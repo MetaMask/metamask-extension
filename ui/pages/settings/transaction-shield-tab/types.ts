@@ -85,17 +85,12 @@ export type SubmitClaimErrorResponse = {
   }[];
 };
 
-export type AccountSelectorChainAccount = {
-  id: string;
-  address: string;
-  type: string;
-};
-
 export type AccountSelectorAccount = {
   id: string;
   name: string;
+  address: string;
+  type: string;
   seedIcon?: string;
-  chainAccounts: AccountSelectorChainAccount[];
 };
 
 export type AccountSelectorWallet = {

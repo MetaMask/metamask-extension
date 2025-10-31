@@ -19,7 +19,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -48,7 +48,7 @@ import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import { isSafeChainId } from '../../../../../shared/modules/network.utils';
 import {
-  AccountSelectorAccount,
+  AccountSelectorWallet,
   SUBMIT_CLAIM_ERROR_CODES,
   SUBMIT_CLAIM_FIELDS,
   SubmitClaimErrorCode,
@@ -57,6 +57,8 @@ import {
 import { SubmitClaimError } from '../claim-error';
 import AccountSelectorModal from '../account-selector-modal';
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
+import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
+import { useAccountAddressSeedIconMap } from '../../../confirmations/hooks/send/useAccountAddressSeedIconMap';
 
 const VALID_SUBMISSION_WINDOW_DAYS = 21;
 const MAX_FILE_SIZE_MB = 5;
@@ -123,8 +125,6 @@ const SubmitClaimForm = () => {
   const navigate = useNavigate();
   const [claimSubmitLoading, setClaimSubmitLoading] = useState(false);
   const [showAccountListMenu, setShowAccountListMenu] = useState(false);
-  const [selectedAccount, setSelectedAccount] =
-    useState<AccountSelectorAccount | null>(null);
 
   const {
     chainId,
@@ -142,6 +142,64 @@ const SubmitClaimForm = () => {
     files,
     setFiles,
   } = useClaimState();
+
+  // Account list
+  const wallets = useSelector(getWalletsWithAccounts);
+  const { accountAddressSeedIconMap } = useAccountAddressSeedIconMap();
+
+  // Group recipients by wallet name
+  const accountsGroupedByWallet: Record<string, AccountSelectorWallet> =
+    useMemo(() => {
+      return Object.values(wallets).reduce(
+        (acc, wallet) => {
+          const walletName = wallet.metadata.name;
+          if (!acc[walletName]) {
+            acc[walletName] = {
+              id: wallet.id,
+              name: wallet.metadata.name,
+              accounts: [],
+            };
+          }
+          Object.values(wallet.groups).forEach((group) => {
+            // get evm account from group
+            const evmAccount = group.accounts.find((account) =>
+              account.type.startsWith('eip155:'),
+            );
+            if (evmAccount) {
+              acc[walletName].accounts.push({
+                id: group.id,
+                name: group.metadata.name,
+                address: evmAccount.address,
+                seedIcon: accountAddressSeedIconMap.get(
+                  evmAccount.address.toLowerCase(),
+                ),
+                type: evmAccount.type,
+              });
+            }
+          });
+          return acc;
+        },
+        {} as Record<string, AccountSelectorWallet>,
+      );
+    }, [wallets, accountAddressSeedIconMap]);
+
+  const selectedAccountInfo = useMemo(() => {
+    const selectedWallet = Object.values(accountsGroupedByWallet).find(
+      (wallet) =>
+        wallet.accounts.some(
+          (account) => account.address === impactedWalletAddress,
+        ),
+    );
+
+    if (selectedWallet) {
+      return (
+        selectedWallet.accounts.find(
+          (account) => account.address === impactedWalletAddress,
+        ) ?? null
+      );
+    }
+    return null;
+  }, [accountsGroupedByWallet, impactedWalletAddress]);
 
   const [errors, setErrors] = useState<
     Partial<
@@ -208,33 +266,6 @@ const SubmitClaimForm = () => {
         : undefined,
     );
   }, [reimbursementWalletAddress, impactedWalletAddress, setErrorMessage, t]);
-
-  const validateImpactedWalletAddress = useCallback(() => {
-    if (impactedWalletAddress) {
-      const isImpactedWalletAddressValid = isValidHexAddress(
-        impactedWalletAddress,
-      );
-      if (isImpactedWalletAddressValid) {
-        validateReimbursementEqualsImpactedWalletAddress();
-        setErrorMessage(SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS, undefined);
-      } else {
-        setErrorMessage(
-          SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS,
-          t('shieldClaimInvalidWalletAddress'),
-        );
-      }
-    } else {
-      setErrorMessage(
-        SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS,
-        t('shieldClaimInvalidRequired'),
-      );
-    }
-  }, [
-    impactedWalletAddress,
-    setErrorMessage,
-    t,
-    validateReimbursementEqualsImpactedWalletAddress,
-  ]);
 
   const validateReimbursementWalletAddress = useCallback(() => {
     if (reimbursementWalletAddress) {
@@ -396,14 +427,6 @@ const SubmitClaimForm = () => {
     handleSubmitClaimError,
   ]);
 
-  const handleAccountSelect = useCallback(
-    (account: AccountSelectorAccount) => {
-      setSelectedAccount(account);
-      setShowAccountListMenu(false);
-    },
-    [setSelectedAccount],
-  );
-
   return (
     <Box
       className="submit-claim-page flex flex-col"
@@ -503,6 +526,9 @@ const SubmitClaimForm = () => {
       </Box>
 
       <Box>
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+          {t('shieldClaimImpactedWalletAddress')}*
+        </Text>
         <Box
           asChild
           borderColor={BoxBorderColor.BorderDefault}
@@ -510,13 +536,13 @@ const SubmitClaimForm = () => {
           onClick={() => setShowAccountListMenu(true)}
         >
           <button>
-            {selectedAccount ? (
+            {selectedAccountInfo ? (
               <>
                 <PreferredAvatar
-                  address={selectedAccount?.seedIcon ?? ''}
+                  address={selectedAccountInfo?.seedIcon ?? ''}
                   size={AvatarAccountSize.Sm}
                 />
-                <Text>{selectedAccount?.name}</Text>
+                <Text>{selectedAccountInfo?.name}</Text>
               </>
             ) : (
               <Text>Select an account</Text>
@@ -548,31 +574,6 @@ const SubmitClaimForm = () => {
         onBlur={() => validateChainId()}
         value={chainId}
         error={Boolean(errors.chainId)}
-        required
-        width={BlockSize.Full}
-      />
-      <FormTextField
-        label={`${t('shieldClaimImpactedWalletAddress')}*`}
-        placeholder={'e.g. 0x71C...B5f6d'}
-        inputProps={{
-          'data-testid': 'shield-claim-impacted-wallet-address-input',
-        }}
-        helpTextProps={{
-          'data-testid': 'shield-claim-impacted-wallet-address-help-text',
-          color: DsTextColor.textAlternative,
-        }}
-        helpText={
-          errors.impactedWalletAddress
-            ? errors.impactedWalletAddress.msg
-            : undefined
-        }
-        id="impacted-wallet-address"
-        name="impacted-wallet-address"
-        size={FormTextFieldSize.Lg}
-        onChange={(e) => setImpactedWalletAddress(e.target.value)}
-        onBlur={() => validateImpactedWalletAddress()}
-        value={impactedWalletAddress}
-        error={Boolean(errors.impactedWalletAddress)}
         required
         width={BlockSize.Full}
       />
@@ -679,7 +680,12 @@ const SubmitClaimForm = () => {
       {showAccountListMenu && (
         <AccountSelectorModal
           onClose={() => setShowAccountListMenu(false)}
-          onAccountSelect={handleAccountSelect}
+          wallets={accountsGroupedByWallet}
+          onAccountSelect={(address) => {
+            setImpactedWalletAddress(address);
+            setShowAccountListMenu(false);
+            validateReimbursementEqualsImpactedWalletAddress();
+          }}
         />
       )}
     </Box>
