@@ -12,7 +12,7 @@ import {
   getPreferences,
   getCurrencyRates,
   getUseCurrencyRateCheck,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
   getEnabledNetworksByNamespace,
 } from '../../../../selectors';
 import {
@@ -193,7 +193,7 @@ describe('Token Cell', () => {
     if (selector === getUseCurrencyRateCheck) {
       return true;
     }
-    if (selector === useSafeChainsListValidationSelector) {
+    if (selector === getUseSafeChainsListValidation) {
       return true;
     }
     if (selector === getEnabledNetworksByNamespace) {
