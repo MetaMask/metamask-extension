@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { isNonEvmChainId } from '@metamask/bridge-controller';
 import * as actions from '../../../../store/actions';
 import Identicon from '../../../ui/identicon';
 import { Button, ButtonVariant, Box } from '../../../component-library';
@@ -28,11 +29,12 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     hideModal: () => dispatch(actions.hideModal()),
-    hideToken: async (address, networkClientId) => {
+    hideToken: async (address, networkClientId, chainId) => {
       await dispatch(
         actions.ignoreTokens({
           tokensToIgnore: address,
           networkClientId,
+          chainId,
         }),
       );
       dispatch(actions.hideModal());
@@ -74,11 +76,6 @@ class HideTokenConfirmationModal extends Component {
     const { symbol, address, image, chainId: tokenChainId } = token;
     const chainIdToUse = tokenChainId || chainId;
 
-    const chainConfig = networkConfigurationsByChainId[chainIdToUse];
-    const { defaultRpcEndpointIndex } = chainConfig;
-    const { networkClientId: networkInstanceId } =
-      chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
-
     return (
       <div className="hide-token-confirmation__container">
         <div className="hide-token-confirmation__title">
@@ -115,7 +112,16 @@ class HideTokenConfirmationModal extends Component {
             block
             data-testid="hide-token-confirmation__hide"
             onClick={() => {
-              hideToken(address, networkInstanceId);
+              if (isNonEvmChainId(chainIdToUse)) {
+                hideToken(address, undefined, chainIdToUse);
+              } else {
+                const chainConfig =
+                  networkConfigurationsByChainId[chainIdToUse];
+                const { defaultRpcEndpointIndex } = chainConfig;
+                const { networkClientId: networkInstanceId } =
+                  chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
+                hideToken(address, networkInstanceId, chainIdToUse);
+              }
               history.push(DEFAULT_ROUTE);
             }}
           >

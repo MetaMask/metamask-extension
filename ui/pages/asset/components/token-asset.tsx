@@ -141,7 +141,6 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       optionsButton={
         <AssetOptions
           isNativeAsset={false}
-          isEvm={isEvm}
           onRemove={() =>
             dispatch(
               showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, history }),
