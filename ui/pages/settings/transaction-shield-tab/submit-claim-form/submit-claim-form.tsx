@@ -3,6 +3,7 @@ import { isValidHexAddress } from '@metamask/controller-utils';
 import { isStrictHexString } from '@metamask/utils';
 import {
   Box,
+  BoxBorderColor,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -23,7 +24,6 @@ import {
 import {
   FormTextField,
   FormTextFieldSize,
-  TextFieldType,
 } from '../../../../components/component-library';
 import {
   BlockSize,
@@ -47,7 +47,6 @@ import {
 } from '../../../../helpers/constants/routes';
 import { TRANSACTION_SHIELD_LINK } from '../../../../helpers/constants/common';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
-import { isSafeChainId } from '../../../../../shared/modules/network.utils';
 import {
   SUBMIT_CLAIM_ERROR_CODES,
   SUBMIT_CLAIM_FIELDS,
@@ -55,6 +54,8 @@ import {
   SubmitClaimField,
 } from '../types';
 import { SubmitClaimError } from '../claim-error';
+import AccountSelector from '../account-selector';
+import NetworkSelector from '../network-selector';
 
 const VALID_SUBMISSION_WINDOW_DAYS = 21;
 const MAX_FILE_SIZE_MB = 5;
@@ -157,21 +158,6 @@ const SubmitClaimForm = () => {
     [setErrors],
   );
 
-  const validateChainId = useCallback(() => {
-    if (chainId) {
-      const isChainIdValid = isSafeChainId(Number(chainId));
-      setErrorMessage(
-        SUBMIT_CLAIM_FIELDS.CHAIN_ID,
-        isChainIdValid ? undefined : t('shieldClaimInvalidChainId'),
-      );
-    } else {
-      setErrorMessage(
-        SUBMIT_CLAIM_FIELDS.CHAIN_ID,
-        t('shieldClaimInvalidRequired'),
-      );
-    }
-  }, [chainId, setErrorMessage, t]);
-
   const validateEmail = useCallback(() => {
     if (email) {
       const isEmailValid = isValidEmail(email);
@@ -187,49 +173,32 @@ const SubmitClaimForm = () => {
     }
   }, [email, setErrorMessage, t]);
 
-  const validateReimbursementEqualsImpactedWalletAddress = useCallback(() => {
-    if (!reimbursementWalletAddress || !impactedWalletAddress) {
-      return;
-    }
+  const validateReimbursementEqualsImpactedWalletAddress = useCallback(
+    (newImpactedWalletAddress?: string) => {
+      const addressToCompare =
+        newImpactedWalletAddress ?? impactedWalletAddress;
 
-    const isReimbursementEqualsImpactedWalletAddress =
-      reimbursementWalletAddress.toLowerCase() ===
-      impactedWalletAddress.toLowerCase();
-
-    setErrorMessage(
-      SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
-      isReimbursementEqualsImpactedWalletAddress
-        ? t('shieldClaimSameWalletAddressesError')
-        : undefined,
-    );
-  }, [reimbursementWalletAddress, impactedWalletAddress, setErrorMessage, t]);
-
-  const validateImpactedWalletAddress = useCallback(() => {
-    if (impactedWalletAddress) {
-      const isImpactedWalletAddressValid = isValidHexAddress(
-        impactedWalletAddress,
-      );
-      if (isImpactedWalletAddressValid) {
-        validateReimbursementEqualsImpactedWalletAddress();
-        setErrorMessage(SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS, undefined);
-      } else {
+      if (!reimbursementWalletAddress || !addressToCompare) {
         setErrorMessage(
-          SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS,
-          t('shieldClaimInvalidWalletAddress'),
+          SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
+          undefined,
         );
+        return;
       }
-    } else {
+
+      const isReimbursementEqualsImpactedWalletAddress =
+        reimbursementWalletAddress.toLowerCase() ===
+        addressToCompare.toLowerCase();
+
       setErrorMessage(
-        SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS,
-        t('shieldClaimInvalidRequired'),
+        SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
+        isReimbursementEqualsImpactedWalletAddress
+          ? t('shieldClaimSameWalletAddressesError')
+          : undefined,
       );
-    }
-  }, [
-    impactedWalletAddress,
-    setErrorMessage,
-    t,
-    validateReimbursementEqualsImpactedWalletAddress,
-  ]);
+    },
+    [reimbursementWalletAddress, impactedWalletAddress, setErrorMessage, t],
+  );
 
   const validateReimbursementWalletAddress = useCallback(() => {
     if (reimbursementWalletAddress) {
@@ -366,8 +335,9 @@ const SubmitClaimForm = () => {
     }
     try {
       setClaimSubmitLoading(true);
+      const chainIdNumber = Number(chainId);
       await submitShieldClaim({
-        chainId,
+        chainId: chainIdNumber.toString(),
         email,
         impactedWalletAddress,
         impactedTransactionHash,
@@ -417,25 +387,25 @@ const SubmitClaimForm = () => {
           </TextButton>,
         ])}
       </Text>
-      <FormTextField
-        label={`${t('shieldClaimChainId')}*`}
-        placeholder="e.g. 1"
-        type={TextFieldType.Number}
-        inputProps={{ 'data-testid': 'shield-claim-chain-id-input' }}
-        helpText={errors.chainId ? errors.chainId.msg : undefined}
-        helpTextProps={{
-          'data-testid': 'shield-claim-chain-id-help-text',
-        }}
-        id="chain-id"
-        name="chain-id"
-        size={FormTextFieldSize.Lg}
-        onChange={(e) => setChainId(e.target.value.trim())}
-        onBlur={() => validateChainId()}
-        value={chainId}
-        error={Boolean(errors.chainId)}
-        required
-        width={BlockSize.Full}
-      />
+
+      {/* Personal details */}
+      <Box>
+        <Text variant={TextVariant.HeadingSm}>
+          {t('shieldClaimPersonalDetails')}
+        </Text>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="mb-2"
+        >
+          {t('shieldClaimPersonalDetailsDescription')}
+        </Text>
+        <Box
+          borderColor={BoxBorderColor.BorderMuted}
+          className="w-full h-[1px] border border-b-0"
+        ></Box>
+      </Box>
+
       <FormTextField
         label={`${t('shieldClaimEmail')}*`}
         placeholder="johncarpenter@sample.com"
@@ -457,31 +427,79 @@ const SubmitClaimForm = () => {
         required
         width={BlockSize.Full}
       />
+
       <FormTextField
-        label={`${t('shieldClaimImpactedWalletAddress')}*`}
+        label={`${t('shieldClaimReimbursementWalletAddress')}*`}
         placeholder={'e.g. 0x71C...B5f6d'}
         inputProps={{
-          'data-testid': 'shield-claim-impacted-wallet-address-input',
+          'data-testid': 'shield-claim-reimbursement-wallet-address-input',
         }}
         helpTextProps={{
-          'data-testid': 'shield-claim-impacted-wallet-address-help-text',
+          'data-testid': 'shield-claim-reimbursement-wallet-address-help-text',
           color: DsTextColor.textAlternative,
         }}
         helpText={
-          errors.impactedWalletAddress
-            ? errors.impactedWalletAddress.msg
-            : undefined
+          errors.reimbursementWalletAddress
+            ? errors.reimbursementWalletAddress.msg
+            : t('shieldClaimReimbursementWalletAddressHelpText')
         }
-        id="impacted-wallet-address"
-        name="impacted-wallet-address"
+        id="reimbursement-wallet-address"
+        name="reimbursement-wallet-address"
         size={FormTextFieldSize.Lg}
-        onChange={(e) => setImpactedWalletAddress(e.target.value)}
-        onBlur={() => validateImpactedWalletAddress()}
-        value={impactedWalletAddress}
-        error={Boolean(errors.impactedWalletAddress)}
+        onChange={(e) => setReimbursementWalletAddress(e.target.value)}
+        onBlur={() => validateReimbursementWalletAddress()}
+        value={reimbursementWalletAddress}
+        error={Boolean(errors.reimbursementWalletAddress)}
         required
         width={BlockSize.Full}
       />
+
+      {/* Incident details */}
+      <Box className="mt-4">
+        <Text variant={TextVariant.HeadingSm}>
+          {t('shieldClaimIncidentDetails')}
+        </Text>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="mb-2"
+        >
+          {t('shieldClaimIncidentDetailsDescription')}
+        </Text>
+
+        <Box
+          borderColor={BoxBorderColor.BorderMuted}
+          className="w-full h-[1px] border border-b-0"
+        ></Box>
+      </Box>
+
+      <AccountSelector
+        label={`${t('shieldClaimImpactedWalletAddress')}*`}
+        modalTitle={t('shieldClaimSelectAccount')}
+        impactedWalletAddress={impactedWalletAddress}
+        onAccountSelect={(address) => {
+          setImpactedWalletAddress(address);
+          // only validate equality if reimbursement wallet address is set and valid format
+          if (
+            reimbursementWalletAddress &&
+            (!errors.reimbursementWalletAddress ||
+              errors.reimbursementWalletAddress.msg ===
+                t('shieldClaimSameWalletAddressesError'))
+          ) {
+            validateReimbursementEqualsImpactedWalletAddress(address);
+          }
+        }}
+      />
+
+      <NetworkSelector
+        label={`${t('shieldClaimNetwork')}*`}
+        modalTitle={t('shieldClaimSelectNetwork')}
+        selectedChainId={chainId}
+        onNetworkSelect={(selectedChainId) => {
+          setChainId(selectedChainId);
+        }}
+      />
+
       <FormTextField
         label={`${t('shieldClaimImpactedTxHash')}*`}
         placeholder={'e.g. a1084235686add...q46q8wurgw'}
@@ -526,31 +544,7 @@ const SubmitClaimForm = () => {
         required
         width={BlockSize.Full}
       />
-      <FormTextField
-        label={`${t('shieldClaimReimbursementWalletAddress')}*`}
-        placeholder={'e.g. 0x71C...B5f6d'}
-        inputProps={{
-          'data-testid': 'shield-claim-reimbursement-wallet-address-input',
-        }}
-        helpTextProps={{
-          'data-testid': 'shield-claim-reimbursement-wallet-address-help-text',
-          color: DsTextColor.textAlternative,
-        }}
-        helpText={
-          errors.reimbursementWalletAddress
-            ? errors.reimbursementWalletAddress.msg
-            : t('shieldClaimReimbursementWalletAddressHelpText')
-        }
-        id="reimbursement-wallet-address"
-        name="reimbursement-wallet-address"
-        size={FormTextFieldSize.Lg}
-        onChange={(e) => setReimbursementWalletAddress(e.target.value)}
-        onBlur={() => validateReimbursementWalletAddress()}
-        value={reimbursementWalletAddress}
-        error={Boolean(errors.reimbursementWalletAddress)}
-        required
-        width={BlockSize.Full}
-      />
+
       <Box gap={2}>
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {`${t('shieldClaimDescription')}*`}
