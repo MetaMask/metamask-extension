@@ -100,8 +100,12 @@ class StartOnboardingPage {
   async createWalletWithSrp(socialLoginEnabled = true): Promise<void> {
     await this.driver.clickElement(this.createWalletButton);
     if (socialLoginEnabled) {
-      await this.driver.clickElement(this.onboardingCreateWithSrpButton);
+      await this.clickCreateWithSrpButton();
     }
+  }
+
+  async clickCreateWithSrpButton(): Promise<void> {
+    await this.driver.clickElement(this.onboardingCreateWithSrpButton);
   }
 
   async importWallet(): Promise<void> {
@@ -135,6 +139,16 @@ class StartOnboardingPage {
 
     await this.driver.waitForSelector(socialLoginButton);
     await this.driver.clickElement(socialLoginButton);
+  }
+
+  async checkSocialSignUpFormIsVisible(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.onboardingCreateWithGoogleButton);
+    } catch (e) {
+      console.log('Timeout while waiting for social sign up form to be loaded', e);
+      throw e;
+    }
+    console.log('Social sign up form is loaded');
   }
 }
 
