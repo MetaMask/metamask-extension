@@ -168,6 +168,13 @@ export const useAvailableTokenBalances = (params: {
   return availableTokenBalances;
 };
 
+/**
+ * Use this hook to get the subscription pricing.
+ *
+ * @param options - The options for the hook.
+ * @param options.refetch - Whether to refetch the subscription pricing from api.
+ * @returns The subscription pricing.
+ */
 export const useSubscriptionPricing = (
   { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
@@ -223,7 +230,7 @@ export const useShieldSubscriptionPricingFromTokenApproval = ({
   transactionMeta?: TransactionMeta;
   decodedApprovalAmount?: string;
 }) => {
-  const { subscriptionPricing } = useSubscriptionPricing();
+  const { subscriptionPricing } = useSubscriptionPricing(); // shouldn't refetch pricing here since we are using the cached pricing from shield plan screen to compare price amount
   const pricingPlans = useSubscriptionProductPlans(
     PRODUCT_TYPES.SHIELD,
     subscriptionPricing,

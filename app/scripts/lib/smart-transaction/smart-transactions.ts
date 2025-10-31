@@ -141,7 +141,8 @@ class SmartTransactionHook {
     this.#txParams = transactionMeta.txParams;
     this.#transactions = transactions;
     this.#shouldShowStatusPage = Boolean(
-      transactionMeta.type !== TransactionType.bridge ||
+      (transactionMeta.type !== TransactionType.bridge &&
+        transactionMeta.type !== TransactionType.shieldSubscriptionApprove) ||
         (this.#transactions && this.#transactions.length > 0),
     );
   }
