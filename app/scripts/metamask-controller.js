@@ -4242,8 +4242,6 @@ export default class MetamaskController extends EventEmitter {
         this.accountTrackerController.clearAccounts();
 
         this.txController.clearUnapprovedTransactions();
-
-        this.tokenDetectionController.enable();
       }
 
       await this.keyringController.createNewVaultAndKeychain(password);

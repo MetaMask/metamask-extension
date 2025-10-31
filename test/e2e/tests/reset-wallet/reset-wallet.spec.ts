@@ -25,8 +25,10 @@ describe('Reset Wallet - ', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
-        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
+        ignoredConsoleErrors: [
+          'unable to proceed, wallet is locked',
+          'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
+        ],
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
           const oAuthMockttpService = new OAuthMockttpService();
@@ -85,9 +87,10 @@ describe('Reset Wallet - ', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
+        ignoredConsoleErrors: [
+          'unable to proceed, wallet is locked',
+          'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
+        ],
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
           const oAuthMockttpService = new OAuthMockttpService();
@@ -97,6 +100,7 @@ describe('Reset Wallet - ', function () {
             passwordOutdated: true,
           });
         },
+        title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await importWalletWithSocialLoginOnboardingFlow({
@@ -162,8 +166,10 @@ describe('Reset Wallet - ', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
-        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
+        ignoredConsoleErrors: [
+          'unable to proceed, wallet is locked',
+          'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
+        ],
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
           const oAuthMockttpService = new OAuthMockttpService();
