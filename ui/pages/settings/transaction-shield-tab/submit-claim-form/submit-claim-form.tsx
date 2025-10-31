@@ -24,7 +24,6 @@ import {
 import {
   FormTextField,
   FormTextFieldSize,
-  TextFieldType,
 } from '../../../../components/component-library';
 import {
   BlockSize,
@@ -41,7 +40,6 @@ import { setShowClaimSubmitToast } from '../../../../components/app/toast-master
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
 import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
-import { isSafeChainId } from '../../../../../shared/modules/network.utils';
 import {
   SUBMIT_CLAIM_ERROR_CODES,
   SUBMIT_CLAIM_FIELDS,
@@ -50,6 +48,7 @@ import {
 } from '../types';
 import { SubmitClaimError } from '../claim-error';
 import AccountSelector from '../account-selector';
+import NetworkSelector from '../network-selector';
 
 const VALID_SUBMISSION_WINDOW_DAYS = 21;
 const MAX_FILE_SIZE_MB = 5;
@@ -151,21 +150,6 @@ const SubmitClaimForm = () => {
     },
     [setErrors],
   );
-
-  const validateChainId = useCallback(() => {
-    if (chainId) {
-      const isChainIdValid = isSafeChainId(Number(chainId));
-      setErrorMessage(
-        SUBMIT_CLAIM_FIELDS.CHAIN_ID,
-        isChainIdValid ? undefined : t('shieldClaimInvalidChainId'),
-      );
-    } else {
-      setErrorMessage(
-        SUBMIT_CLAIM_FIELDS.CHAIN_ID,
-        t('shieldClaimInvalidRequired'),
-      );
-    }
-  }, [chainId, setErrorMessage, t]);
 
   const validateEmail = useCallback(() => {
     if (email) {
@@ -471,25 +455,13 @@ const SubmitClaimForm = () => {
         }}
       />
 
-      <FormTextField
-        label={`${t('shieldClaimChainId')}*`}
-        placeholder="e.g. 1"
-        type={TextFieldType.Number}
-        inputProps={{ 'data-testid': 'shield-claim-chain-id-input' }}
-        helpText={errors.chainId ? errors.chainId.msg : undefined}
-        helpTextProps={{
-          'data-testid': 'shield-claim-chain-id-help-text',
+      <NetworkSelector
+        selectedChainId={chainId}
+        onNetworkSelect={(selectedChainId) => {
+          setChainId(selectedChainId);
         }}
-        id="chain-id"
-        name="chain-id"
-        size={FormTextFieldSize.Lg}
-        onChange={(e) => setChainId(e.target.value.trim())}
-        onBlur={() => validateChainId()}
-        value={chainId}
-        error={Boolean(errors.chainId)}
-        required
-        width={BlockSize.Full}
       />
+
       <FormTextField
         label={`${t('shieldClaimImpactedTxHash')}*`}
         placeholder={'e.g. a1084235686add...q46q8wurgw'}

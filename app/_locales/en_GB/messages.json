@@ -5771,8 +5771,8 @@
   "shieldClaim": {
     "message": "Submit a claim"
   },
-  "shieldClaimChainId": {
-    "message": "Chain ID"
+  "shieldClaimNetwork": {
+    "message": "Select network"
   },
   "shieldClaimDescription": {
     "message": "Description of case"
