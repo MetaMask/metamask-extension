@@ -868,7 +868,11 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'TransactionController:transactionSubmitted',
       ({ transactionMeta }) => {
-        this._onShieldSubscriptionApprovalTransaction(transactionMeta);
+        this._onShieldSubscriptionApprovalTransaction(transactionMeta).catch(
+          (err) => {
+            console.error('Error onShieldSubscriptionApprovalTransaction', err);
+          },
+        );
       },
     );
 
