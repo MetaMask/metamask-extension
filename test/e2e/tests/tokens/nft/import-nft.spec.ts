@@ -1,5 +1,4 @@
 import { withFixtures } from '../../../helpers';
-import { ACCOUNT_TYPE } from '../../../constants';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
@@ -66,9 +65,7 @@ describe('Import NFT', function () {
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
-        await accountListPage.checkAccountDisplayedInAccountList(
-          'Account 2',
-        );
+        await accountListPage.checkAccountDisplayedInAccountList('Account 2');
         await accountListPage.closeMultichainAccountsPage();
         await homepage.checkExpectedBalanceIsDisplayed();
 

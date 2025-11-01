@@ -1,7 +1,6 @@
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import {
-  ACCOUNT_TYPE,
   DEFAULT_FIXTURE_ACCOUNT,
   DAPP_HOST_ADDRESS,
 } from '../../constants';
@@ -41,9 +40,7 @@ describe('Edit Accounts Permissions', function () {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
-        await accountListPage.checkAccountDisplayedInAccountList(
-          accountLabel2,
-        );
+        await accountListPage.checkAccountDisplayedInAccountList(accountLabel2);
         await accountListPage.closeMultichainAccountsPage();
 
         const homepage = new Homepage(driver);
@@ -53,9 +50,7 @@ describe('Edit Accounts Permissions', function () {
         await homepage.headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
-        await accountListPage.checkAccountDisplayedInAccountList(
-          accountLabel3,
-        );
+        await accountListPage.checkAccountDisplayedInAccountList(accountLabel3);
         await accountListPage.closeMultichainAccountsPage();
         await homepage.checkExpectedBalanceIsDisplayed();
 
