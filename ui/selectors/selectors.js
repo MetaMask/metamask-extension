@@ -674,7 +674,16 @@ export function getHDEntropyIndex(state) {
  */
 export function getMetaMaskAccountBalances(state) {
   const currentChainId = getCurrentChainId(state);
-  return state.metamask?.accountsByChainId?.[currentChainId] ?? {};
+  const balancesForCurrentChain =
+    state.metamask?.accountsByChainId?.[currentChainId] ?? {};
+
+  return Object.entries(balancesForCurrentChain).reduce(
+    (acc, [address, value]) => {
+      acc[address.toLowerCase()] = value;
+      return acc;
+    },
+    {},
+  );
 }
 
 export function getMetaMaskCachedBalances(state, networkChainId) {
@@ -686,7 +695,7 @@ export function getMetaMaskCachedBalances(state, networkChainId) {
     if (state.metamask.accountsByChainId?.[chainId]) {
       return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
         (accumulator, [key, value]) => {
-          accumulator[key] = value.balance;
+          accumulator[key.toLowerCase()] = value.balance;
           return accumulator;
         },
         {},
@@ -700,7 +709,7 @@ export function getMetaMaskCachedBalances(state, networkChainId) {
   if (state.metamask.accountsByChainId?.[chainId]) {
     return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
       (accumulator, [key, value]) => {
-        accumulator[key] = value.balance;
+        accumulator[key.toLowerCase()] = value.balance;
         return accumulator;
       },
       {},
@@ -711,11 +720,11 @@ export function getMetaMaskCachedBalances(state, networkChainId) {
 
 export function getCrossChainMetaMaskCachedBalances(state) {
   const allAccountsByChainId = state.metamask.accountsByChainId;
-  return Object.keys(allAccountsByChainId).reduce((acc, topLevelKey) => {
-    acc[topLevelKey] = Object.keys(allAccountsByChainId[topLevelKey]).reduce(
-      (innerAcc, innerKey) => {
-        innerAcc[innerKey] =
-          allAccountsByChainId[topLevelKey][innerKey].balance;
+  return Object.keys(allAccountsByChainId).reduce((acc, chainId) => {
+    acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
+      (innerAcc, address) => {
+        innerAcc[address.toLowerCase()] =
+          allAccountsByChainId[chainId][address].balance;
         return innerAcc;
       },
       {},
@@ -735,12 +744,15 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
   const { accountsByChainId } = state.metamask;
   const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
 
+  const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
+
   const balancesByChainId = {};
   for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
-    if (accounts[selectedAddress]) {
-      balancesByChainId[chainId] = accounts[selectedAddress].balance;
+    if (accounts[checksummedSelectedAddress]) {
+      balancesByChainId[chainId] = accounts[checksummedSelectedAddress].balance;
     }
   }
+
   return balancesByChainId;
 }
 
@@ -842,10 +854,12 @@ export function getNativeTokenCachedBalanceByChainIdByAccountAddress(
 ) {
   const { accountsByChainId } = state.metamask;
 
+  const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
+
   const balancesByChainId = {};
   for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
-    if (accounts[selectedAddress]) {
-      balancesByChainId[chainId] = accounts[selectedAddress].balance;
+    if (accounts[checksummedSelectedAddress]) {
+      balancesByChainId[chainId] = accounts[checksummedSelectedAddress].balance;
     }
   }
   return balancesByChainId;

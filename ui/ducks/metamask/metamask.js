@@ -36,8 +36,6 @@ const initialState = {
   useBlockie: false,
   featureFlags: {},
   currentLocale: '',
-  currentBlockGasLimit: '',
-  currentBlockGasLimitByChainId: {},
   preferences: {
     autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
     showExtensionInFullSizeView: false,
@@ -309,10 +307,6 @@ export const getNftContracts = (state) => {
   const { chainId } = getProviderConfig(state);
   return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
-
-export function getBlockGasLimit(state) {
-  return state.metamask.currentBlockGasLimit;
-}
 
 export function getNativeCurrency(state) {
   return getProviderConfig(state).ticker;

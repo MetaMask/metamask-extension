@@ -3,7 +3,7 @@
     "pinnedAccountList": {},
     "hiddenAccountList": {}
   },
-  "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
+  "AccountTracker": { "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountTree": "object",
     "isAccountTreeSyncingInProgress": "boolean",
