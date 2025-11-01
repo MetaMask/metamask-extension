@@ -181,9 +181,7 @@ describe('Send ETH', function () {
             '[data-testid="account-overview__activity-tab"]',
           );
 
-          await driver.findElement(
-            '.transaction-status-label--confirmed',
-          );
+          await driver.findElement('.transaction-status-label--confirmed');
 
           // The previous findElement already serves as the guard here for the assertElementNotPresent
           await driver.assertElementNotPresent(
