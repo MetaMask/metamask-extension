@@ -4440,12 +4440,6 @@ export function resetWallet() {
   };
 }
 
-export function resetWalletAction() {
-  return {
-    type: actionConstants.RESET_WALLET,
-  };
-}
-
 export function setServiceWorkerKeepAlivePreference(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

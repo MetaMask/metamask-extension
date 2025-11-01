@@ -325,7 +325,6 @@
     "isUpdatingMetamaskNotifications": "boolean",
     "isFetchingMetamaskNotifications": "boolean",
     "isUpdatingMetamaskNotificationsAccount": "object",
-    "isWalletResetInProgress": "boolean",
     "isCheckingAccountsPresence": "boolean",
     "isPushEnabled": "boolean",
     "fcmToken": "string",

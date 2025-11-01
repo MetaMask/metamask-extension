@@ -62,7 +62,6 @@ const initialState = {
   },
   throttledOrigins: {},
   isSeedlessOnboardingUserAuthenticated: false,
-  isWalletResetInProgress: false,
 };
 
 /**
@@ -194,16 +193,8 @@ export default function reduceMetamask(state = initialState, action) {
         socialLoginEmail: undefined,
         authConnection: undefined,
         nodeAuthTokens: undefined,
-      };
-    }
-
-    case actionConstants.RESET_WALLET: {
-      return {
-        ...metamaskState,
-        ...initialState,
-        isWalletResetInProgress: true,
-        isSeedlessOnboardingUserAuthenticated: false,
         passwordOutdatedCache: undefined,
+        isSeedlessOnboardingUserAuthenticated: false,
       };
     }
 
