@@ -444,7 +444,7 @@ class UnlockPage extends Component {
     this.setState({ showLoginErrorModal: false });
     await this.props.resetWallet();
     await this.props.forceUpdateMetamaskState();
-    this.props.history.replace(ONBOARDING_WELCOME_ROUTE);
+    this.props.history.replace(DEFAULT_ROUTE);
   };
 
   render() {
