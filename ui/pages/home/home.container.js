@@ -26,7 +26,6 @@ import {
   getEditedNetwork,
   selectPendingApprovalsForNavigation,
   getShowUpdateModal,
-  getShowConnectionsRemovedModal,
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
 } from '../../selectors';
@@ -188,7 +187,6 @@ const mapStateToProps = (state) => {
     redirectAfterDefaultPage,
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
     isPrimarySeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
-    showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
     showShieldEntryModal: getShowShieldEntryModal(state),
     isSocialLoginFlow: getIsSocialLoginFlow(state),
   };

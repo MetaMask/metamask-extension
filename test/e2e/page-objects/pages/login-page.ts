@@ -82,10 +82,6 @@ class LoginPage {
     }
   }
 
-  async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.connectionsRemovedModal);
-  }
-
   async gotoResetPasswordPage(): Promise<void> {
     console.log('Navigating to reset password page');
     await this.driver.clickElement(this.forgotPasswordButton);

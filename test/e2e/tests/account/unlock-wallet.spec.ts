@@ -1,4 +1,6 @@
 import { Mockttp } from 'mockttp';
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
@@ -9,11 +11,15 @@ import LoginPage from '../../page-objects/pages/login-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
-import { importWalletWithSocialLoginOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import {
+  importWalletWithSocialLoginOnboardingFlow,
+  onboardingMetricsFlow,
+} from '../../page-objects/flows/onboarding.flow';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
+import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 
 describe('Unlock wallet - ', function () {
   it('handle incorrect password during unlock and login successfully', async function () {
@@ -46,6 +52,11 @@ describe('Unlock wallet - ', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ignoredConsoleErrors: [
+          'unable to proceed, wallet is locked',
+          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
+          'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
+        ],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
@@ -96,7 +107,28 @@ describe('Unlock wallet - ', function () {
         await loginPage.loginToHomepage(WALLET_PASSWORD);
 
         // user should see the connections removed modal and reset the wallet
-        await loginPage.checkConnectionsRemovedModalIsDisplayed();
+        await loginPage.resetWalletFromConnectionsRemovedModal();
+
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          // In Firefox, we need to go to the metametrics page first
+          await onboardingMetricsFlow(driver, {
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: true,
+          });
+        }
+
+        // should be on the welcome page after resetting the wallet
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.checkLoginPageIsLoaded();
+
+        // import wallet with social login and start a new session
+        await startOnboardingPage.importWalletWithSocialLogin(
+          AuthConnection.Google,
+        );
+
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage(WALLET_PASSWORD);
+        await homePage.headerNavbar.checkPageIsLoaded();
       },
     );
   });
