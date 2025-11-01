@@ -111,7 +111,7 @@ class AccountListPage {
   private readonly createAccountButton =
     '[data-testid="multichain-account-menu-popover-action-button"]';
 
-  private readonly createMultichainAccountButton =
+  private readonly addMultichainAccountButton =
     '[data-testid="add-multichain-account-button"]';
 
   private readonly currentSelectedAccount =
@@ -223,7 +223,7 @@ class AccountListPage {
     try {
       await this.driver.waitForMultipleSelectors([
         {
-          css: this.createMultichainAccountButton,
+          css: this.addMultichainAccountButton,
           text: 'Add account',
         },
         this.multichainAccountOptionsMenuButton,
@@ -235,7 +235,7 @@ class AccountListPage {
 
     console.log(`Check that account syncing not displayed in account list`);
     await this.driver.assertElementNotPresent({
-      css: this.createMultichainAccountButton,
+      css: this.addMultichainAccountButton,
       text: 'Syncing',
     });
     console.log('Account list is loaded');
@@ -364,6 +364,14 @@ class AccountListPage {
   }
 
   /**
+   * Adds a new multichain wallet.
+   */
+  async addMultichainWallet(): Promise<void> {
+    console.log(`Adding new multichain wallet`);
+    await this.driver.clickElement(this.addMultichainWalletButton);
+  }
+
+    /**
    * Adds a new multichain account.
    *
    * @param options - Options for creating the multichain account
@@ -372,7 +380,7 @@ class AccountListPage {
   async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
     console.log(`Adding new multichain account`);
     const createMultichainAccountButtons = await this.driver.findElements(
-      this.addMultichainWalletButton,
+      this.addMultichainAccountButton,
     );
     await createMultichainAccountButtons[options?.srpIndex ?? 0].click();
   }

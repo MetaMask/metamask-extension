@@ -40,7 +40,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           '[data-testid="account-overview__activity-tab"]',
         );
         const sendTransactionListItem = await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item',
+          '.transaction-status-label--confirmed',
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
@@ -84,7 +84,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           '[data-testid="account-overview__activity-tab"]',
         );
         await driver.clickElement(
-          '.transaction-list__completed-transactions .activity-list-item',
+          '.transaction-status-label--confirmed',
         );
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
 
@@ -146,10 +146,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           '[data-testid="account-overview__activity-tab"]',
         );
         await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+          '.transaction-status-label--confirmed',
         );
         const sendTransactionListItem = await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+          '.transaction-status-label--confirmed',
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
@@ -208,10 +208,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           '[data-testid="account-overview__activity-tab"]',
         );
         await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+          '.transaction-status-label--confirmed',
         );
         const sendTransactionListItem = await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+          '.transaction-status-label--confirmed',
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
