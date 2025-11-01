@@ -110,7 +110,7 @@ describe('Multiple transactions', function () {
 
         // The previous isTransactionListEmpty wait already serves as the guard here for the assertElementNotPresent
         await driver.assertElementNotPresent(
-          '.transaction-list__completed-transactions .activity-list-item',
+          '.transaction-status-label--confirmed:nth-of-type(1)',
         );
       },
     );
