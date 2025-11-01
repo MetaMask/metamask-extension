@@ -44,6 +44,7 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { withMetaMetrics } from '../../contexts/metametrics';
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
+import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
@@ -87,6 +88,10 @@ class UnlockPage extends Component {
      */
     checkIsSeedlessPasswordOutdated: PropTypes.func,
     /**
+     * check if the seedless onboarding user is authenticated for social login flow to do the rehydration
+     */
+    checkIsSeedlessOnboardingUserAuthenticated: PropTypes.func,
+    /**
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
@@ -120,6 +125,7 @@ class UnlockPage extends Component {
     isSubmitting: false,
     unlockDelayPeriod: 0,
     showLoginErrorModal: false,
+    showConnectionsRemovedModal: false,
   };
 
   failed_attempts = 0;
@@ -162,7 +168,18 @@ class UnlockPage extends Component {
     });
 
     try {
-      await this.props.checkIsSeedlessPasswordOutdated();
+      if (this.props.isOnboardingCompleted) {
+        await this.props.checkIsSeedlessPasswordOutdated();
+      } else {
+        // if the onboarding is not completed, check if the seedless onboarding user is authenticated to do the rehydration
+        // we have to consider the case where required tokens for rehydration are removed when user closed the browser app after social login is completed.
+        const isAuthenticated =
+          await this.props.checkIsSeedlessOnboardingUserAuthenticated();
+        if (!isAuthenticated) {
+          // if the seedless onboarding user is not authenticated, redirect to the onboarding welcome page
+          this.props.history.replace(ONBOARDING_WELCOME_ROUTE);
+        }
+      }
     } catch (error) {
       log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
     }
@@ -310,6 +327,10 @@ class UnlockPage extends Component {
         finalErrorMessage = message;
         this.setState({ showLoginErrorModal: true });
         break;
+      case SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded:
+        finalErrorMessage = message;
+        this.setState({ showConnectionsRemovedModal: true });
+        break;
       default:
         finalErrorMessage = message;
         break;
@@ -441,7 +462,10 @@ class UnlockPage extends Component {
   };
 
   onResetWallet = async () => {
-    this.setState({ showLoginErrorModal: false });
+    this.setState({
+      showLoginErrorModal: false,
+      showConnectionsRemovedModal: false,
+    });
     await this.props.resetWallet();
     await this.props.forceUpdateMetamaskState();
     this.props.history.replace(ONBOARDING_WELCOME_ROUTE);
@@ -454,6 +478,7 @@ class UnlockPage extends Component {
       isLocked,
       showResetPasswordModal,
       showLoginErrorModal,
+      showConnectionsRemovedModal,
     } = this.state;
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     const { t } = this.context;
@@ -481,6 +506,9 @@ class UnlockPage extends Component {
             onDone={this.onResetWallet}
             loginError={LOGIN_ERROR.RESET_WALLET}
           />
+        )}
+        {showConnectionsRemovedModal && (
+          <ConnectionsRemovedModal onConfirm={this.onResetWallet} />
         )}
         <Box
           as="form"

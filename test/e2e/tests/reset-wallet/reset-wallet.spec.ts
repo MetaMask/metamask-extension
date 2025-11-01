@@ -58,7 +58,7 @@ describe('Reset Wallet - ', function () {
         await loginPage.loginToHomepage(WALLET_PASSWORD);
 
         // reset the wallet
-        await loginPage.resetWallet();
+        await loginPage.resetWalletFromConnectionsRemovedModal();
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           // In Firefox, we need to go to the metametrics page first
@@ -122,7 +122,7 @@ describe('Reset Wallet - ', function () {
         await loginPage.loginToHomepage(WALLET_PASSWORD);
 
         // reset the wallet
-        await loginPage.resetWallet();
+        await loginPage.resetWalletFromConnectionsRemovedModal();
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           // In Firefox, we need to go to the metametrics page first
@@ -201,7 +201,7 @@ describe('Reset Wallet - ', function () {
         await loginPage.loginToHomepage(WALLET_PASSWORD);
 
         // reset the wallet
-        await loginPage.resetWallet();
+        await loginPage.resetWalletFromConnectionsRemovedModal();
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           // In Firefox, we need to go to the metametrics page first

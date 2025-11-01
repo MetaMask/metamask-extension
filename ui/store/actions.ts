@@ -709,16 +709,11 @@ export function tryUnlockMetamask(
       callBackgroundMethod(
         'syncPasswordAndUnlockWallet',
         [password],
-        (error, isPasswordSynced) => {
+        (error) => {
           if (error) {
             reject(error);
             return;
           }
-          // if password is not synced show connections removal warning to user.
-          if (!isPasswordSynced) {
-            dispatch(setShowConnectionsRemovedModal(true));
-          }
-
           resolve();
         },
       );
@@ -765,6 +760,45 @@ export function checkIsSeedlessPasswordOutdated(
     }
 
     return isPasswordOutdated;
+  };
+}
+
+/**
+ * Checks if the seedless onboarding user is authenticated.
+ *
+ * @returns True if the seedless onboarding user is authenticated, false otherwise.
+ */
+export function checkIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
+  boolean,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
+    const state = getState();
+    const isSocialLoginFlow = getIsSocialLoginFlow(state);
+
+    if (!isSocialLoginFlow) {
+      // if not social login flow, return true
+      return true;
+    }
+
+    try {
+      dispatch(showLoadingIndication());
+      const isAuthenticated = await submitRequestToBackground<boolean>(
+        'checkIsSeedlessOnboardingUserAuthenticated',
+        [],
+      );
+      return isAuthenticated;
+    } catch (error) {
+      log.warn('checkIsSeedlessOnboardingUserAuthenticated error', error);
+      return false;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -2338,15 +2372,6 @@ export function unlockSucceeded(message?: string) {
   return {
     type: actionConstants.UNLOCK_SUCCEEDED,
     value: message,
-  };
-}
-
-export function setShowConnectionsRemovedModal(
-  showConnectionsRemovedModal: boolean,
-) {
-  return {
-    type: actionConstants.SET_SHOW_CONNECTIONS_REMOVED,
-    value: showConnectionsRemovedModal,
   };
 }
 
