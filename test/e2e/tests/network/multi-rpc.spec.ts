@@ -23,7 +23,7 @@ import {
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
-import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 
 describe('MultiRpc:', function (this: Suite) {
   it('should migrate to multi rpc', async function () {
@@ -124,6 +124,16 @@ describe('MultiRpc:', function (this: Suite) {
             },
             selectedNetworkClientId: 'mainnet',
           })
+          .withPreferencesController({
+            preferences: {
+              showNativeTokenAsMainBalance: true,
+            },
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
@@ -134,8 +144,8 @@ describe('MultiRpc:', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
-          DEFAULT_LOCAL_NODE_USD_BALANCE,
-          '$',
+          DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+          'ETH',
         );
 
         await switchToEditRPCViaGlobalMenuNetworks(driver);
