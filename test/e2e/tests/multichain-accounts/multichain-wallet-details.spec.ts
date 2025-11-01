@@ -4,7 +4,6 @@ import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 
-// eslint-disable-next-line
 describe('Multichain Accounts - Wallet Details', function (this: Suite) {
   it('should view wallet details with one Ethereum and one Solana account and show SRP backup reminder', async function () {
     await withSolanaAccountSnap(
@@ -25,7 +24,8 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
 
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
         await accountListPage.checkAccountNameIsDisplayed('Account 1');
-        // await accountListPage.checkAccountNameIsDisplayed('Solana 1')
+        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 2');
+        await accountListPage.checkAccountNameIsDisplayed('Account 2');
         // BUG 37363
         // await walletDetailsPage.checkBalanceIsDisplayed('$5,643.50');
       },
