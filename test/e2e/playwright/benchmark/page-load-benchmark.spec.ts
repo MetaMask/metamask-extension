@@ -8,7 +8,7 @@ pwTest.describe('Page Load Benchmark', () => {
   let benchmark: PageLoadBenchmark;
   const outputPath = path.join(
     process.cwd(),
-    '/test-artifacts/benchmarks/benchmark-results.json',
+    '/test-artifacts/benchmarks/page-load-benchmark-results.json',
   );
 
   pwTest.beforeAll(async () => {

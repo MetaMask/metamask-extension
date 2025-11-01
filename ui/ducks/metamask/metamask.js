@@ -36,8 +36,6 @@ const initialState = {
   useBlockie: false,
   featureFlags: {},
   currentLocale: '',
-  currentBlockGasLimit: '',
-  currentBlockGasLimitByChainId: {},
   preferences: {
     autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
     showExtensionInFullSizeView: false,
@@ -62,7 +60,6 @@ const initialState = {
   },
   throttledOrigins: {},
   isSeedlessOnboardingUserAuthenticated: false,
-  isWalletResetInProgress: false,
 };
 
 /**
@@ -194,16 +191,8 @@ export default function reduceMetamask(state = initialState, action) {
         socialLoginEmail: undefined,
         authConnection: undefined,
         nodeAuthTokens: undefined,
-      };
-    }
-
-    case actionConstants.RESET_WALLET: {
-      return {
-        ...metamaskState,
-        ...initialState,
-        isWalletResetInProgress: true,
-        isSeedlessOnboardingUserAuthenticated: false,
         passwordOutdatedCache: undefined,
+        isSeedlessOnboardingUserAuthenticated: false,
       };
     }
 
@@ -318,10 +307,6 @@ export const getNftContracts = (state) => {
   const { chainId } = getProviderConfig(state);
   return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
-
-export function getBlockGasLimit(state) {
-  return state.metamask.currentBlockGasLimit;
-}
 
 export function getNativeCurrency(state) {
   return getProviderConfig(state).ticker;

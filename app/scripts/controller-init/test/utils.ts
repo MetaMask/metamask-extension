@@ -27,7 +27,6 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     getProvider: jest.fn(),
     getTransactionMetricsRequest: jest.fn(),
     getUIState: jest.fn(),
-    updateAccountBalanceForTransactionNetwork: jest.fn(),
     offscreenPromise: Promise.resolve(),
     persistedState: {},
     removeAllConnections: jest.fn(),

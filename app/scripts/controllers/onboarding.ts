@@ -199,7 +199,7 @@ export default class OnboardingController extends BaseController<
       log.debug('Ignoring registerOnboarding; user already onboarded');
       return;
     }
-    const { onboardingTabs } = { ...(this.state ?? {}) };
+    const { onboardingTabs } = { ...this.state };
 
     if (!onboardingTabs) {
       return;

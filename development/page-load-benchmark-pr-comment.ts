@@ -5,7 +5,6 @@ import {
   BenchmarkMetrics,
   BenchmarkSummary,
 } from '../test/e2e/page-objects/benchmark/page-load-benchmark';
-import { postCommentWithMetamaskBot } from './utils/benchmark-utils';
 
 /**
  * Structure of the benchmark results output file.
@@ -431,14 +430,14 @@ function generateBenchmarkComment(
   const { summary, commit, timestamp } = benchmarkData;
 
   if (!summary || summary.length === 0) {
-    return '## 📊 Page Load Benchmark Results\n\n❌ No benchmark results available.';
+    return '\n\n❌ No benchmark results available.';
   }
 
   const shortCommit = commit.slice(0, 7);
   const date = new Date(timestamp).toLocaleDateString();
 
-  let comment = `## 📊 Page Load Benchmark Results\n\n`;
-  comment += `**Current Commit**: \`${shortCommit}\` | **Date**: ${date}\n\n`;
+  let comment = `\n\n**Current Commit**: \`${shortCommit}\` | **Date**: ${date}\n\n`;
+  let commentHeader = `📊 Page Load Benchmark Results`;
 
   // Track significant increases for warning
   const significantIncreases: {
@@ -475,7 +474,7 @@ function generateBenchmarkComment(
     }
 
     // Create detailed results section
-    comment += `\n<details>\n<summary>📈 Detailed Results</summary>\n\n`;
+    comment += `\n📈 Detailed Results\n\n`;
     comment += `| Metric | Mean | Std Dev | Min | Max | P95 | P99 |\n`;
     comment += `|--------|------|---------|-----|-----|-----|-----|\n`;
 
@@ -497,8 +496,6 @@ function generateBenchmarkComment(
 
       comment += `| ${metric} | ${formatTime(currentValues.mean)} | ${formatTime(currentValues.stdDev)} | ${formatTime(minValue || 0)} | ${formatTime(maxValue || 0)} | ${formatTime(p95Value || 0)} | ${formatTime(p99Value || 0)} |\n`;
     }
-
-    comment += `\n</details>\n\n`;
   }
 
   // Add warning section if there are significant increases
@@ -514,44 +511,27 @@ function generateBenchmarkComment(
     }
 
     comment += `\n`;
+
+    commentHeader += ` **🚨 Significant performance regression detected!**`;
   }
 
-  comment += `---\n\n`;
-  comment += `*Results generated automatically by MetaMask CI*`;
-
-  return comment;
+  return `<details><summary>${commentHeader}</summary>${comment}</details>`;
 }
 
 /**
- * Main function that orchestrates the benchmark comment posting process.
- * Reads benchmark results from file, generates a formatted comment, and posts it to the pull request.
+ * Main function that generates the benchmark comment.
+ * Reads benchmark results from file, generates a formatted comment, and returns it.
  *
  * Required environment variables:
- * - PR_COMMENT_TOKEN: GitHub token with permission to comment on PRs
- * - OWNER: Repository owner (ex.: "MetaMask")
- * - REPOSITORY: Repository name (ex.: "metamask-extension")
- * - PR_NUMBER: Pull request number to comment on
- *
- * @throws {Error} When GitHub API request fails or required environment variables are missing
+ * - HEAD_COMMIT_HASH: Git commit hash of the current HEAD
  */
-async function main(): Promise<void> {
-  const { PR_COMMENT_TOKEN, OWNER, REPOSITORY, PR_NUMBER, HEAD_COMMIT_HASH } =
-    process.env as Record<string, string>;
+export async function getPageLoadBenchmarkComment(): Promise<string | null> {
+  const { HEAD_COMMIT_HASH } = process.env as Record<string, string>;
   const N_COMMITS = 10;
-
-  if (!PR_NUMBER) {
-    console.warn('No pull request detected, skipping benchmark comment');
-    return;
-  }
-
-  if (!PR_COMMENT_TOKEN) {
-    console.warn('PR_COMMENT_TOKEN not provided, skipping benchmark comment');
-    return;
-  }
 
   const filePath = path.join(
     process.cwd(),
-    'test-artifacts/benchmarks/benchmark-results.json',
+    'test-artifacts/benchmarks/page-load-benchmark-results.json',
   );
 
   let benchmarkData: BenchmarkOutput | null = null;
@@ -566,31 +546,25 @@ async function main(): Promise<void> {
 
   if (!benchmarkData) {
     console.warn('No benchmark results found, skipping comment');
-    return;
+    return null;
   }
 
   benchmarkData.commit = HEAD_COMMIT_HASH;
   const referenceData = await fetchLatestMainBenchmarkData(N_COMMITS);
 
-  const commentBody = generateBenchmarkComment(benchmarkData, referenceData);
-  console.log('Generated comment:');
-  console.log(commentBody);
-
-  const response = await postCommentWithMetamaskBot({
-    commentBody,
-    owner: OWNER,
-    repository: REPOSITORY,
-    prNumber: PR_NUMBER,
-    commentToken: PR_COMMENT_TOKEN,
-  });
-
-  if (response) {
-    const data = await response.json();
-    console.log(`Comment posted successfully: ${data.html_url}`);
-  }
+  return generateBenchmarkComment(benchmarkData, referenceData);
 }
 
-main().catch((error) => {
-  console.error('Error posting benchmark comment:', error);
-  process.exit(1);
-});
+// If main module (i.e. this is the TS file that was run directly)
+// Used for testing this script by itself
+if (require.main === module) {
+  getPageLoadBenchmarkComment()
+    .then((comment) => {
+      console.log('Generated comment:');
+      console.log(comment);
+    })
+    .catch((error) => {
+      console.error('Error posting benchmark comment:', error);
+      process.exit(1);
+    });
+}

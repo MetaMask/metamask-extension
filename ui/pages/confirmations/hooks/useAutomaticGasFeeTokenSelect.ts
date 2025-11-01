@@ -51,10 +51,9 @@ export function useAutomaticGasFeeTokenSelect() {
       return;
     }
 
-    setFirstCheck(false);
-
     if (shouldSelect) {
       await selectFirstToken();
+      setFirstCheck(false);
     }
   }, [shouldSelect, selectFirstToken, firstCheck, gasFeeTokens, transactionId]);
 }

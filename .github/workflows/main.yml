@@ -22,7 +22,7 @@ on:
     - cron: '0 2-6 * * *'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/main' && github.sha || github.ref }}
   cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
 
 env:
@@ -241,22 +241,15 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/bundle-size
           path: test-artifacts/chrome
 
-  page-load-benchmark-pr:
+  page-load-benchmark:
     needs:
       - build-test-browserify
-    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
-    uses: ./.github/workflows/page-load-benchmark-pr.yml
-    with:
-      browser-loads: '10'
-      page-loads: '10'
-
-  page-load-benchmark-upload:
-    needs:
-      - page-load-benchmark-pr
-    if: github.ref == 'refs/heads/main'
-    uses: ./.github/workflows/page-load-benchmark-upload.yml
+    uses: ./.github/workflows/page-load-benchmark.yml
     secrets:
       EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+    with:
+      browser-loads: 10
+      page-loads: 10
 
   needs-e2e:
     needs:
@@ -419,6 +412,7 @@ jobs:
       - build-test-flask-browserify
       - build-test-flask-mv2-browserify
       - run-benchmarks
+      - page-load-benchmark
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard

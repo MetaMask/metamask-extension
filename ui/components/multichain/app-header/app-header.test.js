@@ -34,7 +34,7 @@ const render = ({
     activeTab: {
       origin: 'https://remix.ethereum.org',
     },
-    ...(stateChanges ?? {}),
+    ...stateChanges,
   });
   return renderWithProvider(<AppHeader location={location} />, store);
 };

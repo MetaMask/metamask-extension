@@ -47,6 +47,7 @@ import {
 } from '../../../components/multichain/pages/page';
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
+import { getAllPermittedAccountsForCurrentTab } from '../../../selectors';
 import { filterWalletsByGroupNameOrAddress } from './utils';
 
 export const AccountList = () => {
@@ -57,6 +58,7 @@ export const AccountList = () => {
   const { selectedAccountGroup } = accountTree;
   const [searchPattern, setSearchPattern] = useState<string>('');
   const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
+  const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
 
   const {
     isAccountTreeSyncingInProgress,
@@ -163,6 +165,7 @@ export const AccountList = () => {
               selectedAccountGroups={[selectedAccountGroup]}
               isInSearchMode={Boolean(searchPattern)}
               displayWalletHeader={hasMultipleWallets}
+              showConnectionStatus={permittedAccounts.length > 0}
             />
           ) : (
             <Box

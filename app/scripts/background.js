@@ -365,17 +365,30 @@ function maybeDetectPhishing(theController) {
 
       // Determine the block reason based on the type
       let blockReason;
-      let blockedUrl = hostname;
+      let blockedUrl = href;
       if (phishingTestResponse?.result && blockedRequestResponse.result) {
         blockReason = `${phishingTestResponse.type} and ${blockedRequestResponse.type}`;
       } else if (phishingTestResponse?.result) {
         blockReason = phishingTestResponse.type;
       } else {
+        // Override the blocked URL to the initiator URL if the request was flagged by c2 detection
         blockReason = blockedRequestResponse.type;
         blockedUrl = details.initiator;
       }
 
-      const querystring = new URLSearchParams({ hostname, href });
+      let blockedHostname;
+      try {
+        blockedHostname = new URL(blockedUrl).hostname;
+      } catch {
+        // If blockedUrl is null or undefined, fall back to the original URL
+        blockedHostname = hostname;
+        blockedUrl = href;
+      }
+
+      const querystring = new URLSearchParams({
+        hostname: blockedHostname, // used for creating the EPD issue title (false positive report)
+        href: blockedUrl, // used for displaying the URL on the phsihing warning page + proceed anyway URL
+      });
       const redirectUrl = new URL(phishingPageHref);
       redirectUrl.hash = querystring.toString();
       const redirectHref = redirectUrl.toString();
@@ -619,10 +632,7 @@ function saveTimestamp() {
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
- * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {object} accountsByChainId - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values keyed by chain id.
- * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
- * @property {object} currentBlockGasLimitByChainId - The most recently seen block gas limit, in a lower case hex prefixed string keyed by chain id.
  * @property {object} unapprovedPersonalMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
  * @property {object} unapprovedEncryptionPublicKeyMsgs - An object of messages pending approval, mapping a unique ID to the options.
