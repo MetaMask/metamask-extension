@@ -53,9 +53,7 @@ describe('Multiple transactions', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        await driver.waitForSelector(
-          '.transaction-status-label--confirmed',
-        );
+        await driver.waitForSelector('.transaction-status-label--confirmed');
 
         const confirmedTxes = await driver.findElements(
           '.transaction-status-label--confirmed',
