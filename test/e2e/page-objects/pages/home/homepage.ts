@@ -99,6 +99,9 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
+  private readonly networkSubtitle =
+    '[data-testid="networks-subtitle-test-id"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
