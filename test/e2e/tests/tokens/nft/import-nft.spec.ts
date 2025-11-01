@@ -64,10 +64,12 @@ describe('Import NFT', function () {
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
-        });
-        await headerNavbar.checkAccountLabel('Account 2');
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.addMultichainAccount();
+        await accountListPage.checkAccountDisplayedInAccountList(
+          'Account 2',
+        );
+        await accountListPage.closeMultichainAccountsPage();
         await homepage.checkExpectedBalanceIsDisplayed();
 
         // Switch back to Account 1 and check that the NFT is still displayed
