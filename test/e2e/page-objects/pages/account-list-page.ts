@@ -378,6 +378,12 @@ class AccountListPage {
    * @param options.srpIndex - Optional SRP index for the new account
    */
   async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
+    console.log(`Check that account syncing not displayed in account list`);
+    await this.driver.assertElementNotPresent({
+      css: this.addMultichainAccountButton,
+      text: 'Syncing',
+    });
+
     console.log(`Adding new multichain account`);
     const createMultichainAccountButtons = await this.driver.findElements(
       this.addMultichainAccountButton,
