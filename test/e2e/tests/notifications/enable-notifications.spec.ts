@@ -116,7 +116,9 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
       await headerNavbar.openAccountMenu();
 
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Ethereum });
+      await accountListPage.addMultichainAccount();
+      await accountListPage.checkMultichainAccountNameDisplayed('Account 2');
+      await accountListPage.closeMultichainAccountsPage();
     }
   });
 });
