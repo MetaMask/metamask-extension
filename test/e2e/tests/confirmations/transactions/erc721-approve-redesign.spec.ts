@@ -209,6 +209,6 @@ async function confirmApproveTransaction(driver: Driver) {
 
   await driver.clickElement({ text: 'Activity', tag: 'button' });
   await driver.waitForSelector(
-    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+    '.transaction-status-label--confirmed:nth-of-type(1)',
   );
 }

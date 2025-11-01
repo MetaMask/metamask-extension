@@ -67,7 +67,7 @@ describe('Import NFT', function () {
         await accountListPage.addMultichainAccount();
         await accountListPage.checkAccountDisplayedInAccountList('Account 2');
         await accountListPage.closeMultichainAccountsPage();
-        await homepage.checkExpectedBalanceIsDisplayed();
+        await homepage.checkExpectedBalanceIsDisplayed('24.997');
 
         // Switch back to Account 1 and check that the NFT is still displayed
         await headerNavbar.openAccountMenu();
