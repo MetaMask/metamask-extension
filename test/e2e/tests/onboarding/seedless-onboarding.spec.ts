@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
@@ -10,6 +9,7 @@ import {
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
+import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   MOCK_GOOGLE_ACCOUNT,
@@ -71,10 +71,9 @@ describe('Metamask onboarding (with social login)', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const displayedWalletAddress = await homePage.getAccountAddress();
-
-        assert.deepStrictEqual(
-          displayedWalletAddress,
+        await homePage.clickOnNetworkSubtitle();
+        const addressListModal = new AddressListModal(driver);
+        await addressListModal.checkNetworkAddressIsDisplayed(
           shortenAddress(
             normalizeSafeAddress(MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS),
           ),
