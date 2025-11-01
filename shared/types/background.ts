@@ -142,6 +142,7 @@ export type ControllerStatePropertiesEnumerated = {
   enforcedSimulationsSlippage: AppStateControllerState['enforcedSimulationsSlippage'];
   enforcedSimulationsSlippageForTransactions: AppStateControllerState['enforcedSimulationsSlippageForTransactions'];
   networkConnectionBanner: AppStateControllerState['networkConnectionBanner'];
+  isWalletResetInProgress: AppStateControllerState['isWalletResetInProgress'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];

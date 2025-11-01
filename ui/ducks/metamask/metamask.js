@@ -59,6 +59,7 @@ const initialState = {
     },
   },
   throttledOrigins: {},
+  isSeedlessOnboardingUserAuthenticated: false,
 };
 
 /**
@@ -190,6 +191,8 @@ export default function reduceMetamask(state = initialState, action) {
         socialLoginEmail: undefined,
         authConnection: undefined,
         nodeAuthTokens: undefined,
+        passwordOutdatedCache: undefined,
+        isSeedlessOnboardingUserAuthenticated: false,
       };
     }
 
@@ -523,6 +526,16 @@ export function getCompletedOnboarding(state) {
 }
 export function getIsInitialized(state) {
   return state.metamask.isInitialized;
+}
+
+/**
+ * This function checks if the wallet is currently being reset.
+ *
+ * @param {object} state
+ * @returns {boolean}
+ */
+export function getIsWalletResetInProgress(state) {
+  return state.metamask.isWalletResetInProgress;
 }
 
 export function getIsUnlocked(state) {
