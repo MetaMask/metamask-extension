@@ -3,6 +3,7 @@ import { SmartTransactionStatuses } from '@metamask/smart-transactions-controlle
 import { Box } from '../../../components/component-library';
 import { Display } from '../../../helpers/constants/design-system';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
+import './smart-transaction-animations.scss';
 
 const ANIMATIONS_FOLDER = 'images/animations/smart-transaction-status';
 
@@ -68,11 +69,16 @@ export const SmartTransactionStatusAnimation = ({
   }, [status, isIntro]);
 
   return (
-    <Box display={Display.Flex} style={{ width: '96px', height: '96px' }}>
+    <Box 
+      display={Display.Flex} 
+      style={{ width: '96px', height: '96px' }}
+      className="smart-transaction-animation"
+    >
       <LottieAnimation
         path={animation.path}
         loop={animation.loop}
         autoplay={true}
+        useThemeColors={true}
         onComplete={handleAnimationComplete}
       />
     </Box>
