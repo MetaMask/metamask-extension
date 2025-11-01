@@ -68,9 +68,7 @@ describe('Change assets', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNftControllerERC721()
-          .build(),
+        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         smartContract: [smartContract, tokenContract],
         title: this.test?.fullTitle(),
       },
@@ -208,8 +206,8 @@ describe('Change assets', function () {
         await accountListPage.addMultichainAccount();
 
         // Wait for sync operation to complete
-        //await waitUntilSyncedAccountsNumberEquals(2);
-       // await waitUntilEventsEmittedNumberEquals(1);
+        // await waitUntilSyncedAccountsNumberEquals(2);
+        // await waitUntilEventsEmittedNumberEquals(1);
 
         await accountListPage.checkAccountDisplayedInAccountList(
           newAccountName,

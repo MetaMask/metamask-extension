@@ -83,9 +83,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        await driver.clickElement(
-          '.transaction-status-label--confirmed',
-        );
+        await driver.clickElement('.transaction-status-label--confirmed');
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
 
         // Verify address in activity log
@@ -145,9 +143,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        await driver.findElement(
-          '.transaction-status-label--confirmed',
-        );
+        await driver.findElement('.transaction-status-label--confirmed');
         const sendTransactionListItem = await driver.findElement(
           '.transaction-status-label--confirmed',
         );
@@ -207,9 +203,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        await driver.findElement(
-          '.transaction-status-label--confirmed',
-        );
+        await driver.findElement('.transaction-status-label--confirmed');
         const sendTransactionListItem = await driver.findElement(
           '.transaction-status-label--confirmed',
         );
