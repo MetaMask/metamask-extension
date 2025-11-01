@@ -4,7 +4,9 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
 import { withSolanaAccountSnap } from './common-solana';
 
-describe('Account creation', function (this: Suite) {
+// Skipping these tests becasue creating a Solana account is no longer possible with BIP44
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Account creation', function (this: Suite) {
   it('Creates 2 Solana accounts', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },

@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
 import * as fs from 'fs/promises';
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { regularDelayMs, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import FixtureBuilder from '../../fixture-builder';
-import { ACCOUNT_TYPE } from '../../constants';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -170,6 +169,41 @@ export async function mockPriceApiSpotPriceSolanaUsdc(mockServer: Mockttp) {
       return {
         statusCode: 200,
         json: response,
+      };
+    });
+}
+export async function mockPriceApiNative(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+    .withQuery({
+      tokenAddresses: '0x0000000000000000000000000000000000000000',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          '0x0000000000000000000000000000000000000000': {
+            id: 'ethereum',
+            price: 0.999117772642222,
+            marketCap: 120730309.278268,
+            allTimeHigh: 1.24053260919415,
+            allTimeLow: 0.000108596671808063,
+            totalVolume: 9010559.46688706,
+            high1d: 1.04615771175613,
+            low1d: 0.989917959436686,
+            circulatingSupply: 120698129.773088,
+            dilutedMarketCap: 120730309.278268,
+            marketCapPercentChange1d: -3.34335,
+            priceChange1d: -140.536403039107,
+            pricePercentChange1h: -0.127159732673363,
+            pricePercentChange1d: -3.40772116422561,
+            pricePercentChange7d: 0.946312983866069,
+            pricePercentChange14d: -3.47111933351513,
+            pricePercentChange30d: -3.63371831966747,
+            pricePercentChange200d: 153.231041911147,
+            pricePercentChange1y: 54.625598917999,
+          },
+        },
       };
     });
 }
@@ -1554,7 +1588,6 @@ export async function withSolanaAccountSnap(
     mockGetTransactionFailed,
     mockTokenAccountAccountInfo = true,
     mockZeroBalance,
-    numberOfAccounts = 1,
     state = 0,
     mockSwapUSDtoSOL,
     mockSwapSOLtoUSDC,
@@ -1610,7 +1643,7 @@ export async function withSolanaAccountSnap(
         '0x539': true,
       },
       solana: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': false,
       },
     });
   }
@@ -1631,6 +1664,7 @@ export async function withSolanaAccountSnap(
           bridgeConfig: showSnapConfirmation
             ? featureFlagsWithSnapConfirmation
             : featureFlags,
+          ...BIP44_STAGE_TWO,
         },
       },
       testSpecificMock: async (mockServer: Mockttp) => {
@@ -1753,28 +1787,20 @@ export async function withSolanaAccountSnap(
       mockServer: Mockttp;
       extensionId: string;
     }) => {
-      await loginWithBalanceValidation(driver);
-
-      const headerComponent = new HeaderNavbar(driver);
-      const assetList = new AssetListPage(driver);
-      const accountListPage = new AccountListPage(driver);
-
-      for (let i = 1; i <= numberOfAccounts; i++) {
-        await headerComponent.openAccountMenu();
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Solana,
-          accountName: `Solana ${i}`,
-        });
-        await new NonEvmHomepage(driver).checkPageIsLoaded();
-        await headerComponent.checkAccountLabel(`Solana ${i}`);
-        await assetList.checkNetworkFilterText('Solana');
+      if (showNativeTokenAsMainBalance) {
+        await loginWithBalanceValidation(driver);
+      } else {
+        await loginWithoutBalanceValidation(driver);
       }
 
-      if (numberOfAccounts > 0) {
-        await headerComponent.checkAccountLabel(`Solana ${numberOfAccounts}`);
-      }
+      // Change to Solana
+      await driver.clickElement('[data-testid="sort-by-networks"]');
+      await driver.clickElement({
+        text: 'Popular',
+        tag: 'button',
+      });
+      await driver.clickElement('[data-testid="Solana"]');
 
-      await driver.delay(regularDelayMs); // workaround to avoid flakiness
       await test(driver, mockServer, extensionId);
     },
   );

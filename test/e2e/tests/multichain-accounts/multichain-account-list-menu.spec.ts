@@ -13,13 +13,10 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
-        state: 2,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Ensure that wallet information is displayed
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
@@ -41,13 +38,10 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         accountType: AccountType.HardwareWallet,
-        state: 2,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Ensure that wallet information is displayed
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
@@ -75,7 +69,6 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         testSpecificMock: async (mockServer) => {
           return mockSnapSimpleKeyringAndSite(mockServer);
         },
-        state: 2,
       },
       async (driver: Driver) => {
         await installSnapSimpleKeyring(driver);
@@ -88,9 +81,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         );
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Ensure that wallet information is displayed
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');

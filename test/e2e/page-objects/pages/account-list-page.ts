@@ -63,10 +63,8 @@ class AccountListPage {
   private readonly addEoaAccountButton =
     '[data-testid="multichain-account-menu-popover-add-watch-only-account"]';
 
-  private readonly addHardwareWalletButton = {
-    text: 'Hardware wallet',
-    tag: 'button',
-  };
+  private readonly addHardwareWalletButton =
+    '[data-testid="add-wallet-modal-hardware-wallet"]';
 
   private readonly addImportedAccountButton =
     '[data-testid="multichain-account-menu-popover-add-imported-account"]';
@@ -113,7 +111,7 @@ class AccountListPage {
   private readonly createAccountButton =
     '[data-testid="multichain-account-menu-popover-action-button"]';
 
-  private readonly createMultichainAccountButton =
+  private readonly addMultichainAccountButton =
     '[data-testid="add-multichain-account-button"]';
 
   private readonly currentSelectedAccount =
@@ -221,33 +219,25 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(options?: {
-    isMultichainAccountsState2Enabled?: boolean;
-  }): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
-      const selectorsToWaitFor = options?.isMultichainAccountsState2Enabled
-        ? [
-            {
-              css: this.createMultichainAccountButton,
-              text: 'Add account',
-            },
-            this.multichainAccountOptionsMenuButton,
-          ]
-        : [this.createAccountButton, this.accountOptionsMenuButton];
-      await this.driver.waitForMultipleSelectors(selectorsToWaitFor);
+      await this.driver.waitForMultipleSelectors([
+        {
+          css: this.addMultichainAccountButton,
+          text: 'Add account',
+        },
+        this.multichainAccountOptionsMenuButton,
+      ]);
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
     }
 
-    if (options?.isMultichainAccountsState2Enabled) {
-      console.log(`Check that account syncing not displayed in account list`);
-      await this.driver.assertElementNotPresent({
-        css: this.createMultichainAccountButton,
-        text: 'Syncing',
-      });
-    }
-
+    console.log(`Check that account syncing not displayed in account list`);
+    await this.driver.assertElementNotPresent({
+      css: this.addMultichainAccountButton,
+      text: 'Syncing',
+    });
     console.log('Account list is loaded');
   }
 
@@ -374,15 +364,29 @@ class AccountListPage {
   }
 
   /**
+   * Adds a new multichain wallet.
+   */
+  async addMultichainWallet(): Promise<void> {
+    console.log(`Adding new multichain wallet`);
+    await this.driver.clickElement(this.addMultichainWalletButton);
+  }
+
+  /**
    * Adds a new multichain account.
    *
    * @param options - Options for creating the multichain account
    * @param options.srpIndex - Optional SRP index for the new account
    */
   async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
+    console.log(`Check that account syncing not displayed in account list`);
+    await this.driver.assertElementNotPresent({
+      css: this.addMultichainAccountButton,
+      text: 'Syncing',
+    });
+
     console.log(`Adding new multichain account`);
     const createMultichainAccountButtons = await this.driver.findElements(
-      this.createMultichainAccountButton,
+      this.addMultichainAccountButton,
     );
     await createMultichainAccountButtons[options?.srpIndex ?? 0].click();
   }
@@ -674,7 +678,7 @@ class AccountListPage {
 
   async openConnectHardwareWalletModal(): Promise<void> {
     console.log(`Open connect hardware wallet modal`);
-    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.addMultichainWalletButton);
     await this.driver.clickElement(this.addHardwareWalletButton);
     // This delay is needed to mitigate an existing bug
     // See https://github.com/metamask/metamask-extension/issues/25851
@@ -737,18 +741,6 @@ class AccountListPage {
   async unpinAccount(): Promise<void> {
     console.log(`Unpin account in account list`);
     await this.driver.clickElement(this.pinUnpinAccountButton);
-  }
-
-  async checkAccountAddressDisplayedInAccountList(
-    expectedAddress: string,
-  ): Promise<void> {
-    console.log(
-      `Check that account address ${expectedAddress} is displayed in account list`,
-    );
-    await this.driver.waitForSelector({
-      css: this.accountListAddressItem,
-      text: expectedAddress,
-    });
   }
 
   /**
@@ -910,16 +902,15 @@ class AccountListPage {
   }
 
   /**
-   * Verifies that all occurrences of the account balance value and symbol are displayed as private.
+   * Verifies that account balance is private.
    *
    */
-  async checkBalanceIsPrivateEverywhere(): Promise<void> {
-    console.log(`Verify all account balance occurrences are private`);
-    const balanceSelectors = {
-      tag: 'span',
+  async checkAccountBalanceIsPrivate(): Promise<void> {
+    console.log(`Verify that account balance is private`);
+    await this.driver.waitForSelector({
+      css: this.accountPageBalance,
       text: '••••••',
-    };
-    await this.driver.elementCountBecomesN(balanceSelectors, 6);
+    });
   }
 
   async checkCurrentAccountIsImported(): Promise<void> {

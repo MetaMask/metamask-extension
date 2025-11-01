@@ -99,6 +99,9 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-skip-button"]';
 
+  private readonly networkSubtitle =
+    '[data-testid="networks-subtitle-test-id"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
@@ -355,7 +358,7 @@ class HomePage {
   ): Promise<void> {
     let expectedBalance: string;
     if (localNode) {
-      expectedBalance = (await localNode.getBalance(address)).toString();
+      expectedBalance = (await localNode.getBalance(address)).toFixed(3);
     } else {
       expectedBalance = '25';
     }
@@ -449,6 +452,11 @@ class HomePage {
     await this.driver.assertElementNotPresent(this.shieldEntryModal, {
       waitAtLeastGuard: regularDelayMs,
     });
+  }
+
+  async clickOnNetworkSubtitle(): Promise<void> {
+    console.log('Click on network subtitle');
+    await this.driver.clickElement(this.networkSubtitle);
   }
 }
 
