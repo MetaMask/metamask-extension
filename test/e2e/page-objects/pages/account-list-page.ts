@@ -371,7 +371,7 @@ class AccountListPage {
     await this.driver.clickElement(this.addMultichainWalletButton);
   }
 
-    /**
+  /**
    * Adds a new multichain account.
    *
    * @param options - Options for creating the multichain account
