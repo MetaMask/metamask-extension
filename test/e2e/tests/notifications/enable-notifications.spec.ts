@@ -10,7 +10,6 @@ import NotificationsSettingsPage from '../../page-objects/pages/settings/notific
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { completeOnboardFlowIdentity } from '../identity/flows';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import { ACCOUNT_TYPE } from '../../constants';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices, notificationsMockAccounts } from './mocks';
 
