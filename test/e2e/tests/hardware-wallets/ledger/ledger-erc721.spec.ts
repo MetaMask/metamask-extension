@@ -31,12 +31,7 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await loginWithBalanceValidation(driver, undefined, undefined, '1.21M');
 
         // deploy action
         const testDappPage = new TestDappPage(driver);
@@ -88,7 +83,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          balance?.toString(),
+          `${(balance! / 1_000_000).toFixed(2)}M`.toString(),
         );
 
         const contractAddress =
@@ -151,7 +146,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          balance?.toString(),
+          `${(balance! / 1_000_000).toFixed(2)}M`.toString(),
         );
 
         const contractAddress =
@@ -212,7 +207,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          balance?.toString(),
+          `${(balance! / 1_000_000).toFixed(2)}M`.toString(),
         );
 
         const contractAddress =
