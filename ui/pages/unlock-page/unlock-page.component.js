@@ -467,7 +467,8 @@ class UnlockPage extends Component {
       showConnectionsRemovedModal: false,
     });
     await this.props.resetWallet();
-    this.props.history.replace(DEFAULT_ROUTE);
+    await this.props.forceUpdateMetamaskState();
+    this.props.history.replace(ONBOARDING_WELCOME_ROUTE);
   };
 
   render() {

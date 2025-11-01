@@ -4199,9 +4199,6 @@ export default class MetamaskController extends EventEmitter {
         // TODO: Update @metamask/accounts-controller to support this.
         this.accountOrderController.updateHiddenAccountsList([]);
 
-        // clear accounts in AccountTrackerController
-        this.accountTrackerController.clearAccounts();
-
         this.txController.clearUnapprovedTransactions();
       }
 
