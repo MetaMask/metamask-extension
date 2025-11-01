@@ -30,24 +30,10 @@ describe('Hide tokens without balance', function (this: Suite) {
                     isERC721: false,
                     symbol: 'TST',
                   },
-                  {
-                    address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945948',
-                    decimals: 4,
-                    image: null,
-                    isERC721: false,
-                    symbol: 'TST2',
-                  },
                 ],
               },
             },
             tokens: [
-              {
-                address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945948',
-                decimals: 4,
-                image: null,
-                isERC721: false,
-                symbol: 'TST2',
-              },
               {
                 address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
                 decimals: 4,
@@ -63,6 +49,13 @@ describe('Hide tokens without balance', function (this: Suite) {
       },
       async ({ driver, localNodes }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.importCustomTokenByChain(
+          '0x539',
+          '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945948',
+          'TST2',
+          '4',
+        );
 
         // Verify that both zero-balance tokens and non-zero-balance tokens are displayed by default
         const tokenList = new AssetListPage(driver);

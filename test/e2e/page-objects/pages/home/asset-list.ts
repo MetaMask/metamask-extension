@@ -130,6 +130,9 @@ class AssetListPage {
   private readonly tokenSymbolInput =
     '[data-testid="import-tokens-modal-custom-symbol"]';
 
+  private readonly tokenDecimalsInput =
+    '[data-testid="import-tokens-modal-custom-decimals"]';
+
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
 
   private readonly tokenIncreaseDecreaseValue =
@@ -260,6 +263,7 @@ class AssetListPage {
     chainId: string,
     tokenAddress: string,
     symbol?: string,
+    decimals?: string,
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage`);
     await this.driver.waitForSelector(this.multichainTokenListButton, {
@@ -285,6 +289,14 @@ class AssetListPage {
         waitAtLeastGuard: 1000,
       });
       await this.driver.fill(this.tokenSymbolInput, symbol);
+    }
+
+    if (decimals) {
+      await this.driver.waitForSelector(this.importTokensNextButton, {
+        state: 'disabled',
+        waitAtLeastGuard: 1000,
+      });
+      await this.driver.fill(this.tokenDecimalsInput, decimals);
     }
 
     await this.driver.waitForSelector(this.tokenDecimalsTitle);
