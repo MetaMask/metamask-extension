@@ -4,8 +4,12 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
+import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { ONBOARDING_WELCOME_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import UnlockPage from '.';
 
@@ -15,11 +19,15 @@ const mockTryUnlockMetamask = jest.fn(() => {
   };
 });
 const mockMarkPasswordForgotten = jest.fn();
+const mockResetWallet = jest.fn(() => {
+  return Promise.resolve();
+});
 
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   tryUnlockMetamask: () => mockTryUnlockMetamask,
   markPasswordForgotten: () => mockMarkPasswordForgotten,
+  resetWallet: () => mockResetWallet,
 }));
 
 const mockElement = document.createElement('svg');
@@ -226,5 +234,94 @@ describe('Unlock Page', () => {
     expect(history.push).toHaveBeenCalledWith(intendedPath + intendedSearch);
     expect(history.location.pathname).toBe(intendedPath);
     expect(history.location.search).toBe(intendedSearch);
+  });
+
+  it('should show connections removed modal when max keychain length is exceeded error is thrown', async () => {
+    const mockStateWithUnlock = {
+      metamask: { isUnlocked: false, completedOnboarding: true },
+    };
+    const store = configureMockStore([thunk])(mockStateWithUnlock);
+    const history = createMemoryHistory({
+      initialEntries: [{ pathname: '/unlock' }],
+    });
+
+    jest.spyOn(history, 'replace');
+    const mockForceUpdateMetamaskState = jest.fn();
+
+    mockTryUnlockMetamask.mockImplementationOnce(
+      jest.fn(() => {
+        return Promise.reject(
+          new Error(
+            SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded,
+          ),
+        );
+      }),
+    );
+
+    const { queryByTestId } = renderWithProvider(
+      <Router history={history}>
+        <UnlockPage forceUpdateMetamaskState={mockForceUpdateMetamaskState} />
+      </Router>,
+      store,
+    );
+
+    const passwordField = queryByTestId('unlock-password');
+    const loginButton = queryByTestId('unlock-submit');
+    fireEvent.change(passwordField, { target: { value: 'a-password' } });
+    fireEvent.click(loginButton);
+
+    await waitFor(async () => {
+      expect(queryByTestId('connections-removed-modal')).toBeInTheDocument();
+      const connectionsRemovedConfirmButton = queryByTestId(
+        'connections-removed-modal-confirm-button',
+      );
+      expect(connectionsRemovedConfirmButton).toBeInTheDocument();
+      fireEvent.click(connectionsRemovedConfirmButton);
+
+      // should reset the wallet and redirect to the onboarding welcome page
+      await waitFor(() => {
+        expect(mockResetWallet).toHaveBeenCalledTimes(1);
+        expect(history.replace).toHaveBeenCalledTimes(1);
+        expect(history.replace).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
+    });
+  });
+
+  it('should show login error modal when authentication error is thrown', async () => {
+    const mockStateWithUnlock = {
+      metamask: { isUnlocked: false, completedOnboarding: true },
+    };
+    const store = configureMockStore([thunk])(mockStateWithUnlock);
+    const history = createMemoryHistory({
+      initialEntries: [{ pathname: '/unlock' }],
+    });
+
+    jest.spyOn(history, 'replace');
+
+    mockTryUnlockMetamask.mockImplementationOnce(
+      jest.fn(() => {
+        return Promise.reject(
+          new Error(
+            SeedlessOnboardingControllerErrorMessage.AuthenticationError,
+          ),
+        );
+      }),
+    );
+
+    const { queryByTestId } = renderWithProvider(
+      <Router history={history}>
+        <UnlockPage />
+      </Router>,
+      store,
+    );
+
+    const passwordField = queryByTestId('unlock-password');
+    const loginButton = queryByTestId('unlock-submit');
+    fireEvent.change(passwordField, { target: { value: 'a-password' } });
+    fireEvent.click(loginButton);
+
+    await waitFor(() => {
+      expect(queryByTestId('login-error-modal')).toBeInTheDocument();
+    });
   });
 });

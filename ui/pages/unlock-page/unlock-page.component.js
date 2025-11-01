@@ -317,15 +317,12 @@ class UnlockPage extends Component {
         errorReason = 'outdated_password';
         break;
       case SeedlessOnboardingControllerErrorMessage.AuthenticationError:
+      case SeedlessOnboardingControllerErrorMessage.InvalidRevokeToken:
+      case SeedlessOnboardingControllerErrorMessage.InvalidRefreshToken:
         if (isOnboardingCompleted) {
           finalErrorMessage = message;
           this.setState({ showLoginErrorModal: true });
         }
-        break;
-      case SeedlessOnboardingControllerErrorMessage.InvalidRevokeToken:
-      case SeedlessOnboardingControllerErrorMessage.InvalidRefreshToken:
-        finalErrorMessage = message;
-        this.setState({ showLoginErrorModal: true });
         break;
       case SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded:
         finalErrorMessage = message;
@@ -468,7 +465,7 @@ class UnlockPage extends Component {
     });
     await this.props.resetWallet();
     await this.props.forceUpdateMetamaskState();
-    this.props.history.replace(ONBOARDING_WELCOME_ROUTE);
+    this.props.history.replace(DEFAULT_ROUTE);
   };
 
   render() {

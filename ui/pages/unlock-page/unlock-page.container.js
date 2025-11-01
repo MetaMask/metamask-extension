@@ -18,11 +18,7 @@ import {
   resetOnboarding,
   resetWallet,
 } from '../../store/actions';
-import {
-  getIsSocialLoginFlow,
-  getFirstTimeFlowType,
-  getShowConnectionsRemovedModal,
-} from '../../selectors';
+import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import UnlockPage from './unlock-page.component';
 
@@ -35,7 +31,6 @@ const mapStateToProps = (state) => {
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     isOnboardingCompleted: getCompletedOnboarding(state),
     firstTimeFlowType: getFirstTimeFlowType(state),
-    showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
   };
 };
 
