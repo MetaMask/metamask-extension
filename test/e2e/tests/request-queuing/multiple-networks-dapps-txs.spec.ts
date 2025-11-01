@@ -104,7 +104,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         // Check for unconfirmed transaction in tx list
         const activityList = new ActivityListPage(driver);
-        await activityList.checkPendingTxNumberDisplayedInActivity(1);
+        await activityList.checkUnapprovedTxNumberDisplayedInActivity(1);
 
         // Click Unconfirmed Tx
         await activityList.clickOnActivity(1);
