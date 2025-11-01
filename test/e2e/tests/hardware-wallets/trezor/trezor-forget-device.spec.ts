@@ -45,7 +45,7 @@ describe('Trezor Hardware', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountIsNotDisplayedInAccountList(
-          'Trezor 1',
+          'Trezor Account 1',
         );
       },
     );

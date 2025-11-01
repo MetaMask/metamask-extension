@@ -15,6 +15,9 @@ class AddressListModal {
   private readonly networkName =
     '[data-testid="multichain-address-row-network-name"]';
 
+  private readonly shortenedAddress =
+    '[data-testid="multichain-address-row-address"]';
+
   private readonly addressCopiedMessage = {
     css: '[data-testid="multichain-address-row-address"]',
     text: 'Address copied',
@@ -42,6 +45,14 @@ class AddressListModal {
     await this.driver.waitForSelector({
       text: networkName,
       tag: 'p',
+    });
+  }
+
+  async checkNetworkAddressIsDisplayed(networkAddress: string): Promise<void> {
+    console.log(`Check network "${networkAddress}" is displayed`);
+    await this.driver.waitForSelector({
+      text: networkAddress.toLowerCase(),
+      css: this.shortenedAddress,
     });
   }
 
