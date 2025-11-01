@@ -3,18 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
   ChainPaymentInfo,
-  PAYMENT_TYPES,
   PaymentType,
   PricingPaymentMethod,
   PricingResponse,
-  PRODUCT_TYPES,
   ProductPrice,
   ProductType,
-  RECURRING_INTERVALS,
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { getSubscriptionPricing } from '../../selectors/subscription';
 import {
   getSubscriptionCryptoApprovalAmount,
