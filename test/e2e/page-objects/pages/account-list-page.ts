@@ -63,10 +63,8 @@ class AccountListPage {
   private readonly addEoaAccountButton =
     '[data-testid="multichain-account-menu-popover-add-watch-only-account"]';
 
-  private readonly addHardwareWalletButton = {
-    text: 'Hardware wallet',
-    tag: 'button',
-  };
+  private readonly addHardwareWalletButton =
+    '[data-testid="add-wallet-modal-hardware-wallet"]';
 
   private readonly addImportedAccountButton =
     '[data-testid="multichain-account-menu-popover-add-imported-account"]';
@@ -676,7 +674,7 @@ class AccountListPage {
 
   async openConnectHardwareWalletModal(): Promise<void> {
     console.log(`Open connect hardware wallet modal`);
-    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.addMultichainWalletButton);
     await this.driver.clickElement(this.addHardwareWalletButton);
     // This delay is needed to mitigate an existing bug
     // See https://github.com/metamask/metamask-extension/issues/25851
@@ -739,18 +737,6 @@ class AccountListPage {
   async unpinAccount(): Promise<void> {
     console.log(`Unpin account in account list`);
     await this.driver.clickElement(this.pinUnpinAccountButton);
-  }
-
-  async checkAccountAddressDisplayedInAccountList(
-    expectedAddress: string,
-  ): Promise<void> {
-    console.log(
-      `Check that account address ${expectedAddress} is displayed in account list`,
-    );
-    await this.driver.waitForSelector({
-      css: this.accountListAddressItem,
-      text: expectedAddress,
-    });
   }
 
   /**
