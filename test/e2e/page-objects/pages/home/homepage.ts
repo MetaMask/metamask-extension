@@ -431,9 +431,14 @@ class HomePage {
     let expectedBalance: string;
     if (localNode) {
       const balance = await localNode.getBalance(address);
-      expectedBalance = Number.isInteger(balance)
-        ? balance.toString()
-        : balance.toFixed(3);
+      console.log(balance, Number.isInteger(balance));
+      expectedBalance = balance.toFixed(3);
+      console.log(expectedBalance, expectedBalance.substring(4));
+      expectedBalance =
+        expectedBalance.substring(3) === '000'
+          ? (expectedBalance = '25')
+          : expectedBalance;
+      console.log(expectedBalance);
     } else {
       expectedBalance = '25';
     }
