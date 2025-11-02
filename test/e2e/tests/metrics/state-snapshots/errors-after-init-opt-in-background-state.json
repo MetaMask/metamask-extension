@@ -3,7 +3,12 @@
     "pinnedAccountList": {},
     "hiddenAccountList": {}
   },
-  "AccountTracker": { "accountsByChainId": "object" },
+  "AccountTracker": {
+    "accounts": "object",
+    "currentBlockGasLimit": "0x1c9c380",
+    "accountsByChainId": "object",
+    "currentBlockGasLimitByChainId": { "0x539": "0x1c9c380" }
+  },
   "AccountTreeController": {
     "accountTree": "object",
     "isAccountTreeSyncingInProgress": "boolean",
@@ -31,7 +36,6 @@
     "activeQrCodeScanRequest": null,
     "appActiveTab": "object",
     "browserEnvironment": { "os": "string", "browser": "string" },
-    "canTrackWalletFundsObtained": false,
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "enableEnforcedSimulations": true,
@@ -40,6 +44,7 @@
     "enforcedSimulationsSlippageForTransactions": "object",
     "fullScreenGasPollTokens": "object",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+    "canTrackWalletFundsObtained": false,
     "isRampCardClosed": false,
     "isUpdateAvailable": false,
     "lastUpdatedAt": null,
@@ -311,20 +316,22 @@
   "ProfileMetricsController": "object",
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
-      "feature1": true,
-      "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" },
+      "enableMultichainAccountsState2": {
+        "enabled": true,
+        "featureVersion": "2",
+        "minimumVersion": "12.19.0"
+      },
       "sendRedesign": { "enabled": false }
     },
     "cacheTimestamp": "number"
   },
   "RewardsController": {
-    "rewardsAccounts": "object",
     "rewardsActiveAccount": null,
-    "rewardsSeasonStatuses": "object",
+    "rewardsAccounts": "object",
+    "rewardsSubscriptions": "object",
     "rewardsSeasons": "object",
-    "rewardsSubscriptionTokens": "object",
-    "rewardsSubscriptions": "object"
+    "rewardsSeasonStatuses": "object",
+    "rewardsSubscriptionTokens": "object"
   },
   "RewardsDataService": "undefined",
   "SeedlessOnboardingController": "object",
