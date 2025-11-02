@@ -1,5 +1,4 @@
 import { Suite } from 'mocha';
-import { toHex } from '@metamask/controller-utils';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -18,32 +17,7 @@ describe('Hide tokens without balance', function (this: Suite) {
     const smartContract = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withTokensController({
-            allTokens: {
-              [toHex(1337)]: {
-                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-                  {
-                    address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-                    decimals: 4,
-                    image: null,
-                    isERC721: false,
-                    symbol: 'TST',
-                  },
-                ],
-              },
-            },
-            tokens: [
-              {
-                address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-                decimals: 4,
-                image: null,
-                isERC721: false,
-                symbol: 'TST',
-              },
-            ],
-          })
-          .build(),
+        fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
         title: this.test?.fullTitle(),
         smartContract,
       },
