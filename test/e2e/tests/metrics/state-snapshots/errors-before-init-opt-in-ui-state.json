@@ -10,6 +10,13 @@
       "accountWalletsMetadata": "object",
       "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean"
     },
+    "AccountTreeController": {
+      "accountTree": "object",
+      "isAccountTreeSyncingInProgress": "boolean",
+      "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
+      "accountGroupsMetadata": "object",
+      "accountWalletsMetadata": "object"
+    },
     "AccountsController": {
       "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
     },
@@ -20,11 +27,15 @@
       "web3ShimUsageOrigins": "object"
     },
     "AnnouncementController": { "announcements": "object" },
-    "AppMetadataController": {
-      "currentAppVersion": "string",
-      "currentMigrationVersion": "number",
-      "previousAppVersion": "",
-      "previousMigrationVersion": 0
+    "NetworkOrderController": {
+      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+    },
+    "NetworkEnablementController": {
+      "enabledNetworkMap": { "eip155": "object", "solana": "object" }
+    },
+    "AccountOrderController": {
+      "pinnedAccountList": {},
+      "hiddenAccountList": {}
     },
     "AppStateController": {
       "browserEnvironment": { "browser": "string", "os": "string" },

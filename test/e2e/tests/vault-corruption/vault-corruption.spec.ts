@@ -12,6 +12,7 @@ import AccountAddressModal from '../../page-objects/pages/multichain/account-add
 import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
 import LoginPage from '../../page-objects/pages/login-page';
 
+// Skipping this test as not working with BIP44
 // eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
