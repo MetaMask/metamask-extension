@@ -23,7 +23,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 2');
         await accountListPage.checkAddWalletButttonIsDisplayed();
 
-        // BUGBUG
+        // BUGBUG 37363
         // await accountListPage.checkMultichainAccountBalanceDisplayed('$42,500.00');
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
