@@ -59,7 +59,7 @@ describe('Privacy Mode', function () {
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
         // BUG 37363
-        // await accountList.checkAccountBalanceDisplayed('$42,500');
+        // await accountList.checkMultichainAccountBalanceDisplayed('$42,500');
       },
     );
   });
