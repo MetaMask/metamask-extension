@@ -92,6 +92,8 @@
     "useBlockie": false,
     "featureFlags": {},
     "currentLocale": "en",
+    "currentBlockGasLimit": "0x1c9c380",
+    "currentBlockGasLimitByChainId": { "0x539": "0x1c9c380" },
     "preferences": {
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
@@ -337,9 +339,11 @@
     "fcmToken": "string",
     "isUpdatingFCMToken": "boolean",
     "remoteFeatureFlags": {
-      "feature1": true,
-      "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" },
+      "enableMultichainAccountsState2": {
+        "enabled": true,
+        "featureVersion": "2",
+        "minimumVersion": "12.19.0"
+      },
       "sendRedesign": { "enabled": false }
     },
     "cacheTimestamp": "number",
@@ -349,8 +353,7 @@
     "tokenScanCache": "object",
     "coverageResults": "object",
     "orderedTransactionHistory": "object",
-    "claimsConfigurations": "object",
-    "claims": "object",
+    "accounts": "object",
     "accountsByChainId": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
@@ -421,7 +424,6 @@
     "gatorPermissionsMapSerialized": "string",
     "isFetchingGatorPermissions": "boolean",
     "gatorPermissionsProviderSnapId": "string",
-    "pendingRevocations": "object",
     "rewardsActiveAccount": null,
     "rewardsAccounts": "object",
     "rewardsSubscriptions": "object",
