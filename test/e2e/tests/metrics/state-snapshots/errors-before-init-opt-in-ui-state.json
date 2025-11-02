@@ -9,6 +9,13 @@
       "metamaskNotificationsList": "object",
       "metamaskNotificationsReadList": "object"
     },
+    "AccountTreeController": {
+      "accountTree": "object",
+      "isAccountTreeSyncingInProgress": "boolean",
+      "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
+      "accountGroupsMetadata": "object",
+      "accountWalletsMetadata": "object"
+    },
     "AccountsController": {
       "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
     },
