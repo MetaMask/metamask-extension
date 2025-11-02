@@ -3807,8 +3807,8 @@ export default class MetamaskController extends EventEmitter {
       isPasswordSynced = true;
       return isPasswordSynced;
     }
-    const releaseLock = await this.seedlessOperationMutex.acquire();
 
+    const releaseLock = await this.seedlessOperationMutex.acquire();
     try {
       const isKeyringPasswordValid = await this.keyringController
         .verifyPassword(password)
