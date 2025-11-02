@@ -1198,7 +1198,7 @@ class FixtureBuilder {
         [toHex(chainId)]: {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
             {
-              address: `0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947`,
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
               symbol: 'TST',
               decimals: 4,
               image:
