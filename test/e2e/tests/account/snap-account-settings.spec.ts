@@ -8,6 +8,8 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
+// These tests fails with BIP44 as no longer apply
+// eslint-disable-next-line mocha/no-skipped-tests
 describe('Add snap account experimental settings', function (this: Suite) {
   it('switch "Enable Add account snap" to on', async function () {
     await withFixtures(
