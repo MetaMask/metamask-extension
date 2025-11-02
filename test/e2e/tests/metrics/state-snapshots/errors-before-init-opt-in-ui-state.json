@@ -9,8 +9,15 @@
       "metamaskNotificationsList": "object",
       "metamaskNotificationsReadList": "object"
     },
+    "AccountTreeController": {
+      "accountTree": "object",
+      "isAccountTreeSyncingInProgress": "boolean",
+      "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
+      "accountGroupsMetadata": "object",
+      "accountWalletsMetadata": "object"
+    },
     "AccountsController": {
-      "internalAccounts": { "selectedAccount": "string", "accounts": "object" }
+      "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
     },
     "AlertController": {
       "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
@@ -19,11 +26,7 @@
     },
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": {
-      "orderedNetworkList": {
-        "0": "object",
-        "1": "object",
-        "2": "object"
-      }
+      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
     },
     "NetworkEnablementController": {
       "enabledNetworkMap": { "eip155": "object", "solana": "object" }
