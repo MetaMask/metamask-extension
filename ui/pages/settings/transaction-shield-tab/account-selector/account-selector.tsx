@@ -80,14 +80,18 @@ const AccountSelector = ({
     const selectedWallet = Object.values(accountsGroupedByWallet).find(
       (wallet) =>
         wallet.accounts.some(
-          (account) => account.address === impactedWalletAddress,
+          (account) =>
+            account.address.toLowerCase() ===
+            impactedWalletAddress.toLowerCase(),
         ),
     );
 
     if (selectedWallet) {
       return (
         selectedWallet.accounts.find(
-          (account) => account.address === impactedWalletAddress,
+          (account) =>
+            account.address.toLowerCase() ===
+            impactedWalletAddress.toLowerCase(),
         ) ?? null
       );
     }
@@ -166,7 +170,8 @@ const AccountSelector = ({
                         'account-selector-modal__account w-full flex items-center gap-4 px-4 py-3',
                         {
                           'account-selector-modal__account--selected':
-                            account.address === selectedAccountInfo?.address,
+                            account.address.toLowerCase() ===
+                            selectedAccountInfo?.address.toLowerCase(),
                         },
                       )}
                       onClick={() => {
