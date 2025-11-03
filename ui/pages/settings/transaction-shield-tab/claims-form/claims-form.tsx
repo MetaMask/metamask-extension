@@ -410,9 +410,9 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       {!isView && pendingClaims.length > 0 && (
         <BannerAlert
           severity={BannerAlertSeverity.Info}
-          title="You have claims that are pending approval."
-          description="Your claims is being reviewed by our team. We will notify you when it has been approved by email."
-          actionButtonLabel="View claims"
+          title={t('shieldClaimsPendingAlertTitle')}
+          description={t('shieldClaimsPendingAlertDescription')}
+          actionButtonLabel={t('shieldClaimsPendingAlertActionButtonLabel')}
           actionButtonOnClick={() => {
             navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
           }}
