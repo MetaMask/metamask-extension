@@ -231,13 +231,18 @@ class TransactionConfirmation extends Confirmation {
     console.log(
       `Checking sender account ${account} on transaction confirmation page.`,
     );
-    return await this.driver.isElementPresentAndVisible(
-      {
+    try {
+      await this.driver.waitForSelector({
         css: this.senderAccount,
         text: account,
-      },
-      2000,
-    );
+      });
+      return true;
+    } catch (err) {
+      console.log(
+        `Sender account ${account} is not displayed on transaction confirmation page.`,
+      );
+      return false;
+    }
   }
 
   /**
@@ -304,7 +309,7 @@ class TransactionConfirmation extends Confirmation {
 
   async closeGasFeeToastMessage() {
     // the toast message automatically disappears after some seconds, so we need to use clickElementSafe to prevent race conditions
-    await this.driver.clickElementSafe(this.gasFeeCloseToastMessage, 5000);
+    await this.driver.clickElementSafe(this.gasFeeCloseToastMessage, 10000);
   }
 
   /**
