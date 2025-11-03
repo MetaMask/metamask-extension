@@ -143,6 +143,9 @@ class AssetListPage {
 
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
 
+  private readonly tokenName =
+    '[data-testid="multichain-token-list-item-token-name"]';
+
   private readonly tokenIncreaseDecreaseValue =
     '[data-testid="token-increase-decrease-value"]';
 
@@ -189,8 +192,9 @@ class AssetListPage {
   }
 
   async clickOnAsset(assetName: string): Promise<void> {
+    console.log(`Clicking on the token name `);
     await this.driver.clickElement({
-      css: this.tokenListItem,
+      css: this.tokenName,
       text: assetName,
     });
   }
