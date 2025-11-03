@@ -56,16 +56,20 @@ export default function SrpInputImport({
   const t = useI18nContext();
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
-  const [misSpelledWords, setMisSpelledWords] = useState<string[]>([]);
+  const [misSpelledWords, setMisSpelledWords] = useState<DraftSrp[]>([]);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
 
   const initializeSrp = () => {
+    const firstWordId = uuidv4();
     setDraftSrp([
-      { word: firstWord, id: uuidv4(), active: false },
+      { word: firstWord, id: firstWordId, active: false },
       { word: '', id: uuidv4(), active: true },
     ]);
     setFirstWord('');
+    if (!wordlist.includes(firstWord)) {
+      setMisSpelledWords([{ word: firstWord, id: firstWordId, active: false }]);
+    }
   };
 
   const onSrpPaste = (rawSrp: string) => {
@@ -103,6 +107,10 @@ export default function SrpInputImport({
 
   const handleChange = useCallback(
     (id: string, value: string) => {
+      if (value === ' ') {
+        return;
+      }
+
       const newDraftSrp = [...draftSrp];
       const targetIndex = newDraftSrp.findIndex((word) => word.id === id);
       newDraftSrp[targetIndex] = { ...newDraftSrp[targetIndex], word: value };
@@ -118,6 +126,10 @@ export default function SrpInputImport({
         (word) => word.id === currentWordId,
       );
       const isLastWord = currentWordIndex === draftSrp.length - 1;
+
+      if (!wordlist.includes(draftSrp[currentWordIndex].word)) {
+        setMisSpelledWords((prev) => [...prev, draftSrp[currentWordIndex]]);
+      }
 
       if (
         (SRP_LENGTHS.includes(draftSrp.length) &&
@@ -153,6 +165,12 @@ export default function SrpInputImport({
   const deleteWord = useCallback(
     (wordId: string) => {
       const currentWordIndex = draftSrp.findIndex((word) => word.id === wordId);
+
+      const updatedMisSpelledWords = misSpelledWords.filter(
+        (word) => word.id !== wordId,
+      );
+      setMisSpelledWords(updatedMisSpelledWords);
+
       const previousWordId = draftSrp[currentWordIndex - 1]?.id;
       const newDraftSrp = [...draftSrp];
       newDraftSrp.splice(currentWordIndex, 1);
@@ -163,7 +181,7 @@ export default function SrpInputImport({
         setDraftSrp([]);
       }
     },
-    [draftSrp],
+    [draftSrp, misSpelledWords],
   );
 
   const handleOnKeyDown = (ev: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -250,23 +268,23 @@ export default function SrpInputImport({
       srpRefs.current[activeWord.id]?.focus();
     }
 
-    const wordsNotInWordList = draftSrp
-      .filter((word) => word.word !== '' && !wordlist.includes(word.word))
-      .map((word) => word.word);
-    setMisSpelledWords(wordsNotInWordList);
-
     // if srp length is valid and no empty word trigger onChange
     if (
       SRP_LENGTHS.includes(draftSrp.length) &&
       !draftSrp.some((word) => word.word.length === 0) &&
-      wordsNotInWordList.length === 0
+      misSpelledWords.length === 0
     ) {
       const stringSrp = draftSrp.map((word) => word.word).join(' ');
       onChange(stringSrp);
     } else {
       onChange('');
     }
-  }, [draftSrp, onChange]);
+  }, [draftSrp, onChange, misSpelledWords]);
+
+  const misSpelledWordsList = useCallback(
+    () => misSpelledWords.map((word) => word.word),
+    [misSpelledWords],
+  );
 
   return (
     <>
@@ -297,10 +315,13 @@ export default function SrpInputImport({
                       }}
                       testId={`import-srp__srp-word-${index}`}
                       key={word.id}
-                      error={misSpelledWords.includes(word.word)}
+                      error={
+                        !word.active &&
+                        misSpelledWordsList().includes(word.word)
+                      }
                       value={word.word}
                       type={
-                        word.active || misSpelledWords.includes(word.word)
+                        word.active || misSpelledWordsList().includes(word.word)
                           ? TextFieldType.Text
                           : TextFieldType.Password
                       }
@@ -317,7 +338,10 @@ export default function SrpInputImport({
                         handleChange(word.id, e.target.value)
                       }
                       onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
+                        if (
+                          (e.key === 'Enter' || e.key === ' ') &&
+                          word.word.trim() !== ''
+                        ) {
                           e.preventDefault();
                           nextWord(word.id);
                         }
@@ -360,6 +384,7 @@ export default function SrpInputImport({
                 onChange={(e) => setFirstWord(e.target.value)}
                 onKeyDown={handleOnKeyDown}
                 onPaste={handleOnPaste}
+                autoFocus
               />
             </Box>
           )}
