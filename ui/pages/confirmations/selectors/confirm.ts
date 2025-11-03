@@ -1,9 +1,16 @@
+import type { ApprovalControllerState } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
-
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { createSelector } from 'reselect';
-import { getPendingApprovals } from '../../../selectors/approvals';
 import { createDeepEqualSelector } from '../../../../shared/modules/selectors/util';
-import { ConfirmMetamaskState } from '../types/confirm';
+import {
+  ApprovalsMetaMaskState,
+  getPendingApprovals,
+  selectPendingApproval,
+} from '../../../selectors/approvals';
+import { selectUnapprovedMessage } from '../../../selectors/signatures';
+import { getUnapprovedTransactions } from '../../../selectors/transactions';
+import { ConfirmMetamaskState, SignatureRequestType } from '../types/confirm';
 
 const ConfirmationApprovalTypes = [
   ApprovalType.PersonalSign,
@@ -11,30 +18,82 @@ const ConfirmationApprovalTypes = [
   ApprovalType.Transaction,
 ];
 
-export function pendingConfirmationsSelector(state: ConfirmMetamaskState) {
-  return getPendingApprovals(state).filter(({ type }) =>
-    ConfirmationApprovalTypes.includes(type as ApprovalType),
-  );
-}
-
-export function pendingConfirmationsSortedSelector(
-  state: ConfirmMetamaskState,
-) {
-  return getPendingApprovals(state)
-    .filter(({ type }) =>
+export const pendingConfirmationsSelector = createSelector(
+  getPendingApprovals,
+  (pendingApprovals) =>
+    pendingApprovals.filter(({ type }) =>
       ConfirmationApprovalTypes.includes(type as ApprovalType),
-    )
-    .sort((a1, a2) => a1.time - a2.time);
-}
+    ),
+);
+
+export const pendingConfirmationsSortedSelector = createSelector(
+  pendingConfirmationsSelector,
+  (pendingConfirmations) =>
+    [...pendingConfirmations].sort((a1, a2) => a1.time - a2.time),
+);
 
 const firstPendingConfirmationSelector = createSelector(
   pendingConfirmationsSortedSelector,
   (pendingConfirmations) => pendingConfirmations[0],
 );
 
-export const oldestPendingConfirmationSelector = createDeepEqualSelector(
-  firstPendingConfirmationSelector,
-  (firstPendingConfirmation) => firstPendingConfirmation,
+export const oldestPendingConfirmationSelector =
+  firstPendingConfirmationSelector;
+
+const selectUnapprovedTransaction = createDeepEqualSelector(
+  getUnapprovedTransactions,
+  (_state: ConfirmMetamaskState, transactionId?: string) => transactionId,
+  (unapprovedTxs, transactionId): TransactionMeta | undefined => {
+    if (!unapprovedTxs || typeof unapprovedTxs !== 'object' || !transactionId) {
+      return undefined;
+    }
+
+    const typedUnapprovedTxs = unapprovedTxs as Record<string, TransactionMeta>;
+    const match = Object.values(typedUnapprovedTxs).find(
+      ({ id }) => id === transactionId,
+    );
+
+    return match ? { ...match } : undefined;
+  },
+);
+
+export type ConfirmationSelection = {
+  id?: string;
+  pendingApproval?: ApprovalControllerState['pendingApprovals'][string];
+  transactionMeta?: TransactionMeta;
+  signatureMessage?: SignatureRequestType;
+};
+
+export const selectConfirmationData = createDeepEqualSelector(
+  (state: ConfirmMetamaskState, confirmationId?: string) =>
+    confirmationId ?? oldestPendingConfirmationSelector(state)?.id,
+  (state: ConfirmMetamaskState, _confirmationId?: string) => state,
+  (effectiveId, state): ConfirmationSelection => {
+    if (!effectiveId) {
+      return {
+        id: undefined,
+        pendingApproval: undefined,
+        transactionMeta: undefined,
+        signatureMessage: undefined,
+      };
+    }
+
+    const pendingApproval = selectPendingApproval(
+      state as ApprovalsMetaMaskState,
+      effectiveId,
+    ) as ApprovalControllerState['pendingApprovals'][string] | undefined;
+    const transactionMeta = selectUnapprovedTransaction(state, effectiveId);
+    const signatureMessage = selectUnapprovedMessage(state, effectiveId) as
+      | SignatureRequestType
+      | undefined;
+
+    return {
+      id: effectiveId,
+      pendingApproval,
+      transactionMeta,
+      signatureMessage,
+    };
+  },
 );
 
 export function selectEnableEnforcedSimulations(

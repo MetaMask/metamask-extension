@@ -98,7 +98,21 @@ const render = (
       state: 'OPEN',
     },
   };
-  const store = configureStore(merge(defaultState, state));
+  const combinedState = merge({}, defaultState, state);
+  if (state?.metamask?.internalAccounts) {
+    if ('accounts' in state.metamask.internalAccounts) {
+      combinedState.metamask.internalAccounts.accounts =
+        state.metamask.internalAccounts.accounts;
+    }
+    if ('selectedAccount' in state.metamask.internalAccounts) {
+      combinedState.metamask.internalAccounts.selectedAccount =
+        state.metamask.internalAccounts.selectedAccount;
+    }
+  }
+  if (state?.metamask && 'keyrings' in state.metamask) {
+    combinedState.metamask.keyrings = state.metamask.keyrings;
+  }
+  const store = configureStore(combinedState);
   return renderWithProvider(<AccountListMenu {...props} />, store, location);
 };
 
@@ -395,10 +409,16 @@ describe('AccountListMenu', () => {
           {
             type: 'HD Key Tree',
             accounts: [mockAccount.address],
+            metadata: {
+              id: 'mock-hd-keyring-id',
+            },
           },
           {
             type: 'Snap Keyring',
             accounts: [mockBtcAccount.address],
+            metadata: {
+              id: 'mock-snap-keyring-id',
+            },
           },
         ],
       },

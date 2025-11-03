@@ -1,5 +1,32 @@
 // This file is for Jest-specific setup only and runs before our Jest tests.
+import { setBackgroundConnection } from '../../ui/store/background-connection';
 import '../helpers/setup-after-helper';
+
+const backgroundMethodCache = new Map();
+
+const backgroundStub = new Proxy(
+  {},
+  {
+    get: (_target, prop) => {
+      if (prop === '__esModule') {
+        return undefined;
+      }
+
+      const cacheKey = String(prop);
+
+      if (!backgroundMethodCache.has(cacheKey)) {
+        backgroundMethodCache.set(
+          cacheKey,
+          jest.fn().mockResolvedValue(undefined),
+        );
+      }
+
+      return backgroundMethodCache.get(cacheKey);
+    },
+  },
+);
+
+setBackgroundConnection(backgroundStub);
 
 jest.mock('webextension-polyfill', () => {
   return {
