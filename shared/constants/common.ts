@@ -28,7 +28,7 @@ const BASE_DEFAULT_BLOCK_EXPLORER_URL = 'https://basescan.org/';
 const BASE_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'BaseScan';
 const SEI_DEFAULT_BLOCK_EXPLORER_URL = 'https://seitrace.com/';
 const SEI_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'SEI Explorer';
-const MONAD_DEFAULT_BLOCK_EXPLORER_URL = 'https://monvision.io/';
+const MONAD_DEFAULT_BLOCK_EXPLORER_URL = 'https://monadscan.com/';
 const MONAD_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'Monvision';
 
 type BlockExplorerUrlMap = {

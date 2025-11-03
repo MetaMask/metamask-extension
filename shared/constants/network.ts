@@ -403,7 +403,6 @@ export const LINEA_MAINNET_RPC_URL = getRpcUrl({
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 export const MEGAETH_TESTNET_RPC_URL = 'https://carrot.megaeth.com/rpc';
 export const MONAD_TESTNET_RPC_URL = 'https://testnet-rpc.monad.xyz';
-export const MONAD_MAINNET_RPC_URL = 'https://monad-mainnet.infura.io/v3/';
 
 /**
  * An object containing the token symbols for various tokens that are either
