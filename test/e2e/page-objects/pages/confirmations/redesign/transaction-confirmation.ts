@@ -223,26 +223,18 @@ class TransactionConfirmation extends Confirmation {
   }
 
   /**
-   * Checks if the sender account is displayed in the transaction confirmation page.
+   * Checks that the sender account is displayed on the transaction confirmation page.
    *
    * @param account - The sender account to check.
    */
-  async checkIsSenderAccountDisplayed(account: string): Promise<boolean> {
+  async checkIsSenderAccountDisplayed(account: string): Promise<void> {
     console.log(
       `Checking sender account ${account} on transaction confirmation page.`,
     );
-    try {
-      await this.driver.waitForSelector({
-        css: this.senderAccount,
-        text: account,
-      });
-      return true;
-    } catch (err) {
-      console.log(
-        `Sender account ${account} is not displayed on transaction confirmation page.`,
-      );
-      return false;
-    }
+    await this.driver.waitForSelector({
+      css: this.senderAccount,
+      text: account,
+    });
   }
 
   /**
@@ -384,6 +376,26 @@ class TransactionConfirmation extends Confirmation {
       networkName,
     );
     return networkName;
+  }
+
+  /**
+   * Gets the sender account name displayed on the transaction confirmation page.
+   *
+   * IMPORTANT: Make sure the transaction confirmation screen is fully loaded
+   * before calling this method to avoid race conditions.
+   *
+   * @returns The sender account name.
+   */
+  async getSenderAccountName(): Promise<string> {
+    const senderAccountElement = await this.driver.findElement(
+      this.senderAccount,
+    );
+    const senderAccountName = await senderAccountElement.getText();
+    console.log(
+      'Current sender account name displayed on transaction confirmation page: ',
+      senderAccountName,
+    );
+    return senderAccountName;
   }
 
   async setCustomNonce(nonce: string) {
