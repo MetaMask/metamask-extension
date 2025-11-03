@@ -3,7 +3,7 @@
     "pinnedAccountList": {},
     "hiddenAccountList": {}
   },
-  "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
+  "AccountTracker": { "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountTree": "object",
     "isAccountTreeSyncingInProgress": "boolean",
@@ -164,7 +164,8 @@
   },
   "MultichainAssetsController": {
     "accountsAssets": "object",
-    "assetsMetadata": "object"
+    "assetsMetadata": "object",
+    "allIgnoredAssets": "object"
   },
   "MultichainAssetsRatesController": {
     "conversionRates": "object",

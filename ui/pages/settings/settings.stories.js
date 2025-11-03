@@ -20,11 +20,8 @@ export const SettingsPageComponent = () => (
     addNewNetwork={false}
     addressName=""
     backRoute={SETTINGS_ROUTE}
-    breadCrumbTextKey=""
     conversionDate={Date.now()}
     currentPath={CURRENT_PATH} // Default to general settings page
-    initialBreadCrumbKey=""
-    initialBreadCrumbRoute=""
     isAddressEntryPage={false}
     isPasswordChangePage={false}
     isPopup={false}
