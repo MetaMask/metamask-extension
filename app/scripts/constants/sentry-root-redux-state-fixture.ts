@@ -10,7 +10,7 @@ import { FlattenedBackgroundStateProxy } from '../../../shared/types/background'
 
 const flattenedBackgroundState = Object.values(
   sentryBackgroundStateFixture,
-).reduce<FlattenedBackgroundStateProxy>((backgroundState, controllerState) => {
+).reduce<FlattenedBackgroundStateProxy>((backgroundState: any, controllerState: any) => {
   return {
     ...backgroundState,
     ...controllerState,
@@ -50,7 +50,6 @@ const fixture = {
     draftTransactions: {},
     eip1559support: false,
     gasEstimateIsLoading: false,
-    gasEstimatePollToken: undefined,
     gasIsSetInModal: false,
     gasPriceEstimate: '0x0',
     gasLimitMinimum: '0x5208',
@@ -206,7 +205,6 @@ const fixture = {
     newNftAddedMessage: '',
     removeNftMessage: '',
     newNetworkAddedName: '',
-    editedNetwork: undefined,
     newNetworkAddedConfigurationId: '',
     selectedNetworkConfigurationId: '',
     sendInputCurrencySwitched: false,

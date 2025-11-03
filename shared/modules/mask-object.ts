@@ -120,6 +120,7 @@ function validateMaskWithAllProperties(mask: NonNullable<Mask>): void {
   const stringKeys = Object.keys(mask);
   const totalKeys = symbolKeys.length + stringKeys.length;
   if (totalKeys > 1) {
+    console.log('mask', mask);
     throw new Error(
       'A mask with AllProperties cannot contain any other properties',
     );

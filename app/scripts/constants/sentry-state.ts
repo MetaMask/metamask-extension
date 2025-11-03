@@ -420,6 +420,8 @@ const flattenedBackgroundStateMask = Object.values(
   };
 }, {});
 
+console.log('flattenedBackgroundStateMask', flattenedBackgroundStateMask);
+
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
 // not contain any identifiable information.

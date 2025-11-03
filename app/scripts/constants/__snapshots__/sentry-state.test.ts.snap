@@ -487,7 +487,6 @@ exports[`SENTRY_BACKGROUND_STATE masks private data in background state 1`] = `
   "gas": "object",
   "history": "object",
   "metamask": "object",
-  "unconnectedAccount": "boolean",
 }
 `;
 
