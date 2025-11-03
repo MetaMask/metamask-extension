@@ -2181,13 +2181,7 @@ export default class MetamaskController extends EventEmitter {
    */
   getState() {
     const { vault } = this.keyringController.state;
-
-    // check if the wallet reset is in progress
-    const isWalletResetInProgress =
-      this.appStateController.getIsWalletResetInProgress();
-
-    // if the keyring vault is present but the wallet reset is in progress, we can assume the wallet has not initialized yet
-    const isInitialized = Boolean(vault) && !isWalletResetInProgress;
+    const isInitialized = Boolean(vault);
     const flatState = this.memStore.getFlatState();
 
     return {

@@ -4431,6 +4431,9 @@ export function resetWallet() {
       await dispatch(resetOnboarding());
 
       await submitRequestToBackground('resetWallet');
+
+      // force update metamask state
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error('resetWallet error', error);
       throw error;

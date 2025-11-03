@@ -27,7 +27,6 @@ describe('Reset Wallet - ', function () {
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           'unable to proceed, wallet is locked',
-          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
           'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
         ],
         testSpecificMock: (server: Mockttp) => {
@@ -64,7 +63,7 @@ describe('Reset Wallet - ', function () {
           // In Firefox, we need to go to the metametrics page first
           await onboardingMetricsFlow(driver, {
             participateInMetaMetrics: true,
-            dataCollectionForMarketing: true,
+            dataCollectionForMarketing: false,
           });
         }
 
@@ -97,6 +96,10 @@ describe('Reset Wallet - ', function () {
             passwordOutdated: true,
           });
         },
+        ignoredConsoleErrors: [
+          'unable to proceed, wallet is locked',
+          'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -123,7 +126,7 @@ describe('Reset Wallet - ', function () {
           // In Firefox, we need to go to the metametrics page first
           await onboardingMetricsFlow(driver, {
             participateInMetaMetrics: true,
-            dataCollectionForMarketing: true,
+            dataCollectionForMarketing: false,
           });
         }
 
@@ -146,7 +149,7 @@ describe('Reset Wallet - ', function () {
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           await onboardingMetricsFlow(driver, {
             participateInMetaMetrics: true,
-            dataCollectionForMarketing: true,
+            dataCollectionForMarketing: false,
           });
         }
 
@@ -172,6 +175,10 @@ describe('Reset Wallet - ', function () {
             passwordOutdated: true,
           });
         },
+        ignoredConsoleErrors: [
+          'unable to proceed, wallet is locked',
+          'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await importWalletWithSocialLoginOnboardingFlow({
@@ -197,7 +204,7 @@ describe('Reset Wallet - ', function () {
           // In Firefox, we need to go to the metametrics page first
           await onboardingMetricsFlow(driver, {
             participateInMetaMetrics: true,
-            dataCollectionForMarketing: true,
+            dataCollectionForMarketing: false,
           });
         }
 

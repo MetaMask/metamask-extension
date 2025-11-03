@@ -237,15 +237,14 @@ export default class OnboardingController extends BaseController<
   }
 
   /**
-   * Reset the onboarding state
+   * Reset the onboarding controller state.
    */
   resetOnboarding(): void {
-    const defaultState = getDefaultOnboardingControllerState();
     this.update((state) => {
-      state.completedOnboarding = defaultState.completedOnboarding;
-      state.firstTimeFlowType = defaultState.firstTimeFlowType;
-      state.seedPhraseBackedUp = defaultState.seedPhraseBackedUp;
-      state.onboardingTabs = defaultTransientState.onboardingTabs;
+      state.completedOnboarding = false;
+      state.firstTimeFlowType = null;
+      state.seedPhraseBackedUp = null;
+      state.onboardingTabs = {};
     });
   }
 }
