@@ -71,47 +71,51 @@ const VALID_SUBMISSION_WINDOW_DAYS = 21;
 const MAX_FILE_SIZE_MB = 5;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
+// Error codes for codes on the root level of the error response
 const ERROR_MESSAGE_MAP: Partial<
   Record<
     SubmitClaimErrorCode,
-    { message: string; params?: (string | number)[]; field?: SubmitClaimField }
+    {
+      messageKey: string;
+      params?: (string | number)[];
+      field?: SubmitClaimField;
+    }
   >
 > = {
   [SUBMIT_CLAIM_ERROR_CODES.TRANSACTION_NOT_ELIGIBLE]: {
-    message: 'shieldClaimImpactedTxHashNotEligible',
+    messageKey: 'shieldClaimImpactedTxHashNotEligible',
     field: SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
   },
   [SUBMIT_CLAIM_ERROR_CODES.SUBMISSION_WINDOW_EXPIRED]: {
-    message: 'shieldClaimSubmissionWindowExpired',
+    messageKey: 'shieldClaimSubmissionWindowExpired',
     params: [VALID_SUBMISSION_WINDOW_DAYS.toString()],
   },
   [SUBMIT_CLAIM_ERROR_CODES.MAX_CLAIMS_LIMIT_EXCEEDED]: {
-    message: 'shieldClaimMaxClaimsLimitExceeded',
+    messageKey: 'shieldClaimMaxClaimsLimitExceeded',
   },
   [SUBMIT_CLAIM_ERROR_CODES.DUPLICATE_CLAIM_EXISTS]: {
-    message: 'shieldClaimDuplicateClaimExists',
+    messageKey: 'shieldClaimDuplicateClaimExists',
   },
   [SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]: {
-    message: 'shieldClaimSameWalletAddressesError',
+    messageKey: 'shieldClaimSameWalletAddressesError',
     field: SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
   },
   [SUBMIT_CLAIM_ERROR_CODES.FILES_SIZE_EXCEEDED]: {
-    message: 'shieldClaimFileErrorSizeExceeded',
+    messageKey: 'shieldClaimFileErrorSizeExceeded',
   },
   [SUBMIT_CLAIM_ERROR_CODES.FILES_COUNT_EXCEEDED]: {
-    message: 'shieldClaimFileErrorCountExceeded',
+    messageKey: 'shieldClaimFileErrorCountExceeded',
   },
   [SUBMIT_CLAIM_ERROR_CODES.INVALID_FILES_TYPE]: {
-    message: 'shieldClaimFileErrorInvalidType',
+    messageKey: 'shieldClaimFileErrorInvalidType',
   },
   [SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]: {
-    message: 'shieldClaimInvalidRequired',
+    messageKey: 'shieldClaimInvalidRequired',
   },
 };
 
-const SUBMIT_CLAIM_FIELD_ERROR_MESSAGE_MAP: Partial<
-  Record<SubmitClaimField, string>
-> = {
+// Error codes for fields in the error response
+const FIELD_ERROR_MESSAGE_KEY_MAP: Partial<Record<SubmitClaimField, string>> = {
   [SUBMIT_CLAIM_FIELDS.CHAIN_ID]: 'shieldClaimInvalidChainId',
   [SUBMIT_CLAIM_FIELDS.EMAIL]: 'shieldClaimInvalidEmail',
   [SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS]:
@@ -175,15 +179,17 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       const isEmailValid = isValidEmail(email);
       setErrorMessage(
         SUBMIT_CLAIM_FIELDS.EMAIL,
-        isEmailValid ? undefined : t('shieldClaimInvalidEmail'),
+        isEmailValid
+          ? undefined
+          : FIELD_ERROR_MESSAGE_KEY_MAP[SUBMIT_CLAIM_FIELDS.EMAIL],
       );
     } else {
       setErrorMessage(
         SUBMIT_CLAIM_FIELDS.EMAIL,
-        t('shieldClaimInvalidRequired'),
+        ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]?.messageKey,
       );
     }
-  }, [email, setErrorMessage, t]);
+  }, [email, setErrorMessage]);
 
   const validateReimbursementEqualsImpactedWalletAddress = useCallback(
     (newImpactedWalletAddress?: string) => {
@@ -205,11 +211,12 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       setErrorMessage(
         SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
         isReimbursementEqualsImpactedWalletAddress
-          ? t('shieldClaimSameWalletAddressesError')
+          ? ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]
+              ?.messageKey
           : undefined,
       );
     },
-    [reimbursementWalletAddress, impactedWalletAddress, setErrorMessage, t],
+    [reimbursementWalletAddress, impactedWalletAddress, setErrorMessage],
   );
 
   const validateReimbursementWalletAddress = useCallback(() => {
@@ -223,19 +230,20 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       } else {
         setErrorMessage(
           SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
-          t('shieldClaimInvalidWalletAddress'),
+          FIELD_ERROR_MESSAGE_KEY_MAP[
+            SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS
+          ],
         );
       }
     } else {
       setErrorMessage(
         SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
-        t('shieldClaimInvalidRequired'),
+        ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]?.messageKey,
       );
     }
   }, [
     reimbursementWalletAddress,
     setErrorMessage,
-    t,
     validateReimbursementEqualsImpactedWalletAddress,
   ]);
 
@@ -247,22 +255,29 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
 
       setErrorMessage(
         SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
-        isImpactedTxHashValid ? undefined : t('shieldClaimInvalidTxHash'),
+        isImpactedTxHashValid
+          ? undefined
+          : FIELD_ERROR_MESSAGE_KEY_MAP[
+              SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH
+            ],
       );
     } else {
       setErrorMessage(
         SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
-        t('shieldClaimInvalidRequired'),
+        ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]?.messageKey,
       );
     }
-  }, [impactedTransactionHash, setErrorMessage, t]);
+  }, [impactedTransactionHash, setErrorMessage]);
 
   const validateDescription = useCallback(() => {
     setErrorMessage(
       SUBMIT_CLAIM_FIELDS.CASE_DESCRIPTION,
-      caseDescription ? undefined : t('shieldClaimInvalidRequired'),
+      caseDescription
+        ? undefined
+        : ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]
+            ?.messageKey,
     );
-  }, [caseDescription, setErrorMessage, t]);
+  }, [caseDescription, setErrorMessage]);
 
   const isInvalidData = useMemo(() => {
     return (
@@ -294,15 +309,16 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
             SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED === detailError.errorCode
           ) {
             // if error code is field required, set the error message for the field
-            errorMessage = 'shieldClaimInvalidRequired';
+            errorMessage =
+              ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]
+                ?.messageKey ?? '';
           } else {
             // if error is format error get error per field
-            errorMessage =
-              SUBMIT_CLAIM_FIELD_ERROR_MESSAGE_MAP[detailError.field] ?? '';
+            errorMessage = FIELD_ERROR_MESSAGE_KEY_MAP[detailError.field] ?? '';
           }
 
           if (errorMessage) {
-            setErrorMessage(detailError.field, t(errorMessage));
+            setErrorMessage(detailError.field, errorMessage);
           } else {
             // if error is not on message map, use message coming from backend
             setErrorMessage(detailError.field, detailError.error);
@@ -317,19 +333,22 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
           const messageFromErrorMap = data
             ? ERROR_MESSAGE_MAP[data.errorCode]
             : undefined;
+          // needs to translate message because of the params
           toastMessage = messageFromErrorMap
-            ? t(messageFromErrorMap.message, messageFromErrorMap.params)
+            ? t(messageFromErrorMap.messageKey, messageFromErrorMap.params)
             : message;
 
           // if error message has field, set error message for the field instead of showing toast message
           if (messageFromErrorMap?.field) {
+            // needs to translate message because of the params
             setErrorMessage(
               messageFromErrorMap.field,
-              t(messageFromErrorMap.message, messageFromErrorMap.params),
+              t(messageFromErrorMap.messageKey, messageFromErrorMap.params),
             );
             return;
           }
         }
+        // if message is not mapped we use toast
         dispatch(setShowClaimSubmitToast(toastMessage));
       }
     },
@@ -446,9 +465,9 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         label={`${t('shieldClaimEmail')}*`}
         placeholder="johncarpenter@sample.com"
         inputProps={{ 'data-testid': 'shield-claim-email-input' }}
-        helpText={
-          errors.email ? errors.email.msg : t('shieldClaimEmailHelpText')
-        }
+        helpText={t(
+          errors.email ? errors.email.msg : 'shieldClaimEmailHelpText',
+        )}
         helpTextProps={{
           'data-testid': 'shield-claim-help-text',
           color: DsTextColor.textAlternative,
@@ -474,11 +493,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
           'data-testid': 'shield-claim-reimbursement-wallet-address-help-text',
           color: DsTextColor.textAlternative,
         }}
-        helpText={
+        helpText={t(
           errors.reimbursementWalletAddress
             ? errors.reimbursementWalletAddress.msg
-            : t('shieldClaimReimbursementWalletAddressHelpText')
-        }
+            : 'shieldClaimReimbursementWalletAddressHelpText',
+        )}
         id="reimbursement-wallet-address"
         name="reimbursement-wallet-address"
         size={FormTextFieldSize.Lg}
@@ -519,12 +538,16 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         impactedWalletAddress={impactedWalletAddress}
         onAccountSelect={(address) => {
           setImpactedWalletAddress(address);
+          const sameWalletAddressErrorKey =
+            ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]
+              ?.messageKey ?? '';
+
           // only validate equality if reimbursement wallet address is set and valid format
           if (
             reimbursementWalletAddress &&
             (!errors.reimbursementWalletAddress ||
               errors.reimbursementWalletAddress.msg ===
-                t('shieldClaimSameWalletAddressesError'))
+                sameWalletAddressErrorKey)
           ) {
             validateReimbursementEqualsImpactedWalletAddress(address);
           }
@@ -550,7 +573,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         helpText={
           errors.impactedTxHash ? (
             <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
-              {`${errors.impactedTxHash?.msg}. `}
+              {`${t(errors.impactedTxHash?.msg)}. `}
               <TextButton
                 size={TextButtonSize.BodySm}
                 className="min-w-0"
@@ -621,7 +644,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
             className="mt-0.5"
             data-testid="shield-claim-description-error"
           >
-            {errors.caseDescription.msg}
+            {t(errors.caseDescription.msg)}
           </Text>
         )}
       </Box>

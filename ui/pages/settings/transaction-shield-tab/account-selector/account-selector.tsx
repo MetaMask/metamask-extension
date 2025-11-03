@@ -25,6 +25,7 @@ import {
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { AccountSelectorWallet } from '../types';
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
+import { shortenAddress } from '../../../../helpers/utils/util';
 
 const AccountSelector = ({
   label,
@@ -81,14 +82,18 @@ const AccountSelector = ({
     const selectedWallet = Object.values(accountsGroupedByWallet).find(
       (wallet) =>
         wallet.accounts.some(
-          (account) => account.address === impactedWalletAddress,
+          (account) =>
+            account.address.toLowerCase() ===
+            impactedWalletAddress.toLowerCase(),
         ),
     );
 
     if (selectedWallet) {
       return (
         selectedWallet.accounts.find(
-          (account) => account.address === impactedWalletAddress,
+          (account) =>
+            account.address.toLowerCase() ===
+            impactedWalletAddress.toLowerCase(),
         ) ?? null
       );
     }
@@ -169,7 +174,8 @@ const AccountSelector = ({
                         'account-selector-modal__account w-full flex items-center gap-4 px-4 py-3',
                         {
                           'account-selector-modal__account--selected':
-                            account.address === selectedAccountInfo?.address,
+                            account.address.toLowerCase() ===
+                            selectedAccountInfo?.address.toLowerCase(),
                         },
                       )}
                       onClick={() => {
@@ -182,12 +188,21 @@ const AccountSelector = ({
                           address={account.address ?? ''}
                           size={AvatarAccountSize.Lg}
                         />
-                        <Text
-                          variant={TextVariant.BodyMd}
-                          fontWeight={FontWeight.Medium}
-                        >
-                          {account.name}
-                        </Text>
+                        <Box className="text-left">
+                          <Text
+                            variant={TextVariant.BodyMd}
+                            fontWeight={FontWeight.Medium}
+                          >
+                            {account.name}
+                          </Text>
+                          <Text
+                            variant={TextVariant.BodySm}
+                            fontWeight={FontWeight.Medium}
+                            color={TextColor.TextAlternative}
+                          >
+                            {shortenAddress(account.address)}
+                          </Text>
+                        </Box>
                       </button>
                     </Box>
                   ))}
