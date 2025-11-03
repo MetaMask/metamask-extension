@@ -6,6 +6,7 @@ import { useClaims } from '../../contexts/claims/claims';
 export const useClaimState = (isView: boolean = false) => {
   const { pathname } = useLocation();
   const { claims } = useClaims();
+  const [chainId, setChainId] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [impactedWalletAddress, setImpactedWalletAddress] =
     useState<string>('');
@@ -36,6 +37,8 @@ export const useClaimState = (isView: boolean = false) => {
   }, [isView, claimId, claims]);
 
   return {
+    chainId,
+    setChainId,
     email,
     setEmail,
     impactedWalletAddress,
@@ -50,6 +53,7 @@ export const useClaimState = (isView: boolean = false) => {
     setFiles,
     uploadedFiles,
     clear: () => {
+      setChainId('');
       setEmail('');
       setImpactedWalletAddress('');
       setImpactedTransactionHash('');

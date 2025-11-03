@@ -850,9 +850,9 @@
         "bn.js": true,
         "immer": true,
         "lodash": true,
-        "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
+        "@metamask/assets-controllers>multiformats": true,
         "reselect": true,
-        "single-call-balance-checker-abi": true,
+        "@metamask/assets-controllers>single-call-balance-checker-abi": true,
         "uuid": true
       }
     },
@@ -872,8 +872,7 @@
     },
     "@metamask/base-controller": {
       "globals": {
-        "console.error": true,
-        "setTimeout": true
+        "console.error": true
       },
       "packages": {
         "immer": true
@@ -976,6 +975,7 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/controller-utils": true,
         "@metamask/utils": true,
         "uuid": true
       }
@@ -1359,14 +1359,6 @@
         "bitcoin-address-validation": true
       }
     },
-    "@metamask/multichain-transactions-controller>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
     "@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -1406,14 +1398,6 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
-      }
-    },
-    "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": {
-      "packages": {
-        "@metamask/multichain-transactions-controller>@metamask/keyring-api": true,
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client>uuid": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
@@ -1461,6 +1445,11 @@
         "browserify>buffer": true,
         "webpack>events": true,
         "uuid": true
+      }
+    },
+    "@metamask/messenger": {
+      "globals": {
+        "console.error": true
       }
     },
     "@metamask/multichain-account-service": {
@@ -1519,8 +1508,8 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/multichain-transactions-controller>@metamask/keyring-api": true,
-        "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-snap-client": true,
         "@metamask/snaps-utils": true
       }
     },
@@ -1817,13 +1806,16 @@
     },
     "@metamask/shield-controller": {
       "globals": {
-        "setTimeout": true
+        "AbortController": true
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/signature-controller": true,
         "@metamask/transaction-controller": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "cockatiel": true,
+        "lodash": true
       }
     },
     "@metamask/signature-controller": {
@@ -1989,7 +1981,8 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/transaction-controller": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": {
@@ -2275,6 +2268,179 @@
         "browserify>buffer": true,
         "@segment/loosely-validate-event>component-type": true,
         "@segment/loosely-validate-event>join-component": true
+      }
+    },
+    "@sentry/browser>@sentry-internal/browser-utils": {
+      "globals": {
+        "PerformanceEventTiming.prototype": true,
+        "PerformanceObserver": true,
+        "XMLHttpRequest.prototype": true,
+        "__SENTRY_DEBUG__": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "performance": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry/core": true,
+        "@sentry/utils": true
+      }
+    },
+    "@sentry/browser>@sentry-internal/feedback": {
+      "globals": {
+        "FormData": true,
+        "HTMLFormElement": true,
+        "__SENTRY_DEBUG__": true,
+        "cancelAnimationFrame": true,
+        "clearTimeout": true,
+        "document.createElement": true,
+        "document.createElementNS": true,
+        "document.createTextNode": true,
+        "isSecureContext": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry/core": true,
+        "@sentry/utils": true
+      }
+    },
+    "@sentry/browser>@sentry-internal/replay-canvas": {
+      "globals": {
+        "Blob": true,
+        "HTMLCanvasElement": true,
+        "HTMLImageElement": true,
+        "ImageData": true,
+        "URL.createObjectURL": true,
+        "WeakRef": true,
+        "Worker": true,
+        "cancelAnimationFrame": true,
+        "console.error": true,
+        "createImageBitmap": true,
+        "document": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry/core": true,
+        "@sentry/utils": true
+      }
+    },
+    "@sentry/browser>@sentry-internal/replay": {
+      "globals": {
+        "Blob": true,
+        "CSSConditionRule": true,
+        "CSSGroupingRule": true,
+        "CSSMediaRule": true,
+        "CSSRule": true,
+        "CSSSupportsRule": true,
+        "Document": true,
+        "DragEvent": true,
+        "Element": true,
+        "FormData": true,
+        "HTMLElement": true,
+        "HTMLFormElement": true,
+        "Headers": true,
+        "MouseEvent": true,
+        "MutationObserver": true,
+        "Node.DOCUMENT_FRAGMENT_NODE": true,
+        "Node.prototype.contains": true,
+        "PointerEvent": true,
+        "TextEncoder": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "Worker": true,
+        "__RRWEB_EXCLUDE_IFRAME__": true,
+        "__RRWEB_EXCLUDE_SHADOW_DOM__": true,
+        "__SENTRY_DEBUG__": true,
+        "__SENTRY_EXCLUDE_REPLAY_WORKER__": true,
+        "__rrMutationObserver": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console.debug": true,
+        "console.error": true,
+        "console.warn": true,
+        "customElements.get": true,
+        "document": true,
+        "innerHeight": true,
+        "innerWidth": true,
+        "location.href": true,
+        "location.origin": true,
+        "parent": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry-internal/browser-utils": true,
+        "@sentry/browser>@sentry/core": true,
+        "@sentry/utils": true
+      }
+    },
+    "@sentry/browser": {
+      "globals": {
+        "PerformanceObserver.supportedEntryTypes": true,
+        "Request": true,
+        "URL": true,
+        "XMLHttpRequest.prototype": true,
+        "__SENTRY_DEBUG__": true,
+        "__SENTRY_RELEASE__": true,
+        "addEventListener": true,
+        "console.error": true,
+        "indexedDB.open": true,
+        "performance.timeOrigin": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry-internal/browser-utils": true,
+        "@sentry/browser>@sentry-internal/feedback": true,
+        "@sentry/browser>@sentry-internal/replay-canvas": true,
+        "@sentry/browser>@sentry-internal/replay": true,
+        "@sentry/browser>@sentry/core": true,
+        "@sentry/utils": true
+      }
+    },
+    "@sentry/browser>@sentry/core": {
+      "globals": {
+        "Headers": true,
+        "Request": true,
+        "URL": true,
+        "__SENTRY_DEBUG__": true,
+        "__SENTRY_TRACING__": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.log": true,
+        "console.warn": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@sentry/utils": true
+      }
+    },
+    "@sentry/utils": {
+      "globals": {
+        "CustomEvent": true,
+        "DOMError": true,
+        "DOMException": true,
+        "EdgeRuntime": true,
+        "Element": true,
+        "ErrorEvent": true,
+        "Event": true,
+        "HTMLElement": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "URL": true,
+        "__SENTRY_BROWSER_BUNDLE__": true,
+        "__SENTRY_DEBUG__": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "document": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "process": true
       }
     },
     "@solana/addresses": {
@@ -4088,7 +4254,7 @@
         "sass-embedded>varint": true
       }
     },
-    "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": {
+    "@metamask/assets-controllers>multiformats": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true,
@@ -5223,7 +5389,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true
+        "@metamask/assets-controllers>multiformats": true
       }
     },
     "@ensdomains/content-hash>cids>multihashes>uint8arrays": {
@@ -5350,11 +5516,6 @@
       }
     },
     "@metamask/keyring-snap-client>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client>uuid": {
       "globals": {
         "crypto": true
       }

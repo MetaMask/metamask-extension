@@ -150,6 +150,7 @@ async function setupMocking(
   testSpecificMock,
   { chainId, ethConversionInUsd = 1700 },
 ) {
+  let numNetworkReqs = 0;
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: ({ headers: { host }, url }) => {
@@ -164,13 +165,21 @@ async function setupMocking(
       }
       console.log('Request redirected to the catch all mock ============', url);
       return {
-        // If the URL or the host is not in the allowlsit nor blocklisted, we return a 200.
+        // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.
         response: {
           statusCode: 200,
         },
       };
     },
   });
+
+  function getNetworkReport() {
+    return { numNetworkReqs };
+  }
+
+  function clearNetworkReport() {
+    numNetworkReqs = 0;
+  }
 
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
@@ -185,6 +194,17 @@ async function setupMocking(
           subscriptions: [],
           trialedProducts: [],
         },
+      };
+    });
+
+  await server
+    .forGet(
+      'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [],
       };
     });
 
@@ -1243,6 +1263,8 @@ async function setupMocking(
    * operation. See the browserAPIRequestDomains regex above.
    */
   server.on('request-initiated', (request) => {
+    numNetworkReqs += 1;
+
     const privateHosts = matchPrivateHosts(request);
     if (privateHosts.size) {
       for (const privateHost of privateHosts) {
@@ -1261,7 +1283,12 @@ async function setupMocking(
     }
   });
 
-  return { mockedEndpoint, getPrivacyReport };
+  return {
+    mockedEndpoint,
+    getPrivacyReport,
+    getNetworkReport,
+    clearNetworkReport,
+  };
 }
 
 async function mockLensNameProvider(server) {

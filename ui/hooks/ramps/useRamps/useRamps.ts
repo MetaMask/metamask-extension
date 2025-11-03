@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { isSolanaChainId } from '@metamask/bridge-controller';
 import { CaipChainId, Hex, hexToNumber } from '@metamask/utils';
 import { ChainId } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
@@ -9,6 +8,9 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
 } from '../../../selectors';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+
+const DEFAULT_PORTFOLIO_URL = 'https://app.metamask.io';
 
 type IUseRamps = {
   openBuyCryptoInPdapp: (chainId?: ChainId | CaipChainId) => void;
@@ -38,11 +40,12 @@ const useRamps = (
         params.set('metamaskEntry', metamaskEntry);
 
         let numericChainId = '';
-        if (isSolanaChainId(_chainId)) {
-          numericChainId = _chainId;
-        } else {
+        if (isEvmChainId(_chainId)) {
           numericChainId = hexToNumber(_chainId).toString();
+        } else {
+          numericChainId = _chainId;
         }
+
         params.set('chainId', numericChainId);
         if (metaMetricsId) {
           params.set('metametricsId', metaMetricsId);
@@ -51,12 +54,12 @@ const useRamps = (
         if (isMarketingEnabled) {
           params.set('marketingEnabled', String(isMarketingEnabled));
         }
-        const url = new URL(process.env.PORTFOLIO_URL || '');
+        const url = new URL(process.env.PORTFOLIO_URL || DEFAULT_PORTFOLIO_URL);
         url.pathname = 'buy';
         url.search = params.toString();
         return url.toString();
       } catch {
-        return 'https://app.metamask.io/buy';
+        return `${DEFAULT_PORTFOLIO_URL}/buy`;
       }
     },
     [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, metamaskEntry],

@@ -1,3 +1,4 @@
+import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -69,6 +70,7 @@ import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -109,6 +111,7 @@ const mapStateToProps = (state) => {
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
+  const isSidepanel = envType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
@@ -145,6 +148,7 @@ const mapStateToProps = (state) => {
     isPopup,
     isNotification,
     dataCollectionForMarketing,
+    isSidepanel,
     selectedAddress,
     totalUnapprovedCount,
     participateInMetaMetrics,
@@ -247,7 +251,14 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+// Strip unused 'match' prop from withRouter
+// It causes cascading, unnecessary re-renders
+// eslint-disable-next-line react/prop-types
+const HomeWithRouter = ({ match: _match, ...props }) => {
+  return <Home {...props} />;
+};
+
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-)(Home);
+)(HomeWithRouter);

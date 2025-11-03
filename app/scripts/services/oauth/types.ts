@@ -3,7 +3,7 @@ import {
   AuthConnection,
   SeedlessOnboardingControllerGetStateAction,
 } from '@metamask/seedless-onboarding-controller';
-import { RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 
 export const SERVICE_NAME = 'OAuthService';
 
@@ -150,17 +150,17 @@ export type OAuthConfig = {
   web3AuthNetwork: Web3AuthNetwork;
 };
 
+export type OAuthServiceMessenger = Messenger<
+  typeof SERVICE_NAME,
+  OAuthServiceAction,
+  OAuthServiceEvent
+>;
+
 export type OAuthServiceOptions = {
   /**
    * The messenger used to communicate with other services and controllers.
    */
-  messenger: RestrictedMessenger<
-    typeof SERVICE_NAME,
-    OAuthServiceAction,
-    OAuthServiceEvent,
-    OAuthServiceAction['type'],
-    OAuthServiceEvent['type']
-  >;
+  messenger: OAuthServiceMessenger;
 
   /**
    * The environment variables required for the OAuth login and get JWT Token.
