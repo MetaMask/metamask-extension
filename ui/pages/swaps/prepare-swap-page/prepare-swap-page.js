@@ -936,7 +936,6 @@ export default function PrepareSwapPage({
                 searchQuery={swapFromSearchQuery}
                 setSearchQuery={setSwapFromSearchQuery}
                 hideItemIf={hideSwapFromTokenIf}
-                isSourceList
               />
             </Box>
           </ModalContent>
