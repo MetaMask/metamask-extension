@@ -23,17 +23,6 @@
     position: relative;
     min-height: 50px;
 
-    &__info-icon {
-      position: absolute;
-      right: 48px;
-      opacity: 0;
-      transition: opacity 200ms ease-in-out;
-
-      &--visible {
-        opacity: 1;
-      }
-    }
-
     &:first-of-type {
       border-top: none;
     }
@@ -45,10 +34,6 @@
     &:hover,
     &:focus {
       background: var(--color-background-default-hover);
-
-      .searchable-item-list__item__info-icon {
-        opacity: 1;
-      }
     }
 
     &--selected {
@@ -115,7 +100,6 @@
     display: flex;
     justify-content: space-between;
     flex: 1;
-    min-width: 0; /* Allow content to shrink */
     -moz-animation: fadein 1s;
     -webkit-animation: fadein 1s;
     -o-animation: fadein 1s;
