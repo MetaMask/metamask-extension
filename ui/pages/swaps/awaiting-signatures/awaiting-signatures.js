@@ -71,7 +71,6 @@ export default function AwaitingSignatures() {
         stx_user_opt_in: smartTransactionsOptInStatus,
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const headerText = needsTwoConfirmations
