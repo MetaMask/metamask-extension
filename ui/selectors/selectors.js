@@ -1128,7 +1128,7 @@ export const getMarketData = (state) => {
 };
 
 export const getSupportedChainIds = (state) => {
-  return state.metamask.supportedChainIds?.data;
+  return state.metamask.supportedChainIds?.data ?? [];
 };
 
 export function getAddressBook(state) {
