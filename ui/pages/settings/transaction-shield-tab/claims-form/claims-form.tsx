@@ -654,10 +654,10 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
             {t('shieldClaimFileUploader')}
           </Text>
           <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-            {uploadedFiles.map((file) => (
+            {uploadedFiles.map((file, index) => (
               <Box
                 asChild
-                key={file.key}
+                key={file.key || index}
                 alignItems={BoxAlignItems.Center}
                 flexDirection={BoxFlexDirection.Row}
                 backgroundColor={BoxBackgroundColor.BackgroundSection}

@@ -68,6 +68,8 @@ const ClaimsList = () => {
 
   const claimItem = useCallback(
     (claim: ShieldClaim) => {
+      // add leading zero to claim number if it is less than 1000
+      const claimNumber = claim.claimNumber.toString().padStart(3, '0');
       return (
         <Box
           asChild
@@ -84,7 +86,7 @@ const ClaimsList = () => {
           <button>
             <Box className="flex items-center gap-2">
               <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Left}>
-                Claim #{claim.claimNumber}
+                {t('shieldClaimsNumber', [claimNumber])}
               </Text>
               {claim.status && (
                 <Tag

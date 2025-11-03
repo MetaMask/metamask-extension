@@ -107,6 +107,12 @@ const mapStateToProps = (state, ownProps) => {
   const isShieldClaimNewPage = Boolean(
     pathname.match(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL),
   );
+  const isShieldClaimViewPage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL),
+  );
+  const isShieldClaimBasePage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE),
+  );
 
   const environmentType = getEnvironmentType();
   const isPopup =
@@ -139,6 +145,10 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = SECURITY_ROUTE;
   } else if (isShieldClaimNewPage) {
     backRoute = TRANSACTION_SHIELD_ROUTE;
+  } else if (isShieldClaimViewPage) {
+    backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.BASE;
+  } else if (isShieldClaimBasePage) {
+    backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL;
   }
 
   const addressName = getAddressBookEntryOrAccountName(

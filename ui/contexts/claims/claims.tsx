@@ -70,7 +70,7 @@ export const ClaimsProvider: React.FC<ClaimsProviderProps> = ({ children }) => {
 
   useEffect(() => {
     fetchClaims();
-  });
+  }, [fetchClaims]);
 
   const pendingClaims = useMemo(() => {
     return claims.filter((claim) =>

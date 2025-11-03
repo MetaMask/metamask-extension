@@ -5919,6 +5919,10 @@
   "shieldClaimsListTitle": {
     "message": "Claim details"
   },
+  "shieldClaimsNumber": {
+    "message": "Claim #$1",
+    "description": "The $1 is the claim number"
+  },
   "shieldClaimsPendingTitle": {
     "message": "PENDING CLAIMS"
   },
