@@ -1,10 +1,11 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   GetAllSnaps,
   GetSnap,
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
 import { GetPermissionControllerState } from '@metamask/permission-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type AllowedActions =
   | GetAllSnaps
@@ -24,16 +25,25 @@ export type SnapsNameProviderMessenger = ReturnType<
  * messenger.
  */
 export function getSnapsNameProviderMessenger(
-  messenger: Messenger<AllowedActions, never>,
+  messenger: RootMessenger<AllowedActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'SnapsNameProvider',
-    allowedActions: [
+  const providerMessenger = new Messenger<
+    'SnapsNameProvider',
+    AllowedActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'SnapsNameProvider',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: providerMessenger,
+    actions: [
       'SnapController:getAll',
       'SnapController:get',
       'SnapController:handleRequest',
       'PermissionController:getState',
     ],
-    allowedEvents: [],
   });
+  return providerMessenger;
 }

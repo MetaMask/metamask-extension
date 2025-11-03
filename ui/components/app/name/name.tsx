@@ -40,6 +40,11 @@ export type NameProps = {
    * Such as the chain ID if the `type` is an Ethereum address.
    */
   variation: string;
+
+  /**
+   * The fallback value to display if the name is not found or cannot be resolved.
+   */
+  fallbackName?: string;
 };
 
 const Name = memo(

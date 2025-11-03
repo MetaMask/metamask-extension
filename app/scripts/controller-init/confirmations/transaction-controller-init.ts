@@ -56,7 +56,6 @@ export const TransactionControllerInit: ControllerInitFunction<
     getFlatState,
     getPermittedAccounts,
     getTransactionMetricsRequest,
-    updateAccountBalanceForTransactionNetwork,
     persistedState,
   } = request;
 
@@ -127,7 +126,14 @@ export const TransactionControllerInit: ControllerInitFunction<
       const uiState = getUIState(getFlatState());
 
       // @ts-expect-error Smart transaction selector types does not match controller state
-      return !getIsSmartTransaction(uiState, chainId);
+      const isSmartTransactionEnabled = getIsSmartTransaction(uiState, chainId);
+
+      const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
+
+      // EIP7702 gas fee tokens are enabled when:
+      // - Smart transactions are NOT enabled, OR
+      // - Send bundle is NOT supported
+      return !isSmartTransactionEnabled || !isSendBundleSupportedChain;
     },
     isFirstTimeInteractionEnabled: () =>
       preferencesController().state.securityAlertsEnabled,
@@ -191,7 +197,6 @@ export const TransactionControllerInit: ControllerInitFunction<
   addTransactionControllerListeners(
     initMessenger,
     getTransactionMetricsRequest,
-    updateAccountBalanceForTransactionNetwork,
   );
 
   const api = getApi(controller);
@@ -259,21 +264,8 @@ function getExternalPendingTransactions(
 function addTransactionControllerListeners(
   initMessenger: TransactionControllerInitMessenger,
   getTransactionMetricsRequest: () => TransactionMetricsRequest,
-  updateAccountBalanceForTransactionNetwork: (
-    transactionMeta: TransactionMeta,
-  ) => void,
 ) {
   const transactionMetricsRequest = getTransactionMetricsRequest();
-
-  initMessenger.subscribe(
-    'TransactionController:unapprovedTransactionAdded',
-    updateAccountBalanceForTransactionNetwork,
-  );
-
-  initMessenger.subscribe(
-    'TransactionController:transactionConfirmed',
-    updateAccountBalanceForTransactionNetwork,
-  );
 
   initMessenger.subscribe(
     'TransactionController:postTransactionBalanceUpdated',

@@ -1,5 +1,6 @@
 import { Token, TokenListToken } from '@metamask/assets-controllers';
 import { type Hex, type CaipChainId } from '@metamask/utils';
+import { type KeyringAccountType } from '@metamask/keyring-api';
 import type {
   AssetType,
   TokenStandard,
@@ -62,6 +63,7 @@ export type NativeAsset = {
 export type AssetWithDisplayData<T extends ERC20Asset | NativeAsset> = T & {
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
+  accountType?: KeyringAccountType; // Bitcoin account type (e.g., P2wpkh for Native SegWit)
 } & Pick<TokenListToken, 'decimals'> & {
     tokenFiatAmount?: TokenWithFiatAmount['tokenFiatAmount'];
   };
