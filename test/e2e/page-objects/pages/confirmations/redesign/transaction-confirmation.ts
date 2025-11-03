@@ -70,6 +70,9 @@ class TransactionConfirmation extends Confirmation {
   private readonly gasLimitInput: RawLocator =
     '[data-testid="gas-limit-input"]';
 
+  private readonly headerAccountName: RawLocator =
+    '[data-testid="header-account-name"]';
+
   private readonly networkName: RawLocator =
     '[data-testid="confirmation__details-network-name"]';
 
@@ -215,6 +218,16 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  async checkHeaderAccountNameIsDisplayed(account: string): Promise<void> {
+    console.log(
+      `Checking header account name ${account} on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      css: this.headerAccountName,
+      text: account,
+    });
+  }
+
   async checkPaidByMetaMask() {
     await this.driver.findElement({
       css: this.paidByMetaMaskNotice,
@@ -227,7 +240,7 @@ class TransactionConfirmation extends Confirmation {
    *
    * @param account - The sender account to check.
    */
-  async checkIsSenderAccountDisplayed(account: string): Promise<void> {
+  async checkSenderAccountIsDisplayed(account: string): Promise<void> {
     console.log(
       `Checking sender account ${account} on transaction confirmation page.`,
     );
