@@ -13,7 +13,6 @@ import TimerHelper from '../utils/TimersHelper';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import FixtureBuilder from '../../../fixture-builder';
 import { getCommonMocks } from '../utils/commonMocks';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
 
 describe('MetaMask onboarding', function () {
   it('Creates a new wallet, sets up a secure password, and completes the onboarding process', async function () {
