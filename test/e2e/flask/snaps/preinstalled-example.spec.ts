@@ -8,7 +8,6 @@ import {
   withFixtures,
   WINDOW_TITLES,
   sentryRegEx,
-  largeDelayMs,
 } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
@@ -146,7 +145,7 @@ describe('Preinstalled example Snap', function () {
         await driver.wait(async () => {
           const isPending = await mockedEndpoint.isPending();
           return isPending === false;
-        }, largeDelayMs);
+        }, 5000);
 
         const requests = await mockedEndpoint.getSeenRequests();
         assert.equal(requests.length, 1, 'Expected one request to Sentry.');
@@ -186,7 +185,7 @@ describe('Preinstalled example Snap', function () {
         await driver.wait(async () => {
           const isPending = await mockedEndpoint.isPending();
           return isPending === false;
-        }, largeDelayMs);
+        }, 5000);
 
         const requests = await mockedEndpoint.getSeenRequests();
         assert.equal(requests.length, 1, 'Expected one request to Segment.');
@@ -230,7 +229,7 @@ describe('Preinstalled example Snap', function () {
         await driver.wait(async () => {
           const isPending = await mockedEndpoint.isPending();
           return isPending === false;
-        }, largeDelayMs);
+        }, 5000);
 
         const requests = await mockedEndpoint.getSeenRequests();
         assert.equal(requests.length, 1, 'Expected one request to Sentry.');
