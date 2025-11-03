@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId, Hex } from '@metamask/utils';
-import { useSafeChainsListValidationSelector } from '../selectors';
+import { getUseSafeChainsListValidation } from '../selectors';
 import { getMultichainCurrentNetwork } from '../selectors/multichain';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
 
@@ -18,7 +18,7 @@ export function useIsOriginalNativeTokenSymbol(
 ) {
   const [isOriginalNativeSymbol, setIsOriginalNativeSymbol] = useState(false);
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    getUseSafeChainsListValidation,
   );
 
   const isEvm = isEvmChainId(chainId);

@@ -129,8 +129,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
       return token;
     });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isEvm,
     evmBalances,
