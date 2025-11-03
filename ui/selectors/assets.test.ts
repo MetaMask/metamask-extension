@@ -797,6 +797,10 @@ describe('Aggregated balance recomputation behavior', () => {
     const internalAccounts = { accounts: {}, selectedAccount: '' };
     const tokenBalances = {};
     const marketData = {};
+    const supportedChainIds = {
+      timestamp: 0,
+      data: [],
+    };
     const conversionRates = {};
     const historicalPrices = {};
     const balances = {};
@@ -813,6 +817,7 @@ describe('Aggregated balance recomputation behavior', () => {
         internalAccounts,
         tokenBalances,
         marketData,
+        supportedChainIds,
         balances,
         allTokens,
         currentCurrency: 'usd',
@@ -835,6 +840,7 @@ describe('Aggregated balance recomputation behavior', () => {
         internalAccounts,
         tokenBalances,
         marketData,
+        supportedChainIds,
         balances,
         allTokens,
         currentCurrency: 'usd',
