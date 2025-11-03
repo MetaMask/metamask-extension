@@ -72,7 +72,6 @@ describe('Incremental Security', function (this: Suite) {
         // copy the wallet address
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.clickBackupRemindMeLaterButton();
         await homePage.headerNavbar.clickAddressCopyButton();
 
         // switched to Dapp and send eth to the current account
