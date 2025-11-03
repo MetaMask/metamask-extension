@@ -19,15 +19,14 @@ const usePolling = <PollingInput>(
     JSON.stringify(usePollingOptions.input) !==
     prevPollingInputStringified.current;
 
+  const isMounted = useRef(true);
+
   useEffect(() => {
-    let isMounted = false;
     if (usePollingOptions.enabled === false || !hasPollingInputChanged) {
       return () => {
         // noop
       };
     }
-
-    isMounted = true;
 
     const cleanup = () => {
       if (pollTokenRef.current) {
@@ -41,10 +40,8 @@ const usePolling = <PollingInput>(
       .startPolling(usePollingOptions.input)
       .then((pollToken) => {
         pollTokenRef.current = pollToken;
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        cleanupRef.current = usePollingOptions.callback?.(pollToken) || null;
-        if (!isMounted) {
+        cleanupRef.current = usePollingOptions.callback?.(pollToken) ?? null;
+        if (!isMounted.current) {
           cleanup();
         }
       });
@@ -55,11 +52,15 @@ const usePolling = <PollingInput>(
 
     // Return a cleanup function to stop polling when the component unmounts
     return () => {
-      isMounted = false;
+      isMounted.current = false;
       prevPollingInputStringified.current = null;
       cleanup();
     };
-  }, [hasPollingInputChanged, usePollingOptions.enabled]);
+  }, [
+    usePollingOptions.input,
+    hasPollingInputChanged,
+    usePollingOptions.enabled,
+  ]);
 };
 
 export default usePolling;
