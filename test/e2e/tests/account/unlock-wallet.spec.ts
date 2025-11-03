@@ -22,7 +22,6 @@ describe('Unlock wallet - ', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
-          'unable to proceed, wallet is locked',
           'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
         ],
       },
