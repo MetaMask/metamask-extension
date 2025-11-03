@@ -27,8 +27,8 @@ describe('Reset Wallet - ', function () {
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           'unable to proceed, wallet is locked',
-          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
           'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
+          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
         ],
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
@@ -64,7 +64,7 @@ describe('Reset Wallet - ', function () {
           // In Firefox, we need to go to the metametrics page first
           await onboardingMetricsFlow(driver, {
             participateInMetaMetrics: true,
-            dataCollectionForMarketing: true,
+            dataCollectionForMarketing: false,
           });
         }
 
@@ -88,11 +88,6 @@ describe('Reset Wallet - ', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ignoredConsoleErrors: [
-          'unable to proceed, wallet is locked',
-          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
-          'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
-        ],
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
           const oAuthMockttpService = new OAuthMockttpService();
@@ -102,6 +97,11 @@ describe('Reset Wallet - ', function () {
             passwordOutdated: true,
           });
         },
+        ignoredConsoleErrors: [
+          'unable to proceed, wallet is locked',
+          'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
+          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -128,7 +128,7 @@ describe('Reset Wallet - ', function () {
           // In Firefox, we need to go to the metametrics page first
           await onboardingMetricsFlow(driver, {
             participateInMetaMetrics: true,
-            dataCollectionForMarketing: true,
+            dataCollectionForMarketing: false,
           });
         }
 
@@ -151,7 +151,7 @@ describe('Reset Wallet - ', function () {
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           await onboardingMetricsFlow(driver, {
             participateInMetaMetrics: true,
-            dataCollectionForMarketing: true,
+            dataCollectionForMarketing: false,
           });
         }
 
@@ -168,11 +168,6 @@ describe('Reset Wallet - ', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
-        ignoredConsoleErrors: [
-          'unable to proceed, wallet is locked',
-          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
-          'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
-        ],
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
           const oAuthMockttpService = new OAuthMockttpService();
@@ -182,6 +177,11 @@ describe('Reset Wallet - ', function () {
             passwordOutdated: true,
           });
         },
+        ignoredConsoleErrors: [
+          'unable to proceed, wallet is locked',
+          'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
+          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await importWalletWithSocialLoginOnboardingFlow({
@@ -207,7 +207,7 @@ describe('Reset Wallet - ', function () {
           // In Firefox, we need to go to the metametrics page first
           await onboardingMetricsFlow(driver, {
             participateInMetaMetrics: true,
-            dataCollectionForMarketing: true,
+            dataCollectionForMarketing: false,
           });
         }
 

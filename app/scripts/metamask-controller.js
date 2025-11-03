@@ -2181,13 +2181,7 @@ export default class MetamaskController extends EventEmitter {
    */
   getState() {
     const { vault } = this.keyringController.state;
-
-    // check if the wallet reset is in progress
-    const isWalletResetInProgress =
-      this.appStateController.getIsWalletResetInProgress();
-
-    // if the keyring vault is present but the wallet reset is in progress, we can assume the wallet has not initialized yet
-    const isInitialized = Boolean(vault) && !isWalletResetInProgress;
+    const isInitialized = Boolean(vault);
     const flatState = this.memStore.getFlatState();
 
     return {
@@ -2875,8 +2869,6 @@ export default class MetamaskController extends EventEmitter {
         onboardingController.completeOnboarding.bind(onboardingController),
       setFirstTimeFlowType:
         onboardingController.setFirstTimeFlowType.bind(onboardingController),
-      resetOnboarding:
-        onboardingController.resetOnboarding.bind(onboardingController),
 
       // alert controller
       setAlertEnabledness:
@@ -3414,15 +3406,7 @@ export default class MetamaskController extends EventEmitter {
     // reset onboarding state
     this.onboardingController.resetOnboarding();
 
-    // clear metametrics state
-    this.metaMetricsController.resetState();
-
     this.appStateController.setIsWalletResetInProgress(true);
-
-    // reset preferences state
-    this.preferencesController.resetState();
-
-    this.currencyRateController.setCurrentCurrency('usd');
   }
 
   async exportAccount(address, password) {
@@ -3860,9 +3844,7 @@ export default class MetamaskController extends EventEmitter {
           maxKeyChainLength: 20,
         })
         .catch((err) => {
-          log.error(
-            `error while submitting global password: ${err.message} , isKeyringPasswordValid: ${isKeyringPasswordValid}`,
-          );
+          log.error(`error while submitting global password: ${err.message}`);
           if (err instanceof RecoveryError) {
             // Keyring controller password verification succeeds and seedless controller failed.
             if (
@@ -4176,13 +4158,10 @@ export default class MetamaskController extends EventEmitter {
    */
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
+    const isWalletResetInProgress =
+      this.appStateController.getIsWalletResetInProgress();
     try {
-      const isResettingWallet =
-        this.appStateController.getIsWalletResetInProgress();
-
-      if (isResettingWallet) {
-        // try reset the state first if it's resetting wallet
-
+      if (isWalletResetInProgress) {
         // clear permissions
         this.permissionController.clearState();
 
@@ -4214,7 +4193,7 @@ export default class MetamaskController extends EventEmitter {
       // there are some account migration happening in that function).
       await this.accountsController.updateAccounts();
       // Then we can build the initial tree.
-      this.accountTreeController.init();
+      this.accountTreeController.reinit();
       // TODO: Move this logic to the SnapKeyring directly.
       // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
       await this.forwardSelectedAccountGroupToSnapKeyring(
@@ -4654,9 +4633,6 @@ export default class MetamaskController extends EventEmitter {
           await this.syncKeyringEncryptionKey();
         }
       }
-    } catch (error) {
-      log.error('Error creating new vault and restoring', error);
-      throw error;
     } finally {
       releaseLock();
     }

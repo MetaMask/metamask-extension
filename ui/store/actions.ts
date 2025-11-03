@@ -4426,8 +4426,6 @@ export function resetOnboarding(): ThunkAction<
       const isSocialLoginFlow = getIsSocialLoginFlow(getState());
       dispatch(resetOnboardingAction());
 
-      await submitRequestToBackground('resetOnboarding');
-
       if (isSocialLoginFlow) {
         await dispatch(resetOAuthLoginState());
       }
@@ -4459,6 +4457,7 @@ export function resetWallet() {
 
       await submitRequestToBackground('resetWallet');
 
+      // force update metamask state
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error('resetWallet error', error);

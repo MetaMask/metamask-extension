@@ -19,6 +19,7 @@ import {
   getCompletedOnboarding,
   getIsInitialized,
   getIsUnlocked,
+  getIsWalletResetInProgress,
   getSeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
@@ -37,6 +38,7 @@ export default function OnboardingFlowSwitch() {
   /* eslint-disable prefer-const */
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isInitialized = useSelector(getIsInitialized);
+  const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
   const isUserAuthenticatedWithSocialLogin = useSelector(
     getIsSocialLoginUserAuthenticated,
   );
@@ -70,7 +72,10 @@ export default function OnboardingFlowSwitch() {
   }
 
   // TODO(ritave): Remove allow-list and only leave experimental_area exception
-  if (!isInitialized && !isUserAuthenticatedWithSocialLogin) {
+  if (
+    (!isInitialized || isWalletResetInProgress) &&
+    !isUserAuthenticatedWithSocialLogin
+  ) {
     let redirect;
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     redirect = <Navigate to={ONBOARDING_EXPERIMENTAL_AREA} replace />;
@@ -86,7 +91,7 @@ export default function OnboardingFlowSwitch() {
     return redirect;
   }
   if (
-    !isInitialized &&
+    (!isInitialized || isWalletResetInProgress) &&
     isUserAuthenticatedWithSocialLogin &&
     firstTimeFlowType === FirstTimeFlowType.socialCreate
   ) {
