@@ -126,9 +126,20 @@ export default function SrpInputImport({
         (word) => word.id === currentWordId,
       );
       const isLastWord = currentWordIndex === draftSrp.length - 1;
+      const currentWord = draftSrp[currentWordIndex];
 
-      if (!wordlist.includes(draftSrp[currentWordIndex].word)) {
-        setMisSpelledWords((prev) => [...prev, draftSrp[currentWordIndex]]);
+      // Check if word is valid or invalid and update misSpelledWords accordingly
+      if (wordlist.includes(currentWord.word)) {
+        // Word is valid, remove it from misSpelledWords if it exists
+        setMisSpelledWords((prev) =>
+          prev.filter((word) => word.id !== currentWord.id),
+        );
+      } else {
+        // Word is invalid, add it to misSpelledWords if not already there
+        setMisSpelledWords((prev) => {
+          const alreadyExists = prev.some((word) => word.id === currentWord.id);
+          return alreadyExists ? prev : [...prev, currentWord];
+        });
       }
 
       if (
@@ -242,6 +253,7 @@ export default function SrpInputImport({
   };
 
   const onTriggerPaste = async () => {
+    setMisSpelledWords([]);
     if (getBrowserName() === PLATFORM_FIREFOX) {
       await requestPermissionAndTriggerPasteFireFox();
       return;
@@ -400,6 +412,7 @@ export default function SrpInputImport({
               variant={ButtonVariant.Link}
               onClick={async () => {
                 setDraftSrp([]);
+                setMisSpelledWords([]);
                 onClearCallback?.();
               }}
             >
