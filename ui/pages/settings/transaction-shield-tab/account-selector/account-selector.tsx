@@ -25,6 +25,7 @@ import {
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { AccountSelectorWallet } from '../types';
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
+import { shortenAddress } from '../../../../helpers/utils/util';
 
 const AccountSelector = ({
   label,
@@ -178,12 +179,21 @@ const AccountSelector = ({
                           address={account.address ?? ''}
                           size={AvatarAccountSize.Lg}
                         />
-                        <Text
-                          variant={TextVariant.BodyMd}
-                          fontWeight={FontWeight.Medium}
-                        >
-                          {account.name}
-                        </Text>
+                        <Box className="text-left">
+                          <Text
+                            variant={TextVariant.BodyMd}
+                            fontWeight={FontWeight.Medium}
+                          >
+                            {account.name}
+                          </Text>
+                          <Text
+                            variant={TextVariant.BodySm}
+                            fontWeight={FontWeight.Medium}
+                            color={TextColor.TextAlternative}
+                          >
+                            {shortenAddress(account.address)}
+                          </Text>
+                        </Box>
                       </button>
                     </Box>
                   ))}
