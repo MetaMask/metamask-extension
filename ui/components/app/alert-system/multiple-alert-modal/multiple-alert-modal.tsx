@@ -1,11 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Text,
-} from '../../../component-library';
+import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   AlignItems,
   BackgroundColor,
@@ -15,8 +9,15 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import useAlerts from '../../../../hooks/useAlerts';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../../component-library';
 import { AlertModal } from '../alert-modal';
 
 export type MultipleAlertModalProps = {
@@ -251,8 +252,8 @@ export function MultipleAlertModal({
     }
 
     const fallbackKey =
-      (alertKeyExists && alertKey) ??
-      (pendingAlertExists && pendingAlertKey) ??
+      (alertKeyExists ? alertKey : undefined) ??
+      (pendingAlertExists ? pendingAlertKey : undefined) ??
       navigableAlertsToDisplay[0]?.key ??
       alertsToDisplay[0]?.key;
 
