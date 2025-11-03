@@ -19,7 +19,7 @@ function createMockAsset({
 }): Asset {
   return {
     name,
-    fiat: fiatBalance !== undefined ? { balance: fiatBalance } : undefined,
+    fiat: fiatBalance === undefined ? undefined : { balance: fiatBalance },
     isNative,
     chainId,
   } as unknown as Asset;
