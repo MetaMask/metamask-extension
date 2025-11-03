@@ -1,4 +1,9 @@
-import { ActionConstraint, Messenger } from '@metamask/base-controller';
+import {
+  ActionConstraint,
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { NetworkControllerGetSelectedNetworkClientAction } from '@metamask/network-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { ControllerInitRequest } from './types';
@@ -20,9 +25,12 @@ function getInitRequestMock(): jest.Mocked<
   >
 > {
   const baseMessenger = new Messenger<
+    MockAnyNamespace,
     NetworkControllerGetSelectedNetworkClientAction | ActionConstraint,
     never
-  >();
+  >({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 
   baseMessenger.registerActionHandler(
     'NetworkController:getSelectedNetworkClient',

@@ -974,6 +974,9 @@ class Driver {
   /**
    * Checks if an element that matches the given locator is present on the page.
    *
+   * @deprecated This method should not be used because it can lead to race conditions
+   * when the element takes some ms to disappear. Instead use assertElementNotPresent
+   * which is a more robust method with customizable guard to avoid this problem.
    * @param {string | object} rawLocator - Element locator
    * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element is present.
    */

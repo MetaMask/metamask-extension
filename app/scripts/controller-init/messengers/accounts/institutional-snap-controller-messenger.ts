@@ -1,8 +1,9 @@
 import { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { TransactionControllerUpdateCustodialTransactionAction } from '@metamask/transaction-controller';
 import { InstitutionalSnapController } from '../../../controllers/institutional-snap/InstitutionalSnapController';
+import { RootMessenger } from '../../../lib/messenger';
 
 const controllerName = 'InstitutionalSnapController';
 
@@ -35,11 +36,9 @@ type Actions =
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction;
 
-export type InstitutionalSnapControllerMessenger = RestrictedMessenger<
+export type InstitutionalSnapControllerMessenger = Messenger<
   'InstitutionalSnapControllerMessenger',
   Actions,
-  never,
-  Actions['type'],
   never
 >;
 
@@ -48,19 +47,28 @@ export type InstitutionalSnapControllerMessenger = RestrictedMessenger<
  * scoped to the actions and events that the rate limit controller is allowed to
  * handle.
  *
- * @param messenger - The messenger to restrict.
- * @returns The restricted controller messenger.
+ * @param messenger - The root messenger.
+ * @returns The controller messenger.
  */
 export function getInstitutionalSnapControllerMessenger(
-  messenger: Messenger<Actions, never>,
+  messenger: RootMessenger<Actions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'InstitutionalSnapController',
-    allowedActions: [
+  const institutionalSnapControllerMessenger = new Messenger<
+    typeof controllerName,
+    Actions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'InstitutionalSnapController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: institutionalSnapControllerMessenger,
+    actions: [
       'AccountsController:getAccountByAddress',
       'SnapController:handleRequest',
       'TransactionController:updateCustodialTransaction',
     ],
-    allowedEvents: [],
   });
+  return institutionalSnapControllerMessenger;
 }
