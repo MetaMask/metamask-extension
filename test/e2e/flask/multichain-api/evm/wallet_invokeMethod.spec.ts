@@ -260,23 +260,63 @@ describe('Multichain API', function () {
 
             await testDapp.clickInvokeAllMethodsButton();
             const totalNumberOfScopes = GANACHE_SCOPES.length;
-            for (let i = 0; i < totalNumberOfScopes; i++) {
+            const expectedNetworks = [
+              'Localhost 8545',
+              'Localhost 8546',
+              'Localhost 7777',
+            ];
+            const currentNetworks = new Set<string>();
+
+            // Get the network name from the first confirmation screen
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+            const firstConfirmation = new TransactionConfirmation(driver);
+            await firstConfirmation.checkPageIsLoaded();
+            let currentNetworkName = await firstConfirmation.getNetworkName();
+            await firstConfirmation.checkPageNumbers(1, totalNumberOfScopes);
+            await firstConfirmation.clickFooterConfirmButton();
+            currentNetworks.add(currentNetworkName);
+
+            for (let i = 0; i < totalNumberOfScopes - 1; i++) {
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
               const confirmation = new TransactionConfirmation(driver);
               await confirmation.checkPageIsLoaded();
-              if (i < totalNumberOfScopes - 1) {
-                // if pending tx's, verify navigation and confirm
-                await confirmation.checkPageNumbers(1, totalNumberOfScopes - i);
-                await confirmation.checkNetworkIsDisplayed(
-                  `Localhost ${8545 + i}`,
+
+              // Check that the network is different from the previous confirmation screen to ensure that we’ve switched to a new confirmation screen
+              await confirmation.checkNetworkIsNotDisplayed(currentNetworkName);
+
+              // Get the network name from the current confirmation screen
+              currentNetworkName = await confirmation.getNetworkName();
+
+              // Verify this network hasn't been seen before and is expected
+              assert(
+                !currentNetworks.has(currentNetworkName),
+                `Network ${currentNetworkName} appeared more than once`,
+              );
+              assert(
+                expectedNetworks.includes(currentNetworkName),
+                `Unexpected network: ${currentNetworkName}`,
+              );
+              currentNetworks.add(currentNetworkName);
+
+              if (i < totalNumberOfScopes - 2) {
+                // First 2 confirmations: verify navigation and confirm
+                await confirmation.checkPageNumbers(
+                  1,
+                  totalNumberOfScopes - i - 1,
                 );
                 await confirmation.clickFooterConfirmButton();
               } else {
-                await confirmation.checkNetworkIsDisplayed('Localhost 7777');
-                // if no pending tx's, confirm and wait for window to close
+                // Last confirmation: confirm and wait for window to close
                 await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
               }
             }
+
+            // Verify all expected networks were seen
+            assert.equal(
+              currentNetworks.size,
+              expectedNetworks.length,
+              'Not all networks were confirmed',
+            );
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.ExtensionInFullScreenView,

@@ -70,12 +70,12 @@ class TransactionConfirmation extends Confirmation {
   private readonly gasLimitInput: RawLocator =
     '[data-testid="gas-limit-input"]';
 
+  private readonly networkName: RawLocator =
+    '[data-testid="confirmation__details-network-name"]';
+
   private readonly saveButton: RawLocator = { tag: 'button', text: 'Save' };
 
   private readonly senderAccount: RawLocator = '[data-testid="sender-address"]';
-
-  private readonly transactionDetails: RawLocator =
-    '[data-testid="confirmation__token-details-section"]';
 
   private readonly walletInitiatedHeadingTitle: RawLocator = {
     css: 'h4',
@@ -259,9 +259,21 @@ class TransactionConfirmation extends Confirmation {
       `Checking network ${network} is displayed on transaction confirmation page.`,
     );
     await this.driver.waitForSelector({
-      css: this.transactionDetails,
+      css: this.networkName,
       text: network,
     });
+  }
+
+  async checkNetworkIsNotDisplayed(network: string): Promise<void> {
+    console.log(
+      `Checking network ${network} is not displayed on transaction confirmation page.`,
+    );
+    await this.driver.assertElementNotPresent(
+      { css: this.networkName, text: network },
+      {
+        waitAtLeastGuard: 1000,
+      },
+    );
   }
 
   async checkNoAlertMessageIsDisplayed() {
@@ -353,6 +365,25 @@ class TransactionConfirmation extends Confirmation {
 
   async fillCustomNonce(nonce: string) {
     await this.driver.fill(this.customNonceInput, nonce);
+  }
+
+  /**
+   * Gets the network name displayed on the transaction confirmation page.
+   *
+   * IMPORTANT: Make sure the transaction confirmation screen is fully loaded
+   * before calling this method to avoid race conditions, as the network name element
+   * might not be present or updated correctly immediately after navigation.
+   *
+   * @returns The network name.
+   */
+  async getNetworkName(): Promise<string> {
+    const networkNameElement = await this.driver.findElement(this.networkName);
+    const networkName = await networkNameElement.getText();
+    console.log(
+      'Current network name displayed on transaction confirmation page: ',
+      networkName,
+    );
+    return networkName;
   }
 
   async setCustomNonce(nonce: string) {
