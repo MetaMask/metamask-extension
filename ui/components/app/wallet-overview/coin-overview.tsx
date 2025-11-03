@@ -42,6 +42,7 @@ import { AccountGroupBalanceChange } from '../assets/account-group-balance-chang
 import {
   getMultichainIsEvm,
   getMultichainShouldShowFiat,
+  getMultichainIsTestnet,
 } from '../../../selectors/multichain';
 import { setPrivacyMode } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -54,6 +55,8 @@ import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { RewardsPointsBalance } from '../rewards/RewardsPointsBalance';
 import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
+import { BalanceEmptyState } from '../balance-empty-state';
+import { selectTotalBalanceAcrossAllNetworks } from '../../../selectors/assets';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import {
@@ -224,6 +227,27 @@ export const CoinOverview = ({
   );
   const isRewardsEnabled = useSelector(selectRewardsEnabled);
 
+  // Calculate aggregated balance across all mainnet networks for empty state logic
+  const trueAggregatedBalance = useSelector(
+    selectTotalBalanceAcrossAllNetworks,
+  );
+  const isTestnet = useSelector(getMultichainIsTestnet);
+
+  /**
+   * Determines when to show the balance empty state component.
+   *
+   * Shows empty state only when ALL conditions are met:
+   * 1. Multichain accounts state2 is enabled (new account system)
+   * 2. Not on a testnet (testnets always show balance, even if 0)
+   * 3. Balance data is fresh (not cached/stale)
+   * 4. Aggregated balance across ALL mainnet networks is exactly 0
+   */
+  const shouldShowBalanceEmptyState =
+    isMultichainAccountsState2Enabled &&
+    !isTestnet &&
+    !balanceIsCached && // Don't show empty state if balance data is cached/stale
+    trueAggregatedBalance === 0;
+
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
   };
@@ -359,25 +383,30 @@ export const CoinOverview = ({
   return (
     <WalletOverview
       balance={
-        <Tooltip
-          position="top"
-          title={t('balanceOutdated')}
-          disabled={!balanceIsCached}
-        >
-          <div
-            className={`${classPrefix}-overview__balance [.wallet-overview-fullscreen_&]:items-center`}
+        shouldShowBalanceEmptyState ? (
+          <BalanceEmptyState className="w-full max-w-[420px]" />
+        ) : (
+          <Tooltip
+            position="top"
+            title={t('balanceOutdated')}
+            disabled={!balanceIsCached}
           >
-            <div className={`${classPrefix}-overview__primary-container`}>
-              {balanceSection}
-              {balanceIsCached && (
-                <span className={`${classPrefix}-overview__cached-star`}>
-                  *
-                </span>
-              )}
+            <div
+              className={`${classPrefix}-overview__balance [.wallet-overview-fullscreen_&]:items-center`}
+            >
+              <div className={`${classPrefix}-overview__primary-container`}>
+                {balanceSection}
+                {balanceIsCached && !shouldShowBalanceEmptyState && (
+                  <span className={`${classPrefix}-overview__cached-star`}>
+                    *
+                  </span>
+                )}
+              </div>
+              {!shouldShowBalanceEmptyState &&
+                renderPercentageAndAmountChange()}
             </div>
-            {renderPercentageAndAmountChange()}
-          </div>
-        </Tooltip>
+          </Tooltip>
+        )
       }
       buttons={
         <CoinButtons
