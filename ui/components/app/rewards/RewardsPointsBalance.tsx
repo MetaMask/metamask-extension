@@ -50,7 +50,7 @@ export const RewardsPointsBalance = () => {
   }
 
   if (!candidateSubscriptionId) {
-    return <RewardsBadge text={t('rewardsOptIn')} />;
+    return null;
   }
 
   if (seasonStatusLoading && !seasonStatus?.balance) {

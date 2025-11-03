@@ -249,20 +249,19 @@ export const CoinOverview = ({
 
   const renderPercentageAndAmountChange = () => {
     const renderPortfolioButton = () => {
-      if (isRewardsEnabled) {
-        return <RewardsPointsBalance />;
-      }
-
       return (
-        <ButtonLink
-          endIconName={IconName.Export}
-          onClick={handlePortfolioOnClick}
-          as="a"
-          data-testid="portfolio-link"
-          textProps={{ variant: TextVariant.bodyMdMedium }}
-        >
-          {t('discover')}
-        </ButtonLink>
+        <>
+          {isRewardsEnabled && <RewardsPointsBalance />}
+          <ButtonLink
+            endIconName={IconName.Export}
+            onClick={handlePortfolioOnClick}
+            as="a"
+            data-testid="portfolio-link"
+            textProps={{ variant: TextVariant.bodyMdMedium }}
+          >
+            {t('discover')}
+          </ButtonLink>
+        </>
       );
     };
 

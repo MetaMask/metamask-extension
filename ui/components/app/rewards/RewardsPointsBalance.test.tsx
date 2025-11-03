@@ -108,20 +108,15 @@ describe('RewardsPointsBalance', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('should render opt-in badge when candidateSubscriptionId is null', () => {
+  it('should render null when candidateSubscriptionId is null', () => {
     mockUseRewardsContext.mockReturnValue({
       ...mockRewardsContextValue,
       seasonStatus: null,
       candidateSubscriptionId: null,
     });
 
-    render(<RewardsPointsBalance />);
-
-    expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('rewards-points-balance-value'),
-    ).toHaveTextContent('Opt In');
-    expect(screen.getByAltText('Rewards Points Icon')).toBeInTheDocument();
+    const { container } = render(<RewardsPointsBalance />);
+    expect(container.firstChild).toBeNull();
   });
 
   it('should render skeleton when loading and no balance exists', () => {
