@@ -1,13 +1,7 @@
 import type { Asset } from '@metamask/assets-controllers';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import type { CaipChainId, Hex } from '@metamask/utils';
-import {
-  BtcScope,
-  SolScope,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  TrxScope,
-  ///: END:ONLY_INCLUDE_IF
-} from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { sortAssets, type SortCriteria } from './sort';
 
 // These are the only two options for sorting assets
@@ -25,49 +19,7 @@ export function sortAssetsWithPriority<T extends Asset>(
     });
   }
 
-  const xxx = [...array].sort((a, b) => {
-    const comparison = compareFiatBalanceWithPriority(a, b);
-
-    if (a.name === 'Solana' || b.name === 'Solana') {
-      // eslint-disable-next-line no-console
-      console.log('XXXXX', {
-        a: {
-          name: a.name,
-          chainId: a.chainId,
-          fiatBalance: a.fiat?.balance,
-          isNative: a.isNative,
-        },
-        b: {
-          name: b.name,
-          chainId: b.chainId,
-          fiatBalance: b.fiat?.balance,
-          isNative: b.isNative,
-        },
-        comparison,
-        balanceCheck: a.fiat?.balance && b.fiat?.balance,
-      });
-    }
-
-    return comparison;
-  });
-
-  // eslint-disable-next-line no-console
-  // console.log('ARRAY', {
-  //   unsorted: array.map((asset) => ({
-  //     name: asset.name,
-  //     fiatBalance: asset.fiat?.balance,
-  //     isNative: asset.isNative,
-  //     chainId: asset.chainId,
-  //   })),
-  //   sorted: xxx.map((asset) => ({
-  //     name: asset.name,
-  //     fiatBalance: asset.fiat?.balance,
-  //     isNative: asset.isNative,
-  //     chainId: asset.chainId,
-  //   })),
-  // });
-
-  return xxx;
+  return [...array].sort(compareFiatBalanceWithPriority);
 }
 
 // Higher priority assets are last in the array to facilitate sorting
@@ -77,9 +29,7 @@ const defaultNativeAssetOrder: (Hex | CaipChainId)[] = [
   CHAIN_IDS.BSC,
   CHAIN_IDS.ARBITRUM,
   CHAIN_IDS.BASE,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   TrxScope.Mainnet,
-  ///: END:ONLY_INCLUDE_IF
   BtcScope.Mainnet,
   SolScope.Mainnet,
   CHAIN_IDS.LINEA_MAINNET,
