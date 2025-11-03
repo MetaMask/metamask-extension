@@ -853,7 +853,7 @@ const PrepareBridgePage = ({
           toToken &&
           toTokenIsNotNative &&
           Boolean(occurrences) &&
-          Number(occurrences) < 2 && (
+          Number(occurrences) < 1 && (
             <BannerAlert
               severity={BannerAlertSeverity.Warning}
               title={t('bridgeTokenCannotVerifyTitle')}
