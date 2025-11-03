@@ -7,10 +7,10 @@ import { sortAssets, type SortCriteria } from './sort';
 // These are the only two options for sorting assets
 // {"key": "name", "order": "asc", "sortCallback": "alphaNumeric"}
 // {"key": "tokenFiatAmount", "order": "dsc", "sortCallback": "stringNumeric"}
-export function sortAssetsWithPriority<T extends Asset>(
-  array: T[],
+export function sortAssetsWithPriority(
+  array: Asset[],
   criteria: SortCriteria,
-): T[] {
+): Asset[] {
   if (criteria.key === 'name') {
     return sortAssets(array, {
       key: 'name',
