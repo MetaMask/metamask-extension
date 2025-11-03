@@ -4178,24 +4178,28 @@ export default class MetamaskController extends EventEmitter {
    */
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
+    const isWalletResetInProgress =
+      this.appStateController.getIsWalletResetInProgress();
     try {
-      // clear permissions
-      this.permissionController.clearState();
+      if (isWalletResetInProgress) {
+        // clear permissions
+        this.permissionController.clearState();
 
-      // Clear snap state
-      await this.snapController.clearState();
+        // Clear snap state
+        await this.snapController.clearState();
 
-      // Clear account tree state
-      this.accountTreeController.clearState();
+        // Clear account tree state
+        this.accountTreeController.clearState();
 
-      // Currently, the account-order-controller is not in sync with
-      // the accounts-controller. To properly persist the hidden state
-      // of accounts, we should add a new flag to the account struct
-      // to indicate if it is hidden or not.
-      // TODO: Update @metamask/accounts-controller to support this.
-      this.accountOrderController.updateHiddenAccountsList([]);
+        // Currently, the account-order-controller is not in sync with
+        // the accounts-controller. To properly persist the hidden state
+        // of accounts, we should add a new flag to the account struct
+        // to indicate if it is hidden or not.
+        // TODO: Update @metamask/accounts-controller to support this.
+        this.accountOrderController.updateHiddenAccountsList([]);
 
-      this.txController.clearUnapprovedTransactions();
+        this.txController.clearUnapprovedTransactions();
+      }
 
       await this.keyringController.createNewVaultAndKeychain(password);
 
@@ -4209,7 +4213,7 @@ export default class MetamaskController extends EventEmitter {
       // there are some account migration happening in that function).
       await this.accountsController.updateAccounts();
       // Then we can build the initial tree.
-      this.accountTreeController.init();
+      this.accountTreeController.reinit();
       // TODO: Move this logic to the SnapKeyring directly.
       // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
       await this.forwardSelectedAccountGroupToSnapKeyring(
