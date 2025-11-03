@@ -167,7 +167,7 @@ export default function OnboardingFlow() {
       name: TraceName.OnboardingJourneyOverall,
       op: TraceOperation.OnboardingUserJourney,
     })
-      .then(() => {
+      ?.then(() => {
         if (onboardingParentContext) {
           onboardingParentContext.current = {
             _name: TraceName.OnboardingJourneyOverall,

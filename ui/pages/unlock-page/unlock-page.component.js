@@ -154,7 +154,7 @@ class UnlockPage extends Component {
         op: TraceOperation.OnboardingUserJourney,
         parentContext: this.props.onboardingParentContext?.current,
       })
-      .then(() => {
+      ?.then(() => {
         this.passwordLoginAttemptTraceStarted = true;
       })
       .catch((error) => {
