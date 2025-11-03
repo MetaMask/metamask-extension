@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
   ButtonIcon,
@@ -12,14 +12,12 @@ import {
   BorderRadius,
   Display,
   IconColor,
-  Severity,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import useAlerts from '../../../../hooks/useAlerts';
 import { AlertModal } from '../alert-modal';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type MultipleAlertModalProps = {
   /** The key of the initial alert to display. */
@@ -168,7 +166,6 @@ export function MultipleAlertModal({
   const {
     alerts: alertsFromHook,
     fieldAlerts: fieldAlertsFromHook,
-    isAlertConfirmed,
     navigableAlerts: navigableAlertsFromHook,
     navigableFieldAlerts: navigableFieldAlertsFromHook,
   } = useAlerts(ownerId);
@@ -192,17 +189,88 @@ export function MultipleAlertModal({
     initialAlertKey,
   );
 
+  const previousAlertKeyRef = useRef<string | undefined>();
+  const pendingAlertKeyRef = useRef<string | undefined>();
+
+  useEffect(() => {
+    const alertKeyExists = alertKey
+      ? alertsToDisplay.some((alert) => alert.key === alertKey)
+      : false;
+
+    if (alertKey === previousAlertKeyRef.current) {
+      return;
+    }
+
+    previousAlertKeyRef.current = alertKey;
+
+    if (alertKeyExists && alertKey) {
+      if (alertKey !== currentAlertKey) {
+        setCurrentAlertKey(alertKey);
+      }
+      pendingAlertKeyRef.current = undefined;
+    } else {
+      pendingAlertKeyRef.current = alertKey ?? undefined;
+    }
+  }, [alertKey, alertsToDisplay, currentAlertKey]);
+
+  useEffect(() => {
+    const pendingAlertKey = pendingAlertKeyRef.current;
+
+    if (!pendingAlertKey) {
+      return;
+    }
+
+    const pendingAlertExists = alertsToDisplay.some(
+      (alert) => alert.key === pendingAlertKey,
+    );
+
+    if (!pendingAlertExists) {
+      return;
+    }
+
+    if (pendingAlertKey !== currentAlertKey) {
+      setCurrentAlertKey(pendingAlertKey);
+    }
+    pendingAlertKeyRef.current = undefined;
+  }, [alertsToDisplay, currentAlertKey]);
+
+  useEffect(() => {
+    const currentAlertStillExists = currentAlertKey
+      ? alertsToDisplay.some((alert) => alert.key === currentAlertKey)
+      : false;
+    const alertKeyExists = alertKey
+      ? alertsToDisplay.some((alert) => alert.key === alertKey)
+      : false;
+    const pendingAlertKey = pendingAlertKeyRef.current;
+    const pendingAlertExists = pendingAlertKey
+      ? alertsToDisplay.some((alert) => alert.key === pendingAlertKey)
+      : false;
+
+    if (currentAlertStillExists) {
+      return;
+    }
+
+    const fallbackKey =
+      (alertKeyExists && alertKey) ??
+      (pendingAlertExists && pendingAlertKey) ??
+      navigableAlertsToDisplay[0]?.key ??
+      alertsToDisplay[0]?.key;
+
+    if (fallbackKey !== currentAlertKey) {
+      setCurrentAlertKey(fallbackKey);
+    }
+
+    if (pendingAlertExists && fallbackKey === pendingAlertKey) {
+      pendingAlertKeyRef.current = undefined;
+    }
+  }, [alertKey, alertsToDisplay, navigableAlertsToDisplay, currentAlertKey]);
+
   const selectedAlert =
     alertsToDisplay.find((alert) => alert.key === currentAlertKey) ??
     alertsToDisplay[0];
 
   const currentNavigableIndex = navigableAlertsToDisplay.findIndex(
     (alert) => alert.key === (selectedAlert?.key ?? currentAlertKey),
-  );
-
-  const hasUnconfirmedAlerts = alerts.some(
-    (alert: Alert) =>
-      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
   );
 
   const handleBackButtonClick = useCallback(() => {
@@ -232,58 +300,8 @@ export function MultipleAlertModal({
   }, [currentAlertKey, navigableAlertsToDisplay, selectedAlert]);
 
   const handleAcknowledgeClick = useCallback(() => {
-    const activeAlertKey = selectedAlert?.key ?? currentAlertKey;
-    const activeAlertHidesNavigation =
-      selectedAlert?.hideFromAlertNavigation === true;
-
-    if (skipAlertNavigation || !activeAlertKey) {
-      onFinalAcknowledgeClick();
-      return;
-    }
-
-    if (activeAlertHidesNavigation) {
-      onFinalAcknowledgeClick();
-      return;
-    }
-
-    const navigableIndex = navigableAlertsToDisplay.findIndex(
-      (alert) => alert.key === activeAlertKey,
-    );
-
-    if (navigableIndex === -1) {
-      onFinalAcknowledgeClick();
-      return;
-    }
-
-    const isLastNavigableAlert =
-      navigableIndex === navigableAlertsToDisplay.length - 1;
-
-    if (isLastNavigableAlert) {
-      if (!hasUnconfirmedAlerts) {
-        onFinalAcknowledgeClick();
-        return;
-      }
-
-      const firstNavigableKey = navigableAlertsToDisplay[0]?.key;
-      if (firstNavigableKey) {
-        setCurrentAlertKey(firstNavigableKey);
-      }
-      onFinalAcknowledgeClick();
-      return;
-    }
-
-    const nextAlertKey = navigableAlertsToDisplay[navigableIndex + 1]?.key;
-    if (nextAlertKey) {
-      setCurrentAlertKey(nextAlertKey);
-    }
-  }, [
-    currentAlertKey,
-    onFinalAcknowledgeClick,
-    hasUnconfirmedAlerts,
-    navigableAlertsToDisplay,
-    selectedAlert,
-    skipAlertNavigation,
-  ]);
+    onFinalAcknowledgeClick();
+  }, [onFinalAcknowledgeClick]);
 
   const showNavigationButtons =
     !skipAlertNavigation &&

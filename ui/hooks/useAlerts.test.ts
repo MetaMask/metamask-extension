@@ -64,10 +64,24 @@ describe('useAlerts', () => {
     return renderHookUseAlert(ownerId, state).result;
   };
 
+  const sortBySeverityDesc = (alerts: Alert[]) => {
+    const severityOrder = {
+      [Severity.Danger]: 3,
+      [Severity.Warning]: 2,
+      [Severity.Info]: 1,
+      [Severity.Success]: 0,
+    };
+
+    return [...alerts].sort(
+      (a, b) => severityOrder[b.severity] - severityOrder[a.severity],
+    );
+  };
+
   describe('alerts', () => {
     it('returns all alerts', () => {
       const result = renderAndReturnResult();
-      expect(result.current.alerts).toEqual(alertsMock);
+      const expectedAlerts = sortBySeverityDesc(alertsMock);
+      expect(result.current.alerts).toEqual(expectedAlerts);
       expect(result.current.hasAlerts).toEqual(true);
       expect(result.current.hasDangerAlerts).toEqual(true);
       expect(result.current.hasUnconfirmedDangerAlerts).toEqual(false);
@@ -200,7 +214,10 @@ describe('useAlerts', () => {
         },
       });
 
-      expect(result.current.generalAlerts).toEqual(expectedGeneralAlerts);
+      const expectedSortedGeneralAlerts = sortBySeverityDesc(
+        expectedGeneralAlerts,
+      );
+      expect(result.current.generalAlerts).toEqual(expectedSortedGeneralAlerts);
     });
   });
 
@@ -229,10 +246,12 @@ describe('useAlerts', () => {
   describe('fieldAlerts', () => {
     it('returns all alerts with field property', () => {
       const result = renderAndReturnResult();
-      expect(result.current.fieldAlerts).toEqual([
-        alertsMock[0],
-        alertsMock[2],
-      ]);
+      const expectedFieldAlerts = sortBySeverityDesc(
+        [alertsMock[0], alertsMock[2]].filter(
+          (alert) => typeof alert !== 'undefined',
+        ) as Alert[],
+      );
+      expect(result.current.fieldAlerts).toEqual(expectedFieldAlerts);
     });
 
     it('returns empty array if no alerts with field property', () => {

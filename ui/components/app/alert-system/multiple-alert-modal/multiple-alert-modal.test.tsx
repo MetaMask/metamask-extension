@@ -159,15 +159,20 @@ describe('MultipleAlertModal', () => {
     expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the next alert when the "Got it" button is clicked', () => {
-    const { getByTestId, getByText } = renderWithProvider(
+  it('does not change the alert when the "Got it" button is clicked', () => {
+    onAcknowledgeClickMock.mockReset();
+    const { getByTestId, getByText, queryByText } = renderWithProvider(
       <MultipleAlertModal {...defaultProps} alertKey={DATA_ALERT_KEY_MOCK} />,
       mockStoreAcknowledgeAlerts,
     );
 
+    expect(getByText(alertsMock[1].message)).toBeInTheDocument();
+
     fireEvent.click(getByTestId('alert-modal-button'));
 
+    expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
     expect(getByText(alertsMock[1].message)).toBeInTheDocument();
+    expect(queryByText(alertsMock[2].message)).not.toBeInTheDocument();
   });
 
   it('closes modal when the "Got it" button is clicked', () => {
@@ -184,20 +189,6 @@ describe('MultipleAlertModal', () => {
     fireEvent.click(getByTestId('alert-modal-button'));
 
     expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('resets to the first alert if there are unconfirmed alerts and the final alert is acknowledged', () => {
-    const { getByTestId, getByText } = renderWithProvider(
-      <MultipleAlertModal
-        {...defaultProps}
-        alertKey={CONTRACT_ALERT_KEY_MOCK}
-      />,
-      mockStore,
-    );
-
-    fireEvent.click(getByTestId('alert-modal-button'));
-
-    expect(getByText(alertsMock[0].message)).toBeInTheDocument();
   });
 
   describe('FieldAlerts not present', () => {
@@ -280,7 +271,7 @@ describe('MultipleAlertModal', () => {
 
       fireEvent.click(getByTestId('alert-modal-back-button'));
 
-      expect(getByText(alertsMock[1].message)).toBeInTheDocument();
+      expect(getByText(alertsMock[0].message)).toBeInTheDocument();
     });
   });
 

@@ -129,7 +129,7 @@ function sortAlertsBySeverity(alerts: Alert[]): Alert[] {
     [Severity.Success]: 0,
   };
 
-  return alerts.sort(
+  return [...alerts].sort(
     (a, b) => severityOrder[b.severity] - severityOrder[a.severity],
   );
 }
