@@ -122,7 +122,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         newPrivacyPolicyToastShownDate: Date.now(),
         snapsInstallPrivacyWarningShown: true,
         hasShownMultichainAccountsIntroModal: true,
-        lastUpdatedFromVersion: null,
         showShieldEntryModalOnce: false,
         appActiveTab: {
           id: 1,
