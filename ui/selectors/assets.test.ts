@@ -868,6 +868,10 @@ describe('Aggregated balance recomputation behavior', () => {
         internalAccounts: { accounts: {}, selectedAccount: '' },
         tokenBalances: tokenBalancesA,
         marketData: {},
+        supportedChainIds: {
+          timestamp: 0,
+          data: [],
+        },
         balances: {},
         allTokens: {},
         currentCurrency: 'usd',
@@ -1004,6 +1008,10 @@ describe('getAsset', () => {
       allIgnoredTokens: 'mockAllIgnoredTokens',
       tokenBalances: 'mockTokenBalances',
       marketData: 'mockMarketData',
+      supportedChainIds: {
+        timestamp: 0,
+        data: [],
+      },
       currencyRates: 'mockCurrencyRates',
       currentCurrency: 'mockCurrentCurrency',
       networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
@@ -1069,6 +1077,7 @@ describe('getAsset', () => {
       'bip122:000000000019d6689c085ae165831e93/slip44:0',
       'bip122:000000000019d6689c085ae165831e93',
     );
+
     expect(result).toStrictEqual({
       accountType: 'bip122:p2wpkh',
       accountId: '2d89e6a0-b4e6-45a8-a707-f10cef143b42',
