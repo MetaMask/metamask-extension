@@ -383,7 +383,7 @@ export const TokenListItemComponent = ({
         </Box>
 
         {/* Info icon for destination tokens */}
-        {isDestinationToken && !isNativeCurrency && address && (
+        {isDestinationToken && (
           <ButtonIcon
             iconName={IconName.Info}
             size={ButtonIconSize.Sm}
