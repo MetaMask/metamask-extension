@@ -25,7 +25,6 @@ export const useSendType = () => {
     () => (chainId ? isBitcoinChainId(chainId) : undefined),
     [chainId],
   );
-
   const isTronSendType = useMemo(
     () => (chainId ? isTronChainId(chainId) : undefined),
     [chainId],
