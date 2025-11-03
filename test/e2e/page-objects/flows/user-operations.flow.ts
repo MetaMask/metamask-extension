@@ -5,7 +5,6 @@ import ERC4337SnapPage from '../pages/erc4337-snap-page';
 import SnapInstall from '../pages/dialog/snap-install';
 import TestDapp from '../pages/test-dapp';
 import UserOperationTransactionDetails from '../pages/user-operation-transaction-details';
-import HomePage from '../pages/home/homepage';
 
 /**
  * Flow for installing the ERC-4337 Account Abstraction Snap.
@@ -91,37 +90,6 @@ export async function connectTestDappToSnapAccount(
   const testDapp = new TestDapp(driver);
   await testDapp.openTestDappPage();
   await testDapp.connectAccount({ publicAddress: accountAddress });
-}
-
-/**
- * Flow for confirming a transaction in the notification window.
- *
- * @param driver - The WebDriver instance
- */
-export async function confirmTransaction(driver: Driver): Promise<void> {
-  console.log('Confirming transaction');
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement({ text: 'Confirm' });
-}
-
-/**
- * Flow for opening a confirmed transaction from the activity list.
- *
- * @param driver - The WebDriver instance
- */
-export async function openConfirmedTransaction(driver: Driver): Promise<void> {
-  console.log('Opening confirmed transaction from activity list');
-
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  const homePage = new HomePage(driver);
-  await homePage.goToActivityList();
-
-  // Wait for confirmed transaction to appear and click on it
-  await driver.clickElement({
-    css: '[data-testid="activity-list-item"]',
-    text: 'Confirmed',
-  });
 }
 
 /**

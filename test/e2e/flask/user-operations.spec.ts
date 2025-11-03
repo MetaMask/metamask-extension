@@ -1,4 +1,9 @@
-import { withFixtures, unlockWallet, convertETHToHexGwei } from '../helpers';
+import {
+  withFixtures,
+  unlockWallet,
+  convertETHToHexGwei,
+  WINDOW_TITLES,
+} from '../helpers';
 import { createDappTransaction } from '../page-objects/flows/transaction';
 import { sendRedesignedTransactionWithSnapAccount } from '../page-objects/flows/send-transaction.flow';
 import FixtureBuilder from '../fixture-builder';
@@ -20,10 +25,11 @@ import { Mockttp } from '../mock-e2e';
 import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import {
   setupCompleteERC4337Environment,
-  confirmTransaction,
-  openConfirmedTransaction,
   validateTransactionDetailsWithReceipt,
 } from '../page-objects/flows/user-operations.flow';
+import HomePage from '../page-objects/pages/home/homepage';
+import ActivityListPage from '../page-objects/pages/home/activity-list';
+import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
 
 async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   return [
@@ -105,7 +111,10 @@ describe('User Operations', function () {
         maxPriorityFeePerGas: '0x0',
       });
 
-      await confirmTransaction(driver);
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      const confirmation = new Confirmation(driver);
+      await confirmation.checkPageIsLoaded();
+      await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
     });
   });
 
@@ -122,7 +131,13 @@ describe('User Operations', function () {
           isSyncFlow: true,
         });
 
-        await openConfirmedTransaction(driver);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        const activityListPage = new ActivityListPage(driver);
+        await activityListPage.clickConfirmedTransaction();
         await validateTransactionDetailsWithReceipt(driver, bundlerServer);
       },
     );
@@ -133,7 +148,13 @@ describe('User Operations', function () {
   //     { title: this.test?.fullTitle() },
   //     async (driver, bundlerServer) => {
   //       await createSwap(driver);
-  //       await openConfirmedTransaction(driver);
+  //       await driver.switchToWindowWithTitle(
+  //         WINDOW_TITLES.ExtensionInFullScreenView,
+  //       );
+  //       const homePage = new HomePage(driver);
+  //       await homePage.goToActivityList();
+  //       const activityListPage = new ActivityListPage(driver);
+  //       await activityListPage.clickConfirmedTransaction();
   //       await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
   //     },
   //   );
@@ -164,8 +185,17 @@ describe('User Operations', function () {
           maxPriorityFeePerGas: '0x0',
         });
 
-        await confirmTransaction(driver);
-        await openConfirmedTransaction(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const confirmation = new Confirmation(driver);
+        await confirmation.checkPageIsLoaded();
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        const activityListPage = new ActivityListPage(driver);
+        await activityListPage.clickConfirmedTransaction();
         await validateTransactionDetailsWithReceipt(driver, bundlerServer);
       },
     );
