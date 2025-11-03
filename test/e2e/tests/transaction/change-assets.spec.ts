@@ -215,6 +215,7 @@ describe('Change assets', function () {
 
         // Choose the nft
         await homePage.goToNftTab();
+        await headerNavbar.checkAccountLabel('Account 1');
         await nftListPage.clickNFTFromList();
         await nftDetailsPage.checkPageIsLoaded();
         await nftDetailsPage.clickNFTSendButton();
