@@ -387,7 +387,6 @@ const SubmitClaimForm = () => {
           </TextButton>,
         ])}
       </Text>
-
       {/* Personal details */}
       <Box>
         <Text variant={TextVariant.HeadingSm}>
@@ -405,7 +404,6 @@ const SubmitClaimForm = () => {
           className="w-full h-[1px] border border-b-0"
         ></Box>
       </Box>
-
       <FormTextField
         label={`${t('shieldClaimEmail')}*`}
         placeholder="johncarpenter@sample.com"
@@ -427,7 +425,6 @@ const SubmitClaimForm = () => {
         required
         width={BlockSize.Full}
       />
-
       <FormTextField
         label={`${t('shieldClaimReimbursementWalletAddress')}*`}
         placeholder={'e.g. 0x71C...B5f6d'}
@@ -453,7 +450,6 @@ const SubmitClaimForm = () => {
         required
         width={BlockSize.Full}
       />
-
       {/* Incident details */}
       <Box className="mt-4">
         <Text variant={TextVariant.HeadingSm}>
@@ -472,7 +468,6 @@ const SubmitClaimForm = () => {
           className="w-full h-[1px] border border-b-0"
         ></Box>
       </Box>
-
       <AccountSelector
         label={`${t('shieldClaimImpactedWalletAddress')}*`}
         modalTitle={t('shieldClaimSelectAccount')}
@@ -490,7 +485,7 @@ const SubmitClaimForm = () => {
           }
         }}
       />
-
+      {/* Custom network selector: existing ones are either embedded in containers or too feature-rich for this use case. */}
       <NetworkSelector
         label={`${t('shieldClaimNetwork')}*`}
         modalTitle={t('shieldClaimSelectNetwork')}
@@ -499,7 +494,6 @@ const SubmitClaimForm = () => {
           setChainId(selectedChainId);
         }}
       />
-
       <FormTextField
         label={`${t('shieldClaimImpactedTxHash')}*`}
         placeholder={'e.g. a1084235686add...q46q8wurgw'}
@@ -544,7 +538,6 @@ const SubmitClaimForm = () => {
         required
         width={BlockSize.Full}
       />
-
       <Box gap={2}>
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {`${t('shieldClaimDescription')}*`}
