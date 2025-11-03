@@ -14,6 +14,7 @@ import {
   CaipAssetType,
   CaipChainId,
   Hex,
+  KnownCaipNamespace,
   parseCaipAssetType,
   parseCaipChainId,
 } from '@metamask/utils';
@@ -33,7 +34,6 @@ import type {
   BalanceChangeResult,
 } from '@metamask/assets-controllers';
 import { TEST_CHAINS } from '../../shared/constants/network';
-import { SOLANA_TEST_CHAINS } from '../../shared/constants/multichain/networks';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
@@ -959,7 +959,7 @@ const selectAllMainnetNetworksEnabledMap = createSelector(
       }
 
       // Fix: Convert reference to proper format for calculateBalanceForAllWallets
-      if (namespace === 'eip155') {
+      if (namespace === KnownCaipNamespace.Eip155) {
         // For EVM chains, use hex format (e.g., "1" → "0x1")
         const chainIdHex = toHex(reference);
         enabledNetworkMap[namespace][chainIdHex] = true;
