@@ -329,7 +329,7 @@
     "@metamask/multichain-transactions-controller": "^6.0.0",
     "@metamask/name-controller": "^9.0.0",
     "@metamask/network-controller": "^25.0.0",
-    "@metamask/network-enablement-controller": "^3.0.0",
+    "@metamask/network-enablement-controller": "^3.1.0",
     "@metamask/notification-services-controller": "^19.0.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
@@ -446,7 +446,8 @@
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "yarn.lock": "^0.0.1-security"
   },
   "devDependencies": {
     "@actions/core": "^1.10.0",
