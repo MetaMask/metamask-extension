@@ -159,7 +159,7 @@ export default function ItemList({
                 ) : null}
               </div>
               {/* Info icon for destination tokens only */}
-              {!isSourceList && !result.notImported && (
+              {!isSourceList && !result.notImported && !result.blocked && (
                 <ButtonIcon
                   className={classnames(
                     'searchable-item-list__item__info-icon',

@@ -18,6 +18,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { TokenInsightsModal } from '../../../pages/swaps/token-insights-modal';
+import { type TokenInsightsToken } from '../../../hooks/useTokenInsightsData';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -124,6 +126,7 @@ export const TokenListItemComponent = ({
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+  const [showTokenInsights, setShowTokenInsights] = useState(false);
   const history = useHistory();
 
   const getTokenTitle = () => {
@@ -177,6 +180,7 @@ export const TokenListItemComponent = ({
       gap={4}
       data-testid="multichain-token-list-item"
       title={tooltipText ? t(tooltipText) : undefined}
+      style={{ position: 'relative', alignItems: 'center' }}
     >
       <Box
         className={classnames('multichain-token-list-item__container-cell', {
@@ -185,6 +189,7 @@ export const TokenListItemComponent = ({
         })}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.center}
         paddingTop={2}
         paddingBottom={2}
         paddingLeft={4}
@@ -376,6 +381,39 @@ export const TokenListItemComponent = ({
             )}
           </Box>
         </Box>
+
+        {/* Info icon for destination tokens */}
+        {isDestinationToken && !isNativeCurrency && address && (
+          <ButtonIcon
+            iconName={IconName.Info}
+            size={ButtonIconSize.Sm}
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              e.preventDefault();
+              trackEvent({
+                event: MetaMetricsEventName.TokenDetailsOpened,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  token_symbol: tokenSymbol,
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  token_address: address,
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  chain_id: chainId,
+                  source: 'asset_picker',
+                },
+              });
+              setShowTokenInsights(true);
+            }}
+            className="multichain-token-list-item__info-icon"
+            style={{
+              cursor: 'pointer',
+              alignSelf: 'center',
+            }}
+            color={IconColor.iconAlternative}
+            ariaLabel={t('viewTokenDetails')}
+          />
+        )}
       </Box>
       {isEvm && showScamWarningModal ? (
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
@@ -407,6 +445,23 @@ export const TokenListItemComponent = ({
           </ModalContent>
         </Modal>
       ) : null}
+
+      {/* Token Insights Modal */}
+      {showTokenInsights && (
+        <TokenInsightsModal
+          isOpen={showTokenInsights}
+          onClose={() => setShowTokenInsights(false)}
+          token={
+            {
+              address: address as string,
+              symbol: tokenSymbol || title,
+              name: title,
+              chainId,
+              iconUrl: tokenImage,
+            } as TokenInsightsToken
+          }
+        />
+      )}
     </Box>
   );
 };

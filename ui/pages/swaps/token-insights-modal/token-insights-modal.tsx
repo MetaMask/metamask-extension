@@ -161,12 +161,9 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} className="token-insights-modal">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>
-          {token.symbol} {t('insights')}
-        </ModalHeader>
-
+        <ModalHeader onClose={onClose}></ModalHeader>
         <Box padding={4}>
-          {/* Token Icon and Name */}
+          {/* Token Icon */}
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -181,35 +178,9 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
               data-testid="token-insights-icon"
             />
             <Text variant={TextVariant.headingSm}>
-              {token.name || token.symbol}
+              {token.name || token.symbol} Insights
             </Text>
           </Box>
-
-          {/* Verified Badge */}
-          {isVerified && (
-            <Box
-              backgroundColor={BackgroundColor.successMuted}
-              borderRadius={BorderRadius.MD}
-              padding={2}
-              marginBottom={4}
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              gap={2}
-              data-testid="verified-token-badge"
-            >
-              <Icon
-                name={IconName.SecurityTick}
-                color={IconColor.successDefault}
-                size={IconSize.Sm}
-              />
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.successDefault}
-              >
-                {t('verifiedToken')}
-              </Text>
-            </Box>
-          )}
 
           {/* Market Data */}
           <Box className="market-data">
@@ -273,19 +244,6 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
               data-testid="token-market-cap"
             />
 
-            {/* Listed on */}
-            {aggregators.length > 0 && (
-              <MarketDataRow
-                label={t('listedOn')}
-                value={
-                  <Text variant={TextVariant.bodyMd}>
-                    {t('tokenLists', [aggregators.length])}
-                  </Text>
-                }
-                data-testid="token-listed-on"
-              />
-            )}
-
             {/* Contract Address */}
             {shouldShowContractAddress(token.address) && (
               <MarketDataRow
@@ -302,23 +260,6 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
               />
             )}
           </Box>
-
-          {/* Error state */}
-          {error && !marketData && (
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              marginTop={4}
-            >
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                {t('failedToLoadTokenData')}
-              </Text>
-            </Box>
-          )}
         </Box>
       </ModalContent>
     </Modal>

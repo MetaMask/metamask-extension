@@ -115,6 +115,7 @@
     display: flex;
     justify-content: space-between;
     flex: 1;
+    min-width: 0; /* Allow content to shrink */
     -moz-animation: fadein 1s;
     -webkit-animation: fadein 1s;
     -o-animation: fadein 1s;

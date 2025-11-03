@@ -2593,9 +2593,6 @@
   "failed": {
     "message": "Failed"
   },
-  "failedToLoadTokenData": {
-    "message": "Failed to load token data"
-  },
   "failedToFetchChainId": {
     "message": "Could not fetch chain ID. Is your RPC URL correct?"
   },
@@ -3121,9 +3118,6 @@
   "inYourSettings": {
     "message": "in your Settings"
   },
-  "insights": {
-    "message": "Insights"
-  },
   "included": {
     "message": "included"
   },
@@ -3136,6 +3130,9 @@
   },
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
+  },
+  "insights": {
+    "message": "Insights"
   },
   "insightsFromSnap": {
     "message": "Insights from $1",
@@ -3563,14 +3560,11 @@
   "marketCap": {
     "message": "Market cap"
   },
+  "marketCapFDV": {
+    "message": "Market cap (FDV)"
+  },
   "marketDetails": {
     "message": "Market details"
-  },
-  "volume": {
-    "message": "24h volume"
-  },
-  "marketCapFDV": {
-    "message": "Market cap"
   },
   "maskicons": {
     "message": "Polycons"
@@ -4630,9 +4624,6 @@
   "pending": {
     "message": "Pending"
   },
-  "percentChange": {
-    "message": "24h change"
-  },
   "pendingConfirmationAddNetworkAlertMessage": {
     "message": "Updating network will cancel $1 pending transactions from this site.",
     "description": "Number of transactions."
@@ -4648,6 +4639,9 @@
   "pendingTransactionAlertMessageHyperlink": {
     "message": "Learn how to cancel or speed up a transaction.",
     "description": "The text for the hyperlink in the pending transaction alert message"
+  },
+  "percentChange": {
+    "message": "Percent change"
   },
   "permissionDetails": {
     "message": "Permission details"
@@ -7534,9 +7528,6 @@
   "tokenTransfer": {
     "message": "Token transfer"
   },
-  "verifiedToken": {
-    "message": "Verified token"
-  },
   "tokens": {
     "message": "Tokens"
   },
@@ -7949,9 +7940,6 @@
     "message": "View $1 at $2",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
-  "viewTokenDetails": {
-    "message": "View token details"
-  },
   "viewOnEtherscan": {
     "message": "View $1 on Etherscan",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
@@ -7961,6 +7949,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewTokenDetails": {
+    "message": "View token details"
   },
   "viewTransaction": {
     "message": "View transaction"
@@ -7986,6 +7977,9 @@
   },
   "visitWebSite": {
     "message": "Visit our website"
+  },
+  "volume": {
+    "message": "Volume"
   },
   "wallet": {
     "message": "Wallet"
