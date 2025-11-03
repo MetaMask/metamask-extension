@@ -315,7 +315,6 @@ class HomePage {
         for (const element of assetNameElement) {
           console.log(`Asset name element: ${await element.getText()}`);
           console.log(`Asset name: ${assetName}`);
-          console.log('Son iguales: ', (await element.getText()) === assetName);
           if (await element.getText() === assetName) {
             return true;
           }
