@@ -3,10 +3,10 @@ import { Route, SHIELD_PLAN_ROUTE } from './route';
 export default new Route({
   pathname: '/shield',
   getTitle: (_: URLSearchParams) => 'deepLink_theTransactionShieldPage',
-  handler: function handler(_: URLSearchParams) {
+  handler: function handler(params: URLSearchParams) {
     return {
       path: SHIELD_PLAN_ROUTE,
-      query: new URLSearchParams(),
+      query: params,
     };
   },
 });
