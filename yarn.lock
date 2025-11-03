@@ -5634,6 +5634,11 @@ __metadata:
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/602362d241d90f81bbf60d754c6f394b355f45f12aac78a6df1d78d9daf621dff7d417e6973ea9247b3b77b9acdb9fe275968b1a1736fa53c92007baf55d0d94
   languageName: node
+  linkType: hard
+
+"@metamask/auth-network-utils@npm:^0.3.0, @metamask/auth-network-utils@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "@metamask/auth-network-utils@npm:0.3.1"
   dependencies:
     "@noble/curves": "npm:^1.8.1"
     "@noble/hashes": "npm:^1.7.1"
