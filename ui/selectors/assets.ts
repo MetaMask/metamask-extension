@@ -14,6 +14,7 @@ import {
   CaipAssetType,
   CaipChainId,
   Hex,
+  KnownCaipNamespace,
   parseCaipAssetType,
   parseCaipChainId,
 } from '@metamask/utils';
@@ -967,7 +968,7 @@ const selectAllMainnetNetworksEnabledMap = createSelector(
       }
 
       // Fix: Convert reference to proper format for calculateBalanceForAllWallets
-      if (namespace === 'eip155') {
+      if (namespace === KnownCaipNamespace.Eip155) {
         // For EVM chains, use hex format (e.g., "1" → "0x1")
         const chainIdHex = toHex(reference);
         enabledNetworkMap[namespace][chainIdHex] = true;
