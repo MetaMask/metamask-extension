@@ -345,4 +345,3 @@ describe('useSafeNavigation', () => {
     });
   });
 });
-
