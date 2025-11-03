@@ -38,9 +38,6 @@ const mockUseRewardsContext = useRewardsContext as jest.MockedFunction<
 
 describe('RewardsPointsBalance', () => {
   const mockT = jest.fn((key: string, values?: string[]) => {
-    if (key === 'rewardsOptIn') {
-      return 'Opt In';
-    }
     if (key === 'rewardsPointsBalance' && values) {
       return `${values[0]} points`;
     }
@@ -240,7 +237,6 @@ describe('RewardsPointsBalance', () => {
       'src',
       './images/metamask-rewards-points.svg',
     );
-    expect(image).toHaveStyle({ width: '16px', height: '16px' });
   });
 
   it('should call useSelector with getIntlLocale selector', () => {

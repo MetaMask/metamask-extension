@@ -5470,11 +5470,12 @@
   "reward": {
     "message": "Reward"
   },
-  "rewardsOptIn": {
-    "message": "Sign up for Rewards"
-  },
   "rewardsPointsBalance": {
     "message": "$1 points",
+    "description": "$1 is the formatted number of rewards points"
+  },
+  "rewardsPointsBalanceAlt": {
+    "message": "$1 reward points",
     "description": "$1 is the formatted number of rewards points"
   },
   "rewardsPointsIcon": {

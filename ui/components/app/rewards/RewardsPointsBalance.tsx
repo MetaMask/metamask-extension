@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -6,19 +6,28 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useRewardsContext } from '../../../contexts/rewards';
 import { Skeleton } from '../../component-library/skeleton';
 
-const RewardsBadge = ({ text }: { text: string }) => {
+const RewardsBadge = ({ formattedPoints }: { formattedPoints: string }) => {
   const t = useI18nContext();
+  const [imageLoadError, setImageLoadError] = useState(false);
+
+  const text = imageLoadError
+    ? t('rewardsPointsBalanceAlt', [formattedPoints])
+    : t('rewardsPointsBalance', [formattedPoints]);
 
   return (
     <Box
       className="flex items-center gap-1 px-1.5 bg-background-muted rounded"
       data-testid="rewards-points-balance"
     >
-      <img
-        src="./images/metamask-rewards-points.svg"
-        alt={t('rewardsPointsIcon')}
-        style={{ width: '16px', height: '16px' }}
-      />
+      {!imageLoadError && (
+        <img
+          src="./images/metamask-rewards-points.svg"
+          alt={t('rewardsPointsIcon')}
+          width={16}
+          height={16}
+          onError={() => setImageLoadError(true)}
+        />
+      )}
       <Text
         variant={TextVariant.BodySm}
         data-testid="rewards-points-balance-value"
@@ -35,7 +44,6 @@ const RewardsBadge = ({ text }: { text: string }) => {
  * (i.e., when rewardsActiveAccount?.subscriptionId is null)
  */
 export const RewardsPointsBalance = () => {
-  const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
 
   const {
@@ -45,7 +53,7 @@ export const RewardsPointsBalance = () => {
     candidateSubscriptionId,
   } = useRewardsContext();
 
-  if (!rewardsEnabled) {
+  if (!rewardsEnabled || !candidateSubscriptionId) {
     return null;
   }
 
@@ -62,5 +70,5 @@ export const RewardsPointsBalance = () => {
     seasonStatus?.balance?.total ?? 0,
   );
 
-  return <RewardsBadge text={t('rewardsPointsBalance', [formattedPoints])} />;
+  return <RewardsBadge formattedPoints={formattedPoints} />;
 };
