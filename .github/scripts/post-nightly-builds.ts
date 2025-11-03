@@ -12,6 +12,7 @@ async function main() {
     SLACK_NIGHTLY_BUILDS_WEBHOOK_URL:
       process.env.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL || '',
     BUILD_STATUS: process.env.BUILD_STATUS || 'unknown',
+    BUILD_VERSION: process.env.BUILD_VERSION || '0',
   };
 
   if (!env.RUN_ID) throw new Error('RUN_ID not found');
@@ -41,7 +42,9 @@ async function main() {
   // Handle unknown or invalid status
   console.log(`❓ Unknown build status: ${env.BUILD_STATUS}`);
   console.log('⚠️ Skipping Slack notification due to unknown status');
-  throw new Error(`Invalid BUILD_STATUS: ${env.BUILD_STATUS}. Expected 'success' or 'failure'.`);
+  throw new Error(
+    `Invalid BUILD_STATUS: ${env.BUILD_STATUS}. Expected 'success' or 'failure'.`,
+  );
 }
 
 async function postFailureNotification(env: any, version: string) {
@@ -182,14 +185,16 @@ async function postFailureNotification(env: any, version: string) {
 }
 
 async function postSuccessNotification(env: any, version: string) {
+  const experimentalVersion = `${version}-experimental.${env.BUILD_VERSION}`;
+
   const buildMap = {
     builds: {
       chrome: `${env.HOST_URL}/build-dist-browserify/builds/metamask-chrome-${version}.zip`,
       firefox: `${env.HOST_URL}/build-dist-mv2-browserify/builds/metamask-firefox-${version}.zip`,
     },
     'builds (experimental)': {
-      chrome: `${env.HOST_URL}/build-experimental-browserify/builds/metamask-experimental-chrome-${version}.zip`,
-      firefox: `${env.HOST_URL}/build-experimental-mv2-browserify/builds/metamask-experimental-firefox-${version}.zip`,
+      chrome: `${env.HOST_URL}/build-experimental-browserify/builds/metamask-experimental-chrome-${experimentalVersion}.zip`,
+      firefox: `${env.HOST_URL}/build-experimental-mv2-browserify/builds/metamask-experimental-firefox-${experimentalVersion}.zip`,
     },
   };
 

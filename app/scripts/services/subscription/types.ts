@@ -1,10 +1,13 @@
-import { RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
+  SubscriptionControllerGetBillingPortalUrlAction,
+  SubscriptionControllerGetCryptoApproveTransactionParamsAction,
   SubscriptionControllerGetPricingAction,
   SubscriptionControllerGetSubscriptionsAction,
   SubscriptionControllerStartShieldSubscriptionWithCardAction,
   SubscriptionControllerUpdatePaymentMethodAction,
 } from '@metamask/subscription-controller';
+import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 
@@ -16,16 +19,17 @@ export type SubscriptionServiceAction =
   | SubscriptionControllerGetPricingAction
   | SubscriptionControllerStartShieldSubscriptionWithCardAction
   | SubscriptionControllerUpdatePaymentMethodAction
-  | SubscriptionControllerGetSubscriptionsAction;
+  | SubscriptionControllerGetSubscriptionsAction
+  | SubscriptionControllerGetCryptoApproveTransactionParamsAction
+  | SubscriptionControllerGetBillingPortalUrlAction
+  | AuthenticationControllerGetBearerToken;
 
 export type SubscriptionServiceEvent = never;
 
-export type SubscriptionServiceMessenger = RestrictedMessenger<
+export type SubscriptionServiceMessenger = Messenger<
   ServiceName,
   SubscriptionServiceAction,
-  SubscriptionServiceEvent,
-  SubscriptionServiceAction['type'],
-  SubscriptionServiceEvent['type']
+  SubscriptionServiceEvent
 >;
 
 export type SubscriptionServiceOptions = {

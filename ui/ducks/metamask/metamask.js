@@ -36,8 +36,6 @@ const initialState = {
   useBlockie: false,
   featureFlags: {},
   currentLocale: '',
-  currentBlockGasLimit: '',
-  currentBlockGasLimitByChainId: {},
   preferences: {
     autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
     showExtensionInFullSizeView: false,
@@ -150,6 +148,14 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         completedOnboarding: true,
+      };
+    }
+
+    case actionConstants.COMPLETE_ONBOARDING_WITH_SIDEPANEL: {
+      return {
+        ...metamaskState,
+        completedOnboarding: true,
+        openedWithSidepanel: true,
       };
     }
 
@@ -298,10 +304,6 @@ export const getNftContracts = (state) => {
   const { chainId } = getProviderConfig(state);
   return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
-
-export function getBlockGasLimit(state) {
-  return state.metamask.currentBlockGasLimit;
-}
 
 export function getNativeCurrency(state) {
   return getProviderConfig(state).ticker;

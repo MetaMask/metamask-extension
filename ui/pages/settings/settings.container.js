@@ -7,7 +7,10 @@ import {
   getSnapsMetadata,
   getUseExternalServices,
 } from '../../selectors';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -38,6 +41,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
@@ -65,6 +69,7 @@ const ROUTES_TO_I18N_KEYS = {
   [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityChangePassword',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
+  [TRANSACTION_SHIELD_CLAIM_ROUTE]: 'shieldClaim',
   [TRANSACTION_SHIELD_ROUTE]: 'shieldTx',
 };
 
@@ -88,7 +93,7 @@ const mapStateToProps = (state, ownProps) => {
     pathname.match(SECURITY_PASSWORD_CHANGE_ROUTE),
   );
   const isTransactionShieldPage = Boolean(
-    pathname.match(TRANSACTION_SHIELD_ROUTE),
+    pathname.startsWith(TRANSACTION_SHIELD_ROUTE),
   );
   const isNetworksFormPage =
     Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
@@ -98,8 +103,14 @@ const mapStateToProps = (state, ownProps) => {
     pathname.match(ADD_POPULAR_CUSTOM_NETWORK),
   );
   const isSnapSettingsRoute = Boolean(pathname.match(SNAP_SETTINGS_ROUTE));
+  const isShieldClaimPage = Boolean(
+    pathname.match(TRANSACTION_SHIELD_CLAIM_ROUTE),
+  );
 
-  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+  const environmentType = getEnvironmentType();
+  const isPopup =
+    environmentType === ENVIRONMENT_TYPE_POPUP ||
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const socialLoginEnabled = Boolean(socialLoginEmail);
 
   let pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname];
@@ -120,10 +131,9 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = NETWORKS_ROUTE;
   } else if (isRevealSrpListPage || isPasswordChangePage) {
     backRoute = SECURITY_ROUTE;
+  } else if (isShieldClaimPage) {
+    backRoute = TRANSACTION_SHIELD_ROUTE;
   }
-
-  let initialBreadCrumbRoute;
-  let initialBreadCrumbKey;
 
   const addressName = getAddressBookEntryOrAccountName(
     state,
@@ -150,8 +160,6 @@ const mapStateToProps = (state, ownProps) => {
     backRoute,
     conversionDate,
     currentPath: pathname,
-    initialBreadCrumbKey,
-    initialBreadCrumbRoute,
     isAddressEntryPage,
     isMetaMaskShieldFeatureEnabled: getIsMetaMaskShieldFeatureEnabled(),
     isPasswordChangePage,

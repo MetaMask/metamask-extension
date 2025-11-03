@@ -17,6 +17,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens are 
     "type": "TOKEN",
   },
   {
+    "accountType": undefined,
     "address": "",
     "balance": "0.000000000000000014",
     "chainId": "0xe708",
@@ -28,6 +29,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens are 
     "type": "NATIVE",
   },
   {
+    "accountType": undefined,
     "address": "",
     "balance": "0.00000000000000001",
     "chainId": "0x1",
@@ -160,6 +162,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if chain is solana 1`
     "type": "TOKEN",
   },
   {
+    "accountType": undefined,
     "address": "",
     "balance": "0.000000000000000014",
     "chainId": "0xe708",
@@ -171,6 +174,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if chain is solana 1`
     "type": "NATIVE",
   },
   {
+    "accountType": undefined,
     "address": "",
     "balance": "0.00000000000000001",
     "chainId": "0x1",
@@ -262,7 +266,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if chain is solana 1`
     "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
     "decimals": 18,
     "iconUrl": "",
-    "image": "",
+    "image": "./images/solana-logo.svg",
     "name": "Ether",
     "string": "0",
     "symbol": "ETH",
@@ -303,6 +307,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
     "type": "TOKEN",
   },
   {
+    "accountType": undefined,
     "address": "",
     "balance": "0.000000000000000014",
     "chainId": "0xe708",
@@ -314,6 +319,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
     "type": "NATIVE",
   },
   {
+    "accountType": undefined,
     "address": "",
     "balance": "0.00000000000000001",
     "chainId": "0x1",

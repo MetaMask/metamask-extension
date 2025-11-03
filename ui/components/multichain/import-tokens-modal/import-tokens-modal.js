@@ -748,6 +748,7 @@ export const ImportTokensModal = ({ onClose }) => {
                   tabKey={TAB_NAMES.SEARCH}
                   name={t('search')}
                   onClick={() => setDefaultActiveTabKey(TAB_NAMES.SEARCH)}
+                  className="flex-1"
                 >
                   <Box paddingTop={4}>
                     {useTokenDetection ? null : (
@@ -836,6 +837,7 @@ export const ImportTokensModal = ({ onClose }) => {
                 name={t('customToken')}
                 onClick={() => setDefaultActiveTabKey(TAB_NAMES.CUSTOM_TOKEN)}
                 data-testid="import-tokens-modal-custom-token-tab"
+                className="flex-1"
               >
                 {isConfirming ? (
                   <ImportTokensModalConfirm networkFilter={networkFilter} />

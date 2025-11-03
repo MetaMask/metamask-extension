@@ -40,7 +40,7 @@ type SwapOptions = {
 };
 
 export const buildQuote = async (driver: Driver, options: SwapOptions) => {
-  await driver.clickElement('[data-testid="token-overview-button-swap"]');
+  await driver.clickElement('[data-testid="coin-overview-swap"]');
   await driver.fill(
     'input[data-testid="prepare-swap-page-from-token-amount"]',
     options.amount.toString(),

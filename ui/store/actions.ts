@@ -72,7 +72,11 @@ import {
   ProductType,
   RecurringInterval,
   Subscription,
+  UpdatePaymentMethodOpts,
+  SubmitUserEventRequest,
+  CachedLastSelectedPaymentMethods,
 } from '@metamask/subscription-controller';
+
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -166,7 +170,12 @@ import {
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
-import type { NetworkConnectionBanner } from '../../shared/constants/app-state';
+import {
+  ClaimSubmitToastType,
+  type NetworkConnectionBanner,
+} from '../../shared/constants/app-state';
+import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
+import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -332,6 +341,68 @@ export function createNewVaultAndSyncWithSocial(
 }
 
 /**
+ * Starts polling for the subscriptions.
+ */
+export function subscriptionsStartPolling(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('subscriptionsStartPolling');
+    } catch (error) {
+      log.error('[subscriptionsStartPolling] error', error);
+      dispatch(displayWarning(error));
+    }
+  };
+}
+
+/**
+ * Fetches the subscription eligibilities.
+ *
+ * @returns The subscription eligibilities.
+ */
+export function getSubscriptionsEligibilities(): ThunkAction<
+  SubscriptionEligibility[],
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      return await submitRequestToBackground('getSubscriptionsEligibilities');
+    } catch (error) {
+      log.error('[getSubscriptionsEligibilities] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+/**
+ * Submits a user event.
+ *
+ * @param eventRequest - The event request.
+ * @returns resolved promise.
+ */
+export function submitSubscriptionUserEvents(
+  eventRequest: SubmitUserEventRequest,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('submitSubscriptionUserEvents', [
+        eventRequest,
+      ]);
+    } catch (error) {
+      log.error('[submitSubscriptionUserEvents] error', error);
+      dispatch(displayWarning(error));
+    }
+  };
+}
+
+/**
  * Fetches user subscriptions.
  *
  * @returns The subscriptions.
@@ -397,13 +468,18 @@ export function startSubscriptionWithCard(params: {
   recurringInterval: RecurringInterval;
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    const currentTab = await global.platform.currentTab();
-    const subscriptions = await submitRequestToBackground<Subscription[]>(
-      'startSubscriptionWithCard',
-      [params, currentTab?.id],
-    );
+    try {
+      const currentTab = await global.platform.currentTab();
+      const subscriptions = await submitRequestToBackground<Subscription[]>(
+        'startSubscriptionWithCard',
+        [params, currentTab?.id],
+      );
 
-    return subscriptions;
+      return subscriptions;
+    } catch (error) {
+      console.error('[startSubscriptionWithCard] error', error);
+      throw error;
+    }
   };
 }
 
@@ -420,6 +496,34 @@ export function updateSubscriptionCardPaymentMethod(params: {
     );
 
     return subscriptions;
+  };
+}
+
+export function startSubscriptionWithCrypto(params: {
+  products: ProductType[];
+  isTrialRequested: boolean;
+  recurringInterval: RecurringInterval;
+  billingCycles: number;
+  chainId: Hex;
+  payerAddress: Hex;
+  tokenSymbol: string;
+  rawTransaction: Hex;
+}): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    return await submitRequestToBackground<Subscription[]>(
+      'startSubscriptionWithCrypto',
+      [params],
+    );
+  };
+}
+
+export function updateSubscriptionCryptoPaymentMethod(
+  params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('updateSubscriptionCryptoPaymentMethod', [
+      params,
+    ]);
   };
 }
 
@@ -451,6 +555,55 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
       [],
     );
     return res;
+  };
+}
+
+export function setShowShieldEntryModalOnce(
+  show: boolean | null,
+  shouldSubmitEvents: boolean = false,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setShowShieldEntryModalOnce', [show]);
+      dispatch(
+        setShowShieldEntryModalOnceAction({
+          show: Boolean(show),
+          shouldSubmitEvents,
+        }),
+      );
+    } catch (error) {
+      log.error('[setShowShieldEntryModalOnce] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+export function setShowShieldEntryModalOnceAction(payload: {
+  show: boolean;
+  shouldSubmitEvents: boolean;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return {
+    type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
+    payload,
+  };
+}
+
+export function setLastUsedSubscriptionPaymentDetails(
+  product: ProductType,
+  payload: CachedLastSelectedPaymentMethods,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('cacheLastSelectedPaymentMethod', [
+        product,
+        payload,
+      ]);
+    } catch (error) {
+      log.error('[setLastUsedSubscriptionPaymentDetails] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
   };
 }
 
@@ -657,23 +810,14 @@ export function createNewVaultAndRestore(
   };
 }
 
-export function importMnemonicToVault(mnemonic: string): ThunkAction<
-  Promise<{
-    newAccountAddress: string;
-    discoveredAccounts: { bitcoin: number; solana: number };
-  }>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function importMnemonicToVault(
+  mnemonic: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.importMnemonicToVault`);
 
-    return new Promise<{
-      newAccountAddress: string;
-      discoveredAccounts: { bitcoin: number; solana: number };
-    }>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'importMnemonicToVault',
         [mnemonic],
@@ -2401,6 +2545,58 @@ export function createNextMultichainAccountGroup(
 }
 
 /**
+ * Set the pinned state of an account group.
+ *
+ * @param accountGroupId - ID of an account group.
+ * @param pinned - Whether the account group should be pinned.
+ */
+export function setAccountGroupPinned(
+  accountGroupId: AccountGroupId,
+  pinned: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setAccountGroupPinned`);
+    try {
+      await submitRequestToBackground('setAccountGroupPinned', [
+        accountGroupId,
+        pinned,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
+/**
+ * Set the hidden state of an account group.
+ *
+ * @param accountGroupId - ID of an account group.
+ * @param hidden - Whether the account group should be hidden.
+ */
+export function setAccountGroupHidden(
+  accountGroupId: AccountGroupId,
+  hidden: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setAccountGroupHidden`);
+    try {
+      await submitRequestToBackground('setAccountGroupHidden', [
+        accountGroupId,
+        hidden,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
+/**
  * Set a new account group name (rename a multichain account).
  *
  * @param accountGroupId - ID of a multichain account group.
@@ -3143,6 +3339,19 @@ export function setCurrentExtensionPopupId(
   };
 }
 
+export function setBrowserEnvironment(
+  os: string,
+  _browserName: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground<void>('setBrowserEnvironment', [
+      os,
+      _browserName,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function abortTransactionSigning(
   transactionId: string,
 
@@ -3262,23 +3471,6 @@ export function createSpeedUpTransaction(
     })
       .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => newTx);
-  };
-}
-
-export function updateIncomingTransactions(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async (dispatch) => {
-    log.debug(`background.updateIncomingTransactions`);
-    try {
-      await submitRequestToBackground('updateIncomingTransactions');
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem updating incoming transactions!'));
-    }
   };
 }
 
@@ -4119,6 +4311,10 @@ export function setShowMultiRpcModal(value: boolean) {
   return setPreference('showMultiRpcModal', value);
 }
 
+export function setUseSidePanelAsDefault(value: boolean) {
+  return setPreference('useSidePanelAsDefault', value);
+}
+
 export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
@@ -4146,9 +4342,38 @@ export function setCompletedOnboarding(): ThunkAction<
   };
 }
 
+export function setCompletedOnboardingWithSidepanel(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      await submitRequestToBackground('completeOnboarding');
+      dispatch(completeOnboardingWithSidepanel());
+    } catch (err) {
+      dispatch(displayWarning(err));
+      throw err;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function completeOnboarding() {
   return {
     type: actionConstants.COMPLETE_ONBOARDING,
+  };
+}
+
+export function completeOnboardingWithSidepanel() {
+  return {
+    type: actionConstants.COMPLETE_ONBOARDING_WITH_SIDEPANEL,
   };
 }
 
@@ -4500,18 +4725,15 @@ export function fetchHistoricalPricesForAsset(
 }
 
 // TokenDetectionController
-export function detectTokens(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function detectTokens(
+  chainIds?: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.detectTokens`);
-    await submitRequestToBackground('detectTokens');
+    await submitRequestToBackground('detectTokens', [{ chainIds }]);
     dispatch(hideLoadingIndication());
     await forceUpdateMetamaskState(dispatch);
   };
@@ -5847,23 +6069,6 @@ export async function tokenRatesStopPollingByPollingToken(
 }
 
 /**
- * Starts polling on accountTrackerController with the networkClientId
- *
- * @param networkClientId - The network client ID to pull balances for.
- * @returns polling token used to stop polling
- */
-export async function accountTrackerStartPolling(
-  networkClientId: string,
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'accountTrackerStartPolling',
-    [networkClientId],
-  );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
  * Stops polling on the account tracker controller.
  *
  * @param pollingToken - polling token to use to stop polling.
@@ -6075,7 +6280,7 @@ export function fetchSmartTransactionFees(
       approveTxParams.value = '0x0';
     }
     try {
-      const smartTransactionFees = await await submitRequestToBackground(
+      const smartTransactionFees = await submitRequestToBackground(
         'fetchSmartTransactionFees',
         [unsignedTransaction, approveTxParams],
       );
@@ -7354,4 +7559,82 @@ export async function getLayer1GasFeeValue({
   return await submitRequestToBackground('getLayer1GasFee', [
     { chainId, networkClientId, transactionParams },
   ]);
+}
+
+/**
+ * Submits a shield claim.
+ *
+ * @param params - The parameters.
+ * @param params.chainId - The chain ID.
+ * @param params.email - The email.
+ * @param params.impactedWalletAddress - The impacted wallet address.
+ * @param params.impactedTransactionHash - The impacted transaction hash.
+ * @param params.reimbursementWalletAddress - The reimbursement wallet address.
+ * @param params.caseDescription - The description.
+ * @param params.files - The files.
+ * @returns The subscription response.
+ */
+export async function submitShieldClaim(params: {
+  chainId: string;
+  email: string;
+  impactedWalletAddress: string;
+  impactedTransactionHash: string;
+  reimbursementWalletAddress: string;
+  caseDescription: string;
+  files?: FileList;
+}) {
+  const baseUrl =
+    process.env.SHIELD_CLAIMS_API_URL ??
+    'https://claims.dev-api.cx.metamask.io';
+
+  const claimsUrl = `${baseUrl}/claims`;
+  const formData = new FormData();
+  formData.append('chainId', params.chainId);
+  formData.append('email', params.email);
+  formData.append('impactedWalletAddress', params.impactedWalletAddress);
+  formData.append('impactedTxHash', params.impactedTransactionHash);
+  formData.append(
+    'reimbursementWalletAddress',
+    params.reimbursementWalletAddress,
+  );
+  formData.append('description', params.caseDescription);
+  // TODO: temporary value for signature, update to correct signature after implement signature verification
+  formData.append(
+    'signature',
+    '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
+  );
+  formData.append('timestamp', Date.now().toString());
+
+  // add files to form data
+  if (params.files) {
+    Array.from(params.files).forEach((file) => {
+      formData.append('attachments', file, file.name);
+    });
+  }
+
+  const accessToken = await submitRequestToBackground<string>('getBearerToken');
+
+  try {
+    // we do the request here instead of background controllers because files are not serializable
+    const response = await fetch(claimsUrl, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      const error = (await response.json()) as SubmitClaimErrorResponse;
+      if (error?.errorCode) {
+        throw new SubmitClaimError(error.message, error);
+      }
+      throw new SubmitClaimError(ClaimSubmitToastType.Errored);
+    }
+
+    return ClaimSubmitToastType.Success;
+  } catch (error) {
+    console.error(error);
+    throw new SubmitClaimError(ClaimSubmitToastType.Errored);
+  }
 }

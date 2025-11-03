@@ -1,16 +1,21 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { KeyringController } from '@metamask/keyring-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { cloneDeep } from 'lodash';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { WALLET_PASSWORD } from '../../../test/e2e/constants';
 import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
+import { normalizeSafeAddress } from '../lib/multichain/address';
+import { getRootMessenger } from '../lib/messenger';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { withAddressBook } from './with-address-book';
 import { FIXTURES_APP_STATE } from './with-app-state';
 import { withConfirmedTransactions } from './with-confirmed-transactions';
 import { FIXTURES_ERC20_TOKENS } from './with-erc20-tokens';
-import { FIXTURES_NETWORKS } from './with-networks';
+import { ALL_POPULAR_NETWORKS, FIXTURES_NETWORKS } from './with-networks';
 import { FIXTURES_PREFERENCES } from './with-preferences';
 import { withUnreadNotifications } from './with-unread-notifications';
 
@@ -47,7 +52,9 @@ export async function generateWalletState(withState, fromTest) {
     )
     .withPreferencesController(generatePreferencesControllerState(accounts))
     .withTokensController(generateTokensControllerState(accounts[0]))
-    .withTransactionController(generateTransactionControllerState(accounts[0]));
+    .withTransactionController(generateTransactionControllerState(accounts[0]))
+    .withEnabledNetworks(ALL_POPULAR_NETWORKS)
+    .withNftController(generateNftControllerState(accounts));
 
   return fixtureBuilder;
 }
@@ -60,9 +67,10 @@ export async function generateWalletState(withState, fromTest) {
  * @returns {Promise<{vault: object, accounts: Array<string>}>} The generated vault and account.
  */
 async function generateVaultAndAccount(encodedSeedPhrase, password) {
-  const messenger = new Messenger();
-  const keyringControllerMessenger = messenger.getRestricted({
-    name: 'KeyringController',
+  const messenger = getRootMessenger();
+  const keyringControllerMessenger = new Messenger({
+    namespace: 'KeyringController',
+    parent: messenger,
   });
   const krCtrl = new KeyringController({
     encryptor: encryptorFactory(600_000),
@@ -289,13 +297,28 @@ function generatePreferencesControllerState(accounts) {
 function generateTokensControllerState(account) {
   console.log('Generating TokensController state');
 
-  const tokens = FIXTURES_ERC20_TOKENS;
   if (FIXTURES_CONFIG.withErc20Tokens) {
-    // Update `myAccount` key for the account address
-    for (const network of Object.values(tokens.allTokens)) {
-      network[account] = network.myAccount;
-      delete network.myAccount;
+    // Must cloneDeep to avoid a crash with the benchmarks and browserLoads > 1
+    const tokens = cloneDeep(FIXTURES_ERC20_TOKENS);
+
+    for (const [chainId, data] of Object.entries(tokens.allTokens)) {
+      const chainIdDec = hexToDecimal(chainId);
+
+      // Add automatic token images if missing
+      for (const token of data.myAccount) {
+        if (!token.image) {
+          token.image = `https://static.cx.metamask.io/api/v1/tokenIcons/${chainIdDec}/${token.address}.png`;
+        }
+
+        // Token addresses are only accepted in the checksum format
+        token.address = normalizeSafeAddress(token.address);
+      }
+
+      // Update `myAccount` key into the actual account address
+      data[account] = data.myAccount;
+      delete data.myAccount;
     }
+
     return tokens;
   }
   return {};
@@ -320,4 +343,76 @@ function generateTransactionControllerState(account) {
   }
 
   return transactions;
+}
+
+/**
+ * Generates the state for the NftController.
+ *
+ * @param {Array<string>} accounts - The account addresses to associate NFT data with.
+ * @returns {object} The generated NftController state.
+ */
+function generateNftControllerState(accounts) {
+  console.log('Generating NftController state');
+
+  if (FIXTURES_CONFIG.withNfts === 0) {
+    return {};
+  }
+
+  const state = { allNfts: {} };
+
+  for (const [index, accountString] of accounts.entries()) {
+    state.allNfts[accountString] = {};
+    const account = state.allNfts[accountString];
+
+    // Initialize empty arrays for ALL_POPULAR_NETWORKS
+    for (const chainId of Object.keys(ALL_POPULAR_NETWORKS.eip155)) {
+      account[chainId] = [];
+    }
+
+    const startIndex = index * FIXTURES_CONFIG.withNfts + 1;
+
+    for (let i = startIndex; i < startIndex + FIXTURES_CONFIG.withNfts; i++) {
+      // These particular NFT collections were chosen because:
+      // -- predictable image URLs
+      // -- every image is different
+      // -- reliably loaded when tested
+
+      // Pudgy Penguins on Mainnet
+      account[CHAIN_IDS.MAINNET].push({
+        address: '0xBd3531dA5CF5857e7CfAA92426877b022e612cf8',
+        tokenId: i.toString(),
+        image: `ipfs://QmNf1UsmdGaMbpatQ6toXSkzDpizaGmC9zfunCyoz1enD5/penguin/${i}.png`,
+      });
+
+      // OptiPunks on Optimism
+      account[CHAIN_IDS.OPTIMISM].push({
+        address: '0xb8df6cc3050cc02f967db1ee48330ba23276a492',
+        tokenId: i.toString(),
+        image: `ipfs://QmbAhtqQqiSQqwCwQgrRB6urGc3umTskiuVpgX7FvHhutU/${i}.png`,
+      });
+
+      // Based Kongz on Base
+      account[CHAIN_IDS.BASE].push({
+        address: '0xa7f18e5046a94c376df1c769a6ad3001f2be3a7b',
+        tokenId: i.toString(),
+        image: `ipfs://bafybeia5p5qwrmatw4efdo2khhecaopxpjm32k67vhdnihsnybiavidogq/${i}.png`,
+      });
+
+      // Snout Zoo 2025 on Polygon
+      account[CHAIN_IDS.POLYGON].push({
+        address: '0xd3a40a9810cf9eb9431c885e7a13161118d253dd',
+        tokenId: i.toString(),
+        image: `ipfs://bafybeihcba5cbsu4huts6obpenjhjnqpm43gboutnfibrjycv47pu27gky/${i}.jpeg`,
+      });
+
+      // Pancake Squad NFTs on BSC
+      account[CHAIN_IDS.BSC].push({
+        address: '0x0a8901b0e25deb55a87524f0cc164e9644020eba',
+        tokenId: i.toString(),
+        image: `ipfs://QmaYTLuEoP35NcBKLsyPMzwDpebbZWukdEkzeGV9fVcUCt/pancakesquad${i}.png`,
+      });
+    }
+  }
+
+  return state;
 }

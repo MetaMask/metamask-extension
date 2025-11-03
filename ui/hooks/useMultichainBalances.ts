@@ -5,7 +5,7 @@ import {
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
-import { SolScope } from '@metamask/keyring-api';
+import { SolScope, BtcScope } from '@metamask/keyring-api';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
 import { AssetType } from '../../shared/constants/transaction';
@@ -27,6 +27,7 @@ import { useMultichainSelector } from './useMultichainSelector';
 
 const useNonEvmAssetsWithBalances = (
   accountId?: string,
+  accountType?: InternalAccount['type'],
 ): (Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
   chainId: `${string}:${string}`;
   decimals: number;
@@ -36,6 +37,7 @@ const useNonEvmAssetsWithBalances = (
   balance: string;
   tokenFiatAmount: number;
   symbol: string;
+  accountType?: InternalAccount['type'];
 })[] => {
   // non-evm tokens owned by non-evm account, includes native and non-native assets
   const assetsByAccountId = useSelector(getAccountAssets);
@@ -74,6 +76,7 @@ const useNonEvmAssetsWithBalances = (
           decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
           image: assetMetadataById[caipAssetId]?.iconUrl ?? '',
           type: assetNamespace === 'token' ? AssetType.token : AssetType.native,
+          accountType,
           tokenFiatAmount: new BigNumber(
             balancesByAssetId[caipAssetId]?.amount ?? '1',
           )
@@ -88,6 +91,7 @@ const useNonEvmAssetsWithBalances = (
     assetsByAccountId,
     accountId,
     nonEvmBalancesByAccountId,
+    accountType,
   ]);
 
   return nonEvmTokensWithFiatBalances;
@@ -122,31 +126,50 @@ export const useMultichainBalances = (
       SolScope.Mainnet,
     ),
   );
+  const bitcoinAccount = useSelector((state) =>
+    getInternalAccountByGroupAndCaip(
+      state,
+      accountGroupIdToUse,
+      BtcScope.Mainnet,
+    ),
+  );
 
   // EVM balances
   const evmBalancesWithFiatByChainId = useSelector((state) =>
     getTokenBalancesEvm(state, evmAccount?.address),
   );
-  // Non-EVM balances
-  const nonEvmBalancesWithFiatByChainId = useNonEvmAssetsWithBalances(
-    solanaAccount?.id,
+  // Solana balances
+  const solanaBalancesWithFiat = useNonEvmAssetsWithBalances(solanaAccount?.id);
+  // Bitcoin balances
+  const bitcoinBalancesWithFiat = useNonEvmAssetsWithBalances(
+    bitcoinAccount?.id,
+    bitcoinAccount?.type,
   );
 
   // return TokenWithFiat sorted by fiat balance amount
   const assetsWithBalance = useMemo(() => {
-    return [...evmBalancesWithFiatByChainId, ...nonEvmBalancesWithFiatByChainId]
+    return [
+      ...evmBalancesWithFiatByChainId,
+      ...solanaBalancesWithFiat,
+      ...bitcoinBalancesWithFiat,
+    ]
       .map((token) => ({
         ...token,
         type: token.isNative ? AssetType.native : AssetType.token,
       }))
       .sort((a, b) => (b.tokenFiatAmount ?? 0) - (a.tokenFiatAmount ?? 0));
-  }, [evmBalancesWithFiatByChainId, nonEvmBalancesWithFiatByChainId]);
+  }, [
+    evmBalancesWithFiatByChainId,
+    solanaBalancesWithFiat,
+    bitcoinBalancesWithFiat,
+  ]);
 
   // return total fiat balances by chainId/caipChainId
   const balanceByChainId = useMemo(() => {
     return [
       ...evmBalancesWithFiatByChainId,
-      ...nonEvmBalancesWithFiatByChainId,
+      ...solanaBalancesWithFiat,
+      ...bitcoinBalancesWithFiat,
     ].reduce((acc: Record<Hex | CaipChainId, number>, tokenWithBalanceData) => {
       if (!acc[tokenWithBalanceData.chainId]) {
         acc[tokenWithBalanceData.chainId] = 0;
@@ -155,7 +178,11 @@ export const useMultichainBalances = (
         tokenWithBalanceData.tokenFiatAmount ?? 0;
       return acc;
     }, {});
-  }, [evmBalancesWithFiatByChainId, nonEvmBalancesWithFiatByChainId]);
+  }, [
+    evmBalancesWithFiatByChainId,
+    solanaBalancesWithFiat,
+    bitcoinBalancesWithFiat,
+  ]);
 
   return { assetsWithBalance, balanceByChainId };
 };

@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { By } from 'selenium-webdriver';
+import { By, Key } from 'selenium-webdriver';
 import { tEn } from '../../../../../lib/i18n-helpers';
 import { Driver } from '../../../../webdriver/driver';
 import { RawLocator } from '../../../common';
@@ -51,6 +51,9 @@ class TransactionConfirmation extends Confirmation {
   private readonly gasFeeFiatText: RawLocator =
     '[data-testid="native-currency"]';
 
+  private readonly paidByMetaMaskNotice: RawLocator =
+    '[data-testid="paid-by-meta-mask"]';
+
   private readonly gasFeeText: RawLocator = '[data-testid="first-gas-field"]';
 
   private readonly gasFeeTokenArrow: RawLocator =
@@ -79,13 +82,91 @@ class TransactionConfirmation extends Confirmation {
     text: tEn('review') as string,
   };
 
+  private readonly simulationDetailsLayout: RawLocator =
+    '[data-testid="simulation-details-layout"]';
+
+  private readonly estimatedSimulationDetails = (type: string): RawLocator => {
+    if (type === '') {
+      return this.simulationDetailsLayout;
+    }
+
+    return {
+      css: this.simulationDetailsLayout.toString(),
+      text: type,
+    };
+  };
+
+  private readonly outgoingIncomingSimulationDetails = (
+    isOutgoing: boolean,
+    index: number,
+  ): RawLocator => {
+    const listTestId = isOutgoing
+      ? 'simulation-rows-outgoing'
+      : 'simulation-rows-incoming';
+    const id = index + 1;
+    const css = `[data-testid="${listTestId}"] [data-testid="simulation-details-balance-change-row"]:nth-child(${id})`;
+    console.log(`Locator for outgoing/incoming simulation details: ${css}`);
+
+    return css;
+  };
+
+  private readonly dappNumberConnected = (dappNumber: string) =>
+    By.xpath(`//p[normalize-space(.)='${dappNumber}']`);
+
   constructor(driver: Driver) {
     super(driver);
     this.driver = driver;
   }
 
-  private readonly dappNumberConnected = (dappNumber: string) =>
-    By.xpath(`//p[normalize-space(.)='${dappNumber}']`);
+  async expectBalanceChange({
+    isOutgoing,
+    index,
+    displayAmount,
+    assetName,
+  }: {
+    isOutgoing: boolean;
+    index: number;
+    displayAmount: string;
+    assetName: string;
+  }) {
+    console.log(
+      `Checking balance change ${isOutgoing} ${index} with text ${displayAmount} ${assetName} is displayed on transaction confirmation page.`,
+    );
+    const css = this.outgoingIncomingSimulationDetails(isOutgoing, index);
+
+    console.log(
+      `Checking balance change ${css.toString()} with text ${displayAmount} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.findElement({
+      css,
+      text: displayAmount,
+    });
+
+    console.log(
+      `Checking balance change ${css.toString()} with text ${assetName}  is displayed on transaction confirmation page.`,
+    );
+    await this.driver.findElement({
+      css,
+      text: assetName,
+    });
+  }
+
+  async checkEstimatedSimulationDetails(type: string) {
+    console.log(
+      `Checking estimated simulation details ${type} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector(this.estimatedSimulationDetails(type));
+  }
+
+  async checkEstimatedSimulationDetailsNotDisplayed(waitAtLeastGuard: number) {
+    console.log(
+      `Checking estimated simulation details not displayed on transaction confirmation page.`,
+    );
+    await this.driver.assertElementNotPresent(
+      this.estimatedSimulationDetails(''),
+      { waitAtLeastGuard },
+    );
+  }
 
   /**
    * Checks if the alert message is displayed on the transaction confirmation page.
@@ -134,6 +215,13 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  async checkPaidByMetaMask() {
+    await this.driver.findElement({
+      css: this.paidByMetaMaskNotice,
+      text: tEn('paidByMetaMask') as string,
+    });
+  }
+
   /**
    * Checks if the sender account is displayed in the transaction confirmation page.
    *
@@ -143,13 +231,18 @@ class TransactionConfirmation extends Confirmation {
     console.log(
       `Checking sender account ${account} on transaction confirmation page.`,
     );
-    return await this.driver.isElementPresentAndVisible(
-      {
+    try {
+      await this.driver.waitForSelector({
         css: this.senderAccount,
         text: account,
-      },
-      2000,
-    );
+      });
+      return true;
+    } catch (err) {
+      console.log(
+        `Sender account ${account} is not displayed on transaction confirmation page.`,
+      );
+      return false;
+    }
   }
 
   /**
@@ -195,7 +288,11 @@ class TransactionConfirmation extends Confirmation {
   }
 
   async clickAdvancedDetailsButton() {
-    await this.driver.clickElement(this.advancedDetailsButton);
+    // Instead of clicking the button, we use sendKeys to avoid flakiness when a tooltip appears overlaying the button
+    const advancedDetailsButton = await this.driver.findElement(
+      this.advancedDetailsButton,
+    );
+    await advancedDetailsButton.sendKeys(Key.ENTER);
   }
 
   async clickCustomNonceButton() {
@@ -212,7 +309,7 @@ class TransactionConfirmation extends Confirmation {
 
   async closeGasFeeToastMessage() {
     // the toast message automatically disappears after some seconds, so we need to use clickElementSafe to prevent race conditions
-    await this.driver.clickElementSafe(this.gasFeeCloseToastMessage, 5000);
+    await this.driver.clickElementSafe(this.gasFeeCloseToastMessage, 10000);
   }
 
   /**
@@ -264,76 +361,37 @@ class TransactionConfirmation extends Confirmation {
     await this.clickSaveButton();
   }
 
-  async verifyAdvancedDetailsHexDataIsDisplayed() {
-    const advancedDetailsSection = await this.driver.findElement(
-      this.advancedDetailsSection,
-    );
-
-    await advancedDetailsSection.isDisplayed();
-    await advancedDetailsSection
-      .findElement({ css: this.advancedDetailsHexData.toString() })
-      .isDisplayed();
-
-    const hexDataInfo = (
-      await this.driver.findElement(this.advancedDetailsHexData)
-    ).getText();
-
-    assert.ok(
-      (await hexDataInfo).includes(
-        '0x3b4b13810000000000000000000000000000000000000000000000000000000000000001',
-      ),
-      'Expected hex data to be displayed',
-    );
+  async verifyAdvancedDetailsHexDataIsDisplayed(hexData: string) {
+    await this.driver.waitForSelector({
+      css: this.advancedDetailsHexData,
+      text: hexData,
+    });
   }
 
   async verifyAdvancedDetailsIsDisplayed(type: string) {
-    const advancedDetailsSection = await this.driver.findElement(
-      this.advancedDetailsSection,
-    );
+    await this.driver.waitForSelector(this.advancedDetailsSection);
 
-    await advancedDetailsSection.isDisplayed();
-    await advancedDetailsSection
-      .findElement({ css: this.advancedDetailsDataFunction.toString() })
-      .isDisplayed();
-    await advancedDetailsSection
-      .findElement({ css: this.advancedDetailsDataParam.toString() })
-      .isDisplayed();
-
-    const functionInfo = await this.driver.findElement(
-      this.advancedDetailsDataFunction,
-    );
-    const functionText = await functionInfo.getText();
-
-    assert.ok(
-      functionText.includes('Function'),
-      'Expected key "Function" to be included in the function text',
-    );
-    assert.ok(
-      functionText.includes('mintNFTs'),
-      'Expected "mintNFTs" to be included in the function text',
-    );
-
-    const paramsInfo = await this.driver.findElement(
-      this.advancedDetailsDataParam,
-    );
-    const paramsText = await paramsInfo.getText();
+    await this.driver.waitForSelector({
+      css: this.advancedDetailsDataFunction,
+      text: 'mintNFTs',
+    });
 
     if (type === '4Bytes') {
-      assert.ok(
-        paramsText.includes('Param #1'),
-        'Expected "Param #1" to be included in the param text',
-      );
+      await this.driver.waitForSelector({
+        css: this.advancedDetailsDataParam,
+        text: 'Param #1',
+      });
     } else if (type === 'Sourcify') {
-      assert.ok(
-        paramsText.includes('Number Of Tokens'),
-        'Expected "Number Of Tokens" to be included in the param text',
-      );
+      await this.driver.waitForSelector({
+        css: this.advancedDetailsDataParam,
+        text: 'Number Of Tokens',
+      });
     }
 
-    assert.ok(
-      paramsText.includes('1'),
-      'Expected "1" to be included in the param value',
-    );
+    await this.driver.waitForSelector({
+      css: this.advancedDetailsDataParam,
+      text: '1',
+    });
   }
 
   async verifyUniswapDecodedTransactionAdvancedDetails() {

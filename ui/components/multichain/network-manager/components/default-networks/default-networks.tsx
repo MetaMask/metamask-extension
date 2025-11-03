@@ -54,7 +54,6 @@ import {
   getSelectedInternalAccount,
 } from '../../../../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
-import { isFlask } from '../../../../../helpers/utils/build-types';
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
@@ -97,11 +96,11 @@ const DefaultNetworks = memo(() => {
 
   let btcAccountGroup = null;
 
-  if (isFlask()) {
-    btcAccountGroup = useSelector((state) =>
-      getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
-    );
-  }
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  btcAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
+  );
+  ///: END:ONLY_INCLUDE_IF
 
   // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
@@ -187,11 +186,7 @@ const DefaultNetworks = memo(() => {
           if (solAccountGroup && network.chainId === SolScope.Mainnet) {
             return true;
           }
-          if (
-            btcAccountGroup &&
-            isFlask() &&
-            network.chainId === BtcScope.Mainnet
-          ) {
+          if (btcAccountGroup && network.chainId === BtcScope.Mainnet) {
             return true;
           }
           return false;

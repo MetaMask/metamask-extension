@@ -19,13 +19,11 @@ export const constructInputProps = (props: InputElement['props']) => {
 
       return {
         type,
+        step,
+        min,
+        max,
         textFieldProps: {
-          type,
-          inputProps: {
-            step: step?.toString(),
-            min: min?.toString(),
-            max: max?.toString(),
-          },
+          type: 'text',
         },
       };
     }

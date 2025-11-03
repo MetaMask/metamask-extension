@@ -14,6 +14,9 @@ import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  ///: END:ONLY_INCLUDE_IF
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_BRAVE,
   PLATFORM_CHROME,
@@ -38,6 +41,11 @@ const getEnvironmentTypeMemo = memoize((url) => {
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION;
   }
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  else if (parsedUrl.pathname === '/sidepanel.html') {
+    return ENVIRONMENT_TYPE_SIDEPANEL;
+  }
+  ///: END:ONLY_INCLUDE_IF
   return ENVIRONMENT_TYPE_BACKGROUND;
 });
 
@@ -239,6 +247,10 @@ export function getValidUrl(urlString: string): URL | null {
   } catch (error) {
     return null;
   }
+}
+
+export function isValidEmail(email: string): boolean {
+  return email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/iu) !== null;
 }
 
 export function isWebUrl(urlString: string): boolean {

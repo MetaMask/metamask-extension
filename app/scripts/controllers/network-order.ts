@@ -1,9 +1,6 @@
 import { BtcScope, SolScope } from '@metamask/keyring-api';
-import {
-  BaseController,
-  RestrictedMessenger,
-  StateMetadata,
-} from '@metamask/base-controller';
+import { BaseController, StateMetadata } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerSetActiveNetworkAction,
   NetworkControllerStateChangeEvent,
@@ -14,6 +11,10 @@ import {
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { CaipChainId, CaipNamespace, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
+import type {
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+} from '@metamask/base-controller';
 import { TEST_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
@@ -50,9 +51,15 @@ export type NetworkOrderControllerUpdateNetworksListAction = {
 
 // Union of all possible actions for the messenger
 export type NetworkOrderControllerMessengerActions =
-  NetworkOrderControllerUpdateNetworksListAction;
+  | ControllerGetStateAction<typeof controllerName, NetworkOrderControllerState>
+  | NetworkOrderControllerUpdateNetworksListAction;
 
-export type NetworkOrderControllerMessengerEvents = NetworkOrderStateChange;
+export type NetworkOrderControllerMessengerEvents =
+  | ControllerStateChangeEvent<
+      typeof controllerName,
+      NetworkOrderControllerState
+    >
+  | NetworkOrderStateChange;
 
 type AllowedActions =
   | NetworkControllerGetStateAction
@@ -63,12 +70,10 @@ type AllowedEvents =
   | NetworkControllerNetworkRemovedEvent;
 
 // Type for the messenger of NetworkOrderController
-export type NetworkOrderControllerMessenger = RestrictedMessenger<
+export type NetworkOrderControllerMessenger = Messenger<
   typeof controllerName,
   NetworkOrderControllerMessengerActions | AllowedActions,
-  NetworkOrderControllerMessengerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  NetworkOrderControllerMessengerEvents | AllowedEvents
 >;
 
 // Default state for the controller
@@ -81,7 +86,7 @@ const metadata: StateMetadata<NetworkOrderControllerState> = {
   orderedNetworkList: {
     includeInStateLogs: false,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
 };
@@ -119,7 +124,7 @@ export class NetworkOrderController extends BaseController<
     });
 
     // Subscribe to network state changes
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'NetworkController:stateChange',
       (networkControllerState) => {
         this.onNetworkControllerStateChange(networkControllerState);
