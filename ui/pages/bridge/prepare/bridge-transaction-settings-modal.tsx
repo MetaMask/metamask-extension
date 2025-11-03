@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '@metamask/bridge-controller';
 import {
   Button,
   ButtonSize,
@@ -30,9 +29,13 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getIsSolanaSwap, getSlippage } from '../../../ducks/bridge/selectors';
 import { setSlippage } from '../../../ducks/bridge/actions';
+import { SlippageValue } from '../utils/slippage-service';
 import { Column, Row, Tooltip } from '../layout';
 
-const HARDCODED_SLIPPAGE_OPTIONS = [BRIDGE_DEFAULT_SLIPPAGE, 2];
+const HARDCODED_SLIPPAGE_OPTIONS = [
+  SlippageValue.EvmStablecoin,
+  SlippageValue.BridgeDefault,
+];
 
 export const BridgeTransactionSettingsModal = ({
   onClose,
@@ -69,7 +72,7 @@ export const BridgeTransactionSettingsModal = ({
         if (!slippage || slippage === 0) {
           // Default to first option if no slippage set, null, or 0
           // This handles undefined, null, 0, and other falsy values
-          setLocalSlippage(BRIDGE_DEFAULT_SLIPPAGE);
+          setLocalSlippage(SlippageValue.BridgeDefault);
           setCustomSlippage(undefined);
         } else if (HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)) {
           setLocalSlippage(slippage);
