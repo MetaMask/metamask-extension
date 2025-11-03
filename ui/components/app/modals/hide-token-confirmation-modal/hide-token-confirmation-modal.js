@@ -12,10 +12,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../../../shared/modules/selectors/networks';
@@ -119,15 +115,6 @@ class HideTokenConfirmationModal extends Component {
             block
             data-testid="hide-token-confirmation__hide"
             onClick={() => {
-              this.context.trackEvent({
-                event: MetaMetricsEventName.TokenRemoved,
-                category: MetaMetricsEventCategory.Tokens,
-                sensitiveProperties: {
-                  chain_id: chainId,
-                  token_contract_address: address,
-                  token_symbol: symbol,
-                },
-              });
               hideToken(address, networkInstanceId);
               history.push(DEFAULT_ROUTE);
             }}

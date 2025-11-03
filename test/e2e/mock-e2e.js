@@ -152,7 +152,6 @@ async function setupMocking(
 ) {
   let numNetworkReqs = 0;
   const privacyReport = new Set();
-
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: ({ headers: { host }, url }) => {
       if (blocklistedHosts.includes(host)) {
