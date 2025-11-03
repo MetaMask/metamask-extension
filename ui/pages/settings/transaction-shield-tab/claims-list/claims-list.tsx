@@ -22,50 +22,75 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
-import { CLAIM_STATUS, ClaimStatus } from '../types';
+import { CLAIM_STATUS, ClaimStatus, ShieldClaim } from '../types';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
+
+const CLAIM_STATUS_MAP: Record<
+  ClaimStatus,
+  { label: string; backgroundColor: BackgroundColor; textColor: TextColor }
+> = {
+  [CLAIM_STATUS.CREATED]: {
+    label: 'shieldClaimStatusCreated',
+    backgroundColor: BackgroundColor.warningMuted,
+    textColor: TextColor.warningDefault,
+  },
+  [CLAIM_STATUS.SUBMITTED]: {
+    label: 'shieldClaimStatusSubmitted',
+    backgroundColor: BackgroundColor.warningMuted,
+    textColor: TextColor.warningDefault,
+  },
+  [CLAIM_STATUS.IN_PROGRESS]: {
+    label: 'shieldClaimStatusInProgress',
+    backgroundColor: BackgroundColor.warningMuted,
+    textColor: TextColor.warningDefault,
+  },
+  [CLAIM_STATUS.WAITING_FOR_CUSTOMER]: {
+    label: 'shieldClaimStatusWaitingForCustomer',
+    backgroundColor: BackgroundColor.warningMuted,
+    textColor: TextColor.warningDefault,
+  },
+  [CLAIM_STATUS.APPROVED]: {
+    label: 'shieldClaimStatusApproved',
+    backgroundColor: BackgroundColor.successMuted,
+    textColor: TextColor.successDefault,
+  },
+  [CLAIM_STATUS.REJECTED]: {
+    label: 'shieldClaimStatusRejected',
+    backgroundColor: BackgroundColor.errorMuted,
+    textColor: TextColor.errorDefault,
+  },
+};
 
 const ClaimsList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { pendingClaims, historyClaims, isLoading } = useClaims();
 
-  const claimItem = (claimId: string, status?: ClaimStatus) => {
+  const claimItem = (claim: ShieldClaim) => {
     return (
       <Box
         asChild
-        key={claimId}
-        data-testid={`claim-item-${claimId}`}
+        key={claim.id}
+        data-testid={`claim-item-${claim.id}`}
         backgroundColor={BoxBackgroundColor.BackgroundSection}
         className="claim-item flex items-center justify-between w-full p-4 rounded-lg"
         onClick={() => {
-          navigate(`${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL}/${claimId}`);
+          navigate(`${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL}/${claim.id}`);
         }}
       >
         <button>
           <Box className="flex items-center gap-2">
             <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Left}>
-              Claim #{claimId}
+              Claim #{claim.claimNumber}
             </Text>
-            {status && (
+            {claim.status && (
               <Tag
                 borderStyle={BorderStyle.none}
                 borderRadius={BorderRadius.SM}
-                label={
-                  status === CLAIM_STATUS.COMPLETED
-                    ? t('completed')
-                    : t('rejected')
-                }
-                backgroundColor={
-                  status === CLAIM_STATUS.COMPLETED
-                    ? BackgroundColor.successMuted
-                    : BackgroundColor.errorMuted
-                }
+                label={t(CLAIM_STATUS_MAP[claim.status].label)}
+                backgroundColor={CLAIM_STATUS_MAP[claim.status].backgroundColor}
                 labelProps={{
-                  color:
-                    status === CLAIM_STATUS.COMPLETED
-                      ? TextColor.successDefault
-                      : TextColor.errorDefault,
+                  color: CLAIM_STATUS_MAP[claim.status]?.textColor,
                 }}
               />
             )}
@@ -101,7 +126,7 @@ const ClaimsList = () => {
             {t('shieldClaimsPendingTitle')}
           </Text>
           <Box className="flex flex-col gap-2">
-            {pendingClaims.map((claim) => claimItem(claim.id, claim.status))}
+            {pendingClaims.map((claim) => claimItem(claim))}
           </Box>
         </Box>
       )}
@@ -115,7 +140,7 @@ const ClaimsList = () => {
             {t('shieldClaimsHistoryTitle')}
           </Text>
           <Box className="flex flex-col gap-2">
-            {historyClaims.map((claim) => claimItem(claim.id, claim.status))}
+            {historyClaims.map((claim) => claimItem(claim))}
           </Box>
         </Box>
       )}

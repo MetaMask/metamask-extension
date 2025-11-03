@@ -22,6 +22,7 @@ import {
 } from '@metamask/design-system-react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
 import {
@@ -400,7 +401,17 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       )}
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
         {isView
-          ? t('shieldClaimDetailsViewClaims')
+          ? t('shieldClaimDetailsViewClaims', [
+              <TextButton key="here-link" className="min-w-0" asChild>
+                <a
+                  href={TRANSACTION_SHIELD_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('here')}
+                </a>
+              </TextButton>,
+            ])
           : t('shieldClaimDetails', [
               VALID_SUBMISSION_WINDOW_DAYS,
               <TextButton key="here-link" className="min-w-0" asChild>
@@ -518,6 +529,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
             validateReimbursementEqualsImpactedWalletAddress(address);
           }
         }}
+        disabled={isView}
       />
       {/* Custom network selector: existing ones are either embedded in containers or too feature-rich for this use case. */}
       <NetworkSelector
@@ -527,6 +539,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         onNetworkSelect={(selectedChainId) => {
           setChainId(selectedChainId);
         }}
+        disabled={isView}
       />
       <FormTextField
         label={`${t('shieldClaimImpactedTxHash')}*`}
@@ -571,9 +584,16 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         error={Boolean(errors.impactedTxHash)}
         required
         width={BlockSize.Full}
+        disabled={isView}
       />
-      <Box gap={2}>
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+      <Box className="flex flex-col gap-1">
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          className={classnames({
+            'opacity-50': isView,
+          })}
+        >
           {`${t('shieldClaimDescription')}*`}
         </Text>
         <Textarea

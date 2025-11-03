@@ -31,11 +31,13 @@ const AccountSelector = ({
   modalTitle,
   onAccountSelect,
   impactedWalletAddress,
+  disabled = false,
 }: {
   label: string;
   modalTitle: string;
   onAccountSelect: (address: string) => void;
   impactedWalletAddress: string;
+  disabled?: boolean;
 }) => {
   const [showAccountListMenu, setShowAccountListMenu] = useState(false);
 
@@ -98,7 +100,9 @@ const AccountSelector = ({
       <Text
         variant={TextVariant.BodyMd}
         fontWeight={FontWeight.Medium}
-        className="mb-2"
+        className={classnames('mb-2', {
+          'opacity-50': disabled,
+        })}
       >
         {label}
       </Text>
@@ -109,7 +113,7 @@ const AccountSelector = ({
         onClick={() => setShowAccountListMenu(true)}
         aria-label={modalTitle}
       >
-        <button>
+        <button disabled={disabled}>
           {selectedAccountInfo ? (
             <>
               <PreferredAvatar

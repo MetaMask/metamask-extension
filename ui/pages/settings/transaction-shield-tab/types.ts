@@ -19,9 +19,12 @@ export function isCardPaymentMethod(
 }
 
 export const CLAIM_STATUS = {
-  COMPLETED: 'completed',
+  CREATED: 'created',
+  SUBMITTED: 'submitted',
+  IN_PROGRESS: 'in_progress',
+  WAITING_FOR_CUSTOMER: 'waiting_for_customer',
+  APPROVED: 'approved',
   REJECTED: 'rejected',
-  PENDING: 'pending',
 } as const;
 
 export type ClaimStatus = (typeof CLAIM_STATUS)[keyof typeof CLAIM_STATUS];
@@ -47,7 +50,9 @@ export type ShieldClaim = {
   description: string;
   attachments: ShieldClaimAttachment[];
   intercomId: string;
-  status?: ClaimStatus;
+  status: ClaimStatus;
+  // generated label for the claim
+  claimNumber: number;
 };
 
 export const SUBMIT_CLAIM_FIELDS = {

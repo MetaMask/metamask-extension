@@ -9,6 +9,7 @@ import React, {
 import {
   ShieldClaim,
   CLAIM_STATUS,
+  ClaimStatus,
 } from '../../pages/settings/transaction-shield-tab/types';
 import { getShieldClaims } from '../../store/actions';
 
@@ -27,6 +28,13 @@ type ClaimsProviderProps = {
   children: ReactNode;
 };
 
+const PENDING_CLAIM_STATUSES = [
+  CLAIM_STATUS.CREATED,
+  CLAIM_STATUS.SUBMITTED,
+  CLAIM_STATUS.IN_PROGRESS,
+  CLAIM_STATUS.WAITING_FOR_CUSTOMER,
+] as ClaimStatus[];
+
 export const ClaimsProvider: React.FC<ClaimsProviderProps> = ({ children }) => {
   const [claims, setClaims] = useState<ShieldClaim[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,7 +45,22 @@ export const ClaimsProvider: React.FC<ClaimsProviderProps> = ({ children }) => {
       setIsLoading(true);
       setError(null);
       const claimsData = await getShieldClaims();
-      setClaims(claimsData);
+      // sort claims by createdAt descending
+      const sortedClaims = claimsData.reduce(
+        (acc: ShieldClaim[], claim: ShieldClaim, index: number) => {
+          acc.push({
+            ...claim,
+            // used for displaying list of claims
+            claimNumber: index + 1,
+            // change chainId from number to hex
+            chainId: `0x${Number(claim.chainId).toString(16)}`,
+          });
+          return acc;
+        },
+        [] as ShieldClaim[],
+      );
+      console.log('check: sortedClaims', sortedClaims);
+      setClaims(sortedClaims);
     } catch (err) {
       setError(err as Error);
     } finally {
@@ -50,11 +73,15 @@ export const ClaimsProvider: React.FC<ClaimsProviderProps> = ({ children }) => {
   }, []);
 
   const pendingClaims = useMemo(() => {
-    return claims.filter((claim) => claim.status === CLAIM_STATUS.PENDING);
+    return claims.filter((claim) =>
+      PENDING_CLAIM_STATUSES.includes(claim.status),
+    );
   }, [claims]);
 
   const historyClaims = useMemo(() => {
-    return claims.filter((claim) => claim.status !== CLAIM_STATUS.PENDING);
+    return claims.filter(
+      (claim) => !PENDING_CLAIM_STATUSES.includes(claim.status),
+    );
   }, [claims]);
 
   const value = useMemo(

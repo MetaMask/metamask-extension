@@ -27,6 +27,7 @@ export const useClaimState = (isView: boolean = false) => {
       const claimDetails = claims.find((claim) => claim.id === claimId);
       if (claimDetails) {
         setEmail(claimDetails.email);
+        setChainId(claimDetails.chainId);
         setImpactedWalletAddress(claimDetails.impactedWalletAddress);
         setImpactedTransactionHash(claimDetails.impactedTxHash);
         setReimbursementWalletAddress(claimDetails.reimbursementWalletAddress);
@@ -34,7 +35,18 @@ export const useClaimState = (isView: boolean = false) => {
         setUploadedFiles(claimDetails.attachments);
       }
     }
-  }, [isView, claimId, claims]);
+  }, [
+    isView,
+    claimId,
+    claims,
+    setChainId,
+    setEmail,
+    setImpactedWalletAddress,
+    setImpactedTransactionHash,
+    setReimbursementWalletAddress,
+    setCaseDescription,
+    setUploadedFiles,
+  ]);
 
   return {
     chainId,
