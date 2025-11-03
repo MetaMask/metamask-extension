@@ -149,8 +149,13 @@ class SitePermissionPage {
    */
   async checkConnectedAccountsNumber(number: number): Promise<void> {
     console.log(`Check that the number of connected accounts is: ${number}`);
+    const text =
+      number === 1
+        ? `Connected with Account 1`
+        : `${number} accounts connected`;
+
     await this.driver.waitForSelector({
-      text: `${number} accounts connected`,
+      text,
       tag: 'span',
     });
   }
