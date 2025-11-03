@@ -2871,8 +2871,6 @@ export default class MetamaskController extends EventEmitter {
         onboardingController.completeOnboarding.bind(onboardingController),
       setFirstTimeFlowType:
         onboardingController.setFirstTimeFlowType.bind(onboardingController),
-      resetOnboarding:
-        onboardingController.resetOnboarding.bind(onboardingController),
 
       // alert controller
       setAlertEnabledness:
@@ -3410,15 +3408,7 @@ export default class MetamaskController extends EventEmitter {
     // reset onboarding state
     this.onboardingController.resetOnboarding();
 
-    // clear metametrics state
-    this.metaMetricsController.resetState();
-
     this.appStateController.setIsWalletResetInProgress(true);
-
-    // reset preferences state
-    this.preferencesController.resetState();
-
-    this.currencyRateController.setCurrentCurrency('usd');
   }
 
   async exportAccount(address, password) {
@@ -3862,9 +3852,7 @@ export default class MetamaskController extends EventEmitter {
           isPasswordSynced = true;
         })
         .catch((err) => {
-          log.error(
-            `error while submitting global password: ${err.message} , isKeyringPasswordValid: ${isKeyringPasswordValid}`,
-          );
+          log.error(`error while submitting global password: ${err.message}`);
           if (err instanceof RecoveryError) {
             // Keyring controller password verification succeeds and seedless controller failed.
             if (
@@ -4197,29 +4185,28 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      const isResettingWallet =
-        this.appStateController.getIsWalletResetInProgress();
+      const { completedOnboarding } = this.onboardingController.state;
 
-      if (isResettingWallet) {
-        // try reset the state first if it's resetting wallet
+      // clear permissions
+      this.permissionController.clearState();
 
-        // clear permissions
-        this.permissionController.clearState();
+      // Clear snap state
+      await this.snapController.clearState();
 
-        // Clear snap state
-        await this.snapController.clearState();
+      // Clear account tree state
+      this.accountTreeController.clearState();
 
-        // Clear account tree state
-        this.accountTreeController.clearState();
+      // Currently, the account-order-controller is not in sync with
+      // the accounts-controller. To properly persist the hidden state
+      // of accounts, we should add a new flag to the account struct
+      // to indicate if it is hidden or not.
+      // TODO: Update @metamask/accounts-controller to support this.
+      this.accountOrderController.updateHiddenAccountsList([]);
 
-        // Currently, the account-order-controller is not in sync with
-        // the accounts-controller. To properly persist the hidden state
-        // of accounts, we should add a new flag to the account struct
-        // to indicate if it is hidden or not.
-        // TODO: Update @metamask/accounts-controller to support this.
-        this.accountOrderController.updateHiddenAccountsList([]);
+      this.txController.clearUnapprovedTransactions();
 
-        this.txController.clearUnapprovedTransactions();
+      if (completedOnboarding) {
+        this.tokenDetectionController.enable();
       }
 
       await this.keyringController.createNewVaultAndKeychain(password);
@@ -4674,9 +4661,6 @@ export default class MetamaskController extends EventEmitter {
           await this.syncKeyringEncryptionKey();
         }
       }
-    } catch (error) {
-      log.error('Error creating new vault and restoring', error);
-      throw error;
     } finally {
       releaseLock();
     }

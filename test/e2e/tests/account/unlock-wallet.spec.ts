@@ -55,10 +55,6 @@ describe('Unlock wallet - ', function () {
             userEmail: MOCK_GOOGLE_ACCOUNT,
           });
         },
-        ignoredConsoleErrors: [
-          '#snapSignMessage - unable to proceed, wallet is locked',
-          'unable to proceed, wallet is locked',
-        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await importWalletWithSocialLoginOnboardingFlow({
