@@ -143,6 +143,9 @@ class AssetListPage {
 
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
 
+  private readonly tokenName =
+    '[data-testid="multichain-token-list-item-token-name"]';
+
   private readonly tokenIncreaseDecreaseValue =
     '[data-testid="token-increase-decrease-value"]';
 
@@ -181,15 +184,11 @@ class AssetListPage {
   }
 
   async clickOnAsset(assetName: string): Promise<void> {
-    const buttons = await this.driver.findElements(this.tokenListItem);
-    for (const button of buttons) {
-      const text = await button.getText();
-      if (text.includes(assetName)) {
-        await button.click();
-        return;
-      }
-    }
-    throw new Error(`${assetName} button not found`);
+    console.log(`Clicking on the token name `);
+    await this.driver.clickElement({
+      css: this.tokenName,
+      text: assetName,
+    });
   }
 
   async clickSendButton(): Promise<void> {
