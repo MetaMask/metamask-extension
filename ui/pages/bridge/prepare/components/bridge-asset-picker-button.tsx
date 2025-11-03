@@ -4,38 +4,42 @@ import {
   SelectButtonSize,
 } from '../../../../components/component-library/select-button/select-button.types';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  BadgeWrapper,
-  IconName,
-  SelectButton,
-  Text,
-} from '../../../../components/component-library';
-import {
   AlignItems,
   BackgroundColor,
   BorderColor,
   BorderRadius,
   Display,
   OverflowWrap,
-  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetPicker } from '../../../../components/multichain/asset-picker-amount/asset-picker';
 import { getNftImage } from '../../../../helpers/utils/nfts';
+import { BridgeToken } from '../../../../ducks/bridge/types';
+import { getImageForChainId } from '../../../../selectors/multichain';
+import {
+  formatChainIdToCaip,
+  formatChainIdToHex,
+  isNonEvmChainId,
+} from '@metamask/bridge-controller';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  BadgeWrapper,
+  IconName,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { SelectButton } from '../../../../components/component-library';
 
 export const BridgeAssetPickerButton = ({
   asset,
-  networkProps,
-  networkImageSrc,
+  network,
   ...props
 }: {
-  networkImageSrc?: string;
-} & SelectButtonProps<'div'> &
-  Pick<React.ComponentProps<typeof AssetPicker>, 'asset' | 'networkProps'>) => {
-  const t = useI18nContext();
-
+  asset: BridgeToken;
+  network: MultichainNetworkConfiguration;
+} & SelectButtonProps<'div'>) => {
   return (
     <SelectButton
       borderRadius={BorderRadius.pill}
@@ -51,28 +55,32 @@ export const BridgeAssetPickerButton = ({
       size={SelectButtonSize.Lg}
       alignItems={AlignItems.center}
       descriptionProps={{
-        variant: TextVariant.bodyMd,
+        // variant: TextVariant.BodyMd,
         overflowWrap: OverflowWrap.BreakWord,
         ellipsis: false,
       }}
       caretIconProps={{
-        name: IconName.Arrow2Down,
+        // name: IconName.Arrow2Down,
+        name: '',
         style: { display: Display.None },
       }}
       label={
-        <Text variant={TextVariant.bodyLgMedium} ellipsis>
-          {asset?.symbol ?? t('bridgeTo')}
-        </Text>
+        // <Text variant={TextVariant.BodyLgMedium} ellipsis>
+        asset.symbol // </Text>
       }
       startAccessory={
         asset ? (
           <BadgeWrapper
-            marginRight={2}
+            // marginRight={2}
             badge={
               asset ? (
                 <AvatarNetwork
-                  name={networkProps?.network?.name ?? ''}
-                  src={networkImageSrc}
+                  name={network?.name ?? ''}
+                  src={getImageForChainId(
+                    isNonEvmChainId(asset.chainId)
+                      ? formatChainIdToCaip(asset.chainId)
+                      : formatChainIdToHex(asset.chainId),
+                  )}
                   size={AvatarNetworkSize.Xs}
                 />
               ) : undefined
@@ -82,8 +90,8 @@ export const BridgeAssetPickerButton = ({
               <AvatarToken
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                src={getNftImage(asset.image) || undefined}
-                backgroundColor={BackgroundColor.backgroundHover}
+                src={asset.image}
+                // backgroundColor={BackgroundColor.backgroundHover}
                 name={asset.symbol}
               />
             ) : undefined}

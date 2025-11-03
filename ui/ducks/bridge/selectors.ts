@@ -1,4 +1,5 @@
 import type {
+  AddNetworkFields,
   NetworkConfiguration,
   NetworkState,
 } from '@metamask/network-controller';
@@ -43,7 +44,10 @@ import type {
   TokenRatesControllerState,
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
-import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
+import type {
+  MultichainNetworkConfiguration,
+  MultichainNetworkControllerState,
+} from '@metamask/multichain-network-controller';
 import {
   type AccountGroupObject,
   type AccountTreeControllerState,
@@ -57,13 +61,17 @@ import {
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
 } from '../../selectors/selectors';
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import {
+  ALL_ALLOWED_BRIDGE_CHAIN_IDS,
+  ALLOWED_BRIDGE_CHAIN_IDS,
+} from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getMultichainBalances,
   getMultichainCoinRates,
+  getMultichainNetworkConfigurationsByChainId,
   getMultichainProviderConfig,
 } from '../../selectors/multichain';
 import { getAssetsRates } from '../../selectors/assets';
@@ -167,44 +175,37 @@ const hasBitcoinAccounts = (state: BridgeAppState) => {
   });
 };
 
-// only includes networks user has added
-export const getAllBridgeableNetworks = createDeepEqualSelector(
-  getNetworkConfigurationsByChainId,
-  (networkConfigurationsByChainId) => {
-    return uniqBy(
-      [
-        ...Object.values(networkConfigurationsByChainId),
-        // TODO: get this from network controller, use placeholder values for now
-        {
-          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
-          blockExplorerUrls: [],
-          name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname,
-          nativeCurrency:
-            MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].ticker,
-          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
-          defaultRpcEndpointIndex: 0,
-          chainId: MultichainNetworks.SOLANA,
-        } as unknown as NetworkConfiguration,
-        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
-        // TODO: get this from network controller, use placeholder values for now
-        {
-          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
-          blockExplorerUrls: [],
-          name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN]
-            .nickname,
-          nativeCurrency:
-            MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN].ticker,
-          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
-          defaultRpcEndpointIndex: 0,
-          chainId: MultichainNetworks.BITCOIN,
-        } as unknown as NetworkConfiguration,
-        ///: END:ONLY_INCLUDE_IF
-      ],
-      'chainId',
-    ).filter(({ chainId }) =>
-      ALLOWED_BRIDGE_CHAIN_IDS.includes(
-        chainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
-      ),
+export const getAllBridgeableNetworks = createSelector(
+  [
+    (state: BridgeAppState) =>
+      state.metamask.multichainNetworkConfigurationsByChainId,
+    (state: BridgeAppState) => state.metamask.networkConfigurationsByChainId,
+  ],
+  (
+    multichainNetworkConfigurationsByChainId,
+    networkConfigurationsByChainId,
+  ): Record<CaipChainId, MultichainNetworkConfiguration> => {
+    return Object.fromEntries(
+      uniqBy(
+        [
+          ...Object.values(networkConfigurationsByChainId).map((network) => ({
+            ...network,
+            isEvm: true as const,
+            defaultBlockExplorerUrlIndex:
+              network.defaultBlockExplorerUrlIndex ?? 0,
+          })),
+          multichainNetworkConfigurationsByChainId[MultichainNetworks.SOLANA],
+          ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
+          multichainNetworkConfigurationsByChainId[MultichainNetworks.BITCOIN],
+          ///: END:ONLY_INCLUDE_IF
+        ],
+        'chainId',
+      )
+        .filter(({ chainId }) => ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId))
+        .map((network) => [
+          formatChainIdToCaip(network.chainId),
+          { ...network, chainId: formatChainIdToCaip(network.chainId) },
+        ]),
     );
   },
 );
@@ -224,34 +225,37 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
   (bridgeFeatureFlags) => bridgeFeatureFlags?.priceImpactThreshold,
 );
 
-export const getFromChains = createDeepEqualSelector(
-  getAllBridgeableNetworks,
-  getBridgeFeatureFlags,
-  (state: BridgeAppState) => hasSolanaAccounts(state),
-  (state: BridgeAppState) => hasBitcoinAccounts(state),
+export const getFromChains = createSelector(
+  [
+    (state: BridgeAppState) => getAllBridgeableNetworks(state),
+    // @ts-expect-error - chainRanking is not typed yet
+    (state: BridgeAppState) => getBridgeFeatureFlags(state).chainRanking,
+    (state: BridgeAppState) => hasSolanaAccounts(state),
+    (state: BridgeAppState) => hasBitcoinAccounts(state),
+  ],
   (
-    allBridgeableNetworks,
-    bridgeFeatureFlags,
+    allBridgeableNetworksByChainId,
+    chainRanking,
     hasSolanaAccount,
     hasBitcoinAccount,
-  ) => {
-    // First filter out Solana from source chains if no Solana account exists
-    let filteredNetworks = hasSolanaAccount
-      ? allBridgeableNetworks
-      : allBridgeableNetworks.filter(
-          ({ chainId }) => !isSolanaChainId(chainId),
-        );
-
-    // Then filter out Bitcoin from source chains if no Bitcoin account exists
-    filteredNetworks = hasBitcoinAccount
-      ? filteredNetworks
-      : filteredNetworks.filter(({ chainId }) => !isBitcoinChainId(chainId));
-
-    // Then apply the standard filter for active source chains
-    return filteredNetworks.filter(
-      ({ chainId }) =>
-        bridgeFeatureFlags.chains[formatChainIdToCaip(chainId)]?.isActiveSrc,
-    );
+  ): MultichainNetworkConfiguration[] => {
+    return chainRanking
+      .map(
+        ({ chainId }: { chainId: CaipChainId }) =>
+          allBridgeableNetworksByChainId[chainId],
+      )
+      .filter(Boolean)
+      .filter((network: MultichainNetworkConfiguration) => {
+        // if no solana account, filter out solana
+        if (!hasSolanaAccount && isSolanaChainId(network.chainId)) {
+          return false;
+        }
+        // if no bitcoin account, filter out bitcoin
+        if (!hasBitcoinAccount && isBitcoinChainId(network.chainId)) {
+          return false;
+        }
+        return true;
+      });
   },
 );
 
@@ -266,33 +270,47 @@ export const getLastSelectedChainId = createSelector(
 );
 
 // This returns undefined if the selected chain is not supported by swap/bridge (i.e, testnets)
+// The network picker will show "All networks" in this case
 export const getFromChain = createDeepEqualSelector(
-  [getFromChains, getMultichainProviderConfig],
-  (fromChains, providerConfig) => {
+  [getFromChains, getLastSelectedChainId, (state) => state.bridge.fromChainId],
+  (
+    fromChains,
+    lastSelectedChainId,
+    fromChainId,
+  ): MultichainNetworkConfiguration | null => {
+    const chainId = fromChainId ?? lastSelectedChainId;
     // When the page loads the global network always matches the network filter
     // Because useBridging checks whether the lastSelectedNetwork matches the provider config
     // Then useBridgeQueryParams sets the global network to lastSelectedNetwork as needed
     // TODO remove providerConfig references and just use getLastSelectedChainId
+    if (!ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId)) {
+      return null;
+    }
     return fromChains.find(
-      ({ chainId }) => chainId === providerConfig?.chainId,
+      ({ chainId }) => chainId === formatChainIdToCaip(chainId),
     );
   },
 );
 
 export const getToChains = createDeepEqualSelector(
-  getAllBridgeableNetworks,
-  getBridgeFeatureFlags,
-  (allBridgeableNetworks, bridgeFeatureFlags) => {
-    const availableChains = uniqBy(
-      [...allBridgeableNetworks, ...FEATURED_RPCS],
-      'chainId',
-    ).filter(
-      ({ chainId }) =>
-        bridgeFeatureFlags?.chains?.[formatChainIdToCaip(chainId)]
-          ?.isActiveDest,
+  [
+    getAllBridgeableNetworks,
+    // @ts-expect-error - chainRanking is not typed yet
+    (state: BridgeAppState) => getBridgeFeatureFlags(state).chainRanking,
+  ],
+  (allBridgeableNetworks, chainRanking): MultichainNetworkConfiguration[] => {
+    const featuredNetworksByChainId = Object.fromEntries(
+      FEATURED_RPCS.map((rpc: AddNetworkFields) => [
+        formatChainIdToCaip(rpc.chainId),
+        { ...rpc, isEvm: true as const },
+      ]),
     );
-
-    return availableChains;
+    return chainRanking
+      .map(
+        ({ chainId }: { chainId: CaipChainId }) =>
+          allBridgeableNetworks[chainId] ?? featuredNetworksByChainId[chainId],
+      )
+      .filter(Boolean);
   },
 );
 

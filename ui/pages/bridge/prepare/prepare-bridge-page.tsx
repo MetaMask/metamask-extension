@@ -523,21 +523,18 @@ const PrepareBridgePage = ({
               dispatch(setToToken(null));
             }
           }}
-          networkProps={{
-            network: fromChain,
-            networks: fromChains,
-            onNetworkChange: (networkConfig) => {
-              if (isNetworkAdded(networkConfig)) {
-                enableMissingNetwork(networkConfig.chainId);
-              }
-              dispatch(
-                setFromChain({
-                  networkConfig,
-                  selectedAccount,
-                }),
-              );
-            },
-            header: t('yourNetworks'),
+          selectedChainId={fromChain?.chainId ?? null}
+          networks={fromChains}
+          onNetworkChange={(networkConfig) => {
+            if (isNetworkAdded(networkConfig)) {
+              enableMissingNetwork(networkConfig.chainId);
+            }
+            dispatch(
+              setFromChain({
+                networkConfig,
+                selectedAccount,
+              }),
+            );
           }}
           isMultiselectEnabled={true}
           onMaxButtonClick={
@@ -701,20 +698,18 @@ const PrepareBridgePage = ({
               };
               dispatch(setToToken(bridgeToken));
             }}
-            networkProps={{
-              network: toChain,
-              networks: toChains,
-              onNetworkChange: (networkConfig) => {
-                if (isNetworkAdded(networkConfig)) {
-                  enableMissingNetwork(networkConfig.chainId);
-                }
-                dispatch(setToChainId(networkConfig.chainId));
-              },
-              header: t('yourNetworks'),
-              shouldDisableNetwork: ({ chainId }) =>
-                isBitcoinChainId(chainId) &&
-                !isCrossChain(chainId, fromChain?.chainId),
+            selectedChainId={toChain?.chainId}
+            onNetworkChange={(networkConfig) => {
+              if (isNetworkAdded(networkConfig)) {
+                enableMissingNetwork(networkConfig.chainId);
+              }
+              dispatch(setToChainId(networkConfig.chainId));
             }}
+            networks={toChains}
+            // shouldDisableNetwork={({ chainId }) =>
+            //   isBitcoinChainId(chainId) &&
+            //   !isCrossChain(chainId, fromChain?.chainId),
+            // }}
             customTokenListGenerator={toTokenListGenerator}
             amountInFiat={
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
