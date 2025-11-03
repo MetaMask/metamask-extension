@@ -742,6 +742,7 @@ export default class MetamaskController extends EventEmitter {
     this.nameController = controllersByName.NameController;
     this.announcementController = controllersByName.AnnouncementController;
     this.accountOrderController = controllersByName.AccountOrderController;
+    this.rewardsController = controllersByName.RewardsController;
 
     this.backup = new Backup({
       preferencesController: this.preferencesController,
@@ -2445,17 +2446,22 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // rewards
-      getCandidateSubscriptionId: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:getCandidateSubscriptionId',
+      getRewardsCandidateSubscriptionId:
+        this.rewardsController.getCandidateSubscriptionId.bind(
+          this.rewardsController,
+        ),
+      getRewardsSeasonMetadata: this.rewardsController.getSeasonMetadata.bind(
+        this.rewardsController,
       ),
-      getRewardsSeasonMetadata: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:getSeasonMetadata',
+      getRewardsSeasonStatus: this.rewardsController.getSeasonStatus.bind(
+        this.rewardsController,
       ),
-      getRewardsSeasonStatus: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:getSeasonStatus',
+      getRewardsHasAccountOptedIn:
+        this.rewardsController.getHasAccountOptedIn.bind(
+          this.rewardsController,
+        ),
+      estimateRewardsPoints: this.rewardsController.estimatePoints.bind(
+        this.rewardsController,
       ),
 
       // hardware wallets
