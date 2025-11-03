@@ -82,6 +82,19 @@ async function mockApis(
           },
         };
       }),
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v1/supportedNetworks')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
+            partialSupport: {
+              spotPricesV2: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
+            },
+          },
+        };
+      }),
     await mockEmptyPrices(mockServer, CHAIN_IDS.MAINNET),
   ];
 }
