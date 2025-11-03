@@ -349,7 +349,6 @@
     "tokenScanCache": "object",
     "coverageResults": "object",
     "orderedTransactionHistory": "object",
-    "accounts": "object",
     "accountsByChainId": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
