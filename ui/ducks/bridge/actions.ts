@@ -34,7 +34,6 @@ import type { TokenPayload } from './types';
 import { isNetworkAdded, isNonEvmChain } from './utils';
 
 const {
-  setFromChainId,
   setToChainId,
   setFromToken,
   setToToken,
@@ -165,13 +164,10 @@ export const setFromChain = ({
     // Check for ALL non-EVM chains
     const isNonEvm = isNonEvmChain(networkConfig.chainId);
 
-    dispatch(setFromChainId(networkConfig.chainId));
     // Set the src network
     if (isNonEvm) {
-      // TODO rm
       dispatch(setActiveNetworkWithError(networkConfig.chainId));
     } else {
-      // TODO rm
       const networkId = isNetworkAdded(networkConfig)
         ? networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
             ?.networkClientId

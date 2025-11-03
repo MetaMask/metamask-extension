@@ -77,7 +77,7 @@ export const DestinationAccountPickerModal = ({
 
   return (
     <Modal
-      isOpen={false}
+      isOpen={isOpen || (isToOrFromNonEvm && !selectedAccount)}
       onClose={() => {
         setSearchQuery('');
         onClose();
