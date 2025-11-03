@@ -39,8 +39,8 @@ export function useMultichainAccountsIntroModal(
     // Check if this is an upgrade from a version lower than 13.5.0
     const isUpgradeFromLowerThanBip44Version = Boolean(
       lastUpdatedFromVersion &&
-      typeof lastUpdatedFromVersion === 'string' &&
-      semverLt(lastUpdatedFromVersion, '13.5.0'),
+        typeof lastUpdatedFromVersion === 'string' &&
+        semverLt(lastUpdatedFromVersion, '13.5.0'),
     );
 
     // Show modal only for upgrades from versions < 13.5.0
