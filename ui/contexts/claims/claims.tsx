@@ -5,6 +5,7 @@ import React, {
   useState,
   useMemo,
   ReactNode,
+  useCallback,
 } from 'react';
 import {
   ShieldClaim,
@@ -40,37 +41,36 @@ export const ClaimsProvider: React.FC<ClaimsProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchClaims = async () => {
+  const fetchClaims = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
       const claimsData = await getShieldClaims();
       // sort claims by createdAt descending
-      const sortedClaims = claimsData.reduce(
-        (acc: ShieldClaim[], claim: ShieldClaim, index: number) => {
-          acc.push({
-            ...claim,
-            // used for displaying list of claims
-            claimNumber: index + 1,
-            // change chainId from number to hex
-            chainId: `0x${Number(claim.chainId).toString(16)}`,
-          });
-          return acc;
-        },
-        [] as ShieldClaim[],
-      );
-      console.log('check: sortedClaims', sortedClaims);
+      const sortedClaims = claimsData
+        .sort((a: ShieldClaim, b: ShieldClaim) => {
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          return dateB - dateA;
+        })
+        .map((claim: ShieldClaim, index: number) => ({
+          ...claim,
+          // used for displaying list of claims
+          claimNumber: index + 1,
+          // change chainId from number to hex
+          chainId: `0x${Number(claim.chainId).toString(16)}`,
+        }));
       setClaims(sortedClaims);
     } catch (err) {
       setError(err as Error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchClaims();
-  }, []);
+  });
 
   const pendingClaims = useMemo(() => {
     return claims.filter((claim) =>
@@ -93,7 +93,7 @@ export const ClaimsProvider: React.FC<ClaimsProviderProps> = ({ children }) => {
       error,
       refetchClaims: fetchClaims,
     }),
-    [claims, pendingClaims, historyClaims, isLoading, error],
+    [claims, pendingClaims, historyClaims, isLoading, error, fetchClaims],
   );
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -66,53 +66,60 @@ const ClaimsList = () => {
   const navigate = useNavigate();
   const { pendingClaims, historyClaims, isLoading } = useClaims();
 
-  const claimItem = (claim: ShieldClaim) => {
-    return (
-      <Box
-        asChild
-        key={claim.id}
-        data-testid={`claim-item-${claim.id}`}
-        backgroundColor={BoxBackgroundColor.BackgroundSection}
-        className="claim-item flex items-center justify-between w-full p-4 rounded-lg"
-        onClick={() => {
-          navigate(`${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL}/${claim.id}`);
-        }}
-      >
-        <button>
-          <Box className="flex items-center gap-2">
-            <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Left}>
-              Claim #{claim.claimNumber}
-            </Text>
-            {claim.status && (
-              <Tag
-                borderStyle={BorderStyle.none}
-                borderRadius={BorderRadius.SM}
-                label={t(CLAIM_STATUS_MAP[claim.status].label)}
-                backgroundColor={CLAIM_STATUS_MAP[claim.status].backgroundColor}
-                labelProps={{
-                  color: CLAIM_STATUS_MAP[claim.status]?.textColor,
-                }}
-              />
-            )}
-          </Box>
+  const claimItem = useCallback(
+    (claim: ShieldClaim) => {
+      return (
+        <Box
+          asChild
+          key={claim.id}
+          data-testid={`claim-item-${claim.id}`}
+          backgroundColor={BoxBackgroundColor.BackgroundSection}
+          className="claim-item flex items-center justify-between w-full p-4 rounded-lg"
+          onClick={() => {
+            navigate(
+              `${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL}/${claim.id}`,
+            );
+          }}
+        >
+          <button>
+            <Box className="flex items-center gap-2">
+              <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Left}>
+                Claim #{claim.claimNumber}
+              </Text>
+              {claim.status && (
+                <Tag
+                  borderStyle={BorderStyle.none}
+                  borderRadius={BorderRadius.SM}
+                  label={t(CLAIM_STATUS_MAP[claim.status].label)}
+                  backgroundColor={
+                    CLAIM_STATUS_MAP[claim.status].backgroundColor
+                  }
+                  labelProps={{
+                    color: CLAIM_STATUS_MAP[claim.status]?.textColor,
+                  }}
+                />
+              )}
+            </Box>
 
-          <Box className="flex items-center gap-2">
-            <Text
-              variant={TextVariant.BodyMd}
-              color={DsTextColor.TextAlternative}
-            >
-              {t('viewDetails')}
-            </Text>
-            <Icon
-              name={IconName.ArrowRight}
-              size={IconSize.Md}
-              color={IconColor.IconAlternative}
-            />
-          </Box>
-        </button>
-      </Box>
-    );
-  };
+            <Box className="flex items-center gap-2">
+              <Text
+                variant={TextVariant.BodyMd}
+                color={DsTextColor.TextAlternative}
+              >
+                {t('viewDetails')}
+              </Text>
+              <Icon
+                name={IconName.ArrowRight}
+                size={IconSize.Md}
+                color={IconColor.IconAlternative}
+              />
+            </Box>
+          </button>
+        </Box>
+      );
+    },
+    [navigate, t],
+  );
 
   return (
     <Box className="claims-list-page w-full" data-testid="claims-list-page">

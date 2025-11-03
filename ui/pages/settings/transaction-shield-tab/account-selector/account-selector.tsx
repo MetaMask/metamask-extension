@@ -117,7 +117,7 @@ const AccountSelector = ({
           {selectedAccountInfo ? (
             <>
               <PreferredAvatar
-                address={selectedAccountInfo?.seedIcon ?? ''}
+                address={selectedAccountInfo?.address ?? ''}
                 size={AvatarAccountSize.Sm}
               />
               <Text>{selectedAccountInfo?.name}</Text>

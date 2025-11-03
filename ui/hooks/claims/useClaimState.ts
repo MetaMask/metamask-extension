@@ -35,18 +35,7 @@ export const useClaimState = (isView: boolean = false) => {
         setUploadedFiles(claimDetails.attachments);
       }
     }
-  }, [
-    isView,
-    claimId,
-    claims,
-    setChainId,
-    setEmail,
-    setImpactedWalletAddress,
-    setImpactedTransactionHash,
-    setReimbursementWalletAddress,
-    setCaseDescription,
-    setUploadedFiles,
-  ]);
+  }, [isView, claimId, claims]);
 
   return {
     chainId,

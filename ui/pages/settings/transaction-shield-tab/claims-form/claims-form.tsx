@@ -130,7 +130,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { refetchClaims, claims } = useClaims();
+  const { refetchClaims, pendingClaims } = useClaims();
   const [isSubmittingClaim, setIsSubmittingClaim] = useState(false);
 
   const {
@@ -388,7 +388,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       padding={4}
       gap={4}
     >
-      {!isView && claims.length > 0 && (
+      {!isView && pendingClaims.length > 0 && (
         <BannerAlert
           severity={BannerAlertSeverity.Info}
           title="You have claims that are pending approval."
