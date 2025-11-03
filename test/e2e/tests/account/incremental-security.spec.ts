@@ -88,7 +88,7 @@ describe('Incremental Security', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         // to update balance faster and avoid timeout error
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('3,400.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed('1', 'ETH');
 
         // backup reminder is displayed and it directs user to the backup SRP page
         await homePage.goToBackupSRPPage();
@@ -103,7 +103,7 @@ describe('Incremental Security', function (this: Suite) {
 
         // check the balance is correct after revealing and confirming the SRP
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('3,400.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed('1', 'ETH');
 
         // check backup reminder is not displayed on homepage
         await homePage.checkBackupReminderIsNotDisplayed();

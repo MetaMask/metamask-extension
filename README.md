@@ -189,8 +189,8 @@ For example, to run the `account-details` tests using Chrome, with debug logging
 #### Onboarding fixture setup
 
 The e2e tests require a wallet state fixture for running. To set up your local fixture you can either:
-   a. Download the file from a PR comment (look for "🧪 e2e Wallet State Fixture File") and save it into `test-artifacts/onboarding-fixture/onboarding-fixture.json`
-   b. Export your own file by building the wallet and running the export script: `yarn dist && yarn test:e2e:single test/e2e/wallet-fixture-export.spec.ts --browser chrome` (file will be saved automatically to the correct location)
+a. Download the file from a PR comment (look for "🧪 e2e Wallet State Fixture File") and save it into `test-artifacts/onboarding-fixture/onboarding-fixture.json`
+b. Export your own file by building the wallet and running the export script: `yarn dist && yarn test:e2e:single test/e2e/wallet-fixture-export.spec.ts --browser chrome` (file will be saved automatically to the correct location)
 
 Note: In CI, the fixture is automatically generated and shared across test jobs.
 

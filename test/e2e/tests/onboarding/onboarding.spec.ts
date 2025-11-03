@@ -124,10 +124,7 @@ describe('MetaMask onboarding', function () {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed(
-          DEFAULT_LOCAL_NODE_USD_BALANCE,
-          '$',
-        );
+        await homePage.checkExpectedBalanceIsDisplayed();
       },
     );
   });
