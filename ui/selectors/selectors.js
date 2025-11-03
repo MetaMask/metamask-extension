@@ -3927,16 +3927,11 @@ export function getAccountToConnectToActiveTab(state) {
   const numberOfAccounts = Object.keys(accounts).length;
 
   if (
-    connectedAccounts.length &&
-    connectedAccounts.length !== numberOfAccounts
+    connectedAccounts.length > 0 &&
+    connectedAccounts.length !== numberOfAccounts &&
+    !connectedAccounts.includes(selectedInternalAccount.address)
   ) {
-    if (
-      connectedAccounts.findIndex(
-        (address) => address === selectedInternalAccount.address,
-      ) === -1
-    ) {
-      return getInternalAccount(state, selectedInternalAccount.id);
-    }
+    return getInternalAccount(state, selectedInternalAccount.id);
   }
 
   return undefined;
