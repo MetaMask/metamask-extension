@@ -7647,12 +7647,21 @@ export async function getShieldClaims() {
   const claimsUrl = `${baseUrl}/claims`;
   const accessToken = await submitRequestToBackground<string>('getBearerToken');
 
-  const response = await fetch(claimsUrl, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  try {
+    const response = await fetch(claimsUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-  return response.json();
+    if (!response.ok) {
+      const errorBody = await response.json();
+      throw new Error(errorBody.error || 'Failed to get shield claims');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to get shield claims:', error);
+    throw error;
+  }
 }

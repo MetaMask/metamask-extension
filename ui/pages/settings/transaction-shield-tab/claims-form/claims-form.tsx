@@ -43,7 +43,10 @@ import { useClaimState } from '../../../../hooks/claims/useClaimState';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
-import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
+} from '../../../../helpers/constants/routes';
 import {
   submitShieldClaim,
   setDefaultHomeActiveTabName,
@@ -51,7 +54,6 @@ import {
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { TRANSACTION_SHIELD_LINK } from '../../../../helpers/constants/common';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import {
