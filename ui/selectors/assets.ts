@@ -990,7 +990,7 @@ const selectAllMainnetNetworksEnabledMap = createSelector(
  * @param state - Redux state containing all required controller states for balance calculation.
  * @returns The total balance in user currency for the selected account group, or 0 if no group is selected.
  */
-export const selectTotalBalanceAcrossAllNetworks = createSelector(
+export const selectAccountGroupBalanceForEmptyState = createSelector(
   [
     selectAccountTreeStateForBalances,
     selectAccountsStateForBalances,

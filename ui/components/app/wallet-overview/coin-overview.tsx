@@ -56,7 +56,7 @@ import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { RewardsPointsBalance } from '../rewards/RewardsPointsBalance';
 import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
 import { BalanceEmptyState } from '../balance-empty-state';
-import { selectTotalBalanceAcrossAllNetworks } from '../../../selectors/assets';
+import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import {
@@ -228,8 +228,8 @@ export const CoinOverview = ({
   const isRewardsEnabled = useSelector(selectRewardsEnabled);
 
   // Calculate aggregated balance across all mainnet networks for empty state logic
-  const trueAggregatedBalance = useSelector(
-    selectTotalBalanceAcrossAllNetworks,
+  const accountGroupBalance = useSelector(
+    selectAccountGroupBalanceForEmptyState,
   );
   const isTestnet = useSelector(getMultichainIsTestnet);
 
@@ -246,7 +246,7 @@ export const CoinOverview = ({
     isMultichainAccountsState2Enabled &&
     !isTestnet &&
     !balanceIsCached && // Don't show empty state if balance data is cached/stale
-    trueAggregatedBalance === 0;
+    accountGroupBalance === 0;
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
