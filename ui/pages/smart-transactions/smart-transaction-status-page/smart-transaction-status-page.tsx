@@ -296,7 +296,7 @@ export const SmartTransactionStatusPage = ({
     smartTransaction?.status?.startsWith(SmartTransactionStatuses.CANCELLED),
   );
 
-  const chainId: string = useSelector(getCurrentChainId);
+  const chainId: string | undefined = smartTransaction?.chainId;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore: This same selector is used in the awaiting-swap component.
   const fullTxData = useSelector((state) => getFullTxData(state, txId)) || {};
