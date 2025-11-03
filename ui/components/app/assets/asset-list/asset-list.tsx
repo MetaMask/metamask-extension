@@ -1,12 +1,10 @@
 import React, { useCallback, useContext, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { type SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import DetectedToken from '../../detected-token/detected-token';
 import { usePrimaryCurrencyProperties } from '../hooks';
@@ -56,14 +54,10 @@ const AssetList = ({
   safeChains,
 }: AssetListProps) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
-  const isEvm = useSelector(getMultichainIsEvm);
-  // NOTE: Since we can parametrize it now, we keep the original behavior
-  // for EVM assets
-  const shouldShowTokensLinks = showTokensLinks ?? isEvm;
 
   return (
     <>
-      <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
+      <AssetListControlBar showTokensLinks={showTokensLinks} />
       <TokenListContainer onClickAsset={onClickAsset} safeChains={safeChains} />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
