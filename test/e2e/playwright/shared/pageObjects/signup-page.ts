@@ -82,7 +82,9 @@ export class SignUpPage {
     this.agreeBtn = page.locator('button:has-text("I agree")');
     this.enableBtn = page.locator('button:has-text("Enable")');
     this.popOverBtn = page.getByTestId('popover-close');
-    this.useSRPSocialLoginBtn = page.getByTestId('onboarding-create-with-srp-button');
+    this.useSRPSocialLoginBtn = page.getByTestId(
+      'onboarding-create-with-srp-button',
+    );
     this.remindLaterBtn = page.getByTestId('recovery-phrase-remind-later');
   }
 
@@ -115,7 +117,11 @@ export class SignUpPage {
   }
 
   async isMetamaskPasswordFormVisible() {
-    return await this.passwordTxt.isVisible() && await this.passwordConfirmTxt.isVisible() && await this.agreePasswordTermsCheck.isVisible();
+    return (
+      (await this.passwordTxt.isVisible()) &&
+      (await this.passwordConfirmTxt.isVisible()) &&
+      (await this.agreePasswordTermsCheck.isVisible())
+    );
   }
 
   async isRecoveryPhraseScreenVisible() {

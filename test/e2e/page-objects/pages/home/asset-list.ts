@@ -334,7 +334,11 @@ class AssetListPage {
     await this.driver.clickElement(this.networksToggle);
     await this.driver.waitUntil(
       async () => {
-        return Boolean(await this.driver.findElement('[data-testid="modal-header-close-button"]'));
+        return Boolean(
+          await this.driver.findElement(
+            '[data-testid="modal-header-close-button"]',
+          ),
+        );
       },
       {
         timeout: 5000,
@@ -490,9 +494,10 @@ class AssetListPage {
   async checkPriceChartLoaded(assetAddress: string): Promise<void> {
     console.log(`Verify the price chart is loaded`);
     await this.driver.waitUntil(
-
       async () => {
-        return await this.driver.isElementPresentAndVisible(`[data-testid="token-increase-decrease-percentage-${assetAddress}"]`);
+        return await this.driver.isElementPresentAndVisible(
+          `[data-testid="token-increase-decrease-percentage-${assetAddress}"]`,
+        );
       },
       { timeout: 10000, interval: 100 },
     );

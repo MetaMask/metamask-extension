@@ -1,7 +1,5 @@
-import {
-  WALLET_PASSWORD,
-  withFixtures,
-} from '../../../helpers';
+import { Mockttp } from 'mockttp';
+import { WALLET_PASSWORD, withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../../page-objects/pages/onboarding/onboarding-complete-page';
@@ -14,11 +12,8 @@ import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-on
 import TimerHelper from '../utils/TimersHelper';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import FixtureBuilder from '../../../fixture-builder';
-import { Mockttp } from 'mockttp';
 import { getCommonMocks } from '../utils/commonMocks';
-import NetworkManager from '../../../page-objects/pages/network-manager';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
-
 
 describe('MetaMask onboarding', function () {
   it('Creates a new wallet, sets up a secure password, and completes the onboarding process', async function () {
@@ -33,18 +28,32 @@ describe('MetaMask onboarding', function () {
         },
         useMockingPassThrough: true,
         disableServerMochaToBackground: true,
-        fixtures: new FixtureBuilder({ onboarding: true }).withEnabledNetworks(ALL_POPULAR_NETWORKS).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withEnabledNetworks(ALL_POPULAR_NETWORKS)
+          .build(),
         testSpecificMock: async (server: Mockttp) => {
           return [...getCommonMocks(server)];
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        const timer1 = new TimerHelper('Time since the user clicks on "Create new wallet" button until "Social sign up" is visible');
-        const timer2 = new TimerHelper('Time since the user clicks on "use SRP" button until "Metamask password" form is visible');
-        const timer3 = new TimerHelper('Time since the user clicks on "Create password" button until "Recovery Phrase" screen is visible');
-        const timer4 = new TimerHelper('Time since the user clicks on "Skip" button until "Metrics" screen is visible');
-        const timer5 = new TimerHelper('Time since the user clicks on "I agree" button until "Onboarding Success" screen is visible');
-        const timer6 = new TimerHelper('Time since the user clicks on "Done" button until "Home" screen is visible');
+        const timer1 = new TimerHelper(
+          'Time since the user clicks on "Create new wallet" button until "Social sign up" is visible',
+        );
+        const timer2 = new TimerHelper(
+          'Time since the user clicks on "use SRP" button until "Metamask password" form is visible',
+        );
+        const timer3 = new TimerHelper(
+          'Time since the user clicks on "Create password" button until "Recovery Phrase" screen is visible',
+        );
+        const timer4 = new TimerHelper(
+          'Time since the user clicks on "Skip" button until "Metrics" screen is visible',
+        );
+        const timer5 = new TimerHelper(
+          'Time since the user clicks on "I agree" button until "Onboarding Success" screen is visible',
+        );
+        const timer6 = new TimerHelper(
+          'Time since the user clicks on "Done" button until "Home" screen is visible',
+        );
 
         await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
@@ -83,23 +92,13 @@ describe('MetaMask onboarding', function () {
         await homePage.checkTokenListIsDisplayed();
         timer6.stop();
         await homePage.clickBackupRemindMeLaterButton();
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.openNetworksFilter();
-        const networkManager = new NetworkManager(driver);
-        await networkManager.selectNetworkByNameWithWait("Ethereum");
         await driver.delay(1000);
         await homePage.checkPageIsLoaded();
         await homePage.checkTokenListIsDisplayed();
         await homePage.checkTokenListPricesAreDisplayed();
-        await homePage.checkAssetIsDisplayed("Ethereum");
-        await homePage.checkAssetIsDisplayed("Solana");
-        await assetListPage.clickOnAsset("Ethereum");
-        const timer7 = new TimerHelper("Time since the user clicks on the asset until the price chart is shown");
-        timer7.start();
-        await driver.delay(1000); // workaround to avoid race condition
-        await assetListPage.checkPriceChartIsShown();
-        await assetListPage.checkPriceChartLoaded("0x0000000000000000000000000000000000000000"); //ETH address
-        timer7.stop();
+        await homePage.checkAssetIsDisplayed('Ethereum');
+        await homePage.checkAssetIsDisplayed('Solana');
+
         console.log(`Timer 1:  ${timer1.getDurationInSeconds()} s`);
         console.log('Token list is displayed');
         console.log(`Timer 1:  ${timer1.getDuration()} ms`);

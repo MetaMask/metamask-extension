@@ -1,8 +1,8 @@
 import Timers, { Timer } from './Timers';
 
-interface PerformanceTracker {
+type PerformanceTracker = {
   addTimer(timer: TimerHelper): void;
-}
+};
 
 class TimerHelper {
   private _id: string;
@@ -61,11 +61,11 @@ class TimerHelper {
   // registers the timer with the given performanceTracker.
   // Usage:
   // await TimerHelper.withTimer(performanceTracker, 'Step name', async () => { /* ... */ });
-  static async withTimer<T>(
+  static async withTimer<TResult>(
     performanceTracker: PerformanceTracker,
     id: string,
-    fn: () => Promise<T>,
-  ): Promise<T> {
+    fn: () => Promise<TResult>,
+  ): Promise<TResult> {
     const timer = new TimerHelper(id);
     timer.start();
     try {

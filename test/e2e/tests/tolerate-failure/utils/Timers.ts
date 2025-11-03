@@ -1,22 +1,26 @@
 // Type definitions
-export interface Timer {
+export type Timer = {
   start: number | null;
   end: number | null;
   duration: number | null;
-}
+};
 
-export interface TimerWithId extends Timer {
+export type TimerWithId = {
   id: string;
-}
+} & Timer;
 
 class Timers {
   private static instance: Timers;
-  private timers!: Map<string, Timer>;
 
-  constructor() {
+  private timers: Map<string, Timer>;
+
+  private constructor() {
+    this.timers = new Map<string, Timer>(); // Store the timers in a map
+  }
+
+  public static getInstance(): Timers {
     if (!Timers.instance) {
-      this.timers = new Map<string, Timer>(); // Store the timers in a map
-      Timers.instance = this;
+      Timers.instance = new Timers();
     }
     return Timers.instance;
   }
@@ -38,18 +42,24 @@ class Timers {
     if (!this.timers.has(id)) {
       throw new Error(`Timer with id "${id}" does not exist.`);
     }
-    const timer = this.timers.get(id)!;
-    timer.start = Date.now();
+    const timer = this.timers.get(id);
+    if (timer) {
+      timer.start = Date.now();
+    }
   }
 
   // Stop a timer
   stopTimer(id: string): void {
     if (!this.timers.has(id) || this.timers.get(id)?.start === null) {
-      throw new Error(`Timer with id "${id}" does not exist or has not been started.`);
+      throw new Error(
+        `Timer with id "${id}" does not exist or has not been started.`,
+      );
     }
-    const timer = this.timers.get(id)!;
-    timer.end = Date.now();
-    timer.duration = timer.end - timer.start!;
+    const timer = this.timers.get(id);
+    if (timer && timer.start !== null) {
+      timer.end = Date.now();
+      timer.duration = timer.end - timer.start;
+    }
   }
 
   // Get the value of a timer
@@ -57,7 +67,11 @@ class Timers {
     if (!this.timers.has(id)) {
       throw new Error(`Timer with id "${id}" does not exist.`);
     }
-    return this.timers.get(id)!;
+    const timer = this.timers.get(id);
+    if (!timer) {
+      throw new Error(`Timer with id "${id}" does not exist.`);
+    }
+    return timer;
   }
 
   // Get all timers
@@ -74,6 +88,6 @@ class Timers {
   }
 }
 
-const instance = new Timers();
+const instance = Timers.getInstance();
 Object.freeze(instance); // Ensure that the instance cannot be modified
 export default instance;

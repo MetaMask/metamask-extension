@@ -145,7 +145,10 @@ class StartOnboardingPage {
     try {
       await this.driver.waitForSelector(this.onboardingCreateWithGoogleButton);
     } catch (e) {
-      console.log('Timeout while waiting for social sign up form to be loaded', e);
+      console.log(
+        'Timeout while waiting for social sign up form to be loaded',
+        e,
+      );
       throw e;
     }
     console.log('Social sign up form is loaded');

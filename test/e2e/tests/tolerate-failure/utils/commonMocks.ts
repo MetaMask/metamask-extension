@@ -1,8 +1,8 @@
-import { Mockttp } from "mockttp";
+import { Mockttp } from 'mockttp';
 
 export function getCommonMocks(server: Mockttp) {
   return [
-    server.forPost(/^https:\/\/sentry\.io\/api/).thenCallback(() => {
+    server.forPost(/^https:\/\/sentry\.io\/api/u).thenCallback(() => {
       return {
         statusCode: 200,
         headers: {
@@ -12,28 +12,42 @@ export function getCommonMocks(server: Mockttp) {
         },
         // Typical Sentry envelope endpoint response with event IDs
         json: {
-          "success": true,
-        }
+          success: true,
+        },
       };
     }),
-    server.forPost(/^https:\/\/api\.segment\.io\/v1\//).thenCallback(() => {
+    server.forPost(/^https:\/\/api\.segment\.io\/v1\//u).thenCallback(() => {
       return { statusCode: 200 };
     }),
-    server.forGet(/^https:\/\/subscription\.dev-api\.cx\.metamask\.io\/v1\/subscriptions/).thenCallback(() => {
-      return { statusCode: 200, json: {
-        subscriptions: [],
-        trialedProducts: [],
-      } };
-    }),
-    server.forGet(/^https:\/\/subscription\.dev-api\.cx\.metamask\.io\/v1\/subscriptions\/eligibility/).thenCallback(() => {
-      return { statusCode: 200, json: [
-        {
-          canSubscribe: true,
-          canViewEntryModal: true,
-          minBalanceUSD: 1000,
-          product: 'shield',
-        },
-      ]};
-    }),
+    server
+      .forGet(
+        /^https:\/\/subscription\.dev-api\.cx\.metamask\.io\/v1\/subscriptions/u,
+      )
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            subscriptions: [],
+            trialedProducts: [],
+          },
+        };
+      }),
+    server
+      .forGet(
+        /^https:\/\/subscription\.dev-api\.cx\.metamask\.io\/v1\/subscriptions\/eligibility/u,
+      )
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: [
+            {
+              canSubscribe: true,
+              canViewEntryModal: true,
+              minBalanceUSD: 1000,
+              product: 'shield',
+            },
+          ],
+        };
+      }),
   ];
 }
