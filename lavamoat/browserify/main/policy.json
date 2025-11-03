@@ -852,7 +852,7 @@
         "lodash": true,
         "@metamask/assets-controllers>multiformats": true,
         "reselect": true,
-        "single-call-balance-checker-abi": true,
+        "@metamask/assets-controllers>single-call-balance-checker-abi": true,
         "uuid": true
       }
     },
