@@ -4179,8 +4179,6 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      const { completedOnboarding } = this.onboardingController.state;
-
       // clear permissions
       this.permissionController.clearState();
 
@@ -4198,10 +4196,6 @@ export default class MetamaskController extends EventEmitter {
       this.accountOrderController.updateHiddenAccountsList([]);
 
       this.txController.clearUnapprovedTransactions();
-
-      if (completedOnboarding) {
-        this.tokenDetectionController.enable();
-      }
 
       await this.keyringController.createNewVaultAndKeychain(password);
 
