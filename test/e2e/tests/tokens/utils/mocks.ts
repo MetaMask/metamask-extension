@@ -44,6 +44,21 @@ export const mockSpotPrices = async (
     }));
 };
 
+export const mockSupportedChainIds = async (
+  mockServer: Mockttp,
+  supportedChainIds: string[],
+) => {
+  return mockServer.forGet('/v1/supportedNetworks').thenCallback(() => ({
+    statusCode: 200,
+    json: {
+      fullSupport: supportedChainIds,
+      partialSupport: {
+        spotPricesV2: supportedChainIds,
+      },
+    },
+  }));
+};
+
 type HistoricalPricesOptions = {
   address: string;
   chainId: string;
