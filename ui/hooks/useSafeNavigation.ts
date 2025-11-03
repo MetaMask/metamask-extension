@@ -27,6 +27,11 @@ export const useSafeNavigation = (
         setNavState(null);
       }
 
+      // Schedule cleanup for both custom and default navigate to prevent memory leaks
+      setTimeout(() => {
+        setNavState(null);
+      }, 100);
+
       if (customNavigate) {
         customNavigate(path, options);
         return;
@@ -36,9 +41,6 @@ export const useSafeNavigation = (
         replace: Boolean(options?.replace),
         state: options?.state,
       });
-      setTimeout(() => {
-        setNavState(null);
-      }, 100);
     },
     [customNavigate, defaultNavigate, setNavState],
   );
