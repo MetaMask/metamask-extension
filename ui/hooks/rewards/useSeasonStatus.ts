@@ -1,7 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import log from 'loglevel';
-import { submitRequestToBackground } from '../../store/background-connection';
+import {
+  getRewardsSeasonMetadata,
+  getRewardsSeasonStatus,
+} from '../../store/actions';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import {
   SeasonDtoState,
@@ -33,6 +36,7 @@ export const useSeasonStatus = ({
   subscriptionId,
   onAuthorizationError,
 }: UseSeasonStatusOptions): UseSeasonStatusReturn => {
+  const dispatch = useDispatch();
   const isUnlocked = useSelector(getIsUnlocked);
   const isRewardsEnabled = useRewardsEnabled();
   const [seasonStatus, setSeasonStatus] = useState<SeasonStatusState | null>(
@@ -57,20 +61,17 @@ export const useSeasonStatus = ({
     setSeasonStatusLoading(true);
 
     try {
-      const currentSeasonMetadata =
-        await submitRequestToBackground<SeasonDtoState>(
-          'getRewardsSeasonMetadata',
-          ['current'],
-        );
+      const currentSeasonMetadata = (await dispatch(
+        getRewardsSeasonMetadata('current'),
+      )) as unknown as SeasonDtoState | null;
 
       if (!currentSeasonMetadata) {
         throw new Error('No season metadata found');
       }
 
-      const statusData = await submitRequestToBackground<SeasonStatusState>(
-        'getRewardsSeasonStatus',
-        [subscriptionId, currentSeasonMetadata.id],
-      );
+      const statusData = (await dispatch(
+        getRewardsSeasonStatus(subscriptionId, currentSeasonMetadata.id),
+      )) as unknown as SeasonStatusState | null;
 
       setSeasonStatus(statusData);
       setSeasonStatusError(null);
@@ -92,7 +93,7 @@ export const useSeasonStatus = ({
     } finally {
       setSeasonStatusLoading(false);
     }
-  }, [subscriptionId, onAuthorizationError, isRewardsEnabled]);
+  }, [subscriptionId, onAuthorizationError, isRewardsEnabled, dispatch]);
 
   // Fetch season status when dependencies change
   useEffect(() => {

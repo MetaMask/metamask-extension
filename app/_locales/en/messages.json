@@ -981,6 +981,30 @@
   "bridgeNoMMFee": {
     "message": "No MM fee"
   },
+  "bridgePoints": {
+    "message": "Est. points",
+    "description": "Label for estimated points that can be earned from a bridge or swap"
+  },
+  "bridgePoints_error": {
+    "message": "Failed to estimate points",
+    "description": "Tooltip title when there's an error fetching estimated points"
+  },
+  "bridgePoints_error_content": {
+    "message": "You'll still earn any points for this transaction. We'll notify you once they've been added to your account. You can also check your rewards tab in about an hour.",
+    "description": "Error message when points estimation fails"
+  },
+  "bridgePoints_tooltip": {
+    "message": "Points",
+    "description": "Tooltip title for points"
+  },
+  "bridgePoints_tooltip_content_1": {
+    "message": "Points are how you earn MetaMask Rewards for completing transactions, like when you swap, bridge, or trade perps.",
+    "description": "First part of tooltip content explaining rewards points"
+  },
+  "bridgePoints_tooltip_content_2": {
+    "message": "Keep in mind this value is an estimate and will be finalized once the transaction is complete. Points can take up to 1 hour to be confirmed in your Rewards balance.",
+    "description": "Second part of tooltip content explaining how points are calculated"
+  },
   "bridgePriceImpact": {
     "message": "Price impact"
   },
@@ -5472,10 +5496,6 @@
   },
   "rewardsPointsBalance": {
     "message": "$1 points",
-    "description": "$1 is the formatted number of rewards points"
-  },
-  "rewardsPointsBalanceAlt": {
-    "message": "$1 reward points",
     "description": "$1 is the formatted number of rewards points"
   },
   "rewardsPointsIcon": {

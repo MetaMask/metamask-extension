@@ -169,67 +169,7 @@ describe('useCandidateSubscriptionId', () => {
       const mockId = 'test-subscription-id';
       mockSubmitRequestToBackground.mockResolvedValue(mockId);
 
-      const { result } = renderHookWithProvider(
-        () => useCandidateSubscriptionId(),
-        {
-          metamask: {
-            isUnlocked: true,
-            rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-123',
-            },
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      await act(async () => {
-        await result.current.fetchCandidateSubscriptionId();
-      });
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'getCandidateSubscriptionId',
-        [],
-      );
-      expect(result.current.candidateSubscriptionId).toBe(mockId);
-      expect(result.current.candidateSubscriptionIdError).toBe(false);
-    });
-
-    it('should handle errors and update error state', async () => {
-      const mockError = new Error('API Error');
-      mockSubmitRequestToBackground.mockRejectedValue(mockError);
-
-      const { result } = renderHookWithProvider(
-        () => useCandidateSubscriptionId(),
-        {
-          metamask: {
-            isUnlocked: true,
-            rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-123',
-            },
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      await act(async () => {
-        await result.current.fetchCandidateSubscriptionId();
-      });
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'getCandidateSubscriptionId',
-        [],
-      );
-      expect(result.current.candidateSubscriptionId).toBeNull();
-      expect(result.current.candidateSubscriptionIdError).toBe(true);
-      expect(mockLogError).toHaveBeenCalledWith(
-        '[useCandidateSubscriptionId] Error fetching candidate subscription ID:',
-        mockError,
-      );
-    });
-
-    it('should not fetch when rewards are disabled in fetchCandidateSubscriptionId', async () => {
+      // Start with rewards disabled to prevent useEffect from auto-fetching
       mockUseRewardsEnabled.mockReturnValue(false);
 
       const { result } = renderHookWithProvider(
@@ -246,13 +186,57 @@ describe('useCandidateSubscriptionId', () => {
         },
       );
 
+      // Clear any calls that may have happened during render
+      mockSubmitRequestToBackground.mockClear();
+
       await act(async () => {
         await result.current.fetchCandidateSubscriptionId();
       });
 
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
-      expect(result.current.candidateSubscriptionId).toBeNull();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'getRewardsCandidateSubscriptionId',
+      );
+      expect(result.current.candidateSubscriptionId).toBe(mockId);
       expect(result.current.candidateSubscriptionIdError).toBe(false);
+    });
+
+    it('should handle errors and update error state', async () => {
+      const mockError = new Error('API Error');
+      mockSubmitRequestToBackground.mockRejectedValue(mockError);
+
+      // Start with rewards disabled to prevent useEffect from auto-fetching
+      mockUseRewardsEnabled.mockReturnValue(false);
+
+      const { result } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'sub-123',
+            },
+            rewardsSubscriptions: {},
+          },
+        },
+      );
+
+      // Clear any calls that may have happened during render
+      mockSubmitRequestToBackground.mockClear();
+
+      await act(async () => {
+        await result.current.fetchCandidateSubscriptionId();
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'getRewardsCandidateSubscriptionId',
+      );
+      expect(result.current.candidateSubscriptionId).toBeNull();
+      expect(result.current.candidateSubscriptionIdError).toBe(true);
+      expect(mockLogError).toHaveBeenCalledWith(
+        '[useCandidateSubscriptionId] Error fetching candidate subscription ID:',
+        mockError,
+      );
     });
   });
 
@@ -297,8 +281,7 @@ describe('useCandidateSubscriptionId', () => {
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'getCandidateSubscriptionId',
-          [],
+          'getRewardsCandidateSubscriptionId',
         );
       });
 
@@ -353,8 +336,7 @@ describe('useCandidateSubscriptionId', () => {
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'getCandidateSubscriptionId',
-          [],
+          'getRewardsCandidateSubscriptionId',
         );
       });
 
@@ -419,6 +401,9 @@ describe('useCandidateSubscriptionId', () => {
     it('should handle null response from background', async () => {
       mockSubmitRequestToBackground.mockResolvedValue(null);
 
+      // Start with rewards disabled to prevent useEffect from auto-fetching
+      mockUseRewardsEnabled.mockReturnValue(false);
+
       const { result } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
         {
@@ -432,6 +417,9 @@ describe('useCandidateSubscriptionId', () => {
           },
         },
       );
+
+      // Clear any calls that may have happened during render
+      mockSubmitRequestToBackground.mockClear();
 
       await act(async () => {
         await result.current.fetchCandidateSubscriptionId();
@@ -444,6 +432,9 @@ describe('useCandidateSubscriptionId', () => {
     it('should handle undefined response from background', async () => {
       mockSubmitRequestToBackground.mockResolvedValue(undefined);
 
+      // Start with rewards disabled to prevent useEffect from auto-fetching
+      mockUseRewardsEnabled.mockReturnValue(false);
+
       const { result } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
         {
@@ -457,6 +448,9 @@ describe('useCandidateSubscriptionId', () => {
           },
         },
       );
+
+      // Clear any calls that may have happened during render
+      mockSubmitRequestToBackground.mockClear();
 
       await act(async () => {
         await result.current.fetchCandidateSubscriptionId();
@@ -469,6 +463,9 @@ describe('useCandidateSubscriptionId', () => {
     it('should handle empty string response from background', async () => {
       mockSubmitRequestToBackground.mockResolvedValue('');
 
+      // Start with rewards disabled to prevent useEffect from auto-fetching
+      mockUseRewardsEnabled.mockReturnValue(false);
+
       const { result } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
         {
@@ -482,6 +479,9 @@ describe('useCandidateSubscriptionId', () => {
           },
         },
       );
+
+      // Clear any calls that may have happened during render
+      mockSubmitRequestToBackground.mockClear();
 
       await act(async () => {
         await result.current.fetchCandidateSubscriptionId();

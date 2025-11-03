@@ -13,6 +13,8 @@ import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
 import { isHardwareAccount } from '../../../../shared/lib/accounts';
 import {
+  EstimatedPointsDto,
+  EstimatePointsDto,
   SeasonDtoState,
   SeasonStatusState,
   SeasonTierState,
@@ -21,8 +23,6 @@ import {
   type RewardsControllerState,
   type RewardsAccountState,
   type LoginResponseDto,
-  type EstimatePointsDto,
-  type EstimatedPointsDto,
   type SeasonTierDto,
   type SeasonStatusDto,
   type SubscriptionDto,
