@@ -625,11 +625,44 @@ export default function Routes() {
           />
           <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
-          <Authenticated
+          <Route
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
-            component={CrossChainSwapTxDetails}
-            exact
-          />
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
+            {(props: RouteComponentProps<{ srcTxMetaId: string }>) => {
+              const { history: v5History, location: v5Location, match } = props;
+              const navigate = (
+                to: string | number,
+                options: {
+                  replace?: boolean;
+                  state?: Record<string, unknown>;
+                } = {},
+              ) => {
+                if (typeof to === 'number') {
+                  v5History.go(to);
+                } else if (options.replace) {
+                  v5History.replace(to, options.state);
+                } else {
+                  v5History.push(to, options.state);
+                }
+              };
+              const CrossChainSwapTxDetailsComponent =
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                CrossChainSwapTxDetails as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <CrossChainSwapTxDetailsComponent
+                    location={v5Location}
+                    navigate={navigate}
+                    params={match.params}
+                  />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
           <Route path={CROSS_CHAIN_SWAP_ROUTE}>
             {(props: RouteComponentProps) => {
               const { location: v5Location } = props;
