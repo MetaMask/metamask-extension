@@ -21,9 +21,9 @@ type NavigationStateProviderProps = {
   children: ReactNode;
 };
 
-export function NavigationStateProvider({
+export const NavigationStateProvider = ({
   children,
-}: NavigationStateProviderProps) {
+}: NavigationStateProviderProps) => {
   const [navState, setNavState] = useState<NavState | null>(null);
 
   return (
@@ -33,12 +33,12 @@ export function NavigationStateProvider({
       </SetNavStateContext.Provider>
     </NavStateContext.Provider>
   );
-}
+};
 
-export function useNavState(): NavState | null {
+export const useNavState = (): NavState | null => {
   return useContext(NavStateContext);
-}
+};
 
-export function useSetNavState(): SetNavState {
+export const useSetNavState = (): SetNavState => {
   return useContext(SetNavStateContext);
-}
+};

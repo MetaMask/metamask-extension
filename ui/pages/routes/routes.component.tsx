@@ -632,11 +632,12 @@ export default function Routes() {
           />
           <Route path={CROSS_CHAIN_SWAP_ROUTE}>
             {(props: RouteComponentProps) => {
+              const { location: v5Location } = props;
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const CrossChainSwapComponent = CrossChainSwap as any;
               return (
                 <AuthenticatedV5Compat>
-                  <CrossChainSwapComponent location={props.location} />
+                  <CrossChainSwapComponent location={v5Location} />
                 </AuthenticatedV5Compat>
               );
             }}
