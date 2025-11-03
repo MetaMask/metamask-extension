@@ -119,7 +119,7 @@ class UnlockPage extends Component {
 
   animationEventEmitter = new EventEmitter();
 
-  passwordLoginAttemptTraceCtx = null;
+  passwordLoginAttemptTraceStarted = false;
 
   /**
    * Determines if the current user is in the social import rehydration phase
@@ -148,11 +148,18 @@ class UnlockPage extends Component {
   }
 
   async componentDidMount() {
-    this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace?.({
-      name: TraceName.OnboardingPasswordLoginAttempt,
-      op: TraceOperation.OnboardingUserJourney,
-      parentContext: this.props.onboardingParentContext?.current,
-    });
+    this.context
+      .bufferedTrace?.({
+        name: TraceName.OnboardingPasswordLoginAttempt,
+        op: TraceOperation.OnboardingUserJourney,
+        parentContext: this.props.onboardingParentContext?.current,
+      })
+      .then(() => {
+        this.passwordLoginAttemptTraceStarted = true;
+      })
+      .catch((error) => {
+        log.error('Error starting trace:', error);
+      });
 
     try {
       await this.props.checkIsSeedlessPasswordOutdated();
@@ -217,11 +224,11 @@ class UnlockPage extends Component {
           isNewVisit: true,
         },
       );
-      if (this.passwordLoginAttemptTraceCtx) {
+      if (this.passwordLoginAttemptTraceStarted) {
         this.context.bufferedEndTrace?.({
           name: TraceName.OnboardingPasswordLoginAttempt,
         });
-        this.passwordLoginAttemptTraceCtx = null;
+        this.passwordLoginAttemptTraceStarted = false;
       }
       this.context.bufferedEndTrace?.({
         name: TraceName.OnboardingExistingSocialLogin,
