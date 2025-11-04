@@ -941,12 +941,6 @@ export const selectBalanceChangeBySelectedAccountGroup = (
   );
 
 /**
- * Selects the selected account group's balance entry from the aggregated
- * balances output, returning a minimal fallback when not present.
- *
- * @param state - Redux state used to read selection and aggregated balances.
- */
-/**
  * Creates an enabledNetworkMap from all non-test networks for balance calculations.
  * This selector combines EVM and non-EVM mainnet networks (excluding testnets and custom testnets)
  * and formats them into the enabledNetworkMap structure expected by calculateBalanceChangeForAccountGroup.
@@ -983,9 +977,7 @@ const selectAllMainnetNetworksEnabledMap = createSelector(
 );
 
 /**
- * Calculates total balance across ALL enabled networks for the selected account group,
- * following mobile architecture patterns. This selector builds the network map directly
- * to ensure proper mainnet network filtering and avoid memoization issues.
+ * Calculates total balance across all enabled networks for the selected account group.
  *
  * @param state - Redux state containing all required controller states for balance calculation.
  * @returns The total balance in user currency for the selected account group, or 0 if no group is selected.
