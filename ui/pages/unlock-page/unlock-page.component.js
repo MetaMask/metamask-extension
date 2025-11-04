@@ -90,7 +90,7 @@ class UnlockPage extends Component {
     /**
      * check if the seedless onboarding user is authenticated for social login flow to do the rehydration
      */
-    checkIsSeedlessOnboardingUserAuthenticated: PropTypes.func,
+    getIsSeedlessOnboardingUserAuthenticated: PropTypes.func,
     /**
      * Force update metamask data state
      */
@@ -174,7 +174,7 @@ class UnlockPage extends Component {
         // if the onboarding is not completed, check if the seedless onboarding user is authenticated to do the rehydration
         // we have to consider the case where required tokens for rehydration are removed when user closed the browser app after social login is completed.
         const isAuthenticated =
-          await this.props.checkIsSeedlessOnboardingUserAuthenticated();
+          await this.props.getIsSeedlessOnboardingUserAuthenticated();
         if (!isAuthenticated) {
           // if the seedless onboarding user is not authenticated, redirect to the onboarding welcome page
           this.props.history.replace(ONBOARDING_WELCOME_ROUTE);

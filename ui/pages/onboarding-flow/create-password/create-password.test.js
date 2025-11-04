@@ -328,8 +328,8 @@ describe('Onboarding Create Password', () => {
     });
 
     it('should redirect to onboarding welcome page when seedless onboarding user is not authenticated', async () => {
-      const mockCheckIsSeedlessOnboardingUserAuthenticated = jest
-        .spyOn(Actions, 'checkIsSeedlessOnboardingUserAuthenticated')
+      const mockGetIsSeedlessOnboardingUserAuthenticated = jest
+        .spyOn(Actions, 'getIsSeedlessOnboardingUserAuthenticated')
         .mockReturnValueOnce(jest.fn().mockResolvedValue(false));
       const mockStore = configureMockStore([thunk])({
         ...mockState,
@@ -344,9 +344,7 @@ describe('Onboarding Create Password', () => {
       );
 
       await waitFor(() => {
-        expect(
-          mockCheckIsSeedlessOnboardingUserAuthenticated,
-        ).toHaveBeenCalled();
+        expect(mockGetIsSeedlessOnboardingUserAuthenticated).toHaveBeenCalled();
         expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
           replace: true,
         });

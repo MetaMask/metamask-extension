@@ -55,7 +55,7 @@ import PasswordForm from '../../../components/app/password-form/password-form';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import {
-  checkIsSeedlessOnboardingUserAuthenticated,
+  getIsSeedlessOnboardingUserAuthenticated,
   forceUpdateMetamaskState,
   resetOnboarding,
   setDataCollectionForMarketing,
@@ -108,7 +108,7 @@ export default function CreatePassword({
 
   const validateSocialLoginAuthenticatedState = useCallback(async () => {
     const isSeedlessOnboardingUserAuthenticated = await dispatch(
-      checkIsSeedlessOnboardingUserAuthenticated(),
+      getIsSeedlessOnboardingUserAuthenticated(),
     );
     if (!isSeedlessOnboardingUserAuthenticated) {
       navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });

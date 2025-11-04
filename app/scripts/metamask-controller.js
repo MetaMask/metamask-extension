@@ -2784,8 +2784,8 @@ export default class MetamaskController extends EventEmitter {
         this.restoreSocialBackupAndGetSeedPhrase.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
       changePassword: this.changePassword.bind(this),
-      checkIsSeedlessOnboardingUserAuthenticated:
-        this.seedlessOnboardingController.checkIsSeedlessOnboardingUserAuthenticated.bind(
+      getIsSeedlessOnboardingUserAuthenticated:
+        this.seedlessOnboardingController.getIsUserAuthenticated.bind(
           this.seedlessOnboardingController,
         ),
 

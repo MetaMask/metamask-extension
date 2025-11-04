@@ -22,12 +22,15 @@ const mockMarkPasswordForgotten = jest.fn();
 const mockResetWallet = jest.fn(() => {
   return Promise.resolve();
 });
+const mockGetIsSeedlessOnboardingUserAuthenticated = jest.fn();
 
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   tryUnlockMetamask: () => mockTryUnlockMetamask,
   markPasswordForgotten: () => mockMarkPasswordForgotten,
   resetWallet: () => mockResetWallet,
+  getIsSeedlessOnboardingUserAuthenticated: () =>
+    mockGetIsSeedlessOnboardingUserAuthenticated,
 }));
 
 const mockElement = document.createElement('svg');
@@ -177,25 +180,16 @@ describe('Unlock Page', () => {
 
     jest.spyOn(history, 'replace');
 
-    const mockCheckIsSeedlessOnboardingUserAuthenticated = jest
-      .fn()
-      .mockResolvedValue(false);
+    mockGetIsSeedlessOnboardingUserAuthenticated.mockResolvedValue(false);
 
     renderWithProvider(
       <Router history={history}>
-        <UnlockPage
-          checkIsSeedlessOnboardingUserAuthenticated={
-            mockCheckIsSeedlessOnboardingUserAuthenticated
-          }
-        />
+        <UnlockPage />
       </Router>,
       store,
     );
 
     await waitFor(() => {
-      expect(
-        mockCheckIsSeedlessOnboardingUserAuthenticated,
-      ).toHaveBeenCalledTimes(1);
       expect(history.replace).toHaveBeenCalledTimes(1);
       expect(history.replace).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
     });

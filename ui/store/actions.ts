@@ -768,7 +768,7 @@ export function checkIsSeedlessPasswordOutdated(
  *
  * @returns True if the seedless onboarding user is authenticated, false otherwise.
  */
-export function checkIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
+export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
   boolean,
   MetaMaskReduxState,
   unknown,
@@ -789,12 +789,12 @@ export function checkIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
     try {
       dispatch(showLoadingIndication());
       const isAuthenticated = await submitRequestToBackground<boolean>(
-        'checkIsSeedlessOnboardingUserAuthenticated',
+        'getIsSeedlessOnboardingUserAuthenticated',
         [],
       );
       return isAuthenticated;
     } catch (error) {
-      log.warn('checkIsSeedlessOnboardingUserAuthenticated error', error);
+      log.warn('getIsSeedlessOnboardingUserAuthenticated error', error);
       return false;
     } finally {
       dispatch(hideLoadingIndication());
