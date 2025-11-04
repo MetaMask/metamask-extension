@@ -1,8 +1,8 @@
 // This file is used only for manifest version 3
 
 // We don't usually `import` files into `service-worker.ts` because we need to load
-// "chunks" via `importScripts`; but in this case `ExtensionLazyListener` is so
-// small we won't ever have a problem with these two files being "split".
+// "chunks" via `importScripts`; but in this case these files are so
+// small we won't ever have a problem with these files being "split".
 import './scripts/sentry-install';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
 
