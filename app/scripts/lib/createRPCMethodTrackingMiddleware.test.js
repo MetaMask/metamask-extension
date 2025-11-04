@@ -1,6 +1,6 @@
 import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
-import { Messenger } from '@metamask/base-controller';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
@@ -58,7 +58,7 @@ const appStateController = {
   },
 };
 
-const messenger = new Messenger();
+const messenger = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
 
 messenger.registerActionHandler('PreferencesController:getState', () => ({
   ...getDefaultPreferencesControllerState(),
@@ -81,6 +81,24 @@ messenger.registerActionHandler(
   }),
 );
 
+const controllerMessenger = new Messenger({
+  namespace: 'MetaMetricsController',
+  parent: messenger,
+});
+
+messenger.delegate({
+  messenger: controllerMessenger,
+  actions: [
+    'PreferencesController:getState',
+    'NetworkController:getState',
+    'NetworkController:getNetworkClientById',
+  ],
+  events: [
+    'PreferencesController:stateChange',
+    'NetworkController:networkDidChange',
+  ],
+});
+
 const metaMetricsController = new MetaMetricsController({
   state: {
     participateInMetaMetrics: null,
@@ -88,18 +106,7 @@ const metaMetricsController = new MetaMetricsController({
     fragments: {},
     events: {},
   },
-  messenger: messenger.getRestricted({
-    name: 'MetaMetricsController',
-    allowedActions: [
-      'PreferencesController:getState',
-      'NetworkController:getState',
-      'NetworkController:getNetworkClientById',
-    ],
-    allowedEvents: [
-      'PreferencesController:stateChange',
-      'NetworkController:networkDidChange',
-    ],
-  }),
+  messenger: controllerMessenger,
   segment: createSegmentMock(2),
   version: '0.0.1',
   environment: 'test',

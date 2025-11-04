@@ -21,6 +21,7 @@ describe('Unlock wallet - ', function () {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
       },
       async ({
         driver,

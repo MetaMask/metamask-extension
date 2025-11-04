@@ -74,6 +74,7 @@ import {
   Subscription,
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
+  CachedLastSelectedPaymentMethods,
 } from '@metamask/subscription-controller';
 
 import { captureException } from '../../shared/lib/sentry';
@@ -173,6 +174,8 @@ import {
   ClaimSubmitToastType,
   type NetworkConnectionBanner,
 } from '../../shared/constants/app-state';
+import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
+import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -586,14 +589,21 @@ export function setShowShieldEntryModalOnceAction(payload: {
   };
 }
 
-export function setLastUsedSubscriptionPaymentDetails(payload: {
-  paymentMethod: PaymentType;
-  plan: RecurringInterval;
-  paymentTokenAddress?: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return {
-    type: actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_DETAILS,
-    payload,
+export function setLastUsedSubscriptionPaymentDetails(
+  product: ProductType,
+  payload: CachedLastSelectedPaymentMethods,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('cacheLastSelectedPaymentMethod', [
+        product,
+        payload,
+      ]);
+    } catch (error) {
+      log.error('[setLastUsedSubscriptionPaymentDetails] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
   };
 }
 
@@ -3329,6 +3339,19 @@ export function setCurrentExtensionPopupId(
   };
 }
 
+export function setBrowserEnvironment(
+  os: string,
+  _browserName: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground<void>('setBrowserEnvironment', [
+      os,
+      _browserName,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function abortTransactionSigning(
   transactionId: string,
 
@@ -6046,23 +6069,6 @@ export async function tokenRatesStopPollingByPollingToken(
 }
 
 /**
- * Starts polling on accountTrackerController with the networkClientId
- *
- * @param networkClientId - The network client ID to pull balances for.
- * @returns polling token used to stop polling
- */
-export async function accountTrackerStartPolling(
-  networkClientId: string,
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'accountTrackerStartPolling',
-    [networkClientId],
-  );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
  * Stops polling on the account tracker controller.
  *
  * @param pollingToken - polling token to use to stop polling.
@@ -7608,22 +7614,27 @@ export async function submitShieldClaim(params: {
 
   const accessToken = await submitRequestToBackground<string>('getBearerToken');
 
-  // we do the request here instead of background controllers because files are not serializable
-  const response = await fetch(claimsUrl, {
-    method: 'POST',
-    body: formData,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  try {
+    // we do the request here instead of background controllers because files are not serializable
+    const response = await fetch(claimsUrl, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-  if (!response.ok) {
-    const errorMessage = await response.json();
-    if (errorMessage.message) {
-      throw new Error(errorMessage.message);
+    if (!response.ok) {
+      const error = (await response.json()) as SubmitClaimErrorResponse;
+      if (error?.errorCode) {
+        throw new SubmitClaimError(error.message, error);
+      }
+      throw new SubmitClaimError(ClaimSubmitToastType.Errored);
     }
-    throw new Error(ClaimSubmitToastType.Errored);
-  }
 
-  return ClaimSubmitToastType.Success;
+    return ClaimSubmitToastType.Success;
+  } catch (error) {
+    console.error(error);
+    throw new SubmitClaimError(ClaimSubmitToastType.Errored);
+  }
 }

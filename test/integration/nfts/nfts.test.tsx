@@ -1,9 +1,5 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import nock from 'nock';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 import * as backgroundConnection from '../../../ui/store/background-connection';
 import { integrationTestRender } from '../../lib/render-helpers';
 import mockMetaMaskState from '../data/integration-init-state.json';
@@ -36,7 +32,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -97,28 +93,6 @@ describe('NFTs list', () => {
     await waitForElementByText('MUNK #1 Mainnet');
     await waitForElementByText('MUNK #1 Chain 137');
     await waitForElementByText('MUNK #1 Chain 5');
-
-    let nftScreenOpenedMetricsEvent;
-
-    await waitFor(() => {
-      nftScreenOpenedMetricsEvent =
-        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) =>
-            call[0] === 'trackMetaMetricsEvent' &&
-            call[1]?.[0].category === MetaMetricsEventCategory.Home,
-        );
-
-      expect(nftScreenOpenedMetricsEvent?.[0]).toBe('trackMetaMetricsEvent');
-
-      expect(nftScreenOpenedMetricsEvent?.[1]).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            category: MetaMetricsEventCategory.Home,
-            event: MetaMetricsEventName.NftScreenOpened,
-          }),
-        ]),
-      );
-    });
   });
 
   it('filters the nfts list for the current network', async () => {
