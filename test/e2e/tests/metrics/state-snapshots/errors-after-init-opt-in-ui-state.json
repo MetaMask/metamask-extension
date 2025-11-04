@@ -81,7 +81,8 @@
     "redirectAfterDefaultPage": null
   },
   "invalidCustomNetwork": "object",
-  "localeMessages": "object",
+  "unconnectedAccount": { "state": "CLOSED" },
+  "activeTab": "object",
   "metamask": {
     "isInitialized": true,
     "isUnlocked": true,
@@ -92,8 +93,6 @@
     "useBlockie": false,
     "featureFlags": {},
     "currentLocale": "en",
-    "currentBlockGasLimit": "0x1c9c380",
-    "currentBlockGasLimitByChainId": { "0x539": "0x1c9c380" },
     "preferences": {
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
@@ -353,7 +352,6 @@
     "tokenScanCache": "object",
     "coverageResults": "object",
     "orderedTransactionHistory": "object",
-    "accounts": "object",
     "accountsByChainId": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
@@ -435,7 +433,12 @@
   "ramps": "object",
   "rewards": "object",
   "send": "object",
-  "smartAccounts": "object",
+  "confirmAlerts": "object",
+  "confirmTransaction": "object",
   "swaps": "object",
-  "unconnectedAccount": { "state": "CLOSED" }
+  "ramps": "object",
+  "bridge": "object",
+  "gas": { "customData": { "price": null, "limit": null } },
+  "localeMessages": "object",
+  "smartAccounts": "object"
 }
