@@ -14,6 +14,7 @@ import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import TestDappSendEthWithPrivateKey from '../../page-objects/pages/test-dapp-send-eth-with-private-key';
 import { handleSidepanelPostOnboarding } from '../../page-objects/flows/onboarding.flow';
+import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
 
 async function mockSpotPrices(mockServer: Mockttp) {
   return await mockServer
@@ -40,8 +41,16 @@ describe('Incremental Security', function (this: Suite) {
         dappOptions: {
           customDappPaths: ['./send-eth-with-private-key-test'],
         },
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
         testSpecificMock: mockSpotPrices,
+
         title: this.test?.fullTitle(),
       },
       async ({
@@ -97,6 +106,9 @@ describe('Incremental Security', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.clickAddressCopyButton();
+        const addressListModal = new AddressListModal(driver);
+        await addressListModal.clickCopyButton();
+        await addressListModal.goBack()
 
         // switched to Dapp and send eth to the current account
         const testDapp = new TestDappSendEthWithPrivateKey(driver);
@@ -111,7 +123,7 @@ describe('Incremental Security', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         // to update balance faster and avoid timeout error
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('5,100.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed('1', 'ETH');
 
         // backup reminder is displayed and it directs user to the backup SRP page
         await homePage.goToBackupSRPPage();
@@ -126,7 +138,7 @@ describe('Incremental Security', function (this: Suite) {
 
         // check the balance is correct after revealing and confirming the SRP
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('5,100.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed('1', 'ETH');
 
         // check backup reminder is not displayed on homepage
         await homePage.checkBackupReminderIsNotDisplayed();
