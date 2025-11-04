@@ -1841,6 +1841,18 @@
     "message": "$1 has recommended this price.",
     "description": "$1 represents the Dapp's origin"
   },
+  "dappSwapAdvantage": {
+    "message": "Save + Earn using MetaMask Swap:"
+  },
+  "dappSwapBenefits": {
+    "message": "No additional cost • Priority support • Network fees refunded on failed swaps"
+  },
+  "dappSwapQuoteDetails": {
+    "message": "Save $1 network fee, get $2 more $3"
+  },
+  "dappSwapQuoteDifference": {
+    "message": "Save about $1"
+  },
   "darkTheme": {
     "message": "Dark"
   },
@@ -1966,6 +1978,9 @@
   },
   "deepLink_theSwapsRampsPage": {
     "message": "the Swaps/Ramps page"
+  },
+  "deepLink_theTransactionShieldPage": {
+    "message": "the transaction shield page"
   },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
