@@ -77,14 +77,21 @@ export async function fetchGatorErc20TokenInfo(
         if (typeof decRaw === 'number') {
           decimals = decRaw;
         } else if (typeof decRaw === 'string') {
-          const parsed10 = parseInt(decRaw, 10);
-          if (Number.isFinite(parsed10)) {
-            decimals = parsed10;
+          // Handle hex strings (with 0x prefix) or decimal strings
+          const trimmed = decRaw.trim();
+          let parsed: number;
+
+          if (trimmed.startsWith('0x') || trimmed.startsWith('0X')) {
+            // Parse as hex (strip the 0x prefix)
+            parsed = parseInt(trimmed.slice(2), 16);
           } else {
-            const parsed16 = parseInt(decRaw, 16);
-            if (Number.isFinite(parsed16)) {
-              decimals = parsed16;
-            }
+            // Parse as decimal
+            parsed = parseInt(trimmed, 10);
+          }
+
+          // Only accept valid, finite, non-negative integers
+          if (Number.isFinite(parsed) && parsed >= 0) {
+            decimals = parsed;
           }
         }
         symbol = details?.symbol ?? symbol;
