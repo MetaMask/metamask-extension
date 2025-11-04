@@ -3,11 +3,7 @@ import {
   SeedlessOnboardingControllerMessenger,
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
-import {
-  EncryptionKey,
-  EncryptionResult,
-  KeyDerivationOptions,
-} from '@metamask/browser-passworder';
+import { EncryptionKey, EncryptionResult } from '@metamask/browser-passworder';
 import { ControllerInitFunction } from '../types';
 import { encryptorFactory } from '../../lib/encryptor-factory';
 import { isDevOrTestBuild } from '../../services/oauth/config';
@@ -18,7 +14,7 @@ const loadWeb3AuthNetwork = (): Web3AuthNetwork => {
 };
 
 export const SeedlessOnboardingControllerInit: ControllerInitFunction<
-  SeedlessOnboardingController<EncryptionKey, KeyDerivationOptions>,
+  SeedlessOnboardingController,
   SeedlessOnboardingControllerMessenger,
   SeedlessOnboardingControllerInitMessenger
 > = (request) => {

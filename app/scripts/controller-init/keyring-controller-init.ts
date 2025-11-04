@@ -14,10 +14,6 @@ import {
   LedgerIframeBridge,
   LedgerKeyring,
 } from '@metamask/eth-ledger-bridge-keyring';
-import {
-  EncryptionKey,
-  KeyDerivationOptions,
-} from '@metamask/browser-passworder';
 import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-factory';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
@@ -47,7 +43,7 @@ import {
  * @returns The initialized controller.
  */
 export const KeyringControllerInit: ControllerInitFunction<
-  KeyringController<EncryptionKey | CryptoKey, KeyDerivationOptions>,
+  KeyringController,
   KeyringControllerMessenger,
   KeyringControllerInitMessenger
 > = ({
@@ -113,10 +109,7 @@ export const KeyringControllerInit: ControllerInitFunction<
   additionalKeyrings.push(snapKeyringBuilder);
   ///: END:ONLY_INCLUDE_IF
 
-  const controller = new KeyringController<
-    EncryptionKey | CryptoKey,
-    KeyDerivationOptions
-  >({
+  const controller = new KeyringController({
     state: persistedState.KeyringController,
     messenger: controllerMessenger,
     keyringBuilders: additionalKeyrings,
