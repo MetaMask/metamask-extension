@@ -676,6 +676,7 @@ export const createSwapsMockStore = () => {
                   '0x55ad39634ee10d417b6e190cfd3736098957e958879cffe78f1f00f4fd2654d6',
                 minedTx: 'success',
               },
+              chainId: CHAIN_IDS.MAINNET,
             },
             {
               uuid: 'uuid2',
@@ -689,6 +690,7 @@ export const createSwapsMockStore = () => {
                   '0x55ad39634ee10d417b6e190cfd3736098957e958879cffe78f1f00f4fd2654d6',
                 minedTx: 'success',
               },
+              chainId: CHAIN_IDS.MAINNET,
             },
           ],
         },
