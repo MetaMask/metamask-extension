@@ -497,10 +497,8 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
         };
       }
 
-      return {
-        ...accounts,
-        [internalAccount.address]: account,
-      };
+      accounts[internalAccount.address] = account;
+      return accounts;
     }, {}),
 );
 /**
