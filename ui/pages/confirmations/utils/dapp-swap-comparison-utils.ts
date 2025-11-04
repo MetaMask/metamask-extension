@@ -49,10 +49,6 @@ export const ABI = [
   },
 ];
 
-function getArgsFromInput(input: string) {
-  return input?.slice(2).match(/.{1,64}/gu) ?? [];
-}
-
 function parseTransactionData(data?: string) {
   const contractInterface = new Interface(ABI);
 

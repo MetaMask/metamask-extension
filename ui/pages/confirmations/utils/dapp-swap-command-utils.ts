@@ -168,7 +168,7 @@ export function getCommandValues(
   DAPP_SWAP_COMMANDS.forEach((command) => {
     const args = getCommandArgs(commandBytes, inputs, command.value);
     if (args === undefined) {
-      return {};
+      return;
     }
 
     const result = command.handler(args, chainId, quotesInput);
