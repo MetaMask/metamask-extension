@@ -106,7 +106,7 @@ class AssetListPage {
     text: 'Token decimal',
   };
 
-  private readonly tokenNameInDetails = '[data-testid="asset-name"]';
+  private readonly tokenNameInDetails = '[data-testid="multichain-token-list-item-token-name"]';
 
   private readonly tokenImportedMessageCloseButton =
     '.actionable-message__message button[aria-label="Close"]';
