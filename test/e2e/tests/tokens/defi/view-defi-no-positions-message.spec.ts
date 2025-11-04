@@ -9,7 +9,6 @@ import { Driver } from '../../../webdriver/driver';
 import { mockNoDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
 import { switchToNetworkFromSendFlow } from '../../../page-objects/flows/network.flow';
-import home from '../../../../../shared/lib/deep-links/routes/home';
 
 describe('Check DeFi empty state when no defi positions', function () {
   it('user should be able to view empty', async function () {
