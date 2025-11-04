@@ -9,12 +9,12 @@ import {
 import { cloneDeep } from 'lodash';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import mockState from '../../../test/data/mock-state.json';
-import { useShieldAddFundTrigger } from './useAddFundTrigger';
 import * as actions from '../../store/actions';
 import * as subscriptionHooks from '../../hooks/subscription/useSubscription';
 import * as subscriptionPricingHooks from '../../hooks/subscription/useSubscriptionPricing';
 import { useTokenBalances } from '../../hooks/useTokenBalances';
 import { MINUTE } from '../../../shared/constants/time';
+import { useShieldAddFundTrigger } from './useAddFundTrigger';
 
 jest.mock('../../store/actions');
 jest.mock('../../hooks/subscription/useSubscription');
@@ -215,9 +215,8 @@ describe('useShieldAddFundTrigger', () => {
     if (
       !state.metamask.allTokenBalances[MOCK_CHAIN_ID][selectedAccount.address]
     ) {
-      state.metamask.allTokenBalances[MOCK_CHAIN_ID][
-        selectedAccount.address
-      ] = {};
+      state.metamask.allTokenBalances[MOCK_CHAIN_ID][selectedAccount.address] =
+        {};
     }
     // Store balance as string value
     state.metamask.allTokenBalances[MOCK_CHAIN_ID][selectedAccount.address][
@@ -234,11 +233,10 @@ describe('useShieldAddFundTrigger', () => {
     if (
       !state.metamask.accountsByChainId[MOCK_CHAIN_ID][selectedAccount.address]
     ) {
-      state.metamask.accountsByChainId[MOCK_CHAIN_ID][
-        selectedAccount.address
-      ] = {
-        balance: '0x0',
-      };
+      state.metamask.accountsByChainId[MOCK_CHAIN_ID][selectedAccount.address] =
+        {
+          balance: '0x0',
+        };
     }
 
     // Mock hooks

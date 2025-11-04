@@ -44,7 +44,8 @@ export const useShieldAddFundTrigger = () => {
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
-  const isSubscriptionPaused = shieldSubscription && getIsShieldSubscriptionPaused(shieldSubscription);
+  const isSubscriptionPaused =
+    shieldSubscription && getIsShieldSubscriptionPaused(shieldSubscription);
 
   const { subscriptionPricing } = useSubscriptionPricing();
   const pricingPlans = useSubscriptionProductPlans(
@@ -90,7 +91,10 @@ export const useShieldAddFundTrigger = () => {
   );
 
   // need to do async here since `getSubscriptionCryptoApprovalAmount` make call to background script
-  const { value: subscriptionCryptoApprovalAmount, pending: subscriptionCryptoApprovalAmountPending } = useAsyncResult(async () => {
+  const {
+    value: subscriptionCryptoApprovalAmount,
+    pending: subscriptionCryptoApprovalAmountPending,
+  } = useAsyncResult(async () => {
     if (!shieldSubscription || !cryptoPaymentInfo || !selectedTokenPrice) {
       return undefined;
     }
@@ -109,21 +113,20 @@ export const useShieldAddFundTrigger = () => {
   pollAndUpdateEvmBalances({ chainIds: paymentChainIds });
   // valid token balances for checking
   const validTokenBalance = useMemo(() => {
-    console.log('>>>> hehrersubscriptionCryptoApprovalAmount', {
-      cryptoPaymentInfo,
-      selectedTokenPrice,
-      subscriptionCryptoApprovalAmountPending,
-      subscriptionCryptoApprovalAmount,
-    });
-    if (!cryptoPaymentInfo || !selectedTokenPrice || subscriptionCryptoApprovalAmountPending || !subscriptionCryptoApprovalAmount) {
+    if (
+      !cryptoPaymentInfo ||
+      !selectedTokenPrice ||
+      subscriptionCryptoApprovalAmountPending ||
+      !subscriptionCryptoApprovalAmount
+    ) {
       return undefined;
     }
 
-    const token = evmBalances.find((token) => cryptoPaymentInfo.crypto.chainId === token.chainId && selectedTokenPrice.address.toLowerCase() === token.address.toLowerCase());
-    console.log('>>>> hehrertoken', {
-      token,
-      evmBalances,
-    });
+    const token = evmBalances.find(
+      (t) =>
+        cryptoPaymentInfo.crypto.chainId === t.chainId &&
+        selectedTokenPrice.address.toLowerCase() === t.address.toLowerCase(),
+    );
     if (!token || !token.balance) {
       return undefined;
     }
@@ -137,10 +140,6 @@ export const useShieldAddFundTrigger = () => {
       subscriptionCryptoApprovalAmount &&
       scaledBalance * BigInt(10 ** token.decimals) >=
         BigInt(subscriptionCryptoApprovalAmount.approveAmount);
-    console.log('>>>> hehrertokenHasEnoughBalance', {
-      tokenHasEnoughBalance,
-      token,
-    });
 
     if (!tokenHasEnoughBalance) {
       return undefined;
@@ -152,10 +151,10 @@ export const useShieldAddFundTrigger = () => {
     subscriptionCryptoApprovalAmountPending,
     evmBalances,
     cryptoPaymentInfo,
-    shieldSubscription,
+    selectedTokenPrice,
   ]);
 
-  const hasAvailableSelectedToken = !!validTokenBalance;
+  const hasAvailableSelectedToken = Boolean(validTokenBalance);
 
   // throttle the hasAvailableSelectedToken to avoid multiple triggers
   const { value: hasAvailableSelectedTokenThrottled } = useThrottle({
