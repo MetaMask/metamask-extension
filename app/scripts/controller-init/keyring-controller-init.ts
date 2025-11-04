@@ -14,6 +14,10 @@ import {
   LedgerIframeBridge,
   LedgerKeyring,
 } from '@metamask/eth-ledger-bridge-keyring';
+import {
+  EncryptionKey,
+  KeyDerivationOptions,
+} from '@metamask/browser-passworder';
 import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-factory';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
@@ -43,7 +47,7 @@ import {
  * @returns The initialized controller.
  */
 export const KeyringControllerInit: ControllerInitFunction<
-  KeyringController,
+  KeyringController<EncryptionKey | CryptoKey, KeyDerivationOptions>,
   KeyringControllerMessenger,
   KeyringControllerInitMessenger
 > = ({
@@ -109,11 +113,12 @@ export const KeyringControllerInit: ControllerInitFunction<
   additionalKeyrings.push(snapKeyringBuilder);
   ///: END:ONLY_INCLUDE_IF
 
-  // @ts-expect-error: The types for the encryptor are not correct.
-  const controller = new KeyringController({
+  const controller = new KeyringController<
+    EncryptionKey | CryptoKey,
+    KeyDerivationOptions
+  >({
     state: persistedState.KeyringController,
     messenger: controllerMessenger,
-    cacheEncryptionKey: true,
     keyringBuilders: additionalKeyrings,
     encryptor: encryptor || encryptorFactory(600_000),
   });

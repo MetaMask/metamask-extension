@@ -83,7 +83,7 @@ export type ControllerInitRequest<
    * An instance of an encryptor to use for encrypting and decrypting
    * sensitive data.
    */
-  encryptor?: ExportableKeyEncryptor;
+  encryptor: ExportableKeyEncryptor;
 
   /**
    * The extension browser API.

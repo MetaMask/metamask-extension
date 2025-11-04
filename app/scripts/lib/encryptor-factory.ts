@@ -13,6 +13,7 @@ import {
   EncryptionKey,
   KeyDerivationOptions,
 } from '@metamask/browser-passworder';
+import type { ExportableKeyEncryptor } from '@metamask/keyring-controller';
 
 /**
  * A factory function for the encrypt method of the browser-passworder library,
@@ -107,7 +108,9 @@ const isVaultUpdatedFactory = (iterations: number) => (vault: string) =>
  * @param iterations - The number of iterations to use for the PBKDF2 algorithm.
  * @returns An encryptor set with the given number of iterations.
  */
-export const encryptorFactory = (iterations: number) => ({
+export const encryptorFactory = (
+  iterations: number,
+): ExportableKeyEncryptor<EncryptionKey | CryptoKey, KeyDerivationOptions> => ({
   encrypt: encryptFactory(iterations),
   encryptWithKey,
   encryptWithDetail: encryptWithDetailFactory(iterations),

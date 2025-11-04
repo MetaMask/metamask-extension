@@ -6719,9 +6719,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@24.0.0-preview-898a4135":
-  version: 24.0.0-preview-898a4135
-  resolution: "@metamask-previews/keyring-controller@npm:24.0.0-preview-898a4135"
+"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@24.0.0-preview-fe9b7e4c":
+  version: 24.0.0-preview-fe9b7e4c
+  resolution: "@metamask-previews/keyring-controller@npm:24.0.0-preview-fe9b7e4c"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -6738,7 +6738,7 @@ __metadata:
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
     ulid: "npm:^2.3.0"
-  checksum: 10/f531827fbdf0eb5f51a4f97fbe73052c00f348a9bb25ab64e44e74ca054f8bfe4b7300115455552a3ab49cf698d37441b2e0e84ba215c631cd984516ec4082cd
+  checksum: 10/a4d02845f11fa75e33ad0518f23062f5e343d38f83b5ffb95b7abaf2b02c3771359a992682534b06b37e1cce6c7d4b855847e5bd3cebf535770b6e818f014654
   languageName: node
   linkType: hard
 
@@ -7528,9 +7528,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@6.0.0-preview-898a4135":
-  version: 6.0.0-preview-898a4135
-  resolution: "@metamask-previews/seedless-onboarding-controller@npm:6.0.0-preview-898a4135"
+"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@6.0.0-preview-fe9b7e4c":
+  version: 6.0.0-preview-fe9b7e4c
+  resolution: "@metamask-previews/seedless-onboarding-controller@npm:6.0.0-preview-fe9b7e4c"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7543,7 +7543,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
   peerDependencies:
     "@metamask/keyring-controller": ^24.0.0
-  checksum: 10/1ed07513b4324eccfe0fdd61768f17450f8599301ffc548bcdd0b933021c2238e2d37e46fdce3ac36714b50f303fdbf4cde0091191ce52d06b1e2186bbbe85e9
+  checksum: 10/73d03af51a56307394e006e6cc33d8165b53e13b3e5adaad2dfddd4ce4a8ad334b263078ef0a69cd774205d1b04b1875f8a70e447173133e38f4e8f56ebfc2be
   languageName: node
   linkType: hard
 
