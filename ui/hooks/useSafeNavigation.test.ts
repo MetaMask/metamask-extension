@@ -234,23 +234,22 @@ describe('useSafeNavigation', () => {
 
       expect(mockSetNavState).toHaveBeenCalledWith({ page: 1 });
 
-      // Second navigation before cleanup
+      // Second navigation before cleanup - this clears the first timeout
       act(() => {
         result.current.navigate('/page2', { state: { page: 2 } });
       });
 
       expect(mockSetNavState).toHaveBeenCalledWith({ page: 2 });
 
-      // Advance timers - both cleanups should execute
+      // Advance timers - only the second cleanup should execute (first was cleared)
       act(() => {
         jest.advanceTimersByTime(100);
       });
 
-      // Should have been called: page1 state, page2 state, cleanup1, cleanup2
-      expect(mockSetNavState).toHaveBeenCalledTimes(4);
-      const { calls } = mockSetNavState.mock;
-      expect(calls[calls.length - 2][0]).toBe(null); // First cleanup
-      expect(calls[calls.length - 1][0]).toBe(null); // Second cleanup
+      // Should have been called: page1 state, page2 state, cleanup2 only = 3 calls
+      // (cleanup1 was cleared when page2 navigation happened)
+      expect(mockSetNavState).toHaveBeenCalledTimes(3);
+      expect(mockSetNavState).toHaveBeenLastCalledWith(null);
     });
 
     it('should not accumulate state across multiple navigations', () => {
@@ -259,7 +258,7 @@ describe('useSafeNavigation', () => {
         useSafeNavigation(mockCustomNavigate),
       );
 
-      // Multiple navigations
+      // Multiple navigations - each clears the previous timeout
       for (let i = 0; i < 5; i++) {
         act(() => {
           result.current.navigate(`/page${i}`, { state: { id: i } });
@@ -274,8 +273,9 @@ describe('useSafeNavigation', () => {
       // Last call should always be cleanup (null)
       expect(mockSetNavState).toHaveBeenLastCalledWith(null);
 
-      // Should have 5 state sets + 5 cleanups = 10 total calls
-      expect(mockSetNavState).toHaveBeenCalledTimes(10);
+      // Should have 5 state sets + 1 cleanup (only the last one) = 6 total calls
+      // Previous 4 cleanup timeouts were cleared by subsequent navigations
+      expect(mockSetNavState).toHaveBeenCalledTimes(6);
     });
   });
 
@@ -341,6 +341,94 @@ describe('useSafeNavigation', () => {
         '/destination',
         undefined,
       );
+      expect(mockSetNavState).toHaveBeenCalledWith(null);
+    });
+  });
+
+  describe('timeout cleanup', () => {
+    it('should clear previous timeout when navigate is called multiple times', () => {
+      const { result } = renderHook(() => useSafeNavigation());
+
+      act(() => {
+        result.current.navigate('/path1', { state: { first: true } });
+      });
+
+      // First timeout scheduled, advance time partially
+      act(() => {
+        jest.advanceTimersByTime(50);
+      });
+
+      // Navigate again before first timeout completes
+      act(() => {
+        result.current.navigate('/path2', { state: { second: true } });
+      });
+
+      // Advance remaining time from first timeout (should not trigger)
+      act(() => {
+        jest.advanceTimersByTime(50);
+      });
+
+      // Only the second navigation's state should remain (not cleaned up yet)
+      // First timeout was cleared, so we should have: initial calls + second call
+      expect(mockSetNavState).toHaveBeenCalledWith({ first: true });
+      expect(mockSetNavState).toHaveBeenCalledWith({ second: true });
+
+      // Now advance time to trigger second timeout
+      act(() => {
+        jest.advanceTimersByTime(50);
+      });
+
+      // Second timeout should clean up
+      expect(mockSetNavState).toHaveBeenLastCalledWith(null);
+    });
+
+    it('should clear timeout on unmount', () => {
+      const { result, unmount } = renderHook(() => useSafeNavigation());
+
+      act(() => {
+        result.current.navigate('/destination', { state: { test: true } });
+      });
+
+      // Unmount before timeout completes
+      unmount();
+
+      // Advance time past when cleanup would have happened
+      act(() => {
+        jest.advanceTimersByTime(100);
+      });
+
+      // The cleanup after unmount should not trigger setNavState again
+      // We should only see the initial call, not a cleanup call
+      const callCount = mockSetNavState.mock.calls.length;
+
+      // Advancing timers again should not add more calls
+      act(() => {
+        jest.advanceTimersByTime(100);
+      });
+
+      expect(mockSetNavState.mock.calls.length).toBe(callCount);
+    });
+
+    it('should not accumulate timeouts', () => {
+      const { result } = renderHook(() => useSafeNavigation());
+
+      // Navigate 5 times quickly
+      act(() => {
+        for (let i = 0; i < 5; i++) {
+          result.current.navigate(`/path${i}`, { state: { count: i } });
+        }
+      });
+
+      // Clear all mock calls to focus on cleanup behavior
+      mockSetNavState.mockClear();
+
+      // Advance time to trigger cleanup
+      act(() => {
+        jest.advanceTimersByTime(100);
+      });
+
+      // Only ONE cleanup should happen (from the last navigate call)
+      expect(mockSetNavState).toHaveBeenCalledTimes(1);
       expect(mockSetNavState).toHaveBeenCalledWith(null);
     });
   });

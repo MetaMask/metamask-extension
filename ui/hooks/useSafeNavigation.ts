@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
-import { useCallback } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { useSetNavState } from '../contexts/navigation-state';
 
 type SafeNavigateOptions = {
@@ -16,6 +16,16 @@ export const useSafeNavigation = (
   const defaultNavigate = useNavigate();
   const location = useLocation();
   const setNavState = useSetNavState();
+  const cleanupTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clear timeout on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (cleanupTimeoutRef.current) {
+        clearTimeout(cleanupTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Memoize the navigate function to prevent unnecessary re-renders
   // This is critical for useEffect dependencies that include navigate
@@ -27,9 +37,15 @@ export const useSafeNavigation = (
         setNavState(null);
       }
 
+      // Clear any existing timeout before scheduling a new one
+      if (cleanupTimeoutRef.current) {
+        clearTimeout(cleanupTimeoutRef.current);
+      }
+
       // Schedule cleanup for both custom and default navigate to prevent memory leaks
-      setTimeout(() => {
+      cleanupTimeoutRef.current = setTimeout(() => {
         setNavState(null);
+        cleanupTimeoutRef.current = null;
       }, 100);
 
       if (customNavigate) {
