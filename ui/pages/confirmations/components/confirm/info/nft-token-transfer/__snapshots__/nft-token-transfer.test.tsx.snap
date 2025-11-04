@@ -234,6 +234,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
         </div>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          data-testid="confirmation__details-network-name"
         >
           Goerli
         </p>
