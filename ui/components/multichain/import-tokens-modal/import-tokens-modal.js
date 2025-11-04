@@ -16,6 +16,7 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link/dist/token-tracker-link';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -26,8 +27,6 @@ import {
 import {
   getInternalAccounts,
   getIsDynamicTokenListAvailable,
-  getIsTokenDetectionInactiveOnMainnet,
-  getIsTokenDetectionSupported,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getSelectedInternalAccount,
   getTokenDetectionSupportNetworkByChainId,
@@ -121,7 +120,6 @@ import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { isGlobalNetworkSelectorRemoved } from '../../../selectors/selectors';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
-import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 
 const ACTION_MODES = {
   // Displays the import token modal
@@ -198,15 +196,6 @@ export const ImportTokensModal = ({ onClose }) => {
     }
   }, [currentMultichainChainId, chainId]); // This should not be executed when selectedNetwork changes
 
-  // Determine if we should show the search tab
-  const isTokenDetectionSupported = useSelector(getIsTokenDetectionSupported);
-  const isTokenDetectionInactiveOnMainnet = useSelector(
-    getIsTokenDetectionInactiveOnMainnet,
-  );
-
-  const useTokenDetection = useSelector(
-    ({ metamask }) => metamask.useTokenDetection,
-  );
   const networkName = useSelector(getTokenDetectionSupportNetworkByChainId);
   const nativeCurrency = useSelector(getNativeCurrency);
 
@@ -920,34 +909,32 @@ export const ImportTokensModal = ({ onClose }) => {
                       className="flex-1"
                     >
                       <Box paddingTop={4}>
-                        {useTokenDetection ? null : (
-                          <Box paddingLeft={4} paddingRight={4}>
-                            <BannerAlert
-                              severity={Severity.Info}
-                              marginBottom={4}
-                              paddingLeft={4}
-                              paddingRight={4}
-                            >
-                              <Text variant={TextVariant.bodyMd} fontSize="16">
-                                {t('enhancedTokenDetectionAlertMessage', [
-                                  networkName,
-                                  <ButtonLink
-                                    key="token-detection-announcement"
-                                    className="import-tokens-modal__autodetect"
-                                    onClick={() => {
-                                      onClose();
-                                      history.push(
-                                        `${SECURITY_ROUTE}#auto-detect-tokens`,
-                                      );
-                                    }}
-                                  >
-                                    {t('enableFromSettings')}
-                                  </ButtonLink>,
-                                ])}
-                              </Text>
-                            </BannerAlert>
-                          </Box>
-                        )}
+                        <Box paddingLeft={4} paddingRight={4}>
+                          <BannerAlert
+                            severity={Severity.Info}
+                            marginBottom={4}
+                            paddingLeft={4}
+                            paddingRight={4}
+                          >
+                            <Text variant={TextVariant.bodyMd} fontSize="16">
+                              {t('enhancedTokenDetectionAlertMessage', [
+                                networkName,
+                                <ButtonLink
+                                  key="token-detection-announcement"
+                                  className="import-tokens-modal__autodetect"
+                                  onClick={() => {
+                                    onClose();
+                                    history.push(
+                                      `${SECURITY_ROUTE}#auto-detect-tokens`,
+                                    );
+                                  }}
+                                >
+                                  {t('enableFromSettings')}
+                                </ButtonLink>,
+                              ])}
+                            </Text>
+                          </BannerAlert>
+                        </Box>
 
                         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
                           <TokenSearch
