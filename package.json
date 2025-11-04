@@ -446,8 +446,7 @@
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
-    "xml2js": "^0.6.2",
-    "yarn.lock": "^0.0.1-security"
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@actions/core": "^1.10.0",

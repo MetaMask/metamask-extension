@@ -1534,7 +1534,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
       },
     ],
     defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: ['https://monvision.io/'],
+    blockExplorerUrls: ['https://monadscan.com/'],
     defaultBlockExplorerUrlIndex: 0,
   },
   {
@@ -1666,3 +1666,14 @@ export const TEST_NETWORK_IDS = [
   CHAIN_IDS.MEGAETH_TESTNET,
   CHAIN_IDS.MONAD_TESTNET,
 ];
+
+// default minimum number of `occurrences` per token
+export const MINIMUM_TOKEN_OCCURRENCES = 2;
+
+/**
+ * A map of chain IDs to the minimum number of occurrences.
+ */
+export const TOKEN_OCCURRENCES_MAP: Partial<Record<ChainId, number>> = {
+  // MONAD has very low amount of occurences for tokens, using default value leaves us with just MON
+  [CHAIN_IDS.MONAD]: 1,
+};

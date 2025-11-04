@@ -32282,7 +32282,6 @@ __metadata:
     yaml: "npm:^2.4.1"
     yargs: "npm:^17.7.2"
     yargs-parser: "npm:^21.1.1"
-    yarn.lock: "npm:^0.0.1-security"
   languageName: unknown
   linkType: soft
 
@@ -44197,13 +44196,6 @@ __metadata:
     y18n: "npm:^3.2.1"
     yargs-parser: "npm:^5.0.1"
   checksum: 10/5d52d70cdad810c163b49a0805f5962417e17630b69356aee6234667f75a167f4cc2a51d0cfe0a8ee002ebd0dbdfdd7c471abebe93e1d63125c9363bf6852f7f
-  languageName: node
-  linkType: hard
-
-"yarn.lock@npm:^0.0.1-security":
-  version: 0.0.1-security
-  resolution: "yarn.lock@npm:0.0.1-security"
-  checksum: 10/247a60a82cb355617a26b49fe9097154ed3ab325116897a6bc7e6794984e96856d4a612d9e5e1854859b5338e95c0d8f53a87436f3455189e927a3679ff43bbe
   languageName: node
   linkType: hard
 
