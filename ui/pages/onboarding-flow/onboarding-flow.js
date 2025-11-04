@@ -166,17 +166,12 @@ export default function OnboardingFlow() {
     bufferedTrace?.({
       name: TraceName.OnboardingJourneyOverall,
       op: TraceOperation.OnboardingUserJourney,
-    })
-      ?.then(() => {
-        if (onboardingParentContext) {
-          onboardingParentContext.current = {
-            _name: TraceName.OnboardingJourneyOverall,
-          };
-        }
-      })
-      .catch((error) => {
-        console.error('Error starting trace:', error);
-      });
+    });
+    if (onboardingParentContext) {
+      onboardingParentContext.current = {
+        _name: TraceName.OnboardingJourneyOverall,
+      };
+    }
   }, [onboardingParentContext, bufferedTrace]);
 
   const handleCreateNewAccount = async (password) => {
