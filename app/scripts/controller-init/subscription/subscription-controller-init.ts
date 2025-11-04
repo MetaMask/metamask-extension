@@ -27,7 +27,7 @@ export const SubscriptionControllerInit: ControllerInitFunction<
 > = (request) => {
   const { initMessenger, controllerMessenger, persistedState } = request;
   const subscriptionService = new SubscriptionService({
-    env: isDevOrTestBuild() ? Env.DEV : Env.PRD,
+    env: Env.DEV, // TODO: REMOVE AFTER TESTING
     auth: {
       getAccessToken: () =>
         initMessenger.call('AuthenticationController:getBearerToken'),

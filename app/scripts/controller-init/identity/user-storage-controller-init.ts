@@ -3,6 +3,7 @@ import {
   UserStorageControllerState,
   Controller as UserStorageController,
 } from '@metamask/profile-sync-controller/user-storage';
+import { Env } from '@metamask/profile-sync-controller/sdk';
 import { ControllerInitFunction } from '../types';
 import {
   MetaMetricsEventCategory,
@@ -32,6 +33,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     config: {
+      env: Env.DEV, // TODO: REMOVE AFTER TESTING
       contactSyncing: {
         onContactUpdated: (profileId) => {
           initMessenger.call('MetaMetricsController:trackEvent', {
