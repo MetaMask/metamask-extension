@@ -383,16 +383,7 @@ class AssetListPage {
    */
   async openTokenDetails(tokenSymbol: string): Promise<void> {
     console.log(`Opening token details for ${tokenSymbol}`);
-    const tokenElements = await this.driver.findElements(this.tokenListItem);
-
-    for (const element of tokenElements) {
-      const text = await element.getText();
-      if (text.includes(tokenSymbol)) {
-        await element.click();
-        return;
-      }
-    }
-    throw new Error(`Token "${tokenSymbol}" not found in token list`);
+    await this.driver.clickElement({ text: tokenSymbol, css: this.tokenNameInDetails });
   }
 
   async waitUntilFilterLabelIs(label: string): Promise<void> {
