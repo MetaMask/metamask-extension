@@ -105,8 +105,9 @@ export function useDappSwapComparisonInfo() {
     captureDappSwapComparisonMetricsProperties({
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        dapp_swap_comparison: 'loading',
-        dapp_swap_commands: commands,
+        swap_dapp_comparison: 'loading',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_dapp_commands: commands,
       },
     });
 
@@ -188,7 +189,9 @@ export function useDappSwapComparisonInfo() {
       captureDappSwapComparisonMetricsProperties({
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          dapp_swap_comparison: 'completed',
+          swap_dapp_comparison: 'completed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_commands: commands,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_from_token_simulated_value_usd: getTokenUSDValue(
             srcTokenAmount,

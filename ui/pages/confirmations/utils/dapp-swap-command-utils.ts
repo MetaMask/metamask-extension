@@ -67,7 +67,7 @@ function handleV3SwapExactInCommand(
       ...quotesInput,
       walletAddress: argToAddress(args[0]),
       srcTokenAmount: argToAmount(args[1]),
-      destTokenAddress: bytes.substring(bytes.length - 82, bytes.length - 42),
+      destTokenAddress: `0x${bytes.substring(bytes.length - 82, bytes.length - 42)}`,
     } as GenericQuoteRequest,
   };
 }
@@ -163,16 +163,18 @@ export function getCommandValues(
     return {};
   }
 
+  let isExactOutRequest = false;
+
   DAPP_SWAP_COMMANDS.forEach((command) => {
     const args = getCommandArgs(commandBytes, inputs, command.value);
     if (args === undefined) {
-      return;
+      return {};
     }
 
     const result = command.handler(args, chainId, quotesInput);
     if (result) {
       if (result.isExactOut === true) {
-        return {};
+        isExactOutRequest = true;
       }
       if (result.amountMin !== undefined) {
         amountMin = result.amountMin;
@@ -182,6 +184,10 @@ export function getCommandValues(
       }
     }
   });
+
+  if (isExactOutRequest) {
+    return {};
+  }
 
   return {
     quotesInput,
