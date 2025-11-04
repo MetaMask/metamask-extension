@@ -17,13 +17,17 @@ describe('Hide tokens without balance', function (this: Suite) {
     const smartContract = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         smartContract,
       },
       async ({ driver, localNodes }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
         const assetListPage = new AssetListPage(driver);
+        await assetListPage.importCustomTokenByChain(
+          '0x539',
+          '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+        );
         await assetListPage.importCustomTokenByChain(
           '0x539',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945948',
