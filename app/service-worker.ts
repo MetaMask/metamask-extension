@@ -3,6 +3,7 @@
 // We don't usually `import` files into `service-worker.ts` because we need to load
 // "chunks" via `importScripts`; but in this case `ExtensionLazyListener` is so
 // small we won't ever have a problem with these two files being "split".
+import './scripts/sentry-install.js';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
 
 // We need to define 'window' in the global scope to use it in the service worker
