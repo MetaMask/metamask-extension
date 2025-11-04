@@ -52,7 +52,7 @@ export const ABI = [
 ];
 
 const COMMAND_BYTE_SWEEP = '04';
-const COMMAND_BYTE_PERMIT2PERMIT = '10';
+const COMMAND_BYTE_SEAPORT = '10';
 const COMMAND_BYTE_UNWRAP_WETH = '0c';
 
 function getArgsFromInput(input: string) {
@@ -108,28 +108,28 @@ function getCommandArgs(
   return getArgsFromInput(inputs[commandIndex]);
 }
 
-function addPermit2PermitCommandValues(
+function addSeaportCommandValues(
   commandBytes: string[],
   inputs: string[],
   quotesInput: GenericQuoteRequest,
 ) {
-  const permit2PermitArgs = getCommandArgs(
+  const seaportArgs = getCommandArgs(
     commandBytes,
     inputs,
-    COMMAND_BYTE_PERMIT2PERMIT,
+    COMMAND_BYTE_SEAPORT,
   );
-  if (permit2PermitArgs === undefined) {
+  if (seaportArgs === undefined) {
     return undefined;
   }
 
   return {
-    amountMin: argToAmount(permit2PermitArgs[13]),
+    amountMin: argToAmount(seaportArgs[13]),
     quotesInput: {
       ...quotesInput,
-      destTokenAddress: argToAddress(permit2PermitArgs[16]),
-      srcTokenAddress: argToAddress(permit2PermitArgs[10]),
-      srcTokenAmount: argToAmount(permit2PermitArgs[12]),
-      walletAddress: argToAddress(permit2PermitArgs[28]),
+      destTokenAddress: argToAddress(seaportArgs[16]),
+      srcTokenAddress: argToAddress(seaportArgs[10]),
+      srcTokenAmount: argToAmount(seaportArgs[12]),
+      walletAddress: argToAddress(seaportArgs[28]),
     } as GenericQuoteRequest,
   };
 }
@@ -190,14 +190,14 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
     gasIncluded7702: false,
   } as GenericQuoteRequest;
 
-  const permit2PermitResult = addPermit2PermitCommandValues(
+  const seaportResult = addSeaportCommandValues(
     commandBytes,
     inputs,
     quotesInput,
   );
-  if (permit2PermitResult) {
-    amountMin = permit2PermitResult.amountMin;
-    quotesInput = permit2PermitResult.quotesInput;
+  if (seaportResult) {
+    amountMin = seaportResult.amountMin;
+    quotesInput = seaportResult.quotesInput;
   } else {
     return { quotesInput: undefined, amountMin: undefined, tokenAddresses: [] };
   }
