@@ -38,7 +38,12 @@ export function getSubscriptionServiceMessenger(
       'SubscriptionController:updatePaymentMethod',
       'SubscriptionController:getCryptoApproveTransactionParams',
       'SubscriptionController:getBillingPortalUrl',
+      'SubscriptionController:submitSponsorshipIntents',
       'AuthenticationController:getBearerToken',
+      'TransactionController:getTransactions',
+      'AccountsController:getState',
+      'PreferencesController:getState',
+      'SmartTransactionsController:getState',
     ],
   });
   return serviceMessenger;

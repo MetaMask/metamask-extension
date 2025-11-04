@@ -1,11 +1,22 @@
 import { Messenger } from '@metamask/messenger';
 import {
   PAYMENT_TYPES,
+  PRODUCT_TYPES,
   StartSubscriptionRequest,
   UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import log from 'loglevel';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
+import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
+import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
+// TODO: Migrate to shared directory and remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { accountSupportsSmartTx } from '../../../../ui/selectors';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -38,6 +49,11 @@ export class SubscriptionService {
     this.#messenger = messenger;
     this.#platform = platform;
     this.#webAuthenticator = webAuthenticator;
+
+    this.#messenger.registerActionHandler(
+      `${SERVICE_NAME}:submitSubscriptionSponsorshipIntent`,
+      this.submitSubscriptionSponsorshipIntent.bind(this),
+    );
   }
 
   async updateSubscriptionCardPaymentMethod(
@@ -126,6 +142,42 @@ export class SubscriptionService {
     return subscriptions;
   }
 
+  async submitSubscriptionSponsorshipIntent(txMeta: TransactionMeta) {
+    const { chainId, type, txParams, actionId, id } = txMeta;
+    if (type !== TransactionType.shieldSubscriptionApprove) {
+      return;
+    }
+
+    const transactions =
+      this.#messenger.call('TransactionController:getTransactions') || [];
+    const existingTxMeta = transactions?.find(
+      (tx) => tx.actionId === actionId || tx.id === id,
+    );
+    // If the transaction already exists, we don't need to submit the sponsorship intent again
+    if (existingTxMeta) {
+      return;
+    }
+
+    const isSmartTransactionEnabled =
+      await this.#getIsSmartTransactionEnabled(chainId);
+    if (!isSmartTransactionEnabled) {
+      return;
+    }
+
+    try {
+      await this.#messenger.call(
+        'SubscriptionController:submitSponsorshipIntents',
+        {
+          chainId,
+          address: txParams.from as `0x${string}`,
+          products: [PRODUCT_TYPES.SHIELD],
+        },
+      );
+    } catch (error) {
+      log.error('Failed to submit sponsorship intent', error);
+    }
+  }
+
   async #openAndWaitForTabToClose(params: { url: string; successUrl: string }) {
     const openedTab = await this.#platform.openTab({ url: params.url });
 
@@ -168,5 +220,29 @@ export class SubscriptionService {
       };
       this.#platform.addTabRemovedListener(onTabRemovedListener);
     });
+  }
+
+  async #getIsSmartTransactionEnabled(chainId: `0x${string}`) {
+    const uiState = {
+      metamask: {
+        ...this.#messenger.call('AccountsController:getState'),
+        ...this.#messenger.call('PreferencesController:getState'),
+        ...this.#messenger.call('SmartTransactionsController:getState'),
+      },
+    };
+    const smartTransactionsPreferenceEnabled =
+      getSmartTransactionsPreferenceEnabled(uiState);
+    const supportedAccount = accountSupportsSmartTx(uiState);
+    const smartTxLiveness =
+      uiState.metamask.smartTransactionsState?.livenessByChainId[chainId];
+
+    const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
+
+    return (
+      smartTransactionsPreferenceEnabled &&
+      supportedAccount &&
+      smartTxLiveness &&
+      isSendBundleSupportedChain
+    );
   }
 }
