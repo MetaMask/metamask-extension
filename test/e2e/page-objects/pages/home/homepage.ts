@@ -291,7 +291,6 @@ class HomePage {
       console.log(
         `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
       );
-      return;
     } catch (balanceError) {
       // Balance element not found, check if empty state is displayed instead
       try {
