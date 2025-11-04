@@ -32,6 +32,9 @@ class HomePage {
   protected readonly balance: string =
     '[data-testid="eth-overview__primary-currency"]';
 
+  protected readonly emptyBalance: string =
+    '[data-testid="coin-overview-balance-empty-state"]';
+
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
     css: '.mm-banner-base',
@@ -279,6 +282,25 @@ class HomePage {
     expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
+    // Check if the empty balance state is displayed
+    const emptyBalanceElements = await this.driver.findElements(
+      this.emptyBalance,
+    );
+
+    if (emptyBalanceElements.length > 0) {
+      // Empty state is displayed
+      if (expectedBalance === '0') {
+        console.log(
+          'Balance empty state is displayed as expected for 0 balance',
+        );
+        return;
+      }
+      const errorMessage = `Expected balance ${expectedBalance} ${symbol}, but balance empty state is displayed instead`;
+      console.log(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    // Empty state not shown, check for regular balance display
     try {
       await this.driver.waitForSelector({
         css: this.balance,

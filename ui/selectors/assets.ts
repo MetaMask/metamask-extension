@@ -1031,6 +1031,12 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
   },
 );
 
+/**
+ * Selects the selected account group's balance entry from the aggregated
+ * balances output, returning a minimal fallback when not present.
+ *
+ * @param state - Redux state used to read selection and aggregated balances.
+ */
 export const selectBalanceBySelectedAccountGroup = createSelector(
   [selectAccountTreeStateForBalances, selectBalanceForAllWallets],
   (accountTreeState, allBalances) => {

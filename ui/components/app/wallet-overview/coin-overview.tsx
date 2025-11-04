@@ -384,7 +384,10 @@ export const CoinOverview = ({
     <WalletOverview
       balance={
         shouldShowBalanceEmptyState ? (
-          <BalanceEmptyState className="w-full max-w-[420px]" />
+          <BalanceEmptyState
+            className="w-full max-w-[420px]"
+            data-testid="coin-overview-balance-empty-state"
+          />
         ) : (
           <Tooltip
             position="top"
