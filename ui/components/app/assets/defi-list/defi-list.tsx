@@ -85,6 +85,7 @@ export default function DefiList({ onClick }: DefiListProps) {
           marketValue: formatCurrencyWithMinThreshold(marketValue, 'USD'),
           chainId: chainId as Hex,
           iconGroup,
+          tokenFiatAmount: marketValue,
         };
       }),
     );
@@ -99,6 +100,10 @@ export default function DefiList({ onClick }: DefiListProps) {
       },
     ]);
 
+    console.log('DEBUG DEFI ASSETS', {
+      filteredAssets,
+      tokenSortConfig,
+    });
     // sort filtered tokens based on the tokenSortConfig in state
     return sortAssets(filteredAssets, tokenSortConfig);
   }, [
