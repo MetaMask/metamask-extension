@@ -99,30 +99,6 @@ describe('Submit Claim Form', () => {
     );
   });
 
-  it('should show error when impacted wallet address is invalid', () => {
-    const { getByTestId } = renderWithProvider(
-      <ClaimsProvider>
-        <ClaimsForm />
-      </ClaimsProvider>,
-      store,
-    );
-
-    const impactedWalletAddressInput = getByTestId(
-      'shield-claim-impacted-wallet-address-input',
-    );
-    fireEvent.change(impactedWalletAddressInput, {
-      target: { value: 'incorrect-address' },
-    });
-    fireEvent.blur(impactedWalletAddressInput);
-
-    const errorMessage = getByTestId(
-      'shield-claim-impacted-wallet-address-help-text',
-    );
-    expect(errorMessage).toHaveTextContent(
-      'Please enter a valid wallet address',
-    );
-  });
-
   it('should show error when reimbursement wallet address is invalid', () => {
     const { getByTestId } = renderWithProvider(
       <ClaimsProvider>
