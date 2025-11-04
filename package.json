@@ -242,8 +242,8 @@
     "@endo/env-options@npm:^1.1.7": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@endo/env-options@npm:^1.1.8": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@metamask/jazzicon@npm:^2.0.0": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch",
-    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@24.0.0-preview-fe9b7e4c",
-    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@6.0.0-preview-fe9b7e4c"
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@24.0.0-preview-4419d7e4",
+    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@6.0.0-preview-4419d7e4"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -276,7 +276,7 @@
     "@metamask/bitcoin-wallet-snap": "^1.4.3",
     "@metamask/bridge-controller": "^56.0.3",
     "@metamask/bridge-status-controller": "^56.0.0",
-    "@metamask/browser-passworder": "^4.3.0",
+    "@metamask/browser-passworder": "^6.0.0",
     "@metamask/chain-agnostic-permission": "^1.2.2",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.15.0",
