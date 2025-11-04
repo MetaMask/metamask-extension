@@ -5,49 +5,61 @@ import {
   isNativeAddress as isNativeAddressFromBridge,
 } from '@metamask/bridge-controller';
 import { isCaipChainId, Hex } from '@metamask/utils';
-import { isEvmChainId } from '../../shared/lib/asset-utils';
+import { isEvmChainId, toAssetId } from '../../shared/lib/asset-utils';
 import { getMarketData, getTokenList } from '../selectors';
 import { getCurrentCurrency } from '../ducks/metamask/metamask';
-import { fetchWithCache } from '../../shared/lib/fetch-with-cache';
-// TODO: Move this function to a shared location
-const toAssetId = (address: string, chainId: string): string | null => {
-  if (!address || !chainId) return null;
-  return `${chainId}:${address.toLowerCase()}`;
-};
+import fetchWithCache from '../../shared/lib/fetch-with-cache';
 
-export interface TokenInsightsToken {
+export type TokenInsightsToken = {
   address: string;
   symbol: string;
   name?: string;
   chainId: string;
   iconUrl?: string;
-}
+};
 
-export interface MarketData {
+export type MarketData = {
   price?: number;
   pricePercentChange1d?: number;
   totalVolume?: number;
   marketCap?: number;
   dilutedMarketCap?: number;
-}
+};
 
 export const useTokenInsightsData = (token: TokenInsightsToken | null) => {
   const currentCurrency = useSelector(getCurrentCurrency);
   const isEvm = token ? isEvmChainId(token.chainId as Hex) : false;
 
   // Check TokenRatesController cache (EVM only)
-  const marketDataState = useSelector(getMarketData);
+  type EvmMarketTokenData = {
+    price?: number;
+    pricePercentChange1d?: number;
+    totalVolume?: number;
+    marketCap?: number;
+    dilutedMarketCap?: number;
+  };
+  type EvmMarketDataState = Record<Hex, Record<string, EvmMarketTokenData>>;
+  const marketDataState = useSelector(getMarketData) as
+    | EvmMarketDataState
+    | undefined;
   const evmMarketData = useMemo(() => {
-    if (!token || !isEvm || !marketDataState) return null;
-    const chainData = (marketDataState as any)[token.chainId as Hex];
+    if (!token || !isEvm || !marketDataState) {
+      return null;
+    }
+    const chainData = marketDataState[token.chainId as Hex];
     return chainData?.[token.address.toLowerCase()];
   }, [token, isEvm, marketDataState]);
 
   // Check token list data for verification status
-  const tokenList = useSelector(getTokenList);
+  type TokenListEntry = { aggregators?: unknown[] } | undefined;
+  const tokenList = useSelector(getTokenList) as
+    | Record<string, TokenListEntry>
+    | undefined;
   const tokenListData = useMemo(() => {
-    if (!token || !tokenList) return null;
-    return (tokenList as any)[token.address.toLowerCase()];
+    if (!token || !tokenList) {
+      return null;
+    }
+    return tokenList[token.address.toLowerCase()] ?? null;
   }, [token, tokenList]);
 
   // State for API fetched data
@@ -57,7 +69,9 @@ export const useTokenInsightsData = (token: TokenInsightsToken | null) => {
 
   // Fetch from API if not in cache
   useEffect(() => {
-    if (!token || evmMarketData) return;
+    if (!token || evmMarketData) {
+      return;
+    }
 
     const fetchMarketData = async () => {
       setIsLoading(true);
@@ -116,8 +130,11 @@ export const useTokenInsightsData = (token: TokenInsightsToken | null) => {
       return {
         price: evmMarketData.price,
         pricePercentChange1d: evmMarketData.pricePercentChange1d,
-        totalVolume: evmMarketData.allTimeHigh, // Note: EVM data might have different fields
+        totalVolume: evmMarketData.totalVolume,
         marketCap: evmMarketData.marketCap,
+        dilutedMarketCap:
+          // Prefer dilutedMarketCap when available to mirror other sources
+          evmMarketData.dilutedMarketCap ?? evmMarketData.marketCap,
       };
     }
     return apiData;
@@ -125,7 +142,9 @@ export const useTokenInsightsData = (token: TokenInsightsToken | null) => {
 
   // Check if address is native
   const isNativeToken = useMemo(() => {
-    if (!token?.address) return false;
+    if (!token?.address) {
+      return false;
+    }
     return isNativeAddressFromBridge(token.address);
   }, [token?.address]);
 
@@ -133,7 +152,7 @@ export const useTokenInsightsData = (token: TokenInsightsToken | null) => {
     marketData,
     isLoading,
     error,
-    isVerified: tokenListData?.aggregators?.length > 0,
+    isVerified: (tokenListData?.aggregators?.length ?? 0) > 0,
     aggregators: tokenListData?.aggregators || [],
     isNativeToken,
   };
