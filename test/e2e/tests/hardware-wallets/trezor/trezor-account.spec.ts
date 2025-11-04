@@ -1,5 +1,9 @@
 import FixtureBuilder from '../../../fixture-builder';
-import { withFixtures } from '../../../helpers';
+import {
+  getEventPayloads,
+  WINDOW_TITLES,
+  withFixtures,
+} from '../../../helpers';
 import { shortenAddress } from '../../../../../ui/helpers/utils/util';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
@@ -8,11 +12,54 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { TestSuiteArguments } from '../../confirmations/transactions/shared';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import { MockedEndpoint } from '../../../mock-e2e';
 
 describe('Trezor Hardware', function () {
-  it('derives the correct accounts and unlocks the first account', async function () {
+  it('should do something', async function () {
     await withFixtures(
       {
+        dapp: true,
+        dappPaths: ['./tests/hardware-wallets/cross-origin-messaging'],
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.fullTitle(),
+        // testSpecificMock: mockSegment,
+      },
+      async ({
+        driver,
+        mockedEndpoint: mockedEndpoints,
+      }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver);
+        const dappPage = new TestDapp(driver);
+        await dappPage.openTestDappPage();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        // waiting for marketingCampaignCookieId to update in state
+
+        //   const uiState = await getCleanAppState(driver);
+        //   assert.equal(uiState.metamask.marketingCampaignCookieId, 12345);
+
+        //   const homePage = new HomePage(driver);
+        //   await homePage.checkPageIsLoaded();
+        //   await homePage.headerNavbar.openThreeDotMenu();
+        const events = await getEventPayloads(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+        );
+        assert.equal(events.length, 1);
+        //   const eventContext = events[0].context;
+        //   assert.equal(eventContext.marketingCampaignCookieId, 12345);
+      },
+    );
+  });
+  it.only('derives the correct accounts and unlocks the first account', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        dappPaths: ['./tests/hardware-wallets/cross-origin-messaging'],
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
@@ -30,6 +77,8 @@ describe('Trezor Hardware', function () {
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.openConnectTrezorPage();
+        // TODO: check trezor tab content
+        await driver.delay(100000);
 
         const selectTrezorAccountPage = new SelectHardwareWalletAccountPage(
           driver,

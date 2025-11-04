@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Mock E2E content injection and messaging</title>
+    <script>
+      window.postMessage('e2e-tab-ready');
+      // chrome.tabs.query(
+      //   {
+      //     currentWindow: true,
+      //     active: true,
+      //   },
+      //   (tabs) => {
+      //     console.log('-----------> tabs', tabs);
+      //   },
+      // );
+      // chrome.runtime.onMessage.addListener('e2e-tab-ready', () =>
+      //   console.log('e2e-tab-ready from runtime!'),
+      // );
+      // window.addEventListener(
+      //   'test',
+      //   () => console.log('test received'),
+      //   false,
+      // );
+      // chrome.runtime.onMessage.addListener(
+      //   // The listener function
+      //   function (request) {
+      //     console.log('request', request);
+      //     // 1. Process the Message (request)
+      //     if (request.action === 'test') {
+      //       // Example: Use the message payload to change the page content
+      //       document.body.style.backgroundColor = 'green';
+      //       console.log('DOM updated based on message from extension.');
+
+      //       // 2. Respond to the Sender (Optional)
+      //       // sendResponse({ status: 'Success', message: 'Color changed!' });
+      //     }
+      //   },
+      // );
+    </script>
+  </head>
+  <body>
+    <div>Mock Page for E2E content injection and messaging</div>
+  </body>
+</html>
