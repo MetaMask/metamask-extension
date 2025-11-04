@@ -241,7 +241,10 @@
     "@endo/env-options@npm:^1.1.11": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@endo/env-options@npm:^1.1.7": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@endo/env-options@npm:^1.1.8": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
-    "@metamask/jazzicon@npm:^2.0.0": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
+    "@metamask/jazzicon@npm:^2.0.0": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch",
+    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@11.15.0-preview-5e4e26a6",
+    "@metamask/network-controller": "npm:@metamask-previews/network-controller@25.0.0-preview-5e4e26a6",
+    "@metamask/network-enablement-controller": "npm:@metamask-previews/network-enablement-controller@3.1.0-preview-5e4e26a6"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -277,7 +280,7 @@
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/chain-agnostic-permission": "^1.2.2",
     "@metamask/contract-metadata": "^2.5.0",
-    "@metamask/controller-utils": "^11.15.0",
+    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@11.15.0-preview-5e4e26a6",
     "@metamask/core-backend": "^4.0.0",
     "@metamask/delegation-controller": "^1.0.0",
     "@metamask/delegation-core": "^0.2.0-rc.1",
@@ -328,8 +331,8 @@
     "@metamask/multichain-network-controller": "^2.0.0",
     "@metamask/multichain-transactions-controller": "^6.0.0",
     "@metamask/name-controller": "^9.0.0",
-    "@metamask/network-controller": "^25.0.0",
-    "@metamask/network-enablement-controller": "^3.0.0",
+    "@metamask/network-controller": "npm:@metamask-previews/network-controller@25.0.0-preview-5e4e26a6",
+    "@metamask/network-enablement-controller": "npm:@metamask-previews/network-enablement-controller@3.1.0-preview-5e4e26a6",
     "@metamask/notification-services-controller": "^19.0.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
