@@ -314,12 +314,13 @@ function getNotificationTransformStream() {
     highWaterMark: 16,
     objectMode: true,
     transform: (chunk, _, cb) => {
-      if (chunk?.name === METAMASK_EIP_1193_PROVIDER) {
-        if (chunk.data?.method === 'metamask_accountsChanged') {
-          chunk.data.method = 'wallet_accountsChanged';
-          chunk.data.result = chunk.data.params;
-          delete chunk.data.params;
-        }
+      if (
+        chunk?.name === METAMASK_EIP_1193_PROVIDER &&
+        chunk.data?.method === 'metamask_accountsChanged'
+      ) {
+        chunk.data.method = 'wallet_accountsChanged';
+        chunk.data.result = chunk.data.params;
+        delete chunk.data.params;
       }
       cb(null, chunk);
     },

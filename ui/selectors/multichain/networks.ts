@@ -198,18 +198,21 @@ export const getMultichainNetworkConfigurationsByChainId =
       // There's a fallback for EVM network names/nicknames, in case the network
       // does not have a name/nickname the fallback is the first rpc endpoint url.
       // TODO: Update toMultichainNetworkConfigurationsByChainId to handle this case.
-      const evmNetworks = Object.entries(networkConfigurationsByChainId).reduce(
-        (acc, [, network]) => ({
-          ...acc,
-          [toEvmCaipChainId(network.chainId)]: {
-            ...toMultichainNetworkConfiguration(network),
-            name:
-              network.name ||
-              network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
-          },
-        }),
-        {},
-      );
+      const evmNetworks: Record<
+        CaipChainId,
+        InternalMultichainNetworkConfiguration
+      > = {};
+
+      for (const [, network] of Object.entries(
+        networkConfigurationsByChainId,
+      )) {
+        evmNetworks[toEvmCaipChainId(network.chainId)] = {
+          ...toMultichainNetworkConfiguration(network),
+          name:
+            network.name ||
+            network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
+        };
+      }
 
       const networks = {
         ///: BEGIN:ONLY_INCLUDE_IF(multichain)
