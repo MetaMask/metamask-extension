@@ -27,6 +27,7 @@ import {
   sortNetworks,
   getRpcDataByChainId,
   sortNetworksByPrioity,
+  getFilteredFeaturedNetworks,
 } from './network.utils';
 
 describe('network utils', () => {
@@ -414,6 +415,136 @@ describe('network utils', () => {
       ]);
 
       expect(result).toStrictEqual(expectedResult);
+    });
+  });
+
+  describe('getFilteredFeaturedNetworks', () => {
+    const mockNetworkList = [
+      {
+        chainId: '0xa86a',
+        name: 'Avalanche',
+        nativeCurrency: { symbol: 'AVAX', decimals: 18 },
+        rpcEndpoints: [],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: [],
+        defaultBlockExplorerUrlIndex: 0,
+      },
+      {
+        chainId: '0xa4b1',
+        name: 'Arbitrum',
+        nativeCurrency: { symbol: 'ETH', decimals: 18 },
+        rpcEndpoints: [],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: [],
+        defaultBlockExplorerUrlIndex: 0,
+      },
+      {
+        chainId: '0x89',
+        name: 'Polygon',
+        nativeCurrency: { symbol: 'POL', decimals: 18 },
+        rpcEndpoints: [],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: [],
+        defaultBlockExplorerUrlIndex: 0,
+      },
+      {
+        chainId: '0x2105',
+        name: 'Base',
+        nativeCurrency: { symbol: 'ETH', decimals: 18 },
+        rpcEndpoints: [],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: [],
+        defaultBlockExplorerUrlIndex: 0,
+      },
+    ];
+
+    it('filters out blacklisted chain IDs from network list', () => {
+      const blacklistedChainIds = ['0xa86a', '0xa4b1'];
+
+      const result = getFilteredFeaturedNetworks(
+        blacklistedChainIds,
+        mockNetworkList,
+      );
+
+      expect(result.length).toBe(2);
+      expect(result).not.toContainEqual(
+        expect.objectContaining({ chainId: '0xa86a' }),
+      );
+      expect(result).not.toContainEqual(
+        expect.objectContaining({ chainId: '0xa4b1' }),
+      );
+      expect(result).toContainEqual(
+        expect.objectContaining({ chainId: '0x89' }),
+      );
+      expect(result).toContainEqual(
+        expect.objectContaining({ chainId: '0x2105' }),
+      );
+    });
+
+    it('returns full list when blacklist is empty array', () => {
+      const blacklistedChainIds: string[] = [];
+
+      const result = getFilteredFeaturedNetworks(
+        blacklistedChainIds,
+        mockNetworkList,
+      );
+
+      expect(result).toEqual(mockNetworkList);
+      expect(result.length).toBe(mockNetworkList.length);
+    });
+
+    it('returns full list when blacklist is not an array', () => {
+      const blacklistedChainIds = null as unknown as string[];
+
+      const result = getFilteredFeaturedNetworks(
+        blacklistedChainIds,
+        mockNetworkList,
+      );
+
+      expect(result).toEqual(mockNetworkList);
+    });
+
+    it('returns empty array when all networks are blacklisted', () => {
+      const allChainIds = mockNetworkList.map((network) => network.chainId);
+
+      const result = getFilteredFeaturedNetworks(allChainIds, mockNetworkList);
+
+      expect(result).toEqual([]);
+      expect(result.length).toBe(0);
+    });
+
+    it('returns full list when blacklisted chain IDs do not match any network', () => {
+      const blacklistedChainIds = ['0x999999', '0x888888'];
+
+      const result = getFilteredFeaturedNetworks(
+        blacklistedChainIds,
+        mockNetworkList,
+      );
+
+      expect(result).toEqual(mockNetworkList);
+      expect(result.length).toBe(mockNetworkList.length);
+    });
+
+    it('returns empty array when base network list is empty', () => {
+      const blacklistedChainIds = ['0xa86a'];
+
+      const result = getFilteredFeaturedNetworks(blacklistedChainIds, []);
+
+      expect(result).toEqual([]);
+    });
+
+    it('handles single network blacklist', () => {
+      const blacklistedChainIds = ['0xa86a'];
+
+      const result = getFilteredFeaturedNetworks(
+        blacklistedChainIds,
+        mockNetworkList,
+      );
+
+      expect(result.length).toBe(3);
+      expect(result).not.toContainEqual(
+        expect.objectContaining({ chainId: '0xa86a' }),
+      );
     });
   });
 });

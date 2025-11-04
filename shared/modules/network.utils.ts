@@ -16,6 +16,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../constants/multichain/networks';
+import type { AddNetworkFields } from '@metamask/network-controller';
 
 export type RpcEndpoint = {
   name?: string;
@@ -232,4 +233,25 @@ export const sortNetworksByPrioity = (
     // if both are not in the priority list, sort by name
     return networkA.name.localeCompare(networkB.name);
   });
+};
+
+/**
+ * Filters the featured networks list to exclude networks with blacklisted chain IDs.
+ * Allows to remove a network from the additional network selection.
+ *
+ * @param blacklistedChainIds - Array of chain IDs to exclude from the list
+ * @param baseNetworkList - The base network list to filter (defaults to FEATURED_RPCS)
+ * @returns Filtered array of network configurations
+ */
+export const getFilteredFeaturedNetworks = (
+  blacklistedChainIds: string[],
+  baseNetworkList: AddNetworkFields[] = [],
+): AddNetworkFields[] => {
+  if (!Array.isArray(blacklistedChainIds) || blacklistedChainIds.length === 0) {
+    return baseNetworkList;
+  }
+
+  return baseNetworkList.filter(
+    (network) => !blacklistedChainIds.includes(network.chainId),
+  );
 };
