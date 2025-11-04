@@ -2265,19 +2265,6 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
       getState: this.getState.bind(this),
-      call: async (method, params, networkClientId) => {
-        // Handle eth_call specifically
-        if (method === 'eth_call') {
-          const networkClient =
-            this.networkController.getNetworkClientById(networkClientId);
-          return await networkClient.provider.request({
-            method: 'eth_call',
-            params,
-          });
-        }
-        // For other methods, use the controller messenger
-        return await this.controllerMessenger.call(method, ...params);
-      },
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
       ),
@@ -2827,6 +2814,9 @@ export default class MetamaskController extends EventEmitter {
         gatorPermissionsController.fetchAndUpdateGatorPermissions.bind(
           gatorPermissionsController,
         ),
+
+      // Network utility methods
+      callRpc: this.callRpc.bind(this),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
@@ -8671,6 +8661,24 @@ export default class MetamaskController extends EventEmitter {
    */
   #getGlobalNetworkClientId() {
     return this.networkController.state.selectedNetworkClientId;
+  }
+
+  /**
+   * Makes an RPC request using the network controller.
+   *
+   * @param {string} method - The RPC method name (e.g., 'eth_call', 'eth_getCode').
+   * @param {Array} params - The RPC method parameters.
+   * @param {string} networkClientId - The network client ID to use for the request.
+   * @returns {Promise<any>} The result of the RPC request.
+   */
+  async callRpc(method, params, networkClientId) {
+    const networkClient =
+      this.networkController.getNetworkClientById(networkClientId);
+
+    return await networkClient.provider.request({
+      method,
+      params,
+    });
   }
 
   #initControllers({ existingControllers, initFunctions, initState }) {

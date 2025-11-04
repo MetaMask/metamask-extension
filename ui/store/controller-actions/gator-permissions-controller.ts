@@ -51,7 +51,7 @@ export const isDelegationDisabled = async (
   const callData = encodeDisabledDelegationsCheck({ delegationHash });
 
   // Make eth_call request through the network controller
-  const result = await submitRequestToBackground<Hex>('call', [
+  const result = await submitRequestToBackground<Hex>('callRpc', [
     'eth_call',
     [
       {
@@ -63,6 +63,7 @@ export const isDelegationDisabled = async (
     networkClientId,
   ]);
 
+  // Decode the result
   const isDisabled = decodeDisabledDelegationsResult(result);
 
   return isDisabled;
