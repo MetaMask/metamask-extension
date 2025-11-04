@@ -95,6 +95,13 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_EXPERIMENTAL_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - IS_SIDEPANEL: true
+      - METAMASK_SHIELD_ENABLED: true
+      # URL of Shield gateway
+      - SHIELD_GATEWAY_URL: 'https://shield-gateway.api.cx.metamask.io'
+      # URL of Shield rule engine
+      - SHIELD_RULE_ENGINE_URL: 'https://ruleset-engine.api.cx.metamask.io'
+      # URL of Shield claims API
+      - SHIELD_CLAIMS_API_URL: 'https://claims.api.cx.metamask.io'
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.2/index.html
