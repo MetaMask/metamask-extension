@@ -60,6 +60,18 @@ export default function SrpInputImport({
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
 
+  const checkForInvalidWords = useCallback(() => {
+    draftSrp.forEach((word) => {
+      const isInWordlist = wordlist.includes(word.word);
+      const alreadyInMisspelled = misSpelledWords.some((w) => w.id === word.id);
+      if (isInWordlist && alreadyInMisspelled) {
+        setMisSpelledWords((prev) => prev.filter((w) => w.id !== word.id));
+      } else if (!isInWordlist && !alreadyInMisspelled && word.word !== '') {
+        setMisSpelledWords((prev) => [...prev, word]);
+      }
+    });
+  }, [draftSrp, misSpelledWords]);
+
   const initializeSrp = () => {
     const firstWordId = uuidv4();
     setDraftSrp([
@@ -68,7 +80,10 @@ export default function SrpInputImport({
     ]);
     setFirstWord('');
     if (!wordlist.includes(firstWord)) {
-      setMisSpelledWords([{ word: firstWord, id: firstWordId, active: false }]);
+      setMisSpelledWords((prev) => [
+        ...prev,
+        { word: firstWord, id: firstWordId, active: false },
+      ]);
     }
   };
 
@@ -126,17 +141,9 @@ export default function SrpInputImport({
         (word) => word.id === currentWordId,
       );
       const isLastWord = currentWordIndex === draftSrp.length - 1;
-      const currentWord = draftSrp[currentWordIndex];
 
-      if (wordlist.includes(currentWord.word)) {
-        setMisSpelledWords((prev) =>
-          prev.filter((word) => word.id !== currentWord.id),
-        );
-      } else {
-        setMisSpelledWords((prev) => {
-          const alreadyExists = prev.some((word) => word.id === currentWord.id);
-          return alreadyExists ? prev : [...prev, currentWord];
-        });
+      if (isLastWord) {
+        checkForInvalidWords();
       }
 
       if (
@@ -167,7 +174,7 @@ export default function SrpInputImport({
       // set next word to active
       setDraftSrp(setWordActive(draftSrp, draftSrp[currentWordIndex + 1].id));
     },
-    [draftSrp],
+    [checkForInvalidWords, draftSrp],
   );
 
   const deleteWord = useCallback(
@@ -280,15 +287,22 @@ export default function SrpInputImport({
     // if srp length is valid and no empty word trigger onChange
     if (
       SRP_LENGTHS.includes(draftSrp.length) &&
-      !draftSrp.some((word) => word.word.length === 0) &&
-      misSpelledWords.length === 0
+      !draftSrp.some((word) => word.word.length === 0)
     ) {
-      const stringSrp = draftSrp.map((word) => word.word).join(' ');
-      onChange(stringSrp);
+      const hasInvalidWords = draftSrp.some(
+        (word) => word.word !== '' && !wordlist.includes(word.word),
+      );
+
+      if (hasInvalidWords) {
+        onChange('');
+      } else {
+        const stringSrp = draftSrp.map((word) => word.word).join(' ');
+        onChange(stringSrp);
+      }
     } else {
       onChange('');
     }
-  }, [draftSrp, onChange, misSpelledWords]);
+  }, [draftSrp, onChange]);
 
   const misSpelledWordsList = useCallback(
     () => misSpelledWords.map((word) => word.word),
@@ -347,14 +361,15 @@ export default function SrpInputImport({
                         handleChange(word.id, e.target.value)
                       }
                       onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                        if (
-                          (e.key === 'Enter' || e.key === ' ') &&
-                          word.word.trim() !== ''
-                        ) {
+                        if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
-                          nextWord(word.id);
-                        }
-                        if (e.key === 'Backspace' && word.word.length === 0) {
+                          if (word.word.trim() !== '') {
+                            nextWord(word.id);
+                          }
+                        } else if (
+                          e.key === 'Backspace' &&
+                          word.word.length === 0
+                        ) {
                           e.preventDefault();
                           deleteWord(word.id);
                         }
@@ -364,6 +379,7 @@ export default function SrpInputImport({
                       }}
                       onBlur={() => {
                         setWordInactive(word.id);
+                        checkForInvalidWords();
                       }}
                     />
                   );
