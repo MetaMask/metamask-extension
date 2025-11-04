@@ -39,7 +39,6 @@ export const GasFeeControllerInit: ControllerInitFunction<
     legacyAPIEndpoint: `${GAS_API_URL}/networks/<chain_id>/gasPrices`,
     EIP1559APIEndpoint: `${GAS_API_URL}/networks/<chain_id>/suggestedGasFees`,
 
-    // expects a defined value.
     getProvider: () => {
       const { provider } =
         initMessenger.call('NetworkController:getSelectedNetworkClient') ?? {};
