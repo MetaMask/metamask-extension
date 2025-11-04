@@ -14,6 +14,16 @@ import mockState from '../../../../test/data/mock-state.json';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { ImportTokensModal } from '.';
 
+// Mock the useTokensWithFiltering hook
+jest.mock('../../../hooks/bridge/useTokensWithFiltering', () => ({
+  useTokensWithFiltering: () => ({
+    filteredTokenListGenerator: function* () {
+      // Return empty generator by default
+    },
+    isLoading: false,
+  }),
+}));
+
 jest.mock('../../../store/actions', () => ({
   getTokenStandardAndDetailsByChain: jest
     .fn()

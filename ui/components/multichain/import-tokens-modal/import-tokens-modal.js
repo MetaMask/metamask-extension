@@ -4,7 +4,13 @@ import React, {
   useEffect,
   useRef,
   useState,
+  useMemo,
 } from 'react';
+import {
+  formatChainIdToHex,
+  formatChainIdToCaip,
+  isNonEvmChainId,
+} from '@metamask/bridge-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -14,7 +20,6 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
-  getIsAllNetworksFilterEnabled,
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/modules/selectors/networks';
 import {
@@ -29,13 +34,13 @@ import {
   getTestNetworkBackgroundColor,
   getTokenExchangeRates,
   getPendingTokens,
-  selectERC20TokensByChain,
   getTokenNetworkFilter,
   getAllTokens,
   getEnabledNetworksByNamespace,
 } from '../../../selectors';
 import {
   addImportedTokens,
+  addMultichainAssets,
   clearPendingTokens,
   setPendingTokens,
   showImportNftsModal,
@@ -59,18 +64,15 @@ import {
   IconName,
   ModalBody,
   AvatarNetworkSize,
-  AvatarNetwork,
 } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import TokenSearch from '../../app/import-token/token-search';
 import TokenList from '../../app/import-token/token-list';
 
 import {
-  AlignItems,
   BlockSize,
   Display,
   FlexDirection,
-  JustifyContent,
   Severity,
   Size,
   TextAlign,
@@ -108,14 +110,18 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
-import { NetworkFilterImportToken } from '../../app/import-token/network-filter-import-token';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
+import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
+import { AssetPickerModalNetwork } from '../asset-picker-amount/asset-picker-modal/asset-picker-modal-network';
 import { NetworkSelectorCustomImport } from '../../app/import-token/network-selector-custom-import';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { getSelectedMultichainNetworkChainId } from '../../../selectors/multichain/networks';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { isGlobalNetworkSelectorRemoved } from '../../../selectors/selectors';
+import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
+import { getAllBridgeableNetworks } from '../../../ducks/bridge/selectors';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const ACTION_MODES = {
@@ -123,8 +129,6 @@ const ACTION_MODES = {
   IMPORT_TOKEN: 'IMPORT_TOKEN',
   // Displays the page for selecting a network from custom import
   NETWORK_SELECTOR: 'NETWORK_SELECTOR',
-  // Displays the page for selecting a network from a search
-  SEARCH_NETWORK_SELECTOR: 'SEARCH_NETWORK_SELECTOR',
 };
 
 const TAB_NAMES = {
@@ -144,8 +148,11 @@ export const ImportTokensModal = ({ onClose }) => {
   const [searchResults, setSearchResults] = useState([]);
   // const networkClientId = useSelector(getSelectedNetworkClientId);
   const currentNetwork = useSelector(getCurrentNetwork);
+  const chainId = useSelector(getCurrentChainId);
+
+  // Initialize with current EVM network chainId (custom import only supports EVM)
   const [selectedNetworkForCustomImport, setSelectedNetworkForCustomImport] =
-    useState(null);
+    useState(chainId);
 
   const [defaultActiveTabKey, setDefaultActiveTabKey] = useState(
     TAB_NAMES.SEARCH,
@@ -158,11 +165,53 @@ export const ImportTokensModal = ({ onClose }) => {
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const allBridgeableNetworks = useSelector(getAllBridgeableNetworks);
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+
   const [networkFilter, setNetworkFilter] = useState(
     isGlobalNetworkSelectorRemoved
       ? enabledNetworksByNamespace
       : tokenNetworkFilter,
   );
+
+  // Use all bridgeable networks including multichain (Solana, Bitcoin)
+  const availableNetworks = useMemo(() => {
+    // For the search tab, show all bridgeable networks
+    return allBridgeableNetworks || [];
+  }, [allBridgeableNetworks]);
+
+  const [selectedSearchNetwork, setSelectedSearchNetwork] = useState(null);
+  const [isSearchNetworkSelectorOpen, setIsSearchNetworkSelectorOpen] =
+    useState(false);
+
+  // Initialize selected network with current network when available networks are loaded
+  useEffect(() => {
+    if (availableNetworks.length > 0 && !selectedSearchNetwork) {
+      // Try to match the current selected network
+      let matchingNetwork = null;
+
+      if (currentMultichainChainId) {
+        if (isEvmChainId(currentMultichainChainId)) {
+          const hexChainId = formatChainIdToHex(currentMultichainChainId);
+          // Extract hex chainId from CAIP format for EVM networks
+          matchingNetwork = availableNetworks.find(
+            (network) => network.chainId === hexChainId,
+          );
+        } else {
+          // For non-EVM networks, the chainId in availableNetworks should match directly
+          matchingNetwork = availableNetworks.find(
+            (network) => network.chainId === currentMultichainChainId,
+          );
+        }
+      }
+
+      // Use matching network if found, otherwise default to first available
+      setSelectedSearchNetwork(matchingNetwork || availableNetworks[0]);
+    }
+  }, [availableNetworks, selectedSearchNetwork, currentMultichainChainId]);
 
   // Determine if we should show the search tab
   const isTokenDetectionSupported = useSelector(getIsTokenDetectionSupported);
@@ -173,8 +222,6 @@ export const ImportTokensModal = ({ onClose }) => {
     isTokenDetectionSupported ||
     isTokenDetectionInactiveOnMainnet ||
     Boolean(process.env.IN_TEST);
-
-  const tokenListByChain = useSelector(selectERC20TokensByChain);
 
   const useTokenDetection = useSelector(
     ({ metamask }) => metamask.useTokenDetection,
@@ -191,12 +238,60 @@ export const ImportTokensModal = ({ onClose }) => {
   );
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
-  const chainId = useSelector(getCurrentChainId);
   const allTokens = useSelector(getAllTokens);
   const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
   const contractExchangeRates = useSelector(getTokenExchangeRates);
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const allOpts = useSelector(getIsAllNetworksFilterEnabled);
+
+  // Determine which chain to use based on the active tab
+  const activeChainId = useMemo(() => {
+    if (defaultActiveTabKey === TAB_NAMES.SEARCH && selectedSearchNetwork) {
+      return selectedSearchNetwork.chainId;
+    }
+    // For custom token tab or when search network is not selected
+    return selectedNetworkForCustomImport || chainId;
+  }, [
+    defaultActiveTabKey,
+    selectedSearchNetwork,
+    selectedNetworkForCustomImport,
+    chainId,
+  ]);
+
+  // Use the new useTokensWithFiltering hook for getting token data
+  const { filteredTokenListGenerator } = useTokensWithFiltering(
+    activeChainId,
+    null,
+    selectedAccount?.address,
+  );
+
+  // Convert generator to token list for compatibility with existing components
+  const tokenListByChain = useMemo(() => {
+    if (!filteredTokenListGenerator) {
+      return {};
+    }
+
+    const tokenData = {};
+
+    // Generate all tokens from the generator
+    for (const token of filteredTokenListGenerator(() => true)) {
+      if (token.address) {
+        tokenData[token.address.toLowerCase()] = {
+          address: token.address,
+          symbol: token.symbol,
+          name: token.name,
+          decimals: token.decimals,
+          iconUrl: token.image,
+          aggregators: token.aggregators,
+          occurrences: token.occurrences,
+        };
+      }
+    }
+
+    return {
+      [activeChainId]: {
+        data: tokenData,
+      },
+    };
+  }, [filteredTokenListGenerator, activeChainId]);
 
   const [customAddress, setCustomAddress] = useState('');
   const [customAddressError, setCustomAddressError] = useState(null);
@@ -241,30 +336,73 @@ export const ImportTokensModal = ({ onClose }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const pendingTokens = useSelector(getPendingTokens);
 
+  // Get accounts for non-EVM chains using the account tree selector
+  const getAccountForChain = useSelector((state) => {
+    return (caipChainId) =>
+      getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId);
+  });
+
   const handleAddTokens = useCallback(async () => {
     try {
       const addedTokenValues = Object.values(pendingTokens);
 
-      const addedTokensByChain = addedTokenValues.reduce((groups, token) => {
-        if (!groups[token.chainId]) {
-          groups[token.chainId] = [];
-        }
-        groups[token.chainId].push(token);
-        return groups;
-      }, {});
+      if (addedTokenValues.length === 0) {
+        return;
+      }
 
-      const promiseAllImport = Object.keys(addedTokensByChain).map(
-        (networkId) => {
-          const clientId =
-            networkConfigurations[networkId]?.rpcEndpoints[
-              networkConfigurations[networkId]?.defaultRpcEndpointIndex
-            ]?.networkClientId;
-          return dispatch(
-            addImportedTokens(addedTokensByChain[networkId], clientId),
-          );
-        },
-      );
-      await Promise.all(promiseAllImport);
+      // All tokens should be from the same chain since UI clears selection on network change
+      const { chainId: tokenChainId } = addedTokenValues[0];
+      const isNonEvm = isNonEvmChainId(tokenChainId);
+
+      if (isNonEvm) {
+        // Handle non-EVM tokens
+        const accountForChain = getAccountForChain(tokenChainId);
+
+        if (!accountForChain) {
+          console.warn(`No account found for chain ${tokenChainId}`);
+          return;
+        }
+
+        // Convert all tokens to CAIP asset format
+        const assetIds = addedTokenValues
+          .map((token) => {
+            // Convert address to CAIP asset format
+            const assetId =
+              token.assetId || toAssetId(token.address, tokenChainId);
+
+            if (!assetId) {
+              console.warn(
+                `Failed to create assetId for token ${token.address} on chain ${tokenChainId}`,
+              );
+              return null;
+            }
+
+            return assetId;
+          })
+          .filter((assetId) => assetId !== null); // Remove any failed conversions
+
+        if (assetIds.length > 0) {
+          await dispatch(addMultichainAssets(assetIds, accountForChain.id));
+        }
+      } else {
+        // Handle EVM tokens - use existing batch import
+        const networkConfig = networkConfigurations[tokenChainId];
+        if (!networkConfig) {
+          console.warn(`No network config found for chain ${tokenChainId}`);
+          return;
+        }
+
+        const clientId =
+          networkConfig.rpcEndpoints[networkConfig.defaultRpcEndpointIndex]
+            ?.networkClientId;
+
+        if (!clientId) {
+          console.warn(`No network client ID found for chain ${tokenChainId}`);
+          return;
+        }
+
+        await dispatch(addImportedTokens(addedTokenValues, clientId));
+      }
 
       addedTokenValues.forEach((pendingToken) => {
         trackEvent({
@@ -278,7 +416,7 @@ export const ImportTokensModal = ({ onClose }) => {
             source_connection_method: pendingToken.isCustom
               ? MetaMetricsTokenEventSource.Custom
               : MetaMetricsTokenEventSource.List,
-            token_standard: TokenStandard.ERC20,
+            token_standard: isNonEvm ? TokenStandard.none : TokenStandard.ERC20,
             asset_type: AssetType.token,
           },
         });
@@ -299,7 +437,14 @@ export const ImportTokensModal = ({ onClose }) => {
       dispatch(clearPendingTokens());
       history.push(DEFAULT_ROUTE);
     }
-  }, [dispatch, history, pendingTokens, trackEvent]);
+  }, [
+    dispatch,
+    history,
+    pendingTokens,
+    trackEvent,
+    networkConfigurations,
+    getAccountForChain,
+  ]);
 
   useEffect(() => {
     const pendingTokenKeys = Object.keys(pendingTokens);
@@ -330,6 +475,15 @@ export const ImportTokensModal = ({ onClose }) => {
     setCustomSymbol(initialCustomToken.symbol);
     setCustomDecimals(initialCustomToken.decimals);
   }, [pendingTokens]);
+
+  // Initialize network filter when selected search network is set
+  useEffect(() => {
+    if (selectedSearchNetwork) {
+      setNetworkFilter({
+        [selectedSearchNetwork.chainId]: selectedSearchNetwork,
+      });
+    }
+  }, [selectedSearchNetwork]);
 
   useEffect(() => {
     setSelectedTokens({});
@@ -386,7 +540,7 @@ export const ImportTokensModal = ({ onClose }) => {
         name = '',
       } = await infoGetter.current(
         address,
-        tokenListByChain?.[selectedNetworkForCustomImport]?.data,
+        tokenListByChain?.[activeChainId]?.data,
       );
 
       setDecimalAutoFilled(Boolean(decimals));
@@ -396,7 +550,12 @@ export const ImportTokensModal = ({ onClose }) => {
       setCustomName(name);
       setShowSymbolAndDecimals(true);
     },
-    [selectedNetworkForCustomImport, tokenListByChain],
+    [
+      activeChainId,
+      tokenListByChain,
+      handleCustomDecimalsChange,
+      handleCustomSymbolChange,
+    ],
   );
 
   useEffect(() => {
@@ -455,8 +614,7 @@ export const ImportTokensModal = ({ onClose }) => {
       return;
     }
 
-    const tokenList =
-      tokenListByChain?.[selectedNetworkForCustomImport]?.data ?? {};
+    const tokenList = tokenListByChain?.[activeChainId]?.data ?? {};
 
     const tokenAddressList = Object.keys(tokenList);
     const customToken = customAddress
@@ -494,7 +652,7 @@ export const ImportTokensModal = ({ onClose }) => {
       const result = await fetchTokenExchangeRates(
         nativeCurrency,
         tokenAddresses,
-        chainId,
+        activeChainId,
       );
       // dispatch action
       dispatch(setConfirmationExchangeRates(result));
@@ -598,6 +756,14 @@ export const ImportTokensModal = ({ onClose }) => {
     }
   };
 
+  const accountAddress = useMemo(
+    () =>
+      isEvmChainId(activeChainId)
+        ? getAccountForChain(formatChainIdToCaip(activeChainId))?.address
+        : getAccountForChain(activeChainId)?.id,
+    [activeChainId, getAccountForChain],
+  );
+
   // Determines whether to show the Search/Import or Confirm action
   const isConfirming = mode === 'confirm';
 
@@ -653,59 +819,27 @@ export const ImportTokensModal = ({ onClose }) => {
       </Modal>
     );
   }
-  if (actionMode === ACTION_MODES.SEARCH_NETWORK_SELECTOR) {
+
+  if (isSearchNetworkSelectorOpen) {
     return (
-      <Modal isOpen>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader
-            onBack={() => setActionMode(ACTION_MODES.IMPORT_TOKEN)}
-            onClose={onClose}
-          >
-            <Text variant={TextVariant.headingSm} align={TextAlign.Center}>
-              {t('networks')}
-            </Text>
-          </ModalHeader>
-          <ModalBody>
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              width={BlockSize.Full}
-            >
-              {FEATURED_NETWORK_CHAIN_IDS.filter((chain) => allOpts[chain]).map(
-                (chain) => (
-                  <Box
-                    key={chain}
-                    padding={4}
-                    gap={4}
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
-                    justifyContent={JustifyContent.spaceBetween}
-                    width={BlockSize.Full}
-                  >
-                    <AvatarNetwork
-                      name={getImageForChainId(chain)}
-                      src={getImageForChainId(chain)}
-                      size={AvatarNetworkSize.Sm}
-                    />
-                    <Box
-                      width={BlockSize.Full}
-                      display={Display.Flex}
-                      alignItems={AlignItems.center}
-                    >
-                      <Text variant={TextVariant.bodyMdMedium}>
-                        {networkConfigurations[chain]?.name}
-                      </Text>
-                    </Box>
-                  </Box>
-                ),
-              )}
-            </Box>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      <AssetPickerModalNetwork
+        isOpen
+        onClose={() => {
+          setIsSearchNetworkSelectorOpen(false);
+        }}
+        onBack={() => {
+          setIsSearchNetworkSelectorOpen(false);
+        }}
+        network={selectedSearchNetwork}
+        networks={availableNetworks}
+        onNetworkChange={(network) => {
+          setSelectedSearchNetwork(network);
+        }}
+        header={t('networks')}
+      />
     );
   }
+
   return (
     <Modal
       isOpen
@@ -780,19 +914,15 @@ export const ImportTokensModal = ({ onClose }) => {
                       </Box>
                     )}
 
-                    {FEATURED_NETWORK_CHAIN_IDS.some(
-                      (networkId) => networkId === currentNetwork.chainId,
-                    ) && (
-                      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-                        <NetworkFilterImportToken
-                          buttonDataTestId="test-import-tokens-drop-down"
-                          openListNetwork={() =>
-                            setActionMode(ACTION_MODES.SEARCH_NETWORK_SELECTOR)
-                          }
-                          networkFilter={networkFilter}
-                          setNetworkFilter={setNetworkFilter}
-                        />
-                      </Box>
+                    {availableNetworks.length > 0 && selectedSearchNetwork && (
+                      <NetworkSelectorCustomImport
+                        title={selectedSearchNetwork.name}
+                        buttonDataTestId="test-import-tokens-drop-down"
+                        chainId={selectedSearchNetwork.chainId}
+                        onSelectNetwork={() =>
+                          setIsSearchNetworkSelectorOpen(true)
+                        }
+                      />
                     )}
 
                     <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
@@ -805,6 +935,7 @@ export const ImportTokensModal = ({ onClose }) => {
                         tokenList={tokenListByChain}
                         networkFilter={networkFilter}
                         setSearchResults={setSearchResults}
+                        chainId={activeChainId}
                       />
                     </Box>
 
@@ -827,6 +958,7 @@ export const ImportTokensModal = ({ onClose }) => {
                           Object.keys(networkFilter).length === 1 &&
                           networkFilter[chainId]
                         }
+                        accountAddress={accountAddress}
                       />
                     )}
                   </Box>
