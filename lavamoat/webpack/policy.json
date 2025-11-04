@@ -1967,6 +1967,17 @@
         "@metamask/snaps-controllers>tar-stream": true
       }
     },
+    "@metamask/snaps-execution-environments": {
+      "globals": {
+        "document.getElementById": true
+      },
+      "packages": {
+        "@metamask/post-message-stream": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils": true,
+        "@swc/helpers": true
+      }
+    },
     "@metamask/snaps-utils>@metamask/snaps-registry": {
       "packages": {
         "@metamask/superstruct": true,
