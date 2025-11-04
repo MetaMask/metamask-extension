@@ -38,7 +38,6 @@
     "@sentry/utils": {
       "globals": {
         "performance.now": true,
-        "performance.now.now.timeOrigin.timeOrigin.timing.timing.navigationStart": true,
         "devicePixelRatio": true,
         "navigator.userAgent": true,
         "navigator.language": true,
@@ -55,7 +54,7 @@
     },
     "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
       "globals": {
-        "navigator.userAgentData": true,
+        "navigator.userAgentData": true
       }
     },
     "^ background; v popup": {},
@@ -82,7 +81,7 @@
       "globals": {
         "navigator.userAgent": true,
         "MessageChannel": true,
-        "location": true,
+        "location": true
       }
     },
     "ethers>@ethersproject/random": {
@@ -142,7 +141,6 @@
     "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": {
       "globals": {
         "DOMException": true,
-        "DOMException.prototype": true,
         "fetch": true
       }
     },
