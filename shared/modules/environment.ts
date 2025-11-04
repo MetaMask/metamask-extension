@@ -1,9 +1,5 @@
 import { ENVIRONMENT } from '../../development/build/constants';
 
-export const isExperimentalBuild = (): boolean => {
-  return process.env.METAMASK_BUILD_TYPE === 'experimental';
-};
-
 export const isProduction = (): boolean => {
   return (
     process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.DEVELOPMENT &&
@@ -16,11 +12,7 @@ export const getIsSeedlessOnboardingFeatureEnabled = (): boolean => {
 };
 
 export const getIsMetaMaskShieldFeatureEnabled = (): boolean => {
-  return (
-    // enable shield for experimental build
-    isExperimentalBuild() ||
-    process.env.METAMASK_SHIELD_ENABLED?.toString() === 'true'
-  );
+  return process.env.METAMASK_SHIELD_ENABLED?.toString() === 'true';
 };
 
 export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
