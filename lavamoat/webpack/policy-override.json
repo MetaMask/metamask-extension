@@ -38,6 +38,7 @@
     "@sentry/utils": {
       "globals": {
         "performance.now": true,
+        "performance.timeOrigin": true,
         "devicePixelRatio": true,
         "navigator.userAgent": true,
         "navigator.language": true,
@@ -46,7 +47,8 @@
         "onunhandledrejection": true,
         "addEventListener": true,
         "PerformanceObserver": true,
-        "chrome": true,
+        "chrome.app": true,
+        "chrome.runtime": true,
         "location": true,
         "location.href": true,
         "top": true
