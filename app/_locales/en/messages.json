@@ -1967,6 +1967,9 @@
   "deepLink_theSwapsRampsPage": {
     "message": "the Swaps/Ramps page"
   },
+  "deepLink_theTransactionShieldPage": {
+    "message": "the transaction shield page"
+  },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
   },
