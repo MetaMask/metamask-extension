@@ -30,7 +30,7 @@ export function BatchSimulationDetails() {
 
   const { id, nestedTransactions } = transactionMeta;
 
-  const { value: approveBalanceChanges } =
+  const { value: approveBalanceChanges, pending: approvePending } =
     useBatchApproveBalanceChanges() ?? {};
 
   const [isEditApproveModalOpen, setIsEditApproveModalOpen] = useState(false);
@@ -89,23 +89,27 @@ export function BatchSimulationDetails() {
 
   return (
     <>
-      {isEditApproveModalOpen && (
-        <EditSpendingCapModal
-          data={nestedTransactionToEdit?.data}
-          isOpenEditSpendingCapModal={true}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onSubmit={handleEditSubmit}
-          setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
-          to={nestedTransactionToEdit?.to}
-        />
+      {!approvePending && (
+        <>
+          {isEditApproveModalOpen && (
+            <EditSpendingCapModal
+              data={nestedTransactionToEdit?.data}
+              isOpenEditSpendingCapModal={true}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onSubmit={handleEditSubmit}
+              setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
+              to={nestedTransactionToEdit?.to}
+            />
+          )}
+          <SimulationDetails
+            transaction={transactionMeta}
+            staticRows={approveRows}
+            isTransactionsRedesign
+            enableMetrics
+          />
+        </>
       )}
-      <SimulationDetails
-        transaction={transactionMeta}
-        staticRows={approveRows}
-        isTransactionsRedesign
-        enableMetrics
-      />
     </>
   );
 }

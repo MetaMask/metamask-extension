@@ -1,4 +1,4 @@
-import { RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   KeyringControllerGetKeyringForAccountAction,
   KeyringControllerGetStateAction,
@@ -14,11 +14,9 @@ type AllowedActions =
   | AccountsControllerGetSelectedAccountAction
   | KeyringControllerGetStateAction;
 
-export type SnapAndHardwareMessenger = RestrictedMessenger<
+export type SnapAndHardwareMessenger = Messenger<
   'SnapAndHardwareMessenger',
   AllowedActions,
-  never,
-  AllowedActions['type'],
   never
 >;
 

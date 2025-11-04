@@ -328,6 +328,8 @@ export const CoinOverview = ({
         classPrefix={classPrefix}
         balanceIsCached={balanceIsCached}
         handleSensitiveToggle={handleSensitiveToggle}
+        balance={balance}
+        chainId={chainId}
       />
     );
   } else if (isEvm) {

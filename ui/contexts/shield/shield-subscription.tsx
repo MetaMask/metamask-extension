@@ -127,11 +127,24 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   ]);
 
   useEffect(() => {
-    if (selectedAccount && isSignedIn && isUnlocked) {
+    if (
+      isMetaMaskShieldFeatureEnabled &&
+      isBasicFunctionalityEnabled &&
+      selectedAccount &&
+      isSignedIn &&
+      isUnlocked
+    ) {
       // start polling for the subscriptions
       dispatch(subscriptionsStartPolling());
     }
-  }, [isSignedIn, selectedAccount, dispatch, isUnlocked]);
+  }, [
+    isMetaMaskShieldFeatureEnabled,
+    isSignedIn,
+    selectedAccount,
+    dispatch,
+    isUnlocked,
+    isBasicFunctionalityEnabled,
+  ]);
 
   const resetShieldEntryModalShownStatus = useCallback(() => {
     if (!isShieldSubscriptionActive) {

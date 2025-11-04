@@ -196,13 +196,12 @@ export function AssetPicker({
             // If there is only 1 selected network switch to that network to populate tokens
             if (
               chainIds.length === 1 &&
-              chainIds[0] !== currentNetworkProviderConfig?.chainId
+              chainIds[0] !== currentNetworkProviderConfig?.chainId &&
+              networkProps?.onNetworkChange
             ) {
-              if (networkProps?.onNetworkChange) {
-                networkProps.onNetworkChange(
-                  allNetworks[chainIds[0] as keyof typeof allNetworks],
-                );
-              }
+              networkProps.onNetworkChange(
+                allNetworks[chainIds[0] as keyof typeof allNetworks],
+              );
             }
           }}
           selectedChainIds={selectedChainIds}
