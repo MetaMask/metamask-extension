@@ -1075,6 +1075,34 @@ describe('RewardsController', () => {
         );
       });
     });
+
+    it('should throw AuthorizationFailedError when subscription token is missing', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller }) => {
+          await expect(
+            controller.getSeasonStatus(MOCK_SUBSCRIPTION_ID, MOCK_SEASON_ID),
+          ).rejects.toThrow(
+            `No subscription token found for subscription ID: ${MOCK_SUBSCRIPTION_ID}`,
+          );
+          await expect(
+            controller.getSeasonStatus(MOCK_SUBSCRIPTION_ID, MOCK_SEASON_ID),
+          ).rejects.toBeInstanceOf(AuthorizationFailedError);
+        },
+      );
+    });
   });
 
   describe('optIn', () => {
@@ -1676,6 +1704,102 @@ describe('RewardsController', () => {
         expect(result.addressesNeedingFresh).toEqual([MOCK_ACCOUNT_ADDRESS]);
       });
     });
+
+    it('should force fresh check for not-opted-in accounts checked more than 5 minutes ago', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: false,
+            subscriptionId: null,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 6, // 6 minutes ago (exceeds 5 minute threshold)
+          },
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        const addressToAccountMap = new Map<string, InternalAccount>();
+        addressToAccountMap.set(
+          MOCK_ACCOUNT_ADDRESS.toLowerCase(),
+          MOCK_INTERNAL_ACCOUNT,
+        );
+
+        const result = controller.checkOptInStatusAgainstCache(
+          [MOCK_ACCOUNT_ADDRESS],
+          addressToAccountMap,
+        );
+
+        expect(result.cachedOptInResults).toEqual([null]);
+        expect(result.cachedSubscriptionIds).toEqual([null]);
+        expect(result.addressesNeedingFresh).toEqual([MOCK_ACCOUNT_ADDRESS]);
+      });
+    });
+
+    it('should use cached data for not-opted-in accounts checked within 5 minutes', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: false,
+            subscriptionId: null,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 2, // 2 minutes ago (within 5 minute threshold)
+          },
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        const addressToAccountMap = new Map<string, InternalAccount>();
+        addressToAccountMap.set(
+          MOCK_ACCOUNT_ADDRESS.toLowerCase(),
+          MOCK_INTERNAL_ACCOUNT,
+        );
+
+        const result = controller.checkOptInStatusAgainstCache(
+          [MOCK_ACCOUNT_ADDRESS],
+          addressToAccountMap,
+        );
+
+        expect(result.cachedOptInResults).toEqual([false]);
+        expect(result.cachedSubscriptionIds).toEqual([null]);
+        expect(result.addressesNeedingFresh).toEqual([]);
+      });
+    });
+
+    it('should force fresh check for not-opted-in accounts without lastFreshOptInStatusCheck', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: false,
+            subscriptionId: null,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+            lastFreshOptInStatusCheck: undefined,
+          },
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        const addressToAccountMap = new Map<string, InternalAccount>();
+        addressToAccountMap.set(
+          MOCK_ACCOUNT_ADDRESS.toLowerCase(),
+          MOCK_INTERNAL_ACCOUNT,
+        );
+
+        const result = controller.checkOptInStatusAgainstCache(
+          [MOCK_ACCOUNT_ADDRESS],
+          addressToAccountMap,
+        );
+
+        expect(result.cachedOptInResults).toEqual([null]);
+        expect(result.cachedSubscriptionIds).toEqual([null]);
+        expect(result.addressesNeedingFresh).toEqual([MOCK_ACCOUNT_ADDRESS]);
+      });
+    });
   });
 
   describe('shouldSkipSilentAuth', () => {
@@ -1724,6 +1848,30 @@ describe('RewardsController', () => {
       });
     });
 
+    it('should skip for not-opted-in accounts checked within 5 minutes', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: false,
+            subscriptionId: null,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 2, // 2 minutes ago (within 5 minute threshold)
+          },
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        const result = controller.shouldSkipSilentAuth(
+          MOCK_CAIP_ACCOUNT,
+          MOCK_INTERNAL_ACCOUNT,
+        );
+
+        expect(result).toBe(true);
+      });
+    });
+
     it('should not skip for stale not-opted-in accounts', async () => {
       const state: Partial<RewardsControllerState> = {
         rewardsAccounts: {
@@ -1733,7 +1881,7 @@ describe('RewardsController', () => {
             subscriptionId: null,
             perpsFeeDiscount: null,
             lastPerpsDiscountRateFetched: null,
-            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 60 * 24 * 2, // 2 days ago
+            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 6, // 6 minutes ago (exceeds 5 minute threshold)
           },
         },
       };
@@ -2532,10 +2680,13 @@ describe('Additional RewardsController edge cases', () => {
   });
 
   describe('getCandidateSubscriptionId - error scenarios', () => {
-    it('should return subscription ID from cache if session token exists', async () => {
+    it('should return subscription ID from cache if session token and subscription exist', async () => {
       const state: Partial<RewardsControllerState> = {
         rewardsSubscriptionTokens: {
           [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+        rewardsSubscriptions: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
         },
       };
 
@@ -2576,6 +2727,42 @@ describe('Additional RewardsController edge cases', () => {
           const result = await controller.getCandidateSubscriptionId();
 
           expect(result).toBeNull();
+        },
+      );
+    });
+
+    it('should continue to silent auth when subscription exists but session token is missing', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsSubscriptions: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve(MOCK_LOGIN_RESPONSE);
+            }
+            return undefined;
+          });
+
+          const result = await controller.getCandidateSubscriptionId();
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
         },
       );
     });

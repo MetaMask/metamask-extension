@@ -11,7 +11,7 @@ const RewardsBadge = ({ text }: { text: string }) => {
 
   return (
     <Box
-      className="flex items-center gap-2 px-2 bg-background-muted rounded"
+      className="flex items-center gap-1 px-1.5 bg-background-muted rounded"
       data-testid="rewards-points-balance"
     >
       <img

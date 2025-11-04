@@ -128,6 +128,9 @@ describe('useSeasonStatus', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
           },
         },
       );
@@ -158,6 +161,9 @@ describe('useSeasonStatus', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
           },
         },
       );
@@ -182,6 +188,9 @@ describe('useSeasonStatus', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
           },
         },
       );
@@ -204,6 +213,82 @@ describe('useSeasonStatus', () => {
         {
           metamask: {
             isUnlocked: false,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
+          },
+        },
+      );
+
+      expect(result.current.seasonStatus).toBeNull();
+      expect(result.current.seasonStatusError).toBeNull();
+      expect(result.current.seasonStatusLoading).toBe(false);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when activeRewardsCaipAccountId is missing', () => {
+    it('should not fetch season status when activeRewardsCaipAccountId is null', () => {
+      mockUseRewardsEnabled.mockReturnValue(true);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: null,
+          },
+        },
+      );
+
+      expect(result.current.seasonStatus).toBeNull();
+      expect(result.current.seasonStatusError).toBeNull();
+      expect(result.current.seasonStatusLoading).toBe(false);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('should not fetch season status when activeRewardsCaipAccountId is undefined', () => {
+      mockUseRewardsEnabled.mockReturnValue(true);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: undefined,
+          },
+        },
+      );
+
+      expect(result.current.seasonStatus).toBeNull();
+      expect(result.current.seasonStatusError).toBeNull();
+      expect(result.current.seasonStatusLoading).toBe(false);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('should not fetch season status when rewardsActiveAccount.account is null', () => {
+      mockUseRewardsEnabled.mockReturnValue(true);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: null,
+            },
           },
         },
       );
@@ -230,6 +315,9 @@ describe('useSeasonStatus', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
           },
         },
       );
@@ -267,6 +355,9 @@ describe('useSeasonStatus', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
           },
         },
       );
@@ -296,6 +387,9 @@ describe('useSeasonStatus', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
           },
         },
       );
@@ -327,6 +421,9 @@ describe('useSeasonStatus', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
           },
         },
       );
@@ -357,6 +454,9 @@ describe('useSeasonStatus', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
           },
         },
       );
@@ -376,6 +476,9 @@ describe('useSeasonStatus', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
           },
         },
       );
@@ -413,6 +516,9 @@ describe('useSeasonStatus', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
           },
         },
       );
@@ -439,6 +545,9 @@ describe('useSeasonStatus', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
           },
         },
       );
@@ -484,6 +593,9 @@ describe('useSeasonStatus', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
           },
         },
       );

@@ -74,6 +74,11 @@ describe('useCandidateSubscriptionId', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'sub-123',
+            },
+            rewardsSubscriptions: {},
           },
         },
       );
@@ -91,6 +96,11 @@ describe('useCandidateSubscriptionId', () => {
         metamask: {
           ...mockState.metamask,
           isUnlocked: false,
+          rewardsActiveAccount: {
+            account: 'eip155:1:0x123',
+            subscriptionId: 'sub-123',
+          },
+          rewardsSubscriptions: {},
         },
       };
 
@@ -102,6 +112,55 @@ describe('useCandidateSubscriptionId', () => {
       expect(result.current.candidateSubscriptionId).toBeNull();
       expect(result.current.candidateSubscriptionIdError).toBe(false);
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('should not fetch when rewardsActiveAccountCaipAccountId is missing', () => {
+      mockUseRewardsEnabled.mockReturnValue(true);
+
+      const { result } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: null,
+            rewardsSubscriptions: {},
+          },
+        },
+      );
+
+      expect(result.current.candidateSubscriptionId).toBeNull();
+      expect(result.current.candidateSubscriptionIdError).toBe(false);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('should fetch when subscription IDs do not match', async () => {
+      mockUseRewardsEnabled.mockReturnValue(true);
+      mockSubmitRequestToBackground.mockResolvedValue('new-sub-id');
+
+      const { result } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'different-sub-id',
+            },
+            rewardsSubscriptions: {},
+          },
+        },
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'getCandidateSubscriptionId',
+          [],
+        );
+      });
+
+      await waitFor(() => {
+        expect(result.current.candidateSubscriptionId).toBe('new-sub-id');
+      });
     });
   });
 
@@ -115,6 +174,11 @@ describe('useCandidateSubscriptionId', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'sub-123',
+            },
+            rewardsSubscriptions: {},
           },
         },
       );
@@ -140,6 +204,11 @@ describe('useCandidateSubscriptionId', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'sub-123',
+            },
+            rewardsSubscriptions: {},
           },
         },
       );
@@ -160,34 +229,29 @@ describe('useCandidateSubscriptionId', () => {
       );
     });
 
-    it('should reset error state on successful fetch after error', async () => {
-      const mockError = new Error('API Error');
-      const mockId = 'test-subscription-id';
+    it('should not fetch when rewards are disabled in fetchCandidateSubscriptionId', async () => {
+      mockUseRewardsEnabled.mockReturnValue(false);
 
       const { result } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'sub-123',
+            },
+            rewardsSubscriptions: {},
           },
         },
       );
 
-      // First call fails
-      mockSubmitRequestToBackground.mockRejectedValueOnce(mockError);
       await act(async () => {
         await result.current.fetchCandidateSubscriptionId();
       });
 
-      expect(result.current.candidateSubscriptionIdError).toBe(true);
-
-      // Second call succeeds
-      mockSubmitRequestToBackground.mockResolvedValueOnce(mockId);
-      await act(async () => {
-        await result.current.fetchCandidateSubscriptionId();
-      });
-
-      expect(result.current.candidateSubscriptionId).toBe(mockId);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+      expect(result.current.candidateSubscriptionId).toBeNull();
       expect(result.current.candidateSubscriptionIdError).toBe(false);
     });
   });
@@ -203,6 +267,11 @@ describe('useCandidateSubscriptionId', () => {
         {
           metamask: {
             isUnlocked: false,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'sub-123',
+            },
+            rewardsSubscriptions: {},
           },
         },
       );
@@ -217,6 +286,11 @@ describe('useCandidateSubscriptionId', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'sub-123',
+            },
+            rewardsSubscriptions: {},
           },
         },
       );
@@ -247,6 +321,11 @@ describe('useCandidateSubscriptionId', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'sub-123',
+            },
+            rewardsSubscriptions: {},
           },
         },
       );
@@ -263,6 +342,11 @@ describe('useCandidateSubscriptionId', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'sub-123',
+            },
+            rewardsSubscriptions: {},
           },
         },
       );
@@ -280,6 +364,55 @@ describe('useCandidateSubscriptionId', () => {
         );
       });
     });
+
+    it('should fetch when rewardsActiveAccountCaipAccountId becomes available', async () => {
+      mockUseRewardsEnabled.mockReturnValue(true);
+      mockSubmitRequestToBackground.mockResolvedValue('test-id-789');
+
+      // Test without rewardsActiveAccount
+      const { result: noAccountResult } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: null,
+            rewardsSubscriptions: {},
+          },
+        },
+      );
+
+      // Initially should not fetch
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+      expect(noAccountResult.current.candidateSubscriptionId).toBeNull();
+
+      // Test with rewardsActiveAccount
+      const { result: withAccountResult } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'sub-123',
+            },
+            rewardsSubscriptions: {},
+          },
+        },
+      );
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'getCandidateSubscriptionId',
+          [],
+        );
+      });
+
+      await waitFor(() => {
+        expect(withAccountResult.current.candidateSubscriptionId).toBe(
+          'test-id-789',
+        );
+      });
+    });
   });
 
   describe('Edge Cases', () => {
@@ -291,6 +424,11 @@ describe('useCandidateSubscriptionId', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'sub-123',
+            },
+            rewardsSubscriptions: {},
           },
         },
       );
@@ -311,6 +449,11 @@ describe('useCandidateSubscriptionId', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'sub-123',
+            },
+            rewardsSubscriptions: {},
           },
         },
       );
@@ -331,6 +474,11 @@ describe('useCandidateSubscriptionId', () => {
         {
           metamask: {
             isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'sub-123',
+            },
+            rewardsSubscriptions: {},
           },
         },
       );
@@ -349,6 +497,11 @@ describe('useCandidateSubscriptionId', () => {
         metamask: {
           ...mockState.metamask,
           isUnlocked: false,
+          rewardsActiveAccount: {
+            account: 'eip155:1:0x123',
+            subscriptionId: 'sub-123',
+          },
+          rewardsSubscriptions: {},
         },
       };
 
@@ -357,6 +510,11 @@ describe('useCandidateSubscriptionId', () => {
         metamask: {
           ...mockState.metamask,
           isUnlocked: true,
+          rewardsActiveAccount: {
+            account: 'eip155:1:0x123',
+            subscriptionId: 'sub-123',
+          },
+          rewardsSubscriptions: {},
         },
       };
 

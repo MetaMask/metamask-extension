@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -7,6 +7,7 @@ import {
   SeasonDtoState,
   SeasonStatusState,
 } from '../../../shared/types/rewards';
+import { useAppSelector } from '../../store/store';
 import { useRewardsEnabled } from './useRewardsEnabled';
 
 type UseSeasonStatusOptions = {
@@ -41,20 +42,17 @@ export const useSeasonStatus = ({
     null,
   );
   const [seasonStatusLoading, setSeasonStatusLoading] = useState(false);
-  const isLoadingRef = useRef(false);
+  const activeRewardsCaipAccountId = useAppSelector(
+    (state) => state.metamask.rewardsActiveAccount?.account,
+  );
 
   const fetchSeasonStatus = useCallback(async (): Promise<void> => {
     // Don't fetch if no subscriptionId or season metadata
-    if (!subscriptionId) {
+    if (!subscriptionId || !isRewardsEnabled) {
       setSeasonStatus(null);
       setSeasonStatusLoading(false);
       return;
     }
-
-    if (isLoadingRef.current) {
-      return;
-    }
-    isLoadingRef.current = true;
 
     setSeasonStatusLoading(true);
 
@@ -89,37 +87,19 @@ export const useSeasonStatus = ({
         onAuthorizationError
       ) {
         await onAuthorizationError();
+        setSeasonStatus(null);
       }
     } finally {
-      isLoadingRef.current = false;
       setSeasonStatusLoading(false);
     }
-  }, [subscriptionId, onAuthorizationError]);
+  }, [subscriptionId, onAuthorizationError, isRewardsEnabled]);
 
   // Fetch season status when dependencies change
   useEffect(() => {
-    if (!isRewardsEnabled) {
-      return;
-    }
-
-    if (isUnlocked && subscriptionId) {
+    if (isUnlocked && activeRewardsCaipAccountId) {
       fetchSeasonStatus();
     }
-  }, [isUnlocked, isRewardsEnabled, subscriptionId, fetchSeasonStatus]);
-
-  // TODO: invalidate by reward events
-  // () =>
-  // onlyForExplicitFetch
-  //   ? []
-  //   : [
-  //       'RewardsController:accountLinked' as const,
-  //       'RewardsController:rewardClaimed' as const,
-  //       'RewardsController:balanceUpdated' as const,
-  //     ],
-  // [onlyForExplicitFetch],
-  // );
-
-  // useInvalidateByRewardEvents(invalidateEvents, fetchSeasonStatus);
+  }, [isUnlocked, fetchSeasonStatus, activeRewardsCaipAccountId]);
 
   return {
     seasonStatus,

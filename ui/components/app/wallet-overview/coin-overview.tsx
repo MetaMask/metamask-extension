@@ -248,10 +248,10 @@ export const CoinOverview = ({
   }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
 
   const renderPercentageAndAmountChange = () => {
-    if (isRewardsEnabled) {
-      return <RewardsPointsBalance />;
-    }
-    const renderPortfolioButton = () => {
+    const renderPercentageAndAmountChangeTrail = () => {
+      if (isRewardsEnabled) {
+        return <RewardsPointsBalance />;
+      }
       return (
         <ButtonLink
           endIconName={IconName.Export}
@@ -275,7 +275,7 @@ export const CoinOverview = ({
         >
           <Box className="wallet-overview__currency-wrapper">
             <PercentageAndAmountChange value={value} />
-            {renderPortfolioButton()}
+            {renderPercentageAndAmountChangeTrail()}
           </Box>
         </Skeleton>
       );
@@ -285,11 +285,11 @@ export const CoinOverview = ({
       <Box className="wallet-overview__currency-wrapper">
         {isTokenNetworkFilterEqualCurrentNetwork ? (
           <AggregatedPercentageOverview
-            portfolioButton={renderPortfolioButton}
+            trailingChild={renderPercentageAndAmountChangeTrail}
           />
         ) : (
           <AggregatedPercentageOverviewCrossChains
-            portfolioButton={renderPortfolioButton}
+            trailingChild={renderPercentageAndAmountChangeTrail}
           />
         )}
       </Box>
@@ -299,7 +299,7 @@ export const CoinOverview = ({
       <Box className="wallet-overview__currency-wrapper">
         <AggregatedMultichainPercentageOverview
           privacyMode={privacyMode}
-          portfolioButton={renderPortfolioButton}
+          trailingChild={renderPercentageAndAmountChangeTrail}
         />
       </Box>
     );
@@ -310,7 +310,7 @@ export const CoinOverview = ({
         <Box className="wallet-overview__currency-wrapper">
           <AccountGroupBalanceChange
             period="1d"
-            portfolioButton={renderPortfolioButton}
+            trailingChild={renderPercentageAndAmountChangeTrail}
           />
         </Box>
       );

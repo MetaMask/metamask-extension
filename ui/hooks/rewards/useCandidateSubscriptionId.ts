@@ -3,6 +3,7 @@ import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { useAppSelector } from '../../store/store';
 import { useRewardsEnabled } from './useRewardsEnabled';
 
 type UseCandidateSubscriptionIdReturn = {
@@ -23,9 +24,23 @@ export const useCandidateSubscriptionId =
       useState(false);
     const isUnlocked = useSelector(getIsUnlocked);
     const isRewardsEnabled = useRewardsEnabled();
+    const rewardsActiveAccountSubscriptionId = useAppSelector(
+      (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
+    );
+    const rewardsActiveAccountCaipAccountId = useAppSelector(
+      (state) => state.metamask.rewardsActiveAccount?.account,
+    );
+    const rewardsSubscriptions = useAppSelector(
+      (state) => state.metamask.rewardsSubscriptions,
+    );
 
     const fetchCandidateSubscriptionId = useCallback(async () => {
       try {
+        if (!isRewardsEnabled) {
+          setCandidateSubscriptionId(null);
+          setCandidateSubscriptionIdError(false);
+          return;
+        }
         const candidateId = await submitRequestToBackground<string>(
           'getCandidateSubscriptionId',
           [],
@@ -39,19 +54,25 @@ export const useCandidateSubscriptionId =
         );
         setCandidateSubscriptionIdError(true);
       }
-    }, []);
+    }, [isRewardsEnabled]);
 
-    // Fetch candidate subscription ID on mount and when unlocked
     useEffect(() => {
-      if (!isRewardsEnabled) {
-        return;
-      }
-
-      if (isUnlocked) {
+      if (
+        isUnlocked &&
+        rewardsActiveAccountCaipAccountId &&
+        (!candidateSubscriptionId ||
+          rewardsActiveAccountSubscriptionId !== candidateSubscriptionId)
+      ) {
         fetchCandidateSubscriptionId();
       }
-    }, [isUnlocked, isRewardsEnabled, fetchCandidateSubscriptionId]);
-
+    }, [
+      isUnlocked,
+      fetchCandidateSubscriptionId,
+      rewardsActiveAccountCaipAccountId,
+      rewardsActiveAccountSubscriptionId,
+      candidateSubscriptionId,
+      rewardsSubscriptions,
+    ]);
     return {
       candidateSubscriptionId,
       candidateSubscriptionIdError,

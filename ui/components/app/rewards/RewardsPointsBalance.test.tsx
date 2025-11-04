@@ -229,8 +229,8 @@ describe('RewardsPointsBalance', () => {
     expect(container).toHaveClass(
       'flex',
       'items-center',
-      'gap-2',
-      'px-2',
+      'gap-1',
+      'px-1.5',
       'bg-background-muted',
       'rounded',
     );

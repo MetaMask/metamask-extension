@@ -51,8 +51,8 @@ const SEASON_STATUS_CACHE_THRESHOLD_MS = 1000 * 60 * 1; // 1 minute
 // Season metadata cache threshold
 const SEASON_METADATA_CACHE_THRESHOLD_MS = 1000 * 60 * 10; // 10 minutes
 
-// Opt-in status stale threshold for not opted-in accounts to force a fresh check
-const NOT_OPTED_IN_OIS_STALE_CACHE_THRESHOLD_MS = 1000 * 60 * 60 * 24; // 24 hours
+// Opt-in status stale threshold for not opted-in accounts to force a fresh check (less strict than in mobile for now)
+const NOT_OPTED_IN_OIS_STALE_CACHE_THRESHOLD_MS = 1000 * 60 * 5; // 5 minutes
 
 /**
  * State metadata for the RewardsController
@@ -847,7 +847,6 @@ export class RewardsController extends BaseController<
       // Update state with successful authentication
       subscription = loginResponse.subscription;
 
-      // TODO: Re-enable multi-subscription token vault when implemented
       // Store the session token for this subscription
       this.#storeSubscriptionToken(subscription.id, loginResponse.sessionId);
 
@@ -1265,11 +1264,6 @@ export class RewardsController extends BaseController<
         if (!cached) {
           return undefined;
         }
-        log.info(
-          'RewardsController: Using cached season status data for',
-          subscriptionId,
-          seasonId,
-        );
         return { payload: cached, lastFetched: cached.lastFetched };
       },
       fetchFresh: async () => {
@@ -1281,7 +1275,7 @@ export class RewardsController extends BaseController<
           );
           const subscriptionToken = this.#getSubscriptionToken(subscriptionId);
           if (!subscriptionToken) {
-            throw new Error(
+            throw new AuthorizationFailedError(
               `No subscription token found for subscription ID: ${subscriptionId}`,
             );
           }
@@ -1408,6 +1402,7 @@ export class RewardsController extends BaseController<
       }
       state.rewardsAccounts = {};
       state.rewardsSubscriptions = {};
+      state.rewardsSubscriptionTokens = {};
     });
     log.info('RewardsController: Invalidated accounts and subscriptions');
   }
@@ -1806,7 +1801,11 @@ export class RewardsController extends BaseController<
         const sessionToken = subscriptionId
           ? this.state.rewardsSubscriptionTokens[subscriptionId]
           : undefined;
-        if (subscriptionId && Boolean(sessionToken)) {
+        if (
+          subscriptionId &&
+          Boolean(sessionToken) &&
+          this.state.rewardsSubscriptions[subscriptionId]
+        ) {
           return subscriptionId;
         }
         try {
