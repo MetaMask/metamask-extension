@@ -7528,9 +7528,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@6.0.0-preview-950f30f7":
-  version: 6.0.0-preview-950f30f7
-  resolution: "@metamask-previews/seedless-onboarding-controller@npm:6.0.0-preview-950f30f7"
+"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@6.0.0-preview-d0277a7f":
+  version: 6.0.0-preview-d0277a7f
+  resolution: "@metamask-previews/seedless-onboarding-controller@npm:6.0.0-preview-d0277a7f"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7543,7 +7543,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
   peerDependencies:
     "@metamask/keyring-controller": ^24.0.0
-  checksum: 10/b93b80f18a94b7fd5332bf5ec2bac03dd7b43dd7f3251c1a05746c17db9b1f92e956e63f9231415696b3fc12160dc6cfe11c0cb4c0ca70e15be835e73f5b18d0
+  checksum: 10/62cba191db9dd2f7c3d90c76543b49f52de548fe26481c87b4032240678f3cd3c668361d7634925b37a8ba84082db86b7052c4ad9eeb316accdcbb1b98a6b977
   languageName: node
   linkType: hard
 
@@ -31970,7 +31970,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@6.0.0-preview-950f30f7"
+    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@6.0.0-preview-d0277a7f"
     "@metamask/selected-network-controller": "npm:^25.0.0"
     "@metamask/shield-controller": "npm:^1.1.0"
     "@metamask/signature-controller": "npm:^35.0.0"
