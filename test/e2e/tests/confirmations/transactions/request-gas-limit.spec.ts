@@ -176,7 +176,7 @@ describe('dApp Request Gas Limit', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-       // Click on Activity tab
+        // Click on Activity tab
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
 
