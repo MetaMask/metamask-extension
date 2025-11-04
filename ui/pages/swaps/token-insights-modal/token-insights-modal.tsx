@@ -251,7 +251,16 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="token-insights-modal">
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+        modalDialogProps={{
+          onMouseDown: (e: React.MouseEvent) => e.stopPropagation(),
+          onPointerDown: (e: React.PointerEvent) => e.stopPropagation(),
+          onClick: (e: React.MouseEvent) => e.stopPropagation(),
+        }}
+      >
         <ModalHeader
           onClose={onClose}
           paddingBottom={4}
@@ -343,7 +352,14 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
               <MarketDataRow
                 label={t('contractAddress')}
                 value={
-                  <Box onClick={handleCopyAddress}>
+                  <Box
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopyAddress();
+                    }}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onPointerDown={(e) => e.stopPropagation()}
+                  >
                     <AddressCopyButton
                       address={formatContractAddress(token.address)}
                       shorten
