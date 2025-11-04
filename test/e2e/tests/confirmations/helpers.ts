@@ -604,11 +604,7 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            {
-              sendRedesign: {
-                enabled: false,
-              },
-            },
+            BIP44_STAGE_TWO
           ],
         };
       }),
@@ -685,6 +681,7 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
+            BIP44_STAGE_TWO,
           ],
         };
       }),
