@@ -1696,7 +1696,6 @@ export const TEST_NETWORK_IDS = [
   CHAIN_IDS.ARBITRUM_SEPOLIA,
   CHAIN_IDS.MEGAETH_TESTNET,
   CHAIN_IDS.MONAD_TESTNET,
-  CHAIN_IDS.LOCALHOST,
 ];
 
 // default minimum number of `occurrences` per token
