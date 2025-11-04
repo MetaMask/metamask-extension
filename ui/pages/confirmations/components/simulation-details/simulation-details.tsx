@@ -35,6 +35,7 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -115,7 +116,12 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
 const EmptyContent: React.FC = () => {
   const t = useI18nContext();
   return (
-    <Text color={TextColor.textDefault} variant={TextVariant.bodyMd}>
+    <Text
+      color={TextColor.textDefault}
+      variant={TextVariant.bodyMd}
+      width={BlockSize.ElevenTwelfths}
+      textAlign={TextAlign.Right}
+    >
       {t('simulationDetailsNoChanges')}
     </Text>
   );

@@ -9,10 +9,9 @@ import {
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
-type AllowedActions =
-  AccountTreeControllerGetAccountsFromSelectedAccountGroupAction;
+type Actions = AccountTreeControllerGetAccountsFromSelectedAccountGroupAction;
 
-type AllowedEvents =
+type Events =
   | KeyringControllerLockEvent
   | TransactionControllerTransactionConfirmedEvent
   | AccountTreeControllerSelectedAccountGroupChangeEvent;
@@ -29,12 +28,12 @@ export type DeFiPositionsControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getDeFiPositionsControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
   const controllerMessenger = new Messenger<
     'DeFiPositionsController',
-    AllowedActions,
-    AllowedEvents,
+    Actions,
+    Events,
     typeof messenger
   >({
     namespace: 'DeFiPositionsController',
