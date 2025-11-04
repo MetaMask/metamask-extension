@@ -90,7 +90,8 @@
         "XMLHttpRequest": false,
         "document": false,
         "document.createElement": true,
-        "navigator": true
+        "navigator": false,
+        "navigator.userAgent": true
       }
     },
     "@rive-app/react-canvas": {
