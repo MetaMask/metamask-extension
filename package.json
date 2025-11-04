@@ -370,7 +370,6 @@
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch",
     "@segment/loosely-validate-event": "^2.0.0",
     "@sentry/browser": "patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch",
-    "@sentry/react": "^10.22.0",
     "@sentry/types": "^8.33.1",
     "@sentry/utils": "^8.33.1",
     "@solana/addresses": "2.0.0-rc.4",

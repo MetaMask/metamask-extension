@@ -1,5 +1,5 @@
 import { createModuleLogger } from '@metamask/utils';
-import * as Sentry from '@sentry/react';
+import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
@@ -14,6 +14,7 @@ let installType = 'unknown';
 const internalLog = createModuleLogger(log, 'internal');
 
 /* eslint-disable prefer-destructuring */
+/* eslint-disable no-unused-vars */
 // Destructuring breaks the inlining of the environment variables
 const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
