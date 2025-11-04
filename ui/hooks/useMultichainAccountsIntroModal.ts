@@ -5,6 +5,9 @@ import { getIsMultichainAccountsState2Enabled } from '../selectors/multichain-ac
 import { getLastUpdatedFromVersion } from '../selectors/selectors';
 import { DEFAULT_ROUTE } from '../helpers/constants/routes';
 
+// Version threshold for BIP-44 multichain accounts introduction
+const BIP44_ACCOUNTS_INTRODUCTION_VERSION = '13.5.0';
+
 /**
  * Hook to manage the multichain accounts intro modal display logic
  * Keeps the routes component clean by encapsulating modal state logic
@@ -36,14 +39,14 @@ export function useMultichainAccountsIntroModal(
     // Only show modal on the main wallet/home route
     const isMainWalletArea = location.pathname === DEFAULT_ROUTE;
 
-    // Check if this is an upgrade from a version lower than 13.5.0
+    // Check if this is an upgrade from a version lower than BIP-44 introduction version
     const isUpgradeFromLowerThanBip44Version = Boolean(
       lastUpdatedFromVersion &&
         typeof lastUpdatedFromVersion === 'string' &&
-        semverLt(lastUpdatedFromVersion, '13.5.0'),
+        semverLt(lastUpdatedFromVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION),
     );
 
-    // Show modal only for upgrades from versions < 13.5.0
+    // Show modal only for upgrades from versions < BIP-44 introduction version
     const shouldShowModal =
       isUnlocked &&
       isMultichainAccountsState2Enabled &&
