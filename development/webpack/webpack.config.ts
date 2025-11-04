@@ -45,6 +45,7 @@ if (args.dryRun) {
 }
 
 const context = join(__dirname, '../../app');
+const nodeModules = join(__dirname, '../../node_modules');
 const isDevelopment = args.env === 'development';
 const MANIFEST_VERSION = args.manifest_version;
 const manifestPath = join(context, `manifest/v${MANIFEST_VERSION}/_base.json`);
@@ -159,6 +160,27 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // snaps MV3 needs the offscreen document
+      ...(args.manifest_version === 3
+        ? [
+            {
+              from: join(
+                nodeModules,
+                '@metamask/snaps-execution-environments',
+                'dist/webpack/iframe/index.html',
+              ),
+              to: 'snaps/index.html',
+            },
+            {
+              from: join(
+                nodeModules,
+                '@metamask/snaps-execution-environments',
+                'dist/webpack/iframe/bundle.js',
+              ),
+              to: 'snaps/bundle.js',
+            },
+          ]
+        : []),
     ],
   }),
 ];
