@@ -318,6 +318,7 @@ export function NftDetailsComponent({
     navigateToSendRoute(navigate, isSendRedesignEnabled, {
       address: nft.address,
       chainId: nftChainId,
+      tokenId: String(nft.tokenId),
     });
   };
 
