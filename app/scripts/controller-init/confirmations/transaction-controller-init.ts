@@ -148,6 +148,16 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
+      afterAdd: async (_params: { transactionMeta: TransactionMeta }) => {
+        return {
+          updateTransaction: async (transactionMeta: TransactionMeta) => {
+            await initMessenger.call(
+              'SubscriptionService:submitSubscriptionSponsorshipIntent',
+              transactionMeta,
+            );
+          },
+        };
+      },
       afterSimulate: new EnforceSimulationHook({
         messenger: initMessenger,
       }).getAfterSimulateHook(),
