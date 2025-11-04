@@ -232,6 +232,7 @@ describe('Change assets', function () {
         await sendTokenPage.checkTokenSymbolInAssetPicker('TDN', '1');
         await sendTokenPage.clickAccountPickerButton();
         await accountListPage.selectAccount('Account 2');
+        await driver.delay(1000);
         await sendTokenPage.checkTokenSymbolInAssetPicker('ETH');
         await sendTokenPage.clickAccountPickerButton();
         await accountListPage.selectAccount('Account 1');

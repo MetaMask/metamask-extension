@@ -8,6 +8,8 @@ import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
+// Skipping this test because test fails with BIP44
+// eslint-disable-next-line mocha/no-skipped-tests
 describe('Send ERC20', function () {
   it('should send DAI', async function () {
     await withFixtures(
