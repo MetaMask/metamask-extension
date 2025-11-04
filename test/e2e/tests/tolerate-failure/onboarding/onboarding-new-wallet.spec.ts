@@ -106,7 +106,6 @@ describe('MetaMask onboarding', function () {
         console.log(`Timer 4:  ${timer4.getDuration()} ms`);
         console.log(`Timer 5:  ${timer5.getDuration()} ms`);
         console.log(`Timer 6:  ${timer6.getDuration()} ms`);
-        console.log(`Timer 7:  ${timer7.getDuration()} ms`);
       },
     );
   });
