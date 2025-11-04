@@ -161,27 +161,27 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} className="token-insights-modal">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}></ModalHeader>
-        <Box padding={4}>
-          {/* Token Icon */}
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            gap={2}
-            marginBottom={4}
-          >
-            <AvatarToken
-              src={token.iconUrl}
-              name={token.symbol}
-              size={AvatarTokenSize.Lg}
-              data-testid="token-insights-icon"
-            />
-            <Text variant={TextVariant.headingSm}>
-              {token.name || token.symbol} Insights
-            </Text>
-          </Box>
-
+        <ModalHeader
+          onClose={onClose}
+          paddingBottom={4}
+          childrenWrapperProps={{
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+            alignItems: AlignItems.center,
+            gap: 2,
+          }}
+        >
+          <AvatarToken
+            src={token.iconUrl}
+            name={token.symbol}
+            size={AvatarTokenSize.Lg}
+            data-testid="token-insights-icon"
+          />
+          <Text variant={TextVariant.headingSm}>
+            {token.name || token.symbol} Insights
+          </Text>
+        </ModalHeader>
+        <Box paddingRight={4} paddingLeft={4}>
           {/* Market Data */}
           <Box className="market-data">
             <MarketDataRow
