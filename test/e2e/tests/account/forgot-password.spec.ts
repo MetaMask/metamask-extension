@@ -21,6 +21,7 @@ describe('Forgot password', function () {
           'unable to proceed, wallet is locked',
           'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
           'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.', // issue #37498
+          `Legacy syncing failed for wallet entropy:01K97825312FDAYCHQHH7W1RZJ: failed to get user storage for path 'multichain_accounts_wallets.wallet'. Entropy source with ID "01K97825312FDAYCHQHH7W1RZJ" not found.` // issue #37053
         ],
         title: this.test?.fullTitle(),
       },
