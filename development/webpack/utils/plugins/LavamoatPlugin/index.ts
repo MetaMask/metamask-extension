@@ -133,6 +133,16 @@ export const lavamoatPlugin = (args: Args) =>
             },
           },
         };
+      } else if (chunk.name === '../offscreen/scripts/offscreen.ts') {
+        return {
+          mode: 'safe',
+          embeddedOptions: {
+            scuttleGlobalThis: {
+              enabled: true,
+              exceptions: ['ShadowRoot'],
+            },
+          },
+        };
       } else if (chunk.name === 'ui') {
         return {
           mode: 'safe',
