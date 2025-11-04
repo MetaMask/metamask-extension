@@ -619,10 +619,17 @@ export default function Routes() {
           <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
           <Authenticated path={SNAPS_ROUTE} component={SnapList} exact />
           <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
-          <Authenticated
-            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
-            component={ConfirmTransaction}
-          />
+          <Route path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}>
+            {(props: RouteComponentProps<{ id?: string }>) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const ConfirmTransactionComponent = ConfirmTransaction as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <ConfirmTransactionComponent />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
           <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
           <Authenticated
@@ -634,20 +641,31 @@ export default function Routes() {
             path={CROSS_CHAIN_SWAP_ROUTE}
             component={CrossChainSwap}
           />
-          <Authenticated
-            path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
-            component={ConfirmAddSuggestedTokenPage}
-            exact
-          />
-          <Authenticated
-            path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
-            component={ConfirmAddSuggestedNftPage}
-            exact
-          />
-          <Authenticated
-            path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
-            component={ConfirmationPage}
-          />
+          <Route exact path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}>
+            <Authenticated>
+              <AuthenticatedV5Compat>
+                <ConfirmAddSuggestedTokenPage />
+              </AuthenticatedV5Compat>
+            </Authenticated>
+          </Route>
+          <Route exact path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}>
+            <Authenticated>
+              <AuthenticatedV5Compat>
+                <ConfirmAddSuggestedNftPage />
+              </AuthenticatedV5Compat>
+            </Authenticated>
+          </Route>
+          <Route path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}>
+            {(props: RouteComponentProps<{ id?: string }>) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const ConfirmationPageComponent = ConfirmationPage as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <ConfirmationPageComponent />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
           <Authenticated
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}

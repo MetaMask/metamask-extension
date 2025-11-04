@@ -47,7 +47,7 @@ export default class BackupAndSyncTab extends PureComponent {
           borderColor={BorderColor.borderMuted}
           width={BlockSize.Full}
           style={{ height: '1px', borderBottomWidth: 0 }}
-        ></Box>
+        />
         <BackupAndSyncFeaturesToggles />
       </div>
     );

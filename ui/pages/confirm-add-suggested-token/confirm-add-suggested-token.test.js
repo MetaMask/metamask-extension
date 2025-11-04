@@ -8,7 +8,7 @@ import {
   rejectPendingApproval,
 } from '../../store/actions';
 import configureStore from '../../store/store';
-import { renderWithProvider } from '../../../test/jest/rendering';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -67,6 +67,14 @@ jest.mock('../../hooks/useIsOriginalTokenSymbol', () => {
 });
 
 const renderComponent = (tokens = []) => {
+  const mockNavigate = jest.fn();
+  const mockLocation = {
+    pathname: '/',
+    search: '',
+    hash: '',
+    key: 'test-key',
+  };
+
   const store = configureStore({
     metamask: {
       pendingApprovals: PENDING_APPROVALS,
@@ -115,7 +123,13 @@ const renderComponent = (tokens = []) => {
       mostRecentOverviewPage: '/',
     },
   });
-  return renderWithProvider(<ConfirmAddSuggestedToken />, store);
+  return renderWithProvider(
+    <ConfirmAddSuggestedToken
+      location={mockLocation}
+      navigate={mockNavigate}
+    />,
+    store,
+  );
 };
 
 describe('ConfirmAddSuggestedToken Component', () => {

@@ -60,9 +60,15 @@ jest.mock(
 
 jest.mock('../../../hooks/useOriginThrottling');
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  useNavigate: jest.fn(),
-}));
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
 
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());

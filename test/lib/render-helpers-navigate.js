@@ -87,7 +87,12 @@ export function renderHookWithProvider(hook, state, pathname = '/', Container) {
       )
     : ProviderWrapper;
 
-  return renderHook(hook, { wrapper });
+  const hookResult = renderHook(hook, { wrapper });
+
+  return {
+    ...hookResult,
+    store,
+  };
 }
 
 /**

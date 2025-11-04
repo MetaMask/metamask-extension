@@ -7,8 +7,6 @@ import {
 import { waitFor } from '@testing-library/react';
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
@@ -27,16 +25,6 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }));
 
-const messageIdMock = '12345';
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: () => ({
-    id: messageIdMock,
-  }),
-  useLocation: jest.fn(),
-}));
-
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
   useContext: jest.fn(),
@@ -45,7 +33,6 @@ jest.mock('react', () => ({
 jest.mock('./useContractCode', () => ({
   useContractCode: jest.fn(),
 }));
-
 jest.mock('./NonContractAddressAlertMessage', () => ({
   NonContractAddressAlertMessage: () => 'NonContractAddressAlertMessage',
 }));
@@ -88,14 +75,9 @@ describe('useNonContractAddressAlerts', () => {
   const useContextMock = useContext as jest.Mock;
   const useSelectorMock = useSelector as jest.Mock;
   const mockUseContractCode = jest.mocked(useContractCode);
-  const useLocationMock = jest.mocked(useLocation);
 
   beforeEach(() => {
     jest.resetAllMocks();
-
-    useLocationMock.mockReturnValue({
-      search: '',
-    } as unknown as ReturnType<typeof useLocationMock>);
 
     mockUseContractCode.mockImplementation(
       () =>
@@ -258,9 +240,7 @@ describe('useNonContractAddressAlerts', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       useNonContractAddressAlerts,
-      {
-        currentConfirmation: transaction,
-      },
+      getMockConfirmStateForTransaction(transaction),
     );
 
     expect(result.current).toEqual([]);
@@ -299,9 +279,7 @@ describe('useNonContractAddressAlerts', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       useNonContractAddressAlerts,
-      {
-        currentConfirmation: transactionWithData,
-      },
+      getMockConfirmStateForTransaction(transactionWithData as TransactionMeta),
     );
 
     await waitFor(() => {
@@ -352,9 +330,7 @@ describe('useNonContractAddressAlerts', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       useNonContractAddressAlerts,
-      {
-        currentConfirmation: transactionWithData,
-      },
+      getMockConfirmStateForTransaction(transactionWithData as TransactionMeta),
     );
 
     await waitFor(() => {
@@ -408,9 +384,7 @@ describe('useNonContractAddressAlerts', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       useNonContractAddressAlerts,
-      {
-        currentConfirmation: transactionWithData,
-      },
+      getMockConfirmStateForTransaction(transactionWithData as TransactionMeta),
     );
 
     await waitFor(() => {

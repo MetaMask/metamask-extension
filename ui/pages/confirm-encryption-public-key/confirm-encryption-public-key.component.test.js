@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { EthAccountType } from '@metamask/keyring-api';
 import mockState from '../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component';
 
@@ -11,7 +11,6 @@ const baseProps = {
   cancelEncryptionPublicKey: () => undefined,
   encryptionPublicKey: () => undefined,
   mostRecentOverviewPage: '/',
-  history: { push: '/' },
   requesterAddress: '0x123456789abcdef',
   txData: {
     origin: 'test',
