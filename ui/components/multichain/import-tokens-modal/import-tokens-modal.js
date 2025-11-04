@@ -196,6 +196,10 @@ export const ImportTokensModal = ({ onClose }) => {
     }
   }, [currentMultichainChainId, chainId]); // This should not be executed when selectedNetwork changes
 
+  const useTokenDetection = useSelector(
+    ({ metamask }) => metamask.useTokenDetection,
+  );
+
   const networkName = useSelector(getTokenDetectionSupportNetworkByChainId);
   const nativeCurrency = useSelector(getNativeCurrency);
 
@@ -909,32 +913,34 @@ export const ImportTokensModal = ({ onClose }) => {
                       className="flex-1"
                     >
                       <Box paddingTop={4}>
-                        <Box paddingLeft={4} paddingRight={4}>
-                          <BannerAlert
-                            severity={Severity.Info}
-                            marginBottom={4}
-                            paddingLeft={4}
-                            paddingRight={4}
-                          >
-                            <Text variant={TextVariant.bodyMd} fontSize="16">
-                              {t('enhancedTokenDetectionAlertMessage', [
-                                networkName,
-                                <ButtonLink
-                                  key="token-detection-announcement"
-                                  className="import-tokens-modal__autodetect"
-                                  onClick={() => {
-                                    onClose();
-                                    history.push(
-                                      `${SECURITY_ROUTE}#auto-detect-tokens`,
-                                    );
-                                  }}
-                                >
-                                  {t('enableFromSettings')}
-                                </ButtonLink>,
-                              ])}
-                            </Text>
-                          </BannerAlert>
-                        </Box>
+                        {useTokenDetection && (
+                          <Box paddingLeft={4} paddingRight={4}>
+                            <BannerAlert
+                              severity={Severity.Info}
+                              marginBottom={4}
+                              paddingLeft={4}
+                              paddingRight={4}
+                            >
+                              <Text variant={TextVariant.bodyMd} fontSize="16">
+                                {t('enhancedTokenDetectionAlertMessage', [
+                                  networkName,
+                                  <ButtonLink
+                                    key="token-detection-announcement"
+                                    className="import-tokens-modal__autodetect"
+                                    onClick={() => {
+                                      onClose();
+                                      history.push(
+                                        `${SECURITY_ROUTE}#auto-detect-tokens`,
+                                      );
+                                    }}
+                                  >
+                                    {t('enableFromSettings')}
+                                  </ButtonLink>,
+                                ])}
+                              </Text>
+                            </BannerAlert>
+                          </Box>
+                        )}
 
                         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
                           <TokenSearch

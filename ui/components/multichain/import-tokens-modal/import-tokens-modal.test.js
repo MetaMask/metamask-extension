@@ -103,6 +103,58 @@ describe('ImportTokensModal', () => {
       expect(getByText('Custom token')).toBeInTheDocument();
       expect(queryByText('Search')).not.toBeInTheDocument();
     });
+
+    it('shows token detection banner when useTokenDetection is true', () => {
+      mockUseTokensWithFiltering.mockReturnValue({
+        *filteredTokenListGenerator() {
+          yield {
+            address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+            symbol: 'UNI',
+            name: 'Uniswap',
+            decimals: 18,
+            image: 'https://example.com/uni.png',
+            aggregators: ['CoinGecko'],
+            occurrences: 5,
+          };
+        },
+        isLoading: false,
+      });
+
+      const { getByText } = render({ useTokenDetection: true });
+
+      const searchTab = getByText('Search');
+      fireEvent.click(searchTab);
+
+      expect(
+        getByText(/Enhanced token detection is currently available/iu),
+      ).toBeInTheDocument();
+    });
+
+    it('does not show token detection banner when useTokenDetection is false', () => {
+      mockUseTokensWithFiltering.mockReturnValue({
+        *filteredTokenListGenerator() {
+          yield {
+            address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+            symbol: 'UNI',
+            name: 'Uniswap',
+            decimals: 18,
+            image: 'https://example.com/uni.png',
+            aggregators: ['CoinGecko'],
+            occurrences: 5,
+          };
+        },
+        isLoading: false,
+      });
+
+      const { getByText, queryByText } = render({ useTokenDetection: false });
+
+      const searchTab = getByText('Search');
+      fireEvent.click(searchTab);
+
+      expect(
+        queryByText(/Enhanced token detection is currently available/iu),
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('Custom Token', () => {
