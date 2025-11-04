@@ -1,6 +1,10 @@
 import { Hex } from '@metamask/utils';
 import { useEffect, useMemo } from 'react';
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom-v5-compat';
+import {
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import { SEND_ROUTE } from '../../../../helpers/constants/routes';
@@ -78,7 +82,9 @@ export const useSendQueryParams = () => {
     if (to !== undefined && paramRecipient !== to) {
       queryParams.set('recipient', to);
     }
-    navigate(`${SEND_ROUTE}/${subPath}?${queryParams.toString()}`, { replace: true });
+    navigate(`${SEND_ROUTE}/${subPath}?${queryParams.toString()}`, {
+      replace: true,
+    });
   }, [
     asset,
     navigate,

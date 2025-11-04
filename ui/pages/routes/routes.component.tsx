@@ -567,14 +567,17 @@ export default function Routes() {
       isUnlocked &&
       (pendingApprovals.length > 0 || approvalFlows?.length > 0)
     ) {
+      const firstApprovalId = pendingApprovals[0]?.id;
       navigateToConfirmation(
-        pendingApprovals[0]?.id,
+        firstApprovalId,
         pendingApprovals,
         Boolean(approvalFlows?.length),
         history,
+        '',
+        location.pathname,
       );
     }
-  }, [isUnlocked, pendingApprovals, approvalFlows, history]);
+  }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
   ///: END:ONLY_INCLUDE_IF
 
   const renderRoutes = useCallback(() => {
@@ -620,12 +623,18 @@ export default function Routes() {
           <Authenticated path={SNAPS_ROUTE} component={SnapList} exact />
           <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
           <Route path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}>
-            {(_props: RouteComponentProps<{ id?: string }>) => {
+            {(props: RouteComponentProps<{ id?: string }>) => {
+              const { match, location: v5Location } = props;
+              // Pass the full v5Location because the nested Routes inside ConfirmTransaction
+              // use absolute paths like /confirm-transaction/:id, not relative paths
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const ConfirmTransactionComponent = ConfirmTransaction as any;
               return (
                 <AuthenticatedV5Compat>
-                  <ConfirmTransactionComponent />
+                  <ConfirmTransactionComponent
+                    params={match.params}
+                    location={v5Location}
+                  />
                 </AuthenticatedV5Compat>
               );
             }}
@@ -642,26 +651,66 @@ export default function Routes() {
             component={CrossChainSwap}
           />
           <Route path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}>
-            {() => (
-              <AuthenticatedV5Compat>
-                <ConfirmAddSuggestedTokenPage />
-              </AuthenticatedV5Compat>
-            )}
+            {(props: RouteComponentProps) => {
+              const { history: v5History, location: v5Location } = props;
+              // Create a navigate function compatible with v5-compat for the component
+              const navigate = (
+                to: string,
+                options: { replace?: boolean } = {},
+              ) => {
+                if (options.replace) {
+                  v5History.replace(to);
+                } else {
+                  v5History.push(to);
+                }
+              };
+              const ConfirmAddSuggestedTokenPageWithProps =
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                ConfirmAddSuggestedTokenPage as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <ConfirmAddSuggestedTokenPageWithProps
+                    navigate={navigate}
+                    location={v5Location}
+                  />
+                </AuthenticatedV5Compat>
+              );
+            }}
           </Route>
           <Route path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}>
-            {() => (
-              <AuthenticatedV5Compat>
-                <ConfirmAddSuggestedNftPage />
-              </AuthenticatedV5Compat>
-            )}
+            {(props: RouteComponentProps) => {
+              const { history: v5History, location: v5Location } = props;
+              // Create a navigate function compatible with v5-compat for the component
+              const navigate = (
+                to: string,
+                options: { replace?: boolean } = {},
+              ) => {
+                if (options.replace) {
+                  v5History.replace(to);
+                } else {
+                  v5History.push(to);
+                }
+              };
+              const ConfirmAddSuggestedNftPageWithProps =
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                ConfirmAddSuggestedNftPage as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <ConfirmAddSuggestedNftPageWithProps
+                    navigate={navigate}
+                    location={v5Location}
+                  />
+                </AuthenticatedV5Compat>
+              );
+            }}
           </Route>
           <Route path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}>
-            {(_props: RouteComponentProps<{ id?: string }>) => {
+            {(props: RouteComponentProps<{ id?: string }>) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const ConfirmationPageComponent = ConfirmationPage as any;
               return (
                 <AuthenticatedV5Compat>
-                  <ConfirmationPageComponent />
+                  <ConfirmationPageComponent params={props.match.params} />
                 </AuthenticatedV5Compat>
               );
             }}
@@ -1001,7 +1050,8 @@ export default function Routes() {
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
-      <ToastMaster location={location} />
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+      {React.createElement(ToastMaster as any, { location })}
     </div>
   );
 }

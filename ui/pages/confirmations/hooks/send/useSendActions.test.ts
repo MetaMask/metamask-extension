@@ -3,7 +3,7 @@ import { waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { setDefaultHomeActiveTabName } from '../../../../store/actions';
 import * as SendUtils from '../../utils/send';
 import * as MultichainTransactionUtils from '../../utils/multichain-snaps';
@@ -25,10 +25,13 @@ jest.mock('../../../../store/actions', () => ({
   setDefaultHomeActiveTabName: jest.fn(),
 }));
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -63,13 +66,13 @@ describe('useSendQueryParams', () => {
   it('result returns method handleCancel to cancel send', () => {
     const result = renderHook();
     result.handleCancel();
-    expect(mockHistory.push).toHaveBeenCalledWith('/');
+    expect(mockUseNavigate).toHaveBeenCalledWith('/');
   });
 
   it('result returns method handleBack to goto previous page', () => {
     const result = renderHook();
     result.handleBack();
-    expect(mockHistory.goBack).toHaveBeenCalled();
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('handleSubmit is able to submit evm send', async () => {
@@ -96,7 +99,7 @@ describe('useSendQueryParams', () => {
     expect(mockSubmitEvmTransaction).toHaveBeenCalled();
 
     await waitFor(() => {
-      expect(mockHistory.push).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         '/confirm-transaction?maxValueMode=true',
       );
     });
@@ -120,7 +123,7 @@ describe('useSendQueryParams', () => {
     await waitFor(() => {
       expect(mockSetDefaultHomeActiveTabName).toHaveBeenCalledWith('activity');
       expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
-      expect(mockHistory.push).toHaveBeenCalledWith('/');
+      expect(mockUseNavigate).toHaveBeenCalledWith('/');
     });
   });
 });

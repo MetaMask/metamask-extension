@@ -14,6 +14,14 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import ConfirmAddSuggestedToken from '.';
 
+const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
+  useLocation: mockUseLocation,
+}));
+
 const PENDING_APPROVALS = {
   1: {
     id: '1',
@@ -67,13 +75,14 @@ jest.mock('../../hooks/useIsOriginalTokenSymbol', () => {
 });
 
 const renderComponent = (tokens = []) => {
-  const mockNavigate = jest.fn();
-  const mockLocation = {
+  mockNavigate.mockClear();
+  mockUseLocation.mockReturnValue({
     pathname: '/',
     search: '',
     hash: '',
     key: 'test-key',
-  };
+    state: undefined,
+  });
 
   const store = configureStore({
     metamask: {
@@ -123,13 +132,7 @@ const renderComponent = (tokens = []) => {
       mostRecentOverviewPage: '/',
     },
   });
-  return renderWithProvider(
-    <ConfirmAddSuggestedToken
-      location={mockLocation}
-      navigate={mockNavigate}
-    />,
-    store,
-  );
+  return renderWithProvider(<ConfirmAddSuggestedToken />, store);
 };
 
 describe('ConfirmAddSuggestedToken Component', () => {

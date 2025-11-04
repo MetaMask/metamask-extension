@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Routes,
@@ -52,10 +53,16 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 import { TraceName } from '../../../../shared/lib/trace';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
-const ConfirmTransaction = () => {
+const ConfirmTransaction = ({
+  params: routeParams,
+  location: routeLocation,
+} = {}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { id: paramsTransactionId } = useParams();
+  const urlParams = useParams();
+
+  // Use params from props (v5 route) if available, otherwise fall back to useParams (v6)
+  const { id: paramsTransactionId } = routeParams || urlParams;
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
@@ -76,8 +83,10 @@ const ConfirmTransaction = () => {
     unconfirmedTxsSorted,
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
+
   const use4ByteResolution = useSelector(use4ByteResolutionSelector);
-  const { currentConfirmation } = useCurrentConfirmation();
+  // Pass the transaction ID from route params so useCurrentConfirmation can find the approval
+  const { currentConfirmation } = useCurrentConfirmation(paramsTransactionId);
 
   useEffect(() => {
     const tx = getTransaction();
@@ -189,7 +198,7 @@ const ConfirmTransaction = () => {
   // Once we migrate all confirmations to new designs we can get rid of this code
   // and render <Confirm /> component for all confirmation requests.
   if (currentConfirmation) {
-    return <Confirm />;
+    return <Confirm confirmationId={paramsTransactionId} />;
   }
 
   if (isValidTokenMethod && isValidTransactionId) {
@@ -198,21 +207,36 @@ const ConfirmTransaction = () => {
   // Show routes when state.confirmTransaction has been set and when either the ID in the params
   // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
   // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-  return isValidTransactionId ? (
-    <Routes>
-      <Route
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
-        element={<ConfirmDecryptMessage />}
-      />
-      <Route
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
-        element={<ConfirmEncryptionPublicKey />}
-      />
-      <Route path="*" element={<ConfirmTransactionSwitch />} />
-    </Routes>
-  ) : (
-    <Loading />
-  );
+  if (isValidTransactionId) {
+    return (
+      <Routes location={routeLocation}>
+        <Route
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
+          element={<ConfirmDecryptMessage />}
+        />
+        <Route
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
+          element={<ConfirmEncryptionPublicKey />}
+        />
+        <Route path="*" element={<ConfirmTransactionSwitch />} />
+      </Routes>
+    );
+  }
+
+  return <Loading />;
+};
+
+ConfirmTransaction.propTypes = {
+  params: PropTypes.shape({
+    id: PropTypes.string,
+  }),
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+    search: PropTypes.string,
+    hash: PropTypes.string,
+    state: PropTypes.object,
+    key: PropTypes.string,
+  }),
 };
 
 export default ConfirmTransaction;

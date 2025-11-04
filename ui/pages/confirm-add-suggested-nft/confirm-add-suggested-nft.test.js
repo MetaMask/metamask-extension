@@ -12,8 +12,15 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import * as util from '../../helpers/utils/util';
-import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import ConfirmAddSuggestedNFT from '.';
+
+const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
+  useLocation: mockUseLocation,
+}));
 
 const PENDING_NFT_APPROVALS = {
   1: {
@@ -71,13 +78,14 @@ jest.mock('../../store/actions', () => ({
 }));
 
 const renderComponent = (pendingNfts = {}) => {
-  const mockNavigate = jest.fn();
-  const mockLocation = {
+  mockNavigate.mockClear();
+  mockUseLocation.mockReturnValue({
     pathname: '/',
     search: '',
     hash: '',
     key: 'test-key',
-  };
+    state: undefined,
+  });
 
   const store = configureStore({
     metamask: {
@@ -91,10 +99,7 @@ const renderComponent = (pendingNfts = {}) => {
       mostRecentOverviewPage: '/',
     },
   });
-  return renderWithProvider(
-    <ConfirmAddSuggestedNFT navigate={mockNavigate} location={mockLocation} />,
-    store,
-  );
+  return renderWithProvider(<ConfirmAddSuggestedNFT />, store);
 };
 
 describe('ConfirmAddSuggestedNFT Component', () => {

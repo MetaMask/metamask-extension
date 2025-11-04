@@ -56,6 +56,7 @@ export function useConfirmationNavigation() {
         Boolean(approvalFlows?.length),
         navigate,
         queryString,
+        undefined, // currentPathname not needed here as navigate already handles it
       );
     },
     [approvalFlows?.length, confirmations, navigate, queryString],
@@ -100,9 +101,15 @@ export function navigateToConfirmation(
     | ReturnType<typeof useNavigate>
     | { push: (path: string) => void; replace: (path: string) => void },
   queryString: string = '',
+  currentPathname?: string,
 ) {
   // Helper function to handle both navigate (v5-compat) and history (v5) APIs
   const navigateTo = (path: string, replace = true) => {
+    // Skip navigation if we're already on the target path
+    if (currentPathname && currentPathname === path) {
+      return;
+    }
+
     if (
       'replace' in navigateOrHistory &&
       typeof navigateOrHistory.replace === 'function'

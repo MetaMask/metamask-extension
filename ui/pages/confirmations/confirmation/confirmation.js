@@ -225,6 +225,7 @@ function Header({ confirmation, isSnapCustomUIDialog, onCancel }) {
 
 export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
+  params: routeParams,
 }) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -244,7 +245,9 @@ export default function ConfirmationPage({
   );
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
 
-  const { id } = useParams();
+  const urlParams = useParams();
+  const { id } = routeParams || urlParams;
+
   const pendingRoutedConfirmation = pendingConfirmations.find(
     (confirmation) => confirmation.id === id,
   );
