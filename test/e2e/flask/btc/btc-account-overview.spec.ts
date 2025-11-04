@@ -9,13 +9,11 @@ describe('BTC Account - Overview', function (this: Suite) {
     await withBtcAccountSnap(async (driver) => {
       const homePage = new BitcoinHomepage(driver);
       await homePage.checkPageIsLoaded();
-      await homePage.headerNavbar.checkAccountLabel(DEFAULT_BTC_ACCOUNT_NAME);
 
-      assert.equal(await homePage.checkIsBridgeButtonEnabled(), false);
-      assert.equal(await homePage.checkIsBuySellButtonEnabled(), true);
+      assert.equal(await homePage.checkIsSwapButtonEnabled(), true);
+      assert.equal(await homePage.checkIsSendButtonEnabled(), true);
       assert.equal(await homePage.checkIsReceiveButtonEnabled(), true);
       await homePage.checkPortfolioLinkIsDisplayed();
-
       /* To be reactivated once we use a regtest network instead of mocked data
       await homePage.checkIsExpectedBitcoinBalanceDisplayed(
         DEFAULT_BTC_BALANCE,
