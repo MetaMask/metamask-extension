@@ -236,9 +236,10 @@ class UnlockPage extends Component {
       this.context.bufferedEndTrace?.({
         name: TraceName.OnboardingJourneyOverall,
       });
-      this.setState({ isSubmitting: false });
     } catch (error) {
       await this.handleLoginError(error, isRehydrationFlow);
+    } finally {
+      this.setState({ isSubmitting: false });
     }
   };
 
@@ -323,7 +324,6 @@ class UnlockPage extends Component {
       });
     }
     this.setState({
-      isSubmitting: false,
       error: finalErrorMessage,
       unlockDelayPeriod: finalUnlockDelayPeriod,
     });
