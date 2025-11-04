@@ -61,6 +61,7 @@ import {
   SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTE,
 } from '../../../helpers/constants/routes';
+import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { getProductPrice } from '../../shield-plan/utils';
 import Tooltip from '../../../components/ui/tooltip';
 import { ThemeType } from '../../../../shared/constants/preferences';
@@ -778,7 +779,11 @@ const TransactionShield = () => {
         {buttonRow(
           t('shieldTxMembershipViewFullBenefits'),
           () => {
-            // todo: link to benefits page
+            window.open(
+              TRANSACTION_SHIELD_LINK,
+              '_blank',
+              'noopener noreferrer',
+            );
           },
           'shield-detail-view-benefits-button',
         )}
