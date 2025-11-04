@@ -82,7 +82,7 @@ describe('Dapp viewed Event', function () {
 
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: 'invalid-metrics-id',
@@ -114,7 +114,7 @@ describe('Dapp viewed Event', function () {
 
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: validFakeMetricsId, // 1% sample rate for dapp viewed event
@@ -153,7 +153,7 @@ describe('Dapp viewed Event', function () {
 
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: validFakeMetricsId,
@@ -195,7 +195,7 @@ describe('Dapp viewed Event', function () {
 
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: validFakeMetricsId,
@@ -240,7 +240,7 @@ describe('Dapp viewed Event', function () {
 
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: validFakeMetricsId,
@@ -282,7 +282,7 @@ describe('Dapp viewed Event', function () {
 
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: validFakeMetricsId,

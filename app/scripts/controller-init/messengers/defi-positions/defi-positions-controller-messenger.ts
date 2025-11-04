@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
 import { KeyringControllerLockEvent } from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
@@ -7,6 +7,7 @@ import {
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type AllowedActions =
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction;
@@ -28,19 +29,27 @@ export type DeFiPositionsControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getDeFiPositionsControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'DeFiPositionsController',
-    allowedActions: [
-      'AccountTreeController:getAccountsFromSelectedAccountGroup',
-    ],
-    allowedEvents: [
+  const controllerMessenger = new Messenger<
+    'DeFiPositionsController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'DeFiPositionsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: ['AccountTreeController:getAccountsFromSelectedAccountGroup'],
+    events: [
       'KeyringController:lock',
       'TransactionController:transactionConfirmed',
       'AccountTreeController:selectedAccountGroupChange',
     ],
   });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions =
@@ -52,14 +61,23 @@ export type DeFiPositionsControllerInitMessenger = ReturnType<
 >;
 
 export function getDeFiPositionsControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'DeFiPositionsControllerInit',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'DeFiPositionsControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'DeFiPositionsControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'RemoteFeatureFlagController:getState',
       'MetaMetricsController:trackEvent',
     ],
-    allowedEvents: [],
   });
+  return controllerInitMessenger;
 }

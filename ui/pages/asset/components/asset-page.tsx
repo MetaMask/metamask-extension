@@ -65,6 +65,7 @@ import {
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
+  getAsset,
   getAssetsBySelectedAccountGroup,
   getMultichainNativeAssetType,
 } from '../../../selectors/assets';
@@ -273,6 +274,8 @@ const AssetPage = ({
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
 
+  const bip44Asset = useSelector((state) => getAsset(state, address, chainId));
+
   const tokenWithFiatAmount =
     isEvm || isMultichainAccountsState2Enabled
       ? {
@@ -291,8 +294,12 @@ const AssetPage = ({
           isNative: type === AssetType.native,
           balance,
           secondary: balance ? Number(balance) : 0,
+          accountType: bip44Asset?.accountType,
         }
-      : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
+      : {
+          ...mutichainTokenWithFiatAmount,
+          accountType: bip44Asset?.accountType,
+        };
 
   const { safeChains } = useSafeChains();
 

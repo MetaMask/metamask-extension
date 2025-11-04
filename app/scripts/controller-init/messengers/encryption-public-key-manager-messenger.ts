@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger } from '../../lib/messenger';
 
 export type EncryptionPublicKeyManagerMessenger = ReturnType<
   typeof getEncryptionPublicKeyManagerMessenger
@@ -12,13 +13,15 @@ export type EncryptionPublicKeyManagerMessenger = ReturnType<
  * messenger.
  */
 export function getEncryptionPublicKeyManagerMessenger(
-  messenger: Messenger<never, never>,
+  messenger: RootMessenger<never, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'EncryptionPublicKeyManager',
-
-    // This controller does not call any actions or subscribe to any events.
-    allowedActions: [],
-    allowedEvents: [],
+  return new Messenger<
+    'EncryptionPublicKeyManager',
+    never,
+    never,
+    typeof messenger
+  >({
+    namespace: 'EncryptionPublicKeyManager',
+    parent: messenger,
   });
 }

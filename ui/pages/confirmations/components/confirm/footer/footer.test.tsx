@@ -60,6 +60,10 @@ jest.mock(
 
 jest.mock('../../../hooks/useOriginThrottling');
 
+jest.mock('react-router-dom-v5-compat', () => ({
+  useNavigate: jest.fn(),
+}));
+
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
 
@@ -86,6 +90,11 @@ describe('ConfirmFooter', () => {
   beforeEach(() => {
     mockUseOriginThrottling.mockReturnValue({
       shouldThrottleOrigin: false,
+    });
+
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: false,
     });
 
     useIsGaslessLoadingMock.mockReturnValue({

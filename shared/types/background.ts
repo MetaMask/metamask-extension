@@ -12,6 +12,7 @@ import type {
   MultichainAssetsRatesControllerState,
   MultichainAssetsControllerState,
   DeFiPositionsControllerState,
+  AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
@@ -57,7 +58,6 @@ import type {
 } from '@metamask/notification-services-controller';
 import type { SmartTransactionsControllerState } from '@metamask/smart-transactions-controller';
 
-import type { AccountTrackerControllerState } from '../../app/scripts/controllers/account-tracker-controller';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
 import type { AccountOrderControllerState } from '../../app/scripts/controllers/account-order';
 import type { PreferencesControllerState } from '../../app/scripts/controllers/preferences-controller';
@@ -73,10 +73,7 @@ import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/s
 
 export type ControllerStatePropertiesEnumerated = {
   internalAccounts: AccountsControllerState['internalAccounts'];
-  accounts: AccountTrackerControllerState['accounts'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
-  currentBlockGasLimit: AccountTrackerControllerState['currentBlockGasLimit'];
-  currentBlockGasLimitByChainId: AccountTrackerControllerState['currentBlockGasLimitByChainId'];
   addressBook: AddressBookControllerState['addressBook'];
   alertEnabledness: AlertControllerState['alertEnabledness'];
   unconnectedAccountAlertShownOrigins: AlertControllerState['unconnectedAccountAlertShownOrigins'];
@@ -121,6 +118,7 @@ export type ControllerStatePropertiesEnumerated = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
+  canTrackWalletFundsObtained: AppStateControllerState['canTrackWalletFundsObtained'];
   activeQrCodeScanRequest: AppStateControllerState['activeQrCodeScanRequest'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
   surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
@@ -195,6 +193,7 @@ export type ControllerStatePropertiesEnumerated = {
   historicalPrices: MultichainAssetsRatesControllerState['historicalPrices'];
   assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
   accountsAssets: MultichainAssetsControllerState['accountsAssets'];
+  allIgnoredAssets: MultichainAssetsControllerState['allIgnoredAssets'];
   multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
   selectedMultichainNetworkChainId: MultichainNetworkControllerState['selectedMultichainNetworkChainId'];
   isEvmSelected: MultichainNetworkControllerState['isEvmSelected'];

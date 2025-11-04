@@ -71,6 +71,11 @@ class AccountListPage {
   private readonly addImportedAccountButton =
     '[data-testid="multichain-account-menu-popover-add-imported-account"]';
 
+  private readonly addingAccountMessage = {
+    text: 'Adding account...',
+    tag: 'p',
+  };
+
   private readonly addSnapAccountButton = {
     text: 'Add account Snap',
     tag: 'button',
@@ -86,11 +91,6 @@ class AccountListPage {
 
   private readonly closeMultichainAccountsPageButton =
     '.multichain-page-header button[aria-label="Back"]';
-
-  private readonly creatingAccountMessage = {
-    text: 'Creating account...',
-    tag: 'p',
-  };
 
   private readonly addMultichainWalletButton =
     '[data-testid="account-list-add-wallet-button"]';
@@ -194,10 +194,11 @@ class AccountListPage {
     tag: 'p',
   };
 
-  private readonly importSrpInput = '#import-srp__multi-srp__srp-word-0';
+  private readonly importSrpInput =
+    '[data-testid="srp-input-import__srp-note"]';
 
   private readonly importSrpConfirmButton = {
-    text: 'Import wallet',
+    text: 'Continue',
     tag: 'button',
   };
 
@@ -228,7 +229,7 @@ class AccountListPage {
         ? [
             {
               css: this.createMultichainAccountButton,
-              text: 'Create account',
+              text: 'Add account',
             },
             this.multichainAccountOptionsMenuButton,
           ]
@@ -547,7 +548,7 @@ class AccountListPage {
       `Open multichain account menu in account list for account ${options.accountLabel}`,
     );
     // To ensure no pending Create Account action is in progress
-    await this.driver.assertElementNotPresent(this.creatingAccountMessage, {
+    await this.driver.assertElementNotPresent(this.addingAccountMessage, {
       waitAtLeastGuard: largeDelayMs,
     });
 

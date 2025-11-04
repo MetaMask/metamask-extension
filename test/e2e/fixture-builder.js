@@ -7,12 +7,10 @@ const { toHex } = require('@metamask/controller-utils');
 const { mockNetworkStateOld } = require('../stub/networks');
 
 const {
-  ARBITRUM_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
   BNB_DISPLAY_NAME,
   CHAIN_IDS,
   LOCALHOST_DISPLAY_NAME,
-  OPTIMISM_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   ZK_SYNC_ERA_DISPLAY_NAME,
 } = require('../../shared/constants/network');
@@ -588,18 +586,16 @@ class FixtureBuilder {
   withPermissionControllerConnectedToMultichainTestDappWithTwoAccounts({
     scopes = ['eip155:1337'],
   }) {
-    const optionalScopes = scopes
-      .map((scope) => ({
-        [scope]: {
-          accounts: [
-            `${scope}:0x5cfe73b6021e818b776b421b1c4db2474086a7e1`,
-            `${scope}:0x09781764c08de8ca82e156bbf156a3ca217c7950`,
-          ],
-        },
-      }))
-      .reduce((acc, curr) => {
-        return { ...acc, ...curr };
-      }, {});
+    const optionalScopes = {};
+
+    for (const scope of scopes) {
+      optionalScopes[scope] = {
+        accounts: [
+          `${scope}:0x5cfe73b6021e818b776b421b1c4db2474086a7e1`,
+          `${scope}:0x09781764c08de8ca82e156bbf156a3ca217c7950`,
+        ],
+      };
+    }
 
     const subjects = {
       [DAPP_URL]: {
@@ -1668,31 +1664,15 @@ class FixtureBuilder {
 
   withTrezorAccount() {
     return this.withAccountTracker({
-      accounts: {
-        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-          balance: '0x15af1d78b58c40000',
-        },
-        '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
-          address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
-          balance: '0x100000000000000000000',
-        },
-      },
-      currentBlockGasLimit: '0x1c9c380',
       accountsByChainId: {
         '0x539': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1': {
             balance: '0x15af1d78b58c40000',
           },
-          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
-            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+          '0xF68464152d7289D7eA9a2bEC2E0035c45188223c': {
             balance: '0x100000000000000000000',
           },
         },
-      },
-      currentBlockGasLimitByChainId: {
-        '0x539': '0x1c9c380',
       },
     })
       .withAccountsController({
@@ -1816,30 +1796,6 @@ class FixtureBuilder {
   withPopularNetworks() {
     return this.withNetworkController({
       networkConfigurations: {
-        'op-mainnet': {
-          chainId: CHAIN_IDS.OPTIMISM,
-          nickname: OPTIMISM_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://mainnet.optimism.io',
-          ticker: 'ETH',
-          id: 'op-mainnet',
-        },
-        'polygon-mainnet': {
-          chainId: CHAIN_IDS.POLYGON,
-          nickname: POLYGON_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://polygon-rpc.com',
-          ticker: 'MATIC',
-          id: 'polygon-mainnet',
-        },
-        'arbitrum-one': {
-          chainId: CHAIN_IDS.ARBITRUM,
-          nickname: ARBITRUM_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://arb1.arbitrum.io/rpc',
-          ticker: 'ETH',
-          id: 'arbitrum-one',
-        },
         'avalanche-mainnet': {
           chainId: CHAIN_IDS.AVALANCHE,
           nickname: AVALANCHE_DISPLAY_NAME,
@@ -1847,14 +1803,6 @@ class FixtureBuilder {
           rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
           ticker: 'AVAX',
           id: 'avalanche-mainnet',
-        },
-        'bnb-mainnet': {
-          chainId: CHAIN_IDS.BSC,
-          nickname: BNB_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://bsc-dataseed.binance.org',
-          ticker: 'BNB',
-          id: 'bnb-mainnet',
         },
         'zksync-mainnet': {
           chainId: CHAIN_IDS.ZKSYNC_ERA,

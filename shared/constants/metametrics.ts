@@ -141,6 +141,11 @@ export type MetaMetricsEventPayload = {
    * Whether the event is a duplicate of an anonymized event.
    */
   isDuplicateAnonymizedEvent?: boolean;
+  /**
+   * The timestamp of the event. If provided, this timestamp will be used
+   * instead of the current time when sending to Segment.
+   */
+  timestamp?: string;
 };
 
 export type UnsanitizedMetaMetricsEventPayload = Omit<
@@ -694,10 +699,9 @@ export enum MetaMetricsEventName {
   BannerDisplay = 'Banner Display',
   BannerCloseAll = 'Banner Close All',
   BannerSelect = 'Banner Select',
-  BannerNavigated = 'Banner Navigated',
   BridgeLinkClicked = 'Bridge Link Clicked',
   SwapLinkClicked = 'Swap Link Clicked',
-  CurrentCurrency = 'Current Currency',
+  CurrentCurrency = 'Selected Currency Changed',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',
@@ -709,9 +713,7 @@ export enum MetaMetricsEventName {
   EmptyBuyBannerClicked = 'Empty Buy Banner Clicked',
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
-  EmptyNftsBannerDisplayed = 'Empty NFTs Banner Displayed',
   EmptyNftsBannerClicked = 'Empty NFTs Banner Clicked',
-  EnablingNotifications = 'Notifications Enabled',
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
@@ -729,8 +731,6 @@ export enum MetaMetricsEventName {
   KeyGlobalSecurityToggleSelected = 'Key Global Security/Privacy Settings',
   KeyBalanceTokenPriceChecker = 'Key Show Balance and Token Price Checker Settings',
   KeyGasFeeEstimationBuySwapTokens = 'Key Show Gas Fee Estimation, Buy Crypto and Swap Tokens',
-  KeyAutoDetectTokens = 'Key Autodetect tokens',
-  KeyBatchAccountBalanceRequests = 'Key Batch account balance requests',
   MarkAllNotificationsRead = 'Notifications Marked All as Read',
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
@@ -761,9 +761,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseRevealed = 'SRP Revealed',
   OnboardingWalletSecurityPhraseWrittenDown = 'SRP Backup Confirm Display',
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
-  OnboardingWalletAdvancedSettings = 'Settings Updated',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
-  OnboardingTwitterClick = 'External Link Clicked',
   OnrampProviderSelected = 'On-ramp Provider Selected',
   PasswordChanged = 'Password Changed',
   ForgotPasswordClicked = 'Forgot Password Clicked',
@@ -823,17 +821,14 @@ export enum MetaMetricsEventName {
   TokenImportButtonClicked = 'Import Token Button Clicked',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
-  TokenRemoved = 'Token Removed',
-  TokenSortPreference = 'Token Sort Preference',
-  TokenListRefreshed = 'Token List Refreshed',
-  NFTRemoved = 'NFT Removed',
+  TokenSortPreference = 'Token Sort Preference Updated',
   EmptyNFTTabButtonClicked = 'Empty NFT Tab Button Clicked',
   TokenDetected = 'Token Detected',
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
-  ShowNativeTokenAsMainBalance = 'Show native token as main balance',
   WalletSetupStarted = 'Wallet Setup Started',
+  WalletFundsObtained = 'Wallet Funds Obtained',
   WalletImportStarted = 'Wallet Import Started',
   WalletImportAttempted = 'Wallet Import Attempted',
   WalletImported = 'Wallet Imported',
@@ -847,6 +842,7 @@ export enum MetaMetricsEventName {
   RehydrationPasswordAttempted = 'Rehydration Password Attempted',
   RehydrationCompleted = 'Rehydration Completed',
   RehydrationPasswordFailed = 'Rehydration Password Failed',
+  UseDifferentLoginMethodClicked = 'Use Different Login Method Clicked',
   // BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF
@@ -858,7 +854,6 @@ export enum MetaMetricsEventName {
   AddNetworkButtonClick = 'Add Network Button Clicked',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
-  NftScreenOpened = 'NFT Screen Opened',
   NftDetailsOpened = 'NFT Details Opened',
   DeFiScreenOpened = 'DeFi Screen Opened',
   DeFiDetailsOpened = 'DeFi Details Opened',
@@ -923,13 +918,7 @@ export enum MetaMetricsEventName {
   // Send
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  sendAssetSelected = 'Send Asset Selected',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   sendFlowExited = 'Send Flow Exited',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  sendRecipientSelected = 'Send Recipient Selected',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   sendSwapQuoteError = 'Send Swap Quote Error',

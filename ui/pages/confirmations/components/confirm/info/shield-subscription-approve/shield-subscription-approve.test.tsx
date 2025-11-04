@@ -19,6 +19,22 @@ jest.mock('../hooks/useDecodedTransactionData', () => ({
   })),
 }));
 
+jest.mock('../../../../../../hooks/useDecodedTransactionData', () => ({
+  useDecodedTransactionDataValue: jest.fn(() => ({
+    decodeResponse: {
+      pending: false,
+      value: {
+        data: [
+          {
+            params: [{ name: 'value', value: '96000000000000000000' }],
+          },
+        ],
+      },
+    },
+    value: '96000000000000000000',
+  })),
+}));
+
 jest.mock('../../../../hooks/useAssetDetails', () => ({
   useAssetDetails: jest.fn(() => ({ decimals: 18 })),
 }));
@@ -54,7 +70,7 @@ jest.mock('../../../../../../hooks/subscription/useSubscriptionPricing', () => {
     unitAmount: 8000000,
     unitDecimals: 6,
     currency: 'usd',
-    trialPeriodDays: 7,
+    trialPeriodDays: 14,
   };
   return {
     useShieldSubscriptionPricingFromTokenApproval: jest.fn(() => ({
@@ -75,7 +91,7 @@ describe('ShieldSubscriptionApproveInfo', () => {
 
     expect(getByText(tEn('transactionShield') as string)).toBeInTheDocument();
     expect(getByText('$8/month (Monthly)' as string)).toBeInTheDocument();
-    expect(getByText(tEn('freeSevenDayTrial') as string)).toBeInTheDocument();
+    expect(getByText(tEn('freeTrialDays', [14]) as string)).toBeInTheDocument();
     expect(getByText(tEn('estimatedChanges') as string)).toBeInTheDocument();
     expect(getByText(tEn('youApprove') as string)).toBeInTheDocument();
     expect(getByText('96')).toBeInTheDocument();

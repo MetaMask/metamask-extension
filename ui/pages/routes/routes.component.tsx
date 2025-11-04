@@ -94,6 +94,10 @@ import {
   getPendingApprovals,
   getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+import { getApprovalFlows } from '../../selectors/approvals';
+///: END:ONLY_INCLUDE_IF
+
 import {
   hideImportNftsModal,
   hideIpfsModal,
@@ -117,10 +121,15 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
-
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
+///: END:ONLY_INCLUDE_IF
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -400,6 +409,9 @@ export default function Routes() {
   );
   const pendingApprovals = useAppSelector(getPendingApprovals);
   const transactionsMetadata = useAppSelector(getUnapprovedTransactions);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  const approvalFlows = useAppSelector(getApprovalFlows);
+  ///: END:ONLY_INCLUDE_IF
 
   const shouldShowSeedPhraseReminder = useAppSelector((state) =>
     getShouldShowSeedPhraseReminder(state, account),
@@ -547,6 +559,23 @@ export default function Routes() {
       dispatch(setCurrentCurrency('usd'));
     }
   }, [currentCurrency, dispatch]);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  // Navigate to confirmations when there are pending approvals (from any page)
+  useEffect(() => {
+    if (
+      isUnlocked &&
+      (pendingApprovals.length > 0 || approvalFlows?.length > 0)
+    ) {
+      navigateToConfirmation(
+        pendingApprovals[0]?.id,
+        pendingApprovals,
+        Boolean(approvalFlows?.length),
+        history,
+      );
+    }
+  }, [isUnlocked, pendingApprovals, approvalFlows, history]);
+  ///: END:ONLY_INCLUDE_IF
 
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
@@ -880,11 +909,18 @@ export default function Routes() {
     />
   );
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  const isSidepanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  ///: END:ONLY_INCLUDE_IF
+
   return (
     <div
       className={classnames('app', {
         [`os-${os}`]: Boolean(os),
         [`browser-${browser}`]: Boolean(browser),
+        ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+        'app--sidepanel': isSidepanel,
+        ///: END:ONLY_INCLUDE_IF
       })}
       dir={textDirection}
     >
@@ -947,7 +983,7 @@ export default function Routes() {
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
-      <ToastMaster />
+      <ToastMaster location={location} />
     </div>
   );
 }

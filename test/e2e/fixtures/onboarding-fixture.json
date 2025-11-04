@@ -201,7 +201,8 @@
     },
     "MultichainAssetsController": {
       "accountsAssets": {},
-      "assetsMetadata": {}
+      "assetsMetadata": {},
+      "allIgnoredAssets": {}
     },
     "MultichainAssetsRatesController": {
       "conversionRates": {}
@@ -1731,7 +1732,7 @@
               "isActiveDest": true,
               "isActiveSrc": true,
               "isSingleSwapBridgeButtonEnabled": true,
-              "stablecoins": ["0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1"]
+              "stablecoins": ["0xe15fC38F6D8c56aF07bbCBe3BAf5708A2Bf42392"]
             },
             "8453": {
               "isActiveDest": true,
