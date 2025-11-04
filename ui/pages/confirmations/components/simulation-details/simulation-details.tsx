@@ -279,7 +279,7 @@ const SimulationDetailsLayout: React.FC<{
             : BorderColor.borderDefault
         }
         paddingInline={3}
-        paddingTop={1}
+        paddingTop={2}
         paddingBottom={2}
         margin={isTransactionsRedesign ? null : 4}
         gap={3}
@@ -306,7 +306,7 @@ const SimulationDetailsLayout: React.FC<{
           : BorderColor.borderDefault
       }
       paddingInline={3}
-      paddingTop={1}
+      paddingTop={2}
       paddingBottom={2}
       margin={isTransactionsRedesign ? null : 4}
       gap={3}
