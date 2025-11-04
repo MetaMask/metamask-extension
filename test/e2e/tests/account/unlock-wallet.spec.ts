@@ -114,7 +114,7 @@ describe('Unlock wallet - ', function () {
           // In Firefox, we need to go to the metametrics page first
           await onboardingMetricsFlow(driver, {
             participateInMetaMetrics: true,
-            dataCollectionForMarketing: true,
+            dataCollectionForMarketing: false,
           });
         }
 
