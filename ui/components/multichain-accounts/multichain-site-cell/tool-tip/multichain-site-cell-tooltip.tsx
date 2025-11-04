@@ -135,7 +135,7 @@ const TooltipContent = React.memo<TooltipContentProps>(
                 variant={TextVariant.bodyMdMedium}
                 data-testid="accounts-list-item-plus-more-tooltip"
               >
-                {getMoreText()}
+                {getMoreText}
               </Text>
             </Box>
           )}
