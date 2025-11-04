@@ -1,5 +1,6 @@
 import startCase from 'lodash/startCase';
 import { version as VERSION } from '../package.json';
+import { getPageLoadBenchmarkComment } from './page-load-benchmark-pr-comment';
 import { postCommentWithMetamaskBot } from './utils/benchmark-utils';
 
 const benchmarkPlatforms = ['chrome', 'firefox'];
@@ -328,6 +329,12 @@ async function start(): Promise<void> {
     }
   } else {
     console.log(`No results for ${summaryPlatform} found; skipping benchmark`);
+  }
+
+  // Add the page load benchmark results
+  const pageLoadBenchmarkComment = await getPageLoadBenchmarkComment();
+  if (pageLoadBenchmarkComment) {
+    commentBody += pageLoadBenchmarkComment;
   }
 
   try {

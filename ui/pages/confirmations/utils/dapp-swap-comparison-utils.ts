@@ -231,14 +231,14 @@ export function getBestQuote(
   amountMin: string,
   getUSDValueForToken: (tokenAmount: string) => string,
   getGasUSDValue: (gasValue: BigNumber) => string,
-): QuoteResponse | undefined {
+): {
+  bestQuote: QuoteResponse | undefined;
+  bestFilteredQuote: QuoteResponse | undefined;
+} {
   let selectedQuoteIndex = -1;
+  let bestFilteredQuoteIndex = -1;
   let highestQuoteValue = new BigNumber(-1, 10);
   let minBelowAmountMin = true;
-  const amountMinInUSD = new BigNumber(
-    getUSDValueForToken(new BigNumber(amountMin, 16).toString(10)),
-    10,
-  );
 
   quotes.forEach((currentQuote, index) => {
     const { quote, approval, trade } = currentQuote;
@@ -264,7 +264,7 @@ export function getBestQuote(
     const quoteMinGreaterThanAmountMin = new BigNumber(
       quote.minDestTokenAmount,
       10,
-    ).greaterThanOrEqualTo(amountMinInUSD);
+    ).greaterThanOrEqualTo(new BigNumber(amountMin, 16));
 
     if (
       (minBelowAmountMin && quoteMinGreaterThanAmountMin) ||
@@ -274,10 +274,17 @@ export function getBestQuote(
       minBelowAmountMin = !quoteMinGreaterThanAmountMin;
       highestQuoteValue = quoteValue;
       selectedQuoteIndex = index;
+      if (quoteMinGreaterThanAmountMin) {
+        bestFilteredQuoteIndex = index;
+      }
     }
   });
 
-  return selectedQuoteIndex > -1 ? quotes[selectedQuoteIndex] : undefined;
+  return {
+    bestQuote: selectedQuoteIndex > -1 ? quotes[selectedQuoteIndex] : undefined,
+    bestFilteredQuote:
+      bestFilteredQuoteIndex > -1 ? quotes[bestFilteredQuoteIndex] : undefined,
+  };
 }
 
 export function getTokenValueFromRecord<Type>(

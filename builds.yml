@@ -456,5 +456,5 @@ env:
   # production builds (including beta and Flask).
   - FORCE_PREINSTALLED_SNAPS: 'false'
 
-  # Enable new send implementation
-  - SEND_REDESIGN_ENABLED: false
+  # Enable dapp swap shield implementation
+  - DAPP_SWAP_SHIELD_ENABLED: false

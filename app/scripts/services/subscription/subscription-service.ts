@@ -1,4 +1,4 @@
-import { RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   PAYMENT_TYPES,
   StartSubscriptionRequest,
@@ -20,12 +20,10 @@ export class SubscriptionService {
 
   state = null;
 
-  #messenger: RestrictedMessenger<
+  #messenger: Messenger<
     typeof SERVICE_NAME,
     SubscriptionServiceAction,
-    SubscriptionServiceEvent,
-    SubscriptionServiceAction['type'],
-    SubscriptionServiceEvent['type']
+    SubscriptionServiceEvent
   >;
 
   #platform: ExtensionPlatform;
@@ -139,16 +137,17 @@ export class SubscriptionService {
         changeInfo: { url: string },
       ) => {
         // We only care about updates to our specific checkout tab
-        if (tabId === openedTab.id && changeInfo.url) {
-          if (changeInfo.url.startsWith(params.successUrl)) {
-            // Payment was successful!
-            succeeded = true;
+        if (
+          tabId === openedTab.id &&
+          changeInfo.url?.startsWith(params.successUrl)
+        ) {
+          // Payment was successful!
+          succeeded = true;
 
-            // Clean up: close the tab
-            this.#platform.closeTab(tabId);
-          }
-          // TODO: handle cancel url ?
+          // Clean up: close the tab
+          this.#platform.closeTab(tabId);
         }
+        // TODO: handle cancel url ?
       };
       this.#platform.addTabUpdatedListener(onTabUpdatedListener);
 

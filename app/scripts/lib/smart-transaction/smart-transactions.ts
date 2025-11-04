@@ -5,7 +5,6 @@ import {
   StartFlow,
   UpdateRequestState,
 } from '@metamask/approval-controller';
-import { RestrictedMessenger } from '@metamask/base-controller';
 import {
   SmartTransactionsController,
   SmartTransactionsControllerSmartTransactionEvent,
@@ -23,6 +22,7 @@ import {
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import log from 'loglevel';
+import { Messenger } from '@metamask/messenger';
 import {
   ORIGIN_METAMASK,
   SMART_TRANSACTION_CONFIRMATION_TYPES,
@@ -47,12 +47,10 @@ export type AllowedActions =
   | EndFlow;
 export type AllowedEvents = SmartTransactionsControllerSmartTransactionEvent;
 
-export type SmartTransactionHookMessenger = RestrictedMessenger<
+export type SmartTransactionHookMessenger = Messenger<
   typeof namespace,
   AllowedActions,
-  AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  AllowedEvents
 >;
 
 export type FeatureFlags = {
@@ -143,7 +141,8 @@ class SmartTransactionHook {
     this.#txParams = transactionMeta.txParams;
     this.#transactions = transactions;
     this.#shouldShowStatusPage = Boolean(
-      transactionMeta.type !== TransactionType.bridge ||
+      (transactionMeta.type !== TransactionType.bridge &&
+        transactionMeta.type !== TransactionType.shieldSubscriptionApprove) ||
         (this.#transactions && this.#transactions.length > 0),
     );
   }
@@ -171,20 +170,27 @@ class SmartTransactionHook {
     if (this.#shouldShowStatusPage) {
       await this.#startApprovalFlow();
     }
+
     let getFeesResponse;
-    try {
-      getFeesResponse = await this.#smartTransactionsController.getFees(
-        { ...this.#txParams, chainId: this.#chainId },
-        undefined,
-        { networkClientId: this.#transactionMeta.networkClientId },
-      );
-    } catch (error) {
-      log.error(
-        'Error in smart transaction publish hook, falling back to regular transaction submission',
-        error,
-      );
-      this.#onApproveOrReject();
-      return useRegularTransactionSubmit; // Fallback to regular transaction submission.
+    // Skip getting fees if the tx is signed and sponsored
+    if (
+      !this.#signedTransactionInHex ||
+      !this.#transactionMeta.isGasFeeSponsored
+    ) {
+      try {
+        getFeesResponse = await this.#smartTransactionsController.getFees(
+          { ...this.#txParams, chainId: this.#chainId },
+          undefined,
+          { networkClientId: this.#transactionMeta.networkClientId },
+        );
+      } catch (error) {
+        log.error(
+          'Error in smart transaction publish hook, falling back to regular transaction submission',
+          error,
+        );
+        this.#onApproveOrReject();
+        return useRegularTransactionSubmit; // Fallback to regular transaction submission.
+      }
     }
     try {
       const submitTransactionResponse = await this.#signAndSubmitTransactions({
@@ -373,6 +379,7 @@ class SmartTransactionHook {
               status: SmartTransactionStatuses.PENDING,
               creationTime: Date.now(),
               uuid,
+              chainId: this.#chainId,
             },
             isDapp: this.#isDapp,
             txId: this.#transactionMeta.id,

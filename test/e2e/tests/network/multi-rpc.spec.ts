@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -23,6 +22,7 @@ import {
   importSRPOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
+import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
 
 describe('MultiRpc:', function (this: Suite) {
   it('should migrate to multi rpc', async function () {
