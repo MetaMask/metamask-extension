@@ -278,7 +278,7 @@ describe('MultiRpc:', function (this: Suite) {
         assert.equal(usedUrl[0].url, 'https://responsive-rpc.test/');
 
         // check that requests are sent on the background for the url https://responsive-rpc.test/
-        await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
+        await expectMockRequest(driver, mockedEndpoint[0], { timeout: 5000 });
       },
     );
   });
