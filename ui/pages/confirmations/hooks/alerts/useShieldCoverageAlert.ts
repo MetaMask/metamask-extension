@@ -179,6 +179,7 @@ export function useShieldCoverageAlert(): Alert[] {
         inlineAlertText,
         showArrow: false,
         isOpenModalOnClick: true,
+        hideFromAlertNavigation: true,
       },
     ];
   }, [status, modalBodyStr, showAlert, t]);
