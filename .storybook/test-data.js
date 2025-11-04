@@ -743,46 +743,25 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
     network: '5',
-    accounts: {
-      '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-        address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-        balance: '0x176e5b6f173ebe66',
-      },
-      '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-        address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-        balance: '0x2d3142f5000',
-      },
-      '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
-        address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
-        balance: '0x15f6f0b9d4f8d000',
-      },
-    },
     accountsByChainId: {
       '0x1': {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': { balance: '0x0' },
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
+        '0x64A845a5b02460ACf8a3D84503b0D68d028B4bb4': { balance: '0x0' },
+        '0xb19Ac54EfA18CC3A14A5B821bFeC73d284Bf0c5e': {
           balance: '0xcaf5317161f400',
         },
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': { balance: '0x0' },
+        '0x9D0ba4DDAC06032527B140912EC808ab9451b788': { balance: '0x0' },
       },
       '0x5': {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-          address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+        '0x64A845a5b02460ACf8a3D84503b0D68d028B4bb4': {
           balance: '0x176e5b6f173ebe66',
         },
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-          address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+        '0xb19Ac54EfA18CC3A14A5B821bFeC73d284Bf0c5e': {
           balance: '0x2d3142f5000',
         },
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
-          address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
+        '0x9D0ba4DDAC06032527B140912EC808ab9451b788': {
           balance: '0x15f6f0b9d4f8d000',
         },
       },
-    },
-    currentBlockGasLimit: '0x793af4',
-    currentBlockGasLimitByChainId: {
-      '0x5': '0x793af4',
     },
     transactions: [
       {

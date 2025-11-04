@@ -29,7 +29,6 @@
       }
     }
   },
-  "accounts": { "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189": {} },
   "accountsAssets": {},
   "accountsByChainId": {},
   "addSnapAccountEnabled": false,
@@ -105,8 +104,6 @@
     }
   },
   "currentAppVersion": "11.14.4-flask.0",
-  "currentBlockGasLimit": "",
-  "currentBlockGasLimitByChainId": {},
   "currentCurrency": "usd",
   "currentExtensionPopupId": 1715943310719,
   "currentLocale": "en",
