@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -102,7 +102,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
   const { marketData, isLoading, isNativeToken } = useTokenInsightsData(token);
 
   // Track modal open
-  React.useEffect(() => {
+  useEffect(() => {
     if (isOpen && token) {
       trackEvent({
         event: 'Token Insights Modal Opened',
@@ -121,22 +121,17 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
 
   // Ensure only the top modal closes on outside click by intercepting
   // document mousedown in the capture phase and stopping propagation.
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isOpen) {
       return () => undefined;
     }
     const handleDocMouseDownCapture = (event: MouseEvent) => {
       const el = dialogRef.current;
+      // this prevents the modal from closing when clicking on the modal content
       if (el && !el.contains(event.target as Node)) {
         onClose();
-        // Prevent the underlying modal's outside-click handler
         event.stopPropagation();
-        // Some browsers/listeners may still process, try immediate stop
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const anyEvent = event as any;
-        if (typeof anyEvent.stopImmediatePropagation === 'function') {
-          anyEvent.stopImmediatePropagation();
-        }
+        event.stopImmediatePropagation();
         event.preventDefault();
       }
     };
