@@ -80,6 +80,11 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
     networks[CHAIN_IDS.MAINNET].name = 'Ethereum';
     networks[CHAIN_IDS.LINEA_MAINNET].name = 'Linea';
     networks[CHAIN_IDS.BASE].name = 'Base';
+    networks[CHAIN_IDS.ARBITRUM].name = 'Arbitrum';
+    networks[CHAIN_IDS.BSC].name = 'BNB Chain';
+    networks[CHAIN_IDS.OPTIMISM].name = 'OP';
+    networks[CHAIN_IDS.POLYGON].name = 'Polygon';
+    networks[CHAIN_IDS.SEI].name = 'Sei';
 
     let network: NetworkConfiguration;
     if (process.env.IN_TEST) {
