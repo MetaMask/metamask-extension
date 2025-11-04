@@ -192,6 +192,11 @@ describe('./utils/helpers.ts', () => {
         filename: 'vendor/trezor/content-script.js',
         import: join(appRoot, `vendor/trezor/content-script.js`),
       },
+      '../offscreen/scripts/offscreen.ts': {
+        chunkLoading: false,
+        filename: 'load-offscreen.js',
+        import: 'offscreen/scripts/offscreen.ts',
+      },
       'background.js': {
         chunkLoading: false,
         filename: 'background.js',
@@ -260,6 +265,11 @@ describe('./utils/helpers.ts', () => {
     const { entry: entryv3 } = helpers.collectEntries(manifestv3, appRoot);
     // eslint-disable-next-line @typescript-eslint/naming-convention
     assert.deepStrictEqual(entryv3, {
+      '../offscreen/scripts/offscreen.ts': {
+        chunkLoading: false,
+        filename: 'load-offscreen.js',
+        import: 'offscreen/scripts/offscreen.ts',
+      },
       'service-worker.ts': {
         chunkLoading: false,
         filename: 'service-worker.js',
