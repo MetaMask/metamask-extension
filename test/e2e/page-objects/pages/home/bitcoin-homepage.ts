@@ -4,15 +4,15 @@ class BitcoinHomepage extends HomePage {
   protected readonly balance =
     '[data-testid="coin-overview__primary-currency"]';
 
-  protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
+  protected readonly bridgeButton = '[data-testid="eth-overview-bridge"]';
 
-  private readonly buySellButton = '[data-testid="coin-overview-buy"]';
+  private readonly buySellButton = '[data-testid="eth-overview-buy"]';
 
-  private readonly receiveButton = '[data-testid="coin-overview-receive"]';
+  private readonly receiveButton = '[data-testid="eth-overview-receive"]';
 
-  protected readonly sendButton = '[data-testid="coin-overview-send"]';
+  protected readonly sendButton = '[data-testid="eth-overview-send"]';
 
-  protected readonly swapButton = '[data-testid="coin-overview-swap"]';
+  protected readonly swapButton = '[data-testid="eth-overview-swap"]';
 
   async checkPageIsLoaded(): Promise<void> {
     try {
@@ -46,6 +46,23 @@ class BitcoinHomepage extends HomePage {
       return false;
     }
     console.log('Bridge button is enabled');
+    return true;
+  }
+
+    /**
+   * Checks if the send button is enabled on bitcoin account homepage.
+   *
+   */
+  async checkIsSendButtonEnabled(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.sendButton, {
+        timeout: 1000,
+      });
+    } catch (e) {
+      console.log('Send button not enabled', e);
+      return false;
+    }
+    console.log('Send button is enabled');
     return true;
   }
 
