@@ -1471,27 +1471,21 @@ export default class MetaMetricsController extends BaseController<
   #buildValidTraits(
     userTraits: Partial<MetaMetricsUserTraits>,
   ): MetaMetricsUserTraits {
-    return Object.entries(userTraits).reduce(
-      (validTraits: MetaMetricsUserTraits, [key, value]) => {
-        if (this.#isValidTraitDate(value)) {
-          return {
-            ...validTraits,
-            [key]: value.toISOString(),
-          };
-        } else if (this.#isValidTrait(value)) {
-          return {
-            ...validTraits,
-            [key]: value,
-          };
-        }
+    const validTraits: Record<string, string> = {};
 
+    for (const [key, value] of Object.entries(userTraits)) {
+      if (this.#isValidTraitDate(value)) {
+        validTraits[key] = value.toISOString();
+      } else if (this.#isValidTrait(value)) {
+        (validTraits as Record<string, typeof value>)[key] = value;
+      } else {
         console.warn(
           `MetaMetricsController: "${key}" value is not a valid trait type`,
         );
-        return validTraits;
-      },
-      {},
-    );
+      }
+    }
+
+    return validTraits;
   }
 
   /**
