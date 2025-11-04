@@ -112,7 +112,12 @@ import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { FEATURED_NETWORK_CHAIN_IDS, TOKEN_OCCURRENCES_MAP, MINIMUM_TOKEN_OCCURRENCES, type ChainId } from '../../../../shared/constants/network';
+import {
+  FEATURED_NETWORK_CHAIN_IDS,
+  TOKEN_OCCURRENCES_MAP,
+  MINIMUM_TOKEN_OCCURRENCES,
+  type ChainId,
+} from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
@@ -497,7 +502,9 @@ const PrepareBridgePage = ({
     if (!chainId) {
       return MINIMUM_TOKEN_OCCURRENCES;
     }
-    return TOKEN_OCCURRENCES_MAP[chainId as ChainId] ?? MINIMUM_TOKEN_OCCURRENCES;
+    return (
+      TOKEN_OCCURRENCES_MAP[chainId as ChainId] ?? MINIMUM_TOKEN_OCCURRENCES
+    );
   };
 
   return (

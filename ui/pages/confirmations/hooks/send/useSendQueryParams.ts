@@ -145,5 +145,13 @@ export const useSendQueryParams = () => {
     if (newAsset) {
       updateAsset(newAsset);
     }
-  }, [asset, flatAssets, paramAsset, paramChainId, paramTokenId, nfts, updateAsset]);
+  }, [
+    asset,
+    flatAssets,
+    paramAsset,
+    paramChainId,
+    paramTokenId,
+    nfts,
+    updateAsset,
+  ]);
 };
