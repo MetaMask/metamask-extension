@@ -52,7 +52,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           </div>
         </div>
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--width-11/12 mm-box--color-text-default"
         >
           No changes
         </p>
