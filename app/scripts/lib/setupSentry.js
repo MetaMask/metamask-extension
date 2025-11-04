@@ -1,5 +1,5 @@
 import { createModuleLogger } from '@metamask/utils';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
@@ -28,6 +28,9 @@ const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
 const SENTRY_DSN_FAKE = 'https://fake@sentry.io/0000000';
+
+const SENTRY_DSN_PERFORMANCE =
+  'https://17e6db85bd66517e7c828d36f53e2f26@o124216.ingest.us.sentry.io/4510302346608640';
 
 export const ERROR_URL_ALLOWLIST = {
   CRYPTOCOMPARE: 'cryptocompare.com',
@@ -205,24 +208,26 @@ function getSentryEnvironment() {
 }
 
 function getSentryTarget() {
-  if (
-    process.env.IN_TEST &&
-    (!SENTRY_DSN_DEV || !getManifestFlags().sentry?.forceEnable)
-  ) {
-    return SENTRY_DSN_FAKE;
-  }
+  return SENTRY_DSN_PERFORMANCE;
 
-  if (METAMASK_ENVIRONMENT !== 'production') {
-    return SENTRY_DSN_DEV;
-  }
+  // if (
+  //   process.env.IN_TEST &&
+  //   (!SENTRY_DSN_DEV || !getManifestFlags().sentry?.forceEnable)
+  // ) {
+  //   return SENTRY_DSN_FAKE;
+  // }
 
-  if (!SENTRY_DSN) {
-    throw new Error(
-      `Missing SENTRY_DSN environment variable in production environment`,
-    );
-  }
+  // if (METAMASK_ENVIRONMENT !== 'production') {
+  //   return SENTRY_DSN_DEV;
+  // }
 
-  return SENTRY_DSN;
+  // if (!SENTRY_DSN) {
+  //   throw new Error(
+  //     `Missing SENTRY_DSN environment variable in production environment`,
+  //   );
+  // }
+
+  // return SENTRY_DSN;
 }
 
 /**

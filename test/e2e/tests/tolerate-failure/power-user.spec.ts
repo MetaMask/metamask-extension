@@ -25,6 +25,7 @@ describe('Power user persona', function () {
             disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
+          sentry: { tracesSampleRate: 1.0 },
         },
         useMockingPassThrough: true,
         disableServerMochaToBackground: true,

@@ -40,7 +40,10 @@ async function measurePageStandard(
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
-      title: 'benchmark-pageload',
+      title: 'measurePageStandard',
+      manifestFlags: {
+        sentry: { tracesSampleRate: 1.0 },
+      },
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
       await unlockWallet(driver);
@@ -79,6 +82,7 @@ async function measurePagePowerUser(
           disableSync: true,
           infuraProjectId: process.env.INFURA_PROJECT_ID,
         },
+        sentry: { tracesSampleRate: 1.0 },
       },
       useMockingPassThrough: true,
       disableServerMochaToBackground: true,
