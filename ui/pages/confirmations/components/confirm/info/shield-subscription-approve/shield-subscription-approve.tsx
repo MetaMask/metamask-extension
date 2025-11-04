@@ -7,9 +7,9 @@ import React from 'react';
 import { useUserSubscriptions } from '../../../../../../hooks/subscription/useSubscription';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
-import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { useShieldSubscriptionPricingFromTokenApproval } from '../../../../../../hooks/subscription/useSubscriptionPricing';
+import { useDecodedTransactionDataValue } from '../../../../../../hooks/useDecodedTransactionData';
 import { AccountDetails } from './account-details';
 import { EstimatedChanges } from './estimated-changes';
 import ShieldSubscriptionApproveLoader from './shield-subscription-approve-loader';
@@ -19,13 +19,8 @@ import BillingDetails from './billing-details';
 const ShieldSubscriptionApproveInfo = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const decodeResponse = useDecodedTransactionData({
-    data: transactionMeta.txParams.data as Hex,
-    to: transactionMeta.txParams.to as Hex,
-  });
-  const decodedApprovalAmount = decodeResponse?.value?.data[0].params.find(
-    (param) => param.name === 'value',
-  )?.value;
+  const { decodeResponse, value: decodedApprovalAmount } =
+    useDecodedTransactionDataValue(transactionMeta);
   const { decimals } = useAssetDetails(
     transactionMeta.txParams.to,
     transactionMeta.txParams.from,
