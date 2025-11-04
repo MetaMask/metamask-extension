@@ -169,7 +169,6 @@ async function setupMocking(
         // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.
         response: {
           statusCode: 200,
-          json: {}
         },
       };
     },
