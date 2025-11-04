@@ -391,7 +391,10 @@
     "tokensChainsCache": { "0x539": "object" },
     "preventPollingOnNetworkRestart": false
   },
-  "TokenRatesController": { "marketData": "object" },
+  "TokenRatesController": {
+    "marketData": "object",
+    "supportedChainIds": "object"
+  },
   "TokensController": {
     "allTokens": {},
     "allIgnoredTokens": {},
