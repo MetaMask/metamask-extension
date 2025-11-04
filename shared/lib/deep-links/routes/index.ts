@@ -7,6 +7,7 @@ import perps from './perps';
 import rewards from './rewards';
 
 import type { Route } from './route';
+import shield from './shield';
 
 export type { Route } from './route';
 
@@ -38,3 +39,4 @@ addRoute(swap);
 addRoute(nonevm);
 addRoute(perps);
 addRoute(rewards);
+addRoute(shield);
