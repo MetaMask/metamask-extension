@@ -46,6 +46,7 @@ if (args.dryRun) {
 
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
+const offscreen = join(__dirname, '../../offscreen');
 const isDevelopment = args.env === 'development';
 const MANIFEST_VERSION = args.manifest_version;
 const manifestPath = join(context, `manifest/v${MANIFEST_VERSION}/_base.json`);
@@ -163,6 +164,13 @@ const plugins: WebpackPluginInstance[] = [
       // snaps MV3 needs the offscreen document
       ...(args.manifest_version === 3
         ? [
+            {
+              from: join(
+                offscreen,
+                'offscreen.html',
+              ),
+              to: 'offscreen.html',
+            },
             {
               from: join(
                 nodeModules,
