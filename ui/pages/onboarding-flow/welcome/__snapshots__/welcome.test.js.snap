@@ -6,9 +6,12 @@ exports[`Welcome Page render matches snapshot 1`] = `
     class="mm-box welcome-container mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full"
   >
     <div
+      class="mm-box"
+    />
+    <div
       class="mm-box welcome-login"
       data-testid="get-started"
-      style="opacity: 1; transform: translateY(0) scale(1); transition: opacity 0.6s ease-out, transform 0.6s ease-out;"
+      style="opacity: 0; transform: translateY(80px) scale(0.8); transition: opacity 0.6s ease-out, transform 0.6s ease-out;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
