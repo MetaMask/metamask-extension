@@ -38,7 +38,6 @@ export default class TokenList extends Component {
     onToggleToken: PropTypes.func,
     currentNetwork: PropTypes.object,
     testNetworkBackgroundColor: PropTypes.object,
-    isTokenNetworkFilterEqualCurrentNetwork: PropTypes.bool,
     accountAddress: PropTypes.string,
     accountsAssets: PropTypes.object,
   };
@@ -52,7 +51,6 @@ export default class TokenList extends Component {
       accountAddress,
       currentNetwork,
       testNetworkBackgroundColor,
-      isTokenNetworkFilterEqualCurrentNetwork,
       accountsAssets = {},
     } = this.props;
     return (
@@ -137,13 +135,9 @@ export default class TokenList extends Component {
                                 size={AvatarNetworkSize.Xs}
                                 name={currentNetwork?.nickname}
                                 src={
-                                  isTokenNetworkFilterEqualCurrentNetwork
-                                    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                                        currentNetwork?.chainId
-                                      ]
-                                    : CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                                        results[i]?.chainId
-                                      ]
+                                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                    currentNetwork?.chainId
+                                  ]
                                 }
                                 backgroundColor={testNetworkBackgroundColor}
                                 borderWidth={2}
