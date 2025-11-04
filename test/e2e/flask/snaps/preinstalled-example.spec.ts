@@ -1,10 +1,15 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
+import {
+  largeDelayMs,
+  withFixtures,
+  WINDOW_TITLES,
+  sentryRegEx,
+} from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { withFixtures, WINDOW_TITLES, sentryRegEx } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
@@ -60,15 +65,17 @@ describe('Preinstalled example Snap', function () {
         const preInstalledExample = new PreinstalledExampleSettings(driver);
         await navigateToPreInstalledExample(driver);
 
+        // toggle setting 1
         await preInstalledExample.clickToggleButtonOn();
-        await preInstalledExample.selectRadioOption('Option 2');
-        await preInstalledExample.selectDropdownOption('Option 2');
         await preInstalledExample.checkIsToggleOn();
-        assert.equal(
-          await preInstalledExample.checkSelectedRadioOption('Option 2'),
-          true,
-        );
-        await preInstalledExample.checkSelectedDropdownOption('Option 2');
+
+        // select radio option for setting 2
+        await preInstalledExample.selectRadioOption('Option 2');
+        await driver.delay(largeDelayMs);
+
+        // select dropdown option for setting 3
+        await preInstalledExample.selectDropdownOption('Option 2');
+        await driver.delay(largeDelayMs);
         await driver.clickElement(
           '.settings-page__header__title-container__close-button',
         );

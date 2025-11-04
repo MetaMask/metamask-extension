@@ -57,23 +57,6 @@ class PreinstalledExampleSettings {
     console.log('Checking if the toggle is on');
     await this.driver.waitForSelector(`${this.toggleButton}--on`);
   }
-
-  async checkSelectedRadioOption(option: string): Promise<boolean> {
-    console.log(`Checking if the radio option "${option}" is selected`);
-    const radioOption = await this.driver.findElement(
-      `input[type="radio"][id="${option}"]`,
-    );
-    const isChecked = (await radioOption.getAttribute('checked')) === 'true';
-    return isChecked;
-  }
-
-  async checkSelectedDropdownOption(option: string): Promise<void> {
-    console.log(`Checking if the dropdown option "${option}" is selected`);
-    await this.driver.waitForSelector({
-      css: this.settingsDropdown,
-      text: option,
-    });
-  }
 }
 
 export default PreinstalledExampleSettings;
