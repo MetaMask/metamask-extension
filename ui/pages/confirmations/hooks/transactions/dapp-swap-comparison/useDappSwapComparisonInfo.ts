@@ -62,7 +62,7 @@ export function useDappSwapComparisonInfo() {
     [transactionId, updateTransactionEventFragment],
   );
 
-  const { quotesInput, amountMin, tokenAddresses } = useMemo(() => {
+  const { commands, quotesInput, amountMin, tokenAddresses } = useMemo(() => {
     try {
       let transactionData = data;
       if (nestedTransactions?.length) {
@@ -76,6 +76,7 @@ export function useDappSwapComparisonInfo() {
     } catch (error) {
       captureException(error);
       return {
+        commands: '',
         quotesInput: undefined,
         amountMin: undefined,
         tokenAddresses: [],
@@ -105,6 +106,7 @@ export function useDappSwapComparisonInfo() {
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         dapp_swap_comparison: 'loading',
+        dapp_swap_commands: commands,
       },
     });
 
@@ -116,6 +118,7 @@ export function useDappSwapComparisonInfo() {
     updateQuoteResponseLatency(startTime);
     return quotesList;
   }, [
+    commands,
     captureDappSwapComparisonMetricsProperties,
     quotesInput,
     requestDetectionLatency,
