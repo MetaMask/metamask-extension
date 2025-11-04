@@ -15,6 +15,7 @@ describe('Name lookup', function () {
   it('validate the recipient address appears in the send flow', async function () {
     await withFixtures(
       {
+        forceBip44Version: false,
         fixtures: new FixtureBuilder({
           inputChainId: CHAIN_IDS.MAINNET,
         }).build(),
