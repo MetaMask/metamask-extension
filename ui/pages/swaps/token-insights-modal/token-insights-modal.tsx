@@ -86,6 +86,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
   const t = useI18nContext();
   const trackEvent = React.useContext(MetaMetricsContext);
   const currentCurrency = useSelector(getCurrentCurrency);
+  const dialogRef = React.useRef<HTMLElement | null>(null);
   type CurrencyRatesMap = Record<string, { conversionRate?: number }>;
   const currencyRates = useSelector(getCurrencyRates) as CurrencyRatesMap;
   type EvmMarketTokenData = {
@@ -117,6 +118,37 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
       });
     }
   }, [isOpen, token, trackEvent]);
+
+  // Ensure only the top modal closes on outside click by intercepting
+  // document mousedown in the capture phase and stopping propagation.
+  React.useEffect(() => {
+    if (!isOpen) {
+      return () => undefined;
+    }
+    const handleDocMouseDownCapture = (event: MouseEvent) => {
+      const el = dialogRef.current;
+      if (el && !el.contains(event.target as Node)) {
+        onClose();
+        // Prevent the underlying modal's outside-click handler
+        event.stopPropagation();
+        // Some browsers/listeners may still process, try immediate stop
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const anyEvent = event as any;
+        if (typeof anyEvent.stopImmediatePropagation === 'function') {
+          anyEvent.stopImmediatePropagation();
+        }
+        event.preventDefault();
+      }
+    };
+    document.addEventListener('mousedown', handleDocMouseDownCapture, true);
+    return () => {
+      document.removeEventListener(
+        'mousedown',
+        handleDocMouseDownCapture,
+        true,
+      );
+    };
+  }, [isOpen, onClose]);
 
   // Determine EVM/native context and source market data
   const isEvm = Boolean(token && isEvmChainId(token.chainId as Hex));
@@ -256,6 +288,10 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
         onMouseDown={(e) => e.stopPropagation()}
         onPointerDown={(e) => e.stopPropagation()}
         modalDialogProps={{
+          // attach ref to the inner dialog element
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ref: dialogRef as any,
           onMouseDown: (e: React.MouseEvent) => e.stopPropagation(),
           onPointerDown: (e: React.PointerEvent) => e.stopPropagation(),
           onClick: (e: React.MouseEvent) => e.stopPropagation(),
