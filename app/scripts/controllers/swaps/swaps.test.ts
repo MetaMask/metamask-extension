@@ -5,7 +5,7 @@ import BigNumberjs from 'bignumber.js';
 import { mapValues } from 'lodash';
 import * as ethersProviders from '@ethersproject/providers';
 import { Hex } from '@metamask/utils';
-import { SafeEventEmitterProvider } from '@metamask/eth-json-rpc-provider';
+import { InternalProvider } from '@metamask/eth-json-rpc-provider';
 import { NetworkClientId } from '@metamask/network-controller';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -169,7 +169,7 @@ function mockNetworkControllerGetNetworkClientById(
   networkClientsById: Record<
     NetworkClientId,
     {
-      provider: SafeEventEmitterProvider;
+      provider: InternalProvider;
       configuration: {
         chainId: Hex;
       };

@@ -6145,9 +6145,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^21.0.0":
-  version: 21.0.0
-  resolution: "@metamask/eth-json-rpc-middleware@npm:21.0.0"
+"@metamask/eth-json-rpc-middleware@npm:@metamask-previews/eth-json-rpc-middleware@21.0.0-preview-3d5a68a":
+  version: 21.0.0-preview-3d5a68a
+  resolution: "@metamask-previews/eth-json-rpc-middleware@npm:21.0.0-preview-3d5a68a"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^14.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^5.0.1"
@@ -6159,7 +6159,19 @@ __metadata:
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/3859035c7647202160fa73a8b2837153454b0097713bf822b4c22a14e971176895546c548e5899f0e600d1adbc3b79071ad468a8a1df3f06247ff5bd8b867353
+  checksum: 10/eab9583545ea4b3f6ec1732b61065c319909a21ea901de49b906de3e8c5754dba905c106f8aa1b8efae5746660d1e0a0e12d4a3279ff969e3a0f0ce13ab8cdf4
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-json-rpc-provider@npm:@metamask-previews/eth-json-rpc-provider@5.0.1-preview-3d5a68a":
+  version: 5.0.1-preview-3d5a68a
+  resolution: "@metamask-previews/eth-json-rpc-provider@npm:5.0.1-preview-3d5a68a"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^10.1.1"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.8.1"
+    uuid: "npm:^8.3.2"
+  checksum: 10/c295f87ba0e63259a0844145602ec603b1350b72c8b8592dac2f0d6b7a3ef7217c3a4be0a60372acdf3bef8697c92aa90eff68893d6f8b136932e862ce09a6b2
   languageName: node
   linkType: hard
 
@@ -6176,7 +6188,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-provider@npm:^5.0.0, @metamask/eth-json-rpc-provider@npm:^5.0.1":
+"@metamask/eth-json-rpc-provider@npm:^5.0.0":
   version: 5.0.1
   resolution: "@metamask/eth-json-rpc-provider@npm:5.0.1"
   dependencies:
@@ -6513,7 +6525,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^10.0.0, @metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3, @metamask/json-rpc-engine@npm:^10.1.0, @metamask/json-rpc-engine@npm:^10.1.1":
+"@metamask/json-rpc-engine@npm:@metamask-previews/json-rpc-engine@10.1.1-preview-3d5a68a":
+  version: 10.1.1-preview-3d5a68a
+  resolution: "@metamask-previews/json-rpc-engine@npm:10.1.1-preview-3d5a68a"
+  dependencies:
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.8.1"
+    "@types/deep-freeze-strict": "npm:^1.1.0"
+    deep-freeze-strict: "npm:^1.1.1"
+    klona: "npm:^2.0.6"
+  checksum: 10/402c44f1ef230bbc79dbc481baeda632868a5af6d86f2648de492156a1579cfcfb1be9211def232d4ee141c2b5909f7fc996a63d07eb86e971b18a4c4f545a26
+  languageName: node
+  linkType: hard
+
+"@metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3, @metamask/json-rpc-engine@npm:^10.1.0":
   version: 10.1.1
   resolution: "@metamask/json-rpc-engine@npm:10.1.1"
   dependencies:
@@ -7014,12 +7040,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^25.0.0":
-  version: 25.0.0
-  resolution: "@metamask/network-controller@npm:25.0.0"
+"@metamask/network-controller@npm:@metamask-previews/network-controller@25.0.0-preview-3d5a68a":
+  version: 25.0.0-preview-3d5a68a
+  resolution: "@metamask-previews/network-controller@npm:25.0.0-preview-3d5a68a"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/controller-utils": "npm:^11.15.0"
     "@metamask/eth-block-tracker": "npm:^14.0.0"
     "@metamask/eth-json-rpc-infura": "npm:^10.3.0"
     "@metamask/eth-json-rpc-middleware": "npm:^21.0.0"
@@ -7039,7 +7065,7 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/error-reporting-service": ^3.0.0
-  checksum: 10/1fcad4f22f4b090b7de64134fdc6e4085f5bb4bb1dea53d7d25122c708f18d90a61caa5e6098a483ecbbb8cd93cdd2a145484cb129c7e8def4a9b726e9b4ee4c
+  checksum: 10/e0bcca5940fef7971ea7573cb15db856fe1eb35eeecffe5580504fbb8c50ad14029c2600efc8bb5685937b8d46ea98c8747859701ac2250de8ad251a158ace38
   languageName: node
   linkType: hard
 
