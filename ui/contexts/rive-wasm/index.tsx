@@ -6,55 +6,6 @@ import { RuntimeLoader } from '@rive-app/react-canvas';
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { useAsyncResult } from '../../hooks/useAsync';
 
-// create a context only for the wasm ready state
-const RiveWasmContext = createContext<{
-  isWasmReady: boolean;
-  loading: boolean;
-  error: Error | undefined;
-  urlBufferMap: Record<string, ArrayBuffer>;
-  setUrlBufferCache: (url: string, buffer: ArrayBuffer) => void;
-}>({
-  isWasmReady: false,
-  loading: false,
-  error: undefined,
-  urlBufferMap: {},
-  setUrlBufferCache: () => {},
-});
-
-export default function RiveWasmProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [urlBufferMap, setUrlBufferMap] = useState<Record<string, ArrayBuffer>>(
-    {},
-  );
-  const setUrlBufferCache = useCallback(
-    (url: string, buffer: ArrayBuffer) => {
-      setUrlBufferMap((prev) => ({ ...prev, [url]: buffer }));
-    },
-    [setUrlBufferMap],
-  );
-
-  const { isWasmReady, loading, error } = useRiveWasmReady();
-
-  return (
-    <RiveWasmContext.Provider
-      value={{ isWasmReady, loading, error, urlBufferMap, setUrlBufferCache }}
-    >
-      {children}
-    </RiveWasmContext.Provider>
-  );
-}
-
-export const useRiveWasmContext = () => {
-  const context = useContext(RiveWasmContext);
-  if (!context) {
-    throw new Error('useRiveWasm must be used within RiveWasmProvider');
-  }
-  return context;
-};
-
 // WASM file URL - the file is copied to dist/chrome/images/ by the build process
 // We don't import it as a module to avoid browserify resolution issues
 const RIVE_WASM_URL = './images/riv_animations/rive.wasm';
@@ -94,6 +45,58 @@ export const useRiveWasmReady = () => {
     loading: result.pending,
     error: result.error,
   };
+};
+
+// create a context only for the wasm ready state
+const RiveWasmContext = createContext<{
+  isWasmReady: boolean;
+  loading: boolean;
+  error: Error | undefined;
+  urlBufferMap: Record<string, ArrayBuffer>;
+  setUrlBufferCache: (url: string, buffer: ArrayBuffer) => void;
+}>({
+  isWasmReady: false,
+  loading: false,
+  error: undefined,
+  urlBufferMap: {},
+  // eslint-disable-next-line no-empty-function
+  setUrlBufferCache: () => {},
+});
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export default function RiveWasmProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [urlBufferMap, setUrlBufferMap] = useState<Record<string, ArrayBuffer>>(
+    {},
+  );
+  const setUrlBufferCache = useCallback(
+    (url: string, buffer: ArrayBuffer) => {
+      setUrlBufferMap((prev) => ({ ...prev, [url]: buffer }));
+    },
+    [setUrlBufferMap],
+  );
+
+  const { isWasmReady, loading, error } = useRiveWasmReady();
+
+  return (
+    <RiveWasmContext.Provider
+      value={{ isWasmReady, loading, error, urlBufferMap, setUrlBufferCache }}
+    >
+      {children}
+    </RiveWasmContext.Provider>
+  );
+}
+
+export const useRiveWasmContext = () => {
+  const context = useContext(RiveWasmContext);
+  if (!context) {
+    throw new Error('useRiveWasm must be used within RiveWasmProvider');
+  }
+  return context;
 };
 
 export const useRiveWasmFile = (url: string) => {
