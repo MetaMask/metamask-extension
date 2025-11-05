@@ -370,7 +370,14 @@ class AccountListPage {
     console.log(`Adding new multichain wallet`);
     await this.driver.clickElement(this.addMultichainWalletButton);
   }
-
+  /**
+   * Import a wallet.
+   */
+  async clickImportWallet(): Promise<void> {
+      await this.driver.clickElement(
+      this.importWalletFromMultichainWalletModalButton,
+    );
+  }
   /**
    * Adds a new multichain account.
    *
@@ -1011,23 +1018,13 @@ class AccountListPage {
 
   async startImportSecretPhrase(
     srp: string,
-    options?: { isMultichainAccountsState2Enabled?: boolean },
   ): Promise<void> {
     console.log(`Importing ${srp.split(' ').length} word srp`);
 
-    if (options?.isMultichainAccountsState2Enabled) {
-      await this.driver.clickElement(this.addMultichainWalletButton);
-      await this.driver.clickElement(
-        this.importWalletFromMultichainWalletModalButton,
-      );
-      await this.driver.pasteIntoField(this.importSrpInput, srp);
-      await this.driver.clickElement(this.importSrpConfirmButton);
-      return;
-    }
-
-    await this.driver.clickElement(this.createAccountButton);
-    await this.driver.clickElement(this.importSrpButton);
-    await this.driver.waitForSelector(this.importSrpModalTitle);
+    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.driver.clickElement(
+      this.importWalletFromMultichainWalletModalButton,
+    );
     await this.driver.pasteIntoField(this.importSrpInput, srp);
     await this.driver.clickElement(this.importSrpConfirmButton);
   }
