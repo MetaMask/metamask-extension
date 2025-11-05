@@ -16,6 +16,7 @@ import {
 import { AccountsControllerGetStateAction } from '@metamask/accounts-controller';
 import { SmartTransactionsControllerGetStateAction } from '@metamask/smart-transactions-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
@@ -49,6 +50,7 @@ export type SubscriptionServiceAction =
   | RemoteFeatureFlagControllerGetStateAction
   | SwapsControllerGetStateAction
   | SwapsControllerSetSwapsFeatureFlagsAction
+  | NetworkControllerGetStateAction
   | AuthenticationControllerGetBearerToken;
 
 export type SubscriptionServiceEvent = never;

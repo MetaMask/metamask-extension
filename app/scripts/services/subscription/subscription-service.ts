@@ -16,8 +16,6 @@ import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 // TODO: Migrate to shared directory and remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-// TODO: Migrate to shared directory and remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
 import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
 import {
   SubscriptionServiceAction,
@@ -228,36 +226,46 @@ export class SubscriptionService {
   }
 
   async #getIsSmartTransactionEnabled(chainId: `0x${string}`) {
-    console.log('#getIsSmartTransactionEnabled::chainId', chainId);
-    const uiState = {
-      metamask: {
-        ...this.#messenger.call('AccountsController:getState'),
-        ...this.#messenger.call('PreferencesController:getState'),
-        ...this.#messenger.call('SmartTransactionsController:getState'),
-        ...this.#messenger.call('RemoteFeatureFlagController:getState'),
-        ...this.#messenger.call('SwapsController:getState'),
-      },
-    };
-
-    let swapsFeatureFlags = uiState.metamask.swapsState?.swapsFeatureFlags;
-    if (Object.keys(swapsFeatureFlags).length === 0) {
-      // if `swapsFeatureFlags` is empty, we wil try to fetch the feature flags from the bridge API
-      swapsFeatureFlags = await fetchSwapsFeatureFlags();
-      // after fetching the feature flags, we will set the feature flags to SwapsController state.
-      this.#messenger.call(
-        'SwapsController:setSwapsFeatureFlags',
-        swapsFeatureFlags,
-      );
-      uiState.metamask.swapsState = {
-        ...uiState.metamask.swapsState,
-        swapsFeatureFlags,
+    try {
+      console.log('#getIsSmartTransactionEnabled::chainId', chainId);
+      const uiState = {
+        metamask: {
+          ...this.#messenger.call('AccountsController:getState'),
+          ...this.#messenger.call('PreferencesController:getState'),
+          ...this.#messenger.call('SmartTransactionsController:getState'),
+          ...this.#messenger.call('RemoteFeatureFlagController:getState'),
+          ...this.#messenger.call('SwapsController:getState'),
+          ...this.#messenger.call('NetworkController:getState'),
+        },
       };
+
+      let swapsFeatureFlags = uiState.metamask.swapsState?.swapsFeatureFlags;
+      if (Object.keys(swapsFeatureFlags).length === 0) {
+        // if `swapsFeatureFlags` is empty, we wil try to fetch the feature flags from the bridge API
+        swapsFeatureFlags = await fetchSwapsFeatureFlags();
+        // after fetching the feature flags, we will set the feature flags to SwapsController state.
+        this.#messenger.call(
+          'SwapsController:setSwapsFeatureFlags',
+          swapsFeatureFlags,
+        );
+        uiState.metamask.swapsState = {
+          ...uiState.metamask.swapsState,
+          swapsFeatureFlags,
+        };
+      }
+
+      // @ts-expect-error Smart transaction selector types does not match controller state
+      const isSmartTransaction = getIsSmartTransaction(uiState, chainId);
+      const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
+
+      return isSendBundleSupportedChain && isSmartTransaction;
+    } catch (error) {
+      log.error('Failed to get is smart transaction enabled', error);
+      log.error(
+        'Failed to get is smart transaction enabled',
+        (error as Error).stack,
+      );
+      return false;
     }
-
-    // @ts-expect-error Smart transaction selector types does not match controller state
-    const isSmartTransaction = getIsSmartTransaction(uiState, chainId);
-    const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
-
-    return isSendBundleSupportedChain && isSmartTransaction;
   }
 }
