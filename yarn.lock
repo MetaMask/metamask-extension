@@ -6441,9 +6441,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gator-permissions-controller@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/gator-permissions-controller@npm:0.3.0"
+"@metamask/gator-permissions-controller@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@metamask/gator-permissions-controller@npm:0.4.0"
   dependencies:
     "@metamask/7715-permission-types": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -6455,7 +6455,8 @@ __metadata:
     "@metamask/utils": "npm:^11.8.1"
   peerDependencies:
     "@metamask/snaps-controllers": ^14.0.1
-  checksum: 10/aed9621db1ce8cad13181cf521d119c880bb2d62478bbe257ab02335fb5ab099ca9317b656c16b966d3054627519cf5daf80bc0ec3465a45884e3d47c93524f3
+    "@metamask/transaction-controller": ^61.1.0
+  checksum: 10/7042081a938c20d0534e009c22e7db1bc476622008dee8658278f7b9888625be3bab9745bdff1d835fd0f7566a395e156c34703cb5809f57039e5d6a4df9213b
   languageName: node
   linkType: hard
 
@@ -7546,28 +7547,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/shield-controller@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/shield-controller@npm:1.1.0"
+"@metamask/shield-controller@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/shield-controller@npm:2.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/controller-utils": "npm:^11.15.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.8.1"
     cockatiel: "npm:^3.1.2"
   peerDependencies:
-    "@metamask/signature-controller": ^35.0.0
+    "@metamask/signature-controller": ^36.0.0
     "@metamask/transaction-controller": ^61.0.0
-  checksum: 10/b84030af1df9b6ba7e1ce2a9315426b2cd73109b026b39154b36bc105aa0414c6bb1584fadef466b17e20e3ec7e6845f5b11f52b796d8d451427597e3d44752e
+  checksum: 10/5994d9e8b728610ef8aa77e32da4914bc0dacbe30d73da64e9b9d49c590cd89166d94687aef758223645f947768857e1eef10db990049ce947b71ba290366718
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^35.0.0":
-  version: 35.0.0
-  resolution: "@metamask/signature-controller@npm:35.0.0"
+"@metamask/signature-controller@npm:^36.0.0":
+  version: 36.0.0
+  resolution: "@metamask/signature-controller@npm:36.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/controller-utils": "npm:^11.15.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.8.1"
@@ -7577,11 +7578,11 @@ __metadata:
   peerDependencies:
     "@metamask/accounts-controller": ^34.0.0
     "@metamask/approval-controller": ^8.0.0
-    "@metamask/gator-permissions-controller": ^0.3.0
+    "@metamask/gator-permissions-controller": ^0.4.0
     "@metamask/keyring-controller": ^24.0.0
     "@metamask/logging-controller": ^7.0.0
     "@metamask/network-controller": ^25.0.0
-  checksum: 10/aef26b1453c286a96a0ceead056e07518fc0880ff5f9b08cf896f6e072a1e44886786ceb8abbbc2ee1186f1224ff315bf27a99d937d9587c1c60bf4dde5183d3
+  checksum: 10/5f8fde747c95fb084b5c2f103493408be3e2e98f12f3edaca25d448f1e33556fb82ecb65d4c4145ab16e49b40c390554536ccc69027b2b48a5aad9f86cce4eeb
   languageName: node
   linkType: hard
 
@@ -31894,7 +31895,7 @@ __metadata:
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^25.0.0"
-    "@metamask/gator-permissions-controller": "npm:^0.3.0"
+    "@metamask/gator-permissions-controller": "npm:^0.4.0"
     "@metamask/gator-permissions-snap": "npm:^0.4.1"
     "@metamask/institutional-wallet-snap": "npm:1.3.4"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
@@ -31946,8 +31947,8 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^5.0.0"
     "@metamask/selected-network-controller": "npm:^25.0.0"
-    "@metamask/shield-controller": "npm:^1.1.0"
-    "@metamask/signature-controller": "npm:^35.0.0"
+    "@metamask/shield-controller": "npm:^2.0.0"
+    "@metamask/signature-controller": "npm:^36.0.0"
     "@metamask/smart-transactions-controller": "npm:^20.0.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.0.0"
