@@ -456,6 +456,8 @@ and we'll take you to the right place.`
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
 
         const rawUrl = `https://link.metamask.io/home`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
@@ -472,7 +474,6 @@ and we'll take you to the right place.`
         await deepLink.clickContinueButton();
 
         // make sure the home page has loaded!
-        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
       },
     );
