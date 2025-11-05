@@ -151,15 +151,17 @@ export function formatNetworkFee(
   // For amounts < $0.01, find the precision that shows the first non-zero digit
   // Try precision from 2 to 4 (max allowed)
   for (let precision = 2; precision <= 4; precision++) {
-    const formatted = formatCurrency(amount.toString(), currency, precision);
-    // Extract numeric value from formatted string (remove currency symbols, spaces, etc.)
-    const numericMatch = formatted.match(/[\d.]+/u);
-    if (numericMatch) {
-      const numericValue = new BigNumber(numericMatch[0]);
-      // Check if this precision shows a non-zero value
-      if (numericValue.gt(0)) {
-        return formatted;
-      }
+    // Scale the amount by 10^precision to move the target digit to the ones place
+    // Example: 0.0005 with precision 3 → 0.5 (moves 3rd decimal to ones place)
+    const scaleFactor = new BigNumber(10).pow(precision);
+    const scaledAmount = amount.times(scaleFactor);
+
+    // Round using ROUND_HALF_UP to match currency formatter's rounding behavior
+    // If the rounded value is non-zero, this precision will show a non-zero digit
+    const roundedValue = scaledAmount.round(0, BigNumber.ROUND_HALF_UP);
+
+    if (roundedValue.gt(0)) {
+      return formatCurrency(amount.toString(), currency, precision);
     }
   }
 
