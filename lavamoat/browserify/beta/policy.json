@@ -2229,6 +2229,68 @@
         "document.defaultView": true
       }
     },
+    "@rive-app/react-canvas>@rive-app/canvas": {
+      "globals": {
+        "AudioContext": false,
+        "Blob": true,
+        "DOMMatrix": false,
+        "FinalizationRegistry": false,
+        "HTMLCanvasElement": true,
+        "Image": true,
+        "Iterator": false,
+        "MouseEvent": false,
+        "Path2D": true,
+        "Request": true,
+        "ResizeObserver": false,
+        "TextDecoder": true,
+        "URL.createObjectURL": true,
+        "URL.revokeObjectURL": true,
+        "WebAssembly": true,
+        "XMLHttpRequest": false,
+        "cancelAnimationFrame": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "crypto": false,
+        "define": false,
+        "devicePixelRatio": false,
+        "document": false,
+        "document.createElement": true,
+        "fetch": false,
+        "h": false,
+        "importScripts": false,
+        "location.href": false,
+        "navigator": false,
+        "navigator.userAgent": true,
+        "performance.now": true,
+        "prompt": false,
+        "readline": false,
+        "requestAnimationFrame": true,
+        "setTimeout": true,
+        "webkitAudioContext": false
+      }
+    },
+    "@rive-app/react-canvas": {
+      "globals": {
+        "IntersectionObserver": false,
+        "ResizeObserver": false,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "devicePixelRatio": false,
+        "document.documentElement.clientHeight": true,
+        "document.documentElement.clientWidth": true,
+        "innerHeight": false,
+        "innerWidth": false,
+        "matchMedia": false,
+        "removeEventListener": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@rive-app/react-canvas>@rive-app/canvas": true,
+        "react": true
+      }
+    },
     "@metamask/eth-sig-util>@scure/base": {
       "globals": {
         "TextDecoder": true,
