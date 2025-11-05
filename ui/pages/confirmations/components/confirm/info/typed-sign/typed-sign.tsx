@@ -60,9 +60,13 @@ const TypedSignInfo: React.FC = () => {
       <ConfirmInfoSection data-testid="confirmation_request-section">
         {isPermit && (
           <>
-            <ConfirmInfoRow label={t('spender')}>
+            <ConfirmInfoAlertRow
+              alertKey={RowAlertKey.Spender}
+              ownerId={currentConfirmation.id}
+              label={t('spender')}
+            >
               <ConfirmInfoRowAddress address={spender} chainId={chainId} />
-            </ConfirmInfoRow>
+            </ConfirmInfoAlertRow>
             <ConfirmInfoRowDivider />
           </>
         )}
