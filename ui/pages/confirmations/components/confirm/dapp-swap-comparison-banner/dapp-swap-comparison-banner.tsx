@@ -14,16 +14,27 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
+import {
+  BatchTransaction,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
+import { TxData } from '@metamask/bridge-controller';
+import { toHex } from '@metamask/controller-utils';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { updateTransaction } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
 const DAPP_SWAP_THRESHOLD = 0.01;
+
+type DappSwapUiFlag = {
+  enabled: boolean;
+  threshold: number;
+};
 
 const enum SwapType {
   Current = 'current',
@@ -66,11 +77,19 @@ const SwapButton = ({
 const DappSwapComparisonInner = () => {
   const t = useI18nContext();
   const {
+    selectedQuote,
     selectedQuoteValueDifference,
     gasDifference,
     tokenAmountDifference,
     destinationTokenSymbol,
   } = useDappSwapComparisonInfo();
+  const dispatch = useDispatch();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { dappSwapUi } = useSelector(getRemoteFeatureFlags) as {
+    dappSwapUi: DappSwapUiFlag;
+  };
+
+  // update selectedSwapType depending on data
   const [selectedSwapType, setSelectedSwapType] = useState<SwapType>(
     SwapType.Current,
   );
@@ -81,9 +100,60 @@ const DappSwapComparisonInner = () => {
     setShowDappSwapComparisonBanner(false);
   }, [setShowDappSwapComparisonBanner]);
 
+  const updateSwapToCurrent = useCallback(() => {
+    setSelectedSwapType(SwapType.Current);
+    setShowDappSwapComparisonBanner(true);
+    if (currentConfirmation.txParamsOriginal) {
+      dispatch(
+        updateTransaction(
+          {
+            ...currentConfirmation,
+            txParams: currentConfirmation.txParamsOriginal,
+          },
+          false,
+        ),
+      );
+    }
+  }, [
+    currentConfirmation,
+    dispatch,
+    setSelectedSwapType,
+    setShowDappSwapComparisonBanner,
+  ]);
+
+  const updateSwapToSelectedQuote = useCallback(() => {
+    setSelectedSwapType(SwapType.Metamask);
+    setShowDappSwapComparisonBanner(true);
+    const { value, gasLimit, data } = selectedQuote?.trade as TxData;
+    dispatch(
+      updateTransaction(
+        {
+          ...currentConfirmation,
+          txParams: {
+            ...currentConfirmation.txParams,
+            value,
+            gas: toHex(gasLimit ?? 0),
+            data,
+          },
+          txParamsOriginal: currentConfirmation.txParams,
+          batchTransactions: [selectedQuote?.approval as BatchTransaction],
+        },
+        false,
+      ),
+    );
+  }, [
+    currentConfirmation,
+    dispatch,
+    setSelectedSwapType,
+    setShowDappSwapComparisonBanner,
+    selectedQuote,
+  ]);
+
   if (
     process.env.DAPP_SWAP_SHIELD_ENABLED?.toString() !== 'true' ||
-    selectedQuoteValueDifference < DAPP_SWAP_THRESHOLD
+    !dappSwapUi?.enabled ||
+    selectedQuoteValueDifference <
+      (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD)
   ) {
     return null;
   }
@@ -106,7 +176,7 @@ const DappSwapComparisonInner = () => {
               ? SwapButtonType.ButtonType
               : SwapButtonType.Text
           }
-          onClick={() => setSelectedSwapType(SwapType.Current)}
+          onClick={updateSwapToCurrent}
           label={t('current')}
         />
         <SwapButton
@@ -115,7 +185,7 @@ const DappSwapComparisonInner = () => {
               ? SwapButtonType.ButtonType
               : SwapButtonType.Text
           }
-          onClick={() => setSelectedSwapType(SwapType.Metamask)}
+          onClick={updateSwapToSelectedQuote}
           label={t('saveAndEarn')}
         />
       </Box>

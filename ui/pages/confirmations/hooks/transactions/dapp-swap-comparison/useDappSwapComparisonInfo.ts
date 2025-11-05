@@ -369,6 +369,7 @@ export function useDappSwapComparisonInfo() {
   ]);
 
   return {
+    selectedQuote,
     selectedQuoteValueDifference,
     gasDifference,
     tokenAmountDifference,
