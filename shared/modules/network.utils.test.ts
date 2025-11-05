@@ -9,6 +9,7 @@ import {
 } from '@metamask/network-controller';
 import { CaipChainId } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
+import type { AddNetworkFields } from '@metamask/network-controller';
 import {
   AVALANCHE_DISPLAY_NAME,
   BNB_DISPLAY_NAME,
@@ -29,7 +30,6 @@ import {
   sortNetworksByPrioity,
   getFilteredFeaturedNetworks,
 } from './network.utils';
-import type { AddNetworkFields } from '@metamask/network-controller';
 
 describe('network utils', () => {
   describe('isSafeChainId', () => {
