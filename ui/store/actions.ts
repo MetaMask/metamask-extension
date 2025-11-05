@@ -231,12 +231,17 @@ export function startOAuthLogin(
     dispatch(showLoadingIndication());
 
     // Calculate isRehydration for seedless auth error tracking
-    const state = getState();
-    const firstTimeFlowType = getFirstTimeFlowType(state);
-    const isOnboardingCompleted = getCompletedOnboarding(state);
-    const isRehydration =
-      firstTimeFlowType === FirstTimeFlowType.socialImport &&
-      !isOnboardingCompleted;
+    let isRehydration: boolean | null = null;
+    try {
+      const state = getState();
+      const firstTimeFlowType = getFirstTimeFlowType(state);
+      const isOnboardingCompleted = getCompletedOnboarding(state);
+      isRehydration =
+        firstTimeFlowType === FirstTimeFlowType.socialImport &&
+        !isOnboardingCompleted;
+    } catch {
+      isRehydration = null;
+    }
 
     try {
       const oauth2LoginResult = await submitRequestToBackground(
@@ -277,7 +282,8 @@ export function startOAuthLogin(
             account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_rehydration: String(isRehydration),
+            is_rehydration:
+              isRehydration === null ? 'unknown' : String(isRehydration),
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             failure_type: 'error',
