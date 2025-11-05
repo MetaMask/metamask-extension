@@ -14,12 +14,10 @@ export const isNativeAddress = (address: string): boolean => {
     return false;
   }
 
-  // Use the bridge controller utility
   if (isNativeAddressFromBridge(address)) {
     return true;
   }
 
-  // Additional checks for edge cases
   const normalized = address.toLowerCase();
   return [
     '0',
@@ -121,7 +119,6 @@ export const shouldShowContractAddress = (
     return false;
   }
 
-  // Additional check for edge cases after CAIP parsing
   const normalized = address.toLowerCase();
   return !['0', '0x0', '0x'].includes(normalized);
 };
