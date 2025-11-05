@@ -2,12 +2,14 @@ import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
 import { CopyParams } from '../multichain-address-row/multichain-address-row';
+import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
-    if (key === 'networkNameEthereum') return 'Ethereum';
+    if (key === 'networkNameEthereum') {
+      return 'Ethereum';
+    }
     return key;
   },
 }));
@@ -20,11 +22,20 @@ const TEST_STRINGS = {
   ALT_FULL_ADDRESS: '0xabcdef1234567890abcdef1234567890abcdef12',
   ALT_TRUNCATED_ADDRESS: '0xabcde...def12',
   COPY_MESSAGE: 'Copied!',
+  EMPTY_STRING: '',
   ETHEREUM_GROUP_NAME: 'Ethereum',
   SOLANA_NETWORK_NAME: 'Solana Mainnet',
 } as const;
 
 const TEST_CHAIN_IDS = {
+  ETHEREUM: '0x1',
+  POLYGON: '0x89',
+  ARBITRUM: '0xa4b1',
+  FANTOM: '0xfa',
+  MOONRIVER: '0x2105',
+  OPTIMISM: '0xa',
+  UNKNOWN: 'unknown-chain-id',
+  HEX_123: '0x123',
   ETHEREUM_CAIP: 'eip155:1',
   POLYGON_CAIP: 'eip155:137',
   ARBITRUM_CAIP: 'eip155:42161',
@@ -153,7 +164,7 @@ const createMockState = () => ({
 });
 
 describe('MultichainAggregatedAddressListRow', () => {
-  let store: any;
+  let store: ReturnType<typeof mockStore>;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -347,14 +358,12 @@ describe('MultichainAggregatedAddressListRow', () => {
           <MultichainAggregatedAddressListRow {...props} />
         </Provider>,
       );
-      const row = screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW);
 
       const copyButton = screen.getByRole('button');
       fireEvent.click(copyButton);
 
       expect(props.copyActionParams.callback).toHaveBeenCalled();
 
-      // Fast-forward time
       act(() => {
         jest.advanceTimersByTime(1000);
       });

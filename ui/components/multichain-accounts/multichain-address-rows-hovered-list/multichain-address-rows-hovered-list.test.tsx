@@ -5,10 +5,10 @@ import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
-import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-rows-hovered-list';
 import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import { getNetworksByScopes } from '../../../../shared/modules/selectors/networks';
+import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-rows-hovered-list';
 
 const mockStore = configureStore([]);
 const mockPush = jest.fn();
@@ -262,7 +262,7 @@ describe('MultichainHoveredAddressRowsList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockedGetNetworksByScopes.mockImplementation((state, scopes) => {
+    mockedGetNetworksByScopes.mockImplementation((_, scopes) => {
       const networkMap: Record<string, { name: string; chainId: string }> = {
         'bip122:000000000019d6689c085ae165831e93': {
           name: 'Bitcoin',
@@ -389,7 +389,7 @@ describe('MultichainHoveredAddressRowsList', () => {
   it('displays truncated addresses', () => {
     renderComponent();
 
-    const addressElements = screen.getAllByText(/0x\w+\.\.\.\w+/);
+    const addressElements = screen.getAllByText(/0x\w+\.\.\.\w+/u);
     expect(addressElements.length).toBeGreaterThan(0);
   });
 
