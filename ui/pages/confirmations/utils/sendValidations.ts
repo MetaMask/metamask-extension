@@ -55,31 +55,31 @@ export const validateEvmHexAddress = async (
   chainId?: string,
   assetAddress?: string,
 ) => {
-  // if (LOWER_CASED_BURN_ADDRESSES.includes(address.toLowerCase())) {
-  //   return {
-  //     error: 'invalidAddress',
-  //   };
-  // }
+  if (LOWER_CASED_BURN_ADDRESSES.includes(address.toLowerCase())) {
+    return {
+      error: 'invalidAddress',
+    };
+  }
 
-  // if (address?.toLowerCase() === assetAddress?.toLowerCase()) {
-  //   return {
-  //     error: 'contractAddressError',
-  //   };
-  // }
+  if (address?.toLowerCase() === assetAddress?.toLowerCase()) {
+    return {
+      error: 'contractAddressError',
+    };
+  }
 
-  // if (chainId) {
-  //   const tokenDetails = await getTokenStandardAndDetailsByChain(
-  //     address,
-  //     undefined,
-  //     undefined,
-  //     chainId,
-  //   );
-  //   if (tokenDetails?.standard) {
-  //     return {
-  //       error: 'tokenContractError',
-  //     };
-  //   }
-  // }
+  if (chainId) {
+    const tokenDetails = await getTokenStandardAndDetailsByChain(
+      address,
+      undefined,
+      undefined,
+      chainId,
+    );
+    if (tokenDetails?.standard) {
+      return {
+        error: 'tokenContractError',
+      };
+    }
+  }
 
   return {};
 };
