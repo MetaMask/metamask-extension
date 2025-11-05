@@ -2971,6 +2971,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.MOONBEAM,
     CHAIN_IDS.MOONRIVER,
     CHAIN_IDS.SEI,
+    CHAIN_IDS.MONAD,
   ].includes(chainId);
 }
 
@@ -4097,6 +4098,16 @@ export function getShowUpdateModal(state) {
     enoughTimePassedSinceLastUpdate;
 
   return showUpdateModal;
+}
+
+/**
+ * Gets the previous version that the extension was updated from.
+ *
+ * @param {import('../../ui/store/store').MetaMaskReduxState} state - The MetaMask state.
+ * @returns {string | null} The previous version string, or null if not available.
+ */
+export function getLastUpdatedFromVersion(state) {
+  return state.metamask.lastUpdatedFromVersion;
 }
 
 /**

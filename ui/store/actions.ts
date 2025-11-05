@@ -176,6 +176,7 @@ import {
 } from '../../shared/constants/app-state';
 import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
 import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
+import { loadShieldConfig } from '../../shared/modules/shield';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -7561,6 +7562,8 @@ export async function getLayer1GasFeeValue({
   ]);
 }
 
+const shieldConfig = loadShieldConfig();
+
 /**
  * Submits a shield claim.
  *
@@ -7583,9 +7586,7 @@ export async function submitShieldClaim(params: {
   caseDescription: string;
   files?: FileList;
 }) {
-  const baseUrl =
-    process.env.SHIELD_CLAIMS_API_URL ??
-    'https://claims.dev-api.cx.metamask.io';
+  const baseUrl = shieldConfig.claimUrl;
 
   const claimsUrl = `${baseUrl}/claims`;
   const formData = new FormData();
