@@ -2,6 +2,7 @@ import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixture-builder';
 import { mockNetworkSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -10,6 +11,9 @@ describe('Test Snap networkAccess', function () {
   it('test the network-access endowment', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockNetworkSnap,
         title: this.test?.fullTitle(),

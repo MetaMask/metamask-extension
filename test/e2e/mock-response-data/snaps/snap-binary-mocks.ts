@@ -2,6 +2,7 @@ import fs from 'fs';
 import { escapeRegExp } from 'lodash';
 import { Mockttp } from 'mockttp';
 import { sort as semverSort } from 'semver';
+import { mockTestSnapsSite } from './snap-local-sites/test-snaps-site-mocks';
 
 const SNAP_ASSETS_RELATIVE_PATH =
   'test/e2e/mock-response-data/snaps/snap-binaries-and-headers';
@@ -77,6 +78,33 @@ async function createSnapMock(options: {
     });
 }
 
+/**
+ * Creates a combined mock for both snap binary and test snap site.
+ * This includes the snap binary mock and the local test snap site proxy.
+ *
+ * @param options - The options for creating the snap mock.
+ * @param options.mockServer - The mockttp server instance.
+ * @param options.snapNamePrefix - The prefix of the snap name (e.g., 'bip32-example-snap').
+ * @param [options.specificVersion] - An optional specific version string for the snap.
+ * @param [options.port] - The port for the local test snap site (default: 8080).
+ * @returns A promise that resolves to an array of mocked endpoints.
+ */
+async function createSnapMockWithSite(options: {
+  mockServer: Mockttp;
+  snapNamePrefix: string;
+  specificVersion?: string;
+  port?: number;
+}) {
+  const { mockServer, snapNamePrefix, specificVersion, port = 8080 } = options;
+  const snapMock = await createSnapMock({
+    mockServer,
+    snapNamePrefix,
+    specificVersion,
+  });
+  const siteMocks = await mockTestSnapsSite(mockServer, port);
+  return [snapMock, ...siteMocks];
+}
+
 const snapConfigurations: Record<string, string> = {
   mockAccountAbstractionKeyringSnap: 'snap-account-abstraction-keyring',
   mockBip32Snap: 'bip32-example-snap',
@@ -111,203 +139,203 @@ const snapConfigurations: Record<string, string> = {
 };
 
 export async function mockAccountAbstractionKeyringSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockAccountAbstractionKeyringSnap,
   });
 }
 
 export async function mockBip32Snap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockBip32Snap,
   });
 }
 
 export async function mockBip44Snap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockBip44Snap,
   });
 }
 
 export async function mockClientStatusSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockClientStatusSnap,
   });
 }
 
 export async function mockCronjobSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockCronjobSnap,
   });
 }
 
 export async function mockCronjobDurationSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockCronjobDurationSnap,
   });
 }
 
 export async function mockDialogSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockDialogSnap,
   });
 }
 
 export async function mockErrorSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockErrorSnap,
   });
 }
 
 export async function mockEthereumProviderSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockEthereumProviderSnap,
   });
 }
 
 export async function mockGetEntropySnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockGetEntropySnap,
   });
 }
 
 export async function mockGetFileSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockGetFileSnap,
   });
 }
 
 export async function mockHomePageSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockHomePageSnap,
   });
 }
 
 export async function mockImagesSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockImagesSnap,
   });
 }
 
 export async function mockInsightsSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockInsightsSnap,
   });
 }
 
 export async function mockInteractiveUiSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockInteractiveUiSnap,
   });
 }
 
 export async function mockJsonRpcSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockJsonRpcSnap,
   });
 }
 
 export async function mockJsxSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockJsxSnap,
   });
 }
 
 export async function mockLifecycleHooksSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockLifecycleHooksSnap,
   });
 }
 
 export async function mockLocalizationSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockLocalizationSnap,
   });
 }
 
 export async function mockLookupSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockLookupSnap,
   });
 }
 
 export async function mockManageStateSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockManageStateSnap,
   });
 }
 
 export async function mockNetworkSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockNetworkSnap,
   });
 }
 
 export async function mockNotificationSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockNotificationSnap,
   });
 }
 
 export async function mockProtocolSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockProtocolSnap,
   });
 }
 
 export async function mockPreferencesSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockPreferencesSnap,
   });
 }
 
 export async function mockSignatureInsightsSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockSignatureInsightsSnap,
   });
 }
 
 export async function mockSimpleKeyringSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockSimpleKeyringSnap,
   });
 }
 
 export async function mockWasmSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockWasmSnap,
   });
 }
 
 export async function mockWebpackPluginOldSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockWebpackPluginSnap,
     specificVersion: '2.0.0',
@@ -315,14 +343,14 @@ export async function mockWebpackPluginOldSnap(mockServer: Mockttp) {
 }
 
 export async function mockWebpackPluginSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockWebpackPluginSnap,
   });
 }
 
 export async function mockBackgroundEventsSnap(mockServer: Mockttp) {
-  return createSnapMock({
+  return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockBackgroundEventsSnap,
   });

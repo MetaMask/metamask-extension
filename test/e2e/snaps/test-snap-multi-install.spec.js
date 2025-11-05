@@ -1,3 +1,4 @@
+const { DAPP_PATH } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
@@ -14,8 +15,11 @@ describe('Test Snap Multi Install', function () {
   it('test multi install snaps', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         failOnConsoleError: false,
+        fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapBinaries,
         title: this.test.fullTitle(),
       },

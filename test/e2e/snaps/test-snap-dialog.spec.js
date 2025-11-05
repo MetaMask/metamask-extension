@@ -1,3 +1,4 @@
+const { DAPP_PATH } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
@@ -9,6 +10,9 @@ describe('Test Snap Dialog', function () {
   it('test all four snap_dialog types', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockDialogSnap,
         title: this.test.fullTitle(),

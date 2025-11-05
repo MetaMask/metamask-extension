@@ -1,5 +1,5 @@
 const { withFixtures, unlockWallet } = require('../helpers');
-const { DAPP_URL, WINDOW_TITLES } = require('../constants');
+const { DAPP_URL, WINDOW_TITLES, DAPP_PATH } = require('../constants');
 const FixtureBuilder = require('../fixture-builder');
 const {
   mockSignatureInsightsSnap,
@@ -10,11 +10,14 @@ describe('Test Snap Signature Insights', function () {
   it('tests Signature Insights functionality', async function () {
     await withFixtures(
       {
-        dappOptions: { numberOfTestDapps: 1 },
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
+        failOnConsoleError: false,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        failOnConsoleError: false,
         testSpecificMock: mockSignatureInsightsSnap,
         title: this.test.fullTitle(),
       },

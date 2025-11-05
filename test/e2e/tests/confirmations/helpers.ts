@@ -33,7 +33,7 @@ export function withTransactionEnvelopeTypeFixtures(
   ): Promise<MockedEndpoint[]> => {
     const baseMocks = mocks ? await mocks(mockServer) : [];
     const dialogSnapMocks = await mockDialogSnap(mockServer);
-    return [...baseMocks, ...[dialogSnapMocks]];
+    return [...baseMocks, ...dialogSnapMocks];
   };
   return withFixtures(
     {

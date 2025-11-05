@@ -1,3 +1,4 @@
+const { DAPP_PATH } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
@@ -10,6 +11,9 @@ describe('Test Snap Get Locale', function () {
   it('test snap_getLocale functionality', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockLocalizationSnap,
         title: this.test.fullTitle(),

@@ -1622,7 +1622,7 @@ export async function withSolanaAccountSnap(
       forceBip44Version: state === 2 ? 2 : 0,
       dappOptions: dappOptions ?? {
         numberOfTestDapps: 1,
-        customDappPaths: [DAPP_PATH.TEST_SNAP],
+        customDappPaths: [DAPP_PATH.TEST_SNAPS],
       },
       manifestFlags: {
         // This flag is used to enable/disable the remote mode for the carousel
@@ -1726,7 +1726,7 @@ export async function withSolanaAccountSnap(
         }
 
         if (withProtocolSnap) {
-          mockList.push(await mockProtocolSnap(mockServer));
+          mockList.push(...(await mockProtocolSnap(mockServer)));
         }
         if (withCustomMocks) {
           const customMocksResult = await withCustomMocks(mockServer);

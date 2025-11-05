@@ -1,3 +1,4 @@
+const { DAPP_PATH } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
@@ -9,6 +10,9 @@ describe('Test Snap Images', function () {
   it('can display images in snap ui', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockImagesSnap,
         title: this.test.fullTitle(),

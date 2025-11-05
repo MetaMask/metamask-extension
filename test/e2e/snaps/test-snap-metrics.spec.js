@@ -6,7 +6,7 @@ const {
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const { MOCK_META_METRICS_ID } = require('../constants');
+const { MOCK_META_METRICS_ID, DAPP_PATH } = require('../constants');
 const {
   mockNotificationSnap,
   mockWebpackPluginOldSnap,
@@ -190,7 +190,10 @@ describe('Test Snap Metrics', function () {
 
     await withFixtures(
       {
-        dappOptions: { numberOfTestDapps: 1 },
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -303,7 +306,10 @@ describe('Test Snap Metrics', function () {
 
     await withFixtures(
       {
-        dappOptions: { numberOfTestDapps: 1 },
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -391,7 +397,10 @@ describe('Test Snap Metrics', function () {
 
     await withFixtures(
       {
-        dappOptions: { numberOfTestDapps: 1 },
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -476,7 +485,10 @@ describe('Test Snap Metrics', function () {
 
     await withFixtures(
       {
-        dappOptions: { numberOfTestDapps: 1 },
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -609,7 +621,10 @@ describe('Test Snap Metrics', function () {
     }
     await withFixtures(
       {
-        dappOptions: { numberOfTestDapps: 1 },
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -769,7 +784,10 @@ describe('Test Snap Metrics', function () {
     }
     await withFixtures(
       {
-        dappOptions: { numberOfTestDapps: 1 },
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -919,7 +937,10 @@ describe('Test Snap Metrics', function () {
     }
     await withFixtures(
       {
-        dappOptions: { numberOfTestDapps: 1 },
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,

@@ -1,3 +1,4 @@
+const { DAPP_PATH } = require('../constants');
 const { withFixtures, WINDOW_TITLES, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
@@ -9,6 +10,9 @@ describe('Test Snap revoke permission', function () {
   it('can revoke a permission', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockEthereumProviderSnap,
         title: this.test.fullTitle(),

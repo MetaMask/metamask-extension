@@ -46,5 +46,5 @@ export async function mockSnapSimpleKeyringAndSite(
   const simpleKeyring = await mockSimpleKeyringSnap(mockServer);
   const siteProxy = await serveSnapKeyRingFromLocalhost(mockServer, port);
 
-  return [simpleKeyring, siteProxy];
+  return [...simpleKeyring, siteProxy];
 }

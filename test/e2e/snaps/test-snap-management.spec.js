@@ -1,3 +1,4 @@
+const { DAPP_PATH } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
@@ -9,6 +10,9 @@ describe('Test Snap Management', function () {
   it('tests install disable enable and removal of a snap', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockNotificationSnap,
         title: this.test.fullTitle(),
