@@ -127,8 +127,8 @@ export const AppHeaderUnlockedContent = ({
     internalAccount &&
     shortenAddress(normalizeSafeAddress(internalAccount.address));
   const accountName = isMultichainAccountsState2Enabled
-    ? selectedMultichainAccount.metadata.name
-    : internalAccount.metadata.name;
+    ? (selectedMultichainAccount?.metadata.name ?? '')
+    : (internalAccount?.metadata.name ?? '');
 
   // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
@@ -284,61 +284,64 @@ export const AppHeaderUnlockedContent = ({
           />
           <>{!isMultichainAccountsState2Enabled && CopyButton}</>
         </Text>
-        <Box
-          ref={setReferenceElement}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          display={Display.Flex}
-          className="networks-subtitle"
-          alignItems={AlignItems.center}
-          gap={1}
-          paddingInline={2}
-          paddingTop={1}
-          paddingBottom={1}
-          borderRadius={BorderRadius.SM}
-          data-testid="networks-subtitle-test-id"
-          style={{
-            cursor: 'pointer',
-            transition: 'background-color 0.2s ease',
-            ...(isHoverOpen && {
-              backgroundColor: 'var(--color-background-default-hover)',
-            }),
-          }}
-        >
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyXsMedium}
-          >
-            {networksLabel}
-          </Text>
-          <Icon
-            name={IconNameDesignSystem.Copy}
-            size={IconSizeDesignSystem.Xs}
-            color={IconColorDesignSystem.IconAlternative}
-            data-testid="copy-network-addresses-icon"
-          />
-        </Box>
-        <Popover
-          referenceElement={referenceElement}
-          isOpen={isHoverOpen}
-          position={PopoverPosition.BottomStart}
-          // offset={[0, 8]}
-          flip={false}
-          preventOverflow={true}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          style={{
-            zIndex: 1000,
-            maxHeight: '400px',
-            overflowY: 'auto',
-            minWidth: '320px',
-          }}
-        >
-          <MultichainHoveredAddressRowsList
-            groupId={selectedMultichainAccountId}
-          />
-        </Popover>
+        {selectedMultichainAccountId && (
+          <>
+            <Box
+              ref={setReferenceElement}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              display={Display.Flex}
+              className="networks-subtitle"
+              alignItems={AlignItems.center}
+              gap={1}
+              paddingInline={2}
+              paddingTop={1}
+              paddingBottom={1}
+              borderRadius={BorderRadius.SM}
+              data-testid="networks-subtitle-test-id"
+              style={{
+                cursor: 'pointer',
+                transition: 'background-color 0.2s ease',
+                ...(isHoverOpen && {
+                  backgroundColor: 'var(--color-background-default-hover)',
+                }),
+              }}
+            >
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyXsMedium}
+              >
+                {networksLabel}
+              </Text>
+              <Icon
+                name={IconNameDesignSystem.Copy}
+                size={IconSizeDesignSystem.Xs}
+                color={IconColorDesignSystem.IconAlternative}
+                data-testid="copy-network-addresses-icon"
+              />
+            </Box>
+            <Popover
+              referenceElement={referenceElement}
+              isOpen={isHoverOpen}
+              position={PopoverPosition.BottomStart}
+              flip={false}
+              preventOverflow={true}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              style={{
+                zIndex: 1000,
+                maxHeight: '400px',
+                overflowY: 'auto',
+                minWidth: '320px',
+              }}
+            >
+              <MultichainHoveredAddressRowsList
+                groupId={selectedMultichainAccountId}
+              />
+            </Popover>
+          </>
+        )}
       </Box>
     );
   }, [
@@ -370,7 +373,9 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         <div ref={tourAnchorRef} className="flex">
-          <PreferredAvatar address={internalAccount.address} />
+          {internalAccount && (
+            <PreferredAvatar address={internalAccount.address} />
+          )}
         </div>
 
         {internalAccount && (
