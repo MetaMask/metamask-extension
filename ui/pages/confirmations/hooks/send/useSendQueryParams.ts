@@ -71,6 +71,9 @@ export const useSendQueryParams = () => {
     if (asset?.chainId !== undefined && paramChainId !== asset.chainId) {
       queryParams.set('chainId', asset.chainId.toString());
     }
+    if (asset?.tokenId !== undefined && paramTokenId !== asset.tokenId) {
+      queryParams.set('tokenId', asset.tokenId);
+    }
     if (maxValueMode !== undefined && paramMaxValueMode !== `${maxValueMode}`) {
       queryParams.set('maxValueMode', maxValueMode.toString());
     }
@@ -89,6 +92,7 @@ export const useSendQueryParams = () => {
     paramAmount,
     paramAsset,
     paramChainId,
+    paramTokenId,
     paramMaxValueMode,
     paramRecipient,
     searchParams,
