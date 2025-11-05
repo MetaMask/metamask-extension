@@ -1103,7 +1103,6 @@
     },
     "@metamask/eth-json-rpc-middleware": {
       "globals": {
-        "console.error": true,
         "setTimeout": true
       },
       "packages": {
@@ -1119,9 +1118,7 @@
     "@metamask/eth-json-rpc-provider": {
       "packages": {
         "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "uuid": true
+        "nanoid": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": {
