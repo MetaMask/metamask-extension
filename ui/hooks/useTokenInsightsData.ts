@@ -6,15 +6,12 @@ import {
 } from '@metamask/bridge-controller';
 import { isCaipChainId, Hex } from '@metamask/utils';
 import { isEvmChainId, toAssetId } from '../../shared/lib/asset-utils';
-import { getMarketData, getTokenList, getCurrencyRates } from '../selectors';
+import { getMarketData, getTokenList } from '../selectors';
 import { getCurrentCurrency } from '../ducks/metamask/metamask';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import { formatCurrency } from '../helpers/utils/confirm-tx.util';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 
-// Exported types
 export type TokenInsightsToken = {
-  address: string | null;
+  address: string;
   symbol: string;
   name?: string;
   chainId: string;
@@ -29,88 +26,35 @@ export type MarketData = {
   dilutedMarketCap?: number;
 };
 
-export type EvmMarketTokenData = {
-  price?: number;
-  pricePercentChange1d?: number;
-  totalVolume?: number;
-  marketCap?: number;
-  dilutedMarketCap?: number;
-  currency?: string;
-};
-
-export type EvmMarketDataState = Record<
-  Hex,
-  Record<string, EvmMarketTokenData>
->;
-
-export type TokenListEntry =
-  | {
-      aggregators?: unknown[];
-    }
-  | undefined;
-
-export type CurrencyRatesMap = Record<string, { conversionRate?: number }>;
-
-export type TokenInsightsData = {
-  // Market data in selected fiat currency
-  priceFiat?: number;
-  formattedPrice: string;
-  pricePercentChange1d: number;
-  volumeFiat?: number;
-  marketCapFiat?: number;
-  // Raw market data (for fallback)
-  marketData: MarketData | null;
-  // Verification status
-  isVerified: boolean;
-  aggregators: unknown[];
-  // Token info
-  isNativeToken: boolean;
-  // Loading states
-  isLoading: boolean;
-  error: string | null;
-  // Data source info
-  hasEvmCache: boolean;
-  baseCurrency?: string;
-};
-
-export const useTokenInsightsData = (
-  token: TokenInsightsToken | null,
-): TokenInsightsData => {
-  const currentCurrency = useSelector(getCurrentCurrency) as string;
+export const useTokenInsightsData = (token: TokenInsightsToken | null) => {
+  const currentCurrency = useSelector(getCurrentCurrency);
   const isEvm = token ? isEvmChainId(token.chainId as Hex) : false;
 
-  // Get selectors data
+  // Check TokenRatesController cache (EVM only)
+  type EvmMarketTokenData = {
+    price?: number;
+    pricePercentChange1d?: number;
+    totalVolume?: number;
+    marketCap?: number;
+    dilutedMarketCap?: number;
+  };
+  type EvmMarketDataState = Record<Hex, Record<string, EvmMarketTokenData>>;
   const marketDataState = useSelector(getMarketData) as
     | EvmMarketDataState
     | undefined;
-  const currencyRates = useSelector(getCurrencyRates) as CurrencyRatesMap;
-  const tokenList = useSelector(getTokenList) as
-    | Record<string, TokenListEntry>
-    | undefined;
-
-  // Check if address is native
-  const isNativeToken = useMemo(() => {
-    if (!token?.address) {
-      return false;
-    }
-    return isNativeAddressFromBridge(token.address);
-  }, [token?.address]);
-
-  // Get EVM market data from cache
   const evmMarketData = useMemo(() => {
     if (!token || !isEvm || !marketDataState) {
       return null;
     }
-    // Use checksum address to match the modal's approach
-    const checksumAddr = toChecksumHexAddress(token.address);
     const chainData = marketDataState[token.chainId as Hex];
-    // Try both checksum and lowercase to ensure we find the data
-    return (
-      chainData?.[checksumAddr] || chainData?.[token.address.toLowerCase()]
-    );
+    return chainData?.[token.address.toLowerCase()];
   }, [token, isEvm, marketDataState]);
 
   // Check token list data for verification status
+  type TokenListEntry = { aggregators?: unknown[] } | undefined;
+  const tokenList = useSelector(getTokenList) as
+    | Record<string, TokenListEntry>
+    | undefined;
   const tokenListData = useMemo(() => {
     if (!token || !tokenList) {
       return null;
@@ -143,7 +87,7 @@ export const useTokenInsightsData = (
           throw new Error('Invalid asset ID');
         }
 
-        const url = `https://price.api.cx.metamask.io/v3/spot-prices?assetIds=${assetId}&includeMarketData=true&vsCurrency=${currentCurrency.toLowerCase()}`;
+        const url = `https://price.api.cx.metamask.io/v3/spot-prices?assetIds=${assetId}&includeMarketData=true&vsCurrency=${(currentCurrency as string).toLowerCase()}`;
 
         const response = await fetchWithCache({
           url,
@@ -180,109 +124,32 @@ export const useTokenInsightsData = (
     fetchMarketData();
   }, [token, evmMarketData, currentCurrency]);
 
-  // Determine base currency for EVM conversion
-  const baseCurrency = useMemo(() => {
-    if (!isEvm) {
-      return undefined;
-    }
-    if (isNativeToken) {
-      return token?.symbol;
-    }
-    return evmMarketData?.currency;
-  }, [isEvm, isNativeToken, token, evmMarketData]);
-
-  const exchangeRate = baseCurrency
-    ? currencyRates?.[baseCurrency]?.conversionRate
-    : undefined;
-
-  // Process and convert all market data
-  const processedData = useMemo(() => {
-    const hasEvmCache = Boolean(isEvm && evmMarketData);
-    let priceFiat: number | undefined;
-    let volumeFiat: number | undefined;
-    let marketCapFiat: number | undefined;
-    let pricePercentChange1d = 0;
-    let marketData: MarketData | null = null;
-
-    if (hasEvmCache) {
-      // Use EVM cache data and convert to fiat
-      if (isNativeToken) {
-        priceFiat = token?.symbol
-          ? currencyRates?.[token.symbol]?.conversionRate
-          : undefined;
-      } else if (
-        exchangeRate !== undefined &&
-        evmMarketData?.price !== undefined &&
-        evmMarketData?.price !== null
-      ) {
-        priceFiat = exchangeRate * Number(evmMarketData.price);
-      }
-
-      if (
-        exchangeRate !== undefined &&
-        evmMarketData?.totalVolume !== undefined &&
-        evmMarketData?.totalVolume !== null
-      ) {
-        volumeFiat = exchangeRate * Number(evmMarketData.totalVolume);
-      }
-
-      const evmMarketCapSource =
-        evmMarketData?.dilutedMarketCap ?? evmMarketData?.marketCap;
-      if (
-        exchangeRate !== undefined &&
-        evmMarketCapSource !== undefined &&
-        evmMarketCapSource !== null
-      ) {
-        marketCapFiat = exchangeRate * Number(evmMarketCapSource);
-      }
-
-      pricePercentChange1d = evmMarketData?.pricePercentChange1d || 0;
-
-      // Build marketData object for consistency
-      marketData = {
-        price: evmMarketData?.price,
-        pricePercentChange1d: evmMarketData?.pricePercentChange1d,
-        totalVolume: evmMarketData?.totalVolume,
-        marketCap: evmMarketData?.marketCap,
-        dilutedMarketCap: evmMarketData?.dilutedMarketCap,
+  // Combine data sources
+  const marketData = useMemo(() => {
+    if (evmMarketData) {
+      return {
+        price: evmMarketData.price,
+        pricePercentChange1d: evmMarketData.pricePercentChange1d,
+        totalVolume: evmMarketData.totalVolume,
+        marketCap: evmMarketData.marketCap,
+        dilutedMarketCap:
+          // Prefer dilutedMarketCap when available to mirror other sources
+          evmMarketData.dilutedMarketCap ?? evmMarketData.marketCap,
       };
-    } else if (apiData) {
-      // Use API data (already in target currency)
-      priceFiat = apiData.price;
-      volumeFiat = apiData.totalVolume;
-      marketCapFiat = apiData.dilutedMarketCap ?? apiData.marketCap;
-      pricePercentChange1d = apiData.pricePercentChange1d || 0;
-      marketData = apiData;
     }
+    return apiData;
+  }, [evmMarketData, apiData]);
 
-    const formattedPrice = priceFiat
-      ? formatCurrency(String(priceFiat), currentCurrency)
-      : '—';
-
-    return {
-      priceFiat,
-      formattedPrice,
-      pricePercentChange1d,
-      volumeFiat,
-      marketCapFiat,
-      marketData,
-      hasEvmCache,
-      baseCurrency,
-    };
-  }, [
-    isEvm,
-    evmMarketData,
-    isNativeToken,
-    token,
-    currencyRates,
-    exchangeRate,
-    apiData,
-    currentCurrency,
-    baseCurrency,
-  ]);
+  // Check if address is native
+  const isNativeToken = useMemo(() => {
+    if (!token?.address) {
+      return false;
+    }
+    return isNativeAddressFromBridge(token.address);
+  }, [token?.address]);
 
   return {
-    ...processedData,
+    marketData,
     isLoading,
     error,
     isVerified: (tokenListData?.aggregators?.length ?? 0) > 0,
