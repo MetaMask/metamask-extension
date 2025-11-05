@@ -379,6 +379,7 @@ class SmartTransactionHook {
               status: SmartTransactionStatuses.PENDING,
               creationTime: Date.now(),
               uuid,
+              chainId: this.#chainId,
             },
             isDapp: this.#isDapp,
             txId: this.#transactionMeta.id,

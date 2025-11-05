@@ -119,8 +119,6 @@ class UnlockPage extends Component {
 
   animationEventEmitter = new EventEmitter();
 
-  passwordLoginAttemptTraceCtx = null;
-
   /**
    * Determines if the current user is in the social import rehydration phase
    *
@@ -148,7 +146,7 @@ class UnlockPage extends Component {
   }
 
   async componentDidMount() {
-    this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace?.({
+    this.context.bufferedTrace?.({
       name: TraceName.OnboardingPasswordLoginAttempt,
       op: TraceOperation.OnboardingUserJourney,
       parentContext: this.props.onboardingParentContext?.current,
@@ -217,12 +215,9 @@ class UnlockPage extends Component {
           isNewVisit: true,
         },
       );
-      if (this.passwordLoginAttemptTraceCtx) {
-        this.context.bufferedEndTrace?.({
-          name: TraceName.OnboardingPasswordLoginAttempt,
-        });
-        this.passwordLoginAttemptTraceCtx = null;
-      }
+      this.context.bufferedEndTrace?.({
+        name: TraceName.OnboardingPasswordLoginAttempt,
+      });
       this.context.bufferedEndTrace?.({
         name: TraceName.OnboardingExistingSocialLogin,
       });
@@ -249,6 +244,14 @@ class UnlockPage extends Component {
     let finalUnlockDelayPeriod = 0;
     let errorReason;
 
+    // Determine error type for rehydration tracking
+    const isIncorrectPasswordError =
+      message === 'Incorrect password' ||
+      message === SeedlessOnboardingControllerErrorMessage.IncorrectPassword;
+    const errorType = isIncorrectPasswordError
+      ? 'incorrect_password'
+      : 'unknown_error';
+
     // Track wallet rehydration failed for social import users (only during rehydration)
     if (isRehydrationFlow) {
       this.context.trackEvent({
@@ -257,6 +260,7 @@ class UnlockPage extends Component {
         properties: {
           account_type: 'social',
           failed_attempts: this.failed_attempts,
+          error_type: errorType,
         },
       });
     }
