@@ -1,6 +1,5 @@
 import Timers, { Timer } from './Timers';
 
-
 class TimerHelper {
   private _id: string;
 
