@@ -13,7 +13,7 @@ export function canonicalize(url: URL): string {
 
   const sigParams = url.searchParams.get(SIG_PARAMS_PARAM);
 
-  if (sigParams) {
+  if (typeof sigParams === 'string') {
     const allowedParams = sigParams.split(',');
     const signedParams = new URLSearchParams();
 

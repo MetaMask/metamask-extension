@@ -38,10 +38,8 @@ export async function signDeepLink(
   if (withSigParams) {
     const sigParams = [...new Set(signedUrl.searchParams.keys())];
 
-    if (sigParams.length) {
-      signedUrl.searchParams.append(SIG_PARAMS_PARAM, sigParams.join(','));
-      signedUrl.searchParams.sort();
-    }
+    signedUrl.searchParams.append(SIG_PARAMS_PARAM, sigParams.join(','));
+    signedUrl.searchParams.sort();
   }
 
   const signed = await crypto.subtle.sign(
