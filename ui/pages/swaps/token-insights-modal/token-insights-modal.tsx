@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
 import {
   Modal,
   ModalOverlay,
@@ -30,8 +29,6 @@ import {
   TokenInsightsToken,
 } from '../../../hooks/useTokenInsightsData';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { getCurrencyRates, getMarketData } from '../../../selectors/selectors';
-import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import {
   formatPercentage,
   formatCompactCurrency,
@@ -42,8 +39,6 @@ import {
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Spinner from '../../../components/ui/spinner';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 type TokenInsightsModalProps = {
   isOpen: boolean;
@@ -85,21 +80,18 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = React.useContext(MetaMetricsContext);
-  const currentCurrency = useSelector(getCurrentCurrency);
+  const currentCurrency = useSelector(getCurrentCurrency) as string;
   const dialogRef = React.useRef<HTMLElement | null>(null);
-  type CurrencyRatesMap = Record<string, { conversionRate?: number }>;
-  const currencyRates = useSelector(getCurrencyRates) as CurrencyRatesMap;
-  type EvmMarketTokenData = {
-    price?: number;
-    currency?: string;
-    totalVolume?: number;
-    marketCap?: number;
-    dilutedMarketCap?: number;
-  };
-  type EvmMarketDataState = Record<string, Record<string, EvmMarketTokenData>>;
-  const evmMarketDataState = useSelector(getMarketData) as EvmMarketDataState;
 
-  const { marketData, isLoading, isNativeToken } = useTokenInsightsData(token);
+  // Use the enhanced hook that handles all data fetching and conversion
+  const {
+    formattedPrice,
+    pricePercentChange1d,
+    volumeFiat,
+    marketCapFiat,
+    isLoading,
+    marketData,
+  } = useTokenInsightsData(token);
 
   // Track modal open
   useEffect(() => {
@@ -144,98 +136,6 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
       );
     };
   }, [isOpen, onClose]);
-
-  // Determine EVM/native context and source market data
-  const isEvm = Boolean(token && isEvmChainId(token.chainId as Hex));
-  const evmTokenData = useMemo(() => {
-    if (!token || !isEvm) {
-      return null;
-    }
-    const addr = toChecksumHexAddress(token.address);
-    return evmMarketDataState?.[token.chainId as Hex]?.[addr] || null;
-  }, [token, isEvm, evmMarketDataState]);
-
-  const hasEvmCache = Boolean(isEvm && evmTokenData);
-
-  const baseCurrency: string | undefined = useMemo(() => {
-    if (!isEvm) {
-      return undefined;
-    }
-    if (isNativeToken) {
-      return token?.symbol;
-    }
-    return evmTokenData?.currency;
-  }, [isEvm, isNativeToken, token, evmTokenData]);
-
-  const exchangeRate = baseCurrency
-    ? currencyRates?.[baseCurrency]?.conversionRate
-    : undefined;
-
-  // Extract and convert market data to selected fiat currency for EVM
-  const priceChange24h = marketData?.pricePercentChange1d || 0;
-
-  const priceFiat: number | undefined = useMemo(() => {
-    if (!isEvm || !hasEvmCache) {
-      return marketData?.price;
-    }
-    if (isNativeToken) {
-      return token?.symbol
-        ? currencyRates?.[token.symbol]?.conversionRate
-        : undefined;
-    }
-    if (
-      exchangeRate !== undefined &&
-      evmTokenData?.price !== undefined &&
-      evmTokenData?.price !== null
-    ) {
-      return exchangeRate * Number(evmTokenData.price);
-    }
-    return undefined;
-  }, [
-    isEvm,
-    hasEvmCache,
-    isNativeToken,
-    marketData?.price,
-    currencyRates,
-    token,
-    exchangeRate,
-    evmTokenData,
-  ]);
-
-  const volumeFiat: number | undefined = useMemo(() => {
-    if (!isEvm || !hasEvmCache) {
-      return marketData?.totalVolume;
-    }
-    const vol = evmTokenData?.totalVolume;
-    if (exchangeRate !== undefined && vol !== undefined && vol !== null) {
-      return exchangeRate * Number(vol);
-    }
-    return undefined;
-  }, [isEvm, hasEvmCache, marketData?.totalVolume, evmTokenData, exchangeRate]);
-
-  const marketCapSource = marketData?.dilutedMarketCap ?? marketData?.marketCap;
-  const evmMarketCapSource =
-    evmTokenData?.dilutedMarketCap ?? evmTokenData?.marketCap;
-  const marketCapFiat: number | undefined = useMemo(() => {
-    if (!isEvm || !hasEvmCache) {
-      return marketCapSource as number | undefined;
-    }
-    if (
-      exchangeRate !== undefined &&
-      evmMarketCapSource !== undefined &&
-      evmMarketCapSource !== null
-    ) {
-      return exchangeRate * Number(evmMarketCapSource);
-    }
-    return undefined;
-  }, [isEvm, hasEvmCache, marketCapSource, evmMarketCapSource, exchangeRate]);
-
-  const formattedPrice = useMemo(() => {
-    if (!priceFiat) {
-      return '—';
-    }
-    return formatCurrency(String(priceFiat), currentCurrency as string);
-  }, [priceFiat, currentCurrency]);
 
   const handleCopyAddress = useCallback(() => {
     if (token) {
@@ -329,15 +229,15 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
                   alignItems={AlignItems.center}
                   gap={1}
                 >
-                  {priceChange24h !== 0 && (
+                  {pricePercentChange1d !== 0 && (
                     <Icon
                       name={
-                        priceChange24h > 0
+                        pricePercentChange1d > 0
                           ? IconName.Arrow2Up
                           : IconName.Arrow2Down
                       }
                       color={
-                        priceChange24h > 0
+                        pricePercentChange1d > 0
                           ? IconColor.successDefault
                           : IconColor.errorDefault
                       }
@@ -346,9 +246,9 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
                   )}
                   <Text
                     variant={TextVariant.bodyMd}
-                    color={getPriceChangeColor(priceChange24h)}
+                    color={getPriceChangeColor(pricePercentChange1d)}
                   >
-                    {formatPercentage(priceChange24h)}
+                    {formatPercentage(pricePercentChange1d)}
                   </Text>
                 </Box>
               }
@@ -359,7 +259,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
               label={t('volume')}
               value={
                 <Text variant={TextVariant.bodyMd}>
-                  {formatCompactCurrency(volumeFiat, currentCurrency as string)}
+                  {formatCompactCurrency(volumeFiat, currentCurrency)}
                 </Text>
               }
               data-testid="token-volume"
@@ -369,10 +269,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
               label={t('marketCapFDV')}
               value={
                 <Text variant={TextVariant.bodyMd}>
-                  {formatCompactCurrency(
-                    marketCapFiat,
-                    currentCurrency as string,
-                  )}
+                  {formatCompactCurrency(marketCapFiat, currentCurrency)}
                 </Text>
               }
               data-testid="token-market-cap"

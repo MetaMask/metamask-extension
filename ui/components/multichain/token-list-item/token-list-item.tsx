@@ -425,7 +425,7 @@ export const TokenListItemComponent = ({
         </Modal>
       ) : null}
 
-      {showTokenInsights && address && (
+      {showTokenInsights && (
         <TokenInsightsModal
           isOpen={showTokenInsights}
           onClose={() => setShowTokenInsights(false)}
