@@ -126,8 +126,6 @@ class UnlockPage extends Component {
 
   animationEventEmitter = new EventEmitter();
 
-  passwordLoginAttemptTraceCtx = null;
-
   /**
    * Determines if the current user is in the social import rehydration phase
    *
@@ -155,16 +153,13 @@ class UnlockPage extends Component {
   }
 
   async componentDidMount() {
-    this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace?.({
-      name: TraceName.OnboardingPasswordLoginAttempt,
-      op: TraceOperation.OnboardingUserJourney,
-      parentContext: this.props.onboardingParentContext?.current,
-    });
-
-    try {
-      await this.props.checkIsSeedlessPasswordOutdated();
-    } catch (error) {
-      log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
+    const { isOnboardingCompleted } = this.props;
+    if (isOnboardingCompleted) {
+      try {
+        await this.props.checkIsSeedlessPasswordOutdated();
+      } catch (error) {
+        log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
+      }
     }
   }
 
@@ -173,7 +168,7 @@ class UnlockPage extends Component {
     event.stopPropagation();
 
     const { password, isSubmitting } = this.state;
-    const { onSubmit } = this.props;
+    const { onSubmit, isOnboardingCompleted } = this.props;
 
     if (password === '' || isSubmitting) {
       return;
@@ -194,6 +189,12 @@ class UnlockPage extends Component {
           biometrics: false,
         },
       });
+    } else if (!isOnboardingCompleted) {
+      this.context.bufferedTrace?.({
+        name: TraceName.OnboardingPasswordLoginAttempt,
+        op: TraceOperation.OnboardingUserJourney,
+        parentContext: this.props.onboardingParentContext?.current,
+      });
     }
 
     try {
@@ -210,6 +211,18 @@ class UnlockPage extends Component {
             failed_attempts: this.failed_attempts,
           },
         });
+        this.context.bufferedEndTrace?.({
+          name: TraceName.OnboardingExistingSocialLogin,
+        });
+      }
+
+      if (!isOnboardingCompleted) {
+        this.context.bufferedEndTrace?.({
+          name: TraceName.OnboardingPasswordLoginAttempt,
+        });
+        this.context.bufferedEndTrace?.({
+          name: TraceName.OnboardingJourneyOverall,
+        });
       }
 
       this.context.trackEvent(
@@ -224,18 +237,6 @@ class UnlockPage extends Component {
           isNewVisit: true,
         },
       );
-      if (this.passwordLoginAttemptTraceCtx) {
-        this.context.bufferedEndTrace?.({
-          name: TraceName.OnboardingPasswordLoginAttempt,
-        });
-        this.passwordLoginAttemptTraceCtx = null;
-      }
-      this.context.bufferedEndTrace?.({
-        name: TraceName.OnboardingExistingSocialLogin,
-      });
-      this.context.bufferedEndTrace?.({
-        name: TraceName.OnboardingJourneyOverall,
-      });
     } catch (error) {
       await this.handleLoginError(error, isRehydrationFlow);
     } finally {
@@ -259,7 +260,7 @@ class UnlockPage extends Component {
     let shouldShowLoginErrorModal = false;
 
     // Check if we are in the onboarding flow
-    if (this.props.onboardingParentContext?.current) {
+    if (!isOnboardingCompleted) {
       this.context.bufferedTrace?.({
         name: TraceName.OnboardingPasswordLoginError,
         op: TraceOperation.OnboardingError,
