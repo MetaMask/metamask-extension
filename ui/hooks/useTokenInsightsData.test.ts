@@ -9,6 +9,10 @@ import { isEvmChainId, toAssetId } from '../../shared/lib/asset-utils';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { formatCompactCurrency } from '../helpers/utils/token-insights';
+import {
+  useTokenInsightsData,
+  TokenInsightsToken,
+} from './useTokenInsightsData';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -25,11 +29,6 @@ jest.mock('../ducks/metamask/metamask', () => ({
 jest.mock('../selectors/selectors', () => ({
   getCurrencyRates: jest.fn((state) => state.currencyRates),
 }));
-
-import {
-  useTokenInsightsData,
-  TokenInsightsToken,
-} from './useTokenInsightsData';
 
 jest.mock('@metamask/bridge-controller', () => ({
   formatChainIdToCaip: jest.fn(),
@@ -101,9 +100,11 @@ describe('useTokenInsightsData', () => {
     mockToAssetId.mockReturnValue(
       'eip155:1/erc20:0x1234567890123456789012345678901234567890',
     );
-    mockFormatCurrency.mockImplementation((value, currency) => `$${value}`);
-    mockFormatCompactCurrency.mockImplementation((value, currency) => {
-      if (!value) return '—';
+    mockFormatCurrency.mockImplementation((value) => `$${value}`);
+    mockFormatCompactCurrency.mockImplementation((value) => {
+      if (!value) {
+        return '—';
+      }
       return `$${(value / 1000000).toFixed(2)}M`;
     });
   });

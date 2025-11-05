@@ -140,7 +140,9 @@ describe('TokenInsightsModal', () => {
     it('should show contract address when shouldShowContractAddress returns true', () => {
       renderComponent();
       expect(screen.getByTestId('token-contract-address')).toBeInTheDocument();
-      expect(screen.getByTestId('address-copy-button')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('address-copy-button-text'),
+      ).toBeInTheDocument();
     });
 
     it('should hide contract address when shouldShowContractAddress returns false', () => {
@@ -155,7 +157,7 @@ describe('TokenInsightsModal', () => {
 
     it('should track event when copying contract address', () => {
       renderComponent();
-      const copyButton = screen.getByTestId('address-copy-button');
+      const copyButton = screen.getByTestId('address-copy-button-text');
       fireEvent.click(copyButton);
 
       expect(mockTrackEvent).toHaveBeenCalledWith({
