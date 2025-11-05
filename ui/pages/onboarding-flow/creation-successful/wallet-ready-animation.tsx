@@ -56,7 +56,7 @@ export default function WalletReadyAnimation() {
 
   // Trigger the animation start when rive is loaded
   useEffect(() => {
-    if (rive && isWasmReady && !bufferLoading) {
+    if (rive && isWasmReady && !bufferLoading && buffer) {
       console.log('rive is loaded', rive);
       const inputs = rive.stateMachineInputs('OnboardingLoader');
       if (inputs) {
@@ -76,11 +76,13 @@ export default function WalletReadyAnimation() {
         rive.play();
       }
     }
-  }, [rive, theme, isWasmReady, bufferLoading]);
+  }, [rive, theme, isWasmReady, bufferLoading, buffer]);
 
-  // Don't render Rive component until WASM is ready to avoid "source file required" error
+  // Don't render Rive component until WASM and buffer are ready to avoid errors
   if (
     !isWasmReady ||
+    bufferLoading ||
+    !buffer ||
     status === 'loading' ||
     isTestEnvironment ||
     status === 'failed'

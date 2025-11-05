@@ -66,7 +66,7 @@ export default function FoxAppearAnimation({
 
   // Trigger the animation start when rive is loaded and WASM is ready
   useEffect(() => {
-    if (rive && isWasmReady && !bufferLoading) {
+    if (rive && isWasmReady && !bufferLoading && buffer) {
       // Get the state machine inputs
       const inputs = rive.stateMachineInputs('FoxRaiseUp');
 
@@ -100,11 +100,13 @@ export default function FoxAppearAnimation({
         rive.play();
       }
     }
-  }, [rive, isLoader, isWasmReady, skipTransition, bufferLoading]);
+  }, [rive, isLoader, isWasmReady, skipTransition, bufferLoading, buffer]);
 
   // Don't render Rive component until ready or if loading/failed
   if (
     !isWasmReady ||
+    bufferLoading ||
+    !buffer ||
     status === 'loading' ||
     status === 'failed' ||
     isTestEnvironment

@@ -90,7 +90,7 @@ export default function MetamaskWordMarkAnimation({
 
   // Trigger the animation start when rive is loaded and WASM is ready
   useEffect(() => {
-    if (rive && isWasmReady && !bufferLoading) {
+    if (rive && isWasmReady && !bufferLoading && buffer) {
       // Get the state machine inputs
       const inputs = rive.stateMachineInputs('WordmarkBuildUp');
 
@@ -124,11 +124,13 @@ export default function MetamaskWordMarkAnimation({
         clearTimeout(animationTimeoutRef.current);
       }
     };
-  }, [rive, theme, isWasmReady, skipTransition, bufferLoading]);
+  }, [rive, theme, isWasmReady, skipTransition, bufferLoading, buffer]);
 
   // Don't render Rive component until ready or if loading/failed
   if (
     !isWasmReady ||
+    bufferLoading ||
+    !buffer ||
     isTestEnvironment ||
     status === 'loading' ||
     status === 'failed'
