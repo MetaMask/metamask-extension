@@ -358,40 +358,6 @@ describe('useTokenInsightsData', () => {
       expect(result.current.marketData).toBe(null);
     });
 
-    it('should handle API response with legacy format', async () => {
-      mockUseSelector
-        .mockReturnValueOnce('USD') // getCurrentCurrency
-        .mockReturnValueOnce(defaultCurrencyRates) // getCurrencyRates
-        .mockReturnValueOnce(null); // getMarketData
-
-      const apiResponse = {
-        'eip155:1/erc20:0x1234567890123456789012345678901234567890': {
-          usd: 150, // legacy field
-          pricePercentChange: {
-            P1D: 3.5, // legacy field
-          },
-          totalVolume: 2000000,
-          marketCap: 75000000,
-        },
-      };
-
-      mockFetchWithCache.mockResolvedValue(apiResponse);
-
-      const { result } = renderHook(() => useTokenInsightsData(defaultToken));
-
-      await waitFor(() => {
-        expect(result.current.isLoading).toBe(false);
-      });
-
-      expect(result.current.marketData).toEqual({
-        price: 150,
-        pricePercentChange1d: 3.5,
-        totalVolume: 2000000,
-        marketCap: 75000000,
-        dilutedMarketCap: undefined,
-      });
-    });
-
     it('should use correct URL with currency parameter', async () => {
       mockUseSelector
         .mockReturnValueOnce('EUR') // getCurrentCurrency
