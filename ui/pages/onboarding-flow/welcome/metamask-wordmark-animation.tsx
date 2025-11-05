@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   useRive,
   useRiveFile,
@@ -28,7 +28,9 @@ export default function MetamaskWordMarkAnimation({
   const theme = useTheme();
   const isTestEnvironment = Boolean(process.env.IN_TEST);
   const { isWasmReady, error: wasmError } = useRiveWasmReady();
-  const { buffer, error: bufferError } = useRiveWasmFile('./images/riv_animations/metamask_wordmark.riv');
+  const { buffer, error: bufferError } = useRiveWasmFile(
+    './images/riv_animations/metamask_wordmark.riv',
+  );
 
   useEffect(() => {
     if (wasmError) {

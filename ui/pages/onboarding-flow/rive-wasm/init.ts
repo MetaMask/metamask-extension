@@ -3,7 +3,7 @@
  * This module ensures WASM is loaded once and can be used by multiple animation components
  */
 import { RuntimeLoader } from '@rive-app/react-canvas';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAsyncResult } from '../../../hooks/useAsync';
 
 // WASM file URL - the file is copied to dist/chrome/images/ by the build process
@@ -16,18 +16,12 @@ export const useRiveWasmReady = () => {
 
   // Check if WASM is ready (initialized in parent OnboardingFlow)
 
-  if (isTestEnvironment) {
-    setIsWasmReady(true);
-    return { isWasmReady: true, loading: false, error: undefined };
-  }
-
-  if (typeof RuntimeLoader === 'undefined') {
-    console.warn('[Rive] RuntimeLoader not available');
-    setIsWasmReady(true);
-    return { isWasmReady: true, loading: false, error: undefined };
-  }
-
   const result = useAsyncResult(async () => {
+    if (isTestEnvironment || typeof RuntimeLoader === 'undefined') {
+      setIsWasmReady(true);
+      return true;
+    }
+
     if (isWasmReady) {
       return true;
     }
@@ -43,6 +37,7 @@ export const useRiveWasmReady = () => {
     // Preload the WASM
     await RuntimeLoader.awaitInstance();
     setIsWasmReady(true);
+    return true;
   }, []);
 
   return {
@@ -56,13 +51,12 @@ export const useRiveWasmFile = (url: string) => {
   const [buffer, setBuffer] = useState<ArrayBuffer | undefined>(undefined);
   const { isWasmReady } = useRiveWasmReady();
 
-  if (!isWasmReady) {
-    return { buffer: undefined, loading: true, error: undefined };
-  }
-
   const result = useAsyncResult(async () => {
     if (!isWasmReady) {
-      return;
+      return undefined;
+    }
+    if (buffer) {
+      return buffer;
     }
     const response = await fetch(url);
     if (!response.ok) {
@@ -70,6 +64,7 @@ export const useRiveWasmFile = (url: string) => {
     }
     const arrayBuffer = await response.arrayBuffer();
     setBuffer(arrayBuffer);
+    return arrayBuffer;
   }, [isWasmReady, url]);
 
   return { buffer, loading: result.pending, error: result.error };
