@@ -322,7 +322,7 @@
     "@metamask/message-signing-snap": "1.1.3",
     "@metamask/messenger": "^0.3.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
-    "@metamask/multichain-account-service": "^2.0.0",
+    "@metamask/multichain-account-service": "^2.1.0",
     "@metamask/multichain-api-client": "^0.7.0",
     "@metamask/multichain-api-middleware": "^1.2.4",
     "@metamask/multichain-network-controller": "^2.0.0",
@@ -446,8 +446,7 @@
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
-    "xml2js": "^0.6.2",
-    "yarn.lock": "^0.0.1-security"
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@actions/core": "^1.10.0",
@@ -720,8 +719,8 @@
     "yargs-parser": "^21.1.1"
   },
   "engines": {
-    "node": ">=20.12.0 <20.15.0 || >=20.17.0",
-    "yarn": "^4.9.1"
+    "node": ">=24.11.0",
+    "yarn": "^4.10.3"
   },
   "lavamoat": {
     "allowScripts": {
