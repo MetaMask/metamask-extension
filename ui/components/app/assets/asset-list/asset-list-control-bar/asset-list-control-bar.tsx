@@ -274,12 +274,8 @@ const AssetListControlBar = ({
   };
 
   const handleRefresh = () => {
-    dispatch(detectTokens());
+    dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
     closePopover();
-    trackEvent({
-      category: MetaMetricsEventCategory.Tokens,
-      event: MetaMetricsEventName.TokenListRefreshed,
-    });
   };
 
   const onEnableAutoDetect = () => {

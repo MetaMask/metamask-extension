@@ -2463,10 +2463,6 @@
   "from": {
     "message": "移動元"
   },
-  "fromAddress": {
-    "message": "移動元: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "トークンリストから: $1"
   },
@@ -2757,32 +2753,11 @@
   "importNFTTokenIdToolTip": {
     "message": "NFTのIDは一意の識別子で、同じNFTは2つとして存在しません。前述の通り、OpenSeaではこの番号は「詳細」に表示されます。このIDを書き留めるか、クリップボードにコピーしてください。"
   },
-  "importNWordSRP": {
-    "message": "$1単語のリカバリーフレーズがあります",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "秘密鍵"
   },
-  "importSRPDescription": {
-    "message": "12単語または24単語のシークレットリカバリーフレーズを使用して、既存のウォレットをインポートします。"
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "シークレットリカバリーフレーズは、12単語または24単語で構成されています"
-  },
-  "importSRPWordError": {
-    "message": "単語「$1」が正しくないか、スペルが違います。",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "単語「$1」と「$2」が正しくないか、スペルが違います。",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズをインポート"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "不明なエラーが発生しました。"
   },
   "importSelectedTokens": {
     "message": "選択したトークンをインポートしますか？"
@@ -2801,9 +2776,6 @@
   },
   "importTokensError": {
     "message": "トークンをインポートできませんでした。後ほど再度お試しください。"
-  },
-  "importWallet": {
-    "message": "ウォレットをインポート"
   },
   "importWalletOrAccountHeader": {
     "message": "ウォレットまたはアカウントのインポート"
@@ -6598,10 +6570,6 @@
   },
   "to": {
     "message": "移動先"
-  },
-  "toAddress": {
-    "message": "移動先: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "当社は4byte.directoryとSourcifyサービスを使用してトランザクションデータを解読し、より読みやすい形で表示しています。これにより、保留中および過去のトランザクションの結果を理解しやすくなりますが、IPアドレスが共有される可能性があります。"

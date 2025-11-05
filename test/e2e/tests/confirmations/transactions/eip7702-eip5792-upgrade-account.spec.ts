@@ -16,7 +16,7 @@ describe('Upgrade Account', function (this: Suite) {
   it('an EOA account can be upgraded when triggering a batch tx from a dapp in an odd chain id', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -99,7 +99,7 @@ describe('Upgrade Account', function (this: Suite) {
   it('an EOA account is not upgraded when rejecting a batch transaction, but can trigger a new send call', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

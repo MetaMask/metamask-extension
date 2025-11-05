@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
@@ -13,6 +13,7 @@ import {
   getCurrencyRates,
   getUseCurrencyRateCheck,
   useSafeChainsListValidationSelector,
+  getEnabledNetworksByNamespace,
 } from '../../../../selectors';
 import {
   getMultichainCurrentChainId,
@@ -44,6 +45,14 @@ jest.mock('../../../../hooks/useTokenFiatAmount', () => {
 jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => {
   return {
     useIsOriginalTokenSymbol: jest.fn(),
+  };
+});
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -186,6 +195,11 @@ describe('Token Cell', () => {
     }
     if (selector === useSafeChainsListValidationSelector) {
       return true;
+    }
+    if (selector === getEnabledNetworksByNamespace) {
+      return {
+        '0x1': true,
+      };
     }
     return undefined;
   });

@@ -64,7 +64,11 @@ export const NetworkRow = ({
           name={networkName}
           style={{ borderWidth: 0 }}
         />
-        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+        <Text
+          variant={TextVariant.bodyMd}
+          color={TextColor.textDefault}
+          data-testid="confirmation__details-network-name"
+        >
           {networkName}
         </Text>
       </Box>

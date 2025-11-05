@@ -1,8 +1,8 @@
-import {
+import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  Messenger,
 } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import type {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
@@ -15,15 +15,21 @@ import {
 import {
   AccountTrackerUpdateNativeBalancesAction,
   AccountTrackerUpdateStakedBalancesAction,
+  AccountTrackerControllerGetStateAction,
   TokensControllerState,
+  type TokenDetectionControllerAddDetectedTokensViaWsAction,
 } from '@metamask/assets-controllers';
 import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import { AccountTrackerControllerGetStateAction } from '../../controllers/account-tracker-controller';
+import type {
+  AccountActivityServiceStatusChangedEvent,
+  AccountActivityServiceBalanceUpdatedEvent,
+} from '@metamask/core-backend';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../controllers/preferences-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 // Not exported from `@metamask/assets-controllers`.
 type TokensControllerGetStateAction = ControllerGetStateAction<
@@ -45,13 +51,16 @@ type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetStateAction
   | PreferencesControllerGetStateAction
-  | TokensControllerGetStateAction;
+  | TokensControllerGetStateAction
+  | TokenDetectionControllerAddDetectedTokensViaWsAction;
 
 type AllowedEvents =
   | KeyringControllerAccountRemovedEvent
   | NetworkControllerStateChangeEvent
   | PreferencesControllerStateChangeEvent
-  | TokensControllerStateChangeEvent;
+  | TokensControllerStateChangeEvent
+  | AccountActivityServiceStatusChangedEvent
+  | AccountActivityServiceBalanceUpdatedEvent;
 
 export type TokenBalancesControllerMessenger = ReturnType<
   typeof getTokenBalancesControllerMessenger
@@ -65,11 +74,20 @@ export type TokenBalancesControllerMessenger = ReturnType<
  * messenger.
  */
 export function getTokenBalancesControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'TokenBalancesController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'TokenBalancesController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'TokenBalancesController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'TokensController:getState',
@@ -79,14 +97,18 @@ export function getTokenBalancesControllerMessenger(
       'AccountTrackerController:getState',
       'AccountTrackerController:updateNativeBalances',
       'AccountTrackerController:updateStakedBalances',
+      'TokenDetectionController:addDetectedTokensViaWs',
     ],
-    allowedEvents: [
+    events: [
       'PreferencesController:stateChange',
       'TokensController:stateChange',
       'NetworkController:stateChange',
       'KeyringController:accountRemoved',
+      'AccountActivityService:statusChanged',
+      'AccountActivityService:balanceUpdated',
     ],
   });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions =
@@ -104,14 +126,23 @@ export type TokenBalancesControllerInitMessenger = ReturnType<
  * @param messenger
  */
 export function getTokenBalancesControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'TokenBalancesControllerInit',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'TokenBalancesControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'TokenBalancesControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
     ],
-    allowedEvents: [],
   });
+  return controllerInitMessenger;
 }

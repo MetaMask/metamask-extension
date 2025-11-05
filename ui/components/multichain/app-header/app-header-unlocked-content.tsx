@@ -12,6 +12,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom-v5-compat';
 import {
+  Icon,
+  IconName as IconNameDesignSystem,
+  IconSize as IconSizeDesignSystem,
+  IconColor as IconColorDesignSystem,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   BlockSize,
@@ -57,7 +63,10 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
@@ -112,8 +121,8 @@ export const AppHeaderUnlockedContent = ({
     internalAccount &&
     shortenAddress(normalizeSafeAddress(internalAccount.address));
   const accountName = isMultichainAccountsState2Enabled
-    ? selectedMultichainAccount.metadata.name
-    : internalAccount.metadata.name;
+    ? (selectedMultichainAccount?.metadata.name ?? '')
+    : (internalAccount?.metadata.name ?? '');
 
   // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
@@ -144,7 +153,8 @@ export const AppHeaderUnlockedContent = ({
   }, [copied, dispatch]);
 
   const showConnectedStatus =
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+    (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) &&
     origin &&
     origin !== browser.runtime.id;
 
@@ -246,19 +256,33 @@ export const AppHeaderUnlockedContent = ({
           />
           <>{!isMultichainAccountsState2Enabled && CopyButton}</>
         </Text>
-        <Link
-          to={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`}
-          data-testid="networks-subtitle-test-id"
-        >
-          <Text
-            className="networks-subtitle"
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyXsMedium}
-            paddingInline={2}
+        {selectedMultichainAccountId && (
+          <Link
+            to={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`}
+            data-testid="networks-subtitle-test-id"
           >
-            {networksLabel}
-          </Text>
-        </Link>
+            <Box
+              display={Display.Flex}
+              className="networks-subtitle"
+              alignItems={AlignItems.center}
+              gap={1}
+              paddingInline={2}
+            >
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyXsMedium}
+              >
+                {networksLabel}
+              </Text>
+              <Icon
+                name={IconNameDesignSystem.Copy}
+                size={IconSizeDesignSystem.Xs}
+                color={IconColorDesignSystem.IconAlternative}
+                data-testid="copy-network-addresses-icon"
+              />
+            </Box>
+          </Link>
+        )}
       </Box>
     );
   }, [
@@ -286,7 +310,9 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         <div ref={tourAnchorRef} className="flex">
-          <PreferredAvatar address={internalAccount.address} />
+          {internalAccount && (
+            <PreferredAvatar address={internalAccount.address} />
+          )}
         </div>
 
         {internalAccount && (

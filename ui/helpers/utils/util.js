@@ -332,18 +332,6 @@ export function sortSelectedInternalAccounts(accounts) {
 
 /**
  * Strips the following schemes from URL strings:
- * - http
- * - https
- *
- * @param {string} urlString - The URL string to strip the scheme from.
- * @returns {string} The URL string, without the scheme, if it was stripped.
- */
-export function stripHttpSchemes(urlString) {
-  return urlString.replace(/^https?:\/\//u, '');
-}
-
-/**
- * Strips the following schemes from URL strings:
  * - https
  *
  * @param {string} urlString - The URL string to strip the scheme from.
@@ -704,26 +692,28 @@ export const getDedupedSnaps = (request, permissions) => {
 
 export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 
-const REGEX_LTR_OVERRIDE = /\u202D/giu;
-const REGEX_RTL_OVERRIDE = /\u202E/giu;
-
 /**
- * The method escapes LTR and RTL override unicode in the string
+ * Escapes bidirectional and invisible Unicode control characters in a string.
+ * Prevents text direction manipulation attacks by making hidden characters visible.
+ * This is critical for user safety when signing transactions or messages.
  *
- * @param {*} value
- * @returns {(string|*)} escaped string or original param value
+ * @param {*} value - Input value to sanitize
+ * @returns {string|*} Escaped string or original value if not a string
+ * @example
+ * sanitizeString('Send 100\u200F0 ETH'); // Returns: 'Send 100\u200F0 ETH'
  */
 export const sanitizeString = (value) => {
-  if (!value) {
-    return value;
-  }
-  if (!lodash.isString(value)) {
+  if (!value || !lodash.isString(value)) {
     return value;
   }
 
-  return value
-    .replace(REGEX_LTR_OVERRIDE, '\\u202D')
-    .replace(REGEX_RTL_OVERRIDE, '\\u202E');
+  // Escape all Unicode Format characters (includes bidi controls and zero-width chars)
+  const INVISIBLE_CHARS = /\p{Cf}/gu;
+
+  return value.replace(INVISIBLE_CHARS, (char) => {
+    const hex = char.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
+    return `\\u${hex}`;
+  });
 };
 
 /**

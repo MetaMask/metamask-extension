@@ -17,30 +17,11 @@ import { MOCK_META_METRICS_ID } from '../../constants';
  */
 async function mockSegment(mockServer: Mockttp) {
   return [
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Wallet Setup Started' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
+    // Wallet Setup Started event is omitted because of the onboarding fixture eventsBeforeMetricsOptIn
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
         batch: [{ type: 'track', event: 'Wallet Created' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'nft_autodetection_enabled' }],
       })
       .thenCallback(() => {
         return {
@@ -73,32 +54,19 @@ describe('Nft detection event', function () {
           participateInMetaMetrics: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 2);
+        assert.equal(events.length, 1);
         assert.deepStrictEqual(events[0].properties, {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'metamask',
-          category: 'Onboarding',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x539',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'fullscreen',
-        });
-        assert.deepStrictEqual(events[1].properties, {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           biometrics_enabled: false,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'metamask',
           category: 'Onboarding',
           locale: 'en',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x539',
+          chain_id: '0x1',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',

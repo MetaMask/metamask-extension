@@ -54,9 +54,6 @@ const maskedBackgroundFields = [
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
 const removedBackgroundFields = [
-  // This property is timing-dependent
-  'AccountTracker.currentBlockGasLimit',
-  'AccountTracker.currentBlockGasLimitByChainId',
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
@@ -725,7 +722,7 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await loginWithBalanceValidation(driver);
 
-          await driver.delay(2000);
+          await driver.delay(3000);
           // Trigger error
           await driver.executeScript(
             'window.stateHooks.throwTestBackgroundError()',
@@ -831,7 +828,7 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await loginWithBalanceValidation(driver);
 
-          await driver.delay(2000);
+          await driver.delay(3000);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -904,6 +901,7 @@ describe('Sentry errors', function () {
       balances: false,
       accountsAssets: false,
       assetsMetadata: false,
+      allIgnoredAssets: false,
       assetsRates: false,
       smartTransactionsState: {
         fees: {

@@ -20,6 +20,7 @@ import {
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
@@ -47,19 +48,29 @@ export const EditGasFeesRow = ({
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
-  const { chainId, isGasFeeSponsored, simulationData } = transactionMeta;
+  const {
+    chainId,
+    isGasFeeSponsored: doesSentinelAllowSponsorship,
+    simulationData,
+  } = transactionMeta;
   const gasFeeToken = useSelectedGasFeeToken();
   const showFiat = useShowFiat(chainId);
   const fiatValue = gasFeeToken ? gasFeeToken.amountFiat : fiatFee;
   const tokenValue = gasFeeToken ? gasFeeToken.amountFormatted : nativeFee;
   const metamaskFeeFiat = gasFeeToken?.metamaskFeeFiat;
 
-  const tooltip = gasFeeToken
-    ? t('confirmGasFeeTokenTooltip', [metamaskFeeFiat])
-    : t('estimatedFeeTooltip');
+  const tooltip =
+    gasFeeToken?.metaMaskFee && gasFeeToken.metaMaskFee !== '0x0'
+      ? t('confirmGasFeeTokenTooltip', [metamaskFeeFiat])
+      : t('estimatedFeeTooltip');
 
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const isLoadingGasUsed = !simulationData || balanceChangesResult.pending;
+
+  // This prevents the gas fee row from showing as sponsored if stx is disabled
+  // by the user and 7702 is not supported in the chain.
+  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
+  const isGasFeeSponsored = isGaslessSupported && doesSentinelAllowSponsorship;
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
@@ -122,7 +133,7 @@ export const EditGasFeesRow = ({
               color={TextColor.textAlternative}
               paddingBottom={gasFeeToken ? 2 : 0}
             >
-              {gasFeeToken
+              {gasFeeToken?.metaMaskFee && gasFeeToken?.metaMaskFee !== '0x0'
                 ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
                 : ' '}
             </Text>
