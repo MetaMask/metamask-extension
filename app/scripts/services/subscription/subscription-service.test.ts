@@ -296,7 +296,7 @@ describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
     expect(mockSubmitSponsorshipIntents).not.toHaveBeenCalled();
   });
 
-  it('should fetch swaps feature flags if not available', async () => {
+  it.only('should fetch swaps feature flags if not available and submit sponsorship intent', async () => {
     mockGetSwapsControllerState.mockRestore();
     fetchMock.mockRestore();
 
@@ -313,6 +313,7 @@ describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
           expectedDeadline: 45,
           maxDeadline: 150,
           extensionReturnTxHashAsap: false,
+          extensionActive: true,
         },
       },
     };
@@ -334,6 +335,12 @@ describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
     expect(mockSetSwapsFeatureFlags).toHaveBeenCalledWith(
       MOCK_SWAPS_FEATURE_FLAGS,
     );
+
+    expect(mockSubmitSponsorshipIntents).toHaveBeenCalledWith({
+      chainId: '0x1',
+      address: MOCK_STATE.internalAccounts.selectedAccount,
+      products: [PRODUCT_TYPES.SHIELD],
+    });
   });
 
   it('should handle sponsorship intent submission error', async () => {
