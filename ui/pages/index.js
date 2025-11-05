@@ -14,6 +14,7 @@ import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import { NavigationStateProvider } from '../contexts/navigation-state';
+import { RewardsProvider } from '../contexts/rewards';
 import ErrorPage from './error-page/error-page.component';
 
 import Routes from './routes';
@@ -58,7 +59,9 @@ class Index extends PureComponent {
                         <MetamaskIdentityProvider>
                           <MetamaskNotificationsProvider>
                             <ShieldSubscriptionProvider>
-                              <Routes />
+                              <RewardsProvider>
+                                <Routes />
+                              </RewardsProvider>
                             </ShieldSubscriptionProvider>
                           </MetamaskNotificationsProvider>
                         </MetamaskIdentityProvider>

@@ -32,9 +32,9 @@ import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 
 export const AggregatedPercentageOverviewCrossChains = ({
-  portfolioButton,
+  trailingChild,
 }: {
-  portfolioButton: () => JSX.Element | null;
+  trailingChild: () => JSX.Element | null;
 }) => {
   const { formatCurrencyCompact } = useFormatters();
   const fiatCurrency = useSelector(getCurrentCurrency);
@@ -187,7 +187,7 @@ export const AggregatedPercentageOverviewCrossChains = ({
           {formattedPercentChangeCrossChains}
         </SensitiveText>
       </Box>
-      {portfolioButton()}
+      {trailingChild()}
     </Skeleton>
   );
 };
