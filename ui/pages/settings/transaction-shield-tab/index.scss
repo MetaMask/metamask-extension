@@ -54,3 +54,15 @@
     }
   }
 }
+
+.account-selector-modal {
+  .account-selector-modal__account {
+    &:hover {
+      background-color: var(--color-background-hover);
+    }
+  }
+
+  &__account--selected {
+    background-color: var(--color-primary-muted);
+  }
+}

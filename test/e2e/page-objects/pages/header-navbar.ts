@@ -73,6 +73,7 @@ class HeaderNavbar {
   async lockMetaMask(): Promise<void> {
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
+    await this.driver.waitForSelector('[data-testid="unlock-password"]');
   }
 
   async openAccountMenu(): Promise<void> {

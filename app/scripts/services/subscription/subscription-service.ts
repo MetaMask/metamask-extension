@@ -135,7 +135,10 @@ export class SubscriptionService {
 
     if (!currentTabId) {
       // open extension browser shield settings if open from pop up (no current tab)
-      this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+      this.#platform.openExtensionInBrowser(
+        // need `waitForSubscriptionCreation` param to wait for subscription creation happen in the background and not redirect to the shield plan page immediately
+        '/settings/transaction-shield/?waitForSubscriptionCreation=true',
+      );
     }
 
     const subscriptions = await this.#messenger.call(
@@ -153,7 +156,7 @@ export class SubscriptionService {
     const transactions =
       this.#messenger.call('TransactionController:getTransactions') || [];
     const existingTxMeta = transactions?.find(
-      (tx) => tx.actionId === actionId || tx.id === id,
+      (tx) => (actionId && tx.actionId === actionId) || tx.id === id,
     );
     // If the transaction already exists, we don't need to submit the sponsorship intent again
     if (existingTxMeta) {
@@ -225,6 +228,7 @@ export class SubscriptionService {
   }
 
   async #getIsSmartTransactionEnabled(chainId: `0x${string}`) {
+    console.log('#getIsSmartTransactionEnabled::chainId', chainId);
     const uiState = {
       metamask: {
         ...this.#messenger.call('AccountsController:getState'),
@@ -244,6 +248,10 @@ export class SubscriptionService {
         'SwapsController:setSwapsFeatureFlags',
         swapsFeatureFlags,
       );
+      uiState.metamask.swapsState = {
+        ...uiState.metamask.swapsState,
+        swapsFeatureFlags,
+      };
     }
 
     // @ts-expect-error Smart transaction selector types does not match controller state

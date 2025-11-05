@@ -5485,6 +5485,17 @@
   "reward": {
     "message": "Reward"
   },
+  "rewardsOptIn": {
+    "message": "Sign up for Rewards"
+  },
+  "rewardsPointsBalance": {
+    "message": "$1 points",
+    "description": "$1 is the formatted number of rewards points"
+  },
+  "rewardsPointsIcon": {
+    "message": "Rewards Points",
+    "description": "Alt text for the rewards points icon"
+  },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
   },
@@ -5786,9 +5797,6 @@
   "shieldClaim": {
     "message": "Submit a claim"
   },
-  "shieldClaimChainId": {
-    "message": "Chain ID"
-  },
   "shieldClaimDescription": {
     "message": "Description of case"
   },
@@ -5842,6 +5850,12 @@
   "shieldClaimImpactedWalletAddress": {
     "message": "Impacted wallet address"
   },
+  "shieldClaimIncidentDetails": {
+    "message": "Incident details"
+  },
+  "shieldClaimIncidentDetailsDescription": {
+    "message": "Help us understand more about what happened."
+  },
   "shieldClaimInvalidChainId": {
     "message": "Please enter a valid chain ID"
   },
@@ -5860,6 +5874,15 @@
   "shieldClaimMaxClaimsLimitExceeded": {
     "message": "You have reached the maximum limit of open claims. Please contact support if you need to submit additional claims."
   },
+  "shieldClaimNetwork": {
+    "message": "Select network"
+  },
+  "shieldClaimPersonalDetails": {
+    "message": "Personal details"
+  },
+  "shieldClaimPersonalDetailsDescription": {
+    "message": "We'll use this to communicate with you when investigating and resolving."
+  },
   "shieldClaimReimbursementWalletAddress": {
     "message": "Wallet address for reimbursement"
   },
@@ -5868,6 +5891,12 @@
   },
   "shieldClaimSameWalletAddressesError": {
     "message": "Impacted wallet address and reimbursement wallet address must be different."
+  },
+  "shieldClaimSelectAccount": {
+    "message": "Select an account"
+  },
+  "shieldClaimSelectNetwork": {
+    "message": "Select a network"
   },
   "shieldClaimSubmissionWindowExpired": {
     "message": "Submission window expired. Claims must be filed within $1 days of the incident.",
