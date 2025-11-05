@@ -19,6 +19,7 @@ import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
 
 const initialState: BridgeState = {
+  fromChainId: null,
   toChainId: null,
   fromToken: null,
   toToken: null,
@@ -99,6 +100,10 @@ const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
   reducers: {
+    setFromChainId: (state, { payload }: ChainIdPayload) => {
+      state.fromChainId = payload ? formatChainIdToCaip(payload) : null;
+      state.fromToken = null;
+    },
     setToChainId: (state, { payload }: ChainIdPayload) => {
       state.toChainId = payload ? formatChainIdToCaip(payload) : null;
       state.toToken = null;

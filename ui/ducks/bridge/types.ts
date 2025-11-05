@@ -27,6 +27,10 @@ export type BridgeToken = {
 
 export type BridgeState = {
   /*
+   * This stores the user's selected source chain, and will be null if the user has not selected a source chain (all networks are selected by default)
+   */
+  fromChainId: CaipChainId | null;
+  /*
    * This stores the user's selected destination chain, and will be null if the user has not selected a destination chain
    * This should not be accessed directly in components/hooks, use the getToChain selector instead
    * The getToChain selector uses the source chain as the destination chain by default if toChainId is null
