@@ -24,12 +24,12 @@ import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/con
 import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
 
 // Priority networks that should appear first (using CAIP chain IDs)
-const PRIORITY_CHAIN_IDS: CaipChainId[] = [
-  'eip155:1' as CaipChainId, // Ethereum mainnet
-  'bip122:000000000019d6689c085ae165831e93' as CaipChainId, // Bitcoin mainnet
-  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipChainId, // Solana mainnet
-  'tron:0x2b6653dc' as CaipChainId, // Tron mainnet
-];
+const PRIORITY_CHAIN_IDS = new Map<CaipChainId, number>([
+  ['eip155:1' as CaipChainId, 0], // Ethereum mainnet
+  ['bip122:000000000019d6689c085ae165831e93' as CaipChainId, 1], // Bitcoin mainnet
+  ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipChainId, 2], // Solana mainnet
+  ['tron:0x2b6653dc' as CaipChainId, 3], // Tron mainnet
+]);
 
 export type MultichainAddressRowsListProps = {
   /**
@@ -108,9 +108,16 @@ export const MultichainHoveredAddressRowsList = ({
 
       groupedItems.forEach((item) => {
         // Check if any of the scopes are in priority list
-        const priorityIndex = PRIORITY_CHAIN_IDS.findIndex((chainId) =>
-          item.scopes.includes(chainId),
-        );
+        let priorityIndex = -1;
+
+        // Check each scope for priority chain membership
+        for (const scope of item.scopes) {
+          const index = PRIORITY_CHAIN_IDS.get(scope);
+          if (index !== undefined) {
+            priorityIndex = index;
+            break;
+          }
+        }
 
         if (priorityIndex > -1) {
           // Store with priority index for proper ordering
