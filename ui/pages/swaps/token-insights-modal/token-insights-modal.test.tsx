@@ -56,7 +56,7 @@ describe('TokenInsightsModal', () => {
           token={mockToken}
           {...props}
         />
-      </Provider>
+      </Provider>,
     );
   };
 
@@ -110,7 +110,8 @@ describe('TokenInsightsModal', () => {
   });
 
   it('should show loading state when data is loading', async () => {
-    const useTokenInsightsData = require('../../../hooks/useTokenInsightsData').useTokenInsightsData;
+    const useTokenInsightsData =
+      require('../../../hooks/useTokenInsightsData').useTokenInsightsData;
     useTokenInsightsData.mockReturnValueOnce({
       marketData: null,
       isLoading: true,

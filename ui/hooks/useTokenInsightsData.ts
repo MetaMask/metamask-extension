@@ -153,7 +153,6 @@ export const useTokenInsightsData = (
           setApiData(marketData);
         }
       } catch (err) {
-        console.error('Failed to fetch token insights:', err);
         setError((err as Error).message);
       } finally {
         setIsLoading(false);
