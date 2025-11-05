@@ -27,8 +27,11 @@ import {
   getIsStxEnabled,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
-import { formatNetworkFee } from '../../../helpers/utils/confirm-tx.util';
+import {
+  formatCurrencyAmount,
+  formatNetworkFee,
+  formatTokenAmount,
+} from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   IconColor,
