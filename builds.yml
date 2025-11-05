@@ -455,6 +455,3 @@ env:
   # This should only be used for local testing, and should not be enabled in any
   # production builds (including beta and Flask).
   - FORCE_PREINSTALLED_SNAPS: 'false'
-
-  # Enable dapp swap shield implementation
-  - DAPP_SWAP_SHIELD_ENABLED: false
