@@ -45,8 +45,8 @@ describe('AddMultichainAccount', () => {
     metamask: {
       localeMessages: {
         current: {
-          createMultichainAccountButton: 'Create account',
-          createMultichainAccountButtonLoading: 'Creating account...',
+          createMultichainAccountButton: 'Add account',
+          createMultichainAccountButtonLoading: 'Adding account...',
         },
         currentLocale: 'en',
       },
@@ -73,7 +73,7 @@ describe('AddMultichainAccount', () => {
     expect(
       screen.getByTestId(addMultichainAccountButtonTestId),
     ).toBeInTheDocument();
-    expect(screen.getByText('Create account')).toBeInTheDocument();
+    expect(screen.getByText('Add account')).toBeInTheDocument();
     expect(
       container.querySelector(addMultichainAccountIconClass),
     ).toBeInTheDocument();
@@ -100,7 +100,7 @@ describe('AddMultichainAccount', () => {
 
     fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
 
-    expect(screen.getByText('Creating account...')).toBeInTheDocument();
+    expect(screen.getByText('Adding account...')).toBeInTheDocument();
     expect(
       container.querySelector(addMultichainAccountIconClass),
     ).not.toBeInTheDocument();
@@ -140,7 +140,7 @@ describe('AddMultichainAccount', () => {
     fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
 
     // Verify we're in the loading state first
-    expect(screen.getByText('Creating account...')).toBeInTheDocument();
+    expect(screen.getByText('Adding account...')).toBeInTheDocument();
 
     // Wait for the async operation to complete (first run any pending promises)
     await Promise.resolve();
@@ -149,7 +149,7 @@ describe('AddMultichainAccount', () => {
     await Promise.resolve();
 
     // Check that the component returned to normal state
-    expect(screen.getByText('Create account')).toBeInTheDocument();
+    expect(screen.getByText('Add account')).toBeInTheDocument();
     expect(
       container.querySelector(addMultichainAccountIconClass),
     ).toBeInTheDocument();
@@ -220,10 +220,10 @@ describe('AddMultichainAccount', () => {
         store,
       );
 
-      fireEvent.click(getByText('Create account'));
+      fireEvent.click(getByText('Add account'));
 
       await waitFor(() => {
-        expect(getByText('Creating account...')).toBeInTheDocument();
+        expect(getByText('Adding account...')).toBeInTheDocument();
       });
     });
 
@@ -263,7 +263,7 @@ describe('AddMultichainAccount', () => {
       expect(getByText('Syncing...')).toBeInTheDocument();
     });
 
-    it('shows default create account text when no loading states are active', () => {
+    it('shows default Add account text when no loading states are active', () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
         isAccountTreeSyncingInProgress: false,
         areAnyOperationsLoading: false,
@@ -275,7 +275,7 @@ describe('AddMultichainAccount', () => {
         store,
       );
 
-      expect(getByText('Create account')).toBeInTheDocument();
+      expect(getByText('Add account')).toBeInTheDocument();
     });
 
     it('handles loading state transitions correctly', () => {
@@ -292,7 +292,7 @@ describe('AddMultichainAccount', () => {
         store,
       );
 
-      expect(getByText('Create account')).toBeInTheDocument();
+      expect(getByText('Add account')).toBeInTheDocument();
 
       // Simulate account syncing starting
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
@@ -314,7 +314,7 @@ describe('AddMultichainAccount', () => {
 
       rerender(<AddMultichainAccount walletId={mockWalletId} />);
 
-      expect(getByText('Create account')).toBeInTheDocument();
+      expect(getByText('Add account')).toBeInTheDocument();
     });
   });
 });

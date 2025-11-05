@@ -13,6 +13,7 @@ import { SmartTransactionsController } from '@metamask/smart-transactions-contro
 import { TransactionController } from '@metamask/transaction-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
+  AccountTrackerController,
   AssetsContractController,
   CurrencyRateController,
   DeFiPositionsController,
@@ -88,7 +89,6 @@ import { NetworkOrderController } from '../controllers/network-order';
 import OAuthService from '../services/oauth/oauth-service';
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
-import AccountTrackerController from '../controllers/account-tracker-controller';
 import { AppStateController } from '../controllers/app-state-controller';
 import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
 import { SubscriptionService } from '../services/subscription/subscription-service';
@@ -262,4 +262,5 @@ export type ControllerFlatState = AccountOrderController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
-  NetworkEnablementController['state'];
+  NetworkEnablementController['state'] &
+  AccountTrackerController['state'];
