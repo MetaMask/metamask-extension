@@ -6,7 +6,11 @@ import { RuntimeLoader } from '@rive-app/react-canvas';
 
 // WASM file URL - the file is copied to dist/chrome/images/ by the build process
 // We don't import it as a module to avoid browserify resolution issues
-const RIVE_WASM_URL = './images/riv_animations/rive.wasm';
+const RIVE_WASM_URL = new URL(
+  '@rive-app/canvas/rive.wasm',
+  // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS
+  import.meta.url,
+);
 const isTestEnvironment = Boolean(process.env.IN_TEST);
 
 // Track WASM initialization state globally
@@ -18,59 +22,37 @@ let wasmInitializationPromise: Promise<void> | null = null;
  *
  * @returns Promise that resolves when WASM is ready, rejects on error
  */
-export function initializeRiveWASM(): Promise<void> {
+export async function initializeRiveWASM(): Promise<void> {
   // Skip initialization in test environments
   if (isTestEnvironment) {
     return Promise.resolve();
   }
 
   if (wasmInitializationPromise) {
-    return wasmInitializationPromise;
+    return await wasmInitializationPromise;
   }
 
-  wasmInitializationPromise = new Promise((resolve, reject) => {
-    try {
-      if (typeof RuntimeLoader === 'undefined') {
-        console.warn('[Rive] RuntimeLoader not available');
-        resolve();
-        return;
-      }
-
-      // Fetch the WASM binary and convert to base64 data URI
-      fetch(RIVE_WASM_URL)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.arrayBuffer();
-        })
-        .then((arrayBuffer) => {
-          (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
-            arrayBuffer;
-          RuntimeLoader.setWasmUrl('should not fetch wasm'); // easier to debug if something goes wrong
-
-          // Preload the WASM
-          RuntimeLoader.awaitInstance()
-            .then(() => {
-              console.log('[Rive] WASM loaded and initialized successfully');
-              resolve();
-            })
-            .catch((error: Error) => {
-              console.error('[Rive] WASM initialization failed:', error);
-              reject(error);
-            });
-        })
-        .catch((error) => {
-          console.error('[Rive] Failed to fetch WASM:', error);
-          reject(error);
-        });
-    } catch (error) {
-      console.error('[Rive] WASM setup failed:', error);
-      reject(error);
+  async function init() {
+    if (typeof RuntimeLoader === 'undefined') {
+      console.warn('[Rive] RuntimeLoader not available');
+      return;
     }
-  });
 
-  return wasmInitializationPromise;
+    RuntimeLoader.setWasmUrl(RIVE_WASM_URL.href);
+
+    // Preload the WASM
+    try {
+      await RuntimeLoader.awaitInstance();
+    } catch (error) {
+      console.log('[Rive] WASM loaded and initialized successfully');
+      console.error('[Rive] WASM initialization failed:', error);
+      throw error;
+    }
+  }
+
+  wasmInitializationPromise = init();
+
+  return await wasmInitializationPromise;
 }
 
 /**
@@ -79,17 +61,17 @@ export function initializeRiveWASM(): Promise<void> {
  * @returns Promise that resolves when WASM is initialized and ready to use
  * This allows components to await WASM readiness without polling
  */
-export function waitForWasmReady(): Promise<void> {
+export async function waitForWasmReady(): Promise<void> {
   // Skip in test environments
   if (isTestEnvironment) {
-    return Promise.resolve();
+    return;
   }
 
   // If already initialized, return that promise
   if (wasmInitializationPromise) {
-    return wasmInitializationPromise;
+    return await wasmInitializationPromise;
   }
 
   // If not initialized yet, initialize it
-  return initializeRiveWASM();
+  return await initializeRiveWASM();
 }

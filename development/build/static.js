@@ -123,11 +123,6 @@ function getCopyTargets(
       dest: `images`,
     },
     {
-      src: getPathInsideNodeModules('@rive-app/canvas', 'rive.wasm'),
-      dest: `images/riv_animations/rive.wasm`,
-      pattern: '',
-    },
-    {
       src: getPathInsideNodeModules('@metamask/contract-metadata', 'images/'),
       dest: `images/contract`,
     },
@@ -154,15 +149,15 @@ function getCopyTargets(
     },
     ...(shouldIncludeSnow
       ? [
-          {
-            src: `./node_modules/@lavamoat/snow/snow.prod.js`,
-            dest: `scripts/snow.js`,
-          },
-          {
-            src: `./app/scripts/use-snow.js`,
-            dest: `scripts/use-snow.js`,
-          },
-        ]
+        {
+          src: `./node_modules/@lavamoat/snow/snow.prod.js`,
+          dest: `scripts/snow.js`,
+        },
+        {
+          src: `./app/scripts/use-snow.js`,
+          dest: `scripts/use-snow.js`,
+        },
+      ]
       : []),
     {
       src: shouldIncludeLockdown
@@ -203,57 +198,57 @@ function getCopyTargets(
     },
     ...(isManifestV3
       ? [
-          {
-            src: getPathInsideNodeModules(
-              '@metamask/snaps-execution-environments',
-              'dist/webpack/iframe/index.html',
-            ),
-            dest: `snaps/index.html`,
-            pattern: '',
-          },
-          {
-            src: getPathInsideNodeModules(
-              '@metamask/snaps-execution-environments',
-              'dist/webpack/iframe/bundle.js',
-            ),
-            dest: `snaps/bundle.js`,
-            pattern: '',
-          },
-        ]
+        {
+          src: getPathInsideNodeModules(
+            '@metamask/snaps-execution-environments',
+            'dist/webpack/iframe/index.html',
+          ),
+          dest: `snaps/index.html`,
+          pattern: '',
+        },
+        {
+          src: getPathInsideNodeModules(
+            '@metamask/snaps-execution-environments',
+            'dist/webpack/iframe/bundle.js',
+          ),
+          dest: `snaps/bundle.js`,
+          pattern: '',
+        },
+      ]
       : []),
     ...(shouldIncludeOcapKernel
       ? [
-          {
-            src: getPathInsideNodeModules(
-              '@metamask/kernel-shims',
-              'dist/eventual-send.js',
-            ),
-            dest: `scripts/eventual-send-install.js`,
-          },
-          {
-            src: getPathInsideNodeModules(
-              '@metamask/kernel-browser-runtime',
-              'dist/static/',
-            ),
-            pattern: '*',
-            dest: 'ocap-kernel/',
-          },
-          {
-            src: getPathInsideNodeModules(
-              '@metamask/kernel-ui',
-              'dist/styles.css',
-            ),
-            dest: `devtools/ocap-kernel/kernel-panel.css`,
-          },
-          {
-            src: `./app/devtools/devtools.html`,
-            dest: `devtools/devtools.html`,
-          },
-          {
-            src: `./app/devtools/ocap-kernel/kernel-panel.html`,
-            dest: `devtools/ocap-kernel/kernel-panel.html`,
-          },
-        ]
+        {
+          src: getPathInsideNodeModules(
+            '@metamask/kernel-shims',
+            'dist/eventual-send.js',
+          ),
+          dest: `scripts/eventual-send-install.js`,
+        },
+        {
+          src: getPathInsideNodeModules(
+            '@metamask/kernel-browser-runtime',
+            'dist/static/',
+          ),
+          pattern: '*',
+          dest: 'ocap-kernel/',
+        },
+        {
+          src: getPathInsideNodeModules(
+            '@metamask/kernel-ui',
+            'dist/styles.css',
+          ),
+          dest: `devtools/ocap-kernel/kernel-panel.css`,
+        },
+        {
+          src: `./app/devtools/devtools.html`,
+          dest: `devtools/devtools.html`,
+        },
+        {
+          src: `./app/devtools/ocap-kernel/kernel-panel.html`,
+          dest: `devtools/ocap-kernel/kernel-panel.html`,
+        },
+      ]
       : []),
   ];
 

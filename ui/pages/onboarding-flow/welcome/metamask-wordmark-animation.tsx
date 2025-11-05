@@ -10,6 +10,7 @@ import { Box } from '@metamask/design-system-react';
 import { useTheme } from '../../../hooks/useTheme';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { waitForWasmReady } from '../rive-wasm';
+import riv from '../../../../app/riv_animations/metamask_wordmark.riv';
 
 type MetamaskWordMarkAnimationProps = {
   setIsAnimationComplete: (isAnimationComplete: boolean) => void;
