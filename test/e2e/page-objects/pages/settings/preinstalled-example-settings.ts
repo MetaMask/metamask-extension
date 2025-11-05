@@ -60,24 +60,28 @@ class PreinstalledExampleSettings {
 
   async checkSelectedRadioOption(option: string): Promise<void> {
     console.log(`Checking if the radio option "${option}" is selected`);
-    return this.driver.waitUntil(async () => {
-      const radioOption = await this.driver.findElement(
-        `input[type="radio"][value="${option}"]`,
-      );
-      const isChecked = (await radioOption.getAttribute('checked')) === 'true';
-      return isChecked;
-    }, { timeout: this.driver.timeout, interval: 500 })
+    return this.driver.waitUntil(
+      async () => {
+        const radioOption = await this.driver.findElement(
+          `input[type="radio"][value="${option}"]`,
+        );
+        return (await radioOption.getAttribute('checked')) === 'true';
+      },
+      { timeout: this.driver.timeout, interval: 500 },
+    );
   }
 
   async checkSelectedDropdownOption(option: string): Promise<void> {
     console.log(`Checking if the dropdown option "${option}" is selected`);
-    return this.driver.waitUntil(async () => {
-      const dropdownOption = await this.driver.findElement(
-        `option[value="${option}"]`,
-      );
-      const isSelected = (await dropdownOption.getAttribute('selected')) === 'true';
-      return isSelected;
-    }, { timeout: this.driver.timeout, interval: 500 })
+    return this.driver.waitUntil(
+      async () => {
+        const dropdownOption = await this.driver.findElement(
+          `option[value="${option}"]`,
+        );
+        return (await dropdownOption.getAttribute('selected')) === 'true';
+      },
+      { timeout: this.driver.timeout, interval: 500 },
+    );
   }
 }
 

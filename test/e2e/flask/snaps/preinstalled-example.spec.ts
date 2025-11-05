@@ -76,7 +76,11 @@ describe('Preinstalled example Snap', function () {
         await testSnaps.openPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.clickButton('getSettingsStateButton');
-        const jsonTextValidation = '"setting1": true, "setting2": "option2", "setting3": "option2"';
+        const jsonTextValidation = JSON.stringify(
+          { setting1: true, setting2: 'option2', setting3: 'option2' },
+          null,
+          2,
+        );
         await testSnaps.checkMessageResultSpan(
           'rpcResultSpan',
           jsonTextValidation,
