@@ -75,7 +75,8 @@ export default function PasswordForm({
   }, [password, confirmPassword, onChange]);
 
   const handlePasswordBlur = useCallback(() => {
-    if (password.length < PASSWORD_MIN_LENGTH) {
+    const passwordLength = password.length;
+    if (passwordLength > 0 && passwordLength < PASSWORD_MIN_LENGTH) {
       setPasswordLengthError(true);
     } else {
       setPasswordLengthError(false);
