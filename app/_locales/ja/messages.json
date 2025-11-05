@@ -5241,9 +5241,6 @@
   "shieldEntryModalGetStarted": {
     "message": "利用を開始する"
   },
-  "shieldEntryModalSkip": {
-    "message": "スキップ"
-  },
   "show": {
     "message": "表示"
   },
