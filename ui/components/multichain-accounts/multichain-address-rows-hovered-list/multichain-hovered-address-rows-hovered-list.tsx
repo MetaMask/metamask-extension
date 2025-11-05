@@ -176,9 +176,8 @@ export const MultichainHoveredAddressRowsList = ({
     <Box
       flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-address-rows-list"
-      padding={0}
     >
-      <Box>{renderedRows}</Box>
+      <Box marginBottom={2}>{renderedRows}</Box>
       <Button variant={ButtonVariant.Secondary} onClick={handleViewAllClick}>
         <Box
           flexDirection={BoxFlexDirection.Row}

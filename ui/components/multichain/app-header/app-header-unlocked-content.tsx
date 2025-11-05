@@ -310,6 +310,7 @@ export const AppHeaderUnlockedContent = ({
               <Text
                 color={TextColor.textAlternative}
                 variant={TextVariant.bodyXsMedium}
+                className="networks-label-text"
               >
                 {networksLabel}
               </Text>

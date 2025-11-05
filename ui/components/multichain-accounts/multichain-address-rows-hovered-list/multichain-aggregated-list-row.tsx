@@ -155,7 +155,6 @@ export const MultichainAggregatedAddressListRow = ({
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
-      padding={4}
       gap={4}
       data-testid="multichain-address-row"
       backgroundColor={
