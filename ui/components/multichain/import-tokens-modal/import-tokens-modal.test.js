@@ -104,7 +104,7 @@ describe('ImportTokensModal', () => {
       expect(queryByText('Search')).not.toBeInTheDocument();
     });
 
-    it('shows token detection banner when useTokenDetection is true', () => {
+    it('shows token detection banner when useTokenDetection is false', () => {
       mockUseTokensWithFiltering.mockReturnValue({
         *filteredTokenListGenerator() {
           yield {
@@ -120,7 +120,7 @@ describe('ImportTokensModal', () => {
         isLoading: false,
       });
 
-      const { getByText } = render({ useTokenDetection: true });
+      const { getByText } = render({ useTokenDetection: false });
 
       const searchTab = getByText('Search');
       fireEvent.click(searchTab);
@@ -130,7 +130,7 @@ describe('ImportTokensModal', () => {
       ).toBeInTheDocument();
     });
 
-    it('does not show token detection banner when useTokenDetection is false', () => {
+    it('does not show token detection banner when useTokenDetection is true', () => {
       mockUseTokensWithFiltering.mockReturnValue({
         *filteredTokenListGenerator() {
           yield {
@@ -146,7 +146,7 @@ describe('ImportTokensModal', () => {
         isLoading: false,
       });
 
-      const { getByText, queryByText } = render({ useTokenDetection: false });
+      const { getByText, queryByText } = render({ useTokenDetection: true });
 
       const searchTab = getByText('Search');
       fireEvent.click(searchTab);

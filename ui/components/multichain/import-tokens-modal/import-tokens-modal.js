@@ -223,6 +223,17 @@ export const ImportTokensModal = ({ onClose }) => {
     selectedAccount?.address,
   );
 
+  const shouldAddToken = useCallback(
+    (_symbol, _address, tokenChainId) => {
+      if (!tokenChainId || !selectedNetwork) {
+        return false;
+      }
+
+      return tokenChainId === selectedNetwork;
+    },
+    [selectedNetwork],
+  );
+
   // Convert generator to token list for compatibility with existing components
   const tokenListByChain = useMemo(() => {
     if (!filteredTokenListGenerator) {
@@ -230,9 +241,7 @@ export const ImportTokensModal = ({ onClose }) => {
     }
 
     const tokenData = {};
-
-    // Generate all tokens from the generator
-    for (const token of filteredTokenListGenerator(() => true)) {
+    for (const token of filteredTokenListGenerator(shouldAddToken)) {
       if (token.address) {
         tokenData[token.address.toLowerCase()] = {
           address: token.address,
@@ -251,7 +260,7 @@ export const ImportTokensModal = ({ onClose }) => {
         data: tokenData,
       },
     };
-  }, [filteredTokenListGenerator, selectedNetwork]);
+  }, [filteredTokenListGenerator, selectedNetwork, shouldAddToken]);
 
   const [customAddress, setCustomAddress] = useState('');
   const [customAddressError, setCustomAddressError] = useState(null);
@@ -913,7 +922,7 @@ export const ImportTokensModal = ({ onClose }) => {
                       className="flex-1"
                     >
                       <Box paddingTop={4}>
-                        {useTokenDetection && (
+                        {!useTokenDetection && (
                           <Box paddingLeft={4} paddingRight={4}>
                             <BannerAlert
                               severity={Severity.Info}
