@@ -47,8 +47,6 @@ import {
 import { Column, Row } from '../layout';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { getMultichainNativeCurrency } from '../../../selectors/multichain';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -68,7 +66,9 @@ export const BridgeQuotesModal = ({
     useSelector(getBridgeQuotes);
   const sortOrder = useSelector(getBridgeSortOrder);
   const currency = useSelector(getCurrentCurrency);
-  const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
+  const nativeCurrency = fromChain
+    ? getNativeAssetForChainId(fromChain?.chainId)?.symbol
+    : undefined;
   const locale = useSelector(getIntlLocale);
 
   return (
