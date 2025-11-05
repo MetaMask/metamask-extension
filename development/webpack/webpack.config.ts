@@ -163,7 +163,7 @@ const plugins: WebpackPluginInstance[] = [
       { from: join(context, 'images'), to: 'images' },
       // Copy rive.wasm for Rive animations
       {
-        from: join(context, '../node_modules/@rive-app/canvas/rive.wasm'),
+        from: join(nodeModules, '@rive-app/canvas/rive.wasm'),
         to: 'images/riv_animations/rive.wasm',
       },
       // snaps MV3 needs the offscreen document

@@ -139,7 +139,7 @@ export const lavamoatPlugin = (args: Args) =>
           embeddedOptions: {
             scuttleGlobalThis: {
               enabled: true,
-              exceptions: ['ShadowRoot'],
+              exceptions: ['ShadowRoot', /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu],
             },
           },
         };
