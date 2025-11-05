@@ -6747,10 +6747,9 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       setActiveNetwork: async (networkClientId) => {
-        // If the origin is a Snap or has the CAIP-25 permission
-        // we set per dapp network selection state.
+        // if the origin has the CAIP-25 permission
+        // we set per dapp network selection state
         if (
-          isSnapId(origin) ||
           this.permissionController.hasPermission(
             origin,
             Caip25EndowmentPermissionName,
