@@ -16,9 +16,8 @@ import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 // TODO: Migrate to shared directory and remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-// TODO: Migrate to shared directory and remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
 import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
+import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -228,30 +227,48 @@ export class SubscriptionService {
   }
 
   async #getIsSmartTransactionEnabled(chainId: `0x${string}`) {
+    const swapsControllerState = await this.#getSwapsFeatureFlagsFromNetwork();
     const uiState = {
       metamask: {
+        ...swapsControllerState,
         ...this.#messenger.call('AccountsController:getState'),
         ...this.#messenger.call('PreferencesController:getState'),
         ...this.#messenger.call('SmartTransactionsController:getState'),
-        ...this.#messenger.call('SwapsController:getState'),
         ...this.#messenger.call('NetworkController:getState'),
       },
     };
-
-    let swapsFeatureFlags = uiState.metamask.swapsState?.swapsFeatureFlags;
-    if (Object.keys(swapsFeatureFlags).length === 0) {
-      // if `swapsFeatureFlags` is empty, we wil try to fetch the feature flags from the bridge API
-      swapsFeatureFlags = await fetchSwapsFeatureFlags();
-      uiState.metamask.swapsState = {
-        ...uiState.metamask.swapsState,
-        swapsFeatureFlags,
-      };
-    }
-
     // @ts-expect-error Smart transaction selector types does not match controller state
     const isSmartTransaction = getIsSmartTransaction(uiState, chainId);
     const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
 
     return isSendBundleSupportedChain && isSmartTransaction;
+  }
+
+  async #getSwapsFeatureFlagsFromNetwork(): Promise<
+    SwapsControllerState | undefined
+  > {
+    const swapsControllerState = this.#messenger.call(
+      'SwapsController:getState',
+    );
+    const { swapsFeatureFlags } = swapsControllerState.swapsState;
+    try {
+      if (!swapsFeatureFlags || Object.keys(swapsFeatureFlags).length === 0) {
+        const updatedSwapsFeatureFlags = await fetchSwapsFeatureFlags();
+        if (!updatedSwapsFeatureFlags) {
+          return swapsControllerState;
+        }
+        return {
+          ...swapsControllerState,
+          swapsState: {
+            ...swapsControllerState.swapsState,
+            swapsFeatureFlags: updatedSwapsFeatureFlags,
+          },
+        };
+      }
+    } catch (error) {
+      log.error('Failed to fetch swaps feature flags', error);
+      return swapsControllerState;
+    }
+    return swapsControllerState;
   }
 }
