@@ -50,7 +50,6 @@
         "chrome.app": true,
         "chrome.runtime": true,
         "location": true,
-        "location.href": true,
         "top": true
       }
     },
@@ -221,7 +220,7 @@
         "devicePixelRatio": false,
         "h": false,
         "importScripts": false,
-        "location.href": false,
+        "location": false,
         "prompt": false,
         "readline": false,
         "webkitAudioContext": false,
