@@ -357,15 +357,16 @@ async function withFixtures(options, testSuite) {
       : setupMocking;
 
     // Use the mockingSetupFunction we just chose
-    const { mockedEndpoint, getPrivacyReport } = await mockingSetupFunction(
-      mockServer,
-      testSpecificMock,
-      {
-        chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
-        ethConversionInUsd,
-        monConversionInUsd,
-      },
-    );
+    const {
+      mockedEndpoint,
+      getPrivacyReport,
+      getNetworkReport,
+      clearNetworkReport,
+    } = await mockingSetupFunction(mockServer, testSpecificMock, {
+      chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
+      ethConversionInUsd,
+      monConversionInUsd,
+    });
 
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
@@ -419,6 +420,8 @@ async function withFixtures(options, testSuite) {
       mockedEndpoint,
       mockServer,
       extensionId,
+      getNetworkReport,
+      clearNetworkReport,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();

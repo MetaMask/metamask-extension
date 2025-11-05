@@ -1,19 +1,23 @@
-import React from 'react';
-import { Hex } from '@metamask/utils';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
+import React from 'react';
 import { useSelector } from 'react-redux';
-
-import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
-import { useConfirmContext } from '../../../../../context/confirm';
-import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
-import Identicon from '../../../../../../../components/ui/identicon';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constants/network';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
+import { PreferredAvatar } from '../../../../../../../components/app/preferred-avatar';
 import {
   AvatarToken,
   AvatarTokenSize,
   Box,
 } from '../../../../../../../components/component-library';
+import Identicon from '../../../../../../../components/ui/identicon';
 import { BackgroundColor } from '../../../../../../../helpers/constants/design-system';
+import {
+  selectERC20TokensByChain,
+  selectNetworkConfigurationByChainId,
+} from '../../../../../../../selectors';
+import { useConfirmContext } from '../../../../../context/confirm';
 
 export enum GasFeeTokenIconSize {
   Sm = 'sm',
@@ -36,13 +40,30 @@ export function GasFeeTokenIcon({
     selectNetworkConfigurationByChainId(state, chainId),
   );
 
+  const erc20TokensByChain = useSelector(selectERC20TokensByChain);
+  const variation = chainId;
+  const { iconUrl: image } =
+    erc20TokensByChain?.[variation]?.data?.[tokenAddress] ?? {};
+
   if (tokenAddress !== NATIVE_TOKEN_ADDRESS) {
     return (
       <Box data-testid="token-icon">
-        <Identicon
-          address={tokenAddress}
-          diameter={size === GasFeeTokenIconSize.Md ? 32 : 12}
-        />
+        {image ? (
+          <Identicon
+            address={tokenAddress}
+            diameter={size === GasFeeTokenIconSize.Md ? 32 : 12}
+            image={image}
+          />
+        ) : (
+          <PreferredAvatar
+            address={tokenAddress}
+            size={
+              size === GasFeeTokenIconSize.Md
+                ? AvatarAccountSize.Md
+                : AvatarAccountSize.Xs
+            }
+          />
+        )}
       </Box>
     );
   }

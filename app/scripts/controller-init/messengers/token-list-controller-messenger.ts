@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import type {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
@@ -8,6 +8,7 @@ import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../controllers/preferences-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions = NetworkControllerGetNetworkClientByIdAction;
 
@@ -25,13 +26,23 @@ export type TokenListControllerMessenger = ReturnType<
  * messenger.
  */
 export function getTokenListControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'TokenListController',
-    allowedActions: ['NetworkController:getNetworkClientById'],
-    allowedEvents: ['NetworkController:stateChange'],
+  const controllerMessenger = new Messenger<
+    'TokenListController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'TokenListController',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: ['NetworkController:getNetworkClientById'],
+    events: ['NetworkController:stateChange'],
+  });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions =
@@ -52,18 +63,28 @@ export type TokenListControllerInitMessenger = ReturnType<
  * @param messenger
  */
 export function getTokenListControllerInitMessenger(
-  messenger: Messenger<
+  messenger: RootMessenger<
     AllowedInitializationActions,
     AllowedInitializationEvents
   >,
 ) {
-  return messenger.getRestricted({
-    name: 'TokenListControllerInit',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'TokenListControllerInit',
+    AllowedInitializationActions,
+    AllowedInitializationEvents,
+    typeof messenger
+  >({
+    namespace: 'TokenListControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
       'PreferencesController:getState',
     ],
-    allowedEvents: ['PreferencesController:stateChange'],
+    events: ['PreferencesController:stateChange'],
   });
+  return controllerInitMessenger;
 }

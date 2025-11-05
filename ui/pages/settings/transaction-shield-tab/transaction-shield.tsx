@@ -16,7 +16,7 @@ import {
   SubscriptionCryptoPaymentMethod,
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import {
@@ -57,9 +57,11 @@ import {
 } from '../../../hooks/subscription/useSubscription';
 import { getShortDateFormatterV2 } from '../../asset/util';
 import {
+  DEFAULT_ROUTE,
   SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTE,
 } from '../../../helpers/constants/routes';
+import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { getProductPrice } from '../../shield-plan/utils';
 import Tooltip from '../../../components/ui/tooltip';
 import { ThemeType } from '../../../../shared/constants/preferences';
@@ -92,6 +94,8 @@ import {
   getIsShieldSubscriptionPaused,
 } from '../../../../shared/lib/shield';
 import { useAsyncResult } from '../../../hooks/useAsync';
+import { useTimeout } from '../../../hooks/useTimeout';
+import { MINUTE } from '../../../../shared/constants/time';
 import Name from '../../../components/app/name';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
@@ -99,6 +103,16 @@ import { isCryptoPaymentMethod } from './types';
 const TransactionShield = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { search } = useLocation();
+  const shouldWaitForSubscriptionCreation = useMemo(() => {
+    const searchParams = new URLSearchParams(search);
+    // param to wait for subscription creation happen in the background
+    const waitForSubscriptionCreation = searchParams.get(
+      'waitForSubscriptionCreation',
+    );
+    return waitForSubscriptionCreation === 'true';
+  }, [search]);
+
   const { formatCurrency } = useFormatters();
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -114,12 +128,45 @@ const TransactionShield = () => {
     subscriptions,
     loading: subscriptionsLoading,
   } = useUserSubscriptions({
-    refetch: true, // always fetch latest subscriptions state in settings screen
+    refetch: !shouldWaitForSubscriptionCreation, // always fetch latest subscriptions state in settings screen unless we are waiting for subscription creation (subscription is refetch in background)
   });
   const shieldSubscription = useUserSubscriptionByProduct(
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
+
+  const [timeoutCancelled, setTimeoutCancelled] = useState(false);
+  useEffect(() => {
+    // cancel timeout when component unmounts
+    return () => {
+      setTimeoutCancelled(true);
+    };
+  }, []);
+  useEffect(() => {
+    // cancel timeout when subscription is created
+    if (shieldSubscription) {
+      setTimeoutCancelled(true);
+    }
+  }, [shieldSubscription]);
+
+  const startSubscriptionCreationTimeout = useTimeout(
+    () => {
+      if (timeoutCancelled) {
+        return;
+      }
+
+      // nav back home after timeout and no subscription created
+      navigate(DEFAULT_ROUTE);
+    },
+    MINUTE,
+    false,
+  );
+  // trigger wait for subscription creation timeout
+  useEffect(() => {
+    if (shouldWaitForSubscriptionCreation) {
+      startSubscriptionCreationTimeout?.();
+    }
+  }, [shouldWaitForSubscriptionCreation, startSubscriptionCreationTimeout]);
 
   const { subscriptionPricing, loading: subscriptionPricingLoading } =
     useSubscriptionPricing({
@@ -173,13 +220,19 @@ const TransactionShield = () => {
     recurringInterval: shieldSubscription?.interval,
   });
 
+  const isWaitingForSubscriptionCreation =
+    shouldWaitForSubscriptionCreation && !shieldSubscription;
+
   const loading =
     cancelSubscriptionResult.pending ||
     unCancelSubscriptionResult.pending ||
     openGetSubscriptionBillingPortalResult.pending ||
     updateSubscriptionCardPaymentMethodResult.pending;
 
-  const showSkeletonLoader = subscriptionsLoading || subscriptionPricingLoading;
+  const showSkeletonLoader =
+    isWaitingForSubscriptionCreation ||
+    subscriptionsLoading ||
+    subscriptionPricingLoading;
 
   useEffect(() => {
     if (shieldSubscription) {
@@ -205,11 +258,12 @@ const TransactionShield = () => {
       if (!useTransactionSimulations) {
         setUseTransactionSimulations(true);
       }
-    } else {
+    } else if (!shouldWaitForSubscriptionCreation) {
       // redirect to shield plan page if user doesn't have a subscription
       navigate(SHIELD_PLAN_ROUTE);
     }
   }, [
+    shouldWaitForSubscriptionCreation,
     navigate,
     shieldSubscription,
     securityAlertsEnabled,
@@ -725,7 +779,11 @@ const TransactionShield = () => {
         {buttonRow(
           t('shieldTxMembershipViewFullBenefits'),
           () => {
-            // todo: link to benefits page
+            window.open(
+              TRANSACTION_SHIELD_LINK,
+              '_blank',
+              'noopener noreferrer',
+            );
           },
           'shield-detail-view-benefits-button',
         )}

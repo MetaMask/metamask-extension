@@ -2,7 +2,6 @@ import {
   SubscriptionController,
   SubscriptionService,
 } from '@metamask/subscription-controller';
-import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import {
   getSubscriptionControllerInitMessenger,
@@ -10,6 +9,7 @@ import {
   SubscriptionControllerMessenger,
   SubscriptionControllerInitMessenger,
 } from '../messengers/subscription';
+import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { SubscriptionControllerInit } from './subscription-controller-init';
@@ -22,7 +22,7 @@ function buildInitRequestMock(): jest.Mocked<
     SubscriptionControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = new Messenger<never, never>();
+  const baseControllerMessenger = getRootMessenger<never, never>();
 
   return {
     ...buildControllerInitRequestMock(),

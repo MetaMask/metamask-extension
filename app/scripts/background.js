@@ -19,7 +19,6 @@ import { NotificationServicesController } from '@metamask/notification-services-
 import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
-
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -90,6 +89,7 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
+import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
@@ -100,6 +100,12 @@ import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferra
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
  */
+
+// MV3 configures the ExtensionLazyListener in app-init.js and sets it on globalThis.stateHooks,
+// but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,
+// as it doesn't need them).
+const lazyListener =
+  globalThis.stateHooks.lazyListener ?? new ExtensionLazyListener(browser);
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -173,15 +179,7 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-// In MV3 onInstalled must be installed in the entry file
-if (globalThis.stateHooks.onInstalledListener) {
-  globalThis.stateHooks.onInstalledListener.then(handleOnInstalled);
-} else {
-  browser.runtime.onInstalled.addListener(function listener(details) {
-    browser.runtime.onInstalled.removeListener(listener);
-    handleOnInstalled(details);
-  });
-}
+lazyListener.once('runtime', 'onInstalled').then(handleOnInstalled);
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -341,11 +339,12 @@ function maybeDetectPhishing(theController) {
       }
 
       const { hostname, href, searchParams } = new URL(details.url);
-      if (inTest) {
-        if (searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')) {
-          // this is a test page that needs to bypass early phishing detection
-          return {};
-        }
+      if (
+        inTest &&
+        searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')
+      ) {
+        // this is a test page that needs to bypass early phishing detection
+        return {};
       }
 
       theController.phishingController.maybeUpdateState();
@@ -367,17 +366,30 @@ function maybeDetectPhishing(theController) {
 
       // Determine the block reason based on the type
       let blockReason;
-      let blockedUrl = hostname;
+      let blockedUrl = href;
       if (phishingTestResponse?.result && blockedRequestResponse.result) {
         blockReason = `${phishingTestResponse.type} and ${blockedRequestResponse.type}`;
       } else if (phishingTestResponse?.result) {
         blockReason = phishingTestResponse.type;
       } else {
+        // Override the blocked URL to the initiator URL if the request was flagged by c2 detection
         blockReason = blockedRequestResponse.type;
         blockedUrl = details.initiator;
       }
 
-      const querystring = new URLSearchParams({ hostname, href });
+      let blockedHostname;
+      try {
+        blockedHostname = new URL(blockedUrl).hostname;
+      } catch {
+        // If blockedUrl is null or undefined, fall back to the original URL
+        blockedHostname = hostname;
+        blockedUrl = href;
+      }
+
+      const querystring = new URLSearchParams({
+        hostname: blockedHostname, // used for creating the EPD issue title (false positive report)
+        href: blockedUrl, // used for displaying the URL on the phsihing warning page + proceed anyway URL
+      });
       const redirectUrl = new URL(phishingPageHref);
       redirectUrl.hash = querystring.toString();
       const redirectHref = redirectUrl.toString();
@@ -482,7 +494,12 @@ let connectEip1193;
 let connectCaipMultichain;
 
 const corruptionHandler = new CorruptionHandler();
-browser.runtime.onConnect.addListener(async (port) => {
+/**
+ * Handles the onConnect event.
+ *
+ * @param {browser.Runtime.Port} port - The port provided by a new context.
+ */
+const handleOnConnect = async (port) => {
   if (
     inTest &&
     getManifestFlags().testing?.simulateUnresponsiveBackground === true
@@ -490,12 +507,24 @@ browser.runtime.onConnect.addListener(async (port) => {
     return;
   }
 
-  port.postMessage({
-    data: {
-      method: BACKGROUND_LIVENESS_METHOD,
-    },
-    name: 'background-liveness',
-  });
+  try {
+    // `handleOnConnect` can be called asynchronously, well after the `onConnect`
+    // event was emitted, due to the lazy listener setup in `app-init.js`, so we
+    // might not be able to send this message if the window has already closed.
+    port.postMessage({
+      data: {
+        method: BACKGROUND_LIVENESS_METHOD,
+      },
+      name: 'background-liveness',
+    });
+  } catch (e) {
+    log.error(
+      'MetaMask - background-liveness check: Failed to message to port',
+      e,
+    );
+    // window already closed, no need to continue.
+    return;
+  }
 
   // Queue up connection attempts here, waiting until after initialization
   try {
@@ -554,7 +583,20 @@ browser.runtime.onConnect.addListener(async (port) => {
       });
     }
   }
-});
+};
+const installOnConnectListener = () => {
+  lazyListener.addListener('runtime', 'onConnect', handleOnConnect);
+};
+if (
+  inTest &&
+  getManifestFlags().testing?.simulatedSlowBackgroundLoadingTimeout
+) {
+  const { simulatedSlowBackgroundLoadingTimeout } = getManifestFlags().testing;
+  setTimeout(installOnConnectListener, simulatedSlowBackgroundLoadingTimeout);
+} else {
+  installOnConnectListener();
+}
+
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
@@ -591,10 +633,7 @@ function saveTimestamp() {
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
- * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {object} accountsByChainId - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values keyed by chain id.
- * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
- * @property {object} currentBlockGasLimitByChainId - The most recently seen block gas limit, in a lower case hex prefixed string keyed by chain id.
  * @property {object} unapprovedPersonalMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
  * @property {object} unapprovedEncryptionPublicKeyMsgs - An object of messages pending approval, mapping a unique ID to the options.
@@ -1628,9 +1667,9 @@ const addAppInstalledEvent = () => {
 /**
  * Handles the onInstalled event.
  *
- * @param {chrome.runtime.InstalledDetails} details
+ * @param {[chrome.runtime.InstalledDetails]} params - Array containing a single installation details object.
  */
-function handleOnInstalled(details) {
+function handleOnInstalled([details]) {
   if (details.reason === 'install') {
     onInstall();
   } else if (

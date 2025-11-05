@@ -852,7 +852,7 @@
         "lodash": true,
         "@metamask/assets-controllers>multiformats": true,
         "reselect": true,
-        "single-call-balance-checker-abi": true,
+        "@metamask/assets-controllers>single-call-balance-checker-abi": true,
         "uuid": true
       }
     },
@@ -872,8 +872,7 @@
     },
     "@metamask/base-controller": {
       "globals": {
-        "console.error": true,
-        "setTimeout": true
+        "console.error": true
       },
       "packages": {
         "immer": true
@@ -1360,14 +1359,6 @@
         "bitcoin-address-validation": true
       }
     },
-    "@metamask/multichain-transactions-controller>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
     "@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -1407,14 +1398,6 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
-      }
-    },
-    "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": {
-      "packages": {
-        "@metamask/multichain-transactions-controller>@metamask/keyring-api": true,
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client>uuid": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
@@ -1462,6 +1445,11 @@
         "browserify>buffer": true,
         "webpack>events": true,
         "uuid": true
+      }
+    },
+    "@metamask/messenger": {
+      "globals": {
+        "console.error": true
       }
     },
     "@metamask/multichain-account-service": {
@@ -1520,8 +1508,8 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/multichain-transactions-controller>@metamask/keyring-api": true,
-        "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-snap-client": true,
         "@metamask/snaps-utils": true
       }
     },
@@ -1818,13 +1806,15 @@
     },
     "@metamask/shield-controller": {
       "globals": {
-        "setTimeout": true
+        "AbortController": true
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/signature-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
+        "cockatiel": true,
         "lodash": true
       }
     },
@@ -1991,7 +1981,8 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/transaction-controller": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": {
@@ -2238,6 +2229,68 @@
         "URLSearchParams": true,
         "console": true,
         "document.defaultView": true
+      }
+    },
+    "@rive-app/react-canvas>@rive-app/canvas": {
+      "globals": {
+        "AudioContext": false,
+        "Blob": true,
+        "DOMMatrix": false,
+        "FinalizationRegistry": false,
+        "HTMLCanvasElement": true,
+        "Image": true,
+        "Iterator": false,
+        "MouseEvent": false,
+        "Path2D": true,
+        "Request": true,
+        "ResizeObserver": false,
+        "TextDecoder": true,
+        "URL.createObjectURL": true,
+        "URL.revokeObjectURL": true,
+        "WebAssembly": true,
+        "XMLHttpRequest": false,
+        "cancelAnimationFrame": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "crypto": false,
+        "define": false,
+        "devicePixelRatio": false,
+        "document": false,
+        "document.createElement": true,
+        "fetch": false,
+        "h": false,
+        "importScripts": false,
+        "location.href": false,
+        "navigator": false,
+        "navigator.userAgent": true,
+        "performance.now": true,
+        "prompt": false,
+        "readline": false,
+        "requestAnimationFrame": true,
+        "setTimeout": true,
+        "webkitAudioContext": false
+      }
+    },
+    "@rive-app/react-canvas": {
+      "globals": {
+        "IntersectionObserver": false,
+        "ResizeObserver": false,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "devicePixelRatio": false,
+        "document.documentElement.clientHeight": true,
+        "document.documentElement.clientWidth": true,
+        "innerHeight": false,
+        "innerWidth": false,
+        "matchMedia": false,
+        "removeEventListener": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@rive-app/react-canvas>@rive-app/canvas": true,
+        "react": true
       }
     },
     "@metamask/eth-sig-util>@scure/base": {
@@ -5540,11 +5593,6 @@
       }
     },
     "@metamask/keyring-snap-client>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client>uuid": {
       "globals": {
         "crypto": true
       }

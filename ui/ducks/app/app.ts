@@ -5,10 +5,6 @@ import type {
 import { PayloadAction } from '@reduxjs/toolkit';
 import { Action, AnyAction } from 'redux';
 import {
-  PaymentType,
-  RecurringInterval,
-} from '@metamask/subscription-controller';
-import {
   HardwareTransportStates,
   WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
@@ -142,11 +138,6 @@ type AppState = {
     show: boolean;
     shouldSubmitEvents: boolean;
   };
-  lastUsedSubscriptionPaymentDetails?: {
-    paymentMethod: PaymentType;
-    paymentTokenAddress?: string;
-    plan: RecurringInterval;
-  } | null;
 };
 
 export type AppSliceState = {
@@ -816,11 +807,6 @@ export default function reduceApp(
         shieldEntryModal: {
           ...action.payload,
         },
-      };
-    case actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_DETAILS:
-      return {
-        ...appState,
-        lastUsedSubscriptionPaymentDetails: action.payload,
       };
 
     default:

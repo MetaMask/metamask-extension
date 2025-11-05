@@ -95,11 +95,8 @@ class SettingsPage extends PureComponent {
     addNewNetwork: PropTypes.bool,
     addressName: PropTypes.string,
     backRoute: PropTypes.string,
-    breadCrumbTextKey: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
-    initialBreadCrumbKey: PropTypes.string,
-    initialBreadCrumbRoute: PropTypes.string,
     isAddressEntryPage: PropTypes.bool,
     isMetaMaskShieldFeatureEnabled: PropTypes.bool,
     isPasswordChangePage: PropTypes.bool,
@@ -169,6 +166,9 @@ class SettingsPage extends PureComponent {
     const isPopup =
       environmentType === ENVIRONMENT_TYPE_POPUP ||
       environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+    const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+    ///: END:ONLY_INCLUDE_IF
     const isSearchHidden =
       isRevealSrpListPage || isPasswordChangePage || isTransactionShieldPage;
 
@@ -178,6 +178,9 @@ class SettingsPage extends PureComponent {
           'main-container main-container--has-shadow settings-page',
           {
             'settings-page--selected': currentPath !== SETTINGS_ROUTE,
+            ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+            'settings-page--sidepanel': isSidepanel,
+            ///: END:ONLY_INCLUDE_IF
           },
         )}
       >
@@ -320,10 +323,8 @@ class SettingsPage extends PureComponent {
       isAddressEntryPage,
       pathnameI18nKey,
       addressName,
-      initialBreadCrumbRoute,
-      breadCrumbTextKey,
+      backRoute,
       navigate,
-      initialBreadCrumbKey,
     } = this.props;
     let subheaderText;
 
@@ -331,11 +332,12 @@ class SettingsPage extends PureComponent {
       subheaderText = t('settings');
     } else if (isAddressEntryPage) {
       subheaderText = t('contacts');
-    } else if (initialBreadCrumbKey) {
-      subheaderText = t(initialBreadCrumbKey);
     } else {
       subheaderText = t(pathnameI18nKey || 'general');
     }
+
+    // Show back button only on inner pages of the settings page
+    const showBackButton = backRoute !== SETTINGS_ROUTE;
 
     return (
       !currentPath.startsWith(NETWORKS_ROUTE) && (
@@ -348,23 +350,15 @@ class SettingsPage extends PureComponent {
           flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
         >
-          <Text
-            className={classnames({
-              'settings-page__subheader--link': initialBreadCrumbRoute,
-            })}
-            variant={TextVariant.headingSm}
-            onClick={() =>
-              initialBreadCrumbRoute && navigate(initialBreadCrumbRoute)
-            }
-          >
-            {subheaderText}
-          </Text>
-          {breadCrumbTextKey && (
-            <div className="settings-page__subheader--break">
-              <span>{' > '}</span>
-              {t(breadCrumbTextKey)}
-            </div>
+          {showBackButton && (
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              onClick={() => navigate(backRoute)}
+              marginRight={2}
+              size={ButtonIconSize.Md}
+            />
           )}
+          <Text variant={TextVariant.headingSm}>{subheaderText}</Text>
           {isAddressEntryPage && (
             <div className="settings-page__subheader--break">
               <span>{' > '}</span>
