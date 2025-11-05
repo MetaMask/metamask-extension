@@ -119,8 +119,6 @@ class UnlockPage extends Component {
 
   animationEventEmitter = new EventEmitter();
 
-  passwordLoginAttemptTraceCtx = null;
-
   /**
    * Determines if the current user is in the social import rehydration phase
    *
@@ -148,7 +146,7 @@ class UnlockPage extends Component {
   }
 
   async componentDidMount() {
-    this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace?.({
+    this.context.bufferedTrace?.({
       name: TraceName.OnboardingPasswordLoginAttempt,
       op: TraceOperation.OnboardingUserJourney,
       parentContext: this.props.onboardingParentContext?.current,
@@ -217,12 +215,9 @@ class UnlockPage extends Component {
           isNewVisit: true,
         },
       );
-      if (this.passwordLoginAttemptTraceCtx) {
-        this.context.bufferedEndTrace?.({
-          name: TraceName.OnboardingPasswordLoginAttempt,
-        });
-        this.passwordLoginAttemptTraceCtx = null;
-      }
+      this.context.bufferedEndTrace?.({
+        name: TraceName.OnboardingPasswordLoginAttempt,
+      });
       this.context.bufferedEndTrace?.({
         name: TraceName.OnboardingExistingSocialLogin,
       });
