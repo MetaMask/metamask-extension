@@ -466,7 +466,7 @@ describe('network utils', () => {
         mockNetworkList,
       );
 
-      expect(result.length).toBe(2);
+      expect(result).toHaveLength(2);
       expect(result).not.toContainEqual(
         expect.objectContaining({ chainId: '0xa86a' }),
       );
@@ -489,8 +489,8 @@ describe('network utils', () => {
         mockNetworkList,
       );
 
-      expect(result).toEqual(mockNetworkList);
-      expect(result.length).toBe(mockNetworkList.length);
+      expect(result).toStrictEqual(mockNetworkList);
+      expect(result).toHaveLength(mockNetworkList.length);
     });
 
     it('returns full list when blacklist is not an array', () => {
@@ -501,7 +501,7 @@ describe('network utils', () => {
         mockNetworkList,
       );
 
-      expect(result).toEqual(mockNetworkList);
+      expect(result).toStrictEqual(mockNetworkList);
     });
 
     it('returns empty array when all networks are blacklisted', () => {
@@ -509,8 +509,8 @@ describe('network utils', () => {
 
       const result = getFilteredFeaturedNetworks(allChainIds, mockNetworkList);
 
-      expect(result).toEqual([]);
-      expect(result.length).toBe(0);
+      expect(result).toStrictEqual([]);
+      expect(result).toHaveLength(0);
     });
 
     it('returns full list when blacklisted chain IDs do not match any network', () => {
@@ -521,8 +521,8 @@ describe('network utils', () => {
         mockNetworkList,
       );
 
-      expect(result).toEqual(mockNetworkList);
-      expect(result.length).toBe(mockNetworkList.length);
+      expect(result).toStrictEqual(mockNetworkList);
+      expect(result).toHaveLength(mockNetworkList.length);
     });
 
     it('returns empty array when base network list is empty', () => {
@@ -530,7 +530,7 @@ describe('network utils', () => {
 
       const result = getFilteredFeaturedNetworks(blacklistedChainIds, []);
 
-      expect(result).toEqual([]);
+      expect(result).toStrictEqual([]);
     });
 
     it('handles single network blacklist', () => {
@@ -541,7 +541,7 @@ describe('network utils', () => {
         mockNetworkList,
       );
 
-      expect(result.length).toBe(3);
+      expect(result).toHaveLength(3);
       expect(result).not.toContainEqual(
         expect.objectContaining({ chainId: '0xa86a' }),
       );

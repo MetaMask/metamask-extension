@@ -8,7 +8,10 @@ import {
 } from '@metamask/utils';
 import { convertHexToDecimal } from '@metamask/controller-utils';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import type { NetworkConfiguration } from '@metamask/network-controller';
+import type {
+  NetworkConfiguration,
+  AddNetworkFields,
+} from '@metamask/network-controller';
 
 import {
   CHAIN_IDS,
@@ -16,7 +19,6 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../constants/multichain/networks';
-import type { AddNetworkFields } from '@metamask/network-controller';
 
 export type RpcEndpoint = {
   name?: string;
