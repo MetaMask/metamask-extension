@@ -9,8 +9,6 @@ import { setSlippage } from '../../ducks/bridge/actions';
 import type { BridgeToken } from '../../ducks/bridge/types';
 
 type UseSmartSlippageParams = {
-  fromChain: { chainId: string } | null | undefined;
-  toChain: { chainId: string } | null | undefined;
   fromToken: BridgeToken | null;
   toToken: BridgeToken | null;
   isSwap: boolean;
@@ -28,15 +26,11 @@ type UseSmartSlippageParams = {
  * - Supports Solana AUTO mode (undefined)
  *
  * @param options0
- * @param options0.fromChain
- * @param options0.toChain
  * @param options0.fromToken
  * @param options0.toToken
  * @param options0.isSwap
  */
 export function useSmartSlippage({
-  fromChain,
-  toChain,
   fromToken,
   toToken,
   isSwap,
@@ -44,15 +38,7 @@ export function useSmartSlippage({
   const dispatch = useDispatch();
 
   // Calculate the appropriate slippage for current context
-  const calculateCurrentSlippage = useCallback(() => {
-    const context: SlippageContext = {
-      fromChain,
-      toChain,
-      fromToken,
-      toToken,
-      isSwap,
-    };
-
+  const calculateCurrentSlippage = useCallback((context: SlippageContext) => {
     const slippage = calculateSlippage(context);
 
     // Log the reason in development
@@ -64,19 +50,19 @@ export function useSmartSlippage({
     }
 
     return slippage;
-  }, [fromChain, toChain, fromToken, toToken, isSwap]);
+  }, []);
 
   // Update slippage when context changes
   useEffect(() => {
-    const newSlippage = calculateCurrentSlippage();
+    const context: SlippageContext = {
+      fromChain: { chainId: fromToken?.chainId ?? '' },
+      toChain: { chainId: toToken?.chainId ?? '' },
+      fromToken,
+      toToken,
+      isSwap,
+    };
+
+    const newSlippage = calculateCurrentSlippage(context);
     dispatch(setSlippage(newSlippage));
-  }, [
-    fromChain,
-    toChain,
-    fromToken,
-    toToken,
-    isSwap,
-    calculateCurrentSlippage,
-    dispatch,
-  ]);
+  }, [fromToken, toToken, isSwap, calculateCurrentSlippage, dispatch]);
 }
