@@ -38,14 +38,15 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constan
 import { getImageForChainId } from '../../../../selectors/multichain';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { getShowTestNetworks } from '../../../../selectors/selectors';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 
-// TODO use MultichainNetworkConfiguration type
 type NetworkOption =
   | (NetworkConfiguration & {
       nickname?: string;
     })
   | AddNetworkFields
-  | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
+  | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId })
+  | MultichainNetworkConfiguration;
 
 /**
  * AssetPickerModalNetwork component displays a modal for selecting a network in the asset picker.

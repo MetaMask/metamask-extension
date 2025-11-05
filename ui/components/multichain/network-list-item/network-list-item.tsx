@@ -62,6 +62,7 @@ export const NetworkListItem = ({
   disabled = false,
   variant,
   notSelectable = false,
+  avatarNetworkProps = {},
 }: {
   name: string;
   iconSrc?: string;
@@ -81,6 +82,7 @@ export const NetworkListItem = ({
   disabled?: boolean;
   variant?: TextVariant;
   notSelectable?: boolean;
+  avatarNetworkProps?: Partial<React.ComponentProps<typeof AvatarNetwork>>;
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
@@ -175,6 +177,7 @@ export const NetworkListItem = ({
           name={name}
           src={iconSrc}
           size={iconSize as AvatarNetworkSize}
+          {...avatarNetworkProps}
         />
       )}
       <Box

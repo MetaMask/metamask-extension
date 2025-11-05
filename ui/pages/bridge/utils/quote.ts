@@ -5,10 +5,7 @@ import {
   isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import type {
-  NetworkConfiguration,
-  AddNetworkFields,
-} from '@metamask/network-controller';
+import { type CaipChainId } from '@metamask/utils';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
@@ -50,18 +47,19 @@ export const formatProviderLabel = (args?: {
   bridges: QuoteResponse['quote']['bridges'];
 }): `${string}_${string}` => `${args?.bridgeId}_${args?.bridges[0]}`;
 
+// TODO if user requests quote before setting src chain, this might fail
 export const isQuoteExpiredOrInvalid = ({
   activeQuote,
   toToken,
-  toChain,
-  fromChain,
+  toChainId,
+  fromChainId,
   isQuoteExpired,
   insufficientBal,
 }: {
   activeQuote: QuoteResponse | null;
   toToken: BridgeToken | null;
-  toChain?: NetworkConfiguration | AddNetworkFields;
-  fromChain?: NetworkConfiguration;
+  toChainId?: CaipChainId;
+  fromChainId?: CaipChainId;
   isQuoteExpired: boolean;
   insufficientBal?: boolean;
 }): boolean => {
@@ -70,7 +68,7 @@ export const isQuoteExpiredOrInvalid = ({
     isQuoteExpired &&
     (!insufficientBal ||
       // `insufficientBal` is always true for non-EVM chains (Solana, Bitcoin)
-      (fromChain && isNonEvmChainId(fromChain.chainId)))
+      (fromChainId && isNonEvmChainId(fromChainId)))
   ) {
     return true;
   }
@@ -84,8 +82,8 @@ export const isQuoteExpiredOrInvalid = ({
     const quoteDestChainIdCaip = activeQuote.quote?.destChainId
       ? formatChainIdToCaip(activeQuote.quote.destChainId)
       : '';
-    const selectedDestChainIdCaip = toChain?.chainId
-      ? formatChainIdToCaip(toChain.chainId)
+    const selectedDestChainIdCaip = toChainId
+      ? formatChainIdToCaip(toChainId)
       : '';
 
     return !(

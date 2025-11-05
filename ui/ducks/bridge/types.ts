@@ -11,14 +11,13 @@ import { type TxAlert } from '../../../shared/types/security-alerts-api';
 
 export type BridgeToken = {
   address: string;
-  assetId?: CaipAssetType;
+  assetId: CaipAssetType;
   symbol: string;
+  name?: string;
   image: string;
   decimals: number;
-  chainId: number | Hex | ChainId | CaipChainId;
-  balance: string; // raw balance
-  // TODO deprecate this field and use balance instead
-  string: string | undefined; // normalized balance as a stringified number
+  chainId: CaipChainId;
+  balance?: string; // raw balance
   tokenFiatAmount?: number | null;
   occurrences?: number;
   aggregators?: string[];
@@ -26,6 +25,12 @@ export type BridgeToken = {
 };
 
 export type BridgeState = {
+  /*
+   * This stores the user's selected source chain, and will be null if the user has not selected a source chain (all networks are selected by default)
+   * This should not be accessed directly in components/hooks, use the getFromChain selector instead
+   * The getFromChain selector uses the source chain as the source chain by default if fromChainId is null
+   */
+  fromChainId: CaipChainId | null;
   /*
    * This stores the user's selected destination chain, and will be null if the user has not selected a destination chain
    * This should not be accessed directly in components/hooks, use the getToChain selector instead
