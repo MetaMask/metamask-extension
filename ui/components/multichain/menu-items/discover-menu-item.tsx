@@ -19,7 +19,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Box, IconName } from '../../component-library';
+import { Box } from '@metamask/design-system-react';
+import { IconName } from '../../component-library';
 
 export const DiscoverMenuItem = ({
   closeMenu,
@@ -66,12 +67,7 @@ export const DiscoverMenuItem = ({
       onClick={() => handlePortfolioOnClick()}
       data-testid="portfolio-menu-item"
     >
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.spaceBetween}
-      >
+      <Box className="flex flex-row items-center justify-between">
         {t('discover')}
       </Box>
     </MenuItem>
