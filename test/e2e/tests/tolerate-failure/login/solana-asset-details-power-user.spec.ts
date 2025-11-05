@@ -56,8 +56,8 @@ describe('Power user persona', function () {
         const timer1 = new TimerHelper(
           'Time since the user clicks on the asset until the price chart is shown',
         );
-        timer1.start();
         await driver.delay(1000); // workaround to avoid race condition
+        timer1.start();
         await assetListPage.checkPriceChartIsShown();
         await assetListPage.checkPriceChartLoaded(SOL_TOKEN_ADDRESS); // SOL address
         timer1.stop();
