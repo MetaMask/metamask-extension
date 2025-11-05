@@ -45,12 +45,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  endTrace,
-  trace,
-  TraceName,
-  TraceOperation,
-} from '../../../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
@@ -226,10 +221,6 @@ export const MultichainAccountList = ({
 
     const handleAccountClickToUse = (accountGroupId: AccountGroupId) => {
       const handlerToUse = handleAccountClick ?? defaultHandleAccountClick;
-      trace({
-        name: TraceName.ShowAccountList,
-        op: TraceOperation.AccountUi,
-      });
       handlerToUse?.(accountGroupId);
     };
 
