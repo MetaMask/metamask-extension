@@ -42,7 +42,9 @@ describe('DiscoverMenuItem', () => {
 
     expect(openTabSpy).toHaveBeenCalled();
     expect(openTabSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ url: expect.stringContaining('explore/tokens') }),
+      expect.objectContaining({
+        url: expect.stringContaining('explore/tokens'),
+      }),
     );
     expect(closeMenu).toHaveBeenCalled();
   });

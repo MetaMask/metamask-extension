@@ -1,25 +1,19 @@
-import { MenuItem } from '../../ui/menu';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { Box } from '@metamask/design-system-react';
+import { MenuItem } from '../../ui/menu';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import {
   getDataCollectionForMarketing,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
 } from '../../../selectors';
-import React, { useCallback, useContext } from 'react';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Box } from '@metamask/design-system-react';
 import { IconName } from '../../component-library';
 
 export const DiscoverMenuItem = ({
