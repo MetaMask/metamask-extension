@@ -1,9 +1,9 @@
-import {
-  DeFiPositionsController,
-  DeFiPositionsControllerMessenger,
-} from '@metamask/assets-controllers';
+import { DeFiPositionsController } from '@metamask/assets-controllers';
 import { ControllerInitFunction } from '../types';
-import { DeFiPositionsControllerInitMessenger } from '../messengers/defi-positions/defi-positions-controller-messenger';
+import {
+  DeFiPositionsControllerMessenger,
+  DeFiPositionsControllerInitMessenger,
+} from '../messengers/defi-positions';
 
 export const DeFiPositionsControllerInit: ControllerInitFunction<
   DeFiPositionsController,
@@ -11,12 +11,17 @@ export const DeFiPositionsControllerInit: ControllerInitFunction<
   DeFiPositionsControllerInitMessenger
 > = ({ initMessenger, controllerMessenger, getController }) => {
   const getPreferencesController = () => getController('PreferencesController');
+  const getOnboardingController = () => getController('OnboardingController');
 
   const controller = new DeFiPositionsController({
     messenger: controllerMessenger,
     isEnabled: () => {
-      const preferencesController = getPreferencesController();
-      const { useExternalServices } = preferencesController.state;
+      const {
+        state: { useExternalServices },
+      } = getPreferencesController();
+      const {
+        state: { completedOnboarding },
+      } = getOnboardingController();
 
       const state = initMessenger.call('RemoteFeatureFlagController:getState');
 
@@ -24,7 +29,7 @@ export const DeFiPositionsControllerInit: ControllerInitFunction<
         state?.remoteFeatureFlags?.assetsDefiPositionsEnabled,
       );
 
-      return useExternalServices && featureFlagForDeFi;
+      return completedOnboarding && useExternalServices && featureFlagForDeFi;
     },
     trackEvent: initMessenger.call.bind(
       initMessenger,

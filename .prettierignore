@@ -13,6 +13,7 @@ node_modules/**/*
 /development/ts-migration-dashboard/build/**
 /dist/**/*
 /lavamoat/**/policy.json
+/lavamoat/**/policy-override.json
 /storybook-build/**/*
 /test-artifacts/**/*
 /test/test-results/**/*
