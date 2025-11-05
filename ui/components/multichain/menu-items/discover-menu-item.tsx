@@ -1,0 +1,79 @@
+import { MenuItem } from '../../ui/menu';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { useSelector } from 'react-redux';
+import {
+  getDataCollectionForMarketing,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
+} from '../../../selectors';
+import React, { useCallback, useContext } from 'react';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { Box, IconName } from '../../component-library';
+
+export const DiscoverMenuItem = ({
+  closeMenu,
+  metricsLocation,
+}: {
+  closeMenu: () => void;
+  metricsLocation: string;
+}) => {
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+  const trackEvent = useContext(MetaMetricsContext);
+  const t = useI18nContext();
+
+  const handlePortfolioOnClick = useCallback(() => {
+    const url = getPortfolioUrl(
+      'explore/tokens',
+      'ext_portfolio_button',
+      metaMetricsId,
+      isMetaMetricsEnabled,
+      isMarketingEnabled,
+    );
+    global.platform.openTab({ url });
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PortfolioLinkClicked,
+      properties: {
+        location: metricsLocation,
+        text: 'Portfolio',
+      },
+    });
+    closeMenu();
+  }, [
+    closeMenu,
+    isMarketingEnabled,
+    isMetaMetricsEnabled,
+    metaMetricsId,
+    trackEvent,
+  ]);
+
+  return (
+    <MenuItem
+      iconName={IconName.Export}
+      onClick={() => handlePortfolioOnClick()}
+      data-testid="portfolio-menu-item"
+    >
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.spaceBetween}
+      >
+        {t('discover')}
+      </Box>
+    </MenuItem>
+  );
+};
