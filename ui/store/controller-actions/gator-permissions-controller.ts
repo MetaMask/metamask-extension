@@ -20,8 +20,10 @@ export const addPendingRevocation = async (
   permissionContext: Hex,
 ): Promise<void> => {
   return await submitRequestToBackground('addPendingRevocation', [
-    txId,
-    permissionContext,
+    {
+      txId,
+      permissionContext,
+    },
   ]);
 };
 
