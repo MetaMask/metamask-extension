@@ -185,6 +185,7 @@ export default function OnboardingWelcome() {
             socialConnectionType,
             bufferedTrace,
             bufferedEndTrace,
+            trackEvent,
           ),
         );
         bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
@@ -198,6 +199,7 @@ export default function OnboardingWelcome() {
       onboardingParentContext,
       bufferedTrace,
       bufferedEndTrace,
+      trackEvent,
     ],
   );
 
