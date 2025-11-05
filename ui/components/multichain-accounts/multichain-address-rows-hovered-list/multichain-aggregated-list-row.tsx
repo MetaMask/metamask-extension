@@ -7,11 +7,8 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
-  ButtonIcon,
   ButtonIconSize,
   FontWeight,
-  IconColor,
-  IconName,
   Text,
   TextColor,
   TextVariant,
@@ -24,6 +21,8 @@ import { CopyParams } from '../multichain-address-row/multichain-address-row';
 import { useSelector } from 'react-redux';
 import { getNetworksByScopes } from '../../../../shared/modules/selectors/networks';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+import { ButtonIcon, IconName } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
 
 type MultichainAggregatedAddressListRowProps = {
   /**
@@ -56,6 +55,7 @@ export const MultichainAggregatedAddressListRow = ({
   const [displayText, setDisplayText] = useState(truncatedAddress); // Text to display (address or copy message)
   const [copyIcon, setCopyIcon] = useState(IconName.Copy); // Default copy icon state
   const [addressCopied, setAddressCopied] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   // Track timeout ID for managing `setTimeout`
   const timeoutRef = useRef<number | null>(null);
@@ -142,6 +142,8 @@ export const MultichainAggregatedAddressListRow = ({
           : BoxBackgroundColor.BackgroundDefault
       }
       onClick={handleCopyClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <Box gap={4} flexDirection={BoxFlexDirection.Row}>
         <AvatarGroup
@@ -162,7 +164,11 @@ export const MultichainAggregatedAddressListRow = ({
           variant={TextVariant.BodyXs}
           fontWeight={FontWeight.Medium}
           color={
-            addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
+            addressCopied
+              ? TextColor.SuccessDefault
+              : isHovered
+                ? TextColor.PrimaryDefaultHover
+                : TextColor.TextAlternative
           }
         >
           {displayText}
@@ -172,7 +178,11 @@ export const MultichainAggregatedAddressListRow = ({
           onClick={handleCopyClick}
           size={ButtonIconSize.Sm}
           color={
-            addressCopied ? IconColor.SuccessDefault : IconColor.IconAlternative
+            addressCopied
+              ? IconColor.successDefault
+              : isHovered
+                ? IconColor.primaryDefault
+                : IconColor.iconAlternative
           }
           ariaLabel={t('copyAddressShort')}
         />
