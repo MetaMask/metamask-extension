@@ -142,14 +142,11 @@ describe('AddMultichainAccount', () => {
     // Verify we're in the loading state first
     expect(screen.getByText('Adding account...')).toBeInTheDocument();
 
-    // Wait for the async operation to complete (first run any pending promises)
-    await Promise.resolve();
-
-    // Run another tick to ensure state updates are processed
-    await Promise.resolve();
+    await waitFor(() => {
+      expect(screen.getByText('Add account')).toBeInTheDocument();
+    });
 
     // Check that the component returned to normal state
-    expect(screen.getByText('Add account')).toBeInTheDocument();
     expect(
       container.querySelector(addMultichainAccountIconClass),
     ).toBeInTheDocument();
@@ -180,14 +177,13 @@ describe('AddMultichainAccount', () => {
       }),
     );
 
-    await Promise.resolve();
-    await Promise.resolve();
-
-    expect(traceLib.endTrace).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: traceLib.TraceName.CreateMultichainAccount,
-      }),
-    );
+    await waitFor(() => {
+      expect(traceLib.endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: traceLib.TraceName.CreateMultichainAccount,
+        }),
+      );
+    });
   });
 
   describe('Loading States Integration', () => {
