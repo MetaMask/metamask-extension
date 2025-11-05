@@ -53,7 +53,10 @@ export const lavamoatPlugin = (args: Args) =>
             },
           },
         };
-      } else if (chunk.name === 'background') {
+      } else if (
+        chunk.name === 'background' ||
+        chunk.name === '../offscreen/scripts/offscreen.ts'
+      ) {
         return {
           mode: 'safe',
           embeddedOptions: {
@@ -130,16 +133,6 @@ export const lavamoatPlugin = (args: Args) =>
                     ]
                   : []),
               ],
-            },
-          },
-        };
-      } else if (chunk.name === '../offscreen/scripts/offscreen.ts') {
-        return {
-          mode: 'safe',
-          embeddedOptions: {
-            scuttleGlobalThis: {
-              enabled: true,
-              exceptions: ['ShadowRoot', /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu],
             },
           },
         };
