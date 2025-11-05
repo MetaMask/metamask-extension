@@ -40,10 +40,10 @@ export function useBurnAddressAlert(): Alert[] {
 
     return [
       {
-        key: AlertActionKey.BurnAddress,
-        field: RowAlertKey.BurnAddress,
+        key: AlertActionKey.InteractingWith,
+        field: RowAlertKey.InteractingWith,
         message: t('alertMessageBurnAddress'),
-        title: t('alertActionBurnAddress'),
+        reason: t('alertActionBurnAddress'),
         severity: Severity.Danger,
         isBlocking: true,
       },

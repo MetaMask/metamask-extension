@@ -2,7 +2,6 @@ export const TEST_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 
 export enum RowAlertKey {
   AccountTypeUpgrade = 'accountTypeUpgrade',
-  BurnAddress = 'burnAddress',
   ChainName = 'chainName',
   EstimatedChangesStatic = 'estimatedChangesStatic',
   EstimatedFee = 'estimatedFee',
@@ -18,8 +17,8 @@ export enum RowAlertKey {
 }
 
 export enum AlertActionKey {
-  BurnAddress = 'burnAddress',
   Buy = 'buy',
+  InteractingWith = 'interactingWith',
   ShowAdvancedGasFeeModal = 'showAdvancedGasModal',
   ShowGasFeeModal = 'showGasFeeModal',
   ShowPendingConfirmation = 'showPendingConfirmation',

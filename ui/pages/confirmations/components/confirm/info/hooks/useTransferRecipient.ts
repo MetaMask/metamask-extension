@@ -56,7 +56,11 @@ function getRecipientByType(
   const dataRecipient = getTransactionDataRecipient(data);
   const paramsRecipient = transactionTo;
 
-  return type === TransactionType.simpleSend ? paramsRecipient : dataRecipient;
+  if (type === TransactionType.simpleSend) {
+    return paramsRecipient;
+  }
+
+  return dataRecipient || paramsRecipient;
 }
 
 function getTransactionDataRecipient(data: string): string | undefined {
