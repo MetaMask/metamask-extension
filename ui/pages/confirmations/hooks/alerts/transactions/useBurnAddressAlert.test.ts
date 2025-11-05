@@ -212,8 +212,8 @@ describe('useBurnAddressAlert', () => {
     it('returns alert when burn address in txParams.to (mixed case)', () => {
       const mixedCaseBurnAddress =
         '0x0000000000000000000000000000000000000000'.replace(
-          /0/g,
-          (match, offset) => (offset % 2 === 0 ? '0' : '0'),
+          /0/gu,
+          (_match, offset) => (offset % 2 === 0 ? '0' : '0'),
         );
       const alerts = runHook({
         currentConfirmation: {
