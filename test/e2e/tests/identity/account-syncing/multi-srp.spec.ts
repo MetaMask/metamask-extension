@@ -105,9 +105,6 @@ describe('Account syncing - Multiple SRPs', function () {
         // Import second SRP (this will automatically create the third account)
         await accountListPage.startImportSecretPhrase(
           IDENTITY_TEAM_SEED_PHRASE_2,
-          {
-            isMultichainAccountsState2Enabled: true,
-          },
         );
 
         // Importing an SRP can be long, so we add a bit of extra time here
@@ -173,9 +170,6 @@ describe('Account syncing - Multiple SRPs', function () {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.startImportSecretPhrase(
           IDENTITY_TEAM_SEED_PHRASE_2,
-          {
-            isMultichainAccountsState2Enabled: true,
-          },
         );
 
         // Importing an SRP can be long, so we add a bit of extra time here

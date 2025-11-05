@@ -86,9 +86,7 @@ describe('Add wallet', function () {
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.startImportSecretPhrase(E2E_SRP, {
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.startImportSecretPhrase(E2E_SRP);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
