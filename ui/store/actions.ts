@@ -174,6 +174,12 @@ import {
   ClaimSubmitToastType,
   type NetworkConnectionBanner,
 } from '../../shared/constants/app-state';
+import {
+  SeasonDtoState,
+  SeasonStatusState,
+  EstimatePointsDto,
+  EstimatedPointsDto,
+} from '../../shared/types/rewards';
 import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
 import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
 import { loadShieldConfig } from '../../shared/modules/shield';
@@ -6617,6 +6623,81 @@ export function cancelQrCodeScan(): ThunkAction<
 > {
   return async () => {
     await submitRequestToBackground('cancelQrCodeScan');
+  };
+}
+
+// Rewards
+
+export function getRewardsHasAccountOptedIn(
+  account: CaipAccountId,
+): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    return await submitRequestToBackground<boolean>(
+      'getRewardsHasAccountOptedIn',
+      [account],
+    );
+  };
+}
+
+export function getRewardsCandidateSubscriptionId(): ThunkAction<
+  Promise<string | null>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<string | null>(
+      'getRewardsCandidateSubscriptionId',
+    );
+  };
+}
+
+export function getRewardsSeasonMetadata(
+  type?: 'current' | 'next',
+): ThunkAction<
+  Promise<SeasonDtoState>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<SeasonDtoState>(
+      'getRewardsSeasonMetadata',
+      type ? [type] : [],
+    );
+  };
+}
+
+export function getRewardsSeasonStatus(
+  subscriptionId: string,
+  seasonId: string,
+): ThunkAction<
+  Promise<SeasonStatusState>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<SeasonStatusState>(
+      'getRewardsSeasonStatus',
+      [subscriptionId, seasonId],
+    );
+  };
+}
+
+export function estimateRewardsPoints(
+  request: EstimatePointsDto,
+): ThunkAction<
+  Promise<EstimatedPointsDto>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<EstimatedPointsDto>(
+      'estimateRewardsPoints',
+      [request],
+    );
   };
 }
 
