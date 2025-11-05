@@ -31,8 +31,6 @@ jest.mock('../../../../../components/ui/loading-screen', () => ({
 describe('Loader', () => {
   const mockUseSelector = jest.mocked(useSelector);
 
-  const mockPush = jest.fn();
-
   beforeEach(() => {
     jest.clearAllMocks();
   });

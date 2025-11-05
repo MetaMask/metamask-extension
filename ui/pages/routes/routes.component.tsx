@@ -573,8 +573,8 @@ export default function Routes() {
         pendingApprovals,
         Boolean(approvalFlows?.length),
         history,
-        '', // queryString parameter
-        location.pathname, // currentPathname parameter
+        '',
+        location.pathname,
       );
     }
   }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);

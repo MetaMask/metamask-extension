@@ -5,10 +5,14 @@ import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confi
 import useSyncConfirmPath from './useSyncConfirmPath';
 
 const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
+const mockUseLocation = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useNavigate: () => mockUseNavigate,
+    useParams: () => mockUseParams(),
+    useLocation: () => mockUseLocation(),
   };
 });
 
@@ -28,6 +32,14 @@ const STATE_MOCK = {
 describe('useSyncConfirmPath', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Default mock: on confirmation route with no params
+    mockUseLocation.mockReturnValue({
+      pathname: '/confirm-transaction',
+      search: '',
+      hash: '',
+      state: null,
+    });
+    mockUseParams.mockReturnValue({});
   });
 
   it('should execute correctly', () => {
