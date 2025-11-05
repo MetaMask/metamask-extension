@@ -439,6 +439,9 @@
   "alertAccountTypeUpgradeTitle": {
     "message": "Account type"
   },
+  "alertActionBurnAddress": {
+    "message": "Sending Assets to Burn Address"
+  },
   "alertActionBuyWithNativeCurrency": {
     "message": "Buy $1"
   },
@@ -450,12 +453,6 @@
   },
   "alertActionUpdateGasFeeLevel": {
     "message": "Update gas options"
-  },
-  "alertActionBurnAddress": {
-    "message": "Sending Assets to Burn Address"
-  },
-  "alertMessageBurnAddress": {
-    "message": "You're sending your assets to a burn address. If you continue, you'll lose your assets."
   },
   "alertContentMultipleApprovals": {
     "message": "You're giving someone else permission to withdraw your tokens, even though it's not necessary for this transaction."
@@ -471,6 +468,9 @@
   },
   "alertMessageAddressTrustSignalMalicious": {
     "message": "If you confirm this request, you will probably lose your assets to a scammer."
+  },
+  "alertMessageBurnAddress": {
+    "message": "You're sending your assets to a burn address. If you continue, you'll lose your assets."
   },
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
