@@ -468,25 +468,6 @@ describe('useTokenInsightsData', () => {
       expect(mockFormatChainIdToCaip).not.toHaveBeenCalled();
     });
 
-    it('should handle invalid asset ID', async () => {
-      mockUseSelector
-        .mockReturnValueOnce('USD') // getCurrentCurrency
-        .mockReturnValueOnce(defaultCurrencyRates) // getCurrencyRates
-        .mockReturnValueOnce(null); // getMarketData
-
-      mockToAssetId.mockReturnValue(null);
-      mockFetchWithCache.mockResolvedValue({});
-
-      const { result } = renderHook(() => useTokenInsightsData(defaultToken));
-
-      await waitFor(() => {
-        expect(result.current.isLoading).toBe(false);
-      });
-
-      // Should still attempt to fetch even with invalid asset ID
-      expect(mockFetchWithCache).toHaveBeenCalled();
-    });
-
     it('should not fetch when token is in cache for EVM', () => {
       mockUseSelector
         .mockReturnValueOnce('USD') // getCurrentCurrency

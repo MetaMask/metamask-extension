@@ -3131,6 +3131,9 @@
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
+  "insights": {
+    "message": "Insights"
+  },
   "insightsFromSnap": {
     "message": "Insights from $1",
     "description": "$1 represents the name of the snap"
@@ -3556,6 +3559,9 @@
   },
   "marketCap": {
     "message": "Market cap"
+  },
+  "marketCapFDV": {
+    "message": "Market cap (FDV)"
   },
   "marketDetails": {
     "message": "Market details"
@@ -4633,6 +4639,9 @@
   "pendingTransactionAlertMessageHyperlink": {
     "message": "Learn how to cancel or speed up a transaction.",
     "description": "The text for the hyperlink in the pending transaction alert message"
+  },
+  "percentChange": {
+    "message": "Percent change"
   },
   "permissionDetails": {
     "message": "Permission details"
@@ -7937,6 +7946,9 @@
   "viewOnOpensea": {
     "message": "View on Opensea"
   },
+  "viewTokenDetails": {
+    "message": "View token details"
+  },
   "viewTransaction": {
     "message": "View transaction"
   },
@@ -7961,6 +7973,9 @@
   },
   "visitWebSite": {
     "message": "Visit our website"
+  },
+  "volume": {
+    "message": "Volume"
   },
   "wallet": {
     "message": "Wallet"
