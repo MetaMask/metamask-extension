@@ -120,8 +120,8 @@ async function waitUntilFileIsWritten({
     }
     console.log(`File size is too small (${fileSize} bytes)`);
     if (attempt < maxRetries - 1) {
-      console.log(`Waiting for 5 seconds before retrying...`);
-      await driver.delay(5000);
+      console.log(`Waiting for 8 seconds before retrying...`);
+      await driver.delay(8000);
     }
   }
   // If the loop completes without success, throw an error

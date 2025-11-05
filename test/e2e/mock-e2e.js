@@ -883,6 +883,30 @@ async function setupMocking(
     };
   });
 
+  // Mock Rive animation files to prevent loading errors in e2e tests
+  // These animations are loaded during onboarding flow
+  await server
+    .forGet(/.*\/images\/riv_animations\/rive\.wasm/u)
+    .thenCallback(() => {
+      // Return empty ArrayBuffer for WASM file
+      return {
+        statusCode: 200,
+        headers: { 'content-type': 'application/wasm' },
+        body: Buffer.alloc(0),
+      };
+    });
+
+  await server
+    .forGet(/.*\/images\/riv_animations\/.*\.riv/u)
+    .thenCallback(() => {
+      // Return empty binary for .riv animation files
+      return {
+        statusCode: 200,
+        headers: { 'content-type': 'application/octet-stream' },
+        body: Buffer.alloc(0),
+      };
+    });
+
   await server
     .forGet('https://min-api.cryptocompare.com/data/pricemulti')
     .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
