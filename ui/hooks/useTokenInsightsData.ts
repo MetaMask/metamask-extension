@@ -124,7 +124,7 @@ export const useTokenInsightsData = (
         const assetId = toAssetId(token.address, caipChainId);
 
         if (!assetId) {
-          throw new Error('Invalid asset ID');
+          console.error('Invalid asset ID');
         }
 
         const url = `https://price.api.cx.metamask.io/v3/spot-prices?assetIds=${assetId}&includeMarketData=true&vsCurrency=${currentCurrency.toLowerCase()}`;
@@ -138,7 +138,7 @@ export const useTokenInsightsData = (
           },
         });
 
-        const tokenData = response?.[assetId];
+        const tokenData = assetId ? response?.[assetId] : null;
         if (tokenData) {
           const marketData: MarketData = {
             price: tokenData.price || tokenData.usd,
