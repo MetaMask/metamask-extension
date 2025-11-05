@@ -21,6 +21,9 @@ import { AvatarGroup } from '../../multichain/avatar-group';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { CopyParams } from '../multichain-address-row/multichain-address-row';
+import { useSelector } from 'react-redux';
+import { getNetworksByScopes } from '../../../../shared/modules/selectors/networks';
+import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 
 type MultichainAggregatedAddressListRowProps = {
   /**
@@ -31,10 +34,6 @@ type MultichainAggregatedAddressListRowProps = {
    * Address string to display (will be truncated)
    */
   address: string;
-  /**
-   * Name for the group of address
-   */
-  groupName: string;
   /**
    * Copy parameters for the address
    */
@@ -47,7 +46,6 @@ type MultichainAggregatedAddressListRowProps = {
 
 export const MultichainAggregatedAddressListRow = ({
   chainIds,
-  groupName,
   address,
   copyActionParams,
   className = '',
@@ -79,14 +77,32 @@ export const MultichainAggregatedAddressListRow = ({
 
   const networkData = useMemo(() => {
     return chainIds.map((chain) => {
+      let hexChainId = chain;
+      // Convert CAIP chain ID to hex format for EVM chains
+      if (chain.startsWith('eip155:')) {
+        try {
+          hexChainId = convertCaipToHexChainId(chain as `${string}:${string}`);
+        } catch {
+          // If conversion fails, fall back to using the original chain ID
+          hexChainId = chain;
+        }
+      }
       return {
         avatarValue:
           CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-            chain as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+            hexChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
           ],
       };
     });
   }, [chainIds]);
+
+  const networks = useSelector((state) => getNetworksByScopes(state, chainIds));
+
+  const groupName = useMemo(() => {
+    return chainIds.some((chain) => chain.startsWith('eip155:'))
+      ? t('networkNameEthereum')
+      : networks[0]?.name;
+  }, [chainIds, t, networks]);
 
   // Handle "Copy" button click events
   const handleCopyClick = () => {

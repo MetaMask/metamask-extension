@@ -15,14 +15,25 @@ import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list
 const mockStore = configureStore([]);
 
 const accounts: Record<string, InternalAccount> = {
-  ethereum: { ...MOCK_ACCOUNT_EOA, scopes: ['eip155:*'] },
+  ethereum: { ...MOCK_ACCOUNT_EOA, scopes: ['eip155:1'] },
   polygon: {
     ...MOCK_ACCOUNT_EOA,
     id: '2',
     address: '0xabcdef1234567890abcdef1234567890abcdef12',
     scopes: ['eip155:137'],
   },
-  solana: { ...MOCK_ACCOUNT_SOLANA_MAINNET, scopes: ['solana:*'] },
+  solana: {
+    ...MOCK_ACCOUNT_SOLANA_MAINNET,
+    scopes: [MultichainNetworks.SOLANA],
+    metadata: {
+      ...MOCK_ACCOUNT_SOLANA_MAINNET.metadata,
+      snap: {
+        enabled: true,
+        name: 'Solana Snap',
+        id: 'npm:@consensys/solana-snap',
+      },
+    },
+  },
   solanaTestnet: {
     ...MOCK_ACCOUNT_SOLANA_MAINNET,
     id: 'solana-testnet-account',
@@ -31,9 +42,17 @@ const accounts: Record<string, InternalAccount> = {
     metadata: {
       ...MOCK_ACCOUNT_SOLANA_MAINNET.metadata,
       name: 'Solana Testnet Account',
+      snap: {
+        enabled: true,
+        name: 'Solana Snap',
+        id: 'npm:@consensys/solana-snap',
+      },
     },
   },
-  bitcoin: { ...MOCK_ACCOUNT_BIP122_P2WPKH, scopes: ['bip122:*'] },
+  bitcoin: {
+    ...MOCK_ACCOUNT_BIP122_P2WPKH,
+    scopes: ['bip122:000000000019d6689c085ae165831e93'],
+  },
 };
 
 const createMockState = () => ({
@@ -90,7 +109,7 @@ const createMockState = () => ({
     multichainNetworkConfigurationsByChainId: {
       [MultichainNetworks.SOLANA]: {
         chainId: MultichainNetworks.SOLANA,
-        name: 'Solana with a really long name',
+        name: 'Solana Mainnet',
         nativeCurrency: 'SOL',
         isEvm: false,
       },
@@ -117,7 +136,7 @@ const meta: Meta<typeof MultichainAggregatedAddressListRow> = {
     docs: {
       description: {
         component:
-          'A component that displays an aggregated list row with multiple network avatars, group name, truncated address, and a copy action. It supports multiple chain IDs displayed as avatar groups.',
+          'A component that displays an aggregated list row with multiple network avatars, truncated address, and a copy action. The group name is automatically derived from the chain IDs - "Ethereum" for EVM chains or the network name for non-EVM chains.',
       },
     },
   },
@@ -129,10 +148,6 @@ const meta: Meta<typeof MultichainAggregatedAddressListRow> = {
     address: {
       control: 'text',
       description: 'Address string to display (will be truncated)',
-    },
-    groupName: {
-      control: 'text',
-      description: 'Name for the group of addresses',
     },
     copyActionParams: {
       control: 'object',
@@ -162,7 +177,6 @@ export const DefaultEthereum: Story = {
   args: {
     chainIds: ['0x1'],
     address: '0x1234567890abcdef1234567890abcdef12345678',
-    groupName: 'Ethereum',
     copyActionParams: {
       message: 'Address copied!',
       callback: () => {
@@ -179,7 +193,6 @@ export const ManyNetworks: Story = {
   args: {
     chainIds: ['0x1', '0x89', '0xa4b1', '0xa', '0x2105', '0x8274f'],
     address: '0x1234567890abcdef1234567890abcdef12345678',
-    groupName: 'Ethereum',
     copyActionParams: {
       message: 'Address copied!',
       callback: () => {
@@ -187,6 +200,22 @@ export const ManyNetworks: Story = {
           '0x1234567890abcdef1234567890abcdef12345678',
         );
         console.log('Address copied to clipboard');
+      },
+    },
+  },
+};
+
+export const NonEvmNetwork: Story = {
+  args: {
+    chainIds: [MultichainNetworks.SOLANA],
+    address: 'DfGj1XfVTbfM7VZvqLkVNvDhFb4Nt8xBpGpH5f2r3Dqq',
+    copyActionParams: {
+      message: 'Address copied!',
+      callback: () => {
+        navigator.clipboard.writeText(
+          'DfGj1XfVTbfM7VZvqLkVNvDhFb4Nt8xBpGpH5f2r3Dqq',
+        );
+        console.log('Solana address copied to clipboard');
       },
     },
   },
