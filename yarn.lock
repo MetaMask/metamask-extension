@@ -7030,9 +7030,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/network-enablement-controller@npm:3.0.0"
+"@metamask/network-enablement-controller@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/network-enablement-controller@npm:3.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.14.1"
@@ -7044,7 +7044,7 @@ __metadata:
     "@metamask/multichain-network-controller": ^2.0.0
     "@metamask/network-controller": ^25.0.0
     "@metamask/transaction-controller": ^61.0.0
-  checksum: 10/1e44c1a13d02f1c68601aea308c915d897f7df344e04954b2c7ba7cc0400c81bbab75526572085d17279014b0510bd2a081d828468c5468cbf84c8a4ab52498e
+  checksum: 10/3cb56dd859580e7fb613677c193cc4af377e59e9d76b86ae54c71b0e732dffbdd41b96825de2413bce7f1c57184c1bfed6dc1070641d7848d47ae559f2f915c5
   languageName: node
   linkType: hard
 
@@ -32048,7 +32048,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^6.0.0"
     "@metamask/name-controller": "npm:^9.0.0"
     "@metamask/network-controller": "npm:^25.0.0"
-    "@metamask/network-enablement-controller": "npm:^3.0.0"
+    "@metamask/network-enablement-controller": "npm:^3.1.0"
     "@metamask/notification-services-controller": "npm:^19.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
