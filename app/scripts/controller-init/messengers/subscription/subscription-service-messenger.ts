@@ -44,9 +44,8 @@ export function getSubscriptionServiceMessenger(
       'AccountsController:getState',
       'PreferencesController:getState',
       'SmartTransactionsController:getState',
-      'RemoteFeatureFlagController:getState',
+      'NetworkController:getState',
       'SwapsController:getState',
-      'SwapsController:setSwapsFeatureFlags',
     ],
   });
   return serviceMessenger;

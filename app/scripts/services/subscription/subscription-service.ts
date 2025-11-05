@@ -228,14 +228,13 @@ export class SubscriptionService {
   }
 
   async #getIsSmartTransactionEnabled(chainId: `0x${string}`) {
-    console.log('#getIsSmartTransactionEnabled::chainId', chainId);
     const uiState = {
       metamask: {
         ...this.#messenger.call('AccountsController:getState'),
         ...this.#messenger.call('PreferencesController:getState'),
         ...this.#messenger.call('SmartTransactionsController:getState'),
-        ...this.#messenger.call('RemoteFeatureFlagController:getState'),
         ...this.#messenger.call('SwapsController:getState'),
+        ...this.#messenger.call('NetworkController:getState'),
       },
     };
 
@@ -243,11 +242,6 @@ export class SubscriptionService {
     if (Object.keys(swapsFeatureFlags).length === 0) {
       // if `swapsFeatureFlags` is empty, we wil try to fetch the feature flags from the bridge API
       swapsFeatureFlags = await fetchSwapsFeatureFlags();
-      // after fetching the feature flags, we will set the feature flags to SwapsController state.
-      this.#messenger.call(
-        'SwapsController:setSwapsFeatureFlags',
-        swapsFeatureFlags,
-      );
       uiState.metamask.swapsState = {
         ...uiState.metamask.swapsState,
         swapsFeatureFlags,

@@ -58,9 +58,8 @@ const mockGetSmartTransactionsState = jest.fn();
 const mockCheckoutSessionUrl = 'https://mocked-checkout-session-url';
 const mockStartShieldSubscriptionWithCard = jest.fn();
 const mockGetSubscriptions = jest.fn();
-const mockGetRemoteFeatureFlagsState = jest.fn();
 const mockGetSwapsControllerState = jest.fn();
-const mockSetSwapsFeatureFlags = jest.fn();
+const mockGetNetworkControllerState = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
   namespace: MOCK_ANY_NAMESPACE,
@@ -94,16 +93,12 @@ rootMessenger.registerActionHandler(
   mockGetSubscriptions,
 );
 rootMessenger.registerActionHandler(
-  'RemoteFeatureFlagController:getState',
-  mockGetRemoteFeatureFlagsState,
-);
-rootMessenger.registerActionHandler(
   'SwapsController:getState',
   mockGetSwapsControllerState,
 );
 rootMessenger.registerActionHandler(
-  'SwapsController:setSwapsFeatureFlags',
-  mockSetSwapsFeatureFlags,
+  'NetworkController:getState',
+  mockGetNetworkControllerState,
 );
 
 const messenger: SubscriptionServiceMessenger = new Messenger({
@@ -120,9 +115,8 @@ rootMessenger.delegate({
     'PreferencesController:getState',
     'AccountsController:getState',
     'SmartTransactionsController:getState',
-    'RemoteFeatureFlagController:getState',
     'SwapsController:getState',
-    'SwapsController:setSwapsFeatureFlags',
+    'NetworkController:getState',
   ],
 });
 
@@ -220,7 +214,7 @@ describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
       ok: true,
     } as Response);
     mockGetAccountsState.mockReturnValueOnce({
-      ...MOCK_STATE,
+      internalAccounts: MOCK_STATE.internalAccounts,
     });
     mockGetSmartTransactionsState.mockReturnValueOnce({
       smartTransactionsState: {
@@ -233,9 +227,16 @@ describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
       },
     });
     mockGetPreferencesState.mockReturnValueOnce({
-      ...MOCK_STATE.preferences,
+      preferences: MOCK_STATE.preferences,
+    });
+    mockGetSwapsControllerState.mockReturnValueOnce({
+      swapsState: MOCK_STATE.swapsState,
     });
     mockGetTransactions.mockReturnValueOnce([]);
+    mockGetNetworkControllerState.mockReturnValueOnce({
+      networkConfigurationsByChainId: MOCK_STATE.networkConfigurationsByChainId,
+      networksMetadata: MOCK_STATE.networksMetadata,
+    });
   });
 
   it('should submit the sponsorship intent', async () => {
@@ -296,7 +297,7 @@ describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
     expect(mockSubmitSponsorshipIntents).not.toHaveBeenCalled();
   });
 
-  it.only('should fetch swaps feature flags if not available and submit sponsorship intent', async () => {
+  it('should fetch swaps feature flags if not available and submit sponsorship intent', async () => {
     mockGetSwapsControllerState.mockRestore();
     fetchMock.mockRestore();
 
@@ -331,10 +332,6 @@ describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
 
     // @ts-expect-error mock tx meta
     await subscriptionService.submitSubscriptionSponsorshipIntent(MOCK_TX_META);
-
-    expect(mockSetSwapsFeatureFlags).toHaveBeenCalledWith(
-      MOCK_SWAPS_FEATURE_FLAGS,
-    );
 
     expect(mockSubmitSponsorshipIntents).toHaveBeenCalledWith({
       chainId: '0x1',
