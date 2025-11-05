@@ -15,6 +15,7 @@ import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import { NavigationStateProvider } from '../contexts/navigation-state';
 import { RewardsProvider } from '../contexts/rewards';
+import RiveWasmProvider from '../contexts/rive-wasm';
 import ErrorPage from './error-page/error-page.component';
 
 import Routes from './routes';
@@ -60,7 +61,9 @@ class Index extends PureComponent {
                           <MetamaskNotificationsProvider>
                             <ShieldSubscriptionProvider>
                               <RewardsProvider>
-                                <Routes />
+                                <RiveWasmProvider>
+                                  <Routes />
+                                </RiveWasmProvider>
                               </RewardsProvider>
                             </ShieldSubscriptionProvider>
                           </MetamaskNotificationsProvider>
