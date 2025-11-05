@@ -27,7 +27,7 @@ import { getImageForChainId } from '../../../selectors/multichain';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-type CopyParams = {
+export type CopyParams = {
   /**
    * Message to display when the copy callback is executed
    */
