@@ -285,7 +285,7 @@ const SimulationDetailsLayout: React.FC<{
             : BorderColor.borderDefault
         }
         paddingInline={3}
-        paddingTop={2}
+        paddingTop={1}
         paddingBottom={2}
         margin={isTransactionsRedesign ? null : 4}
         gap={3}
