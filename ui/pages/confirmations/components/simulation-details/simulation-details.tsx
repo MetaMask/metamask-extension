@@ -355,6 +355,8 @@ const BalanceChangesAlert = ({ transactionId }: { transactionId: string }) => {
           <InlineAlert
             onClick={handleInlineAlertClick}
             severity={selectedAlertSeverity}
+            showArrow={false}
+            textOverride={''}
           />
         </Box>
       )}
