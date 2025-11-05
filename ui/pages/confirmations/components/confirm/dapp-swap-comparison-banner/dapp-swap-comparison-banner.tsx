@@ -117,6 +117,7 @@ const DappSwapComparisonInner = () => {
           {
             ...currentConfirmation,
             txParams: currentConfirmation.txParamsOriginal,
+            batchTransactions: undefined,
           },
           false,
         ),
