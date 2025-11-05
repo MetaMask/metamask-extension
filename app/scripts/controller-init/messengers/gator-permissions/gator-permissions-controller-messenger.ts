@@ -1,12 +1,12 @@
 import { Messenger } from '@metamask/messenger';
 import { GatorPermissionsControllerStateChangeEvent } from '@metamask/gator-permissions-controller';
 import { HandleSnapRequest, HasSnap } from '@metamask/snaps-controllers';
-import { RootMessenger } from '../../../lib/messenger';
 import {
   TransactionControllerTransactionConfirmedEvent,
   TransactionControllerTransactionFailedEvent,
   TransactionControllerTransactionDroppedEvent,
 } from '@metamask/transaction-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type GatorPermissionsControllerMessenger = ReturnType<
   typeof getGatorPermissionsControllerMessenger
