@@ -114,7 +114,7 @@ export const useRiveWasmFile = (url: string) => {
     const newArrayBuffer = await response.arrayBuffer();
     setUrlBufferCache(url, newArrayBuffer);
     return newArrayBuffer;
-  }, [isWasmReady, url, setUrlBufferCache]);
+  }, [isWasmReady, url, setUrlBufferCache, urlBufferMap]);
 
   return { buffer: result.value, loading: result.pending, error: result.error };
 };
