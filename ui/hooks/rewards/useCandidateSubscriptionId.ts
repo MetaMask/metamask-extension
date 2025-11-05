@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import log from 'loglevel';
-import { useSelector } from 'react-redux';
-import { submitRequestToBackground } from '../../store/background-connection';
+import { useSelector, useDispatch } from 'react-redux';
+import { getRewardsCandidateSubscriptionId } from '../../store/actions';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { useAppSelector } from '../../store/store';
 import { useRewardsEnabled } from './useRewardsEnabled';
@@ -17,6 +17,7 @@ type UseCandidateSubscriptionIdReturn = {
  */
 export const useCandidateSubscriptionId =
   (): UseCandidateSubscriptionIdReturn => {
+    const dispatch = useDispatch();
     const [candidateSubscriptionId, setCandidateSubscriptionId] = useState<
       string | null
     >(null);
@@ -41,10 +42,9 @@ export const useCandidateSubscriptionId =
           setCandidateSubscriptionIdError(false);
           return;
         }
-        const candidateId = await submitRequestToBackground<string>(
-          'getCandidateSubscriptionId',
-          [],
-        );
+        const candidateId = (await dispatch(
+          getRewardsCandidateSubscriptionId(),
+        )) as unknown as string | null;
         setCandidateSubscriptionId(candidateId);
         setCandidateSubscriptionIdError(false);
       } catch (error) {
@@ -54,7 +54,7 @@ export const useCandidateSubscriptionId =
         );
         setCandidateSubscriptionIdError(true);
       }
-    }, [isRewardsEnabled]);
+    }, [isRewardsEnabled, dispatch]);
 
     useEffect(() => {
       if (

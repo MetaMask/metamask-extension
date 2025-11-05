@@ -41,6 +41,9 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { formatPriceImpact } from '../utils/price-impact';
 import { type DestinationAccount } from '../prepare/types';
+import { useRewards } from '../../../hooks/bridge/useRewards';
+import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
+import { Skeleton } from '../../../components/component-library/skeleton';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 const getTimerColor = (timeInSeconds: number) => {
@@ -65,7 +68,11 @@ export const MultichainBridgeQuoteCard = ({
   onOpenRecipientModal: () => void;
 }) => {
   const t = useI18nContext();
-  const { activeQuote, isQuoteGoingToRefresh } = useSelector(getBridgeQuotes);
+  const {
+    activeQuote,
+    isQuoteGoingToRefresh,
+    isLoading: isQuoteLoading,
+  } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
 
   const { insufficientBal } = useSelector(getQuoteRequest);
@@ -117,6 +124,13 @@ export const MultichainBridgeQuoteCard = ({
   ]);
 
   const secondsUntilNextRefresh = useCountdownTimer();
+
+  const {
+    isLoading: isRewardsLoading,
+    estimatedPoints,
+    shouldShowRewardsRow,
+    hasError: hasRewardsError,
+  } = useRewards({ activeQuote: activeQuote?.quote ?? null });
 
   if (!activeQuote) {
     return null;
@@ -410,6 +424,66 @@ export const MultichainBridgeQuoteCard = ({
                 ariaLabel={t('recipientEditAriaLabel')}
                 data-testid="recipient-edit-button"
               />
+            </Row>
+          </Row>
+        )}
+
+        {/* Estimated Rewards Points */}
+        {shouldShowRewardsRow && (
+          <Row justifyContent={JustifyContent.spaceBetween}>
+            <Row gap={2}>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('bridgePoints')}
+              </Text>
+              <Tooltip
+                title={t('bridgePoints_tooltip')}
+                position={PopoverPosition.TopStart}
+                offset={[-16, 16]}
+              >
+                {`${t('bridgePoints_tooltip_content_1')}\n\n${t('bridgePoints_tooltip_content_2')}`}
+              </Tooltip>
+            </Row>
+            <Row gap={1}>
+              {isRewardsLoading || isQuoteLoading ? (
+                <Skeleton width={100} height={16} />
+              ) : null}
+              {!isRewardsLoading && !isQuoteLoading && hasRewardsError && (
+                <>
+                  <RewardsBadge
+                    formattedPoints={t('bridgePoints_couldntLoad')}
+                    withPointsSuffix={false}
+                    boxClassName="gap-1 bg-background-transparent"
+                    textClassName="text-alternative"
+                    useAlternativeIconColor
+                  />
+                  <Tooltip
+                    title={t('bridgePoints_error')}
+                    iconName={IconName.Warning}
+                    color={IconColor.warningDefault}
+                    position={PopoverPosition.TopEnd}
+                    offset={[-16, 16]}
+                    style={{ width: 350 }}
+                  >
+                    {t('bridgePoints_error_content')}
+                  </Tooltip>
+                </>
+              )}
+              {!isRewardsLoading &&
+                !isQuoteLoading &&
+                !hasRewardsError &&
+                estimatedPoints !== null && (
+                  <RewardsBadge
+                    formattedPoints={new Intl.NumberFormat(locale).format(
+                      estimatedPoints,
+                    )}
+                    withPointsSuffix={false}
+                    boxClassName="gap-1 bg-background-transparent"
+                    textClassName="text-alternative"
+                  />
+                )}
             </Row>
           </Row>
         )}
