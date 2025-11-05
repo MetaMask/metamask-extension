@@ -14,15 +14,11 @@ const isTestEnvironment = Boolean(process.env.IN_TEST);
 export const useRiveWasmReady = () => {
   const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
 
-  console.log('useRiveWasmReady');
-
   const result = useAsyncResult(async () => {
+    console.log('useRiveWasmReady');
+
     if (isTestEnvironment || typeof RuntimeLoader === 'undefined') {
       setIsWasmReady(true);
-      return true;
-    }
-
-    if (isWasmReady) {
       return true;
     }
     const response = await fetch(RIVE_WASM_URL);
@@ -53,14 +49,10 @@ export const useRiveWasmFile = (url: string) => {
   const [buffer, setBuffer] = useState<ArrayBuffer | undefined>(undefined);
   const { isWasmReady } = useRiveWasmReady();
 
-  console.log('useRiveWasmFile', url, isWasmReady);
-
   const result = useAsyncResult(async () => {
+    console.log('useRiveWasmFile', url, isWasmReady);
     if (!isWasmReady) {
       return undefined;
-    }
-    if (buffer) {
-      return buffer;
     }
     const response = await fetch(url);
     if (!response.ok) {
