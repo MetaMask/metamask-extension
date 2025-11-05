@@ -2,7 +2,10 @@ import {
   RECURRING_INTERVALS,
   Subscription,
 } from '@metamask/subscription-controller';
-import { getIsShieldSubscriptionActive } from '../lib/shield';
+import { getIsShieldSubscriptionActive } from '../../lib/shield';
+import { loadShieldConfig } from './config';
+
+const shieldConfig = loadShieldConfig();
 
 export async function getShieldGatewayConfig(
   getToken: () => Promise<string>,
@@ -24,7 +27,7 @@ export async function getShieldGatewayConfig(
     };
   }
 
-  const host = process.env.SHIELD_GATEWAY_URL;
+  const host = shieldConfig.gatewayUrl;
   if (!host) {
     throw new Error('Shield gateway URL is not set');
   }

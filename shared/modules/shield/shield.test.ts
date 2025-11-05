@@ -5,7 +5,13 @@ import {
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
-import { getShieldGatewayConfig } from './shield';
+import { Env as SubscriptionEnv } from '@metamask/subscription-controller';
+
+const mockLoadShieldConfig = jest.fn();
+
+jest.mock('./config', () => ({
+  loadShieldConfig: () => mockLoadShieldConfig(),
+}));
 
 const MOCK_SUBSCRIPTION: Subscription = {
   id: 'sub_123456789',
@@ -41,11 +47,13 @@ const setup = ({
   gatewayUrl?: string | null;
 } = {}) => {
   process.env.METAMASK_SHIELD_ENABLED = isShieldEnabled ? 'true' : 'false';
-  if (gatewayUrl === null) {
-    delete process.env.SHIELD_GATEWAY_URL;
-  } else {
-    process.env.SHIELD_GATEWAY_URL = gatewayUrl;
-  }
+
+  mockLoadShieldConfig.mockReturnValue({
+    subscriptionEnv: SubscriptionEnv.PRD,
+    gatewayUrl: gatewayUrl ?? undefined,
+    ruleEngineUrl: 'https://ruleset-engine.api.cx.metamask.io',
+    claimUrl: 'https://claims.api.cx.metamask.io',
+  });
 
   return {
     gatewayUrl,
@@ -64,6 +72,10 @@ describe('getShieldGatewayConfig', () => {
     const { gatewayUrl, targetUrl, mockGetToken, mockGetShieldSubscription } =
       setup();
 
+    // Re-import after setting up the mock
+    jest.resetModules();
+    const { getShieldGatewayConfig } = require('./shield');
+
     const config = await getShieldGatewayConfig(
       mockGetToken,
       mockGetShieldSubscription,
@@ -79,6 +91,9 @@ describe('getShieldGatewayConfig', () => {
     const { targetUrl, mockGetToken, mockGetShieldSubscription } = setup({
       isShieldEnabled: false,
     });
+
+    jest.resetModules();
+    const { getShieldGatewayConfig } = require('./shield');
 
     const config = await getShieldGatewayConfig(
       mockGetToken,
@@ -96,6 +111,9 @@ describe('getShieldGatewayConfig', () => {
       isShieldSubscriptionActive: false,
     });
 
+    jest.resetModules();
+    const { getShieldGatewayConfig } = require('./shield');
+
     const config = await getShieldGatewayConfig(
       mockGetToken,
       mockGetShieldSubscription,
@@ -110,6 +128,9 @@ describe('getShieldGatewayConfig', () => {
   it('returns the correct config when the token cannot be retrieved', async () => {
     const { targetUrl, mockGetToken, mockGetShieldSubscription } = setup();
     mockGetToken.mockRejectedValue(new Error('Failed to get token'));
+
+    jest.resetModules();
+    const { getShieldGatewayConfig } = require('./shield');
 
     const config = await getShieldGatewayConfig(
       mockGetToken,
@@ -126,6 +147,10 @@ describe('getShieldGatewayConfig', () => {
     const { targetUrl, mockGetToken, mockGetShieldSubscription } = setup({
       gatewayUrl: null,
     });
+
+    jest.resetModules();
+    const { getShieldGatewayConfig } = require('./shield');
+
     await expect(
       getShieldGatewayConfig(
         mockGetToken,
