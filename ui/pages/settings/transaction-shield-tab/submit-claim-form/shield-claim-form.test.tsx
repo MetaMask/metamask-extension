@@ -11,6 +11,56 @@ jest.mock('react-router-dom-v5-compat', () => {
   };
 });
 
+jest.mock('../account-selector', () => {
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: ({
+      label,
+      impactedWalletAddress,
+      onAccountSelect,
+    }: {
+      label: string;
+      impactedWalletAddress: string;
+      onAccountSelect: (address: string) => void;
+    }) => (
+      <div data-testid="account-selector">
+        <label>{label}</label>
+        <input
+          data-testid="shield-claim-impacted-wallet-address-input"
+          value={impactedWalletAddress}
+          onChange={(e) => onAccountSelect(e.target.value)}
+        />
+      </div>
+    ),
+  };
+});
+
+jest.mock('../network-selector', () => {
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: ({
+      label,
+      selectedChainId,
+      onNetworkSelect,
+    }: {
+      label: string;
+      selectedChainId: string;
+      onNetworkSelect: (chainId: string) => void;
+    }) => (
+      <div data-testid="network-selector">
+        <label>{label}</label>
+        <input
+          data-testid="shield-claim-network-selector-input"
+          value={selectedChainId}
+          onChange={(e) => onNetworkSelect(e.target.value)}
+        />
+      </div>
+    ),
+  };
+});
+
 describe('Submit Claim Form', () => {
   let store: ReturnType<typeof configureStore>;
 
@@ -35,25 +85,6 @@ describe('Submit Claim Form', () => {
     const errorMessage = getByTestId('shield-claim-help-text');
     expect(errorMessage).toHaveTextContent(
       'Please enter a valid email address',
-    );
-  });
-
-  it('should show error when impacted wallet address is invalid', () => {
-    const { getByTestId } = renderWithProvider(<SubmitClaimForm />, store);
-
-    const impactedWalletAddressInput = getByTestId(
-      'shield-claim-impacted-wallet-address-input',
-    );
-    fireEvent.change(impactedWalletAddressInput, {
-      target: { value: 'incorrect-address' },
-    });
-    fireEvent.blur(impactedWalletAddressInput);
-
-    const errorMessage = getByTestId(
-      'shield-claim-impacted-wallet-address-help-text',
-    );
-    expect(errorMessage).toHaveTextContent(
-      'Please enter a valid wallet address',
     );
   });
 
