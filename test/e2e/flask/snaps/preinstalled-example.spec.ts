@@ -4,7 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { withFixtures, WINDOW_TITLES, sentryRegEx } from '../../helpers';
+import { withFixtures, WINDOW_TITLES, sentryRegEx, largeDelayMs } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
@@ -61,8 +61,17 @@ describe('Preinstalled example Snap', function () {
         await navigateToPreInstalledExample(driver);
 
         await preInstalledExample.clickToggleButtonOn();
+        // TODO: Remove this when the race condition is fixed in the Snap.
+        await driver.delay(largeDelayMs);
+
         await preInstalledExample.selectRadioOption('Option 2');
+        // TODO: Remove this when the race condition is fixed in the Snap.
+        await driver.delay(largeDelayMs);
+
         await preInstalledExample.selectDropdownOption('Option 2');
+        // TODO: Remove this when the race condition is fixed in the Snap.
+        await driver.delay(largeDelayMs);
+
         await preInstalledExample.checkIsToggleOn();
         await preInstalledExample.checkSelectedRadioOption('option2');
         await preInstalledExample.checkSelectedDropdownOption('option2');
