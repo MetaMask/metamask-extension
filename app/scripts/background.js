@@ -120,6 +120,9 @@ const localStore = useReadOnlyNetworkStore
   ? new ReadOnlyNetworkStore()
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
+
+const { update, requestSafeReload } = getRequestSafeReload(persistenceManager);
+
 // Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
@@ -724,9 +727,6 @@ async function initialize(backup) {
   const preinstalledSnaps = await loadPreinstalledSnaps();
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
-
-  const { update, requestSafeReload } =
-    getRequestSafeReload(persistenceManager);
 
   setupController(
     initState,
@@ -1739,6 +1739,15 @@ async function onUpdate(previousVersion) {
   controller.appStateController.setLastUpdatedAt(Date.now());
   if (previousVersion) {
     controller.appStateController.setLastUpdatedFromVersion(previousVersion);
+    if (!isFirefox) {
+      // work around Chromium bug https://issues.chromium.org/issues/40805401
+      // by doing a safe reload after an update. We'll be able to gate this
+      // behind a Chromium version check once we know the chromium version #
+      // that fixes this bug, ETA: December 2025 (likely in `143.0.7465.0`).
+      // Once we no longer support the affected Chromium versions, we should
+      // remove this workaround.
+      requestSafeReload();
+    }
   }
 }
 
