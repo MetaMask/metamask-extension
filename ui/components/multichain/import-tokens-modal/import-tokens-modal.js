@@ -453,48 +453,54 @@ export const ImportTokensModal = ({ onClose }) => {
     setSelectedTokens({});
   }, [networkFilter]);
 
-  const handleCustomSymbolChange = (value) => {
-    const symbol = value.trim();
-    const symbolLength = symbol.length;
-    let symbolError = null;
+  const handleCustomSymbolChange = useCallback(
+    (value) => {
+      const symbol = value.trim();
+      const symbolLength = symbol.length;
+      let symbolError = null;
 
-    if (symbolLength <= 0 || symbolLength >= 12) {
-      symbolError = t('symbolBetweenZeroTwelve');
-    }
+      if (symbolLength <= 0 || symbolLength >= 12) {
+        symbolError = t('symbolBetweenZeroTwelve');
+      }
 
-    setCustomSymbol(symbol);
-    setCustomSymbolError(symbolError);
-  };
+      setCustomSymbol(symbol);
+      setCustomSymbolError(symbolError);
+    },
+    [t],
+  );
 
-  const handleCustomDecimalsChange = (value) => {
-    let decimals;
-    let decimalsError = null;
+  const handleCustomDecimalsChange = useCallback(
+    (value) => {
+      let decimals;
+      let decimalsError = null;
 
-    if (value) {
-      decimals = Number(value.trim());
-      decimalsError =
-        value < MIN_DECIMAL_VALUE || value > MAX_DECIMAL_VALUE
-          ? t('decimalsMustZerotoTen')
-          : null;
-    } else {
-      decimals = '';
-      decimalsError = t('tokenDecimalFetchFailed', [
-        <ButtonLink
-          className="import-tokens-modal__button-link"
-          key="import-token-verify-token-decimal"
-          rel="noopener noreferrer"
-          target="_blank"
-          href={blockExplorerTokenLink}
-          endIconName={IconName.Export}
-        >
-          {blockExplorerLabel}
-        </ButtonLink>,
-      ]);
-    }
+      if (value) {
+        decimals = Number(value.trim());
+        decimalsError =
+          value < MIN_DECIMAL_VALUE || value > MAX_DECIMAL_VALUE
+            ? t('decimalsMustZerotoTen')
+            : null;
+      } else {
+        decimals = '';
+        decimalsError = t('tokenDecimalFetchFailed', [
+          <ButtonLink
+            className="import-tokens-modal__button-link"
+            key="import-token-verify-token-decimal"
+            rel="noopener noreferrer"
+            target="_blank"
+            href={blockExplorerTokenLink}
+            endIconName={IconName.Export}
+          >
+            {blockExplorerLabel}
+          </ButtonLink>,
+        ]);
+      }
 
-    setCustomDecimals(decimals);
-    setCustomDecimalsError(decimalsError);
-  };
+      setCustomDecimals(decimals);
+      setCustomDecimalsError(decimalsError);
+    },
+    [t, blockExplorerTokenLink, blockExplorerLabel],
+  );
 
   const attemptToAutoFillTokenParams = useCallback(
     async (address) => {
