@@ -8818,14 +8818,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/secp256k1@npm:^1.7.0":
-  version: 1.7.1
-  resolution: "@noble/secp256k1@npm:1.7.1"
-  checksum: 10/214d4756c20ed20809d948d0cc161e95664198cb127266faf747fd7deffe5444901f05fe9f833787738f2c6e60b09e544c2f737f42f73b3699e3999ba15b1b63
-  languageName: node
-  linkType: hard
-
-"@noble/secp256k1@npm:^1.7.1":
+"@noble/secp256k1@npm:^1.7.0, @noble/secp256k1@npm:^1.7.1":
   version: 1.7.2
   resolution: "@noble/secp256k1@npm:1.7.2"
   checksum: 10/ce1651f63ebf9269990dbc1002410d63e2f4379fcbf2bb7a567740997852a1fbdb353929e497cd9d09549c28e3edb036ac3905ff20ac5249ad32e64a852af955
@@ -15296,17 +15289,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:^3.3.0":
-  version: 3.3.1
-  resolution: "@types/hoist-non-react-statics@npm:3.3.1"
-  dependencies:
-    "@types/react": "npm:*"
-    hoist-non-react-statics: "npm:^3.3.0"
-  checksum: 10/071e6d75a0ed9aa0e9ca2cc529a8c15bf7ac3e4a37aac279772ea6036fd0bf969b67fb627b65cfce65adeab31fec1e9e95b4dcdefeab075b580c0c7174206f63
-  languageName: node
-  linkType: hard
-
-"@types/hoist-non-react-statics@npm:^3.3.1":
+"@types/hoist-non-react-statics@npm:^3.3.0, @types/hoist-non-react-statics@npm:^3.3.1":
   version: 3.3.7
   resolution: "@types/hoist-non-react-statics@npm:3.3.7"
   dependencies:
@@ -20449,14 +20432,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.2.5, classnames@npm:^2.2.6":
-  version: 2.2.6
-  resolution: "classnames@npm:2.2.6"
-  checksum: 10/a241cdac6a06d1572e4358eff219ff9be4e2bb83f0a4080b413f32f691e8b7ba4d635b1a99123cbdfef1604e10f398b6f1433364d5645004eea957494ef1f3e8
-  languageName: node
-  linkType: hard
-
-"classnames@npm:^2.3.2":
+"classnames@npm:^2.2.5, classnames@npm:^2.2.6, classnames@npm:^2.3.2":
   version: 2.5.1
   resolution: "classnames@npm:2.5.1"
   checksum: 10/58eb394e8817021b153bb6e7d782cfb667e4ab390cb2e9dac2fc7c6b979d1cc2b2a733093955fc5c94aa79ef5c8c89f11ab77780894509be6afbb91dddd79d15
@@ -21748,7 +21724,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"csstype@npm:^2.5.2, csstype@npm:^2.6.7":
+"csstype@npm:^2.5.2":
   version: 2.6.11
   resolution: "csstype@npm:2.6.11"
   checksum: 10/6fa4c8929b4f2d23e79ac5318f08ec8d92cc299ae520dc76ce311cc1b22306de17973e0ad9a5342ee75a2cd4e4dc6edd5b5e2bf85292129f7654c36f1f73a692
@@ -22788,17 +22764,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-helpers@npm:^5.0.1":
-  version: 5.1.4
-  resolution: "dom-helpers@npm:5.1.4"
-  dependencies:
-    "@babel/runtime": "npm:^7.8.7"
-    csstype: "npm:^2.6.7"
-  checksum: 10/329e1c6763c9442b5bf740e82b2fec46411917b2334df0d9720b26d4eac571b01658915bbc5527b87d3807955e0a9bc9e731c53ec2d12c900d4a47c5335116de
-  languageName: node
-  linkType: hard
-
-"dom-helpers@npm:^5.2.0, dom-helpers@npm:^5.2.1":
+"dom-helpers@npm:^5.0.1, dom-helpers@npm:^5.2.0, dom-helpers@npm:^5.2.1":
   version: 5.2.1
   resolution: "dom-helpers@npm:5.2.1"
   dependencies:

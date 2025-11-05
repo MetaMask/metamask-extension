@@ -10,6 +10,7 @@ import {
   mockDialogSnap,
   mockErrorSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
@@ -54,7 +55,9 @@ describe('Test Snap installed', function () {
 
     await withFixtures(
       {
-        dappOptions: { numberOfTestDapps: 1 },
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
