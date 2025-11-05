@@ -6,4 +6,4 @@
  * @module rive-wasm
  */
 
-export { initializeRiveWASM, waitForWasmReady } from './init';
+export { useRiveWasmReady, useRiveWasmFile } from './init';

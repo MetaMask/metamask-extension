@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   useRive,
   Layout,
@@ -9,55 +9,26 @@ import {
 import { Box } from '@metamask/design-system-react';
 import { useTheme } from '../../../hooks/useTheme';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { waitForWasmReady } from '../rive-wasm';
+import { useRiveWasmFile, useRiveWasmReady } from '../rive-wasm';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WalletReadyAnimation() {
   const theme = useTheme();
   const isTestEnvironment = Boolean(process.env.IN_TEST);
-  const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
-  const [buffer, setBuffer] = useState<ArrayBuffer | undefined>(undefined);
+  const { isWasmReady, error: wasmError } = useRiveWasmReady();
+  const { buffer, error: bufferError } = useRiveWasmFile(
+    './images/riv_animations/wallet_ready.riv',
+  );
 
-  // Check if WASM is ready (initialized in parent OnboardingFlow)
   useEffect(() => {
-    if (isTestEnvironment) {
-      setIsWasmReady(true);
-      return undefined;
+    if (wasmError) {
+      console.error('[Rive] Failed to load WASM:', wasmError);
     }
-
-    // Wait for WASM to be ready using promise instead of polling
-    waitForWasmReady()
-      .then(() => {
-        console.log('[Rive Fox] WASM is ready');
-        setIsWasmReady(true);
-      })
-      .catch((error) => {
-        console.error('[Rive Fox] WASM failed to load:', error);
-        // Could set an error state here if needed
-      });
-
-    return undefined;
-  }, [isTestEnvironment]);
-
-  // Fetch the .riv file and convert to ArrayBuffer
-  useEffect(() => {
-    if (!isWasmReady || isTestEnvironment || buffer) {
-      return;
+    if (bufferError) {
+      console.error('[Rive] Failed to load buffer:', bufferError);
     }
-
-    fetch('./images/riv_animations/wallet_ready.riv')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.arrayBuffer();
-      })
-      .then((arrayBuffer) => setBuffer(arrayBuffer))
-      .catch((error) => {
-        console.error('[Rive Fox] Failed to load .riv file:', error);
-      });
-  }, [isWasmReady, isTestEnvironment, buffer]);
+  }, [wasmError, bufferError]);
 
   // Use the buffer parameter instead of src
   const { riveFile, status } = useRiveFile({
@@ -101,7 +72,12 @@ export default function WalletReadyAnimation() {
   }, [rive, theme, isWasmReady]);
 
   // Don't render Rive component until WASM is ready to avoid "source file required" error
-  if (!isWasmReady || status === 'loading') {
+  if (
+    !isWasmReady ||
+    status === 'loading' ||
+    isTestEnvironment ||
+    status === 'failed'
+  ) {
     return <Box className="riv-animation__wallet-ready-container"></Box>;
   }
 

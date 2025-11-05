@@ -14,7 +14,7 @@ const isTestEnvironment = Boolean(process.env.IN_TEST);
 export const useRiveWasmReady = () => {
   const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
 
-  // Check if WASM is ready (initialized in parent OnboardingFlow)
+  console.log('useRiveWasmReady');
 
   const result = useAsyncResult(async () => {
     if (isTestEnvironment || typeof RuntimeLoader === 'undefined') {
@@ -27,7 +27,9 @@ export const useRiveWasmReady = () => {
     }
     const response = await fetch(RIVE_WASM_URL);
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(
+        `HTTP error! status while fetching rive.wasm: ${response.status}`,
+      );
     }
     const arrayBuffer = await response.arrayBuffer();
     (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
@@ -51,6 +53,8 @@ export const useRiveWasmFile = (url: string) => {
   const [buffer, setBuffer] = useState<ArrayBuffer | undefined>(undefined);
   const { isWasmReady } = useRiveWasmReady();
 
+  console.log('useRiveWasmFile', url, isWasmReady);
+
   const result = useAsyncResult(async () => {
     if (!isWasmReady) {
       return undefined;
@@ -60,7 +64,7 @@ export const useRiveWasmFile = (url: string) => {
     }
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status}, url: ${url}`);
     }
     const arrayBuffer = await response.arrayBuffer();
     setBuffer(arrayBuffer);
