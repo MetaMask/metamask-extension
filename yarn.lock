@@ -4949,19 +4949,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@npm:^7.0.17":
-  version: 7.0.17
-  resolution: "@lavamoat/lavapack@npm:7.0.17"
+"@lavamoat/lavapack@npm:^7.0.17, @lavamoat/lavapack@npm:^7.0.18":
+  version: 7.0.18
+  resolution: "@lavamoat/lavapack@npm:7.0.18"
   dependencies:
     JSONStream: "npm:1.3.5"
     combine-source-map: "npm:0.8.0"
     espree: "npm:9.6.1"
     json-stable-stringify: "npm:1.3.0"
-    lavamoat-core: "npm:^17.0.0"
+    lavamoat-core: "npm:^17.0.1"
     readable-stream: "npm:4.7.0"
     through2: "npm:4.0.2"
     umd: "npm:3.0.3"
-  checksum: 10/9ecb985bd9b3ed253f53e61528d93c2c70316357043e9b80d2c154fd397ecf69669ab52f943806c25130387f31d4ecf13538a9c990289699aff633155cb83660
+  checksum: 10/5df2793eab0cf5bea74dcf2bf1b65f3ce3b541d746ffb262ac0bfb613ace6561f259adfdacaf706ddcd28b8bbce3afd5b87e5c0940d386c80ca8d6b0528029d5
   languageName: node
   linkType: hard
 
@@ -5584,9 +5584,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^86.0.0":
-  version: 86.0.0
-  resolution: "@metamask/assets-controllers@npm:86.0.0"
+"@metamask/assets-controllers@npm:^87.0.0":
+  version: 87.0.0
+  resolution: "@metamask/assets-controllers@npm:87.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5632,7 +5632,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^61.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/a6f6b94b9527014e2bec70587442d7999ac4fdcded2d89d5100cae3cb9ef87392a72337326896342e2d02db91b0d6c6e4459247cf5c5f29c484067557fb2596e
+  checksum: 10/023c91a982e932978dcf33e057a82cb0a7531db18da0293721838cb14965a6adc38200cbcb1c129165c20411d3abd0dbd9dc6ac41ff0d1902c9648c536c07fde
   languageName: node
   linkType: hard
 
@@ -10243,6 +10243,49 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rive-app/canvas@npm:2.31.5":
+  version: 2.31.5
+  resolution: "@rive-app/canvas@npm:2.31.5"
+  checksum: 10/5b1cdb87a21c4b02ef500325b2081a573748821634789f2cc4b3d78894e0d92c6fac4bbc8eec57db8198eb3491f8b4ed3d154ccf02ac80946d920b5c71d74c85
+  languageName: node
+  linkType: hard
+
+"@rive-app/canvas@patch:@rive-app/canvas@npm%3A2.31.5#~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch::version=2.31.5&hash=1ed092":
+  version: 2.31.5
+  resolution: "@rive-app/canvas@patch:@rive-app/canvas@npm%3A2.31.5#~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch::version=2.31.5&hash=1ed092"
+  checksum: 10/d3197be660dcd7508f9864cbca689bd439d02010907e29bd860278dc62af8a3cfff997cc8912fe12632daad9b0541c7cdc6519cc743b5ef1fccb2c0e1d1e6478
+  languageName: node
+  linkType: hard
+
+"@rive-app/canvas@patch:@rive-app/canvas@patch%3A@rive-app/canvas@npm%253A2.31.5%23~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch%3A%3Aversion=2.31.5&hash=1ed092#~/.yarn/patches/@rive-app-canvas-patch-9b746e9393.patch":
+  version: 2.31.5
+  resolution: "@rive-app/canvas@patch:@rive-app/canvas@patch%3A@rive-app/canvas@npm%253A2.31.5%23~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch%3A%3Aversion=2.31.5&hash=1ed092#~/.yarn/patches/@rive-app-canvas-patch-9b746e9393.patch::version=2.31.5&hash=19c5d0"
+  checksum: 10/f8d4243fa29146bfa7958adf2284fd9a3d88a11c2f99a49b439da40d71ac710ad9a9737aeea628eff397889ec2256b4dd8fa547aa39ebc4f548eabcc488df60f
+  languageName: node
+  linkType: hard
+
+"@rive-app/react-canvas@npm:4.23.3":
+  version: 4.23.3
+  resolution: "@rive-app/react-canvas@npm:4.23.3"
+  dependencies:
+    "@rive-app/canvas": "npm:2.31.5"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
+  checksum: 10/e33cc8773a69b8f243b75e545704b760dabdb71c373c7fe6465ffa2a84c5172a873bf88079cec73694b01addfcede1606cf542eb69594b1fc86376c4ca443dcd
+  languageName: node
+  linkType: hard
+
+"@rive-app/react-canvas@patch:@rive-app/react-canvas@npm%3A4.23.3#~/.yarn/patches/@rive-app-react-canvas-npm-4.23.3-3ab1940c19.patch":
+  version: 4.23.3
+  resolution: "@rive-app/react-canvas@patch:@rive-app/react-canvas@npm%3A4.23.3#~/.yarn/patches/@rive-app-react-canvas-npm-4.23.3-3ab1940c19.patch::version=4.23.3&hash=a56107"
+  dependencies:
+    "@rive-app/canvas": "npm:2.31.5"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
+  checksum: 10/dc501d3fb58b284734b730bce1c479a80c2e84309189369430e92d94792f65780fe0480b33df419349ea3e4e249cf1e2e475143c948c579d4086e2564843a4ff
+  languageName: node
+  linkType: hard
+
 "@rollup/plugin-inject@npm:^5.0.5":
   version: 5.0.5
   resolution: "@rollup/plugin-inject@npm:5.0.5"
@@ -10438,18 +10481,99 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/cli@npm:^2.19.4":
-  version: 2.19.4
-  resolution: "@sentry/cli@npm:2.19.4"
+"@sentry/cli-darwin@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-darwin@npm:2.56.0"
+  conditions: os=darwin
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-linux-arm64@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-linux-arm64@npm:2.56.0"
+  conditions: (os=linux | os=freebsd | os=android) & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-linux-arm@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-linux-arm@npm:2.56.0"
+  conditions: (os=linux | os=freebsd | os=android) & cpu=arm
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-linux-i686@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-linux-i686@npm:2.56.0"
+  conditions: (os=linux | os=freebsd | os=android) & (cpu=x86 | cpu=ia32)
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-linux-x64@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-linux-x64@npm:2.56.0"
+  conditions: (os=linux | os=freebsd | os=android) & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-win32-arm64@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-win32-arm64@npm:2.56.0"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-win32-i686@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-win32-i686@npm:2.56.0"
+  conditions: os=win32 & (cpu=x86 | cpu=ia32)
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-win32-x64@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-win32-x64@npm:2.56.0"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@sentry/cli@npm:^2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli@npm:2.56.0"
   dependencies:
+    "@sentry/cli-darwin": "npm:2.56.0"
+    "@sentry/cli-linux-arm": "npm:2.56.0"
+    "@sentry/cli-linux-arm64": "npm:2.56.0"
+    "@sentry/cli-linux-i686": "npm:2.56.0"
+    "@sentry/cli-linux-x64": "npm:2.56.0"
+    "@sentry/cli-win32-arm64": "npm:2.56.0"
+    "@sentry/cli-win32-i686": "npm:2.56.0"
+    "@sentry/cli-win32-x64": "npm:2.56.0"
     https-proxy-agent: "npm:^5.0.0"
     node-fetch: "npm:^2.6.7"
     progress: "npm:^2.0.3"
     proxy-from-env: "npm:^1.1.0"
     which: "npm:^2.0.2"
+  dependenciesMeta:
+    "@sentry/cli-darwin":
+      optional: true
+    "@sentry/cli-linux-arm":
+      optional: true
+    "@sentry/cli-linux-arm64":
+      optional: true
+    "@sentry/cli-linux-i686":
+      optional: true
+    "@sentry/cli-linux-x64":
+      optional: true
+    "@sentry/cli-win32-arm64":
+      optional: true
+    "@sentry/cli-win32-i686":
+      optional: true
+    "@sentry/cli-win32-x64":
+      optional: true
   bin:
     sentry-cli: bin/sentry-cli
-  checksum: 10/d79151025d9f2d714d4503c345d5e1ac729601efceb23cc85410dfdab85f5419b1d9e37708549fc3cd69a6bb37f3e3eae33f47815da4fec90f84efb5749ddbc0
+  checksum: 10/6ed494c6c21c7da53c71ae9ca6b26d49efa29b12707019b6460653cc9e0087412df57e49f2a3d56fbef5d8d0bb64fa23b066d1d7307af7f1093d8804137875cb
   languageName: node
   linkType: hard
 
@@ -30577,23 +30701,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@npm:^19.0.0":
-  version: 19.0.0
-  resolution: "lavamoat-browserify@npm:19.0.0"
+"lavamoat-browserify@npm:^19.0.2":
+  version: 19.0.2
+  resolution: "lavamoat-browserify@npm:19.0.2"
   dependencies:
     "@lavamoat/aa": "npm:^4.3.4"
-    "@lavamoat/lavapack": "npm:^7.0.17"
+    "@lavamoat/lavapack": "npm:^7.0.18"
     "@lavamoat/sourcemap-validator": "npm:2.1.1"
     browser-resolve: "npm:2.0.0"
     concat-stream: "npm:2.0.0"
     convert-source-map: "npm:2.0.0"
     duplexify: "npm:4.1.3"
-    lavamoat-core: "npm:^17.0.0"
+    lavamoat-core: "npm:^17.0.1"
     pify: "npm:5.0.0"
     readable-stream: "npm:4.7.0"
     source-map: "npm:0.7.4"
     through2: "npm:4.0.2"
-  checksum: 10/1d6fb989cb36a41bdface967fc43563d2370eaea695901213186d268b31a0d709ecc258235158f523365438208ccbe40ef8c2390d06e5e0902b7854f30262819
+  checksum: 10/6d2cac266ceb627650a88b08b46fd3771bc6861a305ab952362af2d1f23bd35d874aec85b945116de1c8749216558771cac24d9c03b86fcae33c15c641444e57
   languageName: node
   linkType: hard
 
@@ -30610,9 +30734,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^17.0.0":
-  version: 17.0.0
-  resolution: "lavamoat-core@npm:17.0.0"
+"lavamoat-core@npm:^17.0.0, lavamoat-core@npm:^17.0.1":
+  version: 17.0.1
+  resolution: "lavamoat-core@npm:17.0.1"
   dependencies:
     "@babel/types": "npm:7.27.3"
     "@lavamoat/types": "npm:^0.1.0"
@@ -30622,7 +30746,7 @@ __metadata:
     ses: "npm:1.14.0"
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/6442eb31ed938e1c25805266f447755359e051716b70a62d46d44f1d3036ebc2ed54f62b0eece1ca2f02d4117ed88b5e60ca100905be2d134cef1bcfee015076
+  checksum: 10/216db62524b416ba5670ae237ccdb94d07a04a84294c9193c3f8cd245dc883f37f993bdecefb22f99f8d742e7297303b9dca430631e4a74547c8b9dc94592e2f
   languageName: node
   linkType: hard
 
@@ -31854,7 +31978,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^8.0.0"
-    "@metamask/assets-controllers": "npm:^86.0.0"
+    "@metamask/assets-controllers": "npm:^87.0.0"
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.4.3"
@@ -31982,9 +32106,10 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.6.1"
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
+    "@rive-app/react-canvas": "patch:@rive-app/react-canvas@npm%3A4.23.3#~/.yarn/patches/@rive-app-react-canvas-npm-4.23.3-3ab1940c19.patch"
     "@segment/loosely-validate-event": "npm:^2.0.0"
     "@sentry/browser": "patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch"
-    "@sentry/cli": "npm:^2.19.4"
+    "@sentry/cli": "npm:^2.56.0"
     "@sentry/types": "npm:^8.33.1"
     "@sentry/utils": "npm:^8.33.1"
     "@slack/types": "npm:^2.14.0"
@@ -32166,7 +32291,7 @@ __metadata:
     koa: "npm:^2.7.0"
     labeled-stream-splicer: "npm:^2.0.2"
     lavamoat: "npm:^10.0.0"
-    lavamoat-browserify: "npm:^19.0.0"
+    lavamoat-browserify: "npm:^19.0.2"
     lavamoat-viz: "npm:^7.0.5"
     level: "npm:^8.0.1"
     localforage: "npm:^1.9.0"
