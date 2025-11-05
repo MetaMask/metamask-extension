@@ -4485,9 +4485,6 @@
     "message": "$1 icon",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Choose an option to continue"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Launch extension"
   },
@@ -8112,9 +8109,6 @@
   },
   "welcomeBack": {
     "message": "Welcome back"
-  },
-  "welcomeToMetaMask": {
-    "message": "Let's get started"
   },
   "whatsThis": {
     "message": "What's this?"
