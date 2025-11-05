@@ -11,6 +11,7 @@ import { updateSelectedGasFeeToken } from '../../../store/controller-actions/tra
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../test/data/confirmations/gas';
+import * as actionConstants from '../../../store/actionConstants';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useAutomaticGasFeeTokenSelect } from './useAutomaticGasFeeTokenSelect';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
@@ -50,6 +51,35 @@ function runHook({
 async function flushAsyncUpdates() {
   await act(async () => {
     await flushPromises();
+  });
+}
+
+type ConfirmHookRenderResult = ReturnType<
+  typeof renderHookWithConfirmContextProvider
+>;
+
+function updateTransactionInStore(
+  store: ConfirmHookRenderResult['store'],
+  transactionId: string,
+  updates: Partial<TransactionMeta>,
+) {
+  if (!store) {
+    throw new Error('Expected store to be defined');
+  }
+
+  act(() => {
+    const currentTransactions = store
+      .getState()
+      .metamask.transactions.map((transaction: TransactionMeta) =>
+        transaction.id === transactionId
+          ? { ...transaction, ...updates }
+          : transaction,
+      );
+
+    store.dispatch({
+      type: actionConstants.UPDATE_METAMASK_STATE,
+      value: { transactions: currentTransactions },
+    });
   });
 }
 
@@ -111,7 +141,7 @@ describe('useAutomaticGasFeeTokenSelect', () => {
   });
 
   it('selects first gas fee token on rerender when selection becomes eligible', async () => {
-    const { rerender, state, store } = runHook({
+    const { rerender, store } = runHook({
       selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
     });
 
@@ -124,11 +154,11 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
     expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
 
-    const transactionMeta = state.metamask
-      .transactions[0] as unknown as TransactionMeta;
+    const transactionMeta = store.getState().metamask
+      .transactions[0] as TransactionMeta;
 
-    act(() => {
-      transactionMeta.selectedGasFeeToken = undefined;
+    updateTransactionInStore(store, transactionMeta.id, {
+      selectedGasFeeToken: undefined,
     });
 
     rerender();
@@ -202,7 +232,7 @@ describe('useAutomaticGasFeeTokenSelect', () => {
   });
 
   it('does not select first gas fee token after firstCheck is set to false', async () => {
-    const { rerender, state, store } = runHook();
+    const { rerender, store } = runHook();
 
     if (!store) {
       throw new Error('Expected store to be defined');
@@ -211,10 +241,10 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     await flushAsyncUpdates();
 
     // Simulate a rerender with new state that would otherwise trigger selection
-    act(() => {
-      (
-        state.metamask.transactions[0] as unknown as TransactionMeta
-      ).selectedGasFeeToken = undefined;
+    const transactionMeta = store.getState().metamask
+      .transactions[0] as TransactionMeta;
+    updateTransactionInStore(store, transactionMeta.id, {
+      selectedGasFeeToken: undefined,
     });
 
     rerender();

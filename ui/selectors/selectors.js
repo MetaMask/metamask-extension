@@ -452,7 +452,7 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
     currentChainId,
     chainId,
   ) =>
-    Object.values(internalAccounts).reduce((accounts, internalAccount) => {
+    internalAccounts.reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
@@ -2031,15 +2031,10 @@ export function getNativeCurrencyForChain(chainId) {
  * @param state - The Redux store state.
  * @returns {Array} An array of internal accounts.
  */
-export const getMemoizedMetaMaskInternalAccounts = createDeepEqualSelector(
-  getInternalAccounts,
-  (internalAccounts) => internalAccounts,
-);
+export const getMemoizedMetaMaskInternalAccounts = getInternalAccounts;
 
-export const selectERC20TokensByChain = createDeepEqualSelector(
-  (state) => state.metamask.tokensChainsCache,
-  (erc20TokensByChain) => erc20TokensByChain,
-);
+export const selectERC20TokensByChain = (state) =>
+  state.metamask.tokensChainsCache;
 
 export const selectERC20Tokens = createDeepEqualSelector(
   getCurrentChainId,
@@ -2080,10 +2075,19 @@ export const getMetadataContractName = createSelector(
 export const getTxData = (state) => state.confirmTransaction.txData;
 
 export const getUnapprovedTransaction = createDeepEqualSelector(
-  (state) => getUnapprovedTransactions(state),
+  getUnapprovedTransactions,
   (_, transactionId) => transactionId,
-  (unapprovedTxs, transactionId) =>
-    Object.values(unapprovedTxs).find(({ id }) => id === transactionId),
+  (unapprovedTxs, transactionId) => {
+    if (!unapprovedTxs || typeof unapprovedTxs !== 'object') {
+      return undefined;
+    }
+
+    const match = Object.values(unapprovedTxs).find(
+      ({ id }) => id === transactionId,
+    );
+
+    return match ? { ...match } : undefined;
+  },
 );
 
 export const getTransaction = createDeepEqualSelector(

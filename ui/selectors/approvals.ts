@@ -54,13 +54,16 @@ export function getApprovalFlows(state: ApprovalsMetaMaskState) {
   return state.metamask.approvalFlows;
 }
 
-export function getPendingApprovals(state: ApprovalsMetaMaskState) {
-  return Object.values(state.metamask.pendingApprovals ?? {});
-}
+export const getPendingApprovals = createSelector(
+  (state: ApprovalsMetaMaskState) => state.metamask.pendingApprovals ?? {},
+  (pendingApprovals) => Object.values(pendingApprovals),
+);
 
-export function pendingApprovalsSortedSelector(state: ApprovalsMetaMaskState) {
-  return getPendingApprovals(state).sort((a1, a2) => a1.time - a2.time);
-}
+export const pendingApprovalsSortedSelector = createSelector(
+  getPendingApprovals,
+  (pendingApprovals) =>
+    [...pendingApprovals].sort((a1, a2) => a1.time - a2.time),
+);
 
 /**
  * Returns pending approvals sorted by time for use in confirmation navigation.
@@ -94,10 +97,7 @@ const internalSelectPendingApproval = createSelector(
   (approvals, id) => approvals.find(({ id: approvalId }) => approvalId === id),
 );
 
-export const selectPendingApproval = createDeepEqualSelector(
-  internalSelectPendingApproval,
-  (approval) => approval,
-);
+export const selectPendingApproval = internalSelectPendingApproval;
 
 export const getApprovalsByOrigin = (
   state: ApprovalsMetaMaskState,

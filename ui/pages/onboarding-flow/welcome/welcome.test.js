@@ -49,7 +49,7 @@ describe('Welcome Page', () => {
   let enabledMetricsSpy;
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
     startOAuthLoginSpy = jest
       .spyOn(Actions, 'startOAuthLogin')
       .mockReturnValueOnce(jest.fn().mockResolvedValueOnce(true));
@@ -89,10 +89,11 @@ describe('Welcome Page', () => {
   });
 
   it('should show the error modal when the error thrown in login', async () => {
-    jest.resetAllMocks();
-    jest
-      .spyOn(Actions, 'startOAuthLogin')
-      .mockReturnValueOnce(jest.fn().mockRejectedValueOnce(new Error('test')));
+    jest.clearAllMocks();
+    startOAuthLoginSpy.mockReset();
+    startOAuthLoginSpy.mockReturnValueOnce(
+      jest.fn().mockRejectedValueOnce(new Error('test')),
+    );
 
     const { getByText, getByTestId } = renderWithProvider(
       <Welcome />,

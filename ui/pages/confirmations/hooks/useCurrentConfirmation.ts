@@ -1,15 +1,10 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import {
-  ApprovalsMetaMaskState,
-  getUnapprovedTransaction,
-  oldestPendingConfirmationSelector,
-  selectPendingApproval,
-} from '../../../selectors';
-import { selectUnapprovedMessage } from '../../../selectors/signatures';
+import { selectConfirmationData } from '../selectors/confirm';
+import type { ConfirmationSelection } from '../selectors/confirm';
+import { ConfirmMetamaskState } from '../types/confirm';
 import {
   shouldUseRedesignForSignatures,
   shouldUseRedesignForTransactions,
@@ -25,25 +20,18 @@ import {
  */
 const useCurrentConfirmation = () => {
   const { id: paramsConfirmationId } = useParams<{ id: string }>();
-  const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
-  const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
 
-  const pendingApproval = useSelector((state) =>
-    selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
+  const {
+    pendingApproval,
+    transactionMeta: transactionMetadata,
+    signatureMessage,
+  } = useSelector<ConfirmMetamaskState, ConfirmationSelection>((state) =>
+    selectConfirmationData(state, paramsConfirmationId),
   );
 
-  const transactionMetadata = useSelector((state) =>
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getUnapprovedTransaction as any)(state, confirmationId),
-  ) as TransactionMeta | undefined;
-
-  const signatureMessage = useSelector((state) =>
-    selectUnapprovedMessage(state, confirmationId),
-  );
-
+  const pendingApprovalType = pendingApproval?.type as ApprovalType | undefined;
   const useRedesignedForSignatures = shouldUseRedesignForSignatures({
-    approvalType: pendingApproval?.type as ApprovalType,
+    approvalType: pendingApprovalType,
   });
 
   const useRedesignedForTransaction = shouldUseRedesignForTransactions({
@@ -54,7 +42,7 @@ const useCurrentConfirmation = () => {
     useRedesignedForSignatures || useRedesignedForTransaction;
 
   return useMemo(() => {
-    if (pendingApproval?.type === ApprovalType.AddEthereumChain) {
+    if (pendingApprovalType === ApprovalType.AddEthereumChain) {
       return { currentConfirmation: pendingApproval };
     }
 
@@ -71,6 +59,7 @@ const useCurrentConfirmation = () => {
     signatureMessage,
     shouldUseRedesign,
     pendingApproval,
+    pendingApprovalType,
   ]);
 };
 

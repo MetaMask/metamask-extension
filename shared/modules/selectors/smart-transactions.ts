@@ -111,7 +111,10 @@ export const getSmartTransactionsMigrationAppliedInternal = createSelector(
 // @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsOptInStatusForMetrics = createSelector(
   getSmartTransactionsOptInStatusInternal,
-  (optInStatus: boolean): boolean => optInStatus,
+  (optInStatus: boolean | null | undefined): boolean | null =>
+    optInStatus === undefined || optInStatus === null
+      ? null
+      : Boolean(optInStatus),
 );
 
 /**
@@ -124,11 +127,13 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
 // @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsPreferenceEnabled = createSelector(
   getSmartTransactionsOptInStatusInternal,
-  (optInStatus: boolean): boolean => {
+  (optInStatus: boolean | null | undefined): boolean => {
     // In the absence of an explicit opt-in or opt-out,
     // the Smart Transactions toggle is enabled.
     const DEFAULT_SMART_TRANSACTIONS_ENABLED = true;
-    return optInStatus ?? DEFAULT_SMART_TRANSACTIONS_ENABLED;
+    return optInStatus === undefined || optInStatus === null
+      ? DEFAULT_SMART_TRANSACTIONS_ENABLED
+      : Boolean(optInStatus);
   },
 );
 

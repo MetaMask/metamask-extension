@@ -5,27 +5,35 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { waitFor } from '@testing-library/react';
-import { useContext } from 'react';
-import { useSelector } from 'react-redux';
+import { createElement, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
-import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
+import {
+  getMockConfirmState,
+  getMockConfirmStateForTransaction,
+} from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
-import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
-import { I18nContext } from '../../../../../contexts/i18n';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { selectPendingApprovalsForNavigation } from '../../../../../selectors';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useIsUpgradeTransaction } from '../../../components/confirm/info/hooks/useIsUpgradeTransaction';
 import { ConfirmContext } from '../../../context/confirm';
+import type { ConfirmContextType } from '../../../context/confirm';
+import type { Confirmation } from '../../../types/confirm';
 import { useNonContractAddressAlerts } from './useNonContractAddressAlerts';
 import { useContractCode } from './useContractCode';
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
-  useDispatch: jest.fn(),
+jest.mock('../../../../../hooks/useI18nContext', () => ({
+  useI18nContext: jest.fn(),
 }));
+
+jest.mock(
+  '../../../components/confirm/info/hooks/useIsUpgradeTransaction',
+  () => ({
+    useIsUpgradeTransaction: jest.fn(),
+  }),
+);
 
 const messageIdMock = '12345';
 
@@ -35,11 +43,6 @@ jest.mock('react-router-dom', () => ({
     id: messageIdMock,
   }),
   useLocation: jest.fn(),
-}));
-
-jest.mock('react', () => ({
-  ...jest.requireActual('react'),
-  useContext: jest.fn(),
 }));
 
 jest.mock('./useContractCode', () => ({
@@ -54,6 +57,8 @@ const TRANSACTION_ID_MOCK = '123-456';
 const ACCOUNT_ADDRESS_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const ACCOUNT_ADDRESS_2_MOCK = '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b';
 
+type MockState = Parameters<typeof getMockConfirmState>[0];
+
 const TRANSACTION_META_MOCK = {
   id: TRANSACTION_ID_MOCK,
   chainId: '0x5',
@@ -67,74 +72,82 @@ const TRANSACTION_META_MOCK = {
   time: new Date().getTime() - 10000,
 } as TransactionMeta;
 
+function isTransactionMetaConfirmation(
+  confirmation: Confirmation,
+): confirmation is TransactionMeta {
+  return 'txParams' in confirmation;
+}
+
 function runHook({
   currentConfirmation,
+  stateOverrides,
 }: {
-  currentConfirmation?: TransactionMeta;
+  currentConfirmation?: Confirmation;
+  stateOverrides?: MockState;
 } = {}) {
-  const state = currentConfirmation
-    ? getMockConfirmStateForTransaction(currentConfirmation as TransactionMeta)
-    : {};
+  const confirmContextValue = {
+    currentConfirmation,
+    isScrollToBottomCompleted: true,
+    setIsScrollToBottomCompleted: jest.fn(),
+  };
 
-  const response = renderHookWithConfirmContextProvider(
+  const Container = ({ children }: { children: ReactNode }) =>
+    createElement(
+      ConfirmContext.Provider,
+      {
+        value: confirmContextValue as unknown as ConfirmContextType,
+      },
+      children,
+    );
+
+  const state =
+    currentConfirmation && isTransactionMetaConfirmation(currentConfirmation)
+      ? getMockConfirmStateForTransaction(currentConfirmation, stateOverrides)
+      : getMockConfirmState(stateOverrides);
+
+  return renderHookWithProvider(
     useNonContractAddressAlerts,
     state,
+    '/',
+    Container,
   );
-
-  return response.result.current;
 }
 
 describe('useNonContractAddressAlerts', () => {
-  const useContextMock = useContext as jest.Mock;
-  const useSelectorMock = useSelector as jest.Mock;
+  const mockUseI18nContext = jest.mocked(useI18nContext);
+  const mockUseIsUpgradeTransaction = jest.mocked(useIsUpgradeTransaction);
   const mockUseContractCode = jest.mocked(useContractCode);
   const useLocationMock = jest.mocked(useLocation);
 
   beforeEach(() => {
     jest.resetAllMocks();
 
+    mockUseI18nContext.mockReturnValue(
+      (translationKey: string) => translationKey,
+    );
+
+    mockUseIsUpgradeTransaction.mockReturnValue({
+      isUpgrade: false,
+      isUpgradeOnly: false,
+    });
+
     useLocationMock.mockReturnValue({
       search: '',
     } as unknown as ReturnType<typeof useLocationMock>);
 
-    mockUseContractCode.mockImplementation(
-      () =>
-        ({
-          pending: false,
-          value: {
-            isContractAddress: false,
-            contractCode: '',
-          },
-        }) as ReturnType<typeof useContractCode>,
-    );
+    mockUseContractCode.mockReturnValue({
+      pending: false,
+      value: {
+        isContractAddress: false,
+        contractCode: '',
+      },
+    } as ReturnType<typeof useContractCode>);
   });
 
   it('returns no alerts if no confirmation', () => {
-    const confirmation = TRANSACTION_META_MOCK;
-    useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: confirmation };
-      } else if (context === I18nContext) {
-        return (translationKey: string) => translationKey;
-      }
-      return undefined;
-    });
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getNetworkConfigurationsByChainId) {
-        return {
-          '0x5': {
-            chainId: '0x5',
-            name: 'Mainnet',
-          },
-        };
-      } else if (selector === selectPendingApprovalsForNavigation) {
-        return [confirmation];
-      }
+    const { result } = runHook();
 
-      return undefined;
-    });
-
-    expect(runHook()).toEqual([]);
+    expect(result.current).toEqual([]);
   });
 
   it('returns no alerts if the transaction has no data', () => {
@@ -146,34 +159,11 @@ describe('useNonContractAddressAlerts', () => {
       },
     };
 
-    useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: transactionWithNoData };
-      } else if (context === I18nContext) {
-        return (translationKey: string) => translationKey;
-      }
-      return undefined;
-    });
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getNetworkConfigurationsByChainId) {
-        return {
-          '0x5': {
-            chainId: '0x5',
-            name: 'Mainnet',
-          },
-        };
-      } else if (selector === selectPendingApprovalsForNavigation) {
-        return [transactionWithNoData];
-      }
-
-      return undefined;
+    const { result } = runHook({
+      currentConfirmation: transactionWithNoData,
     });
 
-    expect(
-      runHook({
-        currentConfirmation: transactionWithNoData,
-      }),
-    ).toEqual([]);
+    expect(result.current).toEqual([]);
   });
 
   it('returns no alerts if the transaction has data but the recipient is a contract', () => {
@@ -185,83 +175,35 @@ describe('useNonContractAddressAlerts', () => {
       },
     };
 
-    useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: transactionWithData };
-      } else if (context === I18nContext) {
-        return (translationKey: string) => translationKey;
-      }
-      return undefined;
-    });
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getNetworkConfigurationsByChainId) {
-        return {
-          '0x5': {
-            chainId: '0x5',
-            name: 'Mainnet',
-          },
-        };
-      } else if (selector === selectPendingApprovalsForNavigation) {
-        return [transactionWithData];
-      }
+    mockUseContractCode.mockReturnValue({
+      pending: false,
+      value: {
+        isContractAddress: true,
+        contractCode: '',
+      },
+    } as ReturnType<typeof useContractCode>);
 
-      return undefined;
+    const { result } = runHook({
+      currentConfirmation: transactionWithData,
     });
 
-    mockUseContractCode.mockImplementation(
-      () =>
-        ({
-          pending: false,
-          value: {
-            isContractAddress: true,
-            contractCode: '',
-          },
-        }) as ReturnType<typeof useContractCode>,
-    );
-
-    expect(
-      runHook({
-        currentConfirmation: transactionWithData,
-      }),
-    ).toEqual([]);
+    expect(result.current).toEqual([]);
   });
 
-  it('returns no alert for authorization request', async () => {
+  it('returns no alert for authorization request', () => {
     const authorizationList = [{ address: '0x123' as Hex }];
     const transaction = genUnapprovedContractInteractionConfirmation({
       authorizationList,
     });
 
-    useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: transaction };
-      } else if (context === I18nContext) {
-        return (translationKey: string) => translationKey;
-      }
-      return undefined;
+    mockUseIsUpgradeTransaction.mockReturnValueOnce({
+      isUpgrade: true,
+      isUpgradeOnly: false,
     });
 
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getNetworkConfigurationsByChainId) {
-        return {
-          '0x5': {
-            chainId: '0x5',
-            name: 'Mainnet',
-          },
-        };
-      } else if (selector === selectPendingApprovalsForNavigation) {
-        return [transaction];
-      }
-
-      return undefined;
+    const { result } = runHook({
+      currentConfirmation: transaction,
     });
-
-    const { result } = renderHookWithConfirmContextProvider(
-      useNonContractAddressAlerts,
-      {
-        currentConfirmation: transaction,
-      },
-    );
 
     expect(result.current).toEqual([]);
   });
@@ -274,35 +216,10 @@ describe('useNonContractAddressAlerts', () => {
         data: '0xabcdef',
       },
     };
-    useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: transactionWithData };
-      } else if (context === I18nContext) {
-        return (translationKey: string) => translationKey;
-      }
-      return undefined;
-    });
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getNetworkConfigurationsByChainId) {
-        return {
-          '0x5': {
-            chainId: '0x5',
-            name: 'Mainnet',
-          },
-        };
-      } else if (selector === selectPendingApprovalsForNavigation) {
-        return [transactionWithData];
-      }
 
-      return undefined;
+    const { result } = runHook({
+      currentConfirmation: transactionWithData,
     });
-
-    const { result } = renderHookWithConfirmContextProvider(
-      useNonContractAddressAlerts,
-      {
-        currentConfirmation: transactionWithData,
-      },
-    );
 
     await waitFor(() => {
       expect(result.current).toEqual([
@@ -327,35 +244,10 @@ describe('useNonContractAddressAlerts', () => {
         data: '0xabcdef',
       },
     };
-    useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: transactionWithData };
-      } else if (context === I18nContext) {
-        return (translationKey: string) => translationKey;
-      }
-      return undefined;
-    });
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getNetworkConfigurationsByChainId) {
-        return {
-          '0x5': {
-            chainId: '0x5',
-            name: 'Mainnet',
-          },
-        };
-      } else if (selector === selectPendingApprovalsForNavigation) {
-        return [transactionWithData];
-      }
 
-      return undefined;
+    const { result } = runHook({
+      currentConfirmation: transactionWithData,
     });
-
-    const { result } = renderHookWithConfirmContextProvider(
-      useNonContractAddressAlerts,
-      {
-        currentConfirmation: transactionWithData,
-      },
-    );
 
     await waitFor(() => {
       expect(result.current).toEqual([]);
@@ -371,47 +263,17 @@ describe('useNonContractAddressAlerts', () => {
       },
     };
 
-    useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: transactionWithData };
-      } else if (context === I18nContext) {
-        return (translationKey: string) => translationKey;
-      }
-      return undefined;
-    });
-
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getNetworkConfigurationsByChainId) {
-        return {
-          '0x5': {
-            chainId: '0x5',
-            name: 'Mainnet',
-          },
-        };
-      } else if (selector === selectPendingApprovalsForNavigation) {
-        return [transactionWithData];
-      }
-
-      return undefined;
-    });
-
-    mockUseContractCode.mockImplementation(
-      () =>
-        ({
-          pending: false,
-          value: {
-            isContractAddress: false,
-            contractCode: null, // simulate failure
-          },
-        }) as ReturnType<typeof useContractCode>,
-    );
-
-    const { result } = renderHookWithConfirmContextProvider(
-      useNonContractAddressAlerts,
-      {
-        currentConfirmation: transactionWithData,
+    mockUseContractCode.mockReturnValue({
+      pending: false,
+      value: {
+        isContractAddress: false,
+        contractCode: null,
       },
-    );
+    } as ReturnType<typeof useContractCode>);
+
+    const { result } = runHook({
+      currentConfirmation: transactionWithData,
+    });
 
     await waitFor(() => {
       expect(result.current).toEqual([]);
