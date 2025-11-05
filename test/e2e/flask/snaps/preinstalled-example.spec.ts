@@ -64,11 +64,8 @@ describe('Preinstalled example Snap', function () {
         await preInstalledExample.selectRadioOption('Option 2');
         await preInstalledExample.selectDropdownOption('Option 2');
         await preInstalledExample.checkIsToggleOn();
-        assert.equal(
-          await preInstalledExample.checkSelectedRadioOption('Option 2'),
-          true,
-        );
-        await preInstalledExample.checkSelectedDropdownOption('Option 2');
+        await preInstalledExample.checkSelectedRadioOption('option2');
+        await preInstalledExample.checkSelectedDropdownOption('option2');
         await driver.clickElement(
           '.settings-page__header__title-container__close-button',
         );
@@ -79,7 +76,7 @@ describe('Preinstalled example Snap', function () {
         await testSnaps.openPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.clickButton('getSettingsStateButton');
-        const jsonTextValidation = '"setting1": true';
+        const jsonTextValidation = '"setting1": true, "setting2": "option2", "setting3": "option2"';
         await testSnaps.checkMessageResultSpan(
           'rpcResultSpan',
           jsonTextValidation,
