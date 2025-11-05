@@ -218,7 +218,9 @@ describe('useDappSwapComparisonInfo', () => {
       {
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          dapp_swap_comparison: 'loading',
+          swap_dapp_comparison: 'loading',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_commands: '0x0a100604',
         },
       },
       'f8172040-b3d0-11f0-a882-3f99aa2e9f0c',
@@ -247,7 +249,9 @@ describe('useDappSwapComparisonInfo', () => {
       {
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          dapp_swap_comparison: 'completed',
+          swap_dapp_comparison: 'completed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_commands: '0x0a100604',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_comparison_total_latency_ms: '1500',
           // eslint-disable-next-line @typescript-eslint/naming-convention
