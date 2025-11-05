@@ -454,7 +454,7 @@ async function withFixtures(options, testSuite) {
       if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
         writeFileSync(
           './privacy-snapshot.json',
-          JSON.stringify(mergedReport, null, 2),
+          `${JSON.stringify(mergedReport, null, 2)}\n`, // must add trailing newline to satisfy prettier
         );
       } else {
         throw new Error(
