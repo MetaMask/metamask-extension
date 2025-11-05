@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
@@ -75,6 +75,9 @@ import {
   getThirdPartyNotifySnaps,
   getUseExternalServices,
   getPreferences,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
 } from '../../../selectors';
 import {
   AlignItems,
@@ -94,6 +97,8 @@ import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
 import { getIsShieldSubscriptionActive } from '../../../../shared/lib/shield';
+import { useRewardsContext } from '../../../contexts/rewards';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -112,6 +117,7 @@ export const GlobalMenu = ({
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const basicFunctionality = useSelector(getUseExternalServices);
+  const { rewardsEnabled } = useRewardsContext();
 
   const history = useHistory();
 
@@ -141,6 +147,10 @@ export const GlobalMenu = ({
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
+
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   /**
    * This condition is used to control whether the client shows the "turn on notifications"
@@ -285,6 +295,25 @@ export const GlobalMenu = ({
     closeMenu();
   };
 
+  const handlePortfolioOnClick = useCallback(() => {
+    const url = getPortfolioUrl(
+      'explore/tokens',
+      'ext_portfolio_button',
+      metaMetricsId,
+      isMetaMetricsEnabled,
+      isMarketingEnabled,
+    );
+    global.platform.openTab({ url });
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PortfolioLinkClicked,
+      properties: {
+        location: 'Home',
+        text: 'Portfolio',
+      },
+    });
+  }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
+
   return (
     <Popover
       data-testid="global-menu"
@@ -317,6 +346,24 @@ export const GlobalMenu = ({
               {notificationsUnreadCount === 0 &&
                 !isMetamaskNotificationFeatureSeen && <NewFeatureTag />}
               <NotificationsTagCounter />
+            </Box>
+          </MenuItem>
+        </>
+      )}
+      {rewardsEnabled && (
+        <>
+          <MenuItem
+            iconName={IconName.Export}
+            onClick={() => handlePortfolioOnClick()}
+            data-testid="portfolio-menu-item"
+          >
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.spaceBetween}
+            >
+              {t('discover')}
             </Box>
           </MenuItem>
         </>
