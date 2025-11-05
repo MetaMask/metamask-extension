@@ -9,6 +9,10 @@ import { ENVIRONMENT } from '../../../../development/build/constants';
 import { RewardsDataServiceMessenger } from '../../controller-init/messengers/reward-data-service-messenger';
 import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 import {
+  EstimatePointsDto,
+  EstimatedPointsDto,
+} from '../../../../shared/types/rewards';
+import {
   RewardsDataService,
   InvalidTimestampError,
   AuthorizationFailedError,
@@ -16,8 +20,6 @@ import {
 } from './rewards-data-service';
 import type {
   LoginResponseDto,
-  EstimatePointsDto,
-  EstimatedPointsDto,
   SeasonStateDto,
   MobileLoginDto,
   MobileOptinDto,

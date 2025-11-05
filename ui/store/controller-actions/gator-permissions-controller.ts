@@ -15,11 +15,14 @@ export const fetchAndUpdateGatorPermissions = async (
   );
 };
 
-export const addPendingRevocation = async (
-  txId: string,
-  permissionContext: Hex,
-): Promise<void> => {
-  return await submitRequestToBackground('addPendingRevocation', [
+export const addPendingRevocation = async ({
+  txId,
+  permissionContext,
+}: {
+  txId: string;
+  permissionContext: Hex;
+}): Promise<void> => {
+  await submitRequestToBackground('addPendingRevocation', [
     {
       txId,
       permissionContext,
@@ -27,12 +30,12 @@ export const addPendingRevocation = async (
   ]);
 };
 
-export const submitRevocation = async (
-  permissionContext: Hex,
-): Promise<void> => {
-  return await submitRequestToBackground('submitRevocation', [
-    { permissionContext },
-  ]);
+export const submitRevocation = async ({
+  permissionContext,
+}: {
+  permissionContext: Hex;
+}): Promise<void> => {
+  await submitRequestToBackground('submitRevocation', [{ permissionContext }]);
 };
 
 /**

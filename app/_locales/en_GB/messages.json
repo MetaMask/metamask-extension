@@ -439,6 +439,9 @@
   "alertAccountTypeUpgradeTitle": {
     "message": "Account type"
   },
+  "alertActionBurnAddress": {
+    "message": "Sending Assets to Burn Address"
+  },
   "alertActionBuyWithNativeCurrency": {
     "message": "Buy $1"
   },
@@ -465,6 +468,9 @@
   },
   "alertMessageAddressTrustSignalMalicious": {
     "message": "If you confirm this request, you will probably lose your assets to a scammer."
+  },
+  "alertMessageBurnAddress": {
+    "message": "You're sending your assets to a burn address. If you continue, you'll lose your assets."
   },
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
@@ -980,6 +986,34 @@
   },
   "bridgeNoMMFee": {
     "message": "No MM fee"
+  },
+  "bridgePoints": {
+    "message": "Est. points",
+    "description": "Label for estimated points that can be earned from a bridge or swap"
+  },
+  "bridgePoints_couldntLoad": {
+    "message": "Couldn't load",
+    "description": "Text shown in rewards badge when points couldn't be loaded"
+  },
+  "bridgePoints_error": {
+    "message": "Couldn't load points",
+    "description": "Tooltip title when there's an error fetching estimated points"
+  },
+  "bridgePoints_error_content": {
+    "message": "Don't worry, you're still earning points. They'll show up in your account soon, or you can check in the Rewards tab on MetaMask Mobile.",
+    "description": "Error message when points estimation fails"
+  },
+  "bridgePoints_tooltip": {
+    "message": "Points",
+    "description": "Tooltip title for points"
+  },
+  "bridgePoints_tooltip_content_1": {
+    "message": "Points are how you earn MetaMask Rewards for completing transactions, like when you swap, bridge, or trade perps.",
+    "description": "First part of tooltip content explaining rewards points"
+  },
+  "bridgePoints_tooltip_content_2": {
+    "message": "Keep in mind this value is an estimate and will be finalized once the transaction is complete. Points can take up to 1 hour to be confirmed in your Rewards balance.",
+    "description": "Second part of tooltip content explaining how points are calculated"
   },
   "bridgePriceImpact": {
     "message": "Price impact"
@@ -5490,9 +5524,6 @@
   "reward": {
     "message": "Reward"
   },
-  "rewardsOptIn": {
-    "message": "Sign up for Rewards"
-  },
   "rewardsPointsBalance": {
     "message": "$1 points",
     "description": "$1 is the formatted number of rewards points"
@@ -5654,11 +5685,8 @@
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
   },
   "seedPhraseReviewDetails": {
-    "message": "This is your $1. Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Don’t share it with anyone, ever."
+    "message": "This is your $1. Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Save your Secret Recovery Phrase"
@@ -8057,24 +8085,11 @@
     "message": "$1 you can keep this phrase safe so you never lose access to your money.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "You can back up your wallets or see your Secret Recovery Phrase in Settings > Security & Password."
-  },
   "walletReadyLoseSrp": {
     "message": "If you lose your Secret Recovery Phrase, you won’t be able to use your wallet."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "This Secret Recovery Phrase can help you regain access if you ever forget your password or lose access to your login."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "If you don’t back up your Secret Recovery Phrase, you’ll lose access to your funds if you get locked out of the app or get a new device."
-  },
-  "walletReadySocialDetails1": {
-    "message": "You can log in to your wallet anytime with your $1 account and password.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "If you forget your password, you won’t be able to access your wallet."
   },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"
@@ -8192,8 +8207,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Keep your Secret Recovery Phrase safe!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "We’ll remind you later"
   }
 }
