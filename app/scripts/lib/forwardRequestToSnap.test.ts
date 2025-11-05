@@ -29,6 +29,83 @@ describe('forwardRequestToSnap', () => {
     handleRequestMock.mockResolvedValue(INVOKE_RESULT_MOCK);
   });
 
+  describe('callback hooks', () => {
+    it('calls onBeforeRequest before forwarding and onAfterRequest after success', async () => {
+      const calls: string[] = [];
+      const onBeforeRequest = jest.fn(() => calls.push('before'));
+      handleRequestMock.mockImplementation(async () => {
+        calls.push('handle');
+        return INVOKE_RESULT_MOCK;
+      });
+      const onAfterRequest = jest.fn(() => calls.push('after'));
+
+      const result = await forwardRequestToSnap(
+        {
+          handleRequest: handleRequestMock,
+          snapId: SNAP_ID_MOCK,
+          onBeforeRequest,
+          onAfterRequest,
+        },
+        { id: ID_MOCK },
+        REQUEST_MOCK,
+      );
+
+      expect(result).toBe(INVOKE_RESULT_MOCK);
+      expect(onBeforeRequest).toHaveBeenCalledTimes(1);
+      expect(handleRequestMock).toHaveBeenCalledTimes(1);
+      expect(onAfterRequest).toHaveBeenCalledTimes(1);
+      expect(calls).toEqual(['before', 'handle', 'after']);
+    });
+
+    it('calls onAfterRequest even if forwarding throws', async () => {
+      const error = new Error('failure');
+      const onBeforeRequest = jest.fn();
+      const onAfterRequest = jest.fn();
+      handleRequestMock.mockRejectedValueOnce(error);
+
+      await expect(
+        forwardRequestToSnap(
+          {
+            handleRequest: handleRequestMock,
+            snapId: SNAP_ID_MOCK,
+            onBeforeRequest,
+            onAfterRequest,
+          },
+          { id: ID_MOCK },
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow('failure');
+
+      expect(onBeforeRequest).toHaveBeenCalledTimes(1);
+      expect(onAfterRequest).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not forward the request if onBeforeRequest throws', async () => {
+      const error = new Error('failure');
+
+      const onBeforeRequest = jest.fn(() => {
+        throw error;
+      });
+
+      handleRequestMock.mockResolvedValue(INVOKE_RESULT_MOCK);
+
+      await expect(
+        forwardRequestToSnap(
+          {
+            handleRequest: handleRequestMock,
+            snapId: SNAP_ID_MOCK,
+            onBeforeRequest,
+          },
+          { id: ID_MOCK },
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow(error);
+
+      expect(onBeforeRequest).toHaveBeenCalledTimes(1);
+      expect(handleRequestMock).not.toHaveBeenCalled();
+    });
+  });
+
   describe('when snapId is provided', () => {
     it('forwards the request to the snap with correct arguments', async () => {
       const result = await forwardRequestToSnap(
