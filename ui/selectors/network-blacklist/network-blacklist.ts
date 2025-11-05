@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
 import { getRemoteFeatureFlags } from '../remote-feature-flags';
 
-export interface AdditionalNetworksBlacklistFeatureFlag {
+export type AdditionalNetworksBlacklistFeatureFlag = {
   additionalNetworksBlacklist: string[];
-}
+};
 
 /**
  * Selector to get the additional networks blacklist feature flag from remote feature flags.
@@ -26,4 +26,3 @@ export const selectAdditionalNetworksBlacklistFeatureFlag = createSelector(
     return Array.isArray(remoteValue) ? remoteValue : [];
   },
 );
-
