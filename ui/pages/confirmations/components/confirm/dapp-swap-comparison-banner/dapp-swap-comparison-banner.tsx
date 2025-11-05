@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -27,6 +27,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransaction } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
+import { useSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
 const DAPP_SWAP_THRESHOLD = 0.01;
@@ -83,6 +84,7 @@ const DappSwapComparisonInner = () => {
     tokenAmountDifference,
     destinationTokenSymbol,
   } = useDappSwapComparisonInfo();
+  const { isQuotedSwap } = useSwapCheck();
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { dappSwapUi } = useSelector(getRemoteFeatureFlags) as {
@@ -95,6 +97,12 @@ const DappSwapComparisonInner = () => {
   );
   const [showDappSwapComparisonBanner, setShowDappSwapComparisonBanner] =
     useState<boolean>(true);
+
+  useEffect(() => {
+    if (isQuotedSwap && selectedSwapType !== SwapType.Metamask) {
+      setSelectedSwapType(SwapType.Metamask);
+    }
+  }, [isQuotedSwap, selectedSwapType]);
 
   const hideDappSwapComparisonBanner = useCallback(() => {
     setShowDappSwapComparisonBanner(false);

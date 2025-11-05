@@ -11,6 +11,7 @@ export function useSwapCheck() {
   const { data: txParamsData } = txParams ?? {};
 
   return {
-    isQuotedSwap: txParamsOriginal && txParamsOriginalData !== txParamsData,
+    isQuotedSwap:
+      (txParamsOriginal && txParamsOriginalData !== txParamsData) ?? false,
   };
 }
