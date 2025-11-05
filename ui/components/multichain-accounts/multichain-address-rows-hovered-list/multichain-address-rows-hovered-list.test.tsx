@@ -1,0 +1,534 @@
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AccountGroupId } from '@metamask/account-api';
+import { CaipChainId } from '@metamask/utils';
+import { useHistory } from 'react-router-dom';
+import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-rows-hovered-list';
+import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
+import { getNetworksByScopes } from '../../../../shared/modules/selectors/networks';
+
+const mockStore = configureStore([]);
+const mockPush = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: mockPush,
+  }),
+}));
+
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
+  ...jest.requireActual('../../../selectors/multichain-accounts/account-tree'),
+  getInternalAccountListSpreadByScopesByGroupId: jest.fn(),
+}));
+
+jest.mock('../../../../shared/modules/selectors/networks', () => ({
+  ...jest.requireActual('../../../../shared/modules/selectors/networks'),
+  getNetworksByScopes: jest.fn(),
+}));
+
+const mockHandleCopy = jest.fn();
+jest.mock('../../../hooks/useCopyToClipboard', () => ({
+  useCopyToClipboard: () => [false, mockHandleCopy],
+}));
+
+// Test constants
+const TEST_STRINGS = {
+  VIEW_ALL_TEXT: 'multichainAddressViewAll',
+  EVM_NETWORKS: '[networkNameEthereum]', // Translation key shown for EVM networks
+  BITCOIN_NETWORK: 'Bitcoin',
+  SOLANA_NETWORK: 'Solana',
+  TRON_NETWORK: 'Tron',
+} as const;
+
+const TEST_IDS = {
+  MULTICHAIN_ADDRESS_ROWS_LIST: 'multichain-address-rows-list',
+  MULTICHAIN_ADDRESS_ROW: 'multichain-address-row',
+  AVATAR_GROUP: 'avatar-group',
+} as const;
+
+const CSS_CLASSES = {
+  FONT_BOLD: 'font-bold',
+  ARROW_RIGHT: 'arrow-right',
+  AVATAR_NETWORK: 'avatar-network',
+} as const;
+
+const WALLET_ID_MOCK = 'entropy:01K437Z7EJ0VCMFDE9TQKRV60A';
+const GROUP_ID_MOCK =
+  'entropy:01K437Z7EJ0VCMFDE9TQKRV60A:multichain-account:01K437Z7EJ0VCMFDE9TQKRV60A' as AccountGroupId;
+const SPECIAL_GROUP_ID =
+  'group:with/special?chars&symbols=test' as AccountGroupId;
+const ACCOUNT_EVM_ID_MOCK =
+  'entropy:01K437Z7EJ0VCMFDE9TQKRV60A:multichain-account:01K437Z7EJ0VCMFDE9TQKRV60A:eoa:0x1234567890123456789012345678901234567890';
+const ACCOUNT_BITCOIN_ID_MOCK =
+  'bitcoin:mainnet:4e445ed5a8c09d4d3be8e7fbf7dc3314';
+const ACCOUNT_SOLANA_ID_MOCK =
+  'solana:mainnet:5e445ed5a8c09d4d3be8e7fbf7dc3314';
+const ACCOUNT_TRON_ID_MOCK = 'tron:mainnet:6e445ed5a8c09d4d3be8e7fbf7dc3314';
+
+const INTERNAL_ACCOUNTS_MOCK: Record<string, InternalAccount> = {
+  [ACCOUNT_EVM_ID_MOCK]: {
+    id: ACCOUNT_EVM_ID_MOCK,
+    address: '0x1234567890123456789012345678901234567890',
+    metadata: {
+      name: 'EVM Account',
+      importTime: Date.now(),
+      keyring: { type: 'HD Key Tree' },
+    },
+    options: {},
+    methods: [],
+    type: 'eip155:eoa',
+    scopes: [
+      'eip155:1',
+      'eip155:137',
+      'eip155:42161',
+      'eip155:11155111',
+      'eip155:59144',
+    ],
+  },
+  [ACCOUNT_BITCOIN_ID_MOCK]: {
+    id: ACCOUNT_BITCOIN_ID_MOCK,
+    address: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
+    metadata: {
+      name: 'Bitcoin Account',
+      importTime: Date.now(),
+      keyring: { type: 'Snap Keyring' },
+    },
+    options: {},
+    methods: [],
+    type: 'bip122:p2wpkh',
+    scopes: ['bip122:000000000019d6689c085ae165831e93'],
+  },
+  [ACCOUNT_SOLANA_ID_MOCK]: {
+    id: ACCOUNT_SOLANA_ID_MOCK,
+    address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    metadata: {
+      name: 'Solana Account',
+      importTime: Date.now(),
+      keyring: { type: 'Snap Keyring' },
+    },
+    options: {},
+    methods: [],
+    type: 'solana:data-account',
+    scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+  },
+  [ACCOUNT_TRON_ID_MOCK]: {
+    id: ACCOUNT_TRON_ID_MOCK,
+    address: 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9',
+    metadata: {
+      name: 'Tron Account',
+      importTime: Date.now(),
+      keyring: { type: 'Snap Keyring' },
+    },
+    options: {},
+    methods: [],
+    type: 'tron:eoa',
+    scopes: ['tron:0x2b6653dc'],
+  },
+};
+
+const ACCOUNT_TREE_MOCK = {
+  wallets: {
+    [WALLET_ID_MOCK]: {
+      type: 'entropy',
+      id: WALLET_ID_MOCK,
+      metadata: {},
+      groups: {
+        [GROUP_ID_MOCK]: {
+          type: 'multichain-account',
+          id: GROUP_ID_MOCK,
+          metadata: {},
+          accounts: [
+            ACCOUNT_EVM_ID_MOCK,
+            ACCOUNT_BITCOIN_ID_MOCK,
+            ACCOUNT_SOLANA_ID_MOCK,
+            ACCOUNT_TRON_ID_MOCK,
+          ],
+        },
+      },
+    },
+  },
+};
+
+const createMockState = () => ({
+  metamask: {
+    completedOnboarding: true,
+    internalAccounts: {
+      accounts: INTERNAL_ACCOUNTS_MOCK,
+      selectedAccount: ACCOUNT_EVM_ID_MOCK,
+    },
+    accountTree: ACCOUNT_TREE_MOCK,
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+      },
+      '0x89': {
+        chainId: '0x89',
+        name: 'Polygon',
+        nativeCurrency: 'MATIC',
+      },
+      '0xa4b1': {
+        chainId: '0xa4b1',
+        name: 'Arbitrum',
+        nativeCurrency: 'ETH',
+      },
+      '0xaa36a7': {
+        chainId: '0xaa36a7',
+        name: 'Sepolia',
+        nativeCurrency: 'ETH',
+      },
+      '0xe708': {
+        chainId: '0xe708',
+        name: 'Linea',
+        nativeCurrency: 'ETH',
+      },
+    },
+    multichainNetworkConfigurationsByChainId: {
+      'eip155:1': {
+        chainId: 'eip155:1',
+        name: 'Ethereum',
+        isEvm: true,
+        nativeCurrency: 'ETH',
+      },
+      'eip155:137': {
+        chainId: 'eip155:137',
+        name: 'Polygon',
+        isEvm: true,
+        nativeCurrency: 'MATIC',
+      },
+      'eip155:42161': {
+        chainId: 'eip155:42161',
+        name: 'Arbitrum',
+        isEvm: true,
+        nativeCurrency: 'ETH',
+      },
+      'eip155:11155111': {
+        chainId: 'eip155:11155111',
+        name: 'Sepolia',
+        isEvm: true,
+        nativeCurrency: 'ETH',
+      },
+      'eip155:59144': {
+        chainId: 'eip155:59144',
+        name: 'Linea',
+        isEvm: true,
+        nativeCurrency: 'ETH',
+      },
+      'bip122:000000000019d6689c085ae165831e93': {
+        chainId: 'bip122:000000000019d6689c085ae165831e93',
+        name: 'Bitcoin',
+        isEvm: false,
+        nativeCurrency: 'BTC',
+      },
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        name: 'Solana',
+        isEvm: false,
+        nativeCurrency: 'SOL',
+      },
+      'tron:0x2b6653dc': {
+        chainId: 'tron:0x2b6653dc',
+        name: 'Tron',
+        isEvm: false,
+        nativeCurrency: 'TRX',
+      },
+    },
+  },
+});
+
+const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
+  const store = mockStore(createMockState());
+  return render(
+    <Provider store={store}>
+      <MultichainHoveredAddressRowsList groupId={groupId} />
+    </Provider>,
+  );
+};
+
+const mockedGetInternalAccountListSpreadByScopesByGroupId =
+  getInternalAccountListSpreadByScopesByGroupId as jest.MockedFunction<
+    typeof getInternalAccountListSpreadByScopesByGroupId
+  >;
+const mockedGetNetworksByScopes = getNetworksByScopes as jest.MockedFunction<
+  typeof getNetworksByScopes
+>;
+
+describe('MultichainHoveredAddressRowsList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    mockedGetNetworksByScopes.mockImplementation((state, scopes) => {
+      const networkMap: Record<string, { name: string; chainId: string }> = {
+        'bip122:000000000019d6689c085ae165831e93': {
+          name: 'Bitcoin',
+          chainId: 'bip122:000000000019d6689c085ae165831e93',
+        },
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+          name: 'Solana',
+          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        },
+        'tron:0x2b6653dc': { name: 'Tron', chainId: 'tron:0x2b6653dc' },
+        'eip155:1': { name: 'Ethereum', chainId: 'eip155:1' },
+        'eip155:137': { name: 'Polygon', chainId: 'eip155:137' },
+        'eip155:42161': { name: 'Arbitrum', chainId: 'eip155:42161' },
+        'eip155:59144': { name: 'Linea', chainId: 'eip155:59144' },
+      };
+
+      return (scopes as string[])
+        .map((scope) => networkMap[scope])
+        .filter(Boolean);
+    });
+
+    mockedGetInternalAccountListSpreadByScopesByGroupId.mockReturnValue([
+      {
+        account: INTERNAL_ACCOUNTS_MOCK[ACCOUNT_EVM_ID_MOCK],
+        scope: 'eip155:1' as CaipChainId,
+        networkName: 'Ethereum',
+      },
+      {
+        account: INTERNAL_ACCOUNTS_MOCK[ACCOUNT_EVM_ID_MOCK],
+        scope: 'eip155:137' as CaipChainId,
+        networkName: 'Polygon',
+      },
+      {
+        account: INTERNAL_ACCOUNTS_MOCK[ACCOUNT_EVM_ID_MOCK],
+        scope: 'eip155:42161' as CaipChainId,
+        networkName: 'Arbitrum',
+      },
+      {
+        account: INTERNAL_ACCOUNTS_MOCK[ACCOUNT_EVM_ID_MOCK],
+        scope: 'eip155:59144' as CaipChainId,
+        networkName: 'Linea',
+      },
+      {
+        account: INTERNAL_ACCOUNTS_MOCK[ACCOUNT_BITCOIN_ID_MOCK],
+        scope: 'bip122:000000000019d6689c085ae165831e93' as CaipChainId,
+        networkName: 'Bitcoin',
+      },
+      {
+        account: INTERNAL_ACCOUNTS_MOCK[ACCOUNT_SOLANA_ID_MOCK],
+        scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipChainId,
+        networkName: 'Solana',
+      },
+      {
+        account: INTERNAL_ACCOUNTS_MOCK[ACCOUNT_TRON_ID_MOCK],
+        scope: 'tron:0x2b6653dc' as CaipChainId,
+        networkName: 'Tron',
+      },
+    ]);
+  });
+
+  it('renders the component with aggregated rows', () => {
+    renderComponent();
+
+    expect(
+      screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+    ).toBeInTheDocument();
+
+    const addressRows = screen.getAllByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW);
+    expect(addressRows.length).toBeGreaterThan(0);
+  });
+
+  it('groups all eip155 scopes together', () => {
+    renderComponent();
+
+    const evmRow = screen
+      .getByText(TEST_STRINGS.EVM_NETWORKS)
+      .closest(`[data-testid="${TEST_IDS.MULTICHAIN_ADDRESS_ROW}"]`);
+    expect(evmRow).toBeInTheDocument();
+
+    const avatarGroup = evmRow?.querySelector(
+      `[data-testid="${TEST_IDS.AVATAR_GROUP}"]`,
+    );
+    expect(avatarGroup).toBeInTheDocument();
+  });
+
+  it('displays separate rows for non-eip155 accounts', () => {
+    renderComponent();
+
+    expect(screen.getByText(TEST_STRINGS.BITCOIN_NETWORK)).toBeInTheDocument();
+    expect(screen.getByText(TEST_STRINGS.SOLANA_NETWORK)).toBeInTheDocument();
+    expect(screen.getByText(TEST_STRINGS.TRON_NETWORK)).toBeInTheDocument();
+  });
+
+  it('applies priority sorting with grouped eip155 first', () => {
+    renderComponent();
+
+    const addressRows = screen.getAllByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW);
+    const rowTexts = addressRows.map((row) => row.textContent);
+
+    expect(rowTexts[0]).toContain(TEST_STRINGS.EVM_NETWORKS);
+    expect(rowTexts[1]).toContain(TEST_STRINGS.BITCOIN_NETWORK);
+    expect(rowTexts[2]).toContain(TEST_STRINGS.SOLANA_NETWORK);
+    expect(rowTexts[3]).toContain(TEST_STRINGS.TRON_NETWORK);
+  });
+
+  it('handles copy functionality for aggregated rows', () => {
+    renderComponent();
+
+    const evmRow = screen
+      .getByText(TEST_STRINGS.EVM_NETWORKS)
+      .closest(`[data-testid="${TEST_IDS.MULTICHAIN_ADDRESS_ROW}"]`);
+    const copyButton = evmRow?.querySelector('[aria-label*="copy"]');
+
+    expect(copyButton).toBeInTheDocument();
+
+    if (copyButton) {
+      fireEvent.click(copyButton);
+      expect(mockHandleCopy).toHaveBeenCalledWith(
+        '0x1234567890123456789012345678901234567890',
+      );
+    }
+  });
+
+  it('displays truncated addresses', () => {
+    renderComponent();
+
+    const addressElements = screen.getAllByText(/0x\w+\.\.\.\w+/);
+    expect(addressElements.length).toBeGreaterThan(0);
+  });
+
+  it('handles invalid group id gracefully', () => {
+    mockedGetInternalAccountListSpreadByScopesByGroupId.mockReturnValue([]);
+    renderComponent('invalid-group-id' as AccountGroupId);
+
+    expect(
+      screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryAllByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW),
+    ).toHaveLength(0);
+  });
+
+  it('groups eip155 scopes together for each account', () => {
+    renderComponent();
+
+    const evmRow = screen
+      .getByText(TEST_STRINGS.EVM_NETWORKS)
+      .closest(`[data-testid="${TEST_IDS.MULTICHAIN_ADDRESS_ROW}"]`);
+    expect(evmRow).toBeInTheDocument();
+
+    const avatarGroup = evmRow?.querySelector(
+      `[data-testid="${TEST_IDS.AVATAR_GROUP}"]`,
+    );
+    expect(avatarGroup).toBeInTheDocument();
+
+    const avatars = avatarGroup?.querySelectorAll(
+      `[class*="${CSS_CLASSES.AVATAR_NETWORK}"]`,
+    );
+    expect(avatars?.length).toBeGreaterThan(1);
+
+    expect(screen.getByText(TEST_STRINGS.BITCOIN_NETWORK)).toBeInTheDocument();
+    expect(screen.getByText(TEST_STRINGS.SOLANA_NETWORK)).toBeInTheDocument();
+    expect(screen.getByText(TEST_STRINGS.TRON_NETWORK)).toBeInTheDocument();
+  });
+
+  it('respects priority order when multiple accounts have priority chains', () => {
+    renderComponent();
+
+    const addressRows = screen.getAllByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW);
+
+    expect(addressRows.length).toBe(4);
+
+    const groupNames = addressRows.map((row) => {
+      const nameElement = row.querySelector(
+        `p[class*="${CSS_CLASSES.FONT_BOLD}"]`,
+      );
+      return nameElement?.textContent || '';
+    });
+
+    expect(groupNames).toEqual([
+      TEST_STRINGS.EVM_NETWORKS,
+      TEST_STRINGS.BITCOIN_NETWORK,
+      TEST_STRINGS.SOLANA_NETWORK,
+      TEST_STRINGS.TRON_NETWORK,
+    ]);
+  });
+
+  describe('Copy Functionality', () => {
+    beforeEach(() => {
+      mockHandleCopy.mockClear();
+    });
+
+    it('copies address when clicking copy button', () => {
+      renderComponent();
+
+      const evmRow = screen
+        .getByText(TEST_STRINGS.EVM_NETWORKS)
+        .closest(`[data-testid="${TEST_IDS.MULTICHAIN_ADDRESS_ROW}"]`);
+      const copyButton = evmRow?.querySelector(
+        '[aria-label*="copy"]',
+      ) as HTMLElement;
+
+      fireEvent.click(copyButton);
+
+      expect(mockHandleCopy).toHaveBeenCalledTimes(2);
+      expect(mockHandleCopy).toHaveBeenCalledWith(
+        '0x1234567890123456789012345678901234567890',
+      );
+    });
+
+    it('copies address when clicking on the row (not button)', () => {
+      renderComponent();
+
+      const evmRow = screen
+        .getByText(TEST_STRINGS.EVM_NETWORKS)
+        .closest(
+          `[data-testid="${TEST_IDS.MULTICHAIN_ADDRESS_ROW}"]`,
+        ) as HTMLElement;
+
+      const networkNameElement = screen.getByText(TEST_STRINGS.EVM_NETWORKS);
+
+      fireEvent.click(networkNameElement);
+
+      expect(mockHandleCopy).toHaveBeenCalledTimes(1);
+      expect(mockHandleCopy).toHaveBeenCalledWith(
+        '0x1234567890123456789012345678901234567890',
+      );
+    });
+  });
+
+  describe('View All Button', () => {
+    it('renders the View All button', () => {
+      renderComponent();
+
+      const buttons = screen.getAllByRole('button');
+      expect(buttons.length).toBeGreaterThan(0);
+      const viewAllButton = buttons[buttons.length - 1];
+      expect(viewAllButton).toBeInTheDocument();
+    });
+
+    it('navigates to the correct route when clicked', () => {
+      renderComponent();
+
+      const buttons = screen.getAllByRole('button');
+      const viewAllButton = buttons[buttons.length - 1];
+
+      fireEvent.click(viewAllButton);
+
+      expect(mockPush).toHaveBeenCalledWith(
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(GROUP_ID_MOCK)}`,
+      );
+    });
+
+    it('navigates with properly encoded group ID', () => {
+      renderComponent(SPECIAL_GROUP_ID);
+
+      const buttons = screen.getAllByRole('button');
+      const viewAllButton = buttons[buttons.length - 1];
+
+      fireEvent.click(viewAllButton);
+
+      expect(mockPush).toHaveBeenCalledWith(
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(SPECIAL_GROUP_ID)}`,
+      );
+    });
+  });
+});
