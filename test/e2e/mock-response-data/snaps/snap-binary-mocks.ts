@@ -229,10 +229,11 @@ export async function mockImagesSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockInsightsSnap(mockServer: Mockttp) {
+export async function mockInsightsSnap(mockServer: Mockttp, port?: number) {
   return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockInsightsSnap,
+    port,
   });
 }
 
@@ -292,10 +293,11 @@ export async function mockNetworkSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockNotificationSnap(mockServer: Mockttp) {
+export async function mockNotificationSnap(mockServer: Mockttp, port?: number) {
   return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockNotificationSnap,
+    port,
   });
 }
 
@@ -313,17 +315,19 @@ export async function mockPreferencesSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockSignatureInsightsSnap(mockServer: Mockttp) {
+export async function mockSignatureInsightsSnap(mockServer: Mockttp, port?: number) {
   return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockSignatureInsightsSnap,
+    port,
   });
 }
 
-export async function mockSimpleKeyringSnap(mockServer: Mockttp) {
+export async function mockSimpleKeyringSnap(mockServer: Mockttp, port?: number) {
   return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockSimpleKeyringSnap,
+    port,
   });
 }
 
@@ -334,18 +338,20 @@ export async function mockWasmSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockWebpackPluginOldSnap(mockServer: Mockttp) {
+export async function mockWebpackPluginOldSnap(mockServer: Mockttp, port?: number) {
   return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockWebpackPluginSnap,
     specificVersion: '2.0.0',
+    port,
   });
 }
 
-export async function mockWebpackPluginSnap(mockServer: Mockttp) {
+export async function mockWebpackPluginSnap(mockServer: Mockttp, port?: number) {
   return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockWebpackPluginSnap,
+    port,
   });
 }
 

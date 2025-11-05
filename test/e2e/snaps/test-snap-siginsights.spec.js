@@ -18,7 +18,9 @@ describe('Test Snap Signature Insights', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        testSpecificMock: mockSignatureInsightsSnap,
+        testSpecificMock: async (mockServer) => {
+          return await mockSignatureInsightsSnap(mockServer, 8081);
+        },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
