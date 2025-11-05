@@ -27,9 +27,11 @@ export default function FoxAppearAnimation({
 
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError } = context;
-  const { buffer, error: bufferError } = useRiveWasmFile(
-    './images/riv_animations/fox_appear.riv',
-  );
+  const {
+    buffer,
+    error: bufferError,
+    loading: bufferLoading,
+  } = useRiveWasmFile('./images/riv_animations/fox_appear.riv');
 
   useEffect(() => {
     if (wasmError) {
@@ -64,7 +66,7 @@ export default function FoxAppearAnimation({
 
   // Trigger the animation start when rive is loaded and WASM is ready
   useEffect(() => {
-    if (rive && isWasmReady) {
+    if (rive && isWasmReady && !bufferLoading) {
       // Get the state machine inputs
       const inputs = rive.stateMachineInputs('FoxRaiseUp');
 
@@ -98,7 +100,7 @@ export default function FoxAppearAnimation({
         rive.play();
       }
     }
-  }, [rive, isLoader, isWasmReady, skipTransition]);
+  }, [rive, isLoader, isWasmReady, skipTransition, bufferLoading]);
 
   // Don't render Rive component until ready or if loading/failed
   if (

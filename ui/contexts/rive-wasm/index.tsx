@@ -3,7 +3,7 @@
  * This module ensures WASM is loaded once and can be used by multiple animation components
  */
 import { RuntimeLoader } from '@rive-app/react-canvas';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 import { useAsyncResult } from '../../hooks/useAsync';
 
 // create a context only for the wasm ready state
@@ -11,16 +11,37 @@ const RiveWasmContext = createContext<{
   isWasmReady: boolean;
   loading: boolean;
   error: Error | undefined;
-}>({ isWasmReady: false, loading: false, error: undefined });
+  urlBufferMap: Record<string, ArrayBuffer>;
+  setUrlBufferCache: (url: string, buffer: ArrayBuffer) => void;
+}>({
+  isWasmReady: false,
+  loading: false,
+  error: undefined,
+  urlBufferMap: {},
+  setUrlBufferCache: () => {},
+});
 
 export default function RiveWasmProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [urlBufferMap, setUrlBufferMap] = useState<Record<string, ArrayBuffer>>(
+    {},
+  );
+  const setUrlBufferCache = useCallback(
+    (url: string, buffer: ArrayBuffer) => {
+      setUrlBufferMap((prev) => ({ ...prev, [url]: buffer }));
+    },
+    [setUrlBufferMap],
+  );
+
   const { isWasmReady, loading, error } = useRiveWasmReady();
+
   return (
-    <RiveWasmContext.Provider value={{ isWasmReady, loading, error }}>
+    <RiveWasmContext.Provider
+      value={{ isWasmReady, loading, error, urlBufferMap, setUrlBufferCache }}
+    >
       {children}
     </RiveWasmContext.Provider>
   );
@@ -39,17 +60,14 @@ export const useRiveWasmContext = () => {
 const RIVE_WASM_URL = './images/riv_animations/rive.wasm';
 const isTestEnvironment = Boolean(process.env.IN_TEST);
 
-let arrayBuffer: ArrayBuffer | null = null;
-
 export const useRiveWasmReady = () => {
   const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
 
   const result = useAsyncResult(async () => {
-    if (arrayBuffer) {
+    if (isWasmReady) {
       setIsWasmReady(true);
       return true;
     }
-    console.log('useRiveWasmReady');
 
     if (isTestEnvironment || typeof RuntimeLoader === 'undefined') {
       setIsWasmReady(true);
@@ -61,7 +79,7 @@ export const useRiveWasmReady = () => {
         `HTTP error! status while fetching rive.wasm: ${response.status}`,
       );
     }
-    arrayBuffer = await response.arrayBuffer();
+    const arrayBuffer = await response.arrayBuffer();
     (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
       arrayBuffer;
     RuntimeLoader.setWasmUrl('should not fetch wasm'); // easier to debug if something goes wrong
@@ -70,7 +88,7 @@ export const useRiveWasmReady = () => {
     await RuntimeLoader.awaitInstance();
     setIsWasmReady(true);
     return true;
-  }, []);
+  }, [isWasmReady, setIsWasmReady]);
 
   return {
     isWasmReady,
@@ -80,23 +98,23 @@ export const useRiveWasmReady = () => {
 };
 
 export const useRiveWasmFile = (url: string) => {
-  const [buffer, setBuffer] = useState<ArrayBuffer | undefined>(undefined);
-
-  const { isWasmReady } = useRiveWasmContext();
-
+  const { isWasmReady, urlBufferMap, setUrlBufferCache } = useRiveWasmContext();
   const result = useAsyncResult(async () => {
-    console.log('useRiveWasmFile', url, isWasmReady);
     if (!isWasmReady) {
       return undefined;
+    }
+    const cachedBuffer = urlBufferMap[url];
+    if (cachedBuffer) {
+      return cachedBuffer;
     }
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}, url: ${url}`);
     }
     const newArrayBuffer = await response.arrayBuffer();
-    setBuffer(newArrayBuffer);
+    setUrlBufferCache(url, newArrayBuffer);
     return newArrayBuffer;
-  }, [isWasmReady, url]);
+  }, [isWasmReady, url, setUrlBufferCache]);
 
-  return { buffer, loading: result.pending, error: result.error };
+  return { buffer: result.value, loading: result.pending, error: result.error };
 };
