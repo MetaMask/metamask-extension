@@ -9,7 +9,10 @@ import {
 import { Box } from '@metamask/design-system-react';
 import { useTheme } from '../../../hooks/useTheme';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { useRiveWasmFile, useRiveWasmReady } from '../rive-wasm';
+import {
+  useRiveWasmContext,
+  useRiveWasmFile,
+} from '../../../contexts/rive-wasm';
 
 type MetamaskWordMarkAnimationProps = {
   setIsAnimationComplete: (isAnimationComplete: boolean) => void;
@@ -27,7 +30,8 @@ export default function MetamaskWordMarkAnimation({
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const theme = useTheme();
   const isTestEnvironment = Boolean(process.env.IN_TEST);
-  const { isWasmReady, error: wasmError } = useRiveWasmReady();
+  const context = useRiveWasmContext();
+  const { isWasmReady, error: wasmError } = context;
   const { buffer, error: bufferError } = useRiveWasmFile(
     './images/riv_animations/metamask_wordmark.riv',
   );

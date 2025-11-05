@@ -3,8 +3,36 @@
  * This module ensures WASM is loaded once and can be used by multiple animation components
  */
 import { RuntimeLoader } from '@rive-app/react-canvas';
-import { useState } from 'react';
-import { useAsyncResult } from '../../../hooks/useAsync';
+import React, { createContext, useContext, useState } from 'react';
+import { useAsyncResult } from '../../hooks/useAsync';
+
+// create a context only for the wasm ready state
+const RiveWasmContext = createContext<{
+  isWasmReady: boolean;
+  loading: boolean;
+  error: Error | undefined;
+}>({ isWasmReady: false, loading: false, error: undefined });
+
+export default function RiveWasmProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { isWasmReady, loading, error } = useRiveWasmReady();
+  return (
+    <RiveWasmContext.Provider value={{ isWasmReady, loading, error }}>
+      {children}
+    </RiveWasmContext.Provider>
+  );
+}
+
+export const useRiveWasmContext = () => {
+  const context = useContext(RiveWasmContext);
+  if (!context) {
+    throw new Error('useRiveWasm must be used within RiveWasmProvider');
+  }
+  return context;
+};
 
 // WASM file URL - the file is copied to dist/chrome/images/ by the build process
 // We don't import it as a module to avoid browserify resolution issues
@@ -53,7 +81,8 @@ export const useRiveWasmReady = () => {
 
 export const useRiveWasmFile = (url: string) => {
   const [buffer, setBuffer] = useState<ArrayBuffer | undefined>(undefined);
-  const { isWasmReady } = useRiveWasmReady();
+
+  const { isWasmReady } = useRiveWasmContext();
 
   const result = useAsyncResult(async () => {
     console.log('useRiveWasmFile', url, isWasmReady);

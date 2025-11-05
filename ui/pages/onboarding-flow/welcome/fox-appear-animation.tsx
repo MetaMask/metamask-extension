@@ -7,7 +7,10 @@ import {
   Alignment,
 } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
-import { useRiveWasmFile, useRiveWasmReady } from '../rive-wasm';
+import {
+  useRiveWasmContext,
+  useRiveWasmFile,
+} from '../../../contexts/rive-wasm';
 
 type FoxAppearAnimationProps = {
   isLoader: boolean;
@@ -22,7 +25,8 @@ export default function FoxAppearAnimation({
 }: FoxAppearAnimationProps) {
   const isTestEnvironment = Boolean(process.env.IN_TEST);
 
-  const { isWasmReady, error: wasmError } = useRiveWasmReady();
+  const context = useRiveWasmContext();
+  const { isWasmReady, error: wasmError } = context;
   const { buffer, error: bufferError } = useRiveWasmFile(
     './images/riv_animations/fox_appear.riv',
   );
