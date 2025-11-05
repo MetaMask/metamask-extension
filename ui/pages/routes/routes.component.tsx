@@ -624,7 +624,18 @@ export default function Routes() {
             component={ConfirmTransaction}
           />
           <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
-          <Authenticated path={SWAPS_ROUTE} component={Swaps} />
+          <Route path={SWAPS_ROUTE}>
+            {(props: RouteComponentProps) => {
+              const { location: v5Location } = props;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const SwapsComponent = Swaps as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <SwapsComponent location={v5Location} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
           <Route
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
             // v5 Route supports exact with render props, but TS types don't recognize it
