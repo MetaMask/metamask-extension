@@ -93,7 +93,7 @@ const mockAddTransaction = addTransaction as jest.MockedFunction<
 >;
 const mockFindNetworkClientIdByChainId =
   findNetworkClientIdByChainId as unknown as jest.MockedFunction<
-    (chainId: string) => Promise<string | undefined>
+    (chainId: string) => Promise<string>
   >;
 const mockDecodeDelegations = decodeDelegations as jest.MockedFunction<
   typeof decodeDelegations
@@ -493,33 +493,6 @@ describe('useRevokeGatorPermissions', () => {
 
       expect(mockNavigateToId).not.toHaveBeenCalled();
       expect(mockOnRedirect).not.toHaveBeenCalled();
-    });
-
-    it('should handle missing network client', async () => {
-      // Override the mock to return undefined for this test
-      mockFindNetworkClientIdByChainId.mockResolvedValue(undefined);
-
-      const { result } = renderHook(
-        () =>
-          useRevokeGatorPermissions({
-            chainId: mockChainId,
-          }),
-        {
-          wrapper: ({ children }) => (
-            <Provider store={store}>{children}</Provider>
-          ),
-        },
-      );
-
-      await act(async () => {
-        await expect(
-          result.current.revokeGatorPermission(mockGatorPermission),
-        ).rejects.toThrow('No network client found for chain');
-      });
-
-      expect(mockDecodeDelegations).not.toHaveBeenCalled();
-      expect(mockEncodeDisableDelegation).not.toHaveBeenCalled();
-      expect(mockAddTransaction).not.toHaveBeenCalled();
     });
 
     it('should throw error when no delegation is found in permission context', async () => {
