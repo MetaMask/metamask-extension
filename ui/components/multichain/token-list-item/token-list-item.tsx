@@ -379,7 +379,6 @@ export const TokenListItemComponent = ({
           </Box>
         </Box>
 
-        {/* Info icon for destination tokens */}
         {isDestinationToken && (
           <ButtonIcon
             iconName={IconName.Info}
@@ -426,7 +425,6 @@ export const TokenListItemComponent = ({
         </Modal>
       ) : null}
 
-      {/* Token Insights Modal */}
       {showTokenInsights && address && (
         <TokenInsightsModal
           isOpen={showTokenInsights}
