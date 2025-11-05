@@ -128,6 +128,11 @@ export default function OnboardingFlow() {
 
   // Initialize Rive WASM on mount
   useEffect(() => {
+    const isTestEnvironment = Boolean(process.env.IN_TEST);
+    if (isTestEnvironment) {
+      return;
+    }
+
     console.log('[Rive] Starting WASM initialization from OnboardingFlow...');
     initializeRiveWASM()
       .then(() => {

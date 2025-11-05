@@ -20,11 +20,17 @@ export default function FoxAppearAnimation({
   isLoader = false,
   skipTransition,
 }: FoxAppearAnimationProps) {
-  const [isWasmReady, setIsWasmReady] = useState(false);
+  const isTestEnvironment = Boolean(process.env.IN_TEST);
+  const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
   const [buffer, setBuffer] = useState<ArrayBuffer | undefined>(undefined);
 
   // Check if WASM is ready (initialized in parent OnboardingFlow)
   useEffect(() => {
+    if (isTestEnvironment) {
+      setIsWasmReady(true);
+      return undefined;
+    }
+
     // Wait for WASM to be ready using promise instead of polling
     waitForWasmReady()
       .then(() => {
@@ -36,11 +42,11 @@ export default function FoxAppearAnimation({
       });
 
     return undefined;
-  }, []);
+  }, [isTestEnvironment]);
 
   // Fetch the .riv file and convert to ArrayBuffer
   useEffect(() => {
-    if (!isWasmReady || buffer) {
+    if (!isWasmReady || isTestEnvironment || buffer) {
       return;
     }
 
@@ -62,7 +68,7 @@ export default function FoxAppearAnimation({
       .catch((error) => {
         console.error('[Rive Fox] Failed to load .riv file:', error);
       });
-  }, [isWasmReady, buffer]);
+  }, [isWasmReady, buffer, isTestEnvironment]);
 
   // Use the buffer parameter instead of src
   const { riveFile, status } = useRiveFile({
@@ -117,6 +123,16 @@ export default function FoxAppearAnimation({
       }
     }
   }, [rive, isLoader, isWasmReady, skipTransition]);
+
+  if (isTestEnvironment) {
+    return (
+      <Box
+        className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
+      >
+        {isLoader && <Box className="riv-animation__spinner" />}
+      </Box>
+    );
+  }
 
   // Don't render Rive component until ready or if loading/failed
   if (!isWasmReady || status === 'loading' || status === 'failed') {

@@ -49,7 +49,8 @@
         "PerformanceObserver": true,
         "chrome.app": true,
         "chrome.runtime": true,
-        "location": true,
+        "location": false,
+        "location.href": true,
         "top": true
       }
     },
