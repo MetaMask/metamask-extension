@@ -164,7 +164,8 @@ export class OAuthMockttpService {
 
   #latestAuthPubKey: string = MockAuthPubKey;
 
-  #numbOfRequestTokensCalls: number = 0;
+  // Keep track of the number of GET PubKey requests which checks for password outdated
+  #numberOfGetPubKeyRequests: number = 0;
 
   mockAuthServerToken(overrides?: {
     statusCode?: number;
@@ -175,23 +176,6 @@ export class OAuthMockttpService {
   }) {
     const userEmail = overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
     const idToken = generateMockJwtToken(userEmail);
-
-    // keep track of the number of request tokens calls
-    this.#numbOfRequestTokensCalls += 1;
-
-    if (
-      // on the second call, (assuming it's for unlock) we throw an authentication error when passwordOutdated & throwAuthenticationErrorAtUnlock are true
-      this.#numbOfRequestTokensCalls === 2 &&
-      overrides?.throwAuthenticationErrorAtUnlock &&
-      overrides?.passwordOutdated
-    ) {
-      return {
-        statusCode: 500,
-        json: {
-          message: 'Internal server error',
-        },
-      };
-    }
 
     return {
       statusCode: 200,
@@ -348,6 +332,36 @@ export class OAuthMockttpService {
         id: 1,
         jsonrpc: '2.0',
         result: evalResult,
+      },
+    };
+  }
+
+  async onGetToprfGetPubKeyRequest(
+    nodeIndex: number,
+    options?: {
+      throwAuthenticationErrorAtUnlock?: boolean;
+      passwordOutdated?: boolean;
+    },
+  ) {
+    this.#numberOfGetPubKeyRequests += 1;
+    console.log('numberOfGetPubKeyRequests', this.#numberOfGetPubKeyRequests);
+    let pubKey = this.#latestAuthPubKey;
+    if (options?.throwAuthenticationErrorAtUnlock) {
+      // To throw the authentication error at unlock, we need to enforce the password outdated with different pub key
+      pubKey = MockAuthPubKey2;
+    } else if (options?.passwordOutdated) {
+      pubKey = MockAuthPubKey;
+    }
+    return {
+      statusCode: 200,
+      json: {
+        id: 1,
+        jsonrpc: '2.0',
+        result: {
+          pub_key: pubKey,
+          key_index: 1,
+          node_index: nodeIndex,
+        },
       },
     };
   }
@@ -513,25 +527,7 @@ export class OAuthMockttpService {
         },
       };
     } else if (method === 'TOPRFGetPubKeyRequest') {
-      let pubKey = this.#latestAuthPubKey;
-      if (options?.throwAuthenticationErrorAtUnlock) {
-        // To throw the authentication error at unlock, we need to enforce the password outdated with different pub key
-        pubKey = MockAuthPubKey2;
-      } else if (options?.passwordOutdated) {
-        pubKey = MockAuthPubKey;
-      }
-      return {
-        statusCode: 200,
-        json: {
-          id: 1,
-          jsonrpc: '2.0',
-          result: {
-            pub_key: pubKey,
-            key_index: 1,
-            node_index: nodeIndex,
-          },
-        },
-      };
+      return this.onGetToprfGetPubKeyRequest(nodeIndex, options);
     }
 
     const isNewUser = !options?.userEmail;

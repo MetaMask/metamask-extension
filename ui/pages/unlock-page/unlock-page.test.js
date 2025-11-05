@@ -6,7 +6,10 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { ONBOARDING_WELCOME_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import UnlockPage from '.';
 
@@ -19,12 +22,15 @@ const mockMarkPasswordForgotten = jest.fn();
 const mockResetWallet = jest.fn(() => {
   return Promise.resolve();
 });
+const mockGetIsSeedlessOnboardingUserAuthenticated = jest.fn();
 
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   tryUnlockMetamask: () => mockTryUnlockMetamask,
   markPasswordForgotten: () => mockMarkPasswordForgotten,
   resetWallet: () => mockResetWallet,
+  getIsSeedlessOnboardingUserAuthenticated: () =>
+    mockGetIsSeedlessOnboardingUserAuthenticated,
 }));
 
 const mockElement = document.createElement('svg');
@@ -163,6 +169,32 @@ describe('Unlock Page', () => {
     expect(history.location.pathname).toBe(intendedPath);
   });
 
+  it('should redirect to onboarding welcome page when seedless onboarding user is not authenticated and onboarding is not completed yet', async () => {
+    const mockStateWithoutUnlock = {
+      metamask: { isUnlocked: false, completedOnboarding: false },
+    };
+    const store = configureMockStore([thunk])(mockStateWithoutUnlock);
+    const history = createMemoryHistory({
+      initialEntries: [{ pathname: '/unlock' }],
+    });
+
+    jest.spyOn(history, 'replace');
+
+    mockGetIsSeedlessOnboardingUserAuthenticated.mockResolvedValue(false);
+
+    renderWithProvider(
+      <Router history={history}>
+        <UnlockPage />
+      </Router>,
+      store,
+    );
+
+    await waitFor(() => {
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
+    });
+  });
+
   it('changes password, submits, and redirects to the specified route', async () => {
     const intendedPath = '/intended-route';
     const intendedSearch = '?abc=123';
@@ -198,22 +230,67 @@ describe('Unlock Page', () => {
     expect(history.location.search).toBe(intendedSearch);
   });
 
-  it('should show login error modal when authentication error is thrown', async () => {
-    const intendedPath = '/intended-route';
-    const intendedSearch = '?abc=123';
-    const mockStateNonUnlocked = {
+  it('should show connections removed modal when max keychain length is exceeded error is thrown', async () => {
+    const mockStateWithUnlock = {
       metamask: { isUnlocked: false, completedOnboarding: true },
     };
-    const store = configureMockStore([thunk])(mockStateNonUnlocked);
+    const store = configureMockStore([thunk])(mockStateWithUnlock);
     const history = createMemoryHistory({
-      initialEntries: [
-        {
-          pathname: '/unlock',
-          state: { from: { pathname: intendedPath, search: intendedSearch } },
-        },
-      ],
+      initialEntries: [{ pathname: '/unlock' }],
     });
-    jest.spyOn(history, 'push');
+
+    jest.spyOn(history, 'replace');
+    const mockForceUpdateMetamaskState = jest.fn();
+
+    mockTryUnlockMetamask.mockImplementationOnce(
+      jest.fn(() => {
+        return Promise.reject(
+          new Error(
+            SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded,
+          ),
+        );
+      }),
+    );
+
+    const { queryByTestId } = renderWithProvider(
+      <Router history={history}>
+        <UnlockPage forceUpdateMetamaskState={mockForceUpdateMetamaskState} />
+      </Router>,
+      store,
+    );
+
+    const passwordField = queryByTestId('unlock-password');
+    const loginButton = queryByTestId('unlock-submit');
+    fireEvent.change(passwordField, { target: { value: 'a-password' } });
+    fireEvent.click(loginButton);
+
+    await waitFor(async () => {
+      expect(queryByTestId('connections-removed-modal')).toBeInTheDocument();
+      const connectionsRemovedConfirmButton = queryByTestId(
+        'connections-removed-modal-confirm-button',
+      );
+      expect(connectionsRemovedConfirmButton).toBeInTheDocument();
+      fireEvent.click(connectionsRemovedConfirmButton);
+
+      // should reset the wallet and redirect to the onboarding welcome page
+      await waitFor(() => {
+        expect(mockResetWallet).toHaveBeenCalledTimes(1);
+        expect(history.replace).toHaveBeenCalledTimes(1);
+        expect(history.replace).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
+    });
+  });
+
+  it('should show login error modal when authentication error is thrown', async () => {
+    const mockStateWithUnlock = {
+      metamask: { isUnlocked: false, completedOnboarding: true },
+    };
+    const store = configureMockStore([thunk])(mockStateWithUnlock);
+    const history = createMemoryHistory({
+      initialEntries: [{ pathname: '/unlock' }],
+    });
+
+    jest.spyOn(history, 'replace');
 
     mockTryUnlockMetamask.mockImplementationOnce(
       jest.fn(() => {
@@ -224,14 +301,14 @@ describe('Unlock Page', () => {
         );
       }),
     );
-    const mockForceUpdateMetamaskState = jest.fn();
 
     const { queryByTestId } = renderWithProvider(
       <Router history={history}>
-        <UnlockPage forceUpdateMetamaskState={mockForceUpdateMetamaskState} />
+        <UnlockPage />
       </Router>,
       store,
     );
+
     const passwordField = queryByTestId('unlock-password');
     const loginButton = queryByTestId('unlock-submit');
     fireEvent.change(passwordField, { target: { value: 'a-password' } });

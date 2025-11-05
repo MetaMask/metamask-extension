@@ -14,6 +14,7 @@ import {
   markPasswordForgotten,
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
+  getIsSeedlessOnboardingUserAuthenticated,
   resetOnboarding,
   resetWallet,
 } from '../../store/actions';
@@ -42,6 +43,8 @@ const mapDispatchToProps = (dispatch) => {
     checkIsSeedlessPasswordOutdated: () =>
       dispatch(checkIsSeedlessPasswordOutdated()),
     resetWallet: () => dispatch(resetWallet()),
+    getIsSeedlessOnboardingUserAuthenticated: () =>
+      dispatch(getIsSeedlessOnboardingUserAuthenticated()),
   };
 };
 
