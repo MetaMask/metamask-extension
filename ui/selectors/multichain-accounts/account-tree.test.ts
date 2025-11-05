@@ -722,6 +722,33 @@ describe('Multichain Accounts Selectors', () => {
 
       expect(result).toBeUndefined();
     });
+
+    it('returns undefined when accountId is null', () => {
+      const result = getMultichainAccountGroupById(
+        typedMockState,
+        null as unknown as AccountGroupId,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when accountId is undefined', () => {
+      const result = getMultichainAccountGroupById(
+        typedMockState,
+        undefined as unknown as AccountGroupId,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when accountId is an empty string', () => {
+      const result = getMultichainAccountGroupById(
+        typedMockState,
+        '' as unknown as AccountGroupId,
+      );
+
+      expect(result).toBeUndefined();
+    });
   });
 
   describe('getAllAccountGroups', () => {
@@ -1335,15 +1362,13 @@ describe('Multichain Accounts Selectors', () => {
       expect(result).toBe(ACCOUNT_3_ADDRESS);
     });
 
-    it('throws error when no group ID is found', () => {
-      expect(() =>
-        getIconSeedAddressByAccountGroupId(
-          typedMockState,
-          'nonExistentGroupId' as AccountGroupId,
-        ),
-      ).toThrow(
-        'Error in getIconSeedAddressByAccountGroupId: No accounts found in the specified group',
+    it('returns empty when no group ID is found', () => {
+      const result = getIconSeedAddressByAccountGroupId(
+        typedMockState,
+        'nonExistentGroupId' as AccountGroupId,
       );
+
+      expect(result).toBe('');
     });
   });
 

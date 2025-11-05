@@ -5,10 +5,10 @@ import {
   SetNameRequest,
 } from '@metamask/name-controller';
 import {
+  Messenger,
   ActionConstraint,
   EventConstraint,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
+} from '@metamask/messenger';
 
 // Use the same type for both the source entries and the argument to NameController::setName.
 export type PetnameEntry = SetNameRequest & {
@@ -41,13 +41,7 @@ type PetnamesBridgeAllowedEvents = NameStateChange;
 export type PetnamesBridgeMessenger<
   Event extends EventConstraint = never,
   Action extends ActionConstraint = never,
-> = RestrictedMessenger<
-  'PetnamesBridge',
-  Action,
-  PetnamesBridgeAllowedEvents | Event,
-  Action['type'],
-  (PetnamesBridgeAllowedEvents | Event)['type']
->;
+> = Messenger<'PetnamesBridge', Action, PetnamesBridgeAllowedEvents | Event>;
 
 /**
  * Get a string key for the given entry.

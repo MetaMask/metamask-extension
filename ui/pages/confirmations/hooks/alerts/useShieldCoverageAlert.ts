@@ -134,13 +134,17 @@ export function useShieldCoverageAlert(): Alert[] {
   const { currentConfirmation } = useConfirmContext<
     TransactionMeta | SignatureRequest
   >();
+
   const { reasonCode, status } = useSelector((state) =>
     getCoverageStatus(state as ShieldState, currentConfirmation?.id),
   );
-  const modalBodyStr = getModalBodyStr(reasonCode);
+  const isCovered = status === 'covered';
+  const modalBodyStr = isCovered
+    ? 'shieldCoverageAlertCovered'
+    : getModalBodyStr(reasonCode);
 
   const isEnableShieldCoverageChecks = useEnableShieldCoverageChecks();
-  const showAlert = isEnableShieldCoverageChecks;
+  const showAlert = isEnableShieldCoverageChecks && Boolean(status);
 
   return useMemo<Alert[]>((): Alert[] => {
     if (!showAlert) {
@@ -149,10 +153,12 @@ export function useShieldCoverageAlert(): Alert[] {
 
     let severity = Severity.Info;
     let inlineAlertText = t('shieldNotCovered');
+    let modalTitle = t('shieldCoverageAlertMessageTitle');
     switch (status) {
       case 'covered':
         severity = Severity.Success;
         inlineAlertText = t('shieldCovered');
+        modalTitle = t('shieldCoverageAlertMessageTitleCovered');
         break;
       case 'malicious':
         severity = Severity.Danger;
@@ -163,14 +169,18 @@ export function useShieldCoverageAlert(): Alert[] {
     return [
       {
         key: 'shieldCoverageAlert',
-        reason: t('shieldCoverageAlertMessageTitle'),
+        reason: modalTitle,
         field: RowAlertKey.ShieldFooterCoverageIndicator,
         severity,
-        content: ShieldCoverageAlertMessage(modalBodyStr),
+        content: ShieldCoverageAlertMessage({
+          modalBodyStr,
+        }),
         isBlocking: false,
         inlineAlertText,
         showArrow: false,
-        isOpenModalOnClick: status !== 'covered',
+        isOpenModalOnClick: true,
+        hideFromAlertNavigation: true,
+        acknowledgeBypass: true,
       },
     ];
   }, [status, modalBodyStr, showAlert, t]);

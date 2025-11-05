@@ -1,5 +1,6 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 export type NameControllerMessenger = ReturnType<
   typeof getNameControllerMessenger
@@ -12,13 +13,12 @@ export type NameControllerMessenger = ReturnType<
  * @param messenger - The base messenger used to create the restricted
  * messenger.
  */
-export function getNameControllerMessenger(messenger: Messenger<never, never>) {
-  return messenger.getRestricted({
-    name: 'NameController',
-
-    // This controller does not call any actions or subscribe to any events.
-    allowedActions: [],
-    allowedEvents: [],
+export function getNameControllerMessenger(
+  messenger: RootMessenger<never, never>,
+) {
+  return new Messenger<'NameController', never, never, typeof messenger>({
+    namespace: 'NameController',
+    parent: messenger,
   });
 }
 
@@ -36,11 +36,20 @@ export type NameControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getNameControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'NameControllerInit',
-    allowedActions: ['PreferencesController:getState'],
-    allowedEvents: [],
+  const controllerInitMessenger = new Messenger<
+    'NameControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'NameControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['PreferencesController:getState'],
+  });
+  return controllerInitMessenger;
 }

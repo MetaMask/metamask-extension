@@ -44,6 +44,12 @@ export type Alert = {
   isOpenModalOnClick?: boolean;
 
   /**
+   * Whether acknowledgement requirements should be bypassed for this alert,
+   * even when the severity is set to Danger.
+   */
+  acknowledgeBypass?: boolean;
+
+  /**
    * The unique key of the alert.
    */
   key: string;
@@ -67,6 +73,11 @@ export type Alert = {
    * The severity of the alert.
    */
   severity: AlertSeverity;
+
+  /**
+   * Whether this alert should be excluded from navigation controls.
+   */
+  hideFromAlertNavigation?: boolean;
 
   /**
    * Whether to show the arrow icon on the inline alert.
