@@ -244,6 +244,14 @@ class UnlockPage extends Component {
     let finalUnlockDelayPeriod = 0;
     let errorReason;
 
+    // Determine error type for rehydration tracking
+    const isIncorrectPasswordError =
+      message === 'Incorrect password' ||
+      message === SeedlessOnboardingControllerErrorMessage.IncorrectPassword;
+    const errorType = isIncorrectPasswordError
+      ? 'incorrect_password'
+      : 'unknown_error';
+
     // Track wallet rehydration failed for social import users (only during rehydration)
     if (isRehydrationFlow) {
       this.context.trackEvent({
@@ -252,6 +260,7 @@ class UnlockPage extends Component {
         properties: {
           account_type: 'social',
           failed_attempts: this.failed_attempts,
+          error_type: errorType,
         },
       });
     }
