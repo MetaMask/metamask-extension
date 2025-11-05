@@ -11,14 +11,14 @@ import { waitForWasmReady } from '../rive-wasm';
 
 type FoxAppearAnimationProps = {
   isLoader: boolean;
-  skipTransition: boolean;
+  skipTransition?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function FoxAppearAnimation({
   isLoader = false,
-  skipTransition,
+  skipTransition = false,
 }: FoxAppearAnimationProps) {
   const isTestEnvironment = Boolean(process.env.IN_TEST);
   const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
