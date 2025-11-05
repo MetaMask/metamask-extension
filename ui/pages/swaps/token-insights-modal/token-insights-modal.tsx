@@ -35,7 +35,6 @@ import {
 } from '../../../helpers/utils/token-insights';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import Spinner from '../../../components/ui/spinner';
 
 type TokenInsightsModalProps = {
   isOpen: boolean;
@@ -79,7 +78,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
   const trackEvent = React.useContext(MetaMetricsContext);
   const dialogRef = React.useRef<HTMLElement | null>(null);
 
-  const { marketData, marketDataFiat, isLoading } = useTokenInsightsData(token);
+  const { marketData, marketDataFiat } = useTokenInsightsData(token);
 
   useEffect(() => {
     if (isOpen && token) {
@@ -143,25 +142,6 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
 
   if (!token) {
     return null;
-  }
-
-  // Loading state
-  if (isLoading && !marketData) {
-    return (
-      <Modal isOpen={isOpen} onClose={onClose} className="token-insights-modal">
-        <ModalOverlay />
-        <ModalContent>
-          <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            style={{ minHeight: 300 }}
-          >
-            <Spinner />
-          </Box>
-        </ModalContent>
-      </Modal>
-    );
   }
 
   return (
