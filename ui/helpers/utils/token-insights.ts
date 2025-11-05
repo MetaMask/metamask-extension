@@ -74,7 +74,7 @@ export const formatCompactCurrency = (
  * @param address - The address to format
  * @returns Checksummed address
  */
-export const formatContractAddress = (address: string): string => {
+export const formatContractAddress = (address: string | null): string => {
   if (!address) {
     return '';
   }
@@ -109,9 +109,7 @@ export const getPriceChangeColor = (change: number): TextColor => {
  * @param address - The token address
  * @returns true if contract address should be displayed
  */
-export const shouldShowContractAddress = (
-  address: string | undefined,
-): boolean => {
+export const shouldShowContractAddress = (address: string | null): boolean => {
   if (!address) {
     return false;
   }

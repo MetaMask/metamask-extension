@@ -14,7 +14,7 @@ import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { formatCompactCurrency } from '../helpers/utils/token-insights';
 
 export type TokenInsightsToken = {
-  address: string;
+  address: string | null;
   symbol: string;
   name?: string;
   chainId: string;
@@ -73,14 +73,13 @@ export const useTokenInsightsData = (
     | undefined;
 
   const evmMarketData = useMemo(() => {
-    if (!token || !isEvm || !marketDataState) {
+    if (!token || !isEvm || !marketDataState || !token.address) {
       return null;
     }
     const chainData = marketDataState[token.chainId as Hex];
     return chainData?.[token.address.toLowerCase()] || null;
   }, [token, isEvm, marketDataState]);
 
-  // State for API fetched data
   const [apiData, setApiData] = useState<MarketData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -121,10 +120,11 @@ export const useTokenInsightsData = (
         const caipChainId = isCaipChainId(token.chainId)
           ? token.chainId
           : formatChainIdToCaip(token.chainId as Hex);
-        const assetId = toAssetId(token.address, caipChainId);
+        const assetId = toAssetId(token.address || '', caipChainId);
 
         if (!assetId) {
-          console.error('Invalid asset ID');
+          setError('Invalid asset ID');
+          return;
         }
 
         const url = `https://price.api.cx.metamask.io/v3/spot-prices?assetIds=${assetId}&includeMarketData=true&vsCurrency=${currentCurrency.toLowerCase()}`;
