@@ -5,7 +5,6 @@ import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
-import { useHistory } from 'react-router-dom';
 import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-rows-hovered-list';
 import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
@@ -477,12 +476,6 @@ describe('MultichainHoveredAddressRowsList', () => {
 
     it('copies address when clicking on the row (not button)', () => {
       renderComponent();
-
-      const evmRow = screen
-        .getByText(TEST_STRINGS.EVM_NETWORKS)
-        .closest(
-          `[data-testid="${TEST_IDS.MULTICHAIN_ADDRESS_ROW}"]`,
-        ) as HTMLElement;
 
       const networkNameElement = screen.getByText(TEST_STRINGS.EVM_NETWORKS);
 

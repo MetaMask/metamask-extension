@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { shortenAddress } from '../../../helpers/utils/util';
-
 import {
   Box,
   BoxAlignItems,
@@ -13,12 +11,14 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
+import { shortenAddress } from '../../../helpers/utils/util';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AvatarGroup } from '../../multichain/avatar-group';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { CopyParams } from '../multichain-address-row/multichain-address-row';
-import { useSelector } from 'react-redux';
 import { getNetworksByScopes } from '../../../../shared/modules/selectors/networks';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { ButtonIcon, IconName } from '../../component-library';
@@ -58,7 +58,7 @@ export const MultichainAggregatedAddressListRow = ({
   const [isHovered, setIsHovered] = useState(false);
 
   // Track timeout ID for managing `setTimeout`
-  const timeoutRef = useRef<number | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Update `displayText` when the address prop changes
   useEffect(() => {
@@ -104,6 +104,28 @@ export const MultichainAggregatedAddressListRow = ({
       : networks[0]?.name;
   }, [chainIds, t, networks]);
 
+  // Helper function to get text color based on state
+  const getTextColor = () => {
+    if (addressCopied) {
+      return TextColor.SuccessDefault;
+    }
+    if (isHovered) {
+      return TextColor.PrimaryDefaultHover;
+    }
+    return TextColor.TextAlternative;
+  };
+
+  // Helper function to get icon color based on state
+  const getIconColor = () => {
+    if (addressCopied) {
+      return IconColor.successDefault;
+    }
+    if (isHovered) {
+      return IconColor.primaryDefault;
+    }
+    return IconColor.iconAlternative;
+  };
+
   // Handle "Copy" button click events
   const handleCopyClick = () => {
     // Clear existing timeout if clicking multiple times in rapid succession
@@ -119,7 +141,7 @@ export const MultichainAggregatedAddressListRow = ({
     setCopyIcon(IconName.CopySuccess);
 
     // Reset state after 1 second and track the new timeout
-    timeoutRef.current = window.setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       setDisplayText(truncatedAddress);
       setCopyIcon(IconName.Copy);
       timeoutRef.current = null; // Clear the reference after timeout resolves
@@ -163,27 +185,14 @@ export const MultichainAggregatedAddressListRow = ({
         <Text
           variant={TextVariant.BodyXs}
           fontWeight={FontWeight.Medium}
-          color={
-            addressCopied
-              ? TextColor.SuccessDefault
-              : isHovered
-                ? TextColor.PrimaryDefaultHover
-                : TextColor.TextAlternative
-          }
+          color={getTextColor()}
         >
           {displayText}
         </Text>
         <ButtonIcon
           iconName={copyIcon}
-          onClick={handleCopyClick}
           size={ButtonIconSize.Sm}
-          color={
-            addressCopied
-              ? IconColor.successDefault
-              : isHovered
-                ? IconColor.primaryDefault
-                : IconColor.iconAlternative
-          }
+          color={getIconColor()}
           ariaLabel={t('copyAddressShort')}
         />
       </Box>

@@ -3,9 +3,6 @@ import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import {
   Box,
   BoxAlignItems,
@@ -19,9 +16,12 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
-import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { useHistory } from 'react-router-dom';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
+import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
 
 // Priority networks that should appear first (using CAIP chain IDs)
 const PRIORITY_CHAIN_IDS: CaipChainId[] = [
@@ -69,73 +69,66 @@ export const MultichainHoveredAddressRowsList = ({
         >,
       );
 
-      // Transform grouped data and separate eip155 scopes
-      const transformedItems = Object.values(accountGroups)
-        .map(({ account, scopes }) => {
-          // Separate eip155 scopes from others
-          const eip155Scopes = scopes.filter((scope) =>
-            scope.startsWith('eip155:'),
-          );
-          const otherScopes = scopes.filter(
-            (scope) => !scope.startsWith('eip155:'),
-          );
-
-          // Create items: one for grouped eip155 scopes (if any) and one for each other scope
-          const items: Array<{
-            scopes: CaipChainId[];
-            account: InternalAccount;
-          }> = [];
-
-          if (eip155Scopes.length > 0) {
-            items.push({
-              scopes: eip155Scopes,
-              account,
-            });
-          }
-
-          otherScopes.forEach((scope) => {
-            items.push({
-              scopes: [scope],
-              account,
-            });
-          });
-
-          return items;
-        })
-        .flat();
-
-      const priorityItems: Array<{
+      // Create items: one for grouped eip155 scopes (if any) and one for each other scope
+      const groupedItems: {
         scopes: CaipChainId[];
         account: InternalAccount;
-      }> = [];
+      }[] = [];
+
+      // Transform grouped data and separate eip155 scopes
+      Object.values(accountGroups).forEach(({ account, scopes }) => {
+        // Separate eip155 scopes from others
+        const eip155Scopes = scopes.filter((scope) =>
+          scope.startsWith('eip155:'),
+        );
+        const otherScopes = scopes.filter(
+          (scope) => !scope.startsWith('eip155:'),
+        );
+
+        if (eip155Scopes.length > 0) {
+          groupedItems.push({
+            scopes: eip155Scopes,
+            account,
+          });
+        }
+
+        otherScopes.forEach((scope) => {
+          groupedItems.push({
+            scopes: [scope],
+            account,
+          });
+        });
+      });
+
+      const priorityItems: {
+        scopes: CaipChainId[];
+        account: InternalAccount;
+      }[] = [];
       const otherItems: typeof priorityItems = [];
 
-      transformedItems.forEach((item) => {
+      groupedItems.forEach((item) => {
         // Check if any of the scopes are in priority list
         const priorityIndex = PRIORITY_CHAIN_IDS.findIndex((chainId) =>
           item.scopes.includes(chainId),
         );
 
-        if (priorityIndex >= 0) {
+        if (priorityIndex > -1) {
           // Store with priority index for proper ordering
-          priorityItems[priorityIndex] = item;
+          if (priorityItems[priorityIndex] === undefined) {
+            priorityItems[priorityIndex] = item;
+          } else {
+            // If slot is already taken, add to other items
+            otherItems.push(item);
+          }
         } else {
           otherItems.push(item);
         }
       });
-
       // Filter out undefined entries and maintain priority order
       return [...priorityItems.filter(Boolean), ...otherItems];
     },
     [],
   );
-
-  const filteredItems = useMemo(() => {
-    let items = getAccountsSpreadByNetworkByGroupId;
-
-    // Sort by priority networks
-    return sortByPriorityNetworks(items);
-  }, [getAccountsSpreadByNetworkByGroupId, sortByPriorityNetworks, t]);
 
   const renderAddressItem = useCallback(
     (
@@ -171,13 +164,19 @@ export const MultichainHoveredAddressRowsList = ({
   }, [groupId, history]);
 
   const renderedRows = useMemo(() => {
-    return filteredItems.map((item, index) => renderAddressItem(item, index));
-  }, [filteredItems, renderAddressItem]);
+    const rows = sortByPriorityNetworks(getAccountsSpreadByNetworkByGroupId);
+    return rows.map((item, index) => renderAddressItem(item, index));
+  }, [
+    getAccountsSpreadByNetworkByGroupId,
+    renderAddressItem,
+    sortByPriorityNetworks,
+  ]);
 
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-address-rows-list"
+      padding={0}
     >
       <Box>{renderedRows}</Box>
       <Button variant={ButtonVariant.Secondary} onClick={handleViewAllClick}>
