@@ -7,8 +7,12 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
 import TimerHelper from '../utils/TimersHelper';
+import { setupTimerReporting } from '../utils/testSetup';
 
 describe('Power user persona', function () {
+  // Setup timer reporting for all tests in this describe block
+  setupTimerReporting();
+
   it('Check asset details page load time', async function () {
     if (!process.env.INFURA_PROJECT_ID) {
       throw new Error(

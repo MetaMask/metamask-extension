@@ -8,8 +8,12 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
 import TimerHelper from '../utils/TimersHelper';
+import { setupTimerReporting } from '../utils/testSetup';
 
+const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 describe('Power user persona', function () {
+  // Setup timer reporting for all tests in this describe block
+  setupTimerReporting();
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('Check Solana asset details page load time', async function () {
     // skipped until https://github.com/MetaMask/metamask-extension/pull/37339 gets merged
@@ -48,16 +52,14 @@ describe('Power user persona', function () {
         await homePage.checkPageIsLoaded();
         await homePage.checkTokenListIsDisplayed();
         await homePage.checkTokenListPricesAreDisplayed();
-        await assetListPage.clickOnAsset('SOL');
+        await assetListPage.clickOnAsset('Solana');
         const timer1 = new TimerHelper(
           'Time since the user clicks on the asset until the price chart is shown',
         );
         timer1.start();
         await driver.delay(1000); // workaround to avoid race condition
         await assetListPage.checkPriceChartIsShown();
-        await assetListPage.checkPriceChartLoaded(
-          '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-        ); // USDC address
+        await assetListPage.checkPriceChartLoaded(SOL_TOKEN_ADDRESS); // SOL address
         timer1.stop();
         console.log(`Timer 1:  ${timer1.getDurationInSeconds()} s`);
       },

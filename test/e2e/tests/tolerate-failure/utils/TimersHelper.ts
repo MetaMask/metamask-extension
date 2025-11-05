@@ -1,8 +1,5 @@
 import Timers, { Timer } from './Timers';
 
-type PerformanceTracker = {
-  addTimer(timer: TimerHelper): void;
-};
 
 class TimerHelper {
   private _id: string;

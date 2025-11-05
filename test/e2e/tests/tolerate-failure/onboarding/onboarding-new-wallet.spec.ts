@@ -13,8 +13,11 @@ import TimerHelper from '../utils/TimersHelper';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import FixtureBuilder from '../../../fixture-builder';
 import { getCommonMocks } from '../utils/commonMocks';
+import { setupTimerReporting } from '../utils/testSetup';
 
 describe('MetaMask onboarding', function () {
+  // Setup timer reporting for all tests in this describe block
+  setupTimerReporting();
   it('Creates a new wallet, sets up a secure password, and completes the onboarding process', async function () {
     await withFixtures(
       {

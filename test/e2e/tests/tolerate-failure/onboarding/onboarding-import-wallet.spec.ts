@@ -15,8 +15,11 @@ import FixtureBuilder from '../../../fixture-builder';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { getCommonMocks } from '../utils/commonMocks';
+import { setupTimerReporting } from '../utils/testSetup';
 
 describe('MetaMask onboarding', function () {
+  // Setup timer reporting for all tests in this describe block
+  setupTimerReporting();
   it('Import an existing wallet and completes the onboarding process', async function () {
     this.timeout(120000); // Increased timeout to 120 seconds for performance test
     await withFixtures(
