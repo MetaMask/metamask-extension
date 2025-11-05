@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -47,8 +47,18 @@ import {
 } from '../../../components/multichain/pages/page';
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
-import { getAllPermittedAccountsForCurrentTab } from '../../../selectors';
+import {
+  getAllPermittedAccountsForCurrentTab,
+  getPinnedAccountsList,
+  getHiddenAccountsList,
+  getInternalAccounts,
+} from '../../../selectors';
 import { filterWalletsByGroupNameOrAddress } from './utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 export const AccountList = () => {
   const t = useI18nContext();
@@ -59,6 +69,10 @@ export const AccountList = () => {
   const [searchPattern, setSearchPattern] = useState<string>('');
   const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
+  const trackEvent = useContext(MetaMetricsContext);
+  const pinnedAccountsList = useSelector(getPinnedAccountsList);
+  const hiddenAccountsList = useSelector(getHiddenAccountsList);
+  const internalAccounts = useSelector(getInternalAccounts);
 
   const {
     isAccountTreeSyncingInProgress,
@@ -80,6 +94,19 @@ export const AccountList = () => {
   // every time the account list is being opened.
   // See: https://github.com/MetaMask/metamask-extension/issues/36639
   useSyncSRPs();
+
+  // Track Account List Viewed event when the component mounts
+  useEffect(() => {
+    trackEvent({
+      event: MetaMetricsEventName.AccountListViewed,
+      category: MetaMetricsEventCategory.Accounts,
+      properties: {
+        pinned_count: pinnedAccountsList.length,
+        hidden_count: hiddenAccountsList.length,
+        total_accounts: internalAccounts.length,
+      },
+    });
+  }, [trackEvent, pinnedAccountsList.length, hiddenAccountsList.length, internalAccounts.length]);
 
   const hasMultipleWallets = useMemo(
     () => Object.keys(wallets).length > 1,
