@@ -854,7 +854,7 @@ export const ImportTokensModal = ({ onClose }) => {
                   allNetworks[selectedNetwork]?.name ||
                   networkConfigurations[selectedNetwork]?.name
                 }
-                buttonDataTestId="test-import-tokens-network-selector"
+                buttonDataTestId="test-import-tokens-drop-down-custom-import"
                 chainId={selectedNetwork}
                 onSelectNetwork={() =>
                   setActionMode(ACTION_MODES.NETWORK_SELECTOR)

@@ -261,7 +261,7 @@ describe('ImportTokensModal', () => {
       const { getByText, getByTestId } = render();
 
       const networkSelector = getByTestId(
-        'test-import-tokens-network-selector',
+        'test-import-tokens-drop-down-custom-import',
       );
       fireEvent.click(networkSelector);
 
