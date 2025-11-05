@@ -45,11 +45,12 @@ const AVATAR_GROUP_LIMIT = 4;
 type TooltipContentProps = {
   accountGroups?: AccountGroupWithInternalAccounts[];
   networks?: EvmAndMultichainNetworkConfigurationsWithCaipChainId[];
-  moreText?: string;
+  moreAccountsText?: string;
+  moreNetworksText?: string;
 };
 
 const TooltipContent = React.memo<TooltipContentProps>(
-  ({ accountGroups, networks, moreText }) => {
+  ({ accountGroups, networks, moreAccountsText, moreNetworksText }) => {
     const displayAccountGroups = accountGroups?.slice(0, TOOLTIP_LIMIT) ?? [];
     const displayNetworks = networks?.slice(0, TOOLTIP_LIMIT) ?? [];
     const hasMoreAccounts =
@@ -116,25 +117,44 @@ const TooltipContent = React.memo<TooltipContentProps>(
               </Text>
             </Box>
           ))}
-          {((accountGroups &&
+          {accountGroups &&
             Array.isArray(accountGroups) &&
-            hasMoreAccounts) ||
-            (networks && Array.isArray(networks) && hasMoreNetworks)) && (
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              textAlign={TextAlign.Left}
-              paddingInline={2}
-            >
-              <Text
-                color={TextColor.textMuted}
-                variant={TextVariant.bodyMdMedium}
-                data-testid="accounts-list-item-plus-more-tooltip"
+            hasMoreAccounts &&
+            moreAccountsText && (
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                textAlign={TextAlign.Left}
+                paddingInline={2}
               >
-                {moreText}
-              </Text>
-            </Box>
-          )}
+                <Text
+                  color={TextColor.textMuted}
+                  variant={TextVariant.bodyMdMedium}
+                  data-testid="accounts-list-item-plus-more-tooltip"
+                >
+                  {moreAccountsText}
+                </Text>
+              </Box>
+            )}
+          {networks &&
+            Array.isArray(networks) &&
+            hasMoreNetworks &&
+            moreNetworksText && (
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                textAlign={TextAlign.Left}
+                paddingInline={2}
+              >
+                <Text
+                  color={TextColor.textMuted}
+                  variant={TextVariant.bodyMdMedium}
+                  data-testid="networks-list-item-plus-more-tooltip"
+                >
+                  {moreNetworksText}
+                </Text>
+              </Box>
+            )}
         </Box>
       </Box>
     );
@@ -177,19 +197,24 @@ export const MultichainSiteCellTooltip =
     const hasNetworks =
       Array.isArray(avatarNetworksData) && avatarNetworksData.length > 0;
 
-    const moreText = useMemo(() => {
+    const moreAccountsText = useMemo(() => {
       const hasMoreAccounts =
         accountGroups && accountGroups.length > TOOLTIP_LIMIT;
-      const hasMoreNetworks = networks && networks.length > TOOLTIP_LIMIT;
 
       if (hasMoreAccounts && accountGroups) {
         return t('moreAccounts', [accountGroups.length - TOOLTIP_LIMIT]);
       }
+      return undefined;
+    }, [accountGroups, t]);
+
+    const moreNetworksText = useMemo(() => {
+      const hasMoreNetworks = networks && networks.length > TOOLTIP_LIMIT;
+
       if (hasMoreNetworks && networks) {
         return t('moreNetworks', [networks.length - TOOLTIP_LIMIT]);
       }
-      return '';
-    }, [accountGroups, networks, t]);
+      return undefined;
+    }, [networks, t]);
 
     return (
       <Tooltip
@@ -198,7 +223,8 @@ export const MultichainSiteCellTooltip =
           <TooltipContent
             accountGroups={accountGroups}
             networks={networks}
-            moreText={moreText}
+            moreAccountsText={moreAccountsText}
+            moreNetworksText={moreNetworksText}
           />
         }
         arrow
