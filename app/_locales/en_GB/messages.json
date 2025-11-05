@@ -2862,6 +2862,14 @@
     "message": "Max allowance",
     "description": "Label for the max allowance of a permission"
   },
+  "gatorPermissionsRevocationPending": {
+    "message": "Revocation pending",
+    "description": "Label for a gator permission that is pending a revocation transaction"
+  },
+  "gatorPermissionsRevoke": {
+    "message": "Revoke",
+    "description": "Label for the revoke button of a gator permission"
+  },
   "gatorPermissionsStartDate": {
     "message": "Start date",
     "description": "Label for the start date of a permission"
