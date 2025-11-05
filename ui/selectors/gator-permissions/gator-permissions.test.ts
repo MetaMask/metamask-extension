@@ -16,6 +16,7 @@ import {
   AppState,
   getPermissionGroupMetaData,
   getPermissionMetaDataByOrigin,
+  getPendingRevocations,
 } from './gator-permissions';
 
 const MOCK_CHAIN_ID_MAINNET = '0x1' as Hex;
@@ -1500,6 +1501,29 @@ describe('Gator Permissions Selectors', () => {
       );
 
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('getPendingRevocations', () => {
+    it('should return the list of gator permissions pending a revocation transaction', () => {
+      const result = getPendingRevocations({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          pendingRevocations: [
+            {
+              txId: '1',
+              permissionContext: '0x1',
+            },
+          ],
+        },
+      });
+      expect(result).toEqual([
+        {
+          txId: '1',
+          permissionContext: '0x1',
+        },
+      ]);
     });
   });
 });
