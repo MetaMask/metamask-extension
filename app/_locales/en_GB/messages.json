@@ -1841,6 +1841,18 @@
     "message": "$1 has recommended this price.",
     "description": "$1 represents the Dapp's origin"
   },
+  "dappSwapAdvantage": {
+    "message": "Save + Earn using MetaMask Swap:"
+  },
+  "dappSwapBenefits": {
+    "message": "No additional cost • Priority support • Network fees refunded on failed swaps"
+  },
+  "dappSwapQuoteDetails": {
+    "message": "Save $1 network fee, get $2 more $3"
+  },
+  "dappSwapQuoteDifference": {
+    "message": "Save about $1"
+  },
   "darkTheme": {
     "message": "Dark"
   },
@@ -5472,6 +5484,17 @@
   },
   "reward": {
     "message": "Reward"
+  },
+  "rewardsOptIn": {
+    "message": "Sign up for Rewards"
+  },
+  "rewardsPointsBalance": {
+    "message": "$1 points",
+    "description": "$1 is the formatted number of rewards points"
+  },
+  "rewardsPointsIcon": {
+    "message": "Rewards Points",
+    "description": "Alt text for the rewards points icon"
   },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
