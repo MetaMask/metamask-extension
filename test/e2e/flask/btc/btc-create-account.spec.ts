@@ -11,7 +11,7 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { ACCOUNT_TYPE, DEFAULT_BTC_ACCOUNT_NAME } from '../../constants';
 import { withBtcAccountSnap } from './common-btc';
 
-// Skipping these tests becasue creating a Bitcoin account is no longer possible with BIP44
+// Skipping these tests because creating a Bitcoin account is no longer possible with BIP44
 // eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('Create BTC Account', function (this: Suite) {
   it('create BTC account from the menu', async function () {
