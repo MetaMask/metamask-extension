@@ -177,7 +177,7 @@ export const MultichainAggregatedAddressListRow = ({
         </Text>
       </Box>
       <Box
-        gap={4}
+        gap={1}
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
       >
