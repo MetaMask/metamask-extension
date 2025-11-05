@@ -228,7 +228,7 @@ export function useRevokeGatorPermissions({
       );
 
       if (isDisabled) {
-        await submitRevocation(permissionContext);
+        await submitRevocation({ permissionContext });
         // Return null since no actual transaction is needed when already disabled
         return null;
       }
@@ -258,7 +258,10 @@ export function useRevokeGatorPermissions({
         throw new Error('No transaction id found');
       }
 
-      await addPendingRevocation(transactionMeta.id, permissionContext);
+      await addPendingRevocation({
+        txId: transactionMeta.id,
+        permissionContext,
+      });
 
       return transactionMeta;
     },
