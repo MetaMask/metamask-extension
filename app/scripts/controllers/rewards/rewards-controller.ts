@@ -892,16 +892,7 @@ export class RewardsController extends BaseController<
     if (!rewardsEnabled) {
       return false;
     }
-    const accountState = this.#getAccountState(account);
-    if (accountState?.hasOptedIn) {
-      return accountState.hasOptedIn;
-    }
-
-    // Right now we'll derive this from either cached map state or perps fee discount api call.
-    const optInStatusData = await this.getOptInStatus({
-      addresses: [account.toString()],
-    });
-    return Boolean(optInStatusData.ois[0]);
+    return this.#getAccountState(account)?.hasOptedIn ?? false;
   }
 
   checkOptInStatusAgainstCache(

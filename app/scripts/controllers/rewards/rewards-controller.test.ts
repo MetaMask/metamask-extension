@@ -771,30 +771,36 @@ describe('RewardsController', () => {
       );
     });
 
-    it('should fetch opt-in status when not cached', async () => {
-      await withController(
-        { isDisabled: false },
-        async ({ controller, mockMessengerCall }) => {
-          mockMessengerCall.mockImplementation((actionType) => {
-            if (actionType === 'RewardsDataService:getOptInStatus') {
-              return Promise.resolve({
-                ois: [true],
-                sids: [MOCK_SUBSCRIPTION_ID],
-              });
-            } else if (
-              actionType === 'AccountsController:listMultichainAccounts'
-            ) {
-              return [MOCK_INTERNAL_ACCOUNT];
-            }
-            return undefined;
-          });
+    it('should return false when account has not opted in', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: false,
+            subscriptionId: null,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+      };
 
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller }) => {
           const result =
             await controller.getHasAccountOptedIn(MOCK_CAIP_ACCOUNT);
 
-          expect(result).toBe(true);
+          expect(result).toBe(false);
         },
       );
+    });
+
+    it('should return false when account is not in state', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const result = await controller.getHasAccountOptedIn(MOCK_CAIP_ACCOUNT);
+
+        expect(result).toBe(false);
+      });
     });
   });
 
