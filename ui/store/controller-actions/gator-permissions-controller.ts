@@ -1,13 +1,13 @@
 import { GatorPermissionsMap } from '@metamask/gator-permissions-controller';
-import { Hex, Json } from '@metamask/utils';
-import {
-  encodeDisabledDelegationsCheck,
-  decodeDisabledDelegationsResult,
-} from '../../../shared/lib/delegation/delegation';
+import { Hex } from '@metamask/utils';
 import { submitRequestToBackground } from '../background-connection';
 
+export type FetchAndUpdateGatorPermissionsParams = {
+  isRevoked?: boolean;
+};
+
 export const fetchAndUpdateGatorPermissions = async (
-  params?: Json,
+  params?: FetchAndUpdateGatorPermissionsParams,
 ): Promise<GatorPermissionsMap> => {
   return await submitRequestToBackground(
     'fetchAndUpdateGatorPermissions',
@@ -42,29 +42,14 @@ export const submitRevocation = async (
  * @param networkClientId - The network client ID to use for the query.
  * @returns True if the delegation is disabled, false otherwise.
  */
-export const isDelegationDisabled = async (
+export const checkDelegationDisabled = async (
   delegationManagerAddress: Hex,
   delegationHash: Hex,
   networkClientId: string,
 ): Promise<boolean> => {
-  // Encode the call to disabledDelegations(bytes32)
-  const callData = encodeDisabledDelegationsCheck({ delegationHash });
-
-  // Make eth_call request through the network controller
-  const result = await submitRequestToBackground<Hex>('callRpc', [
-    'eth_call',
-    [
-      {
-        to: delegationManagerAddress,
-        data: callData,
-      },
-      'latest',
-    ],
+  return await submitRequestToBackground<boolean>('checkDelegationDisabled', [
+    delegationManagerAddress,
+    delegationHash,
     networkClientId,
   ]);
-
-  // Decode the result
-  const isDisabled = decodeDisabledDelegationsResult(result);
-
-  return isDisabled;
 };

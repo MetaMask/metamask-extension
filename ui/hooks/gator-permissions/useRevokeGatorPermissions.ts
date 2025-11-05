@@ -26,7 +26,7 @@ import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
   addPendingRevocation,
   submitRevocation,
-  isDelegationDisabled,
+  checkDelegationDisabled,
 } from '../../store/controller-actions/gator-permissions-controller';
 
 export type RevokeGatorPermissionArgs = {
@@ -221,7 +221,7 @@ export function useRevokeGatorPermissions({
 
       const delegationHash = getDelegationHashOffchain(delegation);
 
-      const isDisabled = await isDelegationDisabled(
+      const isDisabled = await checkDelegationDisabled(
         delegationManagerAddress,
         delegationHash,
         networkClientId,

@@ -2814,9 +2814,7 @@ export default class MetamaskController extends EventEmitter {
         gatorPermissionsController.fetchAndUpdateGatorPermissions.bind(
           gatorPermissionsController,
         ),
-
-      // Network utility methods
-      callRpc: this.callRpc.bind(this),
+      checkDelegationDisabled: this.checkDelegationDisabled.bind(this),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
@@ -8664,21 +8662,44 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Makes an RPC request using the network controller.
+   * Checks if a delegation is already disabled on-chain by querying the
+   * delegation manager contract's disabledDelegations mapping.
    *
-   * @param {string} method - The RPC method name (e.g., 'eth_call', 'eth_getCode').
-   * @param {Array} params - The RPC method parameters.
-   * @param {string} networkClientId - The network client ID to use for the request.
-   * @returns {Promise<any>} The result of the RPC request.
+   * @param {string} delegationManagerAddress - The delegation manager contract address.
+   * @param {string} delegationHash - The hash of the delegation to check.
+   * @param {string} networkClientId - The network client ID to use for the query.
+   * @returns {Promise<boolean>} True if the delegation is disabled, false otherwise.
    */
-  async callRpc(method, params, networkClientId) {
+  async checkDelegationDisabled(
+    delegationManagerAddress,
+    delegationHash,
+    networkClientId,
+  ) {
+    const { encodeDisabledDelegationsCheck, decodeDisabledDelegationsResult } =
+      await import('../../shared/lib/delegation/delegation');
+
+    // Encode the call to disabledDelegations(bytes32)
+    const callData = encodeDisabledDelegationsCheck({ delegationHash });
+
+    // Make eth_call request through the network controller
     const networkClient =
       this.networkController.getNetworkClientById(networkClientId);
 
-    return await networkClient.provider.request({
-      method,
-      params,
+    const result = await networkClient.provider.request({
+      method: 'eth_call',
+      params: [
+        {
+          to: delegationManagerAddress,
+          data: callData,
+        },
+        'latest',
+      ],
     });
+
+    // Decode the result
+    const isDisabled = decodeDisabledDelegationsResult(result);
+
+    return isDisabled;
   }
 
   #initControllers({ existingControllers, initFunctions, initState }) {
