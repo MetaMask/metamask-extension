@@ -10,6 +10,8 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import Homepage from '../../page-objects/pages/home/homepage';
 import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 
 const SOLANA_URL_REGEX_MAINNET =
@@ -1583,13 +1585,13 @@ const featureFlagsWithSnapConfirmation = {
 export async function withSolanaAccountSnap(
   {
     title,
+    numberOfAccounts = 1,
     showNativeTokenAsMainBalance = true,
     showSnapConfirmation = false,
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockTokenAccountAccountInfo = true,
     mockZeroBalance,
-    state = 0,
     mockSwapUSDtoSOL,
     mockSwapSOLtoUSDC,
     mockSwapWithNoQuotes,
@@ -1600,7 +1602,6 @@ export async function withSolanaAccountSnap(
     withFixtureBuilder,
   }: {
     title?: string;
-    state?: number;
     showNativeTokenAsMainBalance?: boolean;
     showSnapConfirmation?: boolean;
     numberOfAccounts?: number;
@@ -1653,7 +1654,6 @@ export async function withSolanaAccountSnap(
     {
       fixtures: fixtures.build(),
       title,
-      forceBip44Version: state === 2 ? 2 : 0,
       dappOptions: dappOptions ?? {
         numberOfTestDapps: 1,
         customDappPaths: [DAPP_PATH.TEST_SNAPS],
@@ -1668,7 +1668,7 @@ export async function withSolanaAccountSnap(
           bridgeConfig: showSnapConfirmation
             ? featureFlagsWithSnapConfirmation
             : featureFlags,
-          ...BIP44_STAGE_TWO,
+            ...BIP44_STAGE_TWO,
         },
       },
       testSpecificMock: async (mockServer: Mockttp) => {
@@ -1796,7 +1796,17 @@ export async function withSolanaAccountSnap(
       } else {
         await loginWithoutBalanceValidation(driver);
       }
+      if (numberOfAccounts === 2) {
+        const homepage = new Homepage(driver);
+        await homepage.checkExpectedBalanceIsDisplayed();
 
+        // create 2nd account
+        await homepage.headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.addMultichainAccount();
+        await accountListPage.selectAccount('Account 1')
+      }
       // Change to Solana
       await driver.clickElement('[data-testid="sort-by-networks"]');
       await driver.clickElement({
