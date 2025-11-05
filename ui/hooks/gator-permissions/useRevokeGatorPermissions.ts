@@ -198,12 +198,13 @@ export function useRevokeGatorPermissions({
     ): Promise<TransactionMeta | null> => {
       const permissionChainId = gatorPermission.permissionResponse.chainId;
 
-      const networkClientId =
-        await findNetworkClientIdByChainId(permissionChainId);
-
-      if (!networkClientId) {
+      let networkClientId: string;
+      try {
+        networkClientId = await findNetworkClientIdByChainId(permissionChainId);
+      } catch (error) {
         throw new Error(
-          `No network client found for chain ${permissionChainId}`,
+          `Failed to find network client for chain ${permissionChainId}`,
+          { cause: error },
         );
       }
 
@@ -344,7 +345,7 @@ export function useRevokeGatorPermissions({
   );
 
   useEffect(() => {
-    if (isRedirectPending) {
+    if (isRedirectPending && transactionId) {
       navigateToId(transactionId);
       onRedirect?.();
     }
