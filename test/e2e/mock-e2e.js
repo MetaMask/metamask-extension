@@ -182,7 +182,14 @@ async function setupMocking(
     numNetworkReqs = 0;
   }
 
+  const mockedEndpoint = await testSpecificMock(server);
+  // Mocks below this line can be overridden by test-specific mocks
+  // Test-specific mocks registered above will take precedence since they're registered first
+  // To ensure test-specific mocks override global mocks, use .always() in test-specific mocks
+
   // Subscriptions Polling Get Subscriptions
+  // Global mock - will only be used if test-specific mock doesn't match
+  // Test-specific mocks should use .always() to ensure they take precedence
   await server
     .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
     .thenCallback(() => {
@@ -195,6 +202,9 @@ async function setupMocking(
       };
     });
 
+  // Subscriptions Eligibility
+  // Global mock - will only be used if test-specific mock doesn't match
+  // Test-specific mocks should use .always() to ensure they take precedence
   await server
     .forGet(
       'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
@@ -205,9 +215,6 @@ async function setupMocking(
         json: [],
       };
     });
-
-  const mockedEndpoint = await testSpecificMock(server);
-  // Mocks below this line can be overridden by test-specific mocks
 
   // User Profile Lineage
   await server

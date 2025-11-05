@@ -11,10 +11,13 @@ export default class ShieldClaimPage {
     tag: 'p',
   };
 
-  private readonly chainIdHelpText =
-    '[data-testid="shield-claim-chain-id-help-text"]';
+  private readonly accountSelectorButton =
+    '[data-testid="account-selector-button"]';
 
-  private readonly chainIdInput = '[data-testid="shield-claim-chain-id-input"]';
+  private readonly accountSelectorItem = '.account-selector-modal__account';
+
+  private readonly accountSelectorItemByAddress = (address: string) =>
+    `[data-testid="account-selector-account-item-${address.toLowerCase()}"]`;
 
   private readonly descriptionError =
     '[data-testid="shield-claim-description-error"]';
@@ -33,11 +36,11 @@ export default class ShieldClaimPage {
   private readonly impactedTxHashInput =
     '[data-testid="shield-claim-impacted-tx-hash-input"]';
 
-  private readonly impactedWalletAddressHelpText =
-    '[data-testid="shield-claim-impacted-wallet-address-help-text"]';
+  private readonly networkSelectorButton =
+    '[data-testid="network-selector-button"]';
 
-  private readonly impactedWalletAddressInput =
-    '[data-testid="shield-claim-impacted-wallet-address-input"]';
+  private readonly networkListItem = (chainId: string) =>
+    `[data-testid="network-list-item-${chainId}"]`;
 
   private readonly reimbursementWalletAddressHelpText =
     '[data-testid="shield-claim-reimbursement-wallet-address-help-text"]';
@@ -57,7 +60,6 @@ export default class ShieldClaimPage {
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
       this.pageContainer,
-      this.chainIdInput,
       this.emailInput,
       this.submitButton,
     ]);
@@ -65,13 +67,54 @@ export default class ShieldClaimPage {
   }
 
   /**
-   * Fill in the chain ID field
+   * Select an account from the AccountSelector modal
    *
-   * @param chainId - The chain ID to fill
+   * @param accountName - The name of the account to select
    */
-  async fillChainId(chainId: string): Promise<void> {
-    console.log(`Filling chain ID: ${chainId}`);
-    await this.driver.fill(this.chainIdInput, chainId);
+  async selectImpactedWalletAddress(accountName: string): Promise<void> {
+    console.log(`Selecting impacted wallet address: ${accountName}`);
+    // Click the account selector button to open the modal
+    await this.driver.clickElement(this.accountSelectorButton);
+
+    // Click the account with the specified name
+    await this.driver.clickElement({
+      css: this.accountSelectorItem,
+      text: accountName,
+    });
+
+    console.log(`Account ${accountName} selected`);
+  }
+
+  /**
+   * Select an account from the AccountSelector modal by address
+   *
+   * @param address - The address of the account to select
+   */
+  async selectImpactedWalletAddressByAddress(address: string): Promise<void> {
+    console.log(`Selecting impacted wallet address by address: ${address}`);
+    // Click the account selector button to open the modal
+    await this.driver.clickElement(this.accountSelectorButton);
+
+    // Click the account with the specified address
+    await this.driver.clickElement(this.accountSelectorItemByAddress(address));
+
+    console.log(`Account with address ${address} selected`);
+  }
+
+  /**
+   * Select a network from the NetworkSelector modal
+   *
+   * @param chainId - The chain ID to select (e.g., '0x1' for Mainnet)
+   */
+  async selectNetwork(chainId: string): Promise<void> {
+    console.log(`Selecting network with chain ID: ${chainId}`);
+    // Click the network selector button to open the modal
+    await this.driver.clickElement(this.networkSelectorButton);
+
+    // Click the network with the specified chain ID
+    await this.driver.clickElement(this.networkListItem(chainId));
+
+    console.log(`Network with chain ID ${chainId} selected`);
   }
 
   /**
@@ -82,16 +125,6 @@ export default class ShieldClaimPage {
   async fillEmail(email: string): Promise<void> {
     console.log(`Filling email: ${email}`);
     await this.driver.fill(this.emailInput, email);
-  }
-
-  /**
-   * Fill in the impacted wallet address field
-   *
-   * @param address - The wallet address to fill
-   */
-  async fillImpactedWalletAddress(address: string): Promise<void> {
-    console.log(`Filling impacted wallet address: ${address}`);
-    await this.driver.fill(this.impactedWalletAddressInput, address);
   }
 
   /**
@@ -161,32 +194,32 @@ export default class ShieldClaimPage {
    * Fill the entire form with provided data
    *
    * @param formData - The form data object containing all required fields
-   * @param formData.chainId - The chain ID
    * @param formData.email - The email address
-   * @param formData.impactedWalletAddress - The impacted wallet address
-   * @param formData.impactedTransactionHash - The impacted transaction hash
+   * @param formData.impactedWalletName - The impacted wallet name
+   * @param formData.chainId - The chain ID (e.g., '0x1' for Mainnet)
+   * @param formData.impactedTxnHash - The impacted transaction hash
    * @param formData.reimbursementWalletAddress - The reimbursement wallet address
    * @param formData.description - The case description
    * @param formData.files - Optional array of file paths to upload
    */
   async fillForm(formData: {
-    chainId: string;
     email: string;
-    impactedWalletAddress: string;
-    impactedTransactionHash: string;
     reimbursementWalletAddress: string;
+    impactedWalletName: string;
+    chainId: string;
+    impactedTxnHash: string;
     description: string;
     files?: string[];
   }): Promise<void> {
     console.log('Filling entire claim form');
 
-    await this.fillChainId(formData.chainId);
     await this.fillEmail(formData.email);
-    await this.fillImpactedWalletAddress(formData.impactedWalletAddress);
-    await this.fillImpactedTransactionHash(formData.impactedTransactionHash);
     await this.fillReimbursementWalletAddress(
       formData.reimbursementWalletAddress,
     );
+    await this.selectImpactedWalletAddress(formData.impactedWalletName);
+    await this.selectNetwork(formData.chainId);
+    await this.fillImpactedTransactionHash(formData.impactedTxnHash);
     await this.fillDescription(formData.description);
 
     console.log('Claim form filled successfully');
@@ -196,20 +229,20 @@ export default class ShieldClaimPage {
    * Submit the form with provided data
    *
    * @param formData - The form data object containing all required fields
-   * @param formData.chainId - The chain ID
    * @param formData.email - The email address
-   * @param formData.impactedWalletAddress - The impacted wallet address
-   * @param formData.impactedTransactionHash - The impacted transaction hash
    * @param formData.reimbursementWalletAddress - The reimbursement wallet address
+   * @param formData.impactedWalletName - The impacted wallet name
+   * @param formData.chainId - The chain ID (e.g., '0x1' for Mainnet)
+   * @param formData.impactedTxnHash - The impacted transaction hash
    * @param formData.description - The case description
    * @param formData.files - Optional array of file paths to upload
    */
   async submitForm(formData: {
-    chainId: string;
     email: string;
-    impactedWalletAddress: string;
-    impactedTransactionHash: string;
     reimbursementWalletAddress: string;
+    impactedWalletName: string;
+    chainId: string;
+    impactedTxnHash: string;
     description: string;
     files?: string[];
   }): Promise<void> {

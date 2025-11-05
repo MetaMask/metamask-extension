@@ -64,8 +64,10 @@ async function mockStripeSubscriptionFlow(mockServer: Mockttp) {
 
   return [
     // GET subscriptions reflects current cancelAtPeriodEnd flag
+    // Using .always() to ensure this overrides global mocks
     await mockServer
       .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
+      .always()
       .thenCallback(() => ({
         statusCode: 200,
         json: {
@@ -81,10 +83,12 @@ async function mockStripeSubscriptionFlow(mockServer: Mockttp) {
       .thenJson(200, SHIELD_PRICING_DATA),
 
     // Mock eligibility check
+    // Using .always() to ensure this overrides global mocks
     await mockServer
       .forGet(
         'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
       )
+      .always()
       .thenJson(200, SHIELD_ELIGIBILITY_DATA),
 
     // Mock user events
@@ -165,18 +169,17 @@ describe('Shield Plan Stripe Integration', function () {
 
         // Generate random test data
         const randomEmail = generateRandomEmail();
-        const randomWalletAddress = generateRandomWalletAddress();
         const randomTxHash = generateRandomTxHash();
         const randomReimbursementAddress = generateRandomWalletAddress();
         const randomDescription = generateRandomDescription();
 
         // Fill the claim form with random data
         await shieldClaimPage.fillForm({
-          chainId: '1',
           email: randomEmail,
-          impactedWalletAddress: randomWalletAddress,
-          impactedTransactionHash: randomTxHash,
           reimbursementWalletAddress: randomReimbursementAddress,
+          chainId: '0x1',
+          impactedTxnHash: randomTxHash,
+          impactedWalletName: 'Account 1',
           description: randomDescription,
         });
 

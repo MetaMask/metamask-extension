@@ -63,8 +63,10 @@ async function mockSubscriptionApiCalls(
 
   return [
     // GET subscriptions - returns data only if card subscription was requested
+    // Using .always() to ensure this overrides global mocks
     await mockServer
       .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
+      .always()
       .thenCallback(() => ({
         statusCode: 200,
         json: cardSubscriptionRequested
@@ -97,10 +99,12 @@ async function mockSubscriptionApiCalls(
         };
       }),
 
+    // Using .always() to ensure this overrides global mocks
     await mockServer
       .forGet(
         'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
       )
+      .always()
       .thenJson(200, [
         {
           canSubscribe: !overrides?.mockNotEligible,
