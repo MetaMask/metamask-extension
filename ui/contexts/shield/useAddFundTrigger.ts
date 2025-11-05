@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  CRYPTO_PAYMENT_METHOD_ERRORS,
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   SubscriptionCryptoPaymentMethod,
@@ -23,35 +22,23 @@ import {
   useSubscriptionPricing,
   useSubscriptionProductPlans,
 } from '../../hooks/subscription/useSubscriptionPricing';
-import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
 import { getTokenBalancesEvm } from '../../selectors/assets';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { useThrottle } from '../../hooks/useThrottle';
-import { MINUTE } from '../../../shared/constants/time';
 import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
 import { useAsyncResult } from '../../hooks/useAsync';
 
-const SHIELD_ADD_FUND_TRIGGER_INTERVAL = 5 * MINUTE;
-
 /**
- * Trigger the subscription check after user funding met criteria
+ * Check if the shield subscription payment token has sufficient balance for the subscription
  *
  */
-export const useShieldAddFundTrigger = () => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+export const useShieldSubscriptionCryptoSufficientBalanceCheck = () => {
   const { subscriptions } = useUserSubscriptions();
   const shieldSubscription = useUserSubscriptionByProduct(
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
-  const isSubscriptionPaused =
-    shieldSubscription && getIsShieldSubscriptionPaused(shieldSubscription);
 
   const { subscriptionPricing } = useSubscriptionPricing();
-  const pricingPlans = useSubscriptionProductPlans(
-    PRODUCT_TYPES.SHIELD,
-    subscriptionPricing,
-  );
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
     PAYMENT_TYPES.byCrypto,
     subscriptionPricing,
@@ -73,12 +60,6 @@ export const useShieldAddFundTrigger = () => {
             cryptoPaymentInfo?.crypto.tokenSymbol.toLowerCase(),
         )
     : undefined;
-
-  const selectedProductPrice = useMemo(() => {
-    return pricingPlans?.find(
-      (plan) => plan.interval === shieldSubscription?.interval,
-    );
-  }, [pricingPlans, shieldSubscription]);
 
   const paymentChainIds = useMemo(
     () => (cryptoPaymentInfo ? [cryptoPaymentInfo.crypto.chainId] : []),
@@ -156,20 +137,48 @@ export const useShieldAddFundTrigger = () => {
 
   const hasAvailableSelectedToken = Boolean(validTokenBalance);
 
-  // throttle the hasAvailableSelectedToken to avoid multiple triggers
-  const { value: hasAvailableSelectedTokenThrottled } = useThrottle({
-    value: hasAvailableSelectedToken,
-    interval: SHIELD_ADD_FUND_TRIGGER_INTERVAL,
-  });
+  return {
+    hasAvailableSelectedToken,
+    validTokenBalance,
+  }
+};
+
+/**
+ * Handler for triggering subscription check when user adds funds to the selected token
+ *
+ */
+export const useHandleShieldAddFundTrigger = () => {
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const { subscriptions } = useUserSubscriptions();
+  const shieldSubscription = useUserSubscriptionByProduct(
+    PRODUCT_TYPES.SHIELD,
+    subscriptions,
+  );
+  const isSubscriptionPaused =
+    shieldSubscription && getIsShieldSubscriptionPaused(shieldSubscription);
+
+  const { subscriptionPricing } = useSubscriptionPricing();
+  const pricingPlans = useSubscriptionProductPlans(
+    PRODUCT_TYPES.SHIELD,
+    subscriptionPricing,
+  );
+  const selectedProductPrice = useMemo(() => {
+    return pricingPlans?.find(
+      (plan) => plan.interval === shieldSubscription?.interval,
+    );
+  }, [pricingPlans, shieldSubscription]);
+  const cryptoPaymentInfo = shieldSubscription?.paymentMethod as
+    | SubscriptionCryptoPaymentMethod
+    | undefined;
 
   const handleTriggerSubscriptionCheck = useCallback(async () => {
     if (
       !shieldSubscription ||
       !selectedProductPrice ||
-      !hasAvailableSelectedTokenThrottled ||
-      !cryptoPaymentInfo
+      !cryptoPaymentInfo ||
+      !isSubscriptionPaused
     ) {
-      return;
+      throw new Error('Invalid parameters to handle shield add fund trigger');
     }
 
     try {
@@ -200,45 +209,11 @@ export const useShieldAddFundTrigger = () => {
     dispatch,
     shieldSubscription,
     selectedProductPrice,
-    hasAvailableSelectedTokenThrottled,
     cryptoPaymentInfo,
-  ]);
-
-  useEffect(() => {
-    if (
-      !shieldSubscription ||
-      !isSubscriptionPaused ||
-      !subscriptionPricing ||
-      !cryptoPaymentInfo ||
-      !selectedProductPrice
-    ) {
-      return;
-    }
-    const isInsufficientBalanceError =
-      cryptoPaymentInfo.crypto.error ===
-      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE;
-
-    const isCryptoPayment = isCryptoPaymentMethod(
-      shieldSubscription.paymentMethod,
-    );
-    if (
-      !isInsufficientBalanceError ||
-      !isCryptoPayment ||
-      !selectedTokenPrice ||
-      !hasAvailableSelectedTokenThrottled
-    ) {
-      return;
-    }
-
-    handleTriggerSubscriptionCheck();
-  }, [
     isSubscriptionPaused,
-    subscriptionPricing,
-    cryptoPaymentInfo,
-    selectedTokenPrice,
-    selectedProductPrice,
-    hasAvailableSelectedTokenThrottled,
-    shieldSubscription,
-    handleTriggerSubscriptionCheck,
   ]);
-};
+
+  return {
+    handleTriggerSubscriptionCheck
+  }
+}
