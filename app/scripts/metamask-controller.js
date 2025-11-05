@@ -1875,6 +1875,10 @@ export default class MetamaskController extends EventEmitter {
         // This operates under the assumption that there will be at maximum
         // one origin permittedChains value change per event handler call
         for (const [origin, chains] of changedChains.entries()) {
+          if (isSnapId(origin)) {
+            continue;
+          }
+
           const currentNetworkClientIdForOrigin =
             this.selectedNetworkController.getNetworkClientIdForDomain(origin);
 
