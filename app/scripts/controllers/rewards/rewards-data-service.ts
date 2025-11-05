@@ -7,10 +7,12 @@ import ExtensionPlatform from '../../platforms/extension';
 import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 import type { RewardsDataServiceMessenger } from '../../controller-init/messengers/reward-data-service-messenger';
 import { FALLBACK_LOCALE } from '../../../../shared/modules/i18n';
-import type {
-  LoginResponseDto,
+import {
   EstimatePointsDto,
   EstimatedPointsDto,
+} from '../../../../shared/types/rewards';
+import type {
+  LoginResponseDto,
   MobileLoginDto,
   SubscriptionDto,
   OptInStatusInputDto,

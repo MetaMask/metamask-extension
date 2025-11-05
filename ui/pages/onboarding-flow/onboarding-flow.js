@@ -85,7 +85,6 @@ import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
-import { initializeRiveWASM } from './rive-wasm';
 
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
@@ -124,26 +123,6 @@ export default function OnboardingFlow() {
 
   useEffect(() => {
     setOnboardingDate();
-  }, []);
-
-  // Initialize Rive WASM on mount
-  useEffect(() => {
-    const isTestEnvironment = Boolean(process.env.IN_TEST);
-    if (isTestEnvironment) {
-      return;
-    }
-
-    console.log('[Rive] Starting WASM initialization from OnboardingFlow...');
-    initializeRiveWASM()
-      .then(() => {
-        console.log('[Rive] WASM ready in OnboardingFlow');
-      })
-      .catch((error) => {
-        console.error(
-          '[Rive] Failed to initialize WASM in OnboardingFlow:',
-          error,
-        );
-      });
   }, []);
 
   useEffect(() => {
