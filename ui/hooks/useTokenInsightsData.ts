@@ -6,7 +6,7 @@ import {
 } from '@metamask/bridge-controller';
 import { isCaipChainId, Hex } from '@metamask/utils';
 import { isEvmChainId, toAssetId } from '../../shared/lib/asset-utils';
-import { getMarketData, getTokenList } from '../selectors';
+import { getMarketData } from '../selectors';
 import { getCurrentCurrency } from '../ducks/metamask/metamask';
 import { getCurrencyRates } from '../selectors/selectors';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
@@ -57,8 +57,6 @@ export type TokenInsightsData = {
   };
   isLoading: boolean;
   error: string | null;
-  isVerified: boolean;
-  aggregators: unknown[];
   isNativeToken: boolean;
 };
 
@@ -79,21 +77,8 @@ export const useTokenInsightsData = (
       return null;
     }
     const chainData = marketDataState[token.chainId as Hex];
-    // Normalize address to lowercase for consistent lookups
     return chainData?.[token.address.toLowerCase()] || null;
   }, [token, isEvm, marketDataState]);
-
-  // Check token list data for verification status
-  type TokenListEntry = { aggregators?: unknown[] } | undefined;
-  const tokenList = useSelector(getTokenList) as
-    | Record<string, TokenListEntry>
-    | undefined;
-  const tokenListData = useMemo(() => {
-    if (!token || !tokenList) {
-      return null;
-    }
-    return tokenList[token.address.toLowerCase()] ?? null;
-  }, [token, tokenList]);
 
   // State for API fetched data
   const [apiData, setApiData] = useState<MarketData | null>(null);
@@ -108,7 +93,6 @@ export const useTokenInsightsData = (
     return isNativeAddressFromBridge(token.address);
   }, [token?.address]);
 
-  // Determine base currency for EVM tokens
   const baseCurrency = useMemo(() => {
     if (!isEvm || !evmMarketData) {
       return undefined;
@@ -189,7 +173,6 @@ export const useTokenInsightsData = (
         totalVolume: evmMarketData.totalVolume,
         marketCap: evmMarketData.marketCap,
         dilutedMarketCap:
-          // Prefer dilutedMarketCap when available to mirror other sources
           evmMarketData.dilutedMarketCap ?? evmMarketData.marketCap,
       };
     }
@@ -268,8 +251,6 @@ export const useTokenInsightsData = (
     marketDataFiat,
     isLoading,
     error,
-    isVerified: (tokenListData?.aggregators?.length ?? 0) > 0,
-    aggregators: tokenListData?.aggregators || [],
     isNativeToken,
   };
 };

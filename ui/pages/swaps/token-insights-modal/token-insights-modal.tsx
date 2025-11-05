@@ -81,7 +81,6 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
 
   const { marketData, marketDataFiat, isLoading } = useTokenInsightsData(token);
 
-  // Track modal open
   useEffect(() => {
     if (isOpen && token) {
       trackEvent({
@@ -125,7 +124,6 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
     };
   }, [isOpen, onClose]);
 
-  // Get price change percentage from market data
   const priceChange24h = marketData?.pricePercentChange1d || 0;
 
   const handleCopyAddress = useCallback(() => {
