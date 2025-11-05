@@ -468,7 +468,7 @@ describe('MultichainHoveredAddressRowsList', () => {
 
       fireEvent.click(copyButton);
 
-      expect(mockHandleCopy).toHaveBeenCalledTimes(2);
+      expect(mockHandleCopy).toHaveBeenCalledTimes(1);
       expect(mockHandleCopy).toHaveBeenCalledWith(
         '0x1234567890123456789012345678901234567890',
       );
