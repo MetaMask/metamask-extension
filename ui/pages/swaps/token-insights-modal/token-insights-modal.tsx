@@ -12,7 +12,7 @@ import {
   AvatarToken,
   AvatarTokenSize,
 } from '../../../components/component-library';
-import { AddressCopyButton } from '../../../components/multichain';
+import { AddressCopyButton } from '../../../components/multichain/address-copy-button';
 import {
   Display,
   FlexDirection,
@@ -276,7 +276,9 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
                       handleCopyAddress();
                     }}
                     onMouseDown={(e: React.MouseEvent) => e.stopPropagation()}
-                    onPointerDown={(e: React.PointerEvent) => e.stopPropagation()}
+                    onPointerDown={(e: React.PointerEvent) =>
+                      e.stopPropagation()
+                    }
                   >
                     <AddressCopyButton
                       address={formatContractAddress(token.address)}

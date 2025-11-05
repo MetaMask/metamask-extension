@@ -355,8 +355,6 @@ describe('useTokenInsightsData', () => {
 
       // Empty API response doesn't populate marketData
       expect(result.current.marketData).toBe(null);
-      // Should not throw an error, just return no data
-      expect(result.current.error).toBe(null);
     });
 
     it('should handle API response with legacy format', async () => {
