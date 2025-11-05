@@ -16,8 +16,10 @@ export default class ShieldClaimPage {
 
   private readonly accountSelectorItem = '.account-selector-modal__account';
 
-  private readonly accountSelectorItemByAddress = (address: string) =>
-    `[data-testid="account-selector-account-item-${address.toLowerCase()}"]`;
+  private readonly accountSelectorItemByName = (accountName: string) => ({
+    css: this.accountSelectorItem,
+    text: accountName,
+  });
 
   private readonly descriptionError =
     '[data-testid="shield-claim-description-error"]';
@@ -71,34 +73,15 @@ export default class ShieldClaimPage {
    *
    * @param accountName - The name of the account to select
    */
-  async selectImpactedWalletAddress(accountName: string): Promise<void> {
+  async selectImpactedWalletName(accountName: string): Promise<void> {
     console.log(`Selecting impacted wallet address: ${accountName}`);
     // Click the account selector button to open the modal
     await this.driver.clickElement(this.accountSelectorButton);
 
     // Click the account with the specified name
-    await this.driver.clickElement({
-      css: this.accountSelectorItem,
-      text: accountName,
-    });
+    await this.driver.clickElement(this.accountSelectorItemByName(accountName));
 
     console.log(`Account ${accountName} selected`);
-  }
-
-  /**
-   * Select an account from the AccountSelector modal by address
-   *
-   * @param address - The address of the account to select
-   */
-  async selectImpactedWalletAddressByAddress(address: string): Promise<void> {
-    console.log(`Selecting impacted wallet address by address: ${address}`);
-    // Click the account selector button to open the modal
-    await this.driver.clickElement(this.accountSelectorButton);
-
-    // Click the account with the specified address
-    await this.driver.clickElement(this.accountSelectorItemByAddress(address));
-
-    console.log(`Account with address ${address} selected`);
   }
 
   /**
@@ -158,29 +141,11 @@ export default class ShieldClaimPage {
   }
 
   /**
-   * Fill in the case description textarea and focus out to trigger validation
-   *
-   * @param description - The description text to fill
-   */
-  async fillDescriptionAndFocusOut(description: string): Promise<void> {
-    await this.fillDescription(description);
-    await this.driver.press(this.descriptionTextarea, 'Tab');
-  }
-
-  /**
    * Click the submit button
    */
   async clickSubmitButton(): Promise<void> {
     console.log('Clicking submit button');
     await this.driver.clickElement(this.submitButton);
-  }
-
-  /**
-   * Click the "here" link
-   */
-  async clickHereLink(): Promise<void> {
-    console.log('Clicking here link');
-    await this.driver.clickElement(this.hereLink);
   }
 
   /**
@@ -217,7 +182,7 @@ export default class ShieldClaimPage {
     await this.fillReimbursementWalletAddress(
       formData.reimbursementWalletAddress,
     );
-    await this.selectImpactedWalletAddress(formData.impactedWalletName);
+    await this.selectImpactedWalletName(formData.impactedWalletName);
     await this.selectNetwork(formData.chainId);
     await this.fillImpactedTransactionHash(formData.impactedTxnHash);
     await this.fillDescription(formData.description);
