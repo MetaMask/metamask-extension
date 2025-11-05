@@ -4049,9 +4049,6 @@
     "message": "$1 आइकन",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "जारी रखने के लिए कोई विकल्प चुनें"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "एक्सटेंशन लॉन्च करें"
   },
@@ -7117,9 +7114,6 @@
   },
   "welcomeBack": {
     "message": "वापसी पर स्वागत है"
-  },
-  "welcomeToMetaMask": {
-    "message": "चलिए शुरु करते हैं"
   },
   "whatsThis": {
     "message": "यह क्या है?"
