@@ -4049,9 +4049,6 @@
     "message": "Biểu tượng $1",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Chọn một tùy chọn để tiếp tục"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Khởi chạy tiện ích mở rộng"
   },
@@ -5106,10 +5103,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Đây là $1 của bạn. Hãy ghi lại theo đúng thứ tự và cất giữ ở nơi an toàn. Nếu ai đó có Cụm từ khôi phục bí mật của bạn, họ có thể truy cập vào ví của bạn. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Không bao giờ chia sẻ với bất kỳ ai."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Lưu Cụm từ khôi phục bí mật của bạn"
@@ -7063,24 +7057,11 @@
     "message": "$1 bạn có thể lưu giữ cụm từ này ở nơi an toàn để không bao giờ mất quyền truy cập vào tiền của mình.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Bạn có thể sao lưu ví hoặc xem Cụm từ khôi phục bí mật trong phần Cài đặt > Bảo mật & Mật khẩu."
-  },
   "walletReadyLoseSrp": {
     "message": "Nếu làm mất Cụm từ khôi phục bí mật, bạn sẽ không thể sử dụng ví của mình."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Cụm từ khôi phục bí mật này có thể giúp bạn lấy lại quyền truy cập nếu bạn quên mật khẩu hoặc mất quyền đăng nhập."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Nếu bạn không sao lưu Cụm từ khôi phục bí mật, bạn sẽ mất quyền truy cập vào tiền của mình nếu bị khóa ứng dụng hoặc đổi thiết bị mới."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Bạn có thể đăng nhập vào ví bất cứ lúc nào bằng tài khoản và mật khẩu $1 của mình.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Nếu bạn quên mật khẩu, bạn sẽ không thể truy cập vào ví."
   },
   "wantToAddThisNetwork": {
     "message": "Bạn muốn thêm mạng này?"
@@ -7123,9 +7104,6 @@
   },
   "welcomeBack": {
     "message": "Chào mừng bạn trở lại"
-  },
-  "welcomeToMetaMask": {
-    "message": "Bắt đầu nào"
   },
   "whatsThis": {
     "message": "Đây là gì?"
@@ -7189,8 +7167,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Lưu giữ Cụm từ khôi phục bí mật của bạn ở nơi an toàn!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Chúng tôi sẽ nhắc bạn sau"
   }
 }

@@ -4,8 +4,15 @@ import {
   Subscription,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
+  Env as SubscriptionEnv,
 } from '@metamask/subscription-controller';
 import { getShieldGatewayConfig } from './shield';
+
+const mockLoadShieldConfig = jest.fn();
+
+jest.mock('./config', () => ({
+  loadShieldConfig: () => mockLoadShieldConfig(),
+}));
 
 const MOCK_SUBSCRIPTION: Subscription = {
   id: 'sub_123456789',
@@ -41,11 +48,13 @@ const setup = ({
   gatewayUrl?: string | null;
 } = {}) => {
   process.env.METAMASK_SHIELD_ENABLED = isShieldEnabled ? 'true' : 'false';
-  if (gatewayUrl === null) {
-    delete process.env.SHIELD_GATEWAY_URL;
-  } else {
-    process.env.SHIELD_GATEWAY_URL = gatewayUrl;
-  }
+
+  mockLoadShieldConfig.mockReturnValue({
+    subscriptionEnv: SubscriptionEnv.PRD,
+    gatewayUrl: gatewayUrl ?? undefined,
+    ruleEngineUrl: 'https://ruleset-engine.api.cx.metamask.io',
+    claimUrl: 'https://claims.api.cx.metamask.io',
+  });
 
   return {
     gatewayUrl,
@@ -60,6 +69,10 @@ const setup = ({
 };
 
 describe('getShieldGatewayConfig', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('returns the correct config when the feature is enabled and the subscription is active', async () => {
     const { gatewayUrl, targetUrl, mockGetToken, mockGetShieldSubscription } =
       setup();
@@ -126,6 +139,7 @@ describe('getShieldGatewayConfig', () => {
     const { targetUrl, mockGetToken, mockGetShieldSubscription } = setup({
       gatewayUrl: null,
     });
+
     await expect(
       getShieldGatewayConfig(
         mockGetToken,

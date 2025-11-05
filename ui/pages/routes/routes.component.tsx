@@ -639,15 +639,56 @@ export default function Routes() {
           </Route>
           <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
-          <Authenticated
+          <Route
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
-            component={CrossChainSwapTxDetails}
-            exact
-          />
-          <Authenticated
-            path={CROSS_CHAIN_SWAP_ROUTE}
-            component={CrossChainSwap}
-          />
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
+            {(props: RouteComponentProps<{ srcTxMetaId: string }>) => {
+              const { history: v5History, location: v5Location, match } = props;
+              const navigate = (
+                to: string | number,
+                options: {
+                  replace?: boolean;
+                  state?: Record<string, unknown>;
+                } = {},
+              ) => {
+                if (typeof to === 'number') {
+                  v5History.go(to);
+                } else if (options.replace) {
+                  v5History.replace(to, options.state);
+                } else {
+                  v5History.push(to, options.state);
+                }
+              };
+              const CrossChainSwapTxDetailsComponent =
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                CrossChainSwapTxDetails as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <CrossChainSwapTxDetailsComponent
+                    location={v5Location}
+                    navigate={navigate}
+                    params={match.params}
+                  />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={CROSS_CHAIN_SWAP_ROUTE}>
+            {(props: RouteComponentProps) => {
+              const { location: v5Location } = props;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const CrossChainSwapComponent = CrossChainSwap as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <CrossChainSwapComponent location={v5Location} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
           <Route path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}>
             {(props: RouteComponentProps) => {
               const { history: v5History, location: v5Location } = props;
