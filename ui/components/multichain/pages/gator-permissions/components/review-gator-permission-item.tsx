@@ -375,10 +375,10 @@ export const ReviewGatorPermissionItem = ({
             onClick={onRevokeClick}
             disabled={isPendingRevocation}
             style={{
-              width: '100%',
               backgroundColor: 'transparent',
               border: 'none',
               padding: 0,
+              height: '100%',
             }}
           >
             <Box
