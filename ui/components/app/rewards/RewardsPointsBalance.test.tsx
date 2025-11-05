@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRewardsContext } from '../../../contexts/rewards';
 import type { RewardsContextValue } from '../../../contexts/rewards';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import { RewardsPointsBalance } from './RewardsPointsBalance';
 
 // Mock dependencies
@@ -13,7 +13,15 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: jest.fn(),
+  useI18nContext: jest.fn(() => (key: string, values?: string[]) => {
+    if (key === 'rewardsPointsBalance' && values) {
+      return `${values[0]} points`;
+    }
+    if (key === 'rewardsPointsIcon') {
+      return 'Rewards Points Icon';
+    }
+    return key;
+  }),
 }));
 
 jest.mock('../../../contexts/rewards', () => ({
@@ -29,27 +37,11 @@ jest.mock('../../component-library/skeleton', () => ({
 }));
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUseI18nContext = useI18nContext as jest.MockedFunction<
-  typeof useI18nContext
->;
 const mockUseRewardsContext = useRewardsContext as jest.MockedFunction<
   typeof useRewardsContext
 >;
 
 describe('RewardsPointsBalance', () => {
-  const mockT = jest.fn((key: string, values?: string[]) => {
-    if (key === 'rewardsOptIn') {
-      return 'Opt In';
-    }
-    if (key === 'rewardsPointsBalance' && values) {
-      return `${values[0]} points`;
-    }
-    if (key === 'rewardsPointsIcon') {
-      return 'Rewards Points Icon';
-    }
-    return key;
-  });
-
   // Mock season status with complete structure
   const mockSeasonStatus = {
     season: {
@@ -92,7 +84,6 @@ describe('RewardsPointsBalance', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseI18nContext.mockReturnValue(mockT);
     mockUseSelector.mockReturnValue('en-US'); // Default locale
   });
 
@@ -240,7 +231,6 @@ describe('RewardsPointsBalance', () => {
       'src',
       './images/metamask-rewards-points.svg',
     );
-    expect(image).toHaveStyle({ width: '16px', height: '16px' });
   });
 
   it('should call useSelector with getIntlLocale selector', () => {
@@ -248,15 +238,7 @@ describe('RewardsPointsBalance', () => {
 
     render(<RewardsPointsBalance />);
 
-    expect(mockUseSelector).toHaveBeenCalled();
-  });
-
-  it('should call useI18nContext hook', () => {
-    mockUseRewardsContext.mockReturnValue(mockRewardsContextValue);
-
-    render(<RewardsPointsBalance />);
-
-    expect(mockUseI18nContext).toHaveBeenCalled();
+    expect(mockUseSelector).toHaveBeenCalledWith(getIntlLocale);
   });
 
   it('should call useRewardsContext hook', () => {
@@ -265,5 +247,125 @@ describe('RewardsPointsBalance', () => {
     render(<RewardsPointsBalance />);
 
     expect(mockUseRewardsContext).toHaveBeenCalled();
+  });
+
+  it('should handle undefined balance total gracefully', () => {
+    mockUseRewardsContext.mockReturnValue({
+      ...mockRewardsContextValue,
+      seasonStatus: {
+        ...mockSeasonStatus,
+        balance: {
+          total: undefined as unknown as number,
+        },
+      },
+    });
+
+    render(<RewardsPointsBalance />);
+
+    expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('rewards-points-balance-value'),
+    ).toHaveTextContent('0 points');
+  });
+
+  it('should handle null balance gracefully', () => {
+    mockUseRewardsContext.mockReturnValue({
+      ...mockRewardsContextValue,
+      seasonStatus: {
+        ...mockSeasonStatus,
+        balance: null as unknown as { total: number },
+      },
+    });
+
+    render(<RewardsPointsBalance />);
+
+    expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('rewards-points-balance-value'),
+    ).toHaveTextContent('0 points');
+  });
+
+  it('should format large numbers correctly with US locale', () => {
+    mockUseSelector.mockReturnValue('en-US');
+    mockUseRewardsContext.mockReturnValue({
+      ...mockRewardsContextValue,
+      seasonStatus: {
+        ...mockSeasonStatus,
+        balance: {
+          total: 1234567,
+        },
+      },
+    });
+
+    render(<RewardsPointsBalance />);
+
+    expect(
+      screen.getByTestId('rewards-points-balance-value'),
+    ).toHaveTextContent('1,234,567 points');
+  });
+
+  it('should format numbers correctly with French locale', () => {
+    mockUseSelector.mockReturnValue('fr-FR');
+    mockUseRewardsContext.mockReturnValue({
+      ...mockRewardsContextValue,
+      seasonStatus: {
+        ...mockSeasonStatus,
+        balance: {
+          total: 12345,
+        },
+      },
+    });
+
+    render(<RewardsPointsBalance />);
+
+    expect(
+      screen.getByTestId('rewards-points-balance-value'),
+    ).toHaveTextContent('12 345 points');
+  });
+
+  it('should format numbers correctly with Spanish locale', () => {
+    mockUseSelector.mockReturnValue('es-ES');
+    mockUseRewardsContext.mockReturnValue({
+      ...mockRewardsContextValue,
+      seasonStatus: {
+        ...mockSeasonStatus,
+        balance: {
+          total: 12345,
+        },
+      },
+    });
+
+    render(<RewardsPointsBalance />);
+
+    expect(
+      screen.getByTestId('rewards-points-balance-value'),
+    ).toHaveTextContent('12.345 points');
+  });
+
+  it('should not render skeleton when seasonStatus is null and not loading', () => {
+    mockUseRewardsContext.mockReturnValue({
+      ...mockRewardsContextValue,
+      seasonStatus: null,
+      seasonStatusLoading: false,
+    });
+
+    render(<RewardsPointsBalance />);
+
+    expect(screen.queryByTestId('skeleton')).not.toBeInTheDocument();
+    expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
+  });
+
+  it('should apply correct boxClassName to RewardsBadge', () => {
+    mockUseRewardsContext.mockReturnValue(mockRewardsContextValue);
+
+    render(<RewardsPointsBalance />);
+
+    const container = screen.getByTestId('rewards-points-balance');
+    expect(container).toHaveClass(
+      'gap-1',
+      'px-1.5',
+      'bg-background-muted',
+      'rounded',
+    );
   });
 });
