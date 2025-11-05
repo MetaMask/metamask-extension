@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
 import {
   NetworkControllerGetStateAction,
@@ -7,6 +7,12 @@ import {
   NetworkControllerNetworkAddedEvent,
 } from '@metamask/network-controller';
 import { TransactionControllerTransactionSubmittedEvent } from '@metamask/transaction-controller';
+import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
+import {
+  AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+  AccountTreeControllerSelectedAccountGroupChangeEvent,
+} from '@metamask/account-tree-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | NetworkControllerGetStateAction
@@ -23,19 +29,73 @@ export type NetworkEnablementControllerMessenger = ReturnType<
 >;
 
 export function getNetworkEnablementControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'NetworkEnablementController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'NetworkEnablementController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'NetworkEnablementController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'NetworkController:getState',
       'MultichainNetworkController:getState',
     ],
-    allowedEvents: [
+    events: [
       'NetworkController:networkAdded',
       'NetworkController:networkRemoved',
       'NetworkController:stateChange',
       'TransactionController:transactionSubmitted',
     ],
   });
+  return controllerMessenger;
+}
+
+type AllowedInitializationActions =
+  AccountTreeControllerGetAccountsFromSelectedAccountGroupAction;
+
+type AllowedInitializationEvents =
+  | AccountsControllerSelectedAccountChangeEvent
+  | AccountTreeControllerSelectedAccountGroupChangeEvent;
+
+export type NetworkEnablementControllerInitMessenger = ReturnType<
+  typeof getNetworkEnablementControllerInitMessenger
+>;
+
+/**
+ * Create a messenger restricted to the allowed initialization events of the
+ * network enablement controller.
+ *
+ * @param messenger - The base messenger used to create the restricted
+ * messenger.
+ */
+export function getNetworkEnablementControllerInitMessenger(
+  messenger: RootMessenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
+) {
+  const controllerInitMessenger = new Messenger<
+    'NetworkEnablementControllerInit',
+    AllowedInitializationActions,
+    AllowedInitializationEvents,
+    typeof messenger
+  >({
+    namespace: 'NetworkEnablementControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['AccountTreeController:getAccountsFromSelectedAccountGroup'],
+    events: [
+      'AccountsController:selectedAccountChange',
+      'AccountTreeController:selectedAccountGroupChange',
+    ],
+  });
+  return controllerInitMessenger;
 }

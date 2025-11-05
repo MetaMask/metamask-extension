@@ -5,7 +5,7 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import InlineAlert from '../../../../components/app/alert-system/inline-alert';
@@ -36,6 +36,7 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -117,7 +118,12 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
 const EmptyContent: React.FC = () => {
   const t = useI18nContext();
   return (
-    <Text color={TextColor.textDefault} variant={TextVariant.bodyMd}>
+    <Text
+      color={TextColor.textDefault}
+      variant={TextVariant.bodyMd}
+      width={BlockSize.ElevenTwelfths}
+      textAlign={TextAlign.Right}
+    >
       {t('simulationDetailsNoChanges')}
     </Text>
   );
@@ -517,14 +523,14 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
         {staticRows.map((staticRow, index) => (
-          <React.Fragment key={index}>
+          <Fragment key={index}>
             <BalanceChangeList
               heading={staticRow.label}
               balanceChanges={staticRow.balanceChanges}
               labelColor={getAlertTextColors(selectedAlertSeverity)}
             />
             <BalanceChangesAlert transactionId={transactionId} />
-          </React.Fragment>
+          </Fragment>
         ))}
         <BalanceChangeList
           heading={getOutgoingHeadingText()}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
@@ -14,6 +15,11 @@ jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../hooks/send/metrics/useRecipientSelectionMetrics');
 jest.mock('../../../context/send');
 jest.mock('../../../hooks/send/useRecipients');
+jest.mock('../../../hooks/send/useAccountAddressSeedIconMap', () => ({
+  useAccountAddressSeedIconMap: jest.fn().mockReturnValue({
+    accountAddressSeedIconMap: new Map(),
+  }),
+}));
 
 describe('RecipientInput', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
@@ -28,6 +34,7 @@ describe('RecipientInput', () => {
   const mockSetRecipientInputMethodManual = jest.fn();
   const mockSetRecipientInputMethodSelectContact = jest.fn();
   const mockSetRecipientInputMethodSelectAccount = jest.fn();
+  const mockSetRecipientInputMethodPasted = jest.fn();
 
   const mockStore = configureStore(mockState);
 
@@ -70,6 +77,7 @@ describe('RecipientInput', () => {
         mockSetRecipientInputMethodSelectContact,
       setRecipientInputMethodSelectAccount:
         mockSetRecipientInputMethodSelectAccount,
+      setRecipientInputMethodPasted: mockSetRecipientInputMethodPasted,
     } as unknown as ReturnType<typeof useRecipientSelectionMetrics>);
     mockUseSendContext.mockReturnValue({
       to: '',
@@ -120,21 +128,6 @@ describe('RecipientInput', () => {
     expect(mockOpenRecipientModal).toHaveBeenCalled();
   });
 
-  it('captures metrics on input blur when to value exists', () => {
-    mockUseSendContext.mockReturnValue({
-      to: '0x1234567890abcdef',
-      updateTo: mockUpdateTo,
-      updateToResolved: jest.fn(),
-    } as unknown as ReturnType<typeof useSendContext>);
-
-    const { getByRole } = renderComponent();
-    const input = getByRole('textbox');
-
-    fireEvent.blur(input);
-
-    expect(mockCaptureRecipientSelected).toHaveBeenCalledTimes(1);
-  });
-
   it('renders clear button when to has no error', () => {
     mockUseSendContext.mockReturnValue({
       to: '0x1234567890abcdef',
@@ -167,5 +160,64 @@ describe('RecipientInput', () => {
     fireEvent.click(getByTestId('clear-recipient-btn'));
 
     expect(mockUpdateTo).toHaveBeenCalledWith('');
+  });
+
+  it('display confusable characters when they exist', () => {
+    mockUseSendContext.mockReturnValue({
+      to: '0x1234567890abcdefghijkl',
+      updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { getByText, queryByText } = renderComponent({
+      recipientValidationResult: {
+        toAddressValidated: '0x1234567890abcdefghijkl',
+        recipientConfusableCharacters: [
+          {
+            point: 'l',
+            similarTo: '1',
+          },
+        ],
+      },
+    });
+
+    expect(getByText('0x1234567890abcdefghijk')).toBeInTheDocument();
+    expect(queryByText('0x1234567890abcdefghijkl')).toBeNull();
+  });
+
+  describe('metrics', () => {
+    it('sets recipient input method to manual', async () => {
+      mockUseSendContext.mockReturnValue({
+        to: '0x1234567890abcdef',
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { getByRole } = renderComponent();
+      const input = getByRole('textbox');
+      input.focus();
+
+      // Type a single digit
+      await userEvent.type(input, '0');
+      // Verify that the mock was called
+      expect(mockSetRecipientInputMethodManual).toHaveBeenCalledTimes(1);
+    });
+
+    it('sets recipient input method to pasted', async () => {
+      mockUseSendContext.mockReturnValue({
+        to: '0x1234567890abcdef',
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { getByRole } = renderComponent();
+      const input = getByRole('textbox');
+      input.focus();
+
+      // Paste the address
+      await userEvent.paste('0x1234567890abcdef');
+      // Verify that the mock was called
+      expect(mockSetRecipientInputMethodPasted).toHaveBeenCalledTimes(1);
+    });
   });
 });

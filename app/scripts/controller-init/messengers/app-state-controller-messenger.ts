@@ -1,8 +1,9 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   AllowedActions,
   AllowedEvents,
 } from '../../controllers/app-state-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 export type AppStateControllerMessenger = ReturnType<
   typeof getAppStateControllerMessenger
@@ -15,20 +16,25 @@ export type AppStateControllerMessenger = ReturnType<
  * @param messenger - The base messenger used to create the restricted
  * messenger.
  */
-export function getAppStateControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
-) {
-  return messenger.getRestricted({
-    name: 'AppStateController',
-    allowedActions: [
+export function getAppStateControllerMessenger(messenger: RootMessenger) {
+  const appStateControllerMessenger = new Messenger<
+    'AppStateController',
+    AllowedActions,
+    AllowedEvents,
+    RootMessenger
+  >({
+    namespace: 'AppStateController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: appStateControllerMessenger,
+    actions: [
       'ApprovalController:addRequest',
       'ApprovalController:acceptRequest',
       'KeyringController:getState',
       'PreferencesController:getState',
     ],
-    allowedEvents: [
-      'KeyringController:unlock',
-      'PreferencesController:stateChange',
-    ],
+    events: ['KeyringController:unlock', 'PreferencesController:stateChange'],
   });
+  return appStateControllerMessenger;
 }

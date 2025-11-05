@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { unlockWallet } from '../../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
@@ -20,7 +20,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
     it(`decodes 4 bytes transaction data`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -28,8 +28,12 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
           const contractAddress = await (
             contractRegistry as ContractAddressRegistry
           ).getContractAddress(smartContract);
@@ -41,8 +45,8 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
 
           await testDapp.clickERC721MintButton();
 
-          await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
-
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await confirmation.checkPageIsLoaded();
           await confirmation.clickAdvancedDetailsButton();
           await confirmation.clickScrollToBottomButton();
           await confirmation.verifyAdvancedDetailsIsDisplayed('4Bytes');
@@ -54,7 +58,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
   it(`decodes Sourcify transaction data`, async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -62,8 +66,8 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await unlockWallet(driver);
+      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver, localNodes?.[0]);
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
@@ -74,8 +78,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
         await testDapp.clickERC721MintButton();
-        await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickAdvancedDetailsButton();
         await confirmation.clickScrollToBottomButton();
         await confirmation.verifyAdvancedDetailsIsDisplayed('Sourcify');
@@ -86,15 +91,15 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
   it(`falls back to raw hexadecimal when no data is retreived`, async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await unlockWallet(driver);
+      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver, localNodes?.[0]);
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
@@ -105,11 +110,14 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
         await testDapp.clickERC721MintButton();
-        await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickAdvancedDetailsButton();
         await confirmation.clickScrollToBottomButton();
-        await confirmation.verifyAdvancedDetailsHexDataIsDisplayed();
+        await confirmation.verifyAdvancedDetailsHexDataIsDisplayed(
+          '0x3b4b13810000000000000000000000000000000000000000000000000000000000000001',
+        );
       },
     );
   });
@@ -117,7 +125,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
   it(`decodes uniswap transaction data`, async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
@@ -134,7 +142,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
 
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, localNodes?.[0]);
         const contractAddress = '0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B';
 
         const confirmation = new TransactionConfirmation(driver);
@@ -148,8 +156,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}`,
         );
 
-        await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickAdvancedDetailsButton();
         await confirmation.clickScrollToBottomButton();
         await confirmation.verifyUniswapDecodedTransactionAdvancedDetails();
@@ -164,6 +173,7 @@ async function mocked4BytesResponse(mockServer: MockttpServer) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0x3b4b1381' })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -207,10 +217,13 @@ async function mockedSourcifyResponse(mockServer: MockttpServer) {
     .forGet(
       'https://sourcify.dev/server/files/any/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
     )
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: SOURCIFY_RESPONSE,
-    }));
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: SOURCIFY_RESPONSE,
+      };
+    });
 }
 
 async function mockTokensAndInfura(mockServer: MockttpServer) {

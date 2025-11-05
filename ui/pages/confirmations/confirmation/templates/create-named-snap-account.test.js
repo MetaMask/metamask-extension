@@ -58,13 +58,6 @@ const mockBaseStore = {
   metamask: {
     ...mockState.metamask,
     keyrings: updatedKeyrings,
-    accounts: {
-      ...mockState.metamask.accounts,
-      [mockTemporaryAccount.address]: {
-        balance: mockTemporaryAccount.balance,
-        address: mockTemporaryAccount.address,
-      },
-    },
     internalAccounts: {
       ...mockState.metamask.internalAccounts,
       accounts: {

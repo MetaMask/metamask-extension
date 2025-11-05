@@ -156,10 +156,13 @@ describe('SimulationDetails', () => {
     expect(screen.getByText(/Unavailable/u)).toBeInTheDocument();
   });
 
-  it('renders empty content when there are no balance changes', () => {
+  it('renders empty content when there are no balance changes with proper alignment', () => {
     renderSimulationDetails({});
 
-    expect(screen.getByText(/No changes/u)).toBeInTheDocument();
+    const noChangesText = screen.getByText(/No changes/u);
+    expect(noChangesText).toBeInTheDocument();
+    expect(noChangesText).toHaveClass('mm-box--width-11/12');
+    expect(noChangesText).toHaveClass('mm-text--text-align-right');
   });
 
   it('passes the correct properties to BalanceChangeList components', () => {

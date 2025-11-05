@@ -3,7 +3,7 @@ import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
-import { getCleanAppState } from '../../../helpers';
+import { getCleanAppState, regularDelayMs } from '../../../helpers';
 
 class HomePage {
   protected driver: Driver;
@@ -17,6 +17,11 @@ class HomePage {
   private readonly backupSecretRecoveryPhraseButton = {
     text: 'Back up now',
     css: '.home-notification__accept-button',
+  };
+
+  private readonly backupRemindMeLaterButton = {
+    tag: 'button',
+    text: 'Remind me later',
   };
 
   private readonly backupSecretRecoveryPhraseNotification = {
@@ -61,13 +66,12 @@ class HomePage {
   private readonly portfolioLink = '[data-testid="portfolio-link"]';
 
   private readonly privacyBalanceToggle = {
-    testId: 'sensitive-toggle',
+    testId: 'account-value-and-suffix',
   };
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
-  protected readonly swapButton: string =
-    '[data-testid="token-overview-button-swap"]';
+  protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 
   private readonly refreshErc20Tokens = {
     testId: 'refreshList',
@@ -86,6 +90,14 @@ class HomePage {
 
   private readonly connectionsRemovedModal =
     '[data-testid="connections-removed-modal"]';
+
+  private readonly shieldEntryModal = '[data-testid="shield-entry-modal"]';
+
+  private readonly shieldEntryModalGetStarted =
+    '[data-testid="shield-entry-modal-get-started-button"]';
+
+  private readonly shieldEntryModalSkip =
+    '[data-testid="shield-entry-modal-skip-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -114,6 +126,12 @@ class HomePage {
     await this.driver.assertElementNotPresent(this.tokensTab, {
       waitAtLeastGuard: 500,
     });
+  }
+
+  async clickBackupRemindMeLaterButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.backupRemindMeLaterButton,
+    );
   }
 
   async closeSurveyToast(surveyName: string): Promise<void> {
@@ -305,19 +323,6 @@ class HomePage {
     }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
   }
 
-  async checkIfBridgeButtonIsClickable(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.bridgeButton, {
-        timeout: 1000,
-      });
-    } catch (e) {
-      console.log('Bridge button not clickable', e);
-      return false;
-    }
-    console.log('Bridge button is clickable');
-    return true;
-  }
-
   async checkIfSendButtonIsClickable(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.sendButton, {
@@ -381,7 +386,7 @@ class HomePage {
 
   async checkNewSrpAddedToastIsDisplayed(srpNumber: number = 2): Promise<void> {
     await this.driver.waitForSelector({
-      text: `Secret Recovery Phrase ${srpNumber} imported`,
+      text: `Wallet ${srpNumber} imported`,
     });
   }
 
@@ -422,6 +427,28 @@ class HomePage {
 
   async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.connectionsRemovedModal);
+  }
+
+  async checkShieldEntryModalIsDisplayed(): Promise<void> {
+    console.log('Check shield entry modal is displayed on homepage');
+    await this.driver.waitForSelector(this.shieldEntryModal);
+  }
+
+  async clickOnShieldEntryModalGetStarted(): Promise<void> {
+    console.log('Click on shield entry modal get started');
+    await this.driver.clickElement(this.shieldEntryModalGetStarted);
+  }
+
+  async clickOnShieldEntryModalSkip(): Promise<void> {
+    console.log('Click on shield entry modal skip');
+    await this.driver.clickElement(this.shieldEntryModalSkip);
+  }
+
+  async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
+    console.log('Check no shield entry modal is displayed on homepage');
+    await this.driver.assertElementNotPresent(this.shieldEntryModal, {
+      waitAtLeastGuard: regularDelayMs,
+    });
   }
 }
 

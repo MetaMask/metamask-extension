@@ -6,18 +6,8 @@ import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  ButtonLink,
-  IconName,
-} from '../../component-library';
-import {
-  JustifyContent,
-  TextVariant,
-  IconColor,
-} from '../../../helpers/constants/design-system';
+import { Box, ButtonLink, IconName } from '../../component-library';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -62,6 +52,8 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
+import { useRewardsEnabled } from '../../../hooks/rewards';
+import { RewardsPointsBalance } from '../rewards';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import {
@@ -183,16 +175,7 @@ export const LegacyAggregatedBalance = ({
           !showNativeTokenAsMain && !isTestnet && shouldShowFiat
         }
         privacyMode={privacyMode}
-      />
-      <ButtonIcon
-        color={IconColor.iconAlternative}
-        marginLeft={2}
-        size={ButtonIconSize.Md}
         onClick={handleSensitiveToggle}
-        iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
-        justifyContent={JustifyContent.center}
-        ariaLabel="Sensitive toggle"
-        data-testid="sensitive-toggle"
       />
     </Skeleton>
   );
@@ -239,6 +222,7 @@ export const CoinOverview = ({
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
+  const isRewardsEnabled = useRewardsEnabled();
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
@@ -264,7 +248,10 @@ export const CoinOverview = ({
   }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
 
   const renderPercentageAndAmountChange = () => {
-    const renderPortfolioButton = () => {
+    const renderPercentageAndAmountChangeTrail = () => {
+      if (isRewardsEnabled) {
+        return <RewardsPointsBalance />;
+      }
       return (
         <ButtonLink
           endIconName={IconName.Export}
@@ -276,7 +263,6 @@ export const CoinOverview = ({
           {t('discover')}
         </ButtonLink>
       );
-      return null;
     };
 
     const renderNativeTokenView = () => {
@@ -289,7 +275,7 @@ export const CoinOverview = ({
         >
           <Box className="wallet-overview__currency-wrapper">
             <PercentageAndAmountChange value={value} />
-            {renderPortfolioButton()}
+            {renderPercentageAndAmountChangeTrail()}
           </Box>
         </Skeleton>
       );
@@ -299,11 +285,11 @@ export const CoinOverview = ({
       <Box className="wallet-overview__currency-wrapper">
         {isTokenNetworkFilterEqualCurrentNetwork ? (
           <AggregatedPercentageOverview
-            portfolioButton={renderPortfolioButton}
+            trailingChild={renderPercentageAndAmountChangeTrail}
           />
         ) : (
           <AggregatedPercentageOverviewCrossChains
-            portfolioButton={renderPortfolioButton}
+            trailingChild={renderPercentageAndAmountChangeTrail}
           />
         )}
       </Box>
@@ -313,7 +299,7 @@ export const CoinOverview = ({
       <Box className="wallet-overview__currency-wrapper">
         <AggregatedMultichainPercentageOverview
           privacyMode={privacyMode}
-          portfolioButton={renderPortfolioButton}
+          trailingChild={renderPercentageAndAmountChangeTrail}
         />
       </Box>
     );
@@ -324,7 +310,7 @@ export const CoinOverview = ({
         <Box className="wallet-overview__currency-wrapper">
           <AccountGroupBalanceChange
             period="1d"
-            portfolioButton={renderPortfolioButton}
+            trailingChild={renderPercentageAndAmountChangeTrail}
           />
         </Box>
       );
@@ -347,6 +333,8 @@ export const CoinOverview = ({
         classPrefix={classPrefix}
         balanceIsCached={balanceIsCached}
         handleSensitiveToggle={handleSensitiveToggle}
+        balance={balance}
+        chainId={chainId}
       />
     );
   } else if (isEvm) {

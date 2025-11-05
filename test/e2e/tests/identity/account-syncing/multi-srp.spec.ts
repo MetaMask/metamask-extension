@@ -3,13 +3,14 @@ import {
   USER_STORAGE_GROUPS_FEATURE_KEY,
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
-import { withFixtures, unlockWallet } from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -54,7 +55,10 @@ describe('Account syncing - Multiple SRPs', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
@@ -120,10 +124,9 @@ describe('Account syncing - Multiple SRPs', function () {
           srpIndex: 1, // Second SRP
         });
 
-        const homePage = new HomePage(driver);
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
-        await driver.delay(2000); // Since we'll have two potential 'Account 2's, it's difficult to wait for the new one to appear, so just wait a bit
+        await waitUntilSyncedAccountsNumberEquals(4);
 
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 2',
@@ -154,12 +157,13 @@ describe('Account syncing - Multiple SRPs', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
-
+        await loginWithBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
 
-        const homePage = new HomePage(driver);
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         // await driver.delay(2000); // Wait for potential sync to complete
 

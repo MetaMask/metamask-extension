@@ -13,7 +13,7 @@ import {
   useHistory,
   Redirect,
 } from 'react-router-dom';
-import { shuffle, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { I18nContext } from '../../contexts/i18n';
 
@@ -22,7 +22,6 @@ import {
   getIsSwapsChain,
   isHardwareWallet,
   getHardwareWalletType,
-  getTokenList,
   getHDEntropyIndex,
 } from '../../selectors/selectors';
 import {
@@ -63,6 +62,7 @@ import {
   SWAPS_MAINTENANCE_ROUTE,
   PREPARE_SWAP_ROUTE,
   SWAPS_NOTIFICATION_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   ERROR_FETCHING_QUOTES,
@@ -100,7 +100,6 @@ import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';
 import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
-import PrepareSwapPage from './prepare-swap-page/prepare-swap-page';
 import NotificationPage from './notification-page/notification-page';
 
 export default function Swap() {
@@ -136,8 +135,6 @@ export default function Swap() {
   const swapsEnabled = useSelector(getSwapsFeatureIsLive);
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const tokenList = useSelector(getTokenList, isEqual);
-  const shuffledTokensList = shuffle(Object.values(tokenList));
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const reviewSwapClicked = Boolean(reviewSwapClickedTimestamp);
   const smartTransactionsOptInStatus = useSelector(
@@ -168,8 +165,7 @@ export default function Swap() {
   // This will pre-load gas fees before going to the View Quote page.
   useGasFeeEstimates();
 
-  const { balance: ethBalance, address: selectedAccountAddress } =
-    selectedAccount;
+  const { address: selectedAccountAddress } = selectedAccount;
 
   const approveTxData =
     approveTxId && txList.find(({ id }) => approveTxId === id);
@@ -421,10 +417,10 @@ export default function Swap() {
               path={PREPARE_SWAP_ROUTE}
               exact
               render={() => (
-                <PrepareSwapPage
-                  ethBalance={ethBalance}
-                  selectedAccountAddress={selectedAccountAddress}
-                  shuffledTokensList={shuffledTokensList}
+                <Redirect
+                  to={{
+                    pathname: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
+                  }}
                 />
               )}
             />

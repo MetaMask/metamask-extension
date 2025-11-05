@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 
 import {
@@ -29,8 +29,10 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useRecipients } from '../../../hooks/send/useRecipients';
+import { useAccountAddressSeedIconMap } from '../../../hooks/send/useAccountAddressSeedIconMap';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { useSendContext } from '../../../context/send';
+import { ConfusableRecipientName } from './confusable-recipient-name';
 
 export const RecipientInput = ({
   openRecipientModal,
@@ -41,54 +43,64 @@ export const RecipientInput = ({
   recipientInputRef: React.RefObject<HTMLInputElement>;
   recipientValidationResult: ReturnType<typeof useRecipientValidation>;
 }) => {
-  const {
-    captureRecipientSelected,
-    setRecipientInputMethodManual,
-    setRecipientInputMethodPasted,
-  } = useRecipientSelectionMetrics();
+  const { setRecipientInputMethodManual, setRecipientInputMethodPasted } =
+    useRecipientSelectionMetrics();
   const recipients = useRecipients();
   const t = useI18nContext();
   const { to, updateTo } = useSendContext();
-  const { recipientError, recipientResolvedLookup, toAddressValidated } =
-    recipientValidationResult;
+  const { accountAddressSeedIconMap } = useAccountAddressSeedIconMap();
+  const {
+    recipientConfusableCharacters,
+    recipientError,
+    recipientResolvedLookup,
+    toAddressValidated,
+  } = recipientValidationResult;
+  const avatarSeedAddress =
+    accountAddressSeedIconMap.get(to?.toLowerCase() as string) ||
+    recipientResolvedLookup ||
+    to ||
+    '';
 
   const onToChange = useCallback(
-    (address: string) => {
-      updateTo(address);
-      setRecipientInputMethodManual();
-    },
-    [updateTo, setRecipientInputMethodManual],
-  );
+    (e) => {
+      if (e.nativeEvent.inputType === 'insertFromPaste') {
+        setRecipientInputMethodPasted();
+      } else {
+        setRecipientInputMethodManual();
+      }
 
-  const captureRecipientSelectedEvent = useCallback(() => {
-    if (to) {
-      captureRecipientSelected();
-    }
-  }, [captureRecipientSelected, to]);
+      const address = e.target.value;
+      updateTo(address);
+    },
+    [updateTo, setRecipientInputMethodManual, setRecipientInputMethodPasted],
+  );
 
   const clearRecipient = useCallback(() => {
     updateTo('');
   }, [updateTo]);
 
-  const addressIsValid =
-    to?.length && to === toAddressValidated && recipientError === undefined;
+  const resolvedAddress = useMemo(() => {
+    const addressIsValid =
+      to?.length && to === toAddressValidated && recipientError === undefined;
 
-  const resolvedAddress = addressIsValid
-    ? shortenAddress(recipientResolvedLookup ?? to)
-    : undefined;
+    return addressIsValid
+      ? shortenAddress(recipientResolvedLookup ?? to)
+      : undefined;
+  }, [recipientError, recipientResolvedLookup, toAddressValidated, to]);
 
-  const hasRecipients = recipients.length > 0;
-  const matchingRecipient = recipients.find(
-    (recipient) => recipient.address.toLowerCase() === to?.toLowerCase(),
-  );
-  const recipientName =
-    to && isValidDomainName(to)
+  const recipientName = useMemo(() => {
+    const matchingRecipient = recipients.find(
+      (recipient) => recipient.address.toLowerCase() === to?.toLowerCase(),
+    );
+
+    return to && isValidDomainName(to)
       ? to
       : matchingRecipient?.contactName || matchingRecipient?.accountGroupName;
+  }, [recipients, to]);
 
   return (
     <>
-      {addressIsValid && resolvedAddress ? (
+      {resolvedAddress ? (
         <Box
           alignItems={AlignItems.center}
           display={Display.Flex}
@@ -100,7 +112,7 @@ export const RecipientInput = ({
         >
           <Box alignItems={AlignItems.center} display={Display.Flex}>
             <PreferredAvatar
-              address={resolvedAddress}
+              address={avatarSeedAddress}
               size={AvatarAccountSize.Md}
             />
             <Box
@@ -108,9 +120,15 @@ export const RecipientInput = ({
               flexDirection={FlexDirection.Column}
               marginLeft={3}
             >
-              <Text variant={TextVariant.bodyMd}>
-                {recipientName ?? resolvedAddress}
-              </Text>
+              {recipientConfusableCharacters?.length ? (
+                <ConfusableRecipientName
+                  confusableCharacters={recipientConfusableCharacters}
+                />
+              ) : (
+                <Text variant={TextVariant.bodyMd}>
+                  {recipientName ?? resolvedAddress}
+                </Text>
+              )}
               {recipientName && (
                 <Text
                   color={TextColor.textAlternative}
@@ -133,7 +151,7 @@ export const RecipientInput = ({
         <TextField
           error={Boolean(recipientError)}
           endAccessory={
-            hasRecipients ? (
+            recipients.length > 0 ? (
               <ButtonIcon
                 ariaLabel="Open recipient modal"
                 data-testid="open-recipient-modal-btn"
@@ -143,9 +161,7 @@ export const RecipientInput = ({
               />
             ) : null
           }
-          onChange={(e) => onToChange(e.target.value)}
-          onBlur={captureRecipientSelectedEvent}
-          onPaste={setRecipientInputMethodPasted}
+          onChange={onToChange}
           placeholder={t('recipientPlaceholder')}
           ref={recipientInputRef}
           value={to}

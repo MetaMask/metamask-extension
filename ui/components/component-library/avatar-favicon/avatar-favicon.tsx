@@ -45,6 +45,9 @@ const Favicon = (props: { src?: string; name: string }) => {
   );
 };
 
+/**
+ * @deprecated Please update your code to use `AvatarFavicon` from `@metamask/design-system-react`
+ */
 export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

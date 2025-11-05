@@ -13,7 +13,6 @@ import {
   MetaMetricsEventLocation,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -24,7 +23,7 @@ import {
   getUnapprovedContractInteractionTransaction,
 } from './transactionDataHelpers';
 
-jest.setTimeout(20_000);
+jest.setTimeout(30_000);
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -32,17 +31,7 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   callBackgroundMethod: jest.fn(),
 }));
 
-jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
-  ...jest.requireActual(
-    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
-  ),
-  useAssetDetails: jest.fn().mockResolvedValue({
-    decimals: '4',
-  }),
-}));
-
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
-const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -140,7 +129,7 @@ const setupSubmitRequestToBackgroundMocks = (
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
       ...advancedDetailsMockedRequests,
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -166,11 +155,6 @@ describe('Contract Interaction Confirmation', () => {
     setupSubmitRequestToBackgroundMocks();
     const MINT_NFT_HEX_SIG = '0x3b4b1381';
     mock4byte(MINT_NFT_HEX_SIG);
-    mockedAssetDetails.mockImplementation(() => ({
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      decimals: '4' as any,
-    }));
   });
 
   afterEach(() => {
@@ -531,19 +515,21 @@ describe('Contract Interaction Confirmation', () => {
 
     fireEvent.click(await screen.findByTestId('confirm-footer-cancel-button'));
 
-    expect(
-      mockedBackgroundConnection.submitRequestToBackground,
-    ).toHaveBeenCalledWith(
-      'updateEventFragment',
-      expect.arrayContaining([
-        expect.objectContaining({
-          properties: expect.objectContaining({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            external_link_clicked: 'security_alert_support_link',
+    await waitFor(() => {
+      expect(
+        mockedBackgroundConnection.submitRequestToBackground,
+      ).toHaveBeenCalledWith(
+        'updateEventFragment',
+        expect.arrayContaining([
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              external_link_clicked: 'security_alert_support_link',
+            }),
           }),
-        }),
-      ]),
-    );
+        ]),
+      );
+    });
   });
 });

@@ -4,15 +4,27 @@ import {
   AllowedEvents,
   PhishingControllerActions,
 } from '@metamask/phishing-controller';
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../messenger';
 import { isBlockedUrl } from './isBlockedUrl';
 
 describe('isBlockedUrl', () => {
-  const messenger = new Messenger<PhishingControllerActions, AllowedEvents>();
-  const phishingControllerMessenger = messenger.getRestricted({
-    name: 'PhishingController',
-    allowedActions: [],
-    allowedEvents: ['TransactionController:stateChange'],
+  const messenger = getRootMessenger<
+    PhishingControllerActions,
+    AllowedEvents
+  >();
+  const phishingControllerMessenger = new Messenger<
+    'PhishingController',
+    PhishingControllerActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'PhishingController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: phishingControllerMessenger,
+    events: ['TransactionController:stateChange'],
   });
   const phishingController = new PhishingController({
     messenger: phishingControllerMessenger,
@@ -32,6 +44,7 @@ describe('isBlockedUrl', () => {
           lastUpdated: 0,
           name: ListNames.MetaMask,
           c2DomainBlocklist: [],
+          blocklistPaths: {},
         },
       ],
     },

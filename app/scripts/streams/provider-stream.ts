@@ -1,11 +1,11 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import PortStream from 'extension-port-stream';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline, Transform } from 'readable-stream';
 import browser from 'webextension-polyfill';
+import { ExtensionPortStream } from 'extension-port-stream';
 import {
   CONTENT_SCRIPT,
   LEGACY_CONTENT_SCRIPT,
@@ -36,7 +36,7 @@ let extensionMux: ObjectMultiplex,
   extensionEip1193Channel: Substream,
   extensionCaipChannel: Substream,
   extensionPort: browser.Runtime.Port | null,
-  extensionStream: PortStream | null,
+  extensionStream: ExtensionPortStream | null,
   pageMux: ObjectMultiplex,
   pageChannel: Substream,
   caipChannel: Substream;
@@ -73,7 +73,7 @@ let METAMASK_EXTENSION_CONNECT_SENT = false;
 export const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
-  extensionStream = new PortStream(extensionPort);
+  extensionStream = new ExtensionPortStream(extensionPort, { chunkSize: 0 });
   extensionStream.on('data', extensionStreamMessageListener);
 
   // create and connect channel muxers
@@ -314,12 +314,13 @@ function getNotificationTransformStream() {
     highWaterMark: 16,
     objectMode: true,
     transform: (chunk, _, cb) => {
-      if (chunk?.name === METAMASK_EIP_1193_PROVIDER) {
-        if (chunk.data?.method === 'metamask_accountsChanged') {
-          chunk.data.method = 'wallet_accountsChanged';
-          chunk.data.result = chunk.data.params;
-          delete chunk.data.params;
-        }
+      if (
+        chunk?.name === METAMASK_EIP_1193_PROVIDER &&
+        chunk.data?.method === 'metamask_accountsChanged'
+      ) {
+        chunk.data.method = 'wallet_accountsChanged';
+        chunk.data.result = chunk.data.params;
+        delete chunk.data.params;
       }
       cb(null, chunk);
     },

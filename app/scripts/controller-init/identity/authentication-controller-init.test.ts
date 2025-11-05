@@ -1,5 +1,4 @@
 import { Controller as AuthenticationController } from '@metamask/profile-sync-controller/auth';
-import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
@@ -8,6 +7,7 @@ import {
   AuthenticationControllerInitMessenger,
   getAuthenticationControllerInitMessenger,
 } from '../messengers/identity';
+import { getRootMessenger } from '../../lib/messenger';
 import { AuthenticationControllerInit } from './authentication-controller-init';
 
 jest.mock('@metamask/profile-sync-controller/auth');
@@ -18,7 +18,7 @@ function buildInitRequestMock(): jest.Mocked<
     AuthenticationControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
 
   return {
     ...buildControllerInitRequestMock(),

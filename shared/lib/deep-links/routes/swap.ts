@@ -2,6 +2,9 @@ import { parseAssetID } from './helpers';
 import { Route, SWAP_ROUTE } from './route';
 
 export enum BridgeQueryParams {
+  /**
+   * @deprecated not needed anymore since default value is true
+   */
   SWAPS = 'swaps',
   AMOUNT = 'amount',
   /**

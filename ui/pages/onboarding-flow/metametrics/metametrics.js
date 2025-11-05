@@ -160,7 +160,6 @@ export default function OnboardingMetametrics() {
         variant={TextVariant.headingLg}
         textAlign={TextAlign.Left}
         fontWeight={FontWeight.Bold}
-        marginBottom={4}
       >
         {t('onboardingMetametricsTitle')}
       </Text>
@@ -175,7 +174,7 @@ export default function OnboardingMetametrics() {
         <img
           src="images/user-control.png"
           alt="User control"
-          height={200}
+          height={175}
           width={200}
         />
       </Box>
