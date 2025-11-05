@@ -54,6 +54,7 @@ import {
   getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
   getEnabledNetworks,
+  getSupportedChainIds,
 } from './selectors';
 import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
@@ -634,8 +635,9 @@ const selectTokenBalancesStateForBalances = createSelector(
  * Exposes market data (rates) for core balance computations.
  */
 const selectTokenRatesStateForBalances = createSelector(
-  [getMarketData],
-  (marketData) => ({
+  [getMarketData, getSupportedChainIds],
+  (marketData, supportedChainIds) => ({
+    supportedChainIds,
     marketData,
   }),
 );

@@ -109,6 +109,10 @@ describe('useHistoricalPrices', () => {
           },
         },
       },
+      supportedChainIds: {
+        data: ['0x1'],
+        timestamp: 0,
+      },
     },
   };
 

@@ -794,12 +794,14 @@ export const checkTokenIdExists = (address, tokenId, obj) => {
  * @param {string} nativeCurrency - native currency to fetch prices for.
  * @param {Hex[]} tokenAddresses - set of contract addresses
  * @param {Hex} chainId - current chainId
+ * @param {Hex[]} supportedChainIds - supported chain ids
  * @returns The prices for the requested tokens.
  */
 export const fetchTokenExchangeRates = async (
   nativeCurrency,
   tokenAddresses,
   chainId,
+  supportedChainIds,
 ) => {
   try {
     return await fetchTokenContractExchangeRates({
@@ -807,6 +809,7 @@ export const fetchTokenExchangeRates = async (
       nativeCurrency,
       tokenAddresses,
       chainId,
+      supportedChainIds,
     });
   } catch (err) {
     return {};

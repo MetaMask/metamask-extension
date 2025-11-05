@@ -13,6 +13,7 @@ import {
   mockEmptyPrices,
   mockHistoricalPrices,
   mockSpotPrices,
+  mockSupportedChainIds,
 } from './utils/mocks';
 
 describe('Token Details', function () {
@@ -83,6 +84,7 @@ describe('Token Details', function () {
           await mockSpotPrices(mockServer, chainId, {
             [tokenAddress.toLowerCase()]: marketData,
           }),
+          await mockSupportedChainIds(mockServer, ['1']),
           await mockHistoricalPrices(mockServer, {
             address: tokenAddress,
             chainId,

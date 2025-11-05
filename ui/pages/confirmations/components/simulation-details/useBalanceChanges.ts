@@ -12,6 +12,7 @@ import { useAsyncResultOrThrow } from '../../../../hooks/useAsync';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
+  getSupportedChainIds,
   // eslint-disable-next-line no-restricted-syntax
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
@@ -70,11 +71,13 @@ async function fetchTokenFiatRates(
   fiatCurrency: string,
   erc20TokenAddresses: Hex[],
   chainId: Hex,
+  supportedChainIds: Hex[],
 ): Promise<ContractExchangeRates> {
   const tokenRates = await fetchTokenExchangeRates(
     fiatCurrency,
     erc20TokenAddresses,
     chainId,
+    supportedChainIds,
   );
 
   return Object.fromEntries(
@@ -168,6 +171,7 @@ export const useBalanceChanges = ({
     getUSDConversionRateByChainId(chainId)(state),
   );
 
+  const supportedChainIds = useSelector(getSupportedChainIds);
   const { nativeBalanceChange, tokenBalanceChanges = [] } =
     simulationData ?? {};
 
@@ -181,7 +185,13 @@ export const useBalanceChanges = ({
   );
 
   const erc20FiatRates = useAsyncResultOrThrow(
-    () => fetchTokenFiatRates(fiatCurrency, erc20TokenAddresses, chainId),
+    () =>
+      fetchTokenFiatRates(
+        fiatCurrency,
+        erc20TokenAddresses,
+        chainId,
+        supportedChainIds,
+      ),
     [JSON.stringify(erc20TokenAddresses), chainId, fiatCurrency],
   );
 
@@ -189,7 +199,12 @@ export const useBalanceChanges = ({
     async () =>
       fiatCurrency === CURRENCY_USD
         ? (erc20FiatRates.value ?? {})
-        : fetchTokenFiatRates(CURRENCY_USD, erc20TokenAddresses, chainId),
+        : fetchTokenFiatRates(
+            CURRENCY_USD,
+            erc20TokenAddresses,
+            chainId,
+            supportedChainIds,
+          ),
     [
       JSON.stringify(erc20TokenAddresses),
       chainId,

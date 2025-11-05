@@ -8,6 +8,7 @@ import {
   importSRPOnboardingFlow,
   createNewWalletOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
+import { mockSupportedChainIds } from '../tokens/utils/mocks';
 
 // Mock function implementation for Token Price requests
 async function mockTokenPriceApi(
@@ -21,6 +22,7 @@ async function mockTokenPriceApi(
         statusCode: 200,
         json: {},
       })),
+    await mockSupportedChainIds(mockServer, ['1']),
   ];
 }
 

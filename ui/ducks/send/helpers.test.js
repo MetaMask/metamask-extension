@@ -61,6 +61,7 @@ jest.mock('../../selectors', () => ({
   getConfirmationExchangeRates: jest.fn(),
   getGasPriceInHexWei: jest.fn(),
   getTokenExchangeRates: jest.fn(),
+  getSupportedChainIds: jest.fn(),
 }));
 
 jest.mock('../../store/actions', () => ({

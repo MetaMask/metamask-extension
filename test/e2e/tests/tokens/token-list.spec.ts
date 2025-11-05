@@ -14,6 +14,7 @@ import {
   mockEmptyPrices,
   mockHistoricalPrices,
   mockSpotPrices,
+  mockSupportedChainIds,
 } from './utils/mocks';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
@@ -88,6 +89,7 @@ describe('Token List', function () {
             [zeroAddress()]: marketDataNative,
             [tokenAddress.toLowerCase()]: marketData,
           }),
+          await mockSupportedChainIds(mockServer, ['1']),
           await mockHistoricalPrices(mockServer, {
             address: tokenAddress,
             chainId,

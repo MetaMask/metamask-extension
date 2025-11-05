@@ -33,6 +33,7 @@ import {
   getTokenNetworkFilter,
   getAllTokens,
   getEnabledNetworksByNamespace,
+  getSupportedChainIds,
 } from '../../../selectors';
 import {
   addImportedTokens,
@@ -211,6 +212,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const [tokenStandard, setTokenStandard] = useState(TokenStandard.none);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const [showSymbolAndDecimals, setShowSymbolAndDecimals] = useState(false);
+  const supportedChainIds = useSelector(getSupportedChainIds);
 
   const blockExplorerUrl =
     networkConfigurations[selectedNetworkForCustomImport]?.blockExplorerUrls?.[
@@ -495,6 +497,7 @@ export const ImportTokensModal = ({ onClose }) => {
         nativeCurrency,
         tokenAddresses,
         chainId,
+        supportedChainIds,
       );
       // dispatch action
       dispatch(setConfirmationExchangeRates(result));
