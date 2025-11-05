@@ -573,11 +573,9 @@ export default function Routes() {
         pendingApprovals,
         Boolean(approvalFlows?.length),
         history,
-        '',
-        location.pathname,
       );
     }
-  }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
+  }, [isUnlocked, pendingApprovals, approvalFlows, history]);
   ///: END:ONLY_INCLUDE_IF
 
   const renderRoutes = useCallback(() => {

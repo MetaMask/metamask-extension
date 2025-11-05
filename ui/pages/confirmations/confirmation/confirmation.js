@@ -617,4 +617,7 @@ export default function ConfirmationPage({
 
 ConfirmationPage.propTypes = {
   redirectToHomeOnZeroConfirmations: PropTypes.bool,
+  params: PropTypes.shape({
+    id: PropTypes.string,
+  }),
 };

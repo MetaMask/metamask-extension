@@ -39,7 +39,7 @@ export function renderHookWithConfirmContextProvider(
       )
     : ({ children }: { children: ReactChildren }) => (
         <ConfirmContextProvider confirmationId={confirmationId}>
-          {children}
+          {children as unknown as ReactElement}
         </ConfirmContextProvider>
       );
 

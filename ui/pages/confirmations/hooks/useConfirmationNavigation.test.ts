@@ -1,4 +1,3 @@
-import { useHistory, useLocation } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
 import { ApprovalFlowState } from '@metamask/approval-controller';
@@ -88,17 +87,17 @@ describe('useConfirmationNavigation', () => {
       );
     });
 
-    it('navigates to template route', () => {
-      const result = renderHook(ApprovalType.AddEthereumChain);
+  it('navigates to template route', () => {
+    const result = renderHook(ApprovalType.AddEthereumChain);
 
-      result.navigateToId(APPROVAL_ID_MOCK);
+    result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}`,
-        { replace: true },
-      );
-    });
+    expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${CONFIRMATION_V_NEXT_ROUTE}/${APPROVAL_ID_MOCK}`,
+      { replace: true },
+    );
+  });
 
     it('navigates to template route if approval flow', () => {
       const result = renderHook(undefined as never, undefined, [{} as never]);

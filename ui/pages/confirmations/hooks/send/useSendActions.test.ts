@@ -15,11 +15,6 @@ const MOCK_ADDRESS_2 = '0xd12662965960f3855a09f85396459429a595d741';
 const MOCK_ADDRESS_3 = '4Nd1m5PztHZbA1FtdYzWxTjLdQdHZr4sqoZKxK3x3hJv';
 const MOCK_ADDRESS_4 = '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin';
 
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
-
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   setDefaultHomeActiveTabName: jest.fn(),
