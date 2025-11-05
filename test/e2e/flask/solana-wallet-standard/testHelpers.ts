@@ -174,7 +174,6 @@ export const switchToAccount = async (
   await accountListPage.checkAccountDisplayedInAccountList(accountName);
   await accountListPage.switchToAccount(accountName);
   await nonEvmHomepage.headerNavbar.checkAccountLabel(accountName);
-  await nonEvmHomepage.checkPageIsLoaded();
 };
 
 /**

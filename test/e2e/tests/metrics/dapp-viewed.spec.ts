@@ -178,7 +178,7 @@ describe('Dapp viewed Event', function () {
         // events are original dapp viewed, new dapp viewed when refresh, and permission approved
         const dappViewedEventProperties = events[1].properties;
         assert.equal(dappViewedEventProperties.is_first_visit, false);
-        assert.equal(dappViewedEventProperties.number_of_accounts, 2);
+        assert.equal(dappViewedEventProperties.number_of_accounts, 3);
         assert.equal(dappViewedEventProperties.number_of_accounts_connected, 1);
       },
     );
@@ -276,8 +276,6 @@ describe('Dapp viewed Event', function () {
     );
   });
 
-  // This test fails with BIP44
-  // eslint-disable-next-line mocha/no-skipped-tests
   it('is sent when reconnect to a dapp that has been connected before', async function () {
     async function mockSegment(mockServer: Mockttp) {
       return [

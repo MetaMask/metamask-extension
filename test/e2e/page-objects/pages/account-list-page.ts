@@ -180,7 +180,7 @@ class AccountListPage {
   };
 
   private readonly selectAccountSelector =
-    '.multichain-account-list-item__account-name';
+    '.multichain-account-cell__account-name';
 
   private readonly importSrpButton = {
     text: 'Secret Recovery Phrase',
