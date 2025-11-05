@@ -3726,6 +3726,9 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
+  "multichainAddressViewAll": {
+    "message": "View all"
+  },
   "multichainQuoteCardRateExplanation": {
     "message": "The best rate we found from providers, including provider fees and a $1% MetaMask fee."
   },

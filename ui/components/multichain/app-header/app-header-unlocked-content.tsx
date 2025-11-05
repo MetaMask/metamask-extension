@@ -10,7 +10,6 @@ import browser from 'webextension-polyfill';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Link } from 'react-router-dom-v5-compat';
 import {
   Icon,
   IconName as IconNameDesignSystem,
@@ -38,7 +37,10 @@ import {
   IconName,
   IconSize,
   Text,
+  Popover,
+  PopoverPosition,
 } from '../../component-library';
+import { MultichainHoveredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-hovered-list';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
@@ -73,7 +75,6 @@ import { NotificationsTagCounter } from '../notifications-tag-counter';
 import {
   ACCOUNT_LIST_PAGE_ROUTE,
   REVIEW_PERMISSIONS,
-  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import {
@@ -103,6 +104,11 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
+  const [isHoverOpen, setIsHoverOpen] = useState(false);
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
+    null,
+  );
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const tourAnchorRef = useRef<HTMLDivElement>(null);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
@@ -220,6 +226,28 @@ export const AppHeaderUnlockedContent = ({
     [copied, handleCopyClick, shortenedAddress],
   );
 
+  const handleMouseEnter = useCallback(() => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setIsHoverOpen(true);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsHoverOpen(false);
+    }, 300);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const multichainAccountAppContent = useMemo(() => {
     const networksLabel =
       numberOfAccountsInGroup === 1
@@ -256,31 +284,61 @@ export const AppHeaderUnlockedContent = ({
           />
           <>{!isMultichainAccountsState2Enabled && CopyButton}</>
         </Text>
-        <Link
-          to={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`}
+        <Box
+          ref={setReferenceElement}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          display={Display.Flex}
+          className="networks-subtitle"
+          alignItems={AlignItems.center}
+          gap={1}
+          paddingInline={2}
+          paddingTop={1}
+          paddingBottom={1}
+          borderRadius={BorderRadius.SM}
           data-testid="networks-subtitle-test-id"
+          style={{
+            cursor: 'pointer',
+            transition: 'background-color 0.2s ease',
+            ...(isHoverOpen && {
+              backgroundColor: 'var(--color-background-default-hover)',
+            }),
+          }}
         >
-          <Box
-            display={Display.Flex}
-            className="networks-subtitle"
-            alignItems={AlignItems.center}
-            gap={1}
-            paddingInline={2}
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyXsMedium}
           >
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyXsMedium}
-            >
-              {networksLabel}
-            </Text>
-            <Icon
-              name={IconNameDesignSystem.Copy}
-              size={IconSizeDesignSystem.Xs}
-              color={IconColorDesignSystem.IconAlternative}
-              data-testid="copy-network-addresses-icon"
-            />
-          </Box>
-        </Link>
+            {networksLabel}
+          </Text>
+          <Icon
+            name={IconNameDesignSystem.Copy}
+            size={IconSizeDesignSystem.Xs}
+            color={IconColorDesignSystem.IconAlternative}
+            data-testid="copy-network-addresses-icon"
+          />
+        </Box>
+        <Popover
+          referenceElement={referenceElement}
+          isOpen={isHoverOpen}
+          position={PopoverPosition.BottomStart}
+          // offset={[0, 8]}
+          flip={false}
+          preventOverflow={true}
+          backgroundColor={BackgroundColor.backgroundDefault}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          style={{
+            zIndex: 1000,
+            maxHeight: '400px',
+            overflowY: 'auto',
+            minWidth: '320px',
+          }}
+        >
+          <MultichainHoveredAddressRowsList
+            groupId={selectedMultichainAccountId}
+          />
+        </Popover>
       </Box>
     );
   }, [
@@ -293,6 +351,10 @@ export const AppHeaderUnlockedContent = ({
     numberOfAccountsInGroup,
     t,
     trackEvent,
+    handleMouseEnter,
+    handleMouseLeave,
+    isHoverOpen,
+    referenceElement,
   ]);
 
   // TODO: [Multichain-Accounts-MUL-849] Delete this method once multichain accounts is released
