@@ -429,9 +429,7 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
         totalFiatBalance: 289.96,
       });
       const { container } = render(
-        <AggregatedPercentageOverviewCrossChains
-          portfolioButton={() => null}
-        />,
+        <AggregatedPercentageOverviewCrossChains trailingChild={() => null} />,
       );
       expect(container).toMatchSnapshot();
     });
@@ -457,7 +455,7 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
     });
 
     render(
-      <AggregatedPercentageOverviewCrossChains portfolioButton={() => null} />,
+      <AggregatedPercentageOverviewCrossChains trailingChild={() => null} />,
     );
     const percentageElement = screen.getByText('(+0.00%)');
     const numberElement = screen.getByText('+$0.00');
@@ -504,7 +502,7 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
     const expectedAmountChange = '-$0.97';
     const expectedPercentageChange = '(-0.33%)';
     render(
-      <AggregatedPercentageOverviewCrossChains portfolioButton={() => null} />,
+      <AggregatedPercentageOverviewCrossChains trailingChild={() => null} />,
     );
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
@@ -551,7 +549,7 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
     const expectedAmountChange = '+$0.96';
     const expectedPercentageChange = '(+0.33%)';
     render(
-      <AggregatedPercentageOverviewCrossChains portfolioButton={() => null} />,
+      <AggregatedPercentageOverviewCrossChains trailingChild={() => null} />,
     );
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
@@ -597,7 +595,7 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
     const expectedAmountChange = '+$0.22';
     const expectedPercentageChange = '(+0.08%)';
     render(
-      <AggregatedPercentageOverviewCrossChains portfolioButton={() => null} />,
+      <AggregatedPercentageOverviewCrossChains trailingChild={() => null} />,
     );
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);

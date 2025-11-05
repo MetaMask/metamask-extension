@@ -564,6 +564,54 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         }}
         disabled={isView}
       />
+      {/* Incident details */}
+      <Box className="mt-4">
+        <Text variant={TextVariant.HeadingSm}>
+          {t('shieldClaimIncidentDetails')}
+        </Text>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="mb-2"
+        >
+          {t('shieldClaimIncidentDetailsDescription')}
+        </Text>
+
+        <Box
+          borderColor={BoxBorderColor.BorderMuted}
+          className="w-full h-[1px] border border-b-0"
+        ></Box>
+      </Box>
+      <AccountSelector
+        label={`${t('shieldClaimImpactedWalletAddress')}*`}
+        modalTitle={t('shieldClaimSelectAccount')}
+        impactedWalletAddress={impactedWalletAddress}
+        onAccountSelect={(address) => {
+          setImpactedWalletAddress(address);
+          const sameWalletAddressErrorKey =
+            ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]
+              ?.messageKey ?? '';
+
+          // only validate equality if reimbursement wallet address is set and valid format
+          if (
+            reimbursementWalletAddress &&
+            (!errors.reimbursementWalletAddress ||
+              errors.reimbursementWalletAddress.msg ===
+                sameWalletAddressErrorKey)
+          ) {
+            validateReimbursementEqualsImpactedWalletAddress(address);
+          }
+        }}
+      />
+      {/* Custom network selector: existing ones are either embedded in containers or too feature-rich for this use case. */}
+      <NetworkSelector
+        label={`${t('shieldClaimNetwork')}*`}
+        modalTitle={t('shieldClaimSelectNetwork')}
+        selectedChainId={chainId}
+        onNetworkSelect={(selectedChainId) => {
+          setChainId(selectedChainId);
+        }}
+      />
       <FormTextField
         label={`${t('shieldClaimImpactedTxHash')}*`}
         placeholder={'e.g. a1084235686add...q46q8wurgw'}

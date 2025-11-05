@@ -323,6 +323,8 @@ class SettingsPage extends PureComponent {
       isAddressEntryPage,
       pathnameI18nKey,
       addressName,
+      backRoute,
+      navigate,
     } = this.props;
     let subheaderText;
 
@@ -333,6 +335,9 @@ class SettingsPage extends PureComponent {
     } else {
       subheaderText = t(pathnameI18nKey || 'general');
     }
+
+    // Show back button only on inner pages of the settings page
+    const showBackButton = backRoute !== SETTINGS_ROUTE;
 
     return (
       !currentPath.startsWith(NETWORKS_ROUTE) && (
@@ -345,6 +350,14 @@ class SettingsPage extends PureComponent {
           flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
         >
+          {showBackButton && (
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              onClick={() => navigate(backRoute)}
+              marginRight={2}
+              size={ButtonIconSize.Md}
+            />
+          )}
           <Text variant={TextVariant.headingSm}>{subheaderText}</Text>
           {isAddressEntryPage && (
             <div className="settings-page__subheader--break">
