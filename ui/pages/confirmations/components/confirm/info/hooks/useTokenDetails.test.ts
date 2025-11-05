@@ -2,8 +2,9 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import mockState from '../../../../../../../test/data/mock-state.json';
+import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
 import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { getTokenList } from '../../../../../../selectors';
+import { getCurrentChainId, getTokenList } from '../../../../../../selectors';
 import { useTokenDetails } from './useTokenDetails';
 
 jest.mock('react-redux', () => ({
@@ -188,6 +189,133 @@ describe('useTokenDetails', () => {
     expect(result.current).toEqual({
       tokenImage: undefined,
       tokenSymbol: 'symbol',
+    });
+  });
+
+  it('filters out tokens from different chains', () => {
+    const transactionMeta = genUnapprovedTokenTransferConfirmation(
+      {},
+    ) as TransactionMeta;
+
+    // Current chain ID from mock state is 0x5 (5)
+    const DIFFERENT_CHAIN_ID = '0x1'; // Different from current chain
+    
+    const tokenList = {
+      [transactionMeta.txParams.to as string]: {
+        ...MOCK_TOKEN_LIST(transactionMeta)[transactionMeta.txParams.to as string],
+        chainId: DIFFERENT_CHAIN_ID, // Token is on a different chain
+      },
+    };
+
+    const TEST_SELECTED_TOKEN = {
+      address: 'address',
+      decimals: 18,
+    };
+
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getTokenList) {
+        return tokenList;
+      } else if (selector?.toString().includes('getWatchedToken')) {
+        return TEST_SELECTED_TOKEN;
+      } else if (selector === getCurrentChainId) {
+        return '0x5'; // Current chain ID (5)
+      }
+      return undefined;
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useTokenDetails(transactionMeta),
+      mockState,
+    );
+
+    // Should not find the token in the list due to chain ID mismatch
+    expect(result.current).toEqual({
+      tokenImage: undefined,
+      tokenSymbol: 'Unknown token',
+    });
+  });
+
+  it('includes tokens from the same chain', () => {
+    const transactionMeta = genUnapprovedTokenTransferConfirmation(
+      {},
+    ) as TransactionMeta;
+
+    // Current chain ID from mock state is 0x5 (5)
+    const SAME_CHAIN_ID = '0x5'; // Same as current chain
+    
+    const tokenList = {
+      [transactionMeta.txParams.to as string]: {
+        ...MOCK_TOKEN_LIST(transactionMeta)[transactionMeta.txParams.to as string],
+        chainId: SAME_CHAIN_ID, // Token is on the same chain
+      },
+    };
+
+    const TEST_SELECTED_TOKEN = {
+      address: 'address',
+      decimals: 18,
+    };
+
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getTokenList) {
+        return tokenList;
+      } else if (selector?.toString().includes('getWatchedToken')) {
+        return TEST_SELECTED_TOKEN;
+      } else if (selector === getCurrentChainId) {
+        return '0x5'; // Current chain ID (5)
+      }
+      return undefined;
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useTokenDetails(transactionMeta),
+      mockState,
+    );
+
+    // Should find the token in the list since chain IDs match
+    expect(result.current).toEqual({
+      tokenImage: ICON_URL,
+      tokenSymbol: ICON_SYMBOL,
+    });
+  });
+
+  it('handles tokens without chainId by including them (backward compatibility)', () => {
+    const transactionMeta = genUnapprovedTokenTransferConfirmation(
+      {},
+    ) as TransactionMeta;
+
+    // Token list with a token that doesn't have chainId (legacy support)
+    const tokenList = {
+      [transactionMeta.txParams.to as string]: {
+        ...MOCK_TOKEN_LIST(transactionMeta)[transactionMeta.txParams.to as string],
+        // No chainId specified (legacy token)
+      },
+    };
+
+    const TEST_SELECTED_TOKEN = {
+      address: 'address',
+      decimals: 18,
+    };
+
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getTokenList) {
+        return tokenList;
+      } else if (selector?.toString().includes('getWatchedToken')) {
+        return TEST_SELECTED_TOKEN;
+      } else if (selector === getCurrentChainId) {
+        return '0x5'; // Current chain ID (5)
+      }
+      return undefined;
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useTokenDetails(transactionMeta),
+      mockState,
+    );
+
+    // Should include tokens without chainId for backward compatibility
+    expect(result.current).toEqual({
+      tokenImage: ICON_URL,
+      tokenSymbol: ICON_SYMBOL,
     });
   });
 });
