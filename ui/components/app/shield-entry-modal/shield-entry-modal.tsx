@@ -19,7 +19,6 @@ import {
   ModalOverlay,
   ModalFooter,
   ModalBody,
-  ModalContentSize,
 } from '../../component-library';
 import {
   setShowShieldEntryModalOnce,
@@ -75,7 +74,6 @@ const ShieldEntryModal = () => {
     >
       <ModalOverlay />
       <ModalContent
-        size={ModalContentSize.Md}
         modalDialogProps={{
           className: 'shield-entry-modal__dialog',
         }}
