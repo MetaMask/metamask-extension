@@ -186,7 +186,6 @@ export function useDappSwapComparisonInfo() {
         simulationData,
       );
 
-      console.log('====================');
       captureDappSwapComparisonMetricsProperties({
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
