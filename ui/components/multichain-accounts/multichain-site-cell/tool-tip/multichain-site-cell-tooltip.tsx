@@ -1,7 +1,11 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Tooltip } from 'react-tippy';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+} from '@metamask/design-system-react';
 import {
   AlignItems,
   BorderStyle,
@@ -17,7 +21,6 @@ import {
   Box,
   Text,
 } from '../../../component-library';
-import { PreferredAvatar } from '../../../app/preferred-avatar';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
@@ -42,27 +45,16 @@ const AVATAR_GROUP_LIMIT = 4;
 type TooltipContentProps = {
   accountGroups?: AccountGroupWithInternalAccounts[];
   networks?: EvmAndMultichainNetworkConfigurationsWithCaipChainId[];
+  moreText?: string;
 };
 
 const TooltipContent = React.memo<TooltipContentProps>(
-  ({ accountGroups, networks }) => {
-    const t = useI18nContext();
-
+  ({ accountGroups, networks, moreText }) => {
     const displayAccountGroups = accountGroups?.slice(0, TOOLTIP_LIMIT) ?? [];
     const displayNetworks = networks?.slice(0, TOOLTIP_LIMIT) ?? [];
     const hasMoreAccounts =
       accountGroups && accountGroups.length > TOOLTIP_LIMIT;
     const hasMoreNetworks = networks && networks.length > TOOLTIP_LIMIT;
-
-    const getMoreText = useMemo(() => {
-      if (hasMoreAccounts && accountGroups) {
-        return t('moreAccounts', [accountGroups.length - TOOLTIP_LIMIT]);
-      }
-      if (networks) {
-        return t('moreNetworks', [networks.length - TOOLTIP_LIMIT]);
-      }
-      return '';
-    }, [hasMoreAccounts, accountGroups, networks, t]);
 
     return (
       <Box
@@ -82,7 +74,11 @@ const TooltipContent = React.memo<TooltipContentProps>(
               paddingInline={2}
               gap={2}
             >
-              <PreferredAvatar size={AvatarAccountSize.Xs} address={acc.id} />
+              <AvatarAccount
+                size={AvatarAccountSize.Xs}
+                address={acc.id}
+                variant={AvatarAccountVariant.Jazzicon}
+              />
               <Text
                 color={TextColor.overlayInverse}
                 variant={TextVariant.bodyMdMedium}
@@ -135,7 +131,7 @@ const TooltipContent = React.memo<TooltipContentProps>(
                 variant={TextVariant.bodyMdMedium}
                 data-testid="accounts-list-item-plus-more-tooltip"
               >
-                {getMoreText}
+                {moreText}
               </Text>
             </Box>
           )}
@@ -181,11 +177,29 @@ export const MultichainSiteCellTooltip =
     const hasNetworks =
       Array.isArray(avatarNetworksData) && avatarNetworksData.length > 0;
 
+    const moreText = useMemo(() => {
+      const hasMoreAccounts =
+        accountGroups && accountGroups.length > TOOLTIP_LIMIT;
+      const hasMoreNetworks = networks && networks.length > TOOLTIP_LIMIT;
+
+      if (hasMoreAccounts && accountGroups) {
+        return t('moreAccounts', [accountGroups.length - TOOLTIP_LIMIT]);
+      }
+      if (hasMoreNetworks && networks) {
+        return t('moreNetworks', [networks.length - TOOLTIP_LIMIT]);
+      }
+      return '';
+    }, [accountGroups, networks, t]);
+
     return (
       <Tooltip
         position="bottom"
         html={
-          <TooltipContent accountGroups={accountGroups} networks={networks} />
+          <TooltipContent
+            accountGroups={accountGroups}
+            networks={networks}
+            moreText={moreText}
+          />
         }
         arrow
         offset={0}
