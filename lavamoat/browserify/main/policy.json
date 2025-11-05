@@ -1095,8 +1095,8 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/eth-json-rpc-provider": true,
-        "@metamask/json-rpc-engine": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true
       }
@@ -1112,13 +1112,21 @@
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/eth-json-rpc-middleware>klona": true,
+        "@metamask/json-rpc-engine>klona": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
       }
     },
     "@metamask/eth-json-rpc-provider": {
       "packages": {
         "@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "uuid": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": {
+      "packages": {
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "uuid": true
@@ -1333,6 +1341,37 @@
       }
     },
     "@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true,
+        "deep-freeze-strict": true,
+        "@metamask/json-rpc-engine>klona": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true,
+        "@metamask/json-rpc-engine>klona": true
+      }
+    },
+    "@metamask/providers>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/json-rpc-engine": {
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
@@ -1745,7 +1784,7 @@
         "web3": true
       },
       "packages": {
-        "@metamask/json-rpc-engine": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/json-rpc-middleware-stream": true,
         "@metamask/object-multiplex": true,
         "@metamask/rpc-errors": true,
@@ -1882,7 +1921,7 @@
       "packages": {
         "@metamask/approval-controller": true,
         "@metamask/base-controller": true,
-        "@metamask/json-rpc-engine": true,
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/json-rpc-middleware-stream": true,
         "@metamask/object-multiplex": true,
         "@metamask/permission-controller": true,
