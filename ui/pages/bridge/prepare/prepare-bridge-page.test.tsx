@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Provider } from '@metamask/network-controller';
 import { act } from '@testing-library/react';
 import * as reactRouterUtils from 'react-router-dom-v5-compat';
 import * as ReactReduxModule from 'react-redux';
@@ -33,7 +34,7 @@ describe('PrepareBridgePage', () => {
       chainId: CHAIN_IDS.MAINNET,
     });
 
-    global.ethereumProvider = provider;
+    global.ethereumProvider = provider as unknown as Provider;
   });
 
   beforeEach(() => {
