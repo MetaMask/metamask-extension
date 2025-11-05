@@ -129,8 +129,6 @@ class UnlockPage extends Component {
 
   animationEventEmitter = new EventEmitter();
 
-  passwordLoginAttemptTraceCtx = null;
-
   /**
    * Determines if the current user is in the social import rehydration phase
    *
@@ -158,7 +156,7 @@ class UnlockPage extends Component {
   }
 
   async componentDidMount() {
-    this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace?.({
+    this.context.bufferedTrace?.({
       name: TraceName.OnboardingPasswordLoginAttempt,
       op: TraceOperation.OnboardingUserJourney,
       parentContext: this.props.onboardingParentContext?.current,
@@ -227,12 +225,9 @@ class UnlockPage extends Component {
           isNewVisit: true,
         },
       );
-      if (this.passwordLoginAttemptTraceCtx) {
-        this.context.bufferedEndTrace?.({
-          name: TraceName.OnboardingPasswordLoginAttempt,
-        });
-        this.passwordLoginAttemptTraceCtx = null;
-      }
+      this.context.bufferedEndTrace?.({
+        name: TraceName.OnboardingPasswordLoginAttempt,
+      });
       this.context.bufferedEndTrace?.({
         name: TraceName.OnboardingExistingSocialLogin,
       });
@@ -259,6 +254,14 @@ class UnlockPage extends Component {
     let finalUnlockDelayPeriod = 0;
     let errorReason;
 
+    // Determine error type for rehydration tracking
+    const isIncorrectPasswordError =
+      message === 'Incorrect password' ||
+      message === SeedlessOnboardingControllerErrorMessage.IncorrectPassword;
+    const errorType = isIncorrectPasswordError
+      ? 'incorrect_password'
+      : 'unknown_error';
+
     // Track wallet rehydration failed for social import users (only during rehydration)
     if (isRehydrationFlow) {
       this.context.trackEvent({
@@ -267,6 +270,7 @@ class UnlockPage extends Component {
         properties: {
           account_type: 'social',
           failed_attempts: this.failed_attempts,
+          error_type: errorType,
         },
       });
     }
@@ -401,6 +405,15 @@ class UnlockPage extends Component {
     // in `onboarding_unlock` route, if the user is on a social login flow and onboarding is not completed,
     // we can redirect to `onboarding_welcome` route to select a different login method
     if (!isOnboardingCompleted && isSocialLoginFlow) {
+      // Track when user clicks "Use a different login method" during rehydration
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.UseDifferentLoginMethodClicked,
+        properties: {
+          account_type: 'social',
+        },
+      });
+
       await this.props.loginWithDifferentMethod();
       await this.props.forceUpdateMetamaskState();
       history.replace(ONBOARDING_WELCOME_ROUTE);

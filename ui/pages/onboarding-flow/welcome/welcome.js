@@ -448,7 +448,7 @@ export default function OnboardingWelcome() {
         </>
       )}
 
-      {isLoggingIn && !isTestEnvironment && (
+      {!isTestEnvironment && isLoggingIn && (
         <Suspense fallback={<Box />}>
           <FoxAppearAnimation isLoader />
         </Suspense>

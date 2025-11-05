@@ -5591,10 +5591,6 @@
   "shieldClaimDescription": {
     "message": "Cur síos ar an gcás"
   },
-  "shieldClaimDetails": {
-    "message": "Féadfaidh tú éileamh amháin a chomhdú in aghaidh gach teagmhais laistigh de 21 lá ón teagmhas. Féach ar an bpolasaí clúdaigh iomlán $1.",
-    "description": "The $1 is a link to the full coverage policy"
-  },
   "shieldClaimEmail": {
     "message": "Ríomhphost"
   },
