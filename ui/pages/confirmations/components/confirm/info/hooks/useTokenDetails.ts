@@ -18,7 +18,7 @@ export const useTokenDetails = (transactionMeta: TransactionMeta) => {
 
   const erc20Token =
     erc20TokensByChain[chainId]?.data?.[to?.toLowerCase() as string];
-  const tokenListToken = allTokens?.[chainId]?.[from as string].find(
+  const tokenListToken = allTokens?.[chainId]?.[from as string]?.find(
     (token: Token) =>
       token.address?.toLowerCase() === (to?.toLowerCase() as string),
   );
