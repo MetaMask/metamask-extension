@@ -11,10 +11,16 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 const RIVE_WASM_URL = './images/riv_animations/rive.wasm';
 const isTestEnvironment = Boolean(process.env.IN_TEST);
 
+let arrayBuffer: ArrayBuffer | null = null;
+
 export const useRiveWasmReady = () => {
   const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
 
   const result = useAsyncResult(async () => {
+    if (arrayBuffer) {
+      setIsWasmReady(true);
+      return true;
+    }
     console.log('useRiveWasmReady');
 
     if (isTestEnvironment || typeof RuntimeLoader === 'undefined') {
@@ -27,7 +33,7 @@ export const useRiveWasmReady = () => {
         `HTTP error! status while fetching rive.wasm: ${response.status}`,
       );
     }
-    const arrayBuffer = await response.arrayBuffer();
+    arrayBuffer = await response.arrayBuffer();
     (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
       arrayBuffer;
     RuntimeLoader.setWasmUrl('should not fetch wasm'); // easier to debug if something goes wrong
@@ -58,9 +64,9 @@ export const useRiveWasmFile = (url: string) => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}, url: ${url}`);
     }
-    const arrayBuffer = await response.arrayBuffer();
-    setBuffer(arrayBuffer);
-    return arrayBuffer;
+    const newArrayBuffer = await response.arrayBuffer();
+    setBuffer(newArrayBuffer);
+    return newArrayBuffer;
   }, [isWasmReady, url]);
 
   return { buffer, loading: result.pending, error: result.error };
