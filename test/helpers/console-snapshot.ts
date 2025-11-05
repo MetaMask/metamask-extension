@@ -1,0 +1,439 @@
+/**
+ * Console warnings/errors snapshot system
+ *
+ * This module captures console warnings and errors during test execution
+ * and compares them against a snapshot file to prevent new warnings/errors
+ * from being introduced.
+ */
+
+import fs from 'fs';
+import path from 'path';
+
+// Snapshot file path can be configured via environment variable
+// Defaults to unit test snapshot for backwards compatibility
+function getSnapshotFilePath(): string {
+  const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
+  const snapshotFileName = `test-warnings-snapshot-${snapshotType}.json`;
+  return path.join(process.cwd(), 'test', snapshotFileName);
+}
+
+function getTempDir(): string {
+  const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
+  // Save temporary files in project directory for visibility
+  // This directory is gitignored (via .tmp pattern)
+  return path.join(
+    process.cwd(),
+    'test',
+    `.warnings-snapshot-temp-${snapshotType}`,
+  );
+}
+
+type CapturedEntry = {
+  message: string;
+  normalized?: string;
+  stackTrace?: string;
+  timestamp?: number;
+};
+
+export type CapturedData = {
+  warnings: CapturedEntry[];
+  errors: CapturedEntry[];
+};
+
+type SnapshotData = {
+  warnings: string[];
+  errors: string[];
+  _metadata?: {
+    generatedAt: string;
+    description: string;
+  };
+};
+
+type ComparisonResult = {
+  newWarnings: string[];
+  newErrors: string[];
+  capturedSnapshot: SnapshotData;
+};
+
+/**
+ * Normalize a console message for comparison
+ * This helps avoid false positives from timestamps, random IDs, etc.
+ *
+ * @param message - The message to normalize
+ * @returns The normalized message
+ */
+export function normalizeMessage(message: string): string {
+  if (typeof message !== 'string') {
+    return String(message);
+  }
+
+  // Use aggressive pattern-based replacements to normalize all variations
+  const normalized = message
+    // Replace timestamps (various formats) - do this early
+    .replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[\d.]*Z?/gu, '<TIMESTAMP>')
+    .replace(/\d{13,}/gu, '<TIMESTAMP>') // Unix timestamps
+    // Replace random IDs (hex strings, UUIDs, etc.)
+    .replace(
+      /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/giu,
+      '<UUID>',
+    )
+    .replace(/0x[0-9a-f]{40,}/giu, '<ADDRESS>')
+    .replace(/[0-9a-f]{64}/giu, '<HASH>')
+    // Replace file paths (normalize to relative paths)
+    .replace(/[/\\][^/\\]+[/\\]node_modules[/\\][^/\\]+/gu, '<NODE_MODULE>')
+    .replace(/[A-Z]:[/\\][^/\\]+/gu, '<ABSOLUTE_PATH>') // Windows paths
+    // Replace Unix absolute paths - be very aggressive to catch all variations
+    .replace(/\/Users\/[^\s:)]+/gu, '<USER_PATH>') // Any /Users/... path
+    .replace(/\/home\/[^\s:)]+/gu, '<USER_PATH>') // Any /home/... path
+    .replace(/\/[^\s:)]+\/metamask-extension\//gu, '<PROJECT_ROOT>/') // Project root
+    .replace(
+      /\/[^\s:)]+\/Repositories\/metamask-extension\//gu,
+      '<PROJECT_ROOT>/',
+    ) // Repositories variant
+    // Replace any remaining long absolute paths
+    .replace(/\/[\w.-]+\/[\w.-]+\/[\w.-]+\/[\w.-]+\//gu, '<ABSOLUTE_PATH>/')
+    // Replace numbers aggressively - this collapses module graph warnings automatically
+    .replace(/:\d+:\d+/gu, ':<LINE>:<COL>') // Line:column numbers first (before general numbers)
+    .replace(/"value":\s*\d+/gu, '"value": <NUMBER>') // JSON value fields
+    .replace(/"\d+":/gu, '"<NUMBER>":') // JSON numeric keys
+    .replace(/"id":\s*\d+/gu, '"id": <NUMBER>') // JSON id fields
+    .replace(/"startTime":\s*\d+/gu, '"startTime": <TIMESTAMP>') // JSON timestamps
+    .replace(/"endTime":\s*\d+/gu, '"endTime": <TIMESTAMP>') // JSON timestamps
+    .replace(/"time":\s*\d+/gu, '"time": <TIMESTAMP>') // Generic time fields
+    .replace(/in \d+ms/gu, 'in <DURATION>ms') // Duration in milliseconds
+    // Replace ALL numbers (not just large ones) to maximize normalization
+    .replace(/\b\d+\b/gu, '<NUMBER>') // Any standalone number
+    // Normalize whitespace
+    .replace(/\s+/gu, ' ')
+    .trim();
+
+  return normalized;
+}
+
+/**
+ * Create a key for a warning/error entry
+ *
+ * @param type - The type of entry ('warning' or 'error')
+ * @param message - The message
+ * @param stackTrace - Optional stack trace
+ * @returns The entry key
+ */
+export function createEntryKey(
+  type: string,
+  message: string,
+  stackTrace: string = '',
+): string {
+  const normalizedMessage = normalizeMessage(message);
+  // Include first few lines of stack trace to differentiate similar messages
+  const normalizedStackTrace = stackTrace
+    .split('\n')
+    .slice(0, 3)
+    .map((line) => normalizeMessage(line))
+    .join('\n');
+
+  return `${type}:${normalizedMessage}:${normalizedStackTrace}`;
+}
+
+/**
+ * Load the snapshot file
+ *
+ * @returns The snapshot object with warnings and errors arrays
+ */
+export function loadSnapshot(): SnapshotData {
+  try {
+    const snapshotFile = getSnapshotFilePath();
+    if (fs.existsSync(snapshotFile)) {
+      const content = fs.readFileSync(snapshotFile, 'utf8');
+      return JSON.parse(content) as SnapshotData;
+    }
+  } catch (error) {
+    // If file doesn't exist or is invalid, return empty snapshot
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+      console.error('Error loading snapshot file:', error);
+    }
+  }
+  return { warnings: [], errors: [] };
+}
+
+/**
+ * Save the snapshot file atomically
+ * Uses a temporary file and atomic rename to avoid race conditions
+ *
+ * @param snapshot - The snapshot object to save
+ */
+export function saveSnapshot(snapshot: SnapshotData): void {
+  try {
+    const snapshotFile = getSnapshotFilePath();
+    // Ensure directory exists
+    const dir = path.dirname(snapshotFile);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    // Sort entries for consistent output
+    snapshot.warnings.sort();
+    snapshot.errors.sort();
+
+    // Write to temp file first, then rename atomically
+    const tempFile = `${snapshotFile}.tmp.${Date.now()}.${process.pid}`;
+    fs.writeFileSync(
+      tempFile,
+      `${JSON.stringify(snapshot, null, 2)}\n`,
+      'utf8',
+    );
+    fs.renameSync(tempFile, snapshotFile);
+  } catch (error) {
+    console.error('Error saving snapshot file:', error);
+    throw error;
+  }
+}
+
+/**
+ * Save captured data to a worker-specific temp file
+ * This allows multiple Jest workers to write simultaneously without conflicts
+ *
+ * @param captured - The captured warnings/errors from this worker
+ * @returns Path to the temp file
+ */
+export function saveWorkerSnapshot(captured: CapturedData): string {
+  try {
+    const tempDir = getTempDir();
+    const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
+
+    // Ensure temp directory exists
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+
+    // Create worker-specific temp file with FIXED name per worker
+    // This ensures each worker overwrites its own file, keeping only the latest accumulated data
+    const workerId = process.env.JEST_WORKER_ID || 'main';
+    const tempFile = path.join(
+      tempDir,
+      `warnings-${snapshotType}-worker-${workerId}.json`,
+    );
+
+    fs.writeFileSync(tempFile, JSON.stringify(captured, null, 2), 'utf8');
+    return tempFile;
+  } catch (error) {
+    console.error('Error saving worker snapshot:', error);
+    throw error;
+  }
+}
+
+/**
+ * Aggregate all worker snapshots and save the final snapshot
+ * Call this in Jest global teardown after all workers have finished
+ */
+export function aggregateAndSaveSnapshot(): void {
+  try {
+    const tempDir = getTempDir();
+    const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
+
+    // Check if temp directory exists
+    if (!fs.existsSync(tempDir)) {
+      // No workers wrote anything, create empty snapshot
+      saveSnapshot({ warnings: [], errors: [] });
+      return;
+    }
+
+    // Read all temp files for this snapshot type (both worker and test-specific)
+    const tempFiles = fs
+      .readdirSync(tempDir)
+      .filter(
+        (file) =>
+          (file.startsWith(`warnings-${snapshotType}-worker-`) ||
+            file.startsWith(`warnings-${snapshotType}-test-`)) &&
+          file.endsWith('.json'),
+      )
+      .map((file) => path.join(tempDir, file));
+
+    // Aggregate all captured data
+    const aggregated: CapturedData = {
+      warnings: [],
+      errors: [],
+    };
+
+    for (const tempFile of tempFiles) {
+      try {
+        const content = fs.readFileSync(tempFile, 'utf8');
+        const workerData = JSON.parse(content) as CapturedData;
+        aggregated.warnings.push(...workerData.warnings);
+        aggregated.errors.push(...workerData.errors);
+        // Clean up temp file
+        fs.unlinkSync(tempFile);
+      } catch (error) {
+        console.warn(`Error reading worker snapshot ${tempFile}:`, error);
+      }
+    }
+
+    // Generate final snapshot from aggregated data
+    const snapshot = generateSnapshot(aggregated);
+    saveSnapshot(snapshot);
+
+    // Clean up temp files after successful snapshot generation
+    console.log(
+      `   Cleaned up ${tempFiles.length} temporary file(s) after successful snapshot generation.`,
+    );
+
+    // Clean up temp directory if empty
+    try {
+      const remainingFiles = fs.readdirSync(tempDir);
+      if (remainingFiles.length === 0) {
+        fs.rmdirSync(tempDir);
+      }
+    } catch {
+      // Ignore cleanup errors
+    }
+  } catch (error) {
+    console.error('Error aggregating snapshots:', error);
+    throw error;
+  }
+}
+
+/**
+ * Generate snapshot from captured console messages
+ * ADDITIVE MODE: Merges with existing snapshot, never removes entries
+ *
+ * @param captured - Object with warnings and errors arrays
+ * @returns The generated snapshot (merged with existing)
+ */
+export function generateSnapshot(captured: CapturedData): SnapshotData {
+  // Load existing snapshot to merge with
+  const existingSnapshot = loadSnapshot();
+
+  const snapshot: SnapshotData = {
+    warnings: [...existingSnapshot.warnings], // Start with existing
+    errors: [...existingSnapshot.errors], // Start with existing
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    _metadata: {
+      generatedAt: new Date().toISOString(),
+      lastUpdatedAt: new Date().toISOString(),
+      description:
+        'Snapshot of console warnings and errors captured during test execution',
+      note: 'This snapshot is ADDITIVE - new warnings/errors are added but never automatically removed. To remove entries, manually edit this file or delete it and regenerate.',
+    },
+  };
+
+  // Add new unique warnings (additive)
+  const existingWarningSet = new Set(existingSnapshot.warnings);
+  let newWarningsAdded = 0;
+
+  for (const entry of captured.warnings) {
+    // Note: entry.message is already normalized
+    const key = entry.message;
+    if (!existingWarningSet.has(key)) {
+      existingWarningSet.add(key);
+      snapshot.warnings.push(key);
+      newWarningsAdded += 1;
+    }
+  }
+
+  // Add new unique errors (additive)
+  const existingErrorSet = new Set(existingSnapshot.errors);
+  let newErrorsAdded = 0;
+
+  for (const entry of captured.errors) {
+    // Note: entry.message is already normalized
+    const key = entry.message;
+    if (!existingErrorSet.has(key)) {
+      existingErrorSet.add(key);
+      snapshot.errors.push(key);
+      newErrorsAdded += 1;
+    }
+  }
+
+  // Log what was added
+  if (newWarningsAdded > 0 || newErrorsAdded > 0) {
+    console.log(
+      `\n📊 Added ${newWarningsAdded} new warning(s) and ${newErrorsAdded} new error(s) to snapshot.`,
+    );
+    console.log(
+      `   Total: ${snapshot.warnings.length} warnings, ${snapshot.errors.length} errors`,
+    );
+  } else {
+    console.log(`\n✅ No new warnings or errors found.`);
+    console.log(
+      `   Snapshot unchanged: ${snapshot.warnings.length} warnings, ${snapshot.errors.length} errors`,
+    );
+  }
+
+  return snapshot;
+}
+
+/**
+ * Compare captured messages against snapshot
+ *
+ * @param captured - Object with warnings and errors arrays
+ * @param snapshot - The snapshot to compare against
+ * @returns Comparison results with newWarnings and newErrors
+ */
+export function compareWithSnapshot(
+  captured: CapturedData,
+  snapshot: SnapshotData,
+): ComparisonResult {
+  const capturedSnapshot = generateSnapshot(captured);
+  const newWarnings: string[] = [];
+  const newErrors: string[] = [];
+
+  // Check for new warnings
+  for (const warning of capturedSnapshot.warnings) {
+    if (!snapshot.warnings.includes(warning)) {
+      newWarnings.push(warning);
+    }
+  }
+
+  // Check for new errors
+  for (const error of capturedSnapshot.errors) {
+    if (!snapshot.errors.includes(error)) {
+      newErrors.push(error);
+    }
+  }
+
+  return {
+    newWarnings,
+    newErrors,
+    capturedSnapshot,
+  };
+}
+
+/**
+ * Format comparison results for error message
+ *
+ * @param results - Comparison results with newWarnings and newErrors
+ * @returns Formatted error message
+ */
+export function formatComparisonResults(results: ComparisonResult): string {
+  const lines: string[] = [];
+
+  if (results.newWarnings.length > 0) {
+    lines.push('\n❌ New console warnings detected:');
+    lines.push('='.repeat(80));
+    results.newWarnings.forEach((warning, index) => {
+      lines.push(`${index + 1}. ${warning}`);
+    });
+    lines.push('');
+  }
+
+  if (results.newErrors.length > 0) {
+    lines.push('\n❌ New console errors detected:');
+    lines.push('='.repeat(80));
+    results.newErrors.forEach((error, index) => {
+      lines.push(`${index + 1}. ${error}`);
+    });
+    lines.push('');
+  }
+
+  if (lines.length > 0) {
+    const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
+    const updateCommand = `yarn test:warnings:update:${snapshotType}`;
+    const snapshotFileName = `test/test-warnings-snapshot-${snapshotType}.json`;
+    lines.push('\nTo update the snapshot with these new warnings/errors, run:');
+    lines.push(`  ${updateCommand}\n`);
+    lines.push(`Or manually edit ${snapshotFileName} to add these entries.\n`);
+  }
+
+  return lines.join('\n');
+}
+
+export { getSnapshotFilePath, getTempDir };
