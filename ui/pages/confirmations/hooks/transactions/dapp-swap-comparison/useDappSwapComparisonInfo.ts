@@ -111,11 +111,10 @@ export function useDappSwapComparisonInfo() {
       },
     });
 
-    const startTime = new Date().getTime();
     updateQuoteRequestLatency();
+    const startTime = new Date().getTime();
 
     const quotesList = await fetchQuotes(quotesInput);
-
     updateQuoteResponseLatency(startTime);
     return quotesList;
   }, [

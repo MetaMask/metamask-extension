@@ -11,17 +11,20 @@ export function useDappSwapComparisonLatencyMetrics() {
   const [quoteRequestLatency, setQuoteRequestLatency] = useState(N_A);
   const [quoteResponseLatency, setQuoteResponseLatency] = useState(N_A);
   const [swapComparisonLatency, setSwapComparisonLatency] = useState(N_A);
+  const [time2, setTime2] = useState(0);
 
   const updateRequestDetectionLatency = useCallback(() => {
     if (requestDetectionLatency !== N_A) {
       return;
     }
+    setTime2(new Date().getTime());
     setRequestDetectionLatency(
       (new Date().getTime() - currentConfirmation?.time).toString(),
     );
   }, [
     currentConfirmation?.time,
     requestDetectionLatency,
+    setTime2,
     setRequestDetectionLatency,
   ]);
 
@@ -32,7 +35,7 @@ export function useDappSwapComparisonLatencyMetrics() {
     setQuoteRequestLatency(
       (
         new Date().getTime() -
-        currentConfirmation?.time +
+        currentConfirmation?.time -
         parseInt(requestDetectionLatency, 10)
       ).toString(),
     );
