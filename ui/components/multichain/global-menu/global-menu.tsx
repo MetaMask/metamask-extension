@@ -312,7 +312,14 @@ export const GlobalMenu = ({
         text: 'Portfolio',
       },
     });
-  }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
+    closeMenu();
+  }, [
+    closeMenu,
+    isMarketingEnabled,
+    isMetaMetricsEnabled,
+    metaMetricsId,
+    trackEvent,
+  ]);
 
   return (
     <Popover
