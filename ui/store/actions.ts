@@ -174,8 +174,15 @@ import {
   ClaimSubmitToastType,
   type NetworkConnectionBanner,
 } from '../../shared/constants/app-state';
+import {
+  SeasonDtoState,
+  SeasonStatusState,
+  EstimatePointsDto,
+  EstimatedPointsDto,
+} from '../../shared/types/rewards';
 import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
 import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
+import { loadShieldConfig } from '../../shared/modules/shield';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -6619,6 +6626,81 @@ export function cancelQrCodeScan(): ThunkAction<
   };
 }
 
+// Rewards
+
+export function getRewardsHasAccountOptedIn(
+  account: CaipAccountId,
+): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    return await submitRequestToBackground<boolean>(
+      'getRewardsHasAccountOptedIn',
+      [account],
+    );
+  };
+}
+
+export function getRewardsCandidateSubscriptionId(): ThunkAction<
+  Promise<string | null>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<string | null>(
+      'getRewardsCandidateSubscriptionId',
+    );
+  };
+}
+
+export function getRewardsSeasonMetadata(
+  type?: 'current' | 'next',
+): ThunkAction<
+  Promise<SeasonDtoState>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<SeasonDtoState>(
+      'getRewardsSeasonMetadata',
+      type ? [type] : [],
+    );
+  };
+}
+
+export function getRewardsSeasonStatus(
+  subscriptionId: string,
+  seasonId: string,
+): ThunkAction<
+  Promise<SeasonStatusState>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<SeasonStatusState>(
+      'getRewardsSeasonStatus',
+      [subscriptionId, seasonId],
+    );
+  };
+}
+
+export function estimateRewardsPoints(
+  request: EstimatePointsDto,
+): ThunkAction<
+  Promise<EstimatedPointsDto>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<EstimatedPointsDto>(
+      'estimateRewardsPoints',
+      [request],
+    );
+  };
+}
+
 export function requestUserApproval({
   origin,
   type,
@@ -7561,6 +7643,8 @@ export async function getLayer1GasFeeValue({
   ]);
 }
 
+const shieldConfig = loadShieldConfig();
+
 /**
  * Submits a shield claim.
  *
@@ -7583,9 +7667,7 @@ export async function submitShieldClaim(params: {
   caseDescription: string;
   files?: FileList;
 }) {
-  const baseUrl =
-    process.env.SHIELD_CLAIMS_API_URL ??
-    'https://claims.dev-api.cx.metamask.io';
+  const baseUrl = shieldConfig.claimUrl;
 
   const claimsUrl = `${baseUrl}/claims`;
   const formData = new FormData();
