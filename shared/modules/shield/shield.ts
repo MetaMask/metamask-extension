@@ -5,8 +5,6 @@ import {
 import { getIsShieldSubscriptionActive } from '../../lib/shield';
 import { loadShieldConfig } from './config';
 
-const shieldConfig = loadShieldConfig();
-
 export async function getShieldGatewayConfig(
   getToken: () => Promise<string>,
   getShieldSubscription: () => Subscription | undefined,
@@ -15,6 +13,7 @@ export async function getShieldGatewayConfig(
     origin?: string;
   },
 ): Promise<{ newUrl: string; authorization: string | undefined }> {
+  const shieldConfig = loadShieldConfig();
   const shieldSubscription = getShieldSubscription();
   const isShieldSubscriptionActive = shieldSubscription
     ? getIsShieldSubscriptionActive(shieldSubscription)

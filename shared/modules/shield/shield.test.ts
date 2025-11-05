@@ -4,8 +4,9 @@ import {
   Subscription,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
+  Env as SubscriptionEnv,
 } from '@metamask/subscription-controller';
-import { Env as SubscriptionEnv } from '@metamask/subscription-controller';
+import { getShieldGatewayConfig } from './shield';
 
 const mockLoadShieldConfig = jest.fn();
 
@@ -68,13 +69,13 @@ const setup = ({
 };
 
 describe('getShieldGatewayConfig', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('returns the correct config when the feature is enabled and the subscription is active', async () => {
     const { gatewayUrl, targetUrl, mockGetToken, mockGetShieldSubscription } =
       setup();
-
-    // Re-import after setting up the mock
-    jest.resetModules();
-    const { getShieldGatewayConfig } = require('./shield');
 
     const config = await getShieldGatewayConfig(
       mockGetToken,
@@ -92,9 +93,6 @@ describe('getShieldGatewayConfig', () => {
       isShieldEnabled: false,
     });
 
-    jest.resetModules();
-    const { getShieldGatewayConfig } = require('./shield');
-
     const config = await getShieldGatewayConfig(
       mockGetToken,
       mockGetShieldSubscription,
@@ -111,9 +109,6 @@ describe('getShieldGatewayConfig', () => {
       isShieldSubscriptionActive: false,
     });
 
-    jest.resetModules();
-    const { getShieldGatewayConfig } = require('./shield');
-
     const config = await getShieldGatewayConfig(
       mockGetToken,
       mockGetShieldSubscription,
@@ -128,9 +123,6 @@ describe('getShieldGatewayConfig', () => {
   it('returns the correct config when the token cannot be retrieved', async () => {
     const { targetUrl, mockGetToken, mockGetShieldSubscription } = setup();
     mockGetToken.mockRejectedValue(new Error('Failed to get token'));
-
-    jest.resetModules();
-    const { getShieldGatewayConfig } = require('./shield');
 
     const config = await getShieldGatewayConfig(
       mockGetToken,
@@ -147,9 +139,6 @@ describe('getShieldGatewayConfig', () => {
     const { targetUrl, mockGetToken, mockGetShieldSubscription } = setup({
       gatewayUrl: null,
     });
-
-    jest.resetModules();
-    const { getShieldGatewayConfig } = require('./shield');
 
     await expect(
       getShieldGatewayConfig(
