@@ -11,11 +11,11 @@ import {
   Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
-import { addTransaction } from '../../store/actions';
 import {
-  getInternalAccounts,
-  selectDefaultRpcEndpointByChainId,
-} from '../../selectors';
+  addTransaction,
+  findNetworkClientIdByChainId,
+} from '../../store/actions';
+import { getInternalAccounts } from '../../selectors';
 import { useConfirmationNavigation } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import {
   encodeDisableDelegation,
@@ -39,7 +39,7 @@ export type RevokeGatorPermissionArgs = {
  * Hook for revoking gator permissions.
  *
  * @param params - The parameters for revoking gator permissions
- * @param params.chainId - The chain ID of the gator permission to revoke
+ * @param params.chainId - The chain ID used for validation to ensure all permissions are on the same chain. The actual chainId used for each transaction is extracted from the permission itself.
  * @param params.onRedirect - The callback to call when the redirect is pending
  * @returns The functions to revoke a gator permission and a batch of gator permissions
  */
@@ -53,9 +53,6 @@ export function useRevokeGatorPermissions({
   const [transactionId, setTransactionId] = useState<string | undefined>();
   const { confirmations, navigateToId } = useConfirmationNavigation();
   const internalAccounts = useSelector(getInternalAccounts);
-  const defaultRpcEndpoint = useSelector((state) =>
-    selectDefaultRpcEndpointByChainId(state, chainId),
-  );
 
   const isRedirectPending = confirmations.some(
     (conf) => conf.id === transactionId,
@@ -88,19 +85,6 @@ export function useRevokeGatorPermissions({
     },
     [],
   );
-
-  /**
-   * Returns the default RPC endpoint.
-   *
-   * @returns The default RPC endpoint.
-   * @throws An error if no default RPC endpoint is found.
-   */
-  const getDefaultRpcEndpoint = useCallback(() => {
-    if (!defaultRpcEndpoint) {
-      throw new Error('No default RPC endpoint found');
-    }
-    return defaultRpcEndpoint;
-  }, [defaultRpcEndpoint]);
 
   /**
    * Asserts that the gator permission(s) is not empty.
@@ -212,7 +196,17 @@ export function useRevokeGatorPermissions({
         PermissionTypesWithCustom
       >,
     ): Promise<TransactionMeta | null> => {
-      const { networkClientId } = getDefaultRpcEndpoint();
+      const permissionChainId = gatorPermission.permissionResponse.chainId;
+
+      const networkClientId =
+        await findNetworkClientIdByChainId(permissionChainId);
+
+      if (!networkClientId) {
+        throw new Error(
+          `No network client found for chain ${permissionChainId}`,
+        );
+      }
+
       const { permissionContext, delegationManagerAddress, accountAddress } =
         buildRevokeGatorPermissionArgs(gatorPermission);
 
@@ -226,7 +220,6 @@ export function useRevokeGatorPermissions({
         delegationHash,
         networkClientId,
       );
-
       if (isDisabled) {
         await submitRevocation({ permissionContext });
         // Return null since no actual transaction is needed when already disabled
@@ -266,7 +259,6 @@ export function useRevokeGatorPermissions({
       return transactionMeta;
     },
     [
-      getDefaultRpcEndpoint,
       buildRevokeGatorPermissionArgs,
       extractDelegationFromGatorPermissionContext,
     ],
