@@ -306,7 +306,9 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {},
+        json: {
+          message: 'This is a response from mock-e2e to a SENTRY_DSN_FAKE call',
+        },
       };
     });
 
@@ -315,7 +317,9 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {},
+        json: {
+          message: 'This is a response from mock-e2e to a SENTRY_DSN_FAKE call',
+        },
       };
     });
 
