@@ -140,7 +140,6 @@ export const useTokenInsightsData = (
 
         const tokenData = response?.[assetId];
         if (tokenData) {
-          // Handle different response formats
           const marketData: MarketData = {
             price: tokenData.price || tokenData.usd,
             pricePercentChange1d:

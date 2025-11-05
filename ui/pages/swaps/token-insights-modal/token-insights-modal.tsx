@@ -99,7 +99,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
   }, [isOpen, token, trackEvent]);
 
   // Ensure only the top modal closes on outside click by intercepting
-  // document mousedown in the capture phase and stopping propagation.
+  // document mousedown and stopping propagation.
   useEffect(() => {
     if (!isOpen) {
       return () => undefined;
@@ -172,10 +172,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
         onMouseDown={(e) => e.stopPropagation()}
         onPointerDown={(e) => e.stopPropagation()}
         modalDialogProps={{
-          // attach ref to the inner dialog element
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ref: dialogRef as any,
+          ref: dialogRef as React.RefObject<HTMLDivElement>,
           onMouseDown: (e: React.MouseEvent) => e.stopPropagation(),
           onPointerDown: (e: React.PointerEvent) => e.stopPropagation(),
           onClick: (e: React.MouseEvent) => e.stopPropagation(),
