@@ -125,6 +125,7 @@ import {
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { isSnapId } from '@metamask/snaps-utils';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
@@ -6742,9 +6743,10 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       setActiveNetwork: async (networkClientId) => {
-        // if the origin has the CAIP-25 permission
-        // we set per dapp network selection state
+        // If the origin is a Snap or has the CAIP-25 permission
+        // we set per dapp network selection state.
         if (
+          isSnapId(origin) ||
           this.permissionController.hasPermission(
             origin,
             Caip25EndowmentPermissionName,
