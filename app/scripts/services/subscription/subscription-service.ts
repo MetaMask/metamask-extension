@@ -13,10 +13,12 @@ import log from 'loglevel';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
-import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 // TODO: Migrate to shared directory and remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { accountSupportsSmartTx } from '../../../../ui/selectors';
+// TODO: Migrate to shared directory and remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -228,21 +230,26 @@ export class SubscriptionService {
         ...this.#messenger.call('AccountsController:getState'),
         ...this.#messenger.call('PreferencesController:getState'),
         ...this.#messenger.call('SmartTransactionsController:getState'),
+        ...this.#messenger.call('RemoteFeatureFlagController:getState'),
+        ...this.#messenger.call('SwapsController:getState'),
       },
     };
-    const smartTransactionsPreferenceEnabled =
-      getSmartTransactionsPreferenceEnabled(uiState);
-    const supportedAccount = accountSupportsSmartTx(uiState);
-    const smartTxLiveness =
-      uiState.metamask.smartTransactionsState?.livenessByChainId[chainId];
 
+    let swapsFeatureFlags = uiState.metamask.swapsState?.swapsFeatureFlags;
+    if (Object.keys(swapsFeatureFlags).length === 0) {
+      // if `swapsFeatureFlags` is empty, we wil try to fetch the feature flags from the bridge API
+      swapsFeatureFlags = await fetchSwapsFeatureFlags();
+      // after fetching the feature flags, we will set the feature flags to SwapsController state.
+      this.#messenger.call(
+        'SwapsController:setSwapsFeatureFlags',
+        swapsFeatureFlags,
+      );
+    }
+
+    // @ts-expect-error Smart transaction selector types does not match controller state
+    const isSmartTransaction = getIsSmartTransaction(uiState, chainId);
     const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
 
-    return (
-      smartTransactionsPreferenceEnabled &&
-      supportedAccount &&
-      smartTxLiveness &&
-      isSendBundleSupportedChain
-    );
+    return isSendBundleSupportedChain && isSmartTransaction;
   }
 }

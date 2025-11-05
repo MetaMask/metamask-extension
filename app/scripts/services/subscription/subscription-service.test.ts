@@ -58,6 +58,9 @@ const mockGetSmartTransactionsState = jest.fn();
 const mockCheckoutSessionUrl = 'https://mocked-checkout-session-url';
 const mockStartShieldSubscriptionWithCard = jest.fn();
 const mockGetSubscriptions = jest.fn();
+const mockGetRemoteFeatureFlagsState = jest.fn();
+const mockGetSwapsControllerState = jest.fn();
+const mockSetSwapsFeatureFlags = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
   namespace: MOCK_ANY_NAMESPACE,
@@ -90,6 +93,18 @@ rootMessenger.registerActionHandler(
   'SubscriptionController:getSubscriptions',
   mockGetSubscriptions,
 );
+rootMessenger.registerActionHandler(
+  'RemoteFeatureFlagController:getState',
+  mockGetRemoteFeatureFlagsState,
+);
+rootMessenger.registerActionHandler(
+  'SwapsController:getState',
+  mockGetSwapsControllerState,
+);
+rootMessenger.registerActionHandler(
+  'SwapsController:setSwapsFeatureFlags',
+  mockSetSwapsFeatureFlags,
+);
 
 const messenger: SubscriptionServiceMessenger = new Messenger({
   namespace: 'SubscriptionService',
@@ -105,6 +120,9 @@ rootMessenger.delegate({
     'PreferencesController:getState',
     'AccountsController:getState',
     'SmartTransactionsController:getState',
+    'RemoteFeatureFlagController:getState',
+    'SwapsController:getState',
+    'SwapsController:setSwapsFeatureFlags',
   ],
 });
 
@@ -276,6 +294,46 @@ describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
     await subscriptionService.submitSubscriptionSponsorshipIntent(MOCK_TX_META);
 
     expect(mockSubmitSponsorshipIntents).not.toHaveBeenCalled();
+  });
+
+  it('should fetch swaps feature flags if not available', async () => {
+    mockGetSwapsControllerState.mockRestore();
+    fetchMock.mockRestore();
+
+    mockGetSwapsControllerState.mockReturnValueOnce({
+      swapsState: {
+        swapsFeatureFlags: {},
+      },
+    });
+    const MOCK_SWAPS_FEATURE_FLAGS = {
+      ethereum: {
+        extensionActive: true,
+        mobileActive: false,
+        smartTransactions: {
+          expectedDeadline: 45,
+          maxDeadline: 150,
+          extensionReturnTxHashAsap: false,
+        },
+      },
+    };
+    fetchMock
+      .mockResolvedValueOnce({
+        json: async () => MOCK_SWAPS_FEATURE_FLAGS,
+        ok: true,
+      } as Response)
+      .mockResolvedValueOnce({
+        json: async () => ({
+          '1': MAINNET_BASE,
+        }),
+        ok: true,
+      } as Response);
+
+    // @ts-expect-error mock tx meta
+    await subscriptionService.submitSubscriptionSponsorshipIntent(MOCK_TX_META);
+
+    expect(mockSetSwapsFeatureFlags).toHaveBeenCalledWith(
+      MOCK_SWAPS_FEATURE_FLAGS,
+    );
   });
 
   it('should handle sponsorship intent submission error', async () => {
