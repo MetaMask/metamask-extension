@@ -135,7 +135,10 @@ export class SubscriptionService {
 
     if (!currentTabId) {
       // open extension browser shield settings if open from pop up (no current tab)
-      this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+      this.#platform.openExtensionInBrowser(
+        // need `waitForSubscriptionCreation` param to wait for subscription creation happen in the background and not redirect to the shield plan page immediately
+        '/settings/transaction-shield/?waitForSubscriptionCreation=true',
+      );
     }
 
     const subscriptions = await this.#messenger.call(
