@@ -98,11 +98,13 @@ export const useRiveWasmReady = () => {
 
 export const useRiveWasmFile = (url: string) => {
   const { isWasmReady, urlBufferMap, setUrlBufferCache } = useRiveWasmContext();
+
+  const cachedBuffer = urlBufferMap[url];
+
   const result = useAsyncResult(async () => {
     if (!isWasmReady) {
       return undefined;
     }
-    const cachedBuffer = urlBufferMap[url];
     if (cachedBuffer) {
       return cachedBuffer;
     }
@@ -113,7 +115,7 @@ export const useRiveWasmFile = (url: string) => {
     const newArrayBuffer = await response.arrayBuffer();
     setUrlBufferCache(url, newArrayBuffer);
     return newArrayBuffer;
-  }, [isWasmReady, url, setUrlBufferCache, urlBufferMap]);
+  }, [isWasmReady, url, setUrlBufferCache, cachedBuffer]);
 
   return { buffer: result.value, loading: result.pending, error: result.error };
 };
