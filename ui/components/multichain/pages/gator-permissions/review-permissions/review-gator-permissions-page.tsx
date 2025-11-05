@@ -29,7 +29,6 @@ import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permission
 import {
   AppState,
   getAggregatedGatorPermissionByChainId,
-  getPendingRevocations,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { ReviewGatorPermissionItem } from '../components';
 
@@ -40,7 +39,6 @@ export const ReviewGatorPermissionsPage = () => {
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const pendingRevocations = useSelector(getPendingRevocations);
   const [totalGatorPermissions, setTotalGatorPermissions] = useState(0);
 
   const networkName: string = useMemo(() => {
@@ -101,7 +99,6 @@ export const ReviewGatorPermissionsPage = () => {
           key={`${permission.siteOrigin}-${permission.permissionResponse.context}`}
           networkName={networkName}
           gatorPermission={permission}
-          pendingRevocations={pendingRevocations}
           onRevokeClick={() => handleRevokeClick(permission)}
         />
       );

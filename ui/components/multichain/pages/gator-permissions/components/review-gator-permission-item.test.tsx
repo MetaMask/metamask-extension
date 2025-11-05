@@ -22,6 +22,13 @@ const store = configureStore({
   },
 });
 
+jest.mock(
+  '../../../../../selectors/gator-permissions/gator-permissions',
+  () => ({
+    getPendingRevocations: jest.fn().mockReturnValue([]),
+  }),
+);
+
 describe('Permission List Item', () => {
   beforeAll(() => {
     // Set Luxon to use UTC as the default timezone for consistent test results
@@ -39,10 +46,6 @@ describe('Permission List Item', () => {
     const mockSelectedAccountAddress =
       '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
     const mockStartTime = 1736271776; // January 7, 2025;
-    const mockPendingRevocations: {
-      txId: string;
-      permissionContext: Hex;
-    }[] = [];
 
     describe('NATIVE token permissions', () => {
       const mockNativeTokenStreamPermission: StoredGatorPermissionSanitized<
@@ -103,7 +106,6 @@ describe('Permission List Item', () => {
           <ReviewGatorPermissionItem
             networkName={mockNetworkName}
             gatorPermission={mockNativeTokenStreamPermission}
-            pendingRevocations={mockPendingRevocations}
             onRevokeClick={() => mockOnClick()}
           />,
           store,
@@ -167,7 +169,6 @@ describe('Permission List Item', () => {
           <ReviewGatorPermissionItem
             networkName={mockNetworkName}
             gatorPermission={mockNativeTokenPeriodicPermission}
-            pendingRevocations={mockPendingRevocations}
             onRevokeClick={() => mockOnClick()}
           />,
           store,
@@ -278,7 +279,6 @@ describe('Permission List Item', () => {
           <ReviewGatorPermissionItem
             networkName={mockNetworkName}
             gatorPermission={mockErc20TokenStreamPermission}
-            pendingRevocations={mockPendingRevocations}
             onRevokeClick={() => mockOnClick()}
           />,
           store,
@@ -342,7 +342,6 @@ describe('Permission List Item', () => {
           <ReviewGatorPermissionItem
             networkName={mockNetworkName}
             gatorPermission={mockErc20TokenPeriodicPermission}
-            pendingRevocations={mockPendingRevocations}
             onRevokeClick={() => mockOnClick()}
           />,
           store,
@@ -416,7 +415,6 @@ describe('Permission List Item', () => {
           <ReviewGatorPermissionItem
             networkName={mockNetworkName}
             gatorPermission={mockUnknownTokenStreamPermission}
-            pendingRevocations={mockPendingRevocations}
             onRevokeClick={() => mockOnClick()}
           />,
           store,

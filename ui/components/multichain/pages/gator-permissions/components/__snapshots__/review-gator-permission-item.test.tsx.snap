@@ -23,15 +23,11 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           role="button"
           style="background-color: transparent; padding: 0px; height: 100%;"
         >
-          <div
-            class="flex flex-row gap-2 justify-end"
+          <p
+            class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            <p
-              class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-            >
-              Revoke
-            </p>
-          </div>
+            Revoke
+          </p>
         </button>
       </div>
     </div>
@@ -206,15 +202,11 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           role="button"
           style="background-color: transparent; padding: 0px; height: 100%;"
         >
-          <div
-            class="flex flex-row gap-2 justify-end"
+          <p
+            class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            <p
-              class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-            >
-              Revoke
-            </p>
-          </div>
+            Revoke
+          </p>
         </button>
       </div>
     </div>
@@ -389,15 +381,11 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           role="button"
           style="background-color: transparent; padding: 0px; height: 100%;"
         >
-          <div
-            class="flex flex-row gap-2 justify-end"
+          <p
+            class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            <p
-              class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-            >
-              Revoke
-            </p>
-          </div>
+            Revoke
+          </p>
         </button>
       </div>
     </div>
@@ -572,15 +560,11 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           role="button"
           style="background-color: transparent; padding: 0px; height: 100%;"
         >
-          <div
-            class="flex flex-row gap-2 justify-end"
+          <p
+            class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            <p
-              class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-            >
-              Revoke
-            </p>
-          </div>
+            Revoke
+          </p>
         </button>
       </div>
     </div>
@@ -755,15 +739,11 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           role="button"
           style="background-color: transparent; padding: 0px; height: 100%;"
         >
-          <div
-            class="flex flex-row gap-2 justify-end"
+          <p
+            class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            <p
-              class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-            >
-              Revoke
-            </p>
-          </div>
+            Revoke
+          </p>
         </button>
       </div>
     </div>

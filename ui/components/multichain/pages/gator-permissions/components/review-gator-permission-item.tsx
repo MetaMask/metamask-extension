@@ -47,6 +47,7 @@ import {
   selectERC20TokensByChain,
 } from '../../../../../selectors/selectors';
 import { getTokenMetadata } from '../../../../../helpers/utils/token-util';
+import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 
 type TokenMetadata = {
   symbol: string;
@@ -67,14 +68,6 @@ type ReviewGatorPermissionItemProps = {
     Signer,
     PermissionTypesWithCustom
   >;
-
-  /**
-   * The list of gator permissions pending a revocation transaction
-   */
-  pendingRevocations: {
-    txId: string;
-    permissionContext: Hex;
-  }[];
 
   /**
    * The function to call when the revoke is clicked
@@ -108,7 +101,6 @@ type PermissionDetails = {
 export const ReviewGatorPermissionItem = ({
   networkName,
   gatorPermission,
-  pendingRevocations,
   onRevokeClick,
 }: ReviewGatorPermissionItemProps) => {
   const t = useI18nContext();
@@ -126,6 +118,7 @@ export const ReviewGatorPermissionItem = ({
   const nativeTokenMetadata = useSelector((state) =>
     getNativeTokenInfo(state, chainId),
   ) as TokenMetadata;
+  const pendingRevocations = useSelector(getPendingRevocations);
 
   const tokenMetadata: TokenMetadata = useMemo(() => {
     if (tokenAddress) {
@@ -381,24 +374,18 @@ export const ReviewGatorPermissionItem = ({
               height: '100%',
             }}
           >
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.End}
-              gap={2}
+            <Text
+              color={
+                isPendingRevocation
+                  ? TextColor.TextMuted
+                  : TextColor.ErrorDefault
+              }
+              variant={TextVariant.BodyMd}
             >
-              <Text
-                color={
-                  isPendingRevocation
-                    ? TextColor.TextMuted
-                    : TextColor.ErrorDefault
-                }
-                variant={TextVariant.BodyMd}
-              >
-                {isPendingRevocation
-                  ? t('gatorPermissionsRevocationPending')
-                  : t('gatorPermissionsRevoke')}
-              </Text>
-            </Box>
+              {isPendingRevocation
+                ? t('gatorPermissionsRevocationPending')
+                : t('gatorPermissionsRevoke')}
+            </Text>
           </Button>
         </Box>
       </Box>
