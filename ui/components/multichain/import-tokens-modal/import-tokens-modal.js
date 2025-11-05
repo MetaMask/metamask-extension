@@ -225,7 +225,7 @@ export const ImportTokensModal = ({ onClose }) => {
 
   const shouldAddToken = useCallback(
     (_symbol, _address, tokenChainId) => {
-      if (!tokenChainId || !selectedNetwork) {
+      if (!tokenChainId) {
         return false;
       }
 
