@@ -141,6 +141,7 @@ const useBridging = () => {
       isMarketingEnabled,
       lastSelectedChainId,
       providerConfig?.chainId,
+      isChainIdEnabledForBridging,
     ],
   );
 
