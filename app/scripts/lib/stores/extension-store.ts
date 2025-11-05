@@ -16,8 +16,6 @@ export default class ExtensionStore implements BaseStore {
     }
   }
 
-  manifest: MetaMaskStorageStructure['manifest'] | undefined;
-
   /**
    * Return all data in `local` extension storage area.
    *
@@ -63,6 +61,25 @@ export default class ExtensionStore implements BaseStore {
     };
   }
 
+  async setKeyValues<Key extends keyof MetaMaskStorageStructure['data']>(
+    pairs: {
+      key: Key;
+      value: MetaMaskStorageStructure['data'][Key];
+    }[],
+  ): Promise<void> {
+    if (!this.isSupported) {
+      throw new Error(
+        'Metamask- cannot persist state to local store as this browser does not support this action',
+      );
+    }
+    const { local } = browser.storage;
+    const toSet: Record<string, string> = {};
+    for (const { key, value } of pairs) {
+      toSet[key] = JSON.stringify(value);
+    }
+    return await local.set(toSet);
+  }
+
   /**
    * Overwrite data in `local` extension storage area
    *
@@ -76,46 +93,8 @@ export default class ExtensionStore implements BaseStore {
         'Metamask- cannot persist state to local store as this browser does not support this action',
       );
     }
-    const oldManifest = this.manifest || {};
-    const manifest = {};
-    const values = { ...data, meta };
-    // for each key in data, JSON stringify it, hash it, and store the hash in the manifest
-    const newData = { manifest };
-    if (values) {
-      for (const key of Object.keys(values)) {
-        // @ts-expect-error TODO
-        const value = values[key];
-        const json = JSON.stringify(value);
-        if (!json) {
-          console.log('Skipping empty value for key', key);
-          // no change, skip
-          continue;
-        }
-        //@ts-expect-error TODO
-        manifest[key] = hash;
-        const hash = this.hash(json);
-        if (oldManifest[key] === hash) {
-          console.log('Skipping unchanged value for key', key);
-          // no change, skip
-          continue;
-        }
-        //@ts-expect-error TODO
-        newData[key] = json;
-      }
-    }
-    this.manifest = manifest;
     const { local } = browser.storage;
-    return await local.set(newData);
-  }
-
-  hash(str: string) {
-    // fnv1a hash, good enough for detecting if a string has changed
-    let hash = 0x811c9dc5;
-    for (let i = 0; i < str.length; i++) {
-      hash ^= str.charCodeAt(i);
-      hash = (hash * 0x01000193) >>> 0; // 32-bit FNV prime
-    }
-    return hash >>> 0; // unsigned int
+    return await local.set({ data, meta });
   }
 
   /**

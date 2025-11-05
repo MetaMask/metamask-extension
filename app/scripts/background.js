@@ -666,7 +666,19 @@ async function initialize(backup) {
     cronjobControllerStorageManager,
   );
 
-  controller.store.on('update', update);
+  /** @type {MetamaskController} */
+  const c = controller;
+  /**
+   * @param {object} param0
+   * @param {keyof MetaMaskState} param0.controllerKey
+   * @param {MetaMaskState} param0.newState
+   * @param {MetaMaskState} param0.oldState
+   * @param {import('immer').Patch[]} param0.patches
+   */
+  function stateChange({ controllerKey, newState, oldState, patches }) {
+    update(controllerKey, newState);
+  }
+  c.store.on('stateChange', stateChange);
   controller.store.on('error', (error) => {
     log.error('MetaMask controller.store error:', error);
     sentry?.captureException(error);
