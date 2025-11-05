@@ -11,14 +11,14 @@ import { waitForWasmReady } from '../rive-wasm';
 
 type FoxAppearAnimationProps = {
   isLoader: boolean;
-  skipTransition: boolean;
+  skipTransition?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function FoxAppearAnimation({
   isLoader = false,
-  skipTransition,
+  skipTransition = false,
 }: FoxAppearAnimationProps) {
   const isTestEnvironment = Boolean(process.env.IN_TEST);
   const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
@@ -39,7 +39,6 @@ export default function FoxAppearAnimation({
       })
       .catch((error) => {
         console.error('[Rive Fox] WASM failed to load:', error);
-        // Could set an error state here if needed
       });
 
     return undefined;
@@ -58,11 +57,18 @@ export default function FoxAppearAnimation({
         }
         return response.arrayBuffer();
       })
-      .then((arrayBuffer) => setBuffer(arrayBuffer))
+      .then((arrayBuffer) => {
+        // Only set buffer if it has content
+        if (arrayBuffer.byteLength > 0) {
+          setBuffer(arrayBuffer);
+        } else {
+          console.warn('[Rive Fox] Empty buffer received, skipping animation');
+        }
+      })
       .catch((error) => {
         console.error('[Rive Fox] Failed to load .riv file:', error);
       });
-  }, [isWasmReady, isTestEnvironment, buffer]);
+  }, [isWasmReady, buffer, isTestEnvironment]);
 
   // Use the buffer parameter instead of src
   const { riveFile, status } = useRiveFile({
@@ -118,7 +124,6 @@ export default function FoxAppearAnimation({
     }
   }, [rive, isLoader, isWasmReady, skipTransition]);
 
-  // In test environments, skip animation entirely to avoid CDN network requests
   if (isTestEnvironment) {
     return (
       <Box
@@ -129,27 +134,11 @@ export default function FoxAppearAnimation({
     );
   }
 
-  // Don't render Rive component until WASM is ready and file is loaded
-  if (!isWasmReady || status === 'loading') {
-    return (
-      <Box
-        className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
-      >
-        {isLoader && (
-          <img
-            data-testid="loading-indicator"
-            className="riv-animation__spinner"
-            src="./images/spinner.gif"
-            alt=""
-          />
-        )}
-      </Box>
-    );
-  }
-
-  // Handle file loading failure
-  if (status === 'failed') {
-    console.error('[Rive Fox] Failed to load .riv file');
+  // Don't render Rive component until ready or if loading/failed
+  if (!isWasmReady || status === 'loading' || status === 'failed') {
+    if (status === 'failed') {
+      console.error('[Rive Fox] Failed to load .riv file');
+    }
     return (
       <Box
         className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}

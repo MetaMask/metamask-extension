@@ -1841,6 +1841,18 @@
     "message": "$1 has recommended this price.",
     "description": "$1 represents the Dapp's origin"
   },
+  "dappSwapAdvantage": {
+    "message": "Save + Earn using MetaMask Swap:"
+  },
+  "dappSwapBenefits": {
+    "message": "No additional cost • Priority support • Network fees refunded on failed swaps"
+  },
+  "dappSwapQuoteDetails": {
+    "message": "Save $1 network fee, get $2 more $3"
+  },
+  "dappSwapQuoteDifference": {
+    "message": "Save about $1"
+  },
   "darkTheme": {
     "message": "Dark"
   },
@@ -1966,6 +1978,9 @@
   },
   "deepLink_theSwapsRampsPage": {
     "message": "the Swaps/Ramps page"
+  },
+  "deepLink_theTransactionShieldPage": {
+    "message": "the transaction shield page"
   },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
@@ -5467,6 +5482,17 @@
   "reward": {
     "message": "Reward"
   },
+  "rewardsOptIn": {
+    "message": "Sign up for Rewards"
+  },
+  "rewardsPointsBalance": {
+    "message": "$1 points",
+    "description": "$1 is the formatted number of rewards points"
+  },
+  "rewardsPointsIcon": {
+    "message": "Rewards Points",
+    "description": "Alt text for the rewards points icon"
+  },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
   },
@@ -5765,9 +5791,6 @@
   "shieldClaim": {
     "message": "Submit a claim"
   },
-  "shieldClaimChainId": {
-    "message": "Chain ID"
-  },
   "shieldClaimDescription": {
     "message": "Description of case"
   },
@@ -5775,14 +5798,26 @@
     "message": "Provide a brief summary of the incident"
   },
   "shieldClaimDetails": {
-    "message": "You may file a single claim per incident within 21 days of the incident. View the full coverage policy $1.",
-    "description": "The $1 is a link to the full coverage policy"
+    "message": "You may file a single claim per incident within $1 days of the incident. View the full coverage policy $2.",
+    "description": "The $1 is the number of days and $2 is a link to the full coverage policy"
+  },
+  "shieldClaimDuplicateClaimExists": {
+    "message": "A claim has already been submitted for this transaction hash."
   },
   "shieldClaimEmail": {
     "message": "Email"
   },
   "shieldClaimEmailHelpText": {
     "message": "We'll use this email to keep you informed with updates."
+  },
+  "shieldClaimFileErrorCountExceeded": {
+    "message": "Number of files exceeds the maximum allowed count."
+  },
+  "shieldClaimFileErrorInvalidType": {
+    "message": "Invalid file type."
+  },
+  "shieldClaimFileErrorSizeExceeded": {
+    "message": "Total file size exceeds the maximum allowed size."
   },
   "shieldClaimFileUploader": {
     "message": "Image Upload"
@@ -5804,10 +5839,16 @@
     "message": "Need help finding it?"
   },
   "shieldClaimImpactedTxHashNotEligible": {
-    "message": "This transaction was not made within MetaMask and is not eligible for claims."
+    "message": "This transaction is not done within MetaMask, hence it is not eligible for claims"
   },
   "shieldClaimImpactedWalletAddress": {
     "message": "Impacted wallet address"
+  },
+  "shieldClaimIncidentDetails": {
+    "message": "Incident details"
+  },
+  "shieldClaimIncidentDetailsDescription": {
+    "message": "Help us understand more about what happened."
   },
   "shieldClaimInvalidChainId": {
     "message": "Please enter a valid chain ID"
@@ -5824,11 +5865,36 @@
   "shieldClaimInvalidWalletAddress": {
     "message": "Please enter a valid wallet address"
   },
+  "shieldClaimMaxClaimsLimitExceeded": {
+    "message": "You have reached the maximum limit of open claims. Please contact support if you need to submit additional claims."
+  },
+  "shieldClaimNetwork": {
+    "message": "Select network"
+  },
+  "shieldClaimPersonalDetails": {
+    "message": "Personal details"
+  },
+  "shieldClaimPersonalDetailsDescription": {
+    "message": "We'll use this to communicate with you when investigating and resolving."
+  },
   "shieldClaimReimbursementWalletAddress": {
     "message": "Wallet address for reimbursement"
   },
   "shieldClaimReimbursementWalletAddressHelpText": {
     "message": "Please ensure this is not a compromised wallet."
+  },
+  "shieldClaimSameWalletAddressesError": {
+    "message": "Impacted wallet address and reimbursement wallet address must be different."
+  },
+  "shieldClaimSelectAccount": {
+    "message": "Select an account"
+  },
+  "shieldClaimSelectNetwork": {
+    "message": "Select a network"
+  },
+  "shieldClaimSubmissionWindowExpired": {
+    "message": "Submission window expired. Claims must be filed within $1 days of the incident.",
+    "description": "The $1 is the number of days"
   },
   "shieldClaimSubmit": {
     "message": "Submit a claim"

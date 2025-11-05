@@ -170,6 +170,11 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // Copy rive.wasm for Rive animations
+      {
+        from: join(context, '../node_modules/@rive-app/canvas/rive.wasm'),
+        to: 'images/riv_animations/rive.wasm',
+      },
     ],
   }),
 ];

@@ -7,6 +7,7 @@ import { RuntimeLoader } from '@rive-app/react-canvas';
 // WASM file URL - the file is copied to dist/chrome/images/ by the build process
 // We don't import it as a module to avoid browserify resolution issues
 const RIVE_WASM_URL = './images/riv_animations/rive.wasm';
+const isTestEnvironment = Boolean(process.env.IN_TEST);
 
 // Track WASM initialization state globally
 let wasmInitializationPromise: Promise<void> | null = null;
@@ -18,6 +19,11 @@ let wasmInitializationPromise: Promise<void> | null = null;
  * @returns Promise that resolves when WASM is ready, rejects on error
  */
 export function initializeRiveWASM(): Promise<void> {
+  // Skip initialization in test environments
+  if (isTestEnvironment) {
+    return Promise.resolve();
+  }
+
   if (wasmInitializationPromise) {
     return wasmInitializationPromise;
   }
@@ -74,6 +80,11 @@ export function initializeRiveWASM(): Promise<void> {
  * This allows components to await WASM readiness without polling
  */
 export function waitForWasmReady(): Promise<void> {
+  // Skip in test environments
+  if (isTestEnvironment) {
+    return Promise.resolve();
+  }
+
   // If already initialized, return that promise
   if (wasmInitializationPromise) {
     return wasmInitializationPromise;
