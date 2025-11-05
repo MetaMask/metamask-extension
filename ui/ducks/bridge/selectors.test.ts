@@ -555,6 +555,55 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual(null);
     });
+
+    it('returns ETH as default token when bridging from Bitcoin', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', // Bitcoin native address
+            symbol: 'BTC',
+            chainId: MultichainNetworks.BITCOIN,
+            decimals: 8,
+          },
+          toChainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            support: true,
+            chains: {
+              [toEvmCaipChainId(CHAIN_IDS.MAINNET)]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+            bip44DefaultPairs: {
+              bip122: {
+                standard: {
+                  'bip122:000000000019d6689c085ae165831e93/slip44:0':
+                    'eip155:1/slip44:60',
+                },
+                other: {},
+              },
+            },
+          },
+        },
+      });
+      const result = getToToken(state as never);
+
+      // Should return ETH (native token) instead of mUSD for Bitcoin bridges
+      expect(result).toStrictEqual({
+        address: zeroAddress(),
+        assetId: 'eip155:1/slip44:60',
+        balance: '0',
+        chainId: 'eip155:1',
+        decimals: 18,
+        iconUrl: '',
+        image: './images/eth_logo.svg',
+        name: 'Ether',
+        string: '0',
+        symbol: 'ETH',
+      });
+    });
   });
 
   describe('getFromAmount', () => {
