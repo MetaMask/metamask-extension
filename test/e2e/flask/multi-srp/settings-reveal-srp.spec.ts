@@ -29,25 +29,15 @@ describe('Multi SRP - Reveal Imported SRP', function (this: Suite) {
   const secondSrpIndex = 2;
 
   it('successfully exports the default SRP', async function () {
-    await withMultiSrp(
-      {
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockActiveNetworks,
-      },
-      async (driver: Driver) => {
-        await verifySrp(driver, FIRST_TEST_E2E_SRP, firstSrpIndex);
+    await withMultiSrp(async (driver) => {
+      await verifySrp(driver, FIRST_TEST_E2E_SRP, firstSrpIndex);
       },
     );
   });
 
   it('successfully exports the imported SRP', async function () {
-    await withMultiSrp(
-      {
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockActiveNetworks,
-      },
-      async (driver: Driver) => {
-        await verifySrp(driver, SECOND_TEST_E2E_SRP, secondSrpIndex);
+    await withMultiSrp(async (driver) => {
+      await verifySrp(driver, SECOND_TEST_E2E_SRP, secondSrpIndex);
       },
     );
   });
