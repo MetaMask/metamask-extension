@@ -3,28 +3,14 @@ import { Driver } from '../../../webdriver/driver';
 class OnboardingCompletePage {
   private driver: Driver;
 
-  private readonly installCompleteMessage = {
-    text: 'Installation is complete!',
-    tag: 'h2',
-  };
-
   private readonly onboardingCompleteDoneButton =
     '[data-testid="onboarding-complete-done"]';
 
   private readonly downloadAppContinueButton =
     '[data-testid="download-app-continue"]';
 
-  private readonly pinExtensionDoneButton =
-    '[data-testid="pin-extension-done"]';
-
-  private readonly pinExtensionMessage = {
-    text: 'Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations.',
-    tag: 'p',
-  };
-
   private readonly walletReadyMessage = {
     text: 'Your wallet is ready!',
-    tag: 'h2',
   };
 
   private readonly keepSrpSafeMessage = {
