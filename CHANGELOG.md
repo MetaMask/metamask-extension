@@ -60,6 +60,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Normalize basePath trailing slash in getRelativeLocationForNestedRoutes (#37161)
 - Fixed an issue where some avatars would be out of sync (#37173)
 - Fix the manual refresh and token detection (#37130)
+- Fixes subscription-polling when shield feature is disabled (#37476)
+- Fixes network nicknames for popular networks (#37477)
+- Fixes historical prices chart ranges for non-evm assets (#37505)
+- Fixes issue where we're failing to log swap comparisons in some scenarios (#37496)
+- Fixes issue where asset name is marked as 'unknown' on confirmations screen in the send flow (#37491)
 
 ## [13.7.0]
 
