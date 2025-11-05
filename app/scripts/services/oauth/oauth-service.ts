@@ -122,9 +122,9 @@ export default class OAuthService {
   /**
    * Determine if the current flow is a rehydration (existing user coming back)
    *
-   * @returns True if this is a rehydration flow
+   * @returns True if this is a rehydration flow, false if not, null if status couldn't be determined
    */
-  #isRehydrationFlow(): boolean {
+  #isRehydrationFlow(): boolean | null {
     try {
       const state = this.#messenger.call('OnboardingController:getState');
       return (
@@ -133,7 +133,7 @@ export default class OAuthService {
       );
     } catch (error) {
       log.error('Error checking rehydration flow:', error);
-      return false;
+      return null;
     }
   }
 
@@ -310,7 +310,8 @@ export default class OAuthService {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_rehydration: isRehydration,
+          is_rehydration:
+            isRehydration === null ? 'unknown' : String(isRehydration),
           // eslint-disable-next-line @typescript-eslint/naming-convention
           failure_type: isUserCancelled ? 'user_cancelled' : 'error',
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -360,7 +361,8 @@ export default class OAuthService {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_rehydration: isRehydration,
+          is_rehydration:
+            isRehydration === null ? 'unknown' : String(isRehydration),
           // eslint-disable-next-line @typescript-eslint/naming-convention
           failure_type: 'error',
           // eslint-disable-next-line @typescript-eslint/naming-convention

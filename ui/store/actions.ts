@@ -277,7 +277,7 @@ export function startOAuthLogin(
             account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_rehydration: isRehydration,
+            is_rehydration: String(isRehydration),
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             failure_type: 'error',
