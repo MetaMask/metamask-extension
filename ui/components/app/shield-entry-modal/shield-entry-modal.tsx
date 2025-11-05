@@ -67,6 +67,8 @@ const ShieldEntryModal = () => {
       data-testid="shield-entry-modal"
       isOpen
       autoFocus={false}
+      isClosedOnOutsideClick={false}
+      isClosedOnEscapeKey={false}
       onClose={handleOnClose}
       className="shield-entry-modal"
       data-theme={ThemeType.dark}
@@ -82,6 +84,7 @@ const ShieldEntryModal = () => {
         <ModalHeader
           onClose={handleOnClose}
           closeButtonProps={{
+            'data-testid': 'shield-entry-modal-close-button',
             className: 'absolute top-2 right-2',
           }}
         />
@@ -128,12 +131,7 @@ const ShieldEntryModal = () => {
           >
             {t('shieldEntryModalGetStarted')}
           </Button>
-          <Button
-            asChild
-            data-testid="shield-entry-modal-skip-button"
-            variant={ButtonVariant.Secondary}
-            className="w-full"
-          >
+          <Button asChild variant={ButtonVariant.Secondary} className="w-full">
             <a
               href={TRANSACTION_SHIELD_LINK}
               target="_blank"
