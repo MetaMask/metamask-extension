@@ -65,7 +65,6 @@ export const useRiveWasmReady = () => {
 
   const result = useAsyncResult(async () => {
     if (isWasmReady) {
-      setIsWasmReady(true);
       return true;
     }
 
