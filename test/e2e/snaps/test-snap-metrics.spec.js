@@ -184,14 +184,13 @@ describe('Test Snap Metrics', function () {
         await mockedSnapInstallStarted(mockServer),
         await mockedSnapInstall(mockServer),
         await mockedSnapExportUsed(mockServer),
-        await mockNotificationSnap(mockServer),
+        ...(await mockNotificationSnap(mockServer)),
       ];
     }
 
     await withFixtures(
       {
         dappOptions: {
-          numberOfTestDapps: 1,
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilder()
@@ -300,14 +299,13 @@ describe('Test Snap Metrics', function () {
       return [
         await mockedSnapInstallStarted(mockServer),
         await mockedSnapInstallRejected(mockServer),
-        await mockNotificationSnap(mockServer),
+        ...(await mockNotificationSnap(mockServer)),
       ];
     }
 
     await withFixtures(
       {
         dappOptions: {
-          numberOfTestDapps: 1,
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilder()
@@ -398,7 +396,6 @@ describe('Test Snap Metrics', function () {
     await withFixtures(
       {
         dappOptions: {
-          numberOfTestDapps: 1,
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilder()
@@ -478,15 +475,14 @@ describe('Test Snap Metrics', function () {
     async function mockSegment(mockServer) {
       return [
         await mockedSnapUninstall(mockServer),
-        await mockNotificationSnap(mockServer),
-        await mockWebpackPluginSnap(mockServer),
+        ...(await mockNotificationSnap(mockServer)),
+        ...(await mockWebpackPluginSnap(mockServer)),
       ];
     }
 
     await withFixtures(
       {
         dappOptions: {
-          numberOfTestDapps: 1,
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilder()
@@ -614,15 +610,14 @@ describe('Test Snap Metrics', function () {
       return [
         await mockedSnapUpdateStarted(mockServer),
         await mockedSnapUpdated(mockServer),
-        await mockNotificationSnap(mockServer),
-        await mockWebpackPluginSnap(mockServer),
-        await mockWebpackPluginOldSnap(mockServer),
+        ...(await mockNotificationSnap(mockServer)),
+        ...(await mockWebpackPluginSnap(mockServer)),
+        ...(await mockWebpackPluginOldSnap(mockServer)),
       ];
     }
     await withFixtures(
       {
         dappOptions: {
-          numberOfTestDapps: 1,
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilder()
@@ -775,17 +770,16 @@ describe('Test Snap Metrics', function () {
   it('test snap update rejected metric', async function () {
     async function mockSegment(mockServer) {
       return [
-        await mockNotificationSnap(mockServer),
+        ...(await mockNotificationSnap(mockServer)),
         await mockedSnapUpdateStarted(mockServer),
         await mockedSnapUpdateRejected(mockServer),
-        await mockWebpackPluginOldSnap(mockServer),
-        await mockWebpackPluginSnap(mockServer),
+        ...(await mockWebpackPluginOldSnap(mockServer)),
+        ...(await mockWebpackPluginSnap(mockServer)),
       ];
     }
     await withFixtures(
       {
         dappOptions: {
-          numberOfTestDapps: 1,
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilder()
@@ -930,15 +924,14 @@ describe('Test Snap Metrics', function () {
       return [
         await mockedSnapUpdateStarted(mockServer),
         await mockedSnapUpdateFailed(mockServer),
-        await mockWebpackPluginOldSnap(mockServer),
+        ...(await mockWebpackPluginOldSnap(mockServer)),
         await mockedNpmUpdate(mockServer),
-        await mockWebpackPluginSnap(mockServer),
+        ...(await mockWebpackPluginSnap(mockServer)),
       ];
     }
     await withFixtures(
       {
         dappOptions: {
-          numberOfTestDapps: 1,
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilder()
