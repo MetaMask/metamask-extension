@@ -7501,10 +7501,6 @@
   "tokenList": {
     "message": "Token lists"
   },
-  "tokenLists": {
-    "message": "$1 token lists",
-    "description": "$1 is the number of token lists"
-  },
   "tokenMarketplace": {
     "message": "Token marketplace"
   },

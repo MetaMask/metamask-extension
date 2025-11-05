@@ -309,7 +309,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
             data-testid="token-insights-icon"
           />
           <Text variant={TextVariant.headingSm}>
-            {token.name || token.symbol} Insights
+            {token.symbol || token.name} {t('insights')}
           </Text>
         </ModalHeader>
         <Box paddingRight={4} paddingLeft={4}>
