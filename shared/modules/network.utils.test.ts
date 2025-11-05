@@ -29,6 +29,7 @@ import {
   sortNetworksByPrioity,
   getFilteredFeaturedNetworks,
 } from './network.utils';
+import type { AddNetworkFields } from '@metamask/network-controller';
 
 describe('network utils', () => {
   describe('isSafeChainId', () => {
@@ -419,38 +420,38 @@ describe('network utils', () => {
   });
 
   describe('getFilteredFeaturedNetworks', () => {
-    const mockNetworkList = [
+    const mockNetworkList: AddNetworkFields[] = [
       {
-        chainId: '0xa86a',
+        chainId: '0xa86a' as const,
         name: 'Avalanche',
-        nativeCurrency: { symbol: 'AVAX', decimals: 18 },
+        nativeCurrency: 'AVAX',
         rpcEndpoints: [],
         defaultRpcEndpointIndex: 0,
         blockExplorerUrls: [],
         defaultBlockExplorerUrlIndex: 0,
       },
       {
-        chainId: '0xa4b1',
+        chainId: '0xa4b1' as const,
         name: 'Arbitrum',
-        nativeCurrency: { symbol: 'ETH', decimals: 18 },
+        nativeCurrency: 'ETH',
         rpcEndpoints: [],
         defaultRpcEndpointIndex: 0,
         blockExplorerUrls: [],
         defaultBlockExplorerUrlIndex: 0,
       },
       {
-        chainId: '0x89',
+        chainId: '0x89' as const,
         name: 'Polygon',
-        nativeCurrency: { symbol: 'POL', decimals: 18 },
+        nativeCurrency: 'POL',
         rpcEndpoints: [],
         defaultRpcEndpointIndex: 0,
         blockExplorerUrls: [],
         defaultBlockExplorerUrlIndex: 0,
       },
       {
-        chainId: '0x2105',
+        chainId: '0x2105' as const,
         name: 'Base',
-        nativeCurrency: { symbol: 'ETH', decimals: 18 },
+        nativeCurrency: 'ETH',
         rpcEndpoints: [],
         defaultRpcEndpointIndex: 0,
         blockExplorerUrls: [],
