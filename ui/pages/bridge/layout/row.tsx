@@ -11,7 +11,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-const Row = (props: ContainerProps<'div' | 'button'>) => {
+const Row = (props: ContainerProps<'div'>) => {
   return (
     <Container
       display={Display.Flex}

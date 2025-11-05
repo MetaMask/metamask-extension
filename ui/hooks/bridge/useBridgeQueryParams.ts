@@ -12,7 +12,8 @@ import {
   isCrossChain,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { type InternalAccount } from '@metamask/keyring-internal-api';
+import { type NetworkConfiguration } from '@metamask/network-controller';
 import {
   type AssetMetadata,
   fetchAssetMetadataForAssetIds,
@@ -20,7 +21,8 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
-  setBalanceAmount,
+  setEVMSrcTokenBalance,
+  setEVMSrcNativeBalance,
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
@@ -164,8 +166,9 @@ export const useBridgeQueryParams = () => {
     (
       fromTokenMetadata,
       fromAsset,
-      networks: MultichainNetworkConfiguration[],
-      network: MultichainNetworkConfiguration | null,
+      networks: NetworkConfiguration[],
+      account: InternalAccount | null,
+      network?: NetworkConfiguration,
     ) => {
       const { chainId: assetChainId } = fromAsset;
 
@@ -195,7 +198,8 @@ export const useBridgeQueryParams = () => {
           if (targetChain) {
             dispatch(
               setFromChain({
-                chainId: targetChain.chainId,
+                networkConfig: targetChain,
+                selectedAccount: account,
                 token,
               }),
             );
@@ -241,9 +245,16 @@ export const useBridgeQueryParams = () => {
       fromTokenMetadata,
       parsedFromAssetId,
       fromChains,
+      selectedAccount,
       fromChain,
     );
-  }, [assetMetadataByAssetId, parsedFromAssetId, fromChains, fromChain]);
+  }, [
+    assetMetadataByAssetId,
+    parsedFromAssetId,
+    fromChains,
+    fromChain,
+    selectedAccount,
+  ]);
 
   // Set toChainId and toToken
   useEffect(() => {
@@ -286,38 +297,22 @@ export const useBridgeQueryParams = () => {
   // Set src token balance after url params are applied
   // This effect runs on each load regardless of the url params
   useEffect(() => {
-    console.log('====useBridgeQueryParams', {
-      fromToken,
-      fromChain,
-      parsedFromAssetId,
-      isCrossChain: isCrossChain(fromToken.chainId, fromChain?.chainId),
-      searchParams: searchParams.get(BridgeQueryParams.FROM),
-    });
     if (
       // Wait for url params to be applied
       !parsedFromAssetId &&
       !searchParams.get(BridgeQueryParams.FROM) &&
-      fromToken && //&&
+      fromToken &&
       // Wait for network to be changed if needed
-      !isCrossChain(fromToken.chainId, fromChain?.chainId)
-      // fromChain
+      !isCrossChain(fromToken.chainId, fromChain?.chainId) &&
+      selectedAccount
     ) {
-      console.log('====useBridgeQueryParams setBalanceAmount', {
-        fromToken,
-        fromChain,
-      });
+      dispatch(setEVMSrcTokenBalance(fromToken, selectedAccount.address));
       dispatch(
-        setBalanceAmount({
-          token: fromToken,
-          chainId: fromToken.chainId ?? fromChain?.chainId,
-        }),
-      );
-      dispatch(
-        setBalanceAmount({
-          shouldSetGasTokenBalance: true,
-          chainId: fromToken.chainId ?? fromChain?.chainId,
+        setEVMSrcNativeBalance({
+          selectedAddress: selectedAccount.address,
+          chainId: fromToken.chainId,
         }),
       );
     }
-  }, [parsedFromAssetId, fromToken, fromChain, searchParams]);
+  }, [parsedFromAssetId, selectedAccount, fromToken, fromChain, searchParams]);
 };

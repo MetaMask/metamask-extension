@@ -7,6 +7,10 @@ import {
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
+import {
   ChainId,
   type TxData,
   BridgeClientId,
@@ -230,6 +234,16 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
   };
 };
 
+export const isNetworkAdded = (
+  v:
+    | NetworkConfiguration
+    | AddNetworkFields
+    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId })
+    | undefined,
+): v is NetworkConfiguration =>
+  v !== undefined &&
+  'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
+
 const getTokenImage = (payload: TokenPayload['payload']) => {
   if (!payload) {
     return '';
@@ -258,13 +272,17 @@ const getTokenImage = (payload: TokenPayload['payload']) => {
 };
 
 export const toBridgeToken = (
-  payload: NonNullable<TokenPayload['payload']>,
-): BridgeToken => {
+  payload: TokenPayload['payload'],
+): BridgeToken | null => {
+  if (!payload) {
+    return null;
+  }
   const caipChainId = formatChainIdToCaip(payload.chainId);
   return {
     ...payload,
     balance: payload.balance ?? '0',
-    chainId: formatChainIdToCaip(payload.chainId),
+    string: payload.string ?? '0',
+    chainId: payload.chainId,
     image: getTokenImage(payload),
     assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
   };

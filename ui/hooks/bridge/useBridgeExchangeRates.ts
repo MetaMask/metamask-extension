@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getBridgeQuotes,
-  getFromChain,
   getFromToken,
   getQuoteRequest,
   getToChain,
@@ -16,11 +15,13 @@ import {
   setSrcTokenExchangeRates,
 } from '../../ducks/bridge/bridge';
 import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
+import { useMultichainSelector } from '../useMultichainSelector';
+import { getMultichainCurrentChainId } from '../../selectors/multichain';
 
 export const useBridgeExchangeRates = () => {
   const { srcTokenAddress, destTokenAddress } = useSelector(getQuoteRequest);
   const { activeQuote } = useSelector(getBridgeQuotes);
-  const fromChainId = useSelector(getFromChain)?.chainId;
+  const fromChainId = useMultichainSelector(getMultichainCurrentChainId);
   const toChain = useSelector(getToChain);
   const toChainId = toChain?.chainId;
 
