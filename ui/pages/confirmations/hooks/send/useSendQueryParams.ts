@@ -46,7 +46,6 @@ export const useSendQueryParams = () => {
   const paramHexData = searchParams.get('hexData');
   const paramRecipient = searchParams.get('recipient');
   const paramMaxValueMode = searchParams.get('maxValueMode');
-  const paramTokenId = searchParams.get('tokenId');
 
   useEffect(() => {
     if (currentPage === subPath) {
@@ -80,9 +79,6 @@ export const useSendQueryParams = () => {
     if (to !== undefined && paramRecipient !== to) {
       queryParams.set('recipient', to);
     }
-    if (asset?.tokenId !== undefined && paramTokenId !== asset.tokenId) {
-      queryParams.set('tokenId', asset.tokenId);
-    }
     history.replace(`${SEND_ROUTE}/${subPath}?${queryParams.toString()}`);
   }, [
     asset,
@@ -94,7 +90,6 @@ export const useSendQueryParams = () => {
     paramChainId,
     paramMaxValueMode,
     paramRecipient,
-    paramTokenId,
     searchParams,
     subPath,
     to,
@@ -133,25 +128,16 @@ export const useSendQueryParams = () => {
 
     if (!newAsset) {
       newAsset = nfts?.find(
-        ({ address, chainId: tokenChainId, tokenId, isNative }) =>
+        ({ address, chainId: tokenChainId, isNative }) =>
           paramChainId === tokenChainId &&
           ((paramAsset &&
             address?.toLowerCase() === paramAsset.toLowerCase()) ||
-            (!paramAsset && isNative)) &&
-          (!paramTokenId || tokenId?.toString() === paramTokenId),
+            (!paramAsset && isNative)),
       );
     }
 
     if (newAsset) {
       updateAsset(newAsset);
     }
-  }, [
-    asset,
-    flatAssets,
-    paramAsset,
-    paramChainId,
-    paramTokenId,
-    nfts,
-    updateAsset,
-  ]);
+  }, [asset, flatAssets, paramAsset, paramChainId, nfts, updateAsset]);
 };
