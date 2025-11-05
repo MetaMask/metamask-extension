@@ -49,13 +49,8 @@ export class SignUpPage {
 
   readonly popOverBtn: Locator;
 
-  readonly useSRPSocialLoginBtn: Locator;
-
-  readonly remindLaterBtn: Locator;
-
   constructor(page: Page) {
     this.page = page;
-
     this.getStartedBtn = page.locator('button:has-text("Get started")');
     this.createWalletBtn = page.getByTestId('onboarding-create-wallet');
     this.importWalletBtn = page.locator(
@@ -66,9 +61,9 @@ export class SignUpPage {
     );
     this.metametricsBtn = page.getByTestId('metametrics-i-agree');
     this.agreeBtn = page.locator('button:has-text("I agree")');
-    this.createPasswordBtn = page.getByTestId('create-password-submit');
+    this.createPasswordBtn = page.getByTestId('create-password-wallet');
     this.noThanksBtn = page.locator('button:has-text("No thanks")');
-    this.passwordTxt = page.getByTestId('create-password-new-input');
+    this.passwordTxt = page.getByTestId('create-password-new');
     this.passwordConfirmTxt = page.getByTestId('create-password-confirm');
     this.agreeCheck = page.getByTestId('create-new-vault__terms-checkbox');
     this.agreeTandCCheck = page.getByTestId('onboarding-terms-checkbox');
@@ -82,18 +77,6 @@ export class SignUpPage {
     this.agreeBtn = page.locator('button:has-text("I agree")');
     this.enableBtn = page.locator('button:has-text("Enable")');
     this.popOverBtn = page.getByTestId('popover-close');
-    this.useSRPSocialLoginBtn = page.getByTestId(
-      'onboarding-create-with-srp-button',
-    );
-    this.remindLaterBtn = page.getByTestId('recovery-phrase-remind-later');
-  }
-
-  async clickUseSRPSocialLoginBtn() {
-    await this.useSRPSocialLoginBtn.click();
-  }
-
-  async isSocialSignUpFormVisible() {
-    return await this.useSRPSocialLoginBtn.isVisible();
   }
 
   async importWallet() {
@@ -116,35 +99,19 @@ export class SignUpPage {
     await this.doneBtn.click();
   }
 
-  async isMetamaskPasswordFormVisible() {
-    return (
-      (await this.passwordTxt.isVisible()) &&
-      (await this.passwordConfirmTxt.isVisible()) &&
-      (await this.agreePasswordTermsCheck.isVisible())
-    );
-  }
-
-  async isRecoveryPhraseScreenVisible() {
-    return await this.remindLaterBtn.isVisible();
-  }
-
-  async isMetricsScreenVisible() {
-    return await this.metametricsBtn.isVisible();
-  }
-
   async createWallet() {
     await this.agreeTandCCheck.click();
     await this.createWalletBtn.click();
-    await this.isSocialSignUpFormVisible();
-    await this.clickUseSRPSocialLoginBtn();
-    await this.isMetamaskPasswordFormVisible();
+    await this.metametricsBtn.click();
     await this.passwordTxt.fill(ACCOUNT_PASSWORD as string);
     await this.passwordConfirmTxt.fill(ACCOUNT_PASSWORD as string);
     await this.agreePasswordTermsCheck.click();
     await this.createPasswordBtn.click();
-    await this.isRecoveryPhraseScreenVisible();
-    await this.remindLaterBtn.click();
-    await this.isMetricsScreenVisible();
-    await this.metametricsBtn.click();
+    await this.secureWalletBtn.click();
+    await this.skipBackupBtn.click();
+    await this.skipSrpBackupBtn.click();
+    await this.gotItBtn.click();
+    await this.doneBtn.click();
+    await this.popOverBtn.click();
   }
 }
