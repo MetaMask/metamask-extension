@@ -126,6 +126,8 @@ class UnlockPage extends Component {
 
   animationEventEmitter = new EventEmitter();
 
+  passwordLoginAttemptTraceCtx = null;
+
   /**
    * Determines if the current user is in the social import rehydration phase
    *
@@ -153,7 +155,7 @@ class UnlockPage extends Component {
   }
 
   async componentDidMount() {
-    this.context.bufferedTrace?.({
+    this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace?.({
       name: TraceName.OnboardingPasswordLoginAttempt,
       op: TraceOperation.OnboardingUserJourney,
       parentContext: this.props.onboardingParentContext?.current,
@@ -222,9 +224,12 @@ class UnlockPage extends Component {
           isNewVisit: true,
         },
       );
-      this.context.bufferedEndTrace?.({
-        name: TraceName.OnboardingPasswordLoginAttempt,
-      });
+      if (this.passwordLoginAttemptTraceCtx) {
+        this.context.bufferedEndTrace?.({
+          name: TraceName.OnboardingPasswordLoginAttempt,
+        });
+        this.passwordLoginAttemptTraceCtx = null;
+      }
       this.context.bufferedEndTrace?.({
         name: TraceName.OnboardingExistingSocialLogin,
       });
@@ -251,27 +256,7 @@ class UnlockPage extends Component {
     let finalErrorMessage = message;
     let finalUnlockDelayPeriod = 0;
     let errorReason;
-
-    // Determine error type for rehydration tracking
-    const isIncorrectPasswordError =
-      message === 'Incorrect password' ||
-      message === SeedlessOnboardingControllerErrorMessage.IncorrectPassword;
-    const errorType = isIncorrectPasswordError
-      ? 'incorrect_password'
-      : 'unknown_error';
-
-    // Track wallet rehydration failed for social import users (only during rehydration)
-    if (isRehydrationFlow) {
-      this.context.trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.RehydrationPasswordFailed,
-        properties: {
-          account_type: 'social',
-          failed_attempts: this.failed_attempts,
-          error_type: errorType,
-        },
-      });
-    }
+    let shouldShowLoginErrorModal = false;
 
     // Check if we are in the onboarding flow
     if (this.props.onboardingParentContext?.current) {
@@ -308,7 +293,7 @@ class UnlockPage extends Component {
       case SeedlessOnboardingControllerErrorMessage.InvalidRefreshToken:
         if (isOnboardingCompleted) {
           finalErrorMessage = message;
-          this.setState({ showLoginErrorModal: true });
+          shouldShowLoginErrorModal = true;
         }
         break;
       default:
@@ -318,6 +303,18 @@ class UnlockPage extends Component {
 
     if (errorReason) {
       await this.props.forceUpdateMetamaskState();
+      // Track wallet rehydration failed for social import users (only during rehydration)
+      if (isRehydrationFlow) {
+        this.context.trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.RehydrationPasswordFailed,
+          properties: {
+            account_type: 'social',
+            failed_attempts: this.failed_attempts,
+            error_type: errorReason,
+          },
+        });
+      }
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Navigation,
         event: MetaMetricsEventName.AppUnlockedFailed,
@@ -330,6 +327,7 @@ class UnlockPage extends Component {
     this.setState({
       error: finalErrorMessage,
       unlockDelayPeriod: finalUnlockDelayPeriod,
+      showLoginErrorModal: shouldShowLoginErrorModal,
     });
   };
 
