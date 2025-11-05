@@ -119,6 +119,60 @@ export function roundExponential(decimalString: string): string {
     : decimalString;
 }
 
+/**
+ * Formats network fees with dynamic precision to avoid showing $0.00 for non-zero fees.
+ * If fees are less than $0.01, increases decimal places up to 4 until the first non-zero digit is shown.
+ * If fees are non-zero but smaller than $0.0001, rounds up to $0.0001.
+ *
+ * @param stringifiedDecAmount - The fee amount as a string
+ * @param currency - The currency code (e.g., 'USD')
+ * @returns Formatted currency string with appropriate precision
+ */
+export function formatNetworkFee(
+  stringifiedDecAmount: string | null | undefined,
+  currency: string,
+): string | undefined {
+  if (!stringifiedDecAmount) {
+    return undefined;
+  }
+
+  const amount = new BigNumber(stringifiedDecAmount);
+
+  // If amount is zero, return formatted zero
+  if (amount.isZero()) {
+    return formatCurrency(amount.toString(), currency, 2);
+  }
+
+  // If amount is >= $0.01, use standard 2 decimal places
+  if (amount.gte(0.01)) {
+    return formatCurrency(amount.toString(), currency, 2);
+  }
+
+  // For amounts < $0.01, find the precision that shows the first non-zero digit
+  // Try precision from 2 to 4 (max allowed)
+  for (let precision = 2; precision <= 4; precision++) {
+    const formatted = formatCurrency(amount.toString(), currency, precision);
+    // Extract numeric value from formatted string (remove currency symbols, spaces, etc.)
+    const numericMatch = formatted.match(/[\d.]+/u);
+    if (numericMatch) {
+      const numericValue = new BigNumber(numericMatch[0]);
+      // Check if this precision shows a non-zero value
+      if (numericValue.gt(0)) {
+        return formatted;
+      }
+    }
+  }
+
+  // If after 4 decimal places it's still showing as zero but original amount > 0,
+  // round up to $0.0001
+  if (amount.gt(0)) {
+    return formatCurrency('0.0001', currency, 4);
+  }
+
+  // Fallback to 2 decimal places
+  return formatCurrency(amount.toString(), currency, 2);
+}
+
 export function areDappSuggestedAndTxParamGasFeesTheSame(
   txData: TransactionMeta,
 ): boolean {

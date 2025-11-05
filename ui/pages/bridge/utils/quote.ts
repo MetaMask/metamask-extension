@@ -25,7 +25,7 @@ export const formatTokenAmount = (
 };
 
 export const formatCurrencyAmount = (
-  stringifiedDecAmount: string | null,
+  stringifiedDecAmount: string | null | undefined,
   currency: string,
   precision: number = DEFAULT_PRECISION,
 ) => {
