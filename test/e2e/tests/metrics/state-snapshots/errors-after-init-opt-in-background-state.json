@@ -79,7 +79,6 @@
   },
   "ApprovalController": {
     "pendingApprovals": "object",
-    "pendingRevocations": "object",
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
