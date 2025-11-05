@@ -70,6 +70,7 @@ import type { OnboardingControllerState } from '../../app/scripts/controllers/on
 import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
+import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
 
 export type ControllerStatePropertiesEnumerated = {
   internalAccounts: AccountsControllerState['internalAccounts'];
@@ -311,6 +312,12 @@ export type ControllerStatePropertiesEnumerated = {
   isAccountSyncingEnabled: UserStorageController.UserStorageControllerState['isAccountSyncingEnabled'];
   isContactSyncingEnabled: UserStorageController.UserStorageControllerState['isContactSyncingEnabled'];
   isContactSyncingInProgress: UserStorageController.UserStorageControllerState['isContactSyncingInProgress'];
+  rewardsActiveAccount: RewardsControllerState['rewardsActiveAccount'];
+  rewardsAccounts: RewardsControllerState['rewardsAccounts'];
+  rewardsSubscriptions: RewardsControllerState['rewardsSubscriptions'];
+  rewardsSeasons: RewardsControllerState['rewardsSeasons'];
+  rewardsSeasonStatuses: RewardsControllerState['rewardsSeasonStatuses'];
+  rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &
@@ -371,7 +378,8 @@ type ControllerStateTypesMerged = AccountsControllerState &
   TokenRatesControllerState &
   TransactionControllerState &
   UserOperationControllerState &
-  UserStorageController.UserStorageControllerState;
+  UserStorageController.UserStorageControllerState &
+  RewardsControllerState;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

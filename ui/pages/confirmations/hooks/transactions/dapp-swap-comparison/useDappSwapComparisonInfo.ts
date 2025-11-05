@@ -62,7 +62,7 @@ export function useDappSwapComparisonInfo() {
     [transactionId, updateTransactionEventFragment],
   );
 
-  const { quotesInput, amountMin, tokenAddresses } = useMemo(() => {
+  const { commands, quotesInput, amountMin, tokenAddresses } = useMemo(() => {
     try {
       let transactionData = data;
       if (nestedTransactions?.length) {
@@ -76,6 +76,7 @@ export function useDappSwapComparisonInfo() {
     } catch (error) {
       captureException(error);
       return {
+        commands: '',
         quotesInput: undefined,
         amountMin: undefined,
         tokenAddresses: [],
@@ -104,7 +105,9 @@ export function useDappSwapComparisonInfo() {
     captureDappSwapComparisonMetricsProperties({
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        dapp_swap_comparison: 'loading',
+        swap_dapp_comparison: 'loading',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_dapp_commands: commands,
       },
     });
 
@@ -116,12 +119,13 @@ export function useDappSwapComparisonInfo() {
     updateQuoteResponseLatency(startTime);
     return quotesList;
   }, [
+    commands,
     captureDappSwapComparisonMetricsProperties,
     quotesInput,
     requestDetectionLatency,
   ]);
 
-  const { bestQuote, bestFilteredQuote } = useMemo(() => {
+  const { bestQuote, bestFilteredQuote: selectedQuote } = useMemo(() => {
     if (!amountMin || !quotes?.length || tokenInfoPending) {
       return { bestQuote: undefined, bestFilteredQuote: undefined };
     }
@@ -132,7 +136,13 @@ export function useDappSwapComparisonInfo() {
       getDestinationTokenUSDValue,
       getGasUSDValue,
     );
-  }, [amountMin, getGasUSDValue, getDestinationTokenUSDValue, quotes]);
+  }, [
+    amountMin,
+    getGasUSDValue,
+    getDestinationTokenUSDValue,
+    quotes,
+    tokenInfoPending,
+  ]);
 
   useEffect(() => {
     try {
@@ -180,7 +190,9 @@ export function useDappSwapComparisonInfo() {
       captureDappSwapComparisonMetricsProperties({
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          dapp_swap_comparison: 'completed',
+          swap_dapp_comparison: 'completed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_commands: commands,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_from_token_simulated_value_usd: getTokenUSDValue(
             srcTokenAmount,
@@ -268,5 +280,99 @@ export function useDappSwapComparisonInfo() {
     tokenInfoPending,
   ]);
 
-  return { selectedQuote: bestFilteredQuote };
+  const {
+    selectedQuoteValueDifference = 0,
+    gasDifference = 0,
+    tokenAmountDifference = 0,
+    destinationTokenSymbol,
+  } = useMemo(() => {
+    if (!selectedQuote || !quotesInput || !simulationData || !tokenDetails) {
+      return {};
+    }
+
+    const { destTokenAddress } = quotesInput;
+    const {
+      approval,
+      quote: { destTokenAmount },
+      trade,
+    } = selectedQuote;
+
+    const totalGasInQuote = new BigNumber(
+      getGasUSDValue(
+        new BigNumber(
+          ((approval as TxData)?.effectiveGas ??
+            (approval as TxData)?.gasLimit ??
+            0) +
+            ((trade as TxData)?.effectiveGas ??
+              (trade as TxData)?.gasLimit ??
+              0),
+          10,
+        ),
+      ),
+    );
+
+    const destinationTokenAmountInQuote = new BigNumber(
+      getDestinationTokenUSDValue(destTokenAmount),
+    );
+
+    const totalAmountInQuote =
+      destinationTokenAmountInQuote.minus(totalGasInQuote);
+
+    const totalGasInConfirmation = new BigNumber(
+      getGasUSDValue(
+        new BigNumber(gasUsed ?? gasLimitNoBuffer ?? gas ?? '0x0', 16),
+      ),
+    );
+
+    const destinationTokenAmountInConfirmation = new BigNumber(
+      getDestinationTokenUSDValue(
+        getBalanceChangeFromSimulationData(
+          destTokenAddress as Hex,
+          simulationData,
+        ),
+      ),
+    );
+
+    const totalAmountInConfirmation =
+      destinationTokenAmountInConfirmation.minus(totalGasInConfirmation);
+
+    const selectedQuoteValueDiff = totalAmountInQuote
+      .minus(totalAmountInConfirmation)
+      .toNumber();
+
+    const gasDiff = totalGasInConfirmation.minus(totalGasInQuote).toNumber();
+
+    const tokenAmountDiff = destinationTokenAmountInQuote
+      .minus(destinationTokenAmountInConfirmation)
+      .toNumber();
+
+    const destinationTokenSym = getTokenValueFromRecord<TokenStandAndDetails>(
+      tokenDetails,
+      destTokenAddress as Hex,
+    )?.symbol;
+
+    return {
+      selectedQuoteValueDifference: selectedQuoteValueDiff,
+      gasDifference: gasDiff > 0 ? gasDiff : 0,
+      tokenAmountDifference: tokenAmountDiff > 0 ? tokenAmountDiff : 0,
+      destinationTokenSymbol: destinationTokenSym,
+    };
+  }, [
+    selectedQuote,
+    getDestinationTokenUSDValue,
+    getGasUSDValue,
+    gas,
+    gasLimitNoBuffer,
+    gasUsed,
+    quotesInput,
+    simulationData,
+    tokenDetails,
+  ]);
+
+  return {
+    selectedQuoteValueDifference,
+    gasDifference,
+    tokenAmountDifference,
+    destinationTokenSymbol,
+  };
 }

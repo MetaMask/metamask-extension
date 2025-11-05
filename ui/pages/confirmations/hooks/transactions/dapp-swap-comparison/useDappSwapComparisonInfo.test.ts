@@ -189,8 +189,8 @@ describe('useDappSwapComparisonInfo', () => {
           srcChainId: 42161,
           destChainId: 42161,
           srcTokenAmount: '9913',
-          destTokenAmount: '9907',
-          minDestTokenAmount: '9708',
+          destTokenAmount: '1004000',
+          minDestTokenAmount: '972870',
           walletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
           destWalletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
           bridges: ['okx'],
@@ -204,7 +204,7 @@ describe('useDappSwapComparisonInfo', () => {
           from: '0x178239802520a9C99DCBD791f81326B70298d629',
           value: '0x0',
           data: '',
-          gasLimit: 63109,
+          gasLimit: 62000,
         },
         trade: {
           chainId: 42161,
@@ -212,7 +212,7 @@ describe('useDappSwapComparisonInfo', () => {
           from: '0x178239802520a9C99DCBD791f81326B70298d629',
           value: '0x0',
           data: '',
-          gasLimit: 296174,
+          gasLimit: 80000,
         },
         estimatedProcessingTimeInSeconds: 0,
       },
@@ -225,7 +225,9 @@ describe('useDappSwapComparisonInfo', () => {
       {
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          dapp_swap_comparison: 'loading',
+          swap_dapp_comparison: 'loading',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_commands: '0x0a100604',
         },
       },
       'f8172040-b3d0-11f0-a882-3f99aa2e9f0c',
@@ -254,7 +256,9 @@ describe('useDappSwapComparisonInfo', () => {
       {
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          dapp_swap_comparison: 'completed',
+          swap_dapp_comparison: 'completed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_commands: '0x0a100604',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_comparison_total_latency_ms: '1500',
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -270,9 +274,9 @@ describe('useDappSwapComparisonInfo', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_from_token_simulated_value_usd: '1',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_minimum_received_value_usd: '0.000000000000009706097232',
+          swap_mm_minimum_received_value_usd: '0.00000000000097267931748',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_network_fee_usd: '0.01393686346576541082',
+          swap_mm_network_fee_usd: '0.00550828904272868',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_provider: 'openocean',
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -282,7 +286,7 @@ describe('useDappSwapComparisonInfo', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_slippage: 2,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_to_token_simulated_value_usd: '0.000000000000009905058228',
+          swap_mm_to_token_simulated_value_usd: '0.000000000001003803216',
         },
         sensitiveProperties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -298,5 +302,34 @@ describe('useDappSwapComparisonInfo', () => {
       },
       'f8172040-b3d0-11f0-a882-3f99aa2e9f0c',
     );
+  });
+
+  it('return correct values', async () => {
+    jest.spyOn(Utils, 'fetchTokenExchangeRates').mockResolvedValue({
+      '0x0000000000000000000000000000000000000000': 4052.27,
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': 0.999804,
+      '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798': 1,
+    });
+    jest.spyOn(TokenUtils, 'fetchAllTokenDetails').mockResolvedValue({
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': {
+        symbol: 'USDC',
+        decimals: '6',
+      } as TokenStandAndDetails,
+      '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9': {
+        symbol: 'USDT',
+        decimals: '6',
+      } as TokenStandAndDetails,
+    });
+
+    const {
+      selectedQuoteValueDifference,
+      gasDifference,
+      tokenAmountDifference,
+      destinationTokenSymbol,
+    } = await runHook();
+    expect(selectedQuoteValueDifference).toBe(0.012494042894187605);
+    expect(gasDifference).toBe(0.005686377458187605);
+    expect(tokenAmountDifference).toBe(0.006807665436);
+    expect(destinationTokenSymbol).toBe('USDC');
   });
 });

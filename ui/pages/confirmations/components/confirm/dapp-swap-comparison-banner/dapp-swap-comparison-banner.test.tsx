@@ -45,9 +45,22 @@ describe('<DappSwapComparisonBanner />', () => {
   });
 
   it('renders component without errors', () => {
+    mockUseDappSwapComparisonInfo.mockReturnValue({
+      selectedQuoteValueDifference: 0.1,
+      gasDifference: 0.01,
+      tokenAmountDifference: 0.01,
+      destinationTokenSymbol: 'TEST',
+    } as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
     expect(getByText('Current')).toBeInTheDocument();
     expect(getByText('Save + Earn')).toBeInTheDocument();
+    expect(getByText('Save + Earn using MetaMask Swap:')).toBeInTheDocument();
+    expect(getByText('Save about $0.02')).toBeInTheDocument();
+    expect(
+      getByText(
+        'No additional cost • Priority support • Network fees refunded on failed swaps',
+      ),
+    ).toBeInTheDocument();
   });
 
   it('renders undefined for incorrect origin', () => {
@@ -57,8 +70,8 @@ describe('<DappSwapComparisonBanner />', () => {
 
   it('renders undefined if suitable quote is not found', () => {
     mockUseDappSwapComparisonInfo.mockReturnValue({
-      selectedQuote: undefined,
-    });
+      selectedQuoteValueDifference: 0.001,
+    } as ReturnType<typeof useDappSwapComparisonInfo>);
     const { container } = render();
     expect(container).toBeEmptyDOMElement();
   });
