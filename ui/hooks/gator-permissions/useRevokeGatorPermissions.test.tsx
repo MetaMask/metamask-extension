@@ -17,7 +17,10 @@ import {
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { addTransaction } from '../../store/actions';
+import {
+  addTransaction,
+  findNetworkClientIdByChainId,
+} from '../../store/actions';
 import {
   encodeDisableDelegation,
   getDelegationHashOffchain,
@@ -37,6 +40,7 @@ import { useRevokeGatorPermissions } from './useRevokeGatorPermissions';
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   addTransaction: jest.fn(),
+  findNetworkClientIdByChainId: jest.fn(),
 }));
 
 jest.mock('../../store/controller-actions/transaction-controller', () => ({
@@ -87,6 +91,10 @@ jest.mock('../../pages/confirmations/hooks/useConfirmationNavigation', () => ({
 const mockAddTransaction = addTransaction as jest.MockedFunction<
   typeof addTransaction
 >;
+const mockFindNetworkClientIdByChainId =
+  findNetworkClientIdByChainId as unknown as jest.MockedFunction<
+    (chainId: string) => Promise<string | undefined>
+  >;
 const mockDecodeDelegations = decodeDelegations as jest.MockedFunction<
   typeof decodeDelegations
 >;
@@ -256,6 +264,7 @@ describe('useRevokeGatorPermissions', () => {
     mockNavigateToId.mockClear();
 
     // Setup default mock implementations
+    mockFindNetworkClientIdByChainId.mockResolvedValue(mockNetworkClientId);
     mockDecodeDelegations.mockReturnValue([mockDelegation]);
     mockEncodeDisableDelegation.mockReturnValue(
       '0xencodeddata' as `0x${string}`,
@@ -486,9 +495,9 @@ describe('useRevokeGatorPermissions', () => {
       expect(mockOnRedirect).not.toHaveBeenCalled();
     });
 
-    it('should handle missing defaultRpcEndpoint', async () => {
-      // Override the selector mock to return undefined for this test
-      mockSelectDefaultRpcEndpointByChainId.mockReturnValue(undefined);
+    it('should handle missing network client', async () => {
+      // Override the mock to return undefined for this test
+      mockFindNetworkClientIdByChainId.mockResolvedValue(undefined);
 
       const { result } = renderHook(
         () =>
@@ -505,7 +514,7 @@ describe('useRevokeGatorPermissions', () => {
       await act(async () => {
         await expect(
           result.current.revokeGatorPermission(mockGatorPermission),
-        ).rejects.toThrow('No default RPC endpoint found');
+        ).rejects.toThrow('No network client found for chain');
       });
 
       expect(mockDecodeDelegations).not.toHaveBeenCalled();
