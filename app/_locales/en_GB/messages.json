@@ -5958,18 +5958,18 @@
     "message": "Start 14-day free trial"
   },
   "shieldEntryModalSubtitleA": {
-    "message": "Transaction protection up to $1 and 24/7 priority support.",
+    "message": "Transaction Shield provides protection up to $1 and 24/7 priority support.",
     "description": "The $1 is the amount of transaction protection"
   },
   "shieldEntryModalSubtitleB": {
-    "message": "Transact with added confidence and 24/7 priority support."
+    "message": "Transact with added confidence. Enjoy up to $1 in protection and 24/7 priority support.",
+    "description": "The $1 is the amount of transaction protection"
   },
   "shieldEntryModalTitleA": {
     "message": "Transact with added confidence"
   },
   "shieldEntryModalTitleB": {
-    "message": "Transaction protection up to $1",
-    "description": "The $1 is the amount of transaction protection"
+    "message": "Transaction Shield"
   },
   "shieldEstimatedChangesMonthlyTooltipText": {
     "message": "Authorize up to $1 for the full year. You'll be billed $2 each month, not the full amount now."

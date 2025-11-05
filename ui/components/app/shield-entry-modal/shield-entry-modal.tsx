@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
@@ -43,7 +43,7 @@ const ShieldEntryModal = () => {
   );
 
   // AB Testing
-  const abTestVariant: 'A' | 'B' = 'A';
+  const [abTestVariant] = useState<'A' | 'B'>('A');
 
   const handleOnClose = () => {
     if (shouldSubmitEvent) {
@@ -100,7 +100,7 @@ const ShieldEntryModal = () => {
           >
             {abTestVariant === 'A'
               ? t('shieldEntryModalTitleA')
-              : t('shieldEntryModalTitleB', ['$10k'])}
+              : t('shieldEntryModalTitleB')}
           </Text>
           <Text
             variant={TextVariant.BodyMd}
@@ -109,7 +109,7 @@ const ShieldEntryModal = () => {
           >
             {abTestVariant === 'A'
               ? t('shieldEntryModalSubtitleA', ['$10,000'])
-              : t('shieldEntryModalSubtitleB')}
+              : t('shieldEntryModalSubtitleB', ['$10,000'])}
           </Text>
           <img
             src="/images/shield-entry-modal.png"
