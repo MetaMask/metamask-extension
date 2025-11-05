@@ -26,8 +26,6 @@ import {
 } from '../../../../shared/modules/selectors/networks';
 import {
   getInternalAccounts,
-  getIsDynamicTokenListAvailable,
-  getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getSelectedInternalAccount,
   getTokenDetectionSupportNetworkByChainId,
   getTestNetworkBackgroundColor,
@@ -203,13 +201,6 @@ export const ImportTokensModal = ({ onClose }) => {
   const networkName = useSelector(getTokenDetectionSupportNetworkByChainId);
   const nativeCurrency = useSelector(getNativeCurrency);
 
-  // Custom token stuff
-  const tokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
-    getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  );
-  const isDynamicTokenListAvailable = useSelector(
-    getIsDynamicTokenListAvailable,
-  );
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
   const allTokens = useSelector(getAllTokens);
@@ -225,7 +216,7 @@ export const ImportTokensModal = ({ onClose }) => {
 
   const shouldAddToken = useCallback(
     (_symbol, _address, tokenChainId) => {
-      if (!tokenChainId) {
+      if (!tokenChainId || !selectedNetwork) {
         return false;
       }
 
@@ -998,72 +989,28 @@ export const ImportTokensModal = ({ onClose }) => {
                     >
                       <Box paddingTop={4}>
                         <Box className="import-tokens-modal__custom-token-form__container">
-                          {tokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
-                            <Box paddingLeft={4} paddingRight={4}>
-                              <BannerAlert severity={Severity.Warning}>
-                                <Text variant={TextVariant.bodyMd}>
-                                  {t(
-                                    'customTokenWarningInTokenDetectionNetworkWithTDOFF',
-                                    [
-                                      <ButtonLink
-                                        key="import-token-security-risk"
-                                        rel="noopener noreferrer"
-                                        target="_blank"
-                                        href={
-                                          ZENDESK_URLS.TOKEN_SAFETY_PRACTICES
-                                        }
-                                      >
-                                        {t('tokenScamSecurityRisk')}
-                                      </ButtonLink>,
-                                      <ButtonLink
-                                        type="link"
-                                        key="import-token-token-detection-announcement"
-                                        onClick={() => {
-                                          onClose();
-                                          history.push(
-                                            `${SECURITY_ROUTE}#auto-detect-tokens`,
-                                          );
-                                        }}
-                                      >
-                                        {t('inYourSettings')}
-                                      </ButtonLink>,
-                                    ],
-                                  )}
-                                </Text>
-                              </BannerAlert>
-                            </Box>
-                          ) : (
-                            <Box paddingLeft={4} paddingRight={4}>
-                              <BannerAlert
-                                severity={
-                                  isDynamicTokenListAvailable
-                                    ? Severity.Warning
-                                    : Severity.Info
-                                }
-                                data-testid="custom-token-warning"
-                              >
-                                <Text variant={TextVariant.bodyMd}>
-                                  {t(
-                                    isDynamicTokenListAvailable
-                                      ? 'customTokenWarningInTokenDetectionNetwork'
-                                      : 'customTokenWarningInNonTokenDetectionNetwork',
-                                    [
-                                      <ButtonLink
-                                        key="import-token-fake-token-warning"
-                                        rel="noopener noreferrer"
-                                        target="_blank"
-                                        href={
-                                          ZENDESK_URLS.TOKEN_SAFETY_PRACTICES
-                                        }
-                                      >
-                                        {t('learnScamRisk')}
-                                      </ButtonLink>,
-                                    ],
-                                  )}
-                                </Text>
-                              </BannerAlert>
-                            </Box>
-                          )}
+                          <Box paddingLeft={4} paddingRight={4}>
+                            <BannerAlert
+                              severity={Severity.Warning}
+                              data-testid="custom-token-warning"
+                            >
+                              <Text variant={TextVariant.bodyMd}>
+                                {t(
+                                  'customTokenWarningInTokenDetectionNetwork',
+                                  [
+                                    <ButtonLink
+                                      key="import-token-fake-token-warning"
+                                      rel="noopener noreferrer"
+                                      target="_blank"
+                                      href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+                                    >
+                                      {t('learnScamRisk')}
+                                    </ButtonLink>,
+                                  ],
+                                )}
+                              </Text>
+                            </BannerAlert>
+                          </Box>
                           <Box>
                             <FormTextField
                               paddingLeft={4}
