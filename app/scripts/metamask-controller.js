@@ -120,7 +120,6 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
-
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import {
   FEATURE_VERSION_2,
@@ -856,6 +855,17 @@ export default class MetamaskController extends EventEmitter {
       'TransactionController:transactionStatusUpdated',
       ({ transactionMeta }) => {
         this._onFinishedTransaction(transactionMeta);
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      'TransactionController:transactionSubmitted',
+      ({ transactionMeta }) => {
+        this._onShieldSubscriptionApprovalTransaction(transactionMeta).catch(
+          (err) => {
+            console.error('Error onShieldSubscriptionApprovalTransaction', err);
+          },
+        );
       },
     );
 
@@ -2433,6 +2443,20 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.submitUserEvent.bind(
           this.subscriptionController,
         ),
+
+      // rewards
+      getCandidateSubscriptionId: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'RewardsController:getCandidateSubscriptionId',
+      ),
+      getRewardsSeasonMetadata: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'RewardsController:getSeasonMetadata',
+      ),
+      getRewardsSeasonStatus: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'RewardsController:getSeasonStatus',
+      ),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -8293,6 +8317,18 @@ export default class MetamaskController extends EventEmitter {
       method: NOTIFICATION_NAMES.chainChanged,
       params: await this.getProviderNetworkState({ origin }),
     });
+  }
+
+  /**
+   * Handles the shield subscription approval transaction after confirm
+   * NOTE: This doesn't subscribe to messenger internally inside controller because we need more info from the client as params
+   *
+   * @param transactionMeta - The transaction metadata.
+   */
+  async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
+    await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
+      transactionMeta,
+    );
   }
 
   /**

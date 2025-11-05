@@ -1046,11 +1046,10 @@ export class AppStateController extends BaseController<
   ): void {
     if (
       pollingTokenType.toString() !==
-      POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_BACKGROUND]
+        POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_BACKGROUND] &&
+      this.#isValidPollingTokenType(pollingTokenType)
     ) {
-      if (this.#isValidPollingTokenType(pollingTokenType)) {
-        this.#updatePollingTokens(pollingToken, pollingTokenType);
-      }
+      this.#updatePollingTokens(pollingToken, pollingTokenType);
     }
   }
 
