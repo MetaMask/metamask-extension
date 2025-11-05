@@ -205,7 +205,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
               label={t('price')}
               value={
                 <Text variant={TextVariant.bodyMd}>
-                  {marketDataFiat.formattedPrice}
+                  {marketDataFiat?.formattedPrice || '—'}
                 </Text>
               }
               data-testid="token-price"
@@ -249,7 +249,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
               label={t('volume')}
               value={
                 <Text variant={TextVariant.bodyMd}>
-                  {marketDataFiat.formattedVolume}
+                  {marketDataFiat?.formattedVolume || '—'}
                 </Text>
               }
               data-testid="token-volume"
@@ -259,7 +259,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
               label={t('marketCapFDV')}
               value={
                 <Text variant={TextVariant.bodyMd}>
-                  {marketDataFiat.formattedMarketCap}
+                  {marketDataFiat?.formattedMarketCap || '—'}
                 </Text>
               }
               data-testid="token-market-cap"
