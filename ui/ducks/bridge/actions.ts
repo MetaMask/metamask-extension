@@ -44,6 +44,8 @@ const {
   setWasTxDeclined,
   setSlippage,
   restoreQuoteRequestFromState,
+  setEVMSrcNativeBalance,
+  setEVMSrcTokenBalance,
 } = bridgeSlice.actions;
 
 export {
@@ -58,19 +60,18 @@ export {
   setSortOrder,
   setSelectedQuote,
   setWasTxDeclined,
-  setSlippage,
   setTxAlerts,
-  setEVMSrcNativeBalance,
   restoreQuoteRequestFromState,
 };
 
-const callBridgeControllerMethod = (
-  bridgeAction: BridgeUserAction | BridgeBackgroundAction,
+const callBackgroundHandler = (
+  handlerName: BridgeUserAction | BridgeBackgroundAction | 'getBalanceAmount',
   ...args: unknown[]
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground(bridgeAction, args);
+    const result = await submitRequestToBackground(handlerName, args);
     await forceUpdateMetamaskState(dispatch);
+    return result;
   };
 };
 
@@ -78,7 +79,7 @@ const callBridgeControllerMethod = (
 export const resetBridgeState = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(resetInputFields());
-    dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
+    dispatch(callBackgroundHandler(BridgeBackgroundAction.RESET_STATE));
   };
 };
 
@@ -93,7 +94,7 @@ export const trackUnifiedSwapBridgeEvent = <
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
-      callBridgeControllerMethod(
+      callBackgroundHandler(
         BridgeBackgroundAction.TRACK_METAMETRICS_EVENT,
         eventName,
         propertiesFromClient,
@@ -110,7 +111,7 @@ export const updateQuoteRequestParams = (
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
-      callBridgeControllerMethod(
+      callBackgroundHandler(
         BridgeUserAction.UPDATE_QUOTE_PARAMS,
         params,
         context,
