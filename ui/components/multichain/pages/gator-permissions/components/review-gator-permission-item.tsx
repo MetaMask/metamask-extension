@@ -371,7 +371,6 @@ export const ReviewGatorPermissionItem = ({
               backgroundColor: 'transparent',
               border: 'none',
               padding: 0,
-              height: '100%',
             }}
           >
             <Text
