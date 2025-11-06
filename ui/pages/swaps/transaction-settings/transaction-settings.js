@@ -3,19 +3,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { Text, TextVariant } from '@metamask/design-system-react';
+import {
+  Text,
+  TextVariant,
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import ButtonGroup from '../../../components/ui/button-group';
 import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import Box from '../../../components/ui/box';
 
 import {
-  AlignItems,
-  JustifyContent,
-  DISPLAY,
   SEVERITIES,
-  FlexDirection,
   BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
@@ -151,21 +153,16 @@ export default function TransactionSettings({
           {t('transactionSettings')}
         </ModalHeader>
         <Box
-          display={DISPLAY.FLEX}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.stretch}
+          flexDirection={BoxFlexDirection.Column}
+          justifyContent={BoxJustifyContent.SpaceBetween}
+          alignItems={BoxAlignItems.Stretch}
           className="transaction-settings__content"
         >
           <Box marginTop={7} marginBottom={5}>
             <>
               {!isDirectWrappingEnabled && (
                 <>
-                  <Box
-                    display={DISPLAY.FLEX}
-                    alignItems={AlignItems.center}
-                    marginBottom={2}
-                  >
+                  <Box alignItems={BoxAlignItems.Center} marginBottom={2}>
                     <Text variant={TextVariant.bodySm} className="pr-2">
                       {t('swapsMaxSlippage')}
                     </Text>

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import Box from '../../../components/ui/box';
+import { Box } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';

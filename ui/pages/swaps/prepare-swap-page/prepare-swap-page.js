@@ -7,6 +7,12 @@ import { useHistory } from 'react-router-dom';
 import { getAccountLink, getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 
+import {
+  Box,
+  BoxJustifyContent,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   useTokensToSearch,
@@ -19,15 +25,12 @@ import {
   getConversionRate,
   getCurrentCurrency,
 } from '../../../ducks/metamask/metamask';
-import Box from '../../../components/ui/box';
 import {
-  DISPLAY,
   TextColor,
-  JustifyContent,
-  AlignItems,
   SEVERITIES,
   TextVariant,
   BLOCK_SIZES,
+  AlignItems,
   FontWeight,
   TextAlign,
 } from '../../../helpers/constants/design-system';
@@ -887,7 +890,6 @@ export default function PrepareSwapPage({
               paddingRight={0}
               paddingBottom={0}
               paddingLeft={0}
-              display={DISPLAY.FLEX}
             >
               <ListWithSearch
                 selectedItem={selectedToToken}
@@ -923,7 +925,6 @@ export default function PrepareSwapPage({
               paddingRight={0}
               paddingBottom={0}
               paddingLeft={0}
-              display={DISPLAY.FLEX}
             >
               <ListWithSearch
                 selectedItem={selectedFromToken}
@@ -943,9 +944,8 @@ export default function PrepareSwapPage({
 
         <div className="prepare-swap-page__swap-from-content">
           <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.center}
+            justifyContent={BoxJustifyContent.SpaceBetween}
+            alignItems={BoxAlignItems.Center}
             gap={4}
           >
             <SelectedToken
@@ -954,7 +954,7 @@ export default function PrepareSwapPage({
               selectedToken={selectedFromToken}
               testId="prepare-swap-page-swap-from"
             />
-            <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+            <Box alignItems={BoxAlignItems.Center}>
               <TextField
                 className={classnames('prepare-swap-page__from-token-amount', {
                   [fromTokenAmountClassName]: fromTokenAmountClassName,
@@ -969,9 +969,8 @@ export default function PrepareSwapPage({
             </Box>
           </Box>
           <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.stretch}
+            justifyContent={BoxJustifyContent.SpaceBetween}
+            alignItems={BoxAlignItems.Stretch}
           >
             <div className="prepare-swap-page__balance-message">
               {fromTokenSymbol && yourTokenFromBalance}
@@ -989,9 +988,8 @@ export default function PrepareSwapPage({
             </div>
             {fromTokenInputValue && swapFromFiatValue && (
               <Box
-                display={DISPLAY.FLEX}
-                justifyContent={JustifyContent.flexEnd}
-                alignItems={AlignItems.flexEnd}
+                justifyContent={BoxJustifyContent.FlexEnd}
+                alignItems={BoxAlignItems.FlexEnd}
               >
                 <Text
                   variant={TextVariant.bodySm}
@@ -1003,10 +1001,7 @@ export default function PrepareSwapPage({
             )}
           </Box>
           {showNotEnoughTokenMessage && (
-            <Box
-              display={DISPLAY.FLEX}
-              justifyContent={JustifyContent.flexStart}
-            >
+            <Box justifyContent={BoxJustifyContent.FlexStart}>
               <Text
                 variant={TextVariant.bodySmBold}
                 color={TextColor.textAlternative}
@@ -1017,10 +1012,7 @@ export default function PrepareSwapPage({
             </Box>
           )}
           {fromTokenError && (
-            <Box
-              display={DISPLAY.FLEX}
-              justifyContent={JustifyContent.flexStart}
-            >
+            <Box justifyContent={BoxJustifyContent.FlexStart}>
               <Text
                 variant={TextVariant.bodySmBold}
                 color={TextColor.textAlternative}
@@ -1033,7 +1025,7 @@ export default function PrepareSwapPage({
               </Text>
             </Box>
           )}
-          <Box display={DISPLAY.FLEX} justifyContent={JustifyContent.center}>
+          <Box justifyContent={BoxJustifyContent.Center}>
             <div
               className={classnames('prepare-swap-page__switch-tokens', {
                 'prepare-swap-page__switch-tokens--rotate': rotateSwitchTokens,
@@ -1057,9 +1049,8 @@ export default function PrepareSwapPage({
         </div>
         <div className="prepare-swap-page__swap-to-content">
           <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.center}
+            justifyContent={BoxJustifyContent.SpaceBetween}
+            alignItems={BoxAlignItems.Center}
           >
             <SelectedToken
               onClick={onSwapToOpen}
@@ -1068,8 +1059,7 @@ export default function PrepareSwapPage({
               testId="prepare-swap-page-swap-to"
             />
             <Box
-              display={DISPLAY.FLEX}
-              alignItems={AlignItems.center}
+              alignItems={BoxAlignItems.Center}
               marginLeft={2}
               className="prepare-swap-page__receive-amount-container"
             >
@@ -1085,18 +1075,16 @@ export default function PrepareSwapPage({
             </Box>
           </Box>
           <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.stretch}
+            justifyContent={BoxJustifyContent.SpaceBetween}
+            alignItems={BoxAlignItems.Stretch}
           >
             <div className="prepare-swap-page__balance-message">
               {selectedToToken?.string && yourTokenToBalance}
             </div>
             {receiveToAmountFormatted && swapToTokenFiatValue && (
               <Box
-                display={DISPLAY.FLEX}
-                justifyContent={JustifyContent.flexEnd}
-                alignItems={AlignItems.flexEnd}
+                justifyContent={BoxJustifyContent.FlexEnd}
+                alignItems={BoxAlignItems.FlexEnd}
               >
                 <Text
                   variant={TextVariant.bodySm}
@@ -1108,9 +1096,8 @@ export default function PrepareSwapPage({
             )}
           </Box>
           <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.stretch}
+            justifyContent={BoxJustifyContent.SpaceBetween}
+            alignItems={BoxAlignItems.Stretch}
           >
             <div className="prepare-swap-page__balance-message">
               {selectedToToken &&
@@ -1144,7 +1131,7 @@ export default function PrepareSwapPage({
           </ButtonLink>
         )}
         {!showReviewQuote && toTokenIsNotDefault && occurrences < 2 && (
-          <Box display={DISPLAY.FLEX} marginTop={2}>
+          <Box flexDirection={BoxFlexDirection.Column} marginTop={2}>
             <BannerAlert
               severity={
                 tokenVerifiedOn1Source ? SEVERITIES.WARNING : SEVERITIES.DANGER
@@ -1206,7 +1193,7 @@ export default function PrepareSwapPage({
           />
         )}
         {swapsErrorKey && (
-          <Box display={DISPLAY.FLEX} marginTop={2}>
+          <Box flexDirection={BoxFlexDirection.Row} marginTop={2}>
             <SwapsBannerAlert
               swapsErrorKey={swapsErrorKey}
               currentSlippage={maxSlippage}
