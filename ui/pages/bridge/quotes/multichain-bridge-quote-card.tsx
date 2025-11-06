@@ -236,64 +236,68 @@ export const MultichainBridgeQuoteCard = ({
           </Row>
         </Row>
 
-        {/* Network Fee */}
-        <Row justifyContent={JustifyContent.spaceBetween}>
-          <Row gap={2}>
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-            >
-              {t('networkFee')}
-            </Text>
-            <Tooltip
-              title={t('networkFeeExplanationTitle')}
-              position={PopoverPosition.TopStart}
-              offset={[-16, 16]}
-            >
-              {t('networkFeeExplanation')}
-            </Tooltip>
-          </Row>
-          {activeQuote.quote.gasIncluded && (
-            <Row gap={1} data-testid="network-fees-included">
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                style={{ textDecoration: 'line-through' }}
-              >
-                {activeQuote.includedTxFees?.valueInCurrency
-                  ? formatCurrencyAmount(
-                      activeQuote.includedTxFees.valueInCurrency,
-                      currency,
-                      2,
-                    )
-                  : formatCurrencyAmount(
-                      activeQuote.totalNetworkFee?.valueInCurrency,
-                      currency,
-                      2,
-                    )}
-              </Text>
+        {/* Network Fee - Hide if zero/undefined for non-EVM chains (e.g., Bitcoin with no gas.) */}
+        {(!isToOrFromNonEvm ||
+          (activeQuote.totalNetworkFee?.valueInCurrency &&
+            activeQuote.totalNetworkFee.valueInCurrency !== '0')) && (
+          <Row justifyContent={JustifyContent.spaceBetween}>
+            <Row gap={2}>
               <Text
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                {t('swapGasFeesIncluded')}
+                {t('networkFee')}
               </Text>
+              <Tooltip
+                title={t('networkFeeExplanationTitle')}
+                position={PopoverPosition.TopStart}
+                offset={[-16, 16]}
+              >
+                {t('networkFeeExplanation')}
+              </Tooltip>
             </Row>
-          )}
-          {!activeQuote.quote.gasIncluded && (
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-              data-testid="network-fees"
-            >
-              {formatCurrencyAmount(
-                activeQuote.totalNetworkFee?.valueInCurrency,
-                currency,
-                2,
-              )}
-            </Text>
-          )}
-        </Row>
+            {activeQuote.quote.gasIncluded && (
+              <Row gap={1} data-testid="network-fees-included">
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                  style={{ textDecoration: 'line-through' }}
+                >
+                  {activeQuote.includedTxFees?.valueInCurrency
+                    ? formatCurrencyAmount(
+                        activeQuote.includedTxFees.valueInCurrency,
+                        currency,
+                        2,
+                      )
+                    : formatCurrencyAmount(
+                        activeQuote.totalNetworkFee?.valueInCurrency,
+                        currency,
+                        2,
+                      )}
+                </Text>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {t('swapGasFeesIncluded')}
+                </Text>
+              </Row>
+            )}
+            {!activeQuote.quote.gasIncluded && (
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                data-testid="network-fees"
+              >
+                {formatCurrencyAmount(
+                  activeQuote.totalNetworkFee?.valueInCurrency,
+                  currency,
+                  2,
+                )}
+              </Text>
+            )}
+          </Row>
+        )}
 
         {/* Slippage */}
         <Row justifyContent={JustifyContent.spaceBetween}>

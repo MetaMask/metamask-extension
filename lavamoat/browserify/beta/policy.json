@@ -1310,6 +1310,10 @@
       }
     },
     "@metamask/gator-permissions-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/delegation-core": true,

@@ -1295,6 +1295,9 @@
     "message": "No options found",
     "description": "Default text shown in the combo field dropdown if no options."
   },
+  "completed": {
+    "message": "Completed"
+  },
   "concentratedSupplyDistributionDescription": {
     "message": "The majority of the token's supply is held by the top token holders, posing a risk of centralized price manipulation"
   },
@@ -2856,6 +2859,14 @@
     "message": "Max allowance",
     "description": "Label for the max allowance of a permission"
   },
+  "gatorPermissionsRevocationPending": {
+    "message": "Revocation pending",
+    "description": "Label for a gator permission that is pending a revocation transaction"
+  },
+  "gatorPermissionsRevoke": {
+    "message": "Revoke",
+    "description": "Label for the revoke button of a gator permission"
+  },
   "gatorPermissionsStartDate": {
     "message": "Start date",
     "description": "Label for the start date of a permission"
@@ -3536,6 +3547,10 @@
   },
   "loginErrorGenericTitle": {
     "message": "Something went wrong"
+  },
+  "loginErrorResetWalletDescription": {
+    "message": "An issue occurred while unlocking. Re-login with $1 and your Metamask password.",
+    "description": "$1 is the social login method"
   },
   "loginErrorSessionExpiredButton": {
     "message": "Log in"
@@ -5823,6 +5838,10 @@
     "message": "You may file a single claim per incident within $1 days of the incident. View the full coverage policy $2.",
     "description": "The $1 is the number of days and $2 is a link to the full coverage policy"
   },
+  "shieldClaimDetailsViewClaims": {
+    "message": "This claim is being reviewed by our team. We will notify you when it has been approved by email. View the full coverage policy $1.",
+    "description": "The $1 is a link to the full coverage policy"
+  },
   "shieldClaimDuplicateClaimExists": {
     "message": "A claim has already been submitted for this transaction hash."
   },
@@ -5914,6 +5933,24 @@
   "shieldClaimSelectNetwork": {
     "message": "Select a network"
   },
+  "shieldClaimStatusApproved": {
+    "message": "Approved"
+  },
+  "shieldClaimStatusCreated": {
+    "message": "Created"
+  },
+  "shieldClaimStatusInProgress": {
+    "message": "In progress"
+  },
+  "shieldClaimStatusRejected": {
+    "message": "Rejected"
+  },
+  "shieldClaimStatusSubmitted": {
+    "message": "Submitted"
+  },
+  "shieldClaimStatusWaitingForCustomer": {
+    "message": "Waiting for customer"
+  },
   "shieldClaimSubmissionWindowExpired": {
     "message": "Submission window expired. Claims must be filed within $1 days of the incident.",
     "description": "The $1 is the number of days"
@@ -5929,6 +5966,28 @@
   },
   "shieldClaimSubmitSuccessDescription": {
     "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
+  },
+  "shieldClaimsHistoryTitle": {
+    "message": "CLAIM HISTORY"
+  },
+  "shieldClaimsListTitle": {
+    "message": "Claim details"
+  },
+  "shieldClaimsNumber": {
+    "message": "Claim #$1",
+    "description": "The $1 is the claim number"
+  },
+  "shieldClaimsPendingAlertActionButtonLabel": {
+    "message": "View claims"
+  },
+  "shieldClaimsPendingAlertDescription": {
+    "message": "Your claims is being reviewed by our team. We will notify you when it has been approved by email."
+  },
+  "shieldClaimsPendingAlertTitle": {
+    "message": "You have claims that are pending approval."
+  },
+  "shieldClaimsPendingTitle": {
+    "message": "PENDING CLAIMS"
   },
   "shieldConfirmMembership": {
     "message": "Confirm membership"
