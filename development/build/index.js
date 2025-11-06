@@ -156,6 +156,7 @@ async function defineAndRunBuildTasks() {
       'devicePixelRatio',
       // for @tanstack/react-virtual
       'ResizeObserver',
+      'clearTimeout',
     ];
 
     if (
