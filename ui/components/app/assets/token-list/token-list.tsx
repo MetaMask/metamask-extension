@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import TokenCell from '../token-cell';
+import { ASSET_CELL_HEIGHT } from '../constants';
 import {
   getEnabledNetworksByNamespace,
   getIsMultichainAccountsState2Enabled,
@@ -150,8 +151,8 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
   const virtualizer = useVirtualizer({
     count: sortedFilteredTokens.length,
-    getScrollElement: () => scrollContainerRef.current,
-    estimateSize: () => 62, // TokenCell height from generic-asset-cell-layout.tsx
+    getScrollElement: () => scrollContainerRef?.current || null,
+    estimateSize: () => ASSET_CELL_HEIGHT,
     overscan: 5,
   });
 
