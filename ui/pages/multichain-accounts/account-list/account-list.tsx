@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -53,12 +59,12 @@ import {
   getHiddenAccountsList,
   getInternalAccounts,
 } from '../../../selectors';
-import { filterWalletsByGroupNameOrAddress } from './utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { filterWalletsByGroupNameOrAddress } from './utils';
 
 export const AccountList = () => {
   const t = useI18nContext();
@@ -101,12 +107,20 @@ export const AccountList = () => {
       event: MetaMetricsEventName.AccountListViewed,
       category: MetaMetricsEventCategory.Accounts,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         pinned_count: pinnedAccountsList.length,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hidden_count: hiddenAccountsList.length,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         total_accounts: internalAccounts.length,
       },
     });
-  }, [trackEvent, pinnedAccountsList.length, hiddenAccountsList.length, internalAccounts.length]);
+  }, [
+    trackEvent,
+    pinnedAccountsList.length,
+    hiddenAccountsList.length,
+    internalAccounts.length,
+  ]);
 
   const hasMultipleWallets = useMemo(
     () => Object.keys(wallets).length > 1,

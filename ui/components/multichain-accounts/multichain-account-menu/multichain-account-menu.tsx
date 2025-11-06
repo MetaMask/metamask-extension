@@ -28,16 +28,16 @@ import {
   setAccountGroupHidden,
 } from '../../../store/actions';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
-import { MultichainAccountMenuProps } from './multichain-account-menu.types';
+import {
+  getPinnedAccountsList,
+  getHiddenAccountsList,
+} from '../../../selectors/selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  getPinnedAccountsList,
-  getHiddenAccountsList,
-} from '../../../selectors/selectors';
+import { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
 export const MultichainAccountMenu = ({
   accountGroupId,
@@ -121,6 +121,7 @@ export const MultichainAccountMenu = ({
         category: MetaMetricsEventCategory.Accounts,
         properties: {
           pinned: willBePinned,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           pinned_count_after: pinnedCountAfter,
         },
       });
@@ -152,6 +153,7 @@ export const MultichainAccountMenu = ({
         category: MetaMetricsEventCategory.Accounts,
         properties: {
           hidden: willBeHidden,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hidden_count_after: hiddenCountAfter,
         },
       });
