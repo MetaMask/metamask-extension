@@ -55,8 +55,12 @@ export default function WelcomeLogin({
   }, []);
 
   useEffect(() => {
-    if (!loginParam) {
+    if (loginParam) {
+      setShowLoginOptions(true);
+      setLoginOption(loginParam as LoginOptionType);
+    } else {
       setShowLoginOptions(false);
+      setLoginOption(null);
     }
   }, [loginParam]);
 
