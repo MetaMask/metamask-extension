@@ -21,6 +21,7 @@ buildTypes:
       - multi-srp
       - multichain
       - bitcoin
+      - bitcoin-swaps
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
