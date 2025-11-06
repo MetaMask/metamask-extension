@@ -270,6 +270,7 @@ class AssetListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.tokenImportSelectNetwork(chainId),
     );
+    await this.driver.waitForSelector(this.customTokenModalOption);
     await this.driver.clickElement(this.customTokenModalOption);
     await this.driver.waitForSelector(this.modalWarningBanner);
     await this.driver.fill(this.tokenAddressInput, tokenAddress);

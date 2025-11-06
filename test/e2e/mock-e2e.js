@@ -572,7 +572,7 @@ async function setupMocking(
   // Bridge API mocks - must be after AGGREGATOR_METADATA is defined
   // Network 1 (Mainnet)
   await server
-    .forGet('https://bridge.api.cx.metamask.io/networks/1/topAssets')
+    .forGet(`https://bridge.api.cx.metamask.io/networks/${chainId}/topAssets`)
     .thenCallback(() => {
       return {
         statusCode: 200,
