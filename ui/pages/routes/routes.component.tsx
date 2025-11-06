@@ -178,6 +178,35 @@ import {
   showAppHeader,
 } from './utils';
 
+// V5-compat navigate function type for bridging v5 routes with v5-compat components
+type V5CompatNavigate = (
+  to: string | number,
+  options?: {
+    replace?: boolean;
+    state?: Record<string, unknown>;
+  },
+) => void;
+
+/**
+ * Creates a v5-compat navigate function from v5 history
+ * Used to bridge v5 routes with components expecting v5-compat navigation
+ *
+ * @param history
+ */
+const createV5CompatNavigate = (
+  history: RouteComponentProps['history'],
+): V5CompatNavigate => {
+  return (to, options = {}) => {
+    if (typeof to === 'number') {
+      history.go(to);
+    } else if (options.replace) {
+      history.replace(to, options.state);
+    } else {
+      history.push(to, options.state);
+    }
+  };
+};
+
 // TODO: Fix `as unknown as` casting once `mmLazy` is updated to handle named exports, wrapped components, and other React module types.
 // Casting is preferable over `@ts-expect-error` annotations in this case,
 // because it doesn't suppress competing error messages e.g. "Cannot find module..."
@@ -627,8 +656,9 @@ export default function Routes() {
           <Route path={SWAPS_ROUTE}>
             {(props: RouteComponentProps) => {
               const { location: v5Location } = props;
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const SwapsComponent = Swaps as any;
+              const SwapsComponent = Swaps as React.ComponentType<{
+                location: RouteComponentProps['location'];
+              }>;
               return (
                 <AuthenticatedV5Compat>
                   <SwapsComponent location={v5Location} />
@@ -645,24 +675,13 @@ export default function Routes() {
           >
             {(props: RouteComponentProps<{ srcTxMetaId: string }>) => {
               const { history: v5History, location: v5Location, match } = props;
-              const navigate = (
-                to: string | number,
-                options: {
-                  replace?: boolean;
-                  state?: Record<string, unknown>;
-                } = {},
-              ) => {
-                if (typeof to === 'number') {
-                  v5History.go(to);
-                } else if (options.replace) {
-                  v5History.replace(to, options.state);
-                } else {
-                  v5History.push(to, options.state);
-                }
-              };
+              const navigate = createV5CompatNavigate(v5History);
               const CrossChainSwapTxDetailsComponent =
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                CrossChainSwapTxDetails as any;
+                CrossChainSwapTxDetails as React.ComponentType<{
+                  location: RouteComponentProps['location'];
+                  navigate: V5CompatNavigate;
+                  params: { srcTxMetaId: string };
+                }>;
               return (
                 <AuthenticatedV5Compat>
                   <CrossChainSwapTxDetailsComponent
@@ -677,8 +696,10 @@ export default function Routes() {
           <Route path={CROSS_CHAIN_SWAP_ROUTE}>
             {(props: RouteComponentProps) => {
               const { location: v5Location } = props;
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const CrossChainSwapComponent = CrossChainSwap as any;
+              const CrossChainSwapComponent =
+                CrossChainSwap as React.ComponentType<{
+                  location: RouteComponentProps['location'];
+                }>;
               return (
                 <AuthenticatedV5Compat>
                   <CrossChainSwapComponent location={v5Location} />
@@ -712,20 +733,14 @@ export default function Routes() {
                 match: v5Match,
               } = props;
 
-              // Create a navigate function compatible with v5-compat for the component
-              const navigate = (
-                to: string,
-                options: { replace?: boolean } = {},
-              ) => {
-                if (options.replace) {
-                  v5History.replace(to);
-                } else {
-                  v5History.push(to);
-                }
-              };
+              const navigate = createV5CompatNavigate(v5History);
 
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const PermissionsConnectWithProps = PermissionsConnect as any;
+              const PermissionsConnectWithProps =
+                PermissionsConnect as React.ComponentType<{
+                  location: RouteComponentProps['location'];
+                  navigate: V5CompatNavigate;
+                  match: RouteComponentProps<{ id: string }>['match'];
+                }>;
               return (
                 <AuthenticatedV5Compat>
                   <PermissionsConnectWithProps
@@ -739,8 +754,10 @@ export default function Routes() {
           </Route>
           <Route path={`${ASSET_ROUTE}/image/:asset/:id`}>
             {(props: RouteComponentProps<{ asset: string; id: string }>) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const NftFullImageComponent = NftFullImage as any;
+              const NftFullImageComponent =
+                NftFullImage as React.ComponentType<{
+                  params: { asset: string; id: string };
+                }>;
               return (
                 <AuthenticatedV5Compat>
                   <NftFullImageComponent params={props.match.params} />
@@ -756,8 +773,9 @@ export default function Routes() {
                 id: string;
               }>,
             ) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const AssetComponent = Asset as any;
+              const AssetComponent = Asset as React.ComponentType<{
+                params: { chainId: string; asset: string; id: string };
+              }>;
               return (
                 <AuthenticatedV5Compat>
                   <AssetComponent params={props.match.params} />
@@ -772,8 +790,9 @@ export default function Routes() {
                 asset: string;
               }>,
             ) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const AssetComponent = Asset as any;
+              const AssetComponent = Asset as React.ComponentType<{
+                params: { chainId: string; asset: string };
+              }>;
               return (
                 <AuthenticatedV5Compat>
                   <AssetComponent params={props.match.params} />
@@ -783,8 +802,9 @@ export default function Routes() {
           </Route>
           <Route path={`${ASSET_ROUTE}/:chainId`}>
             {(props: RouteComponentProps<{ chainId: string }>) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const AssetComponent = Asset as any;
+              const AssetComponent = Asset as React.ComponentType<{
+                params: { chainId: string };
+              }>;
               return (
                 <AuthenticatedV5Compat>
                   <AssetComponent params={props.match.params} />
