@@ -313,6 +313,10 @@ export const getMultichainAccountGroupById = createDeepEqualSelector(
   getAccountTree,
   (_, accountId: AccountGroupId) => accountId,
   (accountTree: AccountTreeState, accountId: AccountGroupId) => {
+    if (!accountId) {
+      return undefined;
+    }
+
     const { wallets } = accountTree;
 
     const walletId = extractWalletIdFromGroupId(accountId);

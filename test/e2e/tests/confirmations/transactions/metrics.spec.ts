@@ -69,7 +69,7 @@ describe('Metrics', function () {
         const transactionConfirmation = new TransactionConfirmation(driver);
         // verify UI before clicking advanced details to give time for the Transaction Added event to be emitted without Advanced Details being displayed
         await transactionConfirmation.checkPageIsLoaded();
-        await transactionConfirmation.checkIsSenderAccountDisplayed(
+        await transactionConfirmation.checkHeaderAccountNameIsDisplayed(
           'Account 1',
         );
         await transactionConfirmation.checkGasFeeSymbol('ETH');
