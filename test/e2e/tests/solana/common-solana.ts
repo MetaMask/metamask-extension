@@ -1668,7 +1668,7 @@ export async function withSolanaAccountSnap(
           bridgeConfig: showSnapConfirmation
             ? featureFlagsWithSnapConfirmation
             : featureFlags,
-            ...BIP44_STAGE_TWO,
+          ...BIP44_STAGE_TWO,
         },
       },
       testSpecificMock: async (mockServer: Mockttp) => {
@@ -1805,7 +1805,7 @@ export async function withSolanaAccountSnap(
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
-        await accountListPage.selectAccount('Account 1')
+        await accountListPage.selectAccount('Account 1');
       }
       // Change to Solana
       await driver.clickElement('[data-testid="sort-by-networks"]');
