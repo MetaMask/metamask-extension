@@ -14,7 +14,7 @@ const loadWeb3AuthNetwork = (): Web3AuthNetwork => {
 };
 
 export const SeedlessOnboardingControllerInit: ControllerInitFunction<
-  SeedlessOnboardingController,
+  SeedlessOnboardingController<EncryptionKey>,
   SeedlessOnboardingControllerMessenger,
   SeedlessOnboardingControllerInitMessenger
 > = (request) => {
@@ -24,7 +24,7 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
 
   const network = loadWeb3AuthNetwork();
 
-  const controller = new SeedlessOnboardingController({
+  const controller = new SeedlessOnboardingController<EncryptionKey>({
     messenger: controllerMessenger,
     state: persistedState.SeedlessOnboardingController,
     network,
@@ -42,10 +42,9 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
       initMessenger.call('OAuthService:renewRefreshToken', ...args),
 
     encryptor: {
-      decrypt: (key, encryptedData) => encryptor.decrypt(key, encryptedData),
-      decryptWithDetail: (key, encryptedData) =>
-        encryptor.decryptWithDetail(key, encryptedData),
-      decryptWithKey(key, encryptedData) {
+      decrypt: encryptor.decrypt,
+      decryptWithDetail: encryptor.decryptWithDetail,
+      decryptWithKey: (key: EncryptionKey, encryptedData: EncryptionResult) => {
         let payload: EncryptionResult;
         if (typeof encryptedData === 'string') {
           payload = JSON.parse(encryptedData);
@@ -55,13 +54,12 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
 
         return encryptor.decryptWithKey(key as EncryptionKey, payload);
       },
-      encrypt: (key, data) => encryptor.encrypt(key, data),
-      encryptWithDetail: (key, data) => encryptor.encryptWithDetail(key, data),
-      importKey: (key) => encryptor.importKey(key),
-      exportKey: (key) => encryptor.exportKey(key),
-      keyFromPassword: (password, salt) =>
-        encryptor.keyFromPassword(password, salt),
-      generateSalt: () => encryptor.generateSalt(),
+      encrypt: encryptor.encrypt,
+      encryptWithDetail: encryptor.encryptWithDetail,
+      importKey: encryptor.importKey,
+      exportKey: encryptor.exportKey,
+      keyFromPassword: encryptor.keyFromPassword,
+      generateSalt: encryptor.generateSalt,
     },
   });
 
