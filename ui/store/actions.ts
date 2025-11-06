@@ -77,6 +77,7 @@ import {
   CachedLastSelectedPaymentMethods,
 } from '@metamask/subscription-controller';
 
+import { Claim, SubmitClaimConfig } from '@metamask/claims-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -182,7 +183,6 @@ import {
 } from '../../shared/types/rewards';
 import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
 import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
-import { loadShieldConfig } from '../../shared/modules/shield';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -7697,8 +7697,6 @@ export async function getLayer1GasFeeValue({
   ]);
 }
 
-const shieldConfig = loadShieldConfig();
-
 /**
  * Submits a shield claim.
  *
@@ -7721,9 +7719,12 @@ export async function submitShieldClaim(params: {
   caseDescription: string;
   files?: FileList;
 }) {
-  const baseUrl = shieldConfig.claimUrl;
+  const submitClaimConfig = await submitRequestToBackground<SubmitClaimConfig>(
+    'getSubmitClaimConfig',
+    [params],
+  );
+  const { headers, method } = submitClaimConfig;
 
-  const claimsUrl = `${baseUrl}/claims`;
   const formData = new FormData();
   formData.append('chainId', params.chainId);
   formData.append('email', params.email);
@@ -7748,16 +7749,12 @@ export async function submitShieldClaim(params: {
     });
   }
 
-  const accessToken = await submitRequestToBackground<string>('getBearerToken');
-
   try {
     // we do the request here instead of background controllers because files are not serializable
-    const response = await fetch(claimsUrl, {
-      method: 'POST',
+    const response = await fetch('http://localhost:3000/claims', {
+      method,
       body: formData,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+      headers,
     });
 
     if (!response.ok) {
@@ -7770,32 +7767,34 @@ export async function submitShieldClaim(params: {
 
     return ClaimSubmitToastType.Success;
   } catch (error) {
-    console.error(error);
+    log.error('[submitShieldClaim] Failed to submit shield claim:', error);
     throw new SubmitClaimError(ClaimSubmitToastType.Errored);
   }
 }
 
 export async function getShieldClaims() {
-  const baseUrl = shieldConfig.claimUrl;
-
-  const claimsUrl = `${baseUrl}/claims`;
-  const accessToken = await submitRequestToBackground<string>('getBearerToken');
-
   try {
-    const response = await fetch(claimsUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorBody = await response.json();
-      throw new Error(errorBody.error || 'Failed to get shield claims');
-    }
-    return await response.json();
+    const claims = await submitRequestToBackground<Claim[]>('getClaims');
+    return claims;
   } catch (error) {
-    console.error('Failed to get shield claims:', error);
+    log.error('[getShieldClaims] Failed to get shield claims:', error);
     throw error;
   }
+}
+
+/**
+ * Generates a signature for a claim.
+ *
+ * @param chainId - The chain ID.
+ * @param walletAddress - The wallet address.
+ * @returns The signature.
+ */
+export async function generateClaimSignature(
+  chainId: string,
+  walletAddress: string,
+) {
+  return await submitRequestToBackground<string>('generateClaimSignature', [
+    chainId,
+    walletAddress,
+  ]);
 }

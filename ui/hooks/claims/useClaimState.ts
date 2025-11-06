@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ShieldClaimAttachment } from '../../pages/settings/transaction-shield-tab/types';
+import { Attachment as ClaimAttachment } from '@metamask/claims-controller';
 import { useClaims } from '../../contexts/claims/claims';
+import { generateClaimSignature } from '../../store/actions';
 
 export const useClaimState = (isView: boolean = false) => {
   const { pathname } = useLocation();
@@ -16,11 +17,24 @@ export const useClaimState = (isView: boolean = false) => {
     useState<string>('');
   const [caseDescription, setCaseDescription] = useState<string>('');
   const [files, setFiles] = useState<FileList>();
-  const [uploadedFiles, setUploadedFiles] = useState<ShieldClaimAttachment[]>(
-    [],
-  );
+  const [uploadedFiles, setUploadedFiles] = useState<ClaimAttachment[]>([]);
 
   const claimId = pathname.split('/').pop();
+
+  useEffect(() => {
+    if (isView || !chainId || !impactedWalletAddress) {
+      return;
+    }
+
+    (async () => {
+      const signature = await generateClaimSignature(
+        chainId,
+        impactedWalletAddress,
+      );
+      // TODO: update signature in claim once the backend is ready
+      console.log('signature', signature);
+    })();
+  }, [isView, chainId, impactedWalletAddress]);
 
   useEffect(() => {
     if (isView && claimId) {
@@ -32,7 +46,7 @@ export const useClaimState = (isView: boolean = false) => {
         setImpactedTransactionHash(claimDetails.impactedTxHash);
         setReimbursementWalletAddress(claimDetails.reimbursementWalletAddress);
         setCaseDescription(claimDetails.description);
-        setUploadedFiles(claimDetails.attachments);
+        setUploadedFiles(claimDetails.attachments || []);
       }
     }
   }, [isView, claimId, claims]);
