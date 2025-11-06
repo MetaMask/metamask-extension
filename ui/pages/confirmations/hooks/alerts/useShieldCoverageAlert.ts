@@ -7,7 +7,10 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { Severity } from '../../../../helpers/constants/design-system';
+import {
+  IconColor,
+  Severity,
+} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getCoverageStatus,
@@ -15,6 +18,7 @@ import {
 } from '../../../../selectors/shield/coverage';
 import { useConfirmContext } from '../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../transactions/useEnableShieldCoverageChecks';
+import { IconName } from '../../../../components/component-library';
 import { ShieldCoverageAlertMessage } from './transactions/ShieldCoverageAlertMessage';
 
 const getModalBodyStr = (reasonCode: string | undefined) => {
@@ -192,6 +196,8 @@ export function useShieldCoverageAlert(): Alert[] {
         isBlocking: false,
         inlineAlertText,
         inlineAlertTextPill: true,
+        iconName: IconName.Info,
+        iconColor: IconColor.inherit,
         showArrow: false,
         isOpenModalOnClick: true,
         hideFromAlertNavigation: true,

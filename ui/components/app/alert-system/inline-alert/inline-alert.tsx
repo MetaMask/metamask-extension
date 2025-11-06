@@ -4,6 +4,7 @@ import {
   AlignItems,
   BorderRadius,
   Display,
+  IconColor,
   Severity,
   TextColor,
   TextVariant,
@@ -32,6 +33,10 @@ export type InlineAlertProps = {
   showArrow?: boolean;
   /** Whether to show the inline alert as a pill style */
   pill?: boolean;
+  /** The name of the icon to show */
+  iconName?: IconName;
+  /** The color of the icon to show */
+  iconColor?: IconColor;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -44,6 +49,8 @@ export default function InlineAlert({
   textOverride,
   showArrow = true,
   pill = false,
+  iconName,
+  iconColor,
 }: InlineAlertProps) {
   const t = useI18nContext();
 
@@ -72,8 +79,12 @@ export default function InlineAlert({
         onClick={onClick}
       >
         <Icon
-          name={severity === Severity.Danger ? IconName.Danger : IconName.Info}
+          name={
+            iconName ??
+            (severity === Severity.Danger ? IconName.Danger : IconName.Info)
+          }
           size={IconSize.Sm}
+          color={iconColor}
         />
         <Text variant={TextVariant.bodySm} color={TextColor.inherit}>
           {textOverride ?? t('alert')}

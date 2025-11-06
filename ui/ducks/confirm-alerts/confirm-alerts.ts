@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { SecurityProvider } from '../../../shared/constants/security-provider';
-import { Severity } from '../../helpers/constants/design-system';
+import { IconColor, Severity } from '../../helpers/constants/design-system';
+import { IconName } from '../../components/component-library';
 
 export type AlertSeverity =
   | Severity.Danger
@@ -37,6 +38,16 @@ export type Alert = {
    * Whether to show the inline alert as a pill style.
    */
   inlineAlertTextPill?: boolean;
+
+  /**
+   * The name of the icon to show.
+   */
+  iconName?: IconName;
+
+  /**
+   * The color of the icon to show.
+   */
+  iconColor?: IconColor;
 
   /**
    * Whether the alert is a blocker and un-acknowledgeable, preventing the user
