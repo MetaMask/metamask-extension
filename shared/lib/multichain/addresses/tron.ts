@@ -23,14 +23,18 @@ const BASE = 58;
 
 // Base58 encoding/decoding
 function encode58(buffer: number[] | string): string {
-  if (buffer.length === 0) return '';
+  if (buffer.length === 0) {
+    return '';
+  }
 
   let i: number;
   let j: number;
   const digits = [0];
 
   for (i = 0; i < buffer.length; i++) {
-    for (j = 0; j < digits.length; j++) digits[j] <<= 8;
+    for (j = 0; j < digits.length; j++) {
+      digits[j] <<= 8;
+    }
 
     digits[0] += (buffer as any)[i];
     let carry = 0;
@@ -47,8 +51,9 @@ function encode58(buffer: number[] | string): string {
     }
   }
 
-  for (i = 0; (buffer as any)[i] === 0 && i < buffer.length - 1; i++)
+  for (i = 0; (buffer as any)[i] === 0 && i < buffer.length - 1; i++) {
     digits.push(0);
+  }
 
   return digits
     .reverse()
@@ -57,7 +62,9 @@ function encode58(buffer: number[] | string): string {
 }
 
 function decode58(string: string): number[] {
-  if (string.length === 0) return [];
+  if (string.length === 0) {
+    return [];
+  }
 
   let i: number;
   let j: number;
@@ -66,9 +73,13 @@ function decode58(string: string): number[] {
   for (i = 0; i < string.length; i++) {
     const c: string = string[i];
 
-    if (!(c in ALPHABET_MAP)) throw new Error('Non-base58 character');
+    if (!(c in ALPHABET_MAP)) {
+      throw new Error('Non-base58 character');
+    }
 
-    for (j = 0; j < bytes.length; j++) bytes[j] *= BASE;
+    for (j = 0; j < bytes.length; j++) {
+      bytes[j] *= BASE;
+    }
 
     bytes[0] += ALPHABET_MAP[c];
     let carry = 0;
@@ -85,14 +96,18 @@ function decode58(string: string): number[] {
     }
   }
 
-  for (i = 0; string[i] === '1' && i < string.length - 1; i++) bytes.push(0);
+  for (i = 0; string[i] === '1' && i < string.length - 1; i++) {
+    bytes.push(0);
+  }
 
   return bytes.reverse();
 }
 
 // Byte array utilities
 function byte2hexStr(byte: number): string {
-  if (byte < 0 || byte > 255) throw new Error('Input must be a byte');
+  if (byte < 0 || byte > 255) {
+    throw new Error('Input must be a byte');
+  }
 
   const hexByteMap = '0123456789ABCDEF';
   let str = '';
@@ -113,12 +128,18 @@ function byteArray2hexStr(byteArray: number[] | Uint8Array): string {
 function hexChar2byte(c: string): number {
   let d: number | undefined;
 
-  if (c >= 'A' && c <= 'F') d = c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
-  else if (c >= 'a' && c <= 'f') d = c.charCodeAt(0) - 'a'.charCodeAt(0) + 10;
-  else if (c >= '0' && c <= '9') d = c.charCodeAt(0) - '0'.charCodeAt(0);
+  if (c >= 'A' && c <= 'F') {
+    d = c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+  } else if (c >= 'a' && c <= 'f') {
+    d = c.charCodeAt(0) - 'a'.charCodeAt(0) + 10;
+  } else if (c >= '0' && c <= '9') {
+    d = c.charCodeAt(0) - '0'.charCodeAt(0);
+  }
 
-  if (typeof d === 'number') return d;
-  else throw new Error('The passed hex char is not a valid hex char');
+  if (typeof d === 'number') {
+    return d;
+  }
+  throw new Error('The passed hex char is not a valid hex char');
 }
 
 function isHexChar(c: string): number {
@@ -155,11 +176,13 @@ function hexStr2byteArray(str: string, strict = false): number[] {
       d += hexChar2byte(c);
       j++;
 
-      if (0 === j % 2) {
+      if (j % 2 === 0) {
         byteArray[k++] = d;
         d = 0;
       }
-    } else throw new Error('The passed hex char is not a valid hex string');
+    } else {
+      throw new Error('The passed hex char is not a valid hex string');
+    }
   }
 
   return byteArray;
@@ -181,13 +204,12 @@ function SHA256(msgBytes: number[] | Uint8Array): number[] {
       .update(Buffer.from(msgHex, 'hex'))
       .digest('hex');
     return hexStr2byteArray(hash);
-  } else {
-    // For browser environment, use Web Crypto API
-    throw new Error(
-      'Browser environment detected. Please use Web Crypto API for SHA256 or include a crypto library.',
-    );
-    // You would need to implement async Web Crypto API here or use a library like crypto-js
   }
+  // For browser environment, use Web Crypto API
+  throw new Error(
+    'Browser environment detected. Please use Web Crypto API for SHA256 or include a crypto library.',
+  );
+  // You would need to implement async Web Crypto API here or use a library like crypto-js
 }
 
 // Core validation functions
@@ -202,13 +224,21 @@ function getBase58CheckAddress(addressBytes: number[]): string {
 }
 
 function isAddressValid(base58Str: string): boolean {
-  if (typeof base58Str !== 'string') return false;
-  if (base58Str.length !== ADDRESS_SIZE) return false;
+  if (typeof base58Str !== 'string') {
+    return false;
+  }
+  if (base58Str.length !== ADDRESS_SIZE) {
+    return false;
+  }
 
   let address = decode58(base58Str);
 
-  if (address.length !== 25) return false;
-  if (address[0] !== ADDRESS_PREFIX_BYTE) return false;
+  if (address.length !== 25) {
+    return false;
+  }
+  if (address[0] !== ADDRESS_PREFIX_BYTE) {
+    return false;
+  }
 
   const checkSum = address.slice(21);
   address = address.slice(0, 21);
@@ -231,16 +261,18 @@ function isAddressValid(base58Str: string): boolean {
 
 /**
  * Validates a TRON address
+ *
  * @param address - The address to validate (can be Base58 or hex format)
  * @returns true if the address is valid, false otherwise
- *
  * @example
  * isAddress('TRX9Uhjxvb9tjfQHWQJKAQQaFcUx3N6TvT') // true
  * isAddress('41a614f803b6fd780986a42c78ec9c7f77e6ded13c') // true (hex format)
  * isAddress('invalid') // false
  */
 export function isTronAddress(address: unknown): boolean {
-  if (!is(address, string())) return false;
+  if (!is(address, string())) {
+    return false;
+  }
 
   // Convert HEX to Base58
   if (address.length === 42) {
