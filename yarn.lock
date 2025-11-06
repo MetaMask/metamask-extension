@@ -6453,9 +6453,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gator-permissions-controller@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/gator-permissions-controller@npm:0.3.0"
+"@metamask/gator-permissions-controller@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@metamask/gator-permissions-controller@npm:0.4.0"
   dependencies:
     "@metamask/7715-permission-types": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -6467,7 +6467,8 @@ __metadata:
     "@metamask/utils": "npm:^11.8.1"
   peerDependencies:
     "@metamask/snaps-controllers": ^14.0.1
-  checksum: 10/aed9621db1ce8cad13181cf521d119c880bb2d62478bbe257ab02335fb5ab099ca9317b656c16b966d3054627519cf5daf80bc0ec3465a45884e3d47c93524f3
+    "@metamask/transaction-controller": ^61.1.0
+  checksum: 10/7042081a938c20d0534e009c22e7db1bc476622008dee8658278f7b9888625be3bab9745bdff1d835fd0f7566a395e156c34703cb5809f57039e5d6a4df9213b
   languageName: node
   linkType: hard
 
@@ -7559,18 +7560,18 @@ __metadata:
   linkType: hard
 
 "@metamask/shield-controller@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/shield-controller@npm:1.1.0"
+  version: 1.2.0
+  resolution: "@metamask/shield-controller@npm:1.2.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/controller-utils": "npm:^11.15.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.8.1"
     cockatiel: "npm:^3.1.2"
   peerDependencies:
     "@metamask/signature-controller": ^35.0.0
     "@metamask/transaction-controller": ^61.0.0
-  checksum: 10/b84030af1df9b6ba7e1ce2a9315426b2cd73109b026b39154b36bc105aa0414c6bb1584fadef466b17e20e3ec7e6845f5b11f52b796d8d451427597e3d44752e
+  checksum: 10/ed58b67ddcfa51a1d375bdc43503d0da6e4445625aa0742972f06da151616469aae3eedde83f8af063da56f6181991d0da956536f1c736c22c38d629c6bd4d1e
   languageName: node
   linkType: hard
 
@@ -32031,7 +32032,7 @@ __metadata:
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^25.0.0"
-    "@metamask/gator-permissions-controller": "npm:^0.3.0"
+    "@metamask/gator-permissions-controller": "npm:^0.4.0"
     "@metamask/gator-permissions-snap": "npm:^0.5.0"
     "@metamask/institutional-wallet-snap": "npm:1.3.4"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
