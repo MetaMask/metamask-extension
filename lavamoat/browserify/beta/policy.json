@@ -66,7 +66,7 @@
         "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "tronweb>ethereum-cryptography": true
+        "@ethereumjs/tx>ethereum-cryptography": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util": {
@@ -76,7 +76,7 @@
       "packages": {
         "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>@ethereumjs/rlp": true,
         "browserify>buffer": true,
-        "tronweb>ethereum-cryptography": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
         "browserify>insert-module-globals>is-buffer": true,
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
@@ -89,7 +89,7 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/rlp": true,
-        "tronweb>ethereum-cryptography": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true
       }
     },
@@ -100,7 +100,7 @@
       "packages": {
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>@ethereumjs/rlp": true,
         "browserify>buffer": true,
-        "tronweb>ethereum-cryptography": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
         "browserify>insert-module-globals>is-buffer": true,
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
@@ -113,7 +113,7 @@
       "packages": {
         "@metamask/eth-sig-util>@ethereumjs/rlp": true,
         "browserify>buffer": true,
-        "tronweb>ethereum-cryptography": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
         "browserify>insert-module-globals>is-buffer": true,
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
@@ -126,7 +126,7 @@
       "packages": {
         "eth-lattice-keyring>@ethereumjs/util>@ethereumjs/rlp": true,
         "browserify>buffer": true,
-        "tronweb>ethereum-cryptography": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
         "browserify>insert-module-globals>is-buffer": true,
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
@@ -785,7 +785,7 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "tronweb>ethereum-cryptography": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
         "lodash": true,
         "uuid": true
       }
@@ -1074,7 +1074,7 @@
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
-        "tronweb>ethereum-cryptography": true
+        "@ethereumjs/tx>ethereum-cryptography": true
       }
     },
     "@metamask/eth-json-rpc-filters": {
@@ -1173,7 +1173,7 @@
         "@metamask/utils": true,
         "@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
-        "tronweb>ethereum-cryptography": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
       }
     },
@@ -1183,7 +1183,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
-        "tronweb>ethereum-cryptography": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
         "crypto-browserify>randombytes": true
       }
     },
@@ -1655,7 +1655,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@noble/hashes": true,
-        "tronweb>ethereum-cryptography": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack-cli>fastest-levenshtein": true,
         "punycode": true
       }
@@ -2138,20 +2138,12 @@
         "@noble/hashes": true
       }
     },
-    "tronweb>ethereum-cryptography>@noble/curves": {
+    "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
       },
       "packages": {
-        "tronweb>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "tronweb>ethers>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "tronweb>ethers>@noble/hashes": true
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@noble/hashes": {
@@ -2167,13 +2159,7 @@
         "crypto": true
       }
     },
-    "tronweb>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "tronweb>ethers>@noble/hashes": {
+    "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -2337,17 +2323,17 @@
         "TextEncoder": true
       }
     },
-    "tronweb>ethereum-cryptography>@scure/bip32>@scure/base": {
+    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
       }
     },
-    "tronweb>ethereum-cryptography>@scure/bip32": {
+    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
       "packages": {
-        "tronweb>ethereum-cryptography>@noble/curves": true,
-        "tronweb>ethereum-cryptography>@noble/hashes": true,
-        "tronweb>ethereum-cryptography>@scure/bip32>@scure/base": true
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": true
       }
     },
     "@segment/loosely-validate-event": {
@@ -2972,36 +2958,6 @@
         "browserify>timers-browserify": true
       }
     },
-    "tronweb>axios": {
-      "globals": {
-        "AbortController": true,
-        "Blob": true,
-        "FormData": true,
-        "ReadableStream": true,
-        "Request": true,
-        "Response": true,
-        "TextEncoder": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "WorkerGlobalScope": true,
-        "XMLHttpRequest": true,
-        "btoa": true,
-        "clearTimeout": true,
-        "console.warn": true,
-        "document": true,
-        "fetch": true,
-        "importScripts": false,
-        "location.href": true,
-        "navigator": true,
-        "queueMicrotask": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "process": true,
-        "browserify>timers-browserify": true
-      }
-    },
     "@metamask/snaps-controllers>tar-stream>b4a": {
       "globals": {
         "TextDecoder": true,
@@ -3079,12 +3035,6 @@
       }
     },
     "eth-lattice-keyring>gridplus-sdk>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "tronweb>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
@@ -3643,6 +3593,17 @@
         "eth-method-registry>@metamask/ethjs-query": true
       }
     },
+    "@ethereumjs/tx>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
+      }
+    },
     "ethereumjs-util>ethereum-cryptography": {
       "packages": {
         "browserify>buffer": true,
@@ -3662,17 +3623,6 @@
         "crypto-browserify>randombytes": true,
         "koa>content-disposition>safe-buffer": true,
         "ganache>secp256k1": true
-      }
-    },
-    "tronweb>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true
-      },
-      "packages": {
-        "tronweb>ethereum-cryptography>@noble/curves": true,
-        "tronweb>ethereum-cryptography>@noble/hashes": true,
-        "tronweb>ethereum-cryptography>@scure/bip32": true
       }
     },
     "ethereumjs-util": {
@@ -3740,25 +3690,6 @@
         "ethers>@ethersproject/wallet": true,
         "ethers>@ethersproject/web": true,
         "ethers>@ethersproject/wordlists": true
-      }
-    },
-    "tronweb>ethers": {
-      "globals": {
-        "AbortController": true,
-        "Headers": true,
-        "atob": true,
-        "btoa": true,
-        "clearTimeout": true,
-        "console.log": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "tronweb>ethers>@adraffy/ens-normalize": true,
-        "tronweb>ethers>@noble/curves": true,
-        "tronweb>ethers>@noble/hashes": true,
-        "tronweb>ethers>aes-js": true,
-        "tronweb>ethers>tslib": true
       }
     },
     "eth-method-registry>@metamask/ethjs-contract>ethjs-abi": {
@@ -3875,12 +3806,6 @@
       "packages": {
         "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": true,
         "string.prototype.matchall>es-abstract>es-object-atoms": true
-      }
-    },
-    "tronweb>google-protobuf": {
-      "globals": {
-        "COMPILED": true,
-        "proto.google.protobuf": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk": {
@@ -5322,14 +5247,6 @@
         "process": true
       }
     },
-    "tronweb>semver": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "process": true
-      }
-    },
     "string.prototype.matchall>call-bind>set-function-length": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
@@ -5509,40 +5426,8 @@
         "document.getSelection": true
       }
     },
-    "tronweb": {
-      "globals": {
-        "COMPILED": true,
-        "TronWebProto": true,
-        "URLSearchParams": true,
-        "btoa": true,
-        "console.log": true,
-        "console.warn": true,
-        "proto": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "tronweb>axios": true,
-        "tronweb>bignumber.js": true,
-        "browserify>buffer": true,
-        "tronweb>ethereum-cryptography": true,
-        "tronweb>ethers": true,
-        "tronweb>eventemitter3": true,
-        "tronweb>google-protobuf": true,
-        "tronweb>semver": true,
-        "tronweb>ethers>tslib": true,
-        "tronweb>validator": true
-      }
-    },
     "tslib": {
       "globals": {
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "tronweb>ethers>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
         "SuppressedError": true,
         "define": true
       }
