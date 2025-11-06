@@ -1,0 +1,1 @@
+This file is used to test INFRA-3081 point 2: commit filtering functionality
