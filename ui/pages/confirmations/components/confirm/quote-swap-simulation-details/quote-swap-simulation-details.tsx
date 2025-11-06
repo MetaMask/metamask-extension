@@ -91,7 +91,6 @@ export const QuoteSwapSimulationDetails = ({
         <BalanceChangeRow
           balanceChange={srcAssetBalanceChange}
           confirmationId={currentConfirmation?.id}
-          hasIncomingTokens
           isFirstRow
           label={t('simulationDetailsOutgoingHeading')}
           labelColor={TextColor.errorAlternative}
@@ -99,6 +98,7 @@ export const QuoteSwapSimulationDetails = ({
         />
         <BalanceChangeRow
           balanceChange={destAssetBalanceChange}
+          hasIncomingTokens
           confirmationId={currentConfirmation?.id}
           label={t('simulationDetailsIncomingHeading')}
           labelColor={TextColor.successDefault}
