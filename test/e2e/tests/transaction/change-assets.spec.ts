@@ -27,7 +27,6 @@ describe('Change assets', function () {
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
-        const accountListPage = new AccountListPage(driver);
         const sendTokenPage = new SendTokenPage(driver);
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
         const activityListPage = new ActivityListPage(driver);
@@ -36,8 +35,7 @@ describe('Change assets', function () {
         await homePage.startSendFlow();
 
         await sendTokenPage.checkPageIsLoaded();
-        await accountListPage.selectAccount('Account 1');
-
+        await sendTokenPage.clickOnAccountSelector('Account 1');
         await sendTokenPage.fillAmount('2');
         await sendTokenPage.clickContinueButton();
         await sendTokenPage.goToPreviousScreen();
@@ -76,7 +74,6 @@ describe('Change assets', function () {
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
-        const accountListPage = new AccountListPage(driver);
         const sendTokenPage = new SendTokenPage(driver);
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
         const activityListPage = new ActivityListPage(driver);
@@ -91,7 +88,7 @@ describe('Change assets', function () {
         await homePage.startSendFlow();
 
         await sendTokenPage.checkPageIsLoaded();
-        await accountListPage.selectAccount('Account 1');
+        await sendTokenPage.clickOnAccountSelector('Account 1');
         await sendTokenPage.fillAmount('2');
         await sendTokenPage.clickContinueButton();
         await sendTokenPage.goToPreviousScreen();
@@ -130,7 +127,6 @@ describe('Change assets', function () {
 
         const homePage = new HomePage(driver);
         const nftDetailsPage = new NFTDetailsPage(driver);
-        const accountListPage = new AccountListPage(driver);
         const sendTokenPage = new SendTokenPage(driver);
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
         const activityListPage = new ActivityListPage(driver);
@@ -142,7 +138,7 @@ describe('Change assets', function () {
         await nftDetailsPage.checkPageIsLoaded();
         await nftDetailsPage.clickNFTSendButton();
         await sendTokenPage.checkPageIsLoaded();
-        await accountListPage.selectAccount('Account 1');
+        await sendTokenPage.clickOnAccountSelector('Account 1');
         await sendTokenPage.checkTokenSymbolInAssetPicker('TDN', '1');
         await sendTokenPage.clickContinueButton();
         await sendTokenPage.goToPreviousScreen();
@@ -205,10 +201,6 @@ describe('Change assets', function () {
         // Create second account with sync enabled - this should sync to user storage
         await accountListPage.addMultichainAccount();
 
-        // Wait for sync operation to complete
-        // await waitUntilSyncedAccountsNumberEquals(2);
-        // await waitUntilEventsEmittedNumberEquals(1);
-
         await accountListPage.checkAccountDisplayedInAccountList(
           newAccountName,
         );
@@ -228,14 +220,13 @@ describe('Change assets', function () {
 
         // Switch accounts during send flow and check that native currency is selected
         await sendTokenPage.checkPageIsLoaded();
-        await accountListPage.selectAccount('Account 1');
+        await sendTokenPage.clickOnAccountSelector('Account 1');
         await sendTokenPage.checkTokenSymbolInAssetPicker('TDN', '1');
         await sendTokenPage.clickAccountPickerButton();
-        await accountListPage.selectAccount('Account 2');
-        await driver.delay(1000);
+        await sendTokenPage.selectAccount('Account 2');
         await sendTokenPage.checkTokenSymbolInAssetPicker('ETH');
         await sendTokenPage.clickAccountPickerButton();
-        await accountListPage.selectAccount('Account 1');
+        await sendTokenPage.selectAccount('Account 1');
         await sendTokenPage.checkTokenSymbolInAssetPicker('ETH');
         await sendTokenPage.fillAmount('2');
 
