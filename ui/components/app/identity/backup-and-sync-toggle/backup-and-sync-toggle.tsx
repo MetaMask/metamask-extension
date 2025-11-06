@@ -98,12 +98,21 @@ export const BackupAndSyncToggle = () => {
       (async () => {
         try {
           // Turn off main backup and sync
-          await setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);
+          await setIsBackupAndSyncFeatureEnabled(
+            BACKUPANDSYNC_FEATURES.main,
+            false,
+          );
           // Also turn off all sub-features when basic functionality is disabled
-          await setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.accountSyncing, false);
-          await setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.contactSyncing, false);
-        } catch (error) {
-          console.error('Failed to disable backup and sync features:', error);
+          await setIsBackupAndSyncFeatureEnabled(
+            BACKUPANDSYNC_FEATURES.accountSyncing,
+            false,
+          );
+          await setIsBackupAndSyncFeatureEnabled(
+            BACKUPANDSYNC_FEATURES.contactSyncing,
+            false,
+          );
+        } catch (err) {
+          console.error('Failed to disable backup and sync features:', err);
         }
       })();
     }

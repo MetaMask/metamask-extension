@@ -235,7 +235,7 @@ describe('BackupAndSyncToggle', () => {
     );
 
     // Wait a bit to ensure useEffect doesn't fire
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Should not have called the disable function at all
     expect(setIsBackupAndSyncFeatureEnabledMock).not.toHaveBeenCalled();
