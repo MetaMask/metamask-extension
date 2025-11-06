@@ -147,9 +147,8 @@ describe('TRON Address Validator', () => {
 
         // Changing case should invalidate the address
         const modifiedAddress = validAddress.toLowerCase();
-        if (modifiedAddress !== validAddress) {
-          expect(isTronAddress(modifiedAddress)).toBe(false);
-        }
+
+        expect(isTronAddress(modifiedAddress)).toBe(false);
       });
     });
 
