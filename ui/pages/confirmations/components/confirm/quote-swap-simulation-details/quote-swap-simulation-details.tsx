@@ -1,10 +1,6 @@
 import React, { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
-import {
-  Box,
-  BoxFlexDirection,
-  TextColor,
-} from '@metamask/design-system-react';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
 import { QuoteResponse } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
@@ -15,15 +11,16 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { SimulationDetailsLayout } from '../../simulation-details/simulation-details';
 import { BalanceChangeRow } from '../../simulation-details/balance-change-row';
+import { TextColor } from '../../../../../helpers/constants/design-system';
 
 export const QuoteSwapSimulationDetails = ({
-  quote,
   fiatRates,
+  quote,
   sourceTokenAmount,
   tokenDetails,
 }: {
-  quote?: QuoteResponse;
   fiatRates?: Record<Hex, number | undefined>;
+  quote?: QuoteResponse;
   sourceTokenAmount?: string;
   tokenDetails?: Record<Hex, TokenStandAndDetails>;
 }) => {
@@ -52,7 +49,6 @@ export const QuoteSwapSimulationDetails = ({
           .times(fiatRates[srcAsset.address as Hex] ?? 0)
           .toNumber(),
         usdAmount: 0,
-        color: TextColor.ErrorAlternative,
       },
       destAssetBalanceChange: {
         asset: {
@@ -68,7 +64,6 @@ export const QuoteSwapSimulationDetails = ({
           .times(fiatRates[destAsset.address as Hex] ?? 0)
           .toNumber(),
         usdAmount: 0,
-        color: TextColor.SuccessDefault,
       },
     };
   }, [fiatRates, quote, tokenDetails]);
@@ -88,19 +83,25 @@ export const QuoteSwapSimulationDetails = ({
       isTransactionsRedesign
       transactionId={transactionId}
     >
-      <Box flexDirection={BoxFlexDirection.Column} gap={3}>
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        gap={3}
+        data-testid="quote-swap-simulation-details"
+      >
         <BalanceChangeRow
-          label={t('simulationDetailsOutgoingHeading')}
-          isFirstRow
-          hasIncomingTokens
-          confirmationId={currentConfirmation?.id}
           balanceChange={srcAssetBalanceChange}
+          confirmationId={currentConfirmation?.id}
+          hasIncomingTokens
+          isFirstRow
+          label={t('simulationDetailsOutgoingHeading')}
+          labelColor={TextColor.errorAlternative}
           showFiat
         />
         <BalanceChangeRow
-          label={t('simulationDetailsIncomingHeading')}
-          confirmationId={currentConfirmation?.id}
           balanceChange={destAssetBalanceChange}
+          confirmationId={currentConfirmation?.id}
+          label={t('simulationDetailsIncomingHeading')}
+          labelColor={TextColor.successDefault}
           showFiat
         />
       </Box>
