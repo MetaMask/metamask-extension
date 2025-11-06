@@ -103,6 +103,11 @@
         "innerWidth": false,
         "matchMedia": false
       }
+    },
+    "@tanstack/react-virtual>@tanstack/virtual-core": {
+      "globals": {
+        "ResizeObserver": true
+      }
     }
   }
 }
