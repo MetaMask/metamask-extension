@@ -180,7 +180,7 @@ class AccountListPage {
   };
 
   private readonly selectAccountSelector =
-    '.multichain-account-cell__account-name';
+    '.multichain-account-list-item__account-name__button';
 
   private readonly importSrpButton = {
     text: 'Secret Recovery Phrase',
@@ -398,7 +398,6 @@ class AccountListPage {
       this.addMultichainAccountButton,
     );
     await createMultichainAccountButtons[options?.srpIndex ?? 0].click();
-    await this.waitUntilSyncingIsCompleted()
   }
 
   /**

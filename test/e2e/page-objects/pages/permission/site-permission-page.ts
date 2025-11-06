@@ -116,7 +116,7 @@ class SitePermissionPage {
     await this.openAccountPermissionsModal();
 
     for (const accountLabel of accountLabels) {
-      await this.driver.clickElement({ text: accountLabel, tag: 'button' });
+      await this.driver.clickElement({ text: accountLabel });
     }
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmEditAccountsButton,
