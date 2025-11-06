@@ -243,11 +243,7 @@ class AccountListPage {
       throw e;
     }
 
-    console.log(`Check that account syncing not displayed in account list`);
-    await this.driver.assertElementNotPresent({
-      css: this.addMultichainAccountButton,
-      text: 'Syncing',
-    });
+    await this.waitUntilSyncingIsCompleted();
     console.log('Account list is loaded');
   }
 
@@ -384,10 +380,21 @@ class AccountListPage {
    * Import a wallet.
    */
   async clickImportWallet(): Promise<void> {
-      await this.driver.clickElement(
+    await this.driver.clickElement(
       this.importWalletFromMultichainWalletModalButton,
     );
   }
+  /**
+   * Waiting until syncing is completed.
+   */
+   async waitUntilSyncingIsCompleted(): Promise<void> {
+    console.log(`Check that account syncing not displayed in account list`);
+    await this.driver.assertElementNotPresent({
+      css: this.addMultichainAccountButton,
+      text: 'Syncing',
+    });
+  }
+
   /**
    * Adds a new multichain account.
    *
@@ -395,17 +402,13 @@ class AccountListPage {
    * @param options.srpIndex - Optional SRP index for the new account
    */
   async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
-    console.log(`Check that account syncing not displayed in account list`);
-    await this.driver.assertElementNotPresent({
-      css: this.addMultichainAccountButton,
-      text: 'Syncing',
-    });
-
     console.log(`Adding new multichain account`);
+    await this.waitUntilSyncingIsCompleted()
     const createMultichainAccountButtons = await this.driver.findElements(
       this.addMultichainAccountButton,
     );
     await createMultichainAccountButtons[options?.srpIndex ?? 0].click();
+    await this.waitUntilSyncingIsCompleted()
   }
 
   /**
