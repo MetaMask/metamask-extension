@@ -156,6 +156,91 @@ describe('BackupAndSyncToggle', () => {
     );
   });
 
+  it('disables all backup and sync features when onboarding basic functionality is disabled', async () => {
+    const store = initialStore();
+    store.metamask.isBackupAndSyncEnabled = true;
+    store.metamask.useExternalServices = true; // Production basic functionality enabled
+    store.appState.externalServicesOnboardingToggleState = false; // Onboarding basic functionality disabled
+
+    const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
+
+    render(
+      <Redux.Provider store={mockStore(store)}>
+        <BackupAndSyncToggle />
+      </Redux.Provider>,
+    );
+
+    // Wait for the async useEffect to complete
+    await waitFor(() => {
+      expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+        BACKUPANDSYNC_FEATURES.main,
+        false,
+      );
+    });
+
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.accountSyncing,
+      false,
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.contactSyncing,
+      false,
+    );
+  });
+
+  it('disables all backup and sync features when both basic functionality states are disabled', async () => {
+    const store = initialStore();
+    store.metamask.isBackupAndSyncEnabled = true;
+    store.metamask.useExternalServices = false; // Production basic functionality disabled
+    store.appState.externalServicesOnboardingToggleState = false; // Onboarding basic functionality disabled
+
+    const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
+
+    render(
+      <Redux.Provider store={mockStore(store)}>
+        <BackupAndSyncToggle />
+      </Redux.Provider>,
+    );
+
+    // Wait for the async useEffect to complete
+    await waitFor(() => {
+      expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+        BACKUPANDSYNC_FEATURES.main,
+        false,
+      );
+    });
+
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.accountSyncing,
+      false,
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.contactSyncing,
+      false,
+    );
+  });
+
+  it('does not disable backup and sync when both basic functionality states are enabled', async () => {
+    const store = initialStore();
+    store.metamask.isBackupAndSyncEnabled = true;
+    store.metamask.useExternalServices = true; // Production basic functionality enabled
+    store.appState.externalServicesOnboardingToggleState = true; // Onboarding basic functionality enabled
+
+    const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
+
+    render(
+      <Redux.Provider store={mockStore(store)}>
+        <BackupAndSyncToggle />
+      </Redux.Provider>,
+    );
+
+    // Wait a bit to ensure useEffect doesn't fire
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Should not have called the disable function at all
+    expect(setIsBackupAndSyncFeatureEnabledMock).not.toHaveBeenCalled();
+  });
+
   it('disables all sub-features when manually turning off backup and sync', async () => {
     const store = initialStore();
     store.metamask.isBackupAndSyncEnabled = true;

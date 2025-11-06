@@ -87,9 +87,14 @@ export const BackupAndSyncToggle = () => {
     [trackEvent, isBackupAndSyncEnabled, isMetamaskNotificationsEnabled],
   );
 
-  // Cascading side effects
+  // Cascading side effects - disable backup & sync when basic functionality is disabled
   useEffect(() => {
-    if (!isBasicFunctionalityEnabled && isBackupAndSyncEnabled) {
+    // Check both basic functionality states: production and onboarding
+    const isBasicFunctionalityDisabled =
+      isBasicFunctionalityEnabled === false ||
+      isOnboardingBasicFunctionalityEnabled === false;
+
+    if (isBasicFunctionalityDisabled && isBackupAndSyncEnabled) {
       (async () => {
         try {
           // Turn off main backup and sync
@@ -104,6 +109,7 @@ export const BackupAndSyncToggle = () => {
     }
   }, [
     isBasicFunctionalityEnabled,
+    isOnboardingBasicFunctionalityEnabled,
     isBackupAndSyncEnabled,
     setIsBackupAndSyncFeatureEnabled,
   ]);
