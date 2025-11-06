@@ -138,7 +138,7 @@ describe('Trezor Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          `${(balance! / 1_000_000).toFixed(2)}M`.toString(),
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
         );
 
         const contractAddress =
@@ -194,7 +194,7 @@ describe('Trezor Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          `${(balance! / 1_000_000).toFixed(2)}M`.toString(),
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
         );
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
