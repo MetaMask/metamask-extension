@@ -34,6 +34,11 @@ export type Alert = {
   inlineAlertText?: string;
 
   /**
+   * Whether to show the inline alert as a pill style.
+   */
+  inlineAlertTextPill?: boolean;
+
+  /**
    * Whether the alert is a blocker and un-acknowledgeable, preventing the user
    * from proceeding and relying on actions to proceed. The default is `false`.
    */

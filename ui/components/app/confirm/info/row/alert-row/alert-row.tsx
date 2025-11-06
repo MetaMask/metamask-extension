@@ -111,6 +111,7 @@ export const ConfirmInfoAlertRow = ({
         showArrow={selectedAlertShowArrow}
         textOverride={selectedAlertInlineAlertText}
         onClick={onClickHandler}
+        pill={selectedAlert?.inlineAlertTextPill}
       />
     </Box>
   ) : (

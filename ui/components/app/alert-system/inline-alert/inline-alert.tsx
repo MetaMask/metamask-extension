@@ -30,6 +30,8 @@ export type InlineAlertProps = {
   textOverride?: string;
   /** Whether to show the arrow icon */
   showArrow?: boolean;
+  /** Whether to show the inline alert as a pill style */
+  pill?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -41,6 +43,7 @@ export default function InlineAlert({
   style,
   textOverride,
   showArrow = true,
+  pill = false,
 }: InlineAlertProps) {
   const t = useI18nContext();
 
@@ -60,6 +63,7 @@ export default function InlineAlert({
           'inline-alert__danger': severity === Severity.Danger,
           'inline-alert__success': severity === Severity.Success,
           'inline-alert__disabled': severity === Severity.Disabled,
+          'inline-alert__pill': pill,
         })}
         style={{
           cursor: onClick ? 'pointer' : 'default',

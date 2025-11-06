@@ -20,7 +20,12 @@
   }
 
   &__disabled {
-    color: var(--color-text-muted);
+    color: var(--color-text-alternative);
     background-color: var(--color-background-muted);
+  }
+
+  &__pill {
+    padding: 2px 5px;
+    border-radius: 6px;
   }
 }

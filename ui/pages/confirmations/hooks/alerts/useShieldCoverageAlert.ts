@@ -191,6 +191,7 @@ export function useShieldCoverageAlert(): Alert[] {
         }),
         isBlocking: false,
         inlineAlertText,
+        inlineAlertTextPill: true,
         showArrow: false,
         isOpenModalOnClick: true,
         hideFromAlertNavigation: true,
