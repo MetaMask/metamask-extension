@@ -7722,9 +7722,7 @@ export async function submitShieldClaim(params: {
 }
 
 export async function getShieldClaims() {
-  const baseUrl =
-    process.env.SHIELD_CLAIMS_API_URL ??
-    'https://claims.dev-api.cx.metamask.io';
+  const baseUrl = shieldConfig.claimUrl;
 
   const claimsUrl = `${baseUrl}/claims`;
   const accessToken = await submitRequestToBackground<string>('getBearerToken');

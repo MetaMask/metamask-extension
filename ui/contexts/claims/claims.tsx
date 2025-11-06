@@ -13,6 +13,7 @@ import {
   ClaimStatus,
 } from '../../pages/settings/transaction-shield-tab/types';
 import { getShieldClaims } from '../../store/actions';
+import { numberToHex } from '@metamask/utils';
 
 type ClaimsContextType = {
   claims: ShieldClaim[];
@@ -57,8 +58,7 @@ export const ClaimsProvider: React.FC<ClaimsProviderProps> = ({ children }) => {
           ...claim,
           // used for displaying list of claims
           claimNumber: index + 1,
-          // change chainId from number to hex
-          chainId: `0x${Number(claim.chainId).toString(16)}`,
+          chainId: numberToHex(Number(claim.chainId)),
         }));
       setClaims(sortedClaims);
     } catch (err) {
