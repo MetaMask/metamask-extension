@@ -3089,7 +3089,7 @@
         "console.warn": true,
         "document": true,
         "fetch": true,
-        "importScripts": true,
+        "importScripts": false,
         "location.href": true,
         "navigator": true,
         "process": true,
