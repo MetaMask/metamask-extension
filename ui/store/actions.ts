@@ -7750,3 +7750,28 @@ export async function submitShieldClaim(params: {
     throw new SubmitClaimError(ClaimSubmitToastType.Errored);
   }
 }
+
+export async function getShieldClaims() {
+  const baseUrl = shieldConfig.claimUrl;
+
+  const claimsUrl = `${baseUrl}/claims`;
+  const accessToken = await submitRequestToBackground<string>('getBearerToken');
+
+  try {
+    const response = await fetch(claimsUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json();
+      throw new Error(errorBody.error || 'Failed to get shield claims');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to get shield claims:', error);
+    throw error;
+  }
+}
