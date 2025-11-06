@@ -7,28 +7,28 @@ import {
   CRYPTO_PAYMENT_METHOD_ERRORS,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
-import { useTokenBalances as pollAndUpdateEvmBalances } from '../../hooks/useTokenBalances';
-import {
-  useUserSubscriptionByProduct,
-  useUserSubscriptions,
-} from '../../hooks/subscription/useSubscription';
+import { useTokenBalances as pollAndUpdateEvmBalances } from '../useTokenBalances';
 import {
   getSubscriptionCryptoApprovalAmount,
   getSubscriptions,
   updateSubscriptionCryptoPaymentMethod,
 } from '../../store/actions';
 import { getSelectedAccount } from '../../selectors';
+import { getTokenBalancesEvm } from '../../selectors/assets';
+import { MetaMaskReduxDispatch } from '../../store/store';
+import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
+import { useAsyncResult } from '../useAsync';
+import { MINUTE } from '../../../shared/constants/time';
+import { useThrottle } from '../useThrottle';
 import {
   useSubscriptionPaymentMethods,
   useSubscriptionPricing,
   useSubscriptionProductPlans,
-} from '../../hooks/subscription/useSubscriptionPricing';
-import { getTokenBalancesEvm } from '../../selectors/assets';
-import { MetaMaskReduxDispatch } from '../../store/store';
-import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
-import { useAsyncResult } from '../../hooks/useAsync';
-import { MINUTE } from '../../../shared/constants/time';
-import { useThrottle } from '../../hooks/useThrottle';
+} from './useSubscriptionPricing';
+import {
+  useUserSubscriptionByProduct,
+  useUserSubscriptions,
+} from './useSubscription';
 
 /**
  * Check if the shield subscription payment token has sufficient balance for the subscription

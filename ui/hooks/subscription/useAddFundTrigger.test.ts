@@ -13,11 +13,11 @@ import { flushPromises } from '../../../test/lib/timer-helpers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import mockState from '../../../test/data/mock-state.json';
 import * as actions from '../../store/actions';
-import * as subscriptionHooks from '../../hooks/subscription/useSubscription';
-import * as subscriptionPricingHooks from '../../hooks/subscription/useSubscriptionPricing';
-import { useTokenBalances } from '../../hooks/useTokenBalances';
+import { useTokenBalances } from '../useTokenBalances';
 import { MINUTE } from '../../../shared/constants/time';
 import { getTokenBalancesEvm } from '../../selectors/assets';
+import * as subscriptionPricingHooks from './useSubscriptionPricing';
+import * as subscriptionHooks from './useSubscription';
 import { useShieldAddFundTrigger } from './useAddFundTrigger';
 
 jest.mock('../../store/actions');
