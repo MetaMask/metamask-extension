@@ -2461,7 +2461,7 @@ describe('Additional RewardsController edge cases', () => {
       );
     });
 
-    it('should handle SeasonNotFoundError and invalidate cache and clear seasons', async () => {
+    it('should handle SeasonNotFoundError and clear seasons', async () => {
       const state: Partial<RewardsControllerState> = {
         rewardsSeasons: {
           [MOCK_SEASON_ID]: {
@@ -2530,26 +2530,31 @@ describe('Additional RewardsController edge cases', () => {
             controller.getSeasonStatus(MOCK_SUBSCRIPTION_ID, MOCK_SEASON_ID),
           ).rejects.toThrow(SeasonNotFoundError);
 
-          // Verify that subscription cache was invalidated
-          expect(
-            controller.state.rewardsSeasonStatuses[
-              `${MOCK_SEASON_ID}:${MOCK_SUBSCRIPTION_ID}`
-            ],
-          ).toBeUndefined();
-
-          // Verify that accounts and subscriptions were invalidated
-          expect(controller.state.rewardsAccounts).toEqual({});
-          expect(controller.state.rewardsSubscriptions).toEqual({});
-          expect(controller.state.rewardsSubscriptionTokens).toEqual({});
-
-          // Verify that rewardsActiveAccount was invalidated
-          expect(controller.state.rewardsActiveAccount?.hasOptedIn).toBe(false);
-          expect(
-            controller.state.rewardsActiveAccount?.subscriptionId,
-          ).toBeNull();
-
           // Verify that rewardsSeasons was cleared
           expect(controller.state.rewardsSeasons).toEqual({});
+
+          // Verify that accounts and subscriptions were NOT invalidated
+          expect(controller.state.rewardsAccounts).toEqual({
+            [MOCK_CAIP_ACCOUNT]: {
+              account: MOCK_CAIP_ACCOUNT,
+              hasOptedIn: true,
+              subscriptionId: MOCK_SUBSCRIPTION_ID,
+              perpsFeeDiscount: null,
+              lastPerpsDiscountRateFetched: null,
+            },
+          });
+          expect(controller.state.rewardsSubscriptions).toEqual({
+            [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+          });
+          expect(controller.state.rewardsSubscriptionTokens).toEqual({
+            [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+          });
+
+          // Verify that rewardsActiveAccount was NOT invalidated
+          expect(controller.state.rewardsActiveAccount?.hasOptedIn).toBe(true);
+          expect(controller.state.rewardsActiveAccount?.subscriptionId).toBe(
+            MOCK_SUBSCRIPTION_ID,
+          );
         },
       );
     });
