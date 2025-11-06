@@ -6145,33 +6145,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:@metamask-previews/eth-json-rpc-middleware@21.0.0-preview-a345102":
-  version: 21.0.0-preview-a345102
-  resolution: "@metamask-previews/eth-json-rpc-middleware@npm:21.0.0-preview-a345102"
+"@metamask/eth-json-rpc-middleware@npm:@metamask-previews/eth-json-rpc-middleware@21.0.0-preview-536ed51":
+  version: 21.0.0-preview-536ed51
+  resolution: "@metamask-previews/eth-json-rpc-middleware@npm:21.0.0-preview-536ed51"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^14.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^5.0.1"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/json-rpc-engine": "npm:^10.1.1"
+    "@metamask/message-manager": "npm:^14.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.8.1"
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/144f3f5dd27418f401b6bb8d93158b47f9b10a090d91a54f0cca5635e94bbb195d5666afc36e9a8c04349797f19aedc31046c1d9aa3a5bc5d1840372b2431049
+  checksum: 10/934290fe3e39d6a428f302028e8f5939e8cc1b13318f0a3f6a5731c072e92fb25e60eb64edec6b44949e53c51b775a90b6b575526809067c6acc01980d3b81c2
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-provider@npm:@metamask-previews/eth-json-rpc-provider@5.0.1-preview-a345102":
-  version: 5.0.1-preview-a345102
-  resolution: "@metamask-previews/eth-json-rpc-provider@npm:5.0.1-preview-a345102"
+"@metamask/eth-json-rpc-provider@npm:@metamask-previews/eth-json-rpc-provider@5.0.1-preview-536ed51":
+  version: 5.0.1-preview-536ed51
+  resolution: "@metamask-previews/eth-json-rpc-provider@npm:5.0.1-preview-536ed51"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^10.1.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.8.1"
     nanoid: "npm:^3.3.8"
-  checksum: 10/51cfa405c9a3ad7829d1bd45d057ec64c01cf3c018db71a20b5ae537f4d862319a402641d1b636169685be5948ced6daf5838cf68bcdeab9b4bb9d116bf43e34
+  checksum: 10/a07dd786d978df9201f1acf1ca0b2d05c9f22d4385595bdfaa4bfb4d9e64d34e442467489ffcbccdcc9d9061420105aa16e62193bf21adccff9b782695c4b2b6
   languageName: node
   linkType: hard
 
@@ -6525,9 +6526,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:@metamask-previews/json-rpc-engine@10.1.1-preview-a345102":
-  version: 10.1.1-preview-a345102
-  resolution: "@metamask-previews/json-rpc-engine@npm:10.1.1-preview-a345102"
+"@metamask/json-rpc-engine@npm:@metamask-previews/json-rpc-engine@10.1.1-preview-536ed51":
+  version: 10.1.1-preview-536ed51
+  resolution: "@metamask-previews/json-rpc-engine@npm:10.1.1-preview-536ed51"
   dependencies:
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
@@ -6535,7 +6536,7 @@ __metadata:
     "@types/deep-freeze-strict": "npm:^1.1.0"
     deep-freeze-strict: "npm:^1.1.1"
     klona: "npm:^2.0.6"
-  checksum: 10/0c80cd6a17be082b8370cd44e7f0d576c3606d486927106037a0c3767d8efee437118042bf546e027401baa3bca02c11910dd89f76b9364e6813e158b09541dc
+  checksum: 10/fbe83e82ff700a107fa7e5132d599e60a6ce0d444a31c5dafde0634db4aa3477d48496e9f35418336ecbc021e1bf9cf8f99ac2834696e6b9891f461de2bb30d9
   languageName: node
   linkType: hard
 
@@ -7040,9 +7041,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:@metamask-previews/network-controller@25.0.0-preview-a345102":
-  version: 25.0.0-preview-a345102
-  resolution: "@metamask-previews/network-controller@npm:25.0.0-preview-a345102"
+"@metamask/network-controller@npm:@metamask-previews/network-controller@25.0.0-preview-536ed51":
+  version: 25.0.0-preview-536ed51
+  resolution: "@metamask-previews/network-controller@npm:25.0.0-preview-536ed51"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.15.0"
@@ -7065,7 +7066,7 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/error-reporting-service": ^3.0.0
-  checksum: 10/5a3dba892c0e32e5f65182e79e358138c23ba5e67909c8328d4519b18616f5af964ea5cd0bc0513d38b475218c3cfd4f992e89d3b2f464aefe83af5b672af158
+  checksum: 10/a816a35a865aa47b5482cb4981a1bd825163b90836dd1d05511b2bf63fb6c224ec6cbee274e6a22e76dbf8cf1d7b23d230c1dd1303264559024c11fe64e543bb
   languageName: node
   linkType: hard
 
