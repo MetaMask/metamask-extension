@@ -59,6 +59,7 @@ export default function InlineAlert({
           'inline-alert__warning': severity === Severity.Warning,
           'inline-alert__danger': severity === Severity.Danger,
           'inline-alert__success': severity === Severity.Success,
+          'inline-alert__disabled': severity === Severity.Disabled,
         })}
         style={{
           cursor: onClick ? 'pointer' : 'default',

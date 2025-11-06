@@ -6,7 +6,8 @@ export type AlertSeverity =
   | Severity.Danger
   | Severity.Info
   | Severity.Success
-  | Severity.Warning;
+  | Severity.Warning
+  | Severity.Disabled;
 
 /**
  * A confirmable alert to be displayed in the UI.
