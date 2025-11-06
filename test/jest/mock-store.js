@@ -334,24 +334,12 @@ export const createSwapsMockStore = () => {
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
-      accounts: {
-        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          balance: '0x0',
-        },
-        '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
-          address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-          balance: '0x0',
-        },
-      },
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc': {
             balance: '0x0',
           },
-          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
-            address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+          '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B': {
             balance: '0x0',
           },
         },
@@ -688,6 +676,7 @@ export const createSwapsMockStore = () => {
                   '0x55ad39634ee10d417b6e190cfd3736098957e958879cffe78f1f00f4fd2654d6',
                 minedTx: 'success',
               },
+              chainId: CHAIN_IDS.MAINNET,
             },
             {
               uuid: 'uuid2',
@@ -701,6 +690,7 @@ export const createSwapsMockStore = () => {
                   '0x55ad39634ee10d417b6e190cfd3736098957e958879cffe78f1f00f4fd2654d6',
                 minedTx: 'success',
               },
+              chainId: CHAIN_IDS.MAINNET,
             },
           ],
         },

@@ -199,7 +199,7 @@ export default class OnboardingController extends BaseController<
       log.debug('Ignoring registerOnboarding; user already onboarded');
       return;
     }
-    const { onboardingTabs } = { ...(this.state ?? {}) };
+    const { onboardingTabs } = { ...this.state };
 
     if (!onboardingTabs) {
       return;
@@ -234,5 +234,17 @@ export default class OnboardingController extends BaseController<
       firstTimeFlowType === FirstTimeFlowType.socialCreate ||
       firstTimeFlowType === FirstTimeFlowType.socialImport
     );
+  }
+
+  /**
+   * Reset the onboarding controller state.
+   */
+  resetOnboarding(): void {
+    this.update((state) => {
+      state.completedOnboarding = false;
+      state.firstTimeFlowType = null;
+      state.seedPhraseBackedUp = null;
+      state.onboardingTabs = {};
+    });
   }
 }

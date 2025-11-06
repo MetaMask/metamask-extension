@@ -4049,9 +4049,6 @@
     "message": "$1 simgesi",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Devam etmek için bir seçenek seçin"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Uzantıyı başlat"
   },
@@ -5106,10 +5103,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Bu size ait $1. Doğru sıralamada yazın ve güvenli bir şekilde saklayın. Gizli Kurtarma İfadenizi elinde bulunduran biri cüzdanınıza erişim sağlayabilir. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Asla hiç kimseyle paylaşmayın."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Gizli Kurtarma İfadenizi kaydedin"
@@ -7063,24 +7057,11 @@
     "message": "$1 paranıza erişimi asla kaybetmemeniz için bu ifadeyi güvenli bir şekilde saklayabilirsiniz.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Şurada cüzdanlarınızı yedekleyebilir veya Gizli Kurtarma İfadenizi görebilirsiniz: Ayarlar > Güvenlik ve Şifre."
-  },
   "walletReadyLoseSrp": {
     "message": "Gizli Kurtarma İfadenizi kaybederseniz cüzdanınızı kullanamayacaksınız."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Bu Gizli Kurtarma İfadesi, şifrenizi unutmanız veya oturumunuza erişimi kaybetmeniz durumunda yeniden erişim kazanmanıza yardımcı olabilir."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Gizli Kurtarma İfadenizi yedeklemezseniz uygulamanın dışında kalmanız veya yeni bir cihaz edinmeniz durumunda paranıza erişimi kaybedersiniz."
-  },
-  "walletReadySocialDetails1": {
-    "message": "$1 hesabı ve şifresi ile dilediğiniz zaman cüzdanınızda oturum açabilirsiniz.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Şifrenizi unutursanız cüzdanınıza erişim sağlayamayacaksınız."
   },
   "wantToAddThisNetwork": {
     "message": "Bu ağı eklemek istiyor musunuz?"
@@ -7123,9 +7104,6 @@
   },
   "welcomeBack": {
     "message": "Tekrar hoş geldiniz"
-  },
-  "welcomeToMetaMask": {
-    "message": "Başlayalım"
   },
   "whatsThis": {
     "message": "Bu nedir?"
@@ -7189,8 +7167,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Gizli Kurtarma İfadenizi güvenli bir şekilde saklayın!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Size daha sonra hatırlatacağız"
   }
 }

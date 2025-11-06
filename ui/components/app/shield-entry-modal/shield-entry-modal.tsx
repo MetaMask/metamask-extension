@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import {
   AlignItems,
   Display,
@@ -95,7 +96,7 @@ export default function ShieldEntryModal() {
                 size={ButtonLinkSize.Inherit}
                 target="_blank"
                 rel="noopener noreferrer"
-                href="#"
+                href={TRANSACTION_SHIELD_LINK}
               >
                 {t('learnMoreUpperCase')}
               </ButtonLink>,
