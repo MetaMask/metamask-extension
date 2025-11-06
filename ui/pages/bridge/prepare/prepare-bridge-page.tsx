@@ -97,11 +97,6 @@ import {
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainNativeCurrency,
-  getMultichainProviderConfig,
-} from '../../../selectors/multichain';
 import { setEnabledAllPopularNetworks } from '../../../store/actions';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
@@ -201,7 +196,6 @@ const PrepareBridgePage = ({
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
-  const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
@@ -251,7 +245,9 @@ const PrepareBridgePage = ({
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
 
-  const ticker = useMultichainSelector(getMultichainNativeCurrency);
+  const ticker = fromChain
+    ? getNativeAssetForChainId(fromChain.chainId)?.symbol
+    : undefined;
   const {
     isEstimatedReturnLow,
     isNoQuotesAvailable,
@@ -383,14 +379,8 @@ const PrepareBridgePage = ({
                     // Length of decimal part cannot exceed token.decimals
                     .split('.')[0]
                 : undefined,
-            srcChainId: fromChain?.chainId,
-            destChainId: toChain?.chainId,
-            // This override allows quotes to be returned when the rpcUrl is a forked network
-            // Otherwise quotes get filtered out by the bridge-api when the wallet's real
-            // balance is less than the tenderly balance
-            insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
-              ? true
-              : undefined,
+            srcChainId: fromToken.chainId,
+            destChainId: toToken.chainId,
             slippage,
             walletAddress: selectedAccount.address,
             destWalletAddress: selectedDestinationAccount?.address,
@@ -399,16 +389,15 @@ const PrepareBridgePage = ({
           }
         : undefined,
     [
-      fromToken?.address,
-      fromToken?.decimals,
-      toToken?.address,
+      fromToken.address,
+      fromToken.chainId,
+      fromToken.decimals,
+      toToken.address,
+      toToken.chainId,
       fromAmount,
-      fromChain?.chainId,
-      toChain?.chainId,
       slippage,
       selectedAccount?.address,
       selectedDestinationAccount?.address,
-      providerConfig?.rpcUrl,
       gasIncluded,
       gasIncluded7702,
     ],

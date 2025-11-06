@@ -42,8 +42,6 @@ import {
 } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { getMultichainCurrentChainId } from '../../../selectors/multichain';
-import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 const sanitizeAmountInput = (textToSanitize: string) => {
   // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
@@ -102,9 +100,7 @@ export const BridgeInputGroup = ({
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
-  const currentChainId = useSelector(getMultichainCurrentChainId);
-  const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
-
+  const selectedChainId = token?.chainId;
   const [, handleCopy] = useCopyToClipboard(MINUTE);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -132,10 +128,9 @@ export const BridgeInputGroup = ({
   const handleAddressClick = () => {
     if (token && selectedChainId) {
       const caipChainId = formatChainIdToCaip(selectedChainId);
-      const isSolana = caipChainId === MultichainNetworks.SOLANA;
 
       let blockExplorerUrl = '';
-      if (isSolana) {
+      if (isNonEvmChainId(selectedChainId)) {
         const blockExplorerUrls =
           MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
         if (blockExplorerUrls) {
