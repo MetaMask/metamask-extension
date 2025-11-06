@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Redux from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { MetamaskIdentityProvider } from '../../../../contexts/identity';
 import * as useBackupAndSyncHook from '../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
@@ -122,6 +122,69 @@ describe('BackupAndSyncToggle', () => {
         name: CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
         enableBackupAndSync: expect.any(Function),
       }),
+    );
+  });
+
+  it('disables all backup and sync features when basic functionality is disabled', async () => {
+    const store = initialStore();
+    store.metamask.isBackupAndSyncEnabled = true;
+    store.metamask.useExternalServices = false; // Basic functionality disabled
+
+    const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
+
+    render(
+      <Redux.Provider store={mockStore(store)}>
+        <BackupAndSyncToggle />
+      </Redux.Provider>,
+    );
+
+    // Wait for the async useEffect to complete
+    await waitFor(() => {
+      expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+        BACKUPANDSYNC_FEATURES.main,
+        false,
+      );
+    });
+
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.accountSyncing,
+      false,
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.contactSyncing,
+      false,
+    );
+  });
+
+  it('disables all sub-features when manually turning off backup and sync', async () => {
+    const store = initialStore();
+    store.metamask.isBackupAndSyncEnabled = true;
+
+    const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
+
+    const { getByTestId } = render(
+      <Redux.Provider store={mockStore(store)}>
+        <BackupAndSyncToggle />
+      </Redux.Provider>,
+    );
+
+    fireEvent.click(getByTestId(backupAndSyncToggleTestIds.toggleButton));
+
+    // Wait for the async toggle handler to complete
+    await waitFor(() => {
+      expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+        BACKUPANDSYNC_FEATURES.main,
+        false,
+      );
+    });
+
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.accountSyncing,
+      false,
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.contactSyncing,
+      false,
     );
   });
 

@@ -90,11 +90,17 @@ export const BackupAndSyncToggle = () => {
   // Cascading side effects
   useEffect(() => {
     if (!isBasicFunctionalityEnabled && isBackupAndSyncEnabled) {
-      // Turn off main backup and sync
-      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);
-      // Also turn off all sub-features when basic functionality is disabled
-      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.accountSyncing, false);
-      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.contactSyncing, false);
+      (async () => {
+        try {
+          // Turn off main backup and sync
+          await setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);
+          // Also turn off all sub-features when basic functionality is disabled
+          await setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.accountSyncing, false);
+          await setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.contactSyncing, false);
+        } catch (error) {
+          console.error('Failed to disable backup and sync features:', error);
+        }
+      })();
     }
   }, [
     isBasicFunctionalityEnabled,
