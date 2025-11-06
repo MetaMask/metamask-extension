@@ -47,6 +47,16 @@ export class AuthorizationFailedError extends Error {
 }
 
 /**
+ * Custom error for season not found
+ */
+export class SeasonNotFoundError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'SeasonNotFoundError';
+  }
+}
+
+/**
  * Custom error for account already registered (409 conflict)
  */
 export class AccountAlreadyRegisteredError extends Error {
@@ -394,6 +404,12 @@ export class RewardsDataService {
       if (errorData?.message?.includes('Rewards authorization failed')) {
         throw new AuthorizationFailedError(
           'Rewards authorization failed. Please login and try again.',
+        );
+      }
+
+      if (errorData?.message?.includes('Season not found')) {
+        throw new SeasonNotFoundError(
+          'Season not found. Please try again with a different season.',
         );
       }
 
