@@ -96,7 +96,7 @@ export function isDevOrTestBuild() {
 export function loadShieldConfig(): ShieldEnvConfig {
   const buildType = process.env.METAMASK_BUILD_TYPE;
 
-  let buildTypeEnv: BuildType = BUILD_TYPE.main;
+  let buildTypeEnv: BuildType = BUILD_TYPE.uat;
   if (isDevOrTestBuild()) {
     buildTypeEnv = BUILD_TYPE.dev;
   } else if (buildType === 'experimental') {
