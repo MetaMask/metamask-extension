@@ -104,6 +104,11 @@
         "matchMedia": false
       }
     },
+    "@tanstack/react-virtual": {
+      "globals": {
+        "ResizeObserver": true
+      }
+    },
     "@tanstack/react-virtual>@tanstack/virtual-core": {
       "globals": {
         "ResizeObserver": true
