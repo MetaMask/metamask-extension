@@ -1,3 +1,6 @@
+import sdkPackageJson from '@metamask/snaps-sdk/package.json';
+import packageJson from '../../../package.json';
+
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
@@ -45,7 +48,16 @@ describe('Test Snap Client Status', function () {
 
         // Validate the client status is accurate
         await testSnaps.checkClientStatus(
-          JSON.stringify({ locked: true, active: false }, null, 2),
+          JSON.stringify(
+            {
+              locked: true,
+              active: false,
+              clientVersion: packageJson.version,
+              platformVersion: sdkPackageJson.version,
+            },
+            null,
+            2,
+          ),
         );
       },
     );
