@@ -227,25 +227,15 @@ export const CoinOverview = ({
   );
   const isRewardsEnabled = useSelector(selectRewardsEnabled);
 
-  // Calculate aggregated balance across all mainnet networks for empty state logic
   const accountGroupBalance = useSelector(
     selectAccountGroupBalanceForEmptyState,
   );
   const isTestnet = useSelector(getMultichainIsTestnet);
 
-  /**
-   * Determines when to show the balance empty state component.
-   *
-   * Shows empty state only when ALL conditions are met:
-   * 1. Multichain accounts state2 is enabled (new account system)
-   * 2. Not on a testnet (testnets always show balance, even if 0)
-   * 3. Balance data is fresh (not cached/stale)
-   * 4. Aggregated balance across ALL mainnet networks is exactly 0
-   */
   const shouldShowBalanceEmptyState =
     isMultichainAccountsState2Enabled &&
     !isTestnet &&
-    !balanceIsCached && // Don't show empty state if balance data is cached/stale
+    !balanceIsCached &&
     accountGroupBalance === 0;
 
   const handleSensitiveToggle = () => {
