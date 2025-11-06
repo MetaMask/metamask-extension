@@ -273,7 +273,63 @@ class HomePage {
   }
 
   /**
+   * Helper method to check if the balance display shows a specific value.
+   *
+   * @param value - The expected balance value to check for.
+   * @returns Promise that resolves to true if balance is found, false otherwise.
+   */
+  private async hasBalanceWithValue(value: string): Promise<boolean> {
+    try {
+      await this.driver.waitForSelector(
+        {
+          css: this.balance,
+          text: value,
+        },
+        { timeout: 2000 },
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Helper method to check if the empty state component is displayed.
+   *
+   * @returns Promise that resolves to true if empty state is found, false otherwise.
+   */
+  private async hasEmptyState(): Promise<boolean> {
+    try {
+      await this.driver.waitForSelector(this.emptyBalance, { timeout: 2000 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Helper method to get the current balance text for error messages.
+   *
+   * @returns Promise that resolves to the balance text, or 'unknown' if not found.
+   */
+  private async getActualBalance(): Promise<string> {
+    try {
+      const balanceElement = await this.driver.waitForSelector(this.balance, {
+        timeout: 2000,
+      });
+      return await balanceElement.getText();
+    } catch {
+      return 'unknown';
+    }
+  }
+
+  /**
    * Checks if the expected balance is displayed on homepage.
+   *
+   * This method handles three scenarios:
+   * 1. Regular balance display showing the expected value
+   * 2. Empty state component (valid only when expecting $0)
+   * 3. Balance mismatch - provides clear error with actual vs expected
    *
    * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
@@ -282,46 +338,32 @@ class HomePage {
     expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
-    // First, try to find the regular balance display
-    try {
-      await this.driver.waitForSelector({
-        css: this.balance,
-        text: expectedBalance,
-      });
+    // Try 1: Check for regular balance display
+    if (await this.hasBalanceWithValue(expectedBalance)) {
       console.log(
         `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
       );
-    } catch (balanceError) {
-      // Balance element not found, check if empty state is displayed instead
-      try {
-        await this.driver.waitForSelector(this.emptyBalance, {
-          timeout: 2000,
-        });
-        // Empty state is displayed
-        if (expectedBalance === '0') {
-          console.log(
-            'Balance empty state is displayed as expected for 0 balance',
-          );
-          return;
-        }
-        const errorMessage = `Expected balance ${expectedBalance} ${symbol}, but balance empty state is displayed instead`;
-        console.log(errorMessage);
-        throw new Error(errorMessage);
-      } catch (emptyStateError) {
-        // Neither balance nor empty state found, try to get actual balance for error message
-        try {
-          const balance = await this.driver.waitForSelector(this.balance);
-          const currentBalance = parseFloat(await balance.getText());
-          const errorMessage = `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} ${symbol}`;
-          console.log(errorMessage);
-          throw new Error(errorMessage);
-        } catch (finalError) {
-          // Can't find anything, throw original error
-          console.log('Could not find balance or empty state element');
-          throw balanceError;
-        }
-      }
+      return;
     }
+
+    // Try 2: Check for empty state (valid only for $0)
+    if (await this.hasEmptyState()) {
+      if (expectedBalance === '0') {
+        console.log(
+          'Balance empty state is displayed as expected for 0 balance',
+        );
+        return;
+      }
+      throw new Error(
+        `Expected balance ${expectedBalance} ${symbol}, but balance empty state is displayed instead`,
+      );
+    }
+
+    // Try 3: Get actual balance for error message
+    const actualBalance = await this.getActualBalance();
+    throw new Error(
+      `Expected balance ${expectedBalance} ${symbol}, got balance ${actualBalance} ${symbol}`,
+    );
   }
 
   /**
