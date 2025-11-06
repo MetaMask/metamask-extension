@@ -50,6 +50,7 @@ import {
   JustifyContent,
   BlockSize,
 } from '../../../helpers/constants/design-system';
+import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
 import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE } from './types';
 import LoginErrorModal from './login-error-modal';
@@ -68,6 +69,7 @@ export default function OnboardingWelcome() {
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
   const isUserAuthenticatedWithSocialLogin = useSelector(
     getIsSocialLoginUserAuthenticated,
   );
@@ -95,7 +97,11 @@ export default function OnboardingWelcome() {
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
-    if (currentKeyring && !newAccountCreationInProgress) {
+    if (
+      currentKeyring &&
+      !newAccountCreationInProgress &&
+      !isWalletResetInProgress
+    ) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.restore
@@ -126,6 +132,7 @@ export default function OnboardingWelcome() {
     isParticipateInMetaMetricsSet,
     isUserAuthenticatedWithSocialLogin,
     isFireFox,
+    isWalletResetInProgress,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -441,7 +448,7 @@ export default function OnboardingWelcome() {
 
           {loginError !== null && (
             <LoginErrorModal
-              onClose={() => setLoginError(null)}
+              onDone={() => setLoginError(null)}
               loginError={loginError}
             />
           )}

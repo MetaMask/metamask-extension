@@ -3554,6 +3554,10 @@
   "loginErrorGenericTitle": {
     "message": "Something went wrong"
   },
+  "loginErrorResetWalletDescription": {
+    "message": "An issue occurred while unlocking. Re-login with $1 and your Metamask password.",
+    "description": "$1 is the social login method"
+  },
   "loginErrorSessionExpiredButton": {
     "message": "Log in"
   },
