@@ -9,7 +9,6 @@ import { is, string } from '@metamask/superstruct';
 
 // Constants
 const ADDRESS_SIZE = 34;
-const ADDRESS_PREFIX = '41';
 const ADDRESS_PREFIX_BYTE = 0x41;
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const ALPHABET_MAP: Record<string, number> = {};
@@ -31,27 +30,39 @@ function encode58(buffer: number[] | string): string {
   let j: number;
   const digits = [0];
 
-  for (i = 0; i < buffer.length; i++) {
+  const bufferArray: number[] =
+    typeof buffer === 'string'
+      ? Array.from(buffer).map((char) => char.charCodeAt(0))
+      : buffer;
+
+  // eslint-disable-next-line no-bitwise, @typescript-eslint/prefer-for-of
+  for (i = 0; i < bufferArray.length; i++) {
+    // eslint-disable-next-line no-bitwise
     for (j = 0; j < digits.length; j++) {
+      // eslint-disable-next-line no-bitwise
       digits[j] <<= 8;
     }
 
-    digits[0] += (buffer as any)[i];
+    digits[0] += bufferArray[i];
     let carry = 0;
 
+    // eslint-disable-next-line no-bitwise, no-plusplus
     for (j = 0; j < digits.length; ++j) {
       digits[j] += carry;
+      // eslint-disable-next-line no-bitwise
       carry = (digits[j] / BASE) | 0;
       digits[j] %= BASE;
     }
 
     while (carry) {
       digits.push(carry % BASE);
+      // eslint-disable-next-line no-bitwise
       carry = (carry / BASE) | 0;
     }
   }
 
-  for (i = 0; (buffer as any)[i] === 0 && i < buffer.length - 1; i++) {
+  // eslint-disable-next-line no-plusplus
+  for (i = 0; bufferArray[i] === 0 && i < bufferArray.length - 1; i++) {
     digits.push(0);
   }
 
@@ -61,8 +72,8 @@ function encode58(buffer: number[] | string): string {
     .join('');
 }
 
-function decode58(string: string): number[] {
-  if (string.length === 0) {
+function decode58(str: string): number[] {
+  if (str.length === 0) {
     return [];
   }
 
@@ -70,8 +81,9 @@ function decode58(string: string): number[] {
   let j: number;
   const bytes = [0];
 
-  for (i = 0; i < string.length; i++) {
-    const c: string = string[i];
+  // eslint-disable-next-line @typescript-eslint/prefer-for-of, no-plusplus
+  for (i = 0; i < str.length; i++) {
+    const c: string = str[i];
 
     if (!(c in ALPHABET_MAP)) {
       throw new Error('Non-base58 character');
@@ -84,19 +96,25 @@ function decode58(string: string): number[] {
     bytes[0] += ALPHABET_MAP[c];
     let carry = 0;
 
+    // eslint-disable-next-line no-bitwise, no-plusplus
     for (j = 0; j < bytes.length; ++j) {
       bytes[j] += carry;
+      // eslint-disable-next-line no-bitwise
       carry = bytes[j] >> 8;
+      // eslint-disable-next-line no-bitwise
       bytes[j] &= 0xff;
     }
 
     while (carry) {
+      // eslint-disable-next-line no-bitwise
       bytes.push(carry & 0xff);
+      // eslint-disable-next-line no-bitwise
       carry >>= 8;
     }
   }
 
-  for (i = 0; string[i] === '1' && i < string.length - 1; i++) {
+  // eslint-disable-next-line no-plusplus
+  for (i = 0; str[i] === '1' && i < str.length - 1; i++) {
     bytes.push(0);
   }
 
@@ -111,7 +129,9 @@ function byte2hexStr(byte: number): string {
 
   const hexByteMap = '0123456789ABCDEF';
   let str = '';
+  // eslint-disable-next-line no-bitwise
   str += hexByteMap.charAt(byte >> 4);
+  // eslint-disable-next-line no-bitwise
   str += hexByteMap.charAt(byte & 0x0f);
 
   return str;
@@ -119,8 +139,8 @@ function byte2hexStr(byte: number): string {
 
 function byteArray2hexStr(byteArray: number[] | Uint8Array): string {
   let str = '';
-  for (let i = 0; i < byteArray.length; i++) {
-    str += byte2hexStr(byteArray[i]);
+  for (const byte of byteArray) {
+    str += byte2hexStr(byte);
   }
   return str;
 }
@@ -154,12 +174,13 @@ function isHexChar(c: string): number {
 }
 
 function hexStr2byteArray(str: string, strict = false): number[] {
+  let processedStr = str;
   let len = str.length;
 
   if (strict) {
     if (len % 2) {
-      str = `0${str}`;
-      len++;
+      processedStr = `0${str}`;
+      len += 1;
     }
   }
 
@@ -168,16 +189,19 @@ function hexStr2byteArray(str: string, strict = false): number[] {
   let j = 0;
   let k = 0;
 
+  // eslint-disable-next-line @typescript-eslint/prefer-for-of, no-plusplus
   for (let i = 0; i < len; i++) {
-    const c = str.charAt(i);
+    const c = processedStr.charAt(i);
 
     if (isHexChar(c)) {
+      // eslint-disable-next-line no-bitwise
       d <<= 4;
       d += hexChar2byte(c);
-      j++;
+      j += 1;
 
       if (j % 2 === 0) {
-        byteArray[k++] = d;
+        byteArray[k] = d;
+        k += 1;
         d = 0;
       }
     } else {
@@ -190,16 +214,13 @@ function hexStr2byteArray(str: string, strict = false): number[] {
 
 // SHA256 - Note: This is a simplified implementation using Node.js crypto
 // For browser environments, you'll need to use Web Crypto API or include a SHA256 library
-function SHA256(msgBytes: number[] | Uint8Array): number[] {
+function sha256(msgBytes: number[] | Uint8Array): number[] {
   // Check if we're in Node.js environment
-  if (
-    typeof process !== 'undefined' &&
-    process.versions &&
-    process.versions.node
-  ) {
-    const crypto = require('crypto');
+  if (typeof process?.versions?.node !== 'undefined') {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+    const nodeCrypto = require('crypto');
     const msgHex = byteArray2hexStr(msgBytes);
-    const hash = crypto
+    const hash = nodeCrypto
       .createHash('sha256')
       .update(Buffer.from(msgHex, 'hex'))
       .digest('hex');
@@ -214,8 +235,8 @@ function SHA256(msgBytes: number[] | Uint8Array): number[] {
 
 // Core validation functions
 function getBase58CheckAddress(addressBytes: number[]): string {
-  const hash0 = SHA256(addressBytes);
-  const hash1 = SHA256(hash0);
+  const hash0 = sha256(addressBytes);
+  const hash1 = sha256(hash0);
 
   let checkSum = hash1.slice(0, 4);
   checkSum = addressBytes.concat(checkSum);
@@ -243,15 +264,15 @@ function isAddressValid(base58Str: string): boolean {
   const checkSum = address.slice(21);
   address = address.slice(0, 21);
 
-  const hash0 = SHA256(address);
-  const hash1 = SHA256(hash0);
+  const hash0 = sha256(address);
+  const hash1 = sha256(hash0);
   const checkSum1 = hash1.slice(0, 4);
 
   if (
-    checkSum[0] == checkSum1[0] &&
-    checkSum[1] == checkSum1[1] &&
-    checkSum[2] == checkSum1[2] &&
-    checkSum[3] == checkSum1[3]
+    checkSum[0] === checkSum1[0] &&
+    checkSum[1] === checkSum1[1] &&
+    checkSum[2] === checkSum1[2] &&
+    checkSum[3] === checkSum1[3]
   ) {
     return true;
   }
