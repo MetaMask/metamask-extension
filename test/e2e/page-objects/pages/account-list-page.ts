@@ -1024,7 +1024,6 @@ class AccountListPage {
   async selectAccount(accountLabel: string): Promise<void> {
     console.log(`Select account with label ${accountLabel} in account list`);
     await this.driver.clickElement({
-      css: this.selectAccountSelector,
       text: accountLabel,
     });
     console.log(`Account with label ${accountLabel} selected`);
