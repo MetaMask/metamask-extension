@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { DEFAULT_BTC_ACCOUNT_NAME } from '../../constants';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import { withBtcAccountSnap } from './common-btc';
 
