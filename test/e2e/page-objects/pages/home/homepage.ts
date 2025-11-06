@@ -317,7 +317,8 @@ class HomePage {
       const balanceElement = await this.driver.waitForSelector(this.balance, {
         timeout: 2000,
       });
-      return await balanceElement.getText();
+      const balanceText = await balanceElement.getText();
+      return parseFloat(balanceText).toString();
     } catch {
       return 'unknown';
     }
