@@ -259,9 +259,7 @@ If warnings/errors aren't being captured:
 - **Snapshot Logic**: `test/helpers/console-snapshot.ts` - Normalization and comparison
 - **E2E Capture**: `test/e2e/console-capture.ts` - E2E-specific capture system
 - **Generation Scripts**:
-  - `development/generate-warnings-snapshot-unit.ts` - Unit tests snapshot
-  - `development/generate-warnings-snapshot-integration.ts` - Integration tests snapshot
-  - `development/generate-warnings-snapshot-e2e.ts` - E2E tests snapshot
+  - `development/generate-warnings-snapshot.ts` - Unified snapshot generation for all test types
 
 ## Parallel Execution & Incremental Updates
 

@@ -26,12 +26,12 @@ async function main(): Promise<void> {
 
   console.log(`\n📦 Aggregating ${snapshotType} snapshot from temp files...\n`);
 
-  // Set the snapshot type
+  // Set the snapshot type environment variable
   process.env.WARNINGS_SNAPSHOT_TYPE = snapshotType;
 
   try {
     const { aggregateAndSaveSnapshot } = await import(
-      '../test/helpers/console-snapshot'
+      '../test/helpers/console-snapshot.js'
     );
 
     aggregateAndSaveSnapshot();

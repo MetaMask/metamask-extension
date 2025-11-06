@@ -27,15 +27,36 @@ A comprehensive system to prevent new console warnings and errors from being int
 
 ### 2. **Independent Snapshots**
 
-- 4 separate snapshot files
+- 3 separate snapshot files
 - Running one doesn't affect others
-- Different teams can own different snapshots
 
 ### 3. **CI-Safe Path Normalization**
 
-- All absolute paths normalized: `<USER_PATH>`, `<PROJECT_ROOT>`
-- Line numbers normalized: `<LINE>:<COL>`
-- Works on any machine/CI system
+Ensures snapshots work across different machines and CI environments by normalizing all variable data:
+
+**Path Normalization:**
+- User home directories: `/Users/username/...` → `<USER_PATH>`
+- CI home directories: `/home/runner/...` → `<USER_PATH>`
+- Project root: `.../metamask-extension/` → `<PROJECT_ROOT>/`
+- Node modules: `.../node_modules/...` → `<NODE_MODULE>`
+- Absolute paths: `/path/to/file` → `<ABSOLUTE_PATH>/`
+
+**Source Location Normalization:**
+- Line and column numbers: `:140:19` → `:<LINE>:<COL>`
+
+**Number Normalization:**
+- All numbers: `123`, `456`, `789` → `<NUMBER>`
+- Durations: `in 827ms` → `in <DURATION>ms`
+- JSON values: `"value": 700` → `"value": <NUMBER>`
+- Large numbers: `1762290003263` → `<NUMBER>`
+
+**ID Normalization:**
+- UUIDs: `550e8400-e29b-41d4-a716-446655440000` → `<UUID>`
+- Addresses: `0x1234...` → `<ADDRESS>`
+- Hashes: `abc123def456...` → `<HASH>`
+- Timestamps: `2024-11-05T12:34:56.789Z` → `<TIMESTAMP>`
+
+**Result:** Snapshots are portable, allowing to work on developer machines, CI servers, and any environment without modification
 
 ### 4. **Auto-Retry Workflow**
 
@@ -55,7 +76,7 @@ yarn test:warnings:update:unit          # ~5 min
 yarn test:warnings:update:integration   # ~30 sec
 
 # Needs build:
-yarn build:test  # ~5-10 min (once)
+yarn build:test  # ~5 min (once)
 yarn test:warnings:update:e2e      # ~10-15 min
 ```
 
@@ -123,14 +144,6 @@ Running one snapshot generation **never affects** other snapshots.
 
 ## Next Steps
 
-### For Extension-Platform Team:
-
-**Add to `.github/CODEOWNERS`:**
-
-```
-/test/test-warnings-snapshot-*.json @MetaMask/extension-platform
-```
-
 ### Start Fixing Warnings:
 
 ```bash
@@ -140,18 +153,3 @@ cat test/test-warnings-snapshot-unit.json | jq '.warnings'
 # Fix them one by one
 # Then manually remove from snapshot after verification
 ```
-
----
-
-## Summary
-
-**System Status:** ✅ Production-Ready
-
-- ✅ All 4 snapshots generated
-- ✅ Additive mode handles non-deterministic tests
-- ✅ Path normalization for CI compatibility
-- ✅ Independent snapshot management
-- ✅ Auto-retry workflow
-- ✅ No linting errors
-
-**Ready to prevent new warnings while fixing existing 162 issues!** 🚀

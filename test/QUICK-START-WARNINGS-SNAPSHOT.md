@@ -167,17 +167,9 @@ No extra flags needed - it just works! 🚀
 
 ## Removing Fixed Warnings
 
-**Important:** Snapshots are ADDITIVE - to remove a warning:
+To remove a warning:
 
 1. Fix the code causing the warning
 2. Verify: `yarn test:unit path/to/test.tsx` (should pass)
 3. Manually edit the snapshot file and delete that warning
 4. Verify: `yarn test:unit` (full suite should pass)
-
-## Advanced: Manual Incremental Updates
-
-For power users who want to save time on e2e tests, see:
-
-- `test/E2E-INCREMENTAL-SNAPSHOT-WORKFLOW.md`
-
-But for most cases, just use the simple "keep re-running" approach! 👍

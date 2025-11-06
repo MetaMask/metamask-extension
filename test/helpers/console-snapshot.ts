@@ -10,13 +10,24 @@ import fs from 'fs';
 import path from 'path';
 
 // Snapshot file path can be configured via environment variable
-// Defaults to unit test snapshot for backwards compatibility
+/**
+ * Get the snapshot file path for the current snapshot type
+ * Snapshot type is determined by WARNINGS_SNAPSHOT_TYPE env variable
+ *
+ * @returns The full path to the snapshot file
+ */
 function getSnapshotFilePath(): string {
   const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
   const snapshotFileName = `test-warnings-snapshot-${snapshotType}.json`;
   return path.join(process.cwd(), 'test', snapshotFileName);
 }
 
+/**
+ * Get the temp directory for the current snapshot type
+ * Snapshot type is determined by WARNINGS_SNAPSHOT_TYPE env variable
+ *
+ * @returns The full path to the temp directory
+ */
 function getTempDir(): string {
   const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
   // Save temporary files in project directory for visibility
@@ -45,7 +56,9 @@ type SnapshotData = {
   errors: string[];
   _metadata?: {
     generatedAt: string;
+    lastUpdatedAt?: string;
     description: string;
+    note?: string;
   };
 };
 
@@ -191,6 +204,7 @@ export function saveSnapshot(snapshot: SnapshotData): void {
 /**
  * Save captured data to a worker-specific temp file
  * This allows multiple Jest workers to write simultaneously without conflicts
+ * Snapshot type is determined by WARNINGS_SNAPSHOT_TYPE env variable
  *
  * @param captured - The captured warnings/errors from this worker
  * @returns Path to the temp file
@@ -224,6 +238,7 @@ export function saveWorkerSnapshot(captured: CapturedData): string {
 /**
  * Aggregate all worker snapshots and save the final snapshot
  * Call this in Jest global teardown after all workers have finished
+ * Snapshot type is determined by WARNINGS_SNAPSHOT_TYPE env variable
  */
 export function aggregateAndSaveSnapshot(): void {
   try {
@@ -232,8 +247,10 @@ export function aggregateAndSaveSnapshot(): void {
 
     // Check if temp directory exists
     if (!fs.existsSync(tempDir)) {
-      // No workers wrote anything, create empty snapshot
-      saveSnapshot({ warnings: [], errors: [] });
+      console.log('\n⚠️  No temp files found - nothing to aggregate.');
+      console.log('   Snapshot unchanged.');
+      console.log('\n   Run tests first to generate temp files:');
+      console.log(`   yarn test:warnings:update:${snapshotType}`);
       return;
     }
 
@@ -247,6 +264,18 @@ export function aggregateAndSaveSnapshot(): void {
           file.endsWith('.json'),
       )
       .map((file) => path.join(tempDir, file));
+
+    // Safety check: If no temp files found, don't touch snapshot
+    if (tempFiles.length === 0) {
+      console.log('\n⚠️  No temp files found - nothing to aggregate.');
+      console.log('   Snapshot unchanged.');
+      console.log('\n   Run tests first to generate temp files:');
+      console.log(`   yarn test:warnings:update:${snapshotType}`);
+      return;
+    }
+
+    // Log temp file count for transparency
+    console.log(`\nFound ${tempFiles.length} temp file(s) to aggregate.`);
 
     // Aggregate all captured data
     const aggregated: CapturedData = {
