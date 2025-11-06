@@ -38,7 +38,6 @@ export function useIsGaslessSupported() {
     return isRelaySupported(chainId);
   }, [chainId, shouldCheck7702Eligibility]);
 
-  // Currently requires upgraded account, can also support no `delegationAddress` in future.
   const is7702Supported = Boolean(
     relaySupportsChain &&
       // contract deployments can't be delegated
