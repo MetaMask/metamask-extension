@@ -61,6 +61,7 @@ export const lavamoatPlugin = (args: Args) =>
               enabled: true,
               exceptions: [
                 // globals used by different mm deps outside of lm compartment
+                'window',
                 'Proxy',
                 'toString',
                 'getComputedStyle',
@@ -165,6 +166,7 @@ export const lavamoatPlugin = (args: Args) =>
               scuttlerName: args.snow ? 'SCUTTLER' : undefined,
               exceptions: [
                 // globals used by different mm deps outside of lm compartment
+                'window',
                 'Proxy',
                 'toString',
                 'getComputedStyle',
