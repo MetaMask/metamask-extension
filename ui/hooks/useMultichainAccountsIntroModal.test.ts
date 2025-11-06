@@ -19,7 +19,10 @@ describe('BIP-44 Banner Logic', () => {
         (() => {
           try {
             const coercedVersion = semverCoerce(lastUpdatedFromVersion);
-            return coercedVersion && semverLt(coercedVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION);
+            return (
+              coercedVersion &&
+              semverLt(coercedVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION)
+            );
           } catch {
             return false;
           }

@@ -47,7 +47,10 @@ export function useMultichainAccountsIntroModal(
         (() => {
           try {
             const coercedVersion = semverCoerce(lastUpdatedFromVersion);
-            return coercedVersion && semverLt(coercedVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION);
+            return (
+              coercedVersion &&
+              semverLt(coercedVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION)
+            );
           } catch {
             // If version can't be parsed, assume it's not from an old version
             return false;
