@@ -19,7 +19,7 @@ type AssetCellTitleProps = {
 export const AssetCellTitle = ({ title }: AssetCellTitleProps) => {
   const t = useI18nContext();
 
-  if (title && title.length > 12) {
+  if (false &&title && title.length > 12) {
     return (
       <Tooltip
         position="bottom"
