@@ -33,8 +33,7 @@ export const QuoteSwapSimulationDetails = ({
     if (!quote || !tokenDetails || !fiatRates) {
       return {};
     }
-    const { srcAsset, srcTokenAmount, destAsset, destTokenAmount } =
-      quote.quote;
+    const { srcAsset, destAsset, destTokenAmount } = quote.quote;
     return {
       srcAssetBalanceChange: {
         asset: {
@@ -45,7 +44,7 @@ export const QuoteSwapSimulationDetails = ({
         amount: new BigNumber(sourceTokenAmount ?? '0x0', 16).dividedBy(
           new BigNumber(10).pow(srcAsset.decimals),
         ),
-        fiatAmount: new BigNumber(srcTokenAmount)
+        fiatAmount: new BigNumber(sourceTokenAmount ?? '0x0', 16)
           .dividedBy(new BigNumber(10).pow(srcAsset.decimals))
           .times(fiatRates[srcAsset.address as Hex] ?? 0)
           .toNumber(),
@@ -67,7 +66,7 @@ export const QuoteSwapSimulationDetails = ({
         usdAmount: 0,
       },
     };
-  }, [fiatRates, quote, tokenDetails]);
+  }, [fiatRates, quote, sourceTokenAmount, tokenDetails]);
 
   if (
     !quote ||
