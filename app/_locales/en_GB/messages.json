@@ -6049,14 +6049,14 @@
     "description": "The $1 is the amount of transaction protection"
   },
   "shieldEntryModalSubtitleB": {
-    "message": "Transact with added confidence. Enjoy up to $1 in protection and 24/7 priority support.",
+    "message": "Transact with added confidence with up to $1 in protection and 24/7 priority support.",
     "description": "The $1 is the amount of transaction protection"
   },
   "shieldEntryModalTitleA": {
     "message": "Transact with added confidence"
   },
   "shieldEntryModalTitleB": {
-    "message": "Transaction Shield"
+    "message": "Introducing Transaction Shield"
   },
   "shieldEstimatedChangesMonthlyTooltipText": {
     "message": "Authorize up to $1 for the full year. You'll be billed $2 each month, not the full amount now."
