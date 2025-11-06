@@ -214,6 +214,9 @@ export const MultichainAccountMenu = ({
     isHidden,
     dispatch,
     onToggle,
+    pinnedAccountsList,
+    hiddenAccountsList,
+    trackEvent,
   ]);
 
   return (
