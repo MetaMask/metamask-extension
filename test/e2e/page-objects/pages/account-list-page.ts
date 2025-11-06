@@ -74,10 +74,8 @@ class AccountListPage {
     tag: 'p',
   };
 
-  private readonly addSnapAccountButton = {
-    text: 'Add account Snap',
-    tag: 'button',
-  };
+  private readonly addSnapAccountButton =
+    '[data-testid="add-wallet-modal-snap-account"]';
 
   private readonly walletDetailsButton = {
     text: 'Details',
