@@ -53,4 +53,4 @@ jobs:
       github-tools-version: chore/test-auto-changelog
       previous-version-ref: null
     secrets:
-      token: ${{ secrets.PR_TOKEN }}
+      github-token: ${{ secrets.PR_TOKEN }}
