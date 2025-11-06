@@ -25,7 +25,6 @@ const TOGGLE_NAMES = {
   NOT_COVERED: 'Not_covered',
 } as const;
 
-
 const findSeverityToggles = (
   inputs: StateMachineInput[],
 ): {
@@ -42,24 +41,28 @@ const findSeverityToggles = (
   };
 };
 
-/**
- * Resets all severity toggles to false
- */
+// Set all severity toggles to false to change the animation state
 const resetSeverityToggles = (toggles: {
   malicious?: StateMachineInput;
   covered?: StateMachineInput;
   warning?: StateMachineInput;
   notCovered?: StateMachineInput;
 }): void => {
-  if (toggles.malicious) toggles.malicious.value = false;
-  if (toggles.covered) toggles.covered.value = false;
-  if (toggles.warning) toggles.warning.value = false;
-  if (toggles.notCovered) toggles.notCovered.value = false;
+  if (toggles.malicious) {
+    toggles.malicious.value = false;
+  }
+  if (toggles.covered) {
+    toggles.covered.value = false;
+  }
+  if (toggles.warning) {
+    toggles.warning.value = false;
+  }
+  if (toggles.notCovered) {
+    toggles.notCovered.value = false;
+  }
 };
 
-/**
- * Sets the appropriate severity toggle based on the alert severity
- */
+// Set the appropriate severity toggle based on the alert severity
 const setSeverityToggle = (
   severity: AlertSeverity,
   toggles: {

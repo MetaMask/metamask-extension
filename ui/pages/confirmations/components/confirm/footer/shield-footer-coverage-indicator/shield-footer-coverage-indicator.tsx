@@ -33,7 +33,7 @@ const ShieldFooterCoverageIndicator = () => {
     TransactionMeta | SignatureRequest
   >();
   const isShowShieldFooterCoverageIndicator = useEnableShieldCoverageChecks();
-  const { getFieldAlerts } = useAlerts(currentConfirmation.id);
+  const { getFieldAlerts } = useAlerts(currentConfirmation?.id ?? '');
   const { subscriptions } = useUserSubscriptions();
 
   const shieldSubscription = useUserSubscriptionByProduct(
@@ -53,7 +53,7 @@ const ShieldFooterCoverageIndicator = () => {
     return selectedAlertSeverity;
   }, [isPaused, selectedAlertSeverity]);
 
-  if (!isShowShieldFooterCoverageIndicator) {
+  if (!currentConfirmation || !isShowShieldFooterCoverageIndicator) {
     return null;
   }
 
