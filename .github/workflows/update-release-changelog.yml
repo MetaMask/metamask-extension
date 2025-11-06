@@ -51,7 +51,6 @@ jobs:
       repository-url: ${{ github.server_url }}/${{ github.repository }}
       platform: extension
       github-tools-version: chore/test-auto-changelog
-      auto-changelog-version: fix/INFRA-3081-filter-commits
       previous-version-ref: null
     secrets:
       github-token: ${{ secrets.PR_TOKEN }}
