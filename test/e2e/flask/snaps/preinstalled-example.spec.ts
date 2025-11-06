@@ -66,17 +66,8 @@ describe('Preinstalled example Snap', function () {
         await navigateToPreInstalledExample(driver);
 
         await preInstalledExample.clickToggleButtonOn();
-        // TODO: Remove this when the race condition is fixed in the Snap.
-        await driver.delay(largeDelayMs);
-
         await preInstalledExample.selectRadioOption('Option 2');
-        // TODO: Remove this when the race condition is fixed in the Snap.
-        await driver.delay(largeDelayMs);
-
         await preInstalledExample.selectDropdownOption('Option 2');
-        // TODO: Remove this when the race condition is fixed in the Snap.
-        await driver.delay(largeDelayMs);
-
         await preInstalledExample.checkIsToggleOn();
         await preInstalledExample.checkSelectedRadioOption('option2');
         await preInstalledExample.checkSelectedDropdownOption('option2');
