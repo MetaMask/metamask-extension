@@ -7,6 +7,7 @@ const ScrollContainerContext =
  * Provides a ref to this container element for its child components
  *
  * @param props - HTML div attributes
+ * @param props.children - Child components to render inside the container
  * @returns A div element with a ref accessible via useScrollContainer
  */
 export const ScrollContainer = ({
