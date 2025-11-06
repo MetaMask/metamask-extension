@@ -3,6 +3,12 @@ import React, { createContext, useContext, useRef } from 'react';
 const ScrollContainerContext =
   createContext<React.RefObject<HTMLDivElement> | null>(null);
 
+/**
+ * Provides a ref to this container element for its child components
+ *
+ * @param props - HTML div attributes
+ * @returns A div element with a ref accessible via useScrollContainer
+ */
 export const ScrollContainer = ({
   children,
   ...props
@@ -18,6 +24,11 @@ export const ScrollContainer = ({
   );
 };
 
+/**
+ * Hook to access the scroll container ref from any child component
+ *
+ * @returns Ref to the scroll container
+ */
 export const useScrollContainer = () => {
   return useContext(ScrollContainerContext);
 };
