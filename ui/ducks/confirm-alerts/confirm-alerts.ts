@@ -1,12 +1,14 @@
 import { ReactNode } from 'react';
 import { SecurityProvider } from '../../../shared/constants/security-provider';
-import { Severity } from '../../helpers/constants/design-system';
+import { IconColor, Severity } from '../../helpers/constants/design-system';
+import { IconName } from '../../components/component-library';
 
 export type AlertSeverity =
   | Severity.Danger
   | Severity.Info
   | Severity.Success
-  | Severity.Warning;
+  | Severity.Warning
+  | Severity.Disabled;
 
 /**
  * A confirmable alert to be displayed in the UI.
@@ -31,6 +33,21 @@ export type Alert = {
    * Optional text to override the default on the inline alert.
    */
   inlineAlertText?: string;
+
+  /**
+   * Whether to show the inline alert as a pill style.
+   */
+  inlineAlertTextPill?: boolean;
+
+  /**
+   * The name of the icon to show.
+   */
+  iconName?: IconName;
+
+  /**
+   * The color of the icon to show.
+   */
+  iconColor?: IconColor;
 
   /**
    * Whether the alert is a blocker and un-acknowledgeable, preventing the user

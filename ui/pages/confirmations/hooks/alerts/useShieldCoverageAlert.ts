@@ -1,10 +1,16 @@
 import { SignatureRequest } from '@metamask/signature-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { Severity } from '../../../../helpers/constants/design-system';
+import {
+  IconColor,
+  Severity,
+} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getCoverageStatus,
@@ -12,6 +18,7 @@ import {
 } from '../../../../selectors/shield/coverage';
 import { useConfirmContext } from '../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../transactions/useEnableShieldCoverageChecks';
+import { IconName } from '../../../../components/component-library';
 import { ShieldCoverageAlertMessage } from './transactions/ShieldCoverageAlertMessage';
 
 const getModalBodyStr = (reasonCode: string | undefined) => {
@@ -134,24 +141,35 @@ export function useShieldCoverageAlert(): Alert[] {
   const { currentConfirmation } = useConfirmContext<
     TransactionMeta | SignatureRequest
   >();
+  const isSimpleSendTransaction =
+    currentConfirmation?.type === TransactionType.simpleSend;
 
   const { reasonCode, status } = useSelector((state) =>
     getCoverageStatus(state as ShieldState, currentConfirmation?.id),
   );
   const isCovered = status === 'covered';
-  const modalBodyStr = isCovered
+  let modalBodyStr = isCovered
     ? 'shieldCoverageAlertCovered'
     : getModalBodyStr(reasonCode);
+  if (isSimpleSendTransaction) {
+    // Simple send transactions are not covered by Shield and can't be send to ruleset engine
+    modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
+  }
 
   const isEnableShieldCoverageChecks = useEnableShieldCoverageChecks();
-  const showAlert = isEnableShieldCoverageChecks && Boolean(status);
+  const showAlert =
+    isEnableShieldCoverageChecks &&
+    (Boolean(status) ||
+      // Simple send transactions are not covered by Shield and can't be send to ruleset engine
+      // so we just show not covered in client side
+      isSimpleSendTransaction);
 
   return useMemo<Alert[]>((): Alert[] => {
     if (!showAlert) {
       return [];
     }
 
-    let severity = Severity.Info;
+    let severity = Severity.Disabled;
     let inlineAlertText = t('shieldNotCovered');
     let modalTitle = t('shieldCoverageAlertMessageTitle');
     switch (status) {
@@ -177,6 +195,9 @@ export function useShieldCoverageAlert(): Alert[] {
         }),
         isBlocking: false,
         inlineAlertText,
+        inlineAlertTextPill: true,
+        iconName: IconName.Info,
+        iconColor: IconColor.inherit,
         showArrow: false,
         isOpenModalOnClick: true,
         hideFromAlertNavigation: true,

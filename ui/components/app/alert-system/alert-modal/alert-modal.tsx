@@ -124,7 +124,7 @@ function AlertHeader({
   customTitle?: string;
 }) {
   const t = useI18nContext();
-  const { severity, reason } = selectedAlert;
+  const { severity, reason, iconName, iconColor } = selectedAlert;
   const severityStyle = getSeverityStyle(severity);
   return (
     <Box
@@ -135,12 +135,13 @@ function AlertHeader({
     >
       <Icon
         name={
-          severity === Severity.Info || severity === Severity.Success
+          iconName ??
+          (severity === Severity.Info || severity === Severity.Success
             ? IconName.Info
-            : IconName.Danger
+            : IconName.Danger)
         }
         size={IconSize.Xl}
-        color={severityStyle.icon}
+        color={iconColor ?? severityStyle.icon}
       />
       <Text
         variant={TextVariant.headingSm}
