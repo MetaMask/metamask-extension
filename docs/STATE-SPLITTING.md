@@ -27,16 +27,13 @@ We need a strategy to:
 2. Avoid reading and writing the giant monolithic `data` JSON when not required.
 3. Maintain backwards compatibility during migration and allow safe rollback.
 4. Preserve atomicity/consistency properties needed by features like recovery vault backups.
-5. Provide a foundation for future optimizations (e.g., compression, per-key TTLs, streaming migrations).
 
 ## Goals
 
 - Reduce average write size and duration dramatically (target: O(changed subtree) vs O(full state)).
 - Preserve current public APIs to controllers initially (no immediate refactor of `this.update`).
-- Enable phased migration with parallel (dual) write strategy and observability.
 - Keep data integrity: no partial writes leading to mixed-version subtrees post-migration.
 - Provide deterministic hashing for change detection to skip redundant serialization/writes.
-- Support eventual concurrency improvements (e.g., parallel per-key writes) without breaking locks semantics.
 
 ## Non-Goals
 
@@ -104,37 +101,29 @@ Where `<controllerKey>` are the existing top-level keys currently nested under `
    - Compare with cached prior hash. If unchanged, skip storing K.
    - If changed, stage write: `{ K: state[K] }` and update the in-memory hash.
 3. Atomically write all staged keys.
-4. The legacy `data` blob will no longer be written to avoid excessive storage consumption. Rollback will be handled by disabling the feature flag.
+4. The legacy `data` blob will no longer be written to avoid excessive storage consumption.
 
 ### Read Path (Phase 1 - Virtual Data Mode)
 
 - Attempt new layout read:
   - Reconstruct a synthetic `data` object via `await local.get(allControllerKeys)`.
-- If the new layout is not present (e.g., first time after update), fall back to reading the legacy `data` key, perform a one-time migration to the per-key format, and then remove the `data` blob.
+- If the new layout is not present (e.g., first time after update), fall back to reading the legacy `data` key, check if user is eligible (See Migration Trigger) for a one-time migration to the per-key format, allow the UI prompt them to migrate.
 
 ### Migration Trigger
 
-Use a feature flag (remote config or build flag) `ENABLE_STATE_SPLITTING`. When enabled:
+Use a feature flag (remote config or build flag) `ENABLE_STATE_SPLITTING`. If we can do a slow rollout, we should. When enabled:
 
-- Per-key writes are active, and reads are synthesized from individual keys.
-- The legacy `data` blob is read once for migration and then deleted.
+- Allows users to OPT-IN to the new per-key storage system via a UI prompt.
   When stable:
 - The feature flag can be removed.
+- Per-key writes are active, and reads are synthesized from individual keys.
+- The legacy `data` blob is read once for migration and then deleted.
 
-## Hashing Strategy
+## Hashing Strategy (for Hash-Based Diffing)
 
-Requirements: deterministic, fast, stable across platforms, low collision probability.
-Options:
+Requirements: deterministic, fast, stable across platforms, medium collision probability is fine.
 
-- SHA-256 (Web Crypto): strong, async, slight overhead for large payloads.
-- MurmurHash / xxHash: fast, but requires bundling an implementation.
-  Decision: Start with SHA-256 via `crypto.subtle.digest('SHA-256', encoder.encode(json))`. Cache results per key; cost is dominated by serialization which is unavoidable for changed subtrees.
-
-Represent hash as base64url or hex. Include size (byte length of UTF-8 encoded JSON) for diagnostics and capacity tracking.
-
-Potential future optimization: basic compression of very large individual keys.
-
-## Diff Algorithm (Hash-Based)
+## Diff Algorithm (for Hash-Based Diffing)
 
 We treat each top-level key independently. The minimal diff is the set of keys whose `hash` changed. No field-level diffing.
 
@@ -147,7 +136,7 @@ const changedSubstates = {};
 for (const key of Object.keys(newState)) {
   const newSubstate = newState[key];
   const oldHash = this.hashCache[key];
-  const newHash = await sha256(JSON.stringify(newSubstate));
+  const newHash = await hashFn(JSON.stringify(newSubstate));
 
   if (newHash !== oldHash) {
     changedSubstates[key] = newSubstate;
@@ -161,7 +150,7 @@ if (Object.keys(changedSubstates).length > 0) {
 }
 ```
 
-## Caching
+## Caching (for Hash-Based Diffing)
 
 In-memory cache held by `PersistenceManager` mapping key -> hash. Reset on `reset()`.
 The cache is populated on startup by reading and hashing all controller substates.
@@ -170,7 +159,7 @@ The cache is populated on startup by reading and hashing all controller substate
 
 - All split writes occur under a single `navigator.locks` exclusive lock; no observable intermediate state.
 - Changed subtrees are written in a single multi-key `local.set` call (treated as atomic by the browser).
-- The legacy `data` key remains the ultimate source of truth until it is decommissioned.
+- The `data` key is removed.
 
 ## Rollback Plan
 
@@ -182,23 +171,30 @@ The cache is populated on startup by reading and hashing all controller substate
 ## Performance Expectations
 
 - **Event-Driven**: Negligible overhead. The primary cost is the write itself, which is already necessary.
-- **Hash-Based Diffing**: Serialization is reduced from the entire 100MB+ JSON to typically a few KB–MB per changed subtree. Hashing cost is proportional to the changed subtree size. Net write latency is expected to drop drastically compared to the monolithic approach.
-- Lock hold time narrows, reducing the backlog of pending writes.
+- **Hash-Based Diffing**: Serialization is reduced from the entire 100MB+ JSON to typically a few KB–MB per changed subtree. Net write latency is expected to drop drastically compared to the monolithic approach, despite the hashing/diff overhead.
+- Lock hold time narrows, reducing the backlog of pending writes, reducing overall write amount and improving performance.
+
+## Stability Expectations
+
+- Reducing write volume and frequency should lead to a more stable persistence layer with fewer corruption events.
 
 ## Observability
 
-Add metrics/logging:
+Add metrics/logging (names TBD):
 
-- `state_split.write.method` ('event' or 'hash')
-- `state_split.write.bytes_changed`, `state_split.write.keys_changed_count`.
+- some ideas: `state_split.write.ms_since_last_write`, `state_split.write.bytes_changed`, `state_split.write.bulk_keys_changed_count`, `state_split.read.keys_read_count`.
 - Timing: serialize+hash per key (for hash-based), total write time.
-- Error counters for any write failures.
+- Report stats of which keys are changing most frequently, etc.
+- Errors for any write failures, of course (we have this already).
+
+Not all of these need to be in the initial implementation, as they are a pain to write :-).
 
 ## Edge Cases
 
-- Extremely large single key remains a potential future chunking candidate in a separate ADR.
+- Extremely large single keys remains potential future splitting candidate -- and in a separate ADR -- since that's going to get messy
 - Concurrent rapid updates to the same key: last write wins under the lock; this behavior is unchanged.
-- Feature flag toggling mid-session: caches should be invalidated; rebuild from storage on the next write/read.
+- Feature flag toggling mid-session: since the feature flag only controls the UI prompt its not a state problem. If the user can get to the UI to click the right buttons, they can complete the migration.
+- If many controllers _usually_ all write around the same time, this ADR is pointless, as we'll basically be writing everything anyway... just like we used to.
 
 ## Security & Integrity
 
