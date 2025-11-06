@@ -127,7 +127,14 @@ export const TransactionControllerInit: ControllerInitFunction<
       const uiState = getUIState(getFlatState());
 
       // @ts-expect-error Smart transaction selector types does not match controller state
-      return !getIsSmartTransaction(uiState, chainId);
+      const isSmartTransactionEnabled = getIsSmartTransaction(uiState, chainId);
+
+      const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
+
+      // EIP7702 gas fee tokens are enabled when:
+      // - Smart transactions are NOT enabled, OR
+      // - Send bundle is NOT supported
+      return !isSmartTransactionEnabled || !isSendBundleSupportedChain;
     },
     isFirstTimeInteractionEnabled: () =>
       preferencesController().state.securityAlertsEnabled,
@@ -375,11 +382,7 @@ export async function publishHook({
     transactionMeta.chainId,
   );
 
-  if (
-    !isSmartTransaction ||
-    !sendBundleSupport ||
-    transactionMeta.isGasFeeSponsored
-  ) {
+  if (!isSmartTransaction || !sendBundleSupport) {
     const hook = new Delegation7702PublishHook({
       isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
         transactionController,

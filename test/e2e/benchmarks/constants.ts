@@ -1,7 +1,7 @@
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
 
-export const ALL_TRACES = {
+export const ALL_METRICS = {
   uiStartup: 'UI Startup',
   load: 'navigation[0].load',
   domContentLoaded: 'navigation[0].domContentLoaded',
@@ -13,6 +13,7 @@ export const ALL_TRACES = {
   initialActions: 'Initial Actions',
   loadScripts: 'Load Scripts',
   setupStore: 'Setup Store',
+  numNetworkReqs: 'numNetworkReqs',
 } as const;
 
 export const WITH_STATE_POWER_USER = {
@@ -21,6 +22,7 @@ export const WITH_STATE_POWER_USER = {
   withContacts: 40,
   withErc20Tokens: true,
   withNetworks: true,
+  withNfts: 20,
   withPreferences: true,
   withUnreadNotifications: 15,
 };

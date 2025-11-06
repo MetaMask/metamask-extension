@@ -59,11 +59,32 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
       getFailoverUrlsForInfuraNetwork('linea-mainnet');
     networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
       getFailoverUrlsForInfuraNetwork('base-mainnet');
+    if (networks[CHAIN_IDS.ARBITRUM]?.rpcEndpoints?.[0]) {
+      networks[CHAIN_IDS.ARBITRUM].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('arbitrum-mainnet');
+    }
+    if (networks[CHAIN_IDS.BSC]?.rpcEndpoints?.[0]) {
+      networks[CHAIN_IDS.BSC].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('bsc-mainnet');
+    }
+    if (networks[CHAIN_IDS.OPTIMISM]?.rpcEndpoints?.[0]) {
+      networks[CHAIN_IDS.OPTIMISM].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('optimism-mainnet');
+    }
+    if (networks[CHAIN_IDS.POLYGON]?.rpcEndpoints?.[0]) {
+      networks[CHAIN_IDS.POLYGON].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('polygon-mainnet');
+    }
 
     // Update default popular network names.
     networks[CHAIN_IDS.MAINNET].name = 'Ethereum';
     networks[CHAIN_IDS.LINEA_MAINNET].name = 'Linea';
     networks[CHAIN_IDS.BASE].name = 'Base';
+    networks[CHAIN_IDS.ARBITRUM].name = 'Arbitrum';
+    networks[CHAIN_IDS.BSC].name = 'BNB Chain';
+    networks[CHAIN_IDS.OPTIMISM].name = 'OP';
+    networks[CHAIN_IDS.POLYGON].name = 'Polygon';
+    networks[CHAIN_IDS.SEI].name = 'Sei';
 
     let network: NetworkConfiguration;
     if (process.env.IN_TEST) {

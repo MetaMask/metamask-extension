@@ -2600,8 +2600,8 @@
   "form": {
     "message": "foirm"
   },
-  "freeSevenDayTrial": {
-    "message": "Triail 7 lá saor in aisce"
+  "freeTrialDays": {
+    "message": "$1 days free trial"
   },
   "from": {
     "message": "Ó"
@@ -2911,32 +2911,11 @@
   "importNFTTokenIdToolTip": {
     "message": "Is aitheantóir uathúil é aitheantas NFT ós rud é nach bhfuil dhá NFT mar a chéile. Arís, ar OpenSea tá an uimhir seo faoi 'Sonraí'. Déan nóta de, nó cóipeáil í chuig do ghearrthaisce."
   },
-  "importNWordSRP": {
-    "message": "Tá frása aisghabhála $1 focal agam",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Eochair Phríobháideach"
   },
-  "importSRPDescription": {
-    "message": "Iompórtáil sparán atá ann cheana féin le do fhrása rúnda téarnaimh 12 nó 24 focal."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Tá 12 nó 24 focal i bhFrásaí Rúnda Aisghabhála"
-  },
-  "importSRPWordError": {
-    "message": "Tá an focal $1 mícheart nó litrithe go mícheart.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Tá na focail $1 agus $2 mícheart nó litrithe go mícheart.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Iompórtáil Frása Rúnda Aisghabhála"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Tharla earráid anaithnid."
   },
   "importSelectedTokens": {
     "message": "An bhfuil tú ag iarraidh comharthaí roghnaithe a allmhairiú?"
@@ -2955,9 +2934,6 @@
   },
   "importTokensError": {
     "message": "Níorbh fhéidir linn na comharthaí a allmhairiú. Déan iarracht arís ar ball."
-  },
-  "importWallet": {
-    "message": "Sparán allmhairithe"
   },
   "importWalletOrAccountHeader": {
     "message": "Sparán nó cuntas a allmhairiú"
@@ -5738,7 +5714,7 @@
     "message": "Sonraí an phlean"
   },
   "shieldPlanDetails1": {
-    "message": "Gan aon táille anois, bain triail as saor in aisce ar feadh 14 lá"
+    "message": "Gan aon táille anois, bain triail as saor in aisce ar feadh $1 lá"
   },
   "shieldPlanDetails2": {
     "message": "Réamhcheadú ballraíochta (1 bhliain réamhshocraithe), agus táillí á ngearradh go míosúil amháin"
@@ -5757,7 +5733,8 @@
     "description": "The $1 is the price of the monthly plan"
   },
   "shieldPlanNoFunds": {
-    "message": "Gan aon chistí ar fáil"
+    "message": "Gan aon chistí ar fáil",
+    "description": "$1 or $2 shows the supported token eg. USDC, USDT or mUSD"
   },
   "shieldPlanPayWith": {
     "message": "Íoc le"

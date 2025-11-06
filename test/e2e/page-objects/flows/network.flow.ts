@@ -24,7 +24,7 @@ export const searchAndSwitchToNetworkFromGlobalMenuFlow = async (
   const selectNetworkDialog = new SelectNetwork(driver);
   await selectNetworkDialog.checkPageIsLoaded();
   await selectNetworkDialog.fillNetworkSearchInput(networkName);
-  await selectNetworkDialog.clickAddButton();
+  await selectNetworkDialog.selectNetworkName(networkName);
 
   await headerNavbar.checkPageIsLoaded();
   await driver.delay(1000);

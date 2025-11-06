@@ -194,10 +194,11 @@ class AccountListPage {
     tag: 'p',
   };
 
-  private readonly importSrpInput = '#import-srp__multi-srp__srp-word-0';
+  private readonly importSrpInput =
+    '[data-testid="srp-input-import__srp-note"]';
 
   private readonly importSrpConfirmButton = {
-    text: 'Import wallet',
+    text: 'Continue',
     tag: 'button',
   };
 
@@ -228,7 +229,7 @@ class AccountListPage {
         ? [
             {
               css: this.createMultichainAccountButton,
-              text: 'Create account',
+              text: 'Add account',
             },
             this.multichainAccountOptionsMenuButton,
           ]
@@ -297,16 +298,23 @@ class AccountListPage {
     options?: { isMultichainAccountsState2Enabled?: boolean },
   ): Promise<void> {
     console.log(`Adding new imported account`);
-
     if (options?.isMultichainAccountsState2Enabled) {
       await this.driver.clickElement(this.addMultichainWalletButton);
       await this.driver.clickElement(
         this.importAccountFromMultichainWalletModalButton,
       );
       await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
-      await this.driver.clickElementAndWaitToDisappear(
-        this.importAccountConfirmButton,
-      );
+      if (expectedErrorMessage) {
+        await this.driver.clickElement(this.importAccountConfirmButton);
+        await this.driver.waitForSelector({
+          css: '.mm-help-text',
+          text: expectedErrorMessage,
+        });
+      } else {
+        await this.driver.clickElementAndWaitToDisappear(
+          this.importAccountConfirmButton,
+        );
+      }
       return;
     }
 
@@ -484,8 +492,10 @@ class AccountListPage {
     password: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.driver.clickElement(this.createAccountButton);
-    await this.driver.clickElement(this.addImportedAccountButton);
+    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.driver.clickElement(
+      this.importAccountFromMultichainWalletModalButton,
+    );
     await this.driver.clickElement(this.importAccountDropdownOption);
     await this.driver.clickElement(this.importAccountJsonFileOption);
 

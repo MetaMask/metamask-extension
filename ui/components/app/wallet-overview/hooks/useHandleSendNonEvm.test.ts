@@ -1,5 +1,5 @@
 import { SolScope } from '@metamask/keyring-api';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import {
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
@@ -23,14 +23,13 @@ jest.mock('react-redux', () => {
   };
 });
 
-const mockHistory = {
-  push: jest.fn(),
-};
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const mockState = {
   metamask: {
@@ -176,7 +175,7 @@ describe('useHandleSendNonEvm', () => {
       );
     });
 
-    it('pushes the confirmation page in history', async () => {
+    it('pushes the confirmation page', async () => {
       const { result } = renderHookWithProvider(
         () =>
           useHandleSendNonEvm(
@@ -188,7 +187,7 @@ describe('useHandleSendNonEvm', () => {
 
       await handleSendNonEvm();
 
-      expect(mockHistory.push).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRMATION_V_NEXT_ROUTE}/${mockState.metamask.pendingApprovals[0].id}`,
       );
     });
@@ -215,7 +214,7 @@ describe('useHandleSendNonEvm', () => {
         );
       });
 
-      it('pushes the confirmation page in history', async () => {
+      it('pushes the confirmation page', async () => {
         const { result } = renderHookWithProvider(
           () => useHandleSendNonEvm(),
           mockState,
@@ -224,7 +223,7 @@ describe('useHandleSendNonEvm', () => {
 
         await handleSendNonEvm();
 
-        expect(mockHistory.push).toHaveBeenCalledWith(
+        expect(mockUseNavigate).toHaveBeenCalledWith(
           `${CONFIRMATION_V_NEXT_ROUTE}/${mockState.metamask.pendingApprovals[0].id}`,
         );
       });
