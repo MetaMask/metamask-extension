@@ -106,7 +106,8 @@ class AssetListPage {
     text: 'Token decimal',
   };
 
-  private readonly tokenNameInDetails = '[data-testid="multichain-token-list-item-token-name"]';
+  private readonly tokenNameInDetails =
+    '[data-testid="multichain-token-list-item-token-name"]';
 
   private readonly tokenImportedMessageCloseButton =
     '.actionable-message__message button[aria-label="Close"]';
@@ -383,7 +384,10 @@ class AssetListPage {
    */
   async openTokenDetails(tokenSymbol: string): Promise<void> {
     console.log(`Opening token details for ${tokenSymbol}`);
-    await this.driver.clickElement({ text: tokenSymbol, css: this.tokenNameInDetails });
+    await this.driver.clickElement({
+      text: tokenSymbol,
+      css: this.tokenNameInDetails,
+    });
   }
 
   async waitUntilFilterLabelIs(label: string): Promise<void> {
