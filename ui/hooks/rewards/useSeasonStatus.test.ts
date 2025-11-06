@@ -44,6 +44,38 @@ const mockLogError = log.error as jest.MockedFunction<typeof log.error>;
 const mockOnAuthorizationError = jest.fn().mockResolvedValue(undefined);
 
 describe('useSeasonStatus', () => {
+  const mockSeasonMetadata = {
+    id: 'season-1',
+    name: 'Season 1',
+    startDate: 1640995200000, // 2022-01-01
+    endDate: 1672531200000, // 2023-01-01
+    tiers: [
+      {
+        id: 'tier-1',
+        name: 'Bronze',
+        pointsNeeded: 0,
+        image: {
+          lightModeUrl: 'https://example.com/bronze-light.png',
+          darkModeUrl: 'https://example.com/bronze-dark.png',
+        },
+        levelNumber: '1',
+        rewards: [],
+      },
+      {
+        id: 'tier-2',
+        name: 'Silver',
+        pointsNeeded: 100,
+        image: {
+          lightModeUrl: 'https://example.com/silver-light.png',
+          darkModeUrl: 'https://example.com/silver-dark.png',
+        },
+        levelNumber: '2',
+        rewards: [],
+      },
+    ],
+    lastFetched: Date.now(),
+  };
+
   const mockSeasonStatus: SeasonStatusState = {
     season: {
       id: 'season-1',
@@ -111,7 +143,16 @@ describe('useSeasonStatus', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseRewardsEnabled.mockReturnValue(false); // Start with rewards disabled to prevent auto-fetch
-    mockSubmitRequestToBackground.mockResolvedValue(mockSeasonStatus);
+    // Mock submitRequestToBackground to return metadata first, then status
+    mockSubmitRequestToBackground.mockImplementation((method) => {
+      if (method === 'getRewardsSeasonMetadata') {
+        return Promise.resolve(mockSeasonMetadata);
+      }
+      if (method === 'getRewardsSeasonStatus') {
+        return Promise.resolve(mockSeasonStatus);
+      }
+      return Promise.resolve(null);
+    });
     mockOnAuthorizationError.mockClear();
   });
 
@@ -145,7 +186,7 @@ describe('useSeasonStatus', () => {
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'getRewardsSeasonStatus',
-        ['test-subscription-id', undefined],
+        ['test-subscription-id', 'season-1'],
       );
       expect(result.current.seasonStatusError).toBeNull();
       expect(result.current.seasonStatusLoading).toBe(false);
@@ -406,11 +447,25 @@ describe('useSeasonStatus', () => {
   describe('loading states', () => {
     it('should show loading state during fetch', async () => {
       mockUseRewardsEnabled.mockReturnValue(true); // Enable rewards for this test
-      let resolvePromise!: (value: SeasonStatusState) => void;
-      const promise = new Promise<SeasonStatusState>((resolve) => {
-        resolvePromise = resolve;
+      let resolveMetadataPromise!: (value: typeof mockSeasonMetadata) => void;
+      let resolveStatusPromise!: (value: SeasonStatusState) => void;
+      const metadataPromise = new Promise<typeof mockSeasonMetadata>(
+        (resolve) => {
+          resolveMetadataPromise = resolve;
+        },
+      );
+      const statusPromise = new Promise<SeasonStatusState>((resolve) => {
+        resolveStatusPromise = resolve;
       });
-      mockSubmitRequestToBackground.mockReturnValue(promise);
+      mockSubmitRequestToBackground.mockImplementation((method) => {
+        if (method === 'getRewardsSeasonMetadata') {
+          return metadataPromise;
+        }
+        if (method === 'getRewardsSeasonStatus') {
+          return statusPromise;
+        }
+        return Promise.resolve(null);
+      });
 
       const { result } = renderHookWithProvider(
         () =>
@@ -432,8 +487,10 @@ describe('useSeasonStatus', () => {
       expect(result.current.seasonStatus).toBeNull();
       expect(result.current.seasonStatusError).toBeNull();
 
-      // Resolve the promise
-      resolvePromise(mockSeasonStatus);
+      // Resolve metadata first
+      resolveMetadataPromise(mockSeasonMetadata);
+      // Then resolve status
+      resolveStatusPromise(mockSeasonStatus);
 
       await waitFor(() => {
         expect(result.current.seasonStatusLoading).toBe(false);
@@ -502,7 +559,7 @@ describe('useSeasonStatus', () => {
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'getRewardsSeasonStatus',
-        ['test-subscription-id', undefined],
+        ['test-subscription-id', 'season-1'],
       );
     });
 
@@ -563,7 +620,7 @@ describe('useSeasonStatus', () => {
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'getRewardsSeasonStatus',
-        ['subscription-1', undefined],
+        ['subscription-1', 'season-1'],
       );
 
       // Change subscriptionId and rerender
@@ -574,7 +631,7 @@ describe('useSeasonStatus', () => {
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'getRewardsSeasonStatus',
-          ['subscription-2', undefined],
+          ['subscription-2', 'season-1'],
         );
       });
 

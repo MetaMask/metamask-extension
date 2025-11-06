@@ -402,6 +402,7 @@
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
+    "pendingRevocations": "object",
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
     "storageMetadata": {},

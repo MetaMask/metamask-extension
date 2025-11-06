@@ -76,6 +76,7 @@ development/generate-attributions/.yarn/*
 
 # MetaMask
 .metamask/*
+github-tools/
 
 # Playwright
 public/playwright

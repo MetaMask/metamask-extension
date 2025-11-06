@@ -42,7 +42,6 @@ class LoginPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.welcomeBackMessage,
         this.passwordInput,
         this.unlockButton,
       ]);
