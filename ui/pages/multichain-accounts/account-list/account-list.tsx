@@ -115,12 +115,8 @@ export const AccountList = () => {
         total_accounts: internalAccounts.length,
       },
     });
-  }, [
-    trackEvent,
-    pinnedAccountsList.length,
-    hiddenAccountsList.length,
-    internalAccounts.length,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const hasMultipleWallets = useMemo(
     () => Object.keys(wallets).length > 1,
