@@ -98,6 +98,7 @@ describe('Metrics', function () {
 
         // enable the advanced view
         await transactionConfirmation.clickAdvancedDetailsButton();
+        await transactionConfirmation.checkNonceSectionIsDisplayed();
         await transactionConfirmation.verifyAdvancedDetailsHexDataIsDisplayed(
           '0xd0e30db0',
         );
