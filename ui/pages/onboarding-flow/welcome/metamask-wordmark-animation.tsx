@@ -31,7 +31,7 @@ export default function MetamaskWordMarkAnimation({
   const theme = useTheme();
   const isTestEnvironment = Boolean(process.env.IN_TEST);
   const context = useRiveWasmContext();
-  const { isWasmReady, error: wasmError } = context;
+  const { isWasmReady, error: wasmError, setIsAnimationCompleted } = context;
   const {
     buffer,
     error: bufferError,
@@ -121,10 +121,20 @@ export default function MetamaskWordMarkAnimation({
     // Cleanup timeout on unmount
     return () => {
       if (animationTimeoutRef.current) {
+        console.log('Clearing timeout');
         clearTimeout(animationTimeoutRef.current);
+        setIsAnimationCompleted('MetamaskWordMarkAnimation', true);
       }
     };
-  }, [rive, theme, isWasmReady, skipTransition, bufferLoading, buffer]);
+  }, [
+    rive,
+    theme,
+    isWasmReady,
+    skipTransition,
+    bufferLoading,
+    buffer,
+    setIsAnimationCompleted,
+  ]);
 
   // Don't render Rive component until ready or if loading/failed
   if (

@@ -7,7 +7,7 @@ import React, {
   Suspense,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useSearchParams } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
 import { Box } from '../../../components/component-library';
 import {
@@ -50,6 +50,7 @@ import {
   JustifyContent,
   BlockSize,
 } from '../../../helpers/constants/design-system';
+import { useRiveWasmContext } from '../../../contexts/rive-wasm';
 import WelcomeLogin from './welcome-login';
 import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE } from './types';
 import LoginErrorModal from './login-error-modal';
@@ -63,7 +64,6 @@ const FoxAppearAnimation = lazy(() => import('./fox-appear-animation'));
 export default function OnboardingWelcome() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
@@ -81,10 +81,10 @@ export default function OnboardingWelcome() {
   const [loginError, setLoginError] = useState(null);
   const isTestEnvironment = Boolean(process.env.IN_TEST);
 
-  // Check if user is returning from another page (skip animations)
-  const fromParam = searchParams.get('from');
-  const shouldSkipAnimation =
-    fromParam === 'unlock' || fromParam === 'account-exist';
+  const { animationCompleted } = useRiveWasmContext();
+  const shouldSkipAnimation = Boolean(
+    animationCompleted?.MetamaskWordMarkAnimation,
+  );
 
   // In test environments or when returning from another page, skip animations
   const [isAnimationComplete, setIsAnimationComplete] = useState(
