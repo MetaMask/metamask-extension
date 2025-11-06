@@ -49,7 +49,7 @@ class BitcoinHomepage extends HomePage {
     return true;
   }
 
-    /**
+  /**
    * Checks if the send button is enabled on bitcoin account homepage.
    *
    */

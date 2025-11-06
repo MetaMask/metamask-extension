@@ -26,12 +26,12 @@ describe('Transfer custom tokens', function () {
         {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-            },
-          })
-          .build(),
+            .withEnabledNetworks({
+              eip155: {
+                '0x539': true,
+              },
+            })
+            .build(),
           localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
           title: this.test?.fullTitle(),

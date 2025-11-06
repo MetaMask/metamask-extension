@@ -31,14 +31,12 @@ describe('Multi SRP - Reveal Imported SRP', function (this: Suite) {
   it('successfully exports the default SRP', async function () {
     await withMultiSrp(async (driver) => {
       await verifySrp(driver, FIRST_TEST_E2E_SRP, firstSrpIndex);
-      },
-    );
+    });
   });
 
   it('successfully exports the imported SRP', async function () {
     await withMultiSrp(async (driver) => {
       await verifySrp(driver, SECOND_TEST_E2E_SRP, secondSrpIndex);
-      },
-    );
+    });
   });
 });

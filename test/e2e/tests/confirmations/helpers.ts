@@ -605,7 +605,7 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            BIP44_STAGE_TWO
+            BIP44_STAGE_TWO,
           ],
         };
       }),

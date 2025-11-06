@@ -44,8 +44,7 @@ class MultichainAccountDetailsPage {
   private readonly showPrivateKeyButton =
     '[data-testid="account-show-private-key-button"]';
 
-  private readonly exportSrpButton =
-    '[data-testid="multichain-srp-backup"]'
+  private readonly exportSrpButton = '[data-testid="multichain-srp-backup"]';
 
   private readonly exportPrivateKeyButton =
     '[data-testid="account-export-private-key-button"]';

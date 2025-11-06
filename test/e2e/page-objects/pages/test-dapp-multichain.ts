@@ -202,7 +202,7 @@ class TestDappMultichain {
   }> {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
     await this.clickWalletGetSessionButton();
-    await this.driver.delay(1000)
+    await this.driver.delay(1000);
     await this.clickFirstResultSummary();
 
     const getSessionRawResult = await this.driver.findElement(

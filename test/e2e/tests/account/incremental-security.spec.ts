@@ -22,15 +22,14 @@ describe('Incremental Security', function (this: Suite) {
           customDappPaths: ['./send-eth-with-private-key-test'],
         },
         fixtures: new FixtureBuilder({ onboarding: true })
-        .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
-        .withEnabledNetworks({
-          eip155: {
-            '0x1': true,
-          },
-        })
-        .build(),
+          .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
-
       },
       async ({
         driver,
@@ -85,7 +84,7 @@ describe('Incremental Security', function (this: Suite) {
         await homePage.headerNavbar.clickAddressCopyButton();
         const addressListModal = new AddressListModal(driver);
         await addressListModal.clickCopyButton();
-        await addressListModal.goBack()
+        await addressListModal.goBack();
 
         // switched to Dapp and send eth to the current account
         const testDapp = new TestDappSendEthWithPrivateKey(driver);

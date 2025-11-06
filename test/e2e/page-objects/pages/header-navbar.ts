@@ -12,7 +12,8 @@ class HeaderNavbar {
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
-  private readonly copyAddressButton = '[data-testid="copy-network-addresses-icon"]';
+  private readonly copyAddressButton =
+    '[data-testid="copy-network-addresses-icon"]';
 
   private readonly threeDotMenuButton =
     '[data-testid="account-options-menu-button"]';
