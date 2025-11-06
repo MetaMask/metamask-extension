@@ -180,10 +180,11 @@ export async function mockCronjobDurationSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockDialogSnap(mockServer: Mockttp) {
+export async function mockDialogSnap(mockServer: Mockttp, port?: number) {
   return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockDialogSnap,
+    port,
   });
 }
 
@@ -272,10 +273,11 @@ export async function mockLocalizationSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockLookupSnap(mockServer: Mockttp) {
+export async function mockLookupSnap(mockServer: Mockttp, port?: number) {
   return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockLookupSnap,
+    port,
   });
 }
 
@@ -315,7 +317,10 @@ export async function mockPreferencesSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockSignatureInsightsSnap(mockServer: Mockttp, port?: number) {
+export async function mockSignatureInsightsSnap(
+  mockServer: Mockttp,
+  port?: number,
+) {
   return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockSignatureInsightsSnap,
@@ -323,7 +328,10 @@ export async function mockSignatureInsightsSnap(mockServer: Mockttp, port?: numb
   });
 }
 
-export async function mockSimpleKeyringSnap(mockServer: Mockttp, port?: number) {
+export async function mockSimpleKeyringSnap(
+  mockServer: Mockttp,
+  port?: number,
+) {
   return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockSimpleKeyringSnap,
@@ -338,7 +346,10 @@ export async function mockWasmSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockWebpackPluginOldSnap(mockServer: Mockttp, port?: number) {
+export async function mockWebpackPluginOldSnap(
+  mockServer: Mockttp,
+  port?: number,
+) {
   return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockWebpackPluginSnap,
@@ -347,7 +358,10 @@ export async function mockWebpackPluginOldSnap(mockServer: Mockttp, port?: numbe
   });
 }
 
-export async function mockWebpackPluginSnap(mockServer: Mockttp, port?: number) {
+export async function mockWebpackPluginSnap(
+  mockServer: Mockttp,
+  port?: number,
+) {
   return createSnapMockWithSite({
     mockServer,
     snapNamePrefix: snapConfigurations.mockWebpackPluginSnap,

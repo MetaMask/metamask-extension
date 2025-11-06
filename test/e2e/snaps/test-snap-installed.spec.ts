@@ -48,8 +48,8 @@ describe('Test Snap installed', function () {
     async function mockSegmentAndSnaps(mockServer: Mockttp) {
       return [
         await mockedSnapInstall(mockServer),
-        await mockErrorSnap(mockServer),
-        await mockDialogSnap(mockServer),
+        ...(await mockErrorSnap(mockServer)),
+        ...(await mockDialogSnap(mockServer)),
       ];
     }
 

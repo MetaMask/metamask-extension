@@ -12,7 +12,7 @@ describe('Test Snap JSX', function () {
     await withFixtures(
       {
         dappOptions: {
-          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockJsxSnap,

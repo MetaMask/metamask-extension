@@ -770,9 +770,9 @@ describe('Test Snap Metrics', function () {
   it('test snap update rejected metric', async function () {
     async function mockSegment(mockServer) {
       return [
-        ...(await mockNotificationSnap(mockServer)),
         await mockedSnapUpdateStarted(mockServer),
         await mockedSnapUpdateRejected(mockServer),
+        ...(await mockNotificationSnap(mockServer)),
         ...(await mockWebpackPluginOldSnap(mockServer)),
         ...(await mockWebpackPluginSnap(mockServer)),
       ];

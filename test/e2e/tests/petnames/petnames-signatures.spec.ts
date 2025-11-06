@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { withSignatureFixtures } from '../confirmations/helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
@@ -8,6 +9,7 @@ import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+import { DAPP_PATH } from '../../constants';
 
 describe('Petnames - Signatures', function (this: Suite) {
   it('can save names for addresses in type 3 signatures', async function () {
@@ -90,13 +92,18 @@ describe('Petnames - Signatures', function (this: Suite) {
   it('can propose names using installed snaps', async function () {
     await withFixtures(
       {
-        dappOptions: { numberOfTestDapps: 1 },
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+          numberOfTestDapps: 1,
+        },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .withNetworkControllerOnMainnet()
           .build(),
-        testSpecificMock: mockLookupSnap,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return await mockLookupSnap(mockServer, 8081);
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

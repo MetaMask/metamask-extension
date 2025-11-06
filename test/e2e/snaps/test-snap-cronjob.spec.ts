@@ -13,7 +13,7 @@ describe('Test Snap Cronjob', function () {
     await withFixtures(
       {
         dappOptions: {
-          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockCronjobSnap,
