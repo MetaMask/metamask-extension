@@ -15,29 +15,14 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import { assertAdvancedGasDetails } from './shared';
 
-const {
-  withFixtures,
-  getEventPayloads,
-  assertInAnyOrder,
-} = require('../../../helpers');
+const { withFixtures, getEventPayloads } = require('../../../helpers');
+const FixtureBuilder = require('../../../fixture-builder');
 
+// Type definition for event structure
 type MetricsEvent = {
   event: string;
-  properties: {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    transaction_type?: string;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    ui_customizations?: string[];
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    transaction_advanced_view?: boolean;
-    [key: string]: unknown;
-  };
   [key: string]: unknown;
 };
-const FixtureBuilder = require('../../../fixture-builder');
 
 describe('Metrics', function () {
   it('Sends a contract interaction type 2 transaction (EIP1559) with the right properties in the metric events', async function () {
@@ -96,9 +81,20 @@ describe('Metrics', function () {
         await transactionConfirmation.checkGasFeeSymbol('ETH');
         await transactionConfirmation.checkGasFee('0.0009');
 
+        // Wait for Transaction Added events before enabling advanced view
+        // This ensures contract interaction "Added" events have transaction_advanced_view: undefined
+        await driver.wait(async () => {
+          const currentEvents = await getEventPayloads(driver, mockedEndpoints);
+          const addedEvents = currentEvents.filter(
+            (event: MetricsEvent) =>
+              event.event === 'Transaction Added' ||
+              event.event === 'Transaction Added Anon',
+          );
+          return addedEvents.length >= 4; // Wait for 4 "Added" events (2 deployment + 2 contract interaction)
+        }, 10000);
+
         // enable the advanced view
         await transactionConfirmation.clickAdvancedDetailsButton();
-        await transactionConfirmation.checkNonceSectionIsDisplayed();
         await transactionConfirmation.verifyAdvancedDetailsHexDataIsDisplayed(
           '0xd0e30db0',
         );
@@ -116,157 +112,129 @@ describe('Metrics', function () {
         console.log(events);
         assert.equal(events.length, 16);
 
-        const findEventsByName = (eventType: string) =>
-          events.filter((event: MetricsEvent) => event.event === eventType);
-
-        // Separate events by transaction type
-        const deploymentEvents = events.filter(
-          (event: MetricsEvent) =>
-            event.properties.transaction_type === 'contractDeployment',
-        );
-        const interactionEvents = events.filter(
-          (event: MetricsEvent) =>
-            event.properties.transaction_type === 'contractInteraction',
-        );
-
+        // deployment tx -- no ui_customizations
         assert.equal(
-          deploymentEvents.length,
-          8,
-          'Should have 8 deployment events',
-        );
-        assert.equal(
-          interactionEvents.length,
-          8,
-          'Should have 8 interaction events',
-        );
-
-        // Assertion predicates for deployment transaction (no advanced view)
-        const deploymentTransactionCheck = [
-          (event: MetricsEvent) =>
-            event.properties.ui_customizations?.[0] ===
-            'redesigned_confirmation',
-          (event: MetricsEvent) =>
-            event.properties.transaction_advanced_view === undefined,
-          (event: MetricsEvent) =>
-            event.properties.transaction_type === 'contractDeployment',
-        ];
-
-        // Assertion predicates for contract interaction transaction (with advanced view)
-        const interactionTransactionCheck = [
-          (event: MetricsEvent) =>
-            event.properties.ui_customizations?.[0] ===
-            'redesigned_confirmation',
-          (event: MetricsEvent) =>
-            event.properties.transaction_type === 'contractInteraction',
-        ];
-
-        // Additional check for events that should have advanced view
-        const interactionWithAdvancedViewCheck = [
-          ...interactionTransactionCheck,
-          (event: MetricsEvent) =>
-            event.properties.transaction_advanced_view === true,
-        ];
-
-        // Additional check for "added" events that don't have advanced view yet
-        const interactionAddedEventCheck = [
-          ...interactionTransactionCheck,
-          (event: MetricsEvent) =>
-            event.properties.transaction_advanced_view === undefined,
-        ];
-
-        // Test Transaction Added events
-        const addedAnonEvents = findEventsByName(
+          events[0].event,
           AnonymousTransactionMetaMetricsEvent.added,
         );
-        const addedEvents = findEventsByName(TransactionMetaMetricsEvent.added);
-
-        assert.equal(addedAnonEvents.length, 2);
-        assert.equal(addedEvents.length, 2);
-
-        assert.ok(
-          assertInAnyOrder(addedAnonEvents, [
-            deploymentTransactionCheck,
-            interactionAddedEventCheck,
-          ]),
+        assert.equal(
+          events[0].properties.ui_customizations[0],
+          'redesigned_confirmation',
         );
-        assert.ok(
-          assertInAnyOrder(addedEvents, [
-            deploymentTransactionCheck,
-            interactionAddedEventCheck,
-          ]),
+        assert.equal(events[0].properties.transaction_advanced_view, undefined);
+        assert.equal(events[1].event, TransactionMetaMetricsEvent.added);
+        assert.equal(
+          events[1].properties.ui_customizations[0],
+          'redesigned_confirmation',
         );
-
-        // Test Transaction Submitted events
-        const submittedAnonEvents = findEventsByName(
+        assert.equal(events[1].properties.transaction_advanced_view, undefined);
+        assert.equal(
+          events[2].event,
           AnonymousTransactionMetaMetricsEvent.submitted,
         );
-        const submittedEvents = findEventsByName(
-          TransactionMetaMetricsEvent.submitted,
+        assert.equal(
+          events[2].properties.ui_customizations[0],
+          'redesigned_confirmation',
         );
-
-        assert.equal(submittedAnonEvents.length, 2);
-        assert.equal(submittedEvents.length, 2);
-
-        assert.ok(
-          assertInAnyOrder(submittedAnonEvents, [
-            deploymentTransactionCheck,
-            interactionWithAdvancedViewCheck,
-          ]),
+        assert.equal(events[2].properties.transaction_advanced_view, undefined);
+        assert.equal(events[3].event, TransactionMetaMetricsEvent.submitted);
+        assert.equal(
+          events[3].properties.ui_customizations[0],
+          'redesigned_confirmation',
         );
-        assert.ok(
-          assertInAnyOrder(submittedEvents, [
-            deploymentTransactionCheck,
-            interactionWithAdvancedViewCheck,
-          ]),
-        );
-
-        // Test Transaction Approved events
-        const approvedAnonEvents = findEventsByName(
+        assert.equal(events[3].properties.transaction_advanced_view, undefined);
+        assert.equal(
+          events[4].event,
           AnonymousTransactionMetaMetricsEvent.approved,
         );
-        const approvedEvents = findEventsByName(
-          TransactionMetaMetricsEvent.approved,
+        assert.equal(
+          events[4].properties.ui_customizations[0],
+          'redesigned_confirmation',
         );
-
-        assert.equal(approvedAnonEvents.length, 2);
-        assert.equal(approvedEvents.length, 2);
-
-        assert.ok(
-          assertInAnyOrder(approvedAnonEvents, [
-            deploymentTransactionCheck,
-            interactionWithAdvancedViewCheck,
-          ]),
+        assert.equal(events[4].properties.transaction_advanced_view, undefined);
+        assert.equal(events[5].event, TransactionMetaMetricsEvent.approved);
+        assert.equal(
+          events[5].properties.ui_customizations[0],
+          'redesigned_confirmation',
         );
-        assert.ok(
-          assertInAnyOrder(approvedEvents, [
-            deploymentTransactionCheck,
-            interactionWithAdvancedViewCheck,
-          ]),
-        );
-
-        // Test Transaction Finalized events
-        const finalizedAnonEvents = findEventsByName(
+        assert.equal(events[5].properties.transaction_advanced_view, undefined);
+        assert.equal(
+          events[6].event,
           AnonymousTransactionMetaMetricsEvent.finalized,
         );
-        const finalizedEvents = findEventsByName(
-          TransactionMetaMetricsEvent.finalized,
+        assert.equal(
+          events[6].properties.ui_customizations[0],
+          'redesigned_confirmation',
         );
+        assert.equal(events[6].properties.transaction_advanced_view, undefined);
+        assert.equal(events[7].event, TransactionMetaMetricsEvent.finalized);
+        assert.equal(
+          events[7].properties.ui_customizations[0],
+          'redesigned_confirmation',
+        );
+        assert.equal(events[7].properties.transaction_advanced_view, undefined);
 
-        assert.equal(finalizedAnonEvents.length, 2);
-        assert.equal(finalizedEvents.length, 2);
-
-        assert.ok(
-          assertInAnyOrder(finalizedAnonEvents, [
-            deploymentTransactionCheck,
-            interactionWithAdvancedViewCheck,
-          ]),
+        // deposit tx (contract interaction) -- ui_customizations is set
+        assert.equal(
+          events[8].event,
+          AnonymousTransactionMetaMetricsEvent.added,
         );
-        assert.ok(
-          assertInAnyOrder(finalizedEvents, [
-            deploymentTransactionCheck,
-            interactionWithAdvancedViewCheck,
-          ]),
+        assert.equal(
+          events[8].properties.ui_customizations[0],
+          'redesigned_confirmation',
         );
+        assert.equal(events[8].properties.transaction_advanced_view, undefined);
+        assert.equal(events[9].event, TransactionMetaMetricsEvent.added);
+        assert.equal(
+          events[9].properties.ui_customizations[0],
+          'redesigned_confirmation',
+        );
+        assert.equal(events[9].properties.transaction_advanced_view, undefined);
+        assert.equal(
+          events[10].event,
+          AnonymousTransactionMetaMetricsEvent.submitted,
+        );
+        assert.equal(
+          events[10].properties.ui_customizations[0],
+          'redesigned_confirmation',
+        );
+        assert.equal(events[10].properties.transaction_advanced_view, true);
+        assert.equal(events[11].event, TransactionMetaMetricsEvent.submitted);
+        assert.equal(
+          events[11].properties.ui_customizations[0],
+          'redesigned_confirmation',
+        );
+        assert.equal(events[11].properties.transaction_advanced_view, true);
+        assert.equal(
+          events[12].event,
+          AnonymousTransactionMetaMetricsEvent.approved,
+        );
+        assert.equal(
+          events[12].properties.ui_customizations[0],
+          'redesigned_confirmation',
+        );
+        assert.equal(events[12].properties.transaction_advanced_view, true);
+        assert.equal(events[13].event, TransactionMetaMetricsEvent.approved);
+        assert.equal(
+          events[13].properties.ui_customizations[0],
+          'redesigned_confirmation',
+        );
+        assert.equal(events[13].properties.transaction_advanced_view, true);
+        assert.equal(
+          events[14].event,
+          AnonymousTransactionMetaMetricsEvent.finalized,
+        );
+        assert.equal(
+          events[14].properties.ui_customizations[0],
+          'redesigned_confirmation',
+        );
+        assert.equal(events[14].properties.transaction_advanced_view, true);
+        assert.equal(events[15].event, TransactionMetaMetricsEvent.finalized);
+        assert.equal(
+          events[15].properties.ui_customizations[0],
+          'redesigned_confirmation',
+        );
+        assert.equal(events[15].properties.transaction_advanced_view, true);
       },
     );
   });
