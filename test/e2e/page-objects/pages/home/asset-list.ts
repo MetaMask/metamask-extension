@@ -262,7 +262,9 @@ class AssetListPage {
     symbol?: string,
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage`);
-    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.waitForSelector(this.multichainTokenListButton, {
+      waitAtLeastGuard: 500,
+    });
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
