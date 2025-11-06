@@ -73,6 +73,7 @@ export default class TokenList extends Component {
               .fill(undefined)
               .map((_, i) => {
                 const { symbol, name, address, chainId } = results[i] || {};
+                const uniqueKey = `${address || 'unknown'}-${chainId || 'nochain'}-${i}-${symbol || 'nosymbol'}-${name || 'noname'}`;
                 let tokenAlreadyAdded = false;
 
                 if (isNonEvmChainId(chainId)) {
@@ -96,7 +97,7 @@ export default class TokenList extends Component {
                 return (
                   Boolean(results[i]?.iconUrl || symbol || name) && (
                     <Box
-                      key={address}
+                      key={uniqueKey}
                       display={Display.Flex}
                       alignItems={AlignItems.center}
                       flexDirection={FlexDirection.Row}

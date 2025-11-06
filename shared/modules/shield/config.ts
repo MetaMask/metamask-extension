@@ -65,8 +65,8 @@ export const ShieldConfigMap: Record<BuildType, ShieldEnvConfig> = {
   [BUILD_TYPE.dev]: {
     subscriptionEnv: SubscriptionEnv.DEV,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.dev],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.prd],
-    claimUrl: SHIELD_CLAIMS_API_URL[ENV.prd],
+    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.dev],
+    claimUrl: SHIELD_CLAIMS_API_URL[ENV.dev],
   },
   [BUILD_TYPE.uat]: {
     subscriptionEnv: SubscriptionEnv.UAT,
