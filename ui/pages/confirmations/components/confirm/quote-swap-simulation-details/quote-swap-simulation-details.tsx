@@ -1,17 +1,18 @@
 import React, { useMemo } from 'react';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
 import { QuoteResponse } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 
+import { TextColor } from '../../../../../helpers/constants/design-system';
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { SimulationDetailsLayout } from '../../simulation-details/simulation-details';
 import { BalanceChangeRow } from '../../simulation-details/balance-change-row';
-import { TextColor } from '../../../../../helpers/constants/design-system';
+import { TokenAssetIdentifier } from '../../simulation-details/types';
 
 export const QuoteSwapSimulationDetails = ({
   fiatRates,
@@ -40,7 +41,7 @@ export const QuoteSwapSimulationDetails = ({
           ...tokenDetails[srcAsset.address as Hex],
           chainId: toHex(srcAsset.chainId),
           address: srcAsset.address as Hex,
-        } as any,
+        } as unknown as TokenAssetIdentifier,
         amount: new BigNumber(sourceTokenAmount ?? '0x0', 16).dividedBy(
           new BigNumber(10).pow(srcAsset.decimals),
         ),
@@ -55,7 +56,7 @@ export const QuoteSwapSimulationDetails = ({
           ...tokenDetails[destAsset.address as Hex],
           chainId: toHex(destAsset.chainId),
           address: destAsset.address as Hex,
-        } as any,
+        } as unknown as TokenAssetIdentifier,
         amount: new BigNumber(destTokenAmount).dividedBy(
           new BigNumber(10).pow(destAsset.decimals),
         ),
