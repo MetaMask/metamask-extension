@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { lt as semverLt } from 'semver';
+import { lt as semverLt, coerce as semverCoerce } from 'semver';
 import { useAppSelector } from '../store/store';
 import { getIsMultichainAccountsState2Enabled } from '../selectors/multichain-accounts/feature-flags';
 import { getLastUpdatedFromVersion } from '../selectors/selectors';
@@ -40,10 +40,19 @@ export function useMultichainAccountsIntroModal(
     const isMainWalletArea = location.pathname === DEFAULT_ROUTE;
 
     // Check if this is an upgrade from a version lower than BIP-44 introduction version
+    // Extension versions may not be valid semver therefore we coerce them first
     const isUpgradeFromLowerThanBip44Version = Boolean(
       lastUpdatedFromVersion &&
         typeof lastUpdatedFromVersion === 'string' &&
-        semverLt(lastUpdatedFromVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION),
+        (() => {
+          try {
+            const coercedVersion = semverCoerce(lastUpdatedFromVersion);
+            return coercedVersion && semverLt(coercedVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION);
+          } catch {
+            // If version can't be parsed, assume it's not from an old version
+            return false;
+          }
+        })(),
     );
 
     // Show modal only for upgrades from versions < BIP-44 introduction version
