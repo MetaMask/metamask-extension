@@ -100,7 +100,6 @@ export function initControllers({
   const partialControllersByName = existingControllers.reduce<
     Partial<ControllerByName>
   >((acc, controller) => {
-    // @ts-expect-error: Union too complex.
     acc[controller.name] = controller;
     return acc;
   }, {});
@@ -159,7 +158,6 @@ export function initControllers({
     const memStateKey =
       memStateKeyRaw === null ? undefined : (memStateKeyRaw ?? controllerName);
 
-    // @ts-expect-error: Union too complex.
     partialControllersByName[controllerName] = controller;
 
     controllerApi = {

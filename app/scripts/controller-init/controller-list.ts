@@ -81,6 +81,7 @@ import {
   AccountActivityService,
   BackendWebSocketService,
 } from '@metamask/core-backend';
+import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -117,6 +118,8 @@ export type Controller =
   | AuthenticationController
   | BridgeController
   | BridgeStatusController
+  | ClaimsController
+  | ClaimsService
   | CronjobController
   | CurrencyRateController
   | DecryptMessageController
@@ -210,6 +213,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   AuthenticationController['state'] &
   BridgeController['state'] &
   BridgeStatusController['state'] &
+  ClaimsController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
