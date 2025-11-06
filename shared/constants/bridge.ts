@@ -2,6 +2,7 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
+  ChainId,
 } from '@metamask/bridge-controller';
 import { MultichainNetworks } from './multichain/networks';
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
@@ -24,6 +25,7 @@ const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
   CHAIN_IDS.SEI,
+  CHAIN_IDS.MONAD,
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -32,12 +34,19 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
   MultichainNetworks.SOLANA,
+  MultichainNetworks.BITCOIN,
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP =
   ALLOWED_EVM_BRIDGE_CHAIN_IDS.map(toEvmCaipChainId).concat(
     ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS,
   );
+
+export const ALL_ALLOWED_BRIDGE_CHAIN_IDS = [
+  ...ALLOWED_BRIDGE_CHAIN_IDS,
+  ...ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP,
+  ...Object.values(ChainId),
+];
 
 export type AllowedBridgeChainIds =
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number]
@@ -74,6 +83,8 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [toEvmCaipChainId(CHAIN_IDS.BASE)]: 'Base',
   [CHAIN_IDS.SEI]: 'Sei',
   [toEvmCaipChainId(CHAIN_IDS.SEI)]: 'Sei',
+  [CHAIN_IDS.MONAD]: 'Monad',
+  [toEvmCaipChainId(CHAIN_IDS.MONAD)]: 'Monad',
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
@@ -101,7 +112,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     // ETH -> mUSD on mainnet
     address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
     symbol: 'mUSD',
-    decimals: 18,
+    decimals: 6,
     name: 'MetaMask USD',
   },
   [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]: {
@@ -157,12 +168,19 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     // ETH -> mUSD on Linea
     address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
     symbol: 'mUSD',
-    decimals: 18,
+    decimals: 6,
     name: 'MetaMask USD',
   },
   [toEvmCaipChainId(CHAIN_IDS.SEI)]: {
     // SEI -> USDC on Sei
-    address: '0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1',
+    address: '0xe15fC38F6D8c56aF07bbCBe3BAf5708A2Bf42392',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+  },
+  [toEvmCaipChainId(CHAIN_IDS.MONAD)]: {
+    // MON -> USDC on Monad
+    address: '0x754704Bc059F8C67012fEd69BC8A327a5aafb603',
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',

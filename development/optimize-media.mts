@@ -2,8 +2,6 @@ import { writeFile, stat } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { argv, exit } from 'node:process';
 import sharp from 'sharp';
-import imagemin from 'imagemin';
-import imageminGifsicle from 'imagemin-gifsicle';
 import globby from 'globby';
 import yargs from 'yargs/yargs';
 
@@ -74,18 +72,7 @@ async function optimizeImage(filePath: string, fix = true) {
 
     if (supportedFileFormats.includes(fileInfo.format)) {
       const { size: originalSize } = await stat(filePath);
-      let optimizedBuffer: Buffer | null = null;
-      if (fileInfo.format === 'gif') {
-        // Gifsicle is usually better at optimizing GIFs than sharp
-        [{ data: optimizedBuffer }] = await imagemin([filePath], {
-          plugins: [
-            imageminGifsicle({
-              optimizationLevel: 3,
-            }),
-          ],
-        });
-      } else {
-        optimizedBuffer = await sharp(filePath, {
+      const optimizedBuffer = await sharp(filePath, {
           // default is `false`, which makes sharp only read the first frame of
           // an animated image :facepalm:
           animated: true,
@@ -98,7 +85,6 @@ async function optimizeImage(filePath: string, fix = true) {
             lossless: true,
           } satisfies SupportedSharpFileOptions)
           .toBuffer();
-      }
 
       if (optimizedBuffer.byteLength < originalSize) {
         // if we saved some bytes, write the optimized image back to disk

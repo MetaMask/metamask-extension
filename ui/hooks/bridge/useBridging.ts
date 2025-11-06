@@ -1,6 +1,6 @@
 import { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   type BridgeAsset,
   formatChainIdToCaip,
@@ -14,7 +14,6 @@ import {
 } from '../../ducks/bridge/actions';
 import {
   getDataCollectionForMarketing,
-  getIsBridgeChain,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
 } from '../../selectors';
@@ -32,14 +31,16 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP } from '../../../shared/constants/bridge';
+import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import {
+  getFromChains,
+  getLastSelectedChainId,
+} from '../../ducks/bridge/selectors';
 import { getMultichainProviderConfig } from '../../selectors/multichain';
-import { getDefaultTokenPair } from '../../ducks/bridge/selectors';
-import { getDefaultToToken, toBridgeToken } from '../../ducks/bridge/utils';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 
 const useBridging = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -47,13 +48,19 @@ const useBridging = () => {
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
+  const lastSelectedChainId = useSelector(getLastSelectedChainId);
   const providerConfig = useSelector(getMultichainProviderConfig);
+  const fromChains = useSelector(getFromChains);
 
-  const isBridgeChain = useSelector((state) =>
-    getIsBridgeChain(state, providerConfig?.chainId),
+  const isChainIdEnabledForBridging = useCallback(
+    (chainId: string | number) =>
+      ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId) &&
+      fromChains.some(
+        (chain) =>
+          formatChainIdToCaip(chain.chainId) === formatChainIdToCaip(chainId),
+      ),
+    [fromChains],
   );
-
-  const defaultTokenPair = useSelector(getDefaultTokenPair);
 
   const openBridgeExperience = useCallback(
     (
@@ -61,62 +68,44 @@ const useBridging = () => {
       srcToken?: Pick<BridgeAsset, 'symbol' | 'address'> & {
         chainId: GenericQuoteRequest['srcChainId'];
       },
-      isSwap = false,
     ) => {
-      const [defaultBip44SrcAssetId, defaultBip44DestAssetId] =
-        defaultTokenPair ?? [];
+      // If srcToken is a bridge token, use its assetId
+      let srcAssetIdToUse =
+        srcToken?.chainId && isChainIdEnabledForBridging(srcToken.chainId)
+          ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
+          : undefined;
 
-      const srcAssetIdToUse =
-        (srcToken
-          ? toAssetId(
-              srcToken.address,
-              formatChainIdToCaip(srcToken.chainId ?? providerConfig.chainId),
-            )
-          : defaultBip44SrcAssetId) ??
-        // If neither the srcAsset or default BIP44 default pair are present
-        // use the native asset for Ethereum mainnet
-        // This should only happen if the feature flags are unavailable and the
-        // user clicks on Swap from the home page
-        getNativeAssetForChainId(CHAIN_IDS.MAINNET)?.assetId;
-
-      // If srcToken is present, use the default dest token for that chain
-      const destAssetIdToUse = srcToken?.chainId
-        ? toBridgeToken(
-            getDefaultToToken(formatChainIdToCaip(srcToken.chainId), srcToken),
-          )?.assetId
-        : defaultBip44DestAssetId;
-
-      const isBridgeToken =
-        srcToken?.chainId &&
-        ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP.includes(
-          formatChainIdToCaip(srcToken.chainId),
-        );
-
-      const isChainOrTokenSupported =
-        isBridgeChain || isBridgeToken || srcAssetIdToUse;
-
-      if (!isChainOrTokenSupported || !providerConfig) {
-        return;
+      /* If srcToken is not in a supported bridge chain, or is not specified
+       * and the selected network filter is not active, set the srcAssetId to
+       * a supported bridge native asset
+       *
+       * If an unsupported network is selected in the network filter, fall back to MAINNET
+       *
+       * default fromChain: srctoken.chainId > lastSelectedId > MAINNET
+       */
+      const targetChainId = isChainIdEnabledForBridging(lastSelectedChainId)
+        ? lastSelectedChainId
+        : CHAIN_IDS.MAINNET;
+      if (!srcAssetIdToUse && targetChainId !== providerConfig?.chainId) {
+        srcAssetIdToUse = getNativeAssetForChainId(targetChainId)?.assetId;
       }
 
       trace({
-        name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
+        name: TraceName.SwapViewLoaded,
         startTime: Date.now(),
       });
       trackEvent({
-        event: isSwap
-          ? MetaMetricsEventName.SwapLinkClicked
-          : MetaMetricsEventName.BridgeLinkClicked,
+        event: MetaMetricsEventName.SwapLinkClicked,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: srcToken?.symbol ?? defaultBip44SrcAssetId ?? '',
+          token_symbol: srcToken?.symbol ?? '',
           location,
-          text: isSwap ? 'Swap' : 'Bridge',
+          text: 'Swap',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: providerConfig.chainId,
+          chain_id: srcToken?.chainId ?? lastSelectedChainId,
         },
       });
       dispatch(
@@ -124,34 +113,35 @@ const useBridging = () => {
           location: location as never,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_source: srcToken?.symbol ?? defaultBip44SrcAssetId ?? '',
+          token_symbol_source: srcToken?.symbol ?? 'ETH',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_destination: destAssetIdToUse ?? '',
+          token_symbol_destination: '',
         }),
       );
       dispatch(resetInputFields());
       let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+
+      url += '?';
       if (srcAssetIdToUse) {
-        url += `?${BridgeQueryParams.FROM}=${srcAssetIdToUse}`;
+        url += `${BridgeQueryParams.FROM}=${srcAssetIdToUse}`;
       }
-      if (destAssetIdToUse) {
-        url += `&${BridgeQueryParams.TO}=${destAssetIdToUse}`;
+
+      if (location === MetaMetricsSwapsEventSource.TransactionShield) {
+        url += `${srcAssetIdToUse ? '&' : ''}isFromTransactionShield=true`;
       }
-      if (isSwap) {
-        url += `&${BridgeQueryParams.SWAPS}=true`;
-      }
-      history.push(url);
+
+      navigate(url);
     },
     [
-      isBridgeChain,
-      history,
+      navigate,
       metaMetricsId,
       trackEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
-      providerConfig,
-      defaultTokenPair,
+      lastSelectedChainId,
+      providerConfig?.chainId,
+      isChainIdEnabledForBridging,
     ],
   );
 

@@ -118,14 +118,11 @@ export const AccountDetailsDisplay = ({
         </Box>
       )}
       {!pending && networkSupporting7702Present && (
-        <Tabs
-          onTabClick={() => undefined}
-          style={{ width: '100%', marginTop: '8px' }}
-        >
-          <Tab name="Type" tabKey="Type" style={{ width: '50%' }}>
+        <Tabs onTabClick={() => undefined} className="mt-2">
+          <Tab name="Type" tabKey="Type" className="flex-1">
             <SmartAccountTab address={address} />
           </Tab>
-          <Tab name="Details" tabKey="Details" style={{ width: '50%' }}>
+          <Tab name="Details" tabKey="Details" className="flex-1">
             <AccountDetailsSection
               address={address}
               onExportClick={onExportClick}

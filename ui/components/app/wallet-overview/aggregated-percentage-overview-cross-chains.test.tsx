@@ -37,6 +37,7 @@ jest.mock('../../../selectors', () => ({
   getMarketData: jest.fn(),
   getAllTokens: jest.fn(),
   getChainIdsToPoll: jest.fn(),
+  selectAnyEnabledNetworksAreAvailable: jest.fn(),
 }));
 
 jest.mock('../../../ducks/metamask/metamask', () => ({
@@ -427,7 +428,9 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
         ],
         totalFiatBalance: 289.96,
       });
-      const { container } = render(<AggregatedPercentageOverviewCrossChains />);
+      const { container } = render(
+        <AggregatedPercentageOverviewCrossChains trailingChild={() => null} />,
+      );
       expect(container).toMatchSnapshot();
     });
   });
@@ -451,7 +454,9 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
       totalFiatBalance: 0,
     });
 
-    render(<AggregatedPercentageOverviewCrossChains />);
+    render(
+      <AggregatedPercentageOverviewCrossChains trailingChild={() => null} />,
+    );
     const percentageElement = screen.getByText('(+0.00%)');
     const numberElement = screen.getByText('+$0.00');
     expect(percentageElement).toBeInTheDocument();
@@ -496,7 +501,9 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
     mockGetMarketData.mockReturnValue(negativeCrossChainMarketDataMock);
     const expectedAmountChange = '-$0.97';
     const expectedPercentageChange = '(-0.33%)';
-    render(<AggregatedPercentageOverviewCrossChains />);
+    render(
+      <AggregatedPercentageOverviewCrossChains trailingChild={() => null} />,
+    );
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
@@ -541,7 +548,9 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
     mockGetMarketData.mockReturnValue(positiveCrossChainMarketDataMock);
     const expectedAmountChange = '+$0.96';
     const expectedPercentageChange = '(+0.33%)';
-    render(<AggregatedPercentageOverviewCrossChains />);
+    render(
+      <AggregatedPercentageOverviewCrossChains trailingChild={() => null} />,
+    );
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
@@ -585,7 +594,9 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
     });
     const expectedAmountChange = '+$0.22';
     const expectedPercentageChange = '(+0.08%)';
-    render(<AggregatedPercentageOverviewCrossChains />);
+    render(
+      <AggregatedPercentageOverviewCrossChains trailingChild={() => null} />,
+    );
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();

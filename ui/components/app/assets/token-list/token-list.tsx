@@ -4,16 +4,15 @@ import { type CaipChainId, type Hex } from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import TokenCell from '../token-cell';
 import {
-  getChainIdsToPoll,
   getEnabledNetworksByNamespace,
   getIsMultichainAccountsState2Enabled,
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
+  getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
 } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
-import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
 import { useNetworkFilter } from '../hooks';
 import { type TokenWithFiatAmount } from '../types';
 import { filterAssets } from '../util/filter';
@@ -36,6 +35,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { isGlobalNetworkSelectorRemoved } from '../../../../selectors/selectors';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -46,7 +46,6 @@ type TokenListProps = {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
-  const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
@@ -55,11 +54,10 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const evmBalances = useSelector((state) =>
     getTokenBalancesEvm(state, selectedAccount.address),
   );
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
   const trackEvent = useContext(MetaMetricsContext);
-  // EVM specific tokenBalance polling, updates state via polling loop per chainId
-  pollAndUpdateEvmBalances({
-    chainIds: chainIdsToPoll as Hex[],
-  });
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
 
@@ -105,29 +103,32 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
         }
 
         // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
-        return assets.map((asset) => {
-          const token: TokenWithFiatAmount = {
-            ...asset,
-            tokenFiatAmount: asset.fiat?.balance,
-            primary: '',
-            secondary: null,
-            title: asset.name,
-            address:
-              'address' in asset ? asset.address : (asset.assetId as Hex),
-            chainId: asset.chainId as Hex,
-          };
-
-          return token;
+        return assets.filter((asset) => {
+          if (shouldHideZeroBalanceTokens && asset.balance === '0') {
+            return false;
+          }
+          return true;
         });
       },
     );
 
-    const accountAssets = sortAssets(
-      [...accountAssetsPreSort],
+    const accountAssets = sortAssetsWithPriority(
+      accountAssetsPreSort,
       tokenSortConfig,
     );
 
-    return accountAssets;
+    return accountAssets.map((asset) => {
+      const token: TokenWithFiatAmount = {
+        ...asset,
+        tokenFiatAmount: asset.fiat?.balance,
+        secondary: null,
+        title: asset.name,
+        address: 'address' in asset ? asset.address : (asset.assetId as Hex),
+        chainId: asset.chainId as Hex,
+      };
+
+      return token;
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

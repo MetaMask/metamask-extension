@@ -357,7 +357,6 @@ function getValues(pendingApproval, t, actions, history, data) {
     ],
     cancelText: t('cancel'),
     submitText: t('approveButtonText'),
-    loadingText: t('addingCustomNetwork'),
     onSubmit: async () => {
       let endpointChainId;
       try {

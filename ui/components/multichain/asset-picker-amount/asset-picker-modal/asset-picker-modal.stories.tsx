@@ -29,6 +29,7 @@ export const DefaultStory = () => {
     <AssetPickerModal
       header={t('sendSelectSendAsset')}
       onAssetChange={() => ({})}
+      autoFocus={false}
       {...props}
     />
   );
@@ -42,6 +43,7 @@ export const TokenStory = () => {
     <AssetPickerModal
       header={t('sendSelectSendAsset')}
       onAssetChange={() => ({})}
+      autoFocus={false}
       {...props}
     />
   );

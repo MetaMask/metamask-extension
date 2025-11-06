@@ -38,7 +38,7 @@ export const BridgeNoFeeMessage = () => {
 
   return (
     <Row gap={1} justifyContent={JustifyContent.center}>
-      <Text variant={TextVariant.bodyXs} color={TextColor.textAlternativeSoft}>
+      <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
         {t('noMMFeeSwapping', [destSymbol])}
       </Text>
     </Row>

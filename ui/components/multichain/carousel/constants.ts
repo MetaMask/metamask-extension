@@ -20,7 +20,7 @@ export const ANIMATION_TIMINGS = {
 export const LAYOUT_CONSTANTS = {
   CONTAINER_HEIGHT: 106, // BANNER_HEIGHT + 6px
   CARD_HEIGHT: 100, // BANNER_HEIGHT
-  IMAGE_SIZE: 76, // Image width and height
+  IMAGE_SIZE: 72, // Image width and height
   CARD_PADDING_HORIZONTAL: 16,
   CARD_PADDING_VERTICAL: 12,
   IMAGE_TEXT_GAP: 16,

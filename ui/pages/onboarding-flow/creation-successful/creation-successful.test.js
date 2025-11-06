@@ -5,7 +5,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
-  ONBOARDING_DOWNLOAD_APP_ROUTE,
+  DEFAULT_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import CreationSuccessful from './creation-successful';
@@ -19,6 +19,11 @@ jest.mock('react-router-dom-v5-compat', () => {
     useLocation: () => ({ search: '' }),
   };
 });
+
+jest.mock('./wallet-ready-animation', () => ({
+  __esModule: true,
+  default: () => <div data-testid="wallet-ready-animation" />,
+}));
 
 describe('Wallet Ready Page', () => {
   const mockState = {
@@ -46,6 +51,9 @@ describe('Wallet Ready Page', () => {
       firstTimeFlowType: FirstTimeFlowType.create,
       seedPhraseBackedUp: true,
     },
+    appState: {
+      externalServicesOnboardingToggleState: true,
+    },
   };
 
   it('should render the wallet ready content if the seed phrase is backed up', () => {
@@ -53,14 +61,9 @@ describe('Wallet Ready Page', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
 
     expect(getByText('Your wallet is ready!')).toBeInTheDocument();
-    expect(
-      getByText(
-        /If you lose your Secret Recovery Phrase, you won’t be able to use your wallet./u,
-      ),
-    ).toBeInTheDocument();
   });
 
-  it('should render the remind you later content if the seed phrase is not backed up', () => {
+  it('should render the wallet ready content if the seed phrase is not backed up', () => {
     const mockStore = configureMockStore([thunk])({
       ...mockState,
       metamask: {
@@ -70,13 +73,7 @@ describe('Wallet Ready Page', () => {
     });
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
 
-    expect(getByText('We’ll remind you later')).toBeInTheDocument();
-
-    expect(
-      getByText(
-        /You can back up your wallets or see your Secret Recovery Phrase in Settings > Security & Password./u,
-      ),
-    ).toBeInTheDocument();
+    expect(getByText('Your wallet is ready!')).toBeInTheDocument();
   });
 
   it('should redirect to privacy-settings view when "Manage default settings" button is clicked', () => {
@@ -98,9 +95,7 @@ describe('Wallet Ready Page', () => {
     const doneButton = getByTestId('onboarding-complete-done');
     fireEvent.click(doneButton);
     await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        ONBOARDING_DOWNLOAD_APP_ROUTE,
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
 });

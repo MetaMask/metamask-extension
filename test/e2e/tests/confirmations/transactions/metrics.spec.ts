@@ -22,7 +22,7 @@ describe('Metrics', function () {
   it('Sends a contract interaction type 2 transaction (EIP1559) with the right properties in the metric events', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
@@ -67,14 +67,31 @@ describe('Metrics', function () {
         // deposit contract
         await testDapp.createDepositTransaction();
         const transactionConfirmation = new TransactionConfirmation(driver);
+        // verify UI before clicking advanced details to give time for the Transaction Added event to be emitted without Advanced Details being displayed
         await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.checkHeaderAccountNameIsDisplayed(
+          'Account 1',
+        );
+        await transactionConfirmation.checkGasFeeSymbol('ETH');
+        await transactionConfirmation.checkGasFee('0.0009');
+
+        // enable the advanced view
         await transactionConfirmation.clickAdvancedDetailsButton();
+        await transactionConfirmation.verifyAdvancedDetailsHexDataIsDisplayed(
+          '0xd0e30db0',
+        );
 
         await assertAdvancedGasDetails(driver);
-        await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 
+        // This is left for debugging purposes
+        console.log(events);
         assert.equal(events.length, 16);
 
         // deployment tx -- no ui_customizations

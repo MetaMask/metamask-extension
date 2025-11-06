@@ -55,8 +55,14 @@ import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { MultichainSiteCell } from '../../multichain-site-cell/multichain-site-cell';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
 import { getCaip25CaveatValueFromPermissions } from '../../../../pages/permissions-connect/connect-page/utils';
-import { getCaip25AccountFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
+import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
 import { MultichainEditAccountsPage } from '../multichain-edit-accounts-page/multichain-edit-accounts-page';
+import {
+  AppState,
+  getPermissionMetaDataByOrigin,
+} from '../../../../selectors/gator-permissions/gator-permissions';
+import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
 
 export enum MultichainReviewPermissionsPageMode {
   Summary = 'summary',
@@ -229,7 +235,7 @@ export const MultichainReviewPermissions = () => {
         accountGroupIds.includes(group.id),
       );
 
-      const caipAccountIds = getCaip25AccountFromAccountGroupAndScope(
+      const caipAccountIds = getCaip25AccountIdsFromAccountGroupAndScope(
         accountGroups,
         connectedChainIds,
       );
@@ -239,6 +245,25 @@ export const MultichainReviewPermissions = () => {
     },
     [activeTabOrigin, connectedChainIds, dispatch, supportedAccountGroups],
   );
+
+  const gatorPermissionsGroupMetaData = useSelector((state) =>
+    getPermissionMetaDataByOrigin(state as AppState, activeTabOrigin),
+  );
+
+  const shouldRenderGatorPermissionGroupDetails = useMemo(() => {
+    if (!gatorPermissionsGroupMetaData) {
+      return false;
+    }
+
+    const isPermissionGroupDetailsMapEmpty = Object.values(
+      gatorPermissionsGroupMetaData,
+    ).every((details) => details.count === 0);
+
+    return (
+      isGatorPermissionsRevocationFeatureEnabled() &&
+      !isPermissionGroupDetailsMapEmpty
+    );
+  }, [gatorPermissionsGroupMetaData]);
 
   return pageMode === MultichainReviewPermissionsPageMode.Summary ? (
     <Page
@@ -264,6 +289,21 @@ export const MultichainReviewPermissions = () => {
           ) : (
             <NoConnectionContent />
           )}
+          {shouldRenderGatorPermissionGroupDetails
+            ? Object.entries(gatorPermissionsGroupMetaData).map(
+                ([permissionGroupName, details]) => (
+                  <PermissionsCell
+                    key={permissionGroupName}
+                    nonTestNetworks={nonTestNetworks}
+                    testNetworks={testNetworks}
+                    totalCount={details.count}
+                    chainIds={details.chains}
+                    paddingTop={connectedAccountGroups.length === 0 ? 4 : 0}
+                  />
+                ),
+              )
+            : null}
+
           {showDisconnectAllModal ? (
             <DisconnectAllModal
               type={DisconnectType.Account}
@@ -352,7 +392,7 @@ export const MultichainReviewPermissions = () => {
     </Page>
   ) : (
     <MultichainEditAccountsPage
-      title={t('connectWithMetaMask')}
+      title={t('editAccounts')}
       confirmButtonText={t('update')}
       supportedAccountGroups={supportedAccountGroups}
       defaultSelectedAccountGroups={selectedAccountGroupIds}

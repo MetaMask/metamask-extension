@@ -25,19 +25,26 @@ import {
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { AssetType } from '../../../shared/constants/transaction';
+import { useAsyncResult } from '../useAsync';
 
 export type TokenWithApprovalAmount = (
   | AssetWithDisplayData<ERC20Asset>
   | AssetWithDisplayData<NativeAsset>
 ) & {
-  approvalAmount: string;
+  approvalAmount: {
+    approveAmount: string;
+    chainId: Hex;
+    paymentAddress: Hex;
+    paymentTokenAddress: Hex;
+  };
 };
 
 export const useAvailableTokenBalances = (params: {
   paymentChains?: ChainPaymentInfo[];
   price?: ProductPrice;
+  productType: ProductType;
 }): TokenWithApprovalAmount[] => {
-  const { paymentChains, price } = params;
+  const { paymentChains, price, productType } = params;
 
   const paymentChainIds = useMemo(
     () => paymentChains?.map((chain) => chain.chainId),
@@ -112,18 +119,37 @@ export const useAvailableTokenBalances = (params: {
             return null;
           }
           return getSubscriptionCryptoApprovalAmount({
-            price,
-            tokenPaymentInfo,
+            chainId: token.chainId as Hex,
+            paymentTokenAddress: token.address as Hex,
+            productType,
+            interval: price.interval,
           });
         }),
       );
 
       cryptoApprovalAmounts.forEach((amount, index) => {
         const token = validTokenBalances[index];
-        if (amount) {
+        if (!token.balance) {
+          return;
+        }
+        // NOTE: we are using stable coin for subscription atm, so we need to scale the balance by the decimals
+        const scaledFactor = 10n ** 6n;
+        const scaledBalance =
+          BigInt(Math.round(Number(token.balance) * Number(scaledFactor))) /
+          scaledFactor;
+        const tokenHasEnoughBalance =
+          amount &&
+          scaledBalance * BigInt(10 ** token.decimals) >=
+            BigInt(amount.approveAmount);
+        if (tokenHasEnoughBalance) {
           availableTokens.push({
             ...token,
-            approvalAmount: amount,
+            approvalAmount: {
+              approveAmount: amount.approveAmount,
+              chainId: token.chainId as Hex,
+              paymentAddress: amount.paymentAddress,
+              paymentTokenAddress: amount.paymentTokenAddress,
+            },
             type: token.isNative ? AssetType.native : AssetType.token,
           } as TokenWithApprovalAmount);
         }
@@ -133,32 +159,32 @@ export const useAvailableTokenBalances = (params: {
     };
 
     getAvailableTokenBalances();
-  }, [price, paymentChainTokenMap, validTokenBalances]);
+  }, [price, productType, paymentChainTokenMap, validTokenBalances]);
 
   return availableTokenBalances;
 };
 
-export const useSubscriptionPricing = () => {
+/**
+ * Use this hook to get the subscription pricing.
+ *
+ * @param options - The options for the hook.
+ * @param options.refetch - Whether to refetch the subscription pricing from api.
+ * @returns The subscription pricing.
+ */
+export const useSubscriptionPricing = (
+  { refetch }: { refetch?: boolean } = { refetch: false },
+) => {
   const dispatch = useDispatch();
   const subscriptionPricing = useSelector(getSubscriptionPricing);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        await dispatch(getSubscriptionPricingAction());
-      } catch (err) {
-        log.error('[useSubscriptionPricing] error', err);
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [dispatch]);
+  const { pending, error } = useAsyncResult(async () => {
+    if (!refetch) {
+      return undefined;
+    }
+    return await dispatch(getSubscriptionPricingAction());
+  }, [dispatch, refetch]);
 
-  return { subscriptionPricing, loading, error };
+  return { subscriptionPricing, loading: pending, error };
 };
 
 export const useSubscriptionProductPlans = (

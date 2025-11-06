@@ -4,26 +4,40 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import Dropdown from '../../../components/ui/dropdown';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { updateCurrentLocale } from '../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
-import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
-import { Box } from '../../../components/component-library';
+import {
+  BannerTip,
+  Box,
+  Icon,
+  Text,
+  IconName,
+  IconSize,
+} from '../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
   Display,
   JustifyContent,
+  BorderColor,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
-import { ThemeType } from '../../../../shared/constants/preferences';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../../helpers/constants/routes';
 
 export default function OnboardingAppHeader({ isWelcomePage }) {
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const t = useI18nContext();
   const currentLocale = useSelector(getCurrentLocale);
   const localeOptions = locales.map((locale) => {
     return {
@@ -31,6 +45,11 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
       value: locale.code,
     };
   });
+
+  const searchParams = new URLSearchParams(search);
+  const isFromReminder = searchParams.get('isFromReminder');
+  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
+  const isFromSettingsSRPBackup = isFromReminder || isFromSettingsSecurity;
 
   return (
     <Box
@@ -46,27 +65,75 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
       <Box
         display={Display.Flex}
         width={BlockSize.Full}
-        justifyContent={JustifyContent.spaceBetween}
+        justifyContent={
+          pathname === ONBOARDING_WELCOME_ROUTE
+            ? JustifyContent.flexEnd
+            : JustifyContent.spaceBetween
+        }
         className="onboarding-app-header__contents"
       >
-        <MetaFoxLogo
-          theme={
-            pathname === ONBOARDING_WELCOME_ROUTE ? ThemeType.light : undefined
-          }
-          unsetIconHeight
-          isOnboarding
-        />
-        <Dropdown
-          data-testid="select-locale"
-          className={classnames('onboarding-app-header__dropdown', {
-            'onboarding-app-header__dropdown--welcome--login': isWelcomePage,
-          })}
-          options={localeOptions}
-          selectedOption={currentLocale}
-          onChange={async (newLocale) =>
-            dispatch(updateCurrentLocale(newLocale))
-          }
-        />
+        {pathname !== ONBOARDING_WELCOME_ROUTE && (
+          <MetaFoxLogo unsetIconHeight isOnboarding />
+        )}
+
+        {pathname === ONBOARDING_COMPLETION_ROUTE &&
+        !isFromSettingsSRPBackup ? (
+          <Box
+            paddingTop={12}
+            className="onboarding-app-header__banner-tip-container"
+          >
+            <BannerTip
+              borderColor={BorderColor.borderMuted}
+              backgroundColor={BackgroundColor.backgroundMuted}
+              title={t('pinMetaMask')}
+              gap={4}
+              titleProps={{
+                color: TextColor.textDefault,
+                variant: TextVariant.bodyMdMedium,
+                paddingRight: 2,
+              }}
+              className="onboarding-app-header__banner-tip"
+              padding={3}
+              alignItems={AlignItems.center}
+            >
+              <Text
+                variant={TextVariant.bodySm}
+                alignItems={AlignItems.center}
+                color={TextColor.textAlternative}
+                paddingRight={2}
+              >
+                {t('pinMetaMaskDescription', [
+                  <Icon
+                    name={IconName.Extension}
+                    key="extension"
+                    color={TextColor.textDefault}
+                    size={IconSize.Md}
+                    className="onboarding-app-header__banner-tip-icon"
+                  />,
+                  <Icon
+                    name={IconName.Keep}
+                    key="keep"
+                    color={TextColor.textDefault}
+                    size={IconSize.Md}
+                    className="onboarding-app-header__banner-tip-icon"
+                  />,
+                ])}
+              </Text>
+            </BannerTip>
+          </Box>
+        ) : (
+          <Dropdown
+            data-testid="select-locale"
+            className={classnames('onboarding-app-header__dropdown', {
+              'onboarding-app-header__dropdown--welcome--login': isWelcomePage,
+            })}
+            options={localeOptions}
+            selectedOption={currentLocale}
+            onChange={async (newLocale) =>
+              dispatch(updateCurrentLocale(newLocale))
+            }
+          />
+        )}
       </Box>
     </Box>
   );

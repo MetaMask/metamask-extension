@@ -4,8 +4,10 @@ import notifications from './notifications';
 import swap from './swap';
 import nonevm from './nonevm';
 import perps from './perps';
+import rewards from './rewards';
 
 import type { Route } from './route';
+import shield from './shield';
 
 export type { Route } from './route';
 
@@ -36,3 +38,5 @@ addRoute(notifications);
 addRoute(swap);
 addRoute(nonevm);
 addRoute(perps);
+addRoute(rewards);
+addRoute(shield);

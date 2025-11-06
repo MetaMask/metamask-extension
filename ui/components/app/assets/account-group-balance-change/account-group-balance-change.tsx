@@ -7,48 +7,62 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
+import {
+  getIsMultichainAccountsState2Enabled,
+  selectAnyEnabledNetworksAreAvailable,
+} from '../../../../selectors';
 import { Box, SensitiveText } from '../../../component-library';
+import { isZeroAmount } from '../../../../helpers/utils/number-utils';
+import { Skeleton } from '../../../component-library/skeleton';
 import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
 export type AccountGroupBalanceChangeProps = {
   period: BalanceChangePeriod;
+  trailingChild: () => JSX.Element | null;
 };
 
 const balanceAmountSpanStyle = { whiteSpace: 'pre' } as const;
 
 const AccountGroupBalanceChangeComponent: React.FC<
   AccountGroupBalanceChangeProps
-> = ({ period }) => {
+> = ({ period, trailingChild }) => {
   const { privacyMode, color, amountChange, percentChange } =
     useAccountGroupBalanceDisplay(period);
   const { formatCurrency, formatPercentWithMinThreshold } = useFormatters();
   const currency = useSelector(getCurrentCurrency);
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
+  );
 
   return (
-    <Box display={Display.Flex} gap={1}>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        style={balanceAmountSpanStyle}
-        data-testid="account-group-balance-change-value"
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {formatCurrency(amountChange, currency, { signDisplay: 'always' })}
-      </SensitiveText>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="account-group-balance-change-percentage"
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {`(${formatPercentWithMinThreshold(percentChange, { signDisplay: 'always' })})`}
-      </SensitiveText>
-    </Box>
+    <Skeleton
+      isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)}
+    >
+      <Box display={Display.Flex} gap={1}>
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          style={balanceAmountSpanStyle}
+          data-testid="account-group-balance-change-value"
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {formatCurrency(amountChange, currency, { signDisplay: 'always' })}
+        </SensitiveText>
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="account-group-balance-change-percentage"
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {`(${formatPercentWithMinThreshold(percentChange, { signDisplay: 'always' })})`}
+        </SensitiveText>
+      </Box>
+      {trailingChild()}
+    </Skeleton>
   );
 };
 

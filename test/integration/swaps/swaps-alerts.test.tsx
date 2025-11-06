@@ -43,7 +43,7 @@ const setupSubmitRequestToBackgroundMocks = (
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
       ...mockedBackgroundRequests,
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -167,7 +167,7 @@ describe.skip('Swaps Alert', () => {
     await screen.findByText(accountName);
 
     await act(async () => {
-      fireEvent.click(await screen.findByTestId('token-overview-button-swap'));
+      fireEvent.click(await screen.findByTestId('coin-overview-swap'));
     });
 
     await act(async () => {

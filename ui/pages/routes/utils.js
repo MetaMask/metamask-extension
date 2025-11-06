@@ -29,6 +29,9 @@ import {
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   SHIELD_PLAN_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  GATOR_PERMISSIONS,
+  TOKEN_TRANSFER_ROUTE,
+  REVIEW_GATOR_PERMISSIONS_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -40,7 +43,7 @@ export function isConfirmTransactionRoute(pathname) {
   );
 }
 
-function getThemeFromRawTheme(theme) {
+export function getThemeFromRawTheme(theme) {
   if (theme === ThemeType.os) {
     if (window?.matchMedia('(prefers-color-scheme: dark)')?.matches) {
       return ThemeType.dark;
@@ -296,6 +299,39 @@ export function hideAppHeader(props) {
     return true;
   }
 
+  const isGatorPermissionsPage = Boolean(
+    matchPath(location.pathname, {
+      path: GATOR_PERMISSIONS,
+      exact: false,
+    }),
+  );
+
+  if (isGatorPermissionsPage) {
+    return true;
+  }
+
+  const isGatorPermissionsTokenTransferPage = Boolean(
+    matchPath(location.pathname, {
+      path: TOKEN_TRANSFER_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isGatorPermissionsTokenTransferPage) {
+    return true;
+  }
+
+  const isReviewGatorPermissionsPage = Boolean(
+    matchPath(location.pathname, {
+      path: REVIEW_GATOR_PERMISSIONS_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isReviewGatorPermissionsPage) {
+    return true;
+  }
+
   return (
     isHandlingPermissionsRequest ||
     isHandlingAddEthereumChainRequest ||
@@ -312,4 +348,48 @@ export function showAppHeader(props) {
       exact: true,
     }),
   );
+}
+
+/**
+ * Creates a relative location object for use with nested react-router-dom-v5-compat Routes.
+ *
+ * When using v5-compat <Routes> and <Route> components inside a parent route,
+ * the child Routes need to match against paths relative to the parent route,
+ * not the full pathname. This function strips the base path prefix from the
+ * location to create a relative location. The resulting pathname is guaranteed
+ * to start with '/', as required by React Router Route matching.
+ *
+ * @param {object} location - The full location object from react-router
+ * @param {string} location.pathname - The full pathname (e.g., '/connect/id/snap-install')
+ * @param {string} basePath - The base path to remove (e.g., '/connect/id' or '/connect/id/')
+ * @returns {object} A new location object with pathname set to the relative path
+ * (e.g., '/snap-install' or '/') and all other location properties preserved
+ * @example
+ * // Full pathname: '/connect/abc123/snaps-connect'
+ * // Base path: '/connect/abc123' or '/connect/abc123/'
+ * const relativeLocation = getRelativeLocationForNestedRoutes(
+ *   location,
+ *   '/connect/abc123'
+ * );
+ * // relativeLocation.pathname === '/snaps-connect'
+ * @example
+ * // Usage with v5-compat Routes:
+ * <Routes location={relativeLocation}>
+ *   <Route path="/" element={<HomePage />} />
+ *   <Route path="/snaps-connect" element={<SnapsConnect />} />
+ * </Routes>
+ */
+export function getRelativeLocationForNestedRoutes(location, basePath) {
+  const normalizedBasePath = basePath.endsWith('/')
+    ? basePath.slice(0, -1)
+    : basePath;
+
+  const relativePathname = location.pathname.startsWith(normalizedBasePath)
+    ? location.pathname.slice(normalizedBasePath.length) || '/'
+    : location.pathname;
+
+  return {
+    ...location,
+    pathname: relativePathname,
+  };
 }

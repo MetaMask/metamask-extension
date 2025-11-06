@@ -2,7 +2,7 @@
 import React, { useMemo, useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -32,11 +32,11 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   BadgeWrapper,
-  BadgeWrapperAnchorElementShape,
   Box,
   Text,
 } from '../../component-library';
 
+import { getStatusKey } from '../../../helpers/utils/transactions.util';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -71,6 +71,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { mapTransactionTypeToCategory } from './helpers';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -79,7 +80,7 @@ function TransactionListItemInner({
   chainId,
 }) {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { hasCancelled } = transactionGroup;
   const [showDetails, setShowDetails] = useState(false);
   const [showCancelEditGasPopover, setShowCancelEditGasPopover] =
@@ -118,9 +119,11 @@ function TransactionListItemInner({
   };
 
   const {
-    initialTransaction: { id },
+    initialTransaction: { id, txParams },
     primaryTransaction: { error, status },
   } = transactionGroup;
+
+  const senderAddress = txParams?.from;
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -181,22 +184,21 @@ function TransactionListItemInner({
     isEarliestNonce,
   );
 
+  const category = mapTransactionTypeToCategory(
+    transactionGroup.initialTransaction.type,
+  );
+
   const {
     title,
-    category,
     primaryCurrency,
     recipientAddress,
     secondaryCurrency,
-    displayedStatusKey: displayedStatusKeyFromSrcTransaction,
     isPending,
-    senderAddress,
-    detailsTitle,
-    remoteSignerAddress,
   } = useTransactionDisplayData(transactionGroup);
   const displayedStatusKey =
     isBridgeTx && isBridgeFailed
       ? TransactionStatus.failed
-      : displayedStatusKeyFromSrcTransaction;
+      : getStatusKey(transactionGroup.primaryTransaction);
   const date = formatDateWithYearContext(
     transactionGroup.primaryTransaction.time,
     'MMM d, y',
@@ -233,7 +235,7 @@ function TransactionListItemInner({
 
   const toggleShowDetails = useCallback(() => {
     if (isUnapproved) {
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`);
+      navigate(`${CONFIRM_TRANSACTION_ROUTE}/${id}`);
       return;
     }
     setShowDetails((prev) => {
@@ -248,9 +250,9 @@ function TransactionListItemInner({
       });
       return !prev;
     });
-  }, [isUnapproved, history, id, trackEvent, category]);
+  }, [isUnapproved, navigate, id, trackEvent, category]);
 
-  const speedUpButton = useMemo(() => {
+  const isSpeedUpButtonVisible = useMemo(() => {
     if (
       !shouldShowSpeedUp ||
       !isPending ||
@@ -258,6 +260,14 @@ function TransactionListItemInner({
       isSigning ||
       isSubmitting
     ) {
+      return false;
+    }
+
+    return true;
+  }, [shouldShowSpeedUp, isUnapproved, isPending, isSigning, isSubmitting]);
+
+  const speedUpButton = useMemo(() => {
+    if (!isSpeedUpButtonVisible) {
       return null;
     }
 
@@ -272,12 +282,8 @@ function TransactionListItemInner({
       </Button>
     );
   }, [
-    shouldShowSpeedUp,
-    isUnapproved,
+    isSpeedUpButtonVisible,
     t,
-    isPending,
-    isSigning,
-    isSubmitting,
     hasCancelled,
     retryTransaction,
     cancelTransaction,
@@ -298,7 +304,6 @@ function TransactionListItemInner({
         title={title}
         icon={
           <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
             display={Display.Block}
             badge={
               <AvatarNetwork
@@ -308,9 +313,11 @@ function TransactionListItemInner({
                 name={NETWORK_TO_NAME_MAP[chainId]}
                 src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
                 borderColor={BackgroundColor.backgroundDefault}
+                borderWidth={2}
                 backgroundColor={getTestNetworkBackgroundColor(chainId)}
               />
             }
+            style={{ alignSelf: 'center' }}
           >
             <TransactionIcon category={category} status={displayedStatusKey} />
           </BadgeWrapper>
@@ -387,7 +394,7 @@ function TransactionListItemInner({
       </ActivityListItem>
       {showDetails && (
         <TransactionListItemDetails
-          title={detailsTitle}
+          title={title}
           onClose={toggleShowDetails}
           transactionGroup={transactionGroup}
           primaryCurrency={primaryCurrency}
@@ -395,7 +402,7 @@ function TransactionListItemInner({
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
           // showRetry={showRetry}
-          showSpeedUp={shouldShowSpeedUp}
+          showSpeedUp={isSpeedUpButtonVisible}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
           transactionStatus={() => (
@@ -409,7 +416,6 @@ function TransactionListItemInner({
             />
           )}
           chainId={chainId}
-          remoteSignerAddress={remoteSignerAddress}
         />
       )}
       {!supportsEIP1559 && showRetryEditGasPopover && (

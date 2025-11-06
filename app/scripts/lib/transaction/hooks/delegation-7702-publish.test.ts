@@ -1,4 +1,8 @@
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
   KeyringControllerSignEip7702AuthorizationAction,
@@ -84,20 +88,33 @@ describe('Delegation 7702 Publish Hook', () => {
     process.env.GASLESS_7702_ENFORCER_ADDRESS = ENFORCE_ADDRESS_MOCK;
 
     const baseMessenger = new Messenger<
+      MockAnyNamespace,
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
       | KeyringControllerSignTypedMessageAction,
       never
-    >();
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
 
-    messenger = baseMessenger.getRestricted({
-      name: 'TransactionController',
-      allowedActions: [
+    messenger = new Messenger<
+      'TransactionController',
+      | DelegationControllerSignDelegationAction
+      | KeyringControllerSignEip7702AuthorizationAction
+      | KeyringControllerSignTypedMessageAction,
+      never,
+      typeof baseMessenger
+    >({
+      namespace: 'TransactionController',
+      parent: baseMessenger,
+    });
+    baseMessenger.delegate({
+      messenger,
+      actions: [
         'KeyringController:signEip7702Authorization',
         'KeyringController:signTypedMessage',
         'DelegationController:signDelegation',
       ],
-      allowedEvents: [],
     });
 
     baseMessenger.registerActionHandler(
@@ -335,6 +352,30 @@ describe('Delegation 7702 Publish Hook', () => {
     await hookClass.getHook()(gaslessTxMeta, SIGNED_TX_MOCK);
 
     expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('submits request to relay for sponsored flow without gas fee tokens', async () => {
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    await hookClass.getHook()(
+      {
+        ...TRANSACTION_META_MOCK,
+        isGasFeeSponsored: true,
+      },
+      SIGNED_TX_MOCK,
+    );
+
+    expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
+    expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
+    const signArgs = signDelegationControllerMock.mock.calls[0][0];
+    expect(signArgs.delegation.caveats).toHaveLength(2);
   });
 
   it('signs delegation for gasless 7702 swap without gas fee tokens', async () => {

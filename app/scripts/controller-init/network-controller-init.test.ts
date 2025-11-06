@@ -1,5 +1,12 @@
-import { Messenger } from '@metamask/base-controller';
+import { ControllerStateChangeEvent } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { NetworkController } from '@metamask/network-controller';
+import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -18,6 +25,8 @@ jest.mock('@metamask/network-controller', () => {
   const NetworkControllerMock = jest.fn().mockImplementation(() => {
     return {
       initializeProvider: jest.fn(),
+      enableRpcFailover: jest.fn(),
+      disableRpcFailover: jest.fn(),
     };
   });
 
@@ -27,14 +36,14 @@ jest.mock('@metamask/network-controller', () => {
   };
 });
 
-function getInitRequestMock(): jest.Mocked<
+function getInitRequestMock(
+  baseMessenger = getRootMessenger<never, never>(),
+): jest.Mocked<
   ControllerInitRequest<
     NetworkControllerMessenger,
     NetworkControllerInitMessenger
   >
 > {
-  const baseMessenger = new Messenger<never, never>();
-
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getNetworkControllerMessenger(baseMessenger),
@@ -53,6 +62,8 @@ describe('NetworkControllerInit', () => {
     const { controller } = NetworkControllerInit(getInitRequestMock());
     expect(controller).toStrictEqual({
       initializeProvider: expect.any(Function),
+      enableRpcFailover: expect.any(Function),
+      disableRpcFailover: expect.any(Function),
     });
   });
 
@@ -150,6 +161,42 @@ describe('NetworkControllerInit', () => {
               },
             ],
           },
+          "0x38": {
+            "blockExplorerUrls": [
+              "https://bscscan.com",
+            ],
+            "chainId": "0x38",
+            "defaultBlockExplorerUrlIndex": 0,
+            "defaultRpcEndpointIndex": 0,
+            "name": "BNB Chain",
+            "nativeCurrency": "BNB",
+            "rpcEndpoints": [
+              {
+                "failoverUrls": [],
+                "networkClientId": "bsc-mainnet",
+                "type": "infura",
+                "url": "https://bsc-mainnet.infura.io/v3/{infuraProjectId}",
+              },
+            ],
+          },
+          "0x531": {
+            "blockExplorerUrls": [
+              "https://seitrace.com",
+            ],
+            "chainId": "0x531",
+            "defaultBlockExplorerUrlIndex": 0,
+            "defaultRpcEndpointIndex": 0,
+            "name": "Sei",
+            "nativeCurrency": "SEI",
+            "rpcEndpoints": [
+              {
+                "failoverUrls": [],
+                "networkClientId": "sei-mainnet",
+                "type": "infura",
+                "url": "https://sei-mainnet.infura.io/v3/{infuraProjectId}",
+              },
+            ],
+          },
           "0x539": {
             "blockExplorerUrls": [],
             "chainId": "0x539",
@@ -162,6 +209,60 @@ describe('NetworkControllerInit', () => {
                 "networkClientId": "networkConfigurationId",
                 "type": "custom",
                 "url": "http://localhost:8545",
+              },
+            ],
+          },
+          "0x89": {
+            "blockExplorerUrls": [
+              "https://polygonscan.com",
+            ],
+            "chainId": "0x89",
+            "defaultBlockExplorerUrlIndex": 0,
+            "defaultRpcEndpointIndex": 0,
+            "name": "Polygon",
+            "nativeCurrency": "POL",
+            "rpcEndpoints": [
+              {
+                "failoverUrls": [],
+                "networkClientId": "polygon-mainnet",
+                "type": "infura",
+                "url": "https://polygon-mainnet.infura.io/v3/{infuraProjectId}",
+              },
+            ],
+          },
+          "0xa": {
+            "blockExplorerUrls": [
+              "https://optimistic.etherscan.io",
+            ],
+            "chainId": "0xa",
+            "defaultBlockExplorerUrlIndex": 0,
+            "defaultRpcEndpointIndex": 0,
+            "name": "OP",
+            "nativeCurrency": "ETH",
+            "rpcEndpoints": [
+              {
+                "failoverUrls": [],
+                "networkClientId": "optimism-mainnet",
+                "type": "infura",
+                "url": "https://optimism-mainnet.infura.io/v3/{infuraProjectId}",
+              },
+            ],
+          },
+          "0xa4b1": {
+            "blockExplorerUrls": [
+              "https://arbiscan.io",
+            ],
+            "chainId": "0xa4b1",
+            "defaultBlockExplorerUrlIndex": 0,
+            "defaultRpcEndpointIndex": 0,
+            "name": "Arbitrum",
+            "nativeCurrency": "ETH",
+            "rpcEndpoints": [
+              {
+                "failoverUrls": [],
+                "networkClientId": "arbitrum-mainnet",
+                "type": "infura",
+                "url": "https://arbitrum-mainnet.infura.io/v3/{infuraProjectId}",
               },
             ],
           },
@@ -224,5 +325,63 @@ describe('NetworkControllerInit', () => {
         "selectedNetworkClientId": "networkConfigurationId",
       }
     `);
+  });
+
+  it('enables RPC failover when the `walletFrameworkRpcFailoverEnabled` feature flag is enabled', () => {
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      never,
+      ControllerStateChangeEvent<
+        'RemoteFeatureFlagController',
+        RemoteFeatureFlagControllerState
+      >
+    >({ namespace: MOCK_ANY_NAMESPACE });
+
+    const request = getInitRequestMock(messenger);
+
+    const { controller } = NetworkControllerInit(request);
+    expect(controller.enableRpcFailover).not.toHaveBeenCalled();
+
+    messenger.publish(
+      'RemoteFeatureFlagController:stateChange',
+      // @ts-expect-error: Partial mock.
+      {
+        remoteFeatureFlags: {
+          walletFrameworkRpcFailoverEnabled: true,
+        },
+      },
+      [],
+    );
+
+    expect(controller.enableRpcFailover).toHaveBeenCalled();
+  });
+
+  it('disables RPC failover when the `walletFrameworkRpcFailoverEnabled` feature flag is disabled', () => {
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      never,
+      ControllerStateChangeEvent<
+        'RemoteFeatureFlagController',
+        RemoteFeatureFlagControllerState
+      >
+    >({ namespace: MOCK_ANY_NAMESPACE });
+
+    const request = getInitRequestMock(messenger);
+
+    const { controller } = NetworkControllerInit(request);
+    expect(controller.disableRpcFailover).not.toHaveBeenCalled();
+
+    messenger.publish(
+      'RemoteFeatureFlagController:stateChange',
+      // @ts-expect-error: Partial mock.
+      {
+        remoteFeatureFlags: {
+          walletFrameworkRpcFailoverEnabled: false,
+        },
+      },
+      [],
+    );
+
+    expect(controller.disableRpcFailover).toHaveBeenCalled();
   });
 });

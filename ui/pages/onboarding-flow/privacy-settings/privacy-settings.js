@@ -172,7 +172,7 @@ export default function PrivacySettings() {
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
+      event: MetaMetricsEventName.SettingsUpdated,
       properties: {
         settings_group: 'onboarding_advanced_configuration',
         is_profile_syncing_enabled: isBackupAndSyncEnabled,
@@ -180,8 +180,7 @@ export default function PrivacySettings() {
         turnon_token_detection: turnOnTokenDetection,
       },
     });
-
-    navigate(ONBOARDING_COMPLETION_ROUTE);
+    navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
   };
 
   const handleIPFSChange = (url) => {

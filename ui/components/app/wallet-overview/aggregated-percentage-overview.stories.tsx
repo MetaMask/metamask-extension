@@ -22,10 +22,17 @@ const Story = {
 
 export default Story;
 
-export const Default = () => <AggregatedPercentageOverview />;
+export const Default = () => (
+  <AggregatedPercentageOverview trailingChild={() => null} />
+);
 
-export const Multichain = () => <AggregatedMultichainPercentageOverview />;
+export const Multichain = () => (
+  <AggregatedMultichainPercentageOverview trailingChild={() => null} />
+);
 
 export const MultichainPrivacyMode = () => (
-  <AggregatedMultichainPercentageOverview privacyMode={true} />
+  <AggregatedMultichainPercentageOverview
+    privacyMode={true}
+    trailingChild={() => null}
+  />
 );

@@ -1,4 +1,5 @@
 import {
+  type NetworkConfiguration,
   RpcEndpointType,
   UpdateNetworkFields,
 } from '@metamask/network-controller';
@@ -29,7 +30,7 @@ import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-m
 import { SelectRpcUrlModal } from '../network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 import { AddNetwork } from './components/add-network';
 import { NetworkTabs } from './network-tabs';
-import { useNetworkManagerState } from './hooks/useNetworkManagerState';
+import { useNetworkManagerInitialTab } from './hooks/useNetworkManagerState';
 
 export const NetworkManager = () => {
   const dispatch = useDispatch();
@@ -37,7 +38,7 @@ export const NetworkManager = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { initialTab } = useNetworkManagerState();
+  const { initialTab } = useNetworkManagerInitialTab();
   const handleNewNetwork = () => {
     navigate('/add');
   };
@@ -53,7 +54,9 @@ export const NetworkManager = () => {
       return undefined;
     }
     if (location.pathname === '/select-rpc') {
-      return evmNetworks[editingChainId as keyof typeof evmNetworks];
+      return editingChainId
+        ? evmNetworks[editingChainId as keyof typeof evmNetworks]
+        : undefined;
     }
     return !editingChainId || editCompleted
       ? undefined
@@ -270,7 +273,10 @@ export const NetworkManager = () => {
                 >
                   {t('selectRpcUrl')}
                 </ModalHeader>
-                <SelectRpcUrlModal onNetworkChange={handleClose} />
+                <SelectRpcUrlModal
+                  networkConfiguration={editedNetwork as NetworkConfiguration}
+                  onNetworkChange={handleClose}
+                />
               </>
             }
           />

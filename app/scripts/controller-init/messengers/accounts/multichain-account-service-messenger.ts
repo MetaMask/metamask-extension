@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
@@ -19,9 +19,14 @@ import {
   NetworkControllerGetNetworkClientByIdAction,
 } from '@metamask/network-controller';
 import {
+  RemoteFeatureFlagControllerStateChangeEvent,
+  RemoteFeatureFlagControllerGetStateAction,
+} from '@metamask/remote-feature-flag-controller';
+import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../../controllers/preferences-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | AccountsControllerListMultichainAccountsAction
@@ -38,7 +43,8 @@ type Actions =
 type Events =
   | KeyringControllerStateChangeEvent
   | AccountsControllerAccountAddedEvent
-  | AccountsControllerAccountRemovedEvent;
+  | AccountsControllerAccountRemovedEvent
+  | RemoteFeatureFlagControllerStateChangeEvent;
 
 export type MultichainAccountServiceMessenger = ReturnType<
   typeof getMultichainAccountServiceMessenger
@@ -52,16 +58,26 @@ export type MultichainAccountServiceMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getMultichainAccountServiceMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'MultichainAccountService',
-    allowedEvents: [
+  const serviceMessenger = new Messenger<
+    'MultichainAccountService',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'MultichainAccountService',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: serviceMessenger,
+    events: [
       'KeyringController:stateChange',
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
+      'RemoteFeatureFlagController:stateChange',
     ],
-    allowedActions: [
+    actions: [
       'AccountsController:listMultichainAccounts',
       'AccountsController:getAccountByAddress',
       'AccountsController:getAccount',
@@ -74,9 +90,12 @@ export function getMultichainAccountServiceMessenger(
       'NetworkController:findNetworkClientIdByChainId',
     ],
   });
+  return serviceMessenger;
 }
 
-type AllowedInitializationActions = PreferencesControllerGetStateAction;
+type AllowedInitializationActions =
+  | PreferencesControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
 
@@ -92,14 +111,27 @@ export type MultichainAccountServiceInitMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getMultichainAccountServiceInitMessenger(
-  messenger: Messenger<
+  messenger: RootMessenger<
     AllowedInitializationActions,
     AllowedInitializationEvents
   >,
 ) {
-  return messenger.getRestricted({
-    name: 'MultichainAccountServiceInit',
-    allowedActions: ['PreferencesController:getState'],
-    allowedEvents: ['PreferencesController:stateChange'],
+  const serviceInitMessenger = new Messenger<
+    'MultichainAccountServiceInit',
+    AllowedInitializationActions,
+    AllowedInitializationEvents,
+    typeof messenger
+  >({
+    namespace: 'MultichainAccountServiceInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: serviceInitMessenger,
+    actions: [
+      'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
+    ],
+    events: ['PreferencesController:stateChange'],
+  });
+  return serviceInitMessenger;
 }

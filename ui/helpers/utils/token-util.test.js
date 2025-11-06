@@ -4,7 +4,7 @@ import {
   getTokenStandardAndDetails,
   getTokenStandardAndDetailsByChain,
 } from '../../store/actions';
-import { getAssetDetails } from './token-util';
+import { getAssetDetails, getTokenMetadata } from './token-util';
 
 jest.mock('../../../shared/modules/transaction.utils', () => ({
   parseStandardTokenTransactionData: jest.fn(),
@@ -188,5 +188,41 @@ describe('getAssetDetails', () => {
     expect(result.name).toStrictEqual('myToken');
     expect(result.symbol).toStrictEqual('MTK');
     expect(result.standard).toStrictEqual(TokenStandard.ERC721);
+  });
+});
+
+describe('getTokenMetadata', () => {
+  it('returns token metadata if lowercase address in the token list', () => {
+    const address = '0xabc123';
+
+    const tokenList = {
+      [address]: {
+        address,
+        name: 'TokenA',
+        symbol: 'TKA',
+        decimals: 12,
+      },
+    };
+
+    const metadata = getTokenMetadata(address.toUpperCase(), tokenList);
+
+    expect(metadata).toStrictEqual(Object.values(tokenList)[0]);
+  });
+
+  it('returns token metadata if checksum address in the token list', () => {
+    const address = '0x5f5F4ebC4Cf750FC9a65EcBF12b2b1a7600C9b56';
+
+    const tokenList = {
+      [address]: {
+        address,
+        name: 'TokenA',
+        symbol: 'TKA',
+        decimals: 12,
+      },
+    };
+
+    const metadata = getTokenMetadata(address.toLowerCase(), tokenList);
+
+    expect(metadata).toStrictEqual(Object.values(tokenList)[0]);
   });
 });
