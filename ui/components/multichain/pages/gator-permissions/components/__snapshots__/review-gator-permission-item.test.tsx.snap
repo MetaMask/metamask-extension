@@ -18,16 +18,17 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         >
           localhost:8000
         </p>
-        <div
-          class="flex flex-row gap-2 justify-end"
-          style="flex: 1; align-self: center; cursor: pointer;"
+        <button
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+          role="button"
+          style="background-color: transparent; padding: 0px;"
         >
           <p
             class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             Revoke
           </p>
-        </div>
+        </button>
       </div>
     </div>
     <div
@@ -196,16 +197,17 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         >
           localhost:8000
         </p>
-        <div
-          class="flex flex-row gap-2 justify-end"
-          style="flex: 1; align-self: center; cursor: pointer;"
+        <button
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+          role="button"
+          style="background-color: transparent; padding: 0px;"
         >
           <p
             class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             Revoke
           </p>
-        </div>
+        </button>
       </div>
     </div>
     <div
@@ -374,16 +376,17 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         >
           localhost:8000
         </p>
-        <div
-          class="flex flex-row gap-2 justify-end"
-          style="flex: 1; align-self: center; cursor: pointer;"
+        <button
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+          role="button"
+          style="background-color: transparent; padding: 0px;"
         >
           <p
             class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             Revoke
           </p>
-        </div>
+        </button>
       </div>
     </div>
     <div
@@ -552,16 +555,17 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
         >
           localhost:8000
         </p>
-        <div
-          class="flex flex-row gap-2 justify-end"
-          style="flex: 1; align-self: center; cursor: pointer;"
+        <button
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+          role="button"
+          style="background-color: transparent; padding: 0px;"
         >
           <p
             class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             Revoke
           </p>
-        </div>
+        </button>
       </div>
     </div>
     <div
@@ -730,16 +734,17 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
         >
           localhost:8000
         </p>
-        <div
-          class="flex flex-row gap-2 justify-end"
-          style="flex: 1; align-self: center; cursor: pointer;"
+        <button
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+          role="button"
+          style="background-color: transparent; padding: 0px;"
         >
           <p
             class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
             Revoke
           </p>
-        </div>
+        </button>
       </div>
     </div>
     <div
