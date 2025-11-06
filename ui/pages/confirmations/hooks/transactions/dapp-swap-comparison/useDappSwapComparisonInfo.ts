@@ -30,11 +30,12 @@ export function useDappSwapComparisonInfo() {
     id: transactionId,
     simulationData,
     txParams,
+    txParamsOriginal,
     nestedTransactions,
   } = currentConfirmation ?? {
     txParams: {},
   };
-  const { data, gas } = txParams ?? {};
+  const { data, gas } = txParamsOriginal ?? txParams ?? {};
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const {
     requestDetectionLatency,
