@@ -46,6 +46,7 @@ export const useSendQueryParams = () => {
   const paramAsset = searchParams.get('asset');
   const paramAmount = searchParams.get('amount');
   const paramChainId = searchParams.get('chainId');
+  const paramTokenId = searchParams.get('tokenId');
   const paramHexData = searchParams.get('hexData');
   const paramRecipient = searchParams.get('recipient');
   const paramMaxValueMode = searchParams.get('maxValueMode');
@@ -73,6 +74,9 @@ export const useSendQueryParams = () => {
     if (asset?.chainId !== undefined && paramChainId !== asset.chainId) {
       queryParams.set('chainId', asset.chainId.toString());
     }
+    if (asset?.tokenId !== undefined && paramTokenId !== asset.tokenId) {
+      queryParams.set('tokenId', asset.tokenId);
+    }
     if (maxValueMode !== undefined && paramMaxValueMode !== `${maxValueMode}`) {
       queryParams.set('maxValueMode', maxValueMode.toString());
     }
@@ -93,6 +97,7 @@ export const useSendQueryParams = () => {
     paramAmount,
     paramAsset,
     paramChainId,
+    paramTokenId,
     paramMaxValueMode,
     paramRecipient,
     searchParams,
@@ -133,8 +138,9 @@ export const useSendQueryParams = () => {
 
     if (!newAsset) {
       newAsset = nfts?.find(
-        ({ address, chainId: tokenChainId, isNative }) =>
+        ({ address, chainId: tokenChainId, isNative, tokenId }) =>
           paramChainId === tokenChainId &&
+          paramTokenId === tokenId &&
           ((paramAsset &&
             address?.toLowerCase() === paramAsset.toLowerCase()) ||
             (!paramAsset && isNative)),
@@ -144,5 +150,13 @@ export const useSendQueryParams = () => {
     if (newAsset) {
       updateAsset(newAsset);
     }
-  }, [asset, flatAssets, paramAsset, paramChainId, nfts, updateAsset]);
+  }, [
+    asset,
+    flatAssets,
+    paramAsset,
+    paramChainId,
+    paramTokenId,
+    nfts,
+    updateAsset,
+  ]);
 };
