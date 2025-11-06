@@ -277,6 +277,7 @@
     "@metamask/bridge-status-controller": "^56.0.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/chain-agnostic-permission": "^1.2.2",
+    "@metamask/claims-controller": "npm:@metamask-previews/claims-controller@0.0.0-preview-1f85e85a",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.15.0",
     "@metamask/core-backend": "^4.0.0",
