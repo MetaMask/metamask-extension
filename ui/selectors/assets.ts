@@ -943,7 +943,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
 /**
  * Creates an enabledNetworkMap from all non-test networks for balance calculations.
  * This selector combines EVM and non-EVM mainnet networks (excluding testnets and custom testnets)
- * and formats them into the enabledNetworkMap structure expected by calculateBalanceChangeForAccountGroup.
+ * and formats them into the enabledNetworkMap structure expected by calculateBalanceForAllWallets.
  *
  * @param state - Redux state containing network configurations.
  * @returns EnabledNetworkMap with all non-test networks enabled across all namespaces.
