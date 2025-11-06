@@ -30,6 +30,7 @@ import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap
 import { useSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
+const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
 const DAPP_SWAP_THRESHOLD = 0.01;
 
 type DappSwapUiFlag = {
@@ -256,7 +257,8 @@ export const DappSwapComparisonBanner = () => {
 
   const dappSwapMetricsEnabled =
     (dappSwapMetrics as { enabled: boolean })?.enabled === true &&
-    transactionMeta.origin === DAPP_SWAP_COMPARISON_ORIGIN;
+    (transactionMeta.origin === DAPP_SWAP_COMPARISON_ORIGIN ||
+      transactionMeta.origin === TEST_DAPP_ORIGIN);
 
   if (!dappSwapMetricsEnabled) {
     return null;
