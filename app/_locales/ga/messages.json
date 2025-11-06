@@ -5441,10 +5441,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Seo do $1. Scríobh síos é san ord ceart agus coinnigh slán é. Má tá do Rúndacht Aisghabhála ag duine éigin, is féidir leo rochtain a fháil ar do sparán. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Ná roinn é le duine ar bith, choíche."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Sábháil do Frása Rúnda Aisghabhála"
@@ -7699,24 +7696,11 @@
     "message": "$1 is féidir leat an frása seo a choinneáil slán ionas nach gcaillfidh tú rochtain ar do chuid airgid choíche.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Is féidir leat cúltaca de do sparán a dhéanamh nó do Rún Aisghabhála Frása a fheiceáil i Socruithe > Slándáil & Pasfhocal."
-  },
   "walletReadyLoseSrp": {
     "message": "Mura gcaillfidh tú do Rúndáta Aisghabhála, ní bheidh tú in ann do sparán a úsáid."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Is féidir leis an bhFrása Rúnda Aisghabhála seo cabhrú leat rochtain a fháil ar ais má dhéanann tú dearmad ar do phasfhocal nó má chailleann tú rochtain ar do logáil isteach riamh."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Mura ndéanann tú cúltaca de do Rúndacht Aisghabhála, caillfidh tú rochtain ar do chistí má ghlasálfar amach as an aip thú nó má fhaigheann tú gléas nua."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Is féidir leat logáil isteach i do sparán am ar bith le do chuntas agus do phasfhocal $1.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Mura ndéanann tú dearmad ar do phasfhocal, ní bheidh tú in ann rochtain a fháil ar do sparán."
   },
   "wantToAddThisNetwork": {
     "message": "Ar mhaith leat an líonra seo a chur leis?"
@@ -7834,8 +7818,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Coinnigh do Rúndacht Aisghabhála slán!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Cuirfimid meabhrúchán i gcuimhne duit níos déanaí"
   }
 }

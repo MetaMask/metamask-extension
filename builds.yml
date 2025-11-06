@@ -21,6 +21,7 @@ buildTypes:
       - multi-srp
       - multichain
       - bitcoin
+      - bitcoin-swaps
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -140,6 +141,7 @@ buildTypes:
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
       - GATOR_PERMISSIONS_ENABLED: true
+      - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/

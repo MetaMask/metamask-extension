@@ -5097,10 +5097,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "यह आपका $1 है। इसे सही क्रम में लिखें और सुरक्षित रखें। अगर किसी के पास आपका सीक्रेट रिकवरी फ्रेज़ है, तो वह आपके वॉलेट तक पहुँच सकता है। $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "इसे कभी भी किसी के साथ साझा न करें।"
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "अपना सीक्रेट रिकवरी फ्रेज़ सेव करें"
@@ -7051,24 +7048,11 @@
     "message": "$1 आप इस फ्रेज़ को सुरक्षित रख सकते हैं ताकि आप कभी भी अपने पैसे तक पहुंच न खोएं।",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "आप अपने वॉलेट का बैकअप ले सकते हैं या सेटिंग्स > सुरक्षा और पासवर्ड में अपना सीक्रेट रिकवरी फ्रेज़ देख सकते हैं।"
-  },
   "walletReadyLoseSrp": {
     "message": "यदि आप अपना सीक्रेट रिकवरी फ्रेज़ खो देते हैं, तो आप अपने वॉलेट का उपयोग नहीं कर पाएंगे।"
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "यदि आप कभी अपना पासवर्ड भूल जाते हैं या अपने लॉगिन तक पहुंच खो देते हैं तो यह सीक्रेट रिकवरी फ्रेज़ आपको पुनः पहुंच प्राप्त करने में मदद कर सकता है।"
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "यदि आप अपने सीक्रेट रिकवरी फ्रेज़ का बैकअप नहीं लेते हैं, तो ऐप से लॉक होने या नया डिवाइस लेने पर आप अपने फंड्स तक पहुंच खो देंगे।"
-  },
-  "walletReadySocialDetails1": {
-    "message": "आप अपने $1 अकाउंट और पासवर्ड से कभी भी अपने वॉलेट में लॉग इन कर सकते हैं।",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "यदि आप अपना पासवर्ड भूल जाते हैं, तो आप अपने वॉलेट तक नहीं पहुंच पाएंगे।"
   },
   "wantToAddThisNetwork": {
     "message": "इस नेटवर्क को जोड़ना चाहते हैं?"
@@ -7174,8 +7158,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "अपने सीक्रेट रिकवरी फ्रेज़ को सुरक्षित रखें!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "हम आपको बाद में याद दिलाएंगे"
   }
 }
