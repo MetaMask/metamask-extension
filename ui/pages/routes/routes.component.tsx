@@ -18,6 +18,7 @@ import { useAppSelector } from '../../store/store';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
 import AuthenticatedV5Compat from '../../helpers/higher-order-components/authenticated/authenticated-v5-compat';
 import Initialized from '../../helpers/higher-order-components/initialized';
+import InitializedV5Compat from '../../helpers/higher-order-components/initialized/initialized-v5-compat';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -617,9 +618,34 @@ export default function Routes() {
           <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
           {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
           <Route path={LOCK_ROUTE} component={Lock} exact />
-          <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
-          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
-          <Route path={DEEP_LINK_ROUTE} component={DeepLink} />
+          <Route path={UNLOCK_ROUTE} exact>
+            {(props: RouteComponentProps) => {
+              const { history: v5History, location: v5Location } = props;
+              const navigate = createV5CompatNavigate(v5History);
+
+              const UnlockPageComponent = UnlockPage as React.ComponentType<{
+                navigate: V5CompatNavigate;
+                location: RouteComponentProps['location'];
+              }>;
+              return (
+                <InitializedV5Compat>
+                  <UnlockPageComponent
+                    navigate={navigate}
+                    location={v5Location}
+                  />
+                </InitializedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={DEEP_LINK_ROUTE}>
+            {(props: RouteComponentProps) => {
+              const { location: v5Location } = props;
+              const DeepLinkComponent = DeepLink as React.ComponentType<{
+                location: RouteComponentProps['location'];
+              }>;
+              return <DeepLinkComponent location={v5Location} />;
+            }}
+          </Route>
           <RestoreVaultComponent
             path={RESTORE_VAULT_ROUTE}
             component={RestoreVaultPage}
@@ -629,12 +655,29 @@ export default function Routes() {
             path={SMART_ACCOUNT_UPDATE}
             component={SmartAccountUpdate}
           />
-          <Authenticated
-            // `:keyringId` is optional here, if not provided, this will fallback
-            // to the main seed phrase.
-            path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
-            component={RevealSeedConfirmation}
-          />
+          <Route path={`${REVEAL_SEED_ROUTE}/:keyringId?`}>
+            {(props: RouteComponentProps<{ keyringId?: string }>) => {
+              const { history: v5History, match } = props;
+              const navigate = createV5CompatNavigate(v5History);
+
+              const RevealSeedConfirmationComponent =
+                RevealSeedConfirmation as React.ComponentType<{
+                  navigate: V5CompatNavigate;
+                  keyringId?: string;
+                }>;
+              return (
+                <Authenticated
+                  path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
+                  component={() => (
+                    <RevealSeedConfirmationComponent
+                      navigate={navigate}
+                      keyringId={match.params.keyringId}
+                    />
+                  )}
+                />
+              );
+            }}
+          </Route>
           <Authenticated path={IMPORT_SRP_ROUTE} component={ImportSrpPage} />
           <Authenticated path={SETTINGS_ROUTE} component={Settings} />
           <Authenticated
@@ -812,10 +855,33 @@ export default function Routes() {
               );
             }}
           </Route>
-          <Authenticated
-            path={`${DEFI_ROUTE}/:chainId/:protocolId`}
-            component={DeFiPage}
-          />
+          <Route path={`${DEFI_ROUTE}/:chainId/:protocolId`}>
+            {(
+              props: RouteComponentProps<{
+                chainId: string;
+                protocolId: string;
+              }>,
+            ) => {
+              const { history: v5History, match } = props;
+              const navigate = createV5CompatNavigate(v5History);
+
+              const DeFiPageComponent = DeFiPage as React.ComponentType<{
+                navigate: V5CompatNavigate;
+                params: { chainId: string; protocolId: string };
+              }>;
+              return (
+                <Authenticated
+                  path={`${DEFI_ROUTE}/:chainId/:protocolId`}
+                  component={() => (
+                    <DeFiPageComponent
+                      navigate={navigate}
+                      params={match.params}
+                    />
+                  )}
+                />
+              );
+            }}
+          </Route>
           <Authenticated
             path={`${CONNECTIONS}/:origin`}
             component={Connections}

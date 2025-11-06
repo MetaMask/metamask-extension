@@ -12,7 +12,7 @@ import React, {
   useContext,
 } from 'react';
 import PropTypes from 'prop-types';
-import { matchPath, useLocation } from 'react-router-dom';
+import { matchPath, useLocation } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import { omit } from 'lodash';
@@ -157,11 +157,14 @@ export function MetaMetricsProvider({ children }) {
    */
   useEffect(() => {
     const environmentType = getEnvironmentType();
-    const match = matchPath(location.pathname, {
-      path: getPaths(),
-      exact: true,
-      strict: true,
-    });
+    const match = matchPath(
+      {
+        path: getPaths(),
+        end: true,
+        caseSensitive: true,
+      },
+      location.pathname,
+    );
     // Start by checking for a missing match route. If this falls through to
     // the else if, then we know we have a matched route for tracking.
     if (!match) {
