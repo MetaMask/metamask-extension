@@ -179,9 +179,6 @@ class AccountListPage {
     tag: 'h4',
   };
 
-  private readonly selectAccountSelector =
-    '.multichain-account-list-item__account-name__button';
-
   private readonly importSrpButton = {
     text: 'Secret Recovery Phrase',
     tag: 'button',
