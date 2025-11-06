@@ -33,7 +33,7 @@ describe('Forgot password', function () {
         localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
-        await driver.delay(5000)
+        await driver.delay(5000);
 
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.checkPageIsLoaded();

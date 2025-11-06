@@ -34,11 +34,10 @@ const TEST_SRP_WORDS_FOR_UI_TEST = [
 
 describe('Multi SRP - Import SRP', function (this: Suite) {
   it('successfully imports a new srp', async function () {
-      await withMultiSrp(async (driver) => {
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkAccountBelongsToSrp('Account 2', 2);
-      },
-    );
+    await withMultiSrp(async (driver) => {
+      const accountListPage = new AccountListPage(driver);
+      await accountListPage.checkAccountBelongsToSrp('Account 2', 2);
+    });
   });
 
   it('successfully imports a new srp and it matches the srp imported', async function () {
@@ -47,11 +46,10 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       await headerNavbar.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
       await accountListPage.openMultichainAccountMenu({
-        accountLabel: 'Account 1', srpIndex: 1
+        accountLabel: 'Account 1',
+        srpIndex: 1,
       });
-      await accountListPage.clickMultichainAccountMenuItem(
-        'Account details',
-      );
+      await accountListPage.clickMultichainAccountMenuItem('Account details');
       const accountDetailsPage = new MultichainAccountDetailsPage(driver);
       await accountDetailsPage.clicRevealRow();
 
@@ -59,8 +57,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       await privacySettings.completeRevealSrpQuiz();
       await privacySettings.fillPasswordToRevealSrp(testPassword);
       await privacySettings.checkSrpTextIsDisplayed(SECOND_TEST_E2E_SRP);
-      }
-    );
+    });
   });
 
   it('should show one word once pasted in textarea', async function () {
@@ -108,6 +105,5 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         );
       },
     );
-
   });
 });

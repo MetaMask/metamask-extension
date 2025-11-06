@@ -366,6 +366,7 @@ class AccountListPage {
     console.log(`Adding new multichain wallet`);
     await this.driver.clickElement(this.addMultichainWalletButton);
   }
+
   /**
    * Import a wallet.
    */
@@ -374,10 +375,11 @@ class AccountListPage {
       this.importWalletFromMultichainWalletModalButton,
     );
   }
+
   /**
    * Waiting until syncing is completed.
    */
-   async waitUntilSyncingIsCompleted(): Promise<void> {
+  async waitUntilSyncingIsCompleted(): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
     await this.driver.assertElementNotPresent({
       css: this.addMultichainAccountButton,
@@ -393,7 +395,7 @@ class AccountListPage {
    */
   async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
     console.log(`Adding new multichain account`);
-    await this.waitUntilSyncingIsCompleted()
+    await this.waitUntilSyncingIsCompleted();
     const createMultichainAccountButtons = await this.driver.findElements(
       this.addMultichainAccountButton,
     );
@@ -1018,9 +1020,7 @@ class AccountListPage {
     console.log(`Account with label ${accountLabel} selected`);
   }
 
-  async startImportSecretPhrase(
-    srp: string,
-  ): Promise<void> {
+  async startImportSecretPhrase(srp: string): Promise<void> {
     console.log(`Importing ${srp.split(' ').length} word srp`);
 
     await this.driver.clickElement(this.addMultichainWalletButton);
