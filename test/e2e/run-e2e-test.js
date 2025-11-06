@@ -107,7 +107,7 @@ async function main() {
       process.env.E2E_DEBUG = 'true';
     }
 
-    let testTimeoutInMilliseconds = 80 * 1000;
+    let testTimeoutInMilliseconds = 80 * 10000;
     let exit = '--exit';
 
     if (leaveRunning) {

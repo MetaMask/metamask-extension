@@ -238,6 +238,49 @@ async function main(): Promise<void> {
       await runInShell('node', [...args, ...qualityGateArg, testFile]);
     }
   }
+
+  const METRICS_DIR = '.';
+  const OUTPUT_FILE = 'react-render-metrics-aggregate.json';
+
+  const totals = {};
+
+  function mergeAggregatedData(aggregated: Record<string, unknown>) {
+    for (const [id, data] of Object.entries(aggregated)) {
+      if (!totals[id]) {
+        totals[id] = { renders: 0, totalRenderTime: 0 };
+      }
+      totals[id].renders += data.renders ?? 0;
+      totals[id].totalRenderTime += data.totalRenderTime ?? 0;
+    }
+  }
+
+  for (const filename of fs.readdirSync(METRICS_DIR)) {
+    if (
+      !filename.startsWith('react-render-metrics-') ||
+      !filename.endsWith('.json')
+    ) {
+      continue;
+    }
+
+    const filepath = path.join(METRICS_DIR, filename);
+    try {
+      const parsed = JSON.parse(fs.readFileSync(filepath, 'utf8'));
+      if (parsed.aggregated && typeof parsed.aggregated === 'object') {
+        mergeAggregatedData(parsed.aggregated);
+      } else {
+        console.warn(`⚠️ Skipping ${filename}: missing 'aggregated' field`);
+      }
+    } catch (err) {
+      console.warn(`⚠️ Failed to read ${filename}:`, err.message);
+    }
+  }
+
+  fs.writeFileSync(
+    OUTPUT_FILE,
+    JSON.stringify({ components: totals }, null, 2),
+  );
+
+  console.log(`✅ Aggregated render metrics written to ${OUTPUT_FILE}`);
 }
 
 main().catch((error) => {

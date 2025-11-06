@@ -424,6 +424,35 @@ async function withFixtures(options, testSuite) {
       clearNetworkReport,
     });
 
+    const profilerMetrics = await driver.executeScript(() => {
+      return window.__RENDER_METRICS__ ?? [];
+    });
+
+    // Group by component `id`
+    const aggregatedMetrics = profilerMetrics.reduce((acc, m) => {
+      if (!acc[m.id]) {
+        acc[m.id] = { renders: 0, totalRenderTime: 0 };
+      }
+      acc[m.id].renders += 1;
+      acc[m.id].totalRenderTime += m.actualDuration;
+      return acc;
+    }, {});
+
+    const metricsOutputPath = `./react-render-metrics-${title.replace(/\s+/g, '_')}.json`;
+    writeFileSync(
+      metricsOutputPath,
+      JSON.stringify(
+        {
+          raw: profilerMetrics,
+          aggregated: aggregatedMetrics,
+        },
+        null,
+        2,
+      ),
+    );
+
+    console.log(`✅ React render metrics exported to: ${metricsOutputPath}`);
+
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
     if (errorsAndExceptions) {
       throw new Error(errorsAndExceptions);
