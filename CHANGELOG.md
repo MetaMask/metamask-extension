@@ -64,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixes network nicknames for popular networks (#37477)
 - Fixes historical prices chart ranges for non-evm assets (#37505)
 - Fixes issue where we're failing to log swap comparisons in some scenarios (#37496)
-- Fixes issue where asset name is marked as 'unknown' on confirmations screen in the send flow (#37491)
+- Fixes token image and symbol in confirmation for EVM transactions when nonEVM network is selected at wallet view (#37491)
 - Fixes a bug where tokenId for NFT was not being sent correctly in send flow (#37555)
 
 ## [13.7.0]
