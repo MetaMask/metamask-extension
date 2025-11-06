@@ -55,7 +55,9 @@ export default function WelcomeLogin({
   }, []);
 
   useEffect(() => {
-    setShowLoginOptions(Boolean(loginParam));
+    if (!loginParam) {
+      setShowLoginOptions(false);
+    }
   }, [loginParam]);
 
   const handleLogin = useCallback(
