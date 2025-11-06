@@ -266,7 +266,7 @@ const HeaderLayout: React.FC<{
  * @param props.children
  * @param props.transactionId
  */
-const SimulationDetailsLayout: React.FC<{
+export const SimulationDetailsLayout: React.FC<{
   inHeader?: React.ReactNode;
   isTransactionsRedesign: boolean;
   transactionId: string;

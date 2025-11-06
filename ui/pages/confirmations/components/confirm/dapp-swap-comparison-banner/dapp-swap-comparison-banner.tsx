@@ -18,7 +18,7 @@ import {
   BatchTransaction,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { TxData } from '@metamask/bridge-controller';
+import { QuoteResponse, TxData } from '@metamask/bridge-controller';
 import { toHex } from '@metamask/controller-utils';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -28,6 +28,8 @@ import { updateTransaction } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 import { useSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
+import { QuoteSwapSimulationDetails } from '../quote-swap-simulation-details/quote-swap-simulation-details';
+import { parseTransactionData } from '../../../utils/dapp-swap-comparison-utils';
 
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
 const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
@@ -79,12 +81,16 @@ const SwapButton = ({
 const DappSwapComparisonInner = () => {
   const t = useI18nContext();
   const {
+    fiatRates,
+    destinationTokenSymbol,
+    gasDifference,
     selectedQuote,
     selectedQuoteValueDifference,
-    gasDifference,
+    sourceTokenAmount,
     tokenAmountDifference,
-    destinationTokenSymbol,
+    tokenDetails,
   } = useDappSwapComparisonInfo();
+
   const { isQuotedSwap } = useSwapCheck();
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -245,6 +251,14 @@ const DappSwapComparisonInner = () => {
             {t('dappSwapBenefits')}
           </Text>
         </Box>
+      )}
+      {selectedSwapType === SwapType.Metamask && (
+        <QuoteSwapSimulationDetails
+          fiatRates={fiatRates}
+          quote={selectedQuote as QuoteResponse}
+          tokenDetails={tokenDetails}
+          sourceTokenAmount={sourceTokenAmount}
+        />
       )}
     </Box>
   );
