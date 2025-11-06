@@ -15,7 +15,7 @@ import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { TestSuiteArguments } from '../tests/confirmations/transactions/shared';
 import TransactionConfirmation from '../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import SnapTxInsights from '../page-objects/pages/dialog/snap-txinsight';
-import { mockInsightsSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { mockInsightsSnapAndTestSnapSite } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH } from '../constants';
 
 describe('Test Snap TxInsights', function () {
@@ -30,7 +30,7 @@ describe('Test Snap TxInsights', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         testSpecificMock: async (mockServer: Mockttp) => {
-          return await mockInsightsSnap(mockServer, 8081);
+          return await mockInsightsSnapAndTestSnapSite(mockServer, 8081);
         },
         title: this.test?.fullTitle(),
       },
@@ -70,7 +70,7 @@ describe('Test Snap TxInsights', function () {
           .build(),
         smartContract,
         testSpecificMock: async (mockServer: Mockttp) => {
-          return await mockInsightsSnap(mockServer, 8081);
+          return await mockInsightsSnapAndTestSnapSite(mockServer, 8081);
         },
         title: this.test?.fullTitle(),
       },
@@ -120,7 +120,7 @@ describe('Test Snap TxInsights', function () {
           .build(),
         smartContract,
         testSpecificMock: async (mockServer: Mockttp) => {
-          return await mockInsightsSnap(mockServer, 8081);
+          return await mockInsightsSnapAndTestSnapSite(mockServer, 8081);
         },
         title: this.test?.fullTitle(),
       },

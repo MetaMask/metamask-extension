@@ -12,7 +12,7 @@ import SignTypedData from '../../page-objects/pages/confirmations/redesign/sign-
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import { DAPP_PATH, MOCK_META_METRICS_ID } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
-import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockDialogSnapAndTestSnapSite } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { withTransactionEnvelopeTypeFixtures } from './helpers';
 
 describe('Confirmation Navigation', function (this: Suite) {
@@ -124,7 +124,7 @@ describe('Confirmation Navigation', function (this: Suite) {
           })
           .build(),
         testSpecificMock: async (mockServer: Mockttp) => {
-          return await mockDialogSnap(mockServer, 8081);
+          return await mockDialogSnapAndTestSnapSite(mockServer, 8081);
         },
         title: this.test?.fullTitle(),
       },

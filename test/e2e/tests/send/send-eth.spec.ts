@@ -10,7 +10,7 @@ import { Driver } from '../../webdriver/driver';
 import { DAPP_PATH } from '../../constants';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockLookupSnapAndTestSnapSite } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { mockSendRedesignFeatureFlag } from './common';
 
@@ -135,10 +135,10 @@ describe('Send ETH', function () {
           inputChainId: CHAIN_IDS.MAINNET,
         }).build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (mockServer: Mockttp) => {
-          mockSendRedesignFeatureFlag(mockServer);
-          mockLookupSnap(mockServer);
-        },
+        testSpecificMock: async (mockServer: Mockttp) => [
+          await mockSendRedesignFeatureFlag(mockServer),
+          ...(await mockLookupSnapAndTestSnapSite(mockServer)),
+        ],
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);

@@ -2,7 +2,7 @@ const { withFixtures, unlockWallet } = require('../helpers');
 const { DAPP_URL, WINDOW_TITLES, DAPP_PATH } = require('../constants');
 const FixtureBuilder = require('../fixture-builder');
 const {
-  mockSignatureInsightsSnap,
+  mockSignatureInsightsSnapAndTestSnapSite,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -19,7 +19,10 @@ describe('Test Snap Signature Insights', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         testSpecificMock: async (mockServer) => {
-          return await mockSignatureInsightsSnap(mockServer, 8081);
+          return await mockSignatureInsightsSnapAndTestSnapSite(
+            mockServer,
+            8081,
+          );
         },
         title: this.test.fullTitle(),
       },

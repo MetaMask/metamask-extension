@@ -6,7 +6,7 @@ import HeaderNavbar from '../page-objects/pages/header-navbar';
 import { withFixtures, unlockWallet, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import NotificationsListPage from '../page-objects/pages/notifications-list-page';
-import { mockNotificationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { mockNotificationSnapAndTestSnapSite } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH } from '../constants';
 
 describe('Test Snap Notification', function () {
@@ -17,7 +17,7 @@ describe('Test Snap Notification', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockNotificationSnap,
+        testSpecificMock: mockNotificationSnapAndTestSnapSite,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -61,7 +61,7 @@ describe('Test Snap Notification', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockNotificationSnap,
+        testSpecificMock: mockNotificationSnapAndTestSnapSite,
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },

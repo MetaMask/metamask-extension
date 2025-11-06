@@ -43,8 +43,8 @@ export async function mockSnapSimpleKeyringAndSite(
   mockServer: Mockttp,
   port: number = 8080,
 ) {
-  const simpleKeyring = await mockSimpleKeyringSnap(mockServer, port);
+  const simpleKeyring = await mockSimpleKeyringSnap(mockServer);
   const siteProxy = await serveSnapKeyRingFromLocalhost(mockServer, port);
 
-  return [...simpleKeyring, siteProxy];
+  return [simpleKeyring, siteProxy];
 }

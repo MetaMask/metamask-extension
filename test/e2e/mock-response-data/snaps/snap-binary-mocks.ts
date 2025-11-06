@@ -180,11 +180,10 @@ export async function mockCronjobDurationSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockDialogSnap(mockServer: Mockttp, port?: number) {
-  return createSnapMockWithSite({
+export async function mockDialogSnap(mockServer: Mockttp) {
+  return createSnapMock({
     mockServer,
     snapNamePrefix: snapConfigurations.mockDialogSnap,
-    port,
   });
 }
 
@@ -230,11 +229,10 @@ export async function mockImagesSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockInsightsSnap(mockServer: Mockttp, port?: number) {
-  return createSnapMockWithSite({
+export async function mockInsightsSnap(mockServer: Mockttp) {
+  return createSnapMock({
     mockServer,
     snapNamePrefix: snapConfigurations.mockInsightsSnap,
-    port,
   });
 }
 
@@ -273,11 +271,10 @@ export async function mockLocalizationSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockLookupSnap(mockServer: Mockttp, port?: number) {
-  return createSnapMockWithSite({
+export async function mockLookupSnap(mockServer: Mockttp) {
+  return createSnapMock({
     mockServer,
     snapNamePrefix: snapConfigurations.mockLookupSnap,
-    port,
   });
 }
 
@@ -295,11 +292,10 @@ export async function mockNetworkSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockNotificationSnap(mockServer: Mockttp, port?: number) {
-  return createSnapMockWithSite({
+export async function mockNotificationSnap(mockServer: Mockttp) {
+  return createSnapMock({
     mockServer,
     snapNamePrefix: snapConfigurations.mockNotificationSnap,
-    port,
   });
 }
 
@@ -317,25 +313,17 @@ export async function mockPreferencesSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockSignatureInsightsSnap(
-  mockServer: Mockttp,
-  port?: number,
-) {
-  return createSnapMockWithSite({
+export async function mockSignatureInsightsSnap(mockServer: Mockttp) {
+  return createSnapMock({
     mockServer,
     snapNamePrefix: snapConfigurations.mockSignatureInsightsSnap,
-    port,
   });
 }
 
-export async function mockSimpleKeyringSnap(
-  mockServer: Mockttp,
-  port?: number,
-) {
-  return createSnapMockWithSite({
+export async function mockSimpleKeyringSnap(mockServer: Mockttp) {
+  return createSnapMock({
     mockServer,
     snapNamePrefix: snapConfigurations.mockSimpleKeyringSnap,
-    port,
   });
 }
 
@@ -346,7 +334,96 @@ export async function mockWasmSnap(mockServer: Mockttp) {
   });
 }
 
-export async function mockWebpackPluginOldSnap(
+export async function mockWebpackPluginOldSnap(mockServer: Mockttp) {
+  return createSnapMock({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockWebpackPluginSnap,
+    specificVersion: '2.0.0',
+  });
+}
+
+export async function mockWebpackPluginSnap(mockServer: Mockttp) {
+  return createSnapMock({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockWebpackPluginSnap,
+  });
+}
+
+export async function mockBackgroundEventsSnap(mockServer: Mockttp) {
+  return createSnapMockWithSite({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockBackgroundEventsSnap,
+  });
+}
+
+// New methods with test snap site included
+export async function mockDialogSnapAndTestSnapSite(
+  mockServer: Mockttp,
+  port?: number,
+) {
+  return createSnapMockWithSite({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockDialogSnap,
+    port,
+  });
+}
+
+export async function mockInsightsSnapAndTestSnapSite(
+  mockServer: Mockttp,
+  port?: number,
+) {
+  return createSnapMockWithSite({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockInsightsSnap,
+    port,
+  });
+}
+
+export async function mockLookupSnapAndTestSnapSite(
+  mockServer: Mockttp,
+  port?: number,
+) {
+  return createSnapMockWithSite({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockLookupSnap,
+    port,
+  });
+}
+
+export async function mockNotificationSnapAndTestSnapSite(
+  mockServer: Mockttp,
+  port?: number,
+) {
+  return createSnapMockWithSite({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockNotificationSnap,
+    port,
+  });
+}
+
+export async function mockSignatureInsightsSnapAndTestSnapSite(
+  mockServer: Mockttp,
+  port?: number,
+) {
+  return createSnapMockWithSite({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockSignatureInsightsSnap,
+    port,
+  });
+}
+
+export async function mockWebpackPluginSnapAndTestSnapSite(
+  mockServer: Mockttp,
+  port?: number,
+) {
+  return createSnapMockWithSite({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockWebpackPluginSnap,
+    port,
+  });
+}
+
+export async function mockWebpackPluginOldSnapAndTestSnapSite(
   mockServer: Mockttp,
   port?: number,
 ) {
@@ -355,23 +432,5 @@ export async function mockWebpackPluginOldSnap(
     snapNamePrefix: snapConfigurations.mockWebpackPluginSnap,
     specificVersion: '2.0.0',
     port,
-  });
-}
-
-export async function mockWebpackPluginSnap(
-  mockServer: Mockttp,
-  port?: number,
-) {
-  return createSnapMockWithSite({
-    mockServer,
-    snapNamePrefix: snapConfigurations.mockWebpackPluginSnap,
-    port,
-  });
-}
-
-export async function mockBackgroundEventsSnap(mockServer: Mockttp) {
-  return createSnapMockWithSite({
-    mockServer,
-    snapNamePrefix: snapConfigurations.mockBackgroundEventsSnap,
   });
 }

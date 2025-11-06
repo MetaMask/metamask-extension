@@ -7,7 +7,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockLookupSnapAndTestSnapSite } from '../../mock-response-data/snaps/snap-binary-mocks';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import { DAPP_PATH } from '../../constants';
 
@@ -102,7 +102,7 @@ describe('Petnames - Signatures', function (this: Suite) {
           .withNetworkControllerOnMainnet()
           .build(),
         testSpecificMock: async (mockServer: Mockttp) => {
-          return await mockLookupSnap(mockServer, 8081);
+          return await mockLookupSnapAndTestSnapSite(mockServer, 8081);
         },
         title: this.test?.fullTitle(),
       },
