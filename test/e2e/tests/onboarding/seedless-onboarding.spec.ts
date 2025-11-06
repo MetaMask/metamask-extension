@@ -57,8 +57,8 @@ describe('Metamask onboarding (with social login)', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
-        .withEnabledNetworks({ eip155: { '0x1': true } })
-        .build(),
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
@@ -80,8 +80,8 @@ describe('Metamask onboarding (with social login)', function () {
         const accountListPage = new AccountListPage(driver);
 
         await accountListPage.openMultichainAccountMenu({
-            accountLabel: 'Account 1',
-          });
+          accountLabel: 'Account 1',
+        });
         await accountListPage.clickMultichainAccountMenuItem('Addresses');
         const addressListModal = new AddressListModal(driver);
         await addressListModal.checkNetworkAddressIsDisplayed(
