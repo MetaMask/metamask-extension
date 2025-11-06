@@ -7,13 +7,13 @@ import React, {
   ReactNode,
   useCallback,
 } from 'react';
+import { numberToHex } from '@metamask/utils';
 import {
   ShieldClaim,
   CLAIM_STATUS,
   ClaimStatus,
 } from '../../pages/settings/transaction-shield-tab/types';
 import { getShieldClaims } from '../../store/actions';
-import { numberToHex } from '@metamask/utils';
 
 type ClaimsContextType = {
   claims: ShieldClaim[];
@@ -54,12 +54,16 @@ export const ClaimsProvider: React.FC<ClaimsProviderProps> = ({ children }) => {
           const dateB = new Date(b.createdAt).getTime();
           return dateB - dateA;
         })
-        .map((claim: ShieldClaim, index: number) => ({
-          ...claim,
-          // used for displaying list of claims
-          claimNumber: index + 1,
-          chainId: numberToHex(Number(claim.chainId)),
-        }));
+        .map((claim: ShieldClaim, index: number) => {
+          const numberChain = Number(claim.chainId);
+          const chainId = isNaN(numberChain) ? '' : numberToHex(numberChain);
+          return {
+            ...claim,
+            // used for displaying list of claims
+            claimNumber: index + 1,
+            chainId,
+          };
+        });
       setClaims(sortedClaims);
     } catch (err) {
       setError(err as Error);
