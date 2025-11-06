@@ -8,9 +8,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-// These tests fails with BIP44 as no longer apply
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Add snap account experimental settings', function (this: Suite) {
+describe('Add snap account experimental settings', function (this: Suite) {
   it('switch "Enable Add account snap" to on', async function () {
     await withFixtures(
       {
@@ -24,9 +22,10 @@ describe.skip('Add snap account experimental settings', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.openAddAccountModal();
+        await accountListPage.addMultichainWallet();
         await accountListPage.checkAddAccountSnapButtonNotPresent();
         await accountListPage.closeAccountModal();
+        await accountListPage.closeMultichainAccountsPage();
 
         // Navigate to experimental settings and enable Add account Snap.
         await headerNavbar.openSettingsPage();
@@ -42,7 +41,7 @@ describe.skip('Add snap account experimental settings', function (this: Suite) {
         );
         // Make sure the "Add account Snap" button is visible.
         await headerNavbar.openAccountMenu();
-        await accountListPage.openAddAccountModal();
+        await accountListPage.addMultichainWallet();
         await accountListPage.checkAddAccountSnapButtonIsDisplayed();
       },
     );
