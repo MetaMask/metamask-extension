@@ -2,3 +2,4 @@ This file is used to test INFRA-3081 point 2: commit filtering functionality
 test 2
 test 3
 test 4
+test 5
