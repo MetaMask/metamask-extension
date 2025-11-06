@@ -1876,10 +1876,6 @@ export default class MetamaskController extends EventEmitter {
         // This operates under the assumption that there will be at maximum
         // one origin permittedChains value change per event handler call
         for (const [origin, chains] of changedChains.entries()) {
-          if (isSnapId(origin)) {
-            continue;
-          }
-
           const currentNetworkClientIdForOrigin =
             this.selectedNetworkController.getNetworkClientIdForDomain(origin);
 
@@ -1901,11 +1897,15 @@ export default class MetamaskController extends EventEmitter {
           if (chains.length > 0 && !chains.includes(currentChainIdForOrigin)) {
             const networkClientId =
               this.networkController.findNetworkClientIdByChainId(chains[0]);
+
             // setActiveNetwork should be called before setNetworkClientIdForDomain
             // to ensure that the isConnected value can be accurately inferred from
             // NetworkController.state.networksMetadata in return value of
             // `metamask_getProviderState` requests and `metamask_chainChanged` events.
-            this.networkController.setActiveNetwork(networkClientId);
+            if (!isSnapId(origin)) {
+              this.networkController.setActiveNetwork(networkClientId);
+            }
+
             this.selectedNetworkController.setNetworkClientIdForDomain(
               origin,
               networkClientId,
