@@ -154,6 +154,8 @@ async function defineAndRunBuildTasks() {
       'opr',
       // for @popperjs/core and snap simple keyring site
       'devicePixelRatio',
+      // for @tanstack/react-virtual
+      'ResizeObserver',
     ];
 
     if (
