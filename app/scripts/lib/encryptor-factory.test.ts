@@ -187,6 +187,44 @@ describe('encryptorFactory', () => {
         },
       );
     });
+
+    it('should call browser-passworder.keyFromPassword with overriden opts', async () => {
+      const encryptor = encryptorFactory(mockIterations);
+
+      const mockResult = {
+        key: 'key',
+        derivationOptions: {
+          algorithm: 'PBKDF2',
+          params: {
+            iterations: mockIterations,
+          },
+        },
+      };
+
+      // @ts-expect-error The key type is a mock type and not valid.
+      mockBrowserPassworder.keyFromPassword.mockResolvedValue(mockResult);
+
+      expect(
+        await encryptor.keyFromPassword(
+          mockPassword,
+          mockSalt,
+          true,
+          undefined,
+        ),
+      ).toBe(mockResult);
+
+      expect(mockBrowserPassworder.keyFromPassword).toHaveBeenCalledWith(
+        mockPassword,
+        mockSalt,
+        true,
+        {
+          algorithm: 'PBKDF2',
+          params: {
+            iterations: mockIterations,
+          },
+        },
+      );
+    });
   });
 
   describe('isVaultUpdated', () => {
