@@ -48,8 +48,8 @@ describe('Unlock wallet - ', function () {
     );
   });
 
-// This test fails with BIP44
-// eslint-disable-next-line mocha/no-skipped-tests
+  // This test fails with BIP44
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show connections removed modal when max key chain length is reached for social account', async function () {
     await withFixtures(
       {
