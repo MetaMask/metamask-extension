@@ -3,7 +3,7 @@ import {
   SeedlessOnboardingControllerMessenger,
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
-import { EncryptionKey, EncryptionResult } from '@metamask/browser-passworder';
+import { EncryptionKey } from '@metamask/browser-passworder';
 import { ControllerInitFunction } from '../types';
 import { encryptorFactory } from '../../lib/encryptor-factory';
 import { isDevOrTestBuild } from '../../services/oauth/config';
@@ -41,26 +41,7 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
     renewRefreshToken: (...args) =>
       initMessenger.call('OAuthService:renewRefreshToken', ...args),
 
-    encryptor: {
-      decrypt: encryptor.decrypt,
-      decryptWithDetail: encryptor.decryptWithDetail,
-      decryptWithKey: (key: EncryptionKey, encryptedData: EncryptionResult) => {
-        let payload: EncryptionResult;
-        if (typeof encryptedData === 'string') {
-          payload = JSON.parse(encryptedData);
-        } else {
-          payload = encryptedData;
-        }
-
-        return encryptor.decryptWithKey(key as EncryptionKey, payload);
-      },
-      encrypt: encryptor.encrypt,
-      encryptWithDetail: encryptor.encryptWithDetail,
-      importKey: encryptor.importKey,
-      exportKey: encryptor.exportKey,
-      keyFromPassword: encryptor.keyFromPassword,
-      generateSalt: encryptor.generateSalt,
-    },
+    encryptor,
   });
 
   return {

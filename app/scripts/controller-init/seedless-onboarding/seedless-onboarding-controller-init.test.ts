@@ -71,6 +71,8 @@ describe('SeedlessOnboardingControllerInit', () => {
         decryptWithKey: expect.any(Function),
         encrypt: expect.any(Function),
         encryptWithDetail: expect.any(Function),
+        encryptWithKey: expect.any(Function),
+        isVaultUpdated: expect.any(Function),
         importKey: expect.any(Function),
         exportKey: expect.any(Function),
         generateSalt: expect.any(Function),
