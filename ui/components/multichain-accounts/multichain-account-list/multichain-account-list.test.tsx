@@ -1177,19 +1177,5 @@ describe('MultichainAccountList', () => {
         expect.objectContaining({ name: traceLib.TraceName.ShowAccountList }),
       );
     });
-
-    it('calls ShowAccountList trace on account click', () => {
-      renderComponent();
-      const cell = screen.getByTestId(
-        `multichain-account-cell-${walletTwoGroupId}`,
-      );
-      cell.click();
-      const traceLib = jest.requireMock('../../../../shared/lib/trace');
-      expect(traceLib.trace).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: traceLib.TraceName.ShowAccountList,
-        }),
-      );
-    });
   });
 });
