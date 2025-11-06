@@ -17,7 +17,7 @@ import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
-import { PREPARE_SWAP_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import Box from '../../../components/ui/box';
 import {
@@ -143,10 +143,8 @@ export default function AwaitingSignatures() {
       <SwapsFooter
         onSubmit={async () => {
           await dispatch(prepareToLeaveSwaps());
-          // Go to the default route and then to the build quote route in order to clean up
-          // the `inputValue` local state in `pages/swaps/index.js`
-          navigate(DEFAULT_ROUTE, { replace: true });
-          setTimeout(() => navigate(PREPARE_SWAP_ROUTE, { replace: true }), 0);
+          // prepareToLeaveSwaps() clears all swaps state, so we can navigate directly
+          navigate(PREPARE_SWAP_ROUTE);
         }}
         submitText={t('cancel')}
         hideCancel
