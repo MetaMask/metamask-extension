@@ -27,12 +27,12 @@ const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
 export const toAssetId = (
   address: Hex | CaipAssetType | string,
   chainId: CaipChainId,
-): CaipAssetType | undefined => {
+): CaipAssetType => {
   if (isCaipAssetType(address)) {
     return address;
   }
   if (isNativeAddress(address)) {
-    return getNativeAssetForChainId(chainId)?.assetId;
+    return getNativeAssetForChainId(chainId).assetId;
   }
   if (chainId === MultichainNetwork.Solana) {
     return CaipAssetTypeStruct.create(`${chainId}/token:${address}`);
@@ -43,7 +43,7 @@ export const toAssetId = (
       `${chainId}/erc20:${address.toLowerCase()}`,
     );
   }
-  return undefined;
+  throw new Error(`Invalid address: ${address} for chainId: ${chainId}`);
 };
 
 /**

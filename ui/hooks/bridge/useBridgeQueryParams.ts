@@ -12,8 +12,7 @@ import {
   isCrossChain,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import { type InternalAccount } from '@metamask/keyring-internal-api';
-import { type NetworkConfiguration } from '@metamask/network-controller';
+import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
   type AssetMetadata,
   fetchAssetMetadataForAssetIds,
@@ -21,15 +20,13 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
-  setEVMSrcTokenBalance,
-  setEVMSrcNativeBalance,
+  setBalanceAmount,
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
   setToToken,
 } from '../../ducks/bridge/actions';
 import {
-  getFromAccount,
   getFromChain,
   getFromChains,
   getFromToken,
@@ -83,7 +80,6 @@ export const useBridgeQueryParams = () => {
   const fromChains = useSelector(getFromChains);
   const fromChain = useSelector(getFromChain);
   const fromToken = useSelector(getFromToken);
-  const selectedAccount = useSelector(getFromAccount);
 
   const abortController = useRef<AbortController>(new AbortController());
 
@@ -172,9 +168,8 @@ export const useBridgeQueryParams = () => {
     (
       fromTokenMetadata,
       fromAsset,
-      networks: NetworkConfiguration[],
-      account: InternalAccount | null,
-      network?: NetworkConfiguration,
+      networks: MultichainNetworkConfiguration[],
+      network: MultichainNetworkConfiguration | null,
     ) => {
       const { chainId: assetChainId } = fromAsset;
 
@@ -204,8 +199,7 @@ export const useBridgeQueryParams = () => {
           if (targetChain) {
             dispatch(
               setFromChain({
-                networkConfig: targetChain,
-                selectedAccount: account,
+                chainId: targetChain.chainId,
                 token,
               }),
             );
@@ -251,16 +245,9 @@ export const useBridgeQueryParams = () => {
       fromTokenMetadata,
       parsedFromAssetId,
       fromChains,
-      selectedAccount,
       fromChain,
     );
-  }, [
-    assetMetadataByAssetId,
-    parsedFromAssetId,
-    fromChains,
-    fromChain,
-    selectedAccount,
-  ]);
+  }, [assetMetadataByAssetId, parsedFromAssetId, fromChains, fromChain]);
 
   // Set toChainId and toToken
   useEffect(() => {
@@ -309,16 +296,20 @@ export const useBridgeQueryParams = () => {
       !searchParams.get(BridgeQueryParams.FROM) &&
       fromToken &&
       // Wait for network to be changed if needed
-      !isCrossChain(fromToken.chainId, fromChain?.chainId) &&
-      selectedAccount
+      !isCrossChain(fromToken.chainId, fromChain?.chainId)
     ) {
-      dispatch(setEVMSrcTokenBalance(fromToken, selectedAccount.address));
       dispatch(
-        setEVMSrcNativeBalance({
-          selectedAddress: selectedAccount.address,
-          chainId: fromToken.chainId,
+        setBalanceAmount({
+          token: fromToken,
+          chainId: fromToken.chainId ?? fromChain?.chainId,
+        }),
+      );
+      dispatch(
+        setBalanceAmount({
+          shouldSetGasTokenBalance: true,
+          chainId: fromToken.chainId ?? fromChain?.chainId,
         }),
       );
     }
-  }, [parsedFromAssetId, selectedAccount, fromToken, fromChain, searchParams]);
+  }, [parsedFromAssetId, fromToken, fromChain?.chainId, searchParams]);
 };

@@ -5,14 +5,13 @@ import {
   getFromToken,
   getValidationErrors,
   getToToken,
+  getFromChain,
 } from '../../ducks/bridge/selectors';
-import { getMultichainCurrentChainId } from '../../selectors/multichain';
-import { useMultichainSelector } from '../useMultichainSelector';
 
 export const useIsTxSubmittable = () => {
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
-  const fromChainId = useMultichainSelector(getMultichainCurrentChainId);
+  const fromChainId = useSelector(getFromChain)?.chainId;
   const fromAmount = useSelector(getFromAmount);
   const { activeQuote } = useSelector(getBridgeQuotes);
 
