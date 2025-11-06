@@ -121,7 +121,6 @@ export default function MetamaskWordMarkAnimation({
     // Cleanup timeout on unmount
     return () => {
       if (animationTimeoutRef.current) {
-        console.log('Clearing timeout');
         clearTimeout(animationTimeoutRef.current);
         setIsAnimationCompleted('MetamaskWordMarkAnimation', true);
       }
