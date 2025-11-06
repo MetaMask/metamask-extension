@@ -751,6 +751,7 @@ export default class MetamaskController extends EventEmitter {
     this.nameController = controllersByName.NameController;
     this.announcementController = controllersByName.AnnouncementController;
     this.accountOrderController = controllersByName.AccountOrderController;
+    this.rewardsController = controllersByName.RewardsController;
 
     this.backup = new Backup({
       preferencesController: this.preferencesController,
@@ -2534,17 +2535,22 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // rewards
-      getCandidateSubscriptionId: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:getCandidateSubscriptionId',
+      getRewardsCandidateSubscriptionId:
+        this.rewardsController.getCandidateSubscriptionId.bind(
+          this.rewardsController,
+        ),
+      getRewardsSeasonMetadata: this.rewardsController.getSeasonMetadata.bind(
+        this.rewardsController,
       ),
-      getRewardsSeasonMetadata: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:getSeasonMetadata',
+      getRewardsSeasonStatus: this.rewardsController.getSeasonStatus.bind(
+        this.rewardsController,
       ),
-      getRewardsSeasonStatus: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:getSeasonStatus',
+      getRewardsHasAccountOptedIn:
+        this.rewardsController.getHasAccountOptedIn.bind(
+          this.rewardsController,
+        ),
+      estimateRewardsPoints: this.rewardsController.estimatePoints.bind(
+        this.rewardsController,
       ),
 
       // hardware wallets
@@ -2903,6 +2909,14 @@ export default class MetamaskController extends EventEmitter {
         gatorPermissionsController.fetchAndUpdateGatorPermissions.bind(
           gatorPermissionsController,
         ),
+      addPendingRevocation:
+        gatorPermissionsController.addPendingRevocation.bind(
+          gatorPermissionsController,
+        ),
+      submitRevocation: gatorPermissionsController.submitRevocation.bind(
+        gatorPermissionsController,
+      ),
+      checkDelegationDisabled: this.checkDelegationDisabled.bind(this),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
@@ -3490,6 +3504,7 @@ export default class MetamaskController extends EventEmitter {
           ),
         }),
       lookupSelectedNetworks: this.lookupSelectedNetworks.bind(this),
+      resetWallet: this.resetWallet.bind(this),
     };
   }
 
@@ -3505,6 +3520,16 @@ export default class MetamaskController extends EventEmitter {
       deleteInterface,
       origin,
     });
+  }
+
+  async resetWallet() {
+    // clear SeedlessOnboardingController state
+    this.seedlessOnboardingController.clearState();
+
+    // reset onboarding state
+    this.onboardingController.resetOnboarding();
+
+    this.appStateController.setIsWalletResetInProgress(true);
   }
 
   async exportAccount(address, password) {
@@ -3948,9 +3973,7 @@ export default class MetamaskController extends EventEmitter {
           isPasswordSynced = true;
         })
         .catch((err) => {
-          log.error(
-            `error while submitting global password: ${err.message} , isKeyringPasswordValid: ${isKeyringPasswordValid}`,
-          );
+          log.error(`error while submitting global password: ${err.message}`);
           if (err instanceof RecoveryError) {
             // Keyring controller password verification succeeds and seedless controller failed.
             if (
@@ -4282,8 +4305,34 @@ export default class MetamaskController extends EventEmitter {
    */
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
+    const isWalletResetInProgress =
+      this.appStateController.getIsWalletResetInProgress();
     try {
+      if (isWalletResetInProgress) {
+        // clear permissions
+        this.permissionController.clearState();
+
+        // Clear snap state
+        await this.snapController.clearState();
+
+        // Clear account tree state
+        this.accountTreeController.clearState();
+
+        // Currently, the account-order-controller is not in sync with
+        // the accounts-controller. To properly persist the hidden state
+        // of accounts, we should add a new flag to the account struct
+        // to indicate if it is hidden or not.
+        // TODO: Update @metamask/accounts-controller to support this.
+        this.accountOrderController.updateHiddenAccountsList([]);
+
+        this.txController.clearUnapprovedTransactions();
+      }
+
       await this.keyringController.createNewVaultAndKeychain(password);
+
+      // set is resetting wallet in progress to false, after new vault and keychain are created
+      this.appStateController.setIsWalletResetInProgress(false);
+
       const primaryKeyring = this.keyringController.state.keyrings[0];
 
       // Once we have our first HD keyring available, we re-create the internal list of
@@ -4291,7 +4340,7 @@ export default class MetamaskController extends EventEmitter {
       // there are some account migration happening in that function).
       await this.accountsController.updateAccounts();
       // Then we can build the initial tree.
-      this.accountTreeController.init();
+      this.accountTreeController.reinit();
       // TODO: Move this logic to the SnapKeyring directly.
       // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
       await this.forwardSelectedAccountGroupToSnapKeyring(
@@ -4683,6 +4732,9 @@ export default class MetamaskController extends EventEmitter {
         password,
         seedPhraseAsUint8Array,
       );
+
+      // set is resetting wallet in progress to false, after new vault and keychain are created
+      this.appStateController.setIsWalletResetInProgress(false);
 
       // We re-created the vault, meaning we only have 1 new HD keyring
       // now. We re-create the internal list of accounts (which is
@@ -8775,6 +8827,47 @@ export default class MetamaskController extends EventEmitter {
    */
   #getGlobalNetworkClientId() {
     return this.networkController.state.selectedNetworkClientId;
+  }
+
+  /**
+   * Checks if a delegation is already disabled on-chain by querying the
+   * delegation manager contract's disabledDelegations mapping.
+   *
+   * @param {string} delegationManagerAddress - The delegation manager contract address.
+   * @param {string} delegationHash - The hash of the delegation to check.
+   * @param {string} networkClientId - The network client ID to use for the query.
+   * @returns {Promise<boolean>} True if the delegation is disabled, false otherwise.
+   */
+  async checkDelegationDisabled(
+    delegationManagerAddress,
+    delegationHash,
+    networkClientId,
+  ) {
+    const { encodeDisabledDelegationsCheck, decodeDisabledDelegationsResult } =
+      await import('../../shared/lib/delegation/delegation');
+
+    // Encode the call to disabledDelegations(bytes32)
+    const callData = encodeDisabledDelegationsCheck({ delegationHash });
+
+    // Make eth_call request through the network controller
+    const networkClient =
+      this.networkController.getNetworkClientById(networkClientId);
+
+    const result = await networkClient.provider.request({
+      method: 'eth_call',
+      params: [
+        {
+          to: delegationManagerAddress,
+          data: callData,
+        },
+        'latest',
+      ],
+    });
+
+    // Decode the result
+    const isDisabled = decodeDisabledDelegationsResult(result);
+
+    return isDisabled;
   }
 
   #initControllers({ existingControllers, initFunctions, initState }) {
