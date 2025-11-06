@@ -384,8 +384,8 @@ const PrepareBridgePage = ({
                     // Length of decimal part cannot exceed token.decimals
                     .split('.')[0]
                 : undefined,
-            srcChainId: fromToken.chainId,
-            destChainId: toToken.chainId,
+            srcChainId: fromToken?.chainId,
+            destChainId: toToken?.chainId,
             slippage,
             walletAddress: selectedAccount.address,
             destWalletAddress: selectedDestinationAccount?.address,
@@ -394,11 +394,11 @@ const PrepareBridgePage = ({
           }
         : undefined,
     [
-      fromToken.address,
-      fromToken.chainId,
-      fromToken.decimals,
-      toToken.address,
-      toToken.chainId,
+      fromToken?.address,
+      fromToken?.chainId,
+      fromToken?.decimals,
+      toToken?.address,
+      toToken?.chainId,
       fromAmount,
       slippage,
       selectedAccount?.address,

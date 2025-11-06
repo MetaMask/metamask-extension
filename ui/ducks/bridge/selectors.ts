@@ -64,7 +64,6 @@ import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getMultichainBalances,
   getMultichainCoinRates,
-  getMultichainProviderConfig,
 } from '../../selectors/multichain';
 import { getAssetsRates } from '../../selectors/assets';
 import {
@@ -225,10 +224,12 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
 );
 
 export const getFromChains = createDeepEqualSelector(
-  getAllBridgeableNetworks,
-  getBridgeFeatureFlags,
-  (state: BridgeAppState) => hasSolanaAccounts(state),
-  (state: BridgeAppState) => hasBitcoinAccounts(state),
+  [
+    getAllBridgeableNetworks,
+    getBridgeFeatureFlags,
+    (state: BridgeAppState) => hasSolanaAccounts(state),
+    (state: BridgeAppState) => hasBitcoinAccounts(state),
+  ],
   (
     allBridgeableNetworks,
     bridgeFeatureFlags,
@@ -257,25 +258,25 @@ export const getFromChains = createDeepEqualSelector(
 
 /**
  * This matches the network filter in the activity and asset lists
+ * When the page loads the global network always matches the network filter
+ * Because useBridging checks whether the lastSelectedNetwork matches the provider config
+ * Then useBridgeQueryParams sets the global network to lastSelectedNetwork as needed
  */
-export const getLastSelectedChainId = createSelector(
-  [getAllEnabledNetworksForAllNamespaces],
-  (allEnabledNetworksForAllNamespaces) => {
-    return allEnabledNetworksForAllNamespaces[0];
-  },
-);
-
-// This returns undefined if the selected chain is not supported by swap/bridge (i.e, testnets)
 export const getFromChain = createDeepEqualSelector(
-  [getFromChains, getMultichainProviderConfig],
-  (fromChains, providerConfig) => {
-    // When the page loads the global network always matches the network filter
-    // Because useBridging checks whether the lastSelectedNetwork matches the provider config
-    // Then useBridgeQueryParams sets the global network to lastSelectedNetwork as needed
-    // TODO remove providerConfig references and just use getLastSelectedChainId
-    return fromChains.find(
-      ({ chainId }) => chainId === providerConfig?.chainId,
+  [getAllEnabledNetworksForAllNamespaces, getFromChains],
+  (allEnabledNetworksForAllNamespaces, fromChains) => {
+    // Find first enabled network that matches a supported bridge network
+    const lastSelectedChainId = allEnabledNetworksForAllNamespaces.find(
+      (chainId) =>
+        fromChains.some(
+          ({ chainId: fromChainId }: NetworkConfiguration) =>
+            fromChainId === chainId,
+        ),
     );
+    const lastSelectedChain = fromChains.find(
+      ({ chainId }) => chainId === lastSelectedChainId,
+    );
+    return lastSelectedChain ?? fromChains[0];
   },
 );
 
