@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Box } from '@metamask/design-system-react';
 import {
   createNewVaultAndRestore,
   resetOAuthLoginState,
@@ -10,7 +11,6 @@ import {
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import CreateNewVault from '../../components/app/create-new-vault';
 import Button from '../../components/ui/button';
-import Box from '../../components/ui/box';
 import { Text } from '../../components/component-library';
 import { TextVariant, TextColor } from '../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';

@@ -2,16 +2,14 @@ import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
+import {
+  Box,
+  BoxJustifyContent,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
 import { formatSwapsValueForDisplay } from '../swaps.util';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import Box from '../../../components/ui/box';
-import {
-  JustifyContent,
-  DISPLAY,
-  AlignItems,
-  IconColor,
-  TextColor,
-} from '../../../helpers/constants/design-system';
+import { IconColor, TextColor } from '../../../helpers/constants/design-system';
 import { Icon, IconName } from '../../../components/component-library';
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -82,9 +80,8 @@ export default function ExchangeRateDisplay({
   return (
     <div className={classnames('exchange-rate-display', className)}>
       <Box
-        display={DISPLAY.FLEX}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
         onClick={onQuotesClick}
         color={quoteRateColor}
         className={quoteRateClassName}
