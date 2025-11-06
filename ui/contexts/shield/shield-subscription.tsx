@@ -20,7 +20,6 @@ import {
 } from '../../selectors/subscription';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
-import { useShieldAddFundTrigger } from './useAddFundTrigger';
 
 export const ShieldSubscriptionContext = React.createContext<{
   resetShieldEntryModalShownStatus: () => void;
@@ -66,9 +65,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     false,
     true, // use USD conversion rate instead of the current currency
   );
-
-  // watch handle add fund trigger server check subscirption paused because of insufficient funds
-  useShieldAddFundTrigger();
 
   /**
    * Check if the user's balance criteria is met to show the shield entry modal.

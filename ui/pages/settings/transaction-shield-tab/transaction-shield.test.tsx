@@ -23,6 +23,12 @@ jest.mock('react-router-dom-v5-compat', () => {
   };
 });
 
+jest.mock('../../../hooks/subscription/useAddFundTrigger', () => {
+  return {
+    useShieldAddFundTrigger: jest.fn(),
+  };
+});
+
 describe('Transaction Shield Page', () => {
   const STATE_MOCK = {
     metamask: {

@@ -1,9 +1,10 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   SubscriptionCryptoPaymentMethod,
+  CRYPTO_PAYMENT_METHOD_ERRORS,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../hooks/useTokenBalances';
@@ -26,6 +27,8 @@ import { getTokenBalancesEvm } from '../../selectors/assets';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
 import { useAsyncResult } from '../../hooks/useAsync';
+import { MINUTE } from '../../../shared/constants/time';
+import { useThrottle } from '../../hooks/useThrottle';
 
 /**
  * Check if the shield subscription payment token has sufficient balance for the subscription
@@ -140,7 +143,7 @@ export const useShieldSubscriptionCryptoSufficientBalanceCheck = () => {
   return {
     hasAvailableSelectedToken,
     validTokenBalance,
-  }
+  };
 };
 
 /**
@@ -214,6 +217,63 @@ export const useHandleShieldAddFundTrigger = () => {
   ]);
 
   return {
-    handleTriggerSubscriptionCheck
-  }
-}
+    handleTriggerSubscriptionCheck,
+  };
+};
+
+const SHIELD_ADD_FUND_TRIGGER_INTERVAL = 5 * MINUTE;
+
+/**
+ * Main hook that combines balance check and handler to automatically trigger
+ * subscription check when user adds funds to the selected token
+ *
+ */
+export const useShieldAddFundTrigger = () => {
+  const { subscriptions } = useUserSubscriptions();
+  const shieldSubscription = useUserSubscriptionByProduct(
+    PRODUCT_TYPES.SHIELD,
+    subscriptions,
+  );
+  const isSubscriptionPaused =
+    shieldSubscription && getIsShieldSubscriptionPaused(shieldSubscription);
+
+  const cryptoPaymentInfo = shieldSubscription?.paymentMethod as
+    | SubscriptionCryptoPaymentMethod
+    | undefined;
+  const hasInsufficientBalanceError =
+    cryptoPaymentInfo?.crypto.error ===
+    CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE;
+
+  const { hasAvailableSelectedToken } =
+    useShieldSubscriptionCryptoSufficientBalanceCheck();
+  const throttledHasAvailableSelectedToken = useThrottle(
+    hasAvailableSelectedToken,
+    SHIELD_ADD_FUND_TRIGGER_INTERVAL,
+  );
+
+  const { handleTriggerSubscriptionCheck } = useHandleShieldAddFundTrigger();
+
+  useEffect(() => {
+    // Only set up interval if:
+    // 1. Subscription is paused
+    // 2. There's an insufficient balance error
+    // 3. Balance is now sufficient
+    if (
+      isSubscriptionPaused &&
+      hasInsufficientBalanceError &&
+      throttledHasAvailableSelectedToken
+    ) {
+      handleTriggerSubscriptionCheck().catch((error) => {
+        log.error(
+          '[useShieldAddFundTrigger] error triggering subscription check',
+          error,
+        );
+      });
+    }
+  }, [
+    isSubscriptionPaused,
+    hasInsufficientBalanceError,
+    throttledHasAvailableSelectedToken,
+    handleTriggerSubscriptionCheck,
+  ]);
+};
