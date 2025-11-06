@@ -7893,19 +7893,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "@metamask/subscription-controller@npm:3.1.0"
+"@metamask/subscription-controller@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "@metamask/subscription-controller@npm:3.3.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/controller-utils": "npm:^11.15.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/polling-controller": "npm:^15.0.0"
-    "@metamask/transaction-controller": "npm:^61.0.0"
+    "@metamask/transaction-controller": "npm:^61.1.0"
     "@metamask/utils": "npm:^11.8.1"
+    bignumber.js: "npm:^9.1.2"
   peerDependencies:
     "@metamask/profile-sync-controller": ^26.0.0
-  checksum: 10/079995bcaeb4b8b01faa815aba285ec5e8588f923d9842b36c584493e0ddfcb9ed6afc334016002471f253eb8e3dc21eb7b0c24ffc5d8a8a0b6be42b22dc0c95
+  checksum: 10/0fe72a78e8cb8c49975c55eee906ec7e15dc343656895ff7810fe30805702406694bc5142b67aa7262efee21f6f5f305b6eea2be1762f9dc5b63a119363df822
   languageName: node
   linkType: hard
 
@@ -7998,9 +7999,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^61.0.0":
-  version: 61.0.0
-  resolution: "@metamask/transaction-controller@npm:61.0.0"
+"@metamask/transaction-controller@npm:^61.0.0, @metamask/transaction-controller@npm:^61.1.0":
+  version: 61.1.0
+  resolution: "@metamask/transaction-controller@npm:61.1.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -8010,7 +8011,7 @@ __metadata:
     "@ethersproject/providers": "npm:^5.7.0"
     "@ethersproject/wallet": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/controller-utils": "npm:^11.15.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
@@ -8031,7 +8032,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^25.0.0
     "@metamask/network-controller": ^25.0.0
     "@metamask/remote-feature-flag-controller": ^2.0.0
-  checksum: 10/af101a50e060ecbe165d8a962e218acf3297c00345e3ad1ee3e6dd19efe3752da8fbd2fd9b1b204e980490135495dfc9df0a30e0d3299a31942d7915c464838e
+  checksum: 10/120112436d6f4d703adafb58e7670579df4dc3e2b35f3536eb6979ec5efb0623e72f690b042af00dc7695e15a803f937088fb4cddd06864a1f5dcb6e85d81eb5
   languageName: node
   linkType: hard
 
@@ -32097,7 +32098,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^2.4.6"
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": "npm:^3.1.0"
+    "@metamask/subscription-controller": "npm:^3.3.0"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
