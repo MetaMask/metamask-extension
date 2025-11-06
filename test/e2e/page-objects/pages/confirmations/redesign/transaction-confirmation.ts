@@ -76,6 +76,9 @@ class TransactionConfirmation extends Confirmation {
   private readonly networkName: RawLocator =
     '[data-testid="confirmation__details-network-name"]';
 
+  private readonly nonceSection: RawLocator =
+    '[data-testid="advanced-details-nonce-section"]';
+
   private readonly saveButton: RawLocator = { tag: 'button', text: 'Save' };
 
   private readonly senderAccount: RawLocator = '[data-testid="sender-address"]';
@@ -226,6 +229,13 @@ class TransactionConfirmation extends Confirmation {
       css: this.headerAccountName,
       text: account,
     });
+  }
+
+  async checkNonceSectionIsDisplayed(): Promise<void> {
+    console.log(
+      `Checking nonce section is displayed on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector(this.nonceSection);
   }
 
   async checkPaidByMetaMask() {
