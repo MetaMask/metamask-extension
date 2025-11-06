@@ -1,6 +1,7 @@
 import assert from 'assert';
 import { By } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
+import { regularDelayMs } from '../../helpers';
 
 export default class DeepLink {
   protected readonly driver: Driver;
@@ -23,14 +24,9 @@ export default class DeepLink {
     try {
       await this.driver.waitForSelector(this.descriptionBox);
       // loading indicator should not be present when the page is loaded
-      const element = await this.driver.driver.findElements(
-        By.css(this.loadingIndicator),
-      );
-      assert.equal(
-        element.length,
-        0,
-        'Loading indicator should not be present',
-      );
+      await this.driver.assertElementNotPresent(this.loadingIndicator, {
+        waitAtLeastGuard: regularDelayMs,
+      });
     } catch (e) {
       console.log('Timeout while waiting for Deep Link page to be loaded', e);
       throw e;
