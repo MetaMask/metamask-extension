@@ -21,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `fallbackName` prop in Shield-subscription-approval page.
 - Claims form back button redirect to Transaction shield page (#37333)
 - Set autofocus false on confirmation alert modals (#37294)
-- N/A (#37298)
 - Added account type tags for bitcoin (#36927)
 - Use ArrowDown instead of ArrowRight on shield list buttons (#37292)
 - Updated two-tab components to use full-width layout for better visual balance (#37142)
@@ -37,7 +36,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Updates add account button text to `Add account` (#37288)
-- Null since it's in experimental build (#37329)
 - Fixes `Background connection unresponsive` issues caused by the UI attempting to load before the background process has (#36729)
   begun initializing.
 - Updated smart account terminology in the UI from "Enable smart contract account" to "Use smart account" (#37235)
@@ -46,7 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added popular networks (Arbitrum, BSC, Optimism, Polygon, Sei, and Base) by default for all users, filtered to only (#37172)
   include networks supported by accounts API v4
 - Fixed a bug causing the setting showNativeTokenAsMainBalance to not display native user balance when ON. (#37233)
-- Null: UI fixes (#36556)
 - Enables storing EIP-7715 permissions granted by the user (#37158)
 - Reduce excess re-renders (#37293)
 - Aligned the Import Wallet UI in the 'Add Wallet' flow with the existing 'Import SRP' onboarding design for consistency (#37207)
@@ -63,6 +60,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Normalize basePath trailing slash in getRelativeLocationForNestedRoutes (#37161)
 - Fixed an issue where some avatars would be out of sync (#37173)
 - Fix the manual refresh and token detection (#37130)
+- Fixes subscription-polling when shield feature is disabled (#37476)
+- Fixes network nicknames for popular networks (#37477)
+- Fixes historical prices chart ranges for non-evm assets (#37505)
+- Fixes issue where we're failing to log swap comparisons in some scenarios (#37496)
+- Fixes token image and symbol in confirmation for EVM transactions when nonEVM network is selected at wallet view (#37491)
+- Fixes a bug where tokenId for NFT was not being sent correctly in send flow (#37555)
 
 ## [13.7.0]
 
