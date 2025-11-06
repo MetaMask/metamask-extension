@@ -986,6 +986,16 @@
         "lodash": true
       }
     },
+    "@metamask/claims-controller": {
+      "globals": {
+        "TextEncoder": true,
+        "console.log": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true
+      }
+    },
     "@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
