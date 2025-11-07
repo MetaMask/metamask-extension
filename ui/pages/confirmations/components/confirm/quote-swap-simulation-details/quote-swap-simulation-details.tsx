@@ -41,9 +41,9 @@ export const QuoteSwapSimulationDetails = ({
           chainId: toHex(srcAsset.chainId),
           address: srcAsset.address as Hex,
         } as unknown as TokenAssetIdentifier,
-        amount: new BigNumber(sourceTokenAmount ?? '0x0', 16).dividedBy(
-          new BigNumber(10).pow(srcAsset.decimals),
-        ),
+        amount: new BigNumber(sourceTokenAmount ?? '0x0', 16)
+          .negated()
+          .dividedBy(new BigNumber(10).pow(srcAsset.decimals)),
         fiatAmount: new BigNumber(sourceTokenAmount ?? '0x0', 16)
           .dividedBy(new BigNumber(10).pow(srcAsset.decimals))
           .times(fiatRates[srcAsset.address as Hex] ?? 0)
@@ -93,7 +93,6 @@ export const QuoteSwapSimulationDetails = ({
           confirmationId={currentConfirmation?.id}
           isFirstRow
           label={t('simulationDetailsOutgoingHeading')}
-          labelColor={TextColor.errorAlternative}
           showFiat
         />
         <BalanceChangeRow
@@ -101,7 +100,6 @@ export const QuoteSwapSimulationDetails = ({
           hasIncomingTokens
           confirmationId={currentConfirmation?.id}
           label={t('simulationDetailsIncomingHeading')}
-          labelColor={TextColor.successDefault}
           showFiat
         />
       </Box>
