@@ -151,16 +151,36 @@ export const BackupAndSyncToggle = () => {
           showModal({
             name: CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
             enableBackupAndSync: async () => {
+              // Turn on main backup and sync
               await setIsBackupAndSyncFeatureEnabled(
                 BACKUPANDSYNC_FEATURES.main,
+                true,
+              );
+              // Also turn on all sub-features for convenient 1-click restore
+              await setIsBackupAndSyncFeatureEnabled(
+                BACKUPANDSYNC_FEATURES.accountSyncing,
+                true,
+              );
+              await setIsBackupAndSyncFeatureEnabled(
+                BACKUPANDSYNC_FEATURES.contactSyncing,
                 true,
               );
             },
           }),
         );
       } else {
+        // Turn on main backup and sync
         await setIsBackupAndSyncFeatureEnabled(
           BACKUPANDSYNC_FEATURES.main,
+          true,
+        );
+        // Also turn on all sub-features for convenient 1-click restore
+        await setIsBackupAndSyncFeatureEnabled(
+          BACKUPANDSYNC_FEATURES.accountSyncing,
+          true,
+        );
+        await setIsBackupAndSyncFeatureEnabled(
+          BACKUPANDSYNC_FEATURES.contactSyncing,
           true,
         );
       }

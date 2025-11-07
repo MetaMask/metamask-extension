@@ -87,7 +87,7 @@ describe('BackupAndSyncToggle', () => {
     });
   });
 
-  it('enables backup and sync when the toggle is turned on and basic functionality is already on', () => {
+  it('enables backup and sync and all sub-features when the toggle is turned on and basic functionality is already on', async () => {
     const store = initialStore();
     store.metamask.isBackupAndSyncEnabled = false;
 
@@ -98,14 +98,29 @@ describe('BackupAndSyncToggle', () => {
         <BackupAndSyncToggle />
       </Redux.Provider>,
     );
+
     fireEvent.click(getByTestId(backupAndSyncToggleTestIds.toggleButton));
+
+    // Wait for the async toggle handler to complete
+    await waitFor(() => {
+      expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+        BACKUPANDSYNC_FEATURES.main,
+        true,
+      );
+    });
+
+    // Should also enable all sub-features for 1-click restore convenience
     expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
-      BACKUPANDSYNC_FEATURES.main,
+      BACKUPANDSYNC_FEATURES.accountSyncing,
+      true,
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.contactSyncing,
       true,
     );
   });
 
-  it('opens the confirm modal when the toggle is turned on and basic functionality is off', () => {
+  it('opens the confirm modal when the toggle is turned on and basic functionality is off', async () => {
     const store = initialStore();
     store.metamask.isBackupAndSyncEnabled = false;
     store.metamask.useExternalServices = false;
@@ -122,6 +137,24 @@ describe('BackupAndSyncToggle', () => {
         name: CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
         enableBackupAndSync: expect.any(Function),
       }),
+    );
+
+    // Test that the modal's enableBackupAndSync callback enables all features
+    const modalAction = mockDispatch.mock.calls[0][0];
+    const enableCallback = modalAction.payload.enableBackupAndSync;
+    await enableCallback();
+
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.main,
+      true,
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.accountSyncing,
+      true,
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.contactSyncing,
+      true,
     );
   });
 
