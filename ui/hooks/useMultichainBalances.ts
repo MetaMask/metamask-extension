@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  isCaipChainId,
   parseCaipAssetType,
   type CaipChainId,
   type Hex,
@@ -8,8 +9,8 @@ import {
 import { SolScope, BtcScope } from '@metamask/keyring-api';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { AssetType } from '../../shared/constants/transaction';
-import type { TokenWithBalance } from '../components/app/assets/types';
 import {
   getAccountAssets,
   getAssetsMetadata,
@@ -23,22 +24,13 @@ import {
   getSelectedAccountGroup,
 } from '../selectors/multichain-accounts/account-tree';
 import { type MultichainAccountsState } from '../selectors/multichain-accounts/account-tree.types';
+import { toAssetId } from '../../shared/lib/asset-utils';
 import { useMultichainSelector } from './useMultichainSelector';
 
 const useNonEvmAssetsWithBalances = (
   accountId?: string,
   accountType?: InternalAccount['type'],
-): (Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
-  chainId: `${string}:${string}`;
-  decimals: number;
-  address: string;
-  assetId: `${string}:${string}`;
-  string: string;
-  balance: string;
-  tokenFiatAmount: number;
-  symbol: string;
-  accountType?: InternalAccount['type'];
-})[] => {
+) => {
   // non-evm tokens owned by non-evm account, includes native and non-native assets
   const assetsByAccountId = useSelector(getAccountAssets);
   const assetMetadataById = useSelector(getAssetsMetadata);
@@ -149,13 +141,21 @@ export const useMultichainBalances = (
   // return TokenWithFiat sorted by fiat balance amount
   const assetsWithBalance = useMemo(() => {
     return [
-      ...evmBalancesWithFiatByChainId,
+      ...evmBalancesWithFiatByChainId.map((t) => ({
+        ...t,
+        chainId: isCaipChainId(t.chainId)
+          ? t.chainId
+          : toEvmCaipChainId(t.chainId),
+        assetId: toAssetId(
+          t.address,
+          isCaipChainId(t.chainId) ? t.chainId : toEvmCaipChainId(t.chainId),
+        ),
+      })),
       ...solanaBalancesWithFiat,
       ...bitcoinBalancesWithFiat,
     ]
       .map((token) => ({
         ...token,
-        type: token.isNative ? AssetType.native : AssetType.token,
       }))
       .sort((a, b) => (b.tokenFiatAmount ?? 0) - (a.tokenFiatAmount ?? 0));
   }, [

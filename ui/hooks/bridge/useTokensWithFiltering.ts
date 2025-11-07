@@ -112,6 +112,7 @@ type FilterPredicate = (
  * - popularity
  * - all other tokens
  *
+ * @deprecated use useMultichainBalances instead
  * @param chainId - the selected src/dest chainId
  * @param tokenToExclude - a token to exclude from the token list, usually the token being swapped from
  * @param tokenToExclude.symbol
@@ -259,7 +260,7 @@ export const useTokensWithFiltering = (
         // Yield multichain tokens with balances and are not blocked
         for (const token of multichainTokensWithBalance) {
           if (shouldAddToken(token.symbol, token.address, token.chainId)) {
-            if (isNativeAddress(token.address) || token.isNative) {
+            if (isNativeAddress(token.address)) {
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,

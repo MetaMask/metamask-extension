@@ -40,7 +40,7 @@ export const toAssetId = (
     return address;
   }
   if (isNativeAddress(address)) {
-    return getNativeAssetForChainId(chainId)?.assetId;
+    return getNativeAssetForChainId(chainId).assetId;
   }
   if (chainId === MultichainNetwork.Solana) {
     return CaipAssetTypeStruct.create(`${chainId}/token:${address}`);
