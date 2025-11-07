@@ -44,6 +44,7 @@ export const QuoteSwapSimulationDetails = ({
           .negated()
           .dividedBy(new BigNumber(10).pow(srcAsset.decimals)),
         fiatAmount: new BigNumber(sourceTokenAmount ?? '0x0', 16)
+          .negated()
           .dividedBy(new BigNumber(10).pow(srcAsset.decimals))
           .times(fiatRates[srcAsset.address as Hex] ?? 0)
           .toNumber(),
