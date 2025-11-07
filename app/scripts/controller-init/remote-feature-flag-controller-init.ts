@@ -58,6 +58,7 @@ export function getConfigForRemoteFeatureFlagRequest() {
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.initMessenger - The messenger to use for initialization.
+ * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
 export const RemoteFeatureFlagControllerInit: ControllerInitFunction<

@@ -2,6 +2,7 @@ import type { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-
 import type { NetworkController } from '@metamask/network-controller';
 /**
  * Sets RPC failover based on remote feature flags.
+ *
  * @param remoteFeatureFlagController - The remote feature flag controller.
  * @param networkController - The network controller.p
  */

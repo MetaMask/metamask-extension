@@ -15,7 +15,7 @@ let updatingPromise: Promise<void> | null = null;
  * If the request fails, the error will be logged but won't interrupt extension initialization.
  *
  * @param metamaskController - The MetaMask controller instance.
- * @returns {Promise<void>} A promise that resolves when the remote feature flags have been updated.
+ * @returns A promise that resolves when the remote feature flags have been updated.
  */
 export async function updateRemoteFeatureFlags(
   metamaskController: MetamaskController,
@@ -26,10 +26,10 @@ export async function updateRemoteFeatureFlags(
       return;
     }
 
-    const remoteFeatureFlagController: RemoteFeatureFlagController =
+    const remoteController: RemoteFeatureFlagController =
       metamaskController.remoteFeatureFlagController;
     // initialize the request to fetch remote feature flags
-    updatingPromise = remoteFeatureFlagController.updateRemoteFeatureFlags();
+    updatingPromise = remoteController.updateRemoteFeatureFlags();
     await updatingPromise;
   } catch (error) {
     log.error('Error initializing remote feature flags:', error);
