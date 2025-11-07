@@ -1,70 +1,105 @@
 /**
- * Standalone TRON Address Validator
+ * Standalone Tron Address Validator (Synchronous)
  *
- * This utility validates TRON blockchain addresses in both Base58 and hex formats.
- * No external dependencies required.
+ * This utility validates Tron addresses in both Base58 and Hex formats.
+ * It works in browser environments with js-sha256 library.
+ *
+ * Requirements:
+ *   Include js-sha256: <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/src/sha256.min.js"></script>
+ *
+ * Usage:
+ *   import { isAddress } from './tron-address-validator';
+ *
+ *   const isValid = isAddress('TRXaddress...'); // returns true or false (NO await needed!)
  */
 
 import { is, string } from '@metamask/superstruct';
+import { sha256 } from 'js-sha256';
 
 // Constants
 const ADDRESS_SIZE = 34;
 const ADDRESS_PREFIX_BYTE = 0x41;
+
+// Base58 alphabet
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const ALPHABET_MAP: Record<string, number> = {};
 
-// Build alphabet map
 for (let i = 0; i < ALPHABET.length; i++) {
   ALPHABET_MAP[ALPHABET.charAt(i)] = i;
 }
 
 const BASE = 58;
 
-// Base58 encoding/decoding
-function encode58(buffer: number[] | string): string {
-  if (buffer.length === 0) {
-    return '';
-  }
+/**
+ * Decodes a Base58 encoded string to a byte array
+ */
+function decode58(string: string): number[] {
+  if (string.length === 0) return [];
 
   let i: number;
   let j: number;
-  const digits = [0];
 
-  const bufferArray: number[] =
-    typeof buffer === 'string'
-      ? Array.from(buffer).map((char) => char.charCodeAt(0))
-      : buffer;
+  const bytes = [0];
 
-  // eslint-disable-next-line no-bitwise, @typescript-eslint/prefer-for-of
-  for (i = 0; i < bufferArray.length; i++) {
-    // eslint-disable-next-line no-bitwise
-    for (j = 0; j < digits.length; j++) {
-      // eslint-disable-next-line no-bitwise
-      digits[j] <<= 8;
-    }
+  for (i = 0; i < string.length; i++) {
+    const c: string = string[i];
 
-    digits[0] += bufferArray[i];
+    if (!(c in ALPHABET_MAP)) throw new Error('Non-base58 character');
+
+    for (j = 0; j < bytes.length; j++) bytes[j] *= BASE;
+
+    bytes[0] += ALPHABET_MAP[c];
     let carry = 0;
 
-    // eslint-disable-next-line no-bitwise, no-plusplus
+    for (j = 0; j < bytes.length; ++j) {
+      bytes[j] += carry;
+      carry = bytes[j] >> 8;
+      bytes[j] &= 0xff;
+    }
+
+    while (carry) {
+      bytes.push(carry & 0xff);
+      carry >>= 8;
+    }
+  }
+
+  for (i = 0; string[i] === '1' && i < string.length - 1; i++) bytes.push(0);
+
+  return bytes.reverse();
+}
+
+/**
+ * Encodes a byte array to Base58
+ */
+function encode58(buffer: number[] | Uint8Array | string): string {
+  if (buffer.length === 0) return '';
+
+  let i: number;
+  let j: number;
+
+  const digits = [0];
+
+  for (i = 0; i < buffer.length; i++) {
+    for (j = 0; j < digits.length; j++) digits[j] <<= 8;
+
+    const item = buffer[i];
+    const byte = typeof item === 'string' ? item.charCodeAt(0) : item;
+    digits[0] += byte;
+    let carry = 0;
+
     for (j = 0; j < digits.length; ++j) {
       digits[j] += carry;
-      // eslint-disable-next-line no-bitwise
       carry = (digits[j] / BASE) | 0;
       digits[j] %= BASE;
     }
 
     while (carry) {
       digits.push(carry % BASE);
-      // eslint-disable-next-line no-bitwise
       carry = (carry / BASE) | 0;
     }
   }
 
-  // eslint-disable-next-line no-plusplus
-  for (i = 0; bufferArray[i] === 0 && i < bufferArray.length - 1; i++) {
-    digits.push(0);
-  }
+  for (i = 0; buffer[i] === 0 && i < buffer.length - 1; i++) digits.push(0);
 
   return digits
     .reverse()
@@ -72,96 +107,35 @@ function encode58(buffer: number[] | string): string {
     .join('');
 }
 
-function decode58(str: string): number[] {
-  if (str.length === 0) {
-    return [];
-  }
-
-  let i: number;
-  let j: number;
-  const bytes = [0];
-
-  // eslint-disable-next-line @typescript-eslint/prefer-for-of, no-plusplus
-  for (i = 0; i < str.length; i++) {
-    const c: string = str[i];
-
-    if (!(c in ALPHABET_MAP)) {
-      throw new Error('Non-base58 character');
-    }
-
-    for (j = 0; j < bytes.length; j++) {
-      bytes[j] *= BASE;
-    }
-
-    bytes[0] += ALPHABET_MAP[c];
-    let carry = 0;
-
-    // eslint-disable-next-line no-bitwise, no-plusplus
-    for (j = 0; j < bytes.length; ++j) {
-      bytes[j] += carry;
-      // eslint-disable-next-line no-bitwise
-      carry = bytes[j] >> 8;
-      // eslint-disable-next-line no-bitwise
-      bytes[j] &= 0xff;
-    }
-
-    while (carry) {
-      // eslint-disable-next-line no-bitwise
-      bytes.push(carry & 0xff);
-      // eslint-disable-next-line no-bitwise
-      carry >>= 8;
-    }
-  }
-
-  // eslint-disable-next-line no-plusplus
-  for (i = 0; str[i] === '1' && i < str.length - 1; i++) {
-    bytes.push(0);
-  }
-
-  return bytes.reverse();
-}
-
-// Byte array utilities
+/**
+ * Converts a byte to a hex string
+ */
 function byte2hexStr(byte: number): string {
-  if (byte < 0 || byte > 255) {
-    throw new Error('Input must be a byte');
-  }
+  if (byte < 0 || byte > 255) throw new Error('Input must be a byte');
 
   const hexByteMap = '0123456789ABCDEF';
+
   let str = '';
-  // eslint-disable-next-line no-bitwise
   str += hexByteMap.charAt(byte >> 4);
-  // eslint-disable-next-line no-bitwise
   str += hexByteMap.charAt(byte & 0x0f);
 
   return str;
 }
 
+/**
+ * Converts a byte array to a hex string
+ */
 function byteArray2hexStr(byteArray: number[] | Uint8Array): string {
   let str = '';
-  for (const byte of byteArray) {
-    str += byte2hexStr(byte);
-  }
+
+  for (let i = 0; i < byteArray.length; i++) str += byte2hexStr(byteArray[i]);
+
   return str;
 }
 
-function hexChar2byte(c: string): number {
-  let d: number | undefined;
-
-  if (c >= 'A' && c <= 'F') {
-    d = c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
-  } else if (c >= 'a' && c <= 'f') {
-    d = c.charCodeAt(0) - 'a'.charCodeAt(0) + 10;
-  } else if (c >= '0' && c <= '9') {
-    d = c.charCodeAt(0) - '0'.charCodeAt(0);
-  }
-
-  if (typeof d === 'number') {
-    return d;
-  }
-  throw new Error('The passed hex char is not a valid hex char');
-}
-
+/**
+ * Checks if a character is a hex character
+ */
 function isHexChar(c: string): number {
   if (
     (c >= 'A' && c <= 'F') ||
@@ -170,73 +144,73 @@ function isHexChar(c: string): number {
   ) {
     return 1;
   }
+
   return 0;
 }
 
+/**
+ * Converts a hex character to a byte
+ */
+function hexChar2byte(c: string): number {
+  let d: number | undefined;
+
+  if (c >= 'A' && c <= 'F') d = c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+  else if (c >= 'a' && c <= 'f') d = c.charCodeAt(0) - 'a'.charCodeAt(0) + 10;
+  else if (c >= '0' && c <= '9') d = c.charCodeAt(0) - '0'.charCodeAt(0);
+
+  if (typeof d === 'number') return d;
+  else throw new Error('The passed hex char is not a valid hex char');
+}
+
+/**
+ * Converts a hex string to a byte array
+ */
 function hexStr2byteArray(str: string, strict = false): number[] {
-  let processedStr = str;
   let len = str.length;
 
   if (strict) {
     if (len % 2) {
-      processedStr = `0${str}`;
-      len += 1;
+      str = `0${str}`;
+      len++;
     }
   }
-
   const byteArray: number[] = [];
   let d = 0;
   let j = 0;
   let k = 0;
 
-  // eslint-disable-next-line @typescript-eslint/prefer-for-of, no-plusplus
   for (let i = 0; i < len; i++) {
-    const c = processedStr.charAt(i);
+    const c = str.charAt(i);
 
     if (isHexChar(c)) {
-      // eslint-disable-next-line no-bitwise
       d <<= 4;
       d += hexChar2byte(c);
-      j += 1;
+      j++;
 
-      if (j % 2 === 0) {
-        byteArray[k] = d;
-        k += 1;
+      if (0 === j % 2) {
+        byteArray[k++] = d;
         d = 0;
       }
-    } else {
-      throw new Error('The passed hex char is not a valid hex string');
-    }
+    } else throw new Error('The passed hex char is not a valid hex string');
   }
 
   return byteArray;
 }
 
-// SHA256 - Note: This is a simplified implementation using Node.js crypto
-// For browser environments, you'll need to use Web Crypto API or include a SHA256 library
-function sha256(msgBytes: number[] | Uint8Array): number[] {
-  // Check if we're in Node.js environment
-  if (typeof process?.versions?.node !== 'undefined') {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
-    const nodeCrypto = require('crypto');
-    const msgHex = byteArray2hexStr(msgBytes);
-    const hash = nodeCrypto
-      .createHash('sha256')
-      .update(Buffer.from(msgHex, 'hex'))
-      .digest('hex');
-    return hexStr2byteArray(hash);
-  }
-  // For browser environment, use Web Crypto API
-  throw new Error(
-    'Browser environment detected. Please use Web Crypto API for SHA256 or include a crypto library.',
-  );
-  // You would need to implement async Web Crypto API here or use a library like crypto-js
+/**
+ * SHA256 hash function using js-sha256 library
+ */
+function SHA256(msgBytes: number[] | Uint8Array): number[] {
+  const hex = sha256.hex(msgBytes);
+  return hexStr2byteArray(hex);
 }
 
-// Core validation functions
+/**
+ * Gets Base58Check address from address bytes
+ */
 function getBase58CheckAddress(addressBytes: number[]): string {
-  const hash0 = sha256(addressBytes);
-  const hash1 = sha256(hash0);
+  const hash0 = SHA256(addressBytes);
+  const hash1 = SHA256(hash0);
 
   let checkSum = hash1.slice(0, 4);
   checkSum = addressBytes.concat(checkSum);
@@ -244,35 +218,32 @@ function getBase58CheckAddress(addressBytes: number[]): string {
   return encode58(checkSum);
 }
 
+/**
+ * Validates if a Base58 string is a valid Tron address
+ */
 function isAddressValid(base58Str: string): boolean {
-  if (typeof base58Str !== 'string') {
-    return false;
-  }
-  if (base58Str.length !== ADDRESS_SIZE) {
-    return false;
-  }
+  if (typeof base58Str !== 'string') return false;
+
+  if (base58Str.length !== ADDRESS_SIZE) return false;
 
   let address = decode58(base58Str);
 
-  if (address.length !== 25) {
-    return false;
-  }
-  if (address[0] !== ADDRESS_PREFIX_BYTE) {
-    return false;
-  }
+  if (address.length !== 25) return false;
+
+  if (address[0] !== ADDRESS_PREFIX_BYTE) return false;
 
   const checkSum = address.slice(21);
   address = address.slice(0, 21);
 
-  const hash0 = sha256(address);
-  const hash1 = sha256(hash0);
+  const hash0 = SHA256(address);
+  const hash1 = SHA256(hash0);
   const checkSum1 = hash1.slice(0, 4);
 
   if (
-    checkSum[0] === checkSum1[0] &&
-    checkSum[1] === checkSum1[1] &&
-    checkSum[2] === checkSum1[2] &&
-    checkSum[3] === checkSum1[3]
+    checkSum[0] == checkSum1[0] &&
+    checkSum[1] == checkSum1[1] &&
+    checkSum[2] == checkSum1[2] &&
+    checkSum[3] == checkSum1[3]
   ) {
     return true;
   }
@@ -281,19 +252,17 @@ function isAddressValid(base58Str: string): boolean {
 }
 
 /**
- * Validates a TRON address
+ * Validates if an address is a valid Tron address (synchronous)
+ * Supports both Base58 format (e.g., TRXaddress...) and Hex format (e.g., 41hexaddress...)
  *
- * @param address - The address to validate (can be Base58 or hex format)
- * @returns true if the address is valid, false otherwise
- * @example
- * isAddress('TRX9Uhjxvb9tjfQHWQJKAQQaFcUx3N6TvT') // true
- * isAddress('41a614f803b6fd780986a42c78ec9c7f77e6ded13c') // true (hex format)
- * isAddress('invalid') // false
+ * Requires js-sha256 library to be loaded globally.
+ * Include: <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/src/sha256.min.js"></script>
+ *
+ * @param address - The address to validate
+ * @returns boolean - true if valid, false otherwise
  */
-export function isTronAddress(address: unknown): boolean {
-  if (!is(address, string())) {
-    return false;
-  }
+export function isTronAddress(address: string): boolean {
+  is(address, string());
 
   // Convert HEX to Base58
   if (address.length === 42) {
@@ -304,7 +273,6 @@ export function isTronAddress(address: unknown): boolean {
       return false;
     }
   }
-
   try {
     return isAddressValid(address);
   } catch (err) {

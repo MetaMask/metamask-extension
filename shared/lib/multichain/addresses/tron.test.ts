@@ -97,7 +97,7 @@ describe('TRON Address Validator', () => {
       it.each(NON_STRING_VALUES)(
         'returns false for non-string value: %p',
         (value: unknown) => {
-          expect(isTronAddress(value)).toBe(false);
+          expect(isTronAddress(value as string)).toBe(false);
         },
       );
     });

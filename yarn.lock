@@ -29829,6 +29829,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js-sha256@npm:^0.11.1":
+  version: 0.11.1
+  resolution: "js-sha256@npm:0.11.1"
+  checksum: 10/0f8eca6d8703f4a7252cce951617a5363676f81c62043b32ed8624f9c9ae49a269294dd8d31b2292bb616afdc46b4c0000b95fdc369768330a7887a36673a5c3
+  languageName: node
+  linkType: hard
+
 "js-sha3@npm:^0.9.2":
   version: 0.9.3
   resolution: "js-sha3@npm:0.9.3"
@@ -32307,6 +32314,7 @@ __metadata:
     jest-fixed-jsdom: "npm:^0.0.9"
     jest-junit: "npm:^14.0.1"
     jest-preview: "npm:^0.3.1"
+    js-sha256: "npm:^0.11.1"
     jsdom: "npm:^16.7.0"
     json-schema-to-ts: "npm:^3.0.1"
     jsonwebtoken: "npm:^9.0.2"
