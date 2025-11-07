@@ -17,9 +17,9 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
+  setLatestEVMBalances,
   setFromToken,
   setFromTokenInputValue,
-  setLatestEVMBalances,
   setToToken,
 } from '../../ducks/bridge/actions';
 import { getFromChains, getFromToken } from '../../ducks/bridge/selectors';

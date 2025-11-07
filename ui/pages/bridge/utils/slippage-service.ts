@@ -85,7 +85,7 @@ export function calculateSlippage(
   }
 
   // 1. Cross-chain (bridge) → 2%
-  if (fromToken.chainId !== toToken.chainId) {
+  if (isCrossChain(fromToken.chainId, toToken.chainId)) {
     return SlippageValue.BridgeDefault;
   }
 
@@ -112,11 +112,11 @@ export function calculateSlippage(
 export function getSlippageReason(context: SlippageContext): string {
   const { fromToken, toToken } = context;
 
-  if (!fromToken?.chainId || !toToken?.chainId) {
+  if (!fromToken.chainId || !toToken.chainId) {
     return 'Incomplete chain setup - using bridge default';
   }
 
-  if (fromToken.chainId !== toToken.chainId) {
+  if (isCrossChain(fromToken.chainId, toToken.chainId)) {
     return 'Cross-chain transaction';
   }
 

@@ -21,7 +21,7 @@ export const useAssetMetadata = (
   searchQuery: string,
   shouldFetchMetadata: boolean,
   abortControllerRef: React.MutableRefObject<AbortController | null>,
-  chainId: CaipChainId,
+  chainId?: Hex | CaipChainId,
 ) => {
   const allowExternalServices = useSelector(getUseExternalServices);
 
@@ -31,7 +31,7 @@ export const useAssetMetadata = (
         symbol: string;
         decimals: number;
         image: string;
-        chainId: CaipChainId;
+        chainId: Hex | CaipChainId;
         isNative: boolean;
         type: AssetType.token;
         balance: string;
@@ -39,7 +39,7 @@ export const useAssetMetadata = (
       }
     | undefined
   >(async () => {
-    if (!searchQuery) {
+    if (!chainId || !searchQuery) {
       return undefined;
     }
 

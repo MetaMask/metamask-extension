@@ -2616,19 +2616,6 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.getNetworkConfigurationByNetworkClientId.bind(
           this.networkController,
         ),
-      getBalanceAmount: async (selectedAddress, tokenAddress, chainId) => {
-        const networkClientId =
-          await this.networkController.findNetworkClientIdByChainId(chainId);
-        const networkClient =
-          await this.networkController.getNetworkClientById(networkClientId);
-        const balance = await calcLatestSrcBalance(
-          networkClient.provider,
-          selectedAddress,
-          tokenAddress,
-          chainId,
-        );
-        return balance?.toString();
-      },
       // PreferencesController
       setSelectedAddress: (address) => {
         const account = this.accountsController.getAccountByAddress(address);

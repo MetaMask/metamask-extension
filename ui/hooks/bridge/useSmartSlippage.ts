@@ -1,12 +1,17 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   calculateSlippage,
   getSlippageReason,
   type SlippageContext,
 } from '../../pages/bridge/utils/slippage-service';
 import { setSlippage } from '../../ducks/bridge/actions';
-import { getFromToken, getToToken } from '../../ducks/bridge/selectors';
+import type { BridgeToken } from '../../ducks/bridge/types';
+
+type UseSmartSlippageParams = {
+  fromToken: BridgeToken;
+  toToken: BridgeToken;
+};
 
 // This hook doesn't return anything as it only dispatches slippage updates
 // The slippage value can be accessed via getSlippage selector
@@ -23,41 +28,38 @@ import { getFromToken, getToToken } from '../../ducks/bridge/selectors';
  * @param options0.fromToken
  * @param options0.toToken
  */
-export function useSmartSlippage(): void {
+export function useSmartSlippage({
+  fromToken,
+  toToken,
+}: UseSmartSlippageParams): void {
   const dispatch = useDispatch();
 
-  const fromToken = useSelector(getFromToken);
-  const toToken = useSelector(getToToken);
-
   // Calculate the appropriate slippage for current context
-  const calculateCurrentSlippage = useCallback((context: SlippageContext) => {
-    const slippage = calculateSlippage(context);
+  const calculateCurrentSlippage = useCallback(
+    (fromTokenInput: BridgeToken, toTokenInput: BridgeToken) => {
+      const context: SlippageContext = {
+        fromToken: fromTokenInput,
+        toToken: toTokenInput,
+      };
 
-    // Log the reason in development
-    if (process.env.NODE_ENV === 'development') {
-      const reason = getSlippageReason(context);
-      // console.log(
-      //   `[useSmartSlippage] Slippage calculated: ${slippage ?? 'AUTO'}% - ${reason}`,
-      // );
-    }
+      const slippage = calculateSlippage(context);
 
-    return slippage;
-  }, []);
+      // Log the reason in development
+      if (process.env.NODE_ENV === 'development') {
+        const reason = getSlippageReason(context);
+        console.log(
+          `[useSmartSlippage] Slippage calculated: ${slippage ?? 'AUTO'}% - ${reason}`,
+        );
+      }
+
+      return slippage;
+    },
+    [],
+  );
 
   // Update slippage when context changes
   useEffect(() => {
-    console.log('===useSmartSlippage', {
-      fromToken,
-      toToken,
-    });
-    const newSlippage = calculateCurrentSlippage({
-      fromToken,
-      toToken,
-    });
+    const newSlippage = calculateCurrentSlippage(fromToken, toToken);
     dispatch(setSlippage(newSlippage));
-  }, [
-    fromToken,
-    // TODO trigger on toToken, but this causes an infinite loop
-    toToken,
-  ]);
+  }, [fromToken, toToken, calculateCurrentSlippage, dispatch]);
 }
