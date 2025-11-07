@@ -30,6 +30,8 @@ import {
 } from '../../../helpers/utils/settings-search';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { Text, Box } from '../../../components/component-library';
+import Button from '../../../components/ui/button';
+import { confirmTronStake } from '../../confirmations/utils/multichain-snaps';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
   return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
@@ -439,6 +441,37 @@ export default class SettingsTab extends PureComponent {
         {this.renderTheme()}
         {this.renderBlockieOptIn()}
         {this.renderHideZeroBalanceTokensOptIn()}
+        <Box
+          className="settings-page__content-row"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+        >
+          <div className="settings-page__content-item">
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textDefault}
+              className="settings-page__content-item__title"
+            >
+              Mock Tron Stake
+            </Text>
+          </div>
+          <div className="settings-page__content-item">
+            <div className="settings-page__content-item-col">
+              <Button
+                type="secondary"
+                onClick={() => {
+                  try {
+                    confirmTronStake();
+                  } catch (e) {
+                    // no-op for mock button
+                  }
+                }}
+              >
+                Send Tron Stake (Mock)
+              </Button>
+            </div>
+          </div>
+        </Box>
       </div>
     );
   }

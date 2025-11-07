@@ -995,6 +995,8 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
     };
     ///: END:ONLY_INCLUDE_IF
 
+    console.log('metamask.accountsAssets', metamask.accountsAssets);
+
     return {
       ...initialState,
       ...multichainState,
