@@ -517,7 +517,7 @@ class AssetListPage {
       `Check that token amount ${tokenAmount} is displayed in token details modal for token ${tokenName}`,
     );
     await this.driver.clickElement({
-      tag: 'span',
+      testId: 'multichain-token-list-item-token-name',
       text: tokenName,
     });
     await this.driver.waitForSelector({
