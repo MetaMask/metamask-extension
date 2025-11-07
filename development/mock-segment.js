@@ -6,19 +6,36 @@ const DEFAULT_PORT = 9090;
 const prefix = '[mock-segment]';
 
 function onRequest(_request, response, events) {
-  const getDescription = (e) => {
+  const getTypeLabel = (e) => {
+    switch (e.type) {
+      case 'track':
+        return 'Track';
+      case 'page':
+        return 'Page';
+      case 'identify':
+        return 'Identify';
+      default:
+        return 'Unknown';
+    }
+  };
+  const getNameOrId = (e) => {
     switch (e.type) {
       case 'track':
         return e.event || '(no name)';
       case 'page':
         return e.name || '(no name)';
+      case 'identify':
+        return e.userId || e.anonymousId || '(no id)';
       default:
         return `[Unrecognized event type: ${e.type}]`;
     }
   };
 
   events.forEach((event) => {
-    const properties = event && event.properties ? event.properties : undefined;
+    const properties =
+      event && (event.properties || event.traits)
+        ? event.properties || event.traits
+        : undefined;
     const hasProperties =
       properties &&
       typeof properties === 'object' &&
@@ -26,8 +43,9 @@ function onRequest(_request, response, events) {
     if (!hasProperties) {
       return;
     }
-    const name = getDescription(event);
-    console.log(`${prefix}: ${name}`);
+    const label = getTypeLabel(event);
+    const nameOrId = getNameOrId(event);
+    console.log(`${prefix}: ${label} event received: ${nameOrId}`);
     try {
       console.log(JSON.stringify(properties, null, 2));
     } catch (_) {
