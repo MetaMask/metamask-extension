@@ -76,7 +76,7 @@ import MetamaskController, {
 } from './metamask-controller';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
+import { getPlatform, shouldEmitDappViewedEvent, getBooleanFlag } from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
@@ -1592,8 +1592,10 @@ export function setupController(
     controller.rejectAllPendingApprovals();
   }
 
-  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
+  // TODO: Move this
   if (
+    getBooleanFlag(process.env.AUTO_UPDATE_PREINSTALLED_SNAPS) ||
+    // Check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
     Object.values(controller.snapController.state.snaps).some(
       (snap) => !snap.preinstalled,
     )
