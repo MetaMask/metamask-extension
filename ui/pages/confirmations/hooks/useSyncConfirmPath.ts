@@ -14,7 +14,6 @@ const useSyncConfirmPath = (
 ) => {
   const { navigateToId, confirmations } = useConfirmationNavigation();
   const location = useLocation();
-  const confirmationId = currentConfirmation?.id;
 
   // Use routeParamId from props if available (passed from v5 Route),
   // otherwise fall back to useParams() for v5-compat Routes

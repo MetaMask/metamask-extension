@@ -602,9 +602,11 @@ export default function Routes() {
         pendingApprovals,
         Boolean(approvalFlows?.length),
         history,
+        '', // queryString
+        location.pathname, // currentPathname for skip-navigation optimization
       );
     }
-  }, [isUnlocked, pendingApprovals, approvalFlows, history]);
+  }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
   ///: END:ONLY_INCLUDE_IF
 
   const renderRoutes = useCallback(() => {
@@ -1108,7 +1110,12 @@ export default function Routes() {
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
-      <ToastMaster location={location} />
+      {React.createElement(
+        ToastMaster as React.ComponentType<{
+          location: RouteComponentProps['location'];
+        }>,
+        { location },
+      )}
     </div>
   );
 }
