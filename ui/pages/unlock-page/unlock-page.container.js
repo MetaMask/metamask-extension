@@ -15,6 +15,7 @@ import {
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
+  resetWallet,
 } from '../../store/actions';
 import {
   getIsSocialLoginFlow,
@@ -45,6 +46,7 @@ const mapDispatchToProps = (dispatch) => {
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
     checkIsSeedlessPasswordOutdated: () =>
       dispatch(checkIsSeedlessPasswordOutdated()),
+    resetWallet: () => dispatch(resetWallet()),
   };
 };
 

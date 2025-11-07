@@ -54,6 +54,11 @@ const RiveWasmContext = createContext<{
   error: Error | undefined;
   urlBufferMap: Record<string, ArrayBuffer>;
   setUrlBufferCache: (url: string, buffer: ArrayBuffer) => void;
+  animationCompleted: Record<string, boolean>;
+  setIsAnimationCompleted: (
+    animationName: string,
+    isAnimationCompleted: boolean,
+  ) => void;
 }>({
   isWasmReady: false,
   loading: false,
@@ -61,6 +66,9 @@ const RiveWasmContext = createContext<{
   urlBufferMap: {},
   // eslint-disable-next-line no-empty-function
   setUrlBufferCache: () => {},
+  animationCompleted: {},
+  // eslint-disable-next-line no-empty-function
+  setIsAnimationCompleted: () => {},
 });
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -73,6 +81,10 @@ export default function RiveWasmProvider({
   const [urlBufferMap, setUrlBufferMap] = useState<Record<string, ArrayBuffer>>(
     {},
   );
+  const [animationCompleted, setAnimationCompleted] = useState<
+    Record<string, boolean>
+  >({});
+
   const setUrlBufferCache = useCallback(
     (url: string, buffer: ArrayBuffer) => {
       setUrlBufferMap((prev) => ({ ...prev, [url]: buffer }));
@@ -80,11 +92,29 @@ export default function RiveWasmProvider({
     [setUrlBufferMap],
   );
 
+  const setIsAnimationCompleted = useCallback(
+    (animationName: string, isAnimationCompleted: boolean) => {
+      setAnimationCompleted((prev) => ({
+        ...prev,
+        [animationName]: isAnimationCompleted,
+      }));
+    },
+    [setAnimationCompleted],
+  );
+
   const { isWasmReady, loading, error } = useRiveWasmReady();
 
   return (
     <RiveWasmContext.Provider
-      value={{ isWasmReady, loading, error, urlBufferMap, setUrlBufferCache }}
+      value={{
+        isWasmReady,
+        loading,
+        error,
+        urlBufferMap,
+        setUrlBufferCache,
+        animationCompleted,
+        setIsAnimationCompleted,
+      }}
     >
       {children}
     </RiveWasmContext.Provider>

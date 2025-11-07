@@ -1,9 +1,11 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import * as bridgeSelectors from '../../ducks/bridge/selectors';
 import useBridging from './useBridging';
 
 const mockUseNavigate = jest.fn();
@@ -108,10 +110,21 @@ describe('useBridging', () => {
         isSwap: boolean,
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
+        jest
+          .spyOn(bridgeSelectors, 'getFromChains')
+          .mockReturnValueOnce([
+            { chainId: CHAIN_IDS.MAINNET } as unknown as NetworkConfiguration,
+            { chainId: CHAIN_IDS.OPTIMISM } as unknown as NetworkConfiguration,
+          ]);
         const { result } = renderUseBridging({
           metamask: {
             useExternalServices: true,
-            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            ...mockNetworkState(
+              {
+                chainId: CHAIN_IDS.MAINNET,
+              },
+              { chainId: CHAIN_IDS.OPTIMISM },
+            ),
             metaMetricsId: MOCK_METAMETRICS_ID,
             remoteFeatureFlags: {
               bridgeConfig: {
@@ -189,6 +202,12 @@ describe('useBridging', () => {
         isSwap: boolean,
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
+        jest
+          .spyOn(bridgeSelectors, 'getFromChains')
+          .mockReturnValueOnce([
+            { chainId: CHAIN_IDS.MAINNET } as unknown as NetworkConfiguration,
+            { chainId: CHAIN_IDS.OPTIMISM } as unknown as NetworkConfiguration,
+          ]);
         const { result } = renderUseBridging({
           metamask: {
             useExternalServices: true,
