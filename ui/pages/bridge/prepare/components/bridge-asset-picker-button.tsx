@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   SelectButtonProps,
   SelectButtonSize,
@@ -24,16 +25,17 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetPicker } from '../../../../components/multichain/asset-picker-amount/asset-picker';
 import { getNftImage } from '../../../../helpers/utils/nfts';
+import { type BridgeToken } from '../../../../ducks/bridge/types';
+import { BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP } from '../../../../../shared/constants/bridge';
 
 export const BridgeAssetPickerButton = ({
   asset,
   networkProps,
-  networkImageSrc,
   ...props
 }: {
-  networkImageSrc?: string;
+  asset: BridgeToken;
 } & SelectButtonProps<'div'> &
-  Pick<React.ComponentProps<typeof AssetPicker>, 'asset' | 'networkProps'>) => {
+  Pick<React.ComponentProps<typeof AssetPicker>, 'networkProps'>) => {
   const t = useI18nContext();
 
   return (
@@ -72,7 +74,11 @@ export const BridgeAssetPickerButton = ({
               asset ? (
                 <AvatarNetwork
                   name={networkProps?.network?.name ?? ''}
-                  src={networkImageSrc}
+                  src={
+                    BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[
+                      formatChainIdToCaip(asset.chainId)
+                    ]
+                  }
                   size={AvatarNetworkSize.Xs}
                 />
               ) : undefined

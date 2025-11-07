@@ -32,7 +32,6 @@ import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { getFromChain } from '../../ducks/bridge/selectors';
 
 const useBridging = () => {
@@ -68,7 +67,7 @@ const useBridging = () => {
        *
        * default fromChain: srctoken.chainId > lastSelectedId > MAINNET
        */
-      const targetChainId = fromChain?.chainId ?? CHAIN_IDS.MAINNET;
+      const targetChainId = fromChain.chainId;
       if (!srcAssetIdToUse && targetChainId) {
         srcAssetIdToUse = getNativeAssetForChainId(targetChainId)?.assetId;
       }

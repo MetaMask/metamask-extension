@@ -5,13 +5,11 @@ import {
   getFromToken,
   getValidationErrors,
   getToToken,
-  getFromChain,
 } from '../../ducks/bridge/selectors';
 
 export const useIsTxSubmittable = () => {
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
-  const fromChainId = useSelector(getFromChain)?.chainId;
   const fromAmount = useSelector(getFromAmount);
   const { activeQuote } = useSelector(getBridgeQuotes);
 
@@ -25,7 +23,6 @@ export const useIsTxSubmittable = () => {
   return Boolean(
     fromToken &&
       toToken &&
-      fromChainId &&
       fromAmount &&
       activeQuote &&
       !isInsufficientBalance &&

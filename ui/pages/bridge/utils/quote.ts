@@ -5,10 +5,6 @@ import {
   isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import type {
-  NetworkConfiguration,
-  AddNetworkFields,
-} from '@metamask/network-controller';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
@@ -53,15 +49,15 @@ export const formatProviderLabel = (args?: {
 export const isQuoteExpiredOrInvalid = ({
   activeQuote,
   toToken,
-  toChain,
-  fromChain,
+  toChainId,
+  fromChainId,
   isQuoteExpired,
   insufficientBal,
 }: {
   activeQuote: QuoteResponse | null;
   toToken: BridgeToken | null;
-  toChain?: NetworkConfiguration | AddNetworkFields;
-  fromChain?: NetworkConfiguration;
+  toChainId: BridgeToken['chainId'];
+  fromChainId: BridgeToken['chainId'];
   isQuoteExpired: boolean;
   insufficientBal?: boolean;
 }): boolean => {
@@ -70,7 +66,7 @@ export const isQuoteExpiredOrInvalid = ({
     isQuoteExpired &&
     (!insufficientBal ||
       // `insufficientBal` is always true for non-EVM chains (Solana, Bitcoin)
-      (fromChain && isNonEvmChainId(fromChain.chainId)))
+      isNonEvmChainId(fromChainId))
   ) {
     return true;
   }
@@ -84,8 +80,8 @@ export const isQuoteExpiredOrInvalid = ({
     const quoteDestChainIdCaip = activeQuote.quote?.destChainId
       ? formatChainIdToCaip(activeQuote.quote.destChainId)
       : '';
-    const selectedDestChainIdCaip = toChain?.chainId
-      ? formatChainIdToCaip(toChain.chainId)
+    const selectedDestChainIdCaip = toChainId
+      ? formatChainIdToCaip(toChainId)
       : '';
 
     return !(

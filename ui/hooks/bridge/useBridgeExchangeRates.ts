@@ -2,10 +2,8 @@ import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getBridgeQuotes,
-  getFromChain,
   getFromToken,
   getQuoteRequest,
-  getToChain,
   getToToken,
 } from '../../ducks/bridge/selectors';
 import { getMarketData, getParticipateInMetaMetrics } from '../../selectors';
@@ -20,9 +18,8 @@ import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
 export const useBridgeExchangeRates = () => {
   const { srcTokenAddress, destTokenAddress } = useSelector(getQuoteRequest);
   const { activeQuote } = useSelector(getBridgeQuotes);
-  const fromChainId = useSelector(getFromChain)?.chainId;
-  const toChain = useSelector(getToChain);
-  const toChainId = toChain?.chainId;
+  const fromChainId = useSelector(getFromToken).chainId;
+  const toChainId = useSelector(getToToken).chainId;
 
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 

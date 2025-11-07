@@ -9,10 +9,7 @@ import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { isRelaySupported } from '../../../store/actions';
 import { isAtomicBatchSupported } from '../../../store/controller-actions/transaction-controller';
 import { getUseSmartAccount } from '../../confirmations/selectors/preferences';
-
-type Chain = {
-  chainId: string;
-};
+import type { BridgeToken } from '../../../ducks/bridge/types';
 
 type Account = {
   address: string;
@@ -21,7 +18,7 @@ type Account = {
 type UseGasIncluded7702Params = {
   isSwap: boolean;
   selectedAccount: Account | null | undefined;
-  fromChain: Chain | null | undefined;
+  fromChainId: BridgeToken['chainId'];
   isSendBundleSupportedForChain: boolean;
 };
 
@@ -31,20 +28,20 @@ type UseGasIncluded7702Params = {
  * @param params - Configuration object
  * @param params.isSwap - Whether this is a swap transaction
  * @param params.selectedAccount - The selected account
- * @param params.fromChain - The source chain
+ * @param params.fromChainId - The source chain id
  * @param params.isSendBundleSupportedForChain - Whether send bundle is supported for the chain
  * @returns Whether gasless 7702 is supported
  */
 export function useGasIncluded7702({
   isSwap,
   selectedAccount,
-  fromChain,
+  fromChainId,
   isSendBundleSupportedForChain,
 }: UseGasIncluded7702Params): boolean {
   const [isGasIncluded7702Supported, setIsGasIncluded7702Supported] =
     useState(false);
   const isSmartTransaction = useSelector((state) =>
-    getIsSmartTransaction(state as never, fromChain?.chainId),
+    getIsSmartTransaction(state as never, fromChainId),
   );
 
   const smartAccountOptedIn = useSelector(getUseSmartAccount);
@@ -58,7 +55,7 @@ export function useGasIncluded7702({
         !smartAccountOptedIn ||
         !isSwap ||
         !selectedAccount?.address ||
-        !fromChain?.chainId
+        !fromChainId
       ) {
         if (!isCancelled) {
           setIsGasIncluded7702Supported(false);
@@ -66,13 +63,13 @@ export function useGasIncluded7702({
         return;
       }
 
-      if (isNonEvmChainId(fromChain.chainId)) {
+      if (isNonEvmChainId(fromChainId)) {
         setIsGasIncluded7702Supported(false);
         return;
       }
 
       try {
-        const chainIdInHex = formatChainIdToHex(fromChain.chainId);
+        const chainIdInHex = formatChainIdToHex(fromChainId);
         const atomicBatchResult = await isAtomicBatchSupported({
           address: selectedAccount.address as Hex,
           chainIds: [chainIdInHex],
@@ -84,7 +81,7 @@ export function useGasIncluded7702({
 
         const atomicBatchChainSupport = atomicBatchResult?.find(
           (result) =>
-            result.chainId.toLowerCase() === fromChain.chainId.toLowerCase(),
+            result.chainId.toLowerCase() === fromChainId.toLowerCase(),
         );
 
         const relaySupportsChain = await isRelaySupported(chainIdInHex);
@@ -111,7 +108,7 @@ export function useGasIncluded7702({
     };
   }, [
     smartAccountOptedIn,
-    fromChain?.chainId,
+    fromChainId,
     isSendBundleSupportedForChain,
     isSmartTransaction,
     isSwap,
