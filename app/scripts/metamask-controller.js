@@ -3504,6 +3504,7 @@ export default class MetamaskController extends EventEmitter {
           ),
         }),
       lookupSelectedNetworks: this.lookupSelectedNetworks.bind(this),
+      resetWallet: this.resetWallet.bind(this),
     };
   }
 
@@ -3519,6 +3520,16 @@ export default class MetamaskController extends EventEmitter {
       deleteInterface,
       origin,
     });
+  }
+
+  async resetWallet() {
+    // clear SeedlessOnboardingController state
+    this.seedlessOnboardingController.clearState();
+
+    // reset onboarding state
+    this.onboardingController.resetOnboarding();
+
+    this.appStateController.setIsWalletResetInProgress(true);
   }
 
   async exportAccount(address, password) {
@@ -3962,9 +3973,7 @@ export default class MetamaskController extends EventEmitter {
           isPasswordSynced = true;
         })
         .catch((err) => {
-          log.error(
-            `error while submitting global password: ${err.message} , isKeyringPasswordValid: ${isKeyringPasswordValid}`,
-          );
+          log.error(`error while submitting global password: ${err.message}`);
           if (err instanceof RecoveryError) {
             // Keyring controller password verification succeeds and seedless controller failed.
             if (
@@ -4296,8 +4305,34 @@ export default class MetamaskController extends EventEmitter {
    */
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
+    const isWalletResetInProgress =
+      this.appStateController.getIsWalletResetInProgress();
     try {
+      if (isWalletResetInProgress) {
+        // clear permissions
+        this.permissionController.clearState();
+
+        // Clear snap state
+        await this.snapController.clearState();
+
+        // Clear account tree state
+        this.accountTreeController.clearState();
+
+        // Currently, the account-order-controller is not in sync with
+        // the accounts-controller. To properly persist the hidden state
+        // of accounts, we should add a new flag to the account struct
+        // to indicate if it is hidden or not.
+        // TODO: Update @metamask/accounts-controller to support this.
+        this.accountOrderController.updateHiddenAccountsList([]);
+
+        this.txController.clearUnapprovedTransactions();
+      }
+
       await this.keyringController.createNewVaultAndKeychain(password);
+
+      // set is resetting wallet in progress to false, after new vault and keychain are created
+      this.appStateController.setIsWalletResetInProgress(false);
+
       const primaryKeyring = this.keyringController.state.keyrings[0];
 
       // Once we have our first HD keyring available, we re-create the internal list of
@@ -4305,7 +4340,7 @@ export default class MetamaskController extends EventEmitter {
       // there are some account migration happening in that function).
       await this.accountsController.updateAccounts();
       // Then we can build the initial tree.
-      this.accountTreeController.init();
+      this.accountTreeController.reinit();
       // TODO: Move this logic to the SnapKeyring directly.
       // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
       await this.forwardSelectedAccountGroupToSnapKeyring(
@@ -4688,6 +4723,9 @@ export default class MetamaskController extends EventEmitter {
         password,
         seedPhraseAsUint8Array,
       );
+
+      // set is resetting wallet in progress to false, after new vault and keychain are created
+      this.appStateController.setIsWalletResetInProgress(false);
 
       // We re-created the vault, meaning we only have 1 new HD keyring
       // now. We re-create the internal list of accounts (which is

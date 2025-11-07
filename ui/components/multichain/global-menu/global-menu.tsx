@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
@@ -97,7 +97,10 @@ import {
 } from '../menu-items';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
-import { getIsShieldSubscriptionActive } from '../../../../shared/lib/shield';
+import {
+  getIsShieldSubscriptionActive,
+  getIsShieldSubscriptionPaused,
+} from '../../../../shared/lib/shield';
 import { useRewardsContext } from '../../../contexts/rewards';
 
 const METRICS_LOCATION = 'Global Menu';
@@ -127,6 +130,8 @@ export const GlobalMenu = ({
   const { subscriptions } = useUserSubscriptions();
   const isActiveShieldSubscription =
     getIsShieldSubscriptionActive(subscriptions);
+  const isPausedShieldSubscription =
+    getIsShieldSubscriptionPaused(subscriptions);
 
   const account = useSelector(getSelectedInternalAccount);
 
@@ -164,6 +169,17 @@ export const GlobalMenu = ({
   // Check if side panel is currently the default (vs popup)
   const preferences = useSelector(getPreferences);
   const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? true;
+
+  const showPriorityTag = useMemo(
+    () =>
+      (isActiveShieldSubscription || isPausedShieldSubscription) &&
+      basicFunctionality,
+    [
+      isActiveShieldSubscription,
+      isPausedShieldSubscription,
+      basicFunctionality,
+    ],
+  );
 
   /**
    * Toggles between side panel and popup as the default extension behavior
@@ -469,7 +485,7 @@ export const GlobalMenu = ({
           justifyContent={JustifyContent.spaceBetween}
         >
           {supportText}
-          {isActiveShieldSubscription && basicFunctionality && (
+          {showPriorityTag && (
             <Tag
               label={t('priority')}
               labelProps={{
