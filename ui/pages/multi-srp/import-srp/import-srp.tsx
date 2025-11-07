@@ -73,13 +73,19 @@ export const ImportSrp = () => {
       }
       await dispatch(importMnemonicToVault(secretRecoveryPhrase));
 
+      // Calculate the new HD entropy index before Redux state updates.
+      // The new keyring will be appended to the keyrings array, so its index
+      // will be equal to the current array length (current index + 1).
+      // We need this value now because Redux state updates asynchronously.
+      const freshHdEntropyIndex = hdEntropyIndex + 1;
+
       // Track the event for the successful import.
       trackEvent({
         category: MetaMetricsEventCategory.Wallet,
         event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
+          hd_entropy_index: freshHdEntropyIndex,
         },
       });
 
