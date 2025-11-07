@@ -910,7 +910,7 @@
     "message": "Tá tú ag ceadú rochtana ar $1 $2. Ní bheidh rochtain ag an gconradh ar aon chistí breise."
   },
   "bridgeApprovalWarningForHardware": {
-    "message": "Beidh ort rochtain a cheadú ar $1 $2 le haghaidh droichid, agus ansin droichid go $2 a cheadú. Beidh dhá dheimhniú ar leith ag teastáil chuige seo."
+    "message": "Beidh ort rochtain a cheadú ar $1 $2 le haghaidh droichid, agus ansin droichid go $3 a cheadú. Beidh dhá dheimhniú ar leith ag teastáil chuige seo."
   },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Nasc taiscéalaí blocála cóipeáilte!"
