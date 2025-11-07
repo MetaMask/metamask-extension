@@ -1735,10 +1735,13 @@ async function onUpdate(previousVersion) {
   log.debug('Update installation detected');
   controller.appStateController.setLastUpdatedAt(Date.now());
   if (previousVersion) {
-    const recordedLastUpdatedFromVersion = controller.appStateController.state.lastUpdatedFromVersion
+    const recordedLastUpdatedFromVersion =
+      controller.appStateController.state.lastUpdatedFromVersion;
     log.info(`onUpdate called`);
     log.info(`Updated from version ${previousVersion}`);
-    log.info(`Recorded last updated from version: ${recordedLastUpdatedFromVersion}`);
+    log.info(
+      `Recorded last updated from version: ${recordedLastUpdatedFromVersion}`,
+    );
     log.info(`Current version: ${platform.getVersion()}`);
     controller.appStateController.setLastUpdatedFromVersion(previousVersion);
     // Work around Chromium bug https://issues.chromium.org/issues/40805401
@@ -1755,10 +1758,12 @@ async function onUpdate(previousVersion) {
       // layer will start writing the state to the database. Once that starts we
       // will `requestSafeReload` to ensure its the last state update before the
       // reload happens.
-      controller.store.on("update", () => {
+      controller.store.on('update', () => {
         // use set immediate to be absolutely sure the reload happens after the
         // all other "update" events above have been processed.
-        log.info(`Requesting safe reload after update to ${platform.getVersion()}`);
+        log.info(
+          `Requesting safe reload after update to ${platform.getVersion()}`,
+        );
         setImmediate(requestSafeReload);
       });
     }
