@@ -4879,17 +4879,17 @@
   "pushNotificationPositionLiquidatedTitle": {
     "message": "Post leachtaithe"
   },
-  "pushNotificationShieldSubscriptionCreatedTitle": {
-    "message": "Sciath Idirbhirt MetaMask gníomhachaithe"
-  },
   "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
     "message": "Fáilte go Sciath Idirbhirt MetaMask! Féach ar na buntáistí"
   },
-  "pushNotificationShieldSubscriptionPaymentFailedTitle": {
-    "message": "Sciath Idirbhirt MetaMask curtha ar sos"
+  "pushNotificationShieldSubscriptionCreatedTitle": {
+    "message": "Sciath Idirbhirt MetaMask gníomhachaithe"
   },
   "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
     "message": "Tá an bhallraíocht neamhghníomhach mar gheall ar fhadhb íocaíochta. Nuashonraigh d'íocaíocht chun clúdach a atosú"
+  },
+  "pushNotificationShieldSubscriptionPaymentFailedTitle": {
+    "message": "Sciath Idirbhirt MetaMask curtha ar sos"
   },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Dhún do $1 fada ag do stad-chaillteanas.",
