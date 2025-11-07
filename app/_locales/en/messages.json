@@ -1840,14 +1840,8 @@
   "customToken": {
     "message": "Custom token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Token detection is not available on this network yet. Please import token manually and make sure you trust it. Learn about $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Anyone can create a token, including creating fake versions of existing tokens. Learn about $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Make sure you trust a token before you import it. Learn how to avoid $1. You can also enable token detection $2."
   },
   "customerSupport": {
     "message": "customer support"
@@ -3175,9 +3169,6 @@
   "imported": {
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "in your Settings"
   },
   "included": {
     "message": "included"
@@ -7666,9 +7657,6 @@
   "tokenPermissionsCount": {
     "message": "$1 token permissions",
     "description": "$1 is the count of token permissions (plural form)"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "token scams and security risks"
   },
   "tokenStandard": {
     "message": "Token standard"
