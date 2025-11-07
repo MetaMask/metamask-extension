@@ -17,17 +17,12 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
-  setEVMSrcTokenBalance,
-  setEVMSrcNativeBalance,
+  setLatestEVMBalances,
   setFromToken,
   setFromTokenInputValue,
   setToToken,
 } from '../../ducks/bridge/actions';
-import {
-  getFromAccount,
-  getFromChains,
-  getFromToken,
-} from '../../ducks/bridge/selectors';
+import { getFromChains, getFromToken } from '../../ducks/bridge/selectors';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -76,7 +71,6 @@ export const useBridgeQueryParams = () => {
   const dispatch = useDispatch();
   const fromChains = useSelector(getFromChains);
   const fromToken = useSelector(getFromToken);
-  const selectedAccount = useSelector(getFromAccount);
 
   const abortController = useRef<AbortController>(new AbortController());
 
@@ -257,16 +251,9 @@ export const useBridgeQueryParams = () => {
       // Wait for url params to be applied
       !parsedFromAssetId &&
       !searchParams.get(BridgeQueryParams.FROM) &&
-      fromToken &&
-      selectedAccount?.address
+      fromToken
     ) {
-      dispatch(setEVMSrcTokenBalance(fromToken, selectedAccount.address));
-      dispatch(
-        setEVMSrcNativeBalance({
-          selectedAddress: selectedAccount.address,
-          chainId: fromToken.chainId,
-        }),
-      );
+      dispatch(setLatestEVMBalances(fromToken));
     }
-  }, [parsedFromAssetId, selectedAccount?.address, fromToken, searchParams]);
+  }, [parsedFromAssetId, fromToken, searchParams]);
 };
