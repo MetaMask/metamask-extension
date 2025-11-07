@@ -22,6 +22,8 @@ import {
   type BridgeController,
   isCrossChain,
 } from '@metamask/bridge-controller';
+import { TrxScope } from '@metamask/keyring-api';
+import { isCaipChainId } from '@metamask/utils';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
   setFromToken,
@@ -189,12 +191,24 @@ const PrepareBridgePage = ({
   const toChains = useSelector(getToChains);
   const toChain = useSelector(getToChain);
 
+  // TODO: Import isTronChainId from @metamask/bridge-controller instead of defining it locally
+  // Helper to check if chain is Tron
+  const isTronChainId = (chainId: string | number) => {
+    return (
+      isCaipChainId(chainId) &&
+      [`${TrxScope.Mainnet}`, `${TrxScope.Nile}`, `${TrxScope.Shasta}`].includes(
+        chainId,
+      )
+    );
+  };
+
   const isFromTokensLoading = useMemo(() => {
-    // Non-EVM chains (Solana, Bitcoin) don't use the EVM token list
+    // Non-EVM chains (Solana, Bitcoin, Tron) don't use the EVM token list
     if (
       fromChain &&
       (isSolanaChainId(fromChain.chainId) ||
-        isBitcoinChainId(fromChain.chainId))
+        isBitcoinChainId(fromChain.chainId) ||
+        isTronChainId(fromChain.chainId))
     ) {
       return false;
     }
@@ -288,7 +302,8 @@ const PrepareBridgePage = ({
             address = '';
           } else if (
             isSolanaChainId(fromChain.chainId) ||
-            isBitcoinChainId(fromChain.chainId)
+            isBitcoinChainId(fromChain.chainId) ||
+            isTronChainId(fromChain.chainId)
           ) {
             address = fromToken.address || '';
           } else {
@@ -726,7 +741,7 @@ const PrepareBridgePage = ({
               },
               header: t('yourNetworks'),
               shouldDisableNetwork: ({ chainId }) =>
-                isBitcoinChainId(chainId) &&
+                (isBitcoinChainId(chainId) || isTronChainId(chainId)) &&
                 !isCrossChain(chainId, fromChain?.chainId),
             }}
             customTokenListGenerator={toTokenListGenerator}

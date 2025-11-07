@@ -12,6 +12,7 @@ const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
   MultichainNetworks.BITCOIN,
   ///: END:ONLY_INCLUDE_IF
+  MultichainNetworks.TRON,
 ];
 
 const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
@@ -35,6 +36,7 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.BASE,
   MultichainNetworks.SOLANA,
   MultichainNetworks.BITCOIN,
+  MultichainNetworks.TRON,
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP =
@@ -93,6 +95,9 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
   [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
   ///: END:ONLY_INCLUDE_IF
+  [MultichainNetworks.TRON]: 'Tron',
+  [MultichainNetworks.TRON_NILE]: 'Tron Nile Testnet',
+  [MultichainNetworks.TRON_SHASTA]: 'Tron Shasta Testnet',
 };
 
 export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';

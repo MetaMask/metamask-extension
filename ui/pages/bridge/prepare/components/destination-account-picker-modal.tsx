@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isSolanaChainId, isBitcoinChainId } from '@metamask/bridge-controller';
+import { TrxScope } from '@metamask/keyring-api';
+import { isCaipChainId } from '@metamask/utils';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
 import {
   TextField,
@@ -42,17 +44,35 @@ export const DestinationAccountPickerModal = ({
   const [searchQuery, setSearchQuery] = useState('');
   const accounts = useSelector(getToAccounts);
   const toChain = useSelector(getToChain);
+
+  // TODO: Import isTronChainId from @metamask/bridge-controller instead of defining it locally
+  // Helper to check if chain is Tron
+  const isTronChainId = (chainId: string | number) => {
+    return (
+      isCaipChainId(chainId) &&
+      [
+        `${TrxScope.Mainnet}`,
+        `${TrxScope.Nile}`,
+        `${TrxScope.Shasta}`,
+      ].includes(chainId)
+    );
+  };
+
   const isDestinationSolana = toChain?.chainId
     ? isSolanaChainId(toChain.chainId)
     : false;
   const isDestinationBitcoin = toChain?.chainId
     ? isBitcoinChainId(toChain.chainId)
     : false;
+  const isDestinationTron = toChain?.chainId
+    ? isTronChainId(toChain.chainId)
+    : false;
 
   const externalAccount = useExternalAccountResolution({
     searchQuery,
     isDestinationSolana,
     isDestinationBitcoin,
+    isDestinationTron,
   });
 
   const filteredAccounts = useMemo(

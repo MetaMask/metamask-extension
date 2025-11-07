@@ -5,13 +5,14 @@ import {
   isSolanaChainId,
   isBitcoinChainId,
 } from '@metamask/bridge-controller';
+import { isCaipChainId } from '@metamask/utils';
 import {
   Icon,
   IconColor,
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType, TrxScope } from '@metamask/keyring-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {
@@ -75,6 +76,19 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   const toChain = useSelector(getToChain);
   const { balanceByChainId } = useMultichainBalances(account.address);
 
+  // TODO: Import isTronChainId from @metamask/bridge-controller instead of defining it locally
+  // Helper to check if chain is Tron
+  const isTronChainId = (chainId: string | number) => {
+    return (
+      isCaipChainId(chainId) &&
+      [
+        `${TrxScope.Mainnet}`,
+        `${TrxScope.Nile}`,
+        `${TrxScope.Shasta}`,
+      ].includes(chainId)
+    );
+  };
+
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
     shouldHideZeroBalanceTokens,
@@ -93,7 +107,9 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   } else {
     const chainIdInHexOrCaip =
       toChain?.chainId &&
-      (isSolanaChainId(toChain?.chainId) || isBitcoinChainId(toChain?.chainId)
+      (isSolanaChainId(toChain?.chainId) ||
+      isBitcoinChainId(toChain?.chainId) ||
+      isTronChainId(toChain?.chainId)
         ? toChain.chainId
         : formatChainIdToHex(toChain?.chainId));
     balanceToTranslate = chainIdInHexOrCaip
@@ -179,7 +195,8 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
               CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
                 toChain?.chainId &&
                 !isSolanaChainId(toChain?.chainId) &&
-                !isBitcoinChainId(toChain?.chainId)
+                !isBitcoinChainId(toChain?.chainId) &&
+                !isTronChainId(toChain?.chainId)
                   ? formatChainIdToHex(toChain?.chainId)
                   : (toChain?.chainId ?? '')
               ]
