@@ -22,6 +22,7 @@ buildTypes:
       - multichain
       - bitcoin
       - bitcoin-swaps
+      - tron
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -89,6 +90,7 @@ buildTypes:
       - multichain
       - bitcoin
       - bitcoin-swaps
+      - tron
     env:
       - INFURA_EXPERIMENTAL_PROJECT_ID
       - SEGMENT_EXPERIMENTAL_WRITE_KEY
