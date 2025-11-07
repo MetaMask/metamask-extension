@@ -31,13 +31,20 @@ const useSyncConfirmPath = (
       return;
     }
 
-    // Sync the path if URL doesn't have the confirmation ID
-    // Navigate to the first confirmation in the queue, not currentConfirmation
-    if (!paramId && confirmations?.length > 0) {
+    // Sync the path if URL doesn't have the confirmation ID AND no confirmation is currently loaded
+    // Navigate to the first confirmation in the queue to fix "2 of 3" navigation issue
+    // Check !currentConfirmation to prevent infinite navigation loops
+    if (!paramId && !currentConfirmation && confirmations?.length > 0) {
       const firstConfirmationId = confirmations[0]?.id;
       navigateToId(firstConfirmationId);
     }
-  }, [paramId, navigateToId, location.pathname, confirmations]);
+  }, [
+    paramId,
+    currentConfirmation,
+    navigateToId,
+    location.pathname,
+    confirmations,
+  ]);
 };
 
 export default useSyncConfirmPath;
