@@ -1735,15 +1735,32 @@ async function onUpdate(previousVersion) {
   log.debug('Update installation detected');
   controller.appStateController.setLastUpdatedAt(Date.now());
   if (previousVersion) {
+    const recordedLastUpdatedFromVersion = controller.appStateController.state.lastUpdatedFromVersion
+    log.info(`onUpdate called`);
+    log.info(`Updated from version ${previousVersion}`);
+    log.info(`Recorded last updated from version: ${recordedLastUpdatedFromVersion}`);
+    log.info(`Current version: ${platform.getVersion()}`);
     controller.appStateController.setLastUpdatedFromVersion(previousVersion);
-    if (!isFirefox) {
-      // work around Chromium bug https://issues.chromium.org/issues/40805401
-      // by doing a safe reload after an update. We'll be able to gate this
-      // behind a Chromium version check once we know the chromium version #
-      // that fixes this bug, ETA: December 2025 (likely in `143.0.7465.0`).
-      // Once we no longer support the affected Chromium versions, we should
-      // remove this workaround.
-      requestSafeReload();
+    // Work around Chromium bug https://issues.chromium.org/issues/40805401
+    // by doing a safe reload after an update. We'll be able to gate this
+    // behind a Chromium version check once we know the chromium version #
+    // that fixes this bug, ETA: December 2025 (likely in `143.0.7465.0`).
+    // Once we no longer support the affected Chromium versions, we should
+    // remove this workaround.
+    // We only want to do the safe reload when the version actually changed, just
+    // as a safe guard (in case Chrome keeps firing this event each time we
+    // restart) -- as we really don't want to send Chrome into an restart loop!
+    if (!isFirefox && previousVersion !== recordedLastUpdatedFromVersion) {
+      // wait for the store to update; when `update` is called the persistence
+      // layer will start writing the state to the database. Once that starts we
+      // will `requestSafeReload` to ensure its the last state update before the
+      // reload happens.
+      controller.store.on("update", () => {
+        // use set immediate to be absolutely sure the reload happens after the
+        // all other "update" events above have been processed.
+        log.info(`Requesting safe reload after update to ${platform.getVersion()}`);
+        setImmediate(requestSafeReload);
+      });
     }
   }
 }
