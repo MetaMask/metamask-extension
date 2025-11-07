@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
+  BackgroundColor,
   IconColor,
   Severity,
 } from '../../../../helpers/constants/design-system';
@@ -172,6 +173,7 @@ export function useShieldCoverageAlert(): Alert[] {
     let severity = Severity.Disabled;
     let inlineAlertText = t('shieldNotCovered');
     let modalTitle = t('shieldCoverageAlertMessageTitle');
+    let inlineAlertTextBackgroundColor;
     switch (status) {
       case 'covered':
         severity = Severity.Success;
@@ -180,6 +182,7 @@ export function useShieldCoverageAlert(): Alert[] {
         break;
       case 'malicious':
         severity = Severity.Danger;
+        inlineAlertTextBackgroundColor = BackgroundColor.errorMuted;
         break;
       default:
     }
@@ -196,6 +199,7 @@ export function useShieldCoverageAlert(): Alert[] {
         isBlocking: false,
         inlineAlertText,
         inlineAlertTextPill: true,
+        inlineAlertTextBackgroundColor,
         iconName: IconName.Info,
         iconColor: IconColor.inherit,
         showArrow: false,

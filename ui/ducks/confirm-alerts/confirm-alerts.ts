@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { SecurityProvider } from '../../../shared/constants/security-provider';
-import { IconColor, Severity } from '../../helpers/constants/design-system';
+import { BackgroundColor, IconColor, Severity } from '../../helpers/constants/design-system';
 import { IconName } from '../../components/component-library';
 
 export type AlertSeverity =
@@ -33,6 +33,11 @@ export type Alert = {
    * Optional text to override the default on the inline alert.
    */
   inlineAlertText?: string;
+
+  /**
+   * The background color of the inline alert.
+   */
+  inlineAlertTextBackgroundColor?: BackgroundColor;
 
   /**
    * Whether to show the inline alert as a pill style.

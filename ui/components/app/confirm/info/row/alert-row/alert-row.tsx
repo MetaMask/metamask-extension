@@ -114,6 +114,7 @@ export const ConfirmInfoAlertRow = ({
         iconName={selectedAlert?.iconName}
         iconColor={selectedAlert?.iconColor}
         pill={selectedAlert?.inlineAlertTextPill}
+        backgroundColor={selectedAlert?.inlineAlertTextBackgroundColor}
       />
     </Box>
   ) : (

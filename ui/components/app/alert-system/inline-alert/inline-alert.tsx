@@ -8,6 +8,7 @@ import {
   Severity,
   TextColor,
   TextVariant,
+  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -37,6 +38,8 @@ export type InlineAlertProps = {
   iconName?: IconName;
   /** The color of the icon to show */
   iconColor?: IconColor;
+  /** The background color of the inline alert */
+  backgroundColor?: BackgroundColor;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -51,6 +54,7 @@ export default function InlineAlert({
   pill = false,
   iconName,
   iconColor,
+  backgroundColor,
 }: InlineAlertProps) {
   const t = useI18nContext();
 
@@ -72,6 +76,7 @@ export default function InlineAlert({
           'inline-alert__disabled': severity === Severity.Disabled,
           'inline-alert__pill': pill,
         })}
+        backgroundColor={backgroundColor}
         style={{
           cursor: onClick ? 'pointer' : 'default',
           ...style,
