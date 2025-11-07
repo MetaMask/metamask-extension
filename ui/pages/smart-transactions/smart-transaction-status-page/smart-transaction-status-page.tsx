@@ -362,7 +362,10 @@ export const SmartTransactionStatusPage = ({
         </Box>
         {canShowSimulationDetails && (
           <Box width={BlockSize.Full}>
-            <SimulationDetails transaction={fullTxData} />
+            <SimulationDetails
+              transaction={fullTxData}
+              smartTransactionStatus={smartTransaction?.status?.toLowerCase()}
+            />
           </Box>
         )}
       </Box>

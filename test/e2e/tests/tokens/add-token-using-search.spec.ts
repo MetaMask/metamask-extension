@@ -29,6 +29,54 @@ describe('Add existing token using search', function () {
         }),
     ];
   }
+
+  // Mock BSC Bridge API endpoints
+  async function mockBscBridgeApi(
+    mockServer: Mockttp,
+  ): Promise<MockedEndpoint[]> {
+    return [
+      await mockServer
+        .forGet('https://bridge.api.cx.metamask.io/networks/56/topAssets')
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: [
+            {
+              address: '0x0000000000000000000000000000000000000000',
+              symbol: 'BNB',
+            },
+            {
+              address: '0x55d398326f99059fF775485246999027B3197955',
+              symbol: 'USDT',
+            },
+            {
+              address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+              symbol: 'USDC',
+            },
+          ],
+        })),
+      await mockServer
+        .forGet('https://bridge.api.cx.metamask.io/networks/56/tokens')
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: [],
+        })),
+      await mockServer
+        .forGet(
+          'https://bridge.api.cx.metamask.io/networks/56/aggregatorMetadata',
+        )
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: {},
+        })),
+    ];
+  }
+
+  async function mockBscApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
+    return [
+      ...(await mockPriceFetch(mockServer)),
+      ...(await mockBscBridgeApi(mockServer)),
+    ];
+  }
   it('renders the balance for the chosen token', async function () {
     await withFixtures(
       {
@@ -62,7 +110,7 @@ describe('Add existing token using search', function () {
           chainId: parseInt(CHAIN_IDS.BSC, 16),
         },
         title: this.test?.fullTitle(),
-        testSpecificMock: mockPriceFetch,
+        testSpecificMock: mockBscApis,
       },
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);

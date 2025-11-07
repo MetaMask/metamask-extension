@@ -1,13 +1,11 @@
 import { connect } from 'react-redux';
-import { getSelectedInternalAccount } from '../../../../selectors';
 import TokenList from './token-list.component';
 
 const mapStateToProps = (state) => {
-  const { allTokens } = state.metamask;
-  const { address } = getSelectedInternalAccount(state);
+  const { allTokens, accountsAssets } = state.metamask;
   return {
     allTokens,
-    accountAddress: address,
+    accountsAssets,
   };
 };
 

@@ -1630,14 +1630,8 @@
   "customToken": {
     "message": "कस्टम टोकन"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "इस नेटवर्क पर अभी टोकन डिटेक्शन उपलब्ध नहीं है। कृपया टोकन को मैन्युअल रूप से इंपोर्ट करें और ये पक्का करें कि आपको उसपर भरोसा हो। $1 के बारे में जानें"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "कोई भी टोकन बना सकता है, जिसमें मौजूदा टोकन के नकली वर्शन को बनाना शामिल है। $1 के बारे में जानें"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "पक्का करें कि आप किसी टोकन को इम्पोर्ट करने से पहले उस पर भरोसा करते हैं। $1 को टालने का तरीका जानें। आप टोकन डिटेक्शन $2 भी इनेबल कर सकते हैं।"
   },
   "customerSupport": {
     "message": "कस्टमर सपोर्ट"
@@ -2787,9 +2781,6 @@
   "imported": {
     "message": "इम्पोर्टित",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "आपके सेटिंग्स में"
   },
   "included": {
     "message": "शामिल है"
@@ -6597,9 +6588,6 @@
   },
   "tokenMarketplace": {
     "message": "टोकन मार्केटप्लेस"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "टोकन घोटाले और सुरक्षा जोखिम"
   },
   "tokenStandard": {
     "message": "टोकन स्टैंडर्ड"

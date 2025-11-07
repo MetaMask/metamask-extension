@@ -48,6 +48,34 @@ function setupPhishingPageStreams(): void {
   // so we can handle the channels individually
   phishingPageMux = new ObjectMultiplex();
   phishingPageMux.setMaxListeners(25);
+
+  /**
+   * Graceful shutdown handler for the phishing page mux.
+   *
+   * WHY THIS IS NEEDED:
+   * This code runs in EXTENSION CONTEXT (content script), not page context.
+   * When the page navigates or closes, the underlying transport (phishingPageStream)
+   * terminates, but the extension-side mux persists. Without this handler, the pipeline
+   * detects an abrupt stream closure and throws "ERR_STREAM_PREMATURE_CLOSE" errors.
+   *
+   * By proactively ending the mux when the transport terminates, we prevent these
+   * errors from occurring. This is critical for reducing error noise - "Premature close"
+   * is currently the #1 error in Sentry with 3.8M occurrences per month.
+   *
+   * See provider-stream.ts for more detailed explanation, and:
+   * - https://github.com/MetaMask/metamask-extension/issues/26337
+   * - https://github.com/MetaMask/metamask-extension/issues/35241
+   */
+  const endPhishingPageMuxIfOpen = () => {
+    if (!phishingPageMux.destroyed && !phishingPageMux.writableEnded) {
+      phishingPageMux.end();
+    }
+  };
+
+  // Attach handlers to detect when the underlying transport terminates
+  phishingPageStream.once?.('close', endPhishingPageMuxIfOpen);
+  phishingPageStream.once?.('end', endPhishingPageMuxIfOpen);
+
   pipeline(phishingPageMux, phishingPageStream, phishingPageMux, (err: Error) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
@@ -85,6 +113,22 @@ export const setupPhishingExtStreams = (): void => {
   // create and connect channel muxers so we can handle the channels individually
   phishingExtMux = new ObjectMultiplex();
   phishingExtMux.setMaxListeners(25);
+
+  /**
+   * Graceful shutdown handler for the phishing extension mux.
+   * See the comment in provider-stream.ts for detailed explanation of why these
+   * handlers are necessary in extension context but not in page context.
+   */
+  const endPhishingExtMuxIfOpen = () => {
+    if (!phishingExtMux.destroyed && !phishingExtMux.writableEnded) {
+      phishingExtMux.end();
+    }
+  };
+
+  // Attach handlers to detect when the underlying transport terminates
+  phishingExtStream?.once?.('close', endPhishingExtMuxIfOpen);
+  phishingExtStream?.once?.('end', endPhishingExtMuxIfOpen);
+
   pipeline(phishingExtMux, phishingExtStream, phishingExtMux, (err: Error) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
     window.postMessage(
