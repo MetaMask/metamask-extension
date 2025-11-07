@@ -69,8 +69,18 @@ export const useLinkAccountGroup = (
 
     const byAddress: Record<string, boolean> = {};
     try {
-      const supportedAccounts = internalAccountsForGroup.filter((account) =>
-        dispatch(rewardsIsOptInSupported({ account })),
+      // Determine supported accounts by awaiting async support checks
+      const supportChecks = await Promise.all(
+        internalAccountsForGroup.map(
+          (account) =>
+            dispatch(
+              rewardsIsOptInSupported({ account }),
+            ) as unknown as Promise<boolean>,
+        ),
+      );
+
+      const supportedAccounts = internalAccountsForGroup.filter(
+        (_account, index) => Boolean(supportChecks[index]),
       );
 
       if (supportedAccounts.length === 0) {
