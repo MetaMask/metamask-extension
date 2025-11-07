@@ -14,7 +14,7 @@ import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-ale
 import { endTrace, TraceName } from '../../../shared/lib/trace';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
-import type { BridgeState, TokenPayload } from './types';
+import type { BridgeState, BridgeToken, TokenPayload } from './types';
 
 const initialState: BridgeState = {
   fromToken: null,
@@ -96,6 +96,15 @@ const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
   reducers: {
+    switchTokens: (
+      state,
+      {
+        payload: { fromToken, toToken },
+      }: { payload: { fromToken: BridgeToken; toToken: BridgeToken } },
+    ) => {
+      state.fromToken = toToken;
+      state.toToken = fromToken;
+    },
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = payload ? toBridgeToken(payload) : null;
       state.fromTokenBalance = null;
