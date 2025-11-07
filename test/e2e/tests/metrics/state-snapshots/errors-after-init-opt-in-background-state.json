@@ -67,6 +67,7 @@
     "throttledOrigins": "object",
     "trezorModel": null,
     "updateModalLastDismissedAt": null,
+    "isWalletResetInProgress": "boolean",
     "hasShownMultichainAccountsIntroModal": "boolean",
     "showShieldEntryModalOnce": "boolean",
     "addressSecurityAlertResponses": "object",

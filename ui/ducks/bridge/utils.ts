@@ -19,6 +19,7 @@ import {
   isNativeAddress,
   isNonEvmChainId,
   formatChainIdToHex,
+  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
@@ -310,7 +311,15 @@ export const getDefaultToToken = (
   const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[targetChainId];
 
   if (commonPair) {
-    // If source is native token, default to USDC on same chain
+    // If bridging from Bitcoin, default to native mainnet token (ETH) instead of common pair token
+    if (fromToken.chainId && isBitcoinChainId(fromToken.chainId)) {
+      const nativeAsset = getNativeAssetForChainId(targetChainId);
+      if (nativeAsset) {
+        return createBridgeTokenPayload(nativeAsset, targetChainId);
+      }
+    }
+
+    // If source is native token, default to common pair token on destination chain
     if (isNativeAddress(fromToken.address)) {
       return createBridgeTokenPayload(commonPair, targetChainId);
     }

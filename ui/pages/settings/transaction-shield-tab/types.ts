@@ -1,3 +1,4 @@
+import { AccountWalletId } from '@metamask/account-api';
 import {
   PAYMENT_TYPES,
   SubscriptionCardPaymentMethod,
@@ -16,6 +17,43 @@ export function isCardPaymentMethod(
 ): paymentMethod is SubscriptionCardPaymentMethod {
   return paymentMethod.type === PAYMENT_TYPES.byCard;
 }
+
+export const CLAIM_STATUS = {
+  CREATED: 'created',
+  SUBMITTED: 'submitted',
+  IN_PROGRESS: 'in_progress',
+  WAITING_FOR_CUSTOMER: 'waiting_for_customer',
+  APPROVED: 'approved',
+  REJECTED: 'rejected',
+} as const;
+
+export type ClaimStatus = (typeof CLAIM_STATUS)[keyof typeof CLAIM_STATUS];
+
+export type ShieldClaimAttachment = {
+  key: string;
+  mimetype: string;
+  publicUrl: string;
+  versionId: string;
+  contentType: string;
+  originalname: string;
+};
+
+export type ShieldClaim = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  chainId: string;
+  email: string;
+  impactedWalletAddress: string;
+  impactedTxHash: string;
+  reimbursementWalletAddress: string;
+  description: string;
+  attachments: ShieldClaimAttachment[];
+  intercomId: string;
+  status: ClaimStatus;
+  // generated label for the claim
+  claimNumber: number;
+};
 
 export const SUBMIT_CLAIM_FIELDS = {
   CHAIN_ID: 'chainId',
@@ -82,4 +120,18 @@ export type SubmitClaimErrorResponse = {
     error: string;
     errorCode: SubmitClaimErrorCode;
   }[];
+};
+
+export type AccountSelectorAccount = {
+  id: string;
+  name: string;
+  address: string;
+  type: string;
+  seedIcon?: string;
+};
+
+export type AccountSelectorWallet = {
+  id: AccountWalletId;
+  name: string;
+  accounts: AccountSelectorAccount[];
 };
