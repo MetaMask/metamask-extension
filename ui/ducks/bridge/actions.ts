@@ -3,12 +3,12 @@ import {
   type BridgeController,
   BridgeUserAction,
   formatChainIdToCaip,
+  formatChainIdToHex,
+  getNativeAssetForChainId,
   isNativeAddress,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
-  formatChainIdToHex,
 } from '@metamask/bridge-controller';
-import { type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { forceUpdateMetamaskState } from '../../store/actions';
@@ -26,7 +26,8 @@ import {
   setTxAlerts,
 } from './bridge';
 import type { BridgeToken } from './types';
-import { isNonEvmChain } from './utils';
+import { isNonEvmChain, toBridgeToken } from './utils';
+import { CaipChainId } from '@metamask/utils';
 
 const {
   setFromToken,
@@ -37,10 +38,10 @@ const {
   resetInputFields,
   setSortOrder,
   setSelectedQuote,
+  switchTokens,
   setWasTxDeclined,
   setSlippage,
   restoreQuoteRequestFromState,
-  switchTokens,
 } = bridgeSlice.actions;
 
 export {
@@ -118,8 +119,7 @@ export const updateQuoteRequestParams = (
 
 const getEVMBalance = async (
   accountAddress: string,
-  chainId: Hex,
-  address?: string,
+  { chainId: srcChainId, address }: BridgeToken,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) =>
     ((await dispatch(
@@ -127,7 +127,7 @@ const getEVMBalance = async (
         'getBalanceAmount',
         accountAddress,
         address || zeroAddress(),
-        chainId,
+        formatChainIdToHex(srcChainId),
       ),
     )) as string) || null;
 };
@@ -171,16 +171,17 @@ export const setLatestEVMBalances = (token: BridgeToken) => {
         dispatch(
           setEVMSrcTokenBalance({
             balance: await dispatch(
-              await getEVMBalance(account.address, hexChainId, address),
+              await getEVMBalance(account.address, token),
             ),
             assetId,
           }),
         );
 
+        const nativeToken = toBridgeToken(getNativeAssetForChainId(chainId));
         dispatch(
           setEVMSrcNativeBalance({
             balance: await dispatch(
-              await getEVMBalance(account.address, hexChainId),
+              await getEVMBalance(account.address, nativeToken),
             ),
             chainId,
           }),

@@ -265,9 +265,7 @@ export const toBridgeToken = (
   return {
     ...payload,
     balance: payload.balance ?? '0',
-    chainId: isNonEvmChainId(payload.chainId)
-      ? caipChainId
-      : formatChainIdToHex(payload.chainId),
+    chainId: formatChainIdToCaip(payload.chainId),
     image: getTokenImage(payload),
     assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
   };

@@ -4,7 +4,7 @@ import {
   getNativeAssetForChainId,
   type QuoteResponse,
 } from '@metamask/bridge-controller';
-import { type CaipAssetType } from '@metamask/utils';
+import type { CaipChainId, type CaipAssetType } from '@metamask/utils';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
@@ -133,7 +133,7 @@ const bridgeSlice = createSlice({
       state,
       action: {
         payload: {
-          chainId: BridgeToken['chainId'];
+          chainId: CaipChainId;
           balance: BridgeState['fromNativeBalance'];
         };
       },
