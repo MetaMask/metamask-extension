@@ -1,4 +1,8 @@
-import { PRODUCT_TYPES, Subscription } from '@metamask/subscription-controller';
+import {
+  PRODUCT_TYPES,
+  SUBSCRIPTION_STATUSES,
+  Subscription,
+} from '@metamask/subscription-controller';
 import {
   ActiveSubscriptionStatuses,
   PausedSubscriptionStatuses,
@@ -61,6 +65,40 @@ export function getIsShieldSubscriptionPaused(
   }
 
   return PausedSubscriptionStatuses.includes(shieldSubscription.status);
+}
+
+export function getIsShieldSubscriptionTrialing(
+  subscriptions: Subscription | Subscription[],
+): boolean {
+  // check the feature flag first
+  if (!getIsMetaMaskShieldFeatureEnabled()) {
+    return false;
+  }
+
+  const shieldSubscription = getShieldSubscription(subscriptions);
+
+  if (!shieldSubscription) {
+    return false;
+  }
+
+  return shieldSubscription.status === SUBSCRIPTION_STATUSES.trialing;
+}
+
+export function getIsShieldSubscriptionProvisional(
+  subscriptions: Subscription | Subscription[],
+): boolean {
+  // check the feature flag first
+  if (!getIsMetaMaskShieldFeatureEnabled()) {
+    return false;
+  }
+
+  const shieldSubscription = getShieldSubscription(subscriptions);
+
+  if (!shieldSubscription) {
+    return false;
+  }
+
+  return shieldSubscription.status === SUBSCRIPTION_STATUSES.provisional;
 }
 
 export function getIsShieldSubscriptionEndingSoon(
