@@ -3072,7 +3072,6 @@ export function ignoreTokens({
       }
 
       if (isNonEvmChainId(chainId)) {
-        console.log('JJJJ');
         await submitRequestToBackground('multichainIgnoreAssets', [
           _tokensToIgnore,
           selectedAccount.id,
