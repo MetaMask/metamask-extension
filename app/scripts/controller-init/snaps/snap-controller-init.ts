@@ -102,7 +102,7 @@ export const SnapControllerInit: ControllerInitFunction<
       return;
     }
 
-    return await new Promise((resolve) => {
+    await new Promise((resolve) => {
       // TODO: Cleanup
       initMessenger.subscribe(
         'OnboardingController:stateChange',
