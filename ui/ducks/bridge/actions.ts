@@ -43,6 +43,7 @@ const {
   setWasTxDeclined,
   setSlippage,
   restoreQuoteRequestFromState,
+  switchTokens,
 } = bridgeSlice.actions;
 
 export {
@@ -60,6 +61,7 @@ export {
   setTxAlerts,
   setEVMSrcNativeBalance,
   restoreQuoteRequestFromState,
+  switchTokens,
 };
 
 const callBridgeControllerMethod = (
@@ -142,7 +144,7 @@ export const setEVMSrcTokenBalance = (
   };
 };
 
-export const setFromChain = ({
+const setFromChain = ({
   networkConfig,
   selectedAccount,
   token = null,

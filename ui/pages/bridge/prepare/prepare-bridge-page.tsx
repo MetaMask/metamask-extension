@@ -21,8 +21,10 @@ import {
   UnifiedSwapBridgeEventName,
   type BridgeController,
   isCrossChain,
+  isNonEvmChainId,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
-import { Hex, parseCaipChainId } from '@metamask/utils';
+import { CaipChainId, Hex, parseCaipChainId } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -31,7 +33,7 @@ import {
   updateQuoteRequestParams,
   resetBridgeState,
   trackUnifiedSwapBridgeEvent,
-  setFromChain,
+  switchTokens,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -84,7 +86,6 @@ import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
 } from '../utils/quote';
-import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
@@ -130,17 +131,22 @@ export const useEnableMissingNetwork = () => {
   const dispatch = useDispatch();
 
   const enableMissingNetwork = useCallback(
-    (chainId: Hex) => {
+    (chainId: Hex | CaipChainId) => {
+      if (isNonEvmChainId(chainId)) {
+        return;
+      }
       const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
       const caipChainId = formatChainIdToCaip(chainId);
       const { namespace } = parseCaipChainId(caipChainId);
+      const hexChainId = formatChainIdToHex(chainId);
 
       if (namespace) {
-        const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
+        const isPopularNetwork =
+          FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
         if (isPopularNetwork) {
-          const isNetworkEnabled = enabledNetworkKeys.includes(chainId);
+          const isNetworkEnabled = enabledNetworkKeys.includes(hexChainId);
           if (!isNetworkEnabled) {
             // Bridging between popular networks indicates we want the 'select all' enabled
             // This way users can see their full bridging tx activity
@@ -530,15 +536,7 @@ const PrepareBridgePage = ({
             ),
             networks: fromChains,
             onNetworkChange: (networkConfig) => {
-              if (isNetworkAdded(networkConfig)) {
-                enableMissingNetwork(networkConfig.chainId);
-              }
-              dispatch(
-                setFromChain({
-                  networkConfig,
-                  selectedAccount,
-                }),
-              );
+              enableMissingNetwork(networkConfig.chainId);
             },
             header: t('yourNetworks'),
           }}
@@ -666,24 +664,8 @@ const PrepareBridgePage = ({
                       },
                     ),
                   );
-
                 setRotateSwitchTokens(!rotateSwitchTokens);
-
-                if (isSwap) {
-                  dispatch(setFromToken(toToken));
-                } else {
-                  // Handle account switching for Solana
-                  dispatch(
-                    setFromChain({
-                      networkConfig: toChains.find(
-                        (chain) => chain.chainId === toChain.chainId,
-                      ),
-                      token: toToken,
-                      selectedAccount,
-                    }),
-                  );
-                }
-                dispatch(setToToken(fromToken));
+                dispatch(switchTokens({ fromToken, toToken }));
               }}
             />
           </Box>
@@ -712,9 +694,7 @@ const PrepareBridgePage = ({
               ),
               networks: toChains,
               onNetworkChange: (networkConfig) => {
-                if (isNetworkAdded(networkConfig)) {
-                  enableMissingNetwork(networkConfig.chainId);
-                }
+                enableMissingNetwork(networkConfig.chainId);
                 dispatch(
                   setToToken(getNativeAssetForChainId(networkConfig.chainId)),
                 );
