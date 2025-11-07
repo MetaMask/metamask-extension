@@ -1,14 +1,11 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { AccountGroupId } from '@metamask/account-api';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MultichainAccountAddressListPage } from './multichain-account-address-list-page';
 
-const mockHistoryGoBack = jest.fn();
-const mockUseParams = jest.fn();
-const mockUseLocation = jest.fn();
 const addressRowsListSearchTestId = 'multichain-address-rows-list-search';
 const addressRowsListTestId = 'multichain-address-rows-list';
 const backButtonTestId = 'multichain-account-address-list-page-back-button';
@@ -17,14 +14,17 @@ const backButtonTestId = 'multichain-account-address-list-page-back-button';
 const MOCK_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
 const MOCK_GROUP_NAME = 'Account 1';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    goBack: mockHistoryGoBack,
-  }),
-  useParams: () => mockUseParams(),
-  useLocation: () => mockUseLocation(),
-}));
+const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useParams: () => mockUseParams(),
+    useLocation: () => mockUseLocation(),
+  };
+});
 
 describe('MultichainAccountAddressListPage', () => {
   beforeEach(() => {
@@ -76,7 +76,7 @@ describe('MultichainAccountAddressListPage', () => {
     const backButton = screen.getByTestId(backButtonTestId);
     fireEvent.click(backButton);
 
-    expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('handles non-existent account group gracefully', () => {

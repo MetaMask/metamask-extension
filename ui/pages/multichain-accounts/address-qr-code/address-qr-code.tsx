@@ -1,7 +1,11 @@
 import React, { useCallback, useContext } from 'react';
 import { parseCaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import {
+  useNavigate,
+  useParams,
+  useLocation,
+} from 'react-router-dom-v5-compat';
 import {
   Page,
   Header,
@@ -33,10 +37,29 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getAccountTypeCategory } from '../account-details';
 
-export const AddressQRCode = () => {
+type AddressQRCodeProps = {
+  params?: { address: string };
+  location?: {
+    pathname: string;
+    search: string;
+    hash: string;
+    state: unknown;
+    key: string;
+  };
+};
+
+export const AddressQRCode = ({
+  params: propsParams,
+  location: propsLocation,
+}: AddressQRCodeProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const { address } = useParams();
+  const navigate = useNavigate();
+  const hookParams = useParams();
+  const hookLocation = useLocation();
+
+  const { address } = propsParams || hookParams;
+  // Location is used by the Page component wrapper
+  propsLocation || hookLocation;
   const trackEvent = useContext(MetaMetricsContext);
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
@@ -90,7 +113,7 @@ export const AddressQRCode = () => {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(-1)}
           />
         }
       >

@@ -9,8 +9,7 @@ import React, {
 import browser from 'webextension-polyfill';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { Link } from 'react-router-dom-v5-compat';
+import { useNavigate, Link } from 'react-router-dom-v5-compat';
 import {
   Icon,
   IconName as IconNameDesignSystem,
@@ -99,7 +98,7 @@ export const AppHeaderUnlockedContent = ({
 }: AppHeaderUnlockedContentProps) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -176,7 +175,7 @@ export const AppHeaderUnlockedContent = ({
   };
 
   const handleConnectionsRoute = () => {
-    history.push(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
+    navigate(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
   };
 
   const handleCopyClick = useCallback(() => {
@@ -241,7 +240,7 @@ export const AppHeaderUnlockedContent = ({
             name={accountName}
             showAvatarAccount={false}
             onClick={() => {
-              history.push(ACCOUNT_LIST_PAGE_ROUTE);
+              navigate(ACCOUNT_LIST_PAGE_ROUTE);
               trackEvent({
                 event: MetaMetricsEventName.NavAccountMenuOpened,
                 category: MetaMetricsEventCategory.Navigation,
@@ -290,7 +289,7 @@ export const AppHeaderUnlockedContent = ({
     accountName,
     disableAccountPicker,
     selectedMultichainAccountId,
-    history,
+    navigate,
     isMultichainAccountsState2Enabled,
     numberOfAccountsInGroup,
     t,
@@ -301,7 +300,7 @@ export const AppHeaderUnlockedContent = ({
   const AppContent = useMemo(() => {
     const handleAccountMenuClick = () => {
       if (isMultichainAccountsState2Enabled) {
-        history.push(ACCOUNT_LIST_PAGE_ROUTE);
+        navigate(ACCOUNT_LIST_PAGE_ROUTE);
       } else {
         dispatch(toggleAccountMenu());
       }
@@ -353,7 +352,7 @@ export const AppHeaderUnlockedContent = ({
     disableAccountPicker,
     CopyButton,
     isMultichainAccountsState2Enabled,
-    history,
+    navigate,
     dispatch,
     trackEvent,
   ]);

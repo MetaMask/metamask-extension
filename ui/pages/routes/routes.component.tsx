@@ -841,56 +841,157 @@ export default function Routes() {
             component={MemoizedReviewPermissionsWrapper}
             exact
           />
-          <Authenticated
-            path={ACCOUNT_LIST_PAGE_ROUTE}
-            component={AccountList}
-            exact
-          />
-          <Authenticated
+          <Route path={ACCOUNT_LIST_PAGE_ROUTE} exact>
+            {() => {
+              const AccountListComponent = AccountList as React.ComponentType;
+              return (
+                <AuthenticatedV5Compat>
+                  <AccountListComponent />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
-            component={MultichainAccountAddressListPage}
             exact
-          />
-          <Authenticated
+          >
+            {(props: RouteComponentProps<{ accountGroupId: string }>) => {
+              const { location: v5Location, match } = props;
+              const MultichainAccountAddressListPageComponent =
+                MultichainAccountAddressListPage as React.ComponentType<{
+                  location: RouteComponentProps['location'];
+                  params: { accountGroupId: string };
+                }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <MultichainAccountAddressListPageComponent
+                    location={v5Location}
+                    params={match.params}
+                  />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
-            component={MultichainAccountPrivateKeyListPage}
             exact
-          />
-          <Authenticated
-            path={ADD_WALLET_PAGE_ROUTE}
-            component={AddWalletPage}
-            exact
-          />
-          <Authenticated
-            path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
-            component={MultichainAccountDetailsPage}
-            exact
-          />
-          <Authenticated
-            path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
-            component={SmartAccountPage}
-            exact
-          />
-          <Authenticated
-            path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
-            component={WalletDetailsPage}
-            exact
-          />
-          <Authenticated
-            path={WALLET_DETAILS_ROUTE}
-            component={WalletDetails}
-            exact
-          />
-          <Authenticated
-            path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
-            component={MultichainAccountDetails}
-            exact
-          />
-          <Authenticated
-            path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
-            component={AddressQRCode}
-            exact
-          />
+          >
+            {(props: RouteComponentProps<{ accountGroupId: string }>) => {
+              const { match } = props;
+              const MultichainAccountPrivateKeyListPageComponent =
+                MultichainAccountPrivateKeyListPage as React.ComponentType<{
+                  params: { accountGroupId: string };
+                }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <MultichainAccountPrivateKeyListPageComponent
+                    params={match.params}
+                  />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={ADD_WALLET_PAGE_ROUTE} exact>
+            {() => {
+              const AddWalletPageComponent =
+                AddWalletPage as React.ComponentType;
+              return (
+                <AuthenticatedV5Compat>
+                  <AddWalletPageComponent />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`} exact>
+            {(props: RouteComponentProps<{ id: string }>) => {
+              const { match } = props;
+              const MultichainAccountDetailsPageComponent =
+                MultichainAccountDetailsPage as React.ComponentType<{
+                  params: { id: string };
+                }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <MultichainAccountDetailsPageComponent
+                    params={match.params}
+                  />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`} exact>
+            {(props: RouteComponentProps<{ address: string }>) => {
+              const { match } = props;
+              const SmartAccountPageComponent =
+                SmartAccountPage as React.ComponentType<{
+                  params: { address: string };
+                }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <SmartAccountPageComponent params={match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`} exact>
+            {(props: RouteComponentProps<{ id: string }>) => {
+              const { match } = props;
+              const WalletDetailsPageComponent =
+                WalletDetailsPage as React.ComponentType<{
+                  params: { id: string };
+                }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <WalletDetailsPageComponent params={match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={WALLET_DETAILS_ROUTE} exact>
+            {(props: RouteComponentProps<{ id: string }>) => {
+              const { match } = props;
+              const WalletDetailsComponent =
+                WalletDetails as React.ComponentType<{
+                  params: { id: string };
+                }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <WalletDetailsComponent params={match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ACCOUNT_DETAILS_ROUTE}/:address`} exact>
+            {(props: RouteComponentProps<{ address: string }>) => {
+              const { match } = props;
+              const MultichainAccountDetailsComponent =
+                MultichainAccountDetails as React.ComponentType<{
+                  params: { address: string };
+                }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <MultichainAccountDetailsComponent params={match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`} exact>
+            {(props: RouteComponentProps<{ address: string }>) => {
+              const { location: v5Location, match } = props;
+              const AddressQRCodeComponent =
+                AddressQRCode as React.ComponentType<{
+                  location: RouteComponentProps['location'];
+                  params: { address: string };
+                }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <AddressQRCodeComponent
+                    location={v5Location}
+                    params={match.params}
+                  />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
           <Authenticated
             path={NONEVM_BALANCE_CHECK_ROUTE}
             component={NonEvmBalanceCheck}

@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { StoryObj, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route } from 'react-router-dom-v5-compat';
 import { action } from '@storybook/addon-actions';
 import {
   Caip25CaveatType,

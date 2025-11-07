@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { useSelector, useDispatch } from 'react-redux';
 import { AccountWalletId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
@@ -67,11 +67,19 @@ type AccountBalance = {
   [key: string]: string | number;
 };
 
-const WalletDetails = () => {
+type WalletDetailsProps = {
+  params?: { id: string };
+};
+
+const WalletDetails = ({
+  params: propsParams,
+}: WalletDetailsProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const hookParams = useParams();
+
+  const { id } = propsParams || hookParams;
   const decodedId = decodeURIComponent(id as string);
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
   const seedPhraseBackedUp = useSelector(getIsPrimarySeedPhraseBackedUp);
@@ -107,11 +115,11 @@ const WalletDetails = () => {
 
   const handleAccountClick = (account: { id: string; address: string }) => {
     dispatch(setAccountDetailsAddress(account.address));
-    history.push(`${ACCOUNT_DETAILS_ROUTE}/${account.address}`);
+    navigate(`${ACCOUNT_DETAILS_ROUTE}/${account.address}`);
   };
 
   const handleBack = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   if (!wallet) {
@@ -336,7 +344,7 @@ const WalletDetails = () => {
               onClick={() => {
                 if (shouldShowBackupReminder) {
                   const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
-                  history.push(backUpSRPRoute);
+                  navigate(backUpSRPRoute);
                 } else {
                   setSrpQuizModalVisible(true);
                 }

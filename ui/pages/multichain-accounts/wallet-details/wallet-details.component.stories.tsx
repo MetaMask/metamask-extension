@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import WalletDetails from './wallet-details.component';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route } from 'react-router-dom-v5-compat';
 
 // Mock the accountTree data that WalletDetails expects
 const mockAccountTree = {

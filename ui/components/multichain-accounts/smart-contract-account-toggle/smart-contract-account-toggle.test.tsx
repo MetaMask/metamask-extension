@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
 import { useBatchAuthorizationRequests } from '../../../pages/confirmations/hooks/useBatchAuthorizationRequests';
@@ -12,13 +12,13 @@ import { SmartContractAccountToggle } from './smart-contract-account-toggle';
 jest.mock('../../../pages/confirmations/hooks/useEIP7702Account');
 jest.mock('../../../pages/confirmations/hooks/useBatchAuthorizationRequests');
 
-const mockPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const mockDispatch = jest.fn();
 const mockUseSelectorImpl = jest.fn();
@@ -341,7 +341,9 @@ describe('SmartContractAccountToggle', () => {
 
       render({}, true, mockTransactions); // toggleState = true
 
-      expect(mockPush).toHaveBeenCalledWith('/confirm-transaction/tx-123');
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        '/confirm-transaction/tx-123',
+      );
     });
 
     it('sets redirect after default page when returnToPage is provided', () => {
@@ -427,7 +429,9 @@ describe('SmartContractAccountToggle', () => {
 
       render({}, true, mockTransactions);
 
-      expect(mockPush).toHaveBeenCalledWith('/confirm-transaction/tx-new');
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        '/confirm-transaction/tx-new',
+      );
     });
 
     it('does not redirect when no matching transactions are found', () => {
@@ -446,7 +450,7 @@ describe('SmartContractAccountToggle', () => {
 
       render({}, true, mockTransactions);
 
-      expect(mockPush).not.toHaveBeenCalled();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
     });
 
     it('resets toggleState after timeout when no transaction is found', async () => {

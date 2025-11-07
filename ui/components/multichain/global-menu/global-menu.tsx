@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import browser from 'webextension-polyfill';
@@ -119,7 +119,7 @@ export const GlobalMenu = ({
   const basicFunctionality = useSelector(getUseExternalServices);
   const { rewardsEnabled } = useRewardsContext();
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const { notificationsReadCount } = useReadNotificationsCounter();
@@ -287,7 +287,7 @@ export const GlobalMenu = ({
         read_count: notificationsReadCount,
       },
     });
-    history.push(NOTIFICATIONS_ROUTE);
+    navigate(NOTIFICATIONS_ROUTE);
     closeMenu();
   };
 
