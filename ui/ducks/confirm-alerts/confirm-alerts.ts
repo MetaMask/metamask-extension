@@ -1,6 +1,10 @@
 import { ReactNode } from 'react';
 import { SecurityProvider } from '../../../shared/constants/security-provider';
-import { BackgroundColor, IconColor, Severity } from '../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  IconColor,
+  Severity,
+} from '../../helpers/constants/design-system';
 import { IconName } from '../../components/component-library';
 
 export type AlertSeverity =
@@ -43,6 +47,11 @@ export type Alert = {
    * Whether to show the inline alert as a pill style.
    */
   inlineAlertTextPill?: boolean;
+
+  /**
+   * Whether to show the icon on the right side of the inline alert.
+   */
+  inlineAlertIconRight?: boolean;
 
   /**
    * The name of the icon to show.
@@ -105,6 +114,16 @@ export type Alert = {
    * Whether to show the arrow icon on the inline alert.
    */
   showArrow?: boolean;
+
+  /**
+   * The custom button text for acknowledging the alert in modal.
+   */
+  customAcknowledgeButtonText?: string;
+
+  /**
+   * The custom button onClick handler for acknowledging the alert in modal.
+   */
+  customAcknowledgeButtonOnClick?: () => void;
 } & MessageOrContent;
 
 type MessageOrContent =

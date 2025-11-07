@@ -3,8 +3,9 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
@@ -20,6 +21,7 @@ import {
 import { useConfirmContext } from '../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../transactions/useEnableShieldCoverageChecks';
 import { IconName } from '../../../../components/component-library';
+import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 import { ShieldCoverageAlertMessage } from './transactions/ShieldCoverageAlertMessage';
 
 const getModalBodyStr = (reasonCode: string | undefined) => {
@@ -139,6 +141,7 @@ const getModalBodyStr = (reasonCode: string | undefined) => {
 
 export function useShieldCoverageAlert(): Alert[] {
   const t = useI18nContext();
+
   const { currentConfirmation } = useConfirmContext<
     TransactionMeta | SignatureRequest
   >();
@@ -148,6 +151,9 @@ export function useShieldCoverageAlert(): Alert[] {
   const { reasonCode, status } = useSelector((state) =>
     getCoverageStatus(state as ShieldState, currentConfirmation?.id),
   );
+
+  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
+
   const isCovered = status === 'covered';
   let modalBodyStr = isCovered
     ? 'shieldCoverageAlertCovered'
@@ -156,14 +162,21 @@ export function useShieldCoverageAlert(): Alert[] {
     // Simple send transactions are not covered by Shield and can't be send to ruleset engine
     modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
   }
+  if (isPaused) {
+    modalBodyStr = 'shieldCoverageAlertMessagePaused';
+  }
 
-  const isEnableShieldCoverageChecks = useEnableShieldCoverageChecks();
   const showAlert =
-    isEnableShieldCoverageChecks &&
+    (isEnabled || isPaused) &&
     (Boolean(status) ||
       // Simple send transactions are not covered by Shield and can't be send to ruleset engine
       // so we just show not covered in client side
       isSimpleSendTransaction);
+
+  const navigate = useNavigate();
+  const onPausedAcknowledgeClick = useCallback(() => {
+    navigate(TRANSACTION_SHIELD_ROUTE);
+  }, [navigate]);
 
   return useMemo<Alert[]>((): Alert[] => {
     if (!showAlert) {
@@ -171,8 +184,10 @@ export function useShieldCoverageAlert(): Alert[] {
     }
 
     let severity = Severity.Disabled;
-    let inlineAlertText = t('shieldNotCovered');
-    let modalTitle = t('shieldCoverageAlertMessageTitle');
+    let inlineAlertText = isPaused ? t('shieldPaused') : t('shieldNotCovered');
+    let modalTitle = isPaused
+      ? t('shieldCoverageAlertMessageTitlePaused')
+      : t('shieldCoverageAlertMessageTitle');
     let inlineAlertTextBackgroundColor;
     switch (status) {
       case 'covered':
@@ -200,13 +215,20 @@ export function useShieldCoverageAlert(): Alert[] {
         inlineAlertText,
         inlineAlertTextPill: true,
         inlineAlertTextBackgroundColor,
+        inlineAlertIconRight: true,
         iconName: IconName.Info,
         iconColor: IconColor.inherit,
         showArrow: false,
         isOpenModalOnClick: true,
         hideFromAlertNavigation: true,
         acknowledgeBypass: true,
+        customAcknowledgeButtonText: isPaused
+          ? t('shieldCoverageAlertMessagePausedAcknowledgeButton')
+          : undefined,
+        customAcknowledgeButtonOnClick: isPaused
+          ? onPausedAcknowledgeClick
+          : undefined,
       },
     ];
-  }, [status, modalBodyStr, showAlert, t]);
+  }, [status, modalBodyStr, showAlert, t, isPaused, onPausedAcknowledgeClick]);
 }

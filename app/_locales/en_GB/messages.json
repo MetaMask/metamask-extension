@@ -6010,6 +6010,12 @@
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
     "message": "Learn how coverage works"
   },
+  "shieldCoverageAlertMessagePaused": {
+    "message": "There was an issue with your Transaction Shield membership payment. Please update your payment method to resume coverage."
+  },
+  "shieldCoverageAlertMessagePausedAcknowledgeButton": {
+    "message": "Update payment method"
+  },
   "shieldCoverageAlertMessagePotentialRisks": {
     "message": "This transaction has potential risks, so it isn't protected by Transaction Shield. $1."
   },
@@ -6021,6 +6027,9 @@
   },
   "shieldCoverageAlertMessageTitleCovered": {
     "message": "This transaction is covered"
+  },
+  "shieldCoverageAlertMessageTitlePaused": {
+    "message": "Transaction Shield paused"
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
     "message": "This transaction type is not supported, so it isn't protected by Transaction Shield. $1."
@@ -6072,6 +6081,9 @@
   },
   "shieldNotCovered": {
     "message": "Not covered"
+  },
+  "shieldPaused": {
+    "message": "Paused"
   },
   "shieldPaymentDeclined": {
     "message": "Shield payment declined"

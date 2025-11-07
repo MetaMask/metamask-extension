@@ -293,11 +293,13 @@ function AcknowledgeButton({
   isConfirmed,
   hasActions,
   isBlocking,
+  label,
 }: {
   onAcknowledgeClick: () => void;
   isConfirmed: boolean;
   hasActions?: boolean;
   isBlocking?: boolean;
+  label?: string;
 }) {
   const t = useI18nContext();
 
@@ -310,7 +312,7 @@ function AcknowledgeButton({
       data-testid="alert-modal-button"
       disabled={!isBlocking && !isConfirmed}
     >
-      {t('gotIt')}
+      {label ?? t('gotIt')}
     </Button>
   );
 }
@@ -457,10 +459,14 @@ export function AlertModal({
             {customAcknowledgeButton ?? (
               <>
                 <AcknowledgeButton
-                  onAcknowledgeClick={onAcknowledgeClick}
+                  onAcknowledgeClick={
+                    selectedAlert.customAcknowledgeButtonOnClick ??
+                    onAcknowledgeClick
+                  }
                   isConfirmed={acknowledgementRequired ? isConfirmed : true}
                   hasActions={Boolean(selectedAlert.actions)}
                   isBlocking={selectedAlert.isBlocking}
+                  label={selectedAlert.customAcknowledgeButtonText}
                 />
                 {(selectedAlert.actions ?? []).map(
                   (action: { key: string; label: string }) => (

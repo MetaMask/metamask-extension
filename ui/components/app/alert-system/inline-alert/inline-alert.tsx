@@ -38,6 +38,8 @@ export type InlineAlertProps = {
   iconName?: IconName;
   /** The color of the icon to show */
   iconColor?: IconColor;
+  /** Whether to show the icon on the right side of the inline alert */
+  iconRight?: boolean;
   /** The background color of the inline alert */
   backgroundColor?: BackgroundColor;
 };
@@ -54,9 +56,21 @@ export default function InlineAlert({
   pill = false,
   iconName,
   iconColor,
+  iconRight,
   backgroundColor,
 }: InlineAlertProps) {
   const t = useI18nContext();
+
+  const renderIcon = () => (
+    <Icon
+      name={
+        iconName ??
+        (severity === Severity.Danger ? IconName.Danger : IconName.Info)
+      }
+      size={IconSize.Sm}
+      color={iconColor}
+    />
+  );
 
   return (
     <Box display={Display.Flex}>
@@ -83,17 +97,11 @@ export default function InlineAlert({
         }}
         onClick={onClick}
       >
-        <Icon
-          name={
-            iconName ??
-            (severity === Severity.Danger ? IconName.Danger : IconName.Info)
-          }
-          size={IconSize.Sm}
-          color={iconColor}
-        />
+        {!iconRight && renderIcon()}
         <Text variant={TextVariant.bodySm} color={TextColor.inherit}>
           {textOverride ?? t('alert')}
         </Text>
+        {iconRight && renderIcon()}
         {showArrow && <Icon name={IconName.ArrowRight} size={IconSize.Xs} />}
       </Box>
     </Box>

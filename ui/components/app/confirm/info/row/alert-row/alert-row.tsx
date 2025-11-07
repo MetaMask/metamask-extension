@@ -113,6 +113,7 @@ export const ConfirmInfoAlertRow = ({
         onClick={onClickHandler}
         iconName={selectedAlert?.iconName}
         iconColor={selectedAlert?.iconColor}
+        iconRight={selectedAlert?.inlineAlertIconRight}
         pill={selectedAlert?.inlineAlertTextPill}
         backgroundColor={selectedAlert?.inlineAlertTextBackgroundColor}
       />
