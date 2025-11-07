@@ -33,7 +33,6 @@ import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { getFromChains } from '../../ducks/bridge/selectors';
-import { getMultichainProviderConfig } from '../../selectors/multichain';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { getFromChain } from '../../ducks/bridge/selectors';
 

@@ -48,6 +48,7 @@ import {
   BRIDGE_CONTROLLER_NAME,
   BridgeUserAction,
   BridgeBackgroundAction,
+  calcLatestSrcBalance,
 } from '@metamask/bridge-controller';
 
 import {
@@ -3179,6 +3180,19 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
       ),
+      getBalanceAmount: async (selectedAddress, tokenAddress, chainId) => {
+        const networkClientId =
+          await this.networkController.findNetworkClientIdByChainId(chainId);
+        const networkClient =
+          await this.networkController.getNetworkClientById(networkClientId);
+        const balance = await calcLatestSrcBalance(
+          networkClient.provider,
+          selectedAddress,
+          tokenAddress,
+          chainId,
+        );
+        return balance?.toString();
+      },
 
       // Bridge Tx submission
       [BridgeStatusAction.SUBMIT_TX]: this.controllerMessenger.call.bind(

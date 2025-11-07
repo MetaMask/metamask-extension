@@ -617,7 +617,10 @@ const PrepareBridgePage = ({
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
-                !fromChains.find((chain) => chain.chainId === toChain.chainId)
+                // If no fromChains match the toChain, it means the toChain is not an enabled network
+                fromChains.every((chain) =>
+                  isCrossChain(chain.chainId, toChain.chainId),
+                )
               }
               onClick={() => {
                 dispatch(setSelectedQuote(null));
