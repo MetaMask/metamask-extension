@@ -189,11 +189,29 @@ export class TestSnaps {
     console.log('Test Snap Dapp page is loaded');
   }
 
-  async checkClientStatus(expectedStatus: string): Promise<void> {
-    console.log(`Checking that the client status should be ${expectedStatus}`);
-    await this.driver.waitForSelector({
-      css: spanLocator.clientStatusResultSpan,
-      text: expectedStatus,
+  async checkClientStatus({
+    clientVersion: expectedClientVersion,
+    ...expectedStatus
+  }: Record<string, unknown>): Promise<void> {
+    console.log(
+      `Checking that the client status should be ${JSON.stringify(expectedStatus, null, 2)}`,
+    );
+
+    await this.driver.wait(async () => {
+      const element = await this.driver.findElement(
+        spanLocator.clientStatusResultSpan,
+      );
+
+      const spanText = await element.getAttribute('textContent');
+      const { clientVersion: actualClientVersion, ...actualStatus } =
+        JSON.parse(spanText);
+
+      return (
+        // Client version is different between main and Flask, so we just check
+        // that it starts with the expected version.
+        actualClientVersion.startsWith(expectedClientVersion) &&
+        isEqual(actualStatus, expectedStatus)
+      );
     });
   }
 
