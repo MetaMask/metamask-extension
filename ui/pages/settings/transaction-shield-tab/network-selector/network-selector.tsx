@@ -15,6 +15,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+import classnames from 'classnames';
 import {
   Modal,
   ModalBody,
@@ -45,11 +46,13 @@ const NetworkSelector = ({
   modalTitle,
   onNetworkSelect,
   selectedChainId,
+  disabled = false,
 }: {
   label: string;
   modalTitle: string;
   onNetworkSelect: (chainId: string) => void;
   selectedChainId: string;
+  disabled?: boolean;
 }) => {
   const [showNetworkListMenu, setShowNetworkListMenu] = useState(false);
 
@@ -72,7 +75,9 @@ const NetworkSelector = ({
       <Text
         variant={TextVariant.BodyMd}
         fontWeight={FontWeight.Medium}
-        className="mb-2"
+        className={classnames('mb-2', {
+          'opacity-50': disabled,
+        })}
       >
         {label}
       </Text>
@@ -83,7 +88,7 @@ const NetworkSelector = ({
         onClick={() => setShowNetworkListMenu(true)}
         aria-label={modalTitle}
       >
-        <button data-testid="network-selector-button">
+        <button data-testid="network-selector-button" disabled={disabled}>
           {selectedNetworkInfo ? (
             <>
               <AvatarNetwork

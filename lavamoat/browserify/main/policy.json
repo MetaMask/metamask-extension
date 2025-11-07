@@ -1310,6 +1310,10 @@
       }
     },
     "@metamask/gator-permissions-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/delegation-core": true,
@@ -1989,7 +1993,8 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "@metamask/transaction-controller": true
+        "@metamask/transaction-controller": true,
+        "@metamask/subscription-controller>bignumber.js": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": {
@@ -3000,6 +3005,12 @@
       }
     },
     "@metamask/smart-transactions-controller>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "@metamask/subscription-controller>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true

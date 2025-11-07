@@ -7,6 +7,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.8.0]
+
+### Added
+
+- Bump bitcoin snap version to v1.4.3 (#37023)
+- Subscription & shield controller updates (#37371)
+- Added account type labels to asset details (#37332)
+- Show Need help link together with error on Claims form Transaction hash field (#37297)
+- Update payment-method component in shield-subscription page (#37340)
+- Added optional prop, `fallbackName` to `name-details` component. (#37299)
+  Provide token symbol from shield pricing as a
+  `fallbackName` prop in Shield-subscription-approval page.
+- Claims form back button redirect to Transaction shield page (#37333)
+- Set autofocus false on confirmation alert modals (#37294)
+- Added account type tags for bitcoin (#36927)
+- Use ArrowDown instead of ArrowRight on shield list buttons (#37292)
+- Updated two-tab components to use full-width layout for better visual balance (#37142)
+- Sidebar experimental PR (#36564)
+- Hide search field on asset picker inside Shield plan (#37193)
+- Updated add custom RPC flow (#36640)
+- Added support for buying Bitcoin and other non-EVM cryptocurrencies through the MetaMask buy crypto flow (#37146)
+- Added chain ID and display backend errors properly (#37174)
+- Added copy icon to network addresses in the account header (#37112)
+- Updated UI and copywriting on Shield Plan Confirm page (#37159)
+- Updated pay with crypto copywriting (#37110)
+
+### Fixed
+
+- Updates add account button text to `Add account` (#37288)
+- Fixes `Background connection unresponsive` issues caused by the UI attempting to load before the background process has (#36729)
+  begun initializing.
+- Updated smart account terminology in the UI from "Enable smart contract account" to "Use smart account" (#37235)
+- Transaction shield covered button show modal (#37225)
+- Update broken onekey tutorial link. (#37217)
+- Added popular networks (Arbitrum, BSC, Optimism, Polygon, Sei, and Base) by default for all users, filtered to only (#37172)
+  include networks supported by accounts API v4
+- Fixed a bug causing the setting showNativeTokenAsMainBalance to not display native user balance when ON. (#37233)
+- Enables storing EIP-7715 permissions granted by the user (#37158)
+- Reduce excess re-renders (#37293)
+- Aligned the Import Wallet UI in the 'Add Wallet' flow with the existing 'Import SRP' onboarding design for consistency (#37207)
+- Fixed shield subscription trial days value inconsistency (#37295)
+- Removed scroll state for MetaMetric UI when opening it on small-screen devices. (#37220)
+- Fixed address security alerts to be properly cached per network, preventing incorrect security warnings when switching between (#36708)
+  chains
+- Fix wrong link on BTC asset details (#37180)
+- Added modal overlay for onboarding modal (#37206)
+- Fixed delay checking if token is already imported inside import tokens modal. (#37116)
+- Fix BTC activity is not shown on asset details (#37170)
+- Fixed Solana and Bitcoin icons not showing in the details page (#37065)
+- Fixed pre-emptive phishing page redirect on Google search results. (#37029)
+- Normalize basePath trailing slash in getRelativeLocationForNestedRoutes (#37161)
+- Fixed an issue where some avatars would be out of sync (#37173)
+- Fix the manual refresh and token detection (#37130)
+- Fixes subscription-polling when shield feature is disabled (#37476)
+- Fixes network nicknames for popular networks (#37477)
+- Fixes historical prices chart ranges for non-evm assets (#37505)
+- Fixes issue where we're failing to log swap comparisons in some scenarios (#37496)
+- Fixes token image and symbol in confirmation for EVM transactions when nonEVM network is selected at wallet view (#37491)
+- Fixes a bug where tokenId for NFT was not being sent correctly in send flow (#37555)
+
 ## [13.7.0]
 
 ### Added
@@ -1009,7 +1069,8 @@ authorized by the user.` error until the user fully revoked dapp
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.7.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.8.0...HEAD
+[13.8.0]: https://github.com/MetaMask/metamask-extension/compare/v13.7.0...v13.8.0
 [13.7.0]: https://github.com/MetaMask/metamask-extension/compare/v13.6.0...v13.7.0
 [13.6.0]: https://github.com/MetaMask/metamask-extension/compare/v13.5.0...v13.6.0
 [13.5.0]: https://github.com/MetaMask/metamask-extension/compare/v13.4.3...v13.5.0

@@ -90,10 +90,15 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
+import {
+  AccountDetailsMenuItem,
+  DiscoverMenuItem,
+  ViewExplorerMenuItem,
+} from '../menu-items';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
 import { getIsShieldSubscriptionActive } from '../../../../shared/lib/shield';
+import { useRewardsContext } from '../../../contexts/rewards';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -112,6 +117,7 @@ export const GlobalMenu = ({
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const basicFunctionality = useSelector(getUseExternalServices);
+  const { rewardsEnabled } = useRewardsContext();
 
   const history = useHistory();
 
@@ -320,6 +326,12 @@ export const GlobalMenu = ({
             </Box>
           </MenuItem>
         </>
+      )}
+      {rewardsEnabled && (
+        <DiscoverMenuItem
+          metricsLocation={METRICS_LOCATION}
+          closeMenu={closeMenu}
+        />
       )}
       {account && (
         <>
