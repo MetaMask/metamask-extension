@@ -439,6 +439,9 @@
   "alertAccountTypeUpgradeTitle": {
     "message": "Account type"
   },
+  "alertActionBurnAddress": {
+    "message": "Sending Assets to Burn Address"
+  },
   "alertActionBuyWithNativeCurrency": {
     "message": "Buy $1"
   },
@@ -465,6 +468,9 @@
   },
   "alertMessageAddressTrustSignalMalicious": {
     "message": "If you confirm this request, you will probably lose your assets to a scammer."
+  },
+  "alertMessageBurnAddress": {
+    "message": "You're sending your assets to a burn address. If you continue, you'll lose your assets."
   },
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
@@ -981,6 +987,34 @@
   "bridgeNoMMFee": {
     "message": "No MM fee"
   },
+  "bridgePoints": {
+    "message": "Est. points",
+    "description": "Label for estimated points that can be earned from a bridge or swap"
+  },
+  "bridgePoints_couldntLoad": {
+    "message": "Couldn't load",
+    "description": "Text shown in rewards badge when points couldn't be loaded"
+  },
+  "bridgePoints_error": {
+    "message": "Couldn't load points",
+    "description": "Tooltip title when there's an error fetching estimated points"
+  },
+  "bridgePoints_error_content": {
+    "message": "Don't worry, you're still earning points. They'll show up in your account soon, or you can check in the Rewards tab on MetaMask Mobile.",
+    "description": "Error message when points estimation fails"
+  },
+  "bridgePoints_tooltip": {
+    "message": "Points",
+    "description": "Tooltip title for points"
+  },
+  "bridgePoints_tooltip_content_1": {
+    "message": "Points are how you earn MetaMask Rewards for completing transactions, like when you swap, bridge, or trade perps.",
+    "description": "First part of tooltip content explaining rewards points"
+  },
+  "bridgePoints_tooltip_content_2": {
+    "message": "Keep in mind this value is an estimate and will be finalized once the transaction is complete. Points can take up to 1 hour to be confirmed in your Rewards balance.",
+    "description": "Second part of tooltip content explaining how points are calculated"
+  },
   "bridgePriceImpact": {
     "message": "Price impact"
   },
@@ -1260,6 +1294,9 @@
   "comboNoOptions": {
     "message": "No options found",
     "description": "Default text shown in the combo field dropdown if no options."
+  },
+  "completed": {
+    "message": "Completed"
   },
   "concentratedSupplyDistributionDescription": {
     "message": "The majority of the token's supply is held by the top token holders, posing a risk of centralized price manipulation"
@@ -2706,7 +2743,8 @@
     "message": "form"
   },
   "freeTrialDays": {
-    "message": "$1 days free trial"
+    "message": "Free $1-day trial",
+    "description": "The $1 is the number of days"
   },
   "from": {
     "message": "From"
@@ -2827,6 +2865,14 @@
   "gatorPermissionsMaxAllowance": {
     "message": "Max allowance",
     "description": "Label for the max allowance of a permission"
+  },
+  "gatorPermissionsRevocationPending": {
+    "message": "Revocation pending",
+    "description": "Label for a gator permission that is pending a revocation transaction"
+  },
+  "gatorPermissionsRevoke": {
+    "message": "Revoke",
+    "description": "Label for the revoke button of a gator permission"
   },
   "gatorPermissionsStartDate": {
     "message": "Start date",
@@ -3511,6 +3557,10 @@
   },
   "loginErrorGenericTitle": {
     "message": "Something went wrong"
+  },
+  "loginErrorResetWalletDescription": {
+    "message": "An issue occurred while unlocking. Re-login with $1 and your Metamask password.",
+    "description": "$1 is the social login method"
   },
   "loginErrorSessionExpiredButton": {
     "message": "Log in"
@@ -5482,9 +5532,6 @@
   "reward": {
     "message": "Reward"
   },
-  "rewardsOptIn": {
-    "message": "Sign up for Rewards"
-  },
   "rewardsPointsBalance": {
     "message": "$1 points",
     "description": "$1 is the formatted number of rewards points"
@@ -5801,6 +5848,10 @@
     "message": "You may file a single claim per incident within $1 days of the incident. View the full coverage policy $2.",
     "description": "The $1 is the number of days and $2 is a link to the full coverage policy"
   },
+  "shieldClaimDetailsViewClaims": {
+    "message": "This claim is being reviewed by our team. We will notify you when it has been approved by email. View the full coverage policy $1.",
+    "description": "The $1 is a link to the full coverage policy"
+  },
   "shieldClaimDuplicateClaimExists": {
     "message": "A claim has already been submitted for this transaction hash."
   },
@@ -5892,6 +5943,24 @@
   "shieldClaimSelectNetwork": {
     "message": "Select a network"
   },
+  "shieldClaimStatusApproved": {
+    "message": "Approved"
+  },
+  "shieldClaimStatusCreated": {
+    "message": "Created"
+  },
+  "shieldClaimStatusInProgress": {
+    "message": "In progress"
+  },
+  "shieldClaimStatusRejected": {
+    "message": "Rejected"
+  },
+  "shieldClaimStatusSubmitted": {
+    "message": "Submitted"
+  },
+  "shieldClaimStatusWaitingForCustomer": {
+    "message": "Waiting for customer"
+  },
   "shieldClaimSubmissionWindowExpired": {
     "message": "Submission window expired. Claims must be filed within $1 days of the incident.",
     "description": "The $1 is the number of days"
@@ -5907,6 +5976,28 @@
   },
   "shieldClaimSubmitSuccessDescription": {
     "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
+  },
+  "shieldClaimsHistoryTitle": {
+    "message": "CLAIM HISTORY"
+  },
+  "shieldClaimsListTitle": {
+    "message": "Claim details"
+  },
+  "shieldClaimsNumber": {
+    "message": "Claim #$1",
+    "description": "The $1 is the claim number"
+  },
+  "shieldClaimsPendingAlertActionButtonLabel": {
+    "message": "View claims"
+  },
+  "shieldClaimsPendingAlertDescription": {
+    "message": "Your claims is being reviewed by our team. We will notify you when it has been approved by email."
+  },
+  "shieldClaimsPendingAlertTitle": {
+    "message": "You have claims that are pending approval."
+  },
+  "shieldClaimsPendingTitle": {
+    "message": "PENDING CLAIMS"
   },
   "shieldConfirmMembership": {
     "message": "Confirm membership"
@@ -5999,10 +6090,6 @@
     "message": "$1/year",
     "description": "The $1 is the price of the annual plan"
   },
-  "shieldPlanAutoRenew": {
-    "message": "Auto renews for $1 until canceled",
-    "description": "The $1 is the price of the monthly plan"
-  },
   "shieldPlanBillingDate": {
     "message": "Billing date"
   },
@@ -6013,16 +6100,20 @@
     "message": "Plan details"
   },
   "shieldPlanDetails1": {
-    "message": "No charge now, try free for $1 days"
-  },
-  "shieldPlanDetails2": {
-    "message": "Pre-approve membership (default 1 year), with fees charged only on a monthly basis"
+    "message": "Free $1-day trial",
+    "description": "The $1 is the number of days"
   },
   "shieldPlanDetails2Card": {
-    "message": "Plan auto-renews at the end of the term"
+    "message": "Plan auto-renews until canceled"
+  },
+  "shieldPlanDetails2CryptoMonth": {
+    "message": "Monthly fees are pre-approved for a year, so your coverage stays active"
+  },
+  "shieldPlanDetails2CryptoYear": {
+    "message": "Fees are paid upfront for a year, so your coverage stays active"
   },
   "shieldPlanDetails3": {
-    "message": "Secures your assets from risky transactions"
+    "message": "Billed monthly, cancel anytime"
   },
   "shieldPlanMonthly": {
     "message": "Monthly"
