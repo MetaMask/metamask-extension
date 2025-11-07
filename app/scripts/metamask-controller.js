@@ -1032,14 +1032,17 @@ export default class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts,
+      getAccounts: (requestOrigin) => getAccounts({ origin: requestOrigin }),
       // tx signing
-      processTransaction: (transactionParams, dappRequest) =>
+      processTransaction: (transactionParams, dappRequest, requestContext) =>
         addDappTransaction(
-          this.getAddTransactionRequest({ transactionParams, dappRequest }),
+          this.getAddTransactionRequest({
+            transactionParams,
+            dappRequest,
+            requestContext,
+          }),
         ),
       // msg signing
-
       processTypedMessage: (...args) =>
         addTypedMessage({
           signatureController: this.signatureController,
@@ -6103,10 +6106,12 @@ export default class MetamaskController extends EventEmitter {
     transactionParams,
     transactionOptions,
     dappRequest,
+    requestContext,
     ...otherParams
   }) {
     const networkClientId =
-      dappRequest?.networkClientId ?? transactionOptions?.networkClientId;
+      requestContext?.get('networkClientId') ??
+      transactionOptions?.networkClientId;
     const { chainId } =
       this.networkController.getNetworkConfigurationByNetworkClientId(
         networkClientId,
@@ -6114,6 +6119,7 @@ export default class MetamaskController extends EventEmitter {
     return {
       internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
+      requestContext,
       networkClientId,
       selectedAccount: this.accountsController.getAccountByAddress(
         transactionParams.from,
