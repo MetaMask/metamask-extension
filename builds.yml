@@ -21,6 +21,7 @@ buildTypes:
       - multi-srp
       - multichain
       - bitcoin
+      - bitcoin-swaps
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -30,7 +31,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.2/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - IS_SIDEPANEL: false
       # for seedless onboarding (social login)
@@ -63,7 +64,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.2/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - IS_SIDEPANEL: false
       # for seedless onboarding (social login)
@@ -95,9 +96,10 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_EXPERIMENTAL_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - IS_SIDEPANEL: true
+      - METAMASK_SHIELD_ENABLED: true
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.2/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       # for seedless onboarding (social login)
       - GOOGLE_EXPERIMENTAL_CLIENT_ID
@@ -125,7 +127,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.2/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
       - SUPPORT_LINK: https://support.metamask.io/
       - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -139,6 +141,7 @@ buildTypes:
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
       - GATOR_PERMISSIONS_ENABLED: true
+      - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
@@ -444,17 +447,7 @@ env:
   # Metamask Shield
   - METAMASK_SHIELD_ENABLED: 'false'
 
-  # URL of Shield gateway
-  - SHIELD_GATEWAY_URL: 'https://shield-gateway.dev-api.cx.metamask.io'
-  # URL of Shield rule engine
-  - SHIELD_RULE_ENGINE_URL: 'https://ruleset-engine.dev-api.cx.metamask.io'
-  # URL of Shield claims API
-  - SHIELD_CLAIMS_API_URL: 'https://claims.dev-api.cx.metamask.io'
-
   # Snaps
   # This should only be used for local testing, and should not be enabled in any
   # production builds (including beta and Flask).
   - FORCE_PREINSTALLED_SNAPS: 'false'
-
-  # Enable dapp swap shield implementation
-  - DAPP_SWAP_SHIELD_ENABLED: false

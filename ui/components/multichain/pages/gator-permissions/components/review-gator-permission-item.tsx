@@ -17,6 +17,7 @@ import {
   AvatarNetworkSize,
   ButtonIconSize,
   IconName,
+  Button,
 } from '@metamask/design-system-react';
 import {
   Erc20TokenPeriodicPermission,
@@ -46,6 +47,7 @@ import {
   selectERC20TokensByChain,
 } from '../../../../../selectors/selectors';
 import { getTokenMetadata } from '../../../../../helpers/utils/token-util';
+import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 
 type TokenMetadata = {
   symbol: string;
@@ -105,6 +107,7 @@ export const ReviewGatorPermissionItem = ({
   const { permissionResponse, siteOrigin } = gatorPermission;
   const { chainId } = permissionResponse;
   const permissionType = permissionResponse.permission.type;
+  const permissionContext = permissionResponse.context;
   const permissionAccount = permissionResponse.address || '0x';
   const tokenAddress = permissionResponse.permission.data.tokenAddress as
     | Hex
@@ -115,6 +118,7 @@ export const ReviewGatorPermissionItem = ({
   const nativeTokenMetadata = useSelector((state) =>
     getNativeTokenInfo(state, chainId),
   ) as TokenMetadata;
+  const pendingRevocations = useSelector(getPendingRevocations);
 
   const tokenMetadata: TokenMetadata = useMemo(() => {
     if (tokenAddress) {
@@ -145,6 +149,12 @@ export const ReviewGatorPermissionItem = ({
       name: nativeTokenMetadata.name,
     };
   }, [tokensByChain, chainId, tokenAddress, nativeTokenMetadata]);
+
+  const isPendingRevocation = useMemo(() => {
+    return pendingRevocations.some(
+      (revocation) => revocation.permissionContext === permissionContext,
+    );
+  }, [pendingRevocations, permissionContext]);
 
   /**
    * Handles the click event for the expand/collapse button
@@ -354,17 +364,28 @@ export const ReviewGatorPermissionItem = ({
           >
             {getURLHost(siteOrigin)}
           </Text>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.End}
-            style={{ flex: '1', alignSelf: 'center', cursor: 'pointer' }}
-            gap={2}
+          <Button
             onClick={onRevokeClick}
+            disabled={isPendingRevocation}
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              padding: 0,
+            }}
           >
-            <Text color={TextColor.ErrorDefault} variant={TextVariant.BodyMd}>
-              Revoke
+            <Text
+              color={
+                isPendingRevocation
+                  ? TextColor.TextMuted
+                  : TextColor.ErrorDefault
+              }
+              variant={TextVariant.BodyMd}
+            >
+              {isPendingRevocation
+                ? t('gatorPermissionsRevocationPending')
+                : t('gatorPermissionsRevoke')}
             </Text>
-          </Box>
+          </Button>
         </Box>
       </Box>
 

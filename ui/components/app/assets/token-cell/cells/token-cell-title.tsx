@@ -16,8 +16,8 @@ export const TokenCellTitle = React.memo(
       ? ACCOUNT_TYPE_LABELS[token.accountType]
       : undefined;
     return (
-      <Box flexDirection={BoxFlexDirection.Row}>
-        <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+      <Box flexDirection={BoxFlexDirection.Row} className="min-w-0">
+        <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
           <AssetCellTitle title={token.title} />
           {label && <Tag label={label} />}
         </Box>

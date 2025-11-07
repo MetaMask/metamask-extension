@@ -3,7 +3,7 @@
     "pinnedAccountList": {},
     "hiddenAccountList": {}
   },
-  "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
+  "AccountTracker": { "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountTree": "object",
     "isAccountTreeSyncingInProgress": "boolean",
@@ -67,6 +67,7 @@
     "throttledOrigins": "object",
     "trezorModel": null,
     "updateModalLastDismissedAt": null,
+    "isWalletResetInProgress": "boolean",
     "hasShownMultichainAccountsIntroModal": "boolean",
     "showShieldEntryModalOnce": "boolean",
     "addressSecurityAlertResponses": "object",

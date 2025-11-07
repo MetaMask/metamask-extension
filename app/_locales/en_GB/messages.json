@@ -439,6 +439,9 @@
   "alertAccountTypeUpgradeTitle": {
     "message": "Account type"
   },
+  "alertActionBurnAddress": {
+    "message": "Sending Assets to Burn Address"
+  },
   "alertActionBuyWithNativeCurrency": {
     "message": "Buy $1"
   },
@@ -465,6 +468,9 @@
   },
   "alertMessageAddressTrustSignalMalicious": {
     "message": "If you confirm this request, you will probably lose your assets to a scammer."
+  },
+  "alertMessageBurnAddress": {
+    "message": "You're sending your assets to a burn address. If you continue, you'll lose your assets."
   },
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
@@ -981,6 +987,34 @@
   "bridgeNoMMFee": {
     "message": "No MM fee"
   },
+  "bridgePoints": {
+    "message": "Est. points",
+    "description": "Label for estimated points that can be earned from a bridge or swap"
+  },
+  "bridgePoints_couldntLoad": {
+    "message": "Couldn't load",
+    "description": "Text shown in rewards badge when points couldn't be loaded"
+  },
+  "bridgePoints_error": {
+    "message": "Couldn't load points",
+    "description": "Tooltip title when there's an error fetching estimated points"
+  },
+  "bridgePoints_error_content": {
+    "message": "Don't worry, you're still earning points. They'll show up in your account soon, or you can check in the Rewards tab on MetaMask Mobile.",
+    "description": "Error message when points estimation fails"
+  },
+  "bridgePoints_tooltip": {
+    "message": "Points",
+    "description": "Tooltip title for points"
+  },
+  "bridgePoints_tooltip_content_1": {
+    "message": "Points are how you earn MetaMask Rewards for completing transactions, like when you swap, bridge, or trade perps.",
+    "description": "First part of tooltip content explaining rewards points"
+  },
+  "bridgePoints_tooltip_content_2": {
+    "message": "Keep in mind this value is an estimate and will be finalized once the transaction is complete. Points can take up to 1 hour to be confirmed in your Rewards balance.",
+    "description": "Second part of tooltip content explaining how points are calculated"
+  },
   "bridgePriceImpact": {
     "message": "Price impact"
   },
@@ -1260,6 +1294,9 @@
   "comboNoOptions": {
     "message": "No options found",
     "description": "Default text shown in the combo field dropdown if no options."
+  },
+  "completed": {
+    "message": "Completed"
   },
   "concentratedSupplyDistributionDescription": {
     "message": "The majority of the token's supply is held by the top token holders, posing a risk of centralized price manipulation"
@@ -1803,14 +1840,8 @@
   "customToken": {
     "message": "Custom token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Token detection is not available on this network yet. Please import token manually and make sure you trust it. Learn about $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Anyone can create a token, including creating fake versions of existing tokens. Learn about $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Make sure you trust a token before you import it. Learn how to avoid $1. You can also enable token detection $2."
   },
   "customerSupport": {
     "message": "customer support"
@@ -1840,6 +1871,18 @@
   "dappSuggestedTooltip": {
     "message": "$1 has recommended this price.",
     "description": "$1 represents the Dapp's origin"
+  },
+  "dappSwapAdvantage": {
+    "message": "Save + Earn using MetaMask Swap:"
+  },
+  "dappSwapBenefits": {
+    "message": "No additional cost • Priority support • Network fees refunded on failed swaps"
+  },
+  "dappSwapQuoteDetails": {
+    "message": "Save $1 network fee, get $2 more $3"
+  },
+  "dappSwapQuoteDifference": {
+    "message": "Save about $1"
   },
   "darkTheme": {
     "message": "Dark"
@@ -1966,6 +2009,9 @@
   },
   "deepLink_theSwapsRampsPage": {
     "message": "the Swaps/Ramps page"
+  },
+  "deepLink_theTransactionShieldPage": {
+    "message": "the transaction shield page"
   },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
@@ -2691,7 +2737,8 @@
     "message": "form"
   },
   "freeTrialDays": {
-    "message": "$1 days free trial"
+    "message": "Free $1-day trial",
+    "description": "The $1 is the number of days"
   },
   "from": {
     "message": "From"
@@ -2812,6 +2859,14 @@
   "gatorPermissionsMaxAllowance": {
     "message": "Max allowance",
     "description": "Label for the max allowance of a permission"
+  },
+  "gatorPermissionsRevocationPending": {
+    "message": "Revocation pending",
+    "description": "Label for a gator permission that is pending a revocation transaction"
+  },
+  "gatorPermissionsRevoke": {
+    "message": "Revoke",
+    "description": "Label for the revoke button of a gator permission"
   },
   "gatorPermissionsStartDate": {
     "message": "Start date",
@@ -3114,9 +3169,6 @@
   "imported": {
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "in your Settings"
   },
   "included": {
     "message": "included"
@@ -3496,6 +3548,10 @@
   },
   "loginErrorGenericTitle": {
     "message": "Something went wrong"
+  },
+  "loginErrorResetWalletDescription": {
+    "message": "An issue occurred while unlocking. Re-login with $1 and your Metamask password.",
+    "description": "$1 is the social login method"
   },
   "loginErrorSessionExpiredButton": {
     "message": "Log in"
@@ -4469,9 +4525,6 @@
   "onboardingOptionIcon": {
     "message": "$1 icon",
     "description": "$1 is the icon name"
-  },
-  "onboardingOptionTitle": {
-    "message": "Choose an option to continue"
   },
   "onboardingPinExtensionAltLaunch": {
     "message": "Launch extension"
@@ -5470,6 +5523,14 @@
   "reward": {
     "message": "Reward"
   },
+  "rewardsPointsBalance": {
+    "message": "$1 points",
+    "description": "$1 is the formatted number of rewards points"
+  },
+  "rewardsPointsIcon": {
+    "message": "Rewards Points",
+    "description": "Alt text for the rewards points icon"
+  },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
   },
@@ -5623,11 +5684,8 @@
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
   },
   "seedPhraseReviewDetails": {
-    "message": "This is your $1. Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Don’t share it with anyone, ever."
+    "message": "This is your $1. Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Save your Secret Recovery Phrase"
@@ -5771,9 +5829,6 @@
   "shieldClaim": {
     "message": "Submit a claim"
   },
-  "shieldClaimChainId": {
-    "message": "Chain ID"
-  },
   "shieldClaimDescription": {
     "message": "Description of case"
   },
@@ -5781,14 +5836,30 @@
     "message": "Provide a brief summary of the incident"
   },
   "shieldClaimDetails": {
-    "message": "You may file a single claim per incident within 21 days of the incident. View the full coverage policy $1.",
+    "message": "You may file a single claim per incident within $1 days of the incident. View the full coverage policy $2.",
+    "description": "The $1 is the number of days and $2 is a link to the full coverage policy"
+  },
+  "shieldClaimDetailsViewClaims": {
+    "message": "This claim is being reviewed by our team. We will notify you when it has been approved by email. View the full coverage policy $1.",
     "description": "The $1 is a link to the full coverage policy"
+  },
+  "shieldClaimDuplicateClaimExists": {
+    "message": "A claim has already been submitted for this transaction hash."
   },
   "shieldClaimEmail": {
     "message": "Email"
   },
   "shieldClaimEmailHelpText": {
     "message": "We'll use this email to keep you informed with updates."
+  },
+  "shieldClaimFileErrorCountExceeded": {
+    "message": "Number of files exceeds the maximum allowed count."
+  },
+  "shieldClaimFileErrorInvalidType": {
+    "message": "Invalid file type."
+  },
+  "shieldClaimFileErrorSizeExceeded": {
+    "message": "Total file size exceeds the maximum allowed size."
   },
   "shieldClaimFileUploader": {
     "message": "Image Upload"
@@ -5810,10 +5881,16 @@
     "message": "Need help finding it?"
   },
   "shieldClaimImpactedTxHashNotEligible": {
-    "message": "This transaction was not made within MetaMask and is not eligible for claims."
+    "message": "This transaction is not done within MetaMask, hence it is not eligible for claims"
   },
   "shieldClaimImpactedWalletAddress": {
     "message": "Impacted wallet address"
+  },
+  "shieldClaimIncidentDetails": {
+    "message": "Incident details"
+  },
+  "shieldClaimIncidentDetailsDescription": {
+    "message": "Help us understand more about what happened."
   },
   "shieldClaimInvalidChainId": {
     "message": "Please enter a valid chain ID"
@@ -5830,11 +5907,54 @@
   "shieldClaimInvalidWalletAddress": {
     "message": "Please enter a valid wallet address"
   },
+  "shieldClaimMaxClaimsLimitExceeded": {
+    "message": "You have reached the maximum limit of open claims. Please contact support if you need to submit additional claims."
+  },
+  "shieldClaimNetwork": {
+    "message": "Select network"
+  },
+  "shieldClaimPersonalDetails": {
+    "message": "Personal details"
+  },
+  "shieldClaimPersonalDetailsDescription": {
+    "message": "We'll use this to communicate with you when investigating and resolving."
+  },
   "shieldClaimReimbursementWalletAddress": {
     "message": "Wallet address for reimbursement"
   },
   "shieldClaimReimbursementWalletAddressHelpText": {
     "message": "Please ensure this is not a compromised wallet."
+  },
+  "shieldClaimSameWalletAddressesError": {
+    "message": "Impacted wallet address and reimbursement wallet address must be different."
+  },
+  "shieldClaimSelectAccount": {
+    "message": "Select an account"
+  },
+  "shieldClaimSelectNetwork": {
+    "message": "Select a network"
+  },
+  "shieldClaimStatusApproved": {
+    "message": "Approved"
+  },
+  "shieldClaimStatusCreated": {
+    "message": "Created"
+  },
+  "shieldClaimStatusInProgress": {
+    "message": "In progress"
+  },
+  "shieldClaimStatusRejected": {
+    "message": "Rejected"
+  },
+  "shieldClaimStatusSubmitted": {
+    "message": "Submitted"
+  },
+  "shieldClaimStatusWaitingForCustomer": {
+    "message": "Waiting for customer"
+  },
+  "shieldClaimSubmissionWindowExpired": {
+    "message": "Submission window expired. Claims must be filed within $1 days of the incident.",
+    "description": "The $1 is the number of days"
   },
   "shieldClaimSubmit": {
     "message": "Submit a claim"
@@ -5847,6 +5967,28 @@
   },
   "shieldClaimSubmitSuccessDescription": {
     "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
+  },
+  "shieldClaimsHistoryTitle": {
+    "message": "CLAIM HISTORY"
+  },
+  "shieldClaimsListTitle": {
+    "message": "Claim details"
+  },
+  "shieldClaimsNumber": {
+    "message": "Claim #$1",
+    "description": "The $1 is the claim number"
+  },
+  "shieldClaimsPendingAlertActionButtonLabel": {
+    "message": "View claims"
+  },
+  "shieldClaimsPendingAlertDescription": {
+    "message": "Your claims is being reviewed by our team. We will notify you when it has been approved by email."
+  },
+  "shieldClaimsPendingAlertTitle": {
+    "message": "You have claims that are pending approval."
+  },
+  "shieldClaimsPendingTitle": {
+    "message": "PENDING CLAIMS"
   },
   "shieldConfirmMembership": {
     "message": "Confirm membership"
@@ -5939,10 +6081,6 @@
     "message": "$1/year",
     "description": "The $1 is the price of the annual plan"
   },
-  "shieldPlanAutoRenew": {
-    "message": "Auto renews for $1 until canceled",
-    "description": "The $1 is the price of the monthly plan"
-  },
   "shieldPlanBillingDate": {
     "message": "Billing date"
   },
@@ -5953,16 +6091,20 @@
     "message": "Plan details"
   },
   "shieldPlanDetails1": {
-    "message": "No charge now, try free for $1 days"
-  },
-  "shieldPlanDetails2": {
-    "message": "Pre-approve membership (default 1 year), with fees charged only on a monthly basis"
+    "message": "Free $1-day trial",
+    "description": "The $1 is the number of days"
   },
   "shieldPlanDetails2Card": {
-    "message": "Plan auto-renews at the end of the term"
+    "message": "Plan auto-renews until canceled"
+  },
+  "shieldPlanDetails2CryptoMonth": {
+    "message": "Monthly fees are pre-approved for a year, so your coverage stays active"
+  },
+  "shieldPlanDetails2CryptoYear": {
+    "message": "Fees are paid upfront for a year, so your coverage stays active"
   },
   "shieldPlanDetails3": {
-    "message": "Secures your assets from risky transactions"
+    "message": "Billed monthly, cancel anytime"
   },
   "shieldPlanMonthly": {
     "message": "Monthly"
@@ -7504,9 +7646,6 @@
     "message": "$1 token permissions",
     "description": "$1 is the count of token permissions (plural form)"
   },
-  "tokenScamSecurityRisk": {
-    "message": "token scams and security risks"
-  },
   "tokenStandard": {
     "message": "Token standard"
   },
@@ -7986,24 +8125,11 @@
     "message": "$1 you can keep this phrase safe so you never lose access to your money.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "You can back up your wallets or see your Secret Recovery Phrase in Settings > Security & Password."
-  },
   "walletReadyLoseSrp": {
     "message": "If you lose your Secret Recovery Phrase, you won’t be able to use your wallet."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "This Secret Recovery Phrase can help you regain access if you ever forget your password or lose access to your login."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "If you don’t back up your Secret Recovery Phrase, you’ll lose access to your funds if you get locked out of the app or get a new device."
-  },
-  "walletReadySocialDetails1": {
-    "message": "You can log in to your wallet anytime with your $1 account and password.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "If you forget your password, you won’t be able to access your wallet."
   },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"
@@ -8046,9 +8172,6 @@
   },
   "welcomeBack": {
     "message": "Welcome back"
-  },
-  "welcomeToMetaMask": {
-    "message": "Let's get started"
   },
   "whatsThis": {
     "message": "What's this?"
@@ -8124,8 +8247,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Keep your Secret Recovery Phrase safe!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "We’ll remind you later"
   }
 }
