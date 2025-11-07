@@ -197,22 +197,32 @@ export class TestSnaps {
       `Checking that the client status should be ${JSON.stringify(expectedStatus, null, 2)}`,
     );
 
-    await this.driver.wait(async () => {
-      const element = await this.driver.findElement(
-        spanLocator.clientStatusResultSpan,
-      );
+    await this.driver.waitUntil(
+      async () => {
+        const element = await this.driver.findElement(
+          spanLocator.clientStatusResultSpan,
+        );
 
-      const spanText = await element.getAttribute('textContent');
-      const { clientVersion: actualClientVersion, ...actualStatus } =
-        JSON.parse(spanText);
+        const spanText = await element.getAttribute('textContent');
+        if (!spanText) {
+          return false;
+        }
 
-      return (
-        // Client version is different between main and Flask, so we just check
-        // that it starts with the expected version.
-        actualClientVersion.startsWith(expectedClientVersion) &&
-        isEqual(actualStatus, expectedStatus)
-      );
-    });
+        const { clientVersion: actualClientVersion, ...actualStatus } =
+          JSON.parse(spanText);
+
+        return (
+          // Client version is different between main and Flask, so we just check
+          // that it starts with the expected version.
+          actualClientVersion.startsWith(expectedClientVersion) &&
+          isEqual(actualStatus, expectedStatus)
+        );
+      },
+      {
+        interval: 200,
+        timeout: veryLargeDelayMs,
+      },
+    );
   }
 
   async scrollAndClickButton(buttonElement: keyof typeof buttonLocator) {
