@@ -93,6 +93,28 @@ export const SnapControllerInit: ControllerInitFunction<
     };
   }
 
+  async function waitForOnboarding() {
+    const { completedOnboarding } = initMessenger.call(
+      'OnboardingController:getState',
+    );
+
+    if (completedOnboarding) {
+      return;
+    }
+
+    return await new Promise((resolve) => {
+      // TODO: Cleanup
+      initMessenger.subscribe(
+        'OnboardingController:stateChange',
+        (state) => {
+          if (state.completedOnboarding) {
+            resolve();
+          }
+        },
+      );
+    });
+  }
+
   const controller = new SnapController({
     environmentEndowmentPermissions: Object.values(EndowmentPermissions),
     excludedPermissions: {
@@ -138,6 +160,8 @@ export const SnapControllerInit: ControllerInitFunction<
       initMessenger,
       'MetaMetricsController:trackEvent',
     ) as unknown as TrackEventHook,
+
+    waitForOnboarding,
   });
 
   initMessenger.subscribe('KeyringController:lock', () => {

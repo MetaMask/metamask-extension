@@ -110,6 +110,7 @@ export function getSnapControllerMessenger(
       'ExecutionService:outboundRequest',
       'ExecutionService:outboundResponse',
       'KeyringController:lock',
+      'OnboardingController:stateChange',
     ],
     actions: [
       'PermissionController:getEndowments',
@@ -139,6 +140,7 @@ export function getSnapControllerMessenger(
       'SnapsRegistry:resolveVersion',
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
+      'OnboardingController:getState',
     ],
   });
   return controllerMessenger;
