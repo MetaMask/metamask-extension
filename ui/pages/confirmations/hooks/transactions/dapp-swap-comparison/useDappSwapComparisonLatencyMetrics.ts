@@ -32,7 +32,7 @@ export function useDappSwapComparisonLatencyMetrics() {
     setQuoteRequestLatency(
       (
         new Date().getTime() -
-        currentConfirmation?.time +
+        currentConfirmation?.time -
         parseInt(requestDetectionLatency, 10)
       ).toString(),
     );
