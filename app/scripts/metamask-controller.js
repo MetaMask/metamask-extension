@@ -3467,7 +3467,7 @@ export default class MetamaskController extends EventEmitter {
 
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       // Multichain Assets Controller
-      addMultichainAssets: (assetIds, accountId) =>
+      multichainAddAssets: (assetIds, accountId) =>
         this.multichainAssetsController.addAssets(assetIds, accountId),
 
       multichainIgnoreAssets: (assetIds, accountId) =>

@@ -37,7 +37,7 @@ import {
 } from '../../../selectors';
 import {
   addImportedTokens,
-  addMultichainAssets,
+  multichainAddAssets,
   clearPendingTokens,
   setPendingTokens,
   showImportNftsModal,
@@ -341,7 +341,7 @@ export const ImportTokensModal = ({ onClose }) => {
           .filter((assetId) => assetId !== null); // Remove any failed conversions
 
         if (assetIds.length > 0) {
-          await dispatch(addMultichainAssets(assetIds, accountForChain.id));
+          await dispatch(multichainAddAssets(assetIds, accountForChain.id));
         }
       } else {
         // Handle EVM tokens - use existing batch import
