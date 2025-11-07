@@ -44,25 +44,12 @@ jest.mock('../../../store/actions', () => ({
   setConfirmationExchangeRates: jest
     .fn()
     .mockImplementation(() => ({ type: 'SET_CONFIRMATION_EXCHANGE_RATES' })),
-  showImportNftsModal: jest
-    .fn()
-    .mockImplementation(() => ({ type: 'SHOW_IMPORT_NFTS_MODAL' })),
-  setNewTokensImported: jest
-    .fn()
-    .mockImplementation(() => ({ type: 'SET_NEW_TOKENS_IMPORTED' })),
-  setNewTokensImportedError: jest
-    .fn()
-    .mockImplementation(() => ({ type: 'SET_NEW_TOKENS_IMPORTED_ERROR' })),
-  hideImportTokensModal: jest
-    .fn()
-    .mockImplementation(() => ({ type: 'HIDE_IMPORT_TOKENS_MODAL' })),
 }));
 
 describe('ImportTokensModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Mock useTokensWithFiltering to return test data
     useTokensWithFiltering.mockReturnValue({
       *filteredTokenListGenerator() {
         yield {
@@ -76,7 +63,6 @@ describe('ImportTokensModal', () => {
       isLoading: false,
     });
 
-    // Mocks needed for your changes to work
     jest
       .spyOn(assetUtilsModule, 'isEvmChainId')
       .mockImplementation((chainId) => {
@@ -91,15 +77,6 @@ describe('ImportTokensModal', () => {
       .mockImplementation((chainId) => {
         if (chainId?.startsWith('eip155:')) {
           return `0x${parseInt(chainId.split(':')[1], 10).toString(16)}`;
-        }
-        return chainId;
-      });
-
-    jest
-      .spyOn(bridgeControllerModule, 'formatChainIdToCaip')
-      .mockImplementation((chainId) => {
-        if (chainId?.startsWith('0x')) {
-          return `eip155:${parseInt(chainId, 16)}`;
         }
         return chainId;
       });
