@@ -12,8 +12,6 @@ import {
   TextField,
   TextFieldType,
   ButtonLink,
-  Button,
-  ButtonSize,
 } from '../../../components/component-library';
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
@@ -73,7 +71,7 @@ export const BridgeInputGroup = ({
 }: {
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
-  token: BridgeToken | null;
+  token: BridgeToken;
   buttonProps: { testId: string };
   amountFieldProps: Pick<
     React.ComponentProps<typeof TextField>,
@@ -237,29 +235,14 @@ export const BridgeInputGroup = ({
           isMultiselectEnabled={isMultiselectEnabled}
           isDestinationToken={isDestinationToken}
         >
-          {(onClickHandler, networkImageSrc) =>
-            isAmountReadOnly && !token ? (
-              <Button
-                data-testid={buttonProps.testId}
-                onClick={onClickHandler}
-                size={ButtonSize.Lg}
-                paddingLeft={6}
-                paddingRight={6}
-                fontWeight={FontWeight.Normal}
-                style={{ whiteSpace: 'nowrap' }}
-              >
-                {t('swapSwapTo')}
-              </Button>
-            ) : (
-              <BridgeAssetPickerButton
-                onClick={onClickHandler}
-                networkImageSrc={networkImageSrc}
-                asset={(token as never) ?? undefined}
-                networkProps={networkProps}
-                data-testid={buttonProps.testId}
-              />
-            )
-          }
+          {(onClickHandler) => (
+            <BridgeAssetPickerButton
+              onClick={onClickHandler}
+              asset={token}
+              networkProps={networkProps}
+              data-testid={buttonProps.testId}
+            />
+          )}
         </AssetPicker>
       </Row>
 

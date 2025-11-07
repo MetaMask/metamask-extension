@@ -26,12 +26,6 @@ export type BridgeToken = {
 };
 
 export type BridgeState = {
-  /*
-   * This stores the user's selected destination chain, and will be null if the user has not selected a destination chain
-   * This should not be accessed directly in components/hooks, use the getToChain selector instead
-   * The getToChain selector uses the source chain as the destination chain by default if toChainId is null
-   */
-  toChainId: CaipChainId | null;
   fromToken: BridgeToken | null;
   toToken: BridgeToken | null;
   fromTokenInputValue: string | null;
@@ -47,13 +41,12 @@ export type BridgeState = {
   txAlert: TxAlert | null;
 };
 
-export type ChainIdPayload = { payload: ChainId | Hex | CaipChainId | null };
 export type TokenPayload = {
   payload: {
     address: GenericQuoteRequest['srcTokenAddress'];
     symbol: string;
     decimals: number;
-    chainId: Exclude<ChainIdPayload['payload'], null>;
+    chainId: ChainId | Hex | CaipChainId;
     balance?: string;
     string?: string;
     image?: string;

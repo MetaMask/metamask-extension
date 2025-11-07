@@ -35,6 +35,7 @@ import {
 } from '../../../../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { useGetFormattedTokensPerChain } from '../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
@@ -184,7 +185,11 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
                   : (toChain?.chainId ?? '')
               ]
             }
-            name={toChain?.name ?? ''}
+            name={
+              NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                toChain.chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+              ]
+            }
             size={AvatarNetworkSize.Xs}
           />
         </Column>

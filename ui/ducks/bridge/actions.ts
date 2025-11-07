@@ -34,7 +34,6 @@ import type { TokenPayload } from './types';
 import { isNetworkAdded, isNonEvmChain } from './utils';
 
 const {
-  setToChainId,
   setFromToken,
   setToToken,
   setFromTokenInputValue,
@@ -47,7 +46,6 @@ const {
 } = bridgeSlice.actions;
 
 export {
-  setToChainId,
   resetInputFields,
   setToToken,
   setFromToken,
