@@ -42,7 +42,7 @@ describe('TokenList Component', () => {
 
     it('should check accountsAssets to determine if token is already added', () => {
       const assetId =
-        'SolTokenAddress123:solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:SolTokenAddress123';
 
       jest
         .spyOn(bridgeControllerModule, 'isNonEvmChainId')
@@ -73,7 +73,7 @@ describe('TokenList Component', () => {
 
     it('should mark token as not added when assetId is not in accountsAssets', () => {
       const assetId =
-        'SolTokenAddress123:solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:SolTokenAddress123';
 
       jest
         .spyOn(bridgeControllerModule, 'isNonEvmChainId')
