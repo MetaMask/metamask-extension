@@ -5,17 +5,35 @@ const { parsePort } = require('./lib/parse-port');
 const DEFAULT_PORT = 9090;
 const prefix = '[mock-segment]';
 
-function onRequest(request, response, events) {
-  console.log(`${prefix}: ${request.method} ${request.url}`);
-  const eventDescriptions = events.map((event) => {
-    if (event.type === 'track') {
-      return event.event;
-    } else if (event.type === 'page') {
-      return event.name;
+function onRequest(_request, response, events) {
+  const getDescription = (e) => {
+    switch (e.type) {
+      case 'track':
+        return e.event || '(no name)';
+      case 'page':
+        return e.name || '(no name)';
+      default:
+        return `[Unrecognized event type: ${e.type}]`;
     }
-    return `[Unrecognized event type: ${event.type}]`;
+  };
+
+  events.forEach((event) => {
+    const properties = event && event.properties ? event.properties : undefined;
+    const hasProperties =
+      properties &&
+      typeof properties === 'object' &&
+      Object.keys(properties).length > 0;
+    if (!hasProperties) {
+      return;
+    }
+    const name = getDescription(event);
+    console.log(`${prefix}: ${name}`);
+    try {
+      console.log(JSON.stringify(properties, null, 2));
+    } catch (_) {
+      console.log(String(properties));
+    }
   });
-  console.log(`${prefix}: Events received: ${eventDescriptions.join(', ')}`);
 
   response.statusCode = 200;
   response.end();
