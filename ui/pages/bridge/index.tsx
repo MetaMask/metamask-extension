@@ -97,6 +97,7 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
   };
 
   // Only fetch gas estimates if the source chain is EVM (not Solana, Bitcoin, or Tron)
+  // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
   const shouldFetchGasEstimates =
     fromChain?.chainId &&
     !isSolanaChainId(fromChain.chainId) &&

@@ -105,6 +105,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   if (isEvmNetwork) {
     balanceToTranslate = totalFiatBalance;
   } else {
+    // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
     const chainIdInHexOrCaip =
       toChain?.chainId &&
       (isSolanaChainId(toChain?.chainId) ||
@@ -193,6 +194,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
           <AvatarNetwork
             src={
               CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
                 toChain?.chainId &&
                 !isSolanaChainId(toChain?.chainId) &&
                 !isBitcoinChainId(toChain?.chainId) &&

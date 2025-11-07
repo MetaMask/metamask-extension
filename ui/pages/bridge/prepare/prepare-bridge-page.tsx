@@ -204,6 +204,7 @@ const PrepareBridgePage = ({
 
   const isFromTokensLoading = useMemo(() => {
     // Non-EVM chains (Solana, Bitcoin, Tron) don't use the EVM token list
+    // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
     if (
       fromChain &&
       (isSolanaChainId(fromChain.chainId) ||
@@ -301,6 +302,7 @@ const PrepareBridgePage = ({
           if (isNativeAddress(fromToken.address)) {
             address = '';
           } else if (
+            // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
             isSolanaChainId(fromChain.chainId) ||
             isBitcoinChainId(fromChain.chainId) ||
             isTronChainId(fromChain.chainId)

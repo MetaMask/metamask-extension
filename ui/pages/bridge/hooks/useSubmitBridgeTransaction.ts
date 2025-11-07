@@ -88,6 +88,7 @@ export default function useSubmitBridgeTransaction() {
       };
 
       // Handle non-EVM source chains (Solana, Bitcoin, Tron)
+      // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
       const isNonEvmSource =
         isSolanaChainId(quoteResponse.quote.srcChainId) ||
         isBitcoinChainId(quoteResponse.quote.srcChainId) ||
