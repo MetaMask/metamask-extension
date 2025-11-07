@@ -110,7 +110,6 @@ export function getSnapControllerMessenger(
       'ExecutionService:outboundRequest',
       'ExecutionService:outboundResponse',
       'KeyringController:lock',
-      'OnboardingController:stateChange',
     ],
     actions: [
       'PermissionController:getEndowments',
@@ -140,7 +139,6 @@ export function getSnapControllerMessenger(
       'SnapsRegistry:resolveVersion',
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
-      'OnboardingController:getState',
     ],
   });
   return controllerMessenger;
@@ -184,8 +182,13 @@ export function getSnapControllerInitMessenger(
       'PreferencesController:getState',
       'MetaMetricsController:trackEvent',
       'SnapController:setClientActive',
+      'OnboardingController:getState',
     ],
-    events: ['KeyringController:lock', 'KeyringController:unlock'],
+    events: [
+      'KeyringController:lock',
+      'KeyringController:unlock',
+      'OnboardingController:stateChange',
+    ],
   });
   return controllerInitMessenger;
 }
