@@ -450,6 +450,16 @@ const MultichainBridgeTransactionDetailsModal = ({
                           : assetData.amount;
                         return `${displayAmount} ${assetData.unit}`;
                       }
+
+                      // Fallback to quote data when transaction.from is empty (e.g., BTC transactions)
+                      if (quote?.srcTokenAmount && quote?.srcAsset?.symbol) {
+                        const formattedAmount = formatDestTokenAmount(
+                          quote.srcTokenAmount,
+                          quote.srcAsset.decimals,
+                        );
+                        return `${formattedAmount} ${quote.srcAsset.symbol}`;
+                      }
+
                       return '';
                     })()}
                   </Text>

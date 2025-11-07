@@ -45,7 +45,7 @@ describe('Test Snap Client Status', function () {
 
         // Validate the client status is accurate
         await testSnaps.checkClientStatus(
-          JSON.stringify({ locked: true, active: true }, null, 2),
+          JSON.stringify({ locked: true, active: false }, null, 2),
         );
       },
     );

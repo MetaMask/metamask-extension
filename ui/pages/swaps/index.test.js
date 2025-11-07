@@ -5,27 +5,24 @@ import nock from 'nock';
 import { waitFor } from '@testing-library/react';
 
 import { setBackgroundConnection } from '../../store/background-connection';
-import {
-  renderWithProvider,
-  createSwapsMockStore,
-  MOCKS,
-  CONSTANTS,
-} from '../../../test/jest';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { createSwapsMockStore, MOCKS, CONSTANTS } from '../../../test/jest';
 import Swap from '.';
 
 const middleware = [thunk];
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: jest.fn(),
-  }),
-  useLocation: jest.fn(() => {
-    return {
-      pathname: '/swaps/prepare-swap-page',
-    };
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: jest.fn(() => {
+      return {
+        pathname: '/swaps/prepare-swap-page',
+      };
+    }),
+  };
+});
 
 setBackgroundConnection({
   getStatePatches: jest.fn().mockResolvedValue([]),
