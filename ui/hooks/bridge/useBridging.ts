@@ -33,12 +33,7 @@ import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { getFromChain } from '../../ducks/bridge/selectors';
-import {
-  getFromChains,
-  getLastSelectedChainId,
-} from '../../ducks/bridge/selectors';
-import { getMultichainProviderConfig } from '../../selectors/multichain';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { getFromChains } from '../../ducks/bridge/selectors';
 
 const useBridging = () => {
   const navigate = useNavigate();
@@ -50,8 +45,6 @@ const useBridging = () => {
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const fromChain = useSelector(getFromChain);
-  const lastSelectedChainId = useSelector(getLastSelectedChainId);
-  const providerConfig = useSelector(getMultichainProviderConfig);
   const fromChains = useSelector(getFromChains);
 
   const isChainIdEnabledForBridging = useCallback(
