@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { Location } from 'react-router-dom';
+import type { Location as RouterLocation } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -155,7 +155,7 @@ async function updateStateFromUrl(
 }
 
 type DeepLinkProps = {
-  location: Location;
+  location: RouterLocation;
 };
 
 export const DeepLink = ({ location }: DeepLinkProps) => {

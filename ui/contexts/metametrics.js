@@ -157,14 +157,22 @@ export function MetaMetricsProvider({ children }) {
    */
   useEffect(() => {
     const environmentType = getEnvironmentType();
-    const match = matchPath(
-      {
-        path: getPaths(),
-        end: true,
-        caseSensitive: true,
-      },
-      location.pathname,
-    );
+    // v6 matchPath doesn't support array of paths, so we loop to find first match
+    const paths = getPaths();
+    let match = null;
+    for (const path of paths) {
+      match = matchPath(
+        {
+          path,
+          end: true,
+          caseSensitive: true,
+        },
+        location.pathname,
+      );
+      if (match) {
+        break;
+      }
+    }
     // Start by checking for a missing match route. If this falls through to
     // the else if, then we know we have a matched route for tracking.
     if (!match) {

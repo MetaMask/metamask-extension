@@ -34,4 +34,3 @@ const InitializedV5Compat = ({ children }: InitializedV5CompatProps) => {
 };
 
 export default InitializedV5Compat;
-

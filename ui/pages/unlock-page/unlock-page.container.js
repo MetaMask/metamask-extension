@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import React from 'react';
 import { compose } from 'redux';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -22,10 +23,9 @@ import {
   getTheme,
 } from '../../selectors';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
-import UnlockPage from './unlock-page.component';
-import withRouterHooks from "../../helpers/higher-order-components/with-router-hooks/with-router-hooks";
-import React from 'react';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { useNavState } from '../../contexts/navigation-state';
+import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
   const {

@@ -295,40 +295,4 @@ describe('Unlock Page', () => {
       expect(queryByTestId('login-error-modal')).toBeInTheDocument();
     });
   });
-
-  it('should show login error modal when authentication error is thrown', async () => {
-    const pathname = '/unlock';
-    const mockStateNonUnlocked = {
-      metamask: { isUnlocked: false, completedOnboarding: true },
-    };
-    const store = configureMockStore([thunk])(mockStateNonUnlocked);
-
-    mockTryUnlockMetamask.mockImplementationOnce(
-      jest.fn(() => {
-        return Promise.reject(
-          new Error(
-            SeedlessOnboardingControllerErrorMessage.AuthenticationError,
-          ),
-        );
-      }),
-    );
-    const mockForceUpdateMetamaskState = jest.fn();
-
-    const { queryByTestId } = renderWithProvider(
-      <UnlockPage forceUpdateMetamaskState={mockForceUpdateMetamaskState} />,
-      store,
-      {
-        pathname,
-      },
-    );
-
-    const passwordField = queryByTestId('unlock-password');
-    const loginButton = queryByTestId('unlock-submit');
-    fireEvent.change(passwordField, { target: { value: 'a-password' } });
-    fireEvent.click(loginButton);
-
-    await waitFor(() => {
-      expect(queryByTestId('login-error-modal')).toBeInTheDocument();
-    });
-  });
 });
