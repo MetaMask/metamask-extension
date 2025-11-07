@@ -273,21 +273,20 @@ const getTokenImage = (payload: TokenPayload['payload']) => {
 };
 
 export const toBridgeToken = (
-  payload: TokenPayload['payload'],
-): BridgeToken | null => {
-  if (!payload) {
-    return null;
-  }
+  payload: NonNullable<TokenPayload['payload']>,
+): BridgeToken => {
   const caipChainId = formatChainIdToCaip(payload.chainId);
   return {
     ...payload,
     balance: payload.balance ?? '0',
-    string: payload.string ?? '0',
-    chainId: payload.chainId,
+    chainId: isNonEvmChainId(payload.chainId)
+      ? caipChainId
+      : formatChainIdToHex(payload.chainId),
     image: getTokenImage(payload),
     assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
   };
 };
+
 const createBridgeTokenPayload = (
   tokenData: {
     address: string;
@@ -297,7 +296,7 @@ const createBridgeTokenPayload = (
     assetId?: string;
   },
   chainId: ChainId | Hex | CaipChainId,
-): TokenPayload['payload'] | null => {
+) => {
   const { assetId, ...rest } = tokenData;
   return toBridgeToken({
     ...rest,
@@ -306,9 +305,9 @@ const createBridgeTokenPayload = (
 };
 
 export const getDefaultToToken = (
-  targetChainId: CaipChainId,
   fromToken: Pick<NonNullable<TokenPayload['payload']>, 'address' | 'chainId'>,
 ) => {
+  const targetChainId = formatChainIdToCaip(fromToken.chainId);
   const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[targetChainId];
 
   if (commonPair) {
@@ -344,5 +343,5 @@ export const getDefaultToToken = (
     return createBridgeTokenPayload(nativeAsset, targetChainId);
   }
 
-  return null;
+  throw new Error(`No default token found for chainId: ${targetChainId}`);
 };

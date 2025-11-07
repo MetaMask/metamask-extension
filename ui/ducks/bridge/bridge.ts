@@ -19,7 +19,6 @@ import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
 
 const initialState: BridgeState = {
-  toChainId: null,
   fromToken: null,
   toToken: null,
   fromTokenInputValue: null,
@@ -99,10 +98,6 @@ const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
   reducers: {
-    setToChainId: (state, { payload }: ChainIdPayload) => {
-      state.toChainId = payload ? formatChainIdToCaip(payload) : null;
-      state.toToken = null;
-    },
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = toBridgeToken(payload);
       state.fromTokenBalance = null;
@@ -116,16 +111,6 @@ const bridgeSlice = createSlice({
       ) {
         state.toToken = null;
       }
-      // if new fromToken is BTC, and toToken is BTC, unset toChain and toToken
-      if (
-        state.fromToken?.chainId &&
-        isBitcoinChainId(state.fromToken.chainId) &&
-        state.toChainId &&
-        isBitcoinChainId(state.toChainId)
-      ) {
-        state.toChainId = null;
-        state.toToken = null;
-      }
     },
     setToToken: (state, { payload }: TokenPayload) => {
       const toToken = toBridgeToken(payload);
@@ -137,16 +122,6 @@ const bridgeSlice = createSlice({
               getNativeAssetForChainId(toToken.chainId)?.address,
           }
         : toToken;
-      // Update toChainId if it's different from the toToken chainId
-      if (
-        toToken?.chainId &&
-        (state.toChainId
-          ? formatChainIdToCaip(toToken.chainId) !==
-            formatChainIdToCaip(state.toChainId)
-          : true)
-      ) {
-        state.toChainId = formatChainIdToCaip(toToken.chainId);
-      }
     },
     setFromTokenInputValue: (
       state,
@@ -163,7 +138,6 @@ const bridgeSlice = createSlice({
     ) => {
       state.fromToken = toBridgeToken(quote.srcAsset);
       state.toToken = toBridgeToken(quote.destAsset);
-      state.toChainId = formatChainIdToCaip(quote.destChainId);
     },
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;

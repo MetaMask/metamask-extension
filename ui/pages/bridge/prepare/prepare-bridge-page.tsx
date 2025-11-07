@@ -27,7 +27,6 @@ import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
-  setToChainId,
   setToToken,
   updateQuoteRequestParams,
   resetBridgeState,
@@ -619,7 +618,7 @@ const PrepareBridgePage = ({
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
-                (toChain && !isNetworkAdded(toChain))
+                !fromChains.find((chain) => chain.chainId === toChain.chainId)
               }
               onClick={() => {
                 dispatch(setSelectedQuote(null));
@@ -675,7 +674,9 @@ const PrepareBridgePage = ({
                   // Handle account switching for Solana
                   dispatch(
                     setFromChain({
-                      networkConfig: toChain,
+                      networkConfig: toChains.find(
+                        (chain) => chain.chainId === toChain.chainId,
+                      ),
                       token: toToken,
                       selectedAccount,
                     }),
@@ -705,13 +706,17 @@ const PrepareBridgePage = ({
               dispatch(setToToken(bridgeToken));
             }}
             networkProps={{
-              network: toChain,
+              network: toChains.find(
+                (chain) => chain.chainId === toChain.chainId,
+              ),
               networks: toChains,
               onNetworkChange: (networkConfig) => {
                 if (isNetworkAdded(networkConfig)) {
                   enableMissingNetwork(networkConfig.chainId);
                 }
-                dispatch(setToChainId(networkConfig.chainId));
+                dispatch(
+                  setToToken(getNativeAssetForChainId(networkConfig.chainId)),
+                );
               },
               header: t('yourNetworks'),
               shouldDisableNetwork: ({ chainId }) =>

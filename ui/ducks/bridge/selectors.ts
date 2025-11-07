@@ -339,13 +339,12 @@ const getBIP44DefaultToChainId = createSelector(
   },
 );
 
-// If the user has selected a toChainId, return it as the destination chain
-// Otherwise, use the source chain as the destination chain (default to swap params)
-export const getToChain = createSelector(
+// If the user has selected a toToken, return it
+// Otherwise, return the default token for the fromChain.
+export const getToToken = createSelector(
   [
-    getFromChain,
-    getToChains,
-    (state: BridgeAppState) => state.bridge?.toChainId,
+    getFromToken,
+    (state: BridgeAppState) => state.bridge.toToken,
     getBIP44DefaultToChainId,
   ],
   (fromChain, toChains, toChainId, defaultToChainId) => {
@@ -403,14 +402,19 @@ export const getToToken = createSelector(
     if (toToken) {
       return toToken;
     }
+    // Bitcoin only has 1 asset, so we can use the default asset from LD
+    if (isBitcoinChainId(fromToken.chainId) && defaultToChainId) {
+      return toBridgeToken(getNativeAssetForChainId(defaultToChainId));
+    }
     // Otherwise, determine the default token to use based on fromToken and toChain
-    const defaultToken = getDefaultToToken(
-      formatChainIdToCaip(toChain.chainId),
-      fromToken,
-    );
-    return defaultToken ? toBridgeToken(defaultToken) : null;
+    return toBridgeToken(getDefaultToToken(fromToken));
   },
 );
+
+const getToChainId = (state: BridgeAppState) => getToToken(state).chainId;
+export const getToChain = (state: BridgeAppState) => ({
+  chainId: getToChainId(state),
+});
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
@@ -448,14 +452,14 @@ export const getFromAccount = createSelector(
 );
 
 export const getToAccounts = createSelector(
-  [getToChain, getWalletsWithAccounts, (state) => state],
-  (toChain, accountsByWallet, state) => {
-    if (!toChain) {
+  [getToChainId, getWalletsWithAccounts, (state) => state],
+  (toChainId, accountsByWallet, state) => {
+    if (!toChainId) {
       return [];
     }
     const internalAccounts = getInternalAccountsByScope(
       state,
-      formatChainIdToCaip(toChain.chainId),
+      formatChainIdToCaip(toChainId),
     );
 
     return internalAccounts.map((account) => ({
@@ -672,7 +676,6 @@ export const getFromTokenConversionRate = createSelector(
 // The cached exchange rate won't be available so the rate from the bridge state is used
 export const getToTokenConversionRate = createDeepEqualSelector(
   [
-    getToChain,
     (state: BridgeAppState) => state.metamask.marketData, // rates for non-native evm tokens
     getAssetsRates, // non-evm conversion rates, multichain equivalent of getMarketData
     getToToken,
@@ -685,7 +688,6 @@ export const getToTokenConversionRate = createDeepEqualSelector(
     getMultichainCoinRates, // multichain native rates
   ],
   (
-    toChain,
     marketData,
     conversionRates,
     toToken,
@@ -693,85 +695,73 @@ export const getToTokenConversionRate = createDeepEqualSelector(
     { state, toTokenExchangeRate, toTokenUsdExchangeRate },
     rates,
   ) => {
+    const { chainId } = toToken;
+    const isToChainEnabled = fromChains.some(
+      ({ chainId: fromChainId }) => fromChainId === chainId,
+    );
     // When the toChain is not imported, the exchange rate to native asset is not available
     // The rate in the bridge state is used instead
-    if (
-      toChain?.chainId &&
-      !allNetworksByChainId[toChain.chainId] &&
-      toTokenExchangeRate
-    ) {
+    if (!isToChainEnabled && toTokenExchangeRate) {
       return {
         valueInCurrency: toTokenExchangeRate,
         usd: toTokenUsdExchangeRate,
       };
     }
-    if (toChain?.chainId && toToken) {
-      const nativeAssetId = getNativeAssetForChainId(toChain.chainId)?.assetId;
-      const tokenAssetId = toAssetId(
-        toToken.address,
-        formatChainIdToCaip(toChain.chainId),
+    const { assetId: nativeAssetId, symbol } =
+      getNativeAssetForChainId(chainId);
+    const tokenAssetId = toAssetId(
+      toToken.address,
+      formatChainIdToCaip(chainId),
+    );
+    const nativeSymbol = symbol?.toLowerCase();
+
+    if (isSolanaChainId(chainId) && nativeAssetId && tokenAssetId) {
+      // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
+      const tokenToNativeAssetRate = tokenPriceInNativeAsset(
+        Number(conversionRates?.[tokenAssetId]?.rate ?? null),
+        Number(conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null),
       );
-
-      if (isSolanaChainId(toChain.chainId) && nativeAssetId && tokenAssetId) {
-        // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
-        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          Number(conversionRates?.[tokenAssetId]?.rate ?? null),
-          Number(
-            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
-          ),
-        );
-        return exchangeRatesFromNativeAndCurrencyRates(
-          tokenToNativeAssetRate,
-          rates?.[toChain.nativeCurrency?.toLowerCase()]?.conversionRate ??
-            null,
-          rates?.[toChain.nativeCurrency?.toLowerCase()]?.usdConversionRate ??
-            null,
-        );
-      }
-
-      if (isBitcoinChainId(toChain.chainId) && nativeAssetId && tokenAssetId) {
-        // For Bitcoin tokens, we use the conversion rates provided by the multichain rates controller
-        const nativeAssetRate = Number(
-          conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
-        );
-        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          Number(conversionRates?.[tokenAssetId]?.rate ?? null),
-          nativeAssetRate,
-        );
-        return exchangeRatesFromNativeAndCurrencyRates(
-          tokenToNativeAssetRate,
-          rates?.[toChain.nativeCurrency?.toLowerCase()]?.conversionRate ??
-            null,
-          rates?.[toChain.nativeCurrency?.toLowerCase()]?.usdConversionRate ??
-            null,
-        );
-      }
-
-      const { chainId } = toChain;
-
-      const nativeToCurrencyRate = selectConversionRateByChainId(
-        state,
-        chainId,
-      );
-      const nativeToUsdRate = getUSDConversionRateByChainId(chainId)(state);
-
-      if (isNativeAddress(toToken.address)) {
-        return {
-          valueInCurrency: nativeToCurrencyRate,
-          usd: nativeToUsdRate,
-        };
-      }
-
-      const tokenToNativeAssetRate =
-        exchangeRateFromMarketData(chainId, toToken.address, marketData) ??
-        tokenPriceInNativeAsset(toTokenExchangeRate, nativeToCurrencyRate);
       return exchangeRatesFromNativeAndCurrencyRates(
         tokenToNativeAssetRate,
-        nativeToCurrencyRate,
-        nativeToUsdRate,
+        rates?.[nativeSymbol]?.conversionRate ?? null,
+        rates?.[nativeSymbol]?.usdConversionRate ?? null,
       );
     }
-    return exchangeRatesFromNativeAndCurrencyRates();
+
+    if (isBitcoinChainId(chainId) && nativeAssetId && tokenAssetId) {
+      // For Bitcoin tokens, we use the conversion rates provided by the multichain rates controller
+      const nativeAssetRate = Number(
+        conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
+      );
+      const tokenToNativeAssetRate = tokenPriceInNativeAsset(
+        Number(conversionRates?.[tokenAssetId]?.rate ?? null),
+        nativeAssetRate,
+      );
+      return exchangeRatesFromNativeAndCurrencyRates(
+        tokenToNativeAssetRate,
+        rates?.[nativeSymbol]?.conversionRate ?? null,
+        rates?.[nativeSymbol]?.usdConversionRate ?? null,
+      );
+    }
+
+    const nativeToCurrencyRate = selectConversionRateByChainId(state, chainId);
+    const nativeToUsdRate = getUSDConversionRateByChainId(chainId)(state);
+
+    if (isNativeAddress(toToken.address)) {
+      return {
+        valueInCurrency: nativeToCurrencyRate,
+        usd: nativeToUsdRate,
+      };
+    }
+
+    const tokenToNativeAssetRate =
+      exchangeRateFromMarketData(chainId, toToken.address, marketData) ??
+      tokenPriceInNativeAsset(toTokenExchangeRate, nativeToCurrencyRate);
+    return exchangeRatesFromNativeAndCurrencyRates(
+      tokenToNativeAssetRate,
+      nativeToCurrencyRate,
+      nativeToUsdRate,
+    );
   },
 );
 

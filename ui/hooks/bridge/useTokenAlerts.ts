@@ -3,12 +3,7 @@ import {
   formatAddressToCaipReference,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import {
-  getFromToken,
-  getFromChain,
-  getToToken,
-  getToChain,
-} from '../../ducks/bridge/selectors';
+import { getToToken } from '../../ducks/bridge/selectors';
 import {
   convertChainIdToBlockAidChainName,
   fetchTokenAlert,
@@ -18,22 +13,13 @@ import { AllowedBridgeChainIds } from '../../../shared/constants/bridge';
 import { useAsyncResult } from '../useAsync';
 
 export const useTokenAlerts = () => {
-  const fromToken = useSelector(getFromToken);
-  const fromChain = useSelector(getFromChain);
   const toToken = useSelector(getToToken);
-  const toChain = useSelector(getToChain);
 
   const { value: tokenAlert } =
     useAsyncResult<TokenAlertWithLabelIds | null>(async () => {
-      if (
-        fromToken &&
-        fromChain &&
-        toToken &&
-        toChain &&
-        !isNativeAddress(toToken.address)
-      ) {
+      if (!isNativeAddress(toToken.address)) {
         const chainName = convertChainIdToBlockAidChainName(
-          toChain?.chainId as AllowedBridgeChainIds,
+          toToken.chainId as AllowedBridgeChainIds,
         );
         if (chainName) {
           return await fetchTokenAlert(
@@ -43,7 +29,7 @@ export const useTokenAlerts = () => {
         }
       }
       return null;
-    }, [toToken?.address, toChain?.chainId]);
+    }, [toToken.address, toToken.chainId]);
 
   return { tokenAlert };
 };
