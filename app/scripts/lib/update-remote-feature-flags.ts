@@ -1,6 +1,6 @@
 import log from 'loglevel';
-import MetamaskController from '../metamask-controller';
 import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-controller';
+import MetamaskController from '../metamask-controller';
 
 /**
  * A variable to track the ongoing updateRemoteFeatureFlags request.
