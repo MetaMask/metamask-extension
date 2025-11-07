@@ -7151,7 +7151,11 @@ export default class MetamaskController extends EventEmitter {
           return !isUnlocked;
         },
         getIsActive: () => {
-          return this._isClientOpen;
+          const { isUnlocked } = this.controllerMessenger.call(
+            'KeyringController:getState',
+          );
+
+          return this._isClientOpen && isUnlocked;
         },
         getInterfaceState: (...args) =>
           this.controllerMessenger.call(
