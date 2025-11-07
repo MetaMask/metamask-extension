@@ -46,8 +46,6 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
 
           await importTST(driver);
 
-          await new Promise((resolve) => setTimeout(resolve, 5000));
-
           await createERC20ApproveTransaction(driver);
 
           await assertApproveDetails(driver);
