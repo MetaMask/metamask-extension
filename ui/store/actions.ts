@@ -77,7 +77,6 @@ import {
   CachedLastSelectedPaymentMethods,
 } from '@metamask/subscription-controller';
 
-import { isNonEvmChainId } from '@metamask/bridge-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -184,7 +183,6 @@ import {
 import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
 import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
 import { loadShieldConfig } from '../../shared/modules/shield';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../selectors/multichain-accounts/account-tree';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -3037,18 +3035,15 @@ export function multichainAddAssets(
  * @param options.tokensToIgnore
  * @param options.networkClientId
  * @param options.dontShowLoadingIndicator
- * @param options.chainId
  */
 export function ignoreTokens({
   tokensToIgnore,
   dontShowLoadingIndicator = false,
   networkClientId = null,
-  chainId,
 }: {
   tokensToIgnore: string[];
   dontShowLoadingIndicator: boolean;
   networkClientId?: NetworkClientId;
-  chainId?: CaipChainId;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   const _tokensToIgnore = Array.isArray(tokensToIgnore)
     ? tokensToIgnore
@@ -3056,32 +3051,41 @@ export function ignoreTokens({
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
     try {
-      const state = getState();
-      const selectedAccount = getInternalAccountBySelectedAccountGroupAndCaip(
-        state,
-        chainId,
-      );
+      await submitRequestToBackground('ignoreTokens', [
+        _tokensToIgnore,
+        networkClientId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning(error));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
 
-      if (!selectedAccount) {
-        throw new Error('No selected account found');
-      }
-
-      if (isNonEvmChainId(chainId)) {
-        await submitRequestToBackground('multichainIgnoreAssets', [
-          _tokensToIgnore,
-          selectedAccount.id,
-        ]);
-      } else {
-        await submitRequestToBackground('ignoreTokens', [
-          _tokensToIgnore,
-          networkClientId,
-        ]);
-      }
+/**
+ * To ignore multichain assets (non-EVM tokens like Solana, Bitcoin)
+ *
+ * @param assetIds - The CAIP asset IDs (includes chain information)
+ * @param accountId - The account ID to add the asset to
+ */
+export function multichainIgnoreAssets(
+  assetIds: string[],
+  accountId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('multichainIgnoreAssets', [
+        assetIds,
+        accountId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
