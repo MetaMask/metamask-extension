@@ -2,8 +2,6 @@
  * @file The entry point for the web extension singleton process.
  */
 
-import { updateNetworkControllerRpcFailoverFromRemoteFeatureFlagController } from './updateNetworkControllerRpcFailoverFromRemoteFeatureFlagController';
-
 // Disabled to allow setting up initial state hooks first
 
 // This import sets up global functions required for Sentry to function.
@@ -55,6 +53,7 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import { updateNetworkControllerRpcFailoverFromRemoteFeatureFlagController } from './updateNetworkControllerRpcFailoverFromRemoteFeatureFlagController';
 import {
   CorruptionHandler,
   hasVault,
