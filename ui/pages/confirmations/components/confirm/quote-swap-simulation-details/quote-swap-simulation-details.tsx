@@ -6,7 +6,6 @@ import { QuoteResponse } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 
-import { TextColor } from '../../../../../helpers/constants/design-system';
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
