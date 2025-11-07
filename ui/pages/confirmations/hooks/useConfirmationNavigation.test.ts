@@ -87,7 +87,8 @@ describe('useConfirmationNavigation', () => {
       );
     });
 
-    it('navigates to template route', () => {
+    // AddEthereumChain is not registered as a templated confirmation, so it uses explicit routing to CONFIRM_TRANSACTION_ROUTE
+    it('navigates to transaction route for AddEthereumChain', () => {
       const result = renderHook(ApprovalType.AddEthereumChain);
 
       result.navigateToId(APPROVAL_ID_MOCK);
