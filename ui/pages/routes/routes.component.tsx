@@ -697,12 +697,15 @@ export default function Routes() {
               // Create a navigate function compatible with v5-compat for the component
               const navigate = (
                 to: string,
-                options: { replace?: boolean } = {},
+                options: {
+                  replace?: boolean;
+                  state?: Record<string, unknown>;
+                } = {},
               ) => {
                 if (options.replace) {
-                  v5History.replace(to);
+                  v5History.replace(to, options.state);
                 } else {
-                  v5History.push(to);
+                  v5History.push(to, options.state);
                 }
               };
               const ConfirmAddSuggestedTokenPageWithProps =
@@ -724,12 +727,15 @@ export default function Routes() {
               // Create a navigate function compatible with v5-compat for the component
               const navigate = (
                 to: string,
-                options: { replace?: boolean } = {},
+                options: {
+                  replace?: boolean;
+                  state?: Record<string, unknown>;
+                } = {},
               ) => {
                 if (options.replace) {
-                  v5History.replace(to);
+                  v5History.replace(to, options.state);
                 } else {
-                  v5History.push(to);
+                  v5History.push(to, options.state);
                 }
               };
               const ConfirmAddSuggestedNftPageWithProps =
