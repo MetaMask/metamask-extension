@@ -31,7 +31,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
 
-          await connectSolanaTestDapp(driver, testDapp, { onboard: false });
+          await connectSolanaTestDapp(driver, testDapp);
 
           const header = await testDapp.getHeader();
 

@@ -65,12 +65,6 @@ class EditConnectedAccountsModal {
     await this.driver.clickElementAndWaitToDisappear(this.disconnectButton);
   }
 
-  async selectAllAccounts(): Promise<void> {
-    console.log('Select all accounts on edit connected accounts modal');
-    await this.driver.clickElement(this.selectAllAccountsCheckbox);
-    await this.driver.clickElementAndWaitToDisappear(this.updateAccountsButton);
-  }
-
   /**
    * Selects an account at the specified index
    *
