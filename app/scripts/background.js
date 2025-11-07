@@ -736,7 +736,6 @@ async function initialize(backup) {
     initData.meta,
     offscreenPromise,
     preinstalledSnaps,
-    requestSafeReload,
     cronjobControllerStorageManager,
   );
 
