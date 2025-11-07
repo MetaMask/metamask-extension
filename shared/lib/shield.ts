@@ -33,15 +33,27 @@ function getShieldSubscription(
   return shieldSubscription;
 }
 
-export function getIsShieldSubscriptionActive(
+function getValidShieldSubscription(
   subscriptions: Subscription | Subscription[],
-): boolean {
+): Subscription | undefined {
   // check the feature flag first
   if (!getIsMetaMaskShieldFeatureEnabled()) {
-    return false;
+    return undefined;
   }
 
   const shieldSubscription = getShieldSubscription(subscriptions);
+
+  if (!shieldSubscription) {
+    return undefined;
+  }
+
+  return shieldSubscription;
+}
+
+export function getIsShieldSubscriptionActive(
+  subscriptions: Subscription | Subscription[],
+): boolean {
+  const shieldSubscription = getValidShieldSubscription(subscriptions);
 
   if (!shieldSubscription) {
     return false;
@@ -53,12 +65,7 @@ export function getIsShieldSubscriptionActive(
 export function getIsShieldSubscriptionPaused(
   subscriptions: Subscription | Subscription[],
 ): boolean {
-  // check the feature flag first
-  if (!getIsMetaMaskShieldFeatureEnabled()) {
-    return false;
-  }
-
-  const shieldSubscription = getShieldSubscription(subscriptions);
+  const shieldSubscription = getValidShieldSubscription(subscriptions);
 
   if (!shieldSubscription) {
     return false;
@@ -70,12 +77,7 @@ export function getIsShieldSubscriptionPaused(
 export function getIsShieldSubscriptionTrialing(
   subscriptions: Subscription | Subscription[],
 ): boolean {
-  // check the feature flag first
-  if (!getIsMetaMaskShieldFeatureEnabled()) {
-    return false;
-  }
-
-  const shieldSubscription = getShieldSubscription(subscriptions);
+  const shieldSubscription = getValidShieldSubscription(subscriptions);
 
   if (!shieldSubscription) {
     return false;
@@ -87,12 +89,7 @@ export function getIsShieldSubscriptionTrialing(
 export function getIsShieldSubscriptionProvisional(
   subscriptions: Subscription | Subscription[],
 ): boolean {
-  // check the feature flag first
-  if (!getIsMetaMaskShieldFeatureEnabled()) {
-    return false;
-  }
-
-  const shieldSubscription = getShieldSubscription(subscriptions);
+  const shieldSubscription = getValidShieldSubscription(subscriptions);
 
   if (!shieldSubscription) {
     return false;
