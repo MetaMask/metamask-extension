@@ -125,7 +125,7 @@ async function mockStripeSubscriptionFlow(
 
     // Mock claims submission endpoint
     await mockServer
-      .forPost('https://claims.dev-api.cx.metamask.io/claims')
+      .forPost(/https:\/\/.*\.cx\.metamask\.io\/claims/u)
       .thenJson(200, SHIELD_CLAIMS_RESPONSE),
 
     // Mock GET claims endpoint - returns list of claims
