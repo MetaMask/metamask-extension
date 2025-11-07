@@ -10,7 +10,10 @@ import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator';
 jest.mock(
   '../../../../hooks/transactions/useEnableShieldCoverageChecks',
   () => ({
-    useEnableShieldCoverageChecks: jest.fn(() => true),
+    useEnableShieldCoverageChecks: jest.fn(() => ({
+      isEnabled: true,
+      isPaused: false,
+    })),
   }),
 );
 
