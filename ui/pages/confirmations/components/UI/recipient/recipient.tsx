@@ -58,8 +58,10 @@ export const Recipient = ({
         size={AvatarAccountSize.Lg}
         data-testid="avatar"
       />
-      <Box>
-        <Text variant={TextVariant.bodyMdMedium}>{recipientName}</Text>
+      <Box className="send-recipient__content">
+        <Text variant={TextVariant.bodyMdMedium} ellipsis>
+          {recipientName}
+        </Text>
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
