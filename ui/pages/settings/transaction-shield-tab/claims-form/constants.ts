@@ -1,4 +1,9 @@
-import { SUBMIT_CLAIM_FIELDS, SUBMIT_CLAIM_ERROR_CODES, type SubmitClaimErrorCode, SubmitClaimField } from "../types";
+import {
+  SUBMIT_CLAIM_FIELDS,
+  SUBMIT_CLAIM_ERROR_CODES,
+  type SubmitClaimErrorCode,
+  SubmitClaimField,
+} from '../types';
 
 export const VALID_SUBMISSION_WINDOW_DAYS = 21;
 export const MAX_FILE_SIZE_MB = 5;
@@ -48,7 +53,9 @@ export const ERROR_MESSAGE_MAP: Partial<
 };
 
 // Error codes for fields in the error response
-export const FIELD_ERROR_MESSAGE_KEY_MAP: Partial<Record<SubmitClaimField, string>> = {
+export const FIELD_ERROR_MESSAGE_KEY_MAP: Partial<
+  Record<SubmitClaimField, string>
+> = {
   [SUBMIT_CLAIM_FIELDS.CHAIN_ID]: 'shieldClaimInvalidChainId',
   [SUBMIT_CLAIM_FIELDS.EMAIL]: 'shieldClaimInvalidEmail',
   [SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS]:

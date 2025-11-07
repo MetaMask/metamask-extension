@@ -414,8 +414,10 @@ import { UserOperationControllerInit } from './controller-init/confirmations/use
 import { RewardsDataServiceInit } from './controller-init/rewards-data-service-init';
 import { RewardsControllerInit } from './controller-init/rewards-controller-init';
 import { getRootMessenger } from './lib/messenger';
-import { ClaimsControllerInit } from './controller-init/claims/claims-controller-init';
-import { ClaimsServiceInit } from './controller-init/claims/claims-service-init';
+import {
+  ClaimsControllerInit,
+  ClaimsServiceInit,
+} from './controller-init/claims';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)

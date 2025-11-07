@@ -119,7 +119,6 @@ export type Controller =
   | BridgeController
   | BridgeStatusController
   | ClaimsController
-  | ClaimsService
   | CronjobController
   | CurrencyRateController
   | DecryptMessageController
@@ -195,7 +194,8 @@ export type Controller =
   | BackendWebSocketService
   | AccountActivityService
   | MultichainAccountService
-  | NetworkEnablementController;
+  | NetworkEnablementController
+  | ClaimsService;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.

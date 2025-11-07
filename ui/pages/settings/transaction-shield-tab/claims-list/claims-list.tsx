@@ -74,7 +74,7 @@ const ClaimsList = () => {
   const claimItem = useCallback(
     (claim: Claim) => {
       // add leading zero to claim number if it is less than 1000
-      const claimNumber = claim.id.toString().padStart(3, '0');
+      const claimNumber = claim.shortId.toString().padStart(3, '0');
       return (
         <Box
           asChild

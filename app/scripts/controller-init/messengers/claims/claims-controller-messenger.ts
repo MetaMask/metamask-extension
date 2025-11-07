@@ -9,7 +9,6 @@ import {
   ClaimsServiceGetClaimsAction,
   ClaimsServiceGetClaimsApiUrlAction,
   ClaimsServiceGetRequestHeadersAction,
-  ClaimsServiceVerifyClaimSignatureAction,
 } from '@metamask/claims-controller';
 import { KeyringControllerSignPersonalMessageAction } from '@metamask/keyring-controller';
 import { RootMessenger } from '../../../lib/messenger';
@@ -19,7 +18,6 @@ type AllowedActions =
   | ClaimsServiceGetRequestHeadersAction
   | ClaimsServiceGetClaimsApiUrlAction
   | ClaimsServiceGenerateMessageForClaimSignatureAction
-  | ClaimsServiceVerifyClaimSignatureAction
   | ClaimsServiceGetClaimsAction
   | KeyringControllerSignPersonalMessageAction;
 type AllowedEvents = MessengerEvents<ClaimsControllerMessenger>;
@@ -46,7 +44,6 @@ export function getClaimsControllerMessenger(
       'ClaimsService:getClaimsApiUrl',
       'ClaimsService:getRequestHeaders',
       'ClaimsService:generateMessageForClaimSignature',
-      'ClaimsService:verifyClaimSignature',
       'ClaimsService:getClaims',
       'KeyringController:signPersonalMessage',
     ],

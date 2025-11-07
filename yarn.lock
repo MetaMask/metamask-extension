@@ -5787,15 +5787,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/claims-controller@npm:@metamask-previews/claims-controller@0.0.0-preview-1f85e85a":
-  version: 0.0.0-preview-1f85e85a
-  resolution: "@metamask-previews/claims-controller@npm:0.0.0-preview-1f85e85a"
+"@metamask/claims-controller@npm:@metamask-previews/claims-controller@0.0.0-preview-fe4c2215":
+  version: 0.0.0-preview-fe4c2215
+  resolution: "@metamask-previews/claims-controller@npm:0.0.0-preview-fe4c2215"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.15.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.8.1"
-  checksum: 10/5f112971d53f38f7aa64570e01c81accca17ac5c91d3d44d31e1d0b98a21a44a34de46dfe707897cecaf8dc6710a5172d1c1bcaec92ee0a7c1c793396a1b2804
+  checksum: 10/218ce4f3d8c2cd653e3e09d411a9bdc21ff75fca5d6b03b8bf70ca862907c980b92694f199e8d330b1106c2f0cbbe3536d7abb64d9990c9d38891ac490a992b3
   languageName: node
   linkType: hard
 
@@ -31997,7 +31997,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.2.2"
-    "@metamask/claims-controller": "npm:@metamask-previews/claims-controller@0.0.0-preview-1f85e85a"
+    "@metamask/claims-controller": "npm:@metamask-previews/claims-controller@0.0.0-preview-fe4c2215"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.15.0"
     "@metamask/core-backend": "npm:^4.0.0"
