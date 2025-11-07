@@ -38,6 +38,10 @@ export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {
   minimumVersion: string;
 } = {
   ...DEFAULT_BRIDGE_FEATURE_FLAGS,
+  sse: {
+    enabled: true,
+    minimumVersion: '13.2.0',
+  },
   ...BIP44_STAGE_TWO,
 };
 

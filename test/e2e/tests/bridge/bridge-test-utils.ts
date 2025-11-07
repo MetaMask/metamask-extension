@@ -836,6 +836,7 @@ export const getBridgeFixtures = (
   }
 
   return {
+    forceBip44Version: false,
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => {
       const standardMocks = [
