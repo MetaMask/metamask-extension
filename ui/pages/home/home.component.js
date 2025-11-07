@@ -246,6 +246,8 @@ export default class Home extends PureComponent {
         pendingApprovals,
         hasApprovalFlows,
         history,
+        '', // queryString
+        location.pathname, // currentPathname for skip-navigation optimization
       );
     }
   }
