@@ -40,16 +40,26 @@ function onRequest(_request, response, events) {
       properties &&
       typeof properties === 'object' &&
       Object.keys(properties).length > 0;
-    if (!hasProperties) {
-      return;
-    }
     const label = getTypeLabel(event);
     const nameOrId = getNameOrId(event);
-    console.log(`${prefix}: ${label} event received: ${nameOrId}`);
-    try {
-      console.log(JSON.stringify(properties, null, 2));
-    } catch (_) {
-      console.log(String(properties));
+    if (hasProperties) {
+      try {
+        console.log(
+          `${prefix}: ${label} event received: ${nameOrId}\n${JSON.stringify(
+            properties,
+            null,
+            2,
+          )}`,
+        );
+      } catch (_) {
+        console.log(
+          `${prefix}: ${label} event received: ${nameOrId}\n${String(
+            properties,
+          )}`,
+        );
+      }
+    } else {
+      console.log(`${prefix}: ${label} event received: ${nameOrId}`);
     }
   });
 
