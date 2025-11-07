@@ -11,7 +11,7 @@ function createProviderMock(storageValues: string[]): Provider {
   }
 
   return {
-    request: async (request) => {
+    request: async (request: { method: string }) => {
       if (request.method === 'eth_getStorageAt') {
         return ethGetStorageAt(request);
       }
