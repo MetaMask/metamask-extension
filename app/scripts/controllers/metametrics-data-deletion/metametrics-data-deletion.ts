@@ -1,4 +1,10 @@
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
+import {
+  BaseController,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  StateMetadata,
+} from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import { PublicInterface } from '@metamask/utils';
 import type { DataDeletionService } from '../../services/data-deletion-service';
 import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
@@ -36,18 +42,24 @@ const getDefaultState = (): MetaMetricsDataDeletionState => {
 };
 
 // Metadata for the controller state
-const metadata = {
+const metadata: StateMetadata<MetaMetricsDataDeletionState> = {
   metaMetricsDataDeletionId: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
   metaMetricsDataDeletionTimestamp: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
   metaMetricsDataDeletionStatus: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
 };
 
@@ -65,8 +77,18 @@ export type UpdateDataDeletionTaskStatusAction = {
 
 // Union of all possible actions for the messenger
 export type MetaMetricsDataDeletionControllerMessengerActions =
+  | ControllerGetStateAction<
+      typeof controllerName,
+      MetaMetricsDataDeletionState
+    >
   | CreateMetaMetricsDataDeletionTaskAction
   | UpdateDataDeletionTaskStatusAction;
+
+export type MetaMetricsDataDeletionControllerMessengerEvents =
+  ControllerStateChangeEvent<
+    typeof controllerName,
+    MetaMetricsDataDeletionState
+  >;
 
 /**
  * Actions that this controller is allowed to call.
@@ -79,12 +101,10 @@ export type AllowedActions = MetaMetricsControllerGetStateAction;
 export type AllowedEvents = never;
 
 // Type for the messenger of MetaMetricsDataDeletionController
-export type MetaMetricsDataDeletionControllerMessenger = RestrictedMessenger<
+export type MetaMetricsDataDeletionControllerMessenger = Messenger<
   typeof controllerName,
   MetaMetricsDataDeletionControllerMessengerActions | AllowedActions,
-  AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  MetaMetricsDataDeletionControllerMessengerEvents | AllowedEvents
 >;
 
 /**
@@ -131,12 +151,12 @@ export class MetaMetricsDataDeletionController extends BaseController<
    * actions.
    */
   #registerMessageHandlers(): void {
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `${controllerName}:createMetaMetricsDataDeletionTask`,
       this.createMetaMetricsDataDeletionTask.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `${controllerName}:updateDataDeletionTaskStatus`,
       this.updateDataDeletionTaskStatus.bind(this),
     );
@@ -147,7 +167,7 @@ export class MetaMetricsDataDeletionController extends BaseController<
    *
    */
   async createMetaMetricsDataDeletionTask(): Promise<void> {
-    const { metaMetricsId } = this.messagingSystem.call(
+    const { metaMetricsId } = this.messenger.call(
       'MetaMetricsController:getState',
     );
     if (!metaMetricsId) {

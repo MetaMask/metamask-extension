@@ -8,12 +8,8 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { Box, Text } from '../../../../components/component-library';
-import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
-import {
-  getPricePrecision,
-  loadingOpacity,
-  getShortDateFormatter,
-} from '../../util';
+import { loadingOpacity, getShortDateFormatter } from '../../util';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { Skeleton } from '../../../../components/component-library/skeleton';
 import { TokenCellPercentChange } from '../../../../components/app/assets/token-cell/cells';
 import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
@@ -81,7 +77,7 @@ const AssetChartPrice = forwardRef(
       date: props.date,
     });
     useImperativeHandle(ref, () => ({ setPrice }));
-
+    const { formatCurrencyTokenPrice } = useFormatters();
     const { loading, currency, comparePrice } = props;
     const priceDelta =
       price !== undefined && comparePrice !== undefined
@@ -115,7 +111,7 @@ const AssetChartPrice = forwardRef(
             marginBottom={1}
             style={{ opacity: shouldShowMainPriceMuted ? loadingOpacity : 1 }}
           >
-            {formatCurrency(`${price}`, currency, getPricePrecision(price))}
+            {formatCurrencyTokenPrice(price, currency)}
           </Text>
         )}
         {shouldShowDeltaLoading && <AssetChartDeltaLoading />}
@@ -126,7 +122,13 @@ const AssetChartPrice = forwardRef(
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
           >
-            {props.asset && <TokenCellPercentChange token={props.asset} />}
+            {props.asset && (
+              <TokenCellPercentChange
+                token={props.asset}
+                price={price}
+                comparePrice={comparePrice}
+              />
+            )}
             <Text
               display={Display.InlineBlock}
               variant={TextVariant.bodyMdMedium}

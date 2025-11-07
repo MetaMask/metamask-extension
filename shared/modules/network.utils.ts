@@ -8,7 +8,10 @@ import {
 } from '@metamask/utils';
 import { convertHexToDecimal } from '@metamask/controller-utils';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import type { NetworkConfiguration } from '@metamask/network-controller';
+import type {
+  NetworkConfiguration,
+  AddNetworkFields,
+} from '@metamask/network-controller';
 
 import {
   CHAIN_IDS,
@@ -17,7 +20,7 @@ import {
 } from '../constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../constants/multichain/networks';
 
-type RpcEndpoint = {
+export type RpcEndpoint = {
   name?: string;
   url: string;
   networkClientId: string;
@@ -232,4 +235,25 @@ export const sortNetworksByPrioity = (
     // if both are not in the priority list, sort by name
     return networkA.name.localeCompare(networkB.name);
   });
+};
+
+/**
+ * Filters the featured networks list to exclude networks with blacklisted chain IDs.
+ * Allows to remove a network from the additional network selection.
+ *
+ * @param blacklistedChainIds - Array of chain IDs to exclude from the list
+ * @param baseNetworkList - The base network list to filter (defaults to FEATURED_RPCS)
+ * @returns Filtered array of network configurations
+ */
+export const getFilteredFeaturedNetworks = (
+  blacklistedChainIds: string[],
+  baseNetworkList: AddNetworkFields[] = [],
+): AddNetworkFields[] => {
+  if (!Array.isArray(blacklistedChainIds) || blacklistedChainIds.length === 0) {
+    return baseNetworkList;
+  }
+
+  return baseNetworkList.filter(
+    (network) => !blacklistedChainIds.includes(network.chainId),
+  );
 };

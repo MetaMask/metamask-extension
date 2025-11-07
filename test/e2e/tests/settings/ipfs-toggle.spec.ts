@@ -25,7 +25,7 @@ describe('Settings', function () {
   it('Shows nft default image when IPFS toggle is off and restore image once we toggle the ipfs modal', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
         smartContract,
         title: this.test?.fullTitle(),

@@ -111,7 +111,7 @@ describe('TokenInput Component', () => {
         mockStore,
       );
 
-      expect(queryByTitle('$0.00 USD')).toBeInTheDocument();
+      expect(queryByTitle('$0.00')).toBeInTheDocument();
     });
   });
 

@@ -7,10 +7,10 @@ import {
 } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
-  getQuoteRequest,
   getValidationErrors,
 } from '../../ducks/bridge/selectors';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
+import { useIsTxSubmittable } from './useIsTxSubmittable';
 
 // This hook is used to track cross chain swaps events related to quote-fetching
 export const useQuoteFetchEvents = () => {
@@ -22,7 +22,7 @@ export const useQuoteFetchEvents = () => {
     activeQuote,
     recommendedQuote,
   } = useSelector(getBridgeQuotes);
-  const { insufficientBal } = useSelector(getQuoteRequest);
+  const isTxSubmittable = useIsTxSubmittable();
   const validationErrors = useSelector(getValidationErrors);
 
   const warnings = useMemo(() => {
@@ -53,10 +53,13 @@ export const useQuoteFetchEvents = () => {
         trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.QuotesReceived, {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          can_submit: !insufficientBal,
+          can_submit: isTxSubmittable,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           gas_included: Boolean(activeQuote?.quote?.gasIncluded),
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          gas_included_7702: Boolean(activeQuote?.quote?.gasIncluded7702),
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           quoted_time_minutes: activeQuote?.estimatedProcessingTimeInSeconds

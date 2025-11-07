@@ -1,8 +1,9 @@
 import { strict as assert } from 'assert';
-import { withFixtures, openDapp } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import createStaticServer from '../../../../development/create-static-server';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import TestDapp from '../../page-objects/pages/test-dapp';
 
 const dappPort = 8080;
 
@@ -22,7 +23,8 @@ describe('The provider', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await openDapp(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         const isExpectedChainIdTextRendered =
           await driver.isElementPresentAndVisible({

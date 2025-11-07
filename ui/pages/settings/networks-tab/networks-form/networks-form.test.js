@@ -4,7 +4,7 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import nock from 'nock';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
@@ -91,7 +91,7 @@ describe('NetworkForm Component', () => {
       .get('/chains.json')
       .reply(200, [
         {
-          name: 'Polygon Mainnet',
+          name: 'Polygon',
           chain: 'Polygon',
           rpc: [
             'https://polygon-rpc.com/',
@@ -166,7 +166,7 @@ describe('NetworkForm Component', () => {
 
     expect(
       await screen.findByText(
-        'This Chain ID is currently used by the Ethereum Mainnet network.',
+        'This Chain ID is currently used by the Ethereum network.',
       ),
     ).toBeInTheDocument();
   });
@@ -223,7 +223,7 @@ describe('NetworkForm Component', () => {
 
     expect(
       await screen.findByText(
-        'This Chain ID is currently used by the Ethereum Mainnet network.',
+        'This Chain ID is currently used by the Ethereum network.',
       ),
     ).toBeInTheDocument();
 
@@ -413,7 +413,7 @@ describe('NetworkForm Component', () => {
       expect(addNetwork).toHaveBeenCalledTimes(1);
       expect(addNetwork).toHaveBeenCalledWith({
         chainId: '0x64',
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -439,7 +439,7 @@ describe('NetworkForm Component', () => {
       expect(updateNetwork).toHaveBeenCalledWith(
         {
           chainId: '0x64',
-          name: 'Ethereum Mainnet',
+          name: 'Ethereum',
           nativeCurrency: 'ETH',
           rpcEndpoints: [
             {

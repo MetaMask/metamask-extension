@@ -1,3 +1,5 @@
+import { ReadableStream as ReadableStreamWeb } from 'stream/web';
+import { Readable } from 'stream';
 import { Mockttp } from 'mockttp';
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
@@ -33,7 +35,9 @@ import {
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
   MOCK_SWAP_API_AGGREGATOR_LINEA,
+  SSE_RESPONSE_HEADER,
 } from './constants';
+import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 
 export class BridgePage {
   driver: Driver;
@@ -82,39 +86,84 @@ export class BridgePage {
   };
 }
 
-export async function bridgeTransaction(
-  driver: Driver,
-  quote: BridgeQuote,
-  transactionsCount: number,
-  expectedWalletBalance?: string,
-) {
+/**
+ * Execute a bridge transaction and checks the activity list
+ *
+ * @param testParams - The test parameters
+ * @param testParams.driver - The driver instance
+ * @param testParams.quote - The quote input parameters
+ * @param testParams.expectedTransactionsCount - The number of transactions to expect in the activity list
+ * @param testParams.expectedWalletBalance - The expected wallet balance after the transaction
+ * @param testParams.expectedSwapTokens - The expected swap tokens shown in the activity list
+ * @param testParams.expectedDestAmount - The expected quoted destination amounts in the quote page
+ * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
+ */
+export const bridgeTransaction = async ({
+  driver,
+  quote,
+  expectedTransactionsCount = 1,
+  expectedWalletBalance,
+  expectedSwapTokens,
+  expectedDestAmount,
+  submitDelay,
+}: {
+  driver: Driver;
+  quote: BridgeQuote;
+  expectedTransactionsCount: number;
+  expectedWalletBalance?: string;
+  expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
+  expectedDestAmount: string;
+  submitDelay?: number;
+}) => {
   // Navigate to Bridge page
   const homePage = new HomePage(driver);
-  await homePage.startBridgeFlow();
+  await homePage.startSwapFlow();
 
   const bridgePage = new BridgeQuotePage(driver);
   await bridgePage.enterBridgeQuote(quote);
   await bridgePage.waitForQuote();
   await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+  submitDelay && (await driver.delay(submitDelay));
+  if (expectedDestAmount) {
+    await bridgePage.checkDestAmount(expectedDestAmount);
+  }
   await bridgePage.submitQuote();
 
   await homePage.goToActivityList();
 
   const activityList = new ActivityListPage(driver);
-  await activityList.checkCompletedBridgeTransactionActivity(transactionsCount);
+  await activityList.checkCompletedBridgeTransactionActivity(
+    expectedTransactionsCount,
+  );
+
+  const isBridge =
+    quote.fromChain && quote.toChain
+      ? quote.fromChain !== quote.toChain
+      : false;
 
   if (quote.unapproved) {
-    await activityList.checkTxAction(`Bridged to ${quote.toChain}`);
-    await activityList.checkTxAction(
-      `Approve ${quote.tokenFrom} for bridge`,
-      2,
-    );
+    await activityList.checkTxAction({
+      action: isBridge
+        ? `Bridged to ${quote.toChain}`
+        : `Swapped ${quote.tokenFrom} to ${quote.tokenTo}`,
+      completedTxs: expectedTransactionsCount,
+    });
+    await activityList.checkTxAction({
+      action: `Approve ${quote.tokenFrom} for ${isBridge ? 'bridge' : 'swap'}`,
+      completedTxs: expectedTransactionsCount,
+      txIndex: 2,
+    });
   } else {
-    await activityList.checkTxAction(`Bridged to ${quote.toChain}`);
+    await activityList.checkTxAction({
+      action: isBridge
+        ? `Bridged to ${quote.toChain}`
+        : `Swap ${quote.tokenFrom ?? expectedSwapTokens?.tokenFrom} to ${quote.tokenTo ?? expectedSwapTokens?.tokenTo}`,
+      completedTxs: expectedTransactionsCount,
+    });
   }
   // Check the amount of ETH deducted in the activity is correct
   await activityList.checkTxAmountInActivity(
-    `-${quote.amount} ${quote.tokenFrom}`,
+    `-${quote.amount} ${quote.tokenFrom ?? expectedSwapTokens?.tokenFrom}`,
   );
 
   // Check the wallet ETH balance is correct
@@ -124,7 +173,7 @@ export async function bridgeTransaction(
       expectedWalletBalance,
     );
   }
-}
+};
 
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
@@ -286,7 +335,80 @@ async function mockDAItoETH(mockServer: Mockttp) {
     });
 }
 
-async function mockUSDCtoDAI(mockServer: Mockttp) {
+const getEventId = (index: number) => `${Date.now().toString()}-${index}`;
+const emitLine = (controller: ReadableStreamDefaultController, line: string) =>
+  controller.enqueue(Buffer.from(line));
+
+/**
+ * Mocks the bridge-api getQuoteStream endpoint's response body
+ *
+ * @param mockQuotes - The quotes to emit
+ * @param delay - The delay to wait between emitting each quote
+ * @returns The Readable stream
+ */
+const mockSseEventSource = (mockQuotes: unknown[], delay: number = 2000) => {
+  let index = 0;
+  return Readable.fromWeb(
+    new ReadableStreamWeb({
+      async pull(controller) {
+        const quote = mockQuotes[index];
+        if (index === mockQuotes.length) {
+          controller.close();
+        }
+        emitLine(controller, `event: quote\n`);
+        emitLine(controller, `id: ${getEventId(index + 1)}\n`);
+        emitLine(controller, `data: ${JSON.stringify(quote)}\n\n`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        index += 1;
+      },
+    }),
+  );
+};
+
+async function mockFeatureFlags(
+  mockServer: Mockttp,
+  featureFlags: Partial<FeatureFlagResponse>,
+) {
+  await mockServer
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [{ bridgeConfig: featureFlags }],
+      };
+    });
+}
+
+async function mockSwapETHtoMUSD(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuoteStream/u)
+    .withQuery({
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+    })
+    .thenStream(
+      200,
+      mockSseEventSource(MOCK_SWAP_QUOTES_ETH_MUSD),
+      SSE_RESPONSE_HEADER,
+    );
+}
+
+async function mockUSDCtoDAI(mockServer: Mockttp, sseEnabled?: boolean) {
+  if (sseEnabled) {
+    return await mockServer
+      .forGet(/getQuoteStream/u)
+      .withQuery({
+        srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        destTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+      })
+      .thenStream(
+        200,
+        mockSseEventSource(MOCK_BRIDGE_USDC_TO_DAI_LINEA),
+        SSE_RESPONSE_HEADER,
+      );
+  }
+
   return await mockServer
     .forGet(/getQuote/u)
     .withQuery({
@@ -468,6 +590,12 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               usd_24h_change: 0.1,
             },
+            '0xaca92e438df0b2401ff60da7e4337b687a2435da': {
+              usd: 0.9999,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              usd_24h_change: 0.1,
+            },
           },
         },
       };
@@ -493,6 +621,12 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             usd_24h_change: 2.5,
           },
+          'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': {
+            usd: 0.9999,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            usd_24h_change: 0.1,
+          },
         },
       };
     });
@@ -500,7 +634,7 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
 
 async function mockSwapAggregatorLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('swap.api.cx.metamask.io/networks/59144/aggregatorMetadata')
+    .forGet('bridge.api.cx.metamask.io/networks/59144/aggregatorMetadata')
     .always()
     .thenCallback(() => {
       return {
@@ -544,7 +678,9 @@ export async function mockGasPricesMainnet(mockServer: Mockttp) {
 
 export async function mockSwapAggregatorMetadataLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/59144/aggregatorMetadata')
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/59144/aggregatorMetadata',
+    )
     .always()
     .thenCallback(() => {
       return {
@@ -556,7 +692,7 @@ export async function mockSwapAggregatorMetadataLinea(mockServer: Mockttp) {
 
 export async function mockSwapTokensLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/59144/tokens')
+    .forGet('https://bridge.api.cx.metamask.io/networks/59144/tokens')
     .withQuery({ includeBlockedTokens: 'true' })
     .always()
     .thenCallback(() => {
@@ -569,7 +705,7 @@ export async function mockSwapTokensLinea(mockServer: Mockttp) {
 
 export async function mockSwapTokensArbitrum(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/42161/tokens')
+    .forGet('https://bridge.api.cx.metamask.io/networks/42161/tokens')
     .withQuery({ includeBlockedTokens: 'true' })
     .always()
     .thenCallback(() => {
@@ -582,7 +718,9 @@ export async function mockSwapTokensArbitrum(mockServer: Mockttp) {
 
 export async function mockSwapAggregatorMetadataArbitrum(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/42161/aggregatorMetadata')
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/42161/aggregatorMetadata',
+    )
     .always()
     .thenCallback(() => {
       return {
@@ -616,14 +754,12 @@ export async function mockSwapAggregatorMetadataArbitrum(mockServer: Mockttp) {
 
 // Expected event types for Bridge metrics
 export enum EventTypes {
-  BridgeLinkClicked = 'Bridge Link Clicked',
+  BridgeLinkClicked = 'Swap Link Clicked',
   SwapBridgeButtonClicked = 'Unified SwapBridge Button Clicked',
   SwapBridgePageViewed = 'Unified SwapBridge Page Viewed',
   SwapBridgeInputChanged = 'Unified SwapBridge Input Changed',
   SwapBridgeQuotesRequested = 'Unified SwapBridge Quotes Requested',
-  CrossChainQuotesReceived = 'Cross-chain Quotes Received',
-  ActionSubmitted = 'Action Submitted',
-  SwapBridgeSubmitted = 'Unified SwapBridge Submitted',
+  UnifiedSwapBridgeQuotesReceived = 'Unified SwapBridge Quotes Received',
   TransactionAddedAnon = 'Transaction Added Anon',
   TransactionAdded = 'Transaction Added',
   TransactionSubmittedAnon = 'Transaction Submitted Anon',
@@ -634,7 +770,7 @@ export enum EventTypes {
   TransactionFinalized = 'Transaction Finalized',
   SwapBridgeCompleted = 'Unified SwapBridge Completed',
   UnifiedSwapBridgeSubmitted = 'Unified SwapBridge Submitted',
-  SwapBridgeTokenFlipped = 'Source and Destination Flipped',
+  SwapBridgeTokenSwitched = 'Unified SwapBridge Source Destination Switched',
 }
 
 export const EXPECTED_EVENT_TYPES = Object.values(EventTypes);
@@ -714,7 +850,13 @@ export const getBridgeFixtures = (
         await mockETHtoETH(mockServer),
         await mockETHtoUSDC(mockServer),
         await mockDAItoETH(mockServer),
-        await mockUSDCtoDAI(mockServer),
+        await mockSwapETHtoMUSD(mockServer),
+        await mockSwapETHtoMUSD(mockServer),
+        await mockSwapETHtoMUSD(mockServer),
+        await mockSwapETHtoMUSD(mockServer),
+        await mockSwapETHtoMUSD(mockServer),
+        await mockUSDCtoDAI(mockServer, featureFlags.sse?.enabled),
+        await mockFeatureFlags(mockServer, featureFlags),
         await mockAccountsTransactions(mockServer),
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPrices(mockServer),
@@ -737,9 +879,7 @@ export const getBridgeFixtures = (
             EventTypes.SwapBridgePageViewed,
             EventTypes.SwapBridgeInputChanged,
             EventTypes.SwapBridgeQuotesRequested,
-            EventTypes.CrossChainQuotesReceived,
-            EventTypes.ActionSubmitted,
-            EventTypes.SwapBridgeSubmitted,
+            EventTypes.UnifiedSwapBridgeQuotesReceived,
             EventTypes.TransactionAddedAnon,
             EventTypes.TransactionAdded,
             EventTypes.TransactionSubmittedAnon,
@@ -751,7 +891,7 @@ export const getBridgeFixtures = (
             EventTypes.SwapBridgeCompleted,
             EventTypes.UnifiedSwapBridgeSubmitted,
             EventTypes.SwapBridgeInputChanged,
-            EventTypes.SwapBridgeTokenFlipped,
+            EventTypes.SwapBridgeTokenSwitched,
           ],
           { shouldAlwaysMatch: true },
         );
@@ -932,19 +1072,45 @@ export const getBridgeL2Fixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withPreferencesControllerSmartTransactionsOptedOut()
-    .withBridgeControllerDefaultState()
     .withNetworkControllerOnLineaLocahost()
+    .withBridgeControllerDefaultState()
+    .withTokenListController({
+      tokensChainsCache: {
+        '0xa4b1': {
+          data: {
+            '0xaf88d065e77c8cc2239327c5edb3a432268e5831': {
+              name: 'USD Coin',
+              symbol: 'USDC',
+              address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+              decimals: 6,
+            },
+            '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1': {
+              name: 'Dai Stablecoin',
+              symbol: 'DAI',
+              address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+              decimals: 18,
+            },
+          },
+        },
+        '0xe708': {
+          // Add Linea tokens
+          data: {
+            '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5': {
+              name: 'Bridged Dai Stablecoin Linea',
+              symbol: 'DAI',
+              address: '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+              decimals: 18,
+            },
+            // Add other Linea tokens as needed
+          },
+        },
+      },
+    })
     .withEnabledNetworks({
       eip155: {
-        '0x1': true, // Ethereum Mainnet
-        '0xa4b1': true, // Arbitrum One
-        '0xe708': true, // Linea Mainnet
-        '0xa': true, // Optimism
-        '0x89': true, // Polygon
-        '0x38': true, // BSC
-        '0xa86a': true, // Avalanche
-        '0x2105': true, // Base
-        '0x144': true, // zkSync Era
+        '0x1': true, // Mainnet
+        '0xe708': true, // Linea (source chain for test)
+        '0xa4b1': true, // Arbitrum One (destination chain for test)
       },
     });
 

@@ -1,3 +1,4 @@
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
   EncryptionPublicKeyManager,
   AbstractMessage,
@@ -115,7 +116,9 @@ describe('EncryptionPublicKeyController', () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metricsEvent: metricsEventMock as any,
-      managerMessenger: managerMessengerMock,
+      manager: new EncryptionPublicKeyManager({
+        messenger: managerMessengerMock,
+      }),
     } as EncryptionPublicKeyControllerOptions);
   });
 
@@ -355,6 +358,58 @@ describe('EncryptionPublicKeyController', () => {
           messageIdMock,
         ),
       ).toEqual(stateMock);
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'includeInDebugSnapshot',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('includes expected state in state logs', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "unapprovedEncryptionPublicKeyMsgCount": 0,
+          "unapprovedEncryptionPublicKeyMsgs": {},
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('exposes expected state to UI', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "unapprovedEncryptionPublicKeyMsgCount": 0,
+          "unapprovedEncryptionPublicKeyMsgs": {},
+        }
+      `);
     });
   });
 });

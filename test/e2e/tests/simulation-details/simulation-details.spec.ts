@@ -3,14 +3,10 @@ import { Mockttp, MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  createDappTransaction,
-  Fixtures,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
+import { Fixtures, withFixtures } from '../../helpers';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { Driver } from '../../webdriver/driver';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import {
   BUY_ERC1155_REQUEST_1_MOCK,
   BUY_ERC1155_REQUEST_2_MOCK,
@@ -65,7 +61,7 @@ async function withFixturesForSimulationDetails(
         .build(),
       title,
       testSpecificMock: mockRequests,
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       localNodeOptions: {
         hardfork: 'london',
         chainId: hexToNumber(inputChainId),
@@ -76,32 +72,6 @@ async function withFixturesForSimulationDetails(
       await runTestWithFixtures({ driver, mockServer });
     },
   );
-}
-
-async function expectBalanceChange(
-  driver: Driver,
-  isOutgoing: boolean,
-  index: number,
-  displayAmount: string,
-  assetName: string,
-) {
-  const listTestId = isOutgoing
-    ? 'simulation-rows-outgoing'
-    : 'simulation-rows-incoming';
-
-  const css = `[data-testid="${listTestId}"] [data-testid="simulation-details-balance-change-row"]:nth-child(${
-    index + 1
-  })`;
-
-  await driver.findElement({
-    css,
-    text: displayAmount,
-  });
-
-  await driver.findElement({
-    css,
-    text: assetName,
-  });
 }
 
 async function mockRequest(
@@ -122,10 +92,19 @@ describe('Simulation Details', function () {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, SEND_ETH_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([SEND_ETH_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await expectBalanceChange(driver, true, 0, '- 0.001', 'ETH');
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: true,
+          index: 0,
+          displayAmount: '- 0.001',
+          assetName: 'ETH',
+        });
       },
     );
   });
@@ -138,11 +117,26 @@ describe('Simulation Details', function () {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, BUY_ERC20_TRANSACTION);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC20_TRANSACTION])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await expectBalanceChange(driver, true, 0, '- 0.002', 'ETH');
-        await expectBalanceChange(driver, false, 0, '+ 6.756', 'DAI');
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: true,
+          index: 0,
+          displayAmount: '- 0.002',
+          assetName: 'ETH',
+        });
+
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: false,
+          index: 0,
+          displayAmount: '+ 6.756',
+          assetName: 'DAI',
+        });
       },
     );
   });
@@ -155,17 +149,25 @@ describe('Simulation Details', function () {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, BUY_ERC721_TRANSACTION_MOCK);
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await expectBalanceChange(driver, true, 0, '- 0.014', 'ETH');
-        await expectBalanceChange(
-          driver,
-          false,
-          0,
-          '+ #719',
-          '0xEF9c2...2AD6e',
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC721_TRANSACTION_MOCK])}`,
         );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: true,
+          index: 0,
+          displayAmount: '- 0.014',
+          assetName: 'ETH',
+        });
+
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: false,
+          index: 0,
+          displayAmount: '+ #719',
+          assetName: '0xEF9c2...2AD6e',
+        });
       },
     );
   });
@@ -184,17 +186,26 @@ describe('Simulation Details', function () {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, BUY_ERC1155_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC1155_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await expectBalanceChange(driver, true, 0, '- 0.00045', 'ETH');
-        await expectBalanceChange(
-          driver,
-          false,
-          0,
-          '+ 1 #10340',
-          '0x76BE3...E8E77',
-        );
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: true,
+          index: 0,
+          displayAmount: '- 0.00045',
+          assetName: 'ETH',
+        });
+
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: false,
+          index: 0,
+          displayAmount: '+ 1 #10340',
+          assetName: '0x76BE3...E8E77',
+        });
       },
     );
   });
@@ -206,13 +217,16 @@ describe('Simulation Details', function () {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, NO_CHANGES_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([NO_CHANGES_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.findElement({
-          css: '[data-testid="simulation-details-layout"]',
-          text: 'No changes',
-        });
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkEstimatedSimulationDetails(
+          'No changes',
+        );
       },
     );
   });
@@ -224,13 +238,16 @@ describe('Simulation Details', function () {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, INSUFFICIENT_GAS_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([INSUFFICIENT_GAS_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.findElement({
-          css: '[data-testid="simulation-details-layout"]',
-          text: 'This transaction is likely to fail',
-        });
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkEstimatedSimulationDetails(
+          'This transaction is likely to fail',
+        );
       },
     );
   });
@@ -246,12 +263,15 @@ describe('Simulation Details', function () {
         mockRequests,
       },
       async ({ driver }) => {
-        await createDappTransaction(driver, SEND_ETH_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([SEND_ETH_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.assertElementNotPresent(
-          '[data-testid="simulation-details-layout"]',
-          { waitAtLeastGuard: 1000 },
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkEstimatedSimulationDetailsNotDisplayed(
+          1000,
         );
       },
     );
@@ -267,13 +287,16 @@ describe('Simulation Details', function () {
         mockRequests,
       },
       async ({ driver }) => {
-        await createDappTransaction(driver, MALFORMED_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([MALFORMED_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.findElement({
-          css: '[data-testid="simulation-details-layout"]',
-          text: 'Unavailable',
-        });
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkEstimatedSimulationDetails(
+          'Unavailable',
+        );
       },
     );
   });

@@ -3,11 +3,19 @@ import {
   type AccountGroupId,
   type AccountWalletId,
 } from '@metamask/account-api';
+import { isEvmAccountType, EthAccountType } from '@metamask/keyring-api';
 import { AccountId } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { type CaipChainId, KnownCaipNamespace } from '@metamask/utils';
+import {
+  type Hex,
+  type CaipChainId,
+  KnownCaipNamespace,
+} from '@metamask/utils';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { type NetworkConfiguration } from '@metamask/network-controller';
+
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getMetaMaskAccountsOrdered,
@@ -22,6 +30,8 @@ import {
   getSelectedInternalAccount,
 } from '../accounts';
 
+import { getMultichainNetworkConfigurationsByChainId } from '../multichain/networks';
+import { isTestNetwork } from '../../helpers/utils/network-helper';
 import {
   AccountGroupWithInternalAccounts,
   AccountTreeState,
@@ -29,6 +39,8 @@ import {
   MultichainAccountGroupScopeToCaipAccountId,
   MultichainAccountGroupToScopesMap,
   MultichainAccountsState,
+  AccountGroupObjectWithWalletNameAndId,
+  NormalizedGroupMetadata,
 } from './account-tree.types';
 import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
 
@@ -40,10 +52,9 @@ import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
  * @param state.metamask.accountTree - Account tree state object.
  * @returns Account tree state.
  */
-export const getAccountTree = createDeepEqualSelector(
-  (state: MultichainAccountsState) => state.metamask.accountTree,
-  (accountTree: AccountTreeState): AccountTreeState => accountTree,
-);
+export const getAccountTree = (
+  state: MultichainAccountsState,
+): AccountTreeState => state.metamask.accountTree;
 
 /**
  * Common function to create consolidated wallets with accounts.
@@ -184,6 +195,38 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
 );
 
 /**
+ * Retrieve the normalized groups metadata.
+ *
+ * @param accountTree - Account tree state.
+ * @param internalAccountsObject - The internal accounts object.
+ * @returns The normalized group metadata.
+ */
+export const getNormalizedGroupsMetadata = createDeepEqualSelector(
+  getAccountTree,
+  getInternalAccountsObject,
+  (
+    accountTree: AccountTreeState,
+    internalAccountsObject: Record<AccountId, InternalAccount>,
+  ) => {
+    const { wallets } = accountTree;
+    const result: Record<AccountGroupId, NormalizedGroupMetadata> = {};
+    for (const wallet of Object.values(wallets)) {
+      for (const group of Object.values(wallet.groups)) {
+        result[group.id] = {
+          name: group.metadata?.name?.toLowerCase() ?? '',
+          accounts: group.accounts.map((accountId: AccountId) => {
+            return (
+              internalAccountsObject[accountId]?.address.toLowerCase() ?? ''
+            );
+          }),
+        };
+      }
+    }
+    return result;
+  },
+);
+
+/**
  * This selector is a temporary solution to avoid a regression in the account order UI while Multichain Accounts V2 is not completed.
  * It takes the ordered accounts from the MetaMask state and combines them with the account tree data
  * bypassing the respective groups inside a wallet and just adding all accounts inside the first group.
@@ -270,6 +313,10 @@ export const getMultichainAccountGroupById = createDeepEqualSelector(
   getAccountTree,
   (_, accountId: AccountGroupId) => accountId,
   (accountTree: AccountTreeState, accountId: AccountGroupId) => {
+    if (!accountId) {
+      return undefined;
+    }
+
     const { wallets } = accountTree;
 
     const walletId = extractWalletIdFromGroupId(accountId);
@@ -291,7 +338,11 @@ export const getAllAccountGroups = createDeepEqualSelector(
     const { wallets } = accountTree;
 
     return Object.values(wallets).flatMap((wallet) => {
-      return Object.values(wallet.groups);
+      return Object.values(wallet.groups).map((group) => ({
+        ...group,
+        walletName: wallet.metadata.name,
+        walletId: wallet.id,
+      }));
     });
   },
 );
@@ -337,7 +388,7 @@ export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
   getAllAccountGroups,
   getInternalAccounts,
   (
-    accountGroups: AccountGroupObject[],
+    accountGroups: AccountGroupObjectWithWalletNameAndId[],
     internalAccounts: InternalAccount[],
   ): AccountGroupWithInternalAccounts[] => {
     return accountGroups.map((accountGroup) => {
@@ -623,30 +674,6 @@ export const getWallet = createSelector(
 );
 
 /**
- * Get the number of internal accounts in a specific group.
- *
- * @param accountTree - Account tree state.
- * @param groupId - The account group ID.
- * @returns The number of accounts in the group, or 0 if the group is not found.
- */
-export const getNetworkAddressCount = createSelector(
-  getAccountTree,
-  (_, accountGroupId: AccountGroupId) => accountGroupId,
-  (accountTree: AccountTreeState, accountGroupId: AccountGroupId): number => {
-    const { wallets } = accountTree;
-
-    const walletId = extractWalletIdFromGroupId(accountGroupId);
-    const wallet = wallets[walletId as AccountWalletId];
-
-    if (!wallet?.groups[accountGroupId]) {
-      return 0;
-    }
-
-    return wallet.groups[accountGroupId].accounts.length;
-  },
-);
-
-/**
  * Returns all account groups that belong to a specific wallet ID.
  *
  * @param state - Redux state.
@@ -733,3 +760,149 @@ export const getAccountGroupsByAddress = createDeepEqualSelector(
     return [...matchingGroups];
   },
 );
+
+/**
+ * Selector to get a list of internal accounts spread across different network scopes for a specific account group.
+ *
+ * @param _state - Redux state.
+ * @param groupId - The ID of the account group.
+ * @returns An array of internal accounts spread across different network scopes.
+ */
+export const getInternalAccountListSpreadByScopesByGroupId =
+  createDeepEqualSelector(
+    [
+      getInternalAccountsFromGroupById,
+      getMultichainNetworkConfigurationsByChainId,
+    ],
+    (
+      internalAccounts: InternalAccount[],
+      networks: [
+        Record<CaipChainId, MultichainNetworkConfiguration>,
+        Record<Hex, NetworkConfiguration>,
+      ],
+    ): {
+      account: InternalAccount;
+      scope: CaipChainId;
+      networkName: string;
+    }[] => {
+      const caipNetworks = networks[0];
+
+      // Precompute EVM network IDs (filtered by non-test networks)
+      const evmNetworkIds = new Set(
+        Object.keys(caipNetworks).filter(
+          (chainId) =>
+            chainId.startsWith(KnownCaipNamespace.Eip155) &&
+            !isTestNetwork(chainId as CaipChainId),
+        ) as CaipChainId[],
+      );
+
+      // Prepare the result array by iterating through internalAccounts
+      const result: {
+        account: InternalAccount;
+        scope: CaipChainId;
+        networkName: string;
+      }[] = [];
+
+      internalAccounts.forEach((account) => {
+        // Use the precomputed EVM network IDs or account-specific scopes
+        const scopes =
+          account.type === EthAccountType.Eoa
+            ? [...evmNetworkIds]
+            : account.scopes || [];
+
+        // Iterate over scopes and filter out test networks
+        scopes.forEach((scope) => {
+          if (!isTestNetwork(scope)) {
+            result.push({
+              account,
+              scope,
+              networkName: caipNetworks[scope]?.name || 'Unknown Network',
+            });
+          }
+        });
+      });
+
+      return result;
+    },
+  );
+
+/**
+ * Get the number of internal accounts in a specific group.
+ *
+ * @param _state - Redux state.
+ * @param groupId - The account group ID.
+ * @returns The number of accounts in the group, or 0 if the group is not found.
+ */
+export const getNetworkAddressCount = createDeepEqualSelector(
+  [getInternalAccountListSpreadByScopesByGroupId],
+  (
+    accounts: {
+      account: InternalAccount;
+      scope: CaipChainId;
+      networkName: string;
+    }[],
+  ): number => {
+    if (!accounts) {
+      return 0;
+    }
+
+    return accounts.length;
+  },
+);
+
+/**
+ * Get the corresponding address to generate the account icon
+ * for a specific account group ID.
+ *
+ * @param groupId - The account group ID.
+ * @returns The address to be used as seed for the icon generation.
+ * @throws If no accounts are found in the specified group.
+ */
+export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
+  [getInternalAccountsFromGroupById],
+  (accounts: InternalAccount[]): string => {
+    if (!accounts || accounts.length === 0) {
+      return '';
+    }
+
+    for (const account of accounts) {
+      if (isEvmAccountType(account.type)) {
+        // Prefer an EVM account if available
+        return account.address;
+      }
+    }
+
+    // In case there are no EVM accounts in the group. We return the first account's address.
+    return accounts[0].address;
+  },
+);
+
+/**
+ * Get the seed addresses for multiple account groups at once.
+ * This is more efficient than calling getIconSeedAddressByAccountGroupId multiple times.
+ *
+ * @param state - Redux state.
+ * @param accountGroups - Array of account groups to get seed addresses for.
+ * @returns Object mapping account group IDs to their seed addresses.
+ */
+export const getIconSeedAddressesByAccountGroups = (
+  state: MultichainAccountsState,
+  accountGroups: AccountGroupWithInternalAccounts[],
+): Record<AccountGroupId, string> => {
+  const seedAddresses: Record<AccountGroupId, string> = {};
+
+  accountGroups.forEach((accountGroup) => {
+    try {
+      const seedAddress = getIconSeedAddressByAccountGroupId(
+        state,
+        accountGroup.id,
+      );
+      seedAddresses[accountGroup.id] = seedAddress;
+    } catch (error) {
+      // don't throw and show empty string as seed address.
+      seedAddresses[accountGroup.id] = '';
+    }
+  });
+
+  return seedAddresses;
+};

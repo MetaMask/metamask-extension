@@ -6,17 +6,9 @@ import {
   AlignItems,
   Display,
   FlexWrap,
-  IconColor,
-  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  SensitiveText,
-} from '../../component-library';
+import { Box, SensitiveText } from '../../component-library';
 import {
   getCurrentCurrency,
   getTokenBalances,
@@ -32,6 +24,7 @@ import {
   getPreferences,
   getSelectedInternalAccount,
   isGlobalNetworkSelectorRemoved,
+  selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
 import {
   getMultichainNetwork,
@@ -39,8 +32,9 @@ import {
 } from '../../../selectors/multichain';
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import Spinner from '../spinner';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { Skeleton } from '../../component-library/skeleton';
+import { isZeroAmount } from '../../../helpers/utils/number-utils';
 
 export const AggregatedBalance = ({
   classPrefix,
@@ -63,6 +57,9 @@ export const AggregatedBalance = ({
     getMultichainAggregatedBalance(state, selectedAccount),
   );
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
+  );
 
   const showNativeTokenAsMain = isGlobalNetworkSelectorRemoved
     ? showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1
@@ -100,12 +97,17 @@ export const AggregatedBalance = ({
     },
   );
 
-  if (!balances || !assets[selectedAccount.id]?.length) {
-    return <Spinner className="loading-overlay__spinner" />;
-  }
-
   return (
-    <>
+    <Skeleton
+      isLoading={
+        !balances ||
+        assets[selectedAccount.id] === undefined ||
+        assets[selectedAccount.id].length === 0 ||
+        (!anyEnabledNetworksAreAvailable &&
+          isZeroAmount(multichainNativeTokenBalance.amount.toString()))
+      }
+      marginBottom={1}
+    >
       <Box
         className={classnames(`${classPrefix}-overview__primary-balance`, {
           [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
@@ -120,6 +122,8 @@ export const AggregatedBalance = ({
           variant={TextVariant.inherit}
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
+          onClick={handleSensitiveToggle}
+          className="cursor-pointer transition-colors duration-200 hover:text-text-alternative"
         >
           {showNativeTokenAsMain || !isNonEvmRatesAvailable || !shouldShowFiat
             ? formattedTokenDisplay
@@ -129,23 +133,14 @@ export const AggregatedBalance = ({
           marginInlineStart={privacyMode ? 0 : 1}
           variant={TextVariant.inherit}
           isHidden={privacyMode}
+          onClick={handleSensitiveToggle}
+          className="cursor-pointer transition-colors duration-200 hover:text-text-alternative"
         >
           {showNativeTokenAsMain || !isNonEvmRatesAvailable || !shouldShowFiat
             ? currentNetwork.network.ticker
             : currentCurrency.toUpperCase()}
         </SensitiveText>
-
-        <ButtonIcon
-          color={IconColor.iconAlternative}
-          marginLeft={2}
-          size={ButtonIconSize.Md}
-          onClick={handleSensitiveToggle}
-          iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
-          justifyContent={JustifyContent.center}
-          ariaLabel="Sensitive toggle"
-          data-testid="sensitive-toggle"
-        />
       </Box>
-    </>
+    </Skeleton>
   );
 };

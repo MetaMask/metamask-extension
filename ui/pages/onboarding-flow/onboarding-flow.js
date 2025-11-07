@@ -1,5 +1,10 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
+import {
+  Routes as Switch,
+  Route,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import Unlock from '../unlock-page';
@@ -13,7 +18,6 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
@@ -36,11 +40,11 @@ import {
   createNewVaultAndRestore,
   restoreSocialBackupAndGetSeedPhrase,
   createNewVaultAndSyncWithSocial,
+  setCompletedOnboarding,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
-  getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -69,7 +73,6 @@ import LoadingScreen from '../../components/ui/loading-screen';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
-import SecureYourWallet from './secure-your-wallet/secure-your-wallet';
 import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
 import PrivacySettings from './privacy-settings/privacy-settings';
 import CreationSuccessful from './creation-successful/creation-successful';
@@ -78,7 +81,6 @@ import ImportSRP from './import-srp/import-srp';
 import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
 import OnboardingAppHeader from './onboarding-app-header/onboarding-app-header';
-import { WelcomePageState } from './welcome/types';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
@@ -89,8 +91,11 @@ export default function OnboardingFlow() {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const { pathname, search } = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const completedOnboarding = useSelector(getCompletedOnboarding);
+  const openedWithSidepanel = useSelector(
+    (state) => state.metamask.openedWithSidepanel,
+  );
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const isFromSettingsSecurity = new URLSearchParams(search).get(
@@ -99,7 +104,6 @@ export default function OnboardingFlow() {
   const trackEvent = useContext(MetaMetricsContext);
   const { bufferedTrace, onboardingParentContext } = trackEvent;
   const isUnlocked = useSelector(getIsUnlocked);
-  const showTermsOfUse = useSelector(getShowTermsOfUse);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
@@ -112,8 +116,9 @@ export default function OnboardingFlow() {
 
   // If the user has not agreed to the terms of use, we show the banner
   // Otherwise, we show the login page
-  const [welcomePageState, setWelcomePageState] = useState(
-    WelcomePageState.Banner,
+  const isWelcomePage = useMemo(
+    () => pathname === ONBOARDING_WELCOME_ROUTE,
+    [pathname],
   );
 
   useEffect(() => {
@@ -121,21 +126,20 @@ export default function OnboardingFlow() {
   }, []);
 
   useEffect(() => {
-    if (completedOnboarding && !isFromReminder) {
-      history.push(DEFAULT_ROUTE);
+    if (completedOnboarding && !isFromReminder && !openedWithSidepanel) {
+      navigate(DEFAULT_ROUTE);
     }
-  }, [history, completedOnboarding, isFromReminder]);
+  }, [navigate, completedOnboarding, isFromReminder, openedWithSidepanel]);
 
   useEffect(() => {
     const isSRPBackupRoute = [
-      ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
       ONBOARDING_REVIEW_SRP_ROUTE,
       ONBOARDING_CONFIRM_SRP_ROUTE,
     ].some((route) => pathname?.startsWith(route));
 
     if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
       if (isSRPBackupRoute) {
-        history.push(ONBOARDING_UNLOCK_ROUTE);
+        navigate(ONBOARDING_UNLOCK_ROUTE);
       }
     }
 
@@ -144,34 +148,29 @@ export default function OnboardingFlow() {
       isSRPBackupRoute &&
       completedOnboarding
     ) {
-      history.replace(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
-    }
-
-    if (pathname === ONBOARDING_WELCOME_ROUTE) {
-      setWelcomePageState(
-        showTermsOfUse ? WelcomePageState.Banner : WelcomePageState.Login,
-      );
-    } else {
-      setWelcomePageState(null);
+      navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE, {
+        replace: true,
+      });
     }
   }, [
     isUnlocked,
     completedOnboarding,
     secretRecoveryPhrase,
     pathname,
-    history,
-    showTermsOfUse,
+    navigate,
     isPrimarySeedPhraseBackedUp,
     isFromSettingsSecurity,
   ]);
 
   useEffect(() => {
-    const trace = bufferedTrace?.({
+    bufferedTrace?.({
       name: TraceName.OnboardingJourneyOverall,
       op: TraceOperation.OnboardingUserJourney,
     });
     if (onboardingParentContext) {
-      onboardingParentContext.current = trace;
+      onboardingParentContext.current = {
+        _name: TraceName.OnboardingJourneyOverall,
+      };
     }
   }, [onboardingParentContext, bufferedTrace]);
 
@@ -217,7 +216,10 @@ export default function OnboardingFlow() {
       }
 
       setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
-      history.replace(nextRoute);
+      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+        await dispatch(setCompletedOnboarding());
+      }
+      navigate(nextRoute, { replace: true });
     } finally {
       setIsLoading(false);
     }
@@ -249,13 +251,10 @@ export default function OnboardingFlow() {
       }
       justifyContent={JustifyContent.flexStart}
       className={classnames('onboarding-flow', {
-        'onboarding-flow--welcome-banner':
-          welcomePageState === WelcomePageState.Banner,
-        'onboarding-flow--welcome-login':
-          welcomePageState === WelcomePageState.Login,
+        'onboarding-flow--welcome-login': isWelcomePage,
       })}
     >
-      {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
+      {!isPopup && <OnboardingAppHeader isWelcomePage={isWelcomePage} />}
       <Box
         className={classnames('onboarding-flow__container', {
           'onboarding-flow__container--full': isFullPage,
@@ -274,111 +273,90 @@ export default function OnboardingFlow() {
         borderColor={BorderColor.borderMuted}
       >
         <Switch>
-          <Route path={ONBOARDING_ACCOUNT_EXIST} component={AccountExist} />
+          <Route path={ONBOARDING_ACCOUNT_EXIST} element={<AccountExist />} />
           <Route
             path={ONBOARDING_ACCOUNT_NOT_FOUND}
-            component={AccountNotFound}
+            element={<AccountNotFound />}
           />
           <Route
             path={ONBOARDING_CREATE_PASSWORD_ROUTE}
-            render={(routeProps) => (
+            element={
               <CreatePassword
-                {...routeProps}
                 createNewAccount={handleCreateNewAccount}
                 importWithRecoveryPhrase={handleImportWithRecoveryPhrase}
                 secretRecoveryPhrase={secretRecoveryPhrase}
               />
-            )}
-          />
-          <Route
-            path={ONBOARDING_SECURE_YOUR_WALLET_ROUTE}
-            component={SecureYourWallet}
+            }
           />
           <Route
             path={ONBOARDING_REVEAL_SRP_ROUTE}
-            render={() => (
+            element={
               <RevealRecoveryPhrase
                 setSecretRecoveryPhrase={setSecretRecoveryPhrase}
               />
-            )}
+            }
           />
           <Route
             path={ONBOARDING_REVIEW_SRP_ROUTE}
-            render={() => (
+            element={
               <ReviewRecoveryPhrase
                 secretRecoveryPhrase={secretRecoveryPhrase}
               />
-            )}
+            }
           />
           <Route
             path={ONBOARDING_CONFIRM_SRP_ROUTE}
-            render={() => (
+            element={
               <ConfirmRecoveryPhrase
                 secretRecoveryPhrase={secretRecoveryPhrase}
               />
-            )}
+            }
           />
           <Route
             path={ONBOARDING_IMPORT_WITH_SRP_ROUTE}
-            render={(routeProps) => (
-              <ImportSRP
-                {...routeProps}
-                submitSecretRecoveryPhrase={setSecretRecoveryPhrase}
-              />
-            )}
+            element={
+              <ImportSRP submitSecretRecoveryPhrase={setSecretRecoveryPhrase} />
+            }
           />
           <Route
             path={ONBOARDING_UNLOCK_ROUTE}
-            render={(routeProps) => (
-              <Unlock {...routeProps} onSubmit={handleUnlock} />
-            )}
+            element={<Unlock onSubmit={handleUnlock} />}
           />
           <Route
             path={ONBOARDING_PRIVACY_SETTINGS_ROUTE}
-            component={PrivacySettings}
+            element={<PrivacySettings />}
           />
           <Route
             path={ONBOARDING_COMPLETION_ROUTE}
-            component={CreationSuccessful}
+            element={<CreationSuccessful />}
           />
           <Route
             path={ONBOARDING_WELCOME_ROUTE}
-            render={(routeProps) => (
-              <OnboardingWelcome
-                {...routeProps}
-                pageState={welcomePageState}
-                setPageState={setWelcomePageState}
-              />
-            )}
+            element={<OnboardingWelcome />}
           />
           <Route
             path={ONBOARDING_PIN_EXTENSION_ROUTE}
-            component={OnboardingPinExtension}
+            element={<OnboardingPinExtension />}
           />
           <Route
             path={ONBOARDING_METAMETRICS}
-            component={MetaMetricsComponent}
+            element={<MetaMetricsComponent />}
           />
           <Route
             path={ONBOARDING_DOWNLOAD_APP_ROUTE}
-            component={OnboardingDownloadApp}
+            element={<OnboardingDownloadApp />}
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           }
           <Route
             path={ONBOARDING_EXPERIMENTAL_AREA}
-            render={(routeProps) => (
-              <ExperimentalArea
-                {...routeProps}
-                redirectTo={ONBOARDING_WELCOME_ROUTE}
-              />
-            )}
+            element={<ExperimentalArea redirectTo={ONBOARDING_WELCOME_ROUTE} />}
           />
           {
             ///: END:ONLY_INCLUDE_IF
           }
-          <Route exact path="*" component={OnboardingFlowSwitch} />
+          <Route path="*" element={<OnboardingFlowSwitch />} />
         </Switch>
       </Box>
       {isLoading && <LoadingScreen />}

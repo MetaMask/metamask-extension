@@ -16,19 +16,20 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          fetch-depth: 0 # This is needed to checkout all branches
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: ShellCheck Lint
         if: ${{ !cancelled() }}
         run: ./development/shellcheck.sh
 
       - name: Validate changelog
-        if: ${{ !startsWith(env.BRANCH, 'Version-v') && !startsWith(env.BRANCH, 'release/') }}
+        if: ${{ !startsWith(env.BRANCH, 'release/') }}
         run: yarn lint:changelog
 
       - name: Validate release candidate changelog
-        if: ${{ startsWith(env.BRANCH, 'Version-v') || startsWith(env.BRANCH, 'release/') }}
+        if: ${{ startsWith(env.BRANCH, 'release/') }}
         run: .github/scripts/validate-changelog-in-rc.sh
 
       - name: Lint lockfile
@@ -62,3 +63,16 @@ jobs:
               echo "::error::Working tree dirty."
               exit 1
           fi
+
+      - name: Run fitness functions
+        if: ${{ !cancelled() && github.event_name == 'pull_request'}}
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          # The following command generates a diff of changes between the common
+          # ancestor of $BASE_REF and HEAD, and the current commit (HEAD), for
+          # files in the current directory and its subdirectories. The output is
+          # then saved to a file called "diff".
+          git diff "$(git merge-base "origin/$BASE_REF" HEAD)" HEAD -- . > ./diff
+
+          yarn fitness-functions ci ./diff

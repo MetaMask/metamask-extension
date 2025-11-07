@@ -21,14 +21,6 @@ jest.mock('../../../../../store/actions', () => ({
   setSmartAccountOptIn: jest.fn(),
 }));
 
-const mockReplace = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockReplace,
-  }),
-}));
-
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -84,10 +76,11 @@ describe('SmartAccountUpdate', () => {
         upgradeAccountConfirmation as Confirmation,
       ),
     );
-    const { getByTestId } = renderWithConfirmContextProvider(
+    const { getByTestId, history } = renderWithConfirmContextProvider(
       <SmartAccountUpdate />,
       mockStore,
     );
+    const mockReplace = jest.spyOn(history, 'replace');
 
     fireEvent.click(getByTestId('smart-account-update-close'));
     expect(mockReplace).toHaveBeenCalled();

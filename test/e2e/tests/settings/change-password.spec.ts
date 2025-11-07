@@ -13,7 +13,6 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
-import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
 
 async function doPasswordChangeAndLockWallet(
@@ -72,6 +71,7 @@ describe('Change wallet password', function () {
         });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.clickBackupRemindMeLaterButton();
 
         await doPasswordChangeAndLockWallet(driver, OLD_PASSWORD, NEW_PASSWORD);
 
@@ -107,10 +107,6 @@ describe('Change wallet password', function () {
           password: OLD_PASSWORD,
         });
 
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        const isSocialImportFlow = true;
-        await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
-
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
@@ -123,7 +119,7 @@ describe('Change wallet password', function () {
 
         const loginPage = new LoginPage(driver);
 
-        // // Try to login with old password, should show incorrect password message
+        // Try to login with old password, should show incorrect password message
         await loginPage.loginToHomepage(OLD_PASSWORD);
         await loginPage.checkIncorrectPasswordMessageIsDisplayed();
 

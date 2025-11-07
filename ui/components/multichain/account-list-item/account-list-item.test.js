@@ -155,9 +155,7 @@ describe('AccountListItem', () => {
     expect(
       screen.getByText(shortenAddress(mockNonEvmAccount.address)),
     ).toBeInTheDocument();
-    expect(
-      document.querySelector('[title="$100,000.00 USD"]'),
-    ).toBeInTheDocument();
+    expect(document.querySelector('[title="$100,000.00"]')).toBeInTheDocument();
     expect(screen.getByTestId('account-network-indicator')).toBeInTheDocument();
 
     expect(container).toMatchSnapshot('non-EVM-account-list-item');
@@ -243,7 +241,6 @@ describe('AccountListItem', () => {
     expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   it('renders the tag with the snap name for named snap accounts', () => {
     const { container } = render(
       {
@@ -307,7 +304,6 @@ describe('AccountListItem', () => {
     const tag = container.querySelector('.mm-tag');
     expect(tag).not.toBeInTheDocument();
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('Multichain Behaviour', () => {
     describe('currency display', () => {
@@ -340,7 +336,6 @@ describe('AccountListItem', () => {
         expect(firstCurrencyDisplay.firstChild.textContent).toContain(
           expectedBalance,
         );
-        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
       });
 
       it('renders fiat and native balance for non-EVM account', () => {
@@ -370,7 +365,6 @@ describe('AccountListItem', () => {
         expect(firstCurrencyDisplay.firstChild.textContent).toContain(
           expectedBalance,
         );
-        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
       });
     });
   });

@@ -2,12 +2,12 @@
 
 .send-header {
   &__wrapper {
-    height: 64px;
+    min-height: 64px;
     position: relative;
   }
 
   &__previous-btn {
-    left: 0;
+    left: 16px;
     position: absolute;
   }
 }

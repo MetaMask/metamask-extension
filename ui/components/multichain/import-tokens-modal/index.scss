@@ -3,17 +3,6 @@
 .import-tokens-modal {
   $self: &;
 
-
-  .tabs {
-    ul {
-      border-bottom: 0;
-    }
-
-    li {
-      width: 50%;
-    }
-  }
-
   &__body::-webkit-scrollbar {
     display: none;
   }
@@ -30,12 +19,6 @@
     @include design-system.screen-sm-max {
       height: 356px;
     }
-  }
-
-  &__tabs {
-    padding-left: 16px;
-    padding-right: 16px;
-    justify-content: center;
   }
 
   &__modal-dialog-content {
@@ -62,20 +45,11 @@
     font-size: 12px;
   }
 
-  &__active-tab {
-    color: var(--color-text-default);
-  }
-
-  &__button-tab {
-    font-weight: 500;
-  }
-
   &__button-search {
     outline-color: var(--color-primary-default);
     padding-left: 16px;
     padding-right: 16px;
   }
-
 
   &__custom-token-form {
     &__container {

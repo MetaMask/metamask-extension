@@ -8,6 +8,26 @@
     align-items: start;
   }
 
+  &__checkbox-label {
+    cursor: pointer;
+    width: 100%;
+  }
+
+  &__checkbox {
+    cursor: pointer;
+  }
+
+  &__checkbox-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &__user-control {
+    height: 175px;
+    width: 200px;
+    margin: 0 auto;
+  }
+
   p {
     align-self: baseline;
   }

@@ -14,15 +14,6 @@ import { MultichainAccountDetails } from './multichain-account-details';
 const middleware = [thunk];
 const mockStore = configureMockStore(middleware);
 
-// Mock the useHistory hook
-const mockPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockPush,
-  }),
-}));
-
 const createMockState = (address: string, account = MOCK_ACCOUNT_EOA) => ({
   appState: {
     accountDetailsAddress: address,
@@ -104,10 +95,6 @@ const createMockState = (address: string, account = MOCK_ACCOUNT_EOA) => ({
 });
 
 describe('AccountDetails', () => {
-  beforeEach(() => {
-    mockPush.mockClear();
-  });
-
   describe('Account Type Detection', () => {
     it('should render EVM account details for EOA accounts', () => {
       const state = createMockState(MOCK_ACCOUNT_EOA.address, MOCK_ACCOUNT_EOA);

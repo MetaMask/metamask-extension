@@ -25,10 +25,7 @@ class NftListPage {
 
   private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
 
-  private readonly noNftInfo = {
-    text: 'No NFTs yet',
-    tag: 'p',
-  };
+  private readonly noNftInfo = '[data-testid="nft-tab-empty-state"]';
 
   private readonly successImportNftMessage = {
     text: 'NFT was successfully added!',

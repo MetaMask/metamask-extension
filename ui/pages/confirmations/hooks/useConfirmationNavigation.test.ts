@@ -1,7 +1,8 @@
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
 import { ApprovalFlowState } from '@metamask/approval-controller';
+
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -18,6 +19,7 @@ import { useConfirmationNavigation } from './useConfirmationNavigation';
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: jest.fn(),
+  useLocation: jest.fn(),
 }));
 
 jest.mock('../confirmation/templates', () => ({
@@ -64,10 +66,14 @@ function renderHook(
 describe('useConfirmationNavigation', () => {
   const useHistoryMock = jest.mocked(useHistory);
   const history = { replace: jest.fn() };
+  const useLocationMock = jest.mocked(useLocation);
 
   beforeEach(() => {
     jest.resetAllMocks();
     useHistoryMock.mockReturnValue(history);
+    useLocationMock.mockReturnValue({
+      search: '',
+    } as unknown as ReturnType<typeof useLocationMock>);
   });
 
   describe('navigateToId', () => {
@@ -204,6 +210,22 @@ describe('useConfirmationNavigation', () => {
     });
   });
 
+  describe('queryParams', () => {
+    it('retain any queryParams present', () => {
+      useLocationMock.mockReturnValue({
+        search: '?test=dummy',
+      } as unknown as ReturnType<typeof useLocationMock>);
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToIndex(1);
+
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(
+        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_2_MOCK}?test=dummy`,
+      );
+    });
+  });
+
   describe('count', () => {
     it('returns the number of confirmations', () => {
       const result = renderHook(ApprovalType.Transaction);
@@ -293,5 +315,16 @@ describe('useConfirmationNavigation', () => {
         ).toEqual([APPROVAL_ID_MOCK, APPROVAL_ID_2_MOCK]);
       },
     );
+  });
+
+  describe('navigateNext', () => {
+    it('navigates to the next confirmation', () => {
+      const result = renderHook(ApprovalType.Transaction);
+      result.navigateNext(APPROVAL_ID_MOCK);
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(
+        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_2_MOCK}`,
+      );
+    });
   });
 });

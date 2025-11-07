@@ -189,12 +189,40 @@ export class TestSnaps {
     console.log('Test Snap Dapp page is loaded');
   }
 
-  async checkClientStatus(expectedStatus: string): Promise<void> {
-    console.log(`Checking that the client status should be ${expectedStatus}`);
-    await this.driver.waitForSelector({
-      css: spanLocator.clientStatusResultSpan,
-      text: expectedStatus,
-    });
+  async checkClientStatus({
+    clientVersion: expectedClientVersion,
+    ...expectedStatus
+  }: Record<string, unknown>): Promise<void> {
+    console.log(
+      `Checking that the client status should be ${JSON.stringify(expectedStatus, null, 2)}`,
+    );
+
+    await this.driver.waitUntil(
+      async () => {
+        const element = await this.driver.findElement(
+          spanLocator.clientStatusResultSpan,
+        );
+
+        const spanText = await element.getAttribute('textContent');
+        if (!spanText) {
+          return false;
+        }
+
+        const { clientVersion: actualClientVersion, ...actualStatus } =
+          JSON.parse(spanText);
+
+        return (
+          // Client version is different between main and Flask, so we just check
+          // that it starts with the expected version.
+          actualClientVersion.startsWith(expectedClientVersion) &&
+          isEqual(actualStatus, expectedStatus)
+        );
+      },
+      {
+        interval: 200,
+        timeout: veryLargeDelayMs,
+      },
+    );
   }
 
   async scrollAndClickButton(buttonElement: keyof typeof buttonLocator) {
@@ -277,14 +305,12 @@ export class TestSnaps {
    * @param dropDownName - The name of the dropdown locator to select the entropy source from.
    * @param name - The name of the entropy source to select.
    */
-  async scrollAndSelectEntropySource(
+  async selectEntropySource(
     dropDownName: keyof typeof dropDownLocator,
     name: string,
   ) {
     const locator = dropDownLocator[dropDownName];
     console.log(`Select ${dropDownName} entropy source`);
-    const selector = await this.driver.findElement(locator);
-    await this.driver.scrollToElement(selector);
     await this.driver.clickElement(locator);
     await this.driver.clickElement({
       text: name,

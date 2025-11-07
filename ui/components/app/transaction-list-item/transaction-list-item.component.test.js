@@ -3,8 +3,8 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import * as reactRouterDom from 'react-router-dom';
 import configureStore from 'redux-mock-store';
+import { createMemoryHistory } from 'history';
 import {
   TrustSignalDisplayState,
   useTrustSignals,
@@ -16,12 +16,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import mockLegacySwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
-import mockUnifiedSwapTxGroup from '../../../../test/data/swap/mock-unified-swap-transaction-group.json';
-import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProviderAndHistory } from '../../../../test/jest';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
+import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { getTokens } from '../../../ducks/metamask/metamask';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import {
@@ -38,6 +36,7 @@ import {
 import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -75,10 +74,6 @@ jest.mock('react-redux', () => {
     useDispatch: jest.fn(),
   };
 });
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(),
-}));
 
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
@@ -127,15 +122,17 @@ const generateUseSelectorRouter = (opts) => (selector) => {
   } else if (selector === getTokenExchangeRates) {
     return opts.tokenExchangeRates ?? {};
   } else if (selector === getCurrentNetwork) {
-    return { nickname: 'Ethereum Mainnet' };
+    return { nickname: 'Ethereum' };
   } else if (selector === getPreferences) {
     return opts.preferences ?? {};
   } else if (selector === getShouldShowFiat) {
     return opts.shouldShowFiat ?? false;
   } else if (selector === getTokens) {
     return opts.tokens ?? [];
-  } else if (selector === selectBridgeHistoryForAccount) {
+  } else if (selector === selectBridgeHistoryForAccountGroup) {
     return opts.bridgeHistory ?? {};
+  } else if (selector === getAccountTree) {
+    return opts.accountTree ?? { wallets: {} };
   } else if (selector === getSelectedInternalAccount) {
     return opts.selectedInternalAccount ?? { address: '0xDefaultAddress' };
   } else if (selector === getNames) {
@@ -163,6 +160,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
 };
 
 describe('TransactionListItem', () => {
+  const history = createMemoryHistory();
+
   beforeAll(() => {
     useGasFeeEstimates.mockImplementation(
       () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
@@ -179,6 +178,9 @@ describe('TransactionListItem', () => {
   afterAll(() => {
     useGasFeeEstimates.mockRestore();
   });
+
+  const renderWithProvider = (component, store) =>
+    renderWithProviderAndHistory(component, store, history);
 
   describe('ActivityListItem interactions', () => {
     it('should show the activity details popover and log metrics when the activity list item is clicked', () => {
@@ -324,7 +326,6 @@ describe('TransactionListItem', () => {
           },
         }}
       />,
-      mockStore(mockState),
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
@@ -362,179 +363,5 @@ describe('TransactionListItem', () => {
       '?Swap USDC to UNIFailed-2 USDC',
     );
     expect(getByText('Failed')).toBeInTheDocument();
-  });
-
-  it('should render confirmed unified swap tx summary', () => {
-    const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={jest.fn()}>
-        <TransactionListItem transactionGroup={mockUnifiedSwapTxGroup} />
-      </MetaMetricsContext.Provider>,
-      mockStore(mockState),
-    );
-
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap to Confirmed-0 ETH',
-    );
-  });
-
-  it('should render failed unified swap tx summary', () => {
-    useSelector.mockImplementation(generateUseSelectorRouter({}));
-    const { queryByTestId, getByText } = renderWithProvider(
-      <TransactionListItem
-        transactionGroup={{
-          ...mockUnifiedSwapTxGroup,
-          primaryTransaction: {
-            ...mockUnifiedSwapTxGroup.primaryTransaction,
-            status: TransactionStatus.failed,
-          },
-        }}
-      />,
-    );
-
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap to Failed-0 ETH',
-    );
-    expect(getByText('Failed')).toBeInTheDocument();
-  });
-
-  it('should render pending bridge tx summary', () => {
-    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        bridgeHistory: {
-          [srcTxMetaId]: {
-            ...bridgeHistoryItem,
-            status: {
-              ...bridgeHistoryItem.status,
-              status: 'PENDING',
-            },
-          },
-        },
-      }),
-    );
-    const { queryByTestId } = renderWithProvider(
-      <TransactionListItem
-        transactionGroup={{
-          ...mockBridgeTxData.transactionGroup,
-          primaryTransaction: {
-            ...mockBridgeTxData.transactionGroup.primaryTransaction,
-            status: TransactionStatus.pending,
-          },
-        }}
-      />,
-    );
-
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OP MainnetTransaction 2 of 2-2 USDC',
-    );
-  });
-
-  it('should render confirmed bridge tx summary', () => {
-    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        bridgeHistory: {
-          [srcTxMetaId]: {
-            ...bridgeHistoryItem,
-            status: {
-              ...bridgeHistoryItem.status,
-              status: 'PENDING',
-            },
-          },
-        },
-      }),
-    );
-    const { queryByTestId, getByText } = renderWithProvider(
-      <TransactionListItem
-        transactionGroup={mockBridgeTxData.transactionGroup}
-      />,
-    );
-
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OP MainnetTransaction 2 of 2-2 USDC',
-    );
-    expect(getByText('Transaction 2 of 2')).toBeInTheDocument();
-  });
-
-  it('should render completed bridge tx summary', () => {
-    const mockPush = jest
-      .fn()
-      .mockImplementation((...args) => jest.fn(...args));
-    jest.spyOn(reactRouterDom, 'useHistory').mockReturnValue({
-      push: mockPush,
-    });
-    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        bridgeHistory: {
-          [srcTxMetaId]: bridgeHistoryItem,
-        },
-      }),
-    );
-    const { queryByTestId, getByTestId } = renderWithProvider(
-      <TransactionListItem
-        transactionGroup={mockBridgeTxData.transactionGroup}
-      />,
-    );
-
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OP MainnetConfirmed-2 USDC',
-    );
-
-    fireEvent.click(getByTestId('activity-list-item'));
-    expect(mockPush).toHaveBeenCalledWith({
-      pathname: '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
-      state: {
-        transactionGroup: mockBridgeTxData.transactionGroup,
-        isEarliestNonce: false,
-      },
-    });
-  });
-
-  it('should render failed bridge tx summary', () => {
-    const mockPush = jest
-      .fn()
-      .mockImplementation((...args) => jest.fn(...args));
-    jest.spyOn(reactRouterDom, 'useHistory').mockReturnValue({
-      push: mockPush,
-    });
-    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        bridgeHistory: {
-          [srcTxMetaId]: {
-            ...bridgeHistoryItem,
-            status: {
-              ...bridgeHistoryItem.status,
-              status: 'FAILED',
-            },
-          },
-        },
-      }),
-    );
-    const failedTransactionGroup = {
-      ...mockBridgeTxData.transactionGroup,
-      primaryTransaction: {
-        ...mockBridgeTxData.transactionGroup.primaryTransaction,
-        status: TransactionStatus.failed,
-      },
-    };
-    const { queryByTestId, getByTestId, getByText } = renderWithProvider(
-      <TransactionListItem transactionGroup={failedTransactionGroup} />,
-    );
-
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OP MainnetFailed-2 USDC',
-    );
-    expect(getByText('Failed')).toBeInTheDocument();
-
-    fireEvent.click(getByTestId('activity-list-item'));
-    expect(mockPush).toHaveBeenCalledWith({
-      pathname: '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
-      state: {
-        transactionGroup: failedTransactionGroup,
-        isEarliestNonce: false,
-      },
-    });
   });
 });

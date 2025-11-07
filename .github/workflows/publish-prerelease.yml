@@ -5,11 +5,17 @@ on:
     secrets:
       PR_COMMENT_TOKEN:
         required: true
+    inputs:
+      lavamoat-policy-changed:
+        description: 'Whether the Lavamoat policy files have changed'
+        required: true
+        type: boolean
 
 jobs:
   publish-prerelease:
     name: Publish prerelease
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
@@ -24,6 +30,7 @@ jobs:
       MERGE_BASE_COMMIT_HASH: '' # placeholder so that we have autocomplete and logs
       CLOUDFRONT_REPO_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
+      LAVAMOAT_POLICY_CHANGED: ${{ inputs.lavamoat-policy-changed }}
     steps:
       - name: Checkout and setup high risk environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -31,10 +38,10 @@ jobs:
           is-high-risk-environment: true
           skip-allow-scripts: true
           fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Find the associated PR
-        if: ${{ (startsWith(env.BRANCH, 'Version-v') || startsWith(env.BRANCH, 'release/')) && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
+        if: ${{ startsWith(env.BRANCH, 'release/') && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
         uses: actions/github-script@v7
         with:
           script: |
@@ -42,7 +49,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               head: `${context.repo.owner}:${process.env.BRANCH}`,
-              base: 'master',
+              base: 'stable',
             });
             if (prs.data.length > 0) {
               core.exportVariable("PR_NUMBER", prs.data[0].number);
@@ -59,6 +66,13 @@ jobs:
           merge_base_commit_hash="$(git merge-base "${BASE_COMMIT_HASH}" "${HEAD_COMMIT_HASH}")"
           echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
           echo "The merge base commit hash is '${merge_base_commit_hash}'"
+
+      - name: Download page load benchmark results
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: page-load-benchmark-results
+          path: test-artifacts/benchmarks
 
       - name: Publish prerelease
         if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}

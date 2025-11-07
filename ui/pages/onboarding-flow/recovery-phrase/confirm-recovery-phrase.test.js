@@ -2,11 +2,12 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
+  REVEAL_SRP_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
 import * as BrowserRuntimeUtils from '../../../../shared/modules/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
@@ -17,14 +18,16 @@ jest.mock('../../../store/actions.ts', () => ({
   setSeedPhraseBackedUp: jest.fn().mockReturnValue(jest.fn()),
 }));
 
-const mockHistoryReplace = jest.fn();
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-  }),
-}));
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
 
 // click and answer the srp quiz
 const clickAndAnswerSrpQuiz = (quizUnansweredChips) => {
@@ -48,6 +51,13 @@ const clickAndAnswerSrpQuiz = (quizUnansweredChips) => {
 };
 
 describe('Confirm Recovery Phrase Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({
+      search: '',
+    });
+  });
+
   const TEST_SEED =
     'debris dizzy just just just float just just just just speak just';
 
@@ -193,7 +203,9 @@ describe('Confirm Recovery Phrase Component', () => {
     fireEvent.click(gotItButton);
 
     expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
-    expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
+      replace: true,
+    });
   });
 
   it('should go to Onboarding Completion page as a next step in firefox', async () => {
@@ -226,8 +238,29 @@ describe('Confirm Recovery Phrase Component', () => {
     fireEvent.click(getByText('Got it'));
 
     expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
-    expect(mockHistoryReplace).toHaveBeenCalledWith(
-      ONBOARDING_COMPLETION_ROUTE,
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE, {
+      replace: true,
+    });
+  });
+
+  it('onClose should navigate to reveal srp list route', () => {
+    mockUseLocation.mockReturnValue({
+      search: '?isFromReminder=true&isFromSettingsSecurity=true',
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <ConfirmRecoveryPhrase {...props} />,
+      mockStore,
     );
+
+    const closeButton = getByTestId(
+      'reveal-recovery-phrase-confirm-close-button',
+    );
+
+    fireEvent.click(closeButton);
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE, {
+      replace: true,
+    });
   });
 });

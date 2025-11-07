@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import React, { Component } from 'react';
+import React, { Component, lazy, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import log from 'loglevel';
@@ -40,10 +40,19 @@ import {
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { withMetaMetrics } from '../../contexts/metametrics';
+import { ThemeType } from '../../../shared/constants/preferences';
+import { getThemeFromRawTheme } from '../routes/utils';
+import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
+import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
+
+const FoxAppearAnimation = lazy(
+  () => import('../onboarding-flow/welcome/fox-appear-animation'),
+);
 
 class UnlockPage extends Component {
   static contextTypes = {
@@ -99,6 +108,18 @@ class UnlockPage extends Component {
      * Reset Onboarding and OAuth login state
      */
     loginWithDifferentMethod: PropTypes.func,
+    /**
+     * Indicates the type of first time flow
+     */
+    firstTimeFlowType: PropTypes.string,
+    /**
+     * The theme of the app
+     */
+    theme: PropTypes.string,
+    /**
+     * Reset Wallet
+     */
+    resetWallet: PropTypes.func,
   };
 
   state = {
@@ -108,13 +129,24 @@ class UnlockPage extends Component {
     isLocked: false,
     isSubmitting: false,
     unlockDelayPeriod: 0,
+    showLoginErrorModal: false,
   };
 
   failed_attempts = 0;
 
   animationEventEmitter = new EventEmitter();
 
-  passwordLoginAttemptTraceCtx = null;
+  /**
+   * Determines if the current user is in the social import rehydration phase
+   *
+   * @returns {boolean} True if user is importing social wallet during onboarding
+   */
+  isSocialImportRehydration() {
+    return (
+      this.props.firstTimeFlowType === FirstTimeFlowType.socialImport &&
+      !this.props.isOnboardingCompleted
+    );
+  }
 
   UNSAFE_componentWillMount() {
     const { isUnlocked, history, location } = this.props;
@@ -131,16 +163,13 @@ class UnlockPage extends Component {
   }
 
   async componentDidMount() {
-    this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace?.({
-      name: TraceName.OnboardingPasswordLoginAttempt,
-      op: TraceOperation.OnboardingUserJourney,
-      parentContext: this.props.onboardingParentContext?.current,
-    });
-
-    try {
-      await this.props.checkIsSeedlessPasswordOutdated();
-    } catch (error) {
-      log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
+    const { isOnboardingCompleted } = this.props;
+    if (isOnboardingCompleted) {
+      try {
+        await this.props.checkIsSeedlessPasswordOutdated();
+      } catch (error) {
+        log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
+      }
     }
   }
 
@@ -149,7 +178,7 @@ class UnlockPage extends Component {
     event.stopPropagation();
 
     const { password, isSubmitting } = this.state;
-    const { onSubmit } = this.props;
+    const { onSubmit, isOnboardingCompleted } = this.props;
 
     if (password === '' || isSubmitting) {
       return;
@@ -157,8 +186,11 @@ class UnlockPage extends Component {
 
     this.setState({ error: null, isSubmitting: true });
 
-    // Track wallet rehydration attempted for social login users
-    if (this.props.isSocialLoginFlow) {
+    // Capture the rehydration state before async operations that might change it
+    const isRehydrationFlow = this.isSocialImportRehydration();
+
+    // Track wallet rehydration attempted for social import users (only during rehydration)
+    if (isRehydrationFlow) {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.RehydrationPasswordAttempted,
@@ -167,13 +199,19 @@ class UnlockPage extends Component {
           biometrics: false,
         },
       });
+    } else if (!isOnboardingCompleted) {
+      this.context.bufferedTrace?.({
+        name: TraceName.OnboardingPasswordLoginAttempt,
+        op: TraceOperation.OnboardingUserJourney,
+        parentContext: this.props.onboardingParentContext?.current,
+      });
     }
 
     try {
       await onSubmit(password);
 
-      // Track wallet rehydration completed for social login users
-      if (this.props.isSocialLoginFlow) {
+      // Track wallet rehydration completed for social import users (only during rehydration)
+      if (isRehydrationFlow) {
         this.context.trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.RehydrationCompleted,
@@ -182,6 +220,18 @@ class UnlockPage extends Component {
             biometrics: false,
             failed_attempts: this.failed_attempts,
           },
+        });
+        this.context.bufferedEndTrace?.({
+          name: TraceName.OnboardingExistingSocialLogin,
+        });
+      }
+
+      if (!isOnboardingCompleted) {
+        this.context.bufferedEndTrace?.({
+          name: TraceName.OnboardingPasswordLoginAttempt,
+        });
+        this.context.bufferedEndTrace?.({
+          name: TraceName.OnboardingJourneyOverall,
         });
       }
 
@@ -197,28 +247,17 @@ class UnlockPage extends Component {
           isNewVisit: true,
         },
       );
-      if (this.passwordLoginAttemptTraceCtx) {
-        this.context.bufferedEndTrace?.({
-          name: TraceName.OnboardingPasswordLoginAttempt,
-        });
-        this.passwordLoginAttemptTraceCtx = null;
-      }
-      this.context.bufferedEndTrace?.({
-        name: TraceName.OnboardingExistingSocialLogin,
-      });
-      this.context.bufferedEndTrace?.({
-        name: TraceName.OnboardingJourneyOverall,
-      });
     } catch (error) {
-      await this.handleLoginError(error);
+      await this.handleLoginError(error, isRehydrationFlow);
     } finally {
       this.setState({ isSubmitting: false });
     }
   };
 
-  handleLoginError = async (error) => {
+  handleLoginError = async (error, isRehydrationFlow = false) => {
     const { t } = this.context;
     const { message, data } = error;
+    const { isOnboardingCompleted } = this.props;
 
     // Sync failed_attempts with numberOfAttempts from error data
     if (data?.numberOfAttempts !== undefined) {
@@ -228,21 +267,10 @@ class UnlockPage extends Component {
     let finalErrorMessage = message;
     let finalUnlockDelayPeriod = 0;
     let errorReason;
-
-    // Track wallet rehydration failed for social login users
-    if (this.props.isSocialLoginFlow) {
-      this.context.trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.RehydrationPasswordFailed,
-        properties: {
-          account_type: 'social',
-          failed_attempts: this.failed_attempts,
-        },
-      });
-    }
+    let shouldShowLoginErrorModal = false;
 
     // Check if we are in the onboarding flow
-    if (this.props.onboardingParentContext?.current) {
+    if (!isOnboardingCompleted) {
       this.context.bufferedTrace?.({
         name: TraceName.OnboardingPasswordLoginError,
         op: TraceOperation.OnboardingError,
@@ -271,6 +299,14 @@ class UnlockPage extends Component {
         finalErrorMessage = t('passwordChangedRecently');
         errorReason = 'outdated_password';
         break;
+      case SeedlessOnboardingControllerErrorMessage.AuthenticationError:
+      case SeedlessOnboardingControllerErrorMessage.InvalidRevokeToken:
+      case SeedlessOnboardingControllerErrorMessage.InvalidRefreshToken:
+        if (isOnboardingCompleted) {
+          finalErrorMessage = message;
+          shouldShowLoginErrorModal = true;
+        }
+        break;
       default:
         finalErrorMessage = message;
         break;
@@ -278,6 +314,18 @@ class UnlockPage extends Component {
 
     if (errorReason) {
       await this.props.forceUpdateMetamaskState();
+      // Track wallet rehydration failed for social import users (only during rehydration)
+      if (isRehydrationFlow) {
+        this.context.trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.RehydrationPasswordFailed,
+          properties: {
+            account_type: 'social',
+            failed_attempts: this.failed_attempts,
+            error_type: errorReason,
+          },
+        });
+      }
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Navigation,
         event: MetaMetricsEventName.AppUnlockedFailed,
@@ -290,6 +338,7 @@ class UnlockPage extends Component {
     this.setState({
       error: finalErrorMessage,
       unlockDelayPeriod: finalUnlockDelayPeriod,
+      showLoginErrorModal: shouldShowLoginErrorModal,
     });
   };
 
@@ -371,6 +420,15 @@ class UnlockPage extends Component {
     // in `onboarding_unlock` route, if the user is on a social login flow and onboarding is not completed,
     // we can redirect to `onboarding_welcome` route to select a different login method
     if (!isOnboardingCompleted && isSocialLoginFlow) {
+      // Track when user clicks "Use a different login method" during rehydration
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.UseDifferentLoginMethodClicked,
+        properties: {
+          account_type: 'social',
+        },
+      });
+
       await this.props.loginWithDifferentMethod();
       await this.props.forceUpdateMetamaskState();
       history.replace(ONBOARDING_WELCOME_ROUTE);
@@ -388,7 +446,7 @@ class UnlockPage extends Component {
     this.setState({ showResetPasswordModal: true });
   };
 
-  onRestoreWallet = () => {
+  onRestoreWallet = async () => {
     const { isSocialLoginFlow } = this.props;
 
     this.context.trackEvent({
@@ -401,12 +459,29 @@ class UnlockPage extends Component {
     this.props.onRestore();
   };
 
+  onResetWallet = async () => {
+    this.setState({ showLoginErrorModal: false });
+    await this.props.resetWallet();
+    await this.props.forceUpdateMetamaskState();
+    this.props.history.replace(DEFAULT_ROUTE);
+  };
+
   render() {
-    const { password, error, isLocked, showResetPasswordModal } = this.state;
-    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
+    const {
+      password,
+      error,
+      isLocked,
+      showResetPasswordModal,
+      showLoginErrorModal,
+    } = this.state;
+    const { isOnboardingCompleted, isSocialLoginFlow, theme } = this.props;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');
+    const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
+    const isTestEnvironment = Boolean(process.env.IN_TEST);
+    const themeType = getThemeFromRawTheme(theme);
+    const isDarkTheme = themeType === ThemeType.dark;
 
     return (
       <Box
@@ -414,14 +489,23 @@ class UnlockPage extends Component {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={
+          isRehydrationFlow ? BackgroundColor.backgroundDefault : ''
+        }
         width={BlockSize.Full}
         paddingBottom={12} // offset header to center content
+        className={isRehydrationFlow ? '' : 'unlock-page__container'}
       >
         {showResetPasswordModal && (
           <ResetPasswordModal
             onClose={() => this.setState({ showResetPasswordModal: false })}
             onRestore={this.onRestoreWallet}
+          />
+        )}
+        {showLoginErrorModal && (
+          <LoginErrorModal
+            onDone={this.onResetWallet}
+            loginError={LOGIN_ERROR.RESET_WALLET}
           />
         )}
         <Box
@@ -446,7 +530,21 @@ class UnlockPage extends Component {
               className="unlock-page__mascot-container"
               marginBottom={isBeta() || isFlask() ? 6 : 0}
             >
-              {this.renderMascot()}
+              {isRehydrationFlow ? (
+                this.renderMascot()
+              ) : (
+                <Box className="unlock-page__mascot-container__logo">
+                  <img
+                    src={
+                      isDarkTheme
+                        ? './images/logo/dark-logo.png'
+                        : './images/logo/light-logo.png'
+                    }
+                    width="180"
+                    height="180"
+                  />
+                </Box>
+              )}
               {isBeta() ? (
                 <Text
                   className="unlock-page__mascot-container__beta"
@@ -461,17 +559,19 @@ class UnlockPage extends Component {
                 </Text>
               ) : null}
             </Box>
-            <Text
-              data-testid="unlock-page-title"
-              as="h1"
-              variant={TextVariant.displayMd}
-              marginBottom={12}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.textDefault}
-              textAlign={TextAlign.Center}
-            >
-              {t('welcomeBack')}
-            </Text>
+            {isRehydrationFlow && (
+              <Text
+                data-testid="unlock-page-title"
+                as="h1"
+                variant={TextVariant.displayMd}
+                marginBottom={12}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.textDefault}
+                textAlign={TextAlign.Center}
+              >
+                {t('welcomeBack')}
+              </Text>
+            )}
             <FormTextField
               id="password"
               placeholder={
@@ -479,13 +579,16 @@ class UnlockPage extends Component {
                   ? t('enterYourPasswordSocialLoginFlow')
                   : t('enterYourPassword')
               }
+              className="unlock-page__password-input-container"
               size={FormTextFieldSize.Lg}
+              placeholderColor={TextColor.textDefault}
               inputProps={{
                 'data-testid': 'unlock-password',
                 'aria-label': t('password'),
               }}
               textFieldProps={{
                 disabled: isLocked,
+                className: 'unlock-page__password-input',
               }}
               onChange={(event) => this.handleInputChange(event)}
               type={TextFieldType.Password}
@@ -516,8 +619,9 @@ class UnlockPage extends Component {
               type="button"
               onClick={this.onForgotPasswordOrLoginWithDiffMethods}
               marginBottom={6}
+              color={TextColor.textDefault}
             >
-              {isSocialLoginFlow && !isOnboardingCompleted
+              {isRehydrationFlow
                 ? t('useDifferentLoginMethod')
                 : t('forgotPassword')}
             </Button>
@@ -554,6 +658,11 @@ class UnlockPage extends Component {
             </Text>
           </Box>
         </Box>
+        {!isTestEnvironment && !isRehydrationFlow && (
+          <Suspense fallback={<Box />}>
+            <FoxAppearAnimation />
+          </Suspense>
+        )}
       </Box>
     );
   }

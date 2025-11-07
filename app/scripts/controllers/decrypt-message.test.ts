@@ -1,3 +1,4 @@
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
   DecryptMessageManager,
   DecryptMessageParams,
@@ -124,7 +125,9 @@ describe('DecryptMessageController', () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metricsEvent: metricsEventMock as any,
-      managerMessenger: managerMessengerMock,
+      manager: new DecryptMessageManager({
+        messenger: managerMessengerMock,
+      }),
     } as DecryptMessageControllerOptions);
   });
 
@@ -302,6 +305,58 @@ describe('DecryptMessageController', () => {
       properties: {
         action: 'Decrypt Message Request',
       },
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      expect(
+        deriveStateFromMetadata(
+          decryptMessageController.state,
+          decryptMessageController.metadata,
+          'includeInDebugSnapshot',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('includes expected state in state logs', () => {
+      expect(
+        deriveStateFromMetadata(
+          decryptMessageController.state,
+          decryptMessageController.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "unapprovedDecryptMsgCount": 0,
+          "unapprovedDecryptMsgs": {},
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      expect(
+        deriveStateFromMetadata(
+          decryptMessageController.state,
+          decryptMessageController.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('exposes expected state to UI', () => {
+      expect(
+        deriveStateFromMetadata(
+          decryptMessageController.state,
+          decryptMessageController.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "unapprovedDecryptMsgCount": 0,
+          "unapprovedDecryptMsgs": {},
+        }
+      `);
     });
   });
 });

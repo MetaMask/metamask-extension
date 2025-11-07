@@ -22,6 +22,8 @@ import {
 } from '@metamask/utils';
 
 import { isEqual } from 'lodash';
+import { Tooltip } from 'react-tippy';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPermissions,
@@ -38,6 +40,9 @@ import {
   ButtonLink,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
   Text,
 } from '../../../components/component-library';
 import {
@@ -54,6 +59,7 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -82,6 +88,8 @@ import {
 } from '../../../selectors/selectors.types';
 import { CreateSolanaAccountModal } from '../../../components/multichain/create-solana-account-modal/create-solana-account-modal';
 import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-merger';
+import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
+import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
@@ -441,6 +449,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
+  const originTrustSignals = useOriginTrustSignals(
+    targetSubjectMetadata.origin,
+  );
 
   return (
     <Page
@@ -448,7 +459,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       className="main-container connect-page"
       backgroundColor={BackgroundColor.backgroundDefault}
     >
-      <Header paddingTop={8} paddingBottom={0}>
+      <Header paddingTop={8} paddingBottom={4}>
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
@@ -491,9 +502,36 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             </AvatarBase>
           )}
         </Box>
-        <Text variant={TextVariant.headingLg} marginBottom={1}>
-          {title}
-        </Text>
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          gap={2}
+          marginBottom={1}
+        >
+          <Text
+            variant={TextVariant.headingLg}
+            style={{
+              wordBreak: 'break-word',
+              whiteSpace: 'normal',
+            }}
+          >
+            {title}
+          </Text>
+          {originTrustSignals.state === TrustSignalDisplayState.Verified && (
+            <Tooltip
+              title={t('alertReasonOriginTrustSignalVerified')}
+              position="bottom"
+              style={{ display: 'flex' }}
+            >
+              <Icon
+                name={IconName.VerifiedFilled}
+                color={IconColor.infoDefault}
+                size={IconSize.Sm}
+              />
+            </Tooltip>
+          )}
+        </Box>
         <Box display={Display.Flex} justifyContent={JustifyContent.center}>
           <Text color={TextColor.textAlternative}>
             {t('connectionDescription')}
@@ -505,20 +543,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs
-          onTabClick={() => null}
-          backgroundColor={BackgroundColor.transparent}
-          justifyContent={JustifyContent.center}
-          defaultActiveTabKey="accounts"
-          tabListProps={{
-            backgroundColor: BackgroundColor.transparent,
-          }}
-        >
+        <Tabs defaultActiveTabKey="accounts">
           <Tab
             name={t('accounts')}
             tabKey="accounts"
-            width={BlockSize.Full}
             data-testid="accounts-tab"
+            className="flex-1"
           >
             <Box marginTop={4}>
               <Box
@@ -617,13 +647,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           <Tab
             name={t('permissions')}
             tabKey="permissions"
-            width={BlockSize.Full}
             data-testid="permissions-tab"
             disabled={
               promptToCreateSolanaAccount &&
               !solanaAccountExistsInWallet &&
               selectedAccounts.length === 0
             }
+            className="flex-1"
           >
             <Box marginTop={4}>
               <SiteCell

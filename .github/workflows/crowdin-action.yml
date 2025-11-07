@@ -10,6 +10,7 @@ on:
 jobs:
   synchronize-with-crowdin:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,6 +23,7 @@ jobs:
         with:
           upload_translations: false
           download_translations: true
+          pull_request_title: 'chore: New Crowdin Translations by GitHub Action'
           github_user_name: metamaskbot
           github_user_email: metamaskbot@users.noreply.github.com
         env:

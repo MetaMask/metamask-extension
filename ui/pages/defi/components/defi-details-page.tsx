@@ -23,7 +23,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 import { getPreferences, getSelectedAccount } from '../../../selectors';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { formatWithThreshold } from '../../../components/app/assets/util/formatWithThreshold';
+import { useFormatters } from '../../../hooks/useFormatters';
 import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import { getDefiPositions } from '../../../selectors/assets';
 import DefiDetailsList, {
@@ -50,7 +50,7 @@ const DeFiPage = () => {
     chainId: '0x' & string;
     protocolId: string;
   }>() as { chainId: '0x' & string; protocolId: string };
-
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const defiPositions = useSelector(getDefiPositions);
   const selectedAccount = useSelector(getSelectedAccount);
 
@@ -58,6 +58,7 @@ const DeFiPage = () => {
   const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
 
+  // TODO: Get value in user's preferred currency
   const protocolPosition =
     defiPositions[selectedAccount.address]?.[chainId]?.protocols[protocolId];
 
@@ -127,20 +128,15 @@ const DeFiPage = () => {
       <Box paddingLeft={4} paddingBottom={4}>
         <SensitiveText
           data-testid="defi-details-page-market-value"
-          className="mm-box--color-text-alternative-soft"
+          className="mm-box--color-text-alternative"
           ellipsis
           variant={TextVariant.inherit}
           isHidden={privacyMode}
           length={SensitiveTextLength.Medium}
         >
-          {formatWithThreshold(
+          {formatCurrencyWithMinThreshold(
             protocolPosition.aggregatedMarketValue,
-            0.0,
             'USD',
-            {
-              style: 'currency',
-              currency: 'USD',
-            },
           )}
         </SensitiveText>
       </Box>

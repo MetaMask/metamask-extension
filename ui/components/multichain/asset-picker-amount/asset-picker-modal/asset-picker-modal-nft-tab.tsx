@@ -1,23 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import {
-  Box,
-  Text,
-  ButtonLink,
-  ButtonLinkSize,
-} from '../../../component-library';
-import {
-  TextColor,
-  TextVariant,
-  TextAlign,
-  Display,
-  JustifyContent,
-  AlignItems,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { useNavigate } from 'react-router-dom-v5-compat';
+import { Box } from '../../../component-library';
 import Spinner from '../../../ui/spinner';
 import {
   getIsMainnet,
@@ -38,7 +22,9 @@ import {
   updateSendAsset,
 } from '../../../../ducks/send';
 import { getNftImage } from '../../../../helpers/utils/nfts';
+import { useRedesignedSendFlow } from '../../../../pages/confirmations/hooks/useRedesignedSendFlow';
 import { navigateToSendRoute } from '../../../../pages/confirmations/utils/send';
+import { NftEmptyState } from '../../../app/assets/nfts/nft-empty-state';
 import { NFT } from './types';
 
 export type PreviouslyOwnedCollections = {
@@ -59,14 +45,14 @@ export function AssetPickerModalNftTab({
   onClose,
   renderSearch,
 }: AssetPickerModalNftTabProps) {
-  const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   const { currentlyOwnedNfts } = useNfts({
     overridePopularNetworkFilter: true,
@@ -93,7 +79,7 @@ export function AssetPickerModalNftTab({
   const handleNftClick = async (nft: NFT) => {
     trackEvent(
       {
-        event: MetaMetricsEventName.sendAssetSelected,
+        event: MetaMetricsEventName.SendAssetSelected,
         category: MetaMetricsEventCategory.Send,
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -128,7 +114,10 @@ export function AssetPickerModalNftTab({
         skipComputeEstimatedGasLimit: false,
       }),
     );
-    navigateToSendRoute(history, { address: nft.address });
+    navigateToSendRoute(navigate, isSendRedesignEnabled, {
+      address: nft.address,
+      chainId: nft.chainId,
+    });
     onClose && onClose();
   };
 
@@ -169,38 +158,7 @@ export function AssetPickerModalNftTab({
               <NFTsDetectionNoticeNFTsTab />
             </Box>
           )}
-          <Box
-            padding={12}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-          >
-            <Box
-              marginTop={12}
-              marginBottom={12}
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-              flexDirection={FlexDirection.Column}
-              className="nfts-tab__link"
-            >
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodyMdMedium}
-                textAlign={TextAlign.Center}
-              >
-                {t('noNFTs')}
-              </Text>
-              <ButtonLink
-                size={ButtonLinkSize.Sm}
-                href={ZENDESK_URLS.NFT_TOKENS}
-                externalLink
-              >
-                {t('learnMoreUpperCase')}
-              </ButtonLink>
-            </Box>
-          </Box>
+          <NftEmptyState className="mx-auto mt-5 mb-6" />
         </>
       )}
     </Box>

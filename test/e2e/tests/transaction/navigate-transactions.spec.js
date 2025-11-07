@@ -5,14 +5,12 @@ const {
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
 
-const {
-  withFixtures,
-  openDapp,
-  locateAccountBalanceDOM,
-  unlockWallet,
-  WINDOW_TITLES,
-} = require('../../helpers');
+const { withFixtures } = require('../../helpers');
+const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const FixtureBuilder = require('../../fixture-builder');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 
 const TRANSACTION_COUNT = 4;
 
@@ -26,10 +24,10 @@ describe('Navigate transactions', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -59,7 +57,7 @@ describe('Navigate transactions', function () {
   it('should add a transaction while the confirm page is in focus', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerTxSimulationsDisabled()
@@ -68,7 +66,7 @@ describe('Navigate transactions', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -82,7 +80,7 @@ describe('Navigate transactions', function () {
         );
 
         // add transaction
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -100,10 +98,10 @@ describe('Navigate transactions', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -125,10 +123,10 @@ describe('Navigate transactions', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -144,16 +142,16 @@ describe('Navigate transactions', function () {
   it('should reject and remove all unapproved transactions', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
-        dapp: true,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -163,7 +161,9 @@ describe('Navigate transactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await locateAccountBalanceDOM(driver);
+        await driver.waitForSelector(
+          '[data-testid="eth-overview__primary-currency"]',
+        );
       },
     );
   });

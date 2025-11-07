@@ -120,8 +120,8 @@ async function waitUntilFileIsWritten({
     }
     console.log(`File size is too small (${fileSize} bytes)`);
     if (attempt < maxRetries - 1) {
-      console.log(`Waiting for 5 seconds before retrying...`);
-      await driver.delay(5000);
+      console.log(`Waiting for 8 seconds before retrying...`);
+      await driver.delay(8000);
     }
   }
   // If the loop completes without success, throw an error
@@ -142,8 +142,11 @@ async function closePopoverIfPresent(driver: Driver) {
     text: 'Enable',
     tag: 'button',
   };
+  const popoverTourSelector = '[data-testid="tour-cta-button"]';
+
   await driver.clickElementSafe(popoverButtonSelector);
   await driver.clickElementSafe(enableButtonSelector);
+  await driver.clickElementSafe(popoverTourSelector);
 
   // Token Autodetection Independent Announcement
   const tokenAutodetection = {

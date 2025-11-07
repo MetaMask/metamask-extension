@@ -1,10 +1,6 @@
 const { strict: assert } = require('assert');
-const {
-  withFixtures,
-  unlockWallet,
-  openDapp,
-  getWindowHandles,
-} = require('../../helpers');
+const { withFixtures, unlockWallet } = require('../../helpers');
+const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('PPOM Settings', function () {
@@ -12,7 +8,7 @@ describe('PPOM Settings', function () {
   it.skip('should not show the PPOM warning when toggle is off', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
@@ -33,10 +29,9 @@ describe('PPOM Settings', function () {
           '[data-testid="settings-toggle-security-alert-blockaid"] .toggle-button > div',
         );
 
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
         await driver.clickElement('#maliciousPermit');
-        const windowHandles = await getWindowHandles(driver, 3);
-        await driver.switchToWindow(windowHandles.popup);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const blockaidResponseTitle =
           '[data-testid="security-provider-banner-alert"]';
@@ -50,7 +45,7 @@ describe('PPOM Settings', function () {
   it.skip('should show the PPOM warning when the toggle is on', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
@@ -60,10 +55,9 @@ describe('PPOM Settings', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
         await driver.clickElement('#maliciousPermit');
-        const windowHandles = await getWindowHandles(driver, 3);
-        await driver.switchToWindow(windowHandles.popup);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const blockaidResponseTitle =
           '[data-testid="security-provider-banner-alert"]';

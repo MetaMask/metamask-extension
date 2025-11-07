@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import LoadingScreen from '../../../../../components/ui/loading-screen';
 import {
   Box,
   Button,
@@ -12,57 +13,86 @@ import {
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { Asset } from '../../../types/send';
 import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
-import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useSendActions } from '../../../hooks/send/useSendActions';
+import { useSendContext } from '../../../context/send';
+import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
+import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
+import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
+import { useSendType } from '../../../hooks/send/useSendType';
+import { SendHero } from '../../UI/send-hero';
 import { Amount } from '../amount/amount';
-import { Header } from '../header';
 import { Recipient } from '../recipient';
+import { HexData } from '../hex-data';
 
 export const AmountRecipient = () => {
   const t = useI18nContext();
-  const [to, setTo] = useState<string | undefined>();
+  const [hexDataError, setHexDataError] = useState<string>();
+  const { asset, toResolved } = useSendContext();
+  const { amountError, validateNonEvmAmountAsync } = useAmountValidation();
+  const { isNonEvmSendType } = useSendType();
   const { handleSubmit } = useSendActions();
   const { captureAmountSelected } = useAmountSelectionMetrics();
-  const { amountError } = useAmountValidation();
+  const { captureRecipientSelected } = useRecipientSelectionMetrics();
+  const recipientValidationResult = useRecipientValidation();
 
-  const onClick = useCallback(() => {
-    handleSubmit(to);
+  const hasError =
+    Boolean(amountError) ||
+    Boolean(recipientValidationResult.recipientError) ||
+    Boolean(hexDataError);
+  const isDisabled = hasError || !toResolved;
+
+  const onClick = useCallback(async () => {
+    if (isNonEvmSendType) {
+      // Non EVM flows need an extra validation because "value" can be empty dependent on the blockchain (e.g it's fine for Solana but not for Bitcoin)
+      // Hence we do a call for `validateNonEvmAmountAsync` here to raise UI validation errors if exists
+      const nonEvmAmountError = await validateNonEvmAmountAsync();
+      if (nonEvmAmountError) {
+        return;
+      }
+    }
+    handleSubmit();
     captureAmountSelected();
-  }, [captureAmountSelected, handleSubmit, to]);
+    captureRecipientSelected();
+  }, [
+    captureAmountSelected,
+    captureRecipientSelected,
+    handleSubmit,
+    isNonEvmSendType,
+    validateNonEvmAmountAsync,
+  ]);
 
-  const hasAmountError = Boolean(amountError);
+  if (!asset) {
+    return <LoadingScreen />;
+  }
 
   return (
-    <div className="send__wrapper">
-      <div className="send__container">
-        <div className="send__content">
-          <Header />
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.spaceBetween}
-            className="send__body"
-          >
-            <Box>
-              <Recipient setTo={setTo} />
-              <Amount />
-            </Box>
-            <Button
-              disabled={hasAmountError}
-              onClick={onClick}
-              size={ButtonSize.Lg}
-              backgroundColor={
-                hasAmountError
-                  ? BackgroundColor.errorDefault
-                  : BackgroundColor.iconDefault
-              }
-            >
-              {amountError ?? t('continue')}
-            </Button>
-          </Box>
-        </div>
-      </div>
-    </div>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      paddingLeft={4}
+      paddingRight={4}
+      style={{ flex: 1 }}
+    >
+      <Box>
+        <SendHero asset={asset as Asset} />
+        <Recipient recipientValidationResult={recipientValidationResult} />
+        <Amount amountError={amountError} />
+        <HexData setHexDataError={setHexDataError} />
+      </Box>
+      <Button
+        disabled={isDisabled}
+        onClick={onClick}
+        size={ButtonSize.Lg}
+        backgroundColor={
+          hasError ? BackgroundColor.errorDefault : BackgroundColor.iconDefault
+        }
+        marginBottom={4}
+      >
+        {amountError ?? hexDataError ?? t('continue')}
+      </Button>
+    </Box>
   );
 };

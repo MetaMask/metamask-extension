@@ -151,14 +151,7 @@ ${Object.entries(env)
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         content_scripts: [
-          {
-            js: [
-              'ignored',
-              'scripts/contentscript.js',
-              'scripts/inpage.js',
-              'ignored',
-            ],
-          },
+          { js: ['scripts/contentscript.js', 'scripts/inpage.js'] },
         ],
       },
       'brave',
@@ -309,7 +302,7 @@ ${Object.entries(env)
   });
 
   // these tests should be temporary until the below options are supported
-  const unsupportedOptions = [['--lavamoat'], ['--manifest_version', '3']];
+  const unsupportedOptions = [['--manifest_version', '3']];
   for (const args of unsupportedOptions) {
     it(`should throw on unsupported option \`${args.join('=')}\``, () => {
       assert.throws(

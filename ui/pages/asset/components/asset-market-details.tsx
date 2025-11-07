@@ -4,7 +4,7 @@ import { CaipAssetType } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 
-import { getPricePrecision, localizeLargeNumber } from '../util';
+import { getPricePrecision } from '../util';
 
 import { Box, Text } from '../../../components/component-library';
 import {
@@ -20,7 +20,6 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getMultichainConversionRate,
-  getMultichainIsEvm,
   getMultichainNativeCurrency,
 } from '../../../selectors/multichain';
 import { getAssetsRates } from '../../../selectors/assets';
@@ -29,6 +28,8 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';
 // eslint-disable-next-line import/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../../../app/scripts/lib/util';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { useFormatters } from '../../../hooks/useFormatters';
 
 export const AssetMarketDetails = ({
   asset,
@@ -43,8 +44,9 @@ export const AssetMarketDetails = ({
   const evmMarketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
   const nonEvmConversionRates = useSelector(getAssetsRates);
+  const { formatCurrencyCompact, formatCompact } = useFormatters();
 
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(asset.chainId);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
 
   const { type, symbol, chainId } = asset;
@@ -95,14 +97,13 @@ export const AssetMarketDetails = ({
 
   let marketCap = toNumber(tokenMarketDetails.marketCap);
   let totalVolume = toNumber(tokenMarketDetails.totalVolume);
-  let circulatingSupply = toNumber(tokenMarketDetails.circulatingSupply);
+  const circulatingSupply = toNumber(tokenMarketDetails.circulatingSupply);
   let allTimeHigh = toNumber(tokenMarketDetails.allTimeHigh);
   let allTimeLow = toNumber(tokenMarketDetails.allTimeLow);
 
   if (isEvm) {
     marketCap *= tokenExchangeRate;
     totalVolume *= tokenExchangeRate;
-    circulatingSupply *= tokenExchangeRate;
     allTimeHigh *= tokenExchangeRate;
     allTimeLow *= tokenExchangeRate;
   }
@@ -136,21 +137,21 @@ export const AssetMarketDetails = ({
               variant={TextVariant.bodyMdMedium}
               data-testid="asset-market-cap"
             >
-              {localizeLargeNumber(t, marketCap)}
+              {formatCurrencyCompact(marketCap, currency)}
             </Text>,
           )}
         {totalVolume > 0 &&
           renderRow(
             t('totalVolume'),
             <Text variant={TextVariant.bodyMdMedium}>
-              {localizeLargeNumber(t, totalVolume)}
+              {formatCurrencyCompact(totalVolume, currency)}
             </Text>,
           )}
         {circulatingSupply > 0 &&
           renderRow(
             t('circulatingSupply'),
             <Text variant={TextVariant.bodyMdMedium}>
-              {localizeLargeNumber(t, circulatingSupply)}
+              {formatCompact(circulatingSupply)}
             </Text>,
           )}
         {allTimeHigh > 0 &&

@@ -2,12 +2,14 @@ import {
   SeedlessOnboardingController,
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
-import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import {
+  getSeedlessOnboardingControllerInitMessenger,
   getSeedlessOnboardingControllerMessenger,
+  SeedlessOnboardingControllerInitMessenger,
   SeedlessOnboardingControllerMessenger,
 } from '../messengers/seedless-onboarding';
+import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { SeedlessOnboardingControllerInit } from './seedless-onboarding-controller-init';
@@ -15,16 +17,21 @@ import { SeedlessOnboardingControllerInit } from './seedless-onboarding-controll
 jest.mock('@metamask/seedless-onboarding-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<SeedlessOnboardingControllerMessenger>
+  ControllerInitRequest<
+    SeedlessOnboardingControllerMessenger,
+    SeedlessOnboardingControllerInitMessenger
+  >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger<never, never>();
 
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getSeedlessOnboardingControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: undefined,
+    initMessenger: getSeedlessOnboardingControllerInitMessenger(
+      baseControllerMessenger,
+    ),
   };
 }
 
@@ -67,8 +74,9 @@ describe('SeedlessOnboardingControllerInit', () => {
         importKey: expect.any(Function),
       },
       passwordOutdatedCacheTTL: expect.any(Number),
-      refreshJWTToken: requestMock.refreshOAuthToken,
-      revokeRefreshToken: requestMock.revokeAndGetNewRefreshToken,
+      refreshJWTToken: expect.any(Function),
+      revokeRefreshToken: expect.any(Function),
+      renewRefreshToken: expect.any(Function),
     });
   });
 });

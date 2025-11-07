@@ -18,6 +18,7 @@ import { useSendContext } from '../send';
 export const AssetFilterMethod = {
   None: 'none',
   Search: 'search',
+  Network: 'network',
 };
 
 export const AmountInputType = {
@@ -43,11 +44,11 @@ export type SendMetricsContextType = {
   assetListSize: string;
   amountInputMethod: string;
   amountInputType: string;
-  assetFilterMethod: string;
+  assetFilterMethod: string[];
   recipientInputMethod: string;
   setAmountInputMethod: (value: string) => void;
   setAmountInputType: (value: string) => void;
-  setAssetFilterMethod: (value: string) => void;
+  setAssetFilterMethod: (value: string[]) => void;
   setAssetListSize: (value: string) => void;
   setRecipientInputMethod: (value: string) => void;
 };
@@ -57,7 +58,7 @@ export const SendMetricsContext = createContext<SendMetricsContextType>({
   assetListSize: '',
   amountInputMethod: AmountInputMethod.Manual,
   amountInputType: AmountInputType.Token,
-  assetFilterMethod: AssetFilterMethod.None,
+  assetFilterMethod: [AssetFilterMethod.None],
   recipientInputMethod: RecipientInputMethod.Manual,
   setAmountInputMethod: () => undefined,
   setAmountInputType: () => undefined,
@@ -71,9 +72,9 @@ export const SendMetricsContextProvider: React.FC<{
 }> = ({ children }) => {
   const { from } = useSendContext();
   const internalAccounts = useSelector(getInternalAccounts);
-  const [assetFilterMethod, setAssetFilterMethod] = useState(
+  const [assetFilterMethod, setAssetFilterMethod] = useState([
     AssetFilterMethod.None,
-  );
+  ]);
   const [assetListSize, setAssetListSize] = useState('');
   const [amountInputMethod, setAmountInputMethod] = useState(
     AmountInputMethod.Manual,

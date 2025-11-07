@@ -106,7 +106,7 @@ async function mockSecurityAlertsRequest(server: MockttpServer): Promise<void> {
   };
 
   await server
-    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x1`)
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x539`)
     .withJsonBodyIncluding(request)
     .thenJson(response.statusCode ?? 201, response);
 }
@@ -117,15 +117,23 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite)
     // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
+          })
+          .withNetworkController({
+            selectedNetworkClientId: 'networkConfigurationId',
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x539': true,
+            },
           })
           .withPreferencesController({
             securityAlertsEnabled: true,
           })
+          // .withNetworkControllerOnMainnet()
           .build(),
         testSpecificMock: mockInfura,
         title: this.test?.fullTitle(),

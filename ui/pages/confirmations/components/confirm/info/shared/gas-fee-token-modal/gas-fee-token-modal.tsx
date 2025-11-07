@@ -207,9 +207,7 @@ function NativeToggle({
         <Icon
           name={IconName.Wallet}
           size={IconSize.Sm}
-          color={
-            isFuture ? IconColor.iconAlternativeSoft : IconColor.infoDefault
-          }
+          color={isFuture ? IconColor.iconAlternative : IconColor.infoDefault}
           margin={2}
         />
       </NativeToggleOption>
@@ -222,10 +220,7 @@ function NativeToggle({
       >
         <img
           src="./images/logo/metamask-fox.svg"
-          height={15}
-          style={{
-            margin: 8,
-          }}
+          className="gas-fee-token-native-toggle-option__fox-icon"
         />
       </NativeToggleOption>
     </Box>

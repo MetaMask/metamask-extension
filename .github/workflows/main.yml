@@ -4,9 +4,7 @@ on:
   push:
     branches:
       - main
-      - master
       - stable
-      - Version-v*
       - release/*
       - trigger-ci*
   pull_request:
@@ -15,17 +13,17 @@ on:
       - reopened
       - synchronize
     branches-ignore:
-      - master
+      - stable
   merge_group:
   schedule:
-    # Run the full suite "overnight," once every half hour from 1:00am UTC until 2:59am UTC.
+    # Run the full suite "overnight," once every hour from 2:00am UTC until 5:59am UTC.
     # This helps with "Top 10 failed tests on the metamask-extension repository main branch,"
     # especially the Monday morning list, which is otherwise usually a fake empty.
-    - cron: '0,30 1-2 * * *'
+    - cron: '0 2-6 * * *'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master') || contains(github.ref, 'refs/heads/stable')) }}
+  group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/main' && github.sha || github.ref }}
+  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
 
 env:
   # For a `pull_request` event, the branch is `github.head_ref``.
@@ -42,6 +40,7 @@ permissions:
 jobs:
   prep-deps:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -49,7 +48,7 @@ jobs:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       # Need to cache `.metamask` folder for the anvil binary
       - name: Cache .metamask folder
@@ -72,13 +71,14 @@ jobs:
     needs:
       - prep-deps
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -94,28 +94,23 @@ jobs:
       - prep-deps
     uses: ./.github/workflows/test-storybook.yml
 
-  validate-lavamoat-policy-build:
+  validate-lavamoat-policies:
     needs:
       - prep-deps
-    uses: ./.github/workflows/validate-lavamoat-policy-build.yml
-
-  validate-lavamoat-policy-webapp:
-    needs:
-      - prep-deps
-    uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
+    uses: ./.github/workflows/validate-lavamoat-policies.yml
 
   build-dist-browserify:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
-      build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build prod' || 'yarn build dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
     secrets: inherit
 
   build-dist-mv2-browserify:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
-      build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build prod' || 'yarn build dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
       mozilla-lint: true
       enable-mv3: false
     secrets: inherit
@@ -140,14 +135,14 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
-      build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
     secrets: inherit
 
   build-flask-mv2-browserify:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
-      build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
       mozilla-lint: true
       enable-mv3: false
     secrets: inherit
@@ -193,11 +188,15 @@ jobs:
     secrets: inherit
 
   run-benchmarks:
+    # If not a fork, run benchmarks
+    if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
       - prep-deps
       - build-test-browserify
       - build-test-webpack
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   run-tests:
     name: Run tests
@@ -209,6 +208,7 @@ jobs:
     needs:
       - build-dist-browserify
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
@@ -218,7 +218,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -241,17 +241,15 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/bundle-size
           path: test-artifacts/chrome
 
-  benchmark-pr:
+  page-load-benchmark:
     needs:
-      - build-dist-browserify
-    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
-    uses: ./.github/workflows/benchmark-pr.yml
-    with:
-      browser-loads: '10'
-      page-loads: '10'
+      - build-test-browserify
+    uses: ./.github/workflows/page-load-benchmark.yml
     secrets:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+    with:
+      browser-loads: 10
+      page-loads: 10
 
   needs-e2e:
     needs:
@@ -269,14 +267,18 @@ jobs:
     uses: ./.github/workflows/e2e-chrome.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   e2e-firefox:
     needs:
       - needs-e2e
       - build-test-mv2-browserify
+      - build-test-webpack
       - build-test-flask-mv2-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   build-storybook:
     name: Build storybook
@@ -295,13 +297,14 @@ jobs:
       - prep-deps
       - build-dist-browserify
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -324,32 +327,69 @@ jobs:
       - prep-deps
       - build-dist-browserify
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       GOOGLE_PROD_CLIENT_ID: 00000000000
       APPLE_PROD_CLIENT_ID: 00000000000
       GOOGLE_BETA_CLIENT_ID: 00000000000
       APPLE_BETA_CLIENT_ID: 00000000000
+      GOOGLE_EXPERIMENTAL_CLIENT_ID: 00000000000
+      APPLE_EXPERIMENTAL_CLIENT_ID: 00000000000
       GOOGLE_FLASK_CLIENT_ID: 00000000000
       APPLE_FLASK_CLIENT_ID: 00000000000
-
+    outputs:
+      lavamoat-policy-changed: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
+
+      - name: Download changed-files artifact
+        if: ${{ env.BRANCH != 'main' }}
+        id: download-changed-files
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: changed-files
+          path: ./changed-files/
+
+      # if the changed-files artifact does not exist, we get the diff
+      - run: yarn tsx .github/scripts/git-diff-default-branch.ts
+        if: ${{ steps.download-changed-files.outcome == 'failure' }}
+
+      - name: See if lavamoat policy files have changed
+        id: lavamoat-policy-changed
+        run: |
+          # if 'changed-files/changed-files.json' exists, check if it contains any files named policy.json or policy-override.json
+          if [ -f "changed-files/changed-files.json" ]; then
+            if grep -q -e 'policy.json' -e 'policy-override.json' changed-files/changed-files.json; then
+              echo "Lavamoat policy file changes detected."
+              echo "lavamoat-policy-changed=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "No Lavamoat policy file changes detected."
+              echo "lavamoat-policy-changed=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "Cannot find 'changed-files.json', assuming that Lavamoat policy files have changed."
+            echo "lavamoat-policy-changed=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Download artifact 'build-dist-browserify'
+        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' }}
         uses: actions/download-artifact@v4
         with:
           name: build-dist-browserify
 
       - run: ./.github/scripts/create-lavamoat-viz.sh
+        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' }}
 
       - name: Upload 'build-viz' to S3
-        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}
@@ -359,6 +399,7 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
+    if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     needs:
       - build-dist-browserify
       - build-dist-mv2-browserify
@@ -371,18 +412,21 @@ jobs:
       - build-test-flask-browserify
       - build-test-flask-mv2-browserify
       - run-benchmarks
+      - page-load-benchmark
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard
       - build-source-map-explorer
       - build-lavamoat-viz
     uses: ./.github/workflows/publish-prerelease.yml
+    with:
+      lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
   publish-release:
     name: Publish release
-    if: ${{ github.event_name == 'push' && (github.ref_name == 'master' || github.ref_name == 'stable') }}
+    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' }}
     needs:
       - build-dist-browserify
       - build-dist-mv2-browserify
@@ -399,13 +443,13 @@ jobs:
   all-jobs-completed:
     name: All jobs completed
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - lint-workflows
       - test-lint
       - repository-health-checks
       - test-storybook
-      - validate-lavamoat-policy-build
-      - validate-lavamoat-policy-webapp
+      - validate-lavamoat-policies
       - build-dist-browserify
       - build-dist-mv2-browserify
       - build-beta-browserify
@@ -418,9 +462,6 @@ jobs:
       - build-test-flask-mv2-browserify
       - build-test-webpack
       - run-tests
-      - needs-e2e
-      - e2e-chrome
-      - e2e-firefox
       - build-storybook
       - build-ts-migration-dashboard
       - build-source-map-explorer
@@ -436,15 +477,34 @@ jobs:
     name: All jobs pass
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - all-jobs-completed
+      - needs-e2e
+      - e2e-chrome
+      - e2e-firefox
     steps:
       - name: Check that all jobs have passed
         run: |
-          passed="${{ needs.all-jobs-completed.outputs.PASSED }}"
-          if [[ $passed != "true" ]]; then
+          # Check if all non-E2E jobs passed
+          if [[ "${{ needs.all-jobs-completed.outputs.PASSED }}" != "true" ]]; then
+            echo "Non-E2E jobs failed"
             exit 1
           fi
+
+          # Check E2E jobs only if they should have run
+          if [[ "${{ needs.needs-e2e.outputs.needs-e2e }}" == "true" ]]; then
+            if [[ "${{ needs.e2e-chrome.result }}" == "failure" ]]; then
+              echo "E2E Chrome tests failed"
+              exit 1
+            fi
+            if [[ "${{ needs.e2e-firefox.result }}" == "failure" ]]; then
+              echo "E2E Firefox tests failed"
+              exit 1
+            fi
+          fi
+
+          echo "All required jobs passed"
 
   log-merge-group-failure:
     name: Log merge group failure

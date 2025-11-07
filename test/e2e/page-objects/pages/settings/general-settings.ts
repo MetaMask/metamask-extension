@@ -13,6 +13,9 @@ class GeneralSettings {
     tag: 'h4',
   };
 
+  private readonly hideTokensWithoutBalanceToggle =
+    '[id="toggle-zero-balance"] .toggle-button';
+
   private readonly jazziconsAccountIdenticon = {
     tag: 'h6',
     text: 'Jazzicons',
@@ -22,9 +25,11 @@ class GeneralSettings {
 
   private readonly selectLanguageField = '[data-testid="locale-select"]';
 
-  private readonly blockiesIcon = '[data-testid="blockie_icon"]';
-
-  private readonly jazziconIcon = '[data-testid="jazz_icon"]';
+  private readonly identicons = {
+    maskicon: '[data-testid="maskicon_icon"]',
+    blockies: '[data-testid="blockie_icon"]',
+    jazzicon: '[data-testid="jazz_icon"]',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -82,22 +87,25 @@ class GeneralSettings {
   /**
    * Check if the specified identicon type is active
    *
-   * @param identicon - The type of identicon to check ('jazzicon' or 'blockies')
+   * @param identicon - The type of identicon to check ('maskicon' or 'jazzicon' or 'blockies')
    */
   async checkIdenticonIsActive(
-    identicon: 'jazzicon' | 'blockies',
+    identicon: 'maskicon' | 'jazzicon' | 'blockies',
   ): Promise<void> {
     console.log(
       `Checking if ${identicon} identicon is active on general settings page`,
     );
-    const iconSelector =
-      identicon === 'jazzicon' ? this.jazziconIcon : this.blockiesIcon;
-    const activeSelector = `${iconSelector} .settings-page__content-item__identicon__item__icon--active`;
+
+    const activeSelector = this.identicons[identicon];
     await this.driver.waitForSelector(activeSelector);
   }
 
   async checkNoLoadingOverlaySpinner(): Promise<void> {
     await this.driver.assertElementNotPresent(this.loadingOverlaySpinner);
+  }
+
+  async toggleHideTokensWithoutBalance(): Promise<void> {
+    await this.driver.clickElement(this.hideTokensWithoutBalanceToggle);
   }
 }
 

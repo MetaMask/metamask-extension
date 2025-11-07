@@ -1,0 +1,54 @@
+# Filter rules for determining E2E test requirements
+# Used with dorny/paths-filter action
+#
+# Each filter creates two outputs:
+# - {filter_name}: 'true'/'false' if any changed files match any filter rules
+# - {filter_name}_count: number of matching files
+#
+# STRATEGY: Use separate filters to detect different file types non E2E related.
+# Conservative approach - add only files that safely allow skipping E2E tests.
+
+# DOCUMENTATION FILES
+documentation_files: &documentation_files
+  - '**/*.{md,mdx,txt}'
+  - 'docs/**/*'
+  - 'test/manual-scenarios/**/*'
+  - 'LICENSE'
+
+# LOW LEVEL TEST FILES
+test_files: &test_files
+  - '**/*.test.{js,ts,tsx,jsx}'
+  - '**/*.stories.*'
+  - '**/*.snap'
+  - 'test/jest/**/*'
+  - 'test/unit-global/**/*'
+  - 'test/lib/**/*'
+  - 'test/stub/**/*'
+  - 'test/integration/**/*'
+
+# CONFIG FILES
+config_files: &config_files
+  - '.eslint*'
+  - 'eslint.config.js'
+  - 'prettier.config.js'
+  - 'stylelint.config.js'
+  - 'tailwind.config.js'
+  - 'sonar-project.properties'
+  - 'codecov.yml'
+
+# DEVELOPMENT TOOLS
+dev_tools: &dev_tools
+  - 'development/fitness-functions/**/*'
+  - 'development/ts-migration-dashboard/**/*'
+  - 'development/generate-attributions/**/*'
+
+# ALL FILTERED FILES - non E2E related files
+non_e2e_related_files:
+  - *documentation_files
+  - *test_files
+  - *config_files
+  - *dev_tools
+
+# ALL CHANGED FILES
+all_changes:
+  - '**'

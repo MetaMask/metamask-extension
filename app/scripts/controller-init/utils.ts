@@ -37,6 +37,7 @@ type ControllerMessengerCallback = (
 ) => BaseRestrictedControllerMessenger;
 
 export type ControllersToInitialize =
+  | 'AccountTrackerController'
   | 'AuthenticationController'
   | 'CronjobController'
   | 'DeFiPositionsController'
@@ -60,7 +61,6 @@ export type ControllersToInitialize =
 type InitFunction<Name extends ControllersToInitialize> =
   ControllerInitFunction<
     ControllerByName[Name],
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getMessenger']>,
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getInitMessenger']>
   >;
@@ -197,7 +197,9 @@ function getControllerOrThrow<Name extends ControllerName>(
   const controller = controllersByName[name];
 
   if (!controller) {
-    throw new Error(`Controller requested before it was initialized: ${name}`);
+    throw new Error(
+      `Controller requested before it was initialized: ${String(name)}`,
+    );
   }
 
   return controller;

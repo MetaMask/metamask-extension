@@ -1,14 +1,56 @@
-import BN from 'bn.js';
+import { KeyringAccountType } from '@metamask/keyring-api';
+import { Hex } from '@metamask/utils';
+
+export enum AssetStandard {
+  Native = 'native',
+  ERC20 = 'ERC20',
+  ERC721 = 'ERC721',
+  ERC1155 = 'ERC1155',
+}
+
+export const NFT_STANDARDS = [AssetStandard.ERC721, AssetStandard.ERC1155];
 
 export type Asset = {
+  accountAddress?: string;
+  accountId?: string;
+  accountType?: KeyringAccountType;
   address?: string;
-  balance?: BN | string | undefined;
+  assetId?: string;
+  balance?: string | number | undefined;
   chainId?: string | number;
-  decimals?: string | number | undefined;
+  collection?: {
+    name?: string;
+    [key: string]: unknown;
+  };
+  decimals?: number | undefined;
+  fiat?: {
+    balance?: number;
+    currency?: string;
+    conversionRate?: number;
+  };
+  image?: string;
+  isNative?: boolean;
   name?: string | undefined;
-  standard?: string;
+  networkName?: string;
+  networkImage?: string;
+  shortenedBalance?: string;
+  standard?: AssetStandard;
   symbol?: string | undefined;
   tokenId?: string;
   tokenURI?: string | undefined;
   primary?: string;
+  rawBalance?: Hex;
+};
+
+export type RecipientValidationResult = {
+  confusableCharacters?: {
+    point: string;
+    similarTo: string;
+  }[];
+  error?: string;
+  resolvedLookup?: string;
+  warning?: string;
+  toAddressValidated?: string;
+  loading?: boolean;
+  protocol?: string;
 };

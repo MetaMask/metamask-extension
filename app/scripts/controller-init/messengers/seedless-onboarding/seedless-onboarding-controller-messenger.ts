@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
@@ -7,6 +7,12 @@ import {
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerStateChangeEvent,
 } from '@metamask/seedless-onboarding-controller';
+import {
+  OAuthServiceGetNewRefreshTokenAction,
+  OAuthServiceRevokeRefreshTokenAction,
+  OAuthServiceRenewRefreshTokenAction,
+} from '../../../services/oauth/types';
+import { RootMessenger } from '../../../lib/messenger';
 
 type MessengerActions = SeedlessOnboardingControllerGetStateAction;
 
@@ -27,11 +33,55 @@ export type SeedlessOnboardingControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getSeedlessOnboardingControllerMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
+  messenger: RootMessenger<MessengerActions, MessengerEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'SeedlessOnboardingController',
-    allowedActions: [],
-    allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
+  return new Messenger<
+    'SeedlessOnboardingController',
+    MessengerActions,
+    MessengerEvents,
+    typeof messenger
+  >({
+    namespace: 'SeedlessOnboardingController',
+    parent: messenger,
   });
+}
+
+type InitActions =
+  | OAuthServiceGetNewRefreshTokenAction
+  | OAuthServiceRevokeRefreshTokenAction
+  | OAuthServiceRenewRefreshTokenAction;
+
+export type SeedlessOnboardingControllerInitMessenger = ReturnType<
+  typeof getSeedlessOnboardingControllerInitMessenger
+>;
+
+/**
+ * Get a restricted messenger for the seedless onboarding controller init. This
+ * is scoped to the actions and events that the seedless onboarding controller
+ * init is allowed to handle.
+ *
+ * @param messenger - The messenger to restrict.
+ * @returns The restricted messenger.
+ */
+export function getSeedlessOnboardingControllerInitMessenger(
+  messenger: RootMessenger<InitActions, never>,
+) {
+  const controllerInitMessenger = new Messenger<
+    'SeedlessOnboardingControllerInit',
+    InitActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'SeedlessOnboardingControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
+      'OAuthService:getNewRefreshToken',
+      'OAuthService:revokeRefreshToken',
+      'OAuthService:renewRefreshToken',
+    ],
+  });
+  return controllerInitMessenger;
 }

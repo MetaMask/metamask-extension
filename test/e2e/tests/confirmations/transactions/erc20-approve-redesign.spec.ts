@@ -2,10 +2,11 @@
 import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   confirmApproveTransaction,
   mocked4BytesApprove,
-  openDAppWithContract,
   TestSuiteArguments,
   toggleAdvancedDetails,
 } from './shared';
@@ -21,7 +22,7 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -32,8 +33,17 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await importTST(driver);
 
@@ -49,7 +59,7 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
     it('Sends a type 2 transaction (EIP1559)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -57,8 +67,18 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await importTST(driver);
 
@@ -85,11 +105,11 @@ async function importTST(driver: Driver) {
   await driver.clickElement('[data-testid="importTokens"]');
 
   await driver.waitForSelector({
-    css: '.import-tokens-modal__button-tab',
+    css: '[data-testid="import-tokens-modal-custom-token-tab"]',
     text: 'Custom token',
   });
   await driver.clickElement({
-    css: '.import-tokens-modal__button-tab',
+    css: '[data-testid="import-tokens-modal-custom-token-tab"]',
     text: 'Custom token',
   });
 

@@ -44,7 +44,9 @@ export const ActivityListItem = ({
         }
       }}
       data-testid={dataTestId}
-      padding={4}
+      paddingInline={4}
+      paddingTop={3}
+      paddingBottom={3}
       display={Display.Flex}
       width={BlockSize.Full}
       flexWrap={FlexWrap.Wrap}
@@ -52,7 +54,7 @@ export const ActivityListItem = ({
     >
       {topContent && (
         <Text
-          variant={TextVariant.bodyMd}
+          variant={TextVariant.bodyMdMedium}
           color={TextColor.textDefault}
           display={Display.Flex}
           width={BlockSize.Full}
@@ -87,7 +89,7 @@ export const ActivityListItem = ({
               <Text
                 ellipsis
                 textAlign={TextAlign.Left}
-                variant={TextVariant.bodyLgMedium}
+                variant={TextVariant.bodyMdMedium}
                 fontWeight={FontWeight.Medium}
                 data-testid="activity-list-item-action"
               >
@@ -99,8 +101,7 @@ export const ActivityListItem = ({
                 as="div"
                 ellipsis
                 textAlign={TextAlign.Left}
-                variant={TextVariant.bodyMd}
-                fontWeight={FontWeight.Normal}
+                variant={TextVariant.bodySmMedium}
               >
                 {subtitle}
               </Text>

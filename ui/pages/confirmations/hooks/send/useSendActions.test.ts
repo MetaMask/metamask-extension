@@ -1,8 +1,10 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { setDefaultHomeActiveTabName } from '../../../../store/actions';
 import * as SendUtils from '../../utils/send';
 import * as MultichainTransactionUtils from '../../utils/multichain-snaps';
 import * as SendContext from '../../context/send';
@@ -18,6 +20,11 @@ const mockHistory = {
   push: jest.fn(),
 };
 
+jest.mock('../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../store/actions'),
+  setDefaultHomeActiveTabName: jest.fn(),
+}));
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => mockHistory,
@@ -25,9 +32,9 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: () => async (fn: () => Promise<unknown>) => {
+  useDispatch: () => (fn: () => void) => {
     if (fn) {
-      await fn();
+      fn();
     }
   },
 }));
@@ -38,6 +45,17 @@ function renderHook() {
 }
 
 describe('useSendQueryParams', () => {
+  const mockSetDefaultHomeActiveTabName = jest.mocked(
+    setDefaultHomeActiveTabName,
+  );
+
+  beforeEach(() => {
+    mockSetDefaultHomeActiveTabName.mockImplementation(
+      () => () =>
+        ({}) as unknown as ReturnType<typeof setDefaultHomeActiveTabName>,
+    );
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -54,13 +72,14 @@ describe('useSendQueryParams', () => {
     expect(mockHistory.goBack).toHaveBeenCalled();
   });
 
-  it('handleSubmit is able to submit evm send', () => {
+  it('handleSubmit is able to submit evm send', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_ASSET,
       chainId: '0x5',
       from: MOCK_ADDRESS_1,
       to: MOCK_ADDRESS_2,
       value: 10,
+      maxValueMode: true,
     } as unknown as SendContext.SendContextType);
 
     const mockSubmitEvmTransaction = jest
@@ -75,14 +94,20 @@ describe('useSendQueryParams', () => {
     result.handleSubmit(MOCK_ADDRESS_2);
 
     expect(mockSubmitEvmTransaction).toHaveBeenCalled();
+
+    await waitFor(() => {
+      expect(mockHistory.push).toHaveBeenCalledWith(
+        '/confirm-transaction?maxValueMode=true',
+      );
+    });
   });
 
-  it('handleSubmit is able to submit non-evm send', () => {
+  it('handleSubmit is able to submit non-evm send', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: SOLANA_ASSET,
       from: MOCK_ADDRESS_3,
       to: MOCK_ADDRESS_4,
-      value: 10,
+      value: '10',
     } as unknown as SendContext.SendContextType);
 
     const mockSubmitNonEvmTransaction = jest
@@ -92,6 +117,10 @@ describe('useSendQueryParams', () => {
     const result = renderHook();
     result.handleSubmit(MOCK_ADDRESS_4);
 
-    expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockSetDefaultHomeActiveTabName).toHaveBeenCalledWith('activity');
+      expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
+      expect(mockHistory.push).toHaveBeenCalledWith('/');
+    });
   });
 });

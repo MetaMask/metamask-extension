@@ -7,12 +7,13 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master') || contains(github.ref, 'refs/heads/stable')) }}
+  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
 
 jobs:
   CLABot:
     if: github.event_name == 'pull_request_target' || contains(github.event.comment.html_url, '/pull/')
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       pull-requests: write
       contents: write

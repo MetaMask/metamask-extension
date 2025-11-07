@@ -3,8 +3,11 @@ import {
   parseCaipChainId,
   CaipChainId,
   CaipNamespace,
+  CaipAccountId,
 } from '@metamask/utils';
 import { EthScope } from '@metamask/keyring-api';
+// eslint-disable-next-line import/no-restricted-paths
+import { AccountGroupWithInternalAccounts } from '../../../ui/selectors/multichain-accounts/account-tree.types';
 
 /**
  * Helper function to check if any of the account scopes match the target scope.
@@ -115,4 +118,70 @@ export const hasNamespaceSupport = (
     }
   }
   return false;
+};
+
+/**
+ * Generates CAIP-25 account IDs from account groups filtered by supported scopes.
+ *
+ * This function takes account groups and filters their accounts based on scope compatibility,
+ * returning CAIP-25 formatted account identifiers. It handles special EIP-155 wildcard logic
+ * where eip155:0 scope matches any EVM chain, and specific EVM chains match the wildcard scope.
+ *
+ * @param accountGroups - Array of account groups containing internal accounts with scope information
+ * @param scopes - Array of CAIP chain IDs to filter accounts by
+ * @returns Array of unique CAIP-25 account IDs for accounts that support the requested scopes
+ */
+export const getCaip25AccountIdsFromAccountGroupAndScope = (
+  accountGroups: AccountGroupWithInternalAccounts[],
+  scopes: CaipChainId[],
+): CaipAccountId[] => {
+  // Pre-parse all chain namespaces and cache common strings
+  const chainNamespaces = new Map<CaipChainId, string>();
+  const eip155Scope = `${KnownCaipNamespace.Eip155}:0`;
+  scopes.forEach((chainId) => {
+    try {
+      const { namespace } = parseCaipChainId(chainId);
+      chainNamespaces.set(chainId, namespace);
+    } catch (err) {
+      // Skip invalid chain IDs
+    }
+  });
+
+  const updatedSelectedCaipAccountAddresses = new Set<CaipAccountId>();
+
+  accountGroups.forEach((accountGroup) => {
+    accountGroup.accounts.forEach((account) => {
+      const accountScopesSet = new Set(account.scopes);
+
+      scopes.forEach((chainId) => {
+        const namespace = chainNamespaces.get(chainId);
+        if (!namespace) {
+          return;
+        }
+
+        let shouldAdd = false;
+
+        if (namespace === KnownCaipNamespace.Eip155) {
+          // Use the same logic as anyScopesMatch for EIP-155 scopes
+          // Check for direct match first
+          shouldAdd = accountScopesSet.has(chainId);
+
+          // If no direct match, check for wildcard scope
+          if (!shouldAdd) {
+            shouldAdd = accountScopesSet.has(eip155Scope);
+          }
+        } else {
+          shouldAdd = accountScopesSet.has(chainId);
+        }
+
+        if (shouldAdd) {
+          updatedSelectedCaipAccountAddresses.add(
+            `${chainId}:${account.address}`,
+          );
+        }
+      });
+    });
+  });
+
+  return Array.from(updatedSelectedCaipAccountAddresses);
 };

@@ -120,6 +120,22 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
   }
 
   async ethereumSignTransaction({ transaction }) {
+    const txType = Number(transaction.type);
+    let hardfork;
+    switch (txType) {
+      case 0:
+        hardfork = 'muirGlacier';
+        break;
+      case 1:
+        throw new Error(
+          'Unsupported transaction type: EIP-2930 (type 1) not yet implemented in FakeTrezorBridge.',
+        );
+      case 2:
+        hardfork = 'london';
+        break;
+      default:
+        throw new Error(`Unsupported transaction type: ${txType}`);
+    }
     const common = Common.custom({
       chain: {
         name: 'localhost',
@@ -127,7 +143,7 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
         networkId: transaction.chainId,
       },
       chainId: transaction.chainId,
-      hardfork: 'istanbul',
+      hardfork,
     });
 
     const signedTransaction = TransactionFactory.fromTxData(transaction, {

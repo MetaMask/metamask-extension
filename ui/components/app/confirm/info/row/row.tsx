@@ -41,11 +41,13 @@ export type ConfirmInfoRowProps = {
   'data-testid'?: string;
   label: string;
   labelChildren?: React.ReactNode;
+  onClick?: () => void;
   style?: React.CSSProperties;
   tooltip?: string;
   tooltipIcon?: IconName;
   tooltipIconColor?: IconColor;
   variant?: ConfirmInfoRowVariant;
+  labelChildrenStyleOverride?: React.CSSProperties;
 };
 
 const BACKGROUND_COLORS = {
@@ -67,7 +69,7 @@ const TOOLTIP_ICONS = {
 };
 
 const TOOLTIP_ICON_COLORS = {
-  [ConfirmInfoRowVariant.Default]: Color.iconMuted,
+  [ConfirmInfoRowVariant.Default]: Color.iconAlternative,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
   [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
@@ -90,6 +92,8 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   collapsed,
   tooltipIcon,
   tooltipIconColor,
+  onClick,
+  labelChildrenStyleOverride,
 }) => {
   const [expanded, setExpanded] = useState(!collapsed);
 
@@ -126,12 +130,12 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           <CopyIcon
             copyText={copyText ?? ''}
             style={{ right: isCollapsible ? 32 : 4 }}
-            color={IconColor.iconMuted}
+            color={IconColor.iconAlternative}
           />
         )}
         {isCollapsible && (
           <ButtonIcon
-            color={IconColor.iconMuted}
+            color={IconColor.iconAlternative}
             iconName={expanded ? IconName.Collapse : IconName.Expand}
             size={ButtonIconSize.Sm}
             style={{
@@ -151,8 +155,14 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           alignItems={AlignItems.flexStart}
           color={color}
           paddingRight={contentPaddingRight || null}
+          onClick={onClick}
+          className={onClick && 'hoverable'}
         >
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            style={labelChildrenStyleOverride}
+          >
             <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
               {label}
             </Text>

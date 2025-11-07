@@ -1,10 +1,18 @@
 import { JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
-import { NetworkController } from '@metamask/network-controller';
+import {
+  NetworkController,
+  NetworkClientId,
+} from '@metamask/network-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { PreferencesController } from '../../controllers/preferences-controller';
-import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
+import {
+  parseTypedDataMessage,
+  parseApprovalTransactionData,
+} from '../../../../shared/modules/transaction.utils';
+import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
+import { mapChainIdToSupportedEVMChain } from '../../../../shared/lib/trust-signals';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import {
   hasValidTypedDataParams,
@@ -14,9 +22,12 @@ import {
   isSecurityAlertsEnabledByUser,
   isConnected,
   connectScreenHasBeenPrompted,
-  getChainId,
 } from './trust-signals-util';
-import { SupportedEVMChain } from './types';
+
+export type TrustSignalsMiddlewareRequest = JsonRpcRequest & {
+  origin?: string;
+  networkClientId: NetworkClientId;
+};
 
 export function createTrustSignalsMiddleware(
   networkController: NetworkController,
@@ -26,7 +37,7 @@ export function createTrustSignalsMiddleware(
   getPermittedAccounts: (origin: string) => string[],
 ) {
   return async (
-    req: JsonRpcRequest & { origin?: string },
+    req: TrustSignalsMiddlewareRequest,
     _res: JsonRpcResponse,
     next: () => void,
   ) => {
@@ -58,7 +69,7 @@ export function createTrustSignalsMiddleware(
 }
 
 function scanUrl(
-  req: JsonRpcRequest & { origin?: string },
+  req: TrustSignalsMiddlewareRequest,
   phishingController: PhishingController,
 ) {
   if (req.origin) {
@@ -69,7 +80,7 @@ function scanUrl(
 }
 
 function handleEthSendTransaction(
-  req: JsonRpcRequest,
+  req: TrustSignalsMiddlewareRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
 ) {
@@ -77,37 +88,59 @@ function handleEthSendTransaction(
     return;
   }
 
-  const { to } = req.params[0];
-  let chainId: SupportedEVMChain | undefined;
-  try {
-    chainId = getChainId(networkController);
-  } catch (error) {
-    console.error(
-      '[createTrustSignalsMiddleware] error getting chainId:',
-      error,
-    );
+  const { to, data } = req.params[0];
+
+  const { chainId: rawChainId } =
+    networkController.getNetworkConfigurationByNetworkClientId(
+      req.networkClientId,
+    ) ?? {};
+
+  if (!rawChainId) {
+    console.error('ChainID not found for networkClientId');
     return;
   }
 
-  if (!chainId) {
+  const supportedEVMChain = mapChainIdToSupportedEVMChain(rawChainId);
+  if (!supportedEVMChain) {
+    console.error('Unsupported chainId:', rawChainId);
     return;
   }
 
+  // Scan the 'to' address (contract address)
   scanAddressAndAddToCache(
     to,
     appStateController.getAddressSecurityAlertResponse,
     appStateController.addAddressSecurityAlertResponse,
-    chainId,
+    supportedEVMChain,
   ).catch((error) => {
     console.error(
       '[createTrustSignalsMiddleware] error scanning address for transaction:',
       error,
     );
   });
+
+  // If this is an approval transaction, also scan the spender address
+  if (data && typeof data === 'string') {
+    const approvalData = parseApprovalTransactionData(data as `0x${string}`);
+    const spenderAddress = approvalData?.spender;
+    if (spenderAddress) {
+      scanAddressAndAddToCache(
+        spenderAddress,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        supportedEVMChain,
+      ).catch((error) => {
+        console.error(
+          '[createTrustSignalsMiddleware] error scanning spender address for approval:',
+          error,
+        );
+      });
+    }
+  }
 }
 
 function handleEthSignTypedData(
-  req: JsonRpcRequest,
+  req: TrustSignalsMiddlewareRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
 ) {
@@ -125,30 +158,56 @@ function handleEthSignTypedData(
     return;
   }
 
-  let chainId: SupportedEVMChain | undefined;
-  try {
-    chainId = getChainId(networkController);
-  } catch (error) {
-    console.error(
-      '[createTrustSignalsMiddleware] error getting chainId:',
-      error,
-    );
+  const { chainId: rawChainId } =
+    networkController.getNetworkConfigurationByNetworkClientId(
+      req.networkClientId,
+    ) ?? {};
+
+  if (!rawChainId) {
+    console.error('ChainID not found for networkClientId');
     return;
   }
 
-  if (!chainId) {
+  const supportedEVMChain = mapChainIdToSupportedEVMChain(rawChainId);
+  if (!supportedEVMChain) {
+    console.error('Unsupported chainId:', rawChainId);
     return;
   }
 
+  // Scan the verifying contract address (token contract)
   scanAddressAndAddToCache(
     verifyingContract,
     appStateController.getAddressSecurityAlertResponse,
     appStateController.addAddressSecurityAlertResponse,
-    chainId,
+    supportedEVMChain,
   ).catch((error) => {
     console.error(
       '[createTrustSignalsMiddleware] error scanning address for signature:',
       error,
     );
   });
+
+  const { primaryType }: { primaryType: string } = typedDataMessage;
+  if (!primaryType) {
+    return;
+  }
+
+  // If this is a permit signature, also scan the spender address
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (PRIMARY_TYPES_PERMIT.includes(primaryType as any)) {
+    const spenderAddress = typedDataMessage.message?.spender;
+    if (spenderAddress) {
+      scanAddressAndAddToCache(
+        spenderAddress,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        supportedEVMChain,
+      ).catch((error) => {
+        console.error(
+          '[createTrustSignalsMiddleware] error scanning spender address for permit:',
+          error,
+        );
+      });
+    }
+  }
 }

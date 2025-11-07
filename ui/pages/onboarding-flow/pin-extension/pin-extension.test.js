@@ -1,23 +1,20 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import reactRouterDom from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   setCompletedOnboarding,
   toggleExternalServices,
 } from '../../../store/actions';
-import {
-  DEFAULT_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import PinExtension from './pin-extension';
 
 jest.mock('../../../store/actions', () => ({
   toggleExternalServices: jest.fn(),
   setCompletedOnboarding: jest.fn(),
+  setCompletedOnboardingWithSidepanel: jest.fn(),
 }));
 
 const mockPromises = [];
@@ -33,18 +30,26 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => ({
-    push: jest.fn(),
-    replace: jest.fn(),
-  })),
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
+// Mock the environment module to control sidepanel feature flag
+jest.mock('../../../../shared/modules/environment', () => ({
+  ...jest.requireActual('../../../../shared/modules/environment'),
+  getIsSidePanelFeatureEnabled: jest.fn(() => false),
 }));
 
-const pushMock = jest.fn();
-const replaceMock = jest.fn();
-
 describe('Creation Successful Onboarding View', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   const arrangeMocks = (
     stateOverrides = {
       metamask: {
@@ -88,16 +93,11 @@ describe('Creation Successful Onboarding View', () => {
     toggleExternalServices.mockClear();
     setCompletedOnboarding.mockClear();
 
-    jest
-      .spyOn(reactRouterDom, 'useHistory')
-      .mockImplementation()
-      .mockReturnValue({ push: pushMock, replace: replaceMock });
-
     return store;
   };
 
   describe('When the "Done" button is clicked', () => {
-    it('should call toggleExternalServices, setCompletedOnboarding and signIn when the "Done" button is clicked', async () => {
+    it('should call toggleExternalServices and setCompletedOnboarding when the "Done" button is clicked', async () => {
       const store = arrangeMocks();
 
       const { getByText } = renderWithProvider(<PinExtension />, store);
@@ -107,9 +107,7 @@ describe('Creation Successful Onboarding View', () => {
 
       await Promise.all(mockPromises);
       expect(toggleExternalServices).toHaveBeenCalledTimes(1);
-      expect(setCompletedOnboarding).toHaveBeenCalledTimes(1);
-      expect(pushMock).toHaveBeenCalledTimes(1);
-      expect(pushMock).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(setCompletedOnboarding).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -135,8 +133,10 @@ describe('Creation Successful Onboarding View', () => {
       const store = arrangeMocks(mockState);
       renderWithProvider(<PinExtension />, store);
 
-      expect(replaceMock).toHaveBeenCalledTimes(1);
-      expect(replaceMock).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+        replace: true,
+      });
     });
   });
 });

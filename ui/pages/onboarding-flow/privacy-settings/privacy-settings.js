@@ -1,9 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import log from 'loglevel';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
@@ -49,6 +50,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getUseExternalNameSources,
   getExternalServicesOnboardingToggleState,
+  getIsSocialLoginFlow,
+  getDataCollectionForMarketing,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -62,6 +65,8 @@ import {
   setUseTransactionSimulations,
   setUseExternalNameSources,
   setEditedNetwork,
+  setDataCollectionForMarketing,
+  setMarketingConsent,
 } from '../../../store/actions';
 import {
   onboardingToggleBasicFunctionalityOn,
@@ -73,6 +78,8 @@ import {
 } from '../../../../shared/constants/network';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
+import DeleteMetaMetricsDataButton from '../../settings/security-tab/delete-metametrics-data-button';
+import MetametricsToggle from '../../settings/security-tab/metametrics-toggle/metametrics-toggle';
 import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;
@@ -80,7 +87,7 @@ const ANIMATION_TIME = 500;
 export default function PrivacySettings() {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [showDetail, setShowDetail] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -97,6 +104,8 @@ export default function PrivacySettings() {
     useTransactionSimulations,
   } = defaultState;
   const useExternalNameSources = useSelector(getUseExternalNameSources);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
@@ -163,7 +172,7 @@ export default function PrivacySettings() {
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
+      event: MetaMetricsEventName.SettingsUpdated,
       properties: {
         settings_group: 'onboarding_advanced_configuration',
         is_profile_syncing_enabled: isBackupAndSyncEnabled,
@@ -171,8 +180,7 @@ export default function PrivacySettings() {
         turnon_token_detection: turnOnTokenDetection,
       },
     });
-
-    history.push(ONBOARDING_COMPLETION_ROUTE);
+    navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
   };
 
   const handleIPFSChange = (url) => {
@@ -207,8 +215,25 @@ export default function PrivacySettings() {
   const items = [
     { id: 1, title: t('general'), subtitle: t('generalDescription') },
     { id: 2, title: t('assets'), subtitle: t('assetsDescription') },
-    { id: 3, title: t('security'), subtitle: t('securityDescription') },
+    {
+      id: 3,
+      title: isSocialLoginFlow
+        ? t('securityDefaultSettingsSocialLogin')
+        : t('security'),
+      subtitle: isSocialLoginFlow
+        ? t('securitySocialLoginDefaultSettingsDescription')
+        : t('securityDescription'),
+    },
   ];
+
+  const handleDataCollectionForMarketing = async (value) => {
+    try {
+      dispatch(setMarketingConsent(value));
+    } catch (error) {
+      log.error('Error setting marketing consent in default settings', error);
+    }
+    dispatch(setDataCollectionForMarketing(value));
+  };
 
   return (
     <>
@@ -671,6 +696,18 @@ export default function PrivacySettings() {
                     title={t('externalNameSourcesSetting')}
                     description={t('externalNameSourcesSettingDescription')}
                   />
+                  {isSocialLoginFlow && (
+                    <>
+                      <MetametricsToggle
+                        dataCollectionForMarketing={dataCollectionForMarketing}
+                        setDataCollectionForMarketing={
+                          handleDataCollectionForMarketing
+                        }
+                        fromDefaultSettings
+                      />
+                      <DeleteMetaMetricsDataButton defaultPrivacySettings />
+                    </>
+                  )}
                 </>
               ) : null}
             </div>

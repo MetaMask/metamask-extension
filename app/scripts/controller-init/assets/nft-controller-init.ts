@@ -1,7 +1,10 @@
 import { NftController } from '@metamask/assets-controllers';
 import { AssetType } from '@metamask/bridge-controller';
 import { ControllerInitFunction } from '../types';
-import { NftControllerMessenger } from '../messengers/assets/nft-controller-messenger';
+import {
+  NftControllerMessenger,
+  NftControllerInitMessenger,
+} from '../messengers/assets';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -13,18 +16,19 @@ import {
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
- * @param request.trackEvent - The function to track events.
+ * @param request.initMessenger - The messenger used for initialization.
  * @returns The initialized controller.
  */
 export const NftControllerInit: ControllerInitFunction<
   NftController,
-  NftControllerMessenger
-> = ({ controllerMessenger, persistedState, trackEvent }) => {
+  NftControllerMessenger,
+  NftControllerInitMessenger
+> = ({ controllerMessenger, initMessenger, persistedState }) => {
   const controller = new NftController({
     state: persistedState.NftController,
     messenger: controllerMessenger,
     onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
-      trackEvent({
+      initMessenger.call('MetaMetricsController:trackEvent', {
         event: MetaMetricsEventName.NftAdded,
         category: MetaMetricsEventCategory.Wallet,
         sensitiveProperties: {

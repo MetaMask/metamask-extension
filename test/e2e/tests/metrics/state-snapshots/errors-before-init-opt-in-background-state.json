@@ -19,11 +19,14 @@
     },
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": {
-      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-      "enabledNetworkMap": {
-        "eip155": "object",
-        "solana": "object"
+      "orderedNetworkList": {
+        "0": "object",
+        "1": "object",
+        "2": "object"
       }
+    },
+    "NetworkEnablementController": {
+      "enabledNetworkMap": { "eip155": "object", "solana": "object" }
     },
     "AccountOrderController": {
       "pinnedAccountList": {},
@@ -45,7 +48,10 @@
       "isRampCardClosed": false,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
-      "snapsInstallPrivacyWarningShown": true
+      "snapsInstallPrivacyWarningShown": true,
+      "hasShownMultichainAccountsIntroModal": "boolean",
+      "showShieldEntryModalOnce": "boolean",
+      "appActiveTab": "object"
     },
     "BridgeController": {},
     "CurrencyController": {
@@ -134,7 +140,7 @@
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
       "isMultiAccountBalancesEnabled": "boolean",
-      "showIncomingTransactions": "object"
+      "referrals": "object"
     },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
@@ -152,6 +158,7 @@
       "allIgnoredTokens": {},
       "allTokens": {}
     },
+    "MultichainAccountService": "object",
     "TransactionController": { "transactions": "object" },
     "config": "object",
     "firstTimeInfo": "object"

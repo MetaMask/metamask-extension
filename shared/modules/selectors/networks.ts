@@ -8,17 +8,17 @@ import {
   type NetworkState as InternalNetworkState,
   type NetworkConfiguration as InternalNetworkConfiguration,
   NetworkConfiguration,
+  NetworkClientId,
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import type { CaipChainId } from '@metamask/utils';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import {
   CAIP_FORMATTED_EVM_TEST_CHAINS,
   NetworkStatus,
 } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
 import { SOLANA_TEST_CHAINS } from '../../constants/multichain/networks';
-import { createDeepEqualSelector } from './util';
 
 export type NetworkState = {
   metamask: InternalNetworkState;
@@ -65,10 +65,26 @@ export type EvmAndMultichainNetworkConfigurationsWithCaipChainId = (
   caipChainId: CaipChainId;
 };
 
-export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
-  (state: NetworkConfigurationsByChainIdState) =>
-    state.metamask.networkConfigurationsByChainId,
-  (networkConfigurationsByChainId) => networkConfigurationsByChainId,
+export const getNetworkConfigurationsByChainId = (
+  state: NetworkConfigurationsByChainIdState,
+) => state.metamask.networkConfigurationsByChainId;
+
+export const selectDefaultNetworkClientIdsByChainId = createSelector(
+  getNetworkConfigurationsByChainId,
+  (networkConfigurationsByChainId) => {
+    const clientIdsByChain: Record<Hex, NetworkClientId> = {};
+
+    for (const [chainId, networkConfiguration] of Object.entries(
+      networkConfigurationsByChainId,
+    )) {
+      clientIdsByChain[chainId as Hex] =
+        networkConfiguration.rpcEndpoints[
+          networkConfiguration.defaultRpcEndpointIndex
+        ].networkClientId;
+    }
+
+    return clientIdsByChain;
+  },
 );
 
 export function getSelectedNetworkClientId(
@@ -117,13 +133,13 @@ export const getNetworkConfigurationsByCaipChainId = ({
     ([caipChainId, networkConfig]) => {
       const matchesAccount = Object.values(internalAccounts.accounts).some(
         (account) => {
-          const matchesScope = account.scopes.some((scope) => {
+          const matchesScope = account.scopes?.some((scope) => {
             return scope === caipChainId;
           });
 
           const isSnapEnabled = account.metadata.snap?.enabled;
 
-          return matchesScope && isSnapEnabled;
+          return Boolean(matchesScope && isSnapEnabled);
         },
       );
 
@@ -278,6 +294,10 @@ export function getInfuraBlocked(
   );
 }
 
+export function getNetworksMetadata(state: NetworkState) {
+  return state.metamask.networksMetadata;
+}
+
 export function getCurrentChainId(state: ProviderConfigState) {
   const { chainId } = getProviderConfig(state);
   return chainId;
@@ -346,7 +366,7 @@ export const getNetworksByScopes = createSelector(
               name: network.name,
             }));
 
-          return [...result, ...evmNetworks];
+          return result.concat(evmNetworks);
         }
 
         const matchingNetwork = nonTestNetworks.find(
@@ -354,13 +374,10 @@ export const getNetworksByScopes = createSelector(
         );
 
         if (matchingNetwork) {
-          return [
-            ...result,
-            {
-              chainId: matchingNetwork.chainId,
-              name: matchingNetwork.name,
-            },
-          ];
+          return result.concat({
+            chainId: matchingNetwork.chainId,
+            name: matchingNetwork.name,
+          });
         }
 
         return result;

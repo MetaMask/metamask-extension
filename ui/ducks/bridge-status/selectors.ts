@@ -1,28 +1,28 @@
 import { createSelector } from 'reselect';
-import { Hex } from '@metamask/utils';
-import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import { getSelectedAddress } from '../../selectors';
+import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
-import { BridgeStatusAppState } from '../../../shared/types/bridge-status';
+import { type BridgeStatusAppState } from '../../../shared/types/bridge-status';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
+import {
+  getInternalAccountsFromGroupById,
+  getSelectedAccountGroup,
+} from '../../selectors/multichain-accounts/account-tree';
 
-export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
-  state.metamask;
+const selectBridgeHistory = (state: BridgeStatusAppState) =>
+  state.metamask.txHistory;
 
-/**
- * Returns a mapping of srcTxMetaId to txHistoryItem for the selected address
- */
-export const selectBridgeHistoryForAccount = createSelector(
-  [getSelectedAddress, selectBridgeStatusState],
-  (selectedAddress, bridgeStatusState) => {
-    // Handle the case when bridgeStatusState is undefined
-    const { txHistory = {} } = bridgeStatusState || {};
+const selectBridgeHistoryForAccount = createSelector(
+  [(_, selectedAddresses?: string[]) => selectedAddresses, selectBridgeHistory],
+  (selectedAddresses, txHistory) => {
+    if (!selectedAddresses || selectedAddresses.length === 0) {
+      return txHistory;
+    }
 
     return Object.keys(txHistory).reduce<Record<string, BridgeHistoryItem>>(
       (acc, txMetaId) => {
         const txHistoryItem = txHistory[txMetaId];
-        if (txHistoryItem.account === selectedAddress) {
+        if (selectedAddresses.includes(txHistoryItem.account)) {
           acc[txMetaId] = txHistoryItem;
         }
         return acc;
@@ -32,10 +32,35 @@ export const selectBridgeHistoryForAccount = createSelector(
   },
 );
 
-const selectBridgeHistoryItemForTxMetaId = createSelector(
-  [selectBridgeHistoryForAccount, (_, txMetaId?: string) => txMetaId],
+/**
+ * Returns a mapping of srcTxMetaId to txHistoryItem for the selected address
+ * If no address is provided, return all bridge history items for all addresses
+ *
+ * @param state - the state object
+ * @returns A mapping of srcTxMetaId to txHistoryItem for the selected address
+ */
+export const selectBridgeHistoryForAccountGroup = createSelector(
+  [selectBridgeHistory, getSelectedAccountGroup, (state) => state],
+  (txHistory, selectedAccountGroup, state) => {
+    if (!selectedAccountGroup) {
+      return txHistory;
+    }
+    const internalAccountAddresses = getInternalAccountsFromGroupById(
+      state,
+      selectedAccountGroup,
+    ).map((internalAccount) => internalAccount.address);
+
+    return selectBridgeHistoryForAccount(state, internalAccountAddresses);
+  },
+);
+
+export const selectBridgeHistoryItemForTxMetaId = createSelector(
+  [selectBridgeHistory, (_, txMetaId?: string) => txMetaId],
   (bridgeHistory, txMetaId) => {
-    return txMetaId ? bridgeHistory[txMetaId] : undefined;
+    if (!txMetaId) {
+      return undefined;
+    }
+    return bridgeHistory[txMetaId];
   },
 );
 
@@ -44,7 +69,7 @@ const selectBridgeHistoryItemForTxMetaId = createSelector(
  * Returns a bridge history item for a given approval tx id
  */
 export const selectBridgeHistoryForApprovalTxId = createSelector(
-  [selectBridgeHistoryForAccount, (_, approvalTxId: string) => approvalTxId],
+  [selectBridgeHistory, (_, approvalTxId: string) => approvalTxId],
   (bridgeHistory, approvalTxId) => {
     return Object.values(bridgeHistory).find(
       (bridgeHistoryItem) => bridgeHistoryItem.approvalTxId === approvalTxId,
@@ -87,7 +112,7 @@ export const selectReceivedSwapsTokenAmountFromTxMeta = createSelector(
  * Returns an array of sorted bridge history items for when the user's current chain is the destination chain for a bridge tx
  */
 export const selectIncomingBridgeHistory = createSelector(
-  selectBridgeHistoryForAccount,
+  selectBridgeHistoryForAccountGroup,
   getCurrentChainId,
   (bridgeHistory, currentChainId) => {
     // Get all history items with dest chain that matches current chain
@@ -96,7 +121,7 @@ export const selectIncomingBridgeHistory = createSelector(
         const hexDestChainId = new Numeric(
           bridgeHistoryItem.quote.destChainId,
           10,
-        ).toPrefixedHexString() as Hex;
+        ).toPrefixedHexString();
 
         return hexDestChainId === currentChainId;
       })

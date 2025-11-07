@@ -17,7 +17,7 @@ const expectedAlert = [
     message:
       'This request is for a different account than the one selected in your wallet. To use another account, connect it to the site.',
     reason: 'Different account selected',
-    severity: 'warning',
+    severity: 'info',
     field: 'signingInWith',
   },
 ];

@@ -17,9 +17,10 @@ exports[`AssetPickerModal token filtering should fetch metadata for unlisted tok
     "asset": undefined,
     "assetItemProps": {
       "isTitleHidden": false,
-      "isTitleNetworkName": true,
+      "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -45,9 +46,10 @@ exports[`AssetPickerModal token filtering should filter tokens by address 1`] = 
     "asset": undefined,
     "assetItemProps": {
       "isTitleHidden": false,
-      "isTitleNetworkName": true,
+      "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -75,9 +77,10 @@ exports[`AssetPickerModal token filtering should filter tokens by address 2`] = 
     "asset": undefined,
     "assetItemProps": {
       "isTitleHidden": false,
-      "isTitleNetworkName": true,
+      "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -104,10 +107,11 @@ exports[`AssetPickerModal token filtering should filter tokens by chain when mul
   {
     "asset": undefined,
     "assetItemProps": {
-      "isTitleHidden": true,
-      "isTitleNetworkName": true,
+      "isTitleHidden": false,
+      "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -130,6 +134,7 @@ exports[`AssetPickerModal token filtering should filter tokens by chain when mul
         "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
         "decimals": 18,
         "image": {},
+        "name": "Solana",
         "string": undefined,
         "symbol": "ETH",
         "type": "NATIVE",
@@ -145,9 +150,10 @@ exports[`AssetPickerModal token filtering should filter tokens by symbol 1`] = `
     "asset": undefined,
     "assetItemProps": {
       "isTitleHidden": false,
-      "isTitleNetworkName": true,
+      "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -175,9 +181,10 @@ exports[`AssetPickerModal token filtering should handle case-insensitive search 
     "asset": undefined,
     "assetItemProps": {
       "isTitleHidden": false,
-      "isTitleNetworkName": true,
+      "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -205,9 +212,10 @@ exports[`AssetPickerModal token filtering should handle case-insensitive search 
     "asset": undefined,
     "assetItemProps": {
       "isTitleHidden": false,
-      "isTitleNetworkName": true,
+      "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -238,6 +246,7 @@ exports[`AssetPickerModal token filtering should only show tokens with balances 
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -260,6 +269,7 @@ exports[`AssetPickerModal token filtering should only show tokens with balances 
         "chainId": "0xa",
         "decimals": 18,
         "image": {},
+        "name": "Ether",
         "string": undefined,
         "symbol": "ETH",
         "type": "NATIVE",
@@ -278,6 +288,7 @@ exports[`AssetPickerModal token filtering should only show tokens with balances 
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -300,6 +311,7 @@ exports[`AssetPickerModal token filtering should only show tokens with balances 
         "chainId": "0xa",
         "decimals": 18,
         "image": {},
+        "name": "Ether",
         "string": undefined,
         "symbol": "ETH",
         "type": "NATIVE",
@@ -315,9 +327,10 @@ exports[`AssetPickerModal token filtering should render all tokens from multiple
     "asset": undefined,
     "assetItemProps": {
       "isTitleHidden": false,
-      "isTitleNetworkName": true,
+      "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -332,6 +345,7 @@ exports[`AssetPickerModal token filtering should render all tokens from multiple
         "decimals": 18,
         "image": "./images/eth_logo.svg",
         "isNative": true,
+        "name": "Ether",
         "symbol": "ETH",
         "type": "NATIVE",
       },
@@ -368,6 +382,7 @@ exports[`AssetPickerModal token filtering should render all tokens from multiple
         "chainId": "0xa",
         "decimals": 18,
         "image": {},
+        "name": "Ether",
         "string": undefined,
         "symbol": "ETH",
         "type": "NATIVE",
@@ -382,10 +397,11 @@ exports[`AssetPickerModal token filtering should render all tokens from single c
   {
     "asset": undefined,
     "assetItemProps": {
-      "isTitleHidden": true,
+      "isTitleHidden": false,
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -400,6 +416,7 @@ exports[`AssetPickerModal token filtering should render all tokens from single c
         "decimals": 18,
         "image": "./images/eth_logo.svg",
         "isNative": true,
+        "name": "Ether",
         "symbol": "ETH",
         "type": "NATIVE",
       },
@@ -423,9 +440,10 @@ exports[`AssetPickerModal token filtering should respect MAX_UNOWNED_TOKENS_REND
     "asset": undefined,
     "assetItemProps": {
       "isTitleHidden": false,
-      "isTitleNetworkName": true,
+      "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -440,6 +458,7 @@ exports[`AssetPickerModal token filtering should respect MAX_UNOWNED_TOKENS_REND
         "decimals": 18,
         "image": "./images/eth_logo.svg",
         "isNative": true,
+        "name": "Ether",
         "symbol": "ETH",
         "type": "NATIVE",
       },
@@ -476,6 +495,7 @@ exports[`AssetPickerModal token filtering should respect MAX_UNOWNED_TOKENS_REND
         "chainId": "0xa",
         "decimals": 18,
         "image": {},
+        "name": "Ether",
         "string": undefined,
         "symbol": "ETH",
         "type": "NATIVE",
@@ -491,9 +511,10 @@ exports[`AssetPickerModal token filtering should show all tokens when search que
     "asset": undefined,
     "assetItemProps": {
       "isTitleHidden": false,
-      "isTitleNetworkName": true,
+      "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -521,9 +542,10 @@ exports[`AssetPickerModal token filtering should show all tokens when search que
     "asset": undefined,
     "assetItemProps": {
       "isTitleHidden": false,
-      "isTitleNetworkName": true,
+      "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -538,6 +560,7 @@ exports[`AssetPickerModal token filtering should show all tokens when search que
         "decimals": 18,
         "image": "./images/eth_logo.svg",
         "isNative": true,
+        "name": "Ether",
         "symbol": "ETH",
         "type": "NATIVE",
       },
@@ -574,6 +597,7 @@ exports[`AssetPickerModal token filtering should show all tokens when search que
         "chainId": "0xa",
         "decimals": 18,
         "image": {},
+        "name": "Ether",
         "string": undefined,
         "symbol": "ETH",
         "type": "NATIVE",
@@ -595,9 +619,10 @@ exports[`AssetPickerModal token filtering should show selected token first when 
     },
     "assetItemProps": {
       "isTitleHidden": false,
-      "isTitleNetworkName": true,
+      "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -612,6 +637,7 @@ exports[`AssetPickerModal token filtering should show selected token first when 
         "decimals": 18,
         "image": "./images/eth_logo.svg",
         "isNative": true,
+        "name": "Ether",
         "symbol": "ETH",
         "type": "NATIVE",
       },
@@ -648,6 +674,7 @@ exports[`AssetPickerModal token filtering should show selected token first when 
         "chainId": "0xa",
         "decimals": 18,
         "image": {},
+        "name": "Ether",
         "string": undefined,
         "symbol": "ETH",
         "type": "NATIVE",
@@ -668,10 +695,11 @@ exports[`AssetPickerModal token filtering should show selected token first when 
       "type": "TOKEN",
     },
     "assetItemProps": {
-      "isTitleHidden": true,
+      "isTitleHidden": false,
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
+    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {

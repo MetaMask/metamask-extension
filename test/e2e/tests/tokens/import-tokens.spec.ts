@@ -180,6 +180,11 @@ describe('Import flow', function () {
                     symbol: 'CHANGE',
                     address: '0x7051faed0775f664a0286af4f75ef5ed74e02754',
                   },
+                  '0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+                    name: 'Chai',
+                    symbol: 'CHAI',
+                    address: '0x06af07097c9eeb7fd685c692751d5c66db49c215',
+                  },
                 },
               },
             },
@@ -205,7 +210,7 @@ describe('Import flow', function () {
         // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
         // ERC20 Tokens: Chain Games, Chai
         await tokenList.checkTokenItemNumber(6);
-        await tokenList.checkTokenExistsInList('Ethereum');
+        await tokenList.checkTokenExistsInList('Ether');
         await tokenList.checkTokenExistsInList('Chain Games');
         // TODO: add back this check once we figure out why tokens name displayed when running the test locally is changex but on CI it is ChangeX
         // await tokenList.checkTokenExistsInList('Changex');
@@ -281,7 +286,7 @@ describe('Import flow', function () {
         // ERC20 Tokens: Polygon USDT, Polygon ERP
         await tokenList.checkTokenItemNumber(6);
 
-        await tokenList.checkTokenExistsInList('Ethereum');
+        await tokenList.checkTokenExistsInList('Ether');
         await tokenList.checkTokenExistsInList('ERP');
         await tokenList.checkTokenExistsInList('USDT');
         await tokenList.checkTokenExistsInList('POL');
@@ -358,7 +363,7 @@ describe('Import flow', function () {
         // ERC20 Tokens: Polygon USDT
         await tokenList.checkTokenItemNumber(5);
 
-        await tokenList.checkTokenExistsInList('Ethereum');
+        await tokenList.checkTokenExistsInList('Ether');
         await tokenList.checkTokenExistsInList('USDT');
         await tokenList.checkTokenExistsInList('POL');
       },

@@ -1,5 +1,8 @@
-import { RestrictedMessenger } from '@metamask/base-controller';
-import { KeyringControllerGetKeyringForAccountAction } from '@metamask/keyring-controller';
+import { Messenger } from '@metamask/messenger';
+import {
+  KeyringControllerGetKeyringForAccountAction,
+  KeyringControllerGetStateAction,
+} from '@metamask/keyring-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { GetSnap } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
@@ -8,13 +11,12 @@ import { HardwareKeyringType } from '../../../../shared/constants/hardware-walle
 type AllowedActions =
   | GetSnap
   | KeyringControllerGetKeyringForAccountAction
-  | AccountsControllerGetSelectedAccountAction;
+  | AccountsControllerGetSelectedAccountAction
+  | KeyringControllerGetStateAction;
 
-export type SnapAndHardwareMessenger = RestrictedMessenger<
+export type SnapAndHardwareMessenger = Messenger<
   'SnapAndHardwareMessenger',
   AllowedActions,
-  never,
-  AllowedActions['type'],
   never
 >;
 
@@ -41,16 +43,24 @@ export async function getSnapAndHardwareInfoForMetrics(
     ) as Snap;
   }
 
+  let keyringAccountInfo = {};
+  const { isUnlocked } = messenger.call('KeyringController:getState');
+  if (isUnlocked) {
+    keyringAccountInfo = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      account_type: await getAccountType(selectedAddress),
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      device_model: await getDeviceModel(selectedAddress),
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      account_hardware_type: await getHardwareTypeForMetric(selectedAddress),
+    };
+  }
+
   return {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    account_type: await getAccountType(selectedAddress),
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    device_model: await getDeviceModel(selectedAddress),
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    account_hardware_type: await getHardwareTypeForMetric(selectedAddress),
+    ...keyringAccountInfo,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     account_snap_type: snap?.id,

@@ -1,10 +1,6 @@
 import { BtcScope, SolScope } from '@metamask/keyring-api';
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
-import {
-  isCaipChainId,
-  KnownCaipNamespace,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { BaseController, StateMetadata } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerSetActiveNetworkAction,
   NetworkControllerStateChangeEvent,
@@ -15,7 +11,11 @@ import {
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { CaipChainId, CaipNamespace, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
+import type {
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+} from '@metamask/base-controller';
+import { TEST_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';
@@ -35,7 +35,6 @@ export type EnabledNetworksByChainId = Record<
 // State shape for NetworkOrderController
 export type NetworkOrderControllerState = {
   orderedNetworkList: NetworksInfo[];
-  enabledNetworkMap: EnabledNetworksByChainId;
 };
 
 // Describes the structure of a state change event
@@ -45,16 +44,22 @@ export type NetworkOrderStateChange = {
 };
 
 // Describes the action for updating the networks list
-export type NetworkOrderControllerupdateNetworksListAction = {
+export type NetworkOrderControllerUpdateNetworksListAction = {
   type: `${typeof controllerName}:updateNetworksList`;
   handler: NetworkOrderController['updateNetworksList'];
 };
 
 // Union of all possible actions for the messenger
 export type NetworkOrderControllerMessengerActions =
-  NetworkOrderControllerupdateNetworksListAction;
+  | ControllerGetStateAction<typeof controllerName, NetworkOrderControllerState>
+  | NetworkOrderControllerUpdateNetworksListAction;
 
-export type NetworkOrderControllerMessengerEvents = NetworkOrderStateChange;
+export type NetworkOrderControllerMessengerEvents =
+  | ControllerStateChangeEvent<
+      typeof controllerName,
+      NetworkOrderControllerState
+    >
+  | NetworkOrderStateChange;
 
 type AllowedActions =
   | NetworkControllerGetStateAction
@@ -65,38 +70,24 @@ type AllowedEvents =
   | NetworkControllerNetworkRemovedEvent;
 
 // Type for the messenger of NetworkOrderController
-export type NetworkOrderControllerMessenger = RestrictedMessenger<
+export type NetworkOrderControllerMessenger = Messenger<
   typeof controllerName,
   NetworkOrderControllerMessengerActions | AllowedActions,
-  NetworkOrderControllerMessengerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  NetworkOrderControllerMessengerEvents | AllowedEvents
 >;
 
 // Default state for the controller
 const defaultState: NetworkOrderControllerState = {
   orderedNetworkList: [],
-  enabledNetworkMap: {
-    [KnownCaipNamespace.Eip155]: {
-      [CHAIN_IDS.MAINNET]: true,
-      [CHAIN_IDS.LINEA_MAINNET]: true,
-      [CHAIN_IDS.BASE]: true,
-    },
-    [KnownCaipNamespace.Solana]: {
-      [SolScope.Mainnet]: true,
-    },
-  },
 };
 
 // Metadata for the controller state
-const metadata = {
+const metadata: StateMetadata<NetworkOrderControllerState> = {
   orderedNetworkList: {
+    includeInStateLogs: false,
     persist: true,
-    anonymous: true,
-  },
-  enabledNetworkMap: {
-    persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
 };
 
@@ -133,17 +124,10 @@ export class NetworkOrderController extends BaseController<
     });
 
     // Subscribe to network state changes
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'NetworkController:stateChange',
       (networkControllerState) => {
         this.onNetworkControllerStateChange(networkControllerState);
-      },
-    );
-
-    this.messagingSystem.subscribe(
-      'NetworkController:networkRemoved',
-      (removedNetwork) => {
-        this.onNetworkRemoved(removedNetwork.chainId);
       },
     );
   }
@@ -191,34 +175,6 @@ export class NetworkOrderController extends BaseController<
         // Append new networks to the end
         .concat(newNetworks);
     });
-
-    // The network controller can potentially update to a chain that is not selected in our enabled network map.
-    // This ensures that we fallback to a network that has been added to our network map.
-    const evmChainIds = Object.keys(
-      this.state.enabledNetworkMap[KnownCaipNamespace.Eip155],
-    );
-    this.#switchToEnabledNetworkIfNeeded(evmChainIds);
-  }
-
-  onNetworkRemoved(networkId: Hex) {
-    const caipId: CaipChainId = isCaipChainId(networkId)
-      ? networkId
-      : toEvmCaipChainId(networkId);
-
-    const { namespace } = parseCaipChainId(caipId);
-
-    if (namespace === (KnownCaipNamespace.Eip155 as string)) {
-      this.update((state) => {
-        delete state.enabledNetworkMap[namespace][networkId];
-        if (Object.keys(state.enabledNetworkMap[namespace]).length === 0) {
-          state.enabledNetworkMap[namespace]['0x1'] = true;
-        }
-      });
-    } else {
-      this.update((state) => {
-        delete state.enabledNetworkMap[namespace][caipId];
-      });
-    }
   }
 
   /**
@@ -233,80 +189,5 @@ export class NetworkOrderController extends BaseController<
         networkId: chainId,
       }));
     });
-  }
-
-  /**
-   * Sets the enabled networks in the controller state.
-   * This method updates the enabledNetworkMap to mark specified networks as enabled.
-   * It can handle both a single chain ID or an array of chain IDs.
-   *
-   * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
-   * to be enabled. All other networks will be implicitly disabled.
-   * @param namespace - The caip-2 namespace of the currently selected network *(e.g. 'eip155' or 'solana')
-   */
-  setEnabledNetworks(chainIds: string | string[], namespace: CaipNamespace) {
-    if (!namespace) {
-      throw new Error('namespace is required to set enabled networks');
-    }
-    if (!chainIds) {
-      throw new Error('chainIds is required to set enabled networks');
-    }
-    const ids = Array.isArray(chainIds) ? chainIds : [chainIds];
-
-    this.update((state) => {
-      const enabledNetworks = Object.fromEntries(ids.map((id) => [id, true]));
-
-      // Add the enabled networks to the mapping for the specified network type
-      state.enabledNetworkMap[namespace] = enabledNetworks;
-    });
-
-    this.#switchToEnabledNetworkIfNeeded(ids);
-  }
-
-  /**
-   * Switches to an enabled network if the currently selected network is not in the enabled list.
-   * This is a private helper method that handles the network switching logic.
-   *
-   * @param chainIds - Array of enabled chain IDs
-   */
-  #switchToEnabledNetworkIfNeeded(chainIds: string[]) {
-    // Early return if no enabled networks
-    if (chainIds.length === 0) {
-      return;
-    }
-
-    const { selectedNetworkClientId, networkConfigurationsByChainId } =
-      this.messagingSystem.call('NetworkController:getState');
-
-    const selectedNetworkChainId = Object.values(
-      networkConfigurationsByChainId,
-    ).find(
-      (network) =>
-        network.rpcEndpoints?.[network.defaultRpcEndpointIndex]
-          ?.networkClientId === selectedNetworkClientId,
-    )?.chainId;
-
-    const networkConf = Object.values(networkConfigurationsByChainId).find(
-      (network) => network.chainId === chainIds[0],
-    );
-
-    const clientId =
-      networkConf?.rpcEndpoints?.[networkConf.defaultRpcEndpointIndex]
-        ?.networkClientId;
-
-    if (
-      selectedNetworkChainId &&
-      !chainIds.includes(selectedNetworkChainId) &&
-      clientId
-    ) {
-      // Settimout delay to run this in a seperate 'tick'.
-      // There were some issues related to background state being updated, but persisted state not being updated.
-      setTimeout(() => {
-        this.messagingSystem.call(
-          'NetworkController:setActiveNetwork',
-          clientId,
-        );
-      }, 0);
-    }
   }
 }

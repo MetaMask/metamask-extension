@@ -1,26 +1,33 @@
 import { AccountTreeController } from '@metamask/account-tree-controller';
-import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
   getAccountTreeControllerMessenger,
+  getAccountTreeControllerInitMessenger,
   AccountTreeControllerMessenger,
+  AccountTreeControllerInitMessenger,
 } from '../messengers/accounts';
+import { getRootMessenger } from '../../lib/messenger';
 import { AccountTreeControllerInit } from './account-tree-controller-init';
 
 jest.mock('@metamask/account-tree-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<AccountTreeControllerMessenger>
+  ControllerInitRequest<
+    AccountTreeControllerMessenger,
+    AccountTreeControllerInitMessenger
+  >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
 
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getAccountTreeControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: undefined,
+    initMessenger: getAccountTreeControllerInitMessenger(
+      baseControllerMessenger,
+    ),
   };
 }
 
@@ -42,9 +49,17 @@ describe('AccountTreeControllerInit', () => {
     const requestMock = buildInitRequestMock();
     AccountTreeControllerInit(requestMock);
 
-    expect(accountTreeControllerClassMock).toHaveBeenCalledWith({
-      messenger: requestMock.controllerMessenger,
-      state: requestMock.persistedState.AccountTreeController,
-    });
+    expect(accountTreeControllerClassMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        messenger: requestMock.controllerMessenger,
+        state: requestMock.persistedState.AccountTreeController,
+        config: expect.objectContaining({
+          trace: expect.any(Function),
+          backupAndSync: expect.objectContaining({
+            onBackupAndSyncEvent: expect.any(Function),
+          }),
+        }),
+      }),
+    );
   });
 });

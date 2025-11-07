@@ -10,12 +10,13 @@ import { mockDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
 import { switchToNetworkFromSendFlow } from '../../../page-objects/flows/network.flow';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import NetworkManager from '../../../page-objects/pages/network-manager';
 
 describe('View DeFi details', function () {
   it('user should be able to view Aave Positions details', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withEnabledNetworks({
             eip155: {
@@ -37,6 +38,12 @@ describe('View DeFi details', function () {
 
         // check ethereum positions present
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
+
+        const networkManager = new NetworkManager(driver);
+
+        await networkManager.openNetworkManager();
+        await networkManager.selectAllNetworks();
+
         await defiTab.checkGroupIconIsDisplayed();
         await defiTab.defiTabCells.checkTokenName('Aave V3');
         await defiTab.defiTabCells.checkTokenMarketValue('$14.74');
@@ -58,7 +65,7 @@ describe('View DeFi details', function () {
 
         // check first underlying position in AaveV3
         await defiDetailsTab.checkTokenName('Tether USD');
-        await defiDetailsTab.checkTokenBalanceWithName('0.30011 Tether USD');
+        await defiDetailsTab.checkTokenBalanceWithName('0.300 Tether USD');
         await defiDetailsTab.checkTokenMarketValue('$0.30');
 
         // check second underlying position in AaveV3

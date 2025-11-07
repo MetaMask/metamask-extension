@@ -61,12 +61,10 @@ describe('App Installed Events', function () {
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.checkPageIsLoaded();
-          await onboardingMetricsPage.clickIAgreeButton();
+          await onboardingMetricsPage.clickOnContinueButton();
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.checkBannerPageIsLoaded();
-        await startOnboardingPage.agreeToTermsOfUse();
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp();
 
@@ -81,7 +79,7 @@ describe('App Installed Events', function () {
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.checkPageIsLoaded();
-          await onboardingMetricsPage.clickIAgreeButton();
+          await onboardingMetricsPage.clickOnContinueButton();
         }
 
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -91,7 +89,7 @@ describe('App Installed Events', function () {
           locale: 'en',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x539',
+          chain_id: '0x1',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'background',
@@ -117,12 +115,10 @@ describe('App Installed Events', function () {
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.checkPageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
+          await onboardingMetricsPage.skipMetricAndContinue();
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.checkBannerPageIsLoaded();
-        await startOnboardingPage.agreeToTermsOfUse();
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp();
 
@@ -137,7 +133,7 @@ describe('App Installed Events', function () {
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.checkPageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
+          await onboardingMetricsPage.skipMetricAndContinue();
         }
 
         const mockedRequests = await getEventPayloads(

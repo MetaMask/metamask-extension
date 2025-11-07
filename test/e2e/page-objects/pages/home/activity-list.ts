@@ -38,7 +38,7 @@ class ActivityListPage {
 
   private readonly viewTransactionOnExplorerButton = {
     text: 'View on block explorer',
-    tag: 'a',
+    tag: 'button',
   };
 
   private readonly cancelTransactionButton = {
@@ -46,12 +46,17 @@ class ActivityListPage {
     tag: 'button',
   };
 
-  private readonly speedupButton = '[data-testid="speedup-button"]';
+  private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
+
+  private readonly speedupModalButton = '[data-testid="speedup-button"]';
 
   private readonly confirmTransactionReplacementButton = {
     text: 'Submit',
     tag: 'button',
   };
+
+  private readonly pendingTransactionItems =
+    '.transaction-list__pending-transactions .activity-list-item';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -157,24 +162,68 @@ class ActivityListPage {
     );
   }
 
+  /**
+   * This function checks the specified number of pending transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of pending transactions to be visible.
+   *
+   * @param expectedNumber - The number of pending transactions expected to be displayed in the activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of pending transactions is displayed within the timeout period.
+   */
+  async checkPendingTxNumberDisplayedInActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} pending transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const pendingTxs = await this.driver.findElements(
+        this.pendingTransactionItems,
+      );
+      return pendingTxs.length === expectedNumber;
+    }, 10000);
+    console.log(
+      `${expectedNumber} pending transactions found in activity list on homepage`,
+    );
+  }
+
   async checkNoTxInActivity(): Promise<void> {
     await this.driver.assertElementNotPresent(this.completedTransactions);
   }
 
-  async checkTxAction(expectedAction: string, expectedNumber: number = 1) {
+  async checkSpeedUpInlineButtonIsPresent(): Promise<void> {
+    await this.driver.waitForSelector(this.speedupInlineButton);
+  }
+
+  /**
+   * Check if a transaction at the specified index displays the expected action text in the activity list.
+   *
+   * @param params - The parameters object containing:
+   * @param params.action - The expected action text to be displayed (e.g., "Send", "Receive", "Swap")
+   * @param params.txIndex - The index of the transaction to check in the activity list
+   * @param params.completedTxs - The total number of completed transactions expected to be displayed in the activity list
+   * @returns A promise that resolves if the transaction at the specified index displays the expected action text within the timeout period.
+   */
+  async checkTxAction({
+    action,
+    txIndex = 1,
+    completedTxs = 1,
+  }: {
+    action: string;
+    txIndex?: number;
+    completedTxs?: number;
+  }): Promise<void> {
+    // We need to wait for the total number of tx's to be able to use getText() without race conditions.
+    await this.checkCompletedTxNumberDisplayedInActivity(completedTxs);
+
     const transactionActions = await this.driver.findElements(
       this.activityListAction,
     );
-
     await this.driver.wait(async () => {
       const transactionActionText =
-        await transactionActions[expectedNumber - 1].getText();
-      return transactionActionText === expectedAction;
+        await transactionActions[txIndex - 1].getText();
+      return transactionActionText === action;
     }, 60000);
-
-    console.log(
-      `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
-    );
+    console.log(`Action for transaction ${txIndex} is displayed as ${action}`);
   }
 
   /**
@@ -347,7 +396,7 @@ class ActivityListPage {
   }
 
   async clickSpeedUpTransaction() {
-    await this.driver.clickElement(this.speedupButton);
+    await this.driver.clickElement(this.speedupModalButton);
   }
 
   async clickConfirmTransactionReplacement() {

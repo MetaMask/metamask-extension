@@ -1,10 +1,13 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import {
+  PRODUCT_TYPES,
+  SUBSCRIPTION_STATUSES,
+} from '@metamask/subscription-controller';
+import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
-  setParticipateInMetaMetrics,
   setDataCollectionForMarketing,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
@@ -21,6 +24,9 @@ import {
   setSecurityAlertsEnabled,
   updateDataDeletionTaskStatus,
   setSkipDeepLinkInterstitial,
+  getMarketingConsent,
+  setMarketingConsent,
+  setParticipateInMetaMetrics,
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
@@ -29,18 +35,19 @@ import {
   getPreferences,
   getIsSocialLoginFlow,
   getSocialLoginType,
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { getUserSubscriptions } from '../../../selectors/subscription';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
   const { metamask } = state;
 
   const {
-    participateInMetaMetrics,
-    dataCollectionForMarketing,
     usePhishDetect,
     useTokenDetection,
     ipfsGateway,
@@ -59,12 +66,27 @@ const mapStateToProps = (state) => {
 
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
+  const { subscriptions } = getUserSubscriptions(state);
+  // get shield subscription
+  const shieldSubscription = subscriptions.find((subscription) =>
+    subscription.products.some(
+      (product) => product.name === PRODUCT_TYPES.SHIELD,
+    ),
+  );
+
+  const hasActiveShieldSubscription = [
+    SUBSCRIPTION_STATUSES.active,
+    SUBSCRIPTION_STATUSES.trialing,
+    SUBSCRIPTION_STATUSES.provisional,
+  ].includes(shieldSubscription?.status);
+
   return {
     networkConfigurations,
-    participateInMetaMetrics,
-    dataCollectionForMarketing,
+    participateInMetaMetrics: getParticipateInMetaMetrics(state),
+    dataCollectionForMarketing: getDataCollectionForMarketing(state),
     usePhishDetect,
     useTokenDetection,
+    hasActiveShieldSubscription,
     ipfsGateway,
     useMultiAccountBalanceChecker,
     useSafeChainsListValidation,
@@ -125,10 +147,12 @@ const mapDispatchToProps = (dispatch) => {
       return updateDataDeletionTaskStatus();
     },
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
+    getMarketingConsent: () => getMarketingConsent(),
+    setMarketingConsent: (value) => dispatch(setMarketingConsent(value)),
   };
 };
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(SecurityTab);

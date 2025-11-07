@@ -1,17 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { CaipAccountId, CaipChainId } from '@metamask/utils';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   BackgroundColor,
-  BorderColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  Box,
-  IconName,
-} from '../../../../component-library';
+import { Box, IconName } from '../../../../component-library';
+import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { EditAccountsModal, EditNetworksModal } from '../../..';
 import { MergedInternalAccountWithCaipAccountId } from '../../../../../selectors/selectors.types';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
@@ -140,10 +136,9 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           content={
             // Why this difference?
             selectedAccounts.length === 1 ? (
-              <AvatarAccount
+              <PreferredAvatar
                 address={selectedAccounts[0].address}
                 size={AvatarAccountSize.Xs}
-                borderColor={BorderColor.transparent}
               />
             ) : (
               <SiteCellTooltip accounts={selectedAccounts} />

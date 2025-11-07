@@ -1,10 +1,16 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import classnames from 'classnames';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+import browser from 'webextension-polyfill';
+///: END:ONLY_INCLUDE_IF
 import {
   setCompletedOnboarding,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  setCompletedOnboardingWithSidepanel,
+  ///: END:ONLY_INCLUDE_IF
   toggleExternalServices,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -19,10 +25,7 @@ import {
   IconColor,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import {
-  DEFAULT_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import {
   Box,
   Button,
@@ -45,10 +48,13 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+import { getIsSidePanelFeatureEnabled } from '../../../../shared/modules/environment';
+///: END:ONLY_INCLUDE_IF
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -63,7 +69,6 @@ export default function OnboardingPinExtension() {
     await dispatch(
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
-    await dispatch(setCompletedOnboarding());
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -74,15 +79,43 @@ export default function OnboardingPinExtension() {
         new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
       },
     });
-    history.push(DEFAULT_ROUTE);
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+    // Side Panel - only if feature flag is enabled and not in test mode
+    if (getIsSidePanelFeatureEnabled()) {
+      try {
+        if (browser?.sidePanel?.open) {
+          const tabs = await browser.tabs.query({
+            active: true,
+            currentWindow: true,
+          });
+          if (tabs && tabs.length > 0) {
+            await browser.sidePanel.open({ windowId: tabs[0].windowId });
+            // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
+            await dispatch(setCompletedOnboardingWithSidepanel());
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Error opening side panel:', error);
+        // Fall through to regular onboarding
+      }
+    }
+    // Fallback to regular onboarding completion
+    await dispatch(setCompletedOnboarding());
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    // Regular onboarding completion for non-experimental builds
+    await dispatch(setCompletedOnboarding());
+    ///: END:ONLY_INCLUDE_IF
   };
 
   useEffect(() => {
     // if the user has not created a wallet, redirect to onboarding welcome route
     if (!currentKeyring) {
-      history.replace(ONBOARDING_WELCOME_ROUTE);
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
     }
-  }, [currentKeyring, history]);
+  }, [currentKeyring, navigate]);
 
   return (
     <Box

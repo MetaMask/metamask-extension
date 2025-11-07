@@ -8,6 +8,7 @@ import React, {
   ///: END:ONLY_INCLUDE_IF
   useEffect,
 } from 'react';
+import { isCrossChain } from '@metamask/bridge-controller';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -34,7 +35,6 @@ import {
   getSelectedMultichainNetworkChainId,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import useSolanaBridgeTransactionMapping from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
 import MultichainBridgeTransactionListItem from '../multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
 import MultichainBridgeTransactionDetailsModal from '../multichain-bridge-transaction-details-modal/multichain-bridge-transaction-details-modal';
 ///: END:ONLY_INCLUDE_IF
@@ -69,7 +69,6 @@ import {
   BadgeWrapper,
   AvatarNetwork,
   AvatarNetworkSize,
-  BadgeWrapperAnchorElementShape,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -96,7 +95,7 @@ import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
-import { ActivityListItem } from '../../multichain';
+import { ActivityListItem } from '../../multichain/activity-list-item';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   KEYRING_TRANSACTION_STATUS_KEY,
@@ -123,7 +122,11 @@ import {
   startIncomingTransactionPolling,
   stopIncomingTransactionPolling,
 } from '../../../store/controller-actions/transaction-controller';
-import NoTransactions from './no-transactions';
+import {
+  selectBridgeHistoryForAccountGroup,
+  selectBridgeHistoryItemForTxMetaId,
+} from '../../../ducks/bridge-status/selectors';
+import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
 
 const PAGE_INCREMENT = 10;
 
@@ -327,14 +330,9 @@ export default function TransactionList({
     getSelectedAccountMultichainTransactions,
   );
 
-  const nonEvmTransactionFilteredByToken = useMemo(
+  const nonEvmTransactionsForToken = useMemo(
     () => filterTransactionsByToken(nonEvmTransactions, tokenAddress),
     [nonEvmTransactions, tokenAddress],
-  );
-
-  // Use our custom hook to map Solana bridge transactions with destination chain info
-  const modifiedNonEvmTransactions = useSolanaBridgeTransactionMapping(
-    nonEvmTransactionFilteredByToken,
   );
   ///: END:ONLY_INCLUDE_IF
 
@@ -371,6 +369,7 @@ export default function TransactionList({
   );
 
   const chainId = useSelector(getCurrentChainId);
+
   const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
@@ -607,6 +606,11 @@ export default function TransactionList({
 
   const trackEvent = useContext(MetaMetricsContext);
 
+  const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
+  const selectedBridgeHistoryItem = useSelector((state) =>
+    selectBridgeHistoryItemForTxMetaId(state, selectedTransaction?.id),
+  );
+
   if (!isEvmAccountType(selectedAccount.type)) {
     const { namespace } = parseCaipChainId(multichainNetworkConfig.chainId);
     const isBitcoinNetwork = namespace === KnownCaipNamespace.Bip122;
@@ -618,16 +622,17 @@ export default function TransactionList({
 
     const metricsLocation = 'Activity Tab';
 
-    const groupedTransactionsList = tokenAddress
-      ? nonEvmTransactionFilteredByToken
-      : modifiedNonEvmTransactions;
-
     return (
       <>
         {selectedTransaction &&
-          (selectedTransaction.isBridgeTx && selectedTransaction.bridgeInfo ? (
+          (selectedBridgeHistoryItem &&
+          isCrossChain(
+            selectedBridgeHistoryItem.quote.srcChainId,
+            selectedBridgeHistoryItem.quote.destChainId,
+          ) ? (
             <MultichainBridgeTransactionDetailsModal
               transaction={selectedTransaction}
+              bridgeHistoryItem={selectedBridgeHistoryItem}
               onClose={() => toggleShowDetails(null)}
             />
           ) : (
@@ -642,29 +647,36 @@ export default function TransactionList({
         <Box className="transaction-list" {...boxProps}>
           {/* TODO: Non-EVM transactions are not paginated for now. */}
           <Box className="transaction-list__transactions">
-            {nonEvmTransactions?.transactions.length > 0 ? (
+            {nonEvmTransactions?.transactions?.length > 0 ? (
               <Box className="transaction-list__completed-transactions">
-                {groupNonEvmTransactionsByDate(groupedTransactionsList).map(
+                {groupNonEvmTransactionsByDate(nonEvmTransactionsForToken).map(
                   (dateGroup) => (
                     <Fragment key={dateGroup.date}>
                       <Text
-                        paddingTop={4}
+                        paddingTop={3}
                         paddingInline={4}
-                        variant={TextVariant.bodyMd}
-                        color={TextColor.textDefault}
+                        variant={TextVariant.bodyMdMedium}
+                        color={TextColor.textAlternative}
                       >
                         {dateGroup.date}
                       </Text>
                       {dateGroup.transactionGroups.map((transaction) => {
-                        // Check for bridging transactions
+                        // Show the Bridge transaction list item component when a multichain cross chain transaction matches a txHistory item.
+                        const matchedBridgeHistoryItem =
+                          bridgeHistoryItems[transaction.id];
+
                         if (
-                          transaction.isBridgeOriginated ||
-                          (transaction.isBridgeTx && transaction.bridgeInfo)
+                          matchedBridgeHistoryItem &&
+                          isCrossChain(
+                            matchedBridgeHistoryItem.quote?.srcChainId,
+                            matchedBridgeHistoryItem.quote?.destChainId,
+                          )
                         ) {
                           return (
                             <MultichainBridgeTransactionListItem
                               key={`bridge-${transaction.id}`}
                               transaction={transaction}
+                              bridgeHistoryItem={matchedBridgeHistoryItem}
                               toggleShowDetails={toggleShowDetails}
                             />
                           );
@@ -705,11 +717,10 @@ export default function TransactionList({
                 )}
               </Box>
             ) : (
-              <Box className="transaction-list__empty">
-                <Box className="transaction-list__empty-text">
-                  {t('noTransactions')}
-                </Box>
-              </Box>
+              <TransactionActivityEmptyState
+                className="mx-auto mt-5 mb-6"
+                account={selectedAccount}
+              />
             )}
           </Box>
         </Box>
@@ -720,14 +731,17 @@ export default function TransactionList({
 
   return (
     <>
-      {showRampsCard ? (
-        <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
-      ) : null}
       <Box className="transaction-list" {...boxProps}>
         {renderFilterButton()}
+        {showRampsCard ? (
+          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
+        ) : null}
         {pendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
-          <NoTransactions />
+          <TransactionActivityEmptyState
+            className="mx-auto mt-5 mb-6"
+            account={selectedAccount}
+          />
         ) : (
           <Box className="transaction-list__transactions">
             {pendingTransactions.length > 0 && (
@@ -818,7 +832,7 @@ export default function TransactionList({
               {completedTransactions.length > limit && (
                 <Button
                   className="transaction-list__view-more"
-                  type="secondary"
+                  variant={ButtonVariant.Secondary}
                   onClick={viewMore}
                 >
                   {t('viewMore')}
@@ -856,7 +870,6 @@ const MultichainTransactionListItem = ({
         onClick={() => toggleShowDetails(transaction)}
         icon={
           <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
             display={Display.Block}
             badge={
               <AvatarNetwork
@@ -906,7 +919,6 @@ const MultichainTransactionListItem = ({
       onClick={() => toggleShowDetails(transaction)}
       icon={
         <BadgeWrapper
-          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
           display={Display.Block}
           badge={
             <AvatarNetwork
@@ -915,6 +927,7 @@ const MultichainTransactionListItem = ({
               size={AvatarNetworkSize.Xs}
               name={transaction.chain}
               src={networkLogo}
+              borderWidth={2}
               borderColor={BackgroundColor.backgroundDefault}
             />
           }
@@ -925,13 +938,12 @@ const MultichainTransactionListItem = ({
       rightContent={
         <Text
           className="activity-list-item__primary-currency"
-          color="text-default"
           data-testid="transaction-list-item-primary-currency"
+          color={TextColor.textDefault}
+          variant={TextVariant.bodyMdMedium}
           ellipsis
-          fontWeight="medium"
           textAlign="right"
           title="Primary Currency"
-          variant="body-lg-medium"
         >
           {amount} {unit}
         </Text>

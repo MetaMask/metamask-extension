@@ -13,7 +13,6 @@ import {
   IconName,
 } from '../../../components/component-library';
 import { Color } from '../../../helpers/constants/design-system';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
 
 const AssetOptions = ({
   onRemove,
@@ -21,13 +20,13 @@ const AssetOptions = ({
   onViewTokenDetails,
   tokenSymbol,
   isNativeAsset,
+  isEvm,
 }) => {
   const t = useContext(I18nContext);
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
   const history = useHistory();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const ref = useRef(false);
-  const isEvm = useSelector(getMultichainIsEvm);
 
   const routeToAddBlockExplorerUrl = () => {
     history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
@@ -108,6 +107,7 @@ const isNotFunc = (p) => {
 
 AssetOptions.propTypes = {
   isNativeAsset: PropTypes.bool,
+  isEvm: PropTypes.bool,
   onClickBlockExplorer: PropTypes.func.isRequired,
   onRemove: (props) => {
     if (props.isNativeAsset === false && isNotFunc(props.onRemove)) {

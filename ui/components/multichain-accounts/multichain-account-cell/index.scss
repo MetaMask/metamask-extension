@@ -7,7 +7,6 @@
   }
 
   &__account-name {
-    font-weight: 600;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -15,27 +14,14 @@
   }
 
   &__account-balance {
-    font-weight: 600;
     flex-shrink: 0;
   }
 
-  &:hover:not(.multichain-account-cell--no-hover) {
+  &:hover:not(.multichain-account-cell--no-hover):not(.is-selected) {
     background: var(--color-background-default-hover);
-
-    .multichain-account-cell__account-avatar {
-      border-color: var(--color-primary-default);
-    }
 
     .multichain-account-cell__account-name {
       color: var(--color-primary-default);
-    }
-
-    .multichain-account-cell__end_accessory .multichain-account-cell-popover-menu-button {
-      background: var(--color-primary-muted);
-    }
-
-    .multichain-account-cell__end_accessory .multichain-account-cell-popover-menu-button-icon {
-      background-color: var(--color-primary-default);
     }
   }
 }

@@ -1,10 +1,11 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
+
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
@@ -33,6 +34,8 @@ export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const history = useHistory();
+  const { search: queryString } = useLocation();
+  const count = confirmations.length;
 
   const getIndex = useCallback(
     (confirmationId?: string) => {
@@ -52,9 +55,10 @@ export function useConfirmationNavigation() {
         confirmations,
         Boolean(approvalFlows?.length),
         history,
+        queryString,
       );
     },
-    [confirmations, history],
+    [confirmations, history, queryString],
   );
 
   const navigateToIndex = useCallback(
@@ -65,9 +69,27 @@ export function useConfirmationNavigation() {
     [confirmations, navigateToId],
   );
 
-  const count = confirmations.length;
+  const navigateNext = useCallback(
+    (confirmationId: string) => {
+      const pendingConfirmations = confirmations.filter(
+        (confirmation) => confirmation.id !== confirmationId,
+      );
+      if (pendingConfirmations.length >= 1) {
+        const index = getIndex(pendingConfirmations[0].id);
+        navigateToIndex(index);
+      }
+    },
+    [confirmations, getIndex, navigateToIndex],
+  );
 
-  return { confirmations, count, getIndex, navigateToId, navigateToIndex };
+  return {
+    confirmations,
+    count,
+    getIndex,
+    navigateToId,
+    navigateToIndex,
+    navigateNext,
+  };
 }
 
 export function navigateToConfirmation(
@@ -75,6 +97,7 @@ export function navigateToConfirmation(
   confirmations: ApprovalRequest<Record<string, Json>>[],
   hasApprovalFlows: boolean,
   history: ReturnType<typeof useHistory>,
+  queryString: string = '',
 ) {
   const hasNoConfirmations = confirmations?.length <= 0 || !confirmationId;
 
@@ -110,6 +133,15 @@ export function navigateToConfirmation(
   }
 
   if (type === ApprovalType.Transaction) {
+    let url = `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`;
+    if (queryString.length) {
+      url = `${url}${queryString}`;
+    }
+    history.replace(url);
+    return;
+  }
+
+  if (type === ApprovalType.AddEthereumChain) {
     history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
     return;
   }

@@ -26,7 +26,6 @@ describe('MultichainAccountMenuItems', () => {
       iconName: IconName.Edit,
       textColor: TextColor.textDefault,
       onClick: mockOnClick,
-      disabled: true,
     },
     {
       textKey: 'remove',
@@ -52,9 +51,6 @@ describe('MultichainAccountMenuItems', () => {
     );
     expect(menuItems[1]).toHaveClass(
       'multichain-account-cell-menu-item--with-border',
-    );
-    expect(menuItems[1]).toHaveClass(
-      'multichain-account-cell-menu-item--disabled',
     );
     expect(menuItems[2]).not.toHaveClass(
       'multichain-account-cell-menu-item--with-border',

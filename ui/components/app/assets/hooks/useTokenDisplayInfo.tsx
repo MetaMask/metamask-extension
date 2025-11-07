@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { isCaipChainId } from '@metamask/utils';
 import {
-  getIsTestnet,
-  getSelectedAccount,
+  getEnabledNetworksByNamespace,
+  getIsMultichainAccountsState2Enabled,
   getShowFiatInTestnets,
   getTokenList,
   selectERC20TokensByChain,
@@ -10,14 +12,15 @@ import {
 import { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
-  getMultichainIsEvm,
   isChainIdMainnet,
   makeGetMultichainShouldShowFiatByChainId,
 } from '../../../../selectors/multichain';
-import { formatWithThreshold } from '../util/formatWithThreshold';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { useFormatters } from '../../../../hooks/useFormatters';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
+import { TEST_CHAINS } from '../../../../../shared/constants/network';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -28,53 +31,57 @@ export const useTokenDisplayInfo = ({
   token,
   fixCurrencyToUSD,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(token.chainId);
   const tokenList = useSelector(getTokenList) || {};
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const locale = useSelector(getIntlLocale);
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const tokenChainImage = getImageForChainId(token.chainId);
-  const selectedAccount = useSelector(getSelectedAccount);
+  const caipChainId = isCaipChainId(token.chainId)
+    ? token.chainId
+    : formatChainIdToCaip(token.chainId);
+  const selectedAccount = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
+  );
+
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
   const showFiat = useMultichainSelector(
     makeGetMultichainShouldShowFiatByChainId(token.chainId),
     selectedAccount,
   );
 
-  const isTestnet = useSelector(getIsTestnet);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const isTestnetSelected = Boolean(
+    Object.keys(enabledNetworksByNamespace).length === 1 &&
+      TEST_CHAINS.includes(
+        Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
+      ),
+  );
 
-  const isMainnet = !isTestnet;
+  const isMainnet = !isTestnetSelected;
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
 
+  // isTestnet value is tied to the value of state.metamask.selectedNetworkClientId;
+  // In some cases; the user has "all popular networks" selected or a specific popular network selected, while being on a dapp that is connected to a testnet,
+  // In this case, isTestnet will be true and the secondary value displayed will be undefined.
+  // I think this used to work before multichain was enabled when the tokens list depended only on a single selected network at a time
+  // which used to match the value of state.metamask.selectedNetworkClientId
+  // I think the tokenList page secondary values should only depend on whether the user has a popular network selected or a custom network or testnet
+
   const shouldShowFiat =
-    showFiat && (isMainnet || (isTestnet && showFiatInTestnets));
-
-  const secondaryThreshold = 0.01;
-
+    showFiat && (isMainnet || (isTestnetSelected && showFiatInTestnets));
   // Format for fiat balance with currency style
   const secondary =
     shouldShowFiat &&
     token.tokenFiatAmount !== null &&
     token.tokenFiatAmount !== undefined
-      ? formatWithThreshold(
-          Number(token.tokenFiatAmount),
-          secondaryThreshold,
-          locale,
-          {
-            style: 'currency',
-            currency: fixCurrencyToUSD ? 'USD' : currentCurrency.toUpperCase(),
-          },
+      ? formatCurrencyWithMinThreshold(
+          token.tokenFiatAmount,
+          fixCurrencyToUSD ? 'USD' : currentCurrency,
         )
       : undefined;
-
-  const formattedPrimary = formatWithThreshold(
-    Number(isEvm ? token.string : token.primary),
-    0.00001,
-    locale,
-    {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 5,
-    },
-  );
 
   const isEvmMainnet =
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
@@ -109,7 +116,6 @@ export const useTokenDisplayInfo = ({
     return {
       title,
       tokenImage,
-      primary: formattedPrimary,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       secondary,
@@ -117,12 +123,19 @@ export const useTokenDisplayInfo = ({
       tokenChainImage: tokenChainImage as string,
     };
   }
+
+  // TODO BIP44 Refactor: type for secondary is wrongly set as number | null, when it is a string | null
+  // Just changing it causes a number of errors all over the codebase
+  // When BIP44 flag is enabled and stable, this can be refactored to use the type from the new selector
+  const nonEvmSecondary = isMultichainAccountsState2Enabled
+    ? (secondary as unknown as number)
+    : token.secondary;
+
   // TODO non-evm assets. this is only the native token
   return {
     title: token.title,
     tokenImage: token.image,
-    primary: formattedPrimary,
-    secondary: showFiat ? token.secondary : null,
+    secondary: showFiat ? nonEvmSecondary : null,
     isStakeable: false,
     tokenChainImage: token.image as string,
   };

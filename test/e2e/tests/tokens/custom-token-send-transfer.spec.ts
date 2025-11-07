@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { mockedSourcifyTokenSend } from '../confirmations/helpers';
-import { openDapp, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { DAPP_URL, WINDOW_TITLES, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -24,7 +24,7 @@ describe('Transfer custom tokens', function () {
     it('send custom tokens from extension customizing gas values', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
           localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
@@ -61,14 +61,14 @@ describe('Transfer custom tokens', function () {
           );
 
           // edit gas fee
-          await tokenTransferRedesignedConfirmPage.editGasFee(
+          await tokenTransferRedesignedConfirmPage.editGasFeeLegacy(
             GAS_LIMIT,
             GAS_PRICE,
           );
           await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // check that transaction has completed correctly and is displayed in the activity list
-          await activityListPage.checkTxAction(`Sent ${symbol}`);
+          await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
           await activityListPage.checkTxAmountInActivity(valueWithSymbol('-1'));
         },
       );
@@ -77,7 +77,7 @@ describe('Transfer custom tokens', function () {
     it('transfer custom tokens from dapp customizing gas values', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withTokensControllerERC20()
@@ -100,7 +100,7 @@ describe('Transfer custom tokens', function () {
           const activityListPage = new ActivityListPage(driver);
 
           // transfer token from dapp
-          await openDapp(driver, contractAddress);
+          await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
           await testDapp.clickTransferTokens();
 
@@ -115,7 +115,7 @@ describe('Transfer custom tokens', function () {
           );
 
           // edit gas fee
-          await tokenTransferRedesignedConfirmPage.editGasFee(
+          await tokenTransferRedesignedConfirmPage.editGasFeeLegacy(
             GAS_LIMIT,
             GAS_PRICE,
           );
@@ -127,7 +127,7 @@ describe('Transfer custom tokens', function () {
           );
 
           await homePage.goToActivityList();
-          await activityListPage.checkTxAction(`Sent ${symbol}`);
+          await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
           await activityListPage.checkTxAmountInActivity(
             valueWithSymbol('-1.5'),
           );
@@ -145,7 +145,7 @@ describe('Transfer custom tokens', function () {
     it('transfer custom tokens from dapp without specifying gas', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withTokensControllerERC20()
@@ -167,7 +167,8 @@ describe('Transfer custom tokens', function () {
           const activityListPage = new ActivityListPage(driver);
 
           // transfer token from dapp
-          await openDapp(driver, contractAddress);
+          await driver.openNewPage(`${DAPP_URL}/?contract=${contractAddress}`);
+
           await testDapp.checkPageIsLoaded();
           await testDapp.clickTransferTokensWithoutGas();
 
@@ -188,7 +189,7 @@ describe('Transfer custom tokens', function () {
           );
 
           await homePage.goToActivityList();
-          await activityListPage.checkTxAction(`Sent ${symbol}`);
+          await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
           await activityListPage.checkTxAmountInActivity(
             valueWithSymbol('-1.5'),
           );

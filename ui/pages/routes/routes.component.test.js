@@ -92,6 +92,10 @@ jest.mock('../../hooks/useMultiPolling', () => ({
   default: jest.fn(),
 }));
 
+jest.mock('../confirmations/hooks/useRedesignedSendFlow', () => ({
+  useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
+}));
+
 const mockIntersectionObserver = jest.fn();
 mockIntersectionObserver.mockReturnValue({
   observe: () => null,
@@ -167,6 +171,15 @@ describe('Routes Component', () => {
           },
           tokenBalances: {
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
+          },
+          permissionHistory: {
+            'https://metamask.github.io': {
+              eth_accounts: {
+                accounts: [
+                  'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                ],
+              },
+            },
           },
         },
         send: {
@@ -269,6 +282,36 @@ describe('toast display', () => {
       tokenBalances: {
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
       },
+      accountTree: {
+        wallets: {
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+            id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+            type: 'entropy',
+            groups: {
+              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+                id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+                type: 'multichain-account',
+                accounts: [selectedAccountId],
+                metadata: {
+                  name: 'Account 1',
+                  entropy: {
+                    groupIndex: 0,
+                  },
+                  hidden: false,
+                  pinned: false,
+                },
+              },
+            },
+            metadata: {
+              name: 'Wallet 1',
+              entropy: {
+                id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+              },
+            },
+          },
+        },
+        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+      },
       internalAccounts: {
         accounts: {
           [mockAccount.id]: mockAccount,
@@ -277,6 +320,25 @@ describe('toast display', () => {
           [mockSolanaAccount.id]: mockSolanaAccount,
         },
         selectedAccount: selectedAccountId ?? mockAccount.id,
+      },
+      accounts: {
+        ...mockState.metamask.accounts,
+        [mockAccount.address]: {
+          balance: '0x0',
+          address: mockAccount.address,
+        },
+        [mockAccount2.address]: {
+          balance: '0x0',
+          address: mockAccount2.address,
+        },
+        [mockNonEvmAccount.address]: {
+          balance: '0x0',
+          address: mockNonEvmAccount.address,
+        },
+        [mockSolanaAccount.address]: {
+          balance: '0x0',
+          address: mockSolanaAccount.address,
+        },
       },
       accountsAssets: {
         [selectedAccountId ?? mockAccount.id]: [],
@@ -321,6 +383,8 @@ describe('toast display', () => {
             rate: '1.00',
           },
       },
+      shieldEndingToastLastClickedOrClosed: null,
+      shieldPausedToastLastClickedOrClosed: null,
     },
     activeTab: {
       id: 2143026027,

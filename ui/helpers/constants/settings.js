@@ -14,6 +14,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
 } from './routes';
 
 /**
@@ -492,6 +493,14 @@ const SETTINGS_CONSTANTS = [
     route: `${TRANSACTION_SHIELD_ROUTE}`,
     iconName: IconName.ShieldLock,
   },
+  {
+    featureFlag: 'METAMASK_SHIELD_ENABLED',
+    tabMessage: (t) => t('shieldClaim'),
+    sectionMessage: (t) => t('shieldClaim'),
+    descriptionMessage: (t) => t('shieldClaim'),
+    route: `${TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL}`,
+    iconName: IconName.ShieldLock,
+  },
   // experimental settingsRefs[0]
   {
     tabMessage: (t) => t('experimental'),
@@ -550,7 +559,7 @@ const SETTINGS_CONSTANTS = [
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
     iconName: IconName.CodeCircle,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('watchEthereumAccountsToggle'),

@@ -222,7 +222,7 @@ export const SmartContractAccountToggle = ({
     <Box
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
-      marginTop={2}
+      marginTop={4}
     >
       <Text
         variant={TextVariant.bodyMdMedium}

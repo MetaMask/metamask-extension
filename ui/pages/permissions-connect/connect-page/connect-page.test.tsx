@@ -101,7 +101,7 @@ describe('ConnectPage', () => {
   it('should render image icon correctly', () => {
     const { getAllByAltText } = render();
 
-    const images = getAllByAltText('github.io logo');
+    const images = getAllByAltText('metamask.github.io logo');
     expect(images.length).toBe(2);
     expect(images[0]).toHaveAttribute(
       'src',
@@ -129,7 +129,7 @@ describe('ConnectPage', () => {
     });
 
     const divElement = container.querySelector('div.mm-avatar-base--size-lg');
-    expect(divElement).toHaveTextContent('g');
+    expect(divElement).toHaveTextContent('m');
   });
 
   it('should render fallback icon correctly for IP address as an origin', () => {
@@ -154,7 +154,7 @@ describe('ConnectPage', () => {
 
   it('should render title correctly', () => {
     const { getByText } = render();
-    expect(getByText('github.io')).toBeDefined();
+    expect(getByText('metamask.github.io')).toBeDefined();
   });
 
   it('should render subtitle correctly', () => {

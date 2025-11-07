@@ -4,16 +4,21 @@
 import classnames from 'classnames';
 import React, { Suspense, useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import {
+  Route,
+  type RouteComponentProps,
+  Switch,
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
 import { useAppSelector } from '../../store/store';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
+import AuthenticatedV5Compat from '../../helpers/higher-order-components/authenticated/authenticated-v5-compat';
 import Initialized from '../../helpers/higher-order-components/initialized';
-import PermissionsConnect from '../permissions-connect';
 import Loading from '../../components/ui/loading-screen';
-import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
@@ -61,15 +66,18 @@ import {
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
+  SHIELD_PLAN_ROUTE,
+  GATOR_PERMISSIONS,
+  TOKEN_TRANSFER_ROUTE,
+  REVIEW_GATOR_PERMISSIONS_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  getProviderConfig,
-  isNetworkLoading as getIsNetworkLoading,
-} from '../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
   getNetworkIdentifier,
   getPreferences,
@@ -86,6 +94,10 @@ import {
   getPendingApprovals,
   getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+import { getApprovalFlows } from '../../selectors/approvals';
+///: END:ONLY_INCLUDE_IF
+
 import {
   hideImportNftsModal,
   hideIpfsModal,
@@ -109,10 +121,15 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
-
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
+///: END:ONLY_INCLUDE_IF
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -145,9 +162,14 @@ import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-ac
 import { MultichainAccountDetails } from '../multichain-accounts/account-details';
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
+import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
+import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
+import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
+import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
+import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -155,6 +177,35 @@ import {
   setTheme,
   showAppHeader,
 } from './utils';
+
+// V5-compat navigate function type for bridging v5 routes with v5-compat components
+type V5CompatNavigate = (
+  to: string | number,
+  options?: {
+    replace?: boolean;
+    state?: Record<string, unknown>;
+  },
+) => void;
+
+/**
+ * Creates a v5-compat navigate function from v5 history
+ * Used to bridge v5 routes with components expecting v5-compat navigation
+ *
+ * @param history
+ */
+const createV5CompatNavigate = (
+  history: RouteComponentProps['history'],
+): V5CompatNavigate => {
+  return (to, options = {}) => {
+    if (typeof to === 'number') {
+      history.go(to);
+    } else if (options.replace) {
+      history.replace(to, options.state);
+    } else {
+      history.push(to, options.state);
+    }
+  };
+};
 
 // TODO: Fix `as unknown as` casting once `mmLazy` is updated to handle named exports, wrapped components, and other React module types.
 // Casting is preferable over `@ts-expect-error` annotations in this case,
@@ -216,18 +267,18 @@ const ConfirmTransaction = mmLazy(
 );
 const SendPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() => {
-    if (process.env.SEND_REDESIGN_ENABLED) {
-      return import('../confirmations/send/index.ts');
-    }
-    return import('../../components/multichain/pages/send/index.js');
-  }) as unknown as DynamicImportType,
+  (() =>
+    import('../confirmations/send/index.ts')) as unknown as DynamicImportType,
 );
 const Swaps = mmLazy(
   (() => import('../swaps/index.js')) as unknown as DynamicImportType,
 );
 const CrossChainSwap = mmLazy(
   (() => import('../bridge/index.tsx')) as unknown as DynamicImportType,
+);
+const PermissionsConnect = mmLazy(
+  (() =>
+    import('../permissions-connect/index.js')) as unknown as DynamicImportType,
 );
 const ConfirmAddSuggestedTokenPage = mmLazy(
   (() =>
@@ -272,6 +323,27 @@ const PermissionsPage = mmLazy(
       '../../components/multichain/pages/permissions-page/permissions-page.js'
     )) as unknown as DynamicImportType,
 );
+const GatorPermissionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+const TokenTransferPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+const ReviewGatorPermissionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
+    )) as unknown as DynamicImportType,
+);
 const Connections = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
@@ -279,11 +351,11 @@ const Connections = mmLazy(
       '../../components/multichain/pages/connections/index.js'
     )) as unknown as DynamicImportType,
 );
-const ReviewPermissions = mmLazy(
+const State2Wrapper = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
-      '../../components/multichain/pages/review-permissions-page/review-permissions-page.tsx'
+      '../../components/multichain-accounts/state2-wrapper/state2-wrapper.tsx'
     )) as unknown as DynamicImportType,
 );
 
@@ -308,13 +380,35 @@ const MultichainAccountDetailsPage = mmLazy(
       '../multichain-accounts/multichain-account-details-page/index.ts'
     )) as unknown as DynamicImportType,
 );
+
+const SmartAccountPage = mmLazy(
+  (() =>
+    import(
+      '../multichain-accounts/smart-account-page/index.ts'
+    )) as unknown as DynamicImportType,
+);
+
 const NonEvmBalanceCheck = mmLazy(
   (() =>
     import(
       '../nonevm-balance-check/index.tsx'
     )) as unknown as DynamicImportType,
 );
+
+const ShieldPlan = mmLazy(
+  (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
+);
 // End Lazy Routes
+
+const MemoizedReviewPermissionsWrapper = React.memo(
+  (props: RouteComponentProps) => (
+    <State2Wrapper
+      {...props}
+      state1Component={ReviewPermissions}
+      state2Component={MultichainReviewPermissions}
+    />
+  ),
+);
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
@@ -335,7 +429,6 @@ export default function Routes() {
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
   const account = useAppSelector(getSelectedInternalAccount);
-  const isNetworkLoading = useAppSelector(getIsNetworkLoading);
 
   const networkToAutomaticallySwitchTo = useAppSelector(
     getNetworkToAutomaticallySwitchTo,
@@ -345,6 +438,9 @@ export default function Routes() {
   );
   const pendingApprovals = useAppSelector(getPendingApprovals);
   const transactionsMetadata = useAppSelector(getUnapprovedTransactions);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  const approvalFlows = useAppSelector(getApprovalFlows);
+  ///: END:ONLY_INCLUDE_IF
 
   const shouldShowSeedPhraseReminder = useAppSelector((state) =>
     getShouldShowSeedPhraseReminder(state, account),
@@ -412,7 +508,14 @@ export default function Routes() {
     getIsMultichainAccountsState1Enabled,
   );
 
-  const prevPropsRef = useRef({ isUnlocked, totalUnapprovedConfirmationCount });
+  // Multichain intro modal logic (extracted to custom hook)
+  const { showMultichainIntroModal, setShowMultichainIntroModal } =
+    useMultichainAccountsIntroModal(isUnlocked, location);
+
+  const prevPropsRef = useRef({
+    isUnlocked,
+    totalUnapprovedConfirmationCount,
+  });
 
   useEffect(() => {
     const prevProps = prevPropsRef.current;
@@ -430,7 +533,10 @@ export default function Routes() {
       dispatch(automaticallySwitchNetwork(networkToAutomaticallySwitchTo));
     }
 
-    prevPropsRef.current = { isUnlocked, totalUnapprovedConfirmationCount };
+    prevPropsRef.current = {
+      isUnlocked,
+      totalUnapprovedConfirmationCount,
+    };
   }, [
     networkToAutomaticallySwitchTo,
     isUnlocked,
@@ -456,13 +562,8 @@ export default function Routes() {
 
   useEffect(() => {
     const windowType = getEnvironmentType();
-    const { openExtensionInBrowser } = globalThis.platform ?? {};
-    if (
-      showExtensionInFullSizeView &&
-      windowType === ENVIRONMENT_TYPE_POPUP &&
-      openExtensionInBrowser
-    ) {
-      openExtensionInBrowser();
+    if (showExtensionInFullSizeView && windowType === ENVIRONMENT_TYPE_POPUP) {
+      global.platform?.openExtensionInBrowser?.();
     }
   }, [showExtensionInFullSizeView]);
 
@@ -487,6 +588,23 @@ export default function Routes() {
       dispatch(setCurrentCurrency('usd'));
     }
   }, [currentCurrency, dispatch]);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  // Navigate to confirmations when there are pending approvals (from any page)
+  useEffect(() => {
+    if (
+      isUnlocked &&
+      (pendingApprovals.length > 0 || approvalFlows?.length > 0)
+    ) {
+      navigateToConfirmation(
+        pendingApprovals[0]?.id,
+        pendingApprovals,
+        Boolean(approvalFlows?.length),
+        history,
+      );
+    }
+  }, [isUnlocked, pendingApprovals, approvalFlows, history]);
+  ///: END:ONLY_INCLUDE_IF
 
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
@@ -535,16 +653,60 @@ export default function Routes() {
             component={ConfirmTransaction}
           />
           <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
-          <Authenticated path={SWAPS_ROUTE} component={Swaps} />
-          <Authenticated
+          <Route path={SWAPS_ROUTE}>
+            {(props: RouteComponentProps) => {
+              const { location: v5Location } = props;
+              const SwapsComponent = Swaps as React.ComponentType<{
+                location: RouteComponentProps['location'];
+              }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <SwapsComponent location={v5Location} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
-            component={CrossChainSwapTxDetails}
-            exact
-          />
-          <Authenticated
-            path={CROSS_CHAIN_SWAP_ROUTE}
-            component={CrossChainSwap}
-          />
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
+            {(props: RouteComponentProps<{ srcTxMetaId: string }>) => {
+              const { history: v5History, location: v5Location, match } = props;
+              const navigate = createV5CompatNavigate(v5History);
+              const CrossChainSwapTxDetailsComponent =
+                CrossChainSwapTxDetails as React.ComponentType<{
+                  location: RouteComponentProps['location'];
+                  navigate: V5CompatNavigate;
+                  params: { srcTxMetaId: string };
+                }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <CrossChainSwapTxDetailsComponent
+                    location={v5Location}
+                    navigate={navigate}
+                    params={match.params}
+                  />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={CROSS_CHAIN_SWAP_ROUTE}>
+            {(props: RouteComponentProps) => {
+              const { location: v5Location } = props;
+              const CrossChainSwapComponent =
+                CrossChainSwap as React.ComponentType<{
+                  location: RouteComponentProps['location'];
+                }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <CrossChainSwapComponent location={v5Location} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
           <Authenticated
             path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
             component={ConfirmAddSuggestedTokenPage}
@@ -563,23 +725,93 @@ export default function Routes() {
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
           />
-          <Authenticated
-            path={`${CONNECT_ROUTE}/:id`}
-            component={PermissionsConnect}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/image/:asset/:id`}
-            component={NftFullImage}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
-            component={Asset}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/:chainId/:asset/`}
-            component={Asset}
-          />
-          <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
+          <Route path={`${CONNECT_ROUTE}/:id`}>
+            {(props: RouteComponentProps<{ id: string }>) => {
+              const {
+                history: v5History,
+                location: v5Location,
+                match: v5Match,
+              } = props;
+
+              const navigate = createV5CompatNavigate(v5History);
+
+              const PermissionsConnectWithProps =
+                PermissionsConnect as React.ComponentType<{
+                  location: RouteComponentProps['location'];
+                  navigate: V5CompatNavigate;
+                  match: RouteComponentProps<{ id: string }>['match'];
+                }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <PermissionsConnectWithProps
+                    navigate={navigate}
+                    location={v5Location}
+                    match={v5Match}
+                  />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/image/:asset/:id`}>
+            {(props: RouteComponentProps<{ asset: string; id: string }>) => {
+              const NftFullImageComponent =
+                NftFullImage as React.ComponentType<{
+                  params: { asset: string; id: string };
+                }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <NftFullImageComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId/:asset/:id`}>
+            {(
+              props: RouteComponentProps<{
+                chainId: string;
+                asset: string;
+                id: string;
+              }>,
+            ) => {
+              const AssetComponent = Asset as React.ComponentType<{
+                params: { chainId: string; asset: string; id: string };
+              }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId/:asset/`}>
+            {(
+              props: RouteComponentProps<{
+                chainId: string;
+                asset: string;
+              }>,
+            ) => {
+              const AssetComponent = Asset as React.ComponentType<{
+                params: { chainId: string; asset: string };
+              }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId`}>
+            {(props: RouteComponentProps<{ chainId: string }>) => {
+              const AssetComponent = Asset as React.ComponentType<{
+                params: { chainId: string };
+              }>;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
           <Authenticated
             path={`${DEFI_ROUTE}/:chainId/:protocolId`}
             component={DeFiPage}
@@ -590,8 +822,23 @@ export default function Routes() {
           />
           <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
           <Authenticated
+            path={GATOR_PERMISSIONS}
+            component={GatorPermissionsPage}
+            exact
+          />
+          <Authenticated
+            path={TOKEN_TRANSFER_ROUTE}
+            component={TokenTransferPage}
+            exact
+          />
+          <Authenticated
+            path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
+            component={ReviewGatorPermissionsPage}
+            exact
+          />
+          <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
-            component={ReviewPermissions}
+            component={MemoizedReviewPermissionsWrapper}
             exact
           />
           <Authenticated
@@ -605,6 +852,11 @@ export default function Routes() {
             exact
           />
           <Authenticated
+            path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
+            component={MultichainAccountPrivateKeyListPage}
+            exact
+          />
+          <Authenticated
             path={ADD_WALLET_PAGE_ROUTE}
             component={AddWalletPage}
             exact
@@ -612,6 +864,11 @@ export default function Routes() {
           <Authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
             component={MultichainAccountDetailsPage}
+            exact
+          />
+          <Authenticated
+            path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
+            component={SmartAccountPage}
             exact
           />
           <Authenticated
@@ -638,6 +895,7 @@ export default function Routes() {
             path={NONEVM_BALANCE_CHECK_ROUTE}
             component={NonEvmBalanceCheck}
           />
+          <Authenticated path={SHIELD_PLAN_ROUTE} component={ShieldPlan} />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
@@ -666,10 +924,9 @@ export default function Routes() {
     return <AccountDetails address={accountDetailsAddress} />;
   };
 
-  const loadMessage =
-    loadingMessage || isNetworkLoading
-      ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
-      : null;
+  const loadMessage = loadingMessage
+    ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
+    : null;
 
   const windowType = getEnvironmentType();
 
@@ -724,11 +981,18 @@ export default function Routes() {
     />
   );
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  const isSidepanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  ///: END:ONLY_INCLUDE_IF
+
   return (
     <div
       className={classnames('app', {
         [`os-${os}`]: Boolean(os),
         [`browser-${browser}`]: Boolean(browser),
+        ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+        'app--sidepanel': isSidepanel,
+        ///: END:ONLY_INCLUDE_IF
       })}
       dir={textDirection}
     >
@@ -779,19 +1043,19 @@ export default function Routes() {
         )
         ///: END:ONLY_INCLUDE_IF
       }
+
+      {showMultichainIntroModal ? (
+        <MultichainAccountIntroModalContainer
+          onClose={() => setShowMultichainIntroModal(false)}
+        />
+      ) : null}
+
       <Box className="main-container-wrapper">
         {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-        {!isLoading &&
-        isUnlocked &&
-        isNetworkLoading &&
-        completedOnboarding &&
-        !isShowingDeepLinkRoute ? (
-          <LoadingNetwork />
-        ) : null}
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
-      <ToastMaster />
+      <ToastMaster location={location} />
     </div>
   );
 }

@@ -3,10 +3,10 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   type UpdateNetworkFields,
-  NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString } from '@metamask/utils';
+import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -32,8 +32,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   addNetwork,
-  setActiveNetwork,
   setEditedNetwork,
+  setEnabledNetworks,
   setTokenNetworkFilter,
   showDeprecatedNetworkModal,
   toggleNetworkMenu,
@@ -75,7 +75,6 @@ import {
   getTokenNetworkFilter,
 } from '../../../../selectors';
 import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
-import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -147,6 +146,9 @@ export const NetworksForm = ({
     const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedName = chainIdHex
       ? (NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
+        NETWORKS_BYPASSING_VALIDATION[
+          chainIdHex as keyof typeof NETWORKS_BYPASSING_VALIDATION
+        ]?.name ??
         safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name)
       : undefined;
 
@@ -174,7 +176,15 @@ export const NetworksForm = ({
           ?.nativeCurrency?.symbol)
       : undefined;
 
-    const mismatch = expectedSymbol && expectedSymbol !== ticker;
+    const isWhitelistedSymbol = chainIdHex
+      ? NETWORKS_BYPASSING_VALIDATION[
+          chainIdHex as keyof typeof NETWORKS_BYPASSING_VALIDATION
+        ]?.symbol?.toLowerCase() === ticker?.toLowerCase()
+      : false;
+
+    const mismatch =
+      expectedSymbol && expectedSymbol !== ticker && !isWhitelistedSymbol;
+
     setSuggestedTicker(mismatch ? expectedSymbol : undefined);
     setWarnings((state) => ({
       ...state,
@@ -297,20 +307,11 @@ export const NetworksForm = ({
                 [existingNetwork.chainId]: true,
               }),
             );
-            await dispatch(enableSingleNetwork(existingNetwork.chainId));
+            await dispatch(setEnabledNetworks(existingNetwork.chainId));
           }
         } else {
-          const addedNetworkConfiguration = (await dispatch(
-            addNetwork(networkPayload),
-          )) as unknown as NetworkConfiguration;
-
-          const networkClientId =
-            addedNetworkConfiguration?.rpcEndpoints?.[
-              addedNetworkConfiguration.defaultRpcEndpointIndex
-            ]?.networkClientId;
-
-          await dispatch(setActiveNetwork(networkClientId));
-          await dispatch(enableSingleNetwork(networkPayload.chainId));
+          await dispatch(addNetwork(networkPayload));
+          await dispatch(setEnabledNetworks(networkPayload.chainId));
         }
 
         trackEvent({

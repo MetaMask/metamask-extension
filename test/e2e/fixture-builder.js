@@ -4,12 +4,16 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
-const {
-  ETHERSCAN_SUPPORTED_CHAIN_IDS,
-} = require('@metamask/preferences-controller');
 const { mockNetworkStateOld } = require('../stub/networks');
 
-const { CHAIN_IDS } = require('../../shared/constants/network');
+const {
+  AVALANCHE_DISPLAY_NAME,
+  BNB_DISPLAY_NAME,
+  CHAIN_IDS,
+  LOCALHOST_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+  ZK_SYNC_ERA_DISPLAY_NAME,
+} = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const {
   DAPP_URL,
@@ -21,138 +25,10 @@ const {
   defaultFixture,
   FIXTURE_STATE_METADATA_VERSION,
 } = require('./default-fixture');
+const onboardingFixtureJson = require('./fixtures/onboarding-fixture.json');
 
 function onboardingFixture() {
-  return {
-    data: {
-      AppStateController: {
-        browserEnvironment: {},
-        nftsDropdownState: {},
-        connectedStatusPopoverHasBeenShown: true,
-        defaultHomeActiveTabName: null,
-        fullScreenGasPollTokens: [],
-        notificationGasPollTokens: [],
-        popupGasPollTokens: [],
-        recoveryPhraseReminderHasBeenShown: false,
-        recoveryPhraseReminderLastShown:
-          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
-        showTestnetMessageInDropdown: true,
-        trezorModel: null,
-      },
-      NetworkController: {
-        ...mockNetworkStateOld({
-          id: 'networkConfigurationId',
-          chainId: CHAIN_IDS.LOCALHOST,
-          nickname: 'Localhost 8545',
-          rpcUrl: 'http://localhost:8545',
-          ticker: 'ETH',
-          blockExplorerUrl: undefined,
-        }),
-        providerConfig: { id: 'networkConfigurationId' },
-      },
-      NetworkOrderController: {
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.LOCALHOST]: true,
-          },
-          solana: {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
-          },
-        },
-      },
-      NotificationServicesController: {},
-      PreferencesController: {
-        advancedGasFee: {},
-        currentLocale: 'en',
-        dismissSeedBackUpReminder: false,
-        overrideContentSecurityPolicyHeader: true,
-        featureFlags: {},
-        forgottenPassword: false,
-        identities: {},
-        ipfsGateway: 'dweb.linkssssss',
-        knownMethodData: {},
-        ledgerTransportType: 'webhid',
-        lostIdentities: {},
-        openSeaEnabled: false,
-        preferences: {
-          hideZeroBalanceTokens: false,
-          showExtensionInFullSizeView: false,
-          showFiatInTestnets: false,
-          privacyMode: false,
-          showTestNetworks: false,
-          smartTransactionsOptInStatus: true,
-          showNativeTokenAsMainBalance: true,
-          petnamesEnabled: true,
-          showMultiRpcModal: false,
-          showConfirmationAdvancedDetails: false,
-          tokenSortConfig: {
-            key: 'tokenFiatAmount',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
-          tokenNetworkFilter: {},
-          shouldShowAggregatedBalancePopover: true,
-        },
-        useExternalServices: true,
-        theme: 'light',
-        useBlockie: false,
-        useNftDetection: false,
-        usePhishDetect: true,
-        useTokenDetection: false,
-        useCurrencyRateCheck: true,
-        useMultiAccountBalanceChecker: true,
-        isMultiAccountBalancesEnabled: true,
-        showIncomingTransactions: {
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM_SEPOLIA]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEPOLIA]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_GOERLI]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_SEPOLIA]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_MAINNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MEGAETH_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MONAD_TESTNET]: true,
-        },
-      },
-      SelectedNetworkController: {
-        domains: {},
-      },
-      SmartTransactionsController: {
-        smartTransactionsState: {
-          fees: {},
-          liveness: true,
-          smartTransactions: {
-            [CHAIN_IDS.MAINNET]: [],
-          },
-        },
-      },
-      UserStorageController: {},
-      TokensController: {
-        allDetectedTokens: {},
-        allIgnoredTokens: {},
-        allTokens: {},
-      },
-      TransactionController: {},
-      config: {},
-      firstTimeInfo: {
-        date: 1665507600000,
-        version: '10.21.0',
-      },
-    },
-  };
+  return onboardingFixtureJson;
 }
 
 class FixtureBuilder {
@@ -203,7 +79,7 @@ class FixtureBuilder {
       networkOrder: this.fixture.data.NetworkOrderController?.networkOrder,
     });
     // Replace instead of merge for enabledNetworkMap
-    this.fixture.data.NetworkOrderController.enabledNetworkMap = data;
+    this.fixture.data.NetworkEnablementController.enabledNetworkMap = data;
     return this;
   }
 
@@ -315,7 +191,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.BSC,
-          nickname: 'Binance Chain',
+          nickname: BNB_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://bsc-dataseed.binance.org',
           ticker: 'BNB',
@@ -330,6 +206,12 @@ class FixtureBuilder {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
   }
 
+  withNetworkControllerOnArbitrumGoerli() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'arbitrum-goerli',
+    });
+  }
+
   withNetworkControllerOnLinea() {
     return this.withNetworkController({
       selectedNetworkClientId: 'linea-mainnet',
@@ -341,7 +223,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.LINEA_MAINNET,
-          nickname: 'Localhost 8545',
+          nickname: LOCALHOST_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
@@ -357,7 +239,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.OPTIMISM,
-          nickname: 'Localhost 8545',
+          nickname: LOCALHOST_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
@@ -373,7 +255,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.POLYGON,
-          nickname: 'Polygon Mainnet',
+          nickname: POLYGON_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
@@ -704,18 +586,16 @@ class FixtureBuilder {
   withPermissionControllerConnectedToMultichainTestDappWithTwoAccounts({
     scopes = ['eip155:1337'],
   }) {
-    const optionalScopes = scopes
-      .map((scope) => ({
-        [scope]: {
-          accounts: [
-            `${scope}:0x5cfe73b6021e818b776b421b1c4db2474086a7e1`,
-            `${scope}:0x09781764c08de8ca82e156bbf156a3ca217c7950`,
-          ],
-        },
-      }))
-      .reduce((acc, curr) => {
-        return { ...acc, ...curr };
-      }, {});
+    const optionalScopes = {};
+
+    for (const scope of scopes) {
+      optionalScopes[scope] = {
+        accounts: [
+          `${scope}:0x5cfe73b6021e818b776b421b1c4db2474086a7e1`,
+          `${scope}:0x09781764c08de8ca82e156bbf156a3ca217c7950`,
+        ],
+      };
+    }
 
     const subjects = {
       [DAPP_URL]: {
@@ -1119,6 +999,169 @@ class FixtureBuilder {
 
   withSubjectMetadataController(data) {
     merge(this.fixture.data.SubjectMetadataController, data);
+    return this;
+  }
+
+  /**
+   * Configure the Account Tree Controller state.
+   * Builds a BIP-44 compliant tree by grouping HD accounts by entropy source
+   * (primary HD keyring ID) into entropy wallets, and non-HD accounts by
+   * keyring/snap into single-account groups.
+   *
+   * @param {object} [data] - Optional overrides to merge into the default state.
+   * @param {object} [data.accountTree] - Account tree structure to set.
+   * @param {object} [data.accountGroupsMetadata] - Per-group metadata map.
+   * @param {object} [data.accountWalletsMetadata] - Per-wallet metadata map.
+   * @returns {FixtureBuilder}
+   */
+  withAccountTreeController(data = {}) {
+    const buildDefaultAccountTree = () => {
+      const accountsById =
+        this.fixture?.data?.AccountsController?.internalAccounts?.accounts ||
+        {};
+      const selectedAccountId =
+        this.fixture?.data?.AccountsController?.internalAccounts
+          ?.selectedAccount || null;
+      const accountsList = Object.values(accountsById);
+
+      const wallets = {};
+
+      // 1) Entropy (HD) wallets grouped by entropySource, defaulting to BIP-44 account index 0
+      const entropyToAccountIds = {};
+      for (const account of accountsList) {
+        const keyringType = account?.metadata?.keyring?.type;
+        if (keyringType === 'HD Key Tree') {
+          const entropyId =
+            account?.options?.entropySource || 'UNKNOWN_ENTROPY_SOURCE';
+          if (!entropyToAccountIds[entropyId]) {
+            entropyToAccountIds[entropyId] = [];
+          }
+          entropyToAccountIds[entropyId].push(account.id);
+        }
+      }
+
+      Object.entries(entropyToAccountIds).forEach(
+        ([entropyId, accountIds], index) => {
+          const walletId = `entropy:${entropyId}`;
+          const groupId = `${walletId}/0`;
+          wallets[walletId] = {
+            id: walletId,
+            type: 'entropy',
+            groups: {
+              [groupId]: {
+                id: groupId,
+                type: 'multichain-account',
+                accounts: accountIds,
+                metadata: {
+                  name: 'Default',
+                  pinned: false,
+                  hidden: false,
+                  entropy: { groupIndex: 0 },
+                },
+              },
+            },
+            metadata: {
+              name: `Wallet ${index + 1}`,
+              entropy: { id: entropyId },
+            },
+          };
+        },
+      );
+
+      // 2) Keyring wallets (Ledger, Trezor, Simple Key Pair, Custody, etc.)
+      for (const account of accountsList) {
+        const keyringType = account?.metadata?.keyring?.type;
+        const isHd = keyringType === 'HD Key Tree';
+        const isSnap = Boolean(account?.metadata?.snap?.id);
+        if (!isHd && keyringType && !isSnap) {
+          const walletId = `keyring:${keyringType}`;
+          const lowerAddress = (account?.address || '').toLowerCase();
+          const groupId = `${walletId}/${lowerAddress}`;
+          wallets[walletId] ||= {
+            id: walletId,
+            type: 'keyring',
+            groups: {},
+            metadata: { name: keyringType, keyring: { type: keyringType } },
+          };
+          wallets[walletId].groups[groupId] = {
+            id: groupId,
+            type: 'single-account',
+            accounts: [account.id],
+            metadata: {
+              name: `${keyringType} Account 1`,
+              pinned: false,
+              hidden: false,
+            },
+          };
+        }
+      }
+
+      // 3) Snap wallets grouped by snap id into single-account groups
+      for (const account of accountsList) {
+        const snapId = account?.metadata?.snap?.id;
+        if (snapId) {
+          const walletId = `snap:${snapId}`;
+          const lowerAddress = (account?.address || '').toLowerCase();
+          const groupId = `${walletId}/${lowerAddress}`;
+          wallets[walletId] ||= {
+            id: walletId,
+            type: 'snap',
+            groups: {},
+            metadata: {
+              name: account?.metadata?.snap?.name || snapId,
+              snap: { id: snapId },
+            },
+          };
+          wallets[walletId].groups[groupId] = {
+            id: groupId,
+            type: 'single-account',
+            accounts: [account.id],
+            metadata: {
+              name: `${account?.metadata?.snap?.name || 'Snap Account'} 1`,
+              pinned: false,
+              hidden: false,
+            },
+          };
+        }
+      }
+
+      // Determine selectedAccountGroup: group containing selected internal account
+      let selectedAccountGroup = null;
+      if (selectedAccountId) {
+        for (const wallet of Object.values(wallets)) {
+          const match = Object.values(wallet.groups).find((group) =>
+            group.accounts.includes(selectedAccountId),
+          );
+          if (match) {
+            selectedAccountGroup = match.id;
+            break;
+          }
+        }
+      }
+
+      // Fallback: select the first available group
+      if (!selectedAccountGroup) {
+        const firstWallet = Object.values(wallets)[0];
+        const firstGroup = firstWallet
+          ? Object.values(firstWallet.groups)[0]
+          : null;
+        selectedAccountGroup = firstGroup ? firstGroup.id : null;
+      }
+
+      return { selectedAccountGroup, wallets };
+    };
+
+    this.fixture.data.AccountTreeController ??= {};
+
+    const defaultState = {
+      accountTree: buildDefaultAccountTree(),
+      accountGroupsMetadata: {},
+      accountWalletsMetadata: {},
+    };
+
+    // Allow callers to override/extend defaults.
+    merge(defaultState, data);
+    merge(this.fixture.data.AccountTreeController, defaultState);
     return this;
   }
 
@@ -1621,31 +1664,15 @@ class FixtureBuilder {
 
   withTrezorAccount() {
     return this.withAccountTracker({
-      accounts: {
-        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-          balance: '0x15af1d78b58c40000',
-        },
-        '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
-          address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
-          balance: '0x100000000000000000000',
-        },
-      },
-      currentBlockGasLimit: '0x1c9c380',
       accountsByChainId: {
         '0x539': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1': {
             balance: '0x15af1d78b58c40000',
           },
-          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
-            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+          '0xF68464152d7289D7eA9a2bEC2E0035c45188223c': {
             balance: '0x100000000000000000000',
           },
         },
-      },
-      currentBlockGasLimitByChainId: {
-        '0x539': '0x1c9c380',
       },
     })
       .withAccountsController({
@@ -1769,49 +1796,17 @@ class FixtureBuilder {
   withPopularNetworks() {
     return this.withNetworkController({
       networkConfigurations: {
-        'op-mainnet': {
-          chainId: CHAIN_IDS.OPTIMISM,
-          nickname: 'OP Mainnet',
-          rpcPrefs: {},
-          rpcUrl: 'https://mainnet.optimism.io',
-          ticker: 'ETH',
-          id: 'op-mainnet',
-        },
-        'polygon-mainnet': {
-          chainId: CHAIN_IDS.POLYGON,
-          nickname: 'Polygon Mainnet',
-          rpcPrefs: {},
-          rpcUrl: 'https://polygon-rpc.com',
-          ticker: 'MATIC',
-          id: 'polygon-mainnet',
-        },
-        'arbitrum-one': {
-          chainId: CHAIN_IDS.ARBITRUM,
-          nickname: 'Arbitrum One',
-          rpcPrefs: {},
-          rpcUrl: 'https://arb1.arbitrum.io/rpc',
-          ticker: 'ETH',
-          id: 'arbitrum-one',
-        },
         'avalanche-mainnet': {
           chainId: CHAIN_IDS.AVALANCHE,
-          nickname: 'Avalanche Network C-Chain',
+          nickname: AVALANCHE_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
           ticker: 'AVAX',
           id: 'avalanche-mainnet',
         },
-        'bnb-mainnet': {
-          chainId: CHAIN_IDS.BSC,
-          nickname: 'BNB Chain',
-          rpcPrefs: {},
-          rpcUrl: 'https://bsc-dataseed.binance.org',
-          ticker: 'BNB',
-          id: 'bnb-mainnet',
-        },
         'zksync-mainnet': {
           chainId: CHAIN_IDS.ZKSYNC_ERA,
-          nickname: 'zkSync Era',
+          nickname: ZK_SYNC_ERA_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.era.zksync.io',
           ticker: 'ETH',
@@ -1908,27 +1903,25 @@ class FixtureBuilder {
 
   withBackupAndSyncSettings(options = {}) {
     const {
-      isProfileSyncingEnabled = true,
+      isBackupAndSyncEnabled = true,
       isAccountSyncingEnabled = true,
-      isProfileSyncingUpdateLoading = false,
-      isAccountSyncingUpdateLoading = false,
-      hasAccountSyncingSyncedAtLeastOnce = false,
+      isBackupAndSyncUpdateLoading = false,
     } = options;
 
     merge(this.fixture.data.UserStorageController, {
-      isProfileSyncingEnabled,
+      isBackupAndSyncEnabled,
       isAccountSyncingEnabled,
-      isProfileSyncingUpdateLoading,
-      isAccountSyncingUpdateLoading,
-      hasAccountSyncingSyncedAtLeastOnce,
+      isBackupAndSyncUpdateLoading,
     });
     return this;
   }
 
   build() {
-    this.fixture.meta = {
-      version: FIXTURE_STATE_METADATA_VERSION,
-    };
+    if (!this.fixture.meta) {
+      this.fixture.meta = {
+        version: FIXTURE_STATE_METADATA_VERSION,
+      };
+    }
     return this.fixture;
   }
 }

@@ -1,7 +1,6 @@
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { flushPromises } from '../../../test/lib/timer-helpers';
-import { SECOND } from '../../../shared/constants/time';
 import { useCountdownTimer } from './useCountdownTimer';
 
 jest.useFakeTimers();
@@ -30,8 +29,8 @@ describe('useCountdownTimer', () => {
 
     let i = 0;
     while (i <= 40) {
-      const secondsLeft = Math.min(41, 40 - i + 2);
-      expect(result.current).toStrictEqual(secondsLeft * SECOND);
+      const secondsLeft = Math.min(41, 40 - i + 1);
+      expect(result.current).toStrictEqual(secondsLeft);
       i += 10;
       jest.advanceTimersByTime(10000);
       await flushPromises();

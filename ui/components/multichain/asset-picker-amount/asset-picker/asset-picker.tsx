@@ -75,6 +75,7 @@ export type AssetPickerProps = {
   action?: 'send' | 'receive';
   isMultiselectEnabled?: boolean;
   autoFocus?: boolean;
+  isDestinationToken?: boolean;
   networkProps?: Pick<
     React.ComponentProps<typeof AssetPickerModalNetwork>,
     | 'network'
@@ -110,6 +111,7 @@ export function AssetPicker({
   isTokenListLoading = false,
   isMultiselectEnabled = false,
   autoFocus = true,
+  isDestinationToken = false,
 }: AssetPickerProps) {
   const t = useI18nContext();
 
@@ -194,13 +196,12 @@ export function AssetPicker({
             // If there is only 1 selected network switch to that network to populate tokens
             if (
               chainIds.length === 1 &&
-              chainIds[0] !== currentNetworkProviderConfig?.chainId
+              chainIds[0] !== currentNetworkProviderConfig?.chainId &&
+              networkProps?.onNetworkChange
             ) {
-              if (networkProps?.onNetworkChange) {
-                networkProps.onNetworkChange(
-                  allNetworks[chainIds[0] as keyof typeof allNetworks],
-                );
-              }
+              networkProps.onNetworkChange(
+                allNetworks[chainIds[0] as keyof typeof allNetworks],
+              );
             }
           }}
           selectedChainIds={selectedChainIds}
@@ -215,6 +216,7 @@ export function AssetPicker({
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
+        isDestinationToken={isDestinationToken}
         onAssetChange={(
           token:
             | AssetWithDisplayData<ERC20Asset>

@@ -83,7 +83,6 @@ describe('Segment User Traits', function () {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -107,7 +106,6 @@ describe('Segment User Traits', function () {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: false,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -143,7 +141,6 @@ describe('Segment User Traits', function () {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: false,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -164,6 +161,9 @@ describe('Segment User Traits', function () {
 
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
+        // Toggle participate in meta metrics first, then toggle data collection for marketing
+        // Data Collection toggle is disabled if participate in meta metrics is off
+        await privacySettings.toggleParticipateInMetaMetrics();
         await privacySettings.toggleDataCollectionForMarketing();
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);

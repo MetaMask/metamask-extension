@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
-import { MemoryRouter, useHistory } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom-v5-compat';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import {
@@ -12,14 +12,13 @@ import {
 } from '../../../../test/data/bridge/dummy-quotes';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
   return {
-    ...original,
-    useHistory: jest.fn().mockImplementation(original.useHistory),
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
   };
 });
-
 jest.mock('../../../ducks/bridge/utils', () => ({
   ...jest.requireActual('../../../ducks/bridge/utils'),
   getTxGasEstimates: jest.fn(() => ({
@@ -53,7 +52,7 @@ jest.mock('../../../../shared/modules/selectors/networks', () => {
         chainId: '0x1',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -68,7 +67,7 @@ jest.mock('../../../../shared/modules/selectors/networks', () => {
         chainId: '0xa4b1',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Arbitrum One',
+        name: 'Arbitrum',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -169,11 +168,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
     it('routes to activity tab', async () => {
       const store = makeMockStore();
-
-      const mockHistory = {
-        push: jest.fn(),
-      };
-      (useHistory as jest.Mock).mockImplementationOnce(() => mockHistory);
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
@@ -186,8 +180,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       // Assert
-      expect(mockHistory.push).toHaveBeenCalledWith({
-        pathname: '/',
+      expect(mockUseNavigate).toHaveBeenCalledWith('/', {
+        replace: false,
         state: { stayOnHomePage: true },
       });
     });

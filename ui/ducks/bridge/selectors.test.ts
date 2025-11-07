@@ -12,10 +12,7 @@ import { SolAccountType, SolScope } from '@metamask/keyring-api';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
-import {
-  mockMultichainNetworkState,
-  mockNetworkState,
-} from '../../../test/stub/networks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
@@ -62,7 +59,7 @@ describe('Bridge selectors', () => {
         chainId: '0xa4b1',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Arbitrum One',
+        name: 'Arbitrum',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -129,7 +126,7 @@ describe('Bridge selectors', () => {
         chainId: '0xe708',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Linea Mainnet',
+        name: 'Linea',
         rpcEndpoints: [
           {
             networkClientId: expect.anything(),
@@ -161,7 +158,7 @@ describe('Bridge selectors', () => {
         chainId: '0x1',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         rpcEndpoints: [
           {
             networkClientId: expect.anything(),
@@ -183,7 +180,7 @@ describe('Bridge selectors', () => {
       });
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(10);
+      expect(result).toHaveLength(12);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: FEATURED_RPCS[0].chainId }),
       );
@@ -226,7 +223,7 @@ describe('Bridge selectors', () => {
       };
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(4);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }),
       );
@@ -399,7 +396,7 @@ describe('Bridge selectors', () => {
           ...mockNetworkState(
             { chainId: CHAIN_IDS.MAINNET },
             ...FEATURED_RPCS.filter(
-              (network) => network.chainId !== CHAIN_IDS.LINEA_MAINNET, // Linea mainnet is both a built in network, as well as featured RPC
+              (network) => network.chainId !== CHAIN_IDS.LINEA_MAINNET, // Linea is both a built in network, as well as featured RPC
             ),
           ),
           useExternalServices: true,
@@ -505,16 +502,16 @@ describe('Bridge selectors', () => {
       const result = getToToken(state as never);
 
       expect(result).toStrictEqual({
-        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+        assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
         balance: '0',
-        chainId: '0x1',
+        chainId: 'eip155:1',
         decimals: 6,
         image:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
-        name: 'USD Coin',
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
+        name: 'MetaMask USD',
         string: '0',
-        symbol: 'USDC',
+        symbol: 'mUSD',
       });
     });
 
@@ -557,6 +554,55 @@ describe('Bridge selectors', () => {
       const result = getToToken(state as never);
 
       expect(result).toStrictEqual(null);
+    });
+
+    it('returns ETH as default token when bridging from Bitcoin', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', // Bitcoin native address
+            symbol: 'BTC',
+            chainId: MultichainNetworks.BITCOIN,
+            decimals: 8,
+          },
+          toChainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            support: true,
+            chains: {
+              [toEvmCaipChainId(CHAIN_IDS.MAINNET)]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+            bip44DefaultPairs: {
+              bip122: {
+                standard: {
+                  'bip122:000000000019d6689c085ae165831e93/slip44:0':
+                    'eip155:1/slip44:60',
+                },
+                other: {},
+              },
+            },
+          },
+        },
+      });
+      const result = getToToken(state as never);
+
+      // Should return ETH (native token) instead of mUSD for Bitcoin bridges
+      expect(result).toStrictEqual({
+        address: zeroAddress(),
+        assetId: 'eip155:1/slip44:60',
+        balance: '0',
+        chainId: 'eip155:1',
+        decimals: 18,
+        iconUrl: '',
+        image: './images/eth_logo.svg',
+        name: 'Ether',
+        string: '0',
+        symbol: 'ETH',
+      });
     });
   });
 
@@ -636,68 +682,26 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const recommendedQuoteMetadata = {
-        includedTxFees: null,
-        adjustedReturn: {
-          usd: '13.84343712858974048',
-          valueInCurrency: '13.84343712858974048',
-        },
-        cost: {
-          valueInCurrency: '0.15656287141025952',
-          usd: '0.15656287141025952',
-        },
-        sentAmount: {
-          valueInCurrency: '14',
-          amount: '14',
-          usd: '14',
-        },
-        swapRate: '0.99887714285714285714',
-        toTokenAmount: {
-          valueInCurrency: '13.8444372',
-          usd: '13.8444372',
-          amount: '13.98428',
-        },
-        gasFee: {
-          effective: {
-            amount: '7.141025952e-8',
-            usd: '7.141025952e-8',
-            valueInCurrency: '7.141025952e-8',
-          },
-          total: {
-            amount: '7.141025952e-8',
-            usd: '7.141025952e-8',
-            valueInCurrency: '7.141025952e-8',
-          },
-          max: {
-            amount: '9.933761952e-8',
-            usd: '9.933761952e-8',
-            valueInCurrency: '9.933761952e-8',
-          },
-        },
-        totalMaxNetworkFee: {
-          amount: '0.00100009933761952',
-          valueInCurrency: '0.00100009933761952',
-          usd: '0.00100009933761952',
-        },
-        totalNetworkFee: {
-          valueInCurrency: '0.00100007141025952',
-          amount: '0.00100007141025952',
-          usd: '0.00100007141025952',
-        },
-      };
-
       const result = getBridgeQuotes(state as never);
       expect(result.sortedQuotes).toHaveLength(2);
-      expect(result).toStrictEqual({
+      const { recommendedQuote, activeQuote, ...rest } = result;
+      expect(recommendedQuote).toStrictEqual(activeQuote);
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuote as QuoteMetadata & QuoteResponse;
+      expect(calculatedQuoteMetadata).toMatchSnapshot();
+      expect({
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+      }).toStrictEqual(mockErc20Erc20Quotes[0]);
+      expect(rest).toStrictEqual({
         sortedQuotes: expect.any(Array),
-        recommendedQuote: {
-          ...mockErc20Erc20Quotes[0],
-          ...recommendedQuoteMetadata,
-        },
-        activeQuote: {
-          ...mockErc20Erc20Quotes[0],
-          ...recommendedQuoteMetadata,
-        },
         quotesLastFetchedMs: 100,
         isLoading: false,
         quotesRefreshCount: 5,
@@ -762,55 +766,6 @@ describe('Bridge selectors', () => {
       });
       const result = getBridgeQuotes(state as never);
 
-      const recommendedQuoteMetadata = {
-        includedTxFees: null,
-        adjustedReturn: {
-          valueInCurrency: '13.843437128589739081572',
-          usd: '39.080515131939180597564',
-        },
-        cost: {
-          valueInCurrency: '0.156562871410260918428',
-          usd: '240.919484868060819402436',
-        },
-        sentAmount: {
-          valueInCurrency: '14',
-          amount: '14',
-          usd: '280',
-        },
-        swapRate: '0.99887714285714285714',
-        toTokenAmount: {
-          valueInCurrency: '13.844437199999998601572',
-          amount: '13.98428',
-          usd: '39.100516560144370997564',
-        },
-        gasFee: {
-          effective: {
-            amount: '7.141025952e-8',
-            usd: '0.0000014282051904',
-            valueInCurrency: '7.141025952e-8',
-          },
-          total: {
-            amount: '7.141025952e-8',
-            usd: '0.0000014282051904',
-            valueInCurrency: '7.141025952e-8',
-          },
-          max: {
-            amount: '9.933761952e-8',
-            usd: '0.0000019867523904',
-            valueInCurrency: '9.933761952e-8',
-          },
-        },
-        totalNetworkFee: {
-          valueInCurrency: '0.00100007141025952',
-          amount: '0.00100007141025952',
-          usd: '0.0200014282051904',
-        },
-        totalMaxNetworkFee: {
-          valueInCurrency: '0.00100009933761952',
-          amount: '0.00100009933761952',
-          usd: '0.0200019867523904',
-        },
-      };
       expect(result.sortedQuotes).toHaveLength(2);
       const EXPECTED_SORTED_COSTS = [
         {
@@ -827,16 +782,25 @@ describe('Bridge selectors', () => {
           expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
         },
       );
-      expect(result).toStrictEqual({
+
+      const { recommendedQuote, activeQuote, ...rest } = result;
+      expect(recommendedQuote).toStrictEqual(activeQuote);
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuote as QuoteMetadata & QuoteResponse;
+      expect(calculatedQuoteMetadata).toMatchSnapshot();
+      expect({
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+      }).toStrictEqual(mockErc20Erc20Quotes[0]);
+      expect(rest).toStrictEqual({
         sortedQuotes: expect.any(Array),
-        recommendedQuote: {
-          ...mockErc20Erc20Quotes[0],
-          ...recommendedQuoteMetadata,
-        },
-        activeQuote: {
-          ...mockErc20Erc20Quotes[0],
-          ...recommendedQuoteMetadata,
-        },
         quotesLastFetchedMs: 100,
         isLoading: false,
         quotesRefreshCount: 2,
@@ -902,56 +866,8 @@ describe('Bridge selectors', () => {
       });
       const result = getBridgeQuotes(state as never);
 
-      const recommendedQuoteMetadata = {
-        includedTxFees: null,
-        adjustedReturn: {
-          valueInCurrency: '13.84343712858974048',
-          usd: '13.8244357717948096',
-        },
-        cost: {
-          valueInCurrency: '0.15656287141025952',
-          usd: '266.1755642282051904',
-        },
-        sentAmount: {
-          valueInCurrency: '14',
-          amount: '14',
-          usd: '280',
-        },
-        swapRate: '0.99887714285714285714',
-        toTokenAmount: {
-          valueInCurrency: '13.8444372',
-          amount: '13.98428',
-          usd: '13.8444372',
-        },
-        gasFee: {
-          effective: {
-            amount: '7.141025952e-8',
-            usd: '0.0000014282051904',
-            valueInCurrency: '7.141025952e-8',
-          },
-          total: {
-            amount: '7.141025952e-8',
-            usd: '0.0000014282051904',
-            valueInCurrency: '7.141025952e-8',
-          },
-          max: {
-            amount: '9.933761952e-8',
-            usd: '0.0000019867523904',
-            valueInCurrency: '9.933761952e-8',
-          },
-        },
-        totalNetworkFee: {
-          valueInCurrency: '0.00100007141025952',
-          amount: '0.00100007141025952',
-          usd: '0.0200014282051904',
-        },
-        totalMaxNetworkFee: {
-          valueInCurrency: '0.00100009933761952',
-          amount: '0.00100009933761952',
-          usd: '0.0200019867523904',
-        },
-      };
       expect(result.sortedQuotes).toHaveLength(2);
+
       const EXPECTED_SORTED_COSTS = [
         {
           valueInCurrency: '0.15656287141025952',
@@ -968,16 +884,24 @@ describe('Bridge selectors', () => {
         },
       );
 
-      expect(result).toStrictEqual({
+      const { recommendedQuote, activeQuote, ...rest } = result;
+      expect(recommendedQuote).toStrictEqual(activeQuote);
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuote as QuoteMetadata & QuoteResponse;
+      expect({
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+      }).toStrictEqual(mockErc20Erc20Quotes[0]);
+      expect(calculatedQuoteMetadata).toMatchSnapshot();
+      expect(rest).toStrictEqual({
         sortedQuotes: expect.any(Array),
-        recommendedQuote: {
-          ...mockErc20Erc20Quotes[0],
-          ...recommendedQuoteMetadata,
-        },
-        activeQuote: {
-          ...mockErc20Erc20Quotes[0],
-          ...recommendedQuoteMetadata,
-        },
         quotesLastFetchedMs: 100,
         quotesInitialLoadTimeMs: 11000,
         isLoading: false,
@@ -1220,6 +1144,22 @@ describe('Bridge selectors', () => {
           },
         },
         metamaskStateOverrides: {
+          accountTree: {
+            selectedAccountGroup: 'entropy-test-account-group-id/0',
+            wallets: {
+              'entropy-test-account-group-id': {
+                id: 'entropy-test-account-group-id',
+                type: 'entropy',
+              },
+              groups: {
+                'entropy-test-account-group-id/0': {
+                  id: 'entropy-test-account-group-id/0',
+                  type: 'multichain-account',
+                  accounts: ['test-account-id'],
+                },
+              },
+            },
+          },
           internalAccounts: {
             selectedAccount: 'test-account-id',
             accounts: {
@@ -1837,6 +1777,42 @@ describe('Bridge selectors', () => {
         }),
       );
     });
+
+    it('should return the selected internal account if accountGroup does not have account for scope', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chains: {
+              [MultichainNetworks.SOLANA]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          accountTree: {
+            // This account group only has 1 Solana account
+            selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/2',
+          },
+        },
+      });
+
+      expect(getFromChain(state as never)).toStrictEqual(
+        expect.objectContaining({
+          chainId: '0x1',
+        }),
+      );
+      const result = getFromAccount(state as never);
+      expect(result).toMatchObject({
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        type: 'eip155:eoa',
+      });
+    });
   });
 
   describe('getIsSwap', () => {
@@ -2011,12 +1987,12 @@ describe('Bridge selectors', () => {
           },
           marketData: {},
           currencyRates: {},
-          ...mockMultichainNetworkState(),
+          selectedMultichainNetworkChainId: formatChainIdToCaip(ChainId.SOLANA),
           conversionRates: {
             [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
               rate: 1.5,
             },
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+            [`${formatChainIdToCaip(ChainId.SOLANA)}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`]:
               {
                 rate: 2.0,
               },

@@ -32,12 +32,10 @@
         border-bottom: 1px solid var(--color-border-muted);
 
         &--sender {
-          padding-right: 30px;
           cursor: pointer;
         }
 
         &--recipient {
-          padding-left: 30px;
           border-left: 1px solid var(--color-border-muted);
 
           &-with-address {
@@ -77,7 +75,6 @@
       &__name {
         @include design-system.H7;
 
-        padding-left: 14px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

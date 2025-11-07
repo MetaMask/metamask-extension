@@ -35,7 +35,6 @@ type TrackEventHook = (event: TrackingEventPayload) => void;
  * @param request.removeAllConnections - Function to remove all connections for
  * a given origin.
  * @param request.preinstalledSnaps - The list of preinstalled Snaps.
- * @param request.trackEvent - Event tracking hook.
  * @returns The initialized controller.
  */
 export const SnapControllerInit: ControllerInitFunction<
@@ -48,7 +47,6 @@ export const SnapControllerInit: ControllerInitFunction<
   persistedState,
   removeAllConnections,
   preinstalledSnaps,
-  trackEvent,
 }) => {
   const allowLocalSnaps = getBooleanFlag(process.env.ALLOW_LOCAL_SNAPS);
   const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
@@ -93,7 +91,6 @@ export const SnapControllerInit: ControllerInitFunction<
   }
 
   const controller = new SnapController({
-    dynamicPermissions: ['endowment:caip25'],
     environmentEndowmentPermissions: Object.values(EndowmentPermissions),
     excludedPermissions: {
       ...ExcludedSnapPermissions,
@@ -118,7 +115,6 @@ export const SnapControllerInit: ControllerInitFunction<
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       forcePreinstalledSnaps,
       ///: END:ONLY_INCLUDE_IF
-      useCaip25Permission: true,
     },
 
     // @ts-expect-error: `encryptorFactory` is not compatible with the expected
@@ -134,7 +130,18 @@ export const SnapControllerInit: ControllerInitFunction<
     // `TrackEventHook` from `snaps-controllers` uses `Json | undefined` for
     // properties, but `MetaMetricsEventPayload` uses `Json`, even though
     // `undefined` is supported.
-    trackEvent: trackEvent as TrackEventHook,
+    trackEvent: initMessenger.call.bind(
+      initMessenger,
+      'MetaMetricsController:trackEvent',
+    ) as unknown as TrackEventHook,
+  });
+
+  initMessenger.subscribe('KeyringController:lock', () => {
+    initMessenger.call('SnapController:setClientActive', false);
+  });
+
+  initMessenger.subscribe('KeyringController:unlock', () => {
+    initMessenger.call('SnapController:setClientActive', true);
   });
 
   return {

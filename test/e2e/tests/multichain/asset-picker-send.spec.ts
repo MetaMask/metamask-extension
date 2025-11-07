@@ -54,7 +54,7 @@ describe('AssetPickerSendFlow', function () {
 
         await sendToPage.clickOnAssetPicker(driver, 'dest');
 
-        await tokenDetailsList.checkTokenName('Ethereum');
+        await tokenDetailsList.checkTokenName('Ether');
         await tokenDetailsList.checkTokenBalanceWithName('$250,000.00');
         await tokenDetailsList.checkTokenMarketValue('25 ETH');
 

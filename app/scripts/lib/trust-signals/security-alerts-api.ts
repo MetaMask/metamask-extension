@@ -2,11 +2,13 @@ import { SECOND } from '../../../../shared/constants/time';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import {
   AddAddressSecurityAlertResponse,
+  createCacheKey,
   GetAddressSecurityAlertResponse,
+  ResultType,
   ScanAddressRequest,
   ScanAddressResponse,
   SupportedEVMChain,
-} from './types';
+} from '../../../../shared/lib/trust-signals';
 
 const TIMEOUT = 5 * SECOND;
 const ENDPOINT_ADDRESS_SCAN = 'address/evm/scan';
@@ -43,21 +45,41 @@ export async function scanAddress(
  * @param address - The address to scan for security alerts
  * @param getAddressSecurityAlertResponse - Function to retrieve cached security alert response for an address
  * @param addAddressSecurityAlertResponse - Function to add a new security alert response to the cache
- * @param chainId - The chainId that the address exists on
+ * @param chain - The chain that the address exists on
  * @returns Promise that resolves to the security scan response containing result type and label
  */
 export async function scanAddressAndAddToCache(
   address: string,
   getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse,
   addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse,
-  chainId: SupportedEVMChain,
+  chain: SupportedEVMChain,
 ): Promise<ScanAddressResponse> {
-  const cachedResponse = getAddressSecurityAlertResponse(address);
+  const cacheKey = createCacheKey(chain, address);
+  const cachedResponse = getAddressSecurityAlertResponse(cacheKey);
   if (cachedResponse) {
     return cachedResponse;
   }
 
-  const result = await scanAddress(chainId, address);
-  addAddressSecurityAlertResponse(address, result);
-  return result;
+  const loadingResponse: ScanAddressResponse = {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result_type: ResultType.Loading,
+    label: '',
+  };
+  addAddressSecurityAlertResponse(cacheKey, loadingResponse);
+
+  try {
+    const result = await scanAddress(chain, address);
+    addAddressSecurityAlertResponse(cacheKey, result);
+    return result;
+  } catch (error) {
+    const errorResponse: ScanAddressResponse = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.ErrorResult,
+      label: '',
+    };
+    addAddressSecurityAlertResponse(cacheKey, errorResponse);
+    throw error;
+  }
 }

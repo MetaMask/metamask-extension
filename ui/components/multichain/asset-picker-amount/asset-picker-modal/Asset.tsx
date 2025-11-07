@@ -1,12 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
-import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getImageForChainId,
@@ -20,6 +17,8 @@ type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
     React.ComponentProps<typeof TokenListItem>,
     'isTitleNetworkName' | 'isTitleHidden' | 'nativeCurrencySymbol'
   >;
+  name?: string;
+  isDestinationToken?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -29,12 +28,15 @@ export default function Asset({
   image,
   symbol,
   string: decimalTokenAmount,
+  name,
   tooltipText,
   tokenFiatAmount,
   chainId,
+  accountType,
   assetItemProps = {},
+  isDestinationToken = false,
 }: AssetProps) {
-  const locale = useSelector(getIntlLocale);
+  const { formatCurrency, formatTokenQuantity } = useFormatters();
 
   const currency = useSelector(getCurrentCurrency);
   const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
@@ -52,13 +54,10 @@ export default function Asset({
     true,
   );
   const formattedAmount = decimalTokenAmount
-    ? `${formatAmount(
-        locale,
-        new BigNumber(decimalTokenAmount.toString(), 10),
-      )} ${symbol}`
+    ? `${formatTokenQuantity(Number(decimalTokenAmount), symbol)}`
     : undefined;
   const primaryAmountToUse = tokenFiatAmount
-    ? formatCurrency(tokenFiatAmount.toString(), currency, 2)
+    ? formatCurrency(tokenFiatAmount, currency)
     : formattedFiat;
 
   return (
@@ -74,10 +73,12 @@ export default function Asset({
       }
       secondary={isTokenChainIdInWallet ? formattedAmount : undefined}
       primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
-      title={symbol}
+      title={name ?? symbol}
       tooltipText={tooltipText}
       tokenChainImage={getImageForChainId(chainId)}
-      isPrimaryTokenSymbolHidden
+      isDestinationToken={isDestinationToken}
+      address={address}
+      accountType={accountType}
       {...assetItemProps}
     />
   );

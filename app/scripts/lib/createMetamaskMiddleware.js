@@ -11,8 +11,6 @@ import {
 export default function createMetamaskMiddleware({
   version,
   getAccounts,
-  getCallsStatus,
-  getCapabilities,
   processTransaction,
   processTypedMessage,
   processTypedMessageV3,
@@ -20,9 +18,9 @@ export default function createMetamaskMiddleware({
   processPersonalMessage,
   processDecryptMessage,
   processEncryptionPublicKey,
-  processSendCalls,
   getPendingNonce,
   getPendingTransactionByHash,
+  processRequestExecutionPermissions,
 }) {
   const metamaskMiddleware = mergeMiddleware([
     createScaffoldMiddleware({
@@ -31,8 +29,6 @@ export default function createMetamaskMiddleware({
     }),
     createWalletMiddleware({
       getAccounts,
-      getCallsStatus,
-      getCapabilities,
       processTransaction,
       processTypedMessage,
       processTypedMessageV3,
@@ -40,7 +36,7 @@ export default function createMetamaskMiddleware({
       processPersonalMessage,
       processDecryptMessage,
       processEncryptionPublicKey,
-      processSendCalls,
+      processRequestExecutionPermissions,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
     createPendingTxMiddleware({ getPendingTransactionByHash }),

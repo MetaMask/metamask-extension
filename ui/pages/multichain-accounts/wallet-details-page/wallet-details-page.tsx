@@ -12,6 +12,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  SensitiveText,
   Text,
 } from '../../../components/component-library';
 import {
@@ -36,6 +37,11 @@ import { MultichainAccountCell } from '../../../components/multichain-accounts/m
 import { AddMultichainAccount } from '../../../components/multichain-accounts/add-multichain-account';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
 import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
+import {
+  useSingleWalletAccountsBalanceCallback,
+  useSingleWalletDisplayBalance,
+} from '../../../hooks/multichain-accounts/useWalletBalance';
+import { getPreferences } from '../../../selectors';
 
 export const WalletDetailsPage = () => {
   const t = useI18nContext();
@@ -46,6 +52,10 @@ export const WalletDetailsPage = () => {
   const wallet = walletsWithAccounts[walletId as AccountWalletId];
   const { multichainAccounts, keyringId, isSRPBackedUp } =
     useWalletInfo(walletId);
+
+  const walletTotalBalance = useSingleWalletDisplayBalance(walletId);
+  const walletAccountBalance = useSingleWalletAccountsBalanceCallback(walletId);
+  const { privacyMode } = useSelector(getPreferences);
 
   useEffect(() => {
     if (!wallet) {
@@ -74,12 +84,17 @@ export const WalletDetailsPage = () => {
           key={`multichain-account-cell-${group.id}`}
           accountId={group.id as AccountGroupId}
           accountName={group.metadata.name}
-          balance="$ n/a"
+          balance={walletAccountBalance(group.id) ?? ''}
           disableHoverEffect={true}
+          privacyMode={privacyMode}
         />
       )),
-    [multichainAccounts],
+    [multichainAccounts, privacyMode, walletAccountBalance],
   );
+
+  const walletDetailsTitle = useMemo(() => {
+    return `${wallet?.metadata.name} / ${t('accounts')}`;
+  }, [wallet?.metadata.name, t]);
 
   return (
     <Page className="multichain-wallet-details-page">
@@ -97,7 +112,7 @@ export const WalletDetailsPage = () => {
           />
         }
       >
-        {t('walletDetails')}
+        {walletDetailsTitle}
       </Header>
       <Content>
         <Box
@@ -137,12 +152,14 @@ export const WalletDetailsPage = () => {
             >
               {t('balance')}
             </Text>
-            <Text
+            <SensitiveText
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textAlternative}
+              isHidden={privacyMode}
+              ellipsis
             >
-              $ n/a
-            </Text>
+              {walletTotalBalance ?? '$ n/a'}
+            </SensitiveText>
           </Box>
           {isEntropyWallet ? (
             <MultichainSrpBackup

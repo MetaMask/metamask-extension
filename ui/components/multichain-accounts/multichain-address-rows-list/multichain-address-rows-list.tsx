@@ -1,7 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
@@ -19,80 +20,92 @@ import {
   TextFieldSearch,
   TextFieldSearchSize,
 } from '../../component-library';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
-import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain/networks';
-import {
-  NetworkAddressItem,
-  sortNetworkAddressItems,
-  getCompatibleNetworksForAccount,
-} from './utils';
+import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
+
+// Priority networks that should appear first (using CAIP chain IDs)
+const PRIORITY_CHAIN_IDS: CaipChainId[] = [
+  'eip155:1' as CaipChainId, // Ethereum mainnet
+  'bip122:000000000019d6689c085ae165831e93' as CaipChainId, // Bitcoin mainnet
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipChainId, // Solana mainnet
+  'tron:0x2b6653dc' as CaipChainId, // Tron mainnet
+  'eip155:59144' as CaipChainId, // Linea mainnet
+];
 
 export type MultichainAddressRowsListProps = {
   /**
-   * Array of InternalAccount objects to determine compatible networks for
+   * The account group ID.
    */
-  accounts?: InternalAccount[];
+  groupId: AccountGroupId;
+  /**
+   * Callback for when QR code button is clicked
+   */
+  onQrClick: (
+    address: string,
+    networkName: string,
+    chainId: CaipChainId,
+    networkImageSrc?: string,
+  ) => void;
 };
 
 export const MultichainAddressRowsList = ({
-  accounts = [],
+  groupId,
+  onQrClick,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [searchPattern, setSearchPattern] = React.useState<string>('');
+  const [, handleCopy] = useCopyToClipboard();
 
-  const [multichainNetworks] = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
+  const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
+    getInternalAccountListSpreadByScopesByGroupId(state, groupId),
   );
 
-  const allNetworks = useMemo(() => {
-    const networks: Record<string, { name: string; chainId: CaipChainId }> = {};
+  const sortByPriorityNetworks = useCallback(
+    (items: typeof getAccountsSpreadByNetworkByGroupId) => {
+      const priorityItems: typeof items = [];
+      const otherItems: typeof items = [];
 
-    if (!multichainNetworks) {
-      return networks;
-    }
+      items.forEach((item) => {
+        const priorityIndex = PRIORITY_CHAIN_IDS.findIndex(
+          (chainId) => chainId === item.scope,
+        );
 
-    Object.entries(multichainNetworks).forEach(([chainId, networkConfig]) => {
-      if (networkConfig && networkConfig.name) {
-        networks[chainId] = {
-          name: networkConfig.name,
-          chainId: chainId as CaipChainId,
-        };
-      }
-    });
+        if (priorityIndex >= 0) {
+          // Store with priority index for proper ordering
+          priorityItems[priorityIndex] = item;
+        } else {
+          otherItems.push(item);
+        }
+      });
 
-    return networks;
-  }, [multichainNetworks]);
-
-  // Generate network address items for all accounts and their compatible networks
-  const networkAddressItems = useMemo(() => {
-    const items: NetworkAddressItem[] = [];
-
-    accounts.forEach((account) => {
-      const compatibleItems = getCompatibleNetworksForAccount(
-        account,
-        allNetworks,
-      );
-      items.push(...compatibleItems);
-    });
-
-    return items;
-  }, [accounts, allNetworks]);
+      // Filter out undefined entries and maintain priority order
+      return [...priorityItems.filter(Boolean), ...otherItems];
+    },
+    [],
+  );
 
   const filteredItems = useMemo(() => {
-    if (!searchPattern.trim()) {
-      return sortNetworkAddressItems(networkAddressItems);
+    let items = getAccountsSpreadByNetworkByGroupId;
+
+    // Apply search filter if there's a search pattern
+    if (searchPattern.trim()) {
+      const pattern = searchPattern.toLowerCase();
+      items = items.filter(({ networkName, account }) => {
+        return (
+          networkName.toLowerCase().includes(pattern) ||
+          account.address.toLowerCase().includes(pattern)
+        );
+      });
     }
 
-    const pattern = searchPattern.toLowerCase();
-    const filtered = networkAddressItems.filter((item) => {
-      return (
-        item.networkName.toLowerCase().includes(pattern) ||
-        item.address.toLowerCase().includes(pattern)
-      );
-    });
-
-    return sortNetworkAddressItems(filtered);
-  }, [networkAddressItems, searchPattern]);
+    // Sort by priority networks
+    return sortByPriorityNetworks(items);
+  }, [
+    getAccountsSpreadByNetworkByGroupId,
+    searchPattern,
+    sortByPriorityNetworks,
+  ]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPattern(event.target.value);
@@ -102,16 +115,41 @@ export const MultichainAddressRowsList = ({
     setSearchPattern('');
   };
 
+  const renderAddressItem = useCallback(
+    (
+      item: {
+        scope: CaipChainId;
+        account: InternalAccount;
+        networkName: string;
+      },
+      index: number,
+    ): React.JSX.Element => {
+      const handleCopyClick = () => {
+        handleCopy(item.account.address);
+      };
+
+      return (
+        <MultichainAddressRow
+          key={`${item.account.address}-${item.scope}-${index}`}
+          chainId={item.scope}
+          networkName={item.networkName}
+          address={item.account.address}
+          copyActionParams={{
+            message: t('multichainAccountAddressCopied'),
+            callback: handleCopyClick,
+          }}
+          qrActionParams={{
+            callback: onQrClick,
+          }}
+        />
+      );
+    },
+    [handleCopy, onQrClick, t],
+  );
+
   const renderedRows = useMemo(() => {
-    return filteredItems.map((item, index) => (
-      <MultichainAddressRow
-        key={`${item.address}-${item.chainId}-${index}`}
-        chainId={item.chainId}
-        networkName={item.networkName}
-        address={item.address}
-      />
-    ));
-  }, [filteredItems]);
+    return filteredItems.map((item, index) => renderAddressItem(item, index));
+  }, [filteredItems, renderAddressItem]);
 
   return (
     <Box
@@ -119,18 +157,21 @@ export const MultichainAddressRowsList = ({
       flexDirection={FlexDirection.Column}
       data-testid="multichain-address-rows-list"
     >
-      <TextFieldSearch
-        size={TextFieldSearchSize.Lg}
-        placeholder={t('searchNetworks')}
-        value={searchPattern}
-        onChange={handleSearchChange}
-        clearButtonOnClick={handleClearSearch}
-        width={BlockSize.Full}
-        borderWidth={0}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        borderRadius={BorderRadius.LG}
-        data-testid="multichain-address-rows-list-search"
-      />
+      <Box paddingLeft={4} paddingRight={4}>
+        <TextFieldSearch
+          size={TextFieldSearchSize.Lg}
+          placeholder={t('searchNetworks')}
+          value={searchPattern}
+          onChange={handleSearchChange}
+          clearButtonOnClick={handleClearSearch}
+          width={BlockSize.Full}
+          borderWidth={0}
+          marginBottom={2}
+          backgroundColor={BackgroundColor.backgroundMuted}
+          borderRadius={BorderRadius.LG}
+          data-testid="multichain-address-rows-list-search"
+        />
+      </Box>
 
       <Box>
         {filteredItems.length > 0 ? (

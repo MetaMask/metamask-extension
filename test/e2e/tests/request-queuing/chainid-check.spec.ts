@@ -3,7 +3,6 @@ import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.fl
 import FixtureBuilder from '../../fixture-builder';
 import {
   withFixtures,
-  openDapp,
   unlockWallet,
   DAPP_URL,
   regularDelayMs,
@@ -21,7 +20,7 @@ describe('Request Queueing chainId proxy sync', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
@@ -47,7 +46,7 @@ describe('Request Queueing chainId proxy sync', function () {
         await driver.navigate(PAGES.HOME);
 
         // Open Dapp One
-        await openDapp(driver, undefined, DAPP_URL);
+        await driver.openNewPage(DAPP_URL);
 
         await driver.delay(regularDelayMs);
 

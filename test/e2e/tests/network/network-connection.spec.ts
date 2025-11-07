@@ -62,7 +62,7 @@ networkConfigs.forEach((config) => {
     it(`should connect dapp to ${config.name} and verify ${config.tokenSymbol} network and tokens`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: config
             .fixtureMethod(new FixtureBuilder())
             .withPermissionControllerConnectedToTestDapp()
@@ -104,7 +104,7 @@ networkConfigs.forEach((config) => {
 
           await performDappActionAndVerify(
             driver,
-            () => testDapp.findAndClickCreateToken(),
+            () => testDapp.clickCreateToken(),
             config.name,
           );
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

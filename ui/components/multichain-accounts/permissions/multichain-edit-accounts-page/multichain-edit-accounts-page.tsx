@@ -29,6 +29,8 @@ import { Content, Footer, Header, Page } from '../../../multichain/pages/page';
 import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
 
 type MultichainEditAccountsPageProps = {
+  title?: string;
+  confirmButtonText?: string;
   defaultSelectedAccountGroups: AccountGroupId[];
   supportedAccountGroups: AccountGroupWithInternalAccounts[];
   onSubmit: (accountGroups: AccountGroupId[]) => void;
@@ -38,6 +40,8 @@ type MultichainEditAccountsPageProps = {
 export const MultichainEditAccountsPage: React.FC<
   MultichainEditAccountsPageProps
 > = ({
+  title,
+  confirmButtonText,
   defaultSelectedAccountGroups,
   supportedAccountGroups,
   onSubmit,
@@ -111,14 +115,11 @@ export const MultichainEditAccountsPage: React.FC<
         location: 'Edit Accounts Modal',
       },
     });
-
-    onClose();
   }, [
     selectedAccountGroups,
     defaultSelectedAccountGroups,
     onSubmit,
     trackEvent,
-    onClose,
   ]);
 
   return (
@@ -128,8 +129,9 @@ export const MultichainEditAccountsPage: React.FC<
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Header
-        paddingTop={8}
-        paddingBottom={0}
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
         startAccessory={
           <ButtonIcon
             size={ButtonIconSize.Md}
@@ -139,11 +141,8 @@ export const MultichainEditAccountsPage: React.FC<
             data-testid="back-button"
           />
         }
-        textProps={{
-          variant: TextVariant.headingSm,
-        }}
       >
-        {t('editAccounts')}
+        {title ?? t('editAccounts')}
       </Header>
       <Content
         paddingLeft={4}
@@ -155,6 +154,7 @@ export const MultichainEditAccountsPage: React.FC<
             wallets={walletsWithSupportedAccountGroups}
             selectedAccountGroups={selectedAccountGroups}
             handleAccountClick={handleAccountClick}
+            showAccountCheckbox={true}
           />
         </Box>
       </Content>
@@ -165,7 +165,7 @@ export const MultichainEditAccountsPage: React.FC<
           size={ButtonSecondarySize.Lg}
           block
         >
-          {t('connect')}
+          {confirmButtonText ?? t('connect')}
         </ButtonSecondary>
       </Footer>
     </Page>

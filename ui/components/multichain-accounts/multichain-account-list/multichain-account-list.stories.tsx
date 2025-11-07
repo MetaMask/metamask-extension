@@ -21,6 +21,11 @@ const defaultArgs: MultichainAccountListProps = {
 
 const store = configureStore({
   metamask: mockState.metamask,
+  activeTab: {
+    origin: 'https://metamask.github.io',
+    protocol: 'https:',
+    url: 'https://metamask.github.io/test-dapp/',
+  },
 });
 
 const meta: Meta<typeof MultichainAccountList> = {
@@ -52,6 +57,22 @@ Default.parameters = {
     description: {
       story:
         'Default state of MultichainAccountList showing various wallets and their accounts.',
+    },
+  },
+};
+
+export const WithCheckboxes: Story = {
+  args: {
+    ...defaultArgs,
+    showAccountCheckbox: true,
+  },
+};
+
+WithCheckboxes.parameters = {
+  docs: {
+    description: {
+      story:
+        'MultichainAccountList with checkboxes enabled for account selection. Checkboxes appear as start accessories on each account row.',
     },
   },
 };

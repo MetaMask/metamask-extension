@@ -15,12 +15,9 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
-const mockUseHistory = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockUseHistory,
-  }),
+jest.mock('react-router-dom-v5-compat', () => ({
+  // eslint-disable-next-line react/prop-types
+  Link: ({ children, ...props }) => <a {...props}>{children}</a>,
 }));
 
 const render = ({
@@ -37,7 +34,7 @@ const render = ({
     activeTab: {
       origin: 'https://remix.ethereum.org',
     },
-    ...(stateChanges ?? {}),
+    ...stateChanges,
   });
   return renderWithProvider(<AppHeader location={location} />, store);
 };

@@ -1,11 +1,15 @@
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import { SubscriptionUserEvent } from '@metamask/subscription-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -239,7 +243,13 @@ describe('Actions', () => {
     });
 
     it('should return true if the password is outdated', async () => {
-      const store = mockStore();
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
 
       const checkIsSeedlessPasswordOutdated =
         background.checkIsSeedlessPasswordOutdated.resolves(true);
@@ -254,7 +264,13 @@ describe('Actions', () => {
     });
 
     it('should return false if the password is not outdated', async () => {
-      const store = mockStore();
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
 
       const checkIsSeedlessPasswordOutdated =
         background.checkIsSeedlessPasswordOutdated.resolves(false);
@@ -269,7 +285,13 @@ describe('Actions', () => {
     });
 
     it('should not throw an error if the checkIsSeedlessPasswordOutdated fails', async () => {
-      const store = mockStore();
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
 
       const checkIsSeedlessPasswordOutdated =
         background.checkIsSeedlessPasswordOutdated.rejects(new Error('error'));
@@ -1412,6 +1434,55 @@ describe('Actions', () => {
       expect(
         createNextMultichainAccountGroup.calledWith(walletIdWithoutPrefix),
       ).toStrictEqual(true);
+    });
+  });
+
+  describe('#setAccountGroupName', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setAccountGroupName in background with correct parameters', async () => {
+      const store = mockStore();
+      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+      const newAccountName = 'New Account Name';
+      const setAccountGroupName = sinon.stub().resolves();
+
+      background.getApi = sinon.stub().returns({
+        setAccountGroupName,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.setAccountGroupName(accountGroupId, newAccountName),
+      );
+
+      expect(setAccountGroupName.callCount).toStrictEqual(1);
+      expect(
+        setAccountGroupName.calledWith(accountGroupId, newAccountName),
+      ).toStrictEqual(true);
+    });
+
+    it('returns false when the background call fails', async () => {
+      const store = mockStore();
+      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+      const newAccountName = 'New Account Name';
+      const setAccountGroupName = sinon
+        .stub()
+        .rejects(new Error('Failed to set account name'));
+
+      background.getApi = sinon.stub().returns({
+        setAccountGroupName,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const result = await store.dispatch(
+        actions.setAccountGroupName(accountGroupId, newAccountName),
+      );
+
+      expect(result).toStrictEqual(false);
     });
   });
 
@@ -2970,29 +3041,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('syncInternalAccountsWithUserStorage', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls syncInternalAccountsWithUserStorage in the background', async () => {
-      const store = mockStore();
-
-      const syncInternalAccountsWithUserStorageStub = sinon.stub().resolves();
-
-      background.getApi.returns({
-        syncInternalAccountsWithUserStorage:
-          syncInternalAccountsWithUserStorageStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.syncInternalAccountsWithUserStorage());
-      expect(syncInternalAccountsWithUserStorageStub.calledOnceWith()).toBe(
-        true,
-      );
-    });
-  });
-
   describe('syncContactsWithUserStorage', () => {
     afterEach(() => {
       sinon.restore();
@@ -3032,8 +3080,13 @@ describe('Actions', () => {
 
       await store.dispatch(actions.deleteAccountSyncingDataFromUserStorage());
       expect(
-        deleteAccountSyncingDataFromUserStorageStub.calledOnceWith(
-          USER_STORAGE_FEATURE_NAMES.accounts,
+        deleteAccountSyncingDataFromUserStorageStub.calledWith(
+          USER_STORAGE_GROUPS_FEATURE_KEY,
+        ),
+      ).toBe(true);
+      expect(
+        deleteAccountSyncingDataFromUserStorageStub.calledWith(
+          USER_STORAGE_WALLETS_FEATURE_KEY,
         ),
       ).toBe(true);
     });
@@ -3296,6 +3349,62 @@ describe('Actions', () => {
       }
 
       expect(background.syncSeedPhrases.calledOnceWith()).toBe(true);
+    });
+  });
+
+  describe('submitSubscriptionUserEvents', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls submitSubscriptionUserEvents in the background', async () => {
+      const store = mockStore();
+      const submitSubscriptionUserEventsStub = sinon.stub().resolves();
+      background.getApi.returns({
+        submitSubscriptionUserEvents: submitSubscriptionUserEventsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.submitSubscriptionUserEvents({
+          event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        }),
+      );
+
+      expect(
+        submitSubscriptionUserEventsStub.calledOnceWith({
+          event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        }),
+      ).toBe(true);
+    });
+
+    it('handles error when submitSubscriptionUserEvents fails', async () => {
+      const errorMessage = 'Failed to submit subscription user events';
+      const store = mockStore();
+      const submitSubscriptionUserEventsStub = sinon
+        .stub()
+        .rejects(new Error(errorMessage));
+      background.getApi.returns({
+        submitSubscriptionUserEvents: submitSubscriptionUserEventsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'DISPLAY_WARNING', payload: errorMessage },
+      ];
+
+      await store.dispatch(
+        actions.submitSubscriptionUserEvents({
+          event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        }),
+      );
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(
+        submitSubscriptionUserEventsStub.calledOnceWith({
+          event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        }),
+      ).toBe(true);
     });
   });
 });

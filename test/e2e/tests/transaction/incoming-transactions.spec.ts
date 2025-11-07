@@ -5,7 +5,6 @@ import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
@@ -111,10 +110,18 @@ describe('Incoming Transactions', function () {
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
 
-        await activityList.checkTxAction('Received', 1);
+        await activityList.checkTxAction({
+          action: 'Received',
+          txIndex: 1,
+          completedTxs: 2,
+        });
         await activityList.checkTxAmountInActivity('1.23 ETH', 1);
 
-        await activityList.checkTxAction('Received', 2);
+        await activityList.checkTxAction({
+          action: 'Received',
+          txIndex: 2,
+          completedTxs: 2,
+        });
         await activityList.checkTxAmountInActivity('2.34 ETH', 2);
       },
     );
@@ -168,7 +175,11 @@ describe('Incoming Transactions', function () {
         const activityList = await changeNetworkAndGoToActivity(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
 
-        await activityList.checkTxAction('Contract interaction', 2);
+        await activityList.checkTxAction({
+          action: 'Contract interaction',
+          txIndex: 2,
+          completedTxs: 2,
+        });
         await activityList.checkTxAmountInActivity('-4.56 ETH', 2);
       },
     );
@@ -227,7 +238,6 @@ describe('Incoming Transactions', function () {
 
 async function changeNetworkAndGoToActivity(driver: Driver) {
   await loginWithoutBalanceValidation(driver);
-  await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
   const homepage = new HomePage(driver);
   await homepage.goToActivityList();

@@ -47,7 +47,7 @@ export const SelectableListItem = ({
           'selectable-list-item--selected': Boolean(isSelected),
         })}
         onClick={onClick}
-        variant={TextVariant.bodyMd}
+        variant={TextVariant.bodySmMedium}
         as="button"
         width={BlockSize.Full}
         backgroundColor={BackgroundColor.backgroundDefault}
@@ -79,8 +79,13 @@ const SortControl = ({ handleClose }: SortControlProps) => {
 
   const dispatch = useDispatch();
 
+  type SortKeys = 'title' | 'tokenFiatAmount';
   const handleSort = useCallback(
-    (key: string, sortCallback: keyof SortingCallbacksT, order: SortOrder) => {
+    (
+      key: SortKeys,
+      sortCallback: keyof SortingCallbacksT,
+      order: SortOrder,
+    ) => {
       dispatch(
         setTokenSortConfig({
           key,

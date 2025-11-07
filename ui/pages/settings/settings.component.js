@@ -1,6 +1,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Switch, Route, matchPath, Redirect } from 'react-router-dom';
+import {
+  Routes as RouterRoutes,
+  Route,
+  matchPath,
+  Navigate,
+} from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
 
@@ -26,6 +31,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -49,7 +55,10 @@ import MetafoxLogo from '../../components/ui/metafox-logo';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
@@ -65,19 +74,29 @@ import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
-import { TransactionShield } from './transaction-shield-tab';
+import ClaimsArea from './transaction-shield-tab/claims-area';
+import TransactionShield from './transaction-shield-tab';
+
+// Helper component for network routes that need side effects
+const NetworkRouteHandler = ({ onMount }) => {
+  React.useEffect(() => {
+    onMount();
+  }, [onMount]);
+
+  return <Navigate to={{ pathname: DEFAULT_ROUTE }} />;
+};
+
+NetworkRouteHandler.propTypes = {
+  onMount: PropTypes.func.isRequired,
+};
 
 class SettingsPage extends PureComponent {
   static propTypes = {
     addNewNetwork: PropTypes.bool,
     addressName: PropTypes.string,
     backRoute: PropTypes.string,
-    breadCrumbTextKey: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
-    history: PropTypes.object,
-    initialBreadCrumbKey: PropTypes.string,
-    initialBreadCrumbRoute: PropTypes.string,
     isAddressEntryPage: PropTypes.bool,
     isMetaMaskShieldFeatureEnabled: PropTypes.bool,
     isPasswordChangePage: PropTypes.bool,
@@ -86,6 +105,7 @@ class SettingsPage extends PureComponent {
     isSeedlessPasswordOutdated: PropTypes.bool,
     isTransactionShieldPage: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
+    navigate: PropTypes.func.isRequired,
     pathnameI18nKey: PropTypes.string,
     settingsPageSnaps: PropTypes.array,
     snapSettingsTitle: PropTypes.string,
@@ -120,8 +140,8 @@ class SettingsPage extends PureComponent {
   }
 
   handleClickSetting(setting) {
-    const { history } = this.props;
-    history.push(setting.route);
+    const { navigate } = this.props;
+    navigate(setting.route);
     this.setState({
       isSearchList: '',
       searchResults: '',
@@ -130,7 +150,7 @@ class SettingsPage extends PureComponent {
 
   render() {
     const {
-      history,
+      navigate,
       backRoute,
       currentPath,
       mostRecentOverviewPage,
@@ -142,7 +162,13 @@ class SettingsPage extends PureComponent {
     } = this.props;
 
     const { t } = this.context;
-    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    const environmentType = getEnvironmentType();
+    const isPopup =
+      environmentType === ENVIRONMENT_TYPE_POPUP ||
+      environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+    const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+    ///: END:ONLY_INCLUDE_IF
     const isSearchHidden =
       isRevealSrpListPage || isPasswordChangePage || isTransactionShieldPage;
 
@@ -152,6 +178,9 @@ class SettingsPage extends PureComponent {
           'main-container main-container--has-shadow settings-page',
           {
             'settings-page--selected': currentPath !== SETTINGS_ROUTE,
+            ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+            'settings-page--sidepanel': isSidepanel,
+            ///: END:ONLY_INCLUDE_IF
           },
         )}
       >
@@ -173,7 +202,7 @@ class SettingsPage extends PureComponent {
                   <MetafoxLogo
                     className="settings-page__header__title-container__metamask-logo"
                     unsetIconHeight
-                    onClick={async () => history.push(DEFAULT_ROUTE)}
+                    onClick={() => navigate(DEFAULT_ROUTE)}
                     display={[Display.Flex, Display.None]}
                   />
                 ) : (
@@ -182,9 +211,9 @@ class SettingsPage extends PureComponent {
                     iconName={IconName.ArrowLeft}
                     className="settings-page__header__title-container__back-button"
                     color={Color.iconDefault}
-                    onClick={() => history.push(backRoute)}
+                    onClick={() => navigate(backRoute)}
                     display={[Display.Flex, Display.None]}
-                    size={ButtonIconSize.Sm}
+                    size={ButtonIconSize.Md}
                   />
                 )}
               </>
@@ -197,12 +226,12 @@ class SettingsPage extends PureComponent {
               ariaLabel={t('close')}
               onClick={() => {
                 if (addNewNetwork) {
-                  history.push(NETWORKS_ROUTE);
+                  navigate(NETWORKS_ROUTE);
                 } else {
-                  history.push(mostRecentOverviewPage);
+                  navigate(mostRecentOverviewPage);
                 }
               }}
-              size={ButtonIconSize.Sm}
+              size={ButtonIconSize.Md}
               marginLeft="auto"
             />
           </div>
@@ -294,23 +323,21 @@ class SettingsPage extends PureComponent {
       isAddressEntryPage,
       pathnameI18nKey,
       addressName,
-      initialBreadCrumbRoute,
-      breadCrumbTextKey,
-      history,
-      initialBreadCrumbKey,
+      backRoute,
+      navigate,
     } = this.props;
-
     let subheaderText;
 
     if (isPopup && isAddressEntryPage) {
       subheaderText = t('settings');
     } else if (isAddressEntryPage) {
       subheaderText = t('contacts');
-    } else if (initialBreadCrumbKey) {
-      subheaderText = t(initialBreadCrumbKey);
     } else {
       subheaderText = t(pathnameI18nKey || 'general');
     }
+
+    // Show back button only on inner pages of the settings page
+    const showBackButton = backRoute !== SETTINGS_ROUTE;
 
     return (
       !currentPath.startsWith(NETWORKS_ROUTE) && (
@@ -323,23 +350,15 @@ class SettingsPage extends PureComponent {
           flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
         >
-          <Text
-            className={classnames({
-              'settings-page__subheader--link': initialBreadCrumbRoute,
-            })}
-            variant={TextVariant.headingSm}
-            onClick={() =>
-              initialBreadCrumbRoute && history.push(initialBreadCrumbRoute)
-            }
-          >
-            {subheaderText}
-          </Text>
-          {breadCrumbTextKey && (
-            <div className="settings-page__subheader--break">
-              <span>{' > '}</span>
-              {t(breadCrumbTextKey)}
-            </div>
+          {showBackButton && (
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              onClick={() => navigate(backRoute)}
+              marginRight={2}
+              size={ButtonIconSize.Md}
+            />
           )}
+          <Text variant={TextVariant.headingSm}>{subheaderText}</Text>
           {isAddressEntryPage && (
             <div className="settings-page__subheader--break">
               <span>{' > '}</span>
@@ -353,7 +372,7 @@ class SettingsPage extends PureComponent {
 
   renderTabs() {
     const {
-      history,
+      navigate,
       currentPath,
       useExternalServices,
       settingsPageSnaps,
@@ -422,7 +441,7 @@ class SettingsPage extends PureComponent {
       });
     }
 
-    if (isMetaMaskShieldFeatureEnabled) {
+    if (isMetaMaskShieldFeatureEnabled && useExternalServices) {
       tabs.splice(-4, 0, {
         content: t('shieldTx'),
         icon: <Icon name={IconName.ShieldLock} />,
@@ -451,11 +470,10 @@ class SettingsPage extends PureComponent {
           ) {
             return true;
           }
-          return matchPath(currentPath, { exact: true, path: key });
+          return matchPath(key, currentPath);
         }}
         onSelect={(key) =>
-          history.push({
-            pathname: key,
+          navigate(key, {
             state: { fromPage: currentPath },
           })
         }
@@ -465,90 +483,89 @@ class SettingsPage extends PureComponent {
 
   renderContent() {
     return (
-      <Switch>
+      <RouterRoutes>
         <Route
-          exact
           path={GENERAL_ROUTE}
-          render={(routeProps) => (
+          element={
             <SettingsTab
-              {...routeProps}
               lastFetchedConversionDate={this.state.lastFetchedConversionDate}
             />
-          )}
+          }
         />
-        <Route exact path={ABOUT_US_ROUTE} render={() => <InfoTab />} />
+        <Route path={ABOUT_US_ROUTE} element={<InfoTab />} />
         <Route
           path={`${SNAP_SETTINGS_ROUTE}/:snapId`}
-          component={SnapSettingsRenderer}
+          element={<SnapSettingsRenderer />}
         />
-        <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
-        <Route exact path={BACKUPANDSYNC_ROUTE} component={BackupAndSyncTab} />
+        <Route path={ADVANCED_ROUTE} element={<AdvancedTab />} />
+        <Route path={BACKUPANDSYNC_ROUTE} element={<BackupAndSyncTab />} />
         <Route
-          exact
           path={ADD_NETWORK_ROUTE}
-          render={() => {
-            this.props.toggleNetworkMenu({ isAddingNewNetwork: true });
-            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
-          }}
+          element={
+            <NetworkRouteHandler
+              onMount={() =>
+                this.props.toggleNetworkMenu({ isAddingNewNetwork: true })
+              }
+            />
+          }
         />
         <Route
-          exact
           path={NETWORKS_ROUTE}
-          render={() => {
-            this.props.toggleNetworkMenu();
-            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
-          }}
+          element={
+            <NetworkRouteHandler
+              onMount={() => this.props.toggleNetworkMenu()}
+            />
+          }
         />
         <Route
-          exact
           path={ADD_POPULAR_CUSTOM_NETWORK}
-          render={() => {
-            this.props.toggleNetworkMenu();
-            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
-          }}
+          element={
+            <NetworkRouteHandler
+              onMount={() => this.props.toggleNetworkMenu()}
+            />
+          }
         />
-        <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
+        <Route path={SECURITY_ROUTE} element={<SecurityTab />} />
         <Route
-          exact
           path={TRANSACTION_SHIELD_ROUTE}
-          component={TransactionShield}
+          element={<TransactionShield />}
         />
-        <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
+        <Route
+          path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}/*`}
+          element={<ClaimsArea />}
+        />
+        <Route path={EXPERIMENTAL_ROUTE} element={<ExperimentalTab />} />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
           process.env.IN_TEST) && (
           <Route
-            exact
             path={DEVELOPER_OPTIONS_ROUTE}
-            component={DeveloperOptionsTab}
+            element={<DeveloperOptionsTab />}
           />
         )}
-        <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
-        <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
+        <Route path={CONTACT_LIST_ROUTE} element={<ContactListTab />} />
+        <Route path={CONTACT_ADD_ROUTE} element={<ContactListTab />} />
         <Route
-          exact
           path={`${CONTACT_EDIT_ROUTE}/:id`}
-          component={ContactListTab}
+          element={<ContactListTab />}
         />
         <Route
-          exact
           path={`${CONTACT_VIEW_ROUTE}/:id`}
-          component={ContactListTab}
+          element={<ContactListTab />}
         />
-        <Route exact path={REVEAL_SRP_LIST_ROUTE} component={RevealSrpList} />
+        <Route path={REVEAL_SRP_LIST_ROUTE} element={<RevealSrpList />} />
         <Route
-          exact
           path={SECURITY_PASSWORD_CHANGE_ROUTE}
-          component={ChangePassword}
+          element={<ChangePassword />}
         />
         <Route
-          render={(routeProps) => (
+          path="*"
+          element={
             <SettingsTab
-              {...routeProps}
               lastFetchedConversionDate={this.state.lastFetchedConversionDate}
             />
-          )}
+          }
         />
-      </Switch>
+      </RouterRoutes>
     );
   }
 }

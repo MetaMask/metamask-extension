@@ -14,6 +14,14 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import BaseTransactionInfo from './base-transaction-info';
 
+jest.mock('../../../simulation-details/useBalanceChanges', () => ({
+  useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
+}));
+
+jest.mock('../hooks/useBatchApproveBalanceChanges', () => ({
+  useBatchApproveBalanceChanges: jest.fn(),
+}));
+
 jest.mock('../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockResolvedValue({

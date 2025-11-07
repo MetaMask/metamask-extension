@@ -6,13 +6,18 @@ import React, {
   useState,
 } from 'react';
 import { NameType } from '@metamask/name-controller';
-import { Box } from '../../component-library';
+import { Box, Text } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Display } from '../../../helpers/constants/design-system';
+import {
+  Display,
+  FlexDirection,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import NameDisplay from './name-details/name-display';
 import NameDetails from './name-details/name-details';
@@ -35,14 +40,25 @@ export type NameProps = {
    * Such as the chain ID if the `type` is an Ethereum address.
    */
   variation: string;
+
+  /**
+   * The fallback value to display if the name is not found or cannot be resolved.
+   */
+  fallbackName?: string;
 };
 
 const Name = memo(
-  ({ value, type, preferContractSymbol = false, variation }: NameProps) => {
+  ({
+    value,
+    type,
+    preferContractSymbol = false,
+    variation,
+    ...props
+  }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
     const trackEvent = useContext(MetaMetricsContext);
 
-    const { name } = useDisplayName({
+    const { name, subtitle, isAccount } = useDisplayName({
       value,
       type,
       preferContractSymbol,
@@ -66,15 +82,18 @@ const Name = memo(
     }, []);
 
     const handleClick = useCallback(() => {
+      if (isAccount) {
+        return;
+      }
       setModalOpen(true);
-    }, [setModalOpen]);
+    }, [isAccount, setModalOpen]);
 
     const handleModalClose = useCallback(() => {
       setModalOpen(false);
     }, [setModalOpen]);
 
     return (
-      <Box display={Display.Flex}>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         {modalOpen && (
           <NameDetails
             value={value}
@@ -83,14 +102,23 @@ const Name = memo(
             onClose={handleModalClose}
           />
         )}
-
         <NameDisplay
           value={value}
           type={type}
           preferContractSymbol={preferContractSymbol}
           variation={variation}
           handleClick={handleClick}
+          {...props}
         />
+        {subtitle && (
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            style={{ textAlign: 'right' }}
+          >
+            {subtitle}
+          </Text>
+        )}
       </Box>
     );
   },

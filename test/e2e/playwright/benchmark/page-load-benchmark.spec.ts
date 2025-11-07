@@ -2,12 +2,13 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import { test as pwTest, expect } from '@playwright/test';
 import { PageLoadBenchmark } from '../../page-objects/benchmark/page-load-benchmark';
+import { DAPP_URL } from '../../constants';
 
 pwTest.describe('Page Load Benchmark', () => {
   let benchmark: PageLoadBenchmark;
   const outputPath = path.join(
     process.cwd(),
-    '/test-artifacts/benchmarks/benchmark-results.json',
+    '/test-artifacts/benchmarks/page-load-benchmark-results.json',
   );
 
   pwTest.beforeAll(async () => {
@@ -24,7 +25,7 @@ pwTest.describe('Page Load Benchmark', () => {
   });
 
   pwTest('Run page load benchmark', async () => {
-    const testUrls = ['https://metamask.github.io/test-dapp/'];
+    const testUrls = [DAPP_URL];
 
     const browserLoads = parseInt(
       process.env.BENCHMARK_BROWSER_LOADS || '10',

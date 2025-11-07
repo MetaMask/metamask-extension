@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import {
-  checkExistingAllTokens,
-  checkExistingAddresses,
-} from '../../../../helpers/utils/util';
+import { checkExistingAllTokens } from '../../../../helpers/utils/util';
 import {
   Box,
   Text,
@@ -33,7 +30,6 @@ export default class TokenList extends Component {
   };
 
   static propTypes = {
-    tokens: PropTypes.array,
     allTokens: PropTypes.object,
     results: PropTypes.array,
     selectedTokens: PropTypes.object,
@@ -48,16 +44,13 @@ export default class TokenList extends Component {
     const {
       results = [],
       selectedTokens = {},
-
       onToggleToken,
-      tokens = [],
       allTokens = {},
       accountAddress,
       currentNetwork,
       testNetworkBackgroundColor,
       isTokenNetworkFilterEqualCurrentNetwork,
     } = this.props;
-
     return (
       <Box className="token-list">
         {results.length === 0 ? (
@@ -78,25 +71,22 @@ export default class TokenList extends Component {
               .fill(undefined)
               .map((_, i) => {
                 const { symbol, name, address, chainId } = results[i] || {};
+                const uniqueKey = `${address || 'unknown'}-${chainId || 'nochain'}-${i}-${symbol || 'nosymbol'}-${name || 'noname'}`;
                 let tokenAlreadyAdded = false;
-                if (isTokenNetworkFilterEqualCurrentNetwork) {
-                  tokenAlreadyAdded = checkExistingAddresses(address, tokens);
-                  results[i].chainId = currentNetwork?.chainId;
-                } else {
-                  tokenAlreadyAdded = checkExistingAllTokens(
-                    address,
-                    chainId,
-                    accountAddress,
-                    allTokens,
-                  );
-                }
+
+                tokenAlreadyAdded = checkExistingAllTokens(
+                  address,
+                  chainId,
+                  accountAddress,
+                  allTokens,
+                );
 
                 const onClick = () =>
                   !tokenAlreadyAdded && onToggleToken(results[i]);
                 return (
                   Boolean(results[i]?.iconUrl || symbol || name) && (
                     <Box
-                      key={address}
+                      key={uniqueKey}
                       display={Display.Flex}
                       alignItems={AlignItems.center}
                       flexDirection={FlexDirection.Row}

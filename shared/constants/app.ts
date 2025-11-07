@@ -16,6 +16,7 @@ export type EnvironmentType =
 export const ENVIRONMENT_TYPE_POPUP = 'popup';
 export const ENVIRONMENT_TYPE_NOTIFICATION = 'notification';
 export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
+export const ENVIRONMENT_TYPE_SIDEPANEL = 'sidepanel';
 export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
 export const PLATFORM_BRAVE = 'Brave';
@@ -60,9 +61,14 @@ export const MESSAGE_TYPE = {
   SNAP_DIALOG_CONFIRMATION: DIALOG_APPROVAL_TYPES.confirmation,
   SNAP_DIALOG_PROMPT: DIALOG_APPROVAL_TYPES.prompt,
   SNAP_DIALOG_DEFAULT: DIALOG_APPROVAL_TYPES.default,
+  HYPERLIQUID_REFERRAL_CONSENT: 'hyperliquid_referral_consent',
 } as const;
 
 export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
+
+// Custom ApprovalType for Hyperliquid referral consent
+export const HYPERLIQUID_APPROVAL_TYPE =
+  MESSAGE_TYPE.HYPERLIQUID_REFERRAL_CONSENT;
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {

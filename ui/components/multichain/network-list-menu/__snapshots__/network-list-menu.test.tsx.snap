@@ -47,10 +47,10 @@ exports[`NetworkListMenu renders properly 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -117,7 +117,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
                       <img
-                        alt="Ethereum Mainnet logo"
+                        alt="Ethereum logo"
                         class="mm-avatar-network__network-image"
                         src="./images/eth_logo.svg"
                       />
@@ -128,7 +128,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                        data-testid="Ethereum Mainnet"
+                        data-testid="Ethereum"
                       >
                         <div
                           class="multichain-network-list-item__tooltip"
@@ -143,7 +143,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                               class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                               tabindex="0"
                             >
-                              Ethereum Mainnet
+                              Ethereum
                             </p>
                           </div>
                         </div>
@@ -180,7 +180,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
                       <img
-                        alt="Linea Mainnet logo"
+                        alt="Linea logo"
                         class="mm-avatar-network__network-image"
                         src="./images/linea-logo-mainnet.svg"
                       />
@@ -191,7 +191,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                        data-testid="Linea Mainnet"
+                        data-testid="Linea"
                       >
                         <div
                           class="multichain-network-list-item__tooltip"
@@ -206,7 +206,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                               class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                               tabindex="0"
                             >
-                              Linea Mainnet
+                              Linea
                             </p>
                           </div>
                         </div>
@@ -346,6 +346,69 @@ exports[`NetworkListMenu renders properly 1`] = `
                     </button>
                   </div>
                 </div>
+                <div
+                  aria-describedby="rbd-hidden-text-0-hidden-text-0"
+                  class="mm-box"
+                  data-rbd-drag-handle-context-id="0"
+                  data-rbd-drag-handle-draggable-id="eip155:143"
+                  data-rbd-draggable-context-id="0"
+                  data-rbd-draggable-id="eip155:143"
+                  draggable="false"
+                  role="button"
+                  tabindex="0"
+                >
+                  <div
+                    class="mm-box multichain-network-list-item multichain-network-list-item--deselected multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                    data-testid="network-list-item-eip155:143"
+                  >
+                    <div
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    >
+                      <img
+                        alt="Monad logo"
+                        class="mm-avatar-network__network-image"
+                        src="./images/monad.svg"
+                      />
+                    </div>
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+                      style="overflow: hidden;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        data-testid="Monad"
+                      >
+                        <div
+                          class="multichain-network-list-item__tooltip"
+                        >
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              Monad
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      aria-label="Network options"
+                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      data-testid="network-list-item-options-button-eip155:143"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/more-vertical.svg');"
+                      />
+                    </button>
+                  </div>
+                </div>
               </div>
               <div
                 class="mm-box new-network-list__networks-container"
@@ -385,7 +448,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Arbitrum One logo"
+                          alt="Arbitrum logo"
                           class="mm-avatar-network__network-image"
                           src="./images/arbitrum.svg"
                         />
@@ -396,7 +459,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Arbitrum One
+                          Arbitrum
                         </p>
                       </div>
                     </div>
@@ -423,7 +486,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Avalanche Network C-Chain logo"
+                          alt="Avalanche logo"
                           class="mm-avatar-network__network-image"
                           src="./images/avax-token.svg"
                         />
@@ -434,7 +497,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Avalanche Network C-Chain
+                          Avalanche
                         </p>
                       </div>
                     </div>
@@ -461,7 +524,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Base Mainnet logo"
+                          alt="Base logo"
                           class="mm-avatar-network__network-image"
                           src="./images/base.svg"
                         />
@@ -472,7 +535,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Base Mainnet
+                          Base
                         </p>
                       </div>
                     </div>
@@ -499,7 +562,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="OP Mainnet logo"
+                          alt="OP logo"
                           class="mm-avatar-network__network-image"
                           src="./images/optimism.svg"
                         />
@@ -510,7 +573,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          OP Mainnet
+                          OP
                         </p>
                       </div>
                     </div>
@@ -537,7 +600,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Polygon Mainnet logo"
+                          alt="Polygon logo"
                           class="mm-avatar-network__network-image"
                           src="./images/pol-token.svg"
                         />
@@ -548,7 +611,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Polygon Mainnet
+                          Polygon
                         </p>
                       </div>
                     </div>
@@ -575,7 +638,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Sei Mainnet logo"
+                          alt="Sei logo"
                           class="mm-avatar-network__network-image"
                           src="./images/sei.svg"
                         />
@@ -586,7 +649,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Sei Mainnet
+                          Sei
                         </p>
                       </div>
                     </div>
@@ -613,7 +676,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="zkSync Era Mainnet logo"
+                          alt="zkSync Era logo"
                           class="mm-avatar-network__network-image"
                           src="./images/zk-sync.svg"
                         />
@@ -624,7 +687,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          zkSync Era Mainnet
+                          zkSync Era
                         </p>
                       </div>
                     </div>
@@ -779,10 +842,10 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
             >
               <button
                 aria-label="Back"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/arrow-left.svg');"
                 />
               </button>
@@ -802,10 +865,10 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -1054,10 +1117,10 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -1106,7 +1169,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                 data-rbd-droppable-id="characters"
               >
                 <div
-                  aria-describedby="rbd-hidden-text-1-hidden-text-6"
+                  aria-describedby="rbd-hidden-text-1-hidden-text-7"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="1"
                   data-rbd-drag-handle-draggable-id="eip155:1"
@@ -1124,7 +1187,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
                       <img
-                        alt="Ethereum Mainnet logo"
+                        alt="Ethereum logo"
                         class="mm-avatar-network__network-image"
                         src="./images/eth_logo.svg"
                       />
@@ -1135,7 +1198,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                        data-testid="Ethereum Mainnet"
+                        data-testid="Ethereum"
                       >
                         <div
                           class="multichain-network-list-item__tooltip"
@@ -1150,7 +1213,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                               class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                               tabindex="0"
                             >
-                              Ethereum Mainnet
+                              Ethereum
                             </p>
                           </div>
                         </div>
@@ -1169,7 +1232,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   </div>
                 </div>
                 <div
-                  aria-describedby="rbd-hidden-text-1-hidden-text-6"
+                  aria-describedby="rbd-hidden-text-1-hidden-text-7"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="1"
                   data-rbd-drag-handle-draggable-id="eip155:59144"
@@ -1187,7 +1250,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
                       <img
-                        alt="Linea Mainnet logo"
+                        alt="Linea logo"
                         class="mm-avatar-network__network-image"
                         src="./images/linea-logo-mainnet.svg"
                       />
@@ -1198,7 +1261,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                        data-testid="Linea Mainnet"
+                        data-testid="Linea"
                       >
                         <div
                           class="multichain-network-list-item__tooltip"
@@ -1213,7 +1276,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                               class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                               tabindex="0"
                             >
-                              Linea Mainnet
+                              Linea
                             </p>
                           </div>
                         </div>
@@ -1232,7 +1295,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   </div>
                 </div>
                 <div
-                  aria-describedby="rbd-hidden-text-1-hidden-text-6"
+                  aria-describedby="rbd-hidden-text-1-hidden-text-7"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="1"
                   data-rbd-drag-handle-draggable-id="eip155:56"
@@ -1295,7 +1358,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   </div>
                 </div>
                 <div
-                  aria-describedby="rbd-hidden-text-1-hidden-text-6"
+                  aria-describedby="rbd-hidden-text-1-hidden-text-7"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="1"
                   data-rbd-drag-handle-draggable-id="eip155:5"
@@ -1353,6 +1416,69 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     </button>
                   </div>
                 </div>
+                <div
+                  aria-describedby="rbd-hidden-text-1-hidden-text-7"
+                  class="mm-box"
+                  data-rbd-drag-handle-context-id="1"
+                  data-rbd-drag-handle-draggable-id="eip155:143"
+                  data-rbd-draggable-context-id="1"
+                  data-rbd-draggable-id="eip155:143"
+                  draggable="false"
+                  role="button"
+                  tabindex="0"
+                >
+                  <div
+                    class="mm-box multichain-network-list-item multichain-network-list-item--deselected multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                    data-testid="network-list-item-eip155:143"
+                  >
+                    <div
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    >
+                      <img
+                        alt="Monad logo"
+                        class="mm-avatar-network__network-image"
+                        src="./images/monad.svg"
+                      />
+                    </div>
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+                      style="overflow: hidden;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        data-testid="Monad"
+                      >
+                        <div
+                          class="multichain-network-list-item__tooltip"
+                        >
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              Monad
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      aria-label="Network options"
+                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      data-testid="network-list-item-options-button-eip155:143"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/more-vertical.svg');"
+                      />
+                    </button>
+                  </div>
+                </div>
               </div>
               <div
                 class="mm-box new-network-list__networks-container"
@@ -1392,7 +1518,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Arbitrum One logo"
+                          alt="Arbitrum logo"
                           class="mm-avatar-network__network-image"
                           src="./images/arbitrum.svg"
                         />
@@ -1403,7 +1529,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Arbitrum One
+                          Arbitrum
                         </p>
                       </div>
                     </div>
@@ -1430,7 +1556,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Avalanche Network C-Chain logo"
+                          alt="Avalanche logo"
                           class="mm-avatar-network__network-image"
                           src="./images/avax-token.svg"
                         />
@@ -1441,7 +1567,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Avalanche Network C-Chain
+                          Avalanche
                         </p>
                       </div>
                     </div>
@@ -1468,7 +1594,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Base Mainnet logo"
+                          alt="Base logo"
                           class="mm-avatar-network__network-image"
                           src="./images/base.svg"
                         />
@@ -1479,7 +1605,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Base Mainnet
+                          Base
                         </p>
                       </div>
                     </div>
@@ -1506,7 +1632,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="OP Mainnet logo"
+                          alt="OP logo"
                           class="mm-avatar-network__network-image"
                           src="./images/optimism.svg"
                         />
@@ -1517,7 +1643,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          OP Mainnet
+                          OP
                         </p>
                       </div>
                     </div>
@@ -1544,7 +1670,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Polygon Mainnet logo"
+                          alt="Polygon logo"
                           class="mm-avatar-network__network-image"
                           src="./images/pol-token.svg"
                         />
@@ -1555,7 +1681,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Polygon Mainnet
+                          Polygon
                         </p>
                       </div>
                     </div>
@@ -1582,7 +1708,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Sei Mainnet logo"
+                          alt="Sei logo"
                           class="mm-avatar-network__network-image"
                           src="./images/sei.svg"
                         />
@@ -1593,7 +1719,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Sei Mainnet
+                          Sei
                         </p>
                       </div>
                     </div>
@@ -1620,7 +1746,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="zkSync Era Mainnet logo"
+                          alt="zkSync Era logo"
                           class="mm-avatar-network__network-image"
                           src="./images/zk-sync.svg"
                         />
@@ -1631,7 +1757,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          zkSync Era Mainnet
+                          zkSync Era
                         </p>
                       </div>
                     </div>
@@ -1730,7 +1856,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
     style="position: absolute; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%);"
   />
   <div
-    id="rbd-hidden-text-1-hidden-text-6"
+    id="rbd-hidden-text-1-hidden-text-7"
     style="display: none;"
   >
     

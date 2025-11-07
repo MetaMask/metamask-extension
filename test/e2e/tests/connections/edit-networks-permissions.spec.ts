@@ -12,7 +12,7 @@ describe('Edit Networks Permissions', function () {
   it('should be able to edit networks', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
@@ -39,12 +39,10 @@ describe('Edit Networks Permissions', function () {
         await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
 
         // Disconnect Mainnet
-        await sitePermissionPage.editPermissionsForNetwork([
-          'Ethereum Mainnet',
-        ]);
+        await sitePermissionPage.editPermissionsForNetwork(['Ethereum']);
 
-        // Default Chains Connected: Ethereum, Linea, Base
-        await sitePermissionPage.checkConnectedNetworksNumber(3);
+        // Default Chains Connected: Ethereum, Linea, Base, Arbitrum, BSC, Optimism, Polygon
+        await sitePermissionPage.checkConnectedNetworksNumber(8);
       },
     );
   });

@@ -1,8 +1,9 @@
 import { promises as fs } from 'fs';
-import { execSync } from 'child_process';
+import { execSync, spawn, ChildProcess } from 'child_process';
 import path from 'path';
 import { chromium, type BrowserContext, Browser } from '@playwright/test';
 import { mean } from 'lodash';
+import { DAPP_URL } from '../../constants';
 
 declare global {
   /**
@@ -131,6 +132,11 @@ export class PageLoadBenchmark {
   /** Collection of all benchmark results from test runs */
   private results: BenchmarkResult[] = [];
 
+  /** Dapp server process running in background */
+  private dappServerProcess: ChildProcess | undefined;
+
+  private readonly userDataDirectory = 'temp-benchmark-user-data';
+
   /**
    * Creates a new PageLoadBenchmark instance.
    *
@@ -149,8 +155,12 @@ export class PageLoadBenchmark {
    */
   async setup() {
     await this.buildExtension();
+    await this.createStaticDappServer();
 
-    this.browser = await chromium.launch({
+    const userDataDir = path.join(process.cwd(), this.userDataDirectory);
+    await fs.mkdir(userDataDir, { recursive: true });
+
+    this.context = await chromium.launchPersistentContext(userDataDir, {
       headless: Boolean(process.env.CI),
       args: [
         `--disable-extensions-except=${this.extensionPath}`,
@@ -161,13 +171,16 @@ export class PageLoadBenchmark {
         '--disable-features=TranslateUI',
         '--disable-ipc-flooding-protection',
       ],
-    });
-
-    this.context = await this.browser.newContext({
       viewport: { width: 1280, height: 720 },
       userAgent:
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     });
+
+    const browser = this.context.browser();
+    if (!browser) {
+      throw new Error('Failed to get browser instance from persistent context');
+    }
+    this.browser = browser;
 
     await this.waitForExtensionLoad();
   }
@@ -190,6 +203,57 @@ export class PageLoadBenchmark {
       execSync('yarn build:test', { stdio: 'inherit' });
     }
     this.extensionPath = distPath;
+  }
+
+  /**
+   * Starts the static dapp server in the background.
+   * The server runs on port 8080 and serves the test dapp for benchmarking.
+   */
+  async createStaticDappServer() {
+    try {
+      console.log('Creating static dapp server...');
+
+      this.dappServerProcess = spawn('yarn', ['dapp'], {
+        stdio: 'pipe', // Capture output but don't block
+        detached: false, // Keep attached to parent process for cleanup
+        cwd: process.cwd(),
+      });
+
+      // Handle process events
+      this.dappServerProcess.stdout?.on('data', (data) => {
+        const output = data.toString();
+
+        // `development/static-server.js` for further context on how server start up works
+        if (output.includes('Running at http://localhost:')) {
+          console.log('Static dapp server up!');
+        }
+      });
+
+      this.dappServerProcess.stderr?.on('data', (data) => {
+        console.error('Dapp server error:', data.toString());
+      });
+
+      this.dappServerProcess.on('error', (error) => {
+        console.error('Failed to start dapp server:', error);
+      });
+
+      this.dappServerProcess.on('exit', (code) => {
+        if (code !== 0) {
+          console.error(`Dapp server exited with code ${code}`);
+        }
+      });
+
+      // Give the server a moment to start up, otherwise benchmark may try to access page
+      // while it's not yet ready to be served.
+      return new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 500);
+      });
+    } catch (e) {
+      console.log('ERROR starting dapp server:', e);
+      throw e;
+    }
   }
 
   /**
@@ -273,7 +337,7 @@ export class PageLoadBenchmark {
     });
 
     const result: BenchmarkResult = {
-      page: url,
+      page: url === DAPP_URL ? 'Localhost MetaMask Test Dapp' : url,
       run: runNumber,
       metrics,
       timestamp: new Date().getTime(),
@@ -287,12 +351,12 @@ export class PageLoadBenchmark {
 
   /**
    * Executes the complete benchmark test suite across multiple browser loads and page loads.
-   * Creates fresh browser contexts for each browser load to simulate real-world conditions,
+   * Uses the persistent browser context to simulate real-world conditions,
    * and measures each URL multiple times to gather statistical data.
    *
    * @param urls - Array of URLs to test
-   * @param browserLoads - Number of fresh browser contexts to create (default: 10)
-   * @param pageLoads - Number of page loads per browser context (default: 10)
+   * @param browserLoads - Number of browser load iterations (default: 10)
+   * @param pageLoads - Number of page loads per browser load (default: 10)
    */
   async runBenchmark(
     urls: string[],
@@ -305,13 +369,6 @@ export class PageLoadBenchmark {
 
     for (let browserLoad = 0; browserLoad < browserLoads; browserLoad++) {
       console.log(`Browser load ${browserLoad + 1}/${browserLoads}`);
-
-      /** Setup fresh browser context for each browser load */
-      this.context = await this.browser?.newContext({
-        viewport: { width: 1280, height: 720 },
-        userAgent:
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      });
       await this.waitForExtensionLoad();
 
       for (const url of urls) {
@@ -329,9 +386,7 @@ export class PageLoadBenchmark {
           await new Promise((resolve) => setTimeout(resolve, 1000));
         }
       }
-
-      /** Teardown current browser context in preparation for next iteration */
-      await this.context?.close();
+      await this.clearBrowserData();
     }
   }
 
@@ -434,7 +489,7 @@ export class PageLoadBenchmark {
     const commitSha = execSync('git rev-parse --short HEAD', {
       cwd: __dirname,
       encoding: 'utf8',
-    });
+    }).slice(0, 7);
 
     const output = {
       timestamp: new Date().getTime(),
@@ -447,11 +502,39 @@ export class PageLoadBenchmark {
   }
 
   /**
+   * Clear browser data between browser loads to simulate fresh browser state.
+   */
+  private async clearBrowserData() {
+    await this.context?.clearCookies();
+    await this.context?.clearPermissions();
+  }
+
+  /**
+   * Stops the dapp server process if it's running.
+   */
+  private stopDappServer() {
+    if (this.dappServerProcess) {
+      console.log('Stopping dapp server...');
+      this.dappServerProcess.kill('SIGTERM');
+      this.dappServerProcess = undefined;
+    }
+  }
+
+  /**
    * Cleans up browser resources and closes all connections.
    * Should be called after benchmark testing is complete to free up system resources.
    */
   async cleanup() {
     await this.context?.close();
     await this.browser?.close();
+    this.stopDappServer();
+
+    // Clean up temporary user data directory
+    const userDataDir = path.join(process.cwd(), this.userDataDirectory);
+    try {
+      await fs.rm(userDataDir, { recursive: true, force: true });
+    } catch (error) {
+      console.warn('Failed to clean up temporary user data directory:', error);
+    }
   }
 }
