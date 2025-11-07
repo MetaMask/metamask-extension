@@ -49,6 +49,7 @@ import { getSnapName } from '../../helpers/utils/util';
 import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
 import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
+import { getHasShieldSubscription } from '../../selectors/subscription/subscription';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
@@ -176,6 +177,7 @@ const mapStateToProps = (state, ownProps) => {
     backRoute,
     conversionDate,
     currentPath: pathname,
+    hasShieldSubscription: getHasShieldSubscription(state),
     isAddressEntryPage,
     isMetaMaskShieldFeatureEnabled: getIsMetaMaskShieldFeatureEnabled(),
     isPasswordChangePage,
