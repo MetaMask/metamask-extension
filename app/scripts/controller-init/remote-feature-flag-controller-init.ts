@@ -64,11 +64,12 @@ export const RemoteFeatureFlagControllerInit: ControllerInitFunction<
   RemoteFeatureFlagController,
   RemoteFeatureFlagControllerMessenger,
   RemoteFeatureFlagControllerInitMessenger
-> = ({ controllerMessenger, initMessenger }) => {
+> = ({ controllerMessenger, initMessenger, persistedState }) => {
   const preferencesState = initMessenger.call('PreferencesController:getState');
   const { distribution, environment } = getConfigForRemoteFeatureFlagRequest();
 
   const controller = new RemoteFeatureFlagController({
+    state: persistedState.RemoteFeatureFlagController,
     messenger: controllerMessenger,
     fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
     disabled: !preferencesState.useExternalServices,

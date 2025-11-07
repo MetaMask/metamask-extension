@@ -2,6 +2,8 @@
  * @file The entry point for the web extension singleton process.
  */
 
+import { updateNetworkControllerRpcFailoverFromRemoteFeatureFlagController } from './updateNetworkControllerRpcFailoverFromRemoteFeatureFlagController';
+
 // Disabled to allow setting up initial state hooks first
 
 // This import sets up global functions required for Sentry to function.
@@ -65,6 +67,7 @@ import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
+import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
@@ -748,6 +751,10 @@ async function initialize(backup) {
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
 
+  // we don't wait for `updateRemoteFeatureFlags` to finish, as it's not
+  // critical to extension initialization, as cached/persisted values are fine.
+  updateRemoteFeatureFlags(controller);
+
   if (!isManifestV3) {
     await loadPhishingWarningPage();
   }
@@ -1244,7 +1251,7 @@ export function setupController(
       controller.setupTrustedCommunication(portStream, remotePort.sender);
       trackAppOpened(processName);
 
-      initializeRemoteFeatureFlags();
+      updateRemoteFeatureFlags(controller);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
@@ -1485,22 +1492,6 @@ export function setupController(
     }
   }
 
-  /**
-   * Initializes remote feature flags by making a request to fetch them from the clientConfigApi.
-   * This function is called when MM is during internal process.
-   * If the request fails, the error will be logged but won't interrupt extension initialization.
-   *
-   * @returns {Promise<void>} A promise that resolves when the remote feature flags have been updated.
-   */
-  async function initializeRemoteFeatureFlags() {
-    try {
-      // initialize the request to fetch remote feature flags
-      await controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
-    } catch (error) {
-      log.error('Error initializing remote feature flags:', error);
-    }
-  }
-
   function getPendingApprovalCount() {
     try {
       const pendingApprovalCount =
@@ -1597,6 +1588,13 @@ export function setupController(
   ) {
     controller.snapController.updateRegistry();
   }
+
+  // TODO: only do this when onboarding completed? or does the controller itself
+  // already "know" not to call out ot the network in this case?
+  updateNetworkControllerRpcFailoverFromRemoteFeatureFlagController(
+    controller.networkController,
+    controller.remoteFeatureFlagController,
+  );
 }
 
 //
@@ -1756,19 +1754,24 @@ async function onUpdate(previousVersion) {
     // `details.previousVersion !== platform.getVersion()`, but better safe
     // than better safe than better safe than... looping forever. :-)
     if (!isFirefox && previousVersion !== recordedLastUpdatedFromVersion) {
-      // wait for the store to update; when `update` is called the persistence
-      // layer will start writing the state to the database. Once that starts we
-      // will `requestSafeReload` to ensure its the last state update before the
-      // reload happens.
-      controller.store.once('update', () => {
-        // use set immediate to be absolutely sure the reload happens after all
-        // other "update" events triggered by the `setLastUpdatedFromVersion`
-        // call immediately below have been processed.
-        log.info(
-          `Requesting safe reload after update to ${platform.getVersion()}`,
-        );
-        setImmediate(requestSafeReload);
-      });
+      const shouldReload =
+        controller.remoteFeatureFlagController.state.remoteFeatureFlags
+          ?.extensionPlatformAutoReloadAfterUpdate;
+      if (shouldReload) {
+        // wait for the store to update; when `update` is called the persistence
+        // layer will start writing the state to the database. Once that starts we
+        // will `requestSafeReload` to ensure its the last state update before the
+        // reload happens.
+        controller.store.once('update', () => {
+          // use set immediate to be absolutely sure the reload happens after all
+          // other "update" events triggered by the `setLastUpdatedFromVersion`
+          // call immediately below have been processed.
+          log.info(
+            `Requesting safe reload after update to ${platform.getVersion()}`,
+          );
+          setImmediate(requestSafeReload);
+        });
+      }
     }
 
     controller.appStateController.setLastUpdatedFromVersion(previousVersion);
