@@ -2601,7 +2601,8 @@
     "message": "foirm"
   },
   "freeTrialDays": {
-    "message": "$1 days free trial"
+    "message": "$1 days free trial",
+    "description": "The $1 is the number of days"
   },
   "from": {
     "message": "Ó"
@@ -5693,10 +5694,6 @@
     "message": "$1/bliain",
     "description": "The $1 is the price of the annual plan"
   },
-  "shieldPlanAutoRenew": {
-    "message": "Athnuachan uathoibríoch ar $1 go dtí go gcealófar é",
-    "description": "The $1 is the price of the monthly plan"
-  },
   "shieldPlanCard": {
     "message": "Cárta"
   },
@@ -5704,10 +5701,8 @@
     "message": "Sonraí an phlean"
   },
   "shieldPlanDetails1": {
-    "message": "Gan aon táille anois, bain triail as saor in aisce ar feadh $1 lá"
-  },
-  "shieldPlanDetails2": {
-    "message": "Réamhcheadú ballraíochta (1 bhliain réamhshocraithe), agus táillí á ngearradh go míosúil amháin"
+    "message": "Gan aon táille anois, bain triail as saor in aisce ar feadh $1 lá",
+    "description": "The $1 is the number of days"
   },
   "shieldPlanDetails2Card": {
     "message": "Athnuaitear an plean go huathoibríoch ag deireadh na téarma"
