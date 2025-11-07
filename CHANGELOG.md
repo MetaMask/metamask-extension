@@ -9,20 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.9.0]
 
-### Uncategorized
-
-- @metamask/message-signing-snap to version 1.1.4 (#37579)
-- Enables the bitcoin swaps features (#37587)
-- Upgrade @metamask/gator-permissions-snap from `^0.5.0` to `^0.6.0` (#37562)
-- Improves metrics generation, by including more information about the
-  permissions being granted
-  (https://github.com/MetaMask/snap-7715-permissions/pull/218)
-- Move "Discover" button to global menu (#37551)
-- Upgrade @metamask-permissions-snap from `0.4.1` to `0.5.0` an @metamask/permissions-kernel-snap from `0.4.0` to `0.5.0` (#37534)
-- Decrease time before activating QuickNode when Infura is degraded or unavailable; decrease time before allowing users to (#37002)
-  interact with a custom network following connection issues
-- Update default bridge slippage to 2% (#37367)
-
 ### Added
 
 - Added feature flag support to temporarily hide Monad (and other networks) from the “Add Popular Network” list. (#37532)
@@ -33,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated the unlock wallet flow with animation changes. (#37412)
 - Introduce burn/null recipient address blocker alert (#37531)
 - Points estimate for swaps/bridges (#37529)
-- feat: updated wallet ready page PR - 2 (#36839)
+- Updates wallet ready page (#36839)
 - Adds MONAD network with bridge & swap support (#37283)
 - Changed how DeFi positions are fetch in the client to reduce amount of calls (#37215)
 - Implemented the Rive animation setup using the `@rive-app/react-canvas` package and updated the welcome page by (#36113)
@@ -48,6 +34,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Handle shield deep link link.metamask.io/shield (#37446)
 - Handle claims submit backend errors (#37391)
 - UI and functionality improvement for file uploader (#37353)
+- Enables the bitcoin swaps features (#37587)
+- Move "Discover" button to global menu (#37551)
+- Upgrade @metamask-permissions-snap from `0.4.1` to `0.5.0` an @metamask/permissions-kernel-snap from `0.4.0` to `0.5.0` (#37534)
 
 ### Fixed
 
@@ -72,6 +61,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Re-add connection indicator to bip44 account cell (#36423)
 - Fixed issue where approval changes were sometimes missing in transaction simulations for batch transactions. (#37347)
 - Defer UI actions until swap SSE quotes are fully loaded (#37336)
+- @metamask/message-signing-snap to version 1.1.4 (#37579)
+- Decrease time before activating QuickNode when Infura is degraded or unavailable; decrease time before allowing users to (#37002)
+  interact with a custom network following connection issues
+- Update default bridge slippage to 2% (#37367)
 
 ## [13.8.0]
 
