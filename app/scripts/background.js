@@ -1743,7 +1743,6 @@ async function onUpdate(previousVersion) {
       `Recorded last updated from version: ${recordedLastUpdatedFromVersion}`,
     );
     log.info(`Current version: ${platform.getVersion()}`);
-    controller.appStateController.setLastUpdatedFromVersion(previousVersion);
     // Work around Chromium bug https://issues.chromium.org/issues/40805401
     // by doing a safe reload after an update. We'll be able to gate this
     // behind a Chromium version check once we know the chromium version #
@@ -1753,20 +1752,26 @@ async function onUpdate(previousVersion) {
     // We only want to do the safe reload when the version actually changed, just
     // as a safe guard (in case Chrome keeps firing this event each time we
     // restart) -- as we really don't want to send Chrome into an restart loop!
+    // This is 100% overkill, as `onUpdate` is only called when
+    // `details.previousVersion !== platform.getVersion()`, but better safe
+    // than better safe than better safe than... looping forever. :-)
     if (!isFirefox && previousVersion !== recordedLastUpdatedFromVersion) {
       // wait for the store to update; when `update` is called the persistence
       // layer will start writing the state to the database. Once that starts we
       // will `requestSafeReload` to ensure its the last state update before the
       // reload happens.
-      controller.store.on('update', () => {
-        // use set immediate to be absolutely sure the reload happens after the
-        // all other "update" events above have been processed.
+      controller.store.once('update', () => {
+        // use set immediate to be absolutely sure the reload happens after all
+        // other "update" events triggered by the `setLastUpdatedFromVersion`
+        // call immediately below have been processed.
         log.info(
           `Requesting safe reload after update to ${platform.getVersion()}`,
         );
         setImmediate(requestSafeReload);
       });
     }
+
+    controller.appStateController.setLastUpdatedFromVersion(previousVersion);
   }
 }
 
