@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   SortOrder,
-  formatChainIdToCaip,
   getNativeAssetForChainId,
   calcLatestSrcBalance,
   isNonEvmChainId,
@@ -9,14 +8,13 @@ import {
   formatChainIdToHex,
   type GenericQuoteRequest,
   type QuoteResponse,
-  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { endTrace, TraceName } from '../../../shared/lib/trace';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
-import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
+import type { BridgeState, TokenPayload } from './types';
 
 const initialState: BridgeState = {
   fromToken: null,
@@ -99,13 +97,12 @@ const bridgeSlice = createSlice({
   initialState: { ...initialState },
   reducers: {
     setFromToken: (state, { payload }: TokenPayload) => {
-      state.fromToken = toBridgeToken(payload);
+      state.fromToken = payload ? toBridgeToken(payload) : null;
       state.fromTokenBalance = null;
       // Unset toToken if it's the same as the fromToken
       if (
         state.fromToken?.assetId &&
         state.toToken?.assetId &&
-        // TODO: determine if this is necessary.
         state.fromToken.assetId?.toLowerCase() ===
           state.toToken.assetId?.toLowerCase()
       ) {
@@ -113,7 +110,7 @@ const bridgeSlice = createSlice({
       }
     },
     setToToken: (state, { payload }: TokenPayload) => {
-      const toToken = toBridgeToken(payload);
+      const toToken = payload ? toBridgeToken(payload) : null;
       state.toToken = toToken
         ? {
             ...toToken,

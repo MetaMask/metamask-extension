@@ -66,9 +66,7 @@ export const BridgeQuotesModal = ({
     useSelector(getBridgeQuotes);
   const sortOrder = useSelector(getBridgeSortOrder);
   const currency = useSelector(getCurrentCurrency);
-  const nativeCurrency = fromChain
-    ? getNativeAssetForChainId(fromChain?.chainId)?.symbol
-    : undefined;
+  const nativeCurrency = getNativeAssetForChainId(fromToken.chainId)?.symbol;
   const locale = useSelector(getIntlLocale);
 
   return (

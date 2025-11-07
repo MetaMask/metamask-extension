@@ -169,7 +169,9 @@ const PrepareBridgePage = ({
 
   const isSwap = useSelector(getIsSwap);
 
-  const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
+  const isSendBundleSupportedForChain = useIsSendBundleSupported(
+    fromChain.chainId,
+  );
   const gasIncluded = useSelector((state) =>
     getIsGasIncluded(state, isSendBundleSupportedForChain),
   );
@@ -193,7 +195,7 @@ const PrepareBridgePage = ({
       return false;
     }
     return Object.keys(fromTokens).length === 0;
-  }, [fromTokens, fromChain]);
+  }, [fromTokens, fromChain.chainId]);
 
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
@@ -221,8 +223,8 @@ const PrepareBridgePage = ({
   const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
     activeQuote: unvalidatedQuote,
     toToken,
-    toChain,
-    fromChain,
+    toChainId: toChain?.chainId,
+    fromChainId: fromChain?.chainId,
     isQuoteExpired,
     insufficientBal: quoteRequest.insufficientBal,
   });
@@ -235,7 +237,7 @@ const PrepareBridgePage = ({
     isSwap,
     isSendBundleSupportedForChain,
     selectedAccount,
-    fromChain,
+    fromChainId: fromChain.chainId,
   });
 
   const shouldShowMaxButton =
@@ -447,11 +449,8 @@ const PrepareBridgePage = ({
 
   // Use smart slippage defaults
   useSmartSlippage({
-    fromChain,
-    toChain,
     fromToken,
     toToken,
-    isSwap,
   });
 
   // Trace swap/bridge view loaded
@@ -526,7 +525,9 @@ const PrepareBridgePage = ({
             }
           }}
           networkProps={{
-            network: fromChain,
+            network: fromChains.find(
+              (chain) => chain.chainId === fromChain.chainId,
+            ),
             networks: fromChains,
             onNetworkChange: (networkConfig) => {
               if (isNetworkAdded(networkConfig)) {
