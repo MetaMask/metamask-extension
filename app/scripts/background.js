@@ -76,7 +76,11 @@ import MetamaskController, {
 } from './metamask-controller';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { getPlatform, shouldEmitDappViewedEvent, getBooleanFlag } from './lib/util';
+import {
+  getPlatform,
+  shouldEmitDappViewedEvent,
+  getBooleanFlag,
+} from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
