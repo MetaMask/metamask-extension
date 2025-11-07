@@ -131,7 +131,7 @@ async function mockStripeSubscriptionFlow(
     // Mock GET claims endpoint - returns list of claims
     // Returns a mock claim after submission, empty array otherwise
     await mockServer
-      .forGet('https://claims.api.cx.metamask.io/claims')
+      .forGet(/https:\/\/.*\.cx\.metamask\.io\/claims/u)
       .thenJson(200, [
         {
           id: SHIELD_CLAIMS_RESPONSE.claimId,
