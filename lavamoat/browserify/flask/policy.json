@@ -2600,7 +2600,6 @@
     },
     "@tanstack/react-virtual": {
       "globals": {
-        "ResizeObserver": true,
         "document": true,
         "scrollY": true
       },
@@ -2612,7 +2611,6 @@
     },
     "@tanstack/react-virtual>@tanstack/virtual-core": {
       "globals": {
-        "ResizeObserver": true,
         "console.info": true,
         "console.warn": true,
         "requestAnimationFrame": true
