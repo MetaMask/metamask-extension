@@ -618,7 +618,13 @@ export default function Routes() {
           <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
           {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
           <Route path={LOCK_ROUTE} component={Lock} exact />
-          <Route path={UNLOCK_ROUTE} exact>
+          <Route
+            path={UNLOCK_ROUTE}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {(props: RouteComponentProps) => {
               const { history: v5History, location: v5Location } = props;
               const navigate = createV5CompatNavigate(v5History);
@@ -666,15 +672,12 @@ export default function Routes() {
                   keyringId?: string;
                 }>;
               return (
-                <Authenticated
-                  path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
-                  component={() => (
-                    <RevealSeedConfirmationComponent
-                      navigate={navigate}
-                      keyringId={match.params.keyringId}
-                    />
-                  )}
-                />
+                <AuthenticatedV5Compat>
+                  <RevealSeedConfirmationComponent
+                    navigate={navigate}
+                    keyringId={match.params.keyringId}
+                  />
+                </AuthenticatedV5Compat>
               );
             }}
           </Route>
@@ -870,15 +873,12 @@ export default function Routes() {
                 params: { chainId: string; protocolId: string };
               }>;
               return (
-                <Authenticated
-                  path={`${DEFI_ROUTE}/:chainId/:protocolId`}
-                  component={() => (
-                    <DeFiPageComponent
-                      navigate={navigate}
-                      params={match.params}
-                    />
-                  )}
-                />
+                <AuthenticatedV5Compat>
+                  <DeFiPageComponent
+                    navigate={navigate}
+                    params={match.params}
+                  />
+                </AuthenticatedV5Compat>
               );
             }}
           </Route>
@@ -1121,7 +1121,12 @@ export default function Routes() {
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
-      <ToastMaster location={location} />
+      {React.createElement(
+        ToastMaster as React.ComponentType<{
+          location: RouteComponentProps['location'];
+        }>,
+        { location },
+      )}
     </div>
   );
 }

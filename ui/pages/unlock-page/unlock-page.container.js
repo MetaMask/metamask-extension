@@ -112,4 +112,7 @@ const UnlockPageWithNavState = (props) => {
   return <UnlockPageConnected {...props} navState={navState} />;
 };
 
+// Export the connected component for Storybook/testing
+export { UnlockPageConnected };
+
 export default UnlockPageWithNavState;
