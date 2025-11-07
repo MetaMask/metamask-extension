@@ -5120,6 +5120,18 @@
   "pushNotificationPositionLiquidatedTitle": {
     "message": "Position liquidated"
   },
+  "pushNotificationShieldSubscriptionCreatedTitle": {
+    "message": "MetaMask Transaction Shield activated"
+  },
+  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
+    "message": "Welcome to MetaMask Transaction Shield! Explore benefits"
+  },
+  "pushNotificationShieldSubscriptionPaymentFailedTitle": {
+    "message": "MetaMask Transaction Shield paused"
+  },
+  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
+    "message": "Membership is inactive due to payment issue. Update your payment to restore coverage"
+  },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Your $1 long closed at your stop loss.",
     "description": "$1 is the asset symbol"
