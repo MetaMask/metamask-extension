@@ -25,6 +25,12 @@ jest.mock(
   }),
 );
 
+jest.mock('./shield-icon-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => <div data-testid="shield-icon-animation" />,
+}));
+
 describe('ShieldFooterCoverageIndicator', () => {
   it('renders transaction shield label when coverage indicator is enabled', () => {
     const transaction = genUnapprovedContractInteractionConfirmation();
