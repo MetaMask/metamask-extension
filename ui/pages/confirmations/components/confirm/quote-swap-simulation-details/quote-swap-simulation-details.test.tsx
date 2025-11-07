@@ -87,7 +87,7 @@ describe('<QuoteSwapSimulationDetails />', () => {
     expect(getByText('Estimated changes')).toBeInTheDocument();
     expect(getByText('You send')).toBeInTheDocument();
     expect(getByText('You receive')).toBeInTheDocument();
-    expect(getByText('+ 0.1')).toBeInTheDocument();
+    expect(getByText('- 0.1')).toBeInTheDocument();
     expect(getByText('+ 0.0991')).toBeInTheDocument();
   });
 });
