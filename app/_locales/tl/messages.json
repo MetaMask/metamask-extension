@@ -4049,9 +4049,6 @@
     "message": "$1 icon",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Pumili ng opsyon para magpatuloy"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Ilunsad ang extension"
   },
@@ -5106,10 +5103,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Ito ang iyong $1. Isulat ito sa tamang pagkakasunod-sunod at panatilihing ligtas. Kung may nakakaalam ng iyong Lihim na Parirala sa Pagbawi, maaari nilang i-access ang iyong wallet. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Huwag itong ibahagi sa sinuman, kailanman."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "I-save ang iyong Lihim na Parirala sa Pagbawi"
@@ -7063,24 +7057,11 @@
     "message": "$1 maaari mong panatiling ligtas ang pariralang ito nang sa gayon hindi mawawala ang access mo sa iyong pera.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Maaari mong i-back up ang iyong mga wallet o tingnan ang iyong Lihim na Parirala sa Pagbawi sa Mga Setting > Seguridad at Password."
-  },
   "walletReadyLoseSrp": {
     "message": "Kapag nawala ang iyong Lihim na Parirala sa Pagbawi, hindi mo na magagamit ang iyong wallet."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Matutulungan ka ng Lihim na Parirala sa Pagbawi na ito na magkaroon muli ng access kung sakaling makalimutan mo ang iyong password o mawalan ng access sa iyong login."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Kapag hindi mo na-back up ang iyong Lihim na Parirala sa Pagbawi, mawawalan ka ng access sa iyong mga pondo kapag na-lock out ka sa app o nagkaroon ng bagong device."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Maaari kang mag-log in sa iyong wallet anumang oras gamit ang iyong $1 account at password.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Kapag nakalimutan mo ang iyong password, hindi mo maa-access ang iyong wallet."
   },
   "wantToAddThisNetwork": {
     "message": "Gusto mo bang idagdag ang network na ito?"
@@ -7123,9 +7104,6 @@
   },
   "welcomeBack": {
     "message": "Maligayang pagbabalik"
-  },
-  "welcomeToMetaMask": {
-    "message": "Magsimula na tayo"
   },
   "whatsThis": {
     "message": "Ano ito?"
@@ -7189,8 +7167,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Panatilihing ligtas ang iyong Lihim na Parirala sa Pagbawi!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Ipapaalala namin sa iyo mamaya"
   }
 }

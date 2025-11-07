@@ -3,27 +3,37 @@ import { isValidHexAddress } from '@metamask/controller-utils';
 import { isStrictHexString } from '@metamask/utils';
 import {
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxBorderColor,
   Button,
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  IconName,
+  Icon,
   Text,
   TextButton,
   TextButtonSize,
   TextColor,
   TextVariant,
+  IconSize,
 } from '@metamask/design-system-react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useClaims } from '../../../../contexts/claims/claims';
 import {
   Textarea,
   TextareaResize,
 } from '../../../../components/component-library/textarea';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   FormTextField,
   FormTextFieldSize,
-  TextFieldType,
 } from '../../../../components/component-library';
 import {
   BlockSize,
@@ -35,19 +45,18 @@ import { useClaimState } from '../../../../hooks/claims/useClaimState';
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
 import {
+  DEFAULT_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
+} from '../../../../helpers/constants/routes';
+import {
   submitShieldClaim,
   setDefaultHomeActiveTabName,
 } from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
-import {
-  TRANSACTION_SHIELD_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../../helpers/constants/routes';
 import { TRANSACTION_SHIELD_LINK } from '../../../../helpers/constants/common';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
-import { isSafeChainId } from '../../../../../shared/modules/network.utils';
 import {
   SUBMIT_CLAIM_ERROR_CODES,
   SUBMIT_CLAIM_FIELDS,
@@ -55,52 +64,58 @@ import {
   SubmitClaimField,
 } from '../types';
 import { SubmitClaimError } from '../claim-error';
+import AccountSelector from '../account-selector';
+import NetworkSelector from '../network-selector';
 
 const VALID_SUBMISSION_WINDOW_DAYS = 21;
 const MAX_FILE_SIZE_MB = 5;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
+// Error codes for codes on the root level of the error response
 const ERROR_MESSAGE_MAP: Partial<
   Record<
     SubmitClaimErrorCode,
-    { message: string; params?: (string | number)[]; field?: SubmitClaimField }
+    {
+      messageKey: string;
+      params?: (string | number)[];
+      field?: SubmitClaimField;
+    }
   >
 > = {
   [SUBMIT_CLAIM_ERROR_CODES.TRANSACTION_NOT_ELIGIBLE]: {
-    message: 'shieldClaimImpactedTxHashNotEligible',
+    messageKey: 'shieldClaimImpactedTxHashNotEligible',
     field: SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
   },
   [SUBMIT_CLAIM_ERROR_CODES.SUBMISSION_WINDOW_EXPIRED]: {
-    message: 'shieldClaimSubmissionWindowExpired',
+    messageKey: 'shieldClaimSubmissionWindowExpired',
     params: [VALID_SUBMISSION_WINDOW_DAYS.toString()],
   },
   [SUBMIT_CLAIM_ERROR_CODES.MAX_CLAIMS_LIMIT_EXCEEDED]: {
-    message: 'shieldClaimMaxClaimsLimitExceeded',
+    messageKey: 'shieldClaimMaxClaimsLimitExceeded',
   },
   [SUBMIT_CLAIM_ERROR_CODES.DUPLICATE_CLAIM_EXISTS]: {
-    message: 'shieldClaimDuplicateClaimExists',
+    messageKey: 'shieldClaimDuplicateClaimExists',
   },
   [SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]: {
-    message: 'shieldClaimSameWalletAddressesError',
+    messageKey: 'shieldClaimSameWalletAddressesError',
     field: SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
   },
   [SUBMIT_CLAIM_ERROR_CODES.FILES_SIZE_EXCEEDED]: {
-    message: 'shieldClaimFileErrorSizeExceeded',
+    messageKey: 'shieldClaimFileErrorSizeExceeded',
   },
   [SUBMIT_CLAIM_ERROR_CODES.FILES_COUNT_EXCEEDED]: {
-    message: 'shieldClaimFileErrorCountExceeded',
+    messageKey: 'shieldClaimFileErrorCountExceeded',
   },
   [SUBMIT_CLAIM_ERROR_CODES.INVALID_FILES_TYPE]: {
-    message: 'shieldClaimFileErrorInvalidType',
+    messageKey: 'shieldClaimFileErrorInvalidType',
   },
   [SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]: {
-    message: 'shieldClaimInvalidRequired',
+    messageKey: 'shieldClaimInvalidRequired',
   },
 };
 
-const SUBMIT_CLAIM_FIELD_ERROR_MESSAGE_MAP: Partial<
-  Record<SubmitClaimField, string>
-> = {
+// Error codes for fields in the error response
+const FIELD_ERROR_MESSAGE_KEY_MAP: Partial<Record<SubmitClaimField, string>> = {
   [SUBMIT_CLAIM_FIELDS.CHAIN_ID]: 'shieldClaimInvalidChainId',
   [SUBMIT_CLAIM_FIELDS.EMAIL]: 'shieldClaimInvalidEmail',
   [SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS]:
@@ -115,11 +130,12 @@ function isValidTransactionHash(hash: string): boolean {
   return hash.length === 66 && isStrictHexString(hash);
 }
 
-const SubmitClaimForm = () => {
+const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [claimSubmitLoading, setClaimSubmitLoading] = useState(false);
+  const { refetchClaims, pendingClaims } = useClaims();
+  const [isSubmittingClaim, setIsSubmittingClaim] = useState(false);
 
   const {
     chainId,
@@ -136,7 +152,8 @@ const SubmitClaimForm = () => {
     setCaseDescription,
     files,
     setFiles,
-  } = useClaimState();
+    uploadedFiles,
+  } = useClaimState(isView);
 
   const [errors, setErrors] = useState<
     Partial<
@@ -157,79 +174,50 @@ const SubmitClaimForm = () => {
     [setErrors],
   );
 
-  const validateChainId = useCallback(() => {
-    if (chainId) {
-      const isChainIdValid = isSafeChainId(Number(chainId));
-      setErrorMessage(
-        SUBMIT_CLAIM_FIELDS.CHAIN_ID,
-        isChainIdValid ? undefined : t('shieldClaimInvalidChainId'),
-      );
-    } else {
-      setErrorMessage(
-        SUBMIT_CLAIM_FIELDS.CHAIN_ID,
-        t('shieldClaimInvalidRequired'),
-      );
-    }
-  }, [chainId, setErrorMessage, t]);
-
   const validateEmail = useCallback(() => {
     if (email) {
       const isEmailValid = isValidEmail(email);
       setErrorMessage(
         SUBMIT_CLAIM_FIELDS.EMAIL,
-        isEmailValid ? undefined : t('shieldClaimInvalidEmail'),
+        isEmailValid
+          ? undefined
+          : FIELD_ERROR_MESSAGE_KEY_MAP[SUBMIT_CLAIM_FIELDS.EMAIL],
       );
     } else {
       setErrorMessage(
         SUBMIT_CLAIM_FIELDS.EMAIL,
-        t('shieldClaimInvalidRequired'),
+        ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]?.messageKey,
       );
     }
-  }, [email, setErrorMessage, t]);
+  }, [email, setErrorMessage]);
 
-  const validateReimbursementEqualsImpactedWalletAddress = useCallback(() => {
-    if (!reimbursementWalletAddress || !impactedWalletAddress) {
-      return;
-    }
+  const validateReimbursementEqualsImpactedWalletAddress = useCallback(
+    (newImpactedWalletAddress?: string) => {
+      const addressToCompare =
+        newImpactedWalletAddress ?? impactedWalletAddress;
 
-    const isReimbursementEqualsImpactedWalletAddress =
-      reimbursementWalletAddress.toLowerCase() ===
-      impactedWalletAddress.toLowerCase();
-
-    setErrorMessage(
-      SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
-      isReimbursementEqualsImpactedWalletAddress
-        ? t('shieldClaimSameWalletAddressesError')
-        : undefined,
-    );
-  }, [reimbursementWalletAddress, impactedWalletAddress, setErrorMessage, t]);
-
-  const validateImpactedWalletAddress = useCallback(() => {
-    if (impactedWalletAddress) {
-      const isImpactedWalletAddressValid = isValidHexAddress(
-        impactedWalletAddress,
-      );
-      if (isImpactedWalletAddressValid) {
-        validateReimbursementEqualsImpactedWalletAddress();
-        setErrorMessage(SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS, undefined);
-      } else {
+      if (!reimbursementWalletAddress || !addressToCompare) {
         setErrorMessage(
-          SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS,
-          t('shieldClaimInvalidWalletAddress'),
+          SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
+          undefined,
         );
+        return;
       }
-    } else {
+
+      const isReimbursementEqualsImpactedWalletAddress =
+        reimbursementWalletAddress.toLowerCase() ===
+        addressToCompare.toLowerCase();
+
       setErrorMessage(
-        SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS,
-        t('shieldClaimInvalidRequired'),
+        SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
+        isReimbursementEqualsImpactedWalletAddress
+          ? ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]
+              ?.messageKey
+          : undefined,
       );
-    }
-  }, [
-    impactedWalletAddress,
-    setErrorMessage,
-    t,
-    validateReimbursementEqualsImpactedWalletAddress,
-  ]);
+    },
+    [reimbursementWalletAddress, impactedWalletAddress, setErrorMessage],
+  );
 
   const validateReimbursementWalletAddress = useCallback(() => {
     if (reimbursementWalletAddress) {
@@ -242,19 +230,20 @@ const SubmitClaimForm = () => {
       } else {
         setErrorMessage(
           SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
-          t('shieldClaimInvalidWalletAddress'),
+          FIELD_ERROR_MESSAGE_KEY_MAP[
+            SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS
+          ],
         );
       }
     } else {
       setErrorMessage(
         SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
-        t('shieldClaimInvalidRequired'),
+        ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]?.messageKey,
       );
     }
   }, [
     reimbursementWalletAddress,
     setErrorMessage,
-    t,
     validateReimbursementEqualsImpactedWalletAddress,
   ]);
 
@@ -266,22 +255,29 @@ const SubmitClaimForm = () => {
 
       setErrorMessage(
         SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
-        isImpactedTxHashValid ? undefined : t('shieldClaimInvalidTxHash'),
+        isImpactedTxHashValid
+          ? undefined
+          : FIELD_ERROR_MESSAGE_KEY_MAP[
+              SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH
+            ],
       );
     } else {
       setErrorMessage(
         SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
-        t('shieldClaimInvalidRequired'),
+        ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]?.messageKey,
       );
     }
-  }, [impactedTransactionHash, setErrorMessage, t]);
+  }, [impactedTransactionHash, setErrorMessage]);
 
   const validateDescription = useCallback(() => {
     setErrorMessage(
       SUBMIT_CLAIM_FIELDS.CASE_DESCRIPTION,
-      caseDescription ? undefined : t('shieldClaimInvalidRequired'),
+      caseDescription
+        ? undefined
+        : ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]
+            ?.messageKey,
     );
-  }, [caseDescription, setErrorMessage, t]);
+  }, [caseDescription, setErrorMessage]);
 
   const isInvalidData = useMemo(() => {
     return (
@@ -313,15 +309,16 @@ const SubmitClaimForm = () => {
             SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED === detailError.errorCode
           ) {
             // if error code is field required, set the error message for the field
-            errorMessage = 'shieldClaimInvalidRequired';
+            errorMessage =
+              ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]
+                ?.messageKey ?? '';
           } else {
             // if error is format error get error per field
-            errorMessage =
-              SUBMIT_CLAIM_FIELD_ERROR_MESSAGE_MAP[detailError.field] ?? '';
+            errorMessage = FIELD_ERROR_MESSAGE_KEY_MAP[detailError.field] ?? '';
           }
 
           if (errorMessage) {
-            setErrorMessage(detailError.field, t(errorMessage));
+            setErrorMessage(detailError.field, errorMessage);
           } else {
             // if error is not on message map, use message coming from backend
             setErrorMessage(detailError.field, detailError.error);
@@ -336,19 +333,22 @@ const SubmitClaimForm = () => {
           const messageFromErrorMap = data
             ? ERROR_MESSAGE_MAP[data.errorCode]
             : undefined;
+          // needs to translate message because of the params
           toastMessage = messageFromErrorMap
-            ? t(messageFromErrorMap.message, messageFromErrorMap.params)
+            ? t(messageFromErrorMap.messageKey, messageFromErrorMap.params)
             : message;
 
           // if error message has field, set error message for the field instead of showing toast message
           if (messageFromErrorMap?.field) {
+            // needs to translate message because of the params
             setErrorMessage(
               messageFromErrorMap.field,
-              t(messageFromErrorMap.message, messageFromErrorMap.params),
+              t(messageFromErrorMap.messageKey, messageFromErrorMap.params),
             );
             return;
           }
         }
+        // if message is not mapped we use toast
         dispatch(setShowClaimSubmitToast(toastMessage));
       }
     },
@@ -365,9 +365,10 @@ const SubmitClaimForm = () => {
       return;
     }
     try {
-      setClaimSubmitLoading(true);
+      setIsSubmittingClaim(true);
+      const chainIdNumber = Number(chainId);
       await submitShieldClaim({
-        chainId,
+        chainId: chainIdNumber.toString(),
         email,
         impactedWalletAddress,
         impactedTransactionHash,
@@ -376,11 +377,13 @@ const SubmitClaimForm = () => {
         files,
       });
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
-      navigate(TRANSACTION_SHIELD_ROUTE);
+      // update claims
+      await refetchClaims();
+      navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
     } catch (error) {
       handleSubmitClaimError(error as SubmitClaimError);
     } finally {
-      setClaimSubmitLoading(false);
+      setIsSubmittingClaim(false);
     }
   }, [
     isInvalidData,
@@ -393,6 +396,7 @@ const SubmitClaimForm = () => {
     files,
     dispatch,
     navigate,
+    refetchClaims,
     handleSubmitClaimError,
   ]);
 
@@ -403,46 +407,67 @@ const SubmitClaimForm = () => {
       padding={4}
       gap={4}
     >
+      {!isView && pendingClaims.length > 0 && (
+        <BannerAlert
+          severity={BannerAlertSeverity.Info}
+          title={t('shieldClaimsPendingAlertTitle')}
+          description={t('shieldClaimsPendingAlertDescription')}
+          actionButtonLabel={t('shieldClaimsPendingAlertActionButtonLabel')}
+          actionButtonOnClick={() => {
+            navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
+          }}
+        />
+      )}
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-        {t('shieldClaimDetails', [
-          VALID_SUBMISSION_WINDOW_DAYS,
-          <TextButton key="here-link" className="min-w-0" asChild>
-            <a
-              href={TRANSACTION_SHIELD_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t('here')}
-            </a>
-          </TextButton>,
-        ])}
+        {isView
+          ? t('shieldClaimDetailsViewClaims', [
+              <TextButton key="here-link" className="min-w-0" asChild>
+                <a
+                  href={TRANSACTION_SHIELD_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('here')}
+                </a>
+              </TextButton>,
+            ])
+          : t('shieldClaimDetails', [
+              VALID_SUBMISSION_WINDOW_DAYS,
+              <TextButton key="here-link" className="min-w-0" asChild>
+                <a
+                  href={TRANSACTION_SHIELD_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('here')}
+                </a>
+              </TextButton>,
+            ])}
       </Text>
-      <FormTextField
-        label={`${t('shieldClaimChainId')}*`}
-        placeholder="e.g. 1"
-        type={TextFieldType.Number}
-        inputProps={{ 'data-testid': 'shield-claim-chain-id-input' }}
-        helpText={errors.chainId ? errors.chainId.msg : undefined}
-        helpTextProps={{
-          'data-testid': 'shield-claim-chain-id-help-text',
-        }}
-        id="chain-id"
-        name="chain-id"
-        size={FormTextFieldSize.Lg}
-        onChange={(e) => setChainId(e.target.value.trim())}
-        onBlur={() => validateChainId()}
-        value={chainId}
-        error={Boolean(errors.chainId)}
-        required
-        width={BlockSize.Full}
-      />
+      {/* Personal details */}
+      <Box>
+        <Text variant={TextVariant.HeadingSm}>
+          {t('shieldClaimPersonalDetails')}
+        </Text>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="mb-2"
+        >
+          {t('shieldClaimPersonalDetailsDescription')}
+        </Text>
+        <Box
+          borderColor={BoxBorderColor.BorderMuted}
+          className="w-full h-[1px] border border-b-0"
+        ></Box>
+      </Box>
       <FormTextField
         label={`${t('shieldClaimEmail')}*`}
         placeholder="johncarpenter@sample.com"
         inputProps={{ 'data-testid': 'shield-claim-email-input' }}
-        helpText={
-          errors.email ? errors.email.msg : t('shieldClaimEmailHelpText')
-        }
+        helpText={t(
+          errors.email ? errors.email.msg : 'shieldClaimEmailHelpText',
+        )}
         helpTextProps={{
           'data-testid': 'shield-claim-help-text',
           color: DsTextColor.textAlternative,
@@ -456,31 +481,83 @@ const SubmitClaimForm = () => {
         error={Boolean(errors.email)}
         required
         width={BlockSize.Full}
+        disabled={isView}
       />
       <FormTextField
-        label={`${t('shieldClaimImpactedWalletAddress')}*`}
+        label={`${t('shieldClaimReimbursementWalletAddress')}*`}
         placeholder={'e.g. 0x71C...B5f6d'}
         inputProps={{
-          'data-testid': 'shield-claim-impacted-wallet-address-input',
+          'data-testid': 'shield-claim-reimbursement-wallet-address-input',
         }}
         helpTextProps={{
-          'data-testid': 'shield-claim-impacted-wallet-address-help-text',
+          'data-testid': 'shield-claim-reimbursement-wallet-address-help-text',
           color: DsTextColor.textAlternative,
         }}
-        helpText={
-          errors.impactedWalletAddress
-            ? errors.impactedWalletAddress.msg
-            : undefined
-        }
-        id="impacted-wallet-address"
-        name="impacted-wallet-address"
+        helpText={t(
+          errors.reimbursementWalletAddress
+            ? errors.reimbursementWalletAddress.msg
+            : 'shieldClaimReimbursementWalletAddressHelpText',
+        )}
+        id="reimbursement-wallet-address"
+        name="reimbursement-wallet-address"
         size={FormTextFieldSize.Lg}
-        onChange={(e) => setImpactedWalletAddress(e.target.value)}
-        onBlur={() => validateImpactedWalletAddress()}
-        value={impactedWalletAddress}
-        error={Boolean(errors.impactedWalletAddress)}
+        onChange={(e) => setReimbursementWalletAddress(e.target.value)}
+        onBlur={() => validateReimbursementWalletAddress()}
+        value={reimbursementWalletAddress}
+        error={Boolean(errors.reimbursementWalletAddress)}
         required
         width={BlockSize.Full}
+        disabled={isView}
+      />
+      {/* Incident details */}
+      <Box className="mt-4">
+        <Text variant={TextVariant.HeadingSm}>
+          {t('shieldClaimIncidentDetails')}
+        </Text>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="mb-2"
+        >
+          {t('shieldClaimIncidentDetailsDescription')}
+        </Text>
+
+        <Box
+          borderColor={BoxBorderColor.BorderMuted}
+          className="w-full h-[1px] border border-b-0"
+        ></Box>
+      </Box>
+      <AccountSelector
+        label={`${t('shieldClaimImpactedWalletAddress')}*`}
+        modalTitle={t('shieldClaimSelectAccount')}
+        impactedWalletAddress={impactedWalletAddress}
+        onAccountSelect={(address) => {
+          setImpactedWalletAddress(address);
+          const sameWalletAddressErrorKey =
+            ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]
+              ?.messageKey ?? '';
+
+          // only validate equality if reimbursement wallet address is set and valid format
+          if (
+            reimbursementWalletAddress &&
+            (!errors.reimbursementWalletAddress ||
+              errors.reimbursementWalletAddress.msg ===
+                sameWalletAddressErrorKey)
+          ) {
+            validateReimbursementEqualsImpactedWalletAddress(address);
+          }
+        }}
+        disabled={isView}
+      />
+      {/* Custom network selector: existing ones are either embedded in containers or too feature-rich for this use case. */}
+      <NetworkSelector
+        label={`${t('shieldClaimNetwork')}*`}
+        modalTitle={t('shieldClaimSelectNetwork')}
+        selectedChainId={chainId}
+        onNetworkSelect={(selectedChainId) => {
+          setChainId(selectedChainId);
+        }}
+        disabled={isView}
       />
       <FormTextField
         label={`${t('shieldClaimImpactedTxHash')}*`}
@@ -491,7 +568,7 @@ const SubmitClaimForm = () => {
         helpText={
           errors.impactedTxHash ? (
             <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
-              {`${errors.impactedTxHash?.msg}. `}
+              {`${t(errors.impactedTxHash?.msg)}. `}
               <TextButton
                 size={TextButtonSize.BodySm}
                 className="min-w-0"
@@ -525,34 +602,16 @@ const SubmitClaimForm = () => {
         error={Boolean(errors.impactedTxHash)}
         required
         width={BlockSize.Full}
+        disabled={isView}
       />
-      <FormTextField
-        label={`${t('shieldClaimReimbursementWalletAddress')}*`}
-        placeholder={'e.g. 0x71C...B5f6d'}
-        inputProps={{
-          'data-testid': 'shield-claim-reimbursement-wallet-address-input',
-        }}
-        helpTextProps={{
-          'data-testid': 'shield-claim-reimbursement-wallet-address-help-text',
-          color: DsTextColor.textAlternative,
-        }}
-        helpText={
-          errors.reimbursementWalletAddress
-            ? errors.reimbursementWalletAddress.msg
-            : t('shieldClaimReimbursementWalletAddressHelpText')
-        }
-        id="reimbursement-wallet-address"
-        name="reimbursement-wallet-address"
-        size={FormTextFieldSize.Lg}
-        onChange={(e) => setReimbursementWalletAddress(e.target.value)}
-        onBlur={() => validateReimbursementWalletAddress()}
-        value={reimbursementWalletAddress}
-        error={Boolean(errors.reimbursementWalletAddress)}
-        required
-        width={BlockSize.Full}
-      />
-      <Box gap={2}>
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+      <Box className="flex flex-col gap-1">
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          className={classnames({
+            'opacity-50': isView,
+          })}
+        >
           {`${t('shieldClaimDescription')}*`}
         </Text>
         <Textarea
@@ -571,6 +630,7 @@ const SubmitClaimForm = () => {
           paddingTop={3}
           paddingBottom={3}
           maxLength={2000}
+          disabled={isView}
         />
         {errors.caseDescription && (
           <Text
@@ -579,34 +639,80 @@ const SubmitClaimForm = () => {
             className="mt-0.5"
             data-testid="shield-claim-description-error"
           >
-            {errors.caseDescription.msg}
+            {t(errors.caseDescription.msg)}
           </Text>
         )}
       </Box>
-      <FileUploader
-        id="upload-images-file-uploader"
-        data-testid="upload-images-file-uploader"
-        label={t('shieldClaimFileUploader')}
-        onChange={(inputFiles) => setFiles(inputFiles as FileList)}
-        accept={['application/pdf', 'image/png', 'image/jpeg'].join(',')}
-        acceptText={t('shieldClaimFileUploaderAcceptText', [MAX_FILE_SIZE_MB])}
-        helpText={t('shieldClaimFileUploaderHelpText')}
-        maxFileSize={MAX_FILE_SIZE_BYTES}
-      />
-      <Box className="settings-page__content-item-col">
-        <Button
-          data-testid="shield-claim-submit-button"
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Lg}
-          disabled={isInvalidData || claimSubmitLoading}
-          onClick={handleSubmitClaim}
-        >
-          {t('shieldClaimSubmit')}
-        </Button>
-      </Box>
-      {claimSubmitLoading && <LoadingScreen />}
+      {isView ? (
+        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+            {t('shieldClaimFileUploader')}
+          </Text>
+          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+            {uploadedFiles.map((file, index) => (
+              <Box
+                asChild
+                key={file.key || index}
+                alignItems={BoxAlignItems.Center}
+                flexDirection={BoxFlexDirection.Row}
+                backgroundColor={BoxBackgroundColor.BackgroundSection}
+                paddingTop={2}
+                paddingBottom={2}
+                paddingLeft={4}
+                paddingRight={4}
+                gap={2}
+                className="rounded-lg"
+              >
+                <a
+                  href={file.publicUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon
+                    name={
+                      file.mimetype?.includes('image')
+                        ? IconName.Image
+                        : IconName.File
+                    }
+                    size={IconSize.Lg}
+                  />
+                  <Text variant={TextVariant.BodySm}>{file.originalname}</Text>
+                </a>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+      ) : (
+        <FileUploader
+          id="upload-images-file-uploader"
+          data-testid="upload-images-file-uploader"
+          label={t('shieldClaimFileUploader')}
+          onChange={(inputFiles) => setFiles(inputFiles as FileList)}
+          accept={['application/pdf', 'image/png', 'image/jpeg'].join(',')}
+          acceptText={t('shieldClaimFileUploaderAcceptText', [
+            MAX_FILE_SIZE_MB,
+          ])}
+          helpText={t('shieldClaimFileUploaderHelpText')}
+          maxFileSize={MAX_FILE_SIZE_BYTES}
+        />
+      )}
+
+      {!isView && (
+        <Box className="settings-page__content-item-col">
+          <Button
+            data-testid="shield-claim-submit-button"
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            disabled={isInvalidData || isSubmittingClaim}
+            onClick={handleSubmitClaim}
+          >
+            {t('shieldClaimSubmit')}
+          </Button>
+        </Box>
+      )}
+      {isSubmittingClaim && <LoadingScreen />}
     </Box>
   );
 };
 
-export default SubmitClaimForm;
+export default ClaimsForm;
