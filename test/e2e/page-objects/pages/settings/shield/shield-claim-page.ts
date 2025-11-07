@@ -4,13 +4,6 @@ import { Driver } from '../../../../webdriver/driver';
 export default class ShieldClaimPage {
   private readonly driver: Driver;
 
-  private readonly pageContainer = '[data-testid="submit-claim-page"]';
-
-  private readonly claimSuccessToast = {
-    text: 'Claim submitted successfully',
-    tag: 'p',
-  };
-
   private readonly accountSelectorButton =
     '[data-testid="account-selector-button"]';
 
@@ -20,6 +13,11 @@ export default class ShieldClaimPage {
     css: this.accountSelectorItem,
     text: accountName,
   });
+
+  private readonly claimSuccessToast = {
+    text: 'Claim submitted successfully',
+    tag: 'p',
+  };
 
   private readonly descriptionError =
     '[data-testid="shield-claim-description-error"]';
@@ -38,11 +36,13 @@ export default class ShieldClaimPage {
   private readonly impactedTxHashInput =
     '[data-testid="shield-claim-impacted-tx-hash-input"]';
 
+  private readonly networkListItem = (chainId: string) =>
+    `[data-testid="network-list-item-${chainId}"]`;
+
   private readonly networkSelectorButton =
     '[data-testid="network-selector-button"]';
 
-  private readonly networkListItem = (chainId: string) =>
-    `[data-testid="network-list-item-${chainId}"]`;
+  private readonly pageContainer = '[data-testid="submit-claim-page"]';
 
   private readonly reimbursementWalletAddressHelpText =
     '[data-testid="shield-claim-reimbursement-wallet-address-help-text"]';
@@ -66,6 +66,18 @@ export default class ShieldClaimPage {
       this.submitButton,
     ]);
     console.log('Shield Claim page is loaded');
+  }
+
+  /**
+   * Check if the Shield Claim page is loaded in view mode
+   * (submit button is not present in view mode)
+   */
+  async checkPageIsLoadedInViewMode(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.pageContainer,
+      this.emailInput,
+    ]);
+    console.log('Shield Claim page is loaded in view mode');
   }
 
   /**
@@ -153,6 +165,58 @@ export default class ShieldClaimPage {
    */
   async checkSuccessMessageDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.claimSuccessToast);
+  }
+
+  /**
+   * Verify claim data is displayed correctly in view mode
+   *
+   * @param claimData - The claim data to verify
+   * @param claimData.email - The email address to verify
+   * @param claimData.reimbursementWalletAddress - The reimbursement wallet address to verify
+   * @param claimData.impactedTxHash - The impacted transaction hash to verify
+   * @param claimData.description - The description to verify
+   */
+  async verifyClaimData(claimData: {
+    email: string;
+    reimbursementWalletAddress: string;
+    impactedTxHash: string;
+    description: string;
+  }): Promise<void> {
+    console.log('Verifying claim data is displayed correctly');
+
+    // Verify email - using css and value pattern
+    await this.driver.waitForSelector({
+      css: this.emailInput,
+      value: claimData.email,
+    });
+    console.log(`Email verified: ${claimData.email}`);
+
+    // Verify reimbursement wallet address
+    await this.driver.waitForSelector({
+      css: this.reimbursementWalletAddressInput,
+      value: claimData.reimbursementWalletAddress,
+    });
+    console.log(
+      `Reimbursement wallet address verified: ${claimData.reimbursementWalletAddress}`,
+    );
+
+    // Verify impacted transaction hash
+    await this.driver.waitForSelector({
+      css: this.impactedTxHashInput,
+      value: claimData.impactedTxHash,
+    });
+    console.log(
+      `Impacted transaction hash verified: ${claimData.impactedTxHash}`,
+    );
+
+    // Verify description - using css and value pattern
+    await this.driver.waitForSelector({
+      css: this.descriptionTextarea,
+      text: claimData.description,
+    });
+    console.log(`Description verified: ${claimData.description}`);
+
+    console.log('All claim data verified successfully');
   }
 
   /**

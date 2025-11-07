@@ -15,7 +15,6 @@ import {
   SHIELD_PRICING_DATA,
   SHIELD_USER_EVENTS_RESPONSE,
 } from '../../helpers/shield/constants';
-import { Driver } from '../../webdriver/driver';
 
 // Local fixture for this spec file
 function createShieldFixture() {
@@ -119,53 +118,6 @@ async function mockSubscriptionApiCalls(
   ];
 }
 
-async function validateShieldDetailPage(driver: Driver) {
-  const shieldDetailPage = new ShieldDetailPage(driver);
-  await shieldDetailPage.checkPageIsLoaded();
-
-  // Verify customer ID matches mock response
-  await shieldDetailPage.checkCustomerId('test_customer_id');
-
-  // Verify trial badge is displayed (status is 'trialing' in mock)
-  await shieldDetailPage.checkTrialTagDisplayed();
-
-  // Verify membership status
-  await shieldDetailPage.checkMembershipStatus('Active membership');
-
-  // Verify next billing date (should be 2025-11-03 based on mock)
-  await shieldDetailPage.checkNextBillingDate('Nov 3');
-
-  // Verify charges (should be $80.00 based on mock unitAmount: 8000, unitDecimals: 2)
-  await shieldDetailPage.checkCharges('$80');
-
-  // Verify payment method (should show Visa ending in 4242 based on mock)
-  await shieldDetailPage.checkPaymentMethod('Visa');
-
-  console.log('All Shield Detail page assertions passed successfully');
-}
-
-async function completeShieldPlanSubscriptionFlow(
-  driver: Driver,
-  plan: 'annual' | 'monthly',
-) {
-  const shieldPlanPage = new ShieldPlanPage(driver);
-  await shieldPlanPage.checkPageIsLoaded();
-
-  if (plan === 'annual') {
-    await shieldPlanPage.selectAnnualPlan();
-  } else {
-    await shieldPlanPage.selectMonthlyPlan();
-  }
-
-  await shieldPlanPage.clickContinueButton();
-
-  // Wait for checkout tab to open and switch to it
-  await driver.waitUntilXWindowHandles(2);
-
-  // Switch back to the main MetaMask window
-  await driver.switchToWindowWithTitle('MetaMask');
-}
-
 describe('Shield Subscription Tests', function () {
   describe('Shield Entry Modal', function () {
     it('should subscribe to the shield plan from the entry modal - annual plan', async function () {
@@ -183,9 +135,11 @@ describe('Shield Subscription Tests', function () {
           await homePage.checkShieldEntryModalIsDisplayed();
           await homePage.clickOnShieldEntryModalGetStarted();
 
-          await completeShieldPlanSubscriptionFlow(driver, 'annual');
+          const shieldPlanPage = new ShieldPlanPage(driver);
+          await shieldPlanPage.completeShieldPlanSubscriptionFlow('annual');
 
-          await validateShieldDetailPage(driver);
+          const shieldDetailPage = new ShieldDetailPage(driver);
+          await shieldDetailPage.validateShieldDetailPage();
         },
       );
     });
@@ -205,9 +159,11 @@ describe('Shield Subscription Tests', function () {
           await homePage.checkShieldEntryModalIsDisplayed();
           await homePage.clickOnShieldEntryModalGetStarted();
 
-          await completeShieldPlanSubscriptionFlow(driver, 'monthly');
+          const shieldPlanPage = new ShieldPlanPage(driver);
+          await shieldPlanPage.completeShieldPlanSubscriptionFlow('monthly');
 
-          await validateShieldDetailPage(driver);
+          const shieldDetailPage = new ShieldDetailPage(driver);
+          await shieldDetailPage.validateShieldDetailPage();
         },
       );
     });
@@ -235,9 +191,11 @@ describe('Shield Subscription Tests', function () {
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToTransactionShieldPage();
 
-          await completeShieldPlanSubscriptionFlow(driver, 'annual');
+          const shieldPlanPage = new ShieldPlanPage(driver);
+          await shieldPlanPage.completeShieldPlanSubscriptionFlow('annual');
 
-          await validateShieldDetailPage(driver);
+          const shieldDetailPage = new ShieldDetailPage(driver);
+          await shieldDetailPage.validateShieldDetailPage();
         },
       );
     });
@@ -263,9 +221,11 @@ describe('Shield Subscription Tests', function () {
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToTransactionShieldPage();
 
-          await completeShieldPlanSubscriptionFlow(driver, 'monthly');
+          const shieldPlanPage = new ShieldPlanPage(driver);
+          await shieldPlanPage.completeShieldPlanSubscriptionFlow('monthly');
 
-          await validateShieldDetailPage(driver);
+          const shieldDetailPage = new ShieldDetailPage(driver);
+          await shieldDetailPage.validateShieldDetailPage();
         },
       );
     });

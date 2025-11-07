@@ -8,6 +8,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
 import ShieldClaimPage from '../../page-objects/pages/settings/shield/shield-claim-page';
+import ShieldClaimsListPage from '../../page-objects/pages/settings/shield/shield-claims-list-page';
 import {
   BASE_SHIELD_SUBSCRIPTION,
   MOCK_CHECKOUT_SESSION_URL,
@@ -52,7 +53,15 @@ function createShieldFixture() {
     });
 }
 
-async function mockStripeSubscriptionFlow(mockServer: Mockttp) {
+async function mockStripeSubscriptionFlow(
+  mockServer: Mockttp,
+  testData?: {
+    email: string;
+    impactedTxHash: string;
+    reimbursementWalletAddress: string;
+    description: string;
+  },
+) {
   const userStorageMockttpController = new UserStorageMockttpController();
   userStorageMockttpController.setupPath(
     USER_STORAGE_FEATURE_NAMES.accounts,
@@ -61,6 +70,15 @@ async function mockStripeSubscriptionFlow(mockServer: Mockttp) {
 
   // Shared state across requests
   let cancelAtPeriodEnd = false;
+
+  // Use provided test data or default values
+  const claimData = testData || {
+    email: 'test@metamask.io',
+    impactedTxHash:
+      '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+    reimbursementWalletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    description: 'This is a test claim description',
+  };
 
   return [
     // GET subscriptions reflects current cancelAtPeriodEnd flag
@@ -110,6 +128,27 @@ async function mockStripeSubscriptionFlow(mockServer: Mockttp) {
       .forPost('https://claims.dev-api.cx.metamask.io/claims')
       .thenJson(200, SHIELD_CLAIMS_RESPONSE),
 
+    // Mock GET claims endpoint - returns list of claims
+    // Returns a mock claim after submission, empty array otherwise
+    await mockServer
+      .forGet('https://claims.api.cx.metamask.io/claims')
+      .thenJson(200, [
+        {
+          id: SHIELD_CLAIMS_RESPONSE.claimId,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          chainId: '1',
+          email: claimData.email,
+          impactedWalletAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          impactedTxHash: claimData.impactedTxHash,
+          reimbursementWalletAddress: claimData.reimbursementWalletAddress,
+          description: claimData.description,
+          attachments: [],
+          intercomId: `intercom_${SHIELD_CLAIMS_RESPONSE.claimId}`,
+          status: 'created',
+        },
+      ]),
+
     // Mock cancel subscription endpoint
     await mockServer
       .forPost(
@@ -140,11 +179,20 @@ async function mockStripeSubscriptionFlow(mockServer: Mockttp) {
 
 describe('Shield Plan Stripe Integration', function () {
   it('should successfully fill and submit shield claim form', async function () {
+    // Generate test data before the test runs so it can be reused in mocks
+    const testData = {
+      email: generateRandomEmail(),
+      impactedTxHash: generateRandomTxHash(),
+      reimbursementWalletAddress: generateRandomWalletAddress(),
+      description: generateRandomDescription(),
+    };
+
     await withFixtures(
       {
         fixtures: createShieldFixture().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockStripeSubscriptionFlow,
+        testSpecificMock: (mockServer: Mockttp) =>
+          mockStripeSubscriptionFlow(mockServer, testData),
       },
       async ({ driver }) => {
         // Login and validate balance
@@ -162,36 +210,46 @@ describe('Shield Plan Stripe Integration', function () {
 
         // Click Claim button to navigate to claim page
         await shieldDetailPage.clickSubmitCaseButton();
-        console.log('Navigated to Shield Claim page');
 
         const shieldClaimPage = new ShieldClaimPage(driver);
         await shieldClaimPage.checkPageIsLoaded();
 
-        // Generate random test data
-        const randomEmail = generateRandomEmail();
-        const randomTxHash = generateRandomTxHash();
-        const randomReimbursementAddress = generateRandomWalletAddress();
-        const randomDescription = generateRandomDescription();
-
-        // Fill the claim form with random data
+        // Fill the claim form with test data
         await shieldClaimPage.fillForm({
-          email: randomEmail,
-          reimbursementWalletAddress: randomReimbursementAddress,
+          email: testData.email,
+          reimbursementWalletAddress: testData.reimbursementWalletAddress,
           chainId: '0x1',
-          impactedTxnHash: randomTxHash,
+          impactedTxnHash: testData.impactedTxHash,
           impactedWalletName: 'Account 1',
-          description: randomDescription,
+          description: testData.description,
         });
 
         // Submit the form
         await shieldClaimPage.clickSubmitButton();
-        console.log('Claim form submitted successfully');
 
         // Check for success toast message
         await shieldClaimPage.checkSuccessMessageDisplayed();
 
-        // Verify navigation to Shield Detail page
-        await shieldDetailPage.checkPageIsLoaded();
+        // Verify navigation to Claims List page
+        const shieldClaimsListPage = new ShieldClaimsListPage(driver);
+        await shieldClaimsListPage.checkPageIsLoaded();
+
+        // Check that the claim is created with status "Created" (pending status)
+        const { claimId } = SHIELD_CLAIMS_RESPONSE;
+        await shieldClaimsListPage.checkClaimExists(claimId);
+        await shieldClaimsListPage.checkClaimStatus(claimId, 'Created');
+
+        // Click on the claim item to view details
+        await shieldClaimsListPage.clickClaimItem(claimId);
+
+        // Verify navigation to Claim detail page (view mode) and check data is displayed correctly
+        await shieldClaimPage.checkPageIsLoadedInViewMode();
+        await shieldClaimPage.verifyClaimData({
+          email: testData.email,
+          reimbursementWalletAddress: testData.reimbursementWalletAddress,
+          impactedTxHash: testData.impactedTxHash,
+          description: testData.description,
+        });
       },
     );
   });
