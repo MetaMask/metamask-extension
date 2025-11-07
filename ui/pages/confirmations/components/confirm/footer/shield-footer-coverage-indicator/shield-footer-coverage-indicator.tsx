@@ -18,7 +18,8 @@ const ShieldFooterCoverageIndicator = () => {
   const { currentConfirmation } = useConfirmContext<
     TransactionMeta | SignatureRequest
   >();
-  const isShowShieldFooterCoverageIndicator = useEnableShieldCoverageChecks();
+  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
+  const isShowShieldFooterCoverageIndicator = isEnabled || isPaused;
 
   if (!isShowShieldFooterCoverageIndicator) {
     return null;
