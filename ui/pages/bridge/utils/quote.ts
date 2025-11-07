@@ -5,6 +5,7 @@ import {
   isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
+import { type CaipChainId } from '@metamask/utils';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
@@ -102,6 +103,7 @@ export const formatProviderLabel = (args?: {
   bridges: QuoteResponse['quote']['bridges'];
 }): `${string}_${string}` => `${args?.bridgeId}_${args?.bridges[0]}`;
 
+// TODO if user requests quote before setting src chain, this might fail
 export const isQuoteExpiredOrInvalid = ({
   activeQuote,
   toToken,

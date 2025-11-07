@@ -13,9 +13,10 @@ export type BridgeToken = {
   address: string;
   assetId: CaipAssetType;
   symbol: string;
+  name?: string;
   image: string;
   decimals: number;
-  chainId: Hex | CaipChainId;
+  chainId: CaipChainId;
   balance: string; // normalized balance as a stringified number
   tokenFiatAmount?: number | null;
   occurrences?: number;

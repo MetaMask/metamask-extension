@@ -8,12 +8,9 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
-import { type TokenListMap } from '@metamask/assets-controllers';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
-  isSolanaChainId,
-  isBitcoinChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
@@ -24,7 +21,7 @@ import {
   isNonEvmChainId,
   formatChainIdToHex,
 } from '@metamask/bridge-controller';
-import { CaipChainId, Hex, parseCaipChainId } from '@metamask/utils';
+import { type CaipChainId, Hex, parseCaipChainId } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -80,7 +77,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   formatTokenAmount,
@@ -92,7 +88,6 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import {
   getCurrentKeyring,
   getEnabledNetworksByNamespace,
-  getTokenList,
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
@@ -131,22 +126,21 @@ export const useEnableMissingNetwork = () => {
   const dispatch = useDispatch();
 
   const enableMissingNetwork = useCallback(
-    (chainId: Hex | CaipChainId) => {
+    (chainId: CaipChainId) => {
       if (isNonEvmChainId(chainId)) {
         return;
       }
       const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
-      const caipChainId = formatChainIdToCaip(chainId);
-      const { namespace } = parseCaipChainId(caipChainId);
-      const hexChainId = formatChainIdToHex(chainId);
+      const { namespace } = parseCaipChainId(chainId);
+      const chainIdInHex = formatChainIdToHex(chainId);
 
       if (namespace) {
         const isPopularNetwork =
-          FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
+          FEATURED_NETWORK_CHAIN_IDS.includes(chainIdInHex);
 
         if (isPopularNetwork) {
-          const isNetworkEnabled = enabledNetworkKeys.includes(hexChainId);
+          const isNetworkEnabled = enabledNetworkKeys.includes(chainIdInHex);
           if (!isNetworkEnabled) {
             // Bridging between popular networks indicates we want the 'select all' enabled
             // This way users can see their full bridging tx activity
@@ -183,25 +177,11 @@ const PrepareBridgePage = ({
   );
 
   const fromToken = useSelector(getFromToken);
-  const fromTokens = useSelector(getTokenList) as TokenListMap;
-
   const toToken = useSelector(getToToken);
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
   const toChain = useSelector(getToChain);
-
-  const isFromTokensLoading = useMemo(() => {
-    // Non-EVM chains (Solana, Bitcoin) don't use the EVM token list
-    if (
-      fromChain &&
-      (isSolanaChainId(fromChain.chainId) ||
-        isBitcoinChainId(fromChain.chainId))
-    ) {
-      return false;
-    }
-    return Object.keys(fromTokens).length === 0;
-  }, [fromTokens, fromChain.chainId]);
 
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
@@ -277,38 +257,6 @@ const PrepareBridgePage = ({
     setIsDestinationAccountPickerOpen,
   } = useDestinationAccount();
 
-  const {
-    filteredTokenListGenerator: toTokenListGenerator,
-    isLoading: isToTokensLoading,
-  } = useTokensWithFiltering(
-    toChain?.chainId ?? fromChain?.chainId,
-    fromChain?.chainId === toChain?.chainId && fromToken && fromChain
-      ? (() => {
-          // Determine the address format based on chain type
-          // We need to make evm tokens lowercase for comparison as sometimes they are checksummed
-          let address = '';
-          if (isNativeAddress(fromToken.address)) {
-            address = '';
-          } else if (
-            isSolanaChainId(fromChain.chainId) ||
-            isBitcoinChainId(fromChain.chainId)
-          ) {
-            address = fromToken.address || '';
-          } else {
-            address = fromToken.address?.toLowerCase() || '';
-          }
-
-          return {
-            ...fromToken,
-            address,
-            // Ensure chainId is in CAIP format for proper comparison
-            chainId: formatChainIdToCaip(fromChain.chainId),
-          };
-        })()
-      : null,
-    selectedDestinationAccount?.address,
-  );
-
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
   // Resets the banner visibility when the estimated return is low
@@ -378,10 +326,10 @@ const PrepareBridgePage = ({
     () =>
       selectedAccount?.address
         ? {
-            srcTokenAddress: fromToken?.address,
-            destTokenAddress: toToken?.address,
+            srcTokenAddress: fromToken.address,
+            destTokenAddress: toToken.address,
             srcTokenAmount:
-              fromAmount && fromToken?.decimals
+              fromAmount && fromToken.decimals
                 ? calcTokenValue(
                     // Treat empty or incomplete amount as 0 to reject NaN
                     ['', '.'].includes(fromAmount) ? '0' : fromAmount,
@@ -454,10 +402,7 @@ const PrepareBridgePage = ({
   }, [quoteParams]);
 
   // Use smart slippage defaults
-  useSmartSlippage({
-    fromToken,
-    toToken,
-  });
+  useSmartSlippage();
 
   // Trace swap/bridge view loaded
   useEffect(() => {
@@ -524,23 +469,11 @@ const PrepareBridgePage = ({
               ...token,
               address: token.address ?? zeroAddress(),
             };
+
             dispatch(setFromToken(bridgeToken));
             dispatch(setFromTokenInputValue(null));
-            if (token.address === toToken?.address) {
-              dispatch(setToToken(null));
-            }
           }}
-          networkProps={{
-            network: fromChains.find(
-              (chain) => chain.chainId === fromChain.chainId,
-            ),
-            networks: fromChains,
-            onNetworkChange: (networkConfig) => {
-              enableMissingNetwork(networkConfig.chainId);
-            },
-            header: t('yourNetworks'),
-          }}
-          isMultiselectEnabled={true}
+          networks={fromChains}
           onMaxButtonClick={
             shouldShowMaxButton
               ? (value: string) => {
@@ -564,7 +497,6 @@ const PrepareBridgePage = ({
           containerProps={{
             paddingInline: 4,
           }}
-          isTokenListLoading={isFromTokensLoading}
           buttonProps={{ testId: 'bridge-source-button' }}
           onBlockExplorerClick={(token) => {
             setBlockExplorerToken(token);
@@ -614,14 +546,14 @@ const PrepareBridgePage = ({
               ariaLabel="switch-tokens"
               iconName={IconName.SwapVertical}
               color={IconColor.iconAlternative}
-              disabled={
+              disabled={Boolean(
                 isSwitchingTemporarilyDisabled ||
-                !isValidQuoteRequest(quoteRequest, false) ||
-                // If no fromChains match the toChain, it means the toChain is not an enabled network
-                fromChains.every((chain) =>
-                  isCrossChain(chain.chainId, toChain.chainId),
-                )
-              }
+                  !isValidQuoteRequest(quoteRequest, false) ||
+                  (toChain &&
+                    !fromChains.find(
+                      (chain) => chain.chainId === toChain.chainId,
+                    )),
+              )}
               onClick={() => {
                 dispatch(setSelectedQuote(null));
                 // Track the flip event
@@ -690,24 +622,9 @@ const PrepareBridgePage = ({
                 address: token.address ?? zeroAddress(),
               };
               dispatch(setToToken(bridgeToken));
+              enableMissingNetwork(token.chainId);
             }}
-            networkProps={{
-              network: toChains.find(
-                (chain) => chain.chainId === toChain.chainId,
-              ),
-              networks: toChains,
-              onNetworkChange: (networkConfig) => {
-                enableMissingNetwork(networkConfig.chainId);
-                dispatch(
-                  setToToken(getNativeAssetForChainId(networkConfig.chainId)),
-                );
-              },
-              header: t('yourNetworks'),
-              shouldDisableNetwork: ({ chainId }) =>
-                isBitcoinChainId(chainId) &&
-                !isCrossChain(chainId, fromChain?.chainId),
-            }}
-            customTokenListGenerator={toTokenListGenerator}
+            networks={toChains}
             amountInFiat={
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
               // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -725,14 +642,12 @@ const PrepareBridgePage = ({
                 ? 'amount-input defined'
                 : 'amount-input',
             }}
-            isTokenListLoading={isToTokensLoading}
             buttonProps={{ testId: 'bridge-destination-button' }}
             onBlockExplorerClick={(token) => {
               setBlockExplorerToken(token);
               setShowBlockExplorerToast(true);
               setToastTriggerCounter((prev) => prev + 1);
             }}
-            isDestinationToken
           />
 
           <Column
