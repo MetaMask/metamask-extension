@@ -18,6 +18,7 @@ export const useClaimState = (isView: boolean = false) => {
   const [caseDescription, setCaseDescription] = useState<string>('');
   const [files, setFiles] = useState<FileList>();
   const [uploadedFiles, setUploadedFiles] = useState<ClaimAttachment[]>([]);
+  const [claimSignature, setClaimSignature] = useState<string>('');
 
   const claimId = pathname.split('/').pop();
 
@@ -31,8 +32,7 @@ export const useClaimState = (isView: boolean = false) => {
         chainId,
         impactedWalletAddress,
       );
-      // TODO: update signature in claim once the backend is ready
-      console.log('signature', signature);
+      setClaimSignature(signature);
     })();
   }, [isView, chainId, impactedWalletAddress]);
 
@@ -67,6 +67,7 @@ export const useClaimState = (isView: boolean = false) => {
     files,
     setFiles,
     uploadedFiles,
+    claimSignature,
     clear: () => {
       setChainId('');
       setEmail('');

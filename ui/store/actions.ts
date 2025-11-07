@@ -7708,6 +7708,7 @@ export async function getLayer1GasFeeValue({
  * @param params.reimbursementWalletAddress - The reimbursement wallet address.
  * @param params.caseDescription - The description.
  * @param params.files - The files.
+ * @param params.signature - Claim signature.
  * @returns The subscription response.
  */
 export async function submitShieldClaim(params: {
@@ -7717,13 +7718,14 @@ export async function submitShieldClaim(params: {
   impactedTransactionHash: string;
   reimbursementWalletAddress: string;
   caseDescription: string;
+  signature: string;
   files?: FileList;
 }) {
   const submitClaimConfig = await submitRequestToBackground<SubmitClaimConfig>(
     'getSubmitClaimConfig',
     [params],
   );
-  const { headers, method } = submitClaimConfig;
+  const { headers, method, url } = submitClaimConfig;
 
   const formData = new FormData();
   formData.append('chainId', params.chainId);
@@ -7736,10 +7738,7 @@ export async function submitShieldClaim(params: {
   );
   formData.append('description', params.caseDescription);
   // TODO: temporary value for signature, update to correct signature after implement signature verification
-  formData.append(
-    'signature',
-    '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
-  );
+  formData.append('signature', params.signature);
   formData.append('timestamp', Date.now().toString());
 
   // add files to form data
@@ -7751,7 +7750,7 @@ export async function submitShieldClaim(params: {
 
   try {
     // we do the request here instead of background controllers because files are not serializable
-    const response = await fetch('http://localhost:3000/claims', {
+    const response = await fetch(url, {
       method,
       body: formData,
       headers,

@@ -96,6 +96,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     files,
     setFiles,
     uploadedFiles,
+    claimSignature,
   } = useClaimState(isView);
 
   const [errors, setErrors] = useState<
@@ -318,6 +319,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         reimbursementWalletAddress,
         caseDescription,
         files,
+        signature: claimSignature,
       });
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
       // update claims
@@ -340,6 +342,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     dispatch,
     navigate,
     refetchClaims,
+    claimSignature,
     handleSubmitClaimError,
   ]);
 
