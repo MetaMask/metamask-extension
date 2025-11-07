@@ -877,6 +877,7 @@ export const ImportTokensModal = ({ onClose }) => {
                   justifyContent="center"
                   paddingTop={8}
                   paddingBottom={8}
+                  data-testid="import-tokens-loading"
                 >
                   <Text
                     variant={TextVariant.bodyMd}
@@ -897,6 +898,7 @@ export const ImportTokensModal = ({ onClose }) => {
                   paddingBottom={8}
                   paddingLeft={4}
                   paddingRight={4}
+                  data-testid="import-tokens-no-support"
                 >
                   <Text
                     variant={TextVariant.bodyMd}

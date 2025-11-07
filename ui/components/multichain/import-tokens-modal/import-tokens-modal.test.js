@@ -1,32 +1,110 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+import * as bridgeControllerModule from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-
 import configureStore from '../../../store/store';
-import { clearPendingTokens } from '../../../store/actions';
+import {
+  clearPendingTokens,
+  getTokenStandardAndDetailsByChain,
+  setPendingTokens,
+  setConfirmationExchangeRates,
+} from '../../../store/actions';
 import mockState from '../../../../test/data/mock-state.json';
+import { TokenStandard } from '../../../../shared/constants/transaction';
+import * as assetUtilsModule from '../../../../shared/lib/asset-utils';
 import { ImportTokensModal } from '.';
 
-// Mock the useTokensWithFiltering hook
-const mockUseTokensWithFiltering = jest.fn(() => ({
-  *filteredTokenListGenerator() {
-    // Return empty generator by default
-  },
-  isLoading: false,
+jest.mock('../../../hooks/bridge/useTokensWithFiltering');
+jest.mock('@metamask/bridge-controller');
+jest.mock('../../../../shared/lib/asset-utils');
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
+  ...jest.requireActual('../../../selectors/multichain-accounts/account-tree'),
+  getInternalAccountBySelectedAccountGroupAndCaip: jest.fn(() => ({
+    id: 'mock-account-id',
+    address: '0xMockAddress',
+  })),
 }));
 
-jest.mock('../../../hooks/bridge/useTokensWithFiltering', () => ({
-  useTokensWithFiltering: (...args) => mockUseTokensWithFiltering(...args),
-}));
+const {
+  useTokensWithFiltering,
+} = require('../../../hooks/bridge/useTokensWithFiltering');
 
 jest.mock('../../../store/actions', () => ({
+  // Actions used in tests
+  getTokenStandardAndDetailsByChain: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve({ standard: 'ERC20' })),
+  setPendingTokens: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'SET_PENDING_TOKENS' })),
   clearPendingTokens: jest
     .fn()
     .mockImplementation(() => ({ type: 'CLEAR_PENDING_TOKENS' })),
+  setConfirmationExchangeRates: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'SET_CONFIRMATION_EXCHANGE_RATES' })),
+  showImportNftsModal: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'SHOW_IMPORT_NFTS_MODAL' })),
+  setNewTokensImported: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'SET_NEW_TOKENS_IMPORTED' })),
+  setNewTokensImportedError: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'SET_NEW_TOKENS_IMPORTED_ERROR' })),
+  hideImportTokensModal: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'HIDE_IMPORT_TOKENS_MODAL' })),
 }));
 
 describe('ImportTokensModal', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    // Mock useTokensWithFiltering to return test data
+    useTokensWithFiltering.mockReturnValue({
+      *filteredTokenListGenerator() {
+        yield {
+          address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+          symbol: 'DAI',
+          name: 'Dai Stablecoin',
+          decimals: 18,
+          image: 'http://example.com/dai.png',
+        };
+      },
+      isLoading: false,
+    });
+
+    // Mocks needed for your changes to work
+    jest
+      .spyOn(assetUtilsModule, 'isEvmChainId')
+      .mockImplementation((chainId) => {
+        if (!chainId) {
+          return false;
+        }
+        return chainId.startsWith('0x') || chainId.startsWith('eip155:');
+      });
+
+    jest
+      .spyOn(bridgeControllerModule, 'formatChainIdToHex')
+      .mockImplementation((chainId) => {
+        if (chainId?.startsWith('eip155:')) {
+          return `0x${parseInt(chainId.split(':')[1], 10).toString(16)}`;
+        }
+        return chainId;
+      });
+
+    jest
+      .spyOn(bridgeControllerModule, 'formatChainIdToCaip')
+      .mockImplementation((chainId) => {
+        if (chainId?.startsWith('0x')) {
+          return `eip155:${parseInt(chainId, 16)}`;
+        }
+        return chainId;
+      });
+  });
+
   const render = (metamaskStateChanges = {}, onClose = jest.fn()) => {
     const store = configureStore({
       ...mockState,
@@ -44,116 +122,16 @@ describe('ImportTokensModal', () => {
     return renderWithProvider(<ImportTokensModal onClose={onClose} />, store);
   };
 
-  afterEach(() => {
-    // Reset mock to default empty generator after each test
-    mockUseTokensWithFiltering.mockReturnValue({
-      *filteredTokenListGenerator() {
-        // Empty generator
-      },
-      isLoading: false,
-    });
-    jest.clearAllMocks();
-  });
-
   describe('Search', () => {
-    it('renders Search tab with token list', () => {
-      // Mock useTokensWithFiltering to return a sample token for Goerli
-      mockUseTokensWithFiltering.mockReturnValue({
-        *filteredTokenListGenerator() {
-          yield {
-            address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
-            symbol: 'UNI',
-            name: 'Uniswap',
-            decimals: 18,
-            image: 'https://example.com/uni.png',
-            aggregators: ['CoinGecko'],
-            occurrences: 5,
-          };
-        },
-        isLoading: false,
-      });
-
-      const { getByText } = render();
-
-      // Search tab should be visible when there are tokens
-      expect(getByText('Search')).toBeInTheDocument();
-      expect(getByText('Custom token')).toBeInTheDocument();
+    it('renders expected elements', () => {
+      const { getByText, getByPlaceholderText } = render();
+      expect(getByText('Next')).toBeDisabled();
+      expect(getByPlaceholderText('Search tokens')).toBeInTheDocument();
     });
 
-    it('shows loading state when tokens are loading', () => {
-      // Mock useTokensWithFiltering to return loading state
-      mockUseTokensWithFiltering.mockReturnValue({
-        *filteredTokenListGenerator() {
-          // Empty generator
-        },
-        isLoading: true,
-      });
-
-      const { getByText } = render();
-
-      // Loading text should be visible
-      expect(getByText(/loading/iu)).toBeInTheDocument();
-    });
-
-    it('shows only Custom token tab when no search tokens available', () => {
-      // Default mock returns empty generator
-      const { getByText, queryByText } = render();
-
-      // Only Custom token tab should be visible
-      expect(getByText('Custom token')).toBeInTheDocument();
-      expect(queryByText('Search')).not.toBeInTheDocument();
-    });
-
-    it('shows token detection banner when useTokenDetection is false', () => {
-      mockUseTokensWithFiltering.mockReturnValue({
-        *filteredTokenListGenerator() {
-          yield {
-            address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
-            symbol: 'UNI',
-            name: 'Uniswap',
-            decimals: 18,
-            image: 'https://example.com/uni.png',
-            aggregators: ['CoinGecko'],
-            occurrences: 5,
-          };
-        },
-        isLoading: false,
-      });
-
+    it('shows the token detection notice when setting is off', () => {
       const { getByText } = render({ useTokenDetection: false });
-
-      const searchTab = getByText('Search');
-      fireEvent.click(searchTab);
-
-      expect(
-        getByText(/Enhanced token detection is currently available/iu),
-      ).toBeInTheDocument();
-    });
-
-    it('does not show token detection banner when useTokenDetection is true', () => {
-      mockUseTokensWithFiltering.mockReturnValue({
-        *filteredTokenListGenerator() {
-          yield {
-            address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
-            symbol: 'UNI',
-            name: 'Uniswap',
-            decimals: 18,
-            image: 'https://example.com/uni.png',
-            aggregators: ['CoinGecko'],
-            occurrences: 5,
-          };
-        },
-        isLoading: false,
-      });
-
-      const { getByText, queryByText } = render({ useTokenDetection: true });
-
-      const searchTab = getByText('Search');
-      fireEvent.click(searchTab);
-
-      expect(
-        queryByText(/Enhanced token detection is currently available/iu),
-      ).not.toBeInTheDocument();
+      expect(getByText('Enable it from Settings.')).toBeInTheDocument();
     });
   });
 
@@ -184,6 +162,136 @@ describe('ImportTokensModal', () => {
       ).toStrictEqual(tokenAddress);
     });
 
+    it('edits token symbol', async () => {
+      const { getByText, getByTestId } = render();
+      const customTokenButton = getByText('Custom token');
+      fireEvent.click(customTokenButton);
+
+      // Enter token address first
+      const tokenAddress = '0xB7b78f0Caa05C4743b231ACa619f60124FEA4261';
+      const eventTokenAddress = { target: { value: tokenAddress } };
+      fireEvent.change(
+        getByTestId('import-tokens-modal-custom-address'),
+        eventTokenAddress,
+      );
+
+      expect(
+        getByTestId('import-tokens-modal-custom-address').value,
+      ).toStrictEqual(tokenAddress);
+
+      // wait for the symbol input to be in the document
+      await waitFor(() =>
+        expect(
+          getByTestId('import-tokens-modal-custom-symbol'),
+        ).toBeInTheDocument(),
+      );
+
+      const tokenSymbol = 'META';
+      const event = { target: { value: tokenSymbol } };
+      fireEvent.change(getByTestId('import-tokens-modal-custom-symbol'), event);
+
+      expect(
+        getByTestId('import-tokens-modal-custom-symbol').value,
+      ).toStrictEqual(tokenSymbol);
+    });
+
+    it('edits token decimal precision', async () => {
+      const { getByText, getByTestId } = render();
+      const customTokenButton = getByText('Custom token');
+      fireEvent.click(customTokenButton);
+
+      // Enter token address first
+      const tokenAddress = '0xB7b78f0Caa05C4743b231ACa619f60124FEA4261';
+      const eventTokenAddress = { target: { value: tokenAddress } };
+      fireEvent.change(
+        getByTestId('import-tokens-modal-custom-address'),
+        eventTokenAddress,
+      );
+
+      // wait for the decimals input to be in the document
+      await waitFor(() =>
+        expect(
+          getByTestId('import-tokens-modal-custom-decimals'),
+        ).toBeInTheDocument(),
+      );
+
+      const tokenPrecision = '2';
+      const event = { target: { value: tokenPrecision } };
+      fireEvent.change(
+        getByTestId('import-tokens-modal-custom-decimals'),
+        event,
+      );
+
+      expect(
+        getByTestId('import-tokens-modal-custom-decimals').value,
+      ).toStrictEqual(tokenPrecision);
+    });
+
+    it('adds custom tokens successfully', async () => {
+      const { getByText, getByTestId } = render({ tokens: [], tokenList: {} });
+      const customTokenButton = getByText('Custom token');
+      fireEvent.click(customTokenButton);
+
+      expect(getByText('Next')).toBeDisabled();
+
+      const tokenAddress = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
+      await fireEvent.change(
+        getByTestId('import-tokens-modal-custom-address'),
+        {
+          target: { value: tokenAddress },
+        },
+      );
+      expect(getByText('Next')).not.toBeDisabled();
+
+      // wait for the symbol input to be in the document
+      await waitFor(() =>
+        expect(
+          getByTestId('import-tokens-modal-custom-symbol'),
+        ).toBeInTheDocument(),
+      );
+
+      const tokenSymbol = 'META';
+
+      fireEvent.change(getByTestId('import-tokens-modal-custom-symbol'), {
+        target: { value: tokenSymbol },
+      });
+
+      expect(getByTestId('import-tokens-modal-custom-symbol').value).toBe(
+        'META',
+      );
+
+      const tokenPrecision = '2';
+
+      fireEvent.change(getByTestId('import-tokens-modal-custom-decimals'), {
+        target: { value: tokenPrecision },
+      });
+
+      expect(getByText('Next')).not.toBeDisabled();
+
+      act(() => {
+        fireEvent.click(getByText('Next'));
+      });
+
+      await waitFor(() => {
+        expect(setPendingTokens).toHaveBeenCalledWith({
+          customToken: {
+            address: tokenAddress,
+            chainId: CHAIN_IDS.GOERLI,
+            decimals: Number(tokenPrecision),
+            standard: TokenStandard.ERC20,
+            symbol: tokenSymbol,
+            name: '',
+          },
+          selectedTokens: {},
+          tokenAddressList: ['0x6b175474e89094c44da98b954eedeac495271d0f'],
+        });
+
+        expect(setConfirmationExchangeRates).toHaveBeenCalled();
+
+        expect(getByText('Import')).toBeInTheDocument();
+      });
+    });
+
     it('cancels out of import token flow', () => {
       const onClose = jest.fn();
       render({}, onClose);
@@ -194,113 +302,145 @@ describe('ImportTokensModal', () => {
       expect(onClose).toHaveBeenCalled();
     });
 
-    it('shows error for invalid token address', () => {
+    it('sets and error when a token is an NFT', async () => {
+      getTokenStandardAndDetailsByChain.mockImplementation(() =>
+        Promise.resolve({ standard: TokenStandard.ERC721 }),
+      );
+
       const { getByText, getByTestId } = render();
       const customTokenButton = getByText('Custom token');
       fireEvent.click(customTokenButton);
 
-      const invalidAddress = '0xinvalidaddress';
-      fireEvent.change(getByTestId('import-tokens-modal-custom-address'), {
-        target: { value: invalidAddress },
+      const submit = getByText('Next');
+      expect(submit).toBeDisabled();
+
+      const tokenAddress = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
+      await fireEvent.change(
+        getByTestId('import-tokens-modal-custom-address'),
+        {
+          target: { value: tokenAddress },
+        },
+      );
+
+      expect(submit).toBeDisabled();
+
+      // The last part of this error message won't be found by getByText because it is wrapped as a link.
+      const errorMessage = getByText('This token is an NFT. Add on the');
+      expect(errorMessage).toBeInTheDocument();
+    });
+  });
+
+  describe('Conditional UI states based on network and loading', () => {
+    it('should show loading indicator when tokens are being fetched', () => {
+      useTokensWithFiltering.mockReturnValue({
+        filteredTokenListGenerator: null,
+        isLoading: true,
       });
 
-      // Error appears synchronously for invalid address format
-      expect(getByText('Invalid address')).toBeInTheDocument();
-      expect(getByText('Next')).toBeDisabled();
+      const { getByTestId, queryByPlaceholderText } = render();
+
+      expect(getByTestId('import-tokens-loading')).toBeInTheDocument();
+      expect(getByTestId('import-tokens-loading').textContent).toContain(
+        'Loading',
+      );
+
+      // Should not show search or tabs while loading
+      expect(queryByPlaceholderText('Search tokens')).not.toBeInTheDocument();
     });
 
-    it('does not show error for empty address', () => {
-      const { getByText, getByTestId, queryByText } = render();
-      const customTokenButton = getByText('Custom token');
-      fireEvent.click(customTokenButton);
+    it('should show "unavailable" message when no tokens and not EVM chain', () => {
+      // Mock as non-EVM chain with no token support
+      jest.spyOn(assetUtilsModule, 'isEvmChainId').mockReturnValue(false);
 
-      const emptyAddress = '';
-      fireEvent.change(getByTestId('import-tokens-modal-custom-address'), {
-        target: { value: emptyAddress },
+      useTokensWithFiltering.mockReturnValue({
+        *filteredTokenListGenerator() {
+          // No tokens
+        },
+        isLoading: false,
       });
 
-      // Empty address should not trigger error
-      expect(queryByText('Invalid address')).not.toBeInTheDocument();
-      expect(getByText('Next')).toBeDisabled();
+      const { getByTestId, queryByText } = render();
+
+      expect(getByTestId('import-tokens-no-support')).toBeInTheDocument();
+      expect(getByTestId('import-tokens-no-support').textContent).toContain(
+        'Unavailable',
+      );
+
+      // Should not show tabs when not supported
+      expect(queryByText('Search')).not.toBeInTheDocument();
+      expect(queryByText('Custom token')).not.toBeInTheDocument();
     });
 
-    it('can switch between Search and Custom token tabs', () => {
-      // Mock useTokensWithFiltering to return a token so Search tab appears
-      mockUseTokensWithFiltering.mockReturnValue({
+    it('should show Search tab when tokens are available on EVM chain', () => {
+      jest.spyOn(assetUtilsModule, 'isEvmChainId').mockReturnValue(true);
+
+      useTokensWithFiltering.mockReturnValue({
         *filteredTokenListGenerator() {
           yield {
-            address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
-            symbol: 'UNI',
-            name: 'Uniswap',
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            symbol: 'DAI',
+            name: 'Dai Stablecoin',
             decimals: 18,
-            image: 'https://example.com/uni.png',
-            aggregators: ['CoinGecko'],
-            occurrences: 5,
+            image: 'http://example.com/dai.png',
           };
         },
         isLoading: false,
       });
 
-      const { getByText } = render();
+      const { getByText, queryByTestId } = render();
 
-      const searchTab = getByText('Search');
-      const customTokenTab = getByText('Custom token');
+      // Should show tabs
+      expect(getByText('Search')).toBeInTheDocument();
+      expect(getByText('Custom token')).toBeInTheDocument();
 
-      // Click Custom token tab
-      fireEvent.click(customTokenTab);
-      expect(customTokenTab).toBeInTheDocument();
-
-      // Click Search tab
-      fireEvent.click(searchTab);
-      expect(searchTab).toBeInTheDocument();
-    });
-  });
-
-  describe('Network Selection', () => {
-    it('opens network selector when clicking select network button', () => {
-      const { getByText, getByTestId } = render();
-
-      const networkSelector = getByTestId(
-        'test-import-tokens-drop-down-custom-import',
-      );
-      fireEvent.click(networkSelector);
-
-      expect(getByText('Select a network')).toBeInTheDocument();
+      // Should not show loading or no-support
+      expect(queryByTestId('import-tokens-loading')).not.toBeInTheDocument();
+      expect(queryByTestId('import-tokens-no-support')).not.toBeInTheDocument();
     });
 
-    it('displays current network name', () => {
-      const { getByText } = render();
+    it('should show Custom token tab on EVM chain even without token data', () => {
+      jest.spyOn(assetUtilsModule, 'isEvmChainId').mockReturnValue(true);
 
-      // Goerli should be displayed as the selected network
-      expect(getByText('Goerli')).toBeInTheDocument();
-    });
-  });
+      useTokensWithFiltering.mockReturnValue({
+        *filteredTokenListGenerator() {
+          // No tokens from search
+        },
+        isLoading: false,
+      });
 
-  describe('Validation', () => {
-    it('disables Next button when no tokens are selected', () => {
-      const { getByText } = render();
+      const { getByText, queryByText } = render();
 
-      const nextButton = getByText('Next');
-      expect(nextButton).toBeDisabled();
-    });
-  });
+      // Custom token tab should still be available on EVM chains
+      expect(getByText('Custom token')).toBeInTheDocument();
 
-  describe('Modal Controls', () => {
-    it('closes modal when clicking Close button in header', () => {
-      const onClose = jest.fn();
-      render({}, onClose);
-
-      const closeButton = document.querySelector('button[aria-label="Close"]');
-      fireEvent.click(closeButton);
-
-      expect(clearPendingTokens).toHaveBeenCalled();
-      expect(onClose).toHaveBeenCalled();
+      // Search tab should not show when no tokens
+      expect(queryByText('Search')).not.toBeInTheDocument();
     });
 
-    it('displays Import tokens as modal title', () => {
-      const { getByText } = render();
+    it('should disable Next button when loading', () => {
+      useTokensWithFiltering.mockReturnValue({
+        filteredTokenListGenerator: null,
+        isLoading: true,
+      });
 
-      expect(getByText('Import tokens')).toBeInTheDocument();
+      const { getByTestId } = render();
+
+      expect(getByTestId('import-tokens-button-next')).toBeDisabled();
+    });
+
+    it('should disable Next button when showing no support placeholder', () => {
+      jest.spyOn(assetUtilsModule, 'isEvmChainId').mockReturnValue(false);
+
+      useTokensWithFiltering.mockReturnValue({
+        *filteredTokenListGenerator() {
+          // No tokens
+        },
+        isLoading: false,
+      });
+
+      const { getByTestId } = render();
+
+      expect(getByTestId('import-tokens-button-next')).toBeDisabled();
     });
   });
 });
