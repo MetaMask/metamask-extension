@@ -3,15 +3,16 @@ import type { NetworkController } from '@metamask/network-controller';
 /**
  * Sets RPC failover based on remote feature flags.
  * @param remoteFeatureFlagController - The remote feature flag controller.
- * @param networkController - The network controller.
+ * @param networkController - The network controller.p
  */
 export function updateNetworkControllerRpcFailoverFromRemoteFeatureFlagController(
   networkController: NetworkController,
   remoteFeatureFlagController: RemoteFeatureFlagController,
 ) {
-  const walletFrameworkRpcFailoverEnabled =
-    remoteFeatureFlagController.state.remoteFeatureFlags
-      ?.walletFrameworkRpcFailoverEnabled as boolean | undefined;
+  const walletFrameworkRpcFailoverEnabled = remoteFeatureFlagController.state
+    .remoteFeatureFlags?.walletFrameworkRpcFailoverEnabled as
+    | boolean
+    | undefined;
   if (walletFrameworkRpcFailoverEnabled) {
     networkController.enableRpcFailover();
   } else {
