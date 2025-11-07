@@ -64,6 +64,17 @@ jest.mock('react-router-dom-v5-compat', () => ({
   useNavigate: jest.fn(),
 }));
 
+jest.mock('../../../../../hooks/subscription/useSubscription', () => ({
+  useUserSubscriptions: jest.fn(() => ({
+    subscriptions: [],
+    loading: false,
+    error: null,
+    customerId: undefined,
+    trialedProducts: [],
+  })),
+  useUserSubscriptionByProduct: jest.fn(() => undefined),
+}));
+
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
 
