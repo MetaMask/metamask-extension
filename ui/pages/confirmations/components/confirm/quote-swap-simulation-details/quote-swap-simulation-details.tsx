@@ -46,7 +46,7 @@ export const QuoteSwapSimulationDetails = ({
         fiatAmount: new BigNumber(sourceTokenAmount ?? '0x0', 16)
           .negated()
           .dividedBy(new BigNumber(10).pow(srcAsset.decimals))
-          .times(fiatRates[srcAsset.address as Hex] ?? 0)
+          .times(fiatRates[srcAsset.address.toLowerCase() as Hex] ?? 0)
           .toNumber(),
         usdAmount: 0,
       },
@@ -61,7 +61,7 @@ export const QuoteSwapSimulationDetails = ({
         ),
         fiatAmount: new BigNumber(destTokenAmount)
           .dividedBy(new BigNumber(10).pow(destAsset.decimals))
-          .times(fiatRates[destAsset.address as Hex] ?? 0)
+          .times(fiatRates[destAsset.address.toLowerCase() as Hex] ?? 0)
           .toNumber(),
         usdAmount: 0,
       },
