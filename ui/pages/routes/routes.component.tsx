@@ -652,10 +652,11 @@ export default function Routes() {
           <Route path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}>
             {(props: RouteComponentProps<{ id?: string }>) => {
               const { match, location: v5Location } = props;
-              // Pass the full v5Location because the nested Routes inside ConfirmTransaction
-              // use absolute paths like /confirm-transaction/:id, not relative paths
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const ConfirmTransactionComponent = ConfirmTransaction as any;
+              const ConfirmTransactionComponent =
+                ConfirmTransaction as React.ComponentType<{
+                  params?: { id?: string };
+                  location?: RouteComponentProps['location'];
+                }>;
               return (
                 <AuthenticatedV5Compat>
                   <ConfirmTransactionComponent
@@ -724,23 +725,12 @@ export default function Routes() {
           <Route path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}>
             {(props: RouteComponentProps) => {
               const { history: v5History, location: v5Location } = props;
-              // Create a navigate function compatible with v5-compat for the component
-              const navigate = (
-                to: string,
-                options: {
-                  replace?: boolean;
-                  state?: Record<string, unknown>;
-                } = {},
-              ) => {
-                if (options.replace) {
-                  v5History.replace(to, options.state);
-                } else {
-                  v5History.push(to, options.state);
-                }
-              };
+              const navigate = createV5CompatNavigate(v5History);
               const ConfirmAddSuggestedTokenPageWithProps =
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                ConfirmAddSuggestedTokenPage as any;
+                ConfirmAddSuggestedTokenPage as React.ComponentType<{
+                  navigate: V5CompatNavigate;
+                  location: RouteComponentProps['location'];
+                }>;
               return (
                 <AuthenticatedV5Compat>
                   <ConfirmAddSuggestedTokenPageWithProps
@@ -754,23 +744,12 @@ export default function Routes() {
           <Route path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}>
             {(props: RouteComponentProps) => {
               const { history: v5History, location: v5Location } = props;
-              // Create a navigate function compatible with v5-compat for the component
-              const navigate = (
-                to: string,
-                options: {
-                  replace?: boolean;
-                  state?: Record<string, unknown>;
-                } = {},
-              ) => {
-                if (options.replace) {
-                  v5History.replace(to, options.state);
-                } else {
-                  v5History.push(to, options.state);
-                }
-              };
+              const navigate = createV5CompatNavigate(v5History);
               const ConfirmAddSuggestedNftPageWithProps =
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                ConfirmAddSuggestedNftPage as any;
+                ConfirmAddSuggestedNftPage as React.ComponentType<{
+                  navigate: V5CompatNavigate;
+                  location: RouteComponentProps['location'];
+                }>;
               return (
                 <AuthenticatedV5Compat>
                   <ConfirmAddSuggestedNftPageWithProps
@@ -783,8 +762,11 @@ export default function Routes() {
           </Route>
           <Route path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}>
             {(props: RouteComponentProps<{ id?: string }>) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const ConfirmationPageComponent = ConfirmationPage as any;
+              const ConfirmationPageComponent =
+                ConfirmationPage as React.ComponentType<{
+                  params?: { id?: string };
+                  redirectToHomeOnZeroConfirmations?: boolean;
+                }>;
               return (
                 <AuthenticatedV5Compat>
                   <ConfirmationPageComponent params={props.match.params} />
@@ -1126,8 +1108,7 @@ export default function Routes() {
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      {React.createElement(ToastMaster as any, { location })}
+      <ToastMaster location={location} />
     </div>
   );
 }
