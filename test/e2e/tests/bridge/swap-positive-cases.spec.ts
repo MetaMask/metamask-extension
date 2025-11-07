@@ -10,7 +10,6 @@ describe('Swap tests', function (this: Suite) {
   it('updates recommended swap quote incrementally when SSE events are received', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         ...getBridgeFixtures(
           this.test?.fullTitle(),
           BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
