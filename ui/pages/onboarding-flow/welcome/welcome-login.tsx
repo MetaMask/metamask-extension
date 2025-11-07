@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useSearchParams, useNavigate } from 'react-router-dom-v5-compat';
 import {
   Box,
   Button,
@@ -16,6 +17,7 @@ import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/module
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';
+import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import LoginOptions from './login-options';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
@@ -39,6 +41,9 @@ export default function WelcomeLogin({
   const dispatch = useDispatch();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const theme = useTheme();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const loginParam = searchParams.get('login');
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -48,6 +53,16 @@ export default function WelcomeLogin({
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (loginParam) {
+      setShowLoginOptions(true);
+      setLoginOption(loginParam as LoginOptionType);
+    } else {
+      setShowLoginOptions(false);
+      setLoginOption(null);
+    }
+  }, [loginParam]);
 
   const handleLogin = useCallback(
     async (loginType: LoginType) => {
@@ -79,6 +94,7 @@ export default function WelcomeLogin({
         setLoginOption(option);
         setIsTransitioning(false);
         timeoutRef.current = null;
+        navigate(`${ONBOARDING_WELCOME_ROUTE}?login=${option}`);
       }, 100);
     } else {
       setShowLoginOptions(true);
