@@ -87,17 +87,17 @@ describe('useConfirmationNavigation', () => {
       );
     });
 
-  it('navigates to template route', () => {
-    const result = renderHook(ApprovalType.AddEthereumChain);
+    it('navigates to template route', () => {
+      const result = renderHook(ApprovalType.AddEthereumChain);
 
-    result.navigateToId(APPROVAL_ID_MOCK);
+      result.navigateToId(APPROVAL_ID_MOCK);
 
-    expect(mockUseNavigate).toHaveBeenCalledTimes(1);
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${CONFIRMATION_V_NEXT_ROUTE}/${APPROVAL_ID_MOCK}`,
-      { replace: true },
-    );
-  });
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${CONFIRMATION_V_NEXT_ROUTE}/${APPROVAL_ID_MOCK}`,
+        { replace: true },
+      );
+    });
 
     it('navigates to template route if approval flow', () => {
       const result = renderHook(undefined as never, undefined, [{} as never]);

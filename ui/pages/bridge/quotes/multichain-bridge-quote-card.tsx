@@ -486,6 +486,7 @@ export const MultichainBridgeQuoteCard = ({
                     withPointsSuffix={false}
                     boxClassName="gap-1 bg-background-transparent"
                     textClassName="text-alternative"
+                    useAlternativeIconColor={!estimatedPoints}
                   />
                 )}
             </Row>

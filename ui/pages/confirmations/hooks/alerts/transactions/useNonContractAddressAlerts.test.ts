@@ -5,7 +5,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { waitFor } from '@testing-library/react';
-import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';

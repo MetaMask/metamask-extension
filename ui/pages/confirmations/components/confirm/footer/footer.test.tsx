@@ -106,6 +106,13 @@ describe('ConfirmFooter', () => {
     useIsGaslessLoadingMock.mockReturnValue({
       isGaslessLoading: false,
     });
+
+    mockUseLocation.mockReturnValue({
+      pathname: '/confirm-transaction',
+      search: '',
+      hash: '',
+      state: null,
+    });
   });
 
   it('should match snapshot with signature confirmation', () => {

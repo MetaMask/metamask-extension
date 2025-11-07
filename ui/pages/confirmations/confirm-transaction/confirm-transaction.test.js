@@ -181,9 +181,7 @@ describe('Confirmation Transaction Page', () => {
         ...mockState,
         metamask: { ...mockState.metamask, transactions: [] },
       });
-      mockUseSearchParams.mockImplementation(() => {
-        return { id: null };
-      });
+      mockUseSearchParams.mockReturnValue([new URLSearchParams(''), jest.fn()]);
       ConfirmTransactionDucks.setTransactionToConfirm.mockClear();
 
       renderWithProvider(<ConfirmTransaction />, mockStore);
