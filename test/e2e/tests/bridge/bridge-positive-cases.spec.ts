@@ -117,9 +117,7 @@ describe('Bridge tests', function (this: Suite) {
       },
     );
   });
-  // This test fails with BIP44
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('updates recommended bridge quote incrementally when SSE events are received', async function () {
+  it('updates recommended bridge quote incrementally when SSE events are received', async function () {
     await withFixtures(
       getBridgeFixtures(
         this.test?.fullTitle(),
