@@ -157,7 +157,7 @@ export const useAvailableTokenBalances = (params: {
     });
 
     return availableTokens;
-  }, [price, paymentChainTokenMap, validTokenBalances]);
+  }, [price, productType, paymentChainTokenMap, validTokenBalances]);
 
   return {
     availableTokenBalances: availableTokenBalances ?? [],
