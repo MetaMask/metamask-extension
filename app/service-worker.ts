@@ -1,14 +1,7 @@
 // This file is used only for manifest version 3
 
-// We don't usually `import` files into `service-worker.ts` because we need to load
-// "chunks" via `importScripts`; but in this case these files are so
-// small we won't ever have a problem with these files being "split".
-import './scripts/sentry-install';
+import './scripts/load/bootstrap';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
-
-// We need to define 'window' in the global scope to use it in the service worker
-// @ts-expect-error - typescript doesn't know about this
-globalThis.window = globalThis;
 
 const { chrome } = globalThis;
 
@@ -17,8 +10,6 @@ const { chrome } = globalThis;
 const lazyListener = new ExtensionLazyListener(chrome, {
   runtime: ['onInstalled', 'onConnect'],
 });
-
-globalThis.stateHooks = globalThis.stateHooks || {};
 
 // Set the lazy listener on globalThis.stateHooks so that other bundles can
 // access it.
