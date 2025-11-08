@@ -192,11 +192,7 @@ describe('./utils/helpers.ts', () => {
         filename: 'vendor/trezor/content-script.js',
         import: join(appRoot, `vendor/trezor/content-script.js`),
       },
-      '../offscreen/scripts/offscreen.ts': {
-        chunkLoading: false,
-        filename: 'load-offscreen.js',
-        import: 'offscreen/scripts/offscreen.ts',
-      },
+      offscreen: 'offscreen/offscreen.html',
       'background.js': {
         chunkLoading: false,
         filename: 'background.js',
@@ -261,11 +257,7 @@ describe('./utils/helpers.ts', () => {
     } as helpers.ManifestV3;
     const { entry: entryv3 } = helpers.collectEntries(manifestv3, appRoot);
     assert.deepStrictEqual(entryv3, {
-      '../offscreen/scripts/offscreen.ts': {
-        chunkLoading: false,
-        filename: 'load-offscreen.js',
-        import: 'offscreen/scripts/offscreen.ts',
-      },
+      offscreen: 'offscreen/offscreen.html',
     });
   });
 
