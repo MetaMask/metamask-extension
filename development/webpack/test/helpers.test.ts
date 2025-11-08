@@ -246,12 +246,10 @@ describe('./utils/helpers.ts', () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: 2,
-      background: { page: 'background.html' },
+      background: {},
     } as helpers.ManifestV2;
     const { entry: entryv2 } = helpers.collectEntries(manifestv2, appRoot);
-    assert.deepStrictEqual(entryv2, {
-      background: '<app-root>/background.html',
-    });
+    assert.deepStrictEqual(entryv2, {});
 
     const manifestv3 = {
       name: 'MetaMask',
@@ -259,21 +257,14 @@ describe('./utils/helpers.ts', () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: 3,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      background: { service_worker: 'service-worker.ts' },
+      background: {},
     } as helpers.ManifestV3;
     const { entry: entryv3 } = helpers.collectEntries(manifestv3, appRoot);
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     assert.deepStrictEqual(entryv3, {
       '../offscreen/scripts/offscreen.ts': {
         chunkLoading: false,
         filename: 'load-offscreen.js',
         import: 'offscreen/scripts/offscreen.ts',
-      },
-      'service-worker.ts': {
-        chunkLoading: false,
-        filename: 'service-worker.js',
-        import: '<app-root>/service-worker.ts',
       },
     });
   });

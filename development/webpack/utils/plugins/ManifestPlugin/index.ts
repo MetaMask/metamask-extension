@@ -305,12 +305,10 @@ export class ManifestPlugin<Z extends boolean> {
       }
 
       // handle manifest v3 service worker logic
-      if (manifest.manifest_version === 3) {
-        if (!manifest.background?.service_worker) {
-          throw new Error(
-            'Manifest V3 requires a background.service_worker entry in the manifest',
-          );
-        }
+      if (
+        manifest.manifest_version === 3 &&
+        manifest.background?.service_worker
+      ) {
         manifest.background.service_worker = extensionToJs(
           manifest.background.service_worker,
         );

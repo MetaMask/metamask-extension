@@ -124,12 +124,9 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
   }
 
   if (manifest.manifest_version === 2) {
-    if (!manifest.background?.page) {
-      throw new Error(
-        'Manifest V2 requires a background.page entry in the manifest',
-      );
+    if (manifest.background?.page) {
+      addHtml(manifest.background.page);
     }
-    addHtml(manifest.background.page);
     for (const resource of manifest.web_accessible_resources ?? []) {
       if (resource.endsWith('.js')) {
         addManifestScript(resource);
@@ -139,12 +136,9 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
       addManifestScript(script);
     }
   } else if (manifest.manifest_version === 3) {
-    if (!manifest.background?.service_worker) {
-      throw new Error(
-        'Manifest V3 requires a background.service_worker entry in the manifest',
-      );
+    if (manifest.background?.service_worker) {
+      addManifestScript(manifest.background.service_worker);
     }
-    addManifestScript(manifest.background.service_worker);
     addManifestScript('../offscreen/scripts/offscreen.ts', 'load-offscreen.js');
 
     for (const resource of manifest.web_accessible_resources ?? []) {
