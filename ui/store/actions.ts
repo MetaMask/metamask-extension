@@ -7753,7 +7753,10 @@ export async function submitShieldClaim(params: {
     const response = await fetch(url, {
       method,
       body: formData,
-      headers,
+      // FIXME: remove `Content-Type: multipart/form-data` from the controller
+      headers: {
+        Authorization: headers.Authorization,
+      },
     });
 
     if (!response.ok) {
