@@ -18,7 +18,7 @@ import {
 import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
-import { getHDEntropyIndex, getIsSocialLoginFlow } from '../../../selectors';
+import { getIsSocialLoginFlow } from '../../../selectors';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
 import { MetaMaskReduxDispatch } from '../../../store/store';
@@ -46,7 +46,6 @@ export const ImportSrp = () => {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
-  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const trackEvent = useContext(MetaMetricsContext);
 
   // Providing duplicate SRP throws an error in metamask-controller, which results in a warning in the UI
@@ -73,20 +72,13 @@ export const ImportSrp = () => {
       }
       await dispatch(importMnemonicToVault(secretRecoveryPhrase));
 
-      // Calculate the new HD entropy index before Redux state updates.
-      // The new keyring will be appended to the keyrings array, so its index
-      // will be equal to the current array length (current index + 1).
-      // We need this value now because Redux state updates asynchronously.
-      const freshHdEntropyIndex = hdEntropyIndex + 1;
-
-      // Track the event for the successful import.
+      // Track the event for the continue button click.
+      // Removed the hd_entropy_index property because it is not needed for this event.
+      // As we already track that in the ImportSecretRecoveryPhraseCompleted event i.e. (dispatch(importMnemonicToVault(secretRecoveryPhrase))) above.
       trackEvent({
         category: MetaMetricsEventCategory.Wallet,
-        event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: freshHdEntropyIndex,
-        },
+        event:
+          MetaMetricsEventName.ImportSecretRecoveryPhraseContinueButtonClicked,
       });
 
       navigate(DEFAULT_ROUTE);
