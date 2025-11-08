@@ -25,6 +25,7 @@ const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
   CHAIN_IDS.SEI,
+  CHAIN_IDS.MONAD,
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -82,6 +83,8 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [toEvmCaipChainId(CHAIN_IDS.BASE)]: 'Base',
   [CHAIN_IDS.SEI]: 'Sei',
   [toEvmCaipChainId(CHAIN_IDS.SEI)]: 'Sei',
+  [CHAIN_IDS.MONAD]: 'Monad',
+  [toEvmCaipChainId(CHAIN_IDS.MONAD)]: 'Monad',
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
@@ -171,6 +174,13 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
   [toEvmCaipChainId(CHAIN_IDS.SEI)]: {
     // SEI -> USDC on Sei
     address: '0xe15fC38F6D8c56aF07bbCBe3BAf5708A2Bf42392',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+  },
+  [toEvmCaipChainId(CHAIN_IDS.MONAD)]: {
+    // MON -> USDC on Monad
+    address: '0x754704Bc059F8C67012fEd69BC8A327a5aafb603',
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',

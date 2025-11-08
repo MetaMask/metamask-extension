@@ -163,12 +163,14 @@ export default function OnboardingFlow() {
   ]);
 
   useEffect(() => {
-    const trace = bufferedTrace?.({
+    bufferedTrace?.({
       name: TraceName.OnboardingJourneyOverall,
       op: TraceOperation.OnboardingUserJourney,
     });
     if (onboardingParentContext) {
-      onboardingParentContext.current = trace;
+      onboardingParentContext.current = {
+        _name: TraceName.OnboardingJourneyOverall,
+      };
     }
   }, [onboardingParentContext, bufferedTrace]);
 

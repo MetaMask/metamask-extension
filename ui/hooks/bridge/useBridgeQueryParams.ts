@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import {
   CaipAssetType,
   CaipAssetTypeStruct,
@@ -87,8 +87,8 @@ export const useBridgeQueryParams = () => {
 
   const abortController = useRef<AbortController>(new AbortController());
 
-  const { search } = useLocation();
-  const history = useHistory();
+  const { search, pathname } = useLocation();
+  const navigate = useNavigate();
 
   // Parse CAIP asset data
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
@@ -102,9 +102,15 @@ export const useBridgeQueryParams = () => {
           updatedSearchParams.delete(param);
         }
       });
-      history.replace({ search: updatedSearchParams.toString() });
+      navigate(
+        {
+          pathname,
+          search: updatedSearchParams.toString(),
+        },
+        { replace: true },
+      );
     },
-    [search, history],
+    [search, pathname, navigate],
   );
 
   const [parsedFromAssetId, setParsedFromAssetId] =

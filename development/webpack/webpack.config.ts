@@ -170,6 +170,11 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // Copy rive.wasm for Rive animations
+      {
+        from: join(context, '../node_modules/@rive-app/canvas/rive.wasm'),
+        to: 'images/riv_animations/rive.wasm',
+      },
     ],
   }),
 ];
@@ -397,9 +402,9 @@ const config = {
           codeFenceLoader,
         ],
       },
-      // images, fonts, wasm, etc.
+      // images, fonts, wasm, riv etc.
       {
-        test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm)$/u,
+        test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm|riv)$/u,
         type: 'asset/resource',
         generator: { filename: 'assets/[name].[contenthash][ext]' },
       },

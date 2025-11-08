@@ -178,6 +178,11 @@ export function ConfirmAlertModal({
     return null;
   }
 
+  const acknowledgementRequired =
+    selectedAlert.severity === Severity.Danger &&
+    !selectedAlert.isBlocking &&
+    !selectedAlert.acknowledgeBypass;
+
   return (
     <AlertModal
       ownerId={ownerId}
@@ -204,7 +209,7 @@ export function ConfirmAlertModal({
         <ConfirmButtons
           onCancel={onCancel}
           onSubmit={onSubmit}
-          isConfirmed={confirmCheckbox}
+          isConfirmed={acknowledgementRequired ? confirmCheckbox : true}
         />
       }
     />

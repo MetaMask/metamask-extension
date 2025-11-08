@@ -5,6 +5,124 @@
 // startup.
 @use "react-responsive-carousel/lib/styles/carousel";
 
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(5px) scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeInUpSmooth {
+  from {
+    opacity: 0;
+    transform: translateY(5px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideUpSmooth {
+  from {
+    transform: translateY(90px);
+  }
+
+  to {
+    transform: translateY(-60px);
+  }
+}
+
+.riv-animation {
+  &__wordmark-container {
+    height: 200px;
+    width: 200px;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    will-change: transform;
+    transform: translateY(90px);
+
+
+    &--complete {
+      animation: slideUpSmooth 0.6s ease-out forwards;
+    }
+
+    &--skip-transition {
+      transform: translateY(-60px);
+      animation: none;
+      transition: none;
+    }
+  }
+
+  &__fox-container {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 400px;
+    width: 100%;
+    max-width: 1280px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    pointer-events: none;
+
+    @include design-system.screen-md-max {
+      height: 300px;
+      width: 400px;
+      max-width: 400px;
+      margin-bottom: -70px;
+    }
+
+    &--loader {
+      height: 550px;
+      width: 550px;
+      max-width: 550px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: -250px;
+    }
+  }
+
+  &__canvas {
+    height: 100%;
+    width: 100%;
+  }
+
+  &__spinner {
+    width: 2rem;
+    height: 2rem;
+    align-self: center;
+    margin-top: -130px;
+  }
+}
+
+.welcome-container {
+  position: relative;
+
+  &__wordmark-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &--complete {
+      animation: slideUpSmooth 1s ease-out forwards;
+    }
+  }
+}
+
 .welcome-banner {
   &__wrapper {
     max-width: 1280px;
@@ -30,15 +148,36 @@
 }
 
 .welcome-login {
-  height: calc(100% - 16px);
-  max-height: 728px;
-  width: 446px;
-  background-color: var(--color-accent02-light);
-  border-radius: 24px;
-  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+  width: 343px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: -40px;
+  overflow: hidden;
+  position: relative;
 
-  &__content {
-    flex: 1;
+
+  &__cta {
+    &--fade-out {
+      opacity: 0 !important;
+      transform: translateX(-30px) !important;
+      animation: none;
+    }
+  }
+
+  &__options {
+    width: 100%;
+    opacity: 0;
+    transform: translateX(30px);
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    &--fade-in {
+      animation: fadeInUpSmooth 0.2s ease-in-out forwards;
+    }
   }
 
   &__title {
@@ -71,7 +210,15 @@
       top: 50%;
       width: 100%;
       height: 1px;
-      background-color: var(--color-border-muted);
+      background-color: var(--color-text-alternative);
+    }
+
+    &-text {
+      background-color: var(--welcome-bg-light);
+
+      @media (prefers-color-scheme: dark) {
+        background-color: var(--color-accent02-dark);
+      }
     }
   }
 

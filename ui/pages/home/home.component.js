@@ -171,6 +171,7 @@ export default class Home extends PureComponent {
     showShieldEntryModal: PropTypes.bool,
     isSocialLoginFlow: PropTypes.bool,
     lookupSelectedNetworks: PropTypes.func.isRequired,
+    navState: PropTypes.object,
   };
 
   state = {
@@ -191,8 +192,12 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
+      navState,
     } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
+    // Read stayOnHomePage from both v5 location.state and v5-compat navState
+    const stayOnHomePage =
+      Boolean(location?.state?.stayOnHomePage) ||
+      Boolean(navState?.stayOnHomePage);
 
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
@@ -221,8 +226,12 @@ export default class Home extends PureComponent {
       location,
       pendingApprovals,
       hasApprovalFlows,
+      navState,
     } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
+    // Read stayOnHomePage from both v5 location.state and v5-compat navState
+    const stayOnHomePage =
+      Boolean(location?.state?.stayOnHomePage) ||
+      Boolean(navState?.stayOnHomePage);
 
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {

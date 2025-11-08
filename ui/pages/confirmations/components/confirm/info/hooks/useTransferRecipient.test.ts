@@ -1,12 +1,16 @@
 import {
   TransactionMeta,
   TransactionType,
+  NestedTransactionMetadata,
 } from '@metamask/transaction-controller';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
-import { useTransferRecipient } from './useTransferRecipient';
+import {
+  useTransferRecipient,
+  useNestedTransactionTransferRecipients,
+} from './useTransferRecipient';
 
 const ADDRESS_MOCK = '0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B';
 const ADDRESS_2_MOCK = '0x2e0D7E8c45221FcA00d74a3609A0f7097035d09C';
@@ -25,6 +29,19 @@ function runHook(transaction?: TransactionMeta) {
   );
 
   return result.current as string | undefined;
+}
+
+function runNestedHook(transaction?: TransactionMeta) {
+  const state = transaction
+    ? getMockConfirmStateForTransaction(transaction)
+    : {};
+
+  const { result } = renderHookWithConfirmContextProvider(
+    useNestedTransactionTransferRecipients,
+    state,
+  );
+
+  return result.current as string[];
 }
 
 describe('useTransferRecipient', () => {
@@ -70,5 +87,37 @@ describe('useTransferRecipient', () => {
         },
       }),
     ).toBe(ADDRESS_2_MOCK);
+  });
+});
+
+describe('useNestedTransactionTransferRecipients', () => {
+  it('returns empty array if no nested transactions', () => {
+    expect(
+      runNestedHook({
+        ...TRANSACTION_METADATA_MOCK,
+        nestedTransactions: [],
+      }),
+    ).toEqual([]);
+  });
+  it('returns nested transaction recipients', () => {
+    expect(
+      runNestedHook({
+        ...TRANSACTION_METADATA_MOCK,
+        nestedTransactions: [{ to: ADDRESS_MOCK }],
+      }),
+    ).toEqual([ADDRESS_MOCK]);
+
+    expect(
+      runNestedHook({
+        ...TRANSACTION_METADATA_MOCK,
+        nestedTransactions: [
+          {
+            ...TRANSACTION_METADATA_MOCK.txParams,
+            to: ADDRESS_2_MOCK,
+            data: genUnapprovedTokenTransferConfirmation().txParams.data,
+          } as unknown as NestedTransactionMetadata,
+        ],
+      }),
+    ).toEqual([ADDRESS_MOCK]);
   });
 });

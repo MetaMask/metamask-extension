@@ -104,6 +104,16 @@ function getSeverityStyle(severity?: Severity) {
   }
 }
 
+function requiresAcknowledgement(alert: Alert) {
+  return (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    alert.severity === Severity.Danger &&
+    !alert.isBlocking &&
+    !alert.acknowledgeBypass
+  );
+}
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function AlertHeader({
@@ -247,13 +257,12 @@ export function AcknowledgeCheckboxBase({
   isConfirmed: boolean;
   label?: string;
 }) {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  if (selectedAlert.isBlocking || selectedAlert.severity !== Severity.Danger) {
+  const t = useI18nContext();
+
+  if (!requiresAcknowledgement(selectedAlert)) {
     return null;
   }
 
-  const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
     <Box
@@ -385,8 +394,8 @@ export function AlertModal({
   const isConfirmed = selectedAlert
     ? isAlertConfirmed(selectedAlert.key)
     : false;
-  const isAlertDanger = selectedAlert
-    ? selectedAlert.severity === Severity.Danger
+  const acknowledgementRequired = selectedAlert
+    ? requiresAcknowledgement(selectedAlert)
     : false;
 
   const handleCheckboxClick = useCallback(() => {
@@ -448,7 +457,7 @@ export function AlertModal({
               <>
                 <AcknowledgeButton
                   onAcknowledgeClick={onAcknowledgeClick}
-                  isConfirmed={!isAlertDanger || isConfirmed}
+                  isConfirmed={acknowledgementRequired ? isConfirmed : true}
                   hasActions={Boolean(selectedAlert.actions)}
                   isBlocking={selectedAlert.isBlocking}
                 />

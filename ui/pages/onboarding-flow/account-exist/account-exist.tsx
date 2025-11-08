@@ -59,7 +59,9 @@ export default function AccountExist() {
     // reset onboarding flow
     await dispatch(resetOnboarding());
     await forceUpdateMetamaskState(dispatch);
-    navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    navigate(ONBOARDING_WELCOME_ROUTE, {
+      replace: true,
+    });
   };
 
   const onDone = async () => {

@@ -23,6 +23,10 @@ export const getSanitizedChainId = (chainId: CaipChainId) => {
 export const extractWalletIdFromGroupId = (
   accountGroupId: AccountGroupId,
 ): AccountWalletId => {
+  if (!accountGroupId) {
+    throw new Error('Account group ID is required');
+  }
+
   if (accountGroupId.startsWith('snap:')) {
     if (accountGroupId.includes('@') && accountGroupId.includes('/')) {
       const lastSlashIndex = accountGroupId.lastIndexOf('/');

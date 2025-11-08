@@ -773,6 +773,7 @@ describe('AppStateController', () => {
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
@@ -780,6 +781,7 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastUpdatedAt": null,
+              "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
@@ -860,6 +862,7 @@ describe('AppStateController', () => {
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
@@ -867,6 +870,7 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastUpdatedAt": null,
+              "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
@@ -939,6 +943,7 @@ describe('AppStateController', () => {
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
@@ -946,6 +951,7 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastUpdatedAt": null,
+              "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
@@ -1020,6 +1026,7 @@ describe('AppStateController', () => {
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
@@ -1027,6 +1034,7 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastUpdatedAt": null,
+              "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "networkConnectionBanner": {
                 "status": "unknown",

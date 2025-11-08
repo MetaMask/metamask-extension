@@ -11,7 +11,6 @@
         "Clipboard": true,
         "Document": true,
         "DocumentFragment": true,
-        "DocumentFragment.prototype": true,
         "Element": true,
         "Event": true,
         "EventTarget": true,
@@ -33,25 +32,13 @@
     },
     "@popperjs/core": {
       "globals": {
-        "devicePixelRatio": true,
-        "devicePixelRatio.Symbol(Symbol.toPrimitive)": true,
-        "devicePixelRatio.Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive)": true,
-        "devicePixelRatio.Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive)": true,
-        "devicePixelRatio.Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive)": true
+        "devicePixelRatio": true
       }
     },
     "@sentry/utils": {
       "globals": {
-        "performance": true,
         "performance.now": true,
-        "performance.now.now": true,
-        "performance.now.now.timeOrigin": true,
-        "performance.now.now.timeOrigin.timeOrigin": true,
-        "performance.now.now.timeOrigin.timeOrigin.Symbol(Symbol.toPrimitive)": true,
-        "performance.now.now.timeOrigin.timeOrigin.timing": true,
-        "performance.now.now.timeOrigin.timeOrigin.timing.timing": true,
-        "performance.now.now.timeOrigin.timeOrigin.timing.timing.navigationStart": true,
-        "navigator": true,
+        "performance.timeOrigin": true,
         "devicePixelRatio": true,
         "navigator.userAgent": true,
         "navigator.language": true,
@@ -60,20 +47,16 @@
         "onunhandledrejection": true,
         "addEventListener": true,
         "PerformanceObserver": true,
-        "chrome": true,
+        "chrome.app": true,
         "chrome.runtime": true,
-        "chrome.runtime.runtime": true,
-        "chrome.runtime.runtime.id": true,
-        "location": true,
+        "location": false,
         "location.href": true,
         "top": true
       }
     },
     "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
       "globals": {
-        "navigator": true,
-        "navigator.userAgentData": true,
-        "navigator.userAgentData.userAgentData": true
+        "navigator.userAgentData": true
       }
     },
     "^ background; v popup": {},
@@ -83,17 +66,7 @@
         "fetch": true,
         "Request": true,
         "Response": true,
-        "TextEncoder": true,
-        "fetch.Symbol(Symbol.toStringTag)": true,
-        "Request.Symbol(Symbol.toStringTag)": true,
-        "Response.Symbol(Symbol.toStringTag)": true,
-        "TextEncoder.prototype": true,
-        "Request.Symbol(Symbol.toStringTag).prototype": true,
-        "Request.Symbol(Symbol.toStringTag).prototype.headers": true,
-        "Request.Symbol(Symbol.toStringTag).prototype.headers.has": true,
-        "Response.Symbol(Symbol.toStringTag).prototype": true,
-        "Response.Symbol(Symbol.toStringTag).prototype.body": true,
-        "Response.Symbol(Symbol.toStringTag).prototype.body.Symbol(Symbol.toStringTag)": true
+        "TextEncoder": true
       }
     },
     "browserify>util": {
@@ -108,22 +81,13 @@
     },
     "core-js-pure": {
       "globals": {
-        "navigator": true,
         "navigator.userAgent": true,
-        "navigator.userAgent.Symbol(Symbol.toPrimitive)": true,
         "MessageChannel": true,
-        "location": true,
-        "MessageChannel.prototype": true,
-        "MessageChannel.prototype.port2": true,
-        "MessageChannel.prototype.port2.port1": true,
-        "MessageChannel.prototype.port2.postMessage": true,
-        "MessageChannel.prototype.port2.postMessage.length": true,
-        "MessageChannel.prototype.port2.postMessage.length.name": true
+        "location": true
       }
     },
     "ethers>@ethersproject/random": {
       "globals": {
-        "crypto": true,
         "crypto.getRandomValues": true
       }
     },
@@ -173,15 +137,12 @@
     },
     "eth-lattice-keyring>gridplus-sdk>buffer": {
       "globals": {
-        "SharedArrayBuffer": true,
-        "SharedArrayBuffer.Symbol(Symbol.hasInstance)": true,
-        "SharedArrayBuffer.Symbol(Symbol.hasInstance).name": true
+        "SharedArrayBuffer": true
       }
     },
     "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": {
       "globals": {
         "DOMException": true,
-        "DOMException.prototype": true,
         "fetch": true
       }
     },
@@ -245,6 +206,41 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "bitcoin-address-validation": true
+      }
+    },
+    "@rive-app/react-canvas>@rive-app/canvas": {
+      "globals": {
+        "AudioContext": false,
+        "DOMMatrix": false,
+        "FinalizationRegistry": false,
+        "Iterator": false,
+        "MouseEvent": false,
+        "ResizeObserver": false,
+        "crypto": false,
+        "define": false,
+        "devicePixelRatio": false,
+        "h": false,
+        "importScripts": false,
+        "location": false,
+        "prompt": false,
+        "readline": false,
+        "webkitAudioContext": false,
+        "fetch": false,
+        "XMLHttpRequest": false,
+        "document": false,
+        "document.createElement": true,
+        "navigator": false,
+        "navigator.userAgent": true
+      }
+    },
+    "@rive-app/react-canvas": {
+      "globals": {
+        "IntersectionObserver": false,
+        "ResizeObserver": false,
+        "devicePixelRatio": false,
+        "innerHeight": false,
+        "innerWidth": false,
+        "matchMedia": false
       }
     }
   }

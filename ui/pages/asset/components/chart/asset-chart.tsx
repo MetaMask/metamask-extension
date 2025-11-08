@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Chart,
   LineElement,
@@ -14,7 +14,14 @@ import {
 import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { brandColor } from '@metamask/design-tokens';
-import { CaipAssetType, Hex } from '@metamask/utils';
+import {
+  Hex,
+  isCaipAssetType,
+  isHexString,
+  KnownCaipNamespace,
+  toCaipAssetType,
+  hexToNumber,
+} from '@metamask/utils';
 import { trim } from 'lodash';
 import { Duration } from 'luxon';
 import { useTheme } from '../../../../hooks/useTheme';
@@ -132,6 +139,28 @@ const getTranslatedTimeRangeLabel = (
   );
 };
 
+export function convertAddressToAssetCaipType(
+  address: string,
+  chainId: string,
+) {
+  if (isCaipAssetType(address)) {
+    return address;
+  }
+
+  // Create EIP155 EVM asset type
+  if (isHexString(address) && isHexString(chainId)) {
+    return toCaipAssetType(
+      KnownCaipNamespace.Eip155,
+      hexToNumber(chainId).toString(),
+      'erc20',
+      address,
+    );
+  }
+
+  // Unsupported CAIP asset type
+  return undefined;
+}
+
 // A chart showing historic prices for a native or token asset
 const AssetChart = ({
   chainId,
@@ -149,7 +178,10 @@ const AssetChart = ({
   const t = useI18nContext();
   const theme = useTheme();
 
-  const timeRanges = useChartTimeRanges(address as CaipAssetType, currency);
+  const caipAssetType = useMemo(() => {
+    return convertAddressToAssetCaipType(address, chainId);
+  }, [address, chainId]);
+  const timeRanges = useChartTimeRanges(caipAssetType, currency);
 
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>(
     timeRanges[0] ?? 'P1D',

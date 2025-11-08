@@ -9,6 +9,7 @@ import {
 } from '../../../../shared/lib/multichain/accounts';
 import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 import { RecipientValidationResult } from '../types/send';
+import { LOWER_CASED_BURN_ADDRESSES } from '../constants/token';
 
 export const findConfusablesInRecipient = (
   address: string,
@@ -48,11 +49,6 @@ export const findConfusablesInRecipient = (
   }
   return {};
 };
-
-const LOWER_CASED_BURN_ADDRESSES = [
-  '0x0000000000000000000000000000000000000000',
-  '0x000000000000000000000000000000000000dead',
-];
 
 export const validateEvmHexAddress = async (
   address: string,

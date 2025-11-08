@@ -4,6 +4,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
+import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { ONBOARDING_WELCOME_ROUTE } from '../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
@@ -15,11 +16,15 @@ const mockTryUnlockMetamask = jest.fn(() => {
   };
 });
 const mockMarkPasswordForgotten = jest.fn();
+const mockResetWallet = jest.fn(() => {
+  return Promise.resolve();
+});
 
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   tryUnlockMetamask: () => mockTryUnlockMetamask,
   markPasswordForgotten: () => mockMarkPasswordForgotten,
+  resetWallet: () => mockResetWallet,
 }));
 
 const mockElement = document.createElement('svg');
@@ -191,5 +196,49 @@ describe('Unlock Page', () => {
     expect(history.push).toHaveBeenCalledWith(intendedPath + intendedSearch);
     expect(history.location.pathname).toBe(intendedPath);
     expect(history.location.search).toBe(intendedSearch);
+  });
+
+  it('should show login error modal when authentication error is thrown', async () => {
+    const intendedPath = '/intended-route';
+    const intendedSearch = '?abc=123';
+    const mockStateNonUnlocked = {
+      metamask: { isUnlocked: false, completedOnboarding: true },
+    };
+    const store = configureMockStore([thunk])(mockStateNonUnlocked);
+    const history = createMemoryHistory({
+      initialEntries: [
+        {
+          pathname: '/unlock',
+          state: { from: { pathname: intendedPath, search: intendedSearch } },
+        },
+      ],
+    });
+    jest.spyOn(history, 'push');
+
+    mockTryUnlockMetamask.mockImplementationOnce(
+      jest.fn(() => {
+        return Promise.reject(
+          new Error(
+            SeedlessOnboardingControllerErrorMessage.AuthenticationError,
+          ),
+        );
+      }),
+    );
+    const mockForceUpdateMetamaskState = jest.fn();
+
+    const { queryByTestId } = renderWithProvider(
+      <Router history={history}>
+        <UnlockPage forceUpdateMetamaskState={mockForceUpdateMetamaskState} />
+      </Router>,
+      store,
+    );
+    const passwordField = queryByTestId('unlock-password');
+    const loginButton = queryByTestId('unlock-submit');
+    fireEvent.change(passwordField, { target: { value: 'a-password' } });
+    fireEvent.click(loginButton);
+
+    await waitFor(() => {
+      expect(queryByTestId('login-error-modal')).toBeInTheDocument();
+    });
   });
 });

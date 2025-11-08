@@ -49,7 +49,8 @@ describe('Snap Account Transfers', function (this: Suite) {
           recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
           amount: '1',
         });
-        await driver.waitForSelector('.transaction-status-label--confirmed');
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
 
         await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
@@ -99,7 +100,8 @@ describe('Snap Account Transfers', function (this: Suite) {
           amount: '1',
           isSyncFlow: false,
         });
-        await driver.waitForSelector('.transaction-status-label--confirmed');
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
 
         await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();

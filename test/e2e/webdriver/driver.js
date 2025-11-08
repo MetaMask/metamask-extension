@@ -806,7 +806,7 @@ class Driver {
    * @param rawLocator - The locator used to identify the element to be clicked
    * @param timeout - The maximum time in ms to wait for the element to disappear after clicking.
    */
-  async clickElementAndWaitToDisappear(rawLocator, timeout = 2000) {
+  async clickElementAndWaitToDisappear(rawLocator, timeout = 3000) {
     const element = await this.findClickableElement(rawLocator);
     await element.click();
     await element.waitForElementState('hidden', timeout);

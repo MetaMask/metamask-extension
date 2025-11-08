@@ -187,11 +187,11 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
       );
       ///: END:ONLY_INCLUDE_IF
 
-      const allEnabledNetworks = Object.values(
-        controller.state.enabledNetworkMap,
-      ).reduce((acc, curr) => {
-        return { ...acc, ...curr };
-      }, {});
+      const allEnabledNetworks = {};
+
+      for (const network of Object.values(controller.state.enabledNetworkMap)) {
+        Object.assign(allEnabledNetworks, network);
+      }
 
       if (Object.keys(allEnabledNetworks).length === 1) {
         const chainId = Object.keys(allEnabledNetworks)[0];

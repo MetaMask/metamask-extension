@@ -22,6 +22,13 @@ const store = configureStore({
   },
 });
 
+jest.mock(
+  '../../../../../selectors/gator-permissions/gator-permissions',
+  () => ({
+    getPendingRevocations: jest.fn().mockReturnValue([]),
+  }),
+);
+
 describe('Permission List Item', () => {
   beforeAll(() => {
     // Set Luxon to use UTC as the default timezone for consistent test results

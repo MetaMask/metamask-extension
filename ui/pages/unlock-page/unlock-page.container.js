@@ -15,8 +15,13 @@ import {
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
+  resetWallet,
 } from '../../store/actions';
-import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
+import {
+  getIsSocialLoginFlow,
+  getFirstTimeFlowType,
+  getTheme,
+} from '../../selectors';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import UnlockPage from './unlock-page.component';
 
@@ -29,6 +34,7 @@ const mapStateToProps = (state) => {
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     isOnboardingCompleted: getCompletedOnboarding(state),
     firstTimeFlowType: getFirstTimeFlowType(state),
+    theme: getTheme(state),
   };
 };
 
@@ -40,6 +46,7 @@ const mapDispatchToProps = (dispatch) => {
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
     checkIsSeedlessPasswordOutdated: () =>
       dispatch(checkIsSeedlessPasswordOutdated()),
+    resetWallet: () => dispatch(resetWallet()),
   };
 };
 

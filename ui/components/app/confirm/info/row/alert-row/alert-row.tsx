@@ -54,12 +54,15 @@ export const ConfirmInfoAlertRow = ({
   const { getFieldAlerts } = useAlerts(ownerId);
   const fieldAlerts = getFieldAlerts(alertKey);
   const hasFieldAlert = fieldAlerts.length > 0;
-  const selectedAlertSeverity = fieldAlerts[0]?.severity;
-  const selectedAlertKey = fieldAlerts[0]?.key;
-  const selectedAlertShowArrow = fieldAlerts[0]?.showArrow;
-  const selectedAlertInlineAlertText = fieldAlerts[0]?.inlineAlertText;
+  const selectedAlert = fieldAlerts[0];
+  const selectedAlertSeverity = selectedAlert?.severity;
+  const selectedAlertKey = selectedAlert?.key;
+  const selectedAlertShowArrow = selectedAlert?.showArrow;
+  const selectedAlertInlineAlertText = selectedAlert?.inlineAlertText;
   const selectedAlertIsOpenModalOnClick =
-    fieldAlerts[0]?.isOpenModalOnClick ?? true;
+    selectedAlert?.isOpenModalOnClick ?? true;
+  const selectedAlertHideFromAlertNavigation =
+    selectedAlert?.hideFromAlertNavigation ?? false;
 
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
 
@@ -139,7 +142,7 @@ export const ConfirmInfoAlertRow = ({
           onFinalAcknowledgeClick={handleModalClose}
           onClose={handleModalClose}
           showCloseIcon={false}
-          skipAlertNavigation={true}
+          skipAlertNavigation={selectedAlertHideFromAlertNavigation}
         />
       )}
       {confirmInfoRow}

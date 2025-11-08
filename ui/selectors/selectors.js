@@ -497,10 +497,8 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
         };
       }
 
-      return {
-        ...accounts,
-        [internalAccount.address]: account,
-      };
+      accounts[internalAccount.address] = account;
+      return accounts;
     }, {}),
 );
 /**
@@ -2973,6 +2971,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.MOONBEAM,
     CHAIN_IDS.MOONRIVER,
     CHAIN_IDS.SEI,
+    CHAIN_IDS.MONAD,
   ].includes(chainId);
 }
 
@@ -3927,16 +3926,11 @@ export function getAccountToConnectToActiveTab(state) {
   const numberOfAccounts = Object.keys(accounts).length;
 
   if (
-    connectedAccounts.length &&
-    connectedAccounts.length !== numberOfAccounts
+    connectedAccounts.length > 0 &&
+    connectedAccounts.length !== numberOfAccounts &&
+    !connectedAccounts.includes(selectedInternalAccount.address)
   ) {
-    if (
-      connectedAccounts.findIndex(
-        (address) => address === selectedInternalAccount.address,
-      ) === -1
-    ) {
-      return getInternalAccount(state, selectedInternalAccount.id);
-    }
+    return getInternalAccount(state, selectedInternalAccount.id);
   }
 
   return undefined;
@@ -4104,6 +4098,16 @@ export function getShowUpdateModal(state) {
     enoughTimePassedSinceLastUpdate;
 
   return showUpdateModal;
+}
+
+/**
+ * Gets the previous version that the extension was updated from.
+ *
+ * @param {import('../../ui/store/store').MetaMaskReduxState} state - The MetaMask state.
+ * @returns {string | null} The previous version string, or null if not available.
+ */
+export function getLastUpdatedFromVersion(state) {
+  return state.metamask.lastUpdatedFromVersion;
 }
 
 /**

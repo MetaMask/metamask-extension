@@ -20,6 +20,10 @@ jest.mock('../../../../store/actions', () => ({
   updateAndApproveTx: jest.fn(),
 }));
 
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: jest.fn(),
+}));
 jest.mock('../gas/useIsGaslessSupported');
 
 jest.mock('../gas/useGaslessSupportedSmartTransactions');

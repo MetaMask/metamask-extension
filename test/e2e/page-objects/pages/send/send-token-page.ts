@@ -388,16 +388,10 @@ class SendTokenPage {
     tokenId?: string,
   ): Promise<void> {
     console.log(`Checking if token symbol "${tokenSymbol}" is displayed`);
-    const assetPickerSymbol = await this.driver.waitForSelector(
-      this.assetPickerSymbol,
-    );
-    this.driver.waitForNonEmptyElement(assetPickerSymbol);
-    const text = await assetPickerSymbol.getText();
-    assert.equal(
-      text,
-      tokenSymbol,
-      `Expected token symbol to be ${tokenSymbol}, got ${text}`,
-    );
+    await this.driver.waitForSelector({
+      css: this.assetPickerSymbol,
+      text: tokenSymbol,
+    });
 
     if (tokenId) {
       const id = `#${tokenId}`;

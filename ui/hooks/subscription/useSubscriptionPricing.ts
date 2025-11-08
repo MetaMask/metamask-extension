@@ -3,18 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
   ChainPaymentInfo,
-  PAYMENT_TYPES,
   PaymentType,
   PricingPaymentMethod,
   PricingResponse,
-  PRODUCT_TYPES,
   ProductPrice,
   ProductType,
-  RECURRING_INTERVALS,
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { getSubscriptionPricing } from '../../selectors/subscription';
 import {
   getSubscriptionCryptoApprovalAmount,
@@ -168,6 +164,13 @@ export const useAvailableTokenBalances = (params: {
   return availableTokenBalances;
 };
 
+/**
+ * Use this hook to get the subscription pricing.
+ *
+ * @param options - The options for the hook.
+ * @param options.refetch - Whether to refetch the subscription pricing from api.
+ * @returns The subscription pricing.
+ */
 export const useSubscriptionPricing = (
   { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
@@ -206,84 +209,4 @@ export const useSubscriptionPaymentMethods = (
       ),
     [pricing, paymentType],
   );
-};
-
-/**
- * Use this hook to get the shield subscription price derived from transaction data.
- *
- * @param params - The parameters for the hook.
- * @param params.transactionMeta - The transaction meta.
- * @param params.decodedApprovalAmount - The decoded approval amount.
- * @returns The product price.
- */
-export const useShieldSubscriptionPricingFromTokenApproval = ({
-  transactionMeta,
-  decodedApprovalAmount,
-}: {
-  transactionMeta?: TransactionMeta;
-  decodedApprovalAmount?: string;
-}) => {
-  const { subscriptionPricing } = useSubscriptionPricing();
-  const pricingPlans = useSubscriptionProductPlans(
-    PRODUCT_TYPES.SHIELD,
-    subscriptionPricing,
-  );
-  const cryptoPaymentMethod = useSubscriptionPaymentMethods(
-    PAYMENT_TYPES.byCrypto,
-    subscriptionPricing,
-  );
-  const selectedTokenPrice = useMemo(() => {
-    return cryptoPaymentMethod?.chains
-      ?.find(
-        (chain) =>
-          chain.chainId.toLowerCase() ===
-          transactionMeta?.chainId.toLowerCase(),
-      )
-      ?.tokens.find(
-        (token) =>
-          token.address.toLowerCase() ===
-          transactionMeta?.txParams?.to?.toLowerCase(),
-      );
-  }, [cryptoPaymentMethod, transactionMeta]);
-
-  // need to do async here since `getSubscriptionCryptoApprovalAmount` make call to background script
-  const { value: productPrice, pending } = useAsyncResult(async (): Promise<
-    ProductPrice | undefined
-  > => {
-    if (selectedTokenPrice) {
-      const params = {
-        chainId: transactionMeta?.chainId as Hex,
-        paymentTokenAddress: selectedTokenPrice.address as Hex,
-        productType: PRODUCT_TYPES.SHIELD,
-      };
-      // Get all intervals from RECURRING_INTERVALS
-      const intervals = Object.values(RECURRING_INTERVALS);
-
-      // Fetch approval amounts for all intervals
-      const approvalAmounts = await Promise.all(
-        intervals.map((interval) =>
-          getSubscriptionCryptoApprovalAmount({
-            ...params,
-            interval,
-          }),
-        ),
-      );
-
-      // Find the matching plan by comparing approval amounts
-      for (let i = 0; i < approvalAmounts.length; i++) {
-        if (approvalAmounts[i]?.approveAmount === decodedApprovalAmount) {
-          return pricingPlans?.find((plan) => plan.interval === intervals[i]);
-        }
-      }
-    }
-
-    return undefined;
-  }, [
-    transactionMeta,
-    selectedTokenPrice,
-    decodedApprovalAmount,
-    pricingPlans,
-  ]);
-
-  return { productPrice, pending, selectedTokenPrice };
 };

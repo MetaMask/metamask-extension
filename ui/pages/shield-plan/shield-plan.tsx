@@ -273,7 +273,6 @@ const ShieldPlan = () => {
         ) ?? [],
     [pricingPlans, t],
   );
-  const selectedPlanData = plans.find((plan) => plan.id === selectedPlan);
 
   const planDetails = useMemo(() => {
     const details = [];
@@ -285,14 +284,20 @@ const ShieldPlan = () => {
         ]),
       );
     }
-    details.push(
-      selectedPaymentMethod === PAYMENT_TYPES.byCrypto
-        ? t('shieldPlanDetails2')
-        : t('shieldPlanDetails2Card'),
-    );
-    details.push(t('shieldPlanDetails3'));
+
+    let planDetails2 = t('shieldPlanDetails2Card');
+    if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
+      planDetails2 =
+        selectedPlan === RECURRING_INTERVALS.year
+          ? t('shieldPlanDetails2CryptoYear')
+          : t('shieldPlanDetails2CryptoMonth');
+    }
+    details.push(planDetails2);
+    if (selectedPlan === RECURRING_INTERVALS.month) {
+      details.push(t('shieldPlanDetails3'));
+    }
     return details;
-  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice]);
+  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice, selectedPlan]);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
@@ -485,7 +490,6 @@ const ShieldPlan = () => {
           <Footer
             className="shield-plan-page__footer"
             flexDirection={FlexDirection.Column}
-            gap={3}
             backgroundColor={BackgroundColor.backgroundMuted}
           >
             <Button
@@ -497,13 +501,6 @@ const ShieldPlan = () => {
             >
               {t('continue')}
             </Button>
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-              textAlign={TextAlign.Center}
-            >
-              {t('shieldPlanAutoRenew', [selectedPlanData?.price])}
-            </Text>
           </Footer>
         </>
       )}

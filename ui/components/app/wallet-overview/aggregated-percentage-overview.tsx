@@ -38,9 +38,9 @@ type MarketDataDetails = {
 };
 
 export const AggregatedPercentageOverview = ({
-  portfolioButton,
+  trailingChild,
 }: {
-  portfolioButton: () => JSX.Element | null;
+  trailingChild: () => JSX.Element | null;
 }) => {
   const tokensMarketData: Record<string, MarketDataDetails> =
     useSelector(getTokensMarketData);
@@ -148,16 +148,16 @@ export const AggregatedPercentageOverview = ({
           {formattedPercentChange}
         </SensitiveText>
       </Box>
-      {portfolioButton()}
+      {trailingChild()}
     </Skeleton>
   );
 };
 
 export const AggregatedMultichainPercentageOverview = ({
-  portfolioButton,
+  trailingChild,
   privacyMode = false,
 }: {
-  portfolioButton: () => JSX.Element | null;
+  trailingChild: () => JSX.Element | null;
   privacyMode?: boolean;
 }) => {
   const locale = useSelector(getIntlLocale);
@@ -240,7 +240,7 @@ export const AggregatedMultichainPercentageOverview = ({
           {localizedPercentChange})
         </SensitiveText>
       </Box>
-      {portfolioButton()}
+      {trailingChild()}
     </Skeleton>
   );
 };

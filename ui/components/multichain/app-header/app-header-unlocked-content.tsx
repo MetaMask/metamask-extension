@@ -121,8 +121,8 @@ export const AppHeaderUnlockedContent = ({
     internalAccount &&
     shortenAddress(normalizeSafeAddress(internalAccount.address));
   const accountName = isMultichainAccountsState2Enabled
-    ? selectedMultichainAccount.metadata.name
-    : internalAccount.metadata.name;
+    ? (selectedMultichainAccount?.metadata.name ?? '')
+    : (internalAccount?.metadata.name ?? '');
 
   // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
@@ -256,31 +256,33 @@ export const AppHeaderUnlockedContent = ({
           />
           <>{!isMultichainAccountsState2Enabled && CopyButton}</>
         </Text>
-        <Link
-          to={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`}
-          data-testid="networks-subtitle-test-id"
-        >
-          <Box
-            display={Display.Flex}
-            className="networks-subtitle"
-            alignItems={AlignItems.center}
-            gap={1}
-            paddingInline={2}
+        {selectedMultichainAccountId && (
+          <Link
+            to={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`}
+            data-testid="networks-subtitle-test-id"
           >
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyXsMedium}
+            <Box
+              display={Display.Flex}
+              className="networks-subtitle"
+              alignItems={AlignItems.center}
+              gap={1}
+              paddingInline={2}
             >
-              {networksLabel}
-            </Text>
-            <Icon
-              name={IconNameDesignSystem.Copy}
-              size={IconSizeDesignSystem.Xs}
-              color={IconColorDesignSystem.IconAlternative}
-              data-testid="copy-network-addresses-icon"
-            />
-          </Box>
-        </Link>
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyXsMedium}
+              >
+                {networksLabel}
+              </Text>
+              <Icon
+                name={IconNameDesignSystem.Copy}
+                size={IconSizeDesignSystem.Xs}
+                color={IconColorDesignSystem.IconAlternative}
+                data-testid="copy-network-addresses-icon"
+              />
+            </Box>
+          </Link>
+        )}
       </Box>
     );
   }, [
@@ -308,7 +310,9 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         <div ref={tourAnchorRef} className="flex">
-          <PreferredAvatar address={internalAccount.address} />
+          {internalAccount && (
+            <PreferredAvatar address={internalAccount.address} />
+          )}
         </div>
 
         {internalAccount && (
