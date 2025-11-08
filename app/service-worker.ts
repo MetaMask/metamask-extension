@@ -26,7 +26,9 @@ function runImportScripts() {
 
   const startImportScriptsTime = performance.now();
 
-  importScripts('scripts/background.js');
+  const files = process.env.FILE_NAMES ? process.env.FILE_NAMES.split(',') : [];
+
+  importScripts(...files);
 
   const endImportScriptsTime = performance.now();
 

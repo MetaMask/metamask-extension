@@ -24,9 +24,9 @@ export const lavamoatPlugin = (args: Args) =>
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
-    // we apply lockdown to 'background.<hash>.js', 'offscreen.<hash>.js', 'ui.<hash>.js', 'scripts/background.js' and 'scripts/contentscript.js'
+    // we apply lockdown to 'background.<hash>.js', 'offscreen.<hash>.js', 'ui.<hash>.js' and 'scripts/contentscript.js'
     inlineLockdown:
-      /^(?:background\.[0-9a-h]{20}\.js|offscreen\.[0-9a-h]{20}\.js|ui\.[0-9a-h]{20}\.js|scripts\/background\.js|scripts\/contentscript\.js)$/u,
+      /^(?:background\.[0-9a-h]{20}\.js|offscreen\.[0-9a-h]{20}\.js|ui\.[0-9a-h]{20}\.js|scripts\/contentscript\.js)$/u,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',

@@ -194,6 +194,13 @@ if (MANIFEST_VERSION === 2) {
   const { SelfInjectPlugin } = require('./utils/plugins/SelfInjectPlugin');
   plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
 }
+// MV3 requires service worker importScripts injection
+if (MANIFEST_VERSION === 3) {
+  const {
+    serviceWorkerPlugin,
+  } = require('./utils/plugins/ServiceWorkerPlugin');
+  plugins.push(serviceWorkerPlugin(manifest));
+}
 if (args.lavamoat) {
   const {
     lavamoatPlugin,
