@@ -180,8 +180,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       // Assert
-      expect(mockUseNavigate).toHaveBeenCalledWith('/', {
-        replace: false,
+      expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=activity', {
         state: { stayOnHomePage: true },
       });
     });

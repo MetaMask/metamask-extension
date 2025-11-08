@@ -35,7 +35,6 @@ import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferen
 import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
 import { SecurityAlertResponse } from '../lib/ppom/types';
 import {
-  AccountOverviewTabKey,
   CarouselSlide,
   NetworkConnectionBanner,
 } from '../../../shared/constants/app-state';
@@ -73,7 +72,6 @@ export type AppStateControllerState = {
   // States used for displaying the changed network toast
   currentExtensionPopupId: number;
   currentPopupId?: number;
-  defaultHomeActiveTabName: AccountOverviewTabKey | null;
   enableEnforcedSimulations: boolean;
   enableEnforcedSimulationsForTransactions: Record<string, boolean>;
   enforcedSimulationsSlippage: number;
@@ -234,7 +232,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   appActiveTab: undefined,
   browserEnvironment: {},
   connectedStatusPopoverHasBeenShown: true,
-  defaultHomeActiveTabName: null,
   enableEnforcedSimulations: true,
   enableEnforcedSimulationsForTransactions: {},
   enforcedSimulationsSlippage: 10,
@@ -339,12 +336,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   currentPopupId: {
     includeInStateLogs: true,
     persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  defaultHomeActiveTabName: {
-    includeInStateLogs: true,
-    persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
@@ -755,19 +746,6 @@ export class AppStateController extends BaseController<
     }
 
     this.#acceptApproval();
-  }
-
-  /**
-   * Sets the default home tab
-   *
-   * @param defaultHomeActiveTabName - the tab name
-   */
-  setDefaultHomeActiveTabName(
-    defaultHomeActiveTabName: AccountOverviewTabKey | null,
-  ): void {
-    this.update((state) => {
-      state.defaultHomeActiveTabName = defaultHomeActiveTabName;
-    });
   }
 
   /**

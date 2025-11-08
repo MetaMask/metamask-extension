@@ -2768,8 +2768,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setCurrentExtensionPopupId.bind(appStateController),
       setBrowserEnvironment:
         appStateController.setBrowserEnvironment.bind(appStateController),
-      setDefaultHomeActiveTabName:
-        appStateController.setDefaultHomeActiveTabName.bind(appStateController),
       setConnectedStatusPopoverHasBeenShown:
         appStateController.setConnectedStatusPopoverHasBeenShown.bind(
           appStateController,

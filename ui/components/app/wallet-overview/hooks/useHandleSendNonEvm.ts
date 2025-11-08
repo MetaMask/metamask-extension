@@ -1,19 +1,19 @@
 import { SnapId } from '@metamask/snaps-sdk';
 import { parseCaipAssetType, CaipAssetType } from '@metamask/utils';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
-import {
-  sendMultichainTransaction,
-  setDefaultHomeActiveTabName,
-} from '../../../../store/actions';
+import { useSelector } from 'react-redux';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { sendMultichainTransaction } from '../../../../store/actions';
 import {
   getMemoizedUnapprovedTemplatedConfirmations,
   getSelectedInternalAccount,
 } from '../../../../selectors';
 import { getSelectedMultichainNetworkConfiguration } from '../../../../selectors/multichain/networks';
 import { isMultichainWalletSnap } from '../../../../../shared/lib/accounts/snaps';
-import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  CONFIRMATION_V_NEXT_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../helpers/constants/routes';
 
 /**
  * Use this hook to trigger the send flow for non-EVM accounts.
@@ -31,12 +31,11 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
 
   const account = useSelector(getSelectedInternalAccount);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const location = useLocation();
 
-  const currentActivityTabName = useSelector(
-    // @ts-expect-error TODO: fix state type
-    (state) => state.metamask.defaultHomeActiveTabName,
-  );
+  // Get the current tab from URL query params
+  const params = new URLSearchParams(location.search);
+  const currentTab = params.get('tab');
 
   const unapprovedTemplatedConfirmations = useSelector(
     getMemoizedUnapprovedTemplatedConfirmations,
@@ -92,7 +91,7 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
     try {
       // FIXME: We switch the tab before starting the send flow (we
       // faced some inconsistencies when changing it after).
-      await dispatch(setDefaultHomeActiveTabName('activity'));
+      navigate(`${DEFAULT_ROUTE}?tab=activity`);
       await sendMultichainTransaction(account.metadata.snap.id, {
         account: account.id,
         scope: chainId,
@@ -100,7 +99,9 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
       });
     } catch (error) {
       // Restore the previous tab in case of any error (see FIXME comment above).
-      await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
+      if (currentTab) {
+        navigate(`${DEFAULT_ROUTE}?tab=${currentTab}`);
+      }
     }
   };
 };

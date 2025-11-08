@@ -35,8 +35,10 @@ export type TabsProps<TKey extends string = string> = Omit<
   BoxProps,
   'children' | 'ref'
 > & {
-  /** Key of the tab that should be active by default */
+  /** Key of the tab that should be active by default (uncontrolled mode) */
   defaultActiveTabKey?: TKey;
+  /** Key of the currently active tab (controlled mode) */
+  activeTabKey?: TKey;
   /** Callback called when a tab is clicked */
   onTabClick?: (tabKey: TKey) => void;
   /** Tab components to render */

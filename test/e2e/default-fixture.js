@@ -108,7 +108,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         connectedStatusPopoverHasBeenShown: true,
         termsOfUseLastAgreed:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
-        defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],

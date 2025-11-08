@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom-v5-compat';
 import {
   BtcAccountType,
   EthAccountType,
@@ -16,7 +17,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getAllChainsToPoll,
   getConnectedSubjectsForAllAddresses,
-  getDefaultHomeActiveTabName,
   getHDEntropyIndex,
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
@@ -75,11 +75,20 @@ export const MultichainAccountListMenu = ({
   ) as AccountConnections;
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
 
   const walletAccountCollection = useSelector(getWalletsWithAccountsSimplified);
-  const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
-    getDefaultHomeActiveTabName,
-  );
+
+  // Get current tab from URL query parameters
+  const currentTabFromUrl = searchParams.get('tab');
+  const currentTab: AccountOverviewTabKey =
+    currentTabFromUrl &&
+    Object.values(AccountOverviewTabKey).includes(
+      currentTabFromUrl as AccountOverviewTabKey,
+    )
+      ? (currentTabFromUrl as AccountOverviewTabKey)
+      : AccountOverviewTabKey.Tokens;
+
   const [searchPattern, setSearchPattern] = useState<string>('');
 
   // Here we are getting the keyring of the last selected account
@@ -98,26 +107,15 @@ export const MultichainAccountListMenu = ({
         },
       });
       endTrace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-          defaultHomeActiveTabName
-        ],
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[currentTab],
       });
       trace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-          defaultHomeActiveTabName
-        ],
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[currentTab],
       });
       dispatch(setSelectedAccount(account.address));
       dispatch(detectNfts(allChainIds));
     },
-    [
-      dispatch,
-      onClose,
-      trackEvent,
-      defaultHomeActiveTabName,
-      hdEntropyIndex,
-      allChainIds,
-    ],
+    [dispatch, onClose, trackEvent, currentTab, hdEntropyIndex, allChainIds],
   );
 
   const onSearchBarChange = useCallback(

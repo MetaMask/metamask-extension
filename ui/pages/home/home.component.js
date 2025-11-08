@@ -119,9 +119,7 @@ export default class Home extends PureComponent {
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
-    defaultHomeActiveTabName: PropTypes.string,
     participateInMetaMetrics: PropTypes.bool.isRequired,
-    onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
     haveBridgeQuotes: PropTypes.bool.isRequired,
@@ -823,8 +821,6 @@ export default class Home extends PureComponent {
 
   render() {
     const {
-      defaultHomeActiveTabName,
-      onTabClick,
       useExternalServices,
       setBasicFunctionalityModalOpen,
       forgottenPassword,
@@ -920,11 +916,9 @@ export default class Home extends PureComponent {
             : null}
           <div className="home__main-view">
             <AccountOverview
-              onTabClick={onTabClick}
               ///: BEGIN:ONLY_INCLUDE_IF(build-main)
               onSupportLinkClick={this.onSupportLinkClick}
               ///: END:ONLY_INCLUDE_IF
-              defaultHomeActiveTabName={defaultHomeActiveTabName}
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
             ></AccountOverview>

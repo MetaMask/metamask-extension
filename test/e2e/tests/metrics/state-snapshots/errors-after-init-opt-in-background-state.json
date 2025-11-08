@@ -33,7 +33,6 @@
     "browserEnvironment": { "os": "string", "browser": "string" },
     "canTrackWalletFundsObtained": false,
     "connectedStatusPopoverHasBeenShown": true,
-    "defaultHomeActiveTabName": null,
     "enableEnforcedSimulations": true,
     "enableEnforcedSimulationsForTransactions": "object",
     "enforcedSimulationsSlippage": "number",

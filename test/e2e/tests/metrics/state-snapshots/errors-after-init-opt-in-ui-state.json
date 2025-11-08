@@ -136,7 +136,6 @@
     "appActiveTab": "object",
     "browserEnvironment": { "os": "string", "browser": "string" },
     "connectedStatusPopoverHasBeenShown": true,
-    "defaultHomeActiveTabName": null,
     "enableEnforcedSimulations": true,
     "enableEnforcedSimulationsForTransactions": "object",
     "enforcedSimulationsSlippage": "number",

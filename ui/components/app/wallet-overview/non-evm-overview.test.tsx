@@ -19,7 +19,6 @@ import useMultiPolling from '../../../hooks/useMultiPolling';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 import NonEvmOverview from './non-evm-overview';
 
-// We need to mock `dispatch` since we use it for `setDefaultHomeActiveTabName`.
 const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -29,7 +28,6 @@ jest.mock('react-redux', () => ({
 jest.mock('../../../store/actions', () => ({
   handleSnapRequest: jest.fn(),
   sendMultichainTransaction: jest.fn(),
-  setDefaultHomeActiveTabName: jest.fn(),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));

@@ -55,10 +55,7 @@ import PulseLoader from '../../../components/ui/pulse-loader';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import {
-  stopPollingForQuotes,
-  setDefaultHomeActiveTabName,
-} from '../../../store/actions';
+import { stopPollingForQuotes } from '../../../store/actions';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
@@ -348,8 +345,7 @@ export default function AwaitingSwap({
           ) {
             navigate(DEFAULT_ROUTE);
           } else {
-            await dispatch(setDefaultHomeActiveTabName('activity'));
-            navigate(DEFAULT_ROUTE);
+            navigate(`${DEFAULT_ROUTE}?tab=activity`);
           }
         }}
         onCancel={async () =>

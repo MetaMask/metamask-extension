@@ -12,7 +12,6 @@ import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../../shared/constants/app';
-import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import { MINUTE } from '../../../shared/constants/time';
 import { AppStateController } from './app-state-controller';
 import type {
@@ -185,18 +184,6 @@ describe('AppStateController', () => {
           );
         },
       );
-    });
-  });
-
-  describe('setDefaultHomeActiveTabName', () => {
-    it('sets the default home tab name', async () => {
-      await withController(({ controller }) => {
-        controller.setDefaultHomeActiveTabName(AccountOverviewTabKey.Activity);
-
-        expect(controller.state.defaultHomeActiveTabName).toBe(
-          AccountOverviewTabKey.Activity,
-        );
-      });
     });
   });
 
@@ -763,7 +750,6 @@ describe('AppStateController', () => {
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
-              "defaultHomeActiveTabName": null,
               "enableEnforcedSimulations": true,
               "enableEnforcedSimulationsForTransactions": {},
               "enforcedSimulationsSlippage": 10,
@@ -852,7 +838,6 @@ describe('AppStateController', () => {
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
-              "defaultHomeActiveTabName": null,
               "enableEnforcedSimulations": true,
               "enableEnforcedSimulationsForTransactions": {},
               "enforcedSimulationsSlippage": 10,
@@ -937,7 +922,6 @@ describe('AppStateController', () => {
               "browserEnvironment": {},
               "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
-              "defaultHomeActiveTabName": null,
               "enableEnforcedSimulations": true,
               "enforcedSimulationsSlippage": 10,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -1017,7 +1001,6 @@ describe('AppStateController', () => {
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
-              "defaultHomeActiveTabName": null,
               "enableEnforcedSimulations": true,
               "enableEnforcedSimulationsForTransactions": {},
               "enforcedSimulationsSlippage": 10,
