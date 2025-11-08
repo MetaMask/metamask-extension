@@ -133,7 +133,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       event:
         option.id === 'import-wallet'
           ? MetaMetricsEventName.ImportSecretRecoveryPhraseClicked
-          : option.titleKey,
+          : t(option.titleKey),
       properties: {
         location: 'Main Menu',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
