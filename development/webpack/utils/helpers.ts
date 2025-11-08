@@ -91,11 +91,11 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     'bootstrap',
   ]);
 
-  function addManifestScript(filename: string, outputFilename?: string) {
+  function addManifestScript(filename: string) {
     selfContainedScripts.add(filename);
     entry[filename] = {
       chunkLoading: false,
-      filename: outputFilename ?? extensionToJs(filename), // output filename with .js extension
+      filename: extensionToJs(filename), // output filename with .js extension
       import: join(appRoot, filename), // the path to the file to use as an entry
     };
   }
@@ -139,8 +139,6 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     if (manifest.background?.service_worker) {
       addManifestScript(manifest.background.service_worker);
     }
-    addManifestScript('../offscreen/scripts/offscreen.ts', 'load-offscreen.js');
-
     for (const resource of manifest.web_accessible_resources ?? []) {
       for (const filename of resource.resources) {
         if (filename.endsWith('.js')) {
@@ -148,6 +146,7 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
         }
       }
     }
+    addHtml('../offscreen/offscreen.html');
   }
 
   for (const filename of readdirSync(appRoot)) {
