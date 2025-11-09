@@ -12,7 +12,12 @@ import React, {
   useContext,
 } from 'react';
 import PropTypes from 'prop-types';
-import { matchPath, useLocation } from 'react-router-dom-v5-compat';
+// NOTE: Mixed v5/v5-compat imports during router migration
+// - useLocation from v5: Works with the v5 HashRouter to detect navigation changes
+// - matchPath from v5-compat: Provides v6 API (reversed args, pattern.path structure)
+// When v6 migration is complete, change both imports to: import { useLocation, matchPath } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { matchPath } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import { omit } from 'lodash';
@@ -148,6 +153,7 @@ export function MetaMetricsProvider({ children }) {
 
   // Used to prevent double tracking page calls
   const previousMatch = useRef();
+  const previousPathname = useRef();
 
   /**
    * Anytime the location changes, track a page change with segment.
@@ -156,11 +162,21 @@ export function MetaMetricsProvider({ children }) {
    * which page the user is on and their navigation path.
    */
   useEffect(() => {
+    // Only run if pathname actually changed
+    if (previousPathname.current === location.pathname) {
+      return;
+    }
+    previousPathname.current = location.pathname;
+
     const environmentType = getEnvironmentType();
     // v6 matchPath doesn't support array of paths, so we loop to find first match
     const paths = getPaths();
     let match = null;
     for (const path of paths) {
+      // Skip empty string paths - they don't work correctly with v6 matchPath
+      if (path === '') {
+        continue;
+      }
       match = matchPath(
         {
           path,
@@ -183,10 +199,10 @@ export function MetaMetricsProvider({ children }) {
         },
       });
     } else if (
-      previousMatch.current !== match.path &&
+      previousMatch.current !== match.pattern.path &&
       !(
         environmentType === 'notification' &&
-        match.path === '/' &&
+        match.pattern.path === '/' &&
         previousMatch.current === undefined
       )
     ) {
@@ -195,7 +211,8 @@ export function MetaMetricsProvider({ children }) {
       // this we keep track of the previousMatch, and we skip the event track
       // in the event that we are dealing with the initial load of the
       // homepage
-      const { path, params } = match;
+      const { pattern, params } = match;
+      const { path } = pattern;
       const name = PATH_NAME_MAP.get(path);
       trackMetaMetricsPage(
         {
@@ -212,8 +229,9 @@ export function MetaMetricsProvider({ children }) {
         },
       );
     }
-    previousMatch.current = match?.path;
-  }, [location, context]);
+    previousMatch.current = match?.pattern?.path;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname, location.search, location.hash]);
 
   // For backwards compatibility, attach the new methods as properties to trackEvent
   const trackEventWithMethods = trackEvent;

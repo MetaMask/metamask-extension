@@ -61,7 +61,9 @@ const DeFiPage = ({ navigate, params }: DeFiPageProps) => {
 
   // TODO: Get value in user's preferred currency
   const protocolPosition =
-    defiPositions[selectedAccount.address]?.[chainId]?.protocols[protocolId];
+    defiPositions[selectedAccount.address]?.[
+      chainId as keyof (typeof defiPositions)[string]
+    ]?.protocols[protocolId];
 
   const extractedTokens = useMemo(() => {
     return Object.keys(protocolPosition?.positionTypes || {}).reduce(
@@ -120,7 +122,7 @@ const DeFiPage = ({ navigate, params }: DeFiPageProps) => {
           {protocolPosition.protocolDetails.name}
         </Text>
         <AssetCellBadge
-          chainId={chainId}
+          chainId={chainId as (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS]}
           tokenImage={protocolPosition.protocolDetails.iconUrl}
           symbol={protocolPosition.protocolDetails.name}
           data-testid="defi-details-page-protocol-badge"
