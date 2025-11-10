@@ -938,7 +938,7 @@
     "message": "You're allowing access to $1 $2. The contract won't access any additional funds."
   },
   "bridgeApprovalWarningForHardware": {
-    "message": "You'll need to allow access to $1 $2 for bridging, and then approve bridging to $2. This will require two separate confirmations."
+    "message": "You'll need to allow access to $1 $2 for bridging, and then approve bridging to $3. This will require two separate confirmations."
   },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Block explorer link copied!"
@@ -1840,14 +1840,8 @@
   "customToken": {
     "message": "Custom token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Token detection is not available on this network yet. Please import token manually and make sure you trust it. Learn about $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Anyone can create a token, including creating fake versions of existing tokens. Learn about $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Make sure you trust a token before you import it. Learn how to avoid $1. You can also enable token detection $2."
   },
   "customerSupport": {
     "message": "customer support"
@@ -2006,6 +2000,9 @@
   },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
+  },
+  "deepLink_thePredictPage": {
+    "message": "the predict page"
   },
   "deepLink_theRewardsPage": {
     "message": "the MetaMask Rewards page"
@@ -3175,9 +3172,6 @@
   "imported": {
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "in your Settings"
   },
   "included": {
     "message": "included"
@@ -5120,6 +5114,18 @@
   "pushNotificationPositionLiquidatedTitle": {
     "message": "Position liquidated"
   },
+  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
+    "message": "Welcome to MetaMask Transaction Shield! Explore benefits"
+  },
+  "pushNotificationShieldSubscriptionCreatedTitle": {
+    "message": "MetaMask Transaction Shield activated"
+  },
+  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
+    "message": "Membership is inactive due to payment issue. Update your payment to restore coverage"
+  },
+  "pushNotificationShieldSubscriptionPaymentFailedTitle": {
+    "message": "MetaMask Transaction Shield paused"
+  },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Your $1 long closed at your stop loss.",
     "description": "$1 is the asset symbol"
@@ -6348,11 +6354,23 @@
   "simulationDetailsIncomingHeading": {
     "message": "You receive"
   },
+  "simulationDetailsIncomingHeadingReceived": {
+    "message": "You've received"
+  },
+  "simulationDetailsIncomingHeadingReceiving": {
+    "message": "You're receiving"
+  },
   "simulationDetailsNoChanges": {
     "message": "No changes"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "You send"
+  },
+  "simulationDetailsOutgoingHeadingSending": {
+    "message": "You're sending"
+  },
+  "simulationDetailsOutgoingHeadingSent": {
+    "message": "You sent"
   },
   "simulationDetailsRevokeSetApprovalForAllDesc": {
     "message": "You're removing someone else's permission to withdraw NFTs from your account."
@@ -7654,9 +7672,6 @@
   "tokenPermissionsCount": {
     "message": "$1 token permissions",
     "description": "$1 is the count of token permissions (plural form)"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "token scams and security risks"
   },
   "tokenStandard": {
     "message": "Token standard"
