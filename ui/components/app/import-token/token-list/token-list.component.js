@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { isNonEvmChainId } from '@metamask/bridge-controller';
 import { checkExistingAllTokens } from '../../../../helpers/utils/util';
 import {
   Box,
@@ -21,6 +22,7 @@ import {
   FlexWrap,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
+import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import TokenListPlaceholder from './token-list-placeholder';
 
@@ -36,8 +38,8 @@ export default class TokenList extends Component {
     onToggleToken: PropTypes.func,
     currentNetwork: PropTypes.object,
     testNetworkBackgroundColor: PropTypes.object,
-    isTokenNetworkFilterEqualCurrentNetwork: PropTypes.bool,
     accountAddress: PropTypes.string,
+    accountsAssets: PropTypes.object,
   };
 
   render() {
@@ -49,7 +51,7 @@ export default class TokenList extends Component {
       accountAddress,
       currentNetwork,
       testNetworkBackgroundColor,
-      isTokenNetworkFilterEqualCurrentNetwork,
+      accountsAssets = {},
     } = this.props;
     return (
       <Box className="token-list">
@@ -74,12 +76,21 @@ export default class TokenList extends Component {
                 const uniqueKey = `${address || 'unknown'}-${chainId || 'nochain'}-${i}-${symbol || 'nosymbol'}-${name || 'noname'}`;
                 let tokenAlreadyAdded = false;
 
-                tokenAlreadyAdded = checkExistingAllTokens(
-                  address,
-                  chainId,
-                  accountAddress,
-                  allTokens,
-                );
+                if (isNonEvmChainId(chainId)) {
+                  const assetsForAccount =
+                    accountsAssets?.[accountAddress] || [];
+
+                  tokenAlreadyAdded = assetsForAccount.some(
+                    (asset) => asset === toAssetId(address, chainId),
+                  );
+                } else {
+                  tokenAlreadyAdded = checkExistingAllTokens(
+                    address,
+                    chainId,
+                    accountAddress,
+                    allTokens,
+                  );
+                }
 
                 const onClick = () =>
                   !tokenAlreadyAdded && onToggleToken(results[i]);
@@ -125,13 +136,9 @@ export default class TokenList extends Component {
                                 size={AvatarNetworkSize.Xs}
                                 name={currentNetwork?.nickname}
                                 src={
-                                  isTokenNetworkFilterEqualCurrentNetwork
-                                    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                                        currentNetwork?.chainId
-                                      ]
-                                    : CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                                        results[i]?.chainId
-                                      ]
+                                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                    currentNetwork?.chainId
+                                  ]
                                 }
                                 backgroundColor={testNetworkBackgroundColor}
                                 borderWidth={2}
