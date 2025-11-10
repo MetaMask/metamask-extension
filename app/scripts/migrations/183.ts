@@ -84,8 +84,8 @@ function transformState(state: Record<string, unknown>) {
         // Add the Infura RPC endpoint to the Monad Testnet network configuration
         monadTestnetConfiguration.rpcEndpoints.push({
           url: 'https://monad-testnet.infura.io/v3/{infuraProjectId}',
-          // For existing uSer, we had to using Custom type,
-          // Otherwise the wallet will throw error
+          // We have to use Custom type for this migration,
+          // Because the controller utils is not yet updated to support Monad Testnet as Infura type
           type: RpcEndpointType.Custom,
           networkClientId: uuidV4(),
         });
