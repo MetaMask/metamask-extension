@@ -104,7 +104,7 @@ async function getFileSize(filePath: string): Promise<number> {
 async function waitUntilFileIsWritten({
   driver,
   filePath,
-  maxRetries = 5,
+  maxRetries = 8,
   minFileSize = 1000000,
 }: {
   driver: Driver;
