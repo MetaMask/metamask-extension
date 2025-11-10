@@ -745,22 +745,12 @@ export default function Routes() {
           <Authenticated path={SNAPS_ROUTE} component={SnapList} exact />
           <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
           <Route path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}>
-            {(props: RouteComponentProps<{ id?: string }>) => {
-              const { match, location: v5Location } = props;
-              const ConfirmTransactionComponent =
-                ConfirmTransaction as React.ComponentType<{
-                  params?: { id?: string };
-                  location?: RouteComponentProps['location'];
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <ConfirmTransactionComponent
-                    params={match.params}
-                    location={v5Location}
-                  />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ id?: string }>(ConfirmTransaction, {
+              wrapper: AuthenticatedV5Compat,
+              includeLocation: true,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
           </Route>
           <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
           <Route path={SWAPS_ROUTE}>
@@ -794,56 +784,25 @@ export default function Routes() {
             })}
           </Route>
           <Route path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}>
-            {(props: RouteComponentProps) => {
-              const { history: v5History, location: v5Location } = props;
-              const navigate = createV5CompatNavigate(v5History);
-              const ConfirmAddSuggestedTokenPageWithProps =
-                ConfirmAddSuggestedTokenPage as React.ComponentType<{
-                  navigate: V5CompatNavigate;
-                  location: RouteComponentProps['location'];
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <ConfirmAddSuggestedTokenPageWithProps
-                    navigate={navigate}
-                    location={v5Location}
-                  />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute(ConfirmAddSuggestedTokenPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
           </Route>
           <Route path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}>
-            {(props: RouteComponentProps) => {
-              const { history: v5History, location: v5Location } = props;
-              const navigate = createV5CompatNavigate(v5History);
-              const ConfirmAddSuggestedNftPageWithProps =
-                ConfirmAddSuggestedNftPage as React.ComponentType<{
-                  navigate: V5CompatNavigate;
-                  location: RouteComponentProps['location'];
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <ConfirmAddSuggestedNftPageWithProps
-                    navigate={navigate}
-                    location={v5Location}
-                  />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute(ConfirmAddSuggestedNftPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
           </Route>
           <Route path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}>
-            {(props: RouteComponentProps<{ id?: string }>) => {
-              const ConfirmationPageComponent =
-                ConfirmationPage as React.ComponentType<{
-                  params?: { id?: string };
-                  redirectToHomeOnZeroConfirmations?: boolean;
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <ConfirmationPageComponent params={props.match.params} />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ id?: string }>(ConfirmationPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
           </Route>
           <Authenticated
             path={NEW_ACCOUNT_ROUTE}
