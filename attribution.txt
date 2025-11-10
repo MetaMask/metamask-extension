@@ -28113,7 +28113,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/bitcoin-wallet-snap
-1.4.4 <https://github.com/MetaMask/snap-bitcoin-wallet>
+1.4.5 <https://github.com/MetaMask/snap-bitcoin-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
