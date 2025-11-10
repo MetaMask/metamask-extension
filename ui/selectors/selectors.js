@@ -4107,7 +4107,7 @@ export function getShowUpdateModal(state) {
  * @returns {string | null} The previous version string, or null if not available.
  */
 export function getLastUpdatedFromVersion(state) {
-  return state.metamask.lastUpdatedFromVersion;
+  return '13.9.0'; //state.metamask.lastUpdatedFromVersion;
 }
 
 /**

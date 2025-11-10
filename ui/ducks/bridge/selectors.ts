@@ -140,14 +140,35 @@ const hasBitcoinAccounts = (state: BridgeAppState) => {
   });
 };
 
-// only includes networks user has added
-export const getAllBridgeableNetworks = createDeepEqualSelector(
-  getNetworkConfigurationsByChainId,
-  (networkConfigurationsByChainId) => {
-    return uniqBy(
+const getBridgeFeatureFlags = createDeepEqualSelector(
+  [(state) => getRemoteFeatureFlags(state).bridgeConfig],
+  (bridgeConfig) => {
+    const validatedFlags = selectBridgeFeatureFlags({
+      remoteFeatureFlags: { bridgeConfig },
+    });
+
+    return {
+      ...validatedFlags,
+      // TODO remove validation skip
+      // @ts-expect-error - chainRanking is not typed yet
+      chainRanking: bridgeConfig?.chainRanking,
+    };
+  },
+);
+
+// only includes networks user has added, ranked by the feature flagged chainRanking
+const getAllBridgeableNetworks = createDeepEqualSelector(
+  [(state) => getNetworkConfigurationsByChainId(state)],
+  (networkConfigurationsByHexChainId) => {
+    return Object.fromEntries([
+      ...ALLOWED_BRIDGE_CHAIN_IDS.map((chainId) => [
+        formatChainIdToCaip(chainId),
+        networkConfigurationsByHexChainId[
+          chainId as keyof typeof networkConfigurationsByHexChainId
+        ],
+      ]),
       [
-        ...Object.values(networkConfigurationsByChainId),
-        // TODO: get this from network controller, use placeholder values for now
+        MultichainNetworks.SOLANA,
         {
           ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
           blockExplorerUrls: [],
@@ -158,8 +179,10 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
           defaultRpcEndpointIndex: 0,
           chainId: MultichainNetworks.SOLANA,
         } as unknown as NetworkConfiguration,
-        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
-        // TODO: get this from network controller, use placeholder values for now
+      ],
+      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
+      [
+        MultichainNetworks.BITCOIN,
         {
           ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
           blockExplorerUrls: [],
@@ -171,24 +194,9 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
           defaultRpcEndpointIndex: 0,
           chainId: MultichainNetworks.BITCOIN,
         } as unknown as NetworkConfiguration,
-        ///: END:ONLY_INCLUDE_IF
       ],
-      'chainId',
-    ).filter(({ chainId }) =>
-      ALLOWED_BRIDGE_CHAIN_IDS.includes(
-        chainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
-      ),
-    );
-  },
-);
-
-const getBridgeFeatureFlags = createDeepEqualSelector(
-  [(state) => getRemoteFeatureFlags(state).bridgeConfig],
-  (bridgeConfig) => {
-    const validatedFlags = selectBridgeFeatureFlags({
-      remoteFeatureFlags: { bridgeConfig },
-    });
-    return validatedFlags;
+      ///: END:ONLY_INCLUDE_IF
+    ]);
   },
 );
 
@@ -197,54 +205,66 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
   (bridgeFeatureFlags) => bridgeFeatureFlags?.priceImpactThreshold,
 );
 
+const getChainRanking = (state: BridgeAppState) => {
+  const chainRanking = (
+    getBridgeFeatureFlags(state).chainRanking as {
+      chainId: CaipChainId;
+    }[]
+  ).map((c) => c.chainId);
+  return Array.from(new Set(chainRanking));
+};
+
 export const getFromChains = createDeepEqualSelector(
   [
     getAllBridgeableNetworks,
-    getBridgeFeatureFlags,
     (state: BridgeAppState) => hasSolanaAccounts(state),
     (state: BridgeAppState) => hasBitcoinAccounts(state),
+    getChainRanking,
   ],
   (
     allBridgeableNetworks,
-    bridgeFeatureFlags,
     hasSolanaAccount,
     hasBitcoinAccount,
+    chainRanking,
   ) => {
-    // First filter out Solana from source chains if no Solana account exists
-    let filteredNetworks = hasSolanaAccount
-      ? allBridgeableNetworks
-      : allBridgeableNetworks.filter(
-          ({ chainId }) => !isSolanaChainId(chainId),
-        );
-
-    // Then filter out Bitcoin from source chains if no Bitcoin account exists
-    filteredNetworks = hasBitcoinAccount
-      ? filteredNetworks
-      : filteredNetworks.filter(({ chainId }) => !isBitcoinChainId(chainId));
-
-    // Then apply the standard filter for active source chains
-    return filteredNetworks.filter(
-      ({ chainId }) =>
-        bridgeFeatureFlags.chains[formatChainIdToCaip(chainId)]?.isActiveSrc,
-    );
+    return chainRanking
+      .map((chainId: CaipChainId) => {
+        // build a list of enabled chains ranked by chainRanking
+        const matchedChain =
+          allBridgeableNetworks[formatChainIdToCaip(chainId)];
+        if (!matchedChain) {
+          return null;
+        }
+        // if no solana account, filter out solana
+        if (!hasSolanaAccount && isSolanaChainId(matchedChain.chainId)) {
+          return null;
+        }
+        // if no bitcoin account, filter out bitcoin
+        if (!hasBitcoinAccount && isBitcoinChainId(matchedChain.chainId)) {
+          return null;
+        }
+        return matchedChain;
+      })
+      .filter(Boolean) as NetworkConfiguration[];
   },
 );
-
+// TODO use all Bridgeable?
 // Returns the latest enabled network that matches a supported bridge network
 // Matches the network filter in the activity and asset lists
-const getLastEnabledChain = createSelector(
+const getNetworkFilterOrTopChain = createSelector(
   [getAllEnabledNetworksForAllNamespaces, getFromChains],
-  (chainIdRanking, fromChains) => {
-    const lastEnabledChainId = chainIdRanking.find((chainId) =>
-      fromChains.some(
-        ({ chainId: fromChainId }: NetworkConfiguration) =>
-          fromChainId === chainId,
-      ),
+  (enabledEvmNetworks, fromChains) => {
+    // If there is no network filter, return first chain ranked by bridge feature flags
+    if (enabledEvmNetworks.length > 1) {
+      return fromChains[0];
+    }
+    // If there is no match for the filter (i.e testnets), return first chain ranked by bridge feature flags
+    const lastEnabledChainId = enabledEvmNetworks.find((chainId) =>
+      fromChains.some(({ chainId: fromChainId }) => fromChainId === chainId),
     );
     return (
       fromChains.find(
-        ({ chainId: fromChainId }: NetworkConfiguration) =>
-          fromChainId === lastEnabledChainId,
+        ({ chainId: fromChainId }) => fromChainId === lastEnabledChainId,
       ) ?? fromChains[0]
     );
   },
@@ -252,7 +272,7 @@ const getLastEnabledChain = createSelector(
 
 export const getFromToken = createSelector(
   [
-    (state) => getLastEnabledChain(state).chainId,
+    (state) => getNetworkFilterOrTopChain(state).chainId,
     (state: BridgeAppState) => state.bridge.fromToken,
   ],
   (lastEnabledChainId, fromToken) =>
@@ -266,19 +286,17 @@ export const getFromChain = (state: BridgeAppState) => ({
 });
 
 export const getToChains = createDeepEqualSelector(
-  getAllBridgeableNetworks,
-  getBridgeFeatureFlags,
-  (allBridgeableNetworks, bridgeFeatureFlags) => {
-    const availableChains = uniqBy(
-      [...allBridgeableNetworks, ...FEATURED_RPCS],
-      'chainId',
-    ).filter(
-      ({ chainId }) =>
-        bridgeFeatureFlags?.chains?.[formatChainIdToCaip(chainId)]
-          ?.isActiveDest,
-    );
-
-    return availableChains;
+  [getAllBridgeableNetworks, getChainRanking],
+  (allBridgeableNetworks, chainRanking) => {
+    const allChains = {
+      ...allBridgeableNetworks,
+      ...Object.fromEntries(
+        FEATURED_RPCS.map((rpc) => [formatChainIdToCaip(rpc.chainId), rpc]),
+      ),
+    };
+    return chainRanking
+      .map((chainId) => allChains[formatChainIdToCaip(chainId)])
+      .filter(Boolean) as NetworkConfiguration[];
   },
 );
 
@@ -586,26 +604,24 @@ export const getToTokenConversionRate = createDeepEqualSelector(
     (state: BridgeAppState) => state.metamask.marketData, // rates for non-native evm tokens
     getAssetsRates, // non-evm conversion rates, multichain equivalent of getMarketData
     getToToken,
-    getFromChains,
     (state) => ({
       state,
       toTokenExchangeRate: state.bridge.toTokenExchangeRate,
       toTokenUsdExchangeRate: state.bridge.toTokenUsdExchangeRate,
     }),
     getMultichainCoinRates, // multichain native rates
+    getAllBridgeableNetworks,
   ],
   (
     marketData,
     conversionRates,
     toToken,
-    fromChains,
     { state, toTokenExchangeRate, toTokenUsdExchangeRate },
     rates,
+    enabledNetworMap,
   ) => {
     const { chainId } = toToken;
-    const isToChainEnabled = fromChains.some(
-      ({ chainId: fromChainId }) => fromChainId === chainId,
-    );
+    const isToChainEnabled = enabledNetworMap[formatChainIdToCaip(chainId)];
     // When the toChain is not imported, the exchange rate to native asset is not available
     // The rate in the bridge state is used instead
     if (!isToChainEnabled && toTokenExchangeRate) {
