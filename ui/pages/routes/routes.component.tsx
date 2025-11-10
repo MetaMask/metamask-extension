@@ -209,18 +209,6 @@ const createV5CompatNavigate = (
 };
 
 /**
- * Props that can be passed to v5-compat components
- */
-type V5CompatComponentProps<
-  TParams extends Record<string, string | undefined>,
-> = {
-  navigate?: V5CompatNavigate;
-  location?: RouteComponentProps['location'];
-  match?: RouteComponentProps<TParams>['match'];
-  params?: TParams;
-} & Partial<TParams>;
-
-/**
  * Helper to create v5-compat route wrappers with less boilerplate.
  * Handles authentication, navigation, and prop passing for v5-to-v5-compat transition.
  *
@@ -238,9 +226,13 @@ type V5CompatComponentProps<
  * @returns Route render function
  */
 const createV5CompatRoute = <
-  TParams extends Record<string, string | undefined>,
+  TParams extends Record<string, string | undefined> = Record<
+    string,
+    string | undefined
+  >,
 >(
-  Component: React.ComponentType<V5CompatComponentProps<TParams>>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Component: React.ComponentType<any>,
   options: {
     wrapper?: React.ComponentType<{ children: React.ReactNode }> | null;
     includeNavigate?: boolean;
@@ -262,7 +254,7 @@ const createV5CompatRoute = <
   return (props: RouteComponentProps<TParams>) => {
     const { history: v5History, location: v5Location, match } = props;
 
-    const componentProps: Partial<V5CompatComponentProps<TParams>> = {};
+    const componentProps: Record<string, unknown> = {};
 
     if (includeNavigate) {
       componentProps.navigate = createV5CompatNavigate(v5History);
@@ -281,11 +273,11 @@ const createV5CompatRoute = <
       }
     }
 
-    const element = (
-      <Component {...(componentProps as V5CompatComponentProps<TParams>)} />
-    );
+    const element = <Component {...componentProps} />;
 
-    return wrapper ? React.createElement(wrapper, {}, element) : element;
+    return wrapper
+      ? React.createElement(wrapper, { children: element })
+      : element;
   };
 };
 
