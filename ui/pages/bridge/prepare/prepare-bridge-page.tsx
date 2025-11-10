@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
 import { type TokenListMap } from '@metamask/assets-controllers';
+import { type NetworkConfiguration } from '@metamask/network-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
@@ -21,8 +22,10 @@ import {
   UnifiedSwapBridgeEventName,
   type BridgeController,
   isCrossChain,
+  formatChainIdToHex,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { Hex, parseCaipChainId } from '@metamask/utils';
+import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -85,7 +88,6 @@ import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
 } from '../utils/quote';
-import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
@@ -136,17 +138,22 @@ export const useEnableMissingNetwork = () => {
   const dispatch = useDispatch();
 
   const enableMissingNetwork = useCallback(
-    (chainId: Hex) => {
+    (chainId: CaipChainId | Hex) => {
+      if (isNonEvmChainId(chainId)) {
+        return;
+      }
       const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
       const caipChainId = formatChainIdToCaip(chainId);
+      const hexChainId = formatChainIdToHex(caipChainId);
       const { namespace } = parseCaipChainId(caipChainId);
 
       if (namespace) {
-        const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
+        const isPopularNetwork =
+          FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
         if (isPopularNetwork) {
-          const isNetworkEnabled = enabledNetworkKeys.includes(chainId);
+          const isNetworkEnabled = enabledNetworkKeys.includes(hexChainId);
           if (!isNetworkEnabled) {
             // Bridging between popular networks indicates we want the 'select all' enabled
             // This way users can see their full bridging tx activity
@@ -541,12 +548,10 @@ const PrepareBridgePage = ({
             network: fromChain,
             networks: fromChains,
             onNetworkChange: (networkConfig) => {
-              if (isNetworkAdded(networkConfig)) {
-                enableMissingNetwork(networkConfig.chainId);
-              }
+              enableMissingNetwork(networkConfig.chainId);
               dispatch(
                 setFromChain({
-                  networkConfig,
+                  networkConfig: networkConfig as NetworkConfiguration,
                   selectedAccount,
                 }),
               );
@@ -630,7 +635,13 @@ const PrepareBridgePage = ({
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
-                (toChain && !isNetworkAdded(toChain))
+                (toChain &&
+                  !fromChains.some(
+                    ({ chainId: fromChainId }) =>
+                      fromChainId === toChain.chainId ||
+                      formatChainIdToCaip(fromChainId) ===
+                        formatChainIdToCaip(toChain.chainId),
+                  ))
               }
               onClick={() => {
                 dispatch(setSelectedQuote(null));
@@ -719,9 +730,7 @@ const PrepareBridgePage = ({
               network: toChain,
               networks: toChains,
               onNetworkChange: (networkConfig) => {
-                if (isNetworkAdded(networkConfig)) {
-                  enableMissingNetwork(networkConfig.chainId);
-                }
+                enableMissingNetwork(networkConfig.chainId);
                 dispatch(setToChainId(networkConfig.chainId));
               },
               header: t('yourNetworks'),
