@@ -29,7 +29,6 @@ import {
 
 export const ADDITIONAL_DEFAULT_NETWORKS = [
   ChainId['megaeth-testnet'],
-  ChainId['monad-testnet'],
 ];
 
 function getInitialState(initialState?: Partial<NetworkController['state']>) {
@@ -80,17 +79,6 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
         getFailoverUrlsForInfuraNetwork('polygon-mainnet');
     }
 
-    // Temp solution for update monad testnet RPC to Infura,
-    // It will remove when the monad testnet has moved to Infura in NetworkController.
-    if (networks[CHAIN_IDS.MONAD_TESTNET]?.rpcEndpoints) {
-      const monadTestnetRpcUrl =
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `https://monad-testnet.infura.io/v3/{infuraProjectId}`;
-      networks[CHAIN_IDS.MONAD_TESTNET].rpcEndpoints.forEach((rpcEndpoint) => {
-        // for new User, there will be only one RPC endpoint, so we can just directly update the RPC endpoint.
-        rpcEndpoint.url = monadTestnetRpcUrl;
-      });
-    }
 
     // Update default popular network names.
     networks[CHAIN_IDS.MAINNET].name = 'Ethereum';
