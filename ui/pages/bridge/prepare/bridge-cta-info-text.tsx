@@ -83,6 +83,7 @@ export const BridgeCTAInfoText = () => {
             ? t('bridgeApprovalWarningForHardware', [
                 activeQuote.sentAmount.amount,
                 activeQuote.quote.srcAsset.symbol,
+                activeQuote.quote.destAsset.symbol,
               ])
             : t('bridgeApprovalWarning', [
                 activeQuote.sentAmount.amount,

@@ -91,7 +91,6 @@ export const SnapControllerInit: ControllerInitFunction<
   }
 
   const controller = new SnapController({
-    dynamicPermissions: ['endowment:caip25'],
     environmentEndowmentPermissions: Object.values(EndowmentPermissions),
     excludedPermissions: {
       ...ExcludedSnapPermissions,
