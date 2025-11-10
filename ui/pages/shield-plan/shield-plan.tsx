@@ -135,11 +135,12 @@ const ShieldPlan = () => {
     return pricingPlans?.find((plan) => plan.interval === selectedPlan);
   }, [pricingPlans, selectedPlan]);
 
-  const availableTokenBalances = useAvailableTokenBalances({
-    paymentChains: cryptoPaymentMethod?.chains,
-    price: selectedProductPrice,
-    productType: PRODUCT_TYPES.SHIELD,
-  });
+  const { availableTokenBalances, pending: pendingAvailableTokenBalances } =
+    useAvailableTokenBalances({
+      paymentChains: cryptoPaymentMethod?.chains,
+      price: selectedProductPrice,
+      productType: PRODUCT_TYPES.SHIELD,
+    });
   const hasAvailableToken = availableTokenBalances.length > 0;
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
@@ -165,17 +166,23 @@ const ShieldPlan = () => {
 
   // set selected token to the first available token if no token is selected
   useEffect(() => {
-    if (selectedToken || availableTokenBalances.length === 0) {
+    if (
+      pendingAvailableTokenBalances ||
+      selectedToken ||
+      availableTokenBalances.length === 0
+    ) {
       return;
     }
 
     const lastUsedPaymentToken = lastUsedPaymentDetails?.paymentTokenAddress;
     const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
+    const lastUsedPaymentPlan = lastUsedPaymentDetails?.plan;
 
     let lastUsedSelectedToken = availableTokenBalances[0];
     if (
       lastUsedPaymentToken &&
-      lastUsedPaymentMethod === PAYMENT_TYPES.byCrypto
+      lastUsedPaymentMethod === PAYMENT_TYPES.byCrypto &&
+      lastUsedPaymentPlan === selectedPlan
     ) {
       lastUsedSelectedToken =
         availableTokenBalances.find(
@@ -185,11 +192,18 @@ const ShieldPlan = () => {
 
     setSelectedToken(lastUsedSelectedToken);
   }, [
+    pendingAvailableTokenBalances,
     availableTokenBalances,
     selectedToken,
     setSelectedToken,
     lastUsedPaymentDetails,
+    selectedPlan,
   ]);
+
+  // reset selected token if selected plan changes
+  useEffect(() => {
+    setSelectedToken(undefined);
+  }, [selectedPlan, setSelectedToken]);
 
   // set default selected payment method to crypto if selected token available
   useEffect(() => {
@@ -273,7 +287,6 @@ const ShieldPlan = () => {
         ) ?? [],
     [pricingPlans, t],
   );
-  const selectedPlanData = plans.find((plan) => plan.id === selectedPlan);
 
   const planDetails = useMemo(() => {
     const details = [];
@@ -285,14 +298,20 @@ const ShieldPlan = () => {
         ]),
       );
     }
-    details.push(
-      selectedPaymentMethod === PAYMENT_TYPES.byCrypto
-        ? t('shieldPlanDetails2')
-        : t('shieldPlanDetails2Card'),
-    );
-    details.push(t('shieldPlanDetails3'));
+
+    let planDetails2 = t('shieldPlanDetails2Card');
+    if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
+      planDetails2 =
+        selectedPlan === RECURRING_INTERVALS.year
+          ? t('shieldPlanDetails2CryptoYear')
+          : t('shieldPlanDetails2CryptoMonth');
+    }
+    details.push(planDetails2);
+    if (selectedPlan === RECURRING_INTERVALS.month) {
+      details.push(t('shieldPlanDetails3'));
+    }
     return details;
-  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice]);
+  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice, selectedPlan]);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
@@ -485,7 +504,6 @@ const ShieldPlan = () => {
           <Footer
             className="shield-plan-page__footer"
             flexDirection={FlexDirection.Column}
-            gap={3}
             backgroundColor={BackgroundColor.backgroundMuted}
           >
             <Button
@@ -497,13 +515,6 @@ const ShieldPlan = () => {
             >
               {t('continue')}
             </Button>
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-              textAlign={TextAlign.Center}
-            >
-              {t('shieldPlanAutoRenew', [selectedPlanData?.price])}
-            </Text>
           </Footer>
         </>
       )}
