@@ -5584,9 +5584,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^87.0.0":
-  version: 87.0.0
-  resolution: "@metamask/assets-controllers@npm:87.0.0"
+"@metamask/assets-controllers@npm:^87.1.1":
+  version: 87.1.1
+  resolution: "@metamask/assets-controllers@npm:87.1.1"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5632,7 +5632,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^61.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/023c91a982e932978dcf33e057a82cb0a7531db18da0293721838cb14965a6adc38200cbcb1c129165c20411d3abd0dbd9dc6ac41ff0d1902c9648c536c07fde
+  checksum: 10/1414b17db06ad25e2906e9c53d03148f0a3446c26db4241e5e7c1e13b85d021ebcedfc8ea865d1479d33707642baadebbaa4e4a6a39a2af0a2a3ef538d4d55c8
   languageName: node
   linkType: hard
 
@@ -31988,7 +31988,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^8.0.0"
-    "@metamask/assets-controllers": "npm:^87.0.0"
+    "@metamask/assets-controllers": "npm:^87.1.1"
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.4.4"
