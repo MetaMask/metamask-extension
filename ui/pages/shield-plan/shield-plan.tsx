@@ -10,6 +10,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import { Checkbox } from '@metamask/design-system-react';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
@@ -78,6 +79,10 @@ import { selectNetworkConfigurationByChainId } from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constants/subscriptions';
+import {
+  isDevOrTestEnvironment,
+  isDevOrUatBuild,
+} from '../../../shared/modules/shield/config';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -86,6 +91,7 @@ const ShieldPlan = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
+
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
@@ -329,6 +335,14 @@ const ShieldPlan = () => {
     padding: 4,
   };
 
+  // Stripe Test clocks
+  const [enableStripeTestClocks, setEnableStripeTestClocks] = useState(false);
+  console.log(
+    'check: process.env.METAMASK_BUILD_TYPE',
+    process.env.METAMASK_BUILD_TYPE,
+  );
+  const showTestClocksCheckbox = isDevOrUatBuild() || isDevOrTestEnvironment();
+
   return (
     <Page className="shield-plan-page" data-testid="shield-plan-page">
       <Header
@@ -506,6 +520,16 @@ const ShieldPlan = () => {
             flexDirection={FlexDirection.Column}
             backgroundColor={BackgroundColor.backgroundMuted}
           >
+            {showTestClocksCheckbox && (
+              <Checkbox
+                label="Enable Stripe Test clocks (for development and testing only)"
+                onChange={() =>
+                  setEnableStripeTestClocks(!enableStripeTestClocks)
+                }
+                id="stripe-test-clocks"
+                isSelected={enableStripeTestClocks}
+              />
+            )}
             <Button
               size={ButtonSize.Lg}
               variant={ButtonVariant.Primary}
