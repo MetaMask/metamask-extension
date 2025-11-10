@@ -8,7 +8,8 @@ import { withFixtures, WINDOW_TITLES, sentryRegEx } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { DAPP_PATH, MOCK_META_METRICS_ID } from '../../constants';
+import { mockTestSnapsSite } from '../../mock-response-data/snaps/snap-local-sites/test-snaps-site-mocks';
 
 async function mockSentryTestError(mockServer: Mockttp) {
   return await mockServer
@@ -52,8 +53,12 @@ describe('Preinstalled example Snap', function () {
   it('displays the Snap settings page', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockTestSnapsSite,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -91,8 +96,12 @@ describe('Preinstalled example Snap', function () {
   it('uses `initialConnections` to allow JSON-RPC', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockTestSnapsSite,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -116,6 +125,9 @@ describe('Preinstalled example Snap', function () {
   it('tracks an error in Sentry with `snap_trackError`', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -123,7 +135,10 @@ describe('Preinstalled example Snap', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSentryTestError,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockTestSnapsSite(mockServer);
+          return await mockSentryTestError(mockServer);
+        },
         manifestFlags: {
           sentry: { forceEnable: false },
         },
@@ -159,6 +174,9 @@ describe('Preinstalled example Snap', function () {
   it('tracks an event in Segment with `snap_trackEvent`', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -166,7 +184,10 @@ describe('Preinstalled example Snap', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockTestSnapsSite(mockServer);
+          return await mockSegment(mockServer);
+        },
       },
       async ({ driver, mockedEndpoint }) => {
         await loginWithBalanceValidation(driver);
@@ -198,6 +219,9 @@ describe('Preinstalled example Snap', function () {
   it('starts and ends a performance trace in Sentry with `snap_startTrace` and `snap_endTrace`', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -205,7 +229,10 @@ describe('Preinstalled example Snap', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSentryTrace,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockTestSnapsSite(mockServer);
+          return await mockSentryTrace(mockServer);
+        },
         manifestFlags: {
           sentry: { forceEnable: false },
         },

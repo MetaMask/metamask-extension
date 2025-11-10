@@ -29,7 +29,7 @@ export async function serveTestSnapsFromLocalhost(
   // Proxy all metamask.github.io requests to local server
   // This ensures the browser thinks it's visiting https://metamask.github.io (allowed origin) but actually gets content from localhost:port
   return mockServer
-    .forGet(/^https:\/\/metamask\.github\.io\/.*$/u)
+    .forGet(/^https:\/\/metamask\.github\.io\/.*test-snaps.*$/u)
     .thenCallback(async (request) => {
       const url = new URL(request.url);
 
