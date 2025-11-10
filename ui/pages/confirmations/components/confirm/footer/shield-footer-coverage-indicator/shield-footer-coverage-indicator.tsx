@@ -1,4 +1,3 @@
-import { SignatureRequest } from '@metamask/signature-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
@@ -12,14 +11,20 @@ import {
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../../../../hooks/transactions/useEnableShieldCoverageChecks';
+import { isSignatureTransactionType } from '../../../../utils';
+import { isCorrectDeveloperTransactionType } from '../../../../../../../shared/lib/confirmation.utils';
 
 const ShieldFooterCoverageIndicator = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<
-    TransactionMeta | SignatureRequest
-  >();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const isSignature = isSignatureTransactionType(currentConfirmation);
+  const isTransactionConfirmation = isCorrectDeveloperTransactionType(
+    currentConfirmation?.type,
+  );
+
   const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
-  const isShowShieldFooterCoverageIndicator = isEnabled || isPaused;
+  const isShowShieldFooterCoverageIndicator =
+    (isSignature || isTransactionConfirmation) && (isEnabled || isPaused);
 
   if (!isShowShieldFooterCoverageIndicator) {
     return null;

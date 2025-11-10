@@ -267,12 +267,7 @@ const Footer = () => {
 
   return (
     <>
-      {
-        // only show shield footer indicator for signature and transaction confirmation
-        (isSignature || isTransactionConfirmation) && (
-          <ShieldFooterCoverageIndicator />
-        )
-      }
+      <ShieldFooterCoverageIndicator />
       <PageFooter
         className="confirm-footer_page-footer"
         flexDirection={FlexDirection.Column}
