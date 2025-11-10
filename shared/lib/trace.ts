@@ -145,6 +145,9 @@ export type TraceRequest = {
   /**
    * The parent context of the trace.
    * If provided, the trace will be nested under the parent trace.
+   * Can be either:
+   * - A Sentry Span
+   * - { _name: TraceName, _id?: string } (when serialized across RPC)
    */
   parentContext?: TraceContext;
 
@@ -334,9 +337,9 @@ function isValidSentrySpan(value: unknown): value is Sentry.Span {
 
 /**
  * Resolve parentContext to a Sentry Span.
- * Accepts either a Sentry Span or { _name } object from RPC.
+ * Accepts either a Sentry Span or { _name, _id? } object from RPC.
  *
- * @param parentContext - Sentry Span or { _name: TraceName }.
+ * @param parentContext - Sentry Span or { _name: TraceName, _id?: string }.
  * @returns Resolved Sentry Span or null.
  */
 function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
@@ -353,8 +356,11 @@ function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
     '_name' in parentContext &&
     typeof (parentContext as { _name?: unknown })._name === 'string'
   ) {
-    const parentTraceName = (parentContext as { _name: string })._name;
-    const parentKey = getTraceKey({ name: parentTraceName as TraceName });
+    const ctx = parentContext as { _name: string; _id?: string };
+    const parentKey = getTraceKey({
+      name: ctx._name as TraceName,
+      id: ctx._id,
+    });
     const parentTrace = tracesByKey.get(parentKey);
     return parentTrace?.span ?? null;
   }
