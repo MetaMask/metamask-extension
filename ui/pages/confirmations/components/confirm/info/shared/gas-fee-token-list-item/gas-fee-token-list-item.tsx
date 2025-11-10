@@ -65,9 +65,13 @@ export function GasFeeTokenListItem({
       }
       isSelected={isSelected}
       leftPrimary={symbol}
-      leftSecondary={`${t(
-        'confirmGasFeeTokenBalance',
-      )} ${balanceFiat} ${currentCurrency.toUpperCase()}`}
+      leftSecondary={
+        balanceFiat
+          ? `${t(
+              'confirmGasFeeTokenBalance',
+            )} ${balanceFiat} ${currentCurrency.toUpperCase()}`
+          : `${t('confirmGasFeeTokenBalance')} --`
+      }
       rightPrimary={amountFiat}
       rightSecondary={`${amountFormatted} ${symbol}`}
       warning={warning && <WarningIndicator text={warning} />}

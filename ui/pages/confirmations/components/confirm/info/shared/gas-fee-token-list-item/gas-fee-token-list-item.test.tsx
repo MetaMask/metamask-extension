@@ -48,6 +48,32 @@ describe('GasFeeTokenListItem', () => {
     expect(result.getByText('Bal: $2,345.00 USD')).toBeInTheDocument();
   });
 
+  it('renders fallback when fiat balance is unavailable', () => {
+    const storeWithoutFiat = configureStore(
+      getMockConfirmStateForTransaction(
+        genUnapprovedContractInteractionConfirmation({
+          address: FROM_MOCK,
+          gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+          selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+        }),
+        {
+          metamask: {
+            preferences: {
+              showFiatInTestnets: false,
+            },
+          },
+        },
+      ),
+    );
+
+    const result = renderWithConfirmContextProvider(
+      <GasFeeTokenListItem tokenAddress={GAS_FEE_TOKEN_MOCK.tokenAddress} />,
+      storeWithoutFiat,
+    );
+
+    expect(result.getByText('Bal: --')).toBeInTheDocument();
+  });
+
   it('renders token amount', () => {
     const result = renderWithConfirmContextProvider(
       <GasFeeTokenListItem tokenAddress={GAS_FEE_TOKEN_MOCK.tokenAddress} />,
