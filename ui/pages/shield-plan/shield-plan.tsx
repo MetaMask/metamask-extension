@@ -92,6 +92,10 @@ const ShieldPlan = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
+  // Stripe Test clocks
+  const [enableStripeTestClocks, setEnableStripeTestClocks] = useState(false);
+  const showTestClocksCheckbox = isDevOrUatBuild() || isDevOrTestEnvironment();
+
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
@@ -230,6 +234,7 @@ const ShieldPlan = () => {
           paymentTokenAddress: selectedToken?.address as Hex,
           paymentTokenSymbol: selectedToken?.symbol,
           plan: selectedPlan,
+          useTestClocks: enableStripeTestClocks,
         }),
       );
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
@@ -238,6 +243,8 @@ const ShieldPlan = () => {
             products: [PRODUCT_TYPES.SHIELD],
             isTrialRequested: !isTrialed,
             recurringInterval: selectedPlan,
+            // @ts-expect-error - useTestClocks is not a valid prop for startSubscriptionWithCard
+            useTestClocks: enableStripeTestClocks,
           }),
         );
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
@@ -334,10 +341,6 @@ const ShieldPlan = () => {
     backgroundColor: BackgroundColor.backgroundSection,
     padding: 4,
   };
-
-  // Stripe Test clocks
-  const [enableStripeTestClocks, setEnableStripeTestClocks] = useState(false);
-  const showTestClocksCheckbox = isDevOrUatBuild() || isDevOrTestEnvironment();
 
   return (
     <Page className="shield-plan-page" data-testid="shield-plan-page">
