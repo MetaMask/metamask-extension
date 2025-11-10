@@ -155,11 +155,16 @@ export const BackupAndSyncFeaturesToggles = () => {
   const { setIsBackupAndSyncFeatureEnabled } = useBackupAndSync();
 
   // Reverse cascading: if all sub-features are manually turned off, turn off main toggle
+  // Guard against race conditions by not running while updates are in progress
   useEffect(() => {
     const allSubFeaturesDisabled =
       !isAccountSyncingEnabled && !isContactSyncingEnabled;
 
-    if (isBackupAndSyncEnabled && allSubFeaturesDisabled) {
+    if (
+      isBackupAndSyncEnabled &&
+      allSubFeaturesDisabled &&
+      !isBackupAndSyncUpdateLoading
+    ) {
       (async () => {
         try {
           await setIsBackupAndSyncFeatureEnabled(
@@ -175,6 +180,7 @@ export const BackupAndSyncFeaturesToggles = () => {
     isBackupAndSyncEnabled,
     isAccountSyncingEnabled,
     isContactSyncingEnabled,
+    isBackupAndSyncUpdateLoading,
     setIsBackupAndSyncFeatureEnabled,
   ]);
 
