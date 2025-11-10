@@ -234,11 +234,11 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
 
 const getChainRanking = (state: BridgeAppState) => {
   const chainRanking = (
-    getBridgeFeatureFlags(state).chainRanking as {
+    getBridgeFeatureFlags(state)?.chainRanking as {
       chainId: CaipChainId;
     }[]
   )?.map((c) => c.chainId);
-  return Array.from(new Set(chainRanking));
+  return Array.from(new Set(chainRanking)) ?? [];
 };
 
 export const getFromChains = createDeepEqualSelector(
@@ -251,7 +251,6 @@ export const getFromChains = createDeepEqualSelector(
   (
     allBridgeableNetworks,
     chainRanking,
-
     hasSolanaAccount,
     hasBitcoinAccount,
   ) => {
@@ -1093,7 +1092,7 @@ export const selectNoFeeAssets = createSelector(
         (bridgeFeatureFlags?.chains?.[caipChainId] as unknown as {
           noFeeAssets?: string[];
         }) ??
-        bridgeFeatureFlags.chainRanking.find(
+        bridgeFeatureFlags?.chainRanking?.find(
           (c: { chainId: CaipChainId }) =>
             c.chainId === formatChainIdToCaip(chainId),
         )?.noFeeAssets
