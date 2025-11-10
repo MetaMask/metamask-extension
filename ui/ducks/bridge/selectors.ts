@@ -237,7 +237,7 @@ const getChainRanking = (state: BridgeAppState) => {
     getBridgeFeatureFlags(state).chainRanking as {
       chainId: CaipChainId;
     }[]
-  ).map((c) => c.chainId);
+  )?.map((c) => c.chainId);
   return Array.from(new Set(chainRanking));
 };
 
@@ -282,7 +282,7 @@ export const getFromChains = createDeepEqualSelector(
  */
 export const getNetworkFilterOrTopChain = createSelector(
   [getAllEnabledNetworksForAllNamespaces, getFromChains],
-  (enabledEvmNetworks, fromChains) => {
+  (enabledEvmNetworks, fromChains): NetworkConfiguration | undefined => {
     // If there is no network filter, return first chain ranked by bridge feature flags
     if (enabledEvmNetworks.length > 1) {
       return fromChains[0];

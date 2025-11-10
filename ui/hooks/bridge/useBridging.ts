@@ -83,11 +83,11 @@ const useBridging = () => {
        *
        * default fromChain: srctoken.chainId > lastSelectedId > MAINNET
        */
-      const targetChainId = isChainIdEnabledForBridging(
-        lastSelectedChain.chainId,
-      )
-        ? lastSelectedChain.chainId
-        : CHAIN_IDS.MAINNET;
+      const targetChainId =
+        lastSelectedChain?.chainId &&
+        isChainIdEnabledForBridging(lastSelectedChain.chainId)
+          ? lastSelectedChain.chainId
+          : CHAIN_IDS.MAINNET;
       if (!srcAssetIdToUse && targetChainId !== providerConfig?.chainId) {
         srcAssetIdToUse = getNativeAssetForChainId(targetChainId)?.assetId;
       }
@@ -107,7 +107,10 @@ const useBridging = () => {
           text: 'Swap',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: srcToken?.chainId ?? lastSelectedChain.chainId,
+          chain_id:
+            srcToken?.chainId ??
+            lastSelectedChain?.chainId ??
+            CHAIN_IDS.MAINNET,
         },
       });
       dispatch(
@@ -141,7 +144,7 @@ const useBridging = () => {
       trackEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
-      lastSelectedChain.chainId,
+      lastSelectedChain?.chainId,
       providerConfig?.chainId,
       isChainIdEnabledForBridging,
     ],
