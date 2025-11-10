@@ -71,9 +71,7 @@ type WalletDetailsProps = {
   params?: { id: string };
 };
 
-const WalletDetails = ({
-  params: propsParams,
-}: WalletDetailsProps = {}) => {
+const WalletDetails = ({ params: propsParams }: WalletDetailsProps = {}) => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();

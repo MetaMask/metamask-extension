@@ -30,6 +30,8 @@ export default {
   title: 'Components/MultichainAccounts/AccountShowSrpRow',
   component: AccountShowSrpRow,
   parameters: {
+    initialEntries: ['/'],
+    path: '*',
     docs: {
       description: {
         component: 'A component that displays a Secret Recovery Phrase row with backup reminder functionality.',

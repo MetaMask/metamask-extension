@@ -31,14 +31,12 @@ jest.mock('../../../hooks/useMultichainSelector', () => ({
 // Mock react-router-dom-v5-compat
 const mockUseNavigate = jest.fn();
 const mockUseParams = jest.fn();
-const mockUseLocation = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => {
   const actual = jest.requireActual('react-router-dom-v5-compat');
   return {
     ...actual,
     useNavigate: () => mockUseNavigate,
     useParams: () => mockUseParams(),
-    useLocation: () => mockUseLocation(),
   };
 });
 
@@ -122,15 +120,6 @@ const renderComponent = (state = mockState, address = mockAccount.address) => {
   // Set up useParams mock to return the address
   mockUseParams.mockReturnValue({ address });
 
-  // Set up useLocation mock to return a valid location object
-  mockUseLocation.mockReturnValue({
-    pathname: `${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${address}`,
-    search: '',
-    hash: '',
-    state: null,
-    key: 'default',
-  });
-
   return renderWithProvider(<AddressQRCode />, store);
 };
 
@@ -139,7 +128,6 @@ describe('AddressQRCode', () => {
     // Clear all mock calls but not implementations
     mockUseNavigate.mockClear();
     mockUseParams.mockClear();
-    mockUseLocation.mockClear();
     mockUseMultichainSelector.mockClear();
     mockGetMultichainAccountUrl.mockClear();
 

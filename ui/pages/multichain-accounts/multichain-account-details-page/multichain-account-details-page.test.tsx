@@ -109,7 +109,7 @@ describe('MultichainAccountDetailsPage', () => {
 
   it('does not render remove account section for Snap wallet type', () => {
     mockUseParams.mockReturnValue({
-      id: "snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d",
+      id: 'snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d',
     });
 
     renderComponent();

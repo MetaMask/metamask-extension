@@ -1,5 +1,5 @@
 import React from 'react';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route } from 'react-router-dom-v5-compat';
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   fireEvent,

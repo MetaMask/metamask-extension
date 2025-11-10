@@ -270,7 +270,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const blockExplorerUrl =
     networkConfigurations[selectedNetwork]?.blockExplorerUrls?.[
       networkConfigurations[selectedNetwork]?.defaultBlockExplorerUrlIndex
-      ] ?? null;
+    ] ?? null;
 
   const blockExplorerTokenLink = getTokenTrackerLink(
     customAddress,
@@ -611,13 +611,13 @@ export const ImportTokensModal = ({ onClose }) => {
     const tokenAddressList = Object.keys(tokenList);
     const customToken = customAddress
       ? {
-        address: customAddress,
-        symbol: customSymbol,
-        decimals: customDecimals,
-        standard: tokenStandard,
-        name: customName,
-        chainId: selectedNetwork,
-      }
+          address: customAddress,
+          symbol: customSymbol,
+          decimals: customDecimals,
+          standard: tokenStandard,
+          name: customName,
+          chainId: selectedNetwork,
+        }
       : null;
     dispatch(
       setPendingTokens({ customToken, selectedTokens, tokenAddressList }),
@@ -697,7 +697,7 @@ export const ImportTokensModal = ({ onClose }) => {
         break;
 
       case standard === TokenStandard.ERC1155 ||
-      standard === TokenStandard.ERC721:
+        standard === TokenStandard.ERC721:
         setNftAddressError(
           t('nftAddressError', [
             <ButtonLink
@@ -810,7 +810,7 @@ export const ImportTokensModal = ({ onClose }) => {
                     selected={
                       isEvmChainId(network.chainId)
                         ? formatChainIdToHex(network.chainId) ===
-                        selectedNetwork
+                          selectedNetwork
                         : network.chainId === selectedNetwork
                     }
                   />

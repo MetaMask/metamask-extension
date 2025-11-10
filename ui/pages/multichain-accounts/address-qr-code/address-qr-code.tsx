@@ -39,27 +39,16 @@ import { getAccountTypeCategory } from '../account-details';
 
 type AddressQRCodeProps = {
   params?: { address: string };
-  location?: {
-    pathname: string;
-    search: string;
-    hash: string;
-    state: unknown;
-    key: string;
-  };
 };
 
 export const AddressQRCode = ({
   params: propsParams,
-  location: propsLocation,
 }: AddressQRCodeProps = {}) => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const hookParams = useParams();
-  const hookLocation = useLocation();
 
   const { address } = propsParams || hookParams;
-  // Location is used by the Page component wrapper
-  propsLocation || hookLocation;
   const trackEvent = useContext(MetaMetricsContext);
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),

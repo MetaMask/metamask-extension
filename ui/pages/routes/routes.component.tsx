@@ -976,18 +976,14 @@ export default function Routes() {
           </Route>
           <Route path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`} exact>
             {(props: RouteComponentProps<{ address: string }>) => {
-              const { location: v5Location, match } = props;
+              const { match } = props;
               const AddressQRCodeComponent =
                 AddressQRCode as React.ComponentType<{
-                  location: RouteComponentProps['location'];
                   params: { address: string };
                 }>;
               return (
                 <AuthenticatedV5Compat>
-                  <AddressQRCodeComponent
-                    location={v5Location}
-                    params={match.params}
-                  />
+                  <AddressQRCodeComponent params={match.params} />
                 </AuthenticatedV5Compat>
               );
             }}
