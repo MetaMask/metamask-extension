@@ -5,11 +5,12 @@ import {
   renderHookWithProvider,
   renderWithProvider,
 } from '../render-helpers-navigate';
+import { DEFAULT_ROUTE } from '../../../ui/helpers/constants/routes';
 
 export function renderWithConfirmContextProvider(
   component: ReactElement,
   store: unknown,
-  pathname = '/',
+  pathname = DEFAULT_ROUTE,
   confirmationId?: string,
 ) {
   return renderWithProvider(

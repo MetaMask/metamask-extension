@@ -14,6 +14,7 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
 import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import Info from './info';
 
 jest.mock('../../simulation-details/useBalanceChanges', () => ({
@@ -65,6 +66,7 @@ jest.mock('react-router-dom-v5-compat', () => ({
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
   const mockedUseParams = jest.mocked(useParams);
+  const MOCK_CONFIRMATION_ID = '1';
 
   beforeEach(() => {
     mockedAssetDetails.mockImplementation(() => ({
@@ -138,11 +140,16 @@ describe('Info', () => {
   });
 
   it('renders info section for addEthereumChain request', () => {
-    mockedUseParams.mockReturnValue({ id: '1' });
+    mockedUseParams.mockReturnValue({ id: MOCK_CONFIRMATION_ID });
 
     const state = getMockAddEthereumChainConfirmState();
     const mockStore = configureMockStore([])(state);
-    renderWithConfirmContextProvider(<Info />, mockStore, '/', '1');
+    renderWithConfirmContextProvider(
+      <Info />,
+      mockStore,
+      DEFAULT_ROUTE,
+      MOCK_CONFIRMATION_ID,
+    );
 
     expect(screen.getByText('Test Network')).toBeInTheDocument();
     expect(screen.getByText('example.com')).toBeInTheDocument();
