@@ -45,16 +45,10 @@ describe('useDestinationAccount', () => {
     const { result } = renderUseDestinationAccount({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.ETH]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [MultichainNetworks.SOLANA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(ChainId.ETH) },
+            { chainId: MultichainNetworks.SOLANA },
+          ],
         },
       },
       bridgeSliceOverrides: { toChainId: MultichainNetworks.SOLANA },
@@ -81,16 +75,10 @@ describe('useDestinationAccount', () => {
     const { result } = renderUseDestinationAccount({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [MultichainNetworks.SOLANA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [ChainId.ETH]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: MultichainNetworks.SOLANA },
+            { chainId: formatChainIdToCaip(ChainId.ETH) },
+          ],
         },
       },
       bridgeSliceOverrides: {
@@ -118,16 +106,10 @@ describe('useDestinationAccount', () => {
     const { result, store } = renderUseDestinationAccount({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.ETH]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [ChainId.LINEA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(ChainId.ETH) },
+            { chainId: formatChainIdToCaip(ChainId.LINEA) },
+          ],
         },
       },
       bridgeSliceOverrides: { toChainId: formatChainIdToCaip(ChainId.LINEA) },
@@ -259,16 +241,10 @@ describe('useDestinationAccount', () => {
     const { result } = renderUseDestinationAccount({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [MultichainNetworks.SOLANA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [ChainId.ETH]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: MultichainNetworks.SOLANA },
+            { chainId: formatChainIdToCaip(ChainId.ETH) },
+          ],
         },
       },
       bridgeSliceOverrides: {
