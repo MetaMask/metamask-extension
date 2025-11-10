@@ -230,8 +230,13 @@ export function MetaMetricsProvider({ children }) {
       );
     }
     previousMatch.current = match?.pattern?.path;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname, location.search, location.hash]);
+  }, [
+    location.pathname,
+    location.search,
+    location.hash,
+    context.page,
+    context.referrer,
+  ]);
 
   // For backwards compatibility, attach the new methods as properties to trackEvent
   const trackEventWithMethods = trackEvent;
