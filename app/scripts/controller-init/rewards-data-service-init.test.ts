@@ -1,4 +1,8 @@
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import type { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { ControllerInitRequest } from './types';
@@ -13,9 +17,10 @@ jest.mock('../controllers/rewards/rewards-data-service');
 
 function buildInitRequestMock() {
   const baseControllerMessenger = new Messenger<
+    MockAnyNamespace,
     PreferencesControllerGetStateAction,
     never
-  >();
+  >({ namespace: MOCK_ANY_NAMESPACE });
 
   // Register a mock PreferencesController:getState handler
   baseControllerMessenger.registerActionHandler(

@@ -86,9 +86,12 @@ export const useSendNfts = () => {
 
     const updateNfts = async () => {
       const nftsWithBalances = await fetchNftsWithBalances(transformedNfts);
+      const ownedNftsWithoutBalances = nftsWithBalances.filter(
+        (nft) => (nft as Nft).isCurrentlyOwned === true,
+      );
 
       if (!isCancelled) {
-        setNfts(nftsWithBalances);
+        setNfts(ownedNftsWithoutBalances);
       }
     };
 

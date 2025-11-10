@@ -54,13 +54,11 @@ const maskedBackgroundFields = [
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
 const removedBackgroundFields = [
-  // This property is timing-dependent
-  'AccountTracker.currentBlockGasLimit',
-  'AccountTracker.currentBlockGasLimitByChainId',
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
   'AppStateController.lastInteractedConfirmationInfo',
+  'AppStateController.lastUpdatedFromVersion',
   'BridgeController.quoteRequest.walletAddress',
   'BridgeController.quoteRequest.slippage',
   'PPOMController.chainStatus.0x539.lastVisited',
@@ -904,6 +902,7 @@ describe('Sentry errors', function () {
       balances: false,
       accountsAssets: false,
       assetsMetadata: false,
+      allIgnoredAssets: false,
       assetsRates: false,
       smartTransactionsState: {
         fees: {

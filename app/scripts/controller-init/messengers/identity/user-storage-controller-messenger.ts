@@ -1,66 +1,15 @@
-import type { UserStorageControllerStateChangeEvent } from '@metamask/profile-sync-controller/user-storage';
-import { Messenger } from '@metamask/base-controller';
+import type { UserStorageControllerMessenger } from '@metamask/profile-sync-controller/user-storage';
 import {
-  KeyringControllerGetStateAction,
-  KeyringControllerLockEvent,
-  KeyringControllerUnlockEvent,
-} from '@metamask/keyring-controller';
-import { HandleSnapRequest } from '@metamask/snaps-controllers';
-import {
-  AuthenticationControllerGetBearerToken,
-  AuthenticationControllerGetSessionProfile,
-  AuthenticationControllerIsSignedIn,
-  AuthenticationControllerPerformSignIn,
-} from '@metamask/profile-sync-controller/auth';
-import {
-  AddressBookControllerContactUpdatedEvent,
-  AddressBookControllerContactDeletedEvent,
-  AddressBookControllerListAction,
-  AddressBookControllerSetAction,
-  AddressBookControllerDeleteAction,
-} from '@metamask/address-book-controller';
-import {
-  NetworkControllerAddNetworkAction,
-  NetworkControllerGetStateAction,
-  NetworkControllerNetworkRemovedEvent,
-  NetworkControllerRemoveNetworkAction,
-  NetworkControllerUpdateNetworkAction,
-} from '@metamask/network-controller';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
-type MessengerActions =
-  // Keyring Requests
-  | KeyringControllerGetStateAction
-  // Snap Requests
-  | HandleSnapRequest
-  // Auth Requests
-  | AuthenticationControllerGetBearerToken
-  | AuthenticationControllerGetSessionProfile
-  | AuthenticationControllerPerformSignIn
-  | AuthenticationControllerIsSignedIn
-  // Network Syncing
-  | NetworkControllerGetStateAction
-  | NetworkControllerAddNetworkAction
-  | NetworkControllerRemoveNetworkAction
-  | NetworkControllerUpdateNetworkAction
-  // Contact Syncing
-  | AddressBookControllerListAction
-  | AddressBookControllerSetAction
-  | AddressBookControllerDeleteAction;
+type AllowedActions = MessengerActions<UserStorageControllerMessenger>;
 
-type MessengerEvents =
-  | UserStorageControllerStateChangeEvent
-  | KeyringControllerLockEvent
-  | KeyringControllerUnlockEvent
-  // Contact Syncing Events
-  | AddressBookControllerContactUpdatedEvent
-  | AddressBookControllerContactDeletedEvent
-  // Network Syncing Events
-  | NetworkControllerNetworkRemovedEvent;
-
-export type UserStorageControllerMessenger = ReturnType<
-  typeof getUserStorageControllerMessenger
->;
+type AllowedEvents = MessengerEvents<UserStorageControllerMessenger>;
 
 /**
  * Get a restricted messenger for the User Storage controller. This is scoped to the
@@ -70,11 +19,20 @@ export type UserStorageControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getUserStorageControllerMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'UserStorageController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'UserStorageController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'UserStorageController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       // Keyring Controller Requests
       'KeyringController:getState',
       // Snap Controller Requests
@@ -89,17 +47,16 @@ export function getUserStorageControllerMessenger(
       'AddressBookController:set',
       'AddressBookController:delete',
     ],
-    allowedEvents: [
+    events: [
       // Keyring Controller Events
       'KeyringController:lock',
       'KeyringController:unlock',
       // Address Book Controller Events
       'AddressBookController:contactUpdated',
       'AddressBookController:contactDeleted',
-      // Network Controller Events
-      'NetworkController:networkRemoved',
     ],
   });
+  return controllerMessenger;
 }
 
 export type AllowedInitializationActions =
@@ -118,11 +75,20 @@ export type UserStorageControllerInitMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getUserStorageControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'UserStorageControllerInit',
-    allowedActions: ['MetaMetricsController:trackEvent'],
-    allowedEvents: [],
+  const controllerInitMessenger = new Messenger<
+    'UserStorageControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'UserStorageControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['MetaMetricsController:trackEvent'],
+  });
+  return controllerInitMessenger;
 }

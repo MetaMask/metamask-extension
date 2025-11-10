@@ -1,7 +1,9 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
-import { RestrictedMessenger } from '@metamask/base-controller';
 import log from 'loglevel';
-import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import {
+  isUserCancelledLoginError,
+  OAuthErrorMessages,
+} from '../../../../shared/modules/error';
 import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { BaseLoginHandler } from './base-login-handler';
@@ -11,8 +13,7 @@ import {
   OAuthLoginEnv,
   OAuthLoginResult,
   OAuthRefreshTokenResult,
-  OAuthServiceAction,
-  OAuthServiceEvent,
+  OAuthServiceMessenger,
   OAuthServiceOptions,
   SERVICE_NAME,
   ServiceName,
@@ -29,13 +30,7 @@ export default class OAuthService {
 
   state = null;
 
-  #messenger: RestrictedMessenger<
-    typeof SERVICE_NAME,
-    OAuthServiceAction,
-    OAuthServiceEvent,
-    OAuthServiceAction['type'],
-    OAuthServiceEvent['type']
-  >;
+  #messenger: OAuthServiceMessenger;
 
   #env: OAuthConfig & OAuthLoginEnv;
 
@@ -212,12 +207,13 @@ export default class OAuthService {
                   reject(error);
                 }
               } else {
-                if (this.#isUserCancelledLoginError()) {
-                  reject(
-                    new Error(OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR),
-                  );
+                const userCancelledLoginError =
+                  this.#getUserCancelledLoginError();
+                if (userCancelledLoginError) {
+                  reject(userCancelledLoginError);
                   return;
                 }
+                // Throw default error for no redirect URL found
                 reject(
                   new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
                 );
@@ -365,9 +361,12 @@ export default class OAuthService {
     return url.searchParams.get('code');
   }
 
-  #isUserCancelledLoginError(): boolean {
+  #getUserCancelledLoginError(): Error | undefined {
     const error = checkForLastError();
-    return error?.message === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR;
+    if (isUserCancelledLoginError(error)) {
+      return error;
+    }
+    return undefined;
   }
 
   async setMarketingConsent(

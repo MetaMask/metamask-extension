@@ -1,7 +1,7 @@
-import { Messenger } from '@metamask/base-controller';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { RewardsControllerState } from '../controllers/rewards/rewards-controller.types';
+import { getRootMessenger } from '../lib/messenger';
 import {
   getRewardsControllerMessenger,
   getRewardsControllerInitMessenger,
@@ -29,7 +29,7 @@ function buildInitRequestMock(
     RewardsControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = new Messenger<never, never>();
+  const baseControllerMessenger = getRootMessenger<never, never>();
 
   const initMessenger = getRewardsControllerInitMessenger(
     baseControllerMessenger,

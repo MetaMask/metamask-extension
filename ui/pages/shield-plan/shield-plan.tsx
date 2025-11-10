@@ -74,11 +74,9 @@ import {
 } from '../../hooks/subscription/useSubscription';
 import { useAsyncCallback } from '../../hooks/useAsync';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  getLastUsedSubscriptionPaymentDetails,
-  selectNetworkConfigurationByChainId,
-} from '../../selectors';
+import { selectNetworkConfigurationByChainId } from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constants/subscriptions';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
@@ -89,7 +87,7 @@ const ShieldPlan = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const lastUsedPaymentDetails = useSelector(
-    getLastUsedSubscriptionPaymentDetails,
+    getLastUsedShieldSubscriptionPaymentDetails,
   );
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts
@@ -137,17 +135,18 @@ const ShieldPlan = () => {
     return pricingPlans?.find((plan) => plan.interval === selectedPlan);
   }, [pricingPlans, selectedPlan]);
 
-  const availableTokenBalances = useAvailableTokenBalances({
-    paymentChains: cryptoPaymentMethod?.chains,
-    price: selectedProductPrice,
-    productType: PRODUCT_TYPES.SHIELD,
-  });
+  const { availableTokenBalances, pending: pendingAvailableTokenBalances } =
+    useAvailableTokenBalances({
+      paymentChains: cryptoPaymentMethod?.chains,
+      price: selectedProductPrice,
+      productType: PRODUCT_TYPES.SHIELD,
+    });
   const hasAvailableToken = availableTokenBalances.length > 0;
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentType>(() => {
-      if (lastUsedPaymentDetails?.paymentMethod) {
-        return lastUsedPaymentDetails.paymentMethod;
+      if (lastUsedPaymentDetails?.type) {
+        return lastUsedPaymentDetails.type;
       }
       return hasAvailableToken ? PAYMENT_TYPES.byCrypto : PAYMENT_TYPES.byCard;
     });
@@ -167,17 +166,23 @@ const ShieldPlan = () => {
 
   // set selected token to the first available token if no token is selected
   useEffect(() => {
-    if (selectedToken || availableTokenBalances.length === 0) {
+    if (
+      pendingAvailableTokenBalances ||
+      selectedToken ||
+      availableTokenBalances.length === 0
+    ) {
       return;
     }
 
     const lastUsedPaymentToken = lastUsedPaymentDetails?.paymentTokenAddress;
-    const lastUsedPaymentMethod = lastUsedPaymentDetails?.paymentMethod;
+    const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
+    const lastUsedPaymentPlan = lastUsedPaymentDetails?.plan;
 
     let lastUsedSelectedToken = availableTokenBalances[0];
     if (
       lastUsedPaymentToken &&
-      lastUsedPaymentMethod === PAYMENT_TYPES.byCrypto
+      lastUsedPaymentMethod === PAYMENT_TYPES.byCrypto &&
+      lastUsedPaymentPlan === selectedPlan
     ) {
       lastUsedSelectedToken =
         availableTokenBalances.find(
@@ -187,11 +192,18 @@ const ShieldPlan = () => {
 
     setSelectedToken(lastUsedSelectedToken);
   }, [
+    pendingAvailableTokenBalances,
     availableTokenBalances,
     selectedToken,
     setSelectedToken,
     lastUsedPaymentDetails,
+    selectedPlan,
   ]);
+
+  // reset selected token if selected plan changes
+  useEffect(() => {
+    setSelectedToken(undefined);
+  }, [selectedPlan, setSelectedToken]);
 
   // set default selected payment method to crypto if selected token available
   useEffect(() => {
@@ -207,9 +219,10 @@ const ShieldPlan = () => {
     useAsyncCallback(async () => {
       // save the last used subscription payment method and plan to Redux store
       await dispatch(
-        setLastUsedSubscriptionPaymentDetails({
-          paymentMethod: selectedPaymentMethod,
+        setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
+          type: selectedPaymentMethod,
           paymentTokenAddress: selectedToken?.address as Hex,
+          paymentTokenSymbol: selectedToken?.symbol,
           plan: selectedPlan,
         }),
       );
@@ -274,7 +287,6 @@ const ShieldPlan = () => {
         ) ?? [],
     [pricingPlans, t],
   );
-  const selectedPlanData = plans.find((plan) => plan.id === selectedPlan);
 
   const planDetails = useMemo(() => {
     const details = [];
@@ -286,14 +298,20 @@ const ShieldPlan = () => {
         ]),
       );
     }
-    details.push(
-      selectedPaymentMethod === PAYMENT_TYPES.byCrypto
-        ? t('shieldPlanDetails2')
-        : t('shieldPlanDetails2Card'),
-    );
-    details.push(t('shieldPlanDetails3'));
+
+    let planDetails2 = t('shieldPlanDetails2Card');
+    if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
+      planDetails2 =
+        selectedPlan === RECURRING_INTERVALS.year
+          ? t('shieldPlanDetails2CryptoYear')
+          : t('shieldPlanDetails2CryptoMonth');
+    }
+    details.push(planDetails2);
+    if (selectedPlan === RECURRING_INTERVALS.month) {
+      details.push(t('shieldPlanDetails3'));
+    }
     return details;
-  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice]);
+  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice, selectedPlan]);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
@@ -486,7 +504,6 @@ const ShieldPlan = () => {
           <Footer
             className="shield-plan-page__footer"
             flexDirection={FlexDirection.Column}
-            gap={3}
             backgroundColor={BackgroundColor.backgroundMuted}
           >
             <Button
@@ -498,13 +515,6 @@ const ShieldPlan = () => {
             >
               {t('continue')}
             </Button>
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-              textAlign={TextAlign.Center}
-            >
-              {t('shieldPlanAutoRenew', [selectedPlanData?.price])}
-            </Text>
           </Footer>
         </>
       )}

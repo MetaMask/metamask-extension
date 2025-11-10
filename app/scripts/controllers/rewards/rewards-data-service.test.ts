@@ -1,18 +1,26 @@
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { ENVIRONMENT } from '../../../../development/build/constants';
-import type { PreferencesControllerGetStateAction } from '../preferences-controller';
 import { RewardsDataServiceMessenger } from '../../controller-init/messengers/reward-data-service-messenger';
 import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
+import {
+  EstimatePointsDto,
+  EstimatedPointsDto,
+} from '../../../../shared/types/rewards';
 import {
   RewardsDataService,
   InvalidTimestampError,
   AuthorizationFailedError,
   AccountAlreadyRegisteredError,
+  SeasonNotFoundError,
 } from './rewards-data-service';
 import type {
   LoginResponseDto,
-  EstimatePointsDto,
-  EstimatedPointsDto,
   SeasonStateDto,
   MobileLoginDto,
   MobileOptinDto,
@@ -37,11 +45,16 @@ jest.mock('loglevel', () => ({
 const mockConsoleWarn = jest.spyOn(console, 'warn').mockImplementation();
 const mockConsoleError = jest.spyOn(console, 'error').mockImplementation();
 
+type AllActions = MessengerActions<RewardsDataServiceMessenger>;
+type AllEvents = MessengerEvents<RewardsDataServiceMessenger>;
+
+type RootMessenger = Messenger<MockAnyNamespace, AllActions, AllEvents>;
+
 describe('RewardsDataService', () => {
   let messenger: RewardsDataServiceMessenger;
   let mockFetch: jest.MockedFunction<typeof fetch>;
   let service: RewardsDataService;
-  let baseMessenger: Messenger<PreferencesControllerGetStateAction, never>;
+  let baseMessenger: RootMessenger;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -49,7 +62,7 @@ describe('RewardsDataService', () => {
     mockConsoleError.mockClear();
 
     // Create a new messenger for each test
-    baseMessenger = new Messenger<PreferencesControllerGetStateAction, never>();
+    baseMessenger = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
 
     // Register PreferencesController:getState handler
     baseMessenger.registerActionHandler(
@@ -57,11 +70,19 @@ describe('RewardsDataService', () => {
       () => ({ currentLocale: 'en-US' }) as never,
     );
 
-    messenger = baseMessenger.getRestricted({
-      name: 'RewardsDataService',
-      allowedActions: ['PreferencesController:getState'],
-      allowedEvents: [],
-    }) as unknown as RewardsDataServiceMessenger;
+    messenger = new Messenger<
+      'RewardsDataService',
+      MessengerActions<RewardsDataServiceMessenger>,
+      MessengerEvents<RewardsDataServiceMessenger>,
+      typeof baseMessenger
+    >({
+      namespace: 'RewardsDataService',
+      parent: baseMessenger,
+    });
+    baseMessenger.delegate({
+      messenger,
+      actions: ['PreferencesController:getState'],
+    });
 
     mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
 
@@ -161,21 +182,28 @@ describe('RewardsDataService', () => {
 
     it('preserves locale with underscore region code format', async () => {
       // Create a new messenger with underscore format locale
-      const customBaseMessenger = new Messenger<
-        PreferencesControllerGetStateAction,
-        never
-      >();
+      const customBaseMessenger: RootMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
 
       customBaseMessenger.registerActionHandler(
         'PreferencesController:getState',
         () => ({ currentLocale: 'en_US' }) as never,
       );
 
-      const customMessenger = customBaseMessenger.getRestricted({
-        name: 'RewardsDataService',
-        allowedActions: ['PreferencesController:getState'],
-        allowedEvents: [],
-      }) as unknown as RewardsDataServiceMessenger;
+      const customMessenger = new Messenger<
+        'RewardsDataService',
+        MessengerActions<RewardsDataServiceMessenger>,
+        MessengerEvents<RewardsDataServiceMessenger>,
+        typeof customBaseMessenger
+      >({
+        namespace: 'RewardsDataService',
+        parent: customBaseMessenger,
+      });
+      customBaseMessenger.delegate({
+        messenger: customMessenger,
+        actions: ['PreferencesController:getState'],
+      });
 
       const customService = new RewardsDataService({
         messenger: customMessenger,
@@ -203,21 +231,28 @@ describe('RewardsDataService', () => {
 
     it('preserves locale with hyphen region code format', async () => {
       // Create a new messenger with hyphen format locale
-      const customBaseMessenger = new Messenger<
-        PreferencesControllerGetStateAction,
-        never
-      >();
+      const customBaseMessenger: RootMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
 
       customBaseMessenger.registerActionHandler(
         'PreferencesController:getState',
         () => ({ currentLocale: 'en-GB' }) as never,
       );
 
-      const customMessenger = customBaseMessenger.getRestricted({
-        name: 'RewardsDataService',
-        allowedActions: ['PreferencesController:getState'],
-        allowedEvents: [],
-      }) as unknown as RewardsDataServiceMessenger;
+      const customMessenger = new Messenger<
+        'RewardsDataService',
+        MessengerActions<RewardsDataServiceMessenger>,
+        MessengerEvents<RewardsDataServiceMessenger>,
+        typeof customBaseMessenger
+      >({
+        namespace: 'RewardsDataService',
+        parent: customBaseMessenger,
+      });
+      customBaseMessenger.delegate({
+        messenger: customMessenger,
+        actions: ['PreferencesController:getState'],
+      });
 
       const customService = new RewardsDataService({
         messenger: customMessenger,
@@ -245,21 +280,28 @@ describe('RewardsDataService', () => {
 
     it('preserves locale with hyphen region code format (en-GB)', async () => {
       // Create a new messenger with en-GB locale
-      const customBaseMessenger = new Messenger<
-        PreferencesControllerGetStateAction,
-        never
-      >();
+      const customBaseMessenger: RootMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
 
       customBaseMessenger.registerActionHandler(
         'PreferencesController:getState',
         () => ({ currentLocale: 'en-GB' }) as never,
       );
 
-      const customMessenger = customBaseMessenger.getRestricted({
-        name: 'RewardsDataService',
-        allowedActions: ['PreferencesController:getState'],
-        allowedEvents: [],
-      }) as unknown as RewardsDataServiceMessenger;
+      const customMessenger = new Messenger<
+        'RewardsDataService',
+        MessengerActions<RewardsDataServiceMessenger>,
+        MessengerEvents<RewardsDataServiceMessenger>,
+        typeof customBaseMessenger
+      >({
+        namespace: 'RewardsDataService',
+        parent: customBaseMessenger,
+      });
+      customBaseMessenger.delegate({
+        messenger: customMessenger,
+        actions: ['PreferencesController:getState'],
+      });
 
       const customService = new RewardsDataService({
         messenger: customMessenger,
@@ -287,10 +329,9 @@ describe('RewardsDataService', () => {
 
     it('retries without normalization when first attempt fails, then falls back to en-US', async () => {
       // Create a new messenger that succeeds on retry but returns raw locale
-      const customBaseMessenger = new Messenger<
-        PreferencesControllerGetStateAction,
-        never
-      >();
+      const customBaseMessenger: RootMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
 
       let callCount = 0;
       customBaseMessenger.registerActionHandler(
@@ -304,11 +345,19 @@ describe('RewardsDataService', () => {
         },
       );
 
-      const customMessenger = customBaseMessenger.getRestricted({
-        name: 'RewardsDataService',
-        allowedActions: ['PreferencesController:getState'],
-        allowedEvents: [],
-      }) as unknown as RewardsDataServiceMessenger;
+      const customMessenger = new Messenger<
+        'RewardsDataService',
+        MessengerActions<RewardsDataServiceMessenger>,
+        MessengerEvents<RewardsDataServiceMessenger>,
+        typeof customBaseMessenger
+      >({
+        namespace: 'RewardsDataService',
+        parent: customBaseMessenger,
+      });
+      customBaseMessenger.delegate({
+        messenger: customMessenger,
+        actions: ['PreferencesController:getState'],
+      });
 
       const customService = new RewardsDataService({
         messenger: customMessenger,
@@ -337,10 +386,9 @@ describe('RewardsDataService', () => {
 
     it('falls back to en-US when both attempts to get locale fail', async () => {
       // Create a new messenger that throws an error on both attempts
-      const customBaseMessenger = new Messenger<
-        PreferencesControllerGetStateAction,
-        never
-      >();
+      const customBaseMessenger: RootMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
 
       let callCount = 0;
       customBaseMessenger.registerActionHandler(
@@ -351,11 +399,19 @@ describe('RewardsDataService', () => {
         },
       );
 
-      const customMessenger = customBaseMessenger.getRestricted({
-        name: 'RewardsDataService',
-        allowedActions: ['PreferencesController:getState'],
-        allowedEvents: [],
-      }) as unknown as RewardsDataServiceMessenger;
+      const customMessenger = new Messenger<
+        'RewardsDataService',
+        MessengerActions<RewardsDataServiceMessenger>,
+        MessengerEvents<RewardsDataServiceMessenger>,
+        typeof customBaseMessenger
+      >({
+        namespace: 'RewardsDataService',
+        parent: customBaseMessenger,
+      });
+      customBaseMessenger.delegate({
+        messenger: customMessenger,
+        actions: ['PreferencesController:getState'],
+      });
 
       const customService = new RewardsDataService({
         messenger: customMessenger,
@@ -384,21 +440,28 @@ describe('RewardsDataService', () => {
 
     it('uses different locale when PreferencesController returns different locale', async () => {
       // Create a new messenger with French locale
-      const customBaseMessenger = new Messenger<
-        PreferencesControllerGetStateAction,
-        never
-      >();
+      const customBaseMessenger: RootMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
 
       customBaseMessenger.registerActionHandler(
         'PreferencesController:getState',
         () => ({ currentLocale: 'fr-FR' }) as never,
       );
 
-      const customMessenger = customBaseMessenger.getRestricted({
-        name: 'RewardsDataService',
-        allowedActions: ['PreferencesController:getState'],
-        allowedEvents: [],
-      }) as unknown as RewardsDataServiceMessenger;
+      const customMessenger = new Messenger<
+        'RewardsDataService',
+        MessengerActions<RewardsDataServiceMessenger>,
+        MessengerEvents<RewardsDataServiceMessenger>,
+        typeof customBaseMessenger
+      >({
+        namespace: 'RewardsDataService',
+        parent: customBaseMessenger,
+      });
+      customBaseMessenger.delegate({
+        messenger: customMessenger,
+        actions: ['PreferencesController:getState'],
+      });
 
       const customService = new RewardsDataService({
         messenger: customMessenger,
@@ -797,6 +860,46 @@ describe('RewardsDataService', () => {
       await expect(
         service.getSeasonStatus(mockSeasonId, mockSubscriptionId),
       ).rejects.toBeInstanceOf(AuthorizationFailedError);
+    });
+
+    it('should throw SeasonNotFoundError when season is not found', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 404,
+        json: jest.fn().mockResolvedValue({
+          message: 'Season not found',
+        }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      let caughtError: unknown;
+      try {
+        await service.getSeasonStatus(mockSeasonId, mockSubscriptionId);
+      } catch (error) {
+        caughtError = error;
+      }
+
+      expect(caughtError).toBeInstanceOf(SeasonNotFoundError);
+      const seasonNotFoundError = caughtError as SeasonNotFoundError;
+      expect(seasonNotFoundError.name).toBe('SeasonNotFoundError');
+      expect(seasonNotFoundError.message).toBe(
+        'Season not found. Please try again with a different season.',
+      );
+    });
+
+    it('should detect season not found when message contains the phrase', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 404,
+        json: jest.fn().mockResolvedValue({
+          message: 'The requested Season not found in the system',
+        }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(
+        service.getSeasonStatus(mockSeasonId, mockSubscriptionId),
+      ).rejects.toBeInstanceOf(SeasonNotFoundError);
     });
 
     it('should throw error when fetch fails', async () => {
