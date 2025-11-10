@@ -25,7 +25,11 @@ import { captureException, captureMessage } from '../../shared/lib/sentry';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../app/scripts/lib/util';
-import { PATH_NAME_MAP, getPaths } from '../helpers/constants/routes';
+import {
+  PATH_NAME_MAP,
+  getPaths,
+  DEFAULT_ROUTE,
+} from '../helpers/constants/routes';
 import { MetaMetricsContextProp } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 import { getParticipateInMetaMetrics } from '../selectors';
@@ -166,13 +170,11 @@ export function MetaMetricsProvider({ children }) {
     const paths = getPaths();
     let match = null;
     for (const path of paths) {
-      // Skip empty string paths - they don't work correctly with v6 matchPath
-      if (path === '') {
-        continue;
-      }
+      // Normalize empty string paths to '/' - they're aliases for the Home route
+      const normalizedPath = path === '' ? DEFAULT_ROUTE : path;
       match = matchPath(
         {
-          path,
+          path: normalizedPath,
           end: true,
           caseSensitive: false, // Match v5 behavior (case-insensitive by default)
         },
