@@ -1,8 +1,5 @@
 import { SignatureRequest } from '@metamask/signature-controller';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
@@ -145,8 +142,6 @@ export function useShieldCoverageAlert(): Alert[] {
   const { currentConfirmation } = useConfirmContext<
     TransactionMeta | SignatureRequest
   >();
-  const isSimpleSendTransaction =
-    currentConfirmation?.type === TransactionType.simpleSend;
 
   const { reasonCode, status } = useSelector((state) =>
     getCoverageStatus(state as ShieldState, currentConfirmation?.id),
@@ -166,12 +161,7 @@ export function useShieldCoverageAlert(): Alert[] {
     modalBodyStr = 'shieldCoverageAlertMessagePaused';
   }
 
-  const showAlert =
-    (isEnabled || isPaused) &&
-    (Boolean(status) ||
-      // Simple send transactions are not covered by Shield and can't be send to ruleset engine
-      // so we just show not covered in client side
-      isSimpleSendTransaction);
+  const showAlert = (isEnabled || isPaused) && Boolean(status);
 
   const navigate = useNavigate();
   const onPausedAcknowledgeClick = useCallback(() => {
