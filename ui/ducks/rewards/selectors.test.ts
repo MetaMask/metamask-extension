@@ -5,8 +5,6 @@ import {
   selectOptinAllowedForGeoLoading,
   selectOptinAllowedForGeoError,
   selectCandidateSubscriptionId,
-  selectCandidateSubscriptionIdLoading,
-  selectCandidateSubscriptionIdError,
   selectSeasonStatusLoading,
   selectSeasonStatus,
   selectSeasonStatusError,
@@ -82,20 +80,6 @@ describe('rewards selectors', () => {
         rewards: { candidateSubscriptionId: 'sub-123' },
       });
       expect(selectCandidateSubscriptionId(state)).toBe('sub-123');
-    });
-
-    it('selectCandidateSubscriptionIdLoading returns candidate id loading', () => {
-      const state = buildState({
-        rewards: { candidateSubscriptionIdLoading: true },
-      });
-      expect(selectCandidateSubscriptionIdLoading(state)).toBe(true);
-    });
-
-    it('selectCandidateSubscriptionIdError returns candidate id error', () => {
-      const state = buildState({
-        rewards: { candidateSubscriptionIdError: true },
-      });
-      expect(selectCandidateSubscriptionIdError(state)).toBe(true);
     });
 
     it('selectSeasonStatusLoading returns status loading', () => {

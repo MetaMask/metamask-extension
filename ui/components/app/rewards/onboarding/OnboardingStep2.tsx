@@ -40,7 +40,7 @@ const OnboardingStep2: React.FC = () => {
       </svg>
 
       <img
-        src="/images/rewards/rewards-onboarding-step2.png"
+        src="https://images.ctfassets.net/9sy2a0egs6zh/2wG5gvQmC4d95TShVVpsEX/9bd7f199f47833fdc68e403a059713df/rewards-onboarding-step2.png"
         className="w-full z-10 object-contain"
         data-testid="rewards-onboarding-step2-image"
       />

@@ -100,7 +100,7 @@ const OnboardingStep4: React.FC = () => {
       data-testid="rewards-onboarding-step4-info"
     >
       <img
-        src="/images/rewards/rewards-onboarding-step4.png"
+        src="https://images.ctfassets.net/9sy2a0egs6zh/2W921m9iDZsozDlv1pNx4z/c04e3577afd665ae5434d8b7115c4bcc/rewards-onboarding-step4.png"
         className="z-10 object-contain self-center my-4"
         width={100}
         height={100}

@@ -13,8 +13,9 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
-import { rewardsOptIn } from '../../store/actions';
+import { rewardsOptIn, updateMetaMetricsTraits } from '../../store/actions';
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
 import { useI18nContext } from '../useI18nContext';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
@@ -104,6 +105,21 @@ export const useOptIn = (): UseOptinResult => {
             event: MetaMetricsEventName.RewardsOptInCompleted,
             properties: metricsProps,
           });
+
+          // Update user traits
+          try {
+            await dispatch(
+              updateMetaMetricsTraits({
+                [MetaMetricsUserTrait.HasRewardsOptedIn]: 'on',
+                ...(referralCode && {
+                  [MetaMetricsUserTrait.RewardsReferred]: true,
+                  [MetaMetricsUserTrait.RewardsReferralCodeUsed]: referralCode,
+                }),
+              }),
+            );
+          } catch {
+            // Silently fail - traits update should not block opt-in
+          }
         }
       } catch (error) {
         trackEvent({

@@ -3306,6 +3306,11 @@ export default class MetamaskController extends EventEmitter {
           metaMetricsController,
         ),
 
+      // MetaMetrics traits update (UI → Background)
+      updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
+        metaMetricsController,
+      ),
+
       // Buffered Trace API that checks consent and handles buffering/immediate execution
       bufferedTrace: metaMetricsController.bufferedTrace.bind(
         metaMetricsController,

@@ -11,8 +11,6 @@ import rewardsReducer, {
   setRewardsGeoMetadataLoading,
   setRewardsGeoMetadataError,
   setCandidateSubscriptionId,
-  setCandidateSubscriptionIdLoading,
-  setCandidateSubscriptionIdError,
   setSeasonStatus,
   setSeasonStatusLoading,
   setSeasonStatusError,
@@ -133,22 +131,6 @@ describe('Ducks - Rewards', () => {
       expect(actions[0].type).toBe('rewards/setCandidateSubscriptionId');
       const newState = rewardsReducer(initialState, actions[0]);
       expect(newState.candidateSubscriptionId).toBe('sub_123');
-    });
-
-    it('setCandidateSubscriptionIdLoading updates loading flag', () => {
-      store.dispatch(setCandidateSubscriptionIdLoading(true));
-      const actions = store.getActions();
-      expect(actions[0].type).toBe('rewards/setCandidateSubscriptionIdLoading');
-      const newState = rewardsReducer(initialState, actions[0]);
-      expect(newState.candidateSubscriptionIdLoading).toBe(true);
-    });
-
-    it('setCandidateSubscriptionIdError updates error flag', () => {
-      store.dispatch(setCandidateSubscriptionIdError(true));
-      const actions = store.getActions();
-      expect(actions[0].type).toBe('rewards/setCandidateSubscriptionIdError');
-      const newState = rewardsReducer(initialState, actions[0]);
-      expect(newState.candidateSubscriptionIdError).toBe(true);
     });
 
     it('setSeasonStatusLoading updates loading flag', () => {

@@ -26,13 +26,6 @@ export const selectOptinAllowedForGeoError = (state: MetaMaskReduxState) =>
 export const selectCandidateSubscriptionId = (state: MetaMaskReduxState) =>
   state.rewards.candidateSubscriptionId;
 
-export const selectCandidateSubscriptionIdLoading = (
-  state: MetaMaskReduxState,
-) => state.rewards.candidateSubscriptionIdLoading;
-
-export const selectCandidateSubscriptionIdError = (state: MetaMaskReduxState) =>
-  state.rewards.candidateSubscriptionIdError;
-
 export const selectSeasonStatusLoading = (state: MetaMaskReduxState) =>
   state.rewards.seasonStatusLoading;
 

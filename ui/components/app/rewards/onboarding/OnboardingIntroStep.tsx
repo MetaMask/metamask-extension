@@ -23,7 +23,6 @@ import { setStorageItem } from '../../../../../shared/lib/storage-helpers';
 import { REWARDS_GTM_MODAL_SHOWN } from '../utils/constants';
 import {
   selectCandidateSubscriptionId,
-  selectCandidateSubscriptionIdError,
   selectOptinAllowedForGeo,
   selectOptinAllowedForGeoError,
   selectOptinAllowedForGeoLoading,
@@ -56,16 +55,14 @@ const OnboardingIntroStep: React.FC = () => {
   );
   const optinAllowedForGeoError = useSelector(selectOptinAllowedForGeoError);
   const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
-  const candidateSubscriptionIdError = useSelector(
-    selectCandidateSubscriptionIdError,
-  );
+  const candidateSubscriptionIdError = candidateSubscriptionId === 'error';
   const rewardsActiveAccountSubscriptionId = useAppSelector(
     (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
   );
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
-  // If we don't know of a subscription id, we need to fetch the geo rewards metadata
+  // If we don't know of a subscription id, we need to fetch the geo metadata
   const { fetchGeoRewardsMetadata } = useGeoRewardsMetadata({
     enabled:
       !rewardsActiveAccountSubscriptionId &&
@@ -180,7 +177,7 @@ const OnboardingIntroStep: React.FC = () => {
       data-testid="rewards-onboarding-intro-image"
     >
       <img
-        src="/images/rewards/rewards-onboarding-intro.png"
+        src="https://images.ctfassets.net/9sy2a0egs6zh/5vsF0CDPAgGRK4VpjxyKT9/e744a921a9666172aa4f92852356ca7a/rewards-onboarding-intro.png"
         alt="Rewards onboarding intro"
         className="w-full max-w-lg h-auto object-contain"
         data-testid="intro-image"
@@ -227,7 +224,7 @@ const OnboardingIntroStep: React.FC = () => {
         className="w-full h-full bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage:
-            'url(/images/rewards/rewards-onboarding-intro-bg.png)',
+            'url(https://images.ctfassets.net/9sy2a0egs6zh/3IxIZWE6JZHzDNhlpiLeJq/7e765a752a7ae0b90dd327ddca496175/rewards-onboarding-intro-bg.png)',
         }}
       >
         <ModalBody className="w-full h-full pt-8 pb-4 flex flex-col">

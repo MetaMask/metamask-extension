@@ -18,9 +18,7 @@ export type RewardsState = {
   optinAllowedForGeoError: boolean;
 
   // Rewards subscription / season status state
-  candidateSubscriptionId: string | null;
-  candidateSubscriptionIdLoading: boolean;
-  candidateSubscriptionIdError: boolean;
+  candidateSubscriptionId: string | 'pending' | 'error' | 'retry' | null;
   seasonStatus: SeasonStatusState | null;
   seasonStatusError: string | null;
   seasonStatusLoading: boolean;
@@ -40,9 +38,8 @@ export const initialState: RewardsState = {
   optinAllowedForGeoLoading: false,
   optinAllowedForGeoError: false,
 
-  candidateSubscriptionId: null,
-  candidateSubscriptionIdLoading: false,
-  candidateSubscriptionIdError: false,
+  candidateSubscriptionId: 'pending',
+
   seasonStatus: null,
   seasonStatusError: null,
   seasonStatusLoading: false,
@@ -101,23 +98,29 @@ const rewardsSlice = createSlice({
     // Rewards subscription / season status reducers
     setCandidateSubscriptionId: (
       state,
-      action: PayloadAction<string | null>,
+      action: PayloadAction<string | 'pending' | 'error' | 'retry' | null>,
     ) => {
+      const previousCandidateId = state.candidateSubscriptionId;
+      const newCandidateId = action.payload;
+
+      // Check if candidate ID changed and old value had a value (not null, 'pending', 'error', or 'retry')
+      const hasValidPreviousId =
+        previousCandidateId &&
+        previousCandidateId !== 'pending' &&
+        previousCandidateId !== 'error' &&
+        previousCandidateId !== 'retry';
+
+      const candidateIdChanged =
+        hasValidPreviousId && previousCandidateId !== newCandidateId;
+
+      if (candidateIdChanged) {
+        // Reset UI state to initial values
+        state.seasonStatus = initialState.seasonStatus;
+        state.seasonStatusError = initialState.seasonStatusError;
+        state.seasonStatusLoading = initialState.seasonStatusLoading;
+      }
+
       state.candidateSubscriptionId = action.payload;
-    },
-
-    setCandidateSubscriptionIdLoading: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
-      state.candidateSubscriptionIdLoading = action.payload;
-    },
-
-    setCandidateSubscriptionIdError: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
-      state.candidateSubscriptionIdError = action.payload;
     },
 
     setSeasonStatusLoading: (state, action: PayloadAction<boolean>) => {
@@ -146,8 +149,6 @@ export const {
   setOnboardingModalOpen,
   setOnboardingActiveStep,
   setCandidateSubscriptionId,
-  setCandidateSubscriptionIdLoading,
-  setCandidateSubscriptionIdError,
   setSeasonStatusLoading,
   setSeasonStatus,
   setSeasonStatusError,

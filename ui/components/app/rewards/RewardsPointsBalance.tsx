@@ -6,7 +6,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setOnboardingModalOpen } from '../../../ducks/rewards';
 import {
   selectCandidateSubscriptionId,
-  selectCandidateSubscriptionIdLoading,
   selectRewardsEnabled,
   selectSeasonStatus,
   selectSeasonStatusError,
@@ -15,6 +14,7 @@ import {
 import { useCandidateSubscriptionId } from '../../../hooks/rewards/useCandidateSubscriptionId';
 import { useSeasonStatus } from '../../../hooks/rewards/useSeasonStatus';
 import { getStorageItem } from '../../../../shared/lib/storage-helpers';
+import { useAppSelector } from '../../../store/store';
 import { RewardsBadge } from './RewardsBadge';
 import { REWARDS_GTM_MODAL_SHOWN } from './utils/constants';
 
@@ -34,11 +34,18 @@ export const RewardsPointsBalance = () => {
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const seasonStatus = useSelector(selectSeasonStatus);
   const seasonStatusLoading = useSelector(selectSeasonStatusLoading);
-  const seasonStatusError = useSelector(selectSeasonStatusError)
+  const seasonStatusError = useSelector(selectSeasonStatusError);
   const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
-  const candidateSubscriptionIdLoading = useSelector(
-    selectCandidateSubscriptionIdLoading,
+  const rewardsActiveAccountSubscriptionId = useAppSelector(
+    (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
   );
+
+  const candidateSubscriptionIdLoading =
+    !rewardsActiveAccountSubscriptionId &&
+    (candidateSubscriptionId === 'pending' ||
+      candidateSubscriptionId === 'retry');
+  const candidateSubscriptionIdError = candidateSubscriptionId === 'error';
+
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(true);
   const isTestEnv = Boolean(process.env.IN_TEST);
 
@@ -72,7 +79,7 @@ export const RewardsPointsBalance = () => {
     return null;
   }
 
-  if (!candidateSubscriptionId && !candidateSubscriptionIdLoading) {
+  if (!candidateSubscriptionId) {
     return (
       <RewardsBadge
         boxClassName="gap-1 px-1.5 bg-background-muted rounded"
@@ -85,12 +92,15 @@ export const RewardsPointsBalance = () => {
 
   if (
     (seasonStatusLoading && !seasonStatus?.balance) ||
-    (candidateSubscriptionIdLoading && !candidateSubscriptionId)
+    candidateSubscriptionIdLoading
   ) {
     return <Skeleton width="100px" />;
   }
 
-  if (seasonStatusError && !seasonStatus?.balance) {
+  if (
+    (seasonStatusError && !seasonStatus?.balance) ||
+    candidateSubscriptionIdError
+  ) {
     return (
       <RewardsBadge
         formattedPoints={t('rewardsPointsBalance_couldntLoad')}

@@ -6,6 +6,7 @@ import {
   selectCandidateSubscriptionId,
   selectRewardsEnabled,
   selectSeasonStatus,
+  selectSeasonStatusError,
   selectSeasonStatusLoading,
 } from '../../../ducks/rewards/selectors';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -41,8 +42,6 @@ jest.mock('../../../hooks/useI18nContext', () => ({
     return key;
   }),
 }));
-
-// No rewards context anymore; tests will drive values via useSelector
 
 jest.mock('../../component-library/skeleton', () => ({
   Skeleton: ({ width }: { width: string }) => (
@@ -91,12 +90,14 @@ describe('RewardsPointsBalance', () => {
     candidateSubscriptionId = 'test-subscription-id',
     seasonStatus = mockSeasonStatus,
     seasonStatusLoading = false,
+    seasonStatusError = null,
   }: {
     locale?: string;
     rewardsEnabled?: boolean;
     candidateSubscriptionId?: string | null;
     seasonStatus?: typeof mockSeasonStatus | null;
     seasonStatusLoading?: boolean;
+    seasonStatusError?: string | null;
   }) => {
     mockUseSelector.mockImplementation((selector: unknown) => {
       if (selector === getIntlLocale) {
@@ -113,6 +114,9 @@ describe('RewardsPointsBalance', () => {
       }
       if (selector === selectSeasonStatusLoading) {
         return seasonStatusLoading;
+      }
+      if (selector === selectSeasonStatusError) {
+        return seasonStatusError;
       }
       return undefined;
     });
@@ -323,8 +327,7 @@ describe('RewardsPointsBalance', () => {
   });
 
   it('should render error state when seasonStatusError exists and no balance', () => {
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
+    setSelectorValues({
       seasonStatus: null,
       seasonStatusError: 'Failed to fetch season status',
       seasonStatusLoading: false,
@@ -341,8 +344,7 @@ describe('RewardsPointsBalance', () => {
   });
 
   it('should render error state with correct props when seasonStatusError exists', () => {
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
+    setSelectorValues({
       seasonStatus: null,
       seasonStatusError: 'Network error',
       seasonStatusLoading: false,
@@ -359,8 +361,7 @@ describe('RewardsPointsBalance', () => {
   });
 
   it('should not render error state when loading', () => {
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
+    setSelectorValues({
       seasonStatus: null,
       seasonStatusError: 'Error occurred',
       seasonStatusLoading: true,

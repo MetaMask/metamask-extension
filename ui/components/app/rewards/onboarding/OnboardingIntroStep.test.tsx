@@ -25,6 +25,19 @@ jest.mock('../../../../ducks/rewards', () => ({
   setOnboardingModalOpen: jest.fn((open) => ({ type: 'SET_MODAL_OPEN', open })),
 }));
 
+// Mock selectors to avoid brittle sequencing of useSelector calls
+jest.mock('../../../../ducks/rewards/selectors', () => ({
+  selectOptinAllowedForGeo: jest.fn(),
+  selectOptinAllowedForGeoLoading: jest.fn(),
+  selectOptinAllowedForGeoError: jest.fn(),
+  selectCandidateSubscriptionId: jest.fn(),
+}));
+
+// Mock hardware wallet selector
+jest.mock('../../../../../shared/modules/selectors', () => ({
+  isHardwareWallet: jest.fn(),
+}));
+
 // Mock shared storage helper to avoid side effects from useEffect
 jest.mock('../../../../../shared/lib/storage-helpers', () => ({
   setStorageItem: jest.fn(() => Promise.resolve()),
@@ -44,6 +57,15 @@ describe('OnboardingIntroStep', () => {
   const { useSelector, useDispatch } = jest.requireMock('react-redux');
   const { setErrorToast, setOnboardingActiveStep, setOnboardingModalOpen } =
     jest.requireMock('../../../../ducks/rewards');
+  const {
+    selectOptinAllowedForGeo,
+    selectOptinAllowedForGeoLoading,
+    selectOptinAllowedForGeoError,
+    selectCandidateSubscriptionId,
+  } = jest.requireMock('../../../../ducks/rewards/selectors');
+  const { isHardwareWallet } = jest.requireMock(
+    '../../../../../shared/modules/selectors',
+  );
   const { useAppSelector } = jest.requireMock('../../../../store/store');
   const { useGeoRewardsMetadata } = jest.requireMock(
     '../../../../hooks/rewards/useGeoRewardsMetadata',
@@ -54,29 +76,27 @@ describe('OnboardingIntroStep', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useDispatch as jest.Mock).mockReturnValue(dispatchMock);
+    // Ensure useSelector calls the provided selector function without using any
+    (useSelector as jest.Mock).mockImplementation(
+      (selector: (state: unknown) => unknown) => selector({} as unknown),
+    );
     // Default: no active subscription id
     (useAppSelector as jest.Mock).mockReturnValue(undefined);
     // Default geo metadata hook with a retry function
     (useGeoRewardsMetadata as jest.Mock).mockReturnValue({
       fetchGeoRewardsMetadata: jest.fn(),
     });
+
+    // Default selector returns
+    (selectOptinAllowedForGeo as jest.Mock).mockReturnValue(true);
+    (selectOptinAllowedForGeoLoading as jest.Mock).mockReturnValue(false);
+    (selectOptinAllowedForGeoError as jest.Mock).mockReturnValue(false);
+    (selectCandidateSubscriptionId as jest.Mock).mockReturnValue(undefined);
+    (isHardwareWallet as jest.Mock).mockReturnValue(false);
   });
 
   it('renders title, description, image, and action buttons', () => {
-    // Sequence for useSelector calls in component:
-    // 1) selectOptinAllowedForGeo
-    // 2) selectOptinAllowedForGeoLoading
-    // 3) selectOptinAllowedForGeoError
-    // 4) selectCandidateSubscriptionId
-    // 5) selectCandidateSubscriptionIdError
-    // 6) isHardwareWallet
-    (useSelector as jest.Mock)
-      .mockReturnValueOnce(true)
-      .mockReturnValueOnce(false)
-      .mockReturnValueOnce(false)
-      .mockReturnValueOnce(undefined)
-      .mockReturnValueOnce(false)
-      .mockReturnValueOnce(false);
+    // Defaults from beforeEach are sufficient for rendering
 
     render(<OnboardingIntroStep />);
 
@@ -113,13 +133,11 @@ describe('OnboardingIntroStep', () => {
     });
 
     // Trigger the first error branch: geo check failed
-    (useSelector as jest.Mock)
-      .mockReturnValueOnce(false) // optinAllowedForGeo
-      .mockReturnValueOnce(false) // optinAllowedForGeoLoading
-      .mockReturnValueOnce(true) // optinAllowedForGeoError
-      .mockReturnValueOnce(undefined) // candidateSubscriptionId
-      .mockReturnValueOnce(false) // candidateSubscriptionIdError
-      .mockReturnValueOnce(false); // hardwareWalletUsed
+    (selectOptinAllowedForGeo as jest.Mock).mockReturnValue(false);
+    (selectOptinAllowedForGeoLoading as jest.Mock).mockReturnValue(false);
+    (selectOptinAllowedForGeoError as jest.Mock).mockReturnValue(true);
+    (selectCandidateSubscriptionId as jest.Mock).mockReturnValue(undefined);
+    (isHardwareWallet as jest.Mock).mockReturnValue(false);
 
     render(<OnboardingIntroStep />);
 
@@ -143,13 +161,11 @@ describe('OnboardingIntroStep', () => {
 
   it('on confirm: shows error toast for unsupported region', () => {
     // Trigger the unsupported region branch: opt-in is not allowed
-    (useSelector as jest.Mock)
-      .mockReturnValueOnce(false) // optinAllowedForGeo
-      .mockReturnValueOnce(false) // optinAllowedForGeoLoading
-      .mockReturnValueOnce(false) // optinAllowedForGeoError
-      .mockReturnValueOnce(undefined) // candidateSubscriptionId
-      .mockReturnValueOnce(false) // candidateSubscriptionIdError
-      .mockReturnValueOnce(false); // hardwareWalletUsed
+    (selectOptinAllowedForGeo as jest.Mock).mockReturnValue(false);
+    (selectOptinAllowedForGeoLoading as jest.Mock).mockReturnValue(false);
+    (selectOptinAllowedForGeoError as jest.Mock).mockReturnValue(false);
+    (selectCandidateSubscriptionId as jest.Mock).mockReturnValue(undefined);
+    (isHardwareWallet as jest.Mock).mockReturnValue(false);
 
     render(<OnboardingIntroStep />);
 
@@ -171,13 +187,11 @@ describe('OnboardingIntroStep', () => {
 
   it('on confirm: shows error toast for hardware wallet usage', () => {
     // Trigger the hardware wallet branch
-    (useSelector as jest.Mock)
-      .mockReturnValueOnce(true) // optinAllowedForGeo
-      .mockReturnValueOnce(false) // optinAllowedForGeoLoading
-      .mockReturnValueOnce(false) // optinAllowedForGeoError
-      .mockReturnValueOnce(undefined) // candidateSubscriptionId
-      .mockReturnValueOnce(false) // candidateSubscriptionIdError
-      .mockReturnValueOnce(true); // hardwareWalletUsed
+    (selectOptinAllowedForGeo as jest.Mock).mockReturnValue(true);
+    (selectOptinAllowedForGeoLoading as jest.Mock).mockReturnValue(false);
+    (selectOptinAllowedForGeoError as jest.Mock).mockReturnValue(false);
+    (selectCandidateSubscriptionId as jest.Mock).mockReturnValue(undefined);
+    (isHardwareWallet as jest.Mock).mockReturnValue(true);
 
     render(<OnboardingIntroStep />);
 
@@ -198,13 +212,11 @@ describe('OnboardingIntroStep', () => {
   });
 
   it('on confirm: proceeds to STEP1 when allowed and not hardware wallet', () => {
-    (useSelector as jest.Mock)
-      .mockReturnValueOnce(true) // optinAllowedForGeo
-      .mockReturnValueOnce(false) // optinAllowedForGeoLoading
-      .mockReturnValueOnce(false) // optinAllowedForGeoError
-      .mockReturnValueOnce(undefined) // candidateSubscriptionId
-      .mockReturnValueOnce(false) // candidateSubscriptionIdError
-      .mockReturnValueOnce(false); // hardwareWalletUsed
+    (selectOptinAllowedForGeo as jest.Mock).mockReturnValue(true);
+    (selectOptinAllowedForGeoLoading as jest.Mock).mockReturnValue(false);
+    (selectOptinAllowedForGeoError as jest.Mock).mockReturnValue(false);
+    (selectCandidateSubscriptionId as jest.Mock).mockReturnValue(undefined);
+    (isHardwareWallet as jest.Mock).mockReturnValue(false);
 
     render(<OnboardingIntroStep />);
 
@@ -222,13 +234,11 @@ describe('OnboardingIntroStep', () => {
   });
 
   it('on skip: closes the onboarding modal', () => {
-    (useSelector as jest.Mock)
-      .mockReturnValueOnce(true) // optinAllowedForGeo
-      .mockReturnValueOnce(false) // optinAllowedForGeoLoading
-      .mockReturnValueOnce(false) // optinAllowedForGeoError
-      .mockReturnValueOnce(undefined) // candidateSubscriptionId
-      .mockReturnValueOnce(false) // candidateSubscriptionIdError
-      .mockReturnValueOnce(false); // hardwareWalletUsed
+    (selectOptinAllowedForGeo as jest.Mock).mockReturnValue(true);
+    (selectOptinAllowedForGeoLoading as jest.Mock).mockReturnValue(false);
+    (selectOptinAllowedForGeoError as jest.Mock).mockReturnValue(false);
+    (selectCandidateSubscriptionId as jest.Mock).mockReturnValue(undefined);
+    (isHardwareWallet as jest.Mock).mockReturnValue(false);
 
     render(<OnboardingIntroStep />);
 

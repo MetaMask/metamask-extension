@@ -2,7 +2,6 @@ import { act } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import log from 'loglevel';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
-import mockState from '../../../test/data/mock-state.json';
 import { useCandidateSubscriptionId } from './useCandidateSubscriptionId';
 
 // Mock store actions used by the hook
@@ -26,19 +25,22 @@ describe('useCandidateSubscriptionId', () => {
   });
 
   describe('Initial State', () => {
-    it('returns fetch function and initial rewards state is unchanged', () => {
+    it('returns fetch function and respects initial candidateSubscriptionId sentinel', () => {
       const { result, store } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
-        mockState,
+        {
+          rewards: {
+            candidateSubscriptionId: 'pending',
+          },
+        },
       );
 
       expect(typeof result.current.fetchCandidateSubscriptionId).toBe(
         'function',
       );
       const rewardsState = store?.getState().rewards;
-      expect(rewardsState?.candidateSubscriptionId).toBeNull();
-      expect(rewardsState?.candidateSubscriptionIdError).toBe(false);
-      expect(rewardsState?.candidateSubscriptionIdLoading).toBe(false);
+      // Initial state uses sentinel value 'pending' and no separate flags
+      expect(rewardsState?.candidateSubscriptionId).toBe('pending');
     });
   });
 
@@ -63,30 +65,35 @@ describe('useCandidateSubscriptionId', () => {
       await waitFor(() => {
         expect(getRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
         const rewardsState = store?.getState().rewards;
-        expect(rewardsState?.candidateSubscriptionId).toBeNull();
-        expect(rewardsState?.candidateSubscriptionIdLoading).toBe(false);
-        expect(rewardsState?.candidateSubscriptionIdError).toBe(false);
+        expect(rewardsState?.candidateSubscriptionId).toBe('pending');
       });
     });
 
-    it('does nothing when active account ID is missing', async () => {
+    it("fetches when candidateSubscriptionId is 'retry' (regardless of unlock)", async () => {
+      (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
+        () => async () => 'new-sub-id',
+      );
+
       const { store } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
         {
           metamask: {
-            isUnlocked: true,
+            isUnlocked: false, // ensure unlock effect doesn't trigger
             useExternalServices: true,
             remoteFeatureFlags: { rewardsEnabled: true },
             rewardsActiveAccount: null,
             rewardsSubscriptions: {},
           },
+          rewards: {
+            candidateSubscriptionId: 'retry',
+          },
         },
       );
 
       await waitFor(() => {
-        expect(getRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
+        expect(getRewardsCandidateSubscriptionId).toHaveBeenCalled();
         const rewardsState = store?.getState().rewards;
-        expect(rewardsState?.candidateSubscriptionId).toBeNull();
+        expect(rewardsState?.candidateSubscriptionId).toBe('new-sub-id');
       });
     });
 
@@ -114,21 +121,15 @@ describe('useCandidateSubscriptionId', () => {
       await waitFor(() => {
         expect(getRewardsCandidateSubscriptionId).toHaveBeenCalled();
         const rewardsState = store?.getState().rewards;
-        expect(rewardsState?.candidateSubscriptionIdLoading).toBe(false);
         expect(rewardsState?.candidateSubscriptionId).toBe('new-sub-id');
-        expect(rewardsState?.candidateSubscriptionIdError).toBe(false);
       });
     });
   });
 
   describe('fetchCandidateSubscriptionId function', () => {
-    it('sets loading=true during fetch then false after resolve', async () => {
-      let resolveCandidate!: (value: string | null) => void;
+    it('updates state to returned id when action resolves', async () => {
       (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
-        () => async () =>
-          new Promise<string | null>((resolve) => {
-            resolveCandidate = resolve;
-          }),
+        () => async () => 'abc-id',
       );
 
       const { result, store } = renderHookWithProvider(
@@ -144,30 +145,13 @@ describe('useCandidateSubscriptionId', () => {
         },
       );
 
-      // Start fetch without awaiting completion
-      act(() => {
-        result.current.fetchCandidateSubscriptionId();
+      await act(async () => {
+        await result.current.fetchCandidateSubscriptionId();
       });
 
-      // Loading should be true while fetch is in-flight
-      await waitFor(() => {
-        expect(store?.getState().rewards?.candidateSubscriptionIdLoading).toBe(
-          true,
-        );
-      });
-
-      // Resolve mocked action
-      act(() => {
-        resolveCandidate('abc-id');
-      });
-
-      // After resolution, loading returns to false and id updates
-      await waitFor(() => {
-        const rewardsState = store?.getState().rewards;
-        expect(rewardsState?.candidateSubscriptionIdLoading).toBe(false);
-        expect(rewardsState?.candidateSubscriptionId).toBe('abc-id');
-        expect(rewardsState?.candidateSubscriptionIdError).toBe(false);
-      });
+      expect(getRewardsCandidateSubscriptionId).toHaveBeenCalledTimes(1);
+      const rewardsState = store?.getState().rewards;
+      expect(rewardsState?.candidateSubscriptionId).toBe('abc-id');
     });
     it('sets to null and does not call action when rewards disabled', async () => {
       const { result, store } = renderHookWithProvider(
@@ -193,8 +177,6 @@ describe('useCandidateSubscriptionId', () => {
       expect(getRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
       const rewardsState = store?.getState().rewards;
       expect(rewardsState?.candidateSubscriptionId).toBeNull();
-      expect(rewardsState?.candidateSubscriptionIdLoading).toBe(false);
-      expect(rewardsState?.candidateSubscriptionIdError).toBe(false);
     });
 
     it('updates state when action resolves (without auto-effect)', async () => {
@@ -221,12 +203,10 @@ describe('useCandidateSubscriptionId', () => {
 
       expect(getRewardsCandidateSubscriptionId).toHaveBeenCalledTimes(1);
       const rewardsState = store?.getState().rewards;
-      expect(rewardsState?.candidateSubscriptionIdLoading).toBe(false);
       expect(rewardsState?.candidateSubscriptionId).toBe('resolved-id');
-      expect(rewardsState?.candidateSubscriptionIdError).toBe(false);
     });
 
-    it('sets error=true when action throws (without auto-effect)', async () => {
+    it("sets candidateSubscriptionId to 'error' when action throws (without auto-effect)", async () => {
       const mockError = new Error('API Error');
       (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
         () => async () => {
@@ -253,9 +233,7 @@ describe('useCandidateSubscriptionId', () => {
 
       expect(getRewardsCandidateSubscriptionId).toHaveBeenCalledTimes(1);
       const rewardsState = store?.getState().rewards;
-      expect(rewardsState?.candidateSubscriptionId).toBeNull();
-      expect(rewardsState?.candidateSubscriptionIdError).toBe(true);
-      expect(rewardsState?.candidateSubscriptionIdLoading).toBe(false);
+      expect(rewardsState?.candidateSubscriptionId).toBe('error');
       expect(mockLogError).toHaveBeenCalledWith(
         '[useCandidateSubscriptionId] Error fetching candidate subscription ID:',
         mockError,

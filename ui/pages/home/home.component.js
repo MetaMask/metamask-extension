@@ -179,6 +179,7 @@ export default class Home extends PureComponent {
     evaluateCohortEligibility: PropTypes.func,
     pendingShieldCohort: PropTypes.string,
     setPendingShieldCohort: PropTypes.func,
+    rewardsEnabled: PropTypes.bool,
   };
 
   state = {
@@ -869,6 +870,7 @@ export default class Home extends PureComponent {
       showConnectionsRemovedModal,
       showShieldEntryModal,
       isSocialLoginFlow,
+      rewardsEnabled,
     } = this.props;
 
     if (forgottenPassword) {
@@ -936,7 +938,7 @@ export default class Home extends PureComponent {
           ) : null}
           {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
           {showShieldEntryModal && <ShieldEntryModal />}
-          <RewardsOnboardingModal />
+          {rewardsEnabled && <RewardsOnboardingModal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
