@@ -1,5 +1,5 @@
 import { NetworkState, RpcEndpointType } from '@metamask/network-controller';
-import { FEATURED_RPCS, CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { migrate, version } from './183';
 
 // Mock uuid
