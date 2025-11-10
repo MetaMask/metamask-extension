@@ -1,7 +1,14 @@
 import { Hex } from '@metamask/utils';
 import { GenericQuoteRequest } from '@metamask/bridge-controller';
+import { Interface } from '@ethersproject/abi';
 import { addHexPrefix } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+
+const decodeV4SwapCommandData = (data: string) => {
+  const abiDecoder = Interface.getAbiCoder();
+  const values = abiDecoder.decode(['bytes', 'bytes[]'], data);
+  return values;
+};
 
 function getArgsFromInput(input: string) {
   return input?.slice(2).match(/.{1,64}/gu) ?? [];
@@ -31,33 +38,106 @@ function getCommandArgs(
     (commandByte: string) => commandByte === command,
   );
   if (commandIndex < 0) {
-    return undefined;
+    return { data: undefined, args: undefined };
   }
-  return getArgsFromInput(inputs[commandIndex]);
+
+  return {
+    data: inputs[commandIndex],
+    args: getArgsFromInput(inputs[commandIndex]),
+  };
 }
 
 function handleV4SwapCommand(
-  args: string[],
-  _: Hex,
+  _: string[],
+  chainId: Hex,
   quotesInput: GenericQuoteRequest,
+  data: string,
 ) {
+  const decoded = decodeV4SwapCommandData(data);
+  let commandBytes = decoded[0].slice(2).match(/.{1,2}/gu) ?? [];
+  commandBytes = commandBytes.map((byte: string) => `10_${byte}`);
+  const result = getCommandValues(commandBytes, decoded[1], chainId);
+
   return {
-    amountMin: argToAmount(args[13]),
-    isExactOut: args[10] === args[27],
+    amountMin: result.amountMin,
+    isExactOut: result.isExactOut,
     quotesInput: {
       ...quotesInput,
-      destTokenAddress: argToAddress(args[27]),
-      srcTokenAddress: argToAddress(args[23]),
-      srcTokenAmount: argToAmount(args[12]),
-      walletAddress: argToAddress(args[28]),
+      ...result.quotesInput,
     } as GenericQuoteRequest,
+  };
+}
+
+function handleV4CommandSwapExactIn(
+  args: string[],
+  _1: Hex,
+  quotesInput: GenericQuoteRequest,
+  _2: string,
+) {
+  return {
+    amountMin: undefined,
+    isExactOut: false,
+    quotesInput: {
+      ...quotesInput,
+      srcTokenAmount: argToAmount(args[3]),
+      srcTokenAddress: argToAddress(args[1]),
+      destTokenAddress: argToAddress(args[7]),
+    } as GenericQuoteRequest,
+  };
+}
+
+function handleV4CommandSwapExactInSingle(
+  args: string[],
+  _1: Hex,
+  quotesInput: GenericQuoteRequest,
+  _2: string,
+) {
+  return {
+    amountMin: argToAmount(args[9]),
+    isExactOut: false,
+    quotesInput: {
+      ...quotesInput,
+      srcTokenAmount: argToAmount(args[7]),
+      srcTokenAddress: argToAddress(args[1]),
+      destTokenAddress: argToAddress(args[2]),
+    } as GenericQuoteRequest,
+  };
+}
+
+function handleV4CommandTake(
+  args: string[],
+  _1: Hex,
+  quotesInput: GenericQuoteRequest,
+  _2: string,
+) {
+  return {
+    amountMin: undefined,
+    isExactOut: false,
+    quotesInput: {
+      ...quotesInput,
+      walletAddress: argToAddress(args[1]),
+    } as GenericQuoteRequest,
+  };
+}
+
+function handleCommandSwapExactOut(
+  _1: string[],
+  _2: Hex,
+  _3: GenericQuoteRequest,
+  _4: string,
+) {
+  return {
+    amountMin: undefined,
+    isExactOut: true,
+    quotesInput: undefined,
   };
 }
 
 function handleV3SwapExactInCommand(
   args: string[],
-  _: Hex,
+  _chainId: Hex,
   quotesInput: GenericQuoteRequest,
+  _data: string,
 ) {
   const bytes = `${args[args.length - 2]}${args[args.length - 1]}`;
   return {
@@ -76,6 +156,7 @@ function handleWrapEthCommand(
   args: string[],
   chainId: Hex,
   quotesInput: GenericQuoteRequest,
+  _data: string,
 ) {
   return {
     amountMin: undefined,
@@ -90,8 +171,9 @@ function handleWrapEthCommand(
 
 function handlePermit2PermitCommand(
   args: string[],
-  _: Hex,
+  _chainId: Hex,
   quotesInput: GenericQuoteRequest,
+  _data: string,
 ) {
   return {
     amountMin: undefined,
@@ -105,8 +187,9 @@ function handlePermit2PermitCommand(
 
 function handleSweepCommand(
   args: string[],
-  _: Hex,
+  _chainId: Hex,
   quotesInput: GenericQuoteRequest,
+  _data: string,
 ) {
   return {
     amountMin: argToAmount(args[2]),
@@ -123,6 +206,7 @@ function handleUnwrapWethCommand(
   args: string[],
   chainId: Hex,
   quotesInput: GenericQuoteRequest,
+  _data: string,
 ) {
   return {
     amountMin: argToAmount(args[1]),
@@ -135,15 +219,18 @@ function handleUnwrapWethCommand(
   };
 }
 
-const V3_SWAP_EXACT_OUT = '01';
-
 const DAPP_SWAP_COMMANDS = [
   { value: '00', handler: handleV3SwapExactInCommand },
+  { value: '01', handler: handleCommandSwapExactOut },
   { value: '10', handler: handleV4SwapCommand },
   { value: '0a', handler: handlePermit2PermitCommand },
   { value: '0b', handler: handleWrapEthCommand },
   { value: '04', handler: handleSweepCommand },
   { value: '0c', handler: handleUnwrapWethCommand },
+  { value: '10_06', handler: handleV4CommandSwapExactInSingle },
+  { value: '10_07', handler: handleV4CommandSwapExactIn },
+  { value: '10_09', handler: handleCommandSwapExactOut },
+  { value: '10_0e', handler: handleV4CommandTake },
 ];
 
 export function getCommandValues(
@@ -159,19 +246,14 @@ export function getCommandValues(
     gasIncluded7702: false,
   } as GenericQuoteRequest;
 
-  if (commandBytes.includes(V3_SWAP_EXACT_OUT)) {
-    return {};
-  }
-
   let isExactOutRequest = false;
 
   DAPP_SWAP_COMMANDS.forEach((command) => {
-    const args = getCommandArgs(commandBytes, inputs, command.value);
-    if (args === undefined) {
+    const { data, args } = getCommandArgs(commandBytes, inputs, command.value);
+    if (data === undefined) {
       return;
     }
-
-    const result = command.handler(args, chainId, quotesInput);
+    const result = command.handler(args, chainId, quotesInput, data);
     if (result) {
       if (result.isExactOut === true) {
         isExactOutRequest = true;
@@ -186,7 +268,7 @@ export function getCommandValues(
   });
 
   if (isExactOutRequest) {
-    return {};
+    return { isExactOut: true };
   }
 
   return {
