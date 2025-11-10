@@ -8,7 +8,7 @@ import { DAY } from '../constants/time';
 
 const SUBSCRIPTION_ENDING_SOON_DAYS = DAY;
 
-export function getShieldSubscription(
+function getShieldSubscription(
   subscriptions: Subscription | Subscription[],
 ): Subscription | undefined {
   let shieldSubscription: Subscription | undefined;

@@ -6,10 +6,7 @@ import {
   Subscription,
   SubscriptionControllerState,
 } from '@metamask/subscription-controller';
-import {
-  getIsShieldSubscriptionActive,
-  getShieldSubscription,
-} from '../../../shared/lib/shield';
+import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield';
 
 export type SubscriptionState = {
   metamask: SubscriptionControllerState & {
@@ -53,9 +50,7 @@ export function getLastUsedShieldSubscriptionPaymentDetails(
   return state.metamask.lastSelectedPaymentMethod?.[PRODUCT_TYPES.SHIELD];
 }
 
-export function getHasShieldSubscription(state: SubscriptionState): boolean {
-  const shieldSubscription = getShieldSubscription(
-    state.metamask.subscriptions,
-  );
-  return Boolean(shieldSubscription);
+export function getHasSubscribedToShield(state: SubscriptionState): boolean {
+  const hasSubscribedToShield = state.metamask.customerId;
+  return Boolean(hasSubscribedToShield);
 }

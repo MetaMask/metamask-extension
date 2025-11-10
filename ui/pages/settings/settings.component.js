@@ -98,7 +98,7 @@ class SettingsPage extends PureComponent {
     backRoute: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
-    hasShieldSubscription: PropTypes.bool,
+    hasSubscribedToShield: PropTypes.bool,
     isAddressEntryPage: PropTypes.bool,
     isMetaMaskShieldFeatureEnabled: PropTypes.bool,
     isPasswordChangePage: PropTypes.bool,
@@ -386,7 +386,7 @@ class SettingsPage extends PureComponent {
       useExternalServices,
       settingsPageSnaps,
       isMetaMaskShieldFeatureEnabled,
-      hasShieldSubscription,
+      hasSubscribedToShield,
     } = this.props;
     const { t } = this.context;
 
@@ -483,7 +483,7 @@ class SettingsPage extends PureComponent {
           return matchPath(key, currentPath);
         }}
         onSelect={(key) => {
-          if (key === TRANSACTION_SHIELD_ROUTE && !hasShieldSubscription) {
+          if (key === TRANSACTION_SHIELD_ROUTE && !hasSubscribedToShield) {
             this.setState({ showShieldEntryModal: true });
             return;
           }
