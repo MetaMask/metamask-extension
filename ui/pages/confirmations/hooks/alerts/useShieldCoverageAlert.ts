@@ -157,7 +157,10 @@ export function useShieldCoverageAlert(): Alert[] {
     modalBodyStr = 'shieldCoverageAlertMessagePaused';
   }
 
-  const showAlert = (isEnabled || isPaused) && Boolean(status);
+  const showAlert =
+    (isEnabled && Boolean(status)) ||
+    // show paused alert when subscription is paused without coverage status
+    isPaused;
 
   const navigate = useNavigate();
   const onPausedAcknowledgeClick = useCallback(() => {
