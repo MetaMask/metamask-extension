@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { compose } from 'redux';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -105,11 +106,22 @@ const UnlockPageConnected = compose(
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
 )(UnlockPage);
 
-// Inject navState from NavigationStateContext for v5-compat navigation
-// eslint-disable-next-line react/prop-types
+/**
+ * Inject navState from NavigationStateContext for v5-compat navigation.
+ * This wrapper ensures the unlock page can read navigation state from both
+ * v5 location.state and v5-compat NavigationStateContext.
+ *
+ * @param {object} props - Component props (navigate, location from route)
+ * @returns {React.ReactElement} UnlockPage with navState injected
+ */
 const UnlockPageWithNavState = (props) => {
   const navState = useNavState();
   return <UnlockPageConnected {...props} navState={navState} />;
+};
+
+UnlockPageWithNavState.propTypes = {
+  navigate: PropTypes.func.isRequired,
+  location: PropTypes.object.isRequired,
 };
 
 // Export the connected component for Storybook/testing
