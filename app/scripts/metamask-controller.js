@@ -3485,6 +3485,9 @@ export default class MetamaskController extends EventEmitter {
       multichainAddAssets: (assetIds, accountId) =>
         this.multichainAssetsController.addAssets(assetIds, accountId),
 
+      multichainIgnoreAssets: (assetIds, accountId) =>
+        this.multichainAssetsController.ignoreAssets(assetIds, accountId),
+
       // MultichainBalancesController
       multichainUpdateBalance: (accountId) =>
         this.multichainBalancesController.updateBalance(accountId),
