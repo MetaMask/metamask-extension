@@ -4,6 +4,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { AccountOverviewTabs } from './account-overview-tabs';
@@ -18,6 +19,21 @@ jest.mock('../../app/transaction-list', () => ({
   default: () => null,
 }));
 
+jest.mock('../../app/assets/nfts/nfts-tab', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
+jest.mock('../../app/transaction-list/unified-transaction-list.component', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
+jest.mock('../../app/assets/defi-list/defi-tab', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
 describe('AccountOverviewTabs - event metrics', () => {
   const mockTrackEvent = jest.fn();
 
@@ -25,14 +41,17 @@ describe('AccountOverviewTabs - event metrics', () => {
     jest.clearAllMocks();
   });
 
-  it('includes network_filter property with enabled networks in CAIP format', () => {
+  it('includes network_filter property with both EVM and non-EVM networks in CAIP format', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
         enabledNetworkMap: {
-          'eip155': {
+          eip155: {
             [CHAIN_IDS.MAINNET]: true,
             [CHAIN_IDS.POLYGON]: true,
+          },
+          solana: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
           },
         },
       },
@@ -57,12 +76,12 @@ describe('AccountOverviewTabs - event metrics', () => {
     fireEvent.click(getByText('Tokens'));
 
     // Verify network_filter property is included in correct format
-    expect(mockTrackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        properties: expect.objectContaining({
-          network_filter: expect.arrayContaining(['eip155:1', 'eip155:137']),
-        }),
-      }),
-    );
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      category: MetaMetricsEventCategory.Home,
+      event: MetaMetricsEventName.TokenScreenOpened,
+      properties: {
+        network_filter: ['eip155:1', 'eip155:137', 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      },
+    });
   });
 });

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Hex, isStrictHexString } from '@metamask/utils';
@@ -58,8 +58,12 @@ export const AccountOverviewTabs = ({
   const allEnabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
 
   // Convert enabled networks to CAIP format for metrics
-  const networkFilterForMetrics = allEnabledNetworks.map((chainId) =>
-    isStrictHexString(chainId) ? toEvmCaipChainId(chainId) : chainId,
+  const networkFilterForMetrics = useMemo(
+    () =>
+      allEnabledNetworks.map((chainId) =>
+        isStrictHexString(chainId) ? toEvmCaipChainId(chainId) : chainId,
+      ),
+    [allEnabledNetworks],
   );
 
   // EVM specific tokenBalance polling, updates state via polling loop per chainId
