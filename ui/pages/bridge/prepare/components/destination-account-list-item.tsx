@@ -112,7 +112,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
         ? toChain.chainId
         : formatChainIdToHex(toChain?.chainId));
     balanceToTranslate = chainIdInHexOrCaip
-      ? balanceByChainId[chainIdInHexOrCaip]?.toString() ?? '0'
+      ? (balanceByChainId[chainIdInHexOrCaip]?.toString() ?? '0')
       : '0';
   }
 
