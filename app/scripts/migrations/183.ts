@@ -113,8 +113,8 @@ function transformState(state: Record<string, unknown>) {
       );
 
   // Update RPC endpoints to add failover URL if needed
-  seiNetworkConfiguration.rpcEndpoints = seiNetworkConfiguration.rpcEndpoints.map(
-    (rpcEndpoint) => {
+  seiNetworkConfiguration.rpcEndpoints =
+    seiNetworkConfiguration.rpcEndpoints.map((rpcEndpoint) => {
       // Skip if endpoint is not an object or doesn't have a url property
       if (
         !isObject(rpcEndpoint) ||
@@ -150,8 +150,7 @@ function transformState(state: Record<string, unknown>) {
       }
 
       return rpcEndpoint;
-    },
-  );
+    });
 
   return state;
 }
