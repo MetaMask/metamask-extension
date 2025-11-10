@@ -299,8 +299,16 @@ export function getShowShieldEntryModal(state) {
   return state.appState.shieldEntryModal?.show;
 }
 
+export function getPendingShieldCohort(state) {
+  return state.appState.pendingShieldCohort;
+}
+
 export function getShouldSubmitEventsForShieldEntryModal(state) {
   return state.appState.shieldEntryModal?.shouldSubmitEvents;
+}
+
+export function getShieldEntryModalTriggeringCohort(state) {
+  return state.appState.shieldEntryModal?.triggeringCohort;
 }
 
 /** `metamask` slice selectors */

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
+import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
@@ -172,6 +173,9 @@ export default class Home extends PureComponent {
     isSocialLoginFlow: PropTypes.bool,
     lookupSelectedNetworks: PropTypes.func.isRequired,
     navState: PropTypes.object,
+    evaluateCohortEligibility: PropTypes.func,
+    pendingShieldCohort: PropTypes.string,
+    setPendingShieldCohort: PropTypes.func,
   };
 
   state = {
@@ -282,6 +286,11 @@ export default class Home extends PureComponent {
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
     this.props.lookupSelectedNetworks();
+
+    // Set pending Shield cohort for wallet home evaluation if there's no existing pending cohort
+    if (this.props.setPendingShieldCohort && !this.props.pendingShieldCohort) {
+      this.props.setPendingShieldCohort(COHORT_NAMES.WALLET_HOME);
+    }
   }
 
   static getDerivedStateFromProps(props) {
@@ -300,10 +309,14 @@ export default class Home extends PureComponent {
       setActiveNetwork,
       clearNewNetworkAdded,
       isSidepanel,
+      pendingShieldCohort,
+      evaluateCohortEligibility,
+      setPendingShieldCohort,
     } = this.props;
 
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
+      pendingShieldCohort: prevPendingShieldCohort,
     } = _prevProps;
     const { notificationClosing } = this.state;
 
@@ -323,6 +336,16 @@ export default class Home extends PureComponent {
       isSidepanel
     ) {
       this.checkStatusAndNavigate();
+    }
+
+    // Check for pending Shield cohort evaluation
+    if (
+      pendingShieldCohort &&
+      pendingShieldCohort !== prevPendingShieldCohort &&
+      evaluateCohortEligibility
+    ) {
+      evaluateCohortEligibility(pendingShieldCohort);
+      setPendingShieldCohort(null);
     }
 
     // Check for redirect after default page on updates

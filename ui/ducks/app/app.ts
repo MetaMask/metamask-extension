@@ -73,6 +73,7 @@ type AppState = {
   loadingMessage: string | null;
   scrollToBottom: boolean;
   warning: string | null | undefined;
+  pendingShieldCohort?: string | null;
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -137,6 +138,7 @@ type AppState = {
   shieldEntryModal?: {
     show: boolean;
     shouldSubmitEvents: boolean;
+    triggeringCohort?: string;
   };
 };
 
@@ -527,6 +529,12 @@ export default function reduceApp(
         txId: null,
       };
 
+    case actionConstants.SET_PENDING_SHIELD_COHORT:
+      return {
+        ...appState,
+        pendingShieldCohort: action.payload,
+      };
+
     case actionConstants.UNLOCK_FAILED:
       return {
         ...appState,
@@ -849,6 +857,15 @@ export function toggleGasLoadingAnimation(
   payload: boolean,
 ): PayloadAction<boolean> {
   return { type: actionConstants.TOGGLE_GAS_LOADING_ANIMATION, payload };
+}
+
+export function setPendingShieldCohort(
+  cohort: string | null,
+): PayloadAction<string | null> {
+  return {
+    type: actionConstants.SET_PENDING_SHIELD_COHORT,
+    payload: cohort,
+  };
 }
 
 export function setLedgerWebHidConnectedStatus(

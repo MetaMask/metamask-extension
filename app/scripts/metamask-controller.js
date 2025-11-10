@@ -2493,6 +2493,9 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.getSubscriptionsEligibilities.bind(
           this.subscriptionController,
         ),
+      assignUserToCohort: this.subscriptionController.assignUserToCohort.bind(
+        this.subscriptionController,
+      ),
       getSubscriptions: this.subscriptionController.getSubscriptions.bind(
         this.subscriptionController,
       ),
