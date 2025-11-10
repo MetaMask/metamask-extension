@@ -5,18 +5,18 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 export default class Lock extends PureComponent {
   static propTypes = {
-    history: PropTypes.object,
+    navigate: PropTypes.func,
     isUnlocked: PropTypes.bool,
     lockMetamask: PropTypes.func,
   };
 
   componentDidMount() {
-    const { lockMetamask, isUnlocked, history } = this.props;
+    const { lockMetamask, isUnlocked, navigate } = this.props;
 
     if (isUnlocked) {
-      lockMetamask().then(() => history.push(DEFAULT_ROUTE));
+      lockMetamask().then(() => navigate(DEFAULT_ROUTE));
     } else {
-      history.replace(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE, { replace: true });
     }
   }
 
