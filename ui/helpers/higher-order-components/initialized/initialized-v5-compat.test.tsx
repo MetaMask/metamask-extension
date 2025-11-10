@@ -6,6 +6,10 @@ import configureStore from 'redux-mock-store';
 import { ONBOARDING_ROUTE } from '../../constants/routes';
 import InitializedV5Compat from './initialized-v5-compat';
 
+jest.mock('../../../ducks/metamask/metamask', () => ({
+  getCompletedOnboarding: (state: any) => state.metamask.completedOnboarding,
+}));
+
 const mockStore = configureStore();
 
 describe('InitializedV5Compat', () => {

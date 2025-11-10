@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom-v5-compat';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { ONBOARDING_ROUTE } from '../../constants/routes';
 
 type InitializedV5CompatProps = {
@@ -21,10 +22,7 @@ type InitializedV5CompatProps = {
  * @returns Navigate component or children
  */
 const InitializedV5Compat = ({ children }: InitializedV5CompatProps) => {
-  const completedOnboarding = useSelector(
-    (state: { metamask: { completedOnboarding: boolean } }) =>
-      state.metamask.completedOnboarding,
-  );
+  const completedOnboarding = useSelector(getCompletedOnboarding);
 
   if (!completedOnboarding) {
     return <Navigate to={ONBOARDING_ROUTE} replace />;
