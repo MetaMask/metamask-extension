@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { Mockttp } from 'mockttp';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
