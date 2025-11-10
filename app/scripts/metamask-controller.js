@@ -4641,7 +4641,6 @@ export default class MetamaskController extends EventEmitter {
 
       return mnemonic;
     } catch (error) {
-      log.error('Error restoring social backup and getting seed phrase', error);
       if (error instanceof RecoveryError) {
         throw new JsonRpcError(-32603, error.message, error.data);
       }
