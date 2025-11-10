@@ -7737,7 +7737,6 @@ export async function submitShieldClaim(params: {
     params.reimbursementWalletAddress,
   );
   formData.append('description', params.caseDescription);
-  // TODO: temporary value for signature, update to correct signature after implement signature verification
   formData.append('signature', params.signature);
   formData.append('timestamp', Date.now().toString());
 
@@ -7774,6 +7773,11 @@ export async function submitShieldClaim(params: {
   }
 }
 
+/**
+ * Fetches all shield claims, relates to the current user profile ID.
+ *
+ * @returns The shield claims.
+ */
 export async function getShieldClaims() {
   try {
     const claims = await submitRequestToBackground<Claim[]>('getClaims');
