@@ -8036,10 +8036,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^1.6.1":
-  version: 1.6.1
-  resolution: "@metamask/tron-wallet-snap@npm:1.6.1"
-  checksum: 10/549f0dad4bfaee091bb5ff9bc3d5b9db124121ac77c40da67261d32f71a239cd4db0914436e0c9fb5a2eb9b82b254078d86b41dab6ba32b92359954595fc39c3
+"@metamask/tron-wallet-snap@npm:^1.7.1":
+  version: 1.7.1
+  resolution: "@metamask/tron-wallet-snap@npm:1.7.1"
+  checksum: 10/ea1fcb43faef9028ec67b32123bfd2c3aab800694649072fd2510b291814d54df2a9b471d44bd5e37ef679b6bb517fa5d7895388893fbbadf79f423e8f42cd61
   languageName: node
   linkType: hard
 
@@ -32119,7 +32119,7 @@ __metadata:
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/transaction-controller": "npm:^61.0.0"
-    "@metamask/tron-wallet-snap": "npm:^1.6.1"
+    "@metamask/tron-wallet-snap": "npm:^1.7.1"
     "@metamask/user-operation-controller": "npm:^40.0.0"
     "@metamask/utils": "npm:^11.4.2"
     "@ngraveio/bc-ur": "npm:^1.1.13"
