@@ -84,9 +84,10 @@ export const AccountOverviewTabs = ({
             ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[
               tabName as keyof typeof ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP
             ],
-            properties: {
-              network_filter: networkFilterForMetrics,
-            },
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            network_filter: networkFilterForMetrics,
+          },
         });
       }
       if (defaultHomeActiveTabName) {
