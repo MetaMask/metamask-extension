@@ -12,7 +12,7 @@ const useSyncConfirmPath = (
   currentConfirmation?: Confirmation,
   routeParamId?: string,
 ) => {
-  const { navigateToId, confirmations } = useConfirmationNavigation();
+  const { navigateToId } = useConfirmationNavigation();
   const location = useLocation();
 
   // Use routeParamId from props if available (passed from v5 Route),
@@ -37,13 +37,9 @@ const useSyncConfirmPath = (
     if (!paramId && currentConfirmation) {
       navigateToId(currentConfirmation.id);
     }
-  }, [
-    paramId,
-    currentConfirmation,
-    navigateToId,
-    location.pathname,
-    confirmations,
-  ]);
+    // Note: confirmations is intentionally excluded from dependencies
+    // navigateToId is memoized with useCallback and is sufficient for tracking changes
+  }, [paramId, currentConfirmation, navigateToId, location.pathname]);
 };
 
 export default useSyncConfirmPath;
