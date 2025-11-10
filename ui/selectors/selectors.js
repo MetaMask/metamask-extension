@@ -300,7 +300,7 @@ export function getShowShieldEntryModal(state) {
 }
 
 export function getPendingShieldCohort(state) {
-  return state.appState.pendingShieldCohort;
+  return state.metamask.pendingShieldCohort;
 }
 
 export function getShouldSubmitEventsForShieldEntryModal(state) {

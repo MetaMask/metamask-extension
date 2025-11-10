@@ -2884,6 +2884,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setShowShieldEntryModalOnce:
         appStateController.setShowShieldEntryModalOnce.bind(appStateController),
+      setPendingShieldCohort:
+        appStateController.setPendingShieldCohort.bind(appStateController),
       setShieldPausedToastLastClickedOrClosed:
         appStateController.setShieldPausedToastLastClickedOrClosed.bind(
           appStateController,
@@ -8463,6 +8465,18 @@ export default class MetamaskController extends EventEmitter {
     await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
       transactionMeta,
     );
+
+    // Mark send/transfer/swap transactions for Shield post_tx cohort evaluation
+    const isPostTxTransaction = [
+      TransactionType.simpleSend,
+      TransactionType.tokenMethodTransfer,
+      TransactionType.swap,
+      TransactionType.swapAndSend,
+    ].includes(transactionMeta.type);
+
+    if (isPostTxTransaction) {
+      this.appStateController.setPendingShieldCohort('post_tx');
+    }
   }
 
   /**

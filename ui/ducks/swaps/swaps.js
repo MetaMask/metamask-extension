@@ -30,7 +30,6 @@ import {
   cancelSmartTransaction,
   getTransactions,
 } from '../../store/actions';
-import { setPendingShieldCohort } from '../app/app';
 import {
   AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
@@ -544,15 +543,7 @@ export const prepareForRetryGetQuotes = () => {
 };
 
 export const prepareToLeaveSwaps = () => {
-  return async (dispatch, getState) => {
-    const state = getState();
-    const tradeTxId = getTradeTxId(state);
-
-    // Mark swap transactions for Shield cohort evaluation
-    if (tradeTxId) {
-      dispatch(setPendingShieldCohort('post_tx'));
-    }
-
+  return async (dispatch) => {
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
   };

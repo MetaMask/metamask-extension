@@ -119,7 +119,6 @@ import {
   SEND_STAGES,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import { setPendingShieldCohort } from '../ducks/app/app';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
@@ -626,6 +625,20 @@ export function setShowShieldEntryModalOnceAction(payload: {
   return {
     type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
     payload,
+  };
+}
+
+export function setPendingShieldCohort(
+  cohort: string | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setPendingShieldCohort', [cohort]);
+    } catch (error) {
+      log.error('[setPendingShieldCohort] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
   };
 }
 
@@ -1940,16 +1953,6 @@ export function updateAndApproveTx(
           dispatch(resetSendState());
         }
         dispatch(completedTx(txMeta.id));
-
-        // Mark send/transfer transactions for Shield cohort evaluation
-        const isSendOrTransfer = [
-          TransactionType.simpleSend,
-          TransactionType.tokenMethodTransfer,
-        ].includes(txMeta.type);
-        if (isSendOrTransfer) {
-          dispatch(setPendingShieldCohort('post_tx'));
-        }
-
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
         dispatch(closeCurrentNotificationWindow());

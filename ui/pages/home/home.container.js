@@ -54,11 +54,11 @@ import {
   setEditedNetwork,
   setAccountDetailsAddress,
   lookupSelectedNetworks,
+  setPendingShieldCohort,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
   openBasicFunctionalityModal,
-  setPendingShieldCohort,
 } from '../../ducks/app/app';
 import {
   getIsPrimarySeedPhraseBackedUp,
