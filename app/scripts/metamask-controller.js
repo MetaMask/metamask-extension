@@ -65,7 +65,9 @@ import {
   SolScope,
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   TrxScope,
+  TrxAccountType,
   ///: END:ONLY_INCLUDE_IF
+  BtcAccountType,
 } from '@metamask/keyring-api';
 import {
   hexToBigInt,
@@ -4374,12 +4376,20 @@ export default class MetamaskController extends EventEmitter {
     };
 
     const solanaAccountTypes = Object.values(SolAccountType);
+    const bitcoinAccountTypes = Object.values(BtcAccountType);
+    const tronAccountTypes = Object.values(TrxAccountType);
 
     for (const account of accounts) {
       // Newly supported account types should be added here
       // No BTC discovery/account creation until the provider is added to the MultichainAccountsService
       if (solanaAccountTypes.includes(account.type)) {
         counts.Solana += 1;
+      }
+      if (bitcoinAccountTypes.includes(account.type)) {
+        counts.Bitcoin += 1;
+      }
+      if (tronAccountTypes.includes(account.type)) {
+        counts.Tron += 1;
       }
     }
 
