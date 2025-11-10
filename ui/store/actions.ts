@@ -639,7 +639,6 @@ export function restoreSocialBackupAndGetSeedPhrase(
       await forceUpdateMetamaskState(dispatch);
       return mnemonic;
     } catch (error) {
-      log.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
       dispatch(displayWarning(error.message));
       throw error;
     }
