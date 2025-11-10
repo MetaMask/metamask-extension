@@ -1630,14 +1630,8 @@
   "customToken": {
     "message": "Özel Token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Token algılama henüz bu ağda mevcut değil. Lütfen tokeni manuel olarak içe aktarın ve ona güvendiğinizden emin olun. $1 hakkında bilgi edinin"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Mevcut tokenlerin sahteleri de dahil olmak üzere herkes bir token oluşturabilir. $1 hakkında bilgi edinin"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Bir tokeni içe aktarmadan önce ona güvendiğinizden emin olun. $1 kaçınmayı öğrenin. Ayrıca token algılamayı $2 etkinleştirebilirsiniz."
   },
   "customerSupport": {
     "message": "müşteri hizmetleri"
@@ -2787,9 +2781,6 @@
   "imported": {
     "message": "İçe Aktarıldı",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "Ayarlar kısmında"
   },
   "included": {
     "message": "dahil"
@@ -6600,9 +6591,6 @@
   },
   "tokenMarketplace": {
     "message": "Token pazar yeri"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "token dolandırıcılıkları ve güvenlik riskleri"
   },
   "tokenStandard": {
     "message": "Token standardı"

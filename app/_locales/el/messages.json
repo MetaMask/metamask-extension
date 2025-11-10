@@ -1630,14 +1630,8 @@
   "customToken": {
     "message": "Προσαρμοσμένο token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Ο εντοπισμός token δεν είναι ακόμη διαθέσιμος σε αυτό το δίκτυο. Εισαγάγετε το token με μη αυτόματο τρόπο και βεβαιωθείτε ότι το εμπιστεύεστε. Μάθετε σχετικά με $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Πριν εισαγάγετε το token με μη αυτόματο τρόπο, βεβαιωθείτε ότι το εμπιστεύεστε. Μάθετε σχετικά με $1."
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Σιγουρευτείτε ότι εμπιστεύεστε ένα token προτού το εισαγάγετε. Μάθετε πώς να αποφεύγετε $1. Μπορείτε επίσης να ενεργοποιήσετε τον εντοπισμό token $2."
   },
   "customerSupport": {
     "message": "υποστήριξη πελατών"
@@ -2787,9 +2781,6 @@
   "imported": {
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "στις Ρυθμίσεις σας"
   },
   "included": {
     "message": "περιλαμβάνεται"
@@ -6600,9 +6591,6 @@
   },
   "tokenMarketplace": {
     "message": "Αγορά tokens"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "απάτες με token και κίνδυνοι ασφάλειας"
   },
   "tokenStandard": {
     "message": "Πρότυπο Token"

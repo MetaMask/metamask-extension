@@ -10,21 +10,31 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import ar from '../../../../app/_locales/ar/messages.json';
+import da from '../../../../app/_locales/da/messages.json';
+import de from '../../../../app/_locales/de/messages.json';
+import en from '../../../../app/_locales/en/messages.json';
+import hu from '../../../../app/_locales/hu/messages.json';
+import es from '../../../../app/_locales/es/messages.json';
+import hi from '../../../../app/_locales/hi/messages.json';
 
 const selectors = {
-  currentLanguageDansk: { tag: 'p', text: 'Nuværende sprog' },
-  currentLanguageDeutsch: { tag: 'p', text: 'Aktuelle Sprache' },
-  currentLanguageEnglish: { tag: 'p', text: 'Current language' },
-  currentLanguageMagyar: { tag: 'p', text: 'Aktuális nyelv' },
-  currentLanguageSpanish: { tag: 'p', text: 'Idioma actual' },
-  currentLanguageवर्तमान: { tag: 'p', text: 'वर्तमान भाषा' },
-  advanceText: { text: 'Avanceret', tag: 'div' },
-  waterText: '[placeholder="Søg"]',
-  headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
-  buttonText: { css: '[data-testid="auto-lockout-button"]', text: 'Gem' },
-  dialogText: { text: 'Empfängeradresse ist unzulässig', tag: 'p' },
-  discoverText: { text: 'खोजें', tag: 'a' },
-  headerText: { text: 'الإعدادات', tag: 'h3' },
+  currentLanguageDansk: { tag: 'p', text: da.currentLanguage.message },
+  currentLanguageDeutsch: { tag: 'p', text: de.currentLanguage.message },
+  currentLanguageEnglish: { tag: 'p', text: en.currentLanguage.message },
+  currentLanguageMagyar: { tag: 'p', text: hu.currentLanguage.message },
+  currentLanguageSpanish: { tag: 'p', text: es.currentLanguage.message },
+  currentLanguageवर्तमान: { tag: 'p', text: hi.currentLanguage.message },
+  advanceTextDansk: { text: da.advanced.message, tag: 'div' },
+  waterTextDansk: `[placeholder="${da.search.message}"]`,
+  headerTextDansk: { text: da.settings.message, tag: 'h3' },
+  buttonTextDansk: {
+    css: '[data-testid="auto-lockout-button"]',
+    text: da.save.message,
+  },
+  dialogTextDeutsch: { text: de.invalidAddressRecipient.message, tag: 'p' },
+  discoverTextवर्तमान: { text: hi.discover.message, tag: 'a' },
+  headerTextAr: { text: ar.settings.message, tag: 'h3' },
 };
 
 describe('Settings - general tab', function (this: Suite) {
@@ -85,13 +95,13 @@ describe('Settings - general tab', function (this: Suite) {
         );
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
-        await driver.clickElement(selectors.advanceText);
+        await driver.clickElement(selectors.advanceTextDansk);
         const advancedSettings = new AdvancedSettings(driver);
         await advancedSettings.checkPageIsLoaded();
 
         // Confirm that the language change is reflected in search box water text
         const isWaterTextChanged = await driver.isElementPresent(
-          selectors.waterText,
+          selectors.waterTextDansk,
         );
         assert.equal(
           isWaterTextChanged,
@@ -111,7 +121,7 @@ describe('Settings - general tab', function (this: Suite) {
 
         // Confirm that the language change is reflected in button
         const isButtonTextChanged = await driver.isElementPresent(
-          selectors.buttonText,
+          selectors.buttonTextDansk,
         );
         assert.equal(
           isButtonTextChanged,
@@ -157,7 +167,7 @@ describe('Settings - general tab', function (this: Suite) {
 
         // Validate the language change is reflected in the dialog message
         const isDialogMessageChanged = await driver.isElementPresent(
-          selectors.dialogText,
+          selectors.dialogTextDeutsch,
         );
         assert.equal(
           isDialogMessageChanged,
@@ -193,7 +203,7 @@ describe('Settings - general tab', function (this: Suite) {
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
         const isDiscoverButtonTextChanged = await driver.isElementPresent(
-          selectors.discoverText,
+          selectors.discoverTextवर्तमान,
         );
         assert.equal(
           isDiscoverButtonTextChanged,
@@ -220,7 +230,7 @@ describe('Settings - general tab', function (this: Suite) {
         await generalSettings.changeLanguage('العربية');
 
         const isHeaderTextChanged = await driver.isElementPresent(
-          selectors.headerText,
+          selectors.headerTextAr,
         );
         assert.equal(
           isHeaderTextChanged,

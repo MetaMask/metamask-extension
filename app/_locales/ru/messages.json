@@ -1630,14 +1630,8 @@
   "customToken": {
     "message": "Пользовательский токен"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Определение токена пока недоступно в этой сети. Импортируйте токен вручную и убедитесь, что вы ему доверяете. Подробнее о $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Кто угодно может создать токен, в том числе поддельные версии существующих токенов. Узнайте подробнее о $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Перед импортом убедитесь, что вы доверяете токену. Узнайте, как избежать $1. Вы также можете включить определение токена $2."
   },
   "customerSupport": {
     "message": "поддержка клиентов"
@@ -2787,9 +2781,6 @@
   "imported": {
     "message": "Импортирован",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "в ваших Настройках"
   },
   "included": {
     "message": "включено"
@@ -6600,9 +6591,6 @@
   },
   "tokenMarketplace": {
     "message": "Торговая площадка для токенов"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "мошенничество с токенами и угрозы безопасности"
   },
   "tokenStandard": {
     "message": "Стандарт токена"

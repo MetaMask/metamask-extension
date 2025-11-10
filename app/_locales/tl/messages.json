@@ -1630,14 +1630,8 @@
   "customToken": {
     "message": "Custom na Token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Ang pagtuklas ng token ay hindi pa magagamit sa network na ito. Mangyaring manu-manong mag-import ng token at tiyaking pinagkakatiwalaan mo ito. Matuto tungkol sa $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Bago manu-manong mag-import ng token, tiyaking pinagkakatiwalaan mo ito. Matuto tungkol sa $1."
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Siguraduhing pinagkakatiwalaan mo ang isang token bago mo ito i-import. Alamin kung paano maiwasan ang $1. Maaari mo ring paganahin ang pagtuklas ng token $2."
   },
   "customerSupport": {
     "message": "suporta sa kostumer"
@@ -2787,9 +2781,6 @@
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "sa iyong Mga Setting"
   },
   "included": {
     "message": "kalakip"
@@ -6600,9 +6591,6 @@
   },
   "tokenMarketplace": {
     "message": "Marketplace ng token"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "mga panloloko sa token at panganib sa seguridad"
   },
   "tokenStandard": {
     "message": "Pamantayan ng token"

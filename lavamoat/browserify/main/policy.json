@@ -948,6 +948,13 @@
         "lodash": true
       }
     },
+    "@metamask/claims-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/controller-utils": {
       "globals": {
         "URL": true,
