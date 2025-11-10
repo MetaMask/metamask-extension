@@ -1,9 +1,10 @@
-import {
-  createScaffoldMiddleware,
-  mergeMiddleware,
-} from '@metamask/json-rpc-engine';
-import { asLegacyMiddleware } from '@metamask/json-rpc-engine/v2';
 import { createWalletMiddleware } from '@metamask/eth-json-rpc-middleware';
+import {
+  asLegacyMiddleware,
+  createScaffoldMiddleware,
+  JsonRpcEngineV2,
+} from '@metamask/json-rpc-engine/v2';
+
 import {
   createPendingNonceMiddleware,
   createPendingTxMiddleware,
@@ -23,12 +24,12 @@ export default function createMetamaskMiddleware({
   getPendingTransactionByHash,
   processRequestExecutionPermissions,
 }) {
-  const metamaskMiddleware = mergeMiddleware([
-    createScaffoldMiddleware({
-      eth_syncing: false,
-      web3_clientVersion: `MetaMask/v${version}`,
-    }),
-    asLegacyMiddleware(
+  const engine = JsonRpcEngineV2.create({
+    middleware: [
+      createScaffoldMiddleware({
+        eth_syncing: false,
+        web3_clientVersion: `MetaMask/v${version}`,
+      }),
       createWalletMiddleware({
         getAccounts,
         processTransaction,
@@ -40,9 +41,9 @@ export default function createMetamaskMiddleware({
         processEncryptionPublicKey,
         processRequestExecutionPermissions,
       }),
-    ),
-    createPendingNonceMiddleware({ getPendingNonce }),
-    createPendingTxMiddleware({ getPendingTransactionByHash }),
-  ]);
-  return metamaskMiddleware;
+      createPendingNonceMiddleware({ getPendingNonce }),
+      createPendingTxMiddleware({ getPendingTransactionByHash }),
+    ],
+  });
+  return asLegacyMiddleware(engine);
 }
