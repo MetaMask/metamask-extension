@@ -75,6 +75,7 @@ import {
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
   CachedLastSelectedPaymentMethods,
+  SubscriptionEligibility,
 } from '@metamask/subscription-controller';
 
 import { Claim, SubmitClaimConfig } from '@metamask/claims-controller';
@@ -372,7 +373,7 @@ export function subscriptionsStartPolling(): ThunkAction<
  * @returns The subscription eligibilities.
  */
 export function getSubscriptionsEligibilities(): ThunkAction<
-  SubscriptionEligibility[],
+  (SubscriptionEligibility & { modalType?: 'A' | 'B' })[],
   MetaMaskReduxState,
   unknown,
   AnyAction
@@ -568,6 +569,7 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
 export function setShowShieldEntryModalOnce(
   show: boolean | null,
   shouldSubmitEvents: boolean = false,
+  modalType?: 'A' | 'B' = 'A',
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -576,6 +578,7 @@ export function setShowShieldEntryModalOnce(
         setShowShieldEntryModalOnceAction({
           show: Boolean(show),
           shouldSubmitEvents,
+          modalType,
         }),
       );
     } catch (error) {
@@ -589,6 +592,7 @@ export function setShowShieldEntryModalOnce(
 export function setShowShieldEntryModalOnceAction(payload: {
   show: boolean;
   shouldSubmitEvents: boolean;
+  modalType: 'A' | 'B';
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
     type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,

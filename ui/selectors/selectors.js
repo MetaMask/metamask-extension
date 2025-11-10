@@ -303,6 +303,9 @@ export function getShouldSubmitEventsForShieldEntryModal(state) {
   return state.appState.shieldEntryModal?.shouldSubmitEvents;
 }
 
+export function getModalTypeForShieldEntryModal(state) {
+  return state.appState.shieldEntryModal?.modalType;
+}
 /** `metamask` slice selectors */
 
 export function getNetworkIdentifier(state) {

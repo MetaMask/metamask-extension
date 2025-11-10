@@ -97,7 +97,10 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
         Number(totalFiatBalance) >= shieldSubscriptionEligibility?.minBalanceUSD
       ) {
         const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event
-        dispatch(setShowShieldEntryModalOnce(true, shouldSubmitUserEvents));
+        const modalType = shieldSubscriptionEligibility?.modalType || 'A';
+        dispatch(
+          setShowShieldEntryModalOnce(true, shouldSubmitUserEvents, modalType),
+        );
       }
     } catch (error) {
       log.warn('[getIsUserBalanceCriteriaMet] error', error);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
@@ -25,7 +25,10 @@ import {
   submitSubscriptionUserEvents,
 } from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
-import { getShouldSubmitEventsForShieldEntryModal } from '../../../selectors';
+import {
+  getModalTypeForShieldEntryModal,
+  getShouldSubmitEventsForShieldEntryModal,
+} from '../../../selectors';
 import {
   AlignItems,
   Display,
@@ -41,9 +44,7 @@ const ShieldEntryModal = () => {
   const shouldSubmitEvent = useSelector(
     getShouldSubmitEventsForShieldEntryModal,
   );
-
-  // AB Testing
-  const [abTestVariant] = useState<'A' | 'B'>('A');
+  const modalType = useSelector(getModalTypeForShieldEntryModal);
 
   const handleOnClose = () => {
     if (shouldSubmitEvent) {
@@ -98,7 +99,7 @@ const ShieldEntryModal = () => {
             fontWeight={FontWeight.Regular}
             className="shield-entry-modal__title text-center text-accent04-light"
           >
-            {abTestVariant === 'A'
+            {modalType === 'A'
               ? t('shieldEntryModalTitleA')
               : t('shieldEntryModalTitleB')}
           </Text>
@@ -107,7 +108,7 @@ const ShieldEntryModal = () => {
             fontWeight={FontWeight.Medium}
             className="text-center"
           >
-            {abTestVariant === 'A'
+            {modalType === 'A'
               ? t('shieldEntryModalSubtitleA', ['$10,000'])
               : t('shieldEntryModalSubtitleB', ['$10,000'])}
           </Text>

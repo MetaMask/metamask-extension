@@ -212,7 +212,7 @@ export const useSubscriptionEligibility = (product: ProductType) => {
   const isUnlocked = useSelector(getIsUnlocked);
 
   const getSubscriptionEligibility = useCallback(async (): Promise<
-    SubscriptionEligibility | undefined
+    (SubscriptionEligibility & { modalType?: 'A' | 'B' }) | undefined
   > => {
     try {
       // if user is not signed in or unlocked, return undefined
