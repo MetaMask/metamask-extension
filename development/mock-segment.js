@@ -33,9 +33,9 @@ function onRequest(_request, response, events) {
 
   events.forEach((event) => {
     const properties =
-      event && (event.properties || event.traits)
-        ? event.properties || event.traits
-        : undefined;
+      event && event.type === 'identify'
+        ? event.traits
+        : event && event.properties;
     const hasProperties =
       properties &&
       typeof properties === 'object' &&
@@ -43,21 +43,13 @@ function onRequest(_request, response, events) {
     const label = getTypeLabel(event);
     const nameOrId = getNameOrId(event);
     if (hasProperties) {
-      try {
-        console.log(
-          `${prefix}: ${label} event received: ${nameOrId}\n${JSON.stringify(
-            properties,
-            null,
-            2,
-          )}`,
-        );
-      } catch (_) {
-        console.log(
-          `${prefix}: ${label} event received: ${nameOrId}\n${String(
-            properties,
-          )}`,
-        );
-      }
+      console.log(
+        `${prefix}: ${label} event received: ${nameOrId}\n${JSON.stringify(
+          properties,
+          null,
+          2,
+        )}`,
+      );
     } else {
       console.log(`${prefix}: ${label} event received: ${nameOrId}`);
     }
