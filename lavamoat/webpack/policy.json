@@ -1434,7 +1434,7 @@
         "@metamask/utils": true,
         "@noble/curves": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true
+        "@metamask/snaps-sdk>@metamask/key-tree>@scure/base": true
       }
     },
     "@metamask/keyring-api": {
@@ -2047,7 +2047,7 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/snaps-utils>@scure/base": true,
         "@swc/helpers": true,
         "chalk": true,
         "cron-parser": true,
@@ -2170,7 +2170,7 @@
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils>@scure/base": true,
         "buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2186,7 +2186,7 @@
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/browser-passworder>@metamask/utils>@scure/base": true,
         "buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2390,7 +2390,19 @@
         "react": true
       }
     },
+    "@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
     "@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/snaps-sdk>@metamask/key-tree>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2402,7 +2414,25 @@
         "TextEncoder": true
       }
     },
+    "@metamask/snaps-utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
     "@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/browser-passworder>@metamask/utils>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
