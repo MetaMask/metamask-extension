@@ -1,4 +1,4 @@
-import { RpcEndpointType } from '@metamask/network-controller';
+import { NetworkState, RpcEndpointType } from '@metamask/network-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { migrate, version } from './183';
 
@@ -261,15 +261,15 @@ describe(`migration #${VERSION}`, () => {
 
     // Mainnet endpoint should remain unchanged
     expect(
-      newStorage.data.NetworkController.networkConfigurationsByChainId['0x1']
-        .rpcEndpoints[0],
+      (newStorage.data.NetworkController as NetworkState)
+        .networkConfigurationsByChainId['0x1'].rpcEndpoints[0],
     ).not.toHaveProperty('failoverUrls');
 
     // Sei endpoint should have failover URL added
     expect(
-      newStorage.data.NetworkController.networkConfigurationsByChainId[
-        SEI_CHAIN_ID
-      ].rpcEndpoints[0].failoverUrls,
+      (newStorage.data.NetworkController as NetworkState)
+        .networkConfigurationsByChainId[SEI_CHAIN_ID].rpcEndpoints[0]
+        .failoverUrls,
     ).toEqual([QUICKNODE_SEI_URL]);
   });
 
