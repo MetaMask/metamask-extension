@@ -153,10 +153,6 @@ export function useShieldCoverageAlert(): Alert[] {
   let modalBodyStr = isCovered
     ? 'shieldCoverageAlertCovered'
     : getModalBodyStr(reasonCode);
-  if (isSimpleSendTransaction) {
-    // Simple send transactions are not covered by Shield and can't be send to ruleset engine
-    modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
-  }
   if (isPaused) {
     modalBodyStr = 'shieldCoverageAlertMessagePaused';
   }
