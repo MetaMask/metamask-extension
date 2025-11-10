@@ -1,4 +1,6 @@
 import React from 'react';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP } from '../../../../../shared/constants/bridge';
 import {
   SelectButtonProps,
   SelectButtonSize,
@@ -28,11 +30,8 @@ import { getNftImage } from '../../../../helpers/utils/nfts';
 export const BridgeAssetPickerButton = ({
   asset,
   networkProps,
-  networkImageSrc,
   ...props
-}: {
-  networkImageSrc?: string;
-} & SelectButtonProps<'div'> &
+}: SelectButtonProps<'div'> &
   Pick<React.ComponentProps<typeof AssetPicker>, 'asset' | 'networkProps'>) => {
   const t = useI18nContext();
 
@@ -65,14 +64,18 @@ export const BridgeAssetPickerButton = ({
         </Text>
       }
       startAccessory={
-        asset ? (
+        networkProps?.network?.chainId ? (
           <BadgeWrapper
             marginRight={2}
             badge={
               asset ? (
                 <AvatarNetwork
                   name={networkProps?.network?.name ?? ''}
-                  src={networkImageSrc}
+                  src={
+                    BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[
+                      formatChainIdToCaip(networkProps.network.chainId)
+                    ]
+                  }
                   size={AvatarNetworkSize.Xs}
                 />
               ) : undefined

@@ -258,10 +258,22 @@ export const getFromChains = createDeepEqualSelector(
 /**
  * This matches the network filter in the activity and asset lists
  */
-export const getLastSelectedChainId = createSelector(
-  [getAllEnabledNetworksForAllNamespaces],
-  (allEnabledNetworksForAllNamespaces) => {
-    return allEnabledNetworksForAllNamespaces[0];
+export const getNetworkFilterOrTopChain = createSelector(
+  [getAllEnabledNetworksForAllNamespaces, getFromChains],
+  (enabledEvmNetworks, fromChains) => {
+    // If there is no network filter, return first chain ranked by bridge feature flags
+    if (enabledEvmNetworks.length > 1) {
+      return fromChains[0];
+    }
+    // If there is no match for the filter (i.e testnets), return first chain ranked by bridge feature flags
+    const lastEnabledChainId = enabledEvmNetworks.find((chainId) =>
+      fromChains.some(({ chainId: fromChainId }) => fromChainId === chainId),
+    );
+    return (
+      fromChains.find(
+        ({ chainId: fromChainId }) => fromChainId === lastEnabledChainId,
+      ) ?? fromChains[0]
+    );
   },
 );
 
@@ -273,8 +285,9 @@ export const getFromChain = createDeepEqualSelector(
     // Because useBridging checks whether the lastSelectedNetwork matches the provider config
     // Then useBridgeQueryParams sets the global network to lastSelectedNetwork as needed
     // TODO remove providerConfig references and just use getLastSelectedChainId
-    return fromChains.find(
-      ({ chainId }) => chainId === providerConfig?.chainId,
+    return (
+      fromChains.find(({ chainId }) => chainId === providerConfig?.chainId) ??
+      fromChains[0]
     );
   },
 );

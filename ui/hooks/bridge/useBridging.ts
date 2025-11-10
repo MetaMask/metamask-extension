@@ -34,10 +34,10 @@ import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import {
   getFromChains,
-  getLastSelectedChainId,
+  getNetworkFilterOrTopChain,
 } from '../../ducks/bridge/selectors';
-import { getMultichainProviderConfig } from '../../selectors/multichain';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { getMultichainProviderConfig } from '../../selectors/multichain';
 
 const useBridging = () => {
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ const useBridging = () => {
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
-  const lastSelectedChainId = useSelector(getLastSelectedChainId);
+  const lastSelectedChain = useSelector(getNetworkFilterOrTopChain);
   const providerConfig = useSelector(getMultichainProviderConfig);
   const fromChains = useSelector(getFromChains);
 
@@ -83,8 +83,10 @@ const useBridging = () => {
        *
        * default fromChain: srctoken.chainId > lastSelectedId > MAINNET
        */
-      const targetChainId = isChainIdEnabledForBridging(lastSelectedChainId)
-        ? lastSelectedChainId
+      const targetChainId = isChainIdEnabledForBridging(
+        lastSelectedChain.chainId,
+      )
+        ? lastSelectedChain.chainId
         : CHAIN_IDS.MAINNET;
       if (!srcAssetIdToUse && targetChainId !== providerConfig?.chainId) {
         srcAssetIdToUse = getNativeAssetForChainId(targetChainId)?.assetId;
@@ -105,7 +107,7 @@ const useBridging = () => {
           text: 'Swap',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: srcToken?.chainId ?? lastSelectedChainId,
+          chain_id: srcToken?.chainId ?? lastSelectedChain.chainId,
         },
       });
       dispatch(
@@ -139,7 +141,7 @@ const useBridging = () => {
       trackEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
-      lastSelectedChainId,
+      lastSelectedChain.chainId,
       providerConfig?.chainId,
       isChainIdEnabledForBridging,
     ],
