@@ -1553,6 +1553,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     defaultBlockExplorerUrlIndex: 0,
   },
   {
+    chainId: CHAIN_IDS.HYPE,
+    name: HYPEREVM_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.HYPE,
+    rpcEndpoints: [
+      {
+        url: 'https://rpc.hyperliquid.xyz/evm',
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://hyperevmscan.io/'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
     chainId: CHAIN_IDS.BASE,
     name: BASE_DISPLAY_NAME,
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
