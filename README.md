@@ -208,6 +208,18 @@ Different build types have different e2e tests sets. In order to run them look i
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
 ```
 
+### Test and iterate on GitHub Actions more quickly
+
+Running the full workflow on GitHub Actions can take 30 minutes or more, but there are ways to speed it up for faster iteration
+
+- `[builds-from-run: <run-id>]` in the last commit message - If you didn't change any code that will change the builds, you can use this to speed up CI by about 10 minutes
+  - You probably want to use either the last completed run on branch `main` https://github.com/MetaMask/metamask-extension/actions/workflows/main.yml?query=branch%3Amain, or the last run on your feature branch. The run-id is at the end of the URL like https://github.com/MetaMask/metamask-extension/actions/runs/xxxxxxxx
+  - For security, you will be prevented from merging the PR in this test state.
+  - If this is popular (a lot of people using it in commit messages, praising it on Slack), we may be able to harden this state, trigger it more automatically, make the UX easier, and allow merges.
+- `[skip-e2e]` in the last commit message - Skips the E2E test suite
+- `[skip-unit]` in the last commit message _(command not working yet, coming soon)_ - Skips the unit test suite
+- `trigger-ci-*` as the branch name - This allows you to run the CI workflow without attaching it to a PR. This is useful if you need to test some things that you know will never be merged. Please clean up after yourself when you're done, and delete the branch.
+
 ### Changing dependencies
 
 Whenever you change dependencies (adding, removing, or updating, either in `package.json` or `yarn.lock`), there are various files that must be kept up-to-date.
