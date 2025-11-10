@@ -3005,6 +3005,30 @@ export function addImportedTokens(
 }
 
 /**
+ * To add multichain assets (non-EVM tokens like Solana, Bitcoin)
+ *
+ * @param assetIds - The CAIP asset IDs (includes chain information)
+ * @param accountId - The account ID to add the asset to
+ */
+export function multichainAddAssets(
+  assetIds: string[],
+  accountId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('multichainAddAssets', [
+        assetIds,
+        accountId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+/**
  * To add ignored token addresses to state
  *
  * @param options
