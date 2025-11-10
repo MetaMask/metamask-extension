@@ -81,5 +81,4 @@ describe('Remote feature flag', function (this: Suite) {
       },
     );
   });
-
 });
