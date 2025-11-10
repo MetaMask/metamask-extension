@@ -8,17 +8,13 @@ import React, {
   useCallback,
 } from 'react';
 import { numberToHex } from '@metamask/utils';
-import {
-  ShieldClaim,
-  CLAIM_STATUS,
-  ClaimStatus,
-} from '../../pages/settings/transaction-shield-tab/types';
+import { Claim, ClaimStatusEnum } from '@metamask/claims-controller';
 import { getShieldClaims } from '../../store/actions';
 
 type ClaimsContextType = {
-  claims: ShieldClaim[];
-  pendingClaims: ShieldClaim[];
-  historyClaims: ShieldClaim[];
+  claims: Claim[];
+  pendingClaims: Claim[];
+  historyClaims: Claim[];
   isLoading: boolean;
   error: Error | null;
   refetchClaims: () => Promise<void>;
@@ -31,14 +27,14 @@ type ClaimsProviderProps = {
 };
 
 const PENDING_CLAIM_STATUSES = [
-  CLAIM_STATUS.CREATED,
-  CLAIM_STATUS.SUBMITTED,
-  CLAIM_STATUS.IN_PROGRESS,
-  CLAIM_STATUS.WAITING_FOR_CUSTOMER,
-] as ClaimStatus[];
+  ClaimStatusEnum.CREATED,
+  ClaimStatusEnum.SUBMITTED,
+  ClaimStatusEnum.IN_PROGRESS,
+  ClaimStatusEnum.WAITING_FOR_CUSTOMER,
+] as ClaimStatusEnum[];
 
 export const ClaimsProvider: React.FC<ClaimsProviderProps> = ({ children }) => {
-  const [claims, setClaims] = useState<ShieldClaim[]>([]);
+  const [claims, setClaims] = useState<Claim[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -49,12 +45,12 @@ export const ClaimsProvider: React.FC<ClaimsProviderProps> = ({ children }) => {
       const claimsData = await getShieldClaims();
       // sort claims by createdAt descending
       const sortedClaims = claimsData
-        .sort((a: ShieldClaim, b: ShieldClaim) => {
+        .sort((a: Claim, b: Claim) => {
           const dateA = new Date(a.createdAt).getTime();
           const dateB = new Date(b.createdAt).getTime();
           return dateB - dateA;
         })
-        .map((claim: ShieldClaim, index: number) => {
+        .map((claim: Claim, index: number) => {
           const numberChain = Number(claim.chainId);
           const chainId = isNaN(numberChain) ? '' : numberToHex(numberChain);
           return {
