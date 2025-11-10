@@ -3,6 +3,7 @@ import { Hex } from '@metamask/utils';
 import React, { useMemo } from 'react';
 import { captureException } from '../../../../../../../../../shared/lib/sentry';
 import { MetaMetricsEventLocation } from '../../../../../../../../../shared/constants/metametrics';
+import { TokenStandard } from '../../../../../../../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import Name from '../../../../../../../../components/app/name/name';
@@ -63,6 +64,9 @@ type PermitSimulationValueDisplayParams = {
 
   /** Whether a large amount can be substituted by "Unlimited" */
   canDisplayValueAsUnlimited?: boolean;
+
+  /** The asset type (e.g., 'ERC20', 'ERC721', 'ERC1155') */
+  assetType?: string;
 };
 
 const PermitSimulationValueDisplay: React.FC<
@@ -77,6 +81,7 @@ const PermitSimulationValueDisplay: React.FC<
   credit,
   debit,
   canDisplayValueAsUnlimited,
+  assetType,
 }) => {
   const t = useI18nContext();
 
@@ -92,12 +97,18 @@ const PermitSimulationValueDisplay: React.FC<
   const { decimalsNumber: tokenDecimals } = tokenDetails;
 
   const fiatValue = useMemo(() => {
-    if (exchangeRate && value && !tokenId) {
+    // Only calculate fiat value for ERC20 tokens, not for NFTs (ERC721/ERC1155)
+    if (
+      exchangeRate &&
+      value &&
+      !tokenId &&
+      assetType === TokenStandard.ERC20
+    ) {
       const tokenAmount = calcTokenAmount(value, tokenDecimals);
       return exchangeRate.times(tokenAmount).toNumber();
     }
     return undefined;
-  }, [exchangeRate, tokenDecimals, tokenId, value]);
+  }, [exchangeRate, tokenDecimals, tokenId, value, assetType]);
 
   const { tokenValue, tokenValueMaxPrecision, shouldShowUnlimitedValue } =
     useMemo(() => {
@@ -114,12 +125,17 @@ const PermitSimulationValueDisplay: React.FC<
         };
       }
 
-      const tokenAmount = calcTokenAmount(value, tokenDecimals);
+      // For NFTs (ERC721/ERC1155), display the amount as-is without decimal conversion
+      // For ERC20 tokens, apply decimal conversion
+      const isNFT =
+        assetType === TokenStandard.ERC721 ||
+        assetType === TokenStandard.ERC1155;
+      const tokenAmount = isNFT
+        ? value
+        : calcTokenAmount(value, tokenDecimals);
 
-      const showUnlimitedDueToPermitValue = isSpendingCapUnlimited(
-        value,
-        tokenDecimals,
-      );
+      const showUnlimitedDueToPermitValue =
+        !isNFT && isSpendingCapUnlimited(value, tokenDecimals);
 
       return {
         tokenValue: formatAmount('en-US', tokenAmount),
@@ -135,6 +151,7 @@ const PermitSimulationValueDisplay: React.FC<
       tokenContract,
       tokenId,
       value,
+      assetType,
     ]);
 
   /** Temporary error capturing as we are building out Permit Simulations */

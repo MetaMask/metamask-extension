@@ -27,6 +27,7 @@ describe('PermitSimulationValueDisplay', () => {
           tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
           value="4321"
           chainId="0x1"
+          assetType="ERC20"
         />,
         mockStore,
       );
@@ -47,6 +48,7 @@ describe('PermitSimulationValueDisplay', () => {
             tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
             value="4321"
             chainId="0x1"
+            assetType="ERC20"
           />
         </MetaMetricsContext.Provider>,
         mockStore,
@@ -66,6 +68,7 @@ describe('PermitSimulationValueDisplay', () => {
           value={UNLIMITED_THRESHOLD}
           chainId="0x1"
           canDisplayValueAsUnlimited
+          assetType="ERC20"
         />
       </MetaMetricsContext.Provider>,
       mockStore,
@@ -88,6 +91,7 @@ describe('PermitSimulationValueDisplay', () => {
           value={`${UNLIMITED_THRESHOLD.slice(0, -1)}1`}
           chainId="0x1"
           canDisplayValueAsUnlimited
+          assetType="ERC20"
         />
       </MetaMetricsContext.Provider>,
       mockStore,
@@ -110,6 +114,7 @@ describe('PermitSimulationValueDisplay', () => {
           value={UNLIMITED_THRESHOLD.slice(0, -1)}
           chainId="0x1"
           canDisplayValueAsUnlimited
+          assetType="ERC20"
         />
       </MetaMetricsContext.Provider>,
       mockStore,
@@ -120,5 +125,44 @@ describe('PermitSimulationValueDisplay', () => {
     });
 
     expect(queryByText('Unlimited')).toBeNull();
+  });
+
+  it('renders ERC1155 amount without decimal conversion', async () => {
+    const mockStore = configureMockStore([])(mockState);
+
+    await act(async () => {
+      const { findByText } = renderWithProvider(
+        <PermitSimulationValueDisplay
+          tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+          value="1000000000000000"
+          chainId="0x1"
+          assetType="ERC1155"
+        />,
+        mockStore,
+      );
+
+      // For ERC1155, the value should be displayed as-is (1000000000000000)
+      // not divided by decimals (which would be 0.001 for 18 decimals)
+      expect(await findByText('1,000,000,000,000,000')).toBeInTheDocument();
+    });
+  });
+
+  it('renders ERC721 amount without decimal conversion', async () => {
+    const mockStore = configureMockStore([])(mockState);
+
+    await act(async () => {
+      const { findByText } = renderWithProvider(
+        <PermitSimulationValueDisplay
+          tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+          value="5"
+          chainId="0x1"
+          assetType="ERC721"
+        />,
+        mockStore,
+      );
+
+      // For ERC721, the value should be displayed as-is (5)
+      expect(await findByText('5')).toBeInTheDocument();
+    });
   });
 });

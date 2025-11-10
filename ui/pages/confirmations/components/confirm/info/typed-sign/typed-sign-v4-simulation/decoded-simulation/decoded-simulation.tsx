@@ -129,6 +129,7 @@ const StateChangeRow = ({
           }
           debit={changeType === DecodingDataChangeType.Transfer}
           canDisplayValueAsUnlimited={canDisplayValueAsUnlimited}
+          assetType={assetType}
         />
       )}
       {assetType === 'NATIVE' && (
