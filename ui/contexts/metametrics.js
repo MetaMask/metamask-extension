@@ -153,7 +153,6 @@ export function MetaMetricsProvider({ children }) {
 
   // Used to prevent double tracking page calls
   const previousMatch = useRef();
-  const previousPathname = useRef();
 
   /**
    * Anytime the location changes, track a page change with segment.
@@ -162,12 +161,6 @@ export function MetaMetricsProvider({ children }) {
    * which page the user is on and their navigation path.
    */
   useEffect(() => {
-    // Only run if pathname actually changed
-    if (previousPathname.current === location.pathname) {
-      return;
-    }
-    previousPathname.current = location.pathname;
-
     const environmentType = getEnvironmentType();
     // v6 matchPath doesn't support array of paths, so we loop to find first match
     const paths = getPaths();
@@ -181,7 +174,7 @@ export function MetaMetricsProvider({ children }) {
         {
           path,
           end: true,
-          caseSensitive: true,
+          caseSensitive: false, // Match v5 behavior (case-insensitive by default)
         },
         location.pathname,
       );
