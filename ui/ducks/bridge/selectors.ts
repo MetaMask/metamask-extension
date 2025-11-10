@@ -337,7 +337,13 @@ export const getTopAssetsFromFeatureFlags = (
     return undefined;
   }
   const bridgeFeatureFlags = getBridgeFeatureFlags(state);
-  return bridgeFeatureFlags?.chains[formatChainIdToCaip(chainId)]?.topAssets;
+  return (
+    bridgeFeatureFlags?.chains[formatChainIdToCaip(chainId)]?.topAssets ??
+    bridgeFeatureFlags?.chainRanking?.find(
+      (c: { chainId: CaipChainId }) =>
+        c.chainId === formatChainIdToCaip(chainId),
+    )?.topAssets
+  );
 };
 
 const getDefaultTokenPair = createDeepEqualSelector(
@@ -583,6 +589,11 @@ export const getQuoteRefreshRate = createSelector(
     (fromChain &&
       extensionConfig.chains[formatChainIdToCaip(fromChain.chainId)]
         ?.refreshRate) ??
+    (fromChain &&
+      extensionConfig?.chainRanking?.find(
+        (c: { chainId: CaipChainId }) =>
+          c.chainId === formatChainIdToCaip(fromChain.chainId),
+      )?.refreshRate) ??
     extensionConfig.refreshRate,
 );
 export const getBridgeSortOrder = (state: BridgeAppState) =>
@@ -1079,9 +1090,13 @@ export const selectNoFeeAssets = createSelector(
     const caipChainId = formatChainIdToCaip(chainId);
     return (
       (
-        bridgeFeatureFlags?.chains?.[caipChainId] as unknown as {
+        (bridgeFeatureFlags?.chains?.[caipChainId] as unknown as {
           noFeeAssets?: string[];
-        }
+        }) ??
+        bridgeFeatureFlags.chainRanking.find(
+          (c: { chainId: CaipChainId }) =>
+            c.chainId === formatChainIdToCaip(chainId),
+        )?.noFeeAssets
       )?.noFeeAssets ?? []
     );
   },

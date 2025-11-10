@@ -1,3 +1,4 @@
+import { ChainId, formatChainIdToCaip } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { flushPromises } from '../../../test/lib/timer-helpers';
@@ -18,7 +19,16 @@ describe('useCountdownTimer', () => {
     const { result } = renderUseCountdownTimer(
       createBridgeMockStore({
         featureFlagOverrides: {
-          bridgeConfig: { maxRefreshCount: 5, refreshRate: 40000 },
+          bridgeConfig: {
+            maxRefreshCount: 5,
+            refreshRate: 30000,
+            chainRanking: [
+              {
+                chainId: formatChainIdToCaip(ChainId.ETH),
+                refreshRate: 40000,
+              },
+            ],
+          },
         },
         bridgeStateOverrides: {
           quotesLastFetched,
