@@ -59,7 +59,7 @@ import { getShortDateFormatterV2 } from '../../asset/util';
 import {
   DEFAULT_ROUTE,
   SHIELD_PLAN_ROUTE,
-  TRANSACTION_SHIELD_CLAIM_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
 } from '../../../helpers/constants/routes';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { getProductPrice } from '../../shield-plan/utils';
@@ -792,7 +792,7 @@ const TransactionShield = () => {
           buttonRow(
             t('shieldTxMembershipSubmitCase'),
             () => {
-              navigate(TRANSACTION_SHIELD_CLAIM_ROUTE);
+              navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
             },
             'shield-detail-submit-case-button',
           )}
