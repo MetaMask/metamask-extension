@@ -224,6 +224,9 @@ export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
   CHAIN_IDS.SEI,
   CHAIN_IDS.MONAD,
   MultichainNetworks.SOLANA,
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  MultichainNetworks.TRON,
+  ///: END:ONLY_INCLUDE_IF
 ] as const;
 
 export const ALLOWED_DEV_SWAPS_CHAIN_IDS = [

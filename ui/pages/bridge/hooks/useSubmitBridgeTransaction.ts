@@ -1,6 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { isSolanaChainId, isBitcoinChainId } from '@metamask/bridge-controller';
+import {
+  isSolanaChainId,
+  isBitcoinChainId,
+  ChainId,
+} from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { TrxScope } from '@metamask/keyring-api';
+import { isCaipChainId } from '@metamask/utils';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -60,6 +66,15 @@ export default function useSubmitBridgeTransaction() {
 
   const fromAccount = useSelector(getFromAccount);
 
+  // TODO: Import isTronChainId from @metamask/bridge-controller once it's exported from the main entry point
+  // Helper to check if chain is Tron
+  const isTronChainId = (chainId: string | number) => {
+    if (isCaipChainId(chainId)) {
+      return chainId === TrxScope.Mainnet.toString();
+    }
+    return chainId.toString() === ChainId.TRON.toString();
+  };
+
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
@@ -74,10 +89,12 @@ export default function useSubmitBridgeTransaction() {
 
     // Execute transaction(s)
     try {
-      // Handle non-EVM source chains (Solana, Bitcoin)
+      // Handle non-EVM source chains (Solana, Bitcoin, Tron)
+      // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
       const isNonEvmSource =
         isSolanaChainId(quoteResponse.quote.srcChainId) ||
-        isBitcoinChainId(quoteResponse.quote.srcChainId);
+        isBitcoinChainId(quoteResponse.quote.srcChainId) ||
+        isTronChainId(quoteResponse.quote.srcChainId);
 
       if (isNonEvmSource) {
         // Submit the transaction first, THEN navigate

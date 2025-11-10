@@ -3,9 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom-v5-compat';
 import {
   UnifiedSwapBridgeEventName,
-  // TODO: update this with all non-EVM chains when bitcoin added.
   isSolanaChainId,
+  isBitcoinChainId,
+  ChainId,
 } from '@metamask/bridge-controller';
+import { TrxScope } from '@metamask/keyring-api';
+import { isCaipChainId } from '@metamask/utils';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
@@ -79,10 +82,23 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
-  // Only fetch gas estimates if the source chain is EVM (not Solana)
+
+  // TODO: Import isTronChainId from @metamask/bridge-controller once it's exported from the main entry point
+  // Helper to check if chain is Tron
+  const isTronChainId = (chainId: string | number) => {
+    if (isCaipChainId(chainId)) {
+      return chainId === TrxScope.Mainnet.toString();
+    }
+    return chainId.toString() === ChainId.TRON.toString();
+  };
+
+  // Only fetch gas estimates if the source chain is EVM (not Solana, Bitcoin, or Tron)
+  // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
   const shouldFetchGasEstimates =
-    // TODO: update this with all non-EVM chains when bitcoin added.
-    fromChain?.chainId && !isSolanaChainId(fromChain.chainId);
+    fromChain?.chainId &&
+    !isSolanaChainId(fromChain.chainId) &&
+    !isBitcoinChainId(fromChain.chainId) &&
+    !isTronChainId(fromChain.chainId);
 
   useEffect(() => {
     dispatch(

@@ -5,7 +5,7 @@ import {
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
-import { SolScope, BtcScope } from '@metamask/keyring-api';
+import { SolScope, BtcScope, TrxScope } from '@metamask/keyring-api';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
 import { AssetType } from '../../shared/constants/transaction';
@@ -133,6 +133,13 @@ export const useMultichainBalances = (
       BtcScope.Mainnet,
     ),
   );
+  const tronAccount = useSelector((state) =>
+    getInternalAccountByGroupAndCaip(
+      state,
+      accountGroupIdToUse,
+      TrxScope.Mainnet,
+    ),
+  );
 
   // EVM balances
   const evmBalancesWithFiatByChainId = useSelector((state) =>
@@ -145,6 +152,11 @@ export const useMultichainBalances = (
     bitcoinAccount?.id,
     bitcoinAccount?.type,
   );
+  // Tron balances
+  const tronBalancesWithFiat = useNonEvmAssetsWithBalances(
+    tronAccount?.id,
+    tronAccount?.type,
+  );
 
   // return TokenWithFiat sorted by fiat balance amount
   const assetsWithBalance = useMemo(() => {
@@ -152,6 +164,7 @@ export const useMultichainBalances = (
       ...evmBalancesWithFiatByChainId,
       ...solanaBalancesWithFiat,
       ...bitcoinBalancesWithFiat,
+      ...tronBalancesWithFiat,
     ]
       .map((token) => ({
         ...token,
@@ -162,6 +175,7 @@ export const useMultichainBalances = (
     evmBalancesWithFiatByChainId,
     solanaBalancesWithFiat,
     bitcoinBalancesWithFiat,
+    tronBalancesWithFiat,
   ]);
 
   // return total fiat balances by chainId/caipChainId
@@ -170,6 +184,7 @@ export const useMultichainBalances = (
       ...evmBalancesWithFiatByChainId,
       ...solanaBalancesWithFiat,
       ...bitcoinBalancesWithFiat,
+      ...tronBalancesWithFiat,
     ].reduce((acc: Record<Hex | CaipChainId, number>, tokenWithBalanceData) => {
       if (!acc[tokenWithBalanceData.chainId]) {
         acc[tokenWithBalanceData.chainId] = 0;
@@ -182,6 +197,7 @@ export const useMultichainBalances = (
     evmBalancesWithFiatByChainId,
     solanaBalancesWithFiat,
     bitcoinBalancesWithFiat,
+    tronBalancesWithFiat,
   ]);
 
   return { assetsWithBalance, balanceByChainId };

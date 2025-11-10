@@ -258,6 +258,15 @@ export const useTokensWithFiltering = (
 
         // Yield multichain tokens with balances and are not blocked
         for (const token of multichainTokensWithBalance) {
+          // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
+          // as they are not tradeable assets
+          if (
+            token.chainId?.includes('tron:') &&
+            (token.symbol?.toUpperCase().includes('ENERGY') ||
+              token.symbol?.toUpperCase().includes('BANDWIDTH'))
+          ) {
+            continue;
+          }
           if (shouldAddToken(token.symbol, token.address, token.chainId)) {
             if (isNativeAddress(token.address) || token.isNative) {
               yield {
@@ -321,8 +330,15 @@ export const useTokensWithFiltering = (
             tokenList?.[token_.address] ??
             tokenList?.[token_.address.toLowerCase()];
           const token = buildTokenData(chainId, matchedToken);
+          // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
+          // as they are not tradeable assets
           if (
             token &&
+            !(
+              chainId?.toString().includes('tron:') &&
+              (token.symbol?.toUpperCase().includes('ENERGY') ||
+                token.symbol?.toUpperCase().includes('BANDWIDTH'))
+            ) &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
             yield token;
@@ -334,9 +350,16 @@ export const useTokensWithFiltering = (
         // eslint-disable-next-line @typescript-eslint/naming-convention
         for (const token_ of Object.values(tokenList)) {
           const token = buildTokenData(chainId, token_);
+          // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
+          // as they are not tradeable assets
           if (
             token &&
             token.symbol.indexOf('$') === -1 &&
+            !(
+              chainId?.toString().includes('tron:') &&
+              (token.symbol?.toUpperCase().includes('ENERGY') ||
+                token.symbol?.toUpperCase().includes('BANDWIDTH'))
+            ) &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
             yield token;

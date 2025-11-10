@@ -21,8 +21,10 @@ import {
   UnifiedSwapBridgeEventName,
   type BridgeController,
   isCrossChain,
+  ChainId,
 } from '@metamask/bridge-controller';
-import { Hex, parseCaipChainId } from '@metamask/utils';
+import { TrxScope } from '@metamask/keyring-api';
+import { Hex, parseCaipChainId, isCaipChainId } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -116,7 +118,6 @@ import {
   FEATURED_NETWORK_CHAIN_IDS,
   TOKEN_OCCURRENCES_MAP,
   MINIMUM_TOKEN_OCCURRENCES,
-  type ChainId,
 } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
@@ -189,12 +190,23 @@ const PrepareBridgePage = ({
   const toChains = useSelector(getToChains);
   const toChain = useSelector(getToChain);
 
+  // TODO: Import isTronChainId from @metamask/bridge-controller once it's exported from the main entry point
+  // Helper to check if chain is Tron
+  const isTronChainId = (chainId: string | number) => {
+    if (isCaipChainId(chainId)) {
+      return chainId === TrxScope.Mainnet.toString();
+    }
+    return chainId.toString() === ChainId.TRON.toString();
+  };
+
   const isFromTokensLoading = useMemo(() => {
-    // Non-EVM chains (Solana, Bitcoin) don't use the EVM token list
+    // Non-EVM chains (Solana, Bitcoin, Tron) don't use the EVM token list
+    // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
     if (
       fromChain &&
       (isSolanaChainId(fromChain.chainId) ||
-        isBitcoinChainId(fromChain.chainId))
+        isBitcoinChainId(fromChain.chainId) ||
+        isTronChainId(fromChain.chainId))
     ) {
       return false;
     }
@@ -287,8 +299,10 @@ const PrepareBridgePage = ({
           if (isNativeAddress(fromToken.address)) {
             address = '';
           } else if (
+            // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
             isSolanaChainId(fromChain.chainId) ||
-            isBitcoinChainId(fromChain.chainId)
+            isBitcoinChainId(fromChain.chainId) ||
+            isTronChainId(fromChain.chainId)
           ) {
             address = fromToken.address || '';
           } else {
