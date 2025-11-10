@@ -18,6 +18,7 @@ import { useAppSelector } from '../../store/store';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
 import AuthenticatedV5Compat from '../../helpers/higher-order-components/authenticated/authenticated-v5-compat';
 import Initialized from '../../helpers/higher-order-components/initialized';
+import InitializedV5Compat from '../../helpers/higher-order-components/initialized/initialized-v5-compat';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -204,6 +205,79 @@ const createV5CompatNavigate = (
     } else {
       history.push(to, options.state);
     }
+  };
+};
+
+/**
+ * Helper to create v5-compat route wrappers with less boilerplate.
+ * Handles authentication, navigation, and prop passing for v5-to-v5-compat transition.
+ *
+ * NOTE: This is temporary scaffolding for the v5-compat transition.
+ * It will be removed during the full v6 migration when routes use native v6 patterns.
+ *
+ * @param Component - The component to render
+ * @param options - Configuration options
+ * @param options.wrapper - Wrapper component (AuthenticatedV5Compat, InitializedV5Compat, or null for none)
+ * @param options.includeNavigate - Whether to pass navigate prop
+ * @param options.includeLocation - Whether to pass location prop
+ * @param options.includeParams - Whether to pass params from route match
+ * @param options.includeMatch - Whether to pass the entire match object
+ * @param options.paramsAsProps - Whether to spread params as individual props (default: true)
+ * @returns Route render function
+ */
+const createV5CompatRoute = <
+  TParams extends Record<string, string | undefined> = Record<
+    string,
+    string | undefined
+  >,
+>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Component: React.ComponentType<any>,
+  options: {
+    wrapper?: React.ComponentType<{ children: React.ReactNode }> | null;
+    includeNavigate?: boolean;
+    includeLocation?: boolean;
+    includeParams?: boolean;
+    includeMatch?: boolean;
+    paramsAsProps?: boolean;
+  } = {},
+) => {
+  const {
+    wrapper = null,
+    includeNavigate = false,
+    includeLocation = false,
+    includeParams = false,
+    includeMatch = false,
+    paramsAsProps = true,
+  } = options;
+
+  return (props: RouteComponentProps<TParams>) => {
+    const { history: v5History, location: v5Location, match } = props;
+
+    const componentProps: Record<string, unknown> = {};
+
+    if (includeNavigate) {
+      componentProps.navigate = createV5CompatNavigate(v5History);
+    }
+    if (includeLocation) {
+      componentProps.location = v5Location;
+    }
+    if (includeMatch) {
+      componentProps.match = match;
+    }
+    if (includeParams) {
+      if (paramsAsProps) {
+        Object.assign(componentProps, match.params);
+      } else {
+        componentProps.params = match.params;
+      }
+    }
+
+    const element = <Component {...componentProps} />;
+
+    return wrapper
+      ? React.createElement(wrapper, { children: element })
+      : element;
   };
 };
 
@@ -620,9 +694,24 @@ export default function Routes() {
           <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
           {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
           <Route path={LOCK_ROUTE} component={Lock} exact />
-          <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
-          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
-          <Route path={DEEP_LINK_ROUTE} component={DeepLink} />
+          <Route
+            path={UNLOCK_ROUTE}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
+            {createV5CompatRoute(UnlockPage, {
+              wrapper: InitializedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </Route>
+          <Route path={DEEP_LINK_ROUTE}>
+            {createV5CompatRoute(DeepLink, {
+              includeLocation: true,
+            })}
+          </Route>
           <RestoreVaultComponent
             path={RESTORE_VAULT_ROUTE}
             component={RestoreVaultPage}
@@ -632,12 +721,16 @@ export default function Routes() {
             path={SMART_ACCOUNT_UPDATE}
             component={SmartAccountUpdate}
           />
-          <Authenticated
-            // `:keyringId` is optional here, if not provided, this will fallback
-            // to the main seed phrase.
-            path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
-            component={RevealSeedConfirmation}
-          />
+          <Route path={`${REVEAL_SEED_ROUTE}/:keyringId?`}>
+            {createV5CompatRoute<{ keyringId?: string }>(
+              RevealSeedConfirmation,
+              {
+                wrapper: AuthenticatedV5Compat,
+                includeNavigate: true,
+                includeParams: true,
+              },
+            )}
+          </Route>
           <Authenticated path={IMPORT_SRP_ROUTE} component={ImportSrpPage} />
           <Authenticated path={SETTINGS_ROUTE} component={Settings} />
           <Authenticated
@@ -671,17 +764,10 @@ export default function Routes() {
           </Route>
           <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
           <Route path={SWAPS_ROUTE}>
-            {(props: RouteComponentProps) => {
-              const { location: v5Location } = props;
-              const SwapsComponent = Swaps as React.ComponentType<{
-                location: RouteComponentProps['location'];
-              }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <SwapsComponent location={v5Location} />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute(Swaps, {
+              wrapper: AuthenticatedV5Compat,
+              includeLocation: true,
+            })}
           </Route>
           <Route
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
@@ -690,39 +776,22 @@ export default function Routes() {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             {...({ exact: true } as any)}
           >
-            {(props: RouteComponentProps<{ srcTxMetaId: string }>) => {
-              const { history: v5History, location: v5Location, match } = props;
-              const navigate = createV5CompatNavigate(v5History);
-              const CrossChainSwapTxDetailsComponent =
-                CrossChainSwapTxDetails as React.ComponentType<{
-                  location: RouteComponentProps['location'];
-                  navigate: V5CompatNavigate;
-                  params: { srcTxMetaId: string };
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <CrossChainSwapTxDetailsComponent
-                    location={v5Location}
-                    navigate={navigate}
-                    params={match.params}
-                  />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ srcTxMetaId: string }>(
+              CrossChainSwapTxDetails,
+              {
+                wrapper: AuthenticatedV5Compat,
+                includeNavigate: true,
+                includeLocation: true,
+                includeParams: true,
+                paramsAsProps: false, // Pass as params object
+              },
+            )}
           </Route>
           <Route path={CROSS_CHAIN_SWAP_ROUTE}>
-            {(props: RouteComponentProps) => {
-              const { location: v5Location } = props;
-              const CrossChainSwapComponent =
-                CrossChainSwap as React.ComponentType<{
-                  location: RouteComponentProps['location'];
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <CrossChainSwapComponent location={v5Location} />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute(CrossChainSwap, {
+              wrapper: AuthenticatedV5Compat,
+              includeLocation: true,
+            })}
           </Route>
           <Route path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}>
             {(props: RouteComponentProps) => {
@@ -781,96 +850,59 @@ export default function Routes() {
             component={CreateAccountPage}
           />
           <Route path={`${CONNECT_ROUTE}/:id`}>
-            {(props: RouteComponentProps<{ id: string }>) => {
-              const {
-                history: v5History,
-                location: v5Location,
-                match: v5Match,
-              } = props;
-
-              const navigate = createV5CompatNavigate(v5History);
-
-              const PermissionsConnectWithProps =
-                PermissionsConnect as React.ComponentType<{
-                  location: RouteComponentProps['location'];
-                  navigate: V5CompatNavigate;
-                  match: RouteComponentProps<{ id: string }>['match'];
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <PermissionsConnectWithProps
-                    navigate={navigate}
-                    location={v5Location}
-                    match={v5Match}
-                  />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ id: string }>(PermissionsConnect, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+              includeMatch: true,
+            })}
           </Route>
           <Route path={`${ASSET_ROUTE}/image/:asset/:id`}>
-            {(props: RouteComponentProps<{ asset: string; id: string }>) => {
-              const NftFullImageComponent =
-                NftFullImage as React.ComponentType<{
-                  params: { asset: string; id: string };
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <NftFullImageComponent params={props.match.params} />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ asset: string; id: string }>(NftFullImage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
           </Route>
           <Route path={`${ASSET_ROUTE}/:chainId/:asset/:id`}>
-            {(
-              props: RouteComponentProps<{
-                chainId: string;
-                asset: string;
-                id: string;
-              }>,
-            ) => {
-              const AssetComponent = Asset as React.ComponentType<{
-                params: { chainId: string; asset: string; id: string };
-              }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <AssetComponent params={props.match.params} />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{
+              chainId: string;
+              asset: string;
+              id: string;
+            }>(Asset, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
           </Route>
           <Route path={`${ASSET_ROUTE}/:chainId/:asset/`}>
-            {(
-              props: RouteComponentProps<{
-                chainId: string;
-                asset: string;
-              }>,
-            ) => {
-              const AssetComponent = Asset as React.ComponentType<{
-                params: { chainId: string; asset: string };
-              }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <AssetComponent params={props.match.params} />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{
+              chainId: string;
+              asset: string;
+            }>(Asset, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
           </Route>
           <Route path={`${ASSET_ROUTE}/:chainId`}>
-            {(props: RouteComponentProps<{ chainId: string }>) => {
-              const AssetComponent = Asset as React.ComponentType<{
-                params: { chainId: string };
-              }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <AssetComponent params={props.match.params} />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ chainId: string }>(Asset, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
           </Route>
-          <Authenticated
-            path={`${DEFI_ROUTE}/:chainId/:protocolId`}
-            component={DeFiPage}
-          />
+          <Route path={`${DEFI_ROUTE}/:chainId/:protocolId`}>
+            {createV5CompatRoute<{
+              chainId: string;
+              protocolId: string;
+            }>(DeFiPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </Route>
           <Authenticated
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
