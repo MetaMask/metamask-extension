@@ -79,7 +79,6 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
         getFailoverUrlsForInfuraNetwork('polygon-mainnet');
     }
 
-
     // Update default popular network names.
     networks[CHAIN_IDS.MAINNET].name = 'Ethereum';
     networks[CHAIN_IDS.LINEA_MAINNET].name = 'Linea';
