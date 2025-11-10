@@ -25,6 +25,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -33,7 +34,7 @@ export function SmartAccountUpdateSuccess() {
   const navigate = useNavigate();
 
   const closeAccountUpdatePage = useCallback(() => {
-    navigate('/', { replace: true });
+    navigate(DEFAULT_ROUTE, { replace: true });
   }, [navigate]);
 
   return (

@@ -26,6 +26,7 @@ import {
 import { setSmartAccountOptIn } from '../../../../../store/actions';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SmartAccountUpdateContent } from '../smart-account-update-content';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { SmartAccountUpdateSuccess } from './smart-account-update-success';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -37,7 +38,7 @@ export function SmartAccountUpdate() {
   const dispatch = useDispatch();
 
   const closeAccountUpdatePage = useCallback(() => {
-    navigate('/', { replace: true });
+    navigate(DEFAULT_ROUTE, { replace: true });
   }, [navigate]);
 
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
