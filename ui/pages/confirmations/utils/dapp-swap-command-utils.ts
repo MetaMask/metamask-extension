@@ -157,6 +157,7 @@ export function getCommandValues(
     destChainId: chainId,
     gasIncluded: false,
     gasIncluded7702: false,
+    fee: 250,
   } as GenericQuoteRequest;
 
   if (commandBytes.includes(V3_SWAP_EXACT_OUT)) {
