@@ -75,6 +75,7 @@ import {
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
   CachedLastSelectedPaymentMethods,
+  BalanceCategory,
 } from '@metamask/subscription-controller';
 
 import { Claim, SubmitClaimConfig } from '@metamask/claims-controller';
@@ -370,11 +371,11 @@ export function subscriptionsStartPolling(): ThunkAction<
  * Fetches the subscription eligibilities.
  *
  * @param params
- * @param params.balanceUsd
+ * @param params.balanceCategory
  * @returns The subscription eligibilities.
  */
 export function getSubscriptionsEligibilities(params?: {
-  balanceUsd?: number;
+  balanceCategory?: BalanceCategory;
 }): ThunkAction<
   SubscriptionEligibility[],
   MetaMaskReduxState,

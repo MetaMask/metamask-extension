@@ -6,6 +6,7 @@ import {
   RecurringInterval,
   Subscription,
   SubscriptionEligibility,
+  BalanceCategory,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useNavigate } from 'react-router-dom-v5-compat';
@@ -213,7 +214,7 @@ export const useSubscriptionEligibility = (product: ProductType) => {
 
   const getSubscriptionEligibility = useCallback(
     async (params?: {
-      balanceUsd?: number;
+      balanceCategory?: BalanceCategory;
     }): Promise<SubscriptionEligibility | undefined> => {
       try {
         // if user is not signed in or unlocked, return undefined

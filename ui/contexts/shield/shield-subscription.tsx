@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   PRODUCT_TYPES,
   COHORT_NAMES,
+  BALANCE_CATEGORIES,
   type Cohort,
+  type BalanceCategory,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useSubscriptionEligibility } from '../../hooks/subscription/useSubscription';
@@ -24,6 +26,31 @@ import {
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
+
+/**
+ * Converts a balance in USD to a balance category
+ *
+ * @param balanceUsd - The balance in USD
+ * @returns The balance category string
+ */
+function getBalanceCategory(balanceUsd: number): BalanceCategory {
+  if (balanceUsd >= 1000000) {
+    return BALANCE_CATEGORIES.RANGE_1M_PLUS;
+  }
+  if (balanceUsd >= 100000) {
+    return BALANCE_CATEGORIES.RANGE_100K_999_9K;
+  }
+  if (balanceUsd >= 10000) {
+    return BALANCE_CATEGORIES.RANGE_10K_99_9K;
+  }
+  if (balanceUsd >= 1000) {
+    return BALANCE_CATEGORIES.RANGE_1K_9_9K;
+  }
+  if (balanceUsd >= 100) {
+    return BALANCE_CATEGORIES.RANGE_100_999;
+  }
+  return BALANCE_CATEGORIES.RANGE_0_99;
+}
 
 export const ShieldSubscriptionContext = React.createContext<{
   evaluateCohortEligibility: (entrypointCohort: string) => Promise<void>;
@@ -144,8 +171,12 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
           return;
         }
 
+        const balanceCategory = totalFiatBalance
+          ? getBalanceCategory(Number(totalFiatBalance))
+          : undefined;
+
         const shieldEligibility = await getShieldSubscriptionEligibility({
-          balanceUsd: totalFiatBalance ? Number(totalFiatBalance) : undefined,
+          balanceCategory,
         });
 
         if (
