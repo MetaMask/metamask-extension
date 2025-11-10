@@ -4259,15 +4259,6 @@
         "buffer": true
       }
     },
-    "js-sha256": {
-      "globals": {
-        "define": true,
-        "process": true
-      },
-      "packages": {
-        "process": true
-      }
-    },
     "eth-ens-namehash>js-sha3": {
       "globals": {
         "define": true,
