@@ -6,9 +6,6 @@
  */
 
 import {
-  loadSnapshot,
-  compareWithSnapshot,
-  formatComparisonResults,
   normalizeMessage,
   saveWorkerSnapshot,
 } from '../helpers/console-snapshot';
@@ -144,14 +141,10 @@ export function setupConsoleCapture(): void {
         if (captured.warnings.length > 0 || captured.errors.length > 0) {
           saveWorkerSnapshot(captured);
         }
-      } else {
-        // In validation mode, check against snapshot
-        try {
-          validateSnapshot();
-        } finally {
-          // Don't restore console here - let it stay for other cleanup
-        }
       }
+      // In validation mode, we do nothing here
+      // Validation happens in global-teardown.ts AFTER all workers complete
+      // This prevents false positives from incomplete worker aggregation
     });
   }
 }
@@ -164,38 +157,9 @@ export function restoreConsole(): void {
   console.error = originalConsole.error;
 }
 
-/**
- * Validate captured messages against snapshot
- */
-function validateSnapshot(): void {
-  // Check if we're in snapshot generation mode
-  if (process.env.GENERATE_WARNINGS_SNAPSHOT === 'true') {
-    // Save to worker-specific temp file instead of final snapshot
-    // This avoids race conditions when multiple Jest workers run in parallel
-    // Note: We save after each test file, and the last save will have all accumulated data
-    if (captured.warnings.length > 0 || captured.errors.length > 0) {
-      saveWorkerSnapshot(captured);
-    }
-    // Note: Final aggregation will happen via the generate script
-    return;
-  }
-
-  // Normal validation mode - aggregate from all workers first
-  // In validation mode, we need to check against the snapshot after all workers finish
-  // This will be handled in global teardown, but we can do per-worker validation too
-  const snapshot = loadSnapshot();
-  const comparison = compareWithSnapshot(captured, snapshot);
-
-  const hasNewIssues =
-    comparison.newWarnings.length > 0 || comparison.newErrors.length > 0;
-
-  if (hasNewIssues) {
-    const errorMessage = formatComparisonResults(comparison);
-    restoreConsole(); // Restore so error message appears
-    console.error(errorMessage);
-    throw new Error('New console warnings or errors detected');
-  }
-}
+// Validation removed from per-file hook - now only happens in global-teardown.ts
+// after ALL workers complete. This prevents false positives from incomplete
+// worker aggregation during parallel test execution.
 
 /**
  * Get current capture state (for updating snapshots)
