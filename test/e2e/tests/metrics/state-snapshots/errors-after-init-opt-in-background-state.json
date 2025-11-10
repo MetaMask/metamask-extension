@@ -101,6 +101,8 @@
     "minimumBalanceForRentExemptionInLamports": "string"
   },
   "BridgeStatusController": { "txHistory": "object" },
+  "ClaimsController": "object",
+  "ClaimsService": "undefined",
   "CronjobController": { "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
