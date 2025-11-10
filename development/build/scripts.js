@@ -1017,7 +1017,6 @@ function setupBundlerDefaults(
             './**/node_modules/marked',
             './**/node_modules/@solana',
             './**/node_modules/axios',
-            './**/node_modules/tronweb',
             // Ocap Kernel
             './**/node_modules/@endo',
             './**/node_modules/@agoric',
