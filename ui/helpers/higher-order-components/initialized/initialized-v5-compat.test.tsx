@@ -7,7 +7,9 @@ import { ONBOARDING_ROUTE } from '../../constants/routes';
 import InitializedV5Compat from './initialized-v5-compat';
 
 jest.mock('../../../ducks/metamask/metamask', () => ({
-  getCompletedOnboarding: (state: any) => state.metamask.completedOnboarding,
+  getCompletedOnboarding: (state: {
+    metamask: { completedOnboarding: boolean };
+  }) => state.metamask.completedOnboarding,
 }));
 
 const mockStore = configureStore();
@@ -132,4 +134,3 @@ describe('InitializedV5Compat', () => {
     expect(screen.getByText('Some text')).toBeInTheDocument();
   });
 });
-
