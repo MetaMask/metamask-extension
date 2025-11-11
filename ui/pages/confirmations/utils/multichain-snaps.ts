@@ -62,9 +62,9 @@ export async function confirmTronStake(fromAccountId?: string) {
   });
 }
 
-export async function validateTronStakeAmount(fromAccountId?: string) {
+export async function validateTronStakeAmount(accountId?: string) {
   const defaultParams = {
-    fromAccountId: fromAccountId,
+    accountId: accountId,
     assetId: 'tron:728126428/slip44:195' as CaipAssetType,
     value: '1',
   };
@@ -75,6 +75,26 @@ export async function validateTronStakeAmount(fromAccountId?: string) {
     handler: HandlerType.OnClientRequest,
     request: {
       method: 'onStakeAmountInput',
+      params: defaultParams,
+    },
+  });
+}
+
+export async function confirmTronUnstake(accountId?: string) {
+
+  const defaultParams = {
+    accountId: accountId,
+    assetId: 'tron:728126428/slip44:195' as CaipAssetType,
+    options: { purpose: 'ENERGY' },
+    value: '1',
+  };
+
+  return await handleSnapRequest({
+    snapId: 'local:http://localhost:8080',
+    origin: 'metamask',
+    handler: HandlerType.OnClientRequest,
+    request: {
+      method: 'confirmUnstake',
       params: defaultParams,
     },
   });

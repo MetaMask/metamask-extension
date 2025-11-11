@@ -33,6 +33,7 @@ import { Text, Box } from '../../../components/component-library';
 import Button from '../../../components/ui/button';
 import { confirmTronStake } from '../../confirmations/utils/multichain-snaps';
 import { validateTronStakeAmount } from '../../confirmations/utils/multichain-snaps';
+import { confirmTronUnstake } from '../../confirmations/utils/multichain-snaps';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
   return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
@@ -471,6 +472,7 @@ export default class SettingsTab extends PureComponent {
               >
                 Send Tron Stake (Mock)
               </Button>
+              <br />
               <Button
                 type="secondary"
                 onClick={() => {
@@ -482,6 +484,19 @@ export default class SettingsTab extends PureComponent {
                 }}
               >
                 Validate Tron Stake Amount (Mock)
+              </Button>
+              <br />
+              <Button
+                type="secondary"
+                onClick={() => {
+                  try {
+                    confirmTronUnstake(this.props.selectedAccountId);
+                  } catch (e) {
+                    // no-op for mock button
+                  }
+                }}
+              >
+                Confirm Tron Unstake (Mock)
               </Button>
             </div>
           </div>
