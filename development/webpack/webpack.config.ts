@@ -166,7 +166,7 @@ const plugins: WebpackPluginInstance[] = [
         to: 'images/riv_animations/rive.wasm',
       },
       // snaps MV3 needs the offscreen document
-      ...(args.manifest_version === 3
+      ...(MANIFEST_VERSION === 3
         ? [
             {
               from: join(
