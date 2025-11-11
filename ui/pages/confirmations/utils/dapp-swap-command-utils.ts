@@ -138,7 +138,7 @@ const getTokenAddressesFromBytes = (args: string[]) => {
   for (let i = 6; i < args.length; i++) {
     bytes += args[i];
   }
-  bytes = bytes.replace(/(00)+$/, '');
+  bytes = bytes.replace(/(00)+$/u, '');
   const slices = bytes.match(/.{1,46}/gu);
   const srcTokenAddress = `0x${slices?.[0].substring(0, 40)}`;
   const destTokenAddress = `0x${slices?.[slices.length - 1].substring(0, 40)}`;
