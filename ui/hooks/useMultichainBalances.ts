@@ -24,6 +24,8 @@ import {
 } from '../selectors/multichain-accounts/account-tree';
 import { type MultichainAccountsState } from '../selectors/multichain-accounts/account-tree.types';
 import { useMultichainSelector } from './useMultichainSelector';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { toAssetId } from '../../shared/lib/asset-utils';
 
 const useNonEvmAssetsWithBalances = (
   accountId?: string,
@@ -200,5 +202,35 @@ export const useMultichainBalances = (
     tronBalancesWithFiat,
   ]);
 
-  return { assetsWithBalance, balanceByChainId };
+  const balanceByAssetId = useMemo(() => {
+    return Object.fromEntries(
+      [
+        ...evmBalancesWithFiatByChainId,
+        ...solanaBalancesWithFiat,
+        ...bitcoinBalancesWithFiat,
+      ].map((token) => [
+        toAssetId(
+          token.address,
+          formatChainIdToCaip(token.chainId),
+        ).toLowerCase(),
+        {
+          symbol: token.symbol,
+          decimals: token.decimals,
+          image: token.image,
+          name: 'name' in token ? (token.name ?? token.symbol) : token.symbol,
+          chainId: formatChainIdToCaip(token.chainId),
+          balance: token.balance,
+          tokenFiatAmount: token.tokenFiatAmount,
+          accountType: token.accountType,
+          assetId: toAssetId(token.address, formatChainIdToCaip(token.chainId)),
+        },
+      ]),
+    );
+  }, [
+    evmBalancesWithFiatByChainId,
+    solanaBalancesWithFiat,
+    bitcoinBalancesWithFiat,
+  ]);
+
+  return { assetsWithBalance, balanceByChainId, balanceByAssetId };
 };
