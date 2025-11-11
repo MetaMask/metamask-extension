@@ -78,6 +78,9 @@ export default function NotificationDetails() {
   }
 
   const ncs = NotificationComponents[notification.type];
+  if (!ncs.details) {
+    return null;
+  }
 
   return (
     <NotificationsPage>
@@ -100,7 +103,7 @@ export default function NotificationDetails() {
             notification={notification}
           />
           <NotificationDetailsFooter
-            footer={ncs.footer}
+            footer={ncs.details.footer}
             notification={notification}
           />
         </Box>

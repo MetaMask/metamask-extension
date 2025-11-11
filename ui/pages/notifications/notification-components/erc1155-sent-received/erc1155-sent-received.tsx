@@ -182,17 +182,17 @@ export const components: NotificationComponent<ERC1155Notification> = {
         return <NotificationDetailNetworkFee notification={notification} />;
       },
     },
-  },
-  footer: {
-    type: NotificationComponentType.OnChainFooter,
-    ScanLink: ({ notification }) => {
-      return (
-        <NotificationDetailBlockExplorerButton
-          notification={notification}
-          chainId={notification.payload.chain_id}
-          txHash={notification.payload.tx_hash}
-        />
-      );
+    footer: {
+      type: NotificationComponentType.OnChainFooter,
+      ScanLink: ({ notification }) => {
+        return (
+          <NotificationDetailBlockExplorerButton
+            notification={notification}
+            chainId={notification.payload.chain_id}
+            txHash={notification.payload.tx_hash}
+          />
+        );
+      },
     },
   },
 };

@@ -83,7 +83,13 @@ export function NotificationsListItem({
       return;
     }
 
-    navigate(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
+    // If details component, perform navigation
+    if (
+      hasNotificationComponents(notification.type) &&
+      NotificationComponents[notification.type]?.details
+    ) {
+      navigate(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
+    }
   }, [
     trackEvent,
     notification,

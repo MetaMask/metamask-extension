@@ -201,17 +201,17 @@ export const components: NotificationComponent<ETHNotification> = {
         return <NotificationDetailNetworkFee notification={notification} />;
       },
     },
-  },
-  footer: {
-    type: NotificationComponentType.OnChainFooter,
-    ScanLink: ({ notification }) => {
-      return (
-        <NotificationDetailBlockExplorerButton
-          notification={notification}
-          chainId={notification.payload.chain_id}
-          txHash={notification.payload.tx_hash}
-        />
-      );
+    footer: {
+      type: NotificationComponentType.OnChainFooter,
+      ScanLink: ({ notification }) => {
+        return (
+          <NotificationDetailBlockExplorerButton
+            notification={notification}
+            chainId={notification.payload.chain_id}
+            txHash={notification.payload.tx_hash}
+          />
+        );
+      },
     },
   },
 };

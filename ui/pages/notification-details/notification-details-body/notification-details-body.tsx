@@ -11,7 +11,7 @@ import {
 } from '../../notifications/notification-components/types/notifications/notifications';
 
 type NotificationDetailsBodyProps = {
-  body: NotificationComponent['details']['body'];
+  body: NonNullable<NotificationComponent['details']>['body'];
   notification: Notification;
 };
 

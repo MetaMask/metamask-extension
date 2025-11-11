@@ -13,7 +13,7 @@ import {
 } from '../../notifications/notification-components/types/notifications/notifications';
 
 type NotificationDetailsFooterProps = {
-  footer: NotificationComponent['footer'];
+  footer: NonNullable<NotificationComponent['details']>['footer'];
   notification: Notification;
 };
 
