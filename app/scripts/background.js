@@ -1591,15 +1591,6 @@ export function setupController(
 
     controller.rejectAllPendingApprovals();
   }
-
-  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
-  if (
-    Object.values(controller.snapController.state.snaps).some(
-      (snap) => !snap.preinstalled,
-    )
-  ) {
-    controller.snapController.updateRegistry();
-  }
 }
 
 //
