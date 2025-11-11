@@ -6479,10 +6479,6 @@
   "switchNetwork": {
     "message": "Ağı değiştir"
   },
-  "switchToNetwork": {
-    "message": "$1 ağına geçin",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Bu hesaba geç"
   },

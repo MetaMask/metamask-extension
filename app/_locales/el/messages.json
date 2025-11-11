@@ -6479,10 +6479,6 @@
   "switchNetwork": {
     "message": "Αλλαγή δικτύου"
   },
-  "switchToNetwork": {
-    "message": "Αλλαγή σε $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Αλλαγή σε αυτόν τον λογαριασμό"
   },

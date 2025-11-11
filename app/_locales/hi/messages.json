@@ -6473,10 +6473,6 @@
   "switchNetwork": {
     "message": "नेटवर्क स्विच करें"
   },
-  "switchToNetwork": {
-    "message": "$1 पर स्विच करें",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "इस अकाउंट पर स्विच करें"
   },

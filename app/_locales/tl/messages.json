@@ -6479,10 +6479,6 @@
   "switchNetwork": {
     "message": "Lumipat ng network"
   },
-  "switchToNetwork": {
-    "message": "Lumipat sa $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Lumipat sa account na ito"
   },

@@ -7106,10 +7106,6 @@
   "switchNetwork": {
     "message": "Athraigh líonra"
   },
-  "switchToNetwork": {
-    "message": "Lasc go $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Lasc chuig an gcuntas seo"
   },

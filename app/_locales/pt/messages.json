@@ -6479,10 +6479,6 @@
   "switchNetwork": {
     "message": "Alternar rede"
   },
-  "switchToNetwork": {
-    "message": "Alternar para $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Alternar para esta conta"
   },

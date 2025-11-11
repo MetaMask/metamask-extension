@@ -6479,10 +6479,6 @@
   "switchNetwork": {
     "message": "네트워크 전환"
   },
-  "switchToNetwork": {
-    "message": "$1 네트워크로 전환",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "이 계정으로 전환"
   },

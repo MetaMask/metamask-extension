@@ -6479,10 +6479,6 @@
   "switchNetwork": {
     "message": "切换网络"
   },
-  "switchToNetwork": {
-    "message": "切换至$1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "切换到该账户"
   },

@@ -6479,10 +6479,6 @@
   "switchNetwork": {
     "message": "Chuyển mạng"
   },
-  "switchToNetwork": {
-    "message": "Chuyển sang $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Chuyển sang tài khoản này"
   },

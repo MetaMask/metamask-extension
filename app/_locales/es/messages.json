@@ -6479,10 +6479,6 @@
   "switchNetwork": {
     "message": "Cambiar red"
   },
-  "switchToNetwork": {
-    "message": "Cambiar a $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Cambiar a esta cuenta"
   },

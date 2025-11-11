@@ -6479,10 +6479,6 @@
   "switchNetwork": {
     "message": "Beralih jaringan"
   },
-  "switchToNetwork": {
-    "message": "Beralih ke $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Beralih ke akun ini"
   },

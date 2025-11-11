@@ -7553,10 +7553,6 @@
   "switchNetwork": {
     "message": "Switch network"
   },
-  "switchToNetwork": {
-    "message": "Switch to $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Switch to this account"
   },
