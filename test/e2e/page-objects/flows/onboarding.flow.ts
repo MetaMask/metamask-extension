@@ -24,10 +24,8 @@ import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 export const handleSidepanelPostOnboarding = async (
   driver: Driver,
 ): Promise<void> => {
-  // Check if sidepanel is enabled by checking if the API is available
-  const isSidepanelEnabled = await driver.executeScript(`
-    return typeof chrome !== 'undefined' && chrome.sidePanel !== undefined;
-  `);
+  // Check if sidepanel is enabled via build configuration
+  const isSidepanelEnabled = process.env.IS_SIDEPANEL === 'true';
 
   if (isSidepanelEnabled) {
     // Give the onboarding completion time to process (needed for sidepanel)
