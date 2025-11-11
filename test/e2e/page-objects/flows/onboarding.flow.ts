@@ -38,6 +38,9 @@ export const handleSidepanelPostOnboarding = async (
     // Navigate directly to home page in current window
     // With sidepanel enabled, this ensures we load home page in the test window
     await driver.driver.get(`${driver.extensionUrl}/home.html`);
+
+    // Wait for the home page to initialize after navigation
+    await driver.waitForSelector('[data-testid="account-menu-icon"]');
   }
 };
 
