@@ -454,12 +454,6 @@ const config = {
     moduleIds: 'deterministic',
     chunkIds: 'deterministic',
     ...(args.minify ? { minimize: true, minimizer: getMinimizers() } : {}),
-    // Make most chunks share a single runtime file, which contains the
-    // webpack "runtime". The exception is @lavamoat/snow and all scripts
-    // found in the extension manifest; these scripts must be self-contained
-    // and cannot share code with other scripts - as the browser extension
-    // platform is responsible for loading them and splitting these files
-    // would require updating the manifest to include the other chunks.
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations
       // https://github.com/mozilla/addons-linter/issues/4942
