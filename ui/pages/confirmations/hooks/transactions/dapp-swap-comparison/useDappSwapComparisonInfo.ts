@@ -53,6 +53,7 @@ export function useDappSwapComparisonInfo() {
       properties: Record<string, string>;
       sensitiveProperties?: Record<string, string>;
     }) => {
+      console.log('==============================================', params);
       updateTransactionEventFragment(
         {
           ...params,
@@ -124,8 +125,9 @@ export function useDappSwapComparisonInfo() {
 
     updateQuoteRequestLatency();
     const startTime = new Date().getTime();
-
+    console.log('==============================================', quotesInput);
     const quotesList = await fetchQuotes(quotesInput);
+    console.log('==============================================', quotesList);
     updateQuoteResponseLatency(startTime);
     return quotesList;
   }, [
