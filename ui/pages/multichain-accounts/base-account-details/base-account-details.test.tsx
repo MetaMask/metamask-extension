@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_SOLANA_MAINNET,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { AccountGroupId } from '@metamask/account-api';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MultichainAccountPrivateKeyListPage } from './multichain-account-private-key-list-page';

@@ -1,6 +1,5 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import reactRouterDom from 'react-router-dom-v5-compat';
 import { merge } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { fireEvent, waitFor } from '../../../../test/jest';
