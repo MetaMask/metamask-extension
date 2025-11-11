@@ -7,7 +7,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-// These test fail with BIP44
+// Bug 37687 cannot sort tokens alphabetically in the wallet
 // eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('Token List Sorting', function () {
   const mainnetChainId = CHAIN_IDS.MAINNET;

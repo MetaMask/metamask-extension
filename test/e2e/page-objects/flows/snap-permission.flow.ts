@@ -72,6 +72,10 @@ export async function approveAccount(driver: Driver) {
   });
 
   await driver.clickElement({
+    text: 'Account 1',
+  });
+
+  await driver.clickElement({
     text: 'Connect',
     tag: 'button',
   });
