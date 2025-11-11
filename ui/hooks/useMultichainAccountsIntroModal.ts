@@ -43,7 +43,7 @@ export function useMultichainAccountsIntroModal(
     const isUpgradeFromLowerThanBip44Version = Boolean(
       lastUpdatedFromVersion &&
         typeof lastUpdatedFromVersion === 'string' &&
-        semverLt('13.9.0', BIP44_ACCOUNTS_INTRODUCTION_VERSION),
+        semverLt(lastUpdatedFromVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION),
     );
 
     // Show modal only for upgrades from versions < BIP-44 introduction version
