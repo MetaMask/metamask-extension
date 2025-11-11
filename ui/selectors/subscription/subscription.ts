@@ -24,11 +24,13 @@ export function getUserSubscriptions(state: SubscriptionState): {
   customerId?: string;
   subscriptions: Subscription[];
   trialedProducts: ProductType[];
+  lastSubscription?: Subscription;
 } {
   return {
     customerId: state.metamask.customerId,
     subscriptions: state.metamask.subscriptions,
     trialedProducts: state.metamask.trialedProducts,
+    lastSubscription: state.metamask.lastSubscription,
   };
 }
 

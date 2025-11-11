@@ -46,7 +46,7 @@ export const useUserSubscriptions = (
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isSignedIn = useSelector(selectIsSignedIn);
   const isUnlocked = useSelector(getIsUnlocked);
-  const { customerId, subscriptions, trialedProducts } =
+  const { customerId, subscriptions, trialedProducts, lastSubscription } =
     useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
@@ -60,6 +60,7 @@ export const useUserSubscriptions = (
     customerId,
     subscriptions,
     trialedProducts,
+    lastSubscription,
     loading: result.pending,
     error: result.error,
   };

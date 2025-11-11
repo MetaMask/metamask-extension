@@ -126,14 +126,15 @@ const TransactionShield = () => {
   const {
     customerId,
     subscriptions,
+    lastSubscription,
     loading: subscriptionsLoading,
   } = useUserSubscriptions({
     refetch: !shouldWaitForSubscriptionCreation, // always fetch latest subscriptions state in settings screen unless we are waiting for subscription creation (subscription is refetch in background)
   });
-  const shieldSubscription = useUserSubscriptionByProduct(
-    PRODUCT_TYPES.SHIELD,
-    subscriptions,
-  );
+  // show current active shield subscription or last subscription if no active subscription
+  const shieldSubscription =
+    useUserSubscriptionByProduct(PRODUCT_TYPES.SHIELD, subscriptions) ??
+    lastSubscription;
 
   const [timeoutCancelled, setTimeoutCancelled] = useState(false);
   useEffect(() => {
@@ -788,7 +789,7 @@ const TransactionShield = () => {
           'shield-detail-view-benefits-button',
         )}
         {/* TODO: implement logic to allow submitting case until after 21 days of last active subscription */}
-        {!isCancelled &&
+        {shieldSubscription?.isEligibleForSupport &&
           buttonRow(
             t('shieldTxMembershipSubmitCase'),
             () => {
@@ -849,7 +850,7 @@ const TransactionShield = () => {
             <>
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsNextBilling'),
-                shieldSubscription?.cancelAtPeriodEnd
+                isCancelled || shieldSubscription?.cancelAtPeriodEnd
                   ? '-'
                   : getShortDateFormatterV2().format(
                       new Date(shieldSubscription.currentPeriodEnd),
