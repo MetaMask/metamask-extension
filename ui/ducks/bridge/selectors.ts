@@ -234,11 +234,11 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
 
 const getChainRanking = (state: BridgeAppState) => {
   const chainRanking = (
-    getBridgeFeatureFlags(state)?.chainRanking as {
+    (getBridgeFeatureFlags(state)?.chainRanking as {
       chainId: CaipChainId;
-    }[]
-  )?.map((c) => c.chainId);
-  return Array.from(new Set(chainRanking)) ?? [];
+    }[]) ?? []
+  ).map((c) => c.chainId);
+  return Array.from(new Set(chainRanking));
 };
 
 export const getFromChains = createDeepEqualSelector(
@@ -300,8 +300,8 @@ export const getNetworkFilterOrTopChain = createSelector(
 
 // This returns undefined if the selected chain is not supported by swap/bridge (i.e, testnets)
 export const getFromChain = createDeepEqualSelector(
-  [getFromChains, getMultichainProviderConfig],
-  (fromChains, providerConfig) => {
+  [getFromChains, getMultichainProviderConfig, getNetworkFilterOrTopChain],
+  (fromChains, providerConfig, networkFilterOrTopChain) => {
     // When the page loads the global network always matches the network filter
     // Because useBridging checks whether the lastSelectedNetwork matches the provider config
     // Then useBridgeQueryParams sets the global network to lastSelectedNetwork as needed
