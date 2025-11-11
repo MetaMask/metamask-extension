@@ -13,12 +13,27 @@ import Dropdown from '../../../components/ui/dropdown';
 import { getURLHostName } from '../../../helpers/utils/util';
 
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 class AccountList extends Component {
   state = {
     pathValue: null,
   };
+
+  componentDidMount() {
+    const { device } = this.props;
+    const { trackEvent } = this.context;
+
+    trackEvent({
+      event: MetaMetricsEventName.ConnectHardwareWalletAccountSelectorViewed,
+      properties: {
+        device_type: device,
+      },
+    });
+  }
 
   goToNextPage = () => {
     // If we have < 5 accounts, it's restricted by BIP-44
@@ -70,20 +85,63 @@ class AccountList extends Component {
     return device.slice(0, 1).toUpperCase() + device.slice(1);
   }
 
-  renderHeader() {
-    const { device } = this.props;
-    const shouldShowHDPaths = [
+  shouldShowHdPaths(device) {
+    return [
       HardwareDeviceNames.ledger,
       HardwareDeviceNames.lattice,
       HardwareDeviceNames.trezor,
       HardwareDeviceNames.oneKey,
     ].includes(device);
+  }
+
+  onUnlock() {
+    const { device, selectedPath, onUnlockAccounts } = this.props;
+    const { trackEvent } = this.context;
+
+    const properties = { device_type: device };
+
+    if (this.shouldShowHdPaths(device)) {
+      properties.hd_path = selectedPath;
+    }
+
+    try {
+      onUnlockAccounts(device, selectedPath);
+    } catch (error) {
+      trackEvent({
+        event: MetaMetricsEventName.HardwareWalletConnectionFailed,
+        properties,
+      });
+      return;
+    }
+
+    trackEvent({
+      event: MetaMetricsEventName.HardwareWalletAccountConnected,
+      properties,
+    });
+  }
+
+  onForgetDevice() {
+    const { device, onForgetDevice } = this.props;
+    const { trackEvent } = this.context;
+    trackEvent({
+      event: MetaMetricsEventName.HardwareWalletForgotten,
+      properties: {
+        device_type: device,
+      },
+    });
+
+    onForgetDevice(device);
+  }
+
+  renderHeader() {
+    const { device } = this.props;
+    const showHdPaths = this.shouldShowHdPaths(device);
     return (
       <div className="hw-connect">
         <h3 className="hw-connect__unlock-title">
           {this.context.t('selectAnAccount')}
         </h3>
-        {shouldShowHDPaths ? this.renderHdPathSelector() : null}
+        {showHdPaths ? this.renderHdPathSelector() : null}
         <h3 className="hw-connect__hdPath__title">
           {this.context.t('selectAnAccount')}
         </h3>
@@ -222,11 +280,7 @@ class AccountList extends Component {
           block
           className="new-external-account-form__button unlock"
           disabled={disabled}
-          onClick={this.props.onUnlockAccounts.bind(
-            this,
-            this.props.device,
-            this.props.selectedPath,
-          )}
+          onClick={this.onUnlock.bind(this)}
         >
           {this.context.t('unlock')}
         </Button>
@@ -237,7 +291,7 @@ class AccountList extends Component {
   renderForgetDevice() {
     return (
       <div className="hw-forget-device-container">
-        <a onClick={this.props.onForgetDevice.bind(this, this.props.device)}>
+        <a onClick={this.onForgetDevice.bind(this)}>
           {this.context.t('forgetDevice')}
         </a>
       </div>
