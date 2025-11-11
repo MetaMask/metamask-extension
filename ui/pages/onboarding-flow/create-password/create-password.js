@@ -269,7 +269,7 @@ export default function CreatePassword({
     console.error(error);
   };
 
-  const handleCreatePassword = async (password) => {
+  const handleCreatePassword = async (password, termsChecked) => {
     if (!password) {
       return;
     }
@@ -283,7 +283,7 @@ export default function CreatePassword({
         await handleWalletImport(password);
       } else {
         // Otherwise we are in create new wallet flow
-        await handleCreateNewWallet();
+        await handleCreateNewWallet(password, termsChecked);
       }
     } catch (error) {
       handlePasswordSetupError(error);
