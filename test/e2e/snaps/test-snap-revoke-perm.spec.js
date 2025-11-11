@@ -101,14 +101,11 @@ describe('Test Snap revoke permission', function () {
 
         // wait for and click next
         await driver.waitForSelector({
-          text: 'Connect',
+          text: 'Next',
           tag: 'button',
         });
         await driver.clickElement({
-          text: 'Account 1',
-        });
-        await driver.clickElement({
-          text: 'Connect',
+          text: 'Next',
           tag: 'button',
         });
 
@@ -192,14 +189,11 @@ describe('Test Snap revoke permission', function () {
 
         // wait for and click next
         await driver.waitForSelector({
-          text: 'Connect',
+          text: 'Next',
           tag: 'button',
         });
         await driver.clickElement({
-          text: 'Account 1',
-        });
-        await driver.clickElement({
-          text: 'Connect',
+          text: 'Next',
           tag: 'button',
         });
 
