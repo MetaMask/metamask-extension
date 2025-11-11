@@ -10,6 +10,7 @@ import PrivacySettings from './page-objects/pages/settings/privacy-settings';
 import SettingsPage from './page-objects/pages/settings/settings-page';
 import VaultDecryptorPage from './page-objects/pages/vault-decryptor-page';
 import { completeCreateNewWalletOnboardingFlowWithCustomSettings } from './page-objects/flows/onboarding.flow';
+import { ConsoleLogEntry } from 'selenium-webdriver/bidi/logEntries';
 
 const VAULT_DECRYPTOR_PAGE = 'https://metamask.github.io/vault-decryptor';
 
@@ -74,8 +75,12 @@ function getExtensionLogFile(extensionStoragePath: string): string {
     .readdirSync(extensionStoragePath)
     .filter((filename: string) => filename.endsWith('.log'));
 
+  console.log(
+    `Extension Log Number of files =========================: ${logFiles.length}`,
+  );
   // Use the first of the `.log` files found
   return path.resolve(extensionStoragePath, logFiles[0]);
+
 }
 
 /**
