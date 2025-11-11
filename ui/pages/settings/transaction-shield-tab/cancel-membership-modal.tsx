@@ -15,7 +15,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getShortDateFormatterV2 } from '../../asset/util';
-import { PausedSubscriptionStatuses } from '../../../../shared/constants/subscriptions';
+import { getIsShieldSubscriptionPaused } from '../../../../shared/lib/shield';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -29,7 +29,7 @@ export default function CancelMembershipModal({
   subscription: Subscription;
 }) {
   const t = useI18nContext();
-  const isPaused = PausedSubscriptionStatuses.includes(subscription.status);
+  const isPaused = getIsShieldSubscriptionPaused(subscription);
   const messageKey = isPaused
     ? 'shieldTxCancelWhenPausedDetails'
     : 'shieldTxCancelDetails';
