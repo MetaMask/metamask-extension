@@ -25,11 +25,9 @@ import {
   toggleNetworkMenu,
   setUseSidePanelAsDefault,
 } from '../../../store/actions';
-import {
-  getIsSidePanelFeatureEnabled,
-  isGatorPermissionsRevocationFeatureEnabled,
-} from '../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import {
   selectIsMetamaskNotificationsEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
@@ -170,6 +168,9 @@ export const GlobalMenu = ({
   const preferences = useSelector(getPreferences);
   const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? true;
 
+  // Check if sidepanel feature is enabled (both build flag and LaunchDarkly flag)
+  const isSidePanelEnabled = useSidePanelEnabled();
+
   const showPriorityTag = useMemo(
     () =>
       (isActiveShieldSubscription || isPausedShieldSubscription) &&
@@ -186,7 +187,7 @@ export const GlobalMenu = ({
    */
   const toggleDefaultView = async () => {
     // Only allow sidepanel functionality if the feature flag is enabled
-    if (!getIsSidePanelFeatureEnabled()) {
+    if (!isSidePanelEnabled) {
       return;
     }
 
@@ -396,7 +397,7 @@ export const GlobalMenu = ({
       {/* Toggle between popup and sidepanel - only for Chrome when sidepanel is enabled */}
       {getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN &&
       getBrowserName() !== PLATFORM_FIREFOX &&
-      getIsSidePanelFeatureEnabled() ? (
+      isSidePanelEnabled ? (
         <MenuItem
           iconName={IconName.Expand}
           onClick={async () => {
