@@ -1,8 +1,8 @@
 import { isEqual } from 'lodash';
 import { GetPreferencesResult } from '@metamask/snaps-sdk';
 import { Driver } from '../../webdriver/driver';
-import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
 import { veryLargeDelayMs } from '../../helpers';
+import { DAPP_URL } from '../../constants';
 
 const inputLocator = {
   dataManageStateInput: '#dataManageState',
@@ -167,9 +167,10 @@ export class TestSnaps {
     this.driver = driver;
   }
 
-  async openPage() {
-    console.log('Opening Test Snap Dapp page');
-    await this.driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+  async openPage(port?: number) {
+    const targetUrl =
+      typeof port === 'number' ? `http://127.0.0.1:${port}/` : DAPP_URL;
+    await this.driver.openNewPage(targetUrl);
     await this.driver.waitForSelector(this.installedSnapsHeader);
   }
 

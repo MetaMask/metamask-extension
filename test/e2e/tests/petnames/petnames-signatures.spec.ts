@@ -7,7 +7,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { mockLookupSnapAndTestSnapSite } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import { DAPP_PATH } from '../../constants';
 
@@ -101,9 +101,7 @@ describe('Petnames - Signatures', function (this: Suite) {
           .withNoNames()
           .withNetworkControllerOnMainnet()
           .build(),
-        testSpecificMock: async (mockServer: Mockttp) => {
-          return await mockLookupSnapAndTestSnapSite(mockServer, 8081);
-        },
+        testSpecificMock: mockLookupSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -114,6 +112,7 @@ describe('Petnames - Signatures', function (this: Suite) {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectNameLookUpButton',
+          { port: 8081 },
         );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav4();

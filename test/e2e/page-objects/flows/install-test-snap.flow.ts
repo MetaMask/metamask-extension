@@ -14,6 +14,7 @@ import { WINDOW_TITLES } from '../../helpers';
  * @param options - Optional parameters.
  * @param options.withWarning - Whether the installation will have a warning dialog, default is false.
  * @param options.withExtraScreen - Whether there is an extra screen after the Ok, defaults to false.
+ * @param options.port - The port where the test snaps dapp is running.
  */
 export async function openTestSnapClickButtonAndInstall(
   driver: Driver,
@@ -21,13 +22,14 @@ export async function openTestSnapClickButtonAndInstall(
   options: {
     withWarning?: boolean;
     withExtraScreen?: boolean;
+    port?: number;
   } = {},
 ) {
-  const { withWarning = false, withExtraScreen = false } = options;
+  const { withWarning = false, withExtraScreen = false, port } = options;
   const snapInstall = new SnapInstall(driver);
   const snapInstallWarning = new SnapInstallWarning(driver);
   const testSnaps = new TestSnaps(driver);
-  await testSnaps.openPage();
+  await testSnaps.openPage(port);
   await testSnaps.scrollAndClickButton(buttonName);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await snapInstall.checkPageIsLoaded();

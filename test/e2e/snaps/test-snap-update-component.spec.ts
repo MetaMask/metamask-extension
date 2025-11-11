@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import {
-  mockWebpackPluginOldSnapAndTestSnapSite,
+  mockWebpackPluginOldSnap,
   mockWebpackPluginSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
@@ -16,7 +16,7 @@ import { DAPP_PATH } from '../constants';
 
 async function mockSnaps(mockServer: Mockttp) {
   return [
-    ...(await mockWebpackPluginOldSnapAndTestSnapSite(mockServer)),
+    await mockWebpackPluginOldSnap(mockServer),
     await mockWebpackPluginSnap(mockServer),
   ];
 }

@@ -7,7 +7,7 @@ import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow'
 import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import {
-  mockDialogSnapAndTestSnapSite,
+  mockDialogSnap,
   mockErrorSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH } from '../constants';
@@ -46,11 +46,11 @@ async function mockedSnapInstall(mockServer: Mockttp) {
 describe('Test Snap installed', function () {
   it('metrics are sent correctly and error snap validation', async function () {
     async function mockSegmentAndSnaps(mockServer: Mockttp) {
-      return [
-        await mockedSnapInstall(mockServer),
-        ...(await mockErrorSnap(mockServer)),
-        ...(await mockDialogSnapAndTestSnapSite(mockServer)),
-      ];
+      const mocks: MockedEndpoint[] = [];
+      mocks.push(await mockedSnapInstall(mockServer));
+      mocks.push(await mockErrorSnap(mockServer));
+      mocks.push(await mockDialogSnap(mockServer));
+      return mocks;
     }
 
     await withFixtures(
@@ -90,7 +90,7 @@ describe('Test Snap installed', function () {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: 'npm:@metamask/dialog-example-snap',
-          origin: 'https://metamask.github.io',
+          origin: 'http://127.0.0.1:8080',
           version: '2.3.1',
           category: 'Snaps',
           locale: 'en',

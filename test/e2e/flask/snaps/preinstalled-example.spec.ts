@@ -9,7 +9,6 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { DAPP_PATH, MOCK_META_METRICS_ID } from '../../constants';
-import { mockTestSnapsSite } from '../../mock-response-data/snaps/snap-local-sites/test-snaps-site-mocks';
 
 async function mockSentryTestError(mockServer: Mockttp) {
   return await mockServer
@@ -58,7 +57,6 @@ describe('Preinstalled example Snap', function () {
         },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTestSnapsSite,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -102,7 +100,6 @@ describe('Preinstalled example Snap', function () {
         },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTestSnapsSite,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -136,10 +133,7 @@ describe('Preinstalled example Snap', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: Mockttp) => {
-          await mockTestSnapsSite(mockServer);
-          return await mockSentryTestError(mockServer);
-        },
+        testSpecificMock: mockSentryTestError,
         manifestFlags: {
           sentry: { forceEnable: false },
         },
@@ -185,10 +179,7 @@ describe('Preinstalled example Snap', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: Mockttp) => {
-          await mockTestSnapsSite(mockServer);
-          return await mockSegment(mockServer);
-        },
+        testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint }) => {
         await loginWithBalanceValidation(driver);
@@ -230,10 +221,7 @@ describe('Preinstalled example Snap', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: Mockttp) => {
-          await mockTestSnapsSite(mockServer);
-          return await mockSentryTrace(mockServer);
-        },
+        testSpecificMock: mockSentryTrace,
         manifestFlags: {
           sentry: { forceEnable: false },
         },

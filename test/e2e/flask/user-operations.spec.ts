@@ -24,7 +24,6 @@ import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { mockSnapAccountAbstractionKeyRingAndSite } from '../mock-response-data/snaps/snap-local-sites/account-abstraction-keyring-site-mocks';
-import { mockTestSnapsSite } from '../mock-response-data/snaps/snap-local-sites/test-snaps-site-mocks';
 import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import HomePage from '../page-objects/pages/home/homepage';
 
@@ -184,7 +183,6 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
 async function mockSnapAndSwaps(mockServer: Mockttp) {
   return [
     ...(await mockSnapAccountAbstractionKeyRingAndSite(mockServer, 8081)),
-    ...(await mockTestSnapsSite(mockServer, 8082)),
     await mockSwapsTransactionQuote(mockServer),
   ];
 }

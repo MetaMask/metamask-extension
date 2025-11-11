@@ -9,9 +9,7 @@ export async function serveSnapAccountAbstractionKeyRingFromLocalhost(
   // This ensures the browser thinks it's visiting https://metamask.github.io (allowed origin) but actually gets content from localhost:port
   // https://github.com/MetaMask/snap-account-abstraction-keyring/blob/main/packages/snap/snap.manifest.json
   return mockServer
-    .forGet(
-      /^https:\/\/metamask\.github\.io\/(?:(?:snap-account-abstraction-keyring\/.*)|(?:app-|framework-|webpack-runtime-|component---|page-data\/|static\/|_gatsby\/|~partytown\/).+|(?:[0-9a-f-]+\.(?:js(?:\.map)?|css)))$/u,
-    )
+    .forGet(/^https:\/\/metamask\.github\.io\/.*$/u)
     .thenCallback(async (request) => {
       const url = new URL(request.url);
 
@@ -32,13 +30,13 @@ export async function serveSnapAccountAbstractionKeyRingFromLocalhost(
 
       return {
         statusCode: 200,
-      body,
+        body,
         headers: {
-        'Content-Type':
-          response.headers.get('content-type') || 'text/html; charset=utf-8',
+          'Content-Type':
+            response.headers.get('content-type') || 'text/html; charset=utf-8',
         },
       };
-  });
+    });
 }
 
 export async function mockSnapAccountAbstractionKeyRingAndSite(

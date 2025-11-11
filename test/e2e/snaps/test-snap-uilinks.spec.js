@@ -3,7 +3,7 @@ const { DAPP_PATH } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
-  mockDialogSnapAndTestSnapSite,
+  mockDialogSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -19,10 +19,7 @@ async function mockSnapsWebsite(mockServer) {
 }
 
 async function mockSnapBinaryAndWebsite(mockServer) {
-  return [
-    ...(await mockDialogSnapAndTestSnapSite(mockServer)),
-    await mockSnapsWebsite(mockServer),
-  ];
+  return [await mockDialogSnap(mockServer), await mockSnapsWebsite(mockServer)];
 }
 
 describe('Test Snap UI Links', function () {

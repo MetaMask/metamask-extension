@@ -10,7 +10,7 @@ import { Driver } from '../../webdriver/driver';
 import { DAPP_PATH } from '../../constants';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { mockLookupSnapAndTestSnapSite } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { mockSendRedesignFeatureFlag } from './common';
 
@@ -137,7 +137,7 @@ describe('Send ETH', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSendRedesignFeatureFlag(mockServer),
-          ...(await mockLookupSnapAndTestSnapSite(mockServer)),
+          await mockLookupSnap(mockServer),
         ],
       },
       async ({ driver }) => {

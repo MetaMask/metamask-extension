@@ -1,5 +1,4 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
 import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -12,7 +11,7 @@ import SignTypedData from '../../page-objects/pages/confirmations/redesign/sign-
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import { DAPP_PATH, MOCK_META_METRICS_ID } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
-import { mockDialogSnapAndTestSnapSite } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { withTransactionEnvelopeTypeFixtures } from './helpers';
 
 describe('Confirmation Navigation', function (this: Suite) {
@@ -123,16 +122,18 @@ describe('Confirmation Navigation', function (this: Suite) {
             participateInMetaMetrics: true,
           })
           .build(),
-        testSpecificMock: async (mockServer: Mockttp) => {
-          return await mockDialogSnapAndTestSnapSite(mockServer, 8081);
-        },
+        testSpecificMock: mockDialogSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectDialogsButton',
+          { port: 8081 },
+        );
         await testSnaps.scrollAndClickButton('confirmationButton');
 
         const testDapp = new TestDapp(driver);
