@@ -22,7 +22,7 @@ const TRANSACTION_HASH =
   '0xf25183af3bf64af01e9210201a2ede3c1dcd6d16091283152d13265242939fc4';
 
 describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
-  // This test fails with BIP44
+  // Bug 37677 fee paid by Metamask is not shown
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('confirms transaction if successful', async function () {
     await withFixtures(

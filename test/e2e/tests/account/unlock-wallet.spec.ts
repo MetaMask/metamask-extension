@@ -45,7 +45,7 @@ describe('Unlock wallet - ', function () {
 
   // This test fails with BIP44
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show connections removed modal when max key chain length is reached for social account', async function () {
+  it('should show connections removed modal when max key chain length is reached for social account', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -98,6 +98,8 @@ describe('Unlock wallet - ', function () {
         const loginPage = new LoginPage(driver);
         await loginPage.loginToHomepage(WALLET_PASSWORD);
 
+        // Wait syncing to finish
+        await driver.delay(10_000);
         await homePage.checkPageIsLoaded();
         await homePage.checkConnectionsRemovedModalIsDisplayed();
       },

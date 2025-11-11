@@ -9,9 +9,7 @@ import {
   approvePersonalSignMessage,
 } from '../page-objects/flows/snap-permission.flow';
 
-// This test fails with BIP44
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Test Snap ethereum_provider', function () {
+describe('Test Snap ethereum_provider', function () {
   it('can use the ethereum_provider endowment', async function () {
     await withFixtures(
       {
