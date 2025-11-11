@@ -5435,6 +5435,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/subscription-controller@npm:3.3.0-preview-29587976":
+  version: 3.3.0-preview-29587976
+  resolution: "@metamask-previews/subscription-controller@npm:3.3.0-preview-29587976"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/controller-utils": "npm:^11.15.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/polling-controller": "npm:^15.0.0"
+    "@metamask/transaction-controller": "npm:^61.1.0"
+    "@metamask/utils": "npm:^11.8.1"
+    bignumber.js: "npm:^9.1.2"
+  peerDependencies:
+    "@metamask/profile-sync-controller": ^26.0.0
+  checksum: 10/adf4938db82166ab9d34c991224e319ef50f6c84855c790c253540bd998c601c6648274b6f1207b5c108f2aaebe35131ea6d10e088cebeee7897bc075472041d
+  languageName: node
+  linkType: hard
+
 "@metamask/7715-permission-types@npm:^0.3.0":
   version: 0.3.0
   resolution: "@metamask/7715-permission-types@npm:0.3.0"
@@ -7887,23 +7904,6 @@ __metadata:
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.4.2"
   checksum: 10/7b999bdac4462acaf1f7338eba0e20b7444a0e5cbab6b29cba4e5b0a18422e7dffa81badacc5aacd8254ac08a0abf638471f48219e56c554ea4fd6903117cce9
-  languageName: node
-  linkType: hard
-
-"@metamask/subscription-controller@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "@metamask/subscription-controller@npm:3.3.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.15.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/polling-controller": "npm:^15.0.0"
-    "@metamask/transaction-controller": "npm:^61.1.0"
-    "@metamask/utils": "npm:^11.8.1"
-    bignumber.js: "npm:^9.1.2"
-  peerDependencies:
-    "@metamask/profile-sync-controller": ^26.0.0
-  checksum: 10/0fe72a78e8cb8c49975c55eee906ec7e15dc343656895ff7810fe30805702406694bc5142b67aa7262efee21f6f5f305b6eea2be1762f9dc5b63a119363df822
   languageName: node
   linkType: hard
 
@@ -31979,6 +31979,7 @@ __metadata:
     "@ledgerhq/errors": "npm:^6.21.0"
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
+    "@metamask-previews/subscription-controller": "npm:3.3.0-preview-29587976"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^0.12.0"
     "@metamask/account-tree-controller": "npm:^2.0.0"
@@ -32096,7 +32097,6 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^2.4.6"
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": "npm:^3.3.0"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
