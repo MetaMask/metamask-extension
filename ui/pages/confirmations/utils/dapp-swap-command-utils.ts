@@ -1,8 +1,71 @@
 import { GenericQuoteRequest } from '@metamask/bridge-controller';
 import { Hex } from '@metamask/utils';
 import { Interface } from '@ethersproject/abi';
-import { addHexPrefix } from 'ethereumjs-util';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
+
+import { UNISWAP_ROUTER_COMMANDS } from '../../../../app/scripts/lib/transaction/decode/uniswap-commands';
+
+export enum Actions {
+  // swapping
+  SWAP_EXACT_IN_SINGLE = 0x06,
+  SWAP_EXACT_IN = 0x07,
+  SWAP_EXACT_OUT_SINGLE = 0x08,
+  SWAP_EXACT_OUT = 0x09,
+}
+
+const POOL_KEY_STRUCT =
+  '(address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks)';
+
+const PATH_KEY_STRUCT =
+  '(address intermediateCurrency,uint256 fee,int24 tickSpacing,address hooks,bytes hookData)';
+
+const SWAP_EXACT_IN_SINGLE_STRUCT =
+  '(' +
+  POOL_KEY_STRUCT +
+  ' poolKey,bool zeroForOne,uint128 amountIn,uint128 amountOutMinimum,bytes hookData)';
+
+const SWAP_EXACT_IN_STRUCT =
+  '(address currencyIn,' +
+  PATH_KEY_STRUCT +
+  '[] path,uint128 amountIn,uint128 amountOutMinimum)';
+
+const SWAP_EXACT_OUT_SINGLE_STRUCT =
+  '(' +
+  POOL_KEY_STRUCT +
+  ' poolKey,bool zeroForOne,uint128 amountOut,uint128 amountInMaximum,bytes hookData)';
+
+const SWAP_EXACT_OUT_STRUCT =
+  '(address currencyOut,' +
+  PATH_KEY_STRUCT +
+  '[] path,uint128 amountOut,uint128 amountInMaximum)';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const V4_BASE_ACTIONS_ABI_DEFINITION: {} = {
+  // Swapping commands
+  [Actions.SWAP_EXACT_IN_SINGLE]: [
+    {
+      name: 'swap',
+      type: SWAP_EXACT_IN_SINGLE_STRUCT,
+    },
+  ],
+  [Actions.SWAP_EXACT_IN]: [
+    {
+      name: 'swap',
+      type: SWAP_EXACT_IN_STRUCT,
+    },
+  ],
+  [Actions.SWAP_EXACT_OUT_SINGLE]: [
+    {
+      name: 'swap',
+      type: SWAP_EXACT_OUT_SINGLE_STRUCT,
+    },
+  ],
+  [Actions.SWAP_EXACT_OUT]: [
+    {
+      name: 'swap',
+      type: SWAP_EXACT_OUT_STRUCT,
+    },
+  ],
+};
 
 const decodeV4SwapCommandData = (data: string) => {
   const abiDecoder = Interface.getAbiCoder();
@@ -10,26 +73,31 @@ const decodeV4SwapCommandData = (data: string) => {
   return values;
 };
 
-function getArgsFromInput(input: string) {
-  return input?.slice(2).match(/.{1,64}/gu) ?? [];
-}
+const decodeCommandData = (action: any, data: string) => {
+  const abiDecoder = Interface.getAbiCoder();
+  const values = abiDecoder.decode(
+    (
+      V4_BASE_ACTIONS_ABI_DEFINITION[
+        action as keyof typeof V4_BASE_ACTIONS_ABI_DEFINITION
+      ] as any
+    ).map((v: any) => v.type),
+    data,
+  );
+  return values[0];
+};
 
-function argToAddress(arg?: string) {
-  if (!arg) {
-    return undefined;
-  }
-  return addHexPrefix(arg?.slice(24));
-}
+const decodeCommandDataV3 = (action: string, data: string) => {
+  const definition =
+    UNISWAP_ROUTER_COMMANDS[
+      String(action) as keyof typeof UNISWAP_ROUTER_COMMANDS
+    ];
+  const types = definition.params.map((param) => param.type);
+  const abiDecoder = Interface.getAbiCoder();
+  const values = abiDecoder.decode(types, data);
+  return values;
+};
 
-function argToAmount(arg?: string) {
-  if (!arg) {
-    return undefined;
-  }
-  const amount = arg?.replace(/^0+/u, '') || '0';
-  return addHexPrefix(amount);
-}
-
-function getCommandArgs(
+function getCommandData(
   commandBytes: string[],
   inputs: string[],
   command: string,
@@ -38,17 +106,13 @@ function getCommandArgs(
     (commandByte: string) => commandByte === command,
   );
   if (commandIndex < 0) {
-    return { data: undefined, args: undefined };
+    return undefined;
   }
 
-  return {
-    data: inputs[commandIndex],
-    args: getArgsFromInput(inputs[commandIndex]),
-  };
+  return inputs[commandIndex];
 }
 
 function handleV4SwapCommand(
-  _: string[],
   chainId: Hex,
   quotesInput: GenericQuoteRequest,
   data: string,
@@ -69,59 +133,42 @@ function handleV4SwapCommand(
 }
 
 function handleV4CommandSwapExactIn(
-  args: string[],
   _1: Hex,
   quotesInput: GenericQuoteRequest,
-  _2: string,
+  data: string,
 ) {
+  const result = decodeCommandData(Actions.SWAP_EXACT_IN, data);
   return {
-    amountMin: argToAmount(args[4]),
+    amountMin: result.amountOutMinimum.toNumber(),
     isExactOut: false,
     quotesInput: {
       ...(quotesInput ?? {}),
-      srcTokenAmount: argToAmount(args[3]),
-      srcTokenAddress: argToAddress(args[1]),
-      destTokenAddress: argToAddress(args[7]),
+      srcTokenAmount: result.amountIn.toString(),
+      srcTokenAddress: result.currencyIn,
+      destTokenAddress: result.path[1][0],
     } as GenericQuoteRequest,
   };
 }
 
 function handleV4CommandSwapExactInSingle(
-  args: string[],
   _1: Hex,
   quotesInput: GenericQuoteRequest,
-  _2: string,
+  data: string,
 ) {
+  const result = decodeCommandData(Actions.SWAP_EXACT_IN_SINGLE, data);
   return {
-    amountMin: argToAmount(args[9]),
+    amountMin: result.amountOutMinimum.toNumber(),
     isExactOut: false,
     quotesInput: {
       ...(quotesInput ?? {}),
-      srcTokenAmount: argToAmount(args[7]),
-      srcTokenAddress: argToAddress(args[1]),
-      destTokenAddress: argToAddress(args[2]),
-    } as GenericQuoteRequest,
-  };
-}
-
-function handleV4CommandTake(
-  args: string[],
-  _1: Hex,
-  quotesInput: GenericQuoteRequest,
-  _2: string,
-) {
-  return {
-    amountMin: undefined,
-    isExactOut: false,
-    quotesInput: {
-      ...(quotesInput ?? {}),
-      walletAddress: argToAddress(args[1]),
+      srcTokenAmount: result.amountIn.toString(),
+      srcTokenAddress: result[0][0],
+      destTokenAddress: result[0][1],
     } as GenericQuoteRequest,
   };
 }
 
 function handleCommandSwapExactOut(
-  _1: string[],
   _2: Hex,
   _3: GenericQuoteRequest,
   _4: string,
@@ -146,88 +193,49 @@ const getTokenAddressesFromBytes = (args: string[]) => {
 };
 
 function handleV3SwapExactInCommand(
-  args: string[],
   _chainId: Hex,
   quotesInput: GenericQuoteRequest,
-  _data: string,
+  data: string,
 ) {
-  const { srcTokenAddress, destTokenAddress } =
-    getTokenAddressesFromBytes(args);
+  const result = decodeCommandDataV3('0', data);
+
+  const { srcTokenAddress, destTokenAddress } = getTokenAddressesFromBytes(
+    result[3],
+  );
   return {
-    amountMin: argToAmount(args[2]),
+    amountMin: result[2].toNumber(),
     isExactOut: false,
     quotesInput: {
       ...(quotesInput ?? {}),
-      walletAddress: argToAddress(args[0]),
-      srcTokenAmount: argToAmount(args[1]),
+      srcTokenAmount: result[1].toString(),
       srcTokenAddress,
       destTokenAddress,
     } as GenericQuoteRequest,
   };
 }
 
-function handleWrapEthCommand(
-  args: string[],
-  chainId: Hex,
-  quotesInput: GenericQuoteRequest,
-  _data: string,
-) {
-  return {
-    amountMin: undefined,
-    isExactOut: false,
-    quotesInput: {
-      ...(quotesInput ?? {}),
-      srcTokenAddress: getNativeTokenAddress(chainId),
-      srcTokenAmount: argToAmount(args[1]),
-    } as GenericQuoteRequest,
-  };
-}
-
 function handleSweepCommand(
-  args: string[],
   _chainId: Hex,
   quotesInput: GenericQuoteRequest,
-  _data: string,
+  data: string,
 ) {
-  return {
-    amountMin: argToAmount(args[2]),
-    isExactOut: false,
-    quotesInput: {
-      ...(quotesInput ?? {}),
-      destTokenAddress: argToAddress(args[0]),
-      walletAddress: argToAddress(args[1]),
-    } as GenericQuoteRequest,
-  };
-}
+  const result = decodeCommandDataV3('4', data);
 
-function handleUnwrapWethCommand(
-  args: string[],
-  chainId: Hex,
-  quotesInput: GenericQuoteRequest,
-  _data: string,
-) {
   return {
-    amountMin: argToAmount(args[1]),
+    amountMin: result[2].toNumber(),
     isExactOut: false,
-    quotesInput: {
-      ...(quotesInput ?? {}),
-      destTokenAddress: getNativeTokenAddress(chainId),
-      walletAddress: argToAddress(args[0]),
-    } as GenericQuoteRequest,
+    quotesInput,
   };
 }
 
 const DAPP_SWAP_COMMANDS = [
   { value: '00', handler: handleV3SwapExactInCommand },
   { value: '01', handler: handleCommandSwapExactOut },
-  { value: '10', handler: handleV4SwapCommand },
-  { value: '0b', handler: handleWrapEthCommand },
   { value: '04', handler: handleSweepCommand },
-  { value: '0c', handler: handleUnwrapWethCommand },
+  { value: '10', handler: handleV4SwapCommand },
   { value: '10_06', handler: handleV4CommandSwapExactInSingle },
   { value: '10_07', handler: handleV4CommandSwapExactIn },
   { value: '10_09', handler: handleCommandSwapExactOut },
-  { value: '10_0e', handler: handleV4CommandTake },
 ];
 
 export function getCommandValues(
@@ -246,11 +254,11 @@ export function getCommandValues(
   let isExactOutRequest = false;
 
   DAPP_SWAP_COMMANDS.forEach((command) => {
-    const { data, args } = getCommandArgs(commandBytes, inputs, command.value);
+    const data = getCommandData(commandBytes, inputs, command.value);
     if (data === undefined) {
       return;
     }
-    const result = command.handler(args, chainId, quotesInput, data);
+    const result = command.handler(chainId, quotesInput, data);
     if (result) {
       if (result.isExactOut === true) {
         isExactOutRequest = true;
@@ -268,6 +276,7 @@ export function getCommandValues(
     return { isExactOut: true };
   }
 
+  console.log('*********************', quotesInput, amountMin);
   return {
     quotesInput,
     amountMin,

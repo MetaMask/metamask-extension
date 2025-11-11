@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { Interface, TransactionDescription } from '@ethersproject/abi';
 import {
+  GenericQuoteRequest,
   isNativeAddress,
   QuoteResponse,
   TxData,
@@ -68,7 +69,11 @@ function parseTransactionData(data?: string) {
   return { commands, commandBytes, inputs };
 }
 
-export function getDataFromSwap(chainId: Hex, data?: string) {
+export function getDataFromSwap(
+  chainId: Hex,
+  data?: string,
+  walletAddress?: string,
+) {
   const { commands, commandBytes, inputs } = parseTransactionData(data);
 
   const { amountMin, quotesInput } = getCommandValues(
@@ -80,7 +85,10 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
   return {
     amountMin,
     commands,
-    quotesInput,
+    quotesInput: {
+      ...quotesInput,
+      walletAddress,
+    } as GenericQuoteRequest,
     tokenAddresses: [
       quotesInput?.destTokenAddress,
       quotesInput?.srcTokenAddress,

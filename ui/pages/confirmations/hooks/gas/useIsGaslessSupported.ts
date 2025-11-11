@@ -16,40 +16,40 @@ import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmart
  * - `isSmartTransaction`: `true` if smart transactions are enabled for the current chain.
  */
 export function useIsGaslessSupported() {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  // const { currentConfirmation: transactionMeta } =
+  //   useConfirmContext<TransactionMeta>();
 
-  const { chainId } = transactionMeta ?? {};
+  // const { chainId } = transactionMeta ?? {};
 
-  const {
-    isSmartTransaction,
-    isSupported: isSmartTransactionAndBundleSupported,
-    pending,
-  } = useGaslessSupportedSmartTransactions();
+  // const {
+  //   isSmartTransaction,
+  //   isSupported: isSmartTransactionAndBundleSupported,
+  //   pending,
+  // } = useGaslessSupportedSmartTransactions();
 
-  const shouldCheck7702Eligibility =
-    !pending && !isSmartTransactionAndBundleSupported;
+  // const shouldCheck7702Eligibility =
+  //   !pending && !isSmartTransactionAndBundleSupported;
 
-  const { value: relaySupportsChain } = useAsyncResult(async () => {
-    if (!shouldCheck7702Eligibility) {
-      return undefined;
-    }
+  // const { value: relaySupportsChain } = useAsyncResult(async () => {
+  //   if (!shouldCheck7702Eligibility) {
+  //     return undefined;
+  //   }
 
-    return isRelaySupported(chainId);
-  }, [chainId, shouldCheck7702Eligibility]);
+  //   return isRelaySupported(chainId);
+  // }, [chainId, shouldCheck7702Eligibility]);
 
-  const is7702Supported = Boolean(
-    relaySupportsChain &&
-      // contract deployments can't be delegated
-      transactionMeta?.txParams.to !== undefined,
-  );
+  // const is7702Supported = Boolean(
+  //   relaySupportsChain &&
+  //     // contract deployments can't be delegated
+  //     transactionMeta?.txParams.to !== undefined,
+  // );
 
-  const isSupported = Boolean(
-    isSmartTransactionAndBundleSupported || is7702Supported,
-  );
+  // const isSupported = Boolean(
+  //   isSmartTransactionAndBundleSupported || is7702Supported,
+  // );
 
   return {
-    isSupported,
-    isSmartTransaction,
+    isSupported: false,
+    isSmartTransaction: false,
   };
 }

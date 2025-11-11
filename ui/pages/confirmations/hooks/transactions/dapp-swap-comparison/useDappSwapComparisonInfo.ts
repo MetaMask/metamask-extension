@@ -71,7 +71,11 @@ export function useDappSwapComparisonInfo() {
           trxnData?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
         )?.data;
       }
-      const result = getDataFromSwap(chainId, transactionData);
+      const result = getDataFromSwap(
+        chainId,
+        transactionData,
+        txParams?.to as string,
+      );
       updateRequestDetectionLatency();
       return result;
     } catch (error) {
@@ -83,7 +87,13 @@ export function useDappSwapComparisonInfo() {
         tokenAddresses: [],
       };
     }
-  }, [chainId, data, nestedTransactions, updateRequestDetectionLatency]);
+  }, [
+    chainId,
+    data,
+    nestedTransactions,
+    txParams?.to,
+    updateRequestDetectionLatency,
+  ]);
 
   const {
     getGasUSDValue,
