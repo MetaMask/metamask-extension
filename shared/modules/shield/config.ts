@@ -1,4 +1,5 @@
 import { Env as SubscriptionEnv } from '@metamask/subscription-controller';
+import { Env as ClaimsEnv } from '@metamask/claims-controller';
 import { ENVIRONMENT } from '../../../development/build/constants';
 import { ShieldEnvConfig } from './type';
 
@@ -40,36 +41,42 @@ export type BuildType = (typeof BUILD_TYPE)[keyof typeof BUILD_TYPE];
 export const ShieldConfigMap: Record<BuildType, ShieldEnvConfig> = {
   [BUILD_TYPE.main]: {
     subscriptionEnv: SubscriptionEnv.PRD,
+    claimsEnv: ClaimsEnv.PRD,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.prd],
     ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.prd],
     claimUrl: SHIELD_CLAIMS_API_URL[ENV.prd],
   },
   [BUILD_TYPE.flask]: {
     subscriptionEnv: SubscriptionEnv.PRD,
+    claimsEnv: ClaimsEnv.PRD,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.prd],
     ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.prd],
     claimUrl: SHIELD_CLAIMS_API_URL[ENV.prd],
   },
   [BUILD_TYPE.beta]: {
     subscriptionEnv: SubscriptionEnv.UAT,
+    claimsEnv: ClaimsEnv.UAT,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.uat],
     ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.uat],
     claimUrl: SHIELD_CLAIMS_API_URL[ENV.uat],
   },
   [BUILD_TYPE.experimental]: {
     subscriptionEnv: SubscriptionEnv.PRD,
+    claimsEnv: ClaimsEnv.PRD,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.prd],
     ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.prd],
     claimUrl: SHIELD_CLAIMS_API_URL[ENV.prd],
   },
   [BUILD_TYPE.dev]: {
     subscriptionEnv: SubscriptionEnv.DEV,
+    claimsEnv: ClaimsEnv.DEV,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.dev],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.prd],
-    claimUrl: SHIELD_CLAIMS_API_URL[ENV.prd],
+    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.dev],
+    claimUrl: SHIELD_CLAIMS_API_URL[ENV.dev],
   },
   [BUILD_TYPE.uat]: {
     subscriptionEnv: SubscriptionEnv.UAT,
+    claimsEnv: ClaimsEnv.UAT,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.uat],
     ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.uat],
     claimUrl: SHIELD_CLAIMS_API_URL[ENV.uat],

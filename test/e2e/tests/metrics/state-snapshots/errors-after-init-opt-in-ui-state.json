@@ -114,6 +114,7 @@
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "firstTimeFlowType": "import",
+    "claims": "object",
     "completedOnboarding": true,
     "knownMethodData": "object",
     "use4ByteResolution": true,
