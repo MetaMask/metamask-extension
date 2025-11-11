@@ -133,13 +133,26 @@ function handleCommandSwapExactOut(
   };
 }
 
+const getTokenAddressesFromBytes = (args: string[]) => {
+  let bytes = '';
+  for (let i = 6; i < args.length; i++) {
+    bytes += args[i];
+  }
+  bytes = bytes.replace(/(00)+$/, '');
+  const slices = bytes.match(/.{1,46}/gu);
+  const srcTokenAddress = `0x${slices?.[0].substring(0, 40)}`;
+  const destTokenAddress = `0x${slices?.[slices.length - 1].substring(0, 40)}`;
+  return { srcTokenAddress, destTokenAddress };
+};
+
 function handleV3SwapExactInCommand(
   args: string[],
   _chainId: Hex,
   quotesInput: GenericQuoteRequest,
   _data: string,
 ) {
-  const bytes = `${args[args.length - 2]}${args[args.length - 1]}`;
+  const { srcTokenAddress, destTokenAddress } =
+    getTokenAddressesFromBytes(args);
   return {
     amountMin: argToAmount(args[2]),
     isExactOut: false,
@@ -147,7 +160,8 @@ function handleV3SwapExactInCommand(
       ...quotesInput,
       walletAddress: argToAddress(args[0]),
       srcTokenAmount: argToAmount(args[1]),
-      destTokenAddress: `0x${bytes.substring(bytes.length - 82, bytes.length - 42)}`,
+      srcTokenAddress,
+      destTokenAddress,
     } as GenericQuoteRequest,
   };
 }

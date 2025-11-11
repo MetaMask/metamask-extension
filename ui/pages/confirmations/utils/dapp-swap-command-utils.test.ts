@@ -206,7 +206,7 @@ describe('dapp-swap command utils', () => {
         });
       });
 
-      it.skip('returns the correct result for batched v3 erc20 -> erc20 swap', () => {
+      it('returns the correct result for batched v3 erc20 -> erc20 swap', () => {
         const result = getCommandValues(
           ['00', '06', '04'],
           [
@@ -217,21 +217,21 @@ describe('dapp-swap command utils', () => {
           '0x2105',
         );
         expect(result).toEqual({
-          amountMin: '0x17d8f',
+          amountMin: '0x17c96',
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0xfde4c96c8593536e31f229ea8f37b2ada2699bb2',
             gasIncluded: false,
             gasIncluded7702: false,
             srcChainId: '0x2105',
-            srcTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-            srcTokenAmount: '0x186a0',
+            srcTokenAddress: '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798',
+            srcTokenAmount: '0x16345785d8a0000',
             walletAddress: '0x5206d14bfa10bd18989038fe628a79a135f2ee2f',
           },
         });
       });
 
-      it.skip('returns the correct result for batched v3 erc20 -> native swap', () => {
+      it('returns the correct result for batched v3 erc20 -> native swap', () => {
         const result = getCommandValues(
           ['00', '06', '0c'],
           [
