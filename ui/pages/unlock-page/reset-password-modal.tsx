@@ -17,13 +17,12 @@ import {
 } from '../../components/component-library';
 import {
   AlignItems,
-  BlockSize,
   Display,
   FlexDirection,
   FontWeight,
   IconColor,
-  JustifyContent,
   TextVariant,
+  TextColor,
 } from '../../helpers/constants/design-system';
 import { getIsSocialLoginFlow } from '../../selectors';
 
@@ -102,9 +101,18 @@ export default function ResetPasswordModal({
           onClick={onRestore}
           size={ButtonSize.Lg}
           block
-          danger
         >
           {t('forgotPasswordModalButton')}
+        </Button>
+        <Button
+          data-testid="reset-password-modal-button-link"
+          variant={ButtonVariant.Link}
+          onClick={onRestore}
+          size={ButtonSize.Lg}
+          block
+          color={TextColor.primaryDefault}
+        >
+          {t('forgotPasswordModalButtonLink')}
         </Button>
       </Box>
     );
@@ -113,23 +121,6 @@ export default function ResetPasswordModal({
   const srpLoginContent = () => {
     return (
       <Box paddingInline={4}>
-        <Box
-          width={BlockSize.Full}
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          marginBottom={2}
-        >
-          <img
-            src="images/forgot-password-lock.png"
-            width={154}
-            height={154}
-            alt={t('forgotPasswordModalTitle')}
-            style={{
-              alignSelf: 'center',
-            }}
-          />
-        </Box>
         <Text variant={TextVariant.bodyMd} marginBottom={4}>
           {t('forgotPasswordModalDescription1')}
         </Text>
@@ -142,9 +133,18 @@ export default function ResetPasswordModal({
           onClick={onRestore}
           size={ButtonSize.Lg}
           block
-          danger
         >
           {t('forgotPasswordModalButton')}
+        </Button>
+        <Button
+          data-testid="reset-password-modal-button-link"
+          variant={ButtonVariant.Link}
+          onClick={onRestore}
+          size={ButtonSize.Lg}
+          block
+          color={TextColor.primaryDefault}
+        >
+          {t('forgotPasswordModalButtonLink')}
         </Button>
       </Box>
     );

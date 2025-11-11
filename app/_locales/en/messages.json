@@ -2711,29 +2711,32 @@
     "message": "Forgot password?"
   },
   "forgotPasswordModalButton": {
-    "message": "Reset wallet"
+    "message": "Import wallet"
+  },
+  "forgotPasswordModalButtonLink": {
+    "message": "I don’t know my Secret Recovery Phrase"
   },
   "forgotPasswordModalDescription1": {
-    "message": "MetaMask can’t recover your password for you."
+    "message": "We can’t recover your password for you."
   },
   "forgotPasswordModalDescription2": {
-    "message": "You can reset your wallet by entering the Secret Recovery Phrase you used when you set up your wallet."
+    "message": "Add your wallet back to MetaMask by entering the Secret Recovery Phrase associated with it."
   },
   "forgotPasswordModalTitle": {
     "message": "Forgot your password?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "MetaMask can’t recover your password for you."
+    "message": "We can’t recover your password, but there are ways you can regain access to your wallet."
   },
   "forgotPasswordSocialStep1": {
-    "message": "If you’re logged into MetaMask on a device with $1 (like Face ID), you can reset your password there.",
-    "description": "$1 is bold biometrics turned on"
+    "message": "$1 If you’re logged in on a device with Touch or Face ID, reset your password there.",
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
-    "message": "biometrics turned on"
+    "message": "Touch/Face ID:"
   },
   "forgotPasswordSocialStep2": {
-    "message": "If you have your $1, you can reset your current wallet and reimport using Secret Recovery Phrase.",
+    "message": "$1 If you have your Secret Recovery Phrase, you can use it to import your wallet to this device.",
     "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
