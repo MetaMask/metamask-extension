@@ -33,7 +33,6 @@ import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
-  setToChainId,
   setToToken,
   updateQuoteRequestParams,
   resetBridgeState,
@@ -321,7 +320,7 @@ const PrepareBridgePage = ({
   // Resets the banner visibility when toToken is changed
   const [isCannotVerifyTokenBannerOpen, setIsCannotVerifyTokenBannerOpen] =
     useState(true);
-  useEffect(() => setIsCannotVerifyTokenBannerOpen(true), [toToken?.address]);
+  useEffect(() => setIsCannotVerifyTokenBannerOpen(true), [toToken?.assetId]);
 
   // Background updates are debounced when the switch button is clicked
   // To prevent putting the frontend in an unexpected state, prevent the user

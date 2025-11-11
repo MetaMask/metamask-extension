@@ -33,7 +33,6 @@ import type { TokenPayload } from './types';
 import { type BridgeAppState, getFromChains } from './selectors';
 
 const {
-  setToChainId,
   setFromToken,
   setToToken,
   setFromTokenInputValue,
@@ -46,7 +45,6 @@ const {
 } = bridgeSlice.actions;
 
 export {
-  setToChainId,
   resetInputFields,
   setToToken,
   setFromToken,
