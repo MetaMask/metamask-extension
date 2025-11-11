@@ -1579,15 +1579,6 @@ export function setupController(
     controller.rejectAllPendingApprovals();
   }
 
-  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
-  if (
-    Object.values(controller.snapController.state.snaps).some(
-      (snap) => !snap.preinstalled,
-    )
-  ) {
-    controller.snapController.updateRegistry();
-  }
-
   // TODO: only do this when onboarding completed? or does the controller itself
   // already "know" not to call out ot the network in this case?
   updateNetworkControllerRpcFailoverFromRemoteFeatureFlagController(
