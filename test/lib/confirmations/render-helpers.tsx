@@ -11,9 +11,12 @@ export function renderWithConfirmContextProvider(
   component: ReactElement,
   store: unknown,
   pathname = DEFAULT_ROUTE,
+  confirmationId?: string,
 ) {
   return renderWithProvider(
-    <ConfirmContextProvider>{component}</ConfirmContextProvider>,
+    <ConfirmContextProvider confirmationId={confirmationId}>
+      {component}
+    </ConfirmContextProvider>,
     store,
     pathname,
   );
@@ -27,15 +30,16 @@ export function renderHookWithConfirmContextProvider(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Container?: any,
+  confirmationId?: string,
 ) {
   const contextContainer = Container
     ? ({ children }: { children: ReactChildren }) => (
-        <ConfirmContextProvider>
+        <ConfirmContextProvider confirmationId={confirmationId}>
           <Container>{children}</Container>
         </ConfirmContextProvider>
       )
     : ({ children }: { children: ReactChildren }) => (
-        <ConfirmContextProvider>
+        <ConfirmContextProvider confirmationId={confirmationId}>
           {children as unknown as ReactElement}
         </ConfirmContextProvider>
       );

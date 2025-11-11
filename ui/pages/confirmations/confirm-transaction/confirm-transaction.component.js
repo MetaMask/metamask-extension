@@ -85,7 +85,8 @@ const ConfirmTransaction = ({
   const [transaction, setTransaction] = useState(getTransaction);
 
   const use4ByteResolution = useSelector(use4ByteResolutionSelector);
-  const { currentConfirmation } = useCurrentConfirmation();
+  // Pass the transaction ID from route params so useCurrentConfirmation can find the approval
+  const { currentConfirmation } = useCurrentConfirmation(paramsTransactionId);
 
   useEffect(() => {
     const tx = getTransaction();
@@ -197,7 +198,7 @@ const ConfirmTransaction = ({
   // Once we migrate all confirmations to new designs we can get rid of this code
   // and render <Confirm /> component for all confirmation requests.
   if (currentConfirmation) {
-    return <Confirm />;
+    return <Confirm confirmationId={paramsTransactionId} />;
   }
 
   if (isValidTokenMethod && isValidTransactionId) {

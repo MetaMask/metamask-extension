@@ -246,8 +246,9 @@ describe('useNonContractAddressAlerts', () => {
     const { result } = renderHookWithConfirmContextProvider(
       useNonContractAddressAlerts,
       getMockConfirmStateForTransaction(transactionWithData as TransactionMeta),
-      `/confirm-transaction/${transactionWithData.id}`,
+      '/',
       undefined,
+      transactionWithData.id,
     );
 
     await waitFor(() => {
