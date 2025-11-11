@@ -3,7 +3,7 @@
     "pinnedAccountList": {},
     "hiddenAccountList": {}
   },
-  "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
+  "AccountTracker": { "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountTree": "object",
     "isAccountTreeSyncingInProgress": "boolean",
@@ -67,6 +67,7 @@
     "throttledOrigins": "object",
     "trezorModel": null,
     "updateModalLastDismissedAt": null,
+    "isWalletResetInProgress": "boolean",
     "hasShownMultichainAccountsIntroModal": "boolean",
     "showShieldEntryModalOnce": "boolean",
     "addressSecurityAlertResponses": "object",
@@ -100,6 +101,8 @@
     "minimumBalanceForRentExemptionInLamports": "string"
   },
   "BridgeStatusController": { "txHistory": "object" },
+  "ClaimsController": "object",
+  "ClaimsService": "undefined",
   "CronjobController": { "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
@@ -164,7 +167,8 @@
   },
   "MultichainAssetsController": {
     "accountsAssets": "object",
-    "assetsMetadata": "object"
+    "assetsMetadata": "object",
+    "allIgnoredAssets": "object"
   },
   "MultichainAssetsRatesController": {
     "conversionRates": "object",

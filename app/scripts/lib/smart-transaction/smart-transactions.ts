@@ -141,7 +141,8 @@ class SmartTransactionHook {
     this.#txParams = transactionMeta.txParams;
     this.#transactions = transactions;
     this.#shouldShowStatusPage = Boolean(
-      transactionMeta.type !== TransactionType.bridge ||
+      (transactionMeta.type !== TransactionType.bridge &&
+        transactionMeta.type !== TransactionType.shieldSubscriptionApprove) ||
         (this.#transactions && this.#transactions.length > 0),
     );
   }
@@ -169,20 +170,27 @@ class SmartTransactionHook {
     if (this.#shouldShowStatusPage) {
       await this.#startApprovalFlow();
     }
+
     let getFeesResponse;
-    try {
-      getFeesResponse = await this.#smartTransactionsController.getFees(
-        { ...this.#txParams, chainId: this.#chainId },
-        undefined,
-        { networkClientId: this.#transactionMeta.networkClientId },
-      );
-    } catch (error) {
-      log.error(
-        'Error in smart transaction publish hook, falling back to regular transaction submission',
-        error,
-      );
-      this.#onApproveOrReject();
-      return useRegularTransactionSubmit; // Fallback to regular transaction submission.
+    // Skip getting fees if the tx is signed and sponsored
+    if (
+      !this.#signedTransactionInHex ||
+      !this.#transactionMeta.isGasFeeSponsored
+    ) {
+      try {
+        getFeesResponse = await this.#smartTransactionsController.getFees(
+          { ...this.#txParams, chainId: this.#chainId },
+          undefined,
+          { networkClientId: this.#transactionMeta.networkClientId },
+        );
+      } catch (error) {
+        log.error(
+          'Error in smart transaction publish hook, falling back to regular transaction submission',
+          error,
+        );
+        this.#onApproveOrReject();
+        return useRegularTransactionSubmit; // Fallback to regular transaction submission.
+      }
     }
     try {
       const submitTransactionResponse = await this.#signAndSubmitTransactions({
@@ -371,6 +379,7 @@ class SmartTransactionHook {
               status: SmartTransactionStatuses.PENDING,
               creationTime: Date.now(),
               uuid,
+              chainId: this.#chainId,
             },
             isDapp: this.#isDapp,
             txId: this.#transactionMeta.id,

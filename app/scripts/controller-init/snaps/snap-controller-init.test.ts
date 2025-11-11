@@ -54,7 +54,6 @@ describe('SnapControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       closeAllConnections: expect.any(Function),
-      dynamicPermissions: ['endowment:caip25'],
       encryptor: expect.any(Object),
       environmentEndowmentPermissions: expect.any(Array),
       excludedPermissions: expect.any(Object),

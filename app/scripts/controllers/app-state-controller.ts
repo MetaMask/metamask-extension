@@ -90,6 +90,7 @@ export type AppStateControllerState = {
   isUpdateAvailable: boolean;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
+  lastUpdatedFromVersion: string | null;
   lastViewedUserSurvey: number | null;
   networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
@@ -122,6 +123,11 @@ export type AppStateControllerState = {
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
   showShieldEntryModalOnce: boolean | null;
+
+  /**
+   * Whether the wallet reset is in progress.
+   */
+  isWalletResetInProgress: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -241,6 +247,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   isRampCardClosed: false,
   isUpdateAvailable: false,
   lastUpdatedAt: null,
+  lastUpdatedFromVersion: null,
   lastViewedUserSurvey: null,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
@@ -268,6 +275,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
   showShieldEntryModalOnce: null,
+  isWalletResetInProgress: false,
+
   ...getInitialStateOverrides(),
 });
 
@@ -402,6 +411,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   lastUpdatedAt: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  lastUpdatedFromVersion: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -598,6 +613,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
+  },
+  isWalletResetInProgress: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
   },
 };
 
@@ -947,6 +968,17 @@ export class AppStateController extends BaseController<
   }
 
   /**
+   * Record the previous version the user updated from
+   *
+   * @param fromVersion - the version the user updated from
+   */
+  setLastUpdatedFromVersion(fromVersion: string): void {
+    this.update((state) => {
+      state.lastUpdatedFromVersion = fromVersion;
+    });
+  }
+
+  /**
    * Sets the inactive timeout for the app
    *
    * @param timeoutMinutes - The inactive timeout in minutes.
@@ -1033,11 +1065,10 @@ export class AppStateController extends BaseController<
   ): void {
     if (
       pollingTokenType.toString() !==
-      POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_BACKGROUND]
+        POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_BACKGROUND] &&
+      this.#isValidPollingTokenType(pollingTokenType)
     ) {
-      if (this.#isValidPollingTokenType(pollingTokenType)) {
-        this.#updatePollingTokens(pollingToken, pollingTokenType);
-      }
+      this.#updatePollingTokens(pollingToken, pollingTokenType);
     }
   }
 
@@ -1501,5 +1532,15 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.canTrackWalletFundsObtained = enabled;
     });
+  }
+
+  setIsWalletResetInProgress(isResetting: boolean): void {
+    this.update((state) => {
+      state.isWalletResetInProgress = isResetting;
+    });
+  }
+
+  getIsWalletResetInProgress(): boolean {
+    return this.state.isWalletResetInProgress;
   }
 }

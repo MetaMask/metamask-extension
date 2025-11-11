@@ -31,7 +31,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
-  TRANSACTION_SHIELD_CLAIM_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -74,8 +74,8 @@ import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
+import ClaimsArea from './transaction-shield-tab/claims-area';
 import TransactionShield from './transaction-shield-tab';
-import SubmitClaimForm from './transaction-shield-tab/submit-claim-form';
 
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
@@ -95,11 +95,8 @@ class SettingsPage extends PureComponent {
     addNewNetwork: PropTypes.bool,
     addressName: PropTypes.string,
     backRoute: PropTypes.string,
-    breadCrumbTextKey: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
-    initialBreadCrumbKey: PropTypes.string,
-    initialBreadCrumbRoute: PropTypes.string,
     isAddressEntryPage: PropTypes.bool,
     isMetaMaskShieldFeatureEnabled: PropTypes.bool,
     isPasswordChangePage: PropTypes.bool,
@@ -326,10 +323,8 @@ class SettingsPage extends PureComponent {
       isAddressEntryPage,
       pathnameI18nKey,
       addressName,
-      initialBreadCrumbRoute,
-      breadCrumbTextKey,
+      backRoute,
       navigate,
-      initialBreadCrumbKey,
     } = this.props;
     let subheaderText;
 
@@ -337,11 +332,12 @@ class SettingsPage extends PureComponent {
       subheaderText = t('settings');
     } else if (isAddressEntryPage) {
       subheaderText = t('contacts');
-    } else if (initialBreadCrumbKey) {
-      subheaderText = t(initialBreadCrumbKey);
     } else {
       subheaderText = t(pathnameI18nKey || 'general');
     }
+
+    // Show back button only on inner pages of the settings page
+    const showBackButton = backRoute !== SETTINGS_ROUTE;
 
     return (
       !currentPath.startsWith(NETWORKS_ROUTE) && (
@@ -354,23 +350,15 @@ class SettingsPage extends PureComponent {
           flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
         >
-          <Text
-            className={classnames({
-              'settings-page__subheader--link': initialBreadCrumbRoute,
-            })}
-            variant={TextVariant.headingSm}
-            onClick={() =>
-              initialBreadCrumbRoute && navigate(initialBreadCrumbRoute)
-            }
-          >
-            {subheaderText}
-          </Text>
-          {breadCrumbTextKey && (
-            <div className="settings-page__subheader--break">
-              <span>{' > '}</span>
-              {t(breadCrumbTextKey)}
-            </div>
+          {showBackButton && (
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              onClick={() => navigate(backRoute)}
+              marginRight={2}
+              size={ButtonIconSize.Md}
+            />
           )}
+          <Text variant={TextVariant.headingSm}>{subheaderText}</Text>
           {isAddressEntryPage && (
             <div className="settings-page__subheader--break">
               <span>{' > '}</span>
@@ -543,9 +531,8 @@ class SettingsPage extends PureComponent {
           element={<TransactionShield />}
         />
         <Route
-          exact
-          path={TRANSACTION_SHIELD_CLAIM_ROUTE}
-          element={<SubmitClaimForm />}
+          path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}/*`}
+          element={<ClaimsArea />}
         />
         <Route path={EXPERIMENTAL_ROUTE} element={<ExperimentalTab />} />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
