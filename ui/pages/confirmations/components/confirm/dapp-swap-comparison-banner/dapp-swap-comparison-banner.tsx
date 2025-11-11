@@ -49,10 +49,12 @@ const enum SwapButtonType {
 }
 
 const SwapButton = ({
+  className = '',
   type,
   label,
   onClick,
 }: {
+  className?: string;
   type: SwapButtonType;
   label: string;
   onClick: () => void;
@@ -60,7 +62,7 @@ const SwapButton = ({
   if (type === SwapButtonType.ButtonType) {
     return (
       <Button
-        className="dapp-swap_highlighted-button"
+        className={`dapp-swap_rounded-button ${className}`}
         size={ButtonSize.Md}
         variant={ButtonVariant.Secondary}
         onClick={onClick}
@@ -70,7 +72,10 @@ const SwapButton = ({
     );
   }
   return (
-    <TextButton className="dapp-swap_text-button" onClick={onClick}>
+    <TextButton
+      className={`dapp-swap_text-button ${className}`}
+      onClick={onClick}
+    >
       {label}
     </TextButton>
   );
@@ -160,9 +165,10 @@ const DappSwapComparisonInner = () => {
   ]);
 
   if (
-    !dappSwapUi?.enabled ||
-    selectedQuoteValueDifference <
-      (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD)
+    !dappSwapUi?.enabled
+    // ||
+    // selectedQuoteValueDifference <
+    //   (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD)
   ) {
     return null;
   }
@@ -180,6 +186,7 @@ const DappSwapComparisonInner = () => {
         padding={1}
       >
         <SwapButton
+          className="dapp-swap_dapp-swap-button"
           type={
             selectedSwapType === SwapType.Current
               ? SwapButtonType.ButtonType
@@ -189,16 +196,17 @@ const DappSwapComparisonInner = () => {
           label={t('current')}
         />
         <SwapButton
+          className="dapp-swap_mm-swap-button"
           type={
             selectedSwapType === SwapType.Metamask
               ? SwapButtonType.ButtonType
               : SwapButtonType.Text
           }
           onClick={updateSwapToSelectedQuote}
-          label={t('saveAndEarn')}
+          label={t('metamaskSwap')}
         />
       </Box>
-      {showDappSwapComparisonBanner && (
+      {showDappSwapComparisonBanner && dappTypeSelected && (
         <Box
           className="dapp-swap_callout"
           backgroundColor={BoxBackgroundColor.BackgroundAlternative}
@@ -212,35 +220,23 @@ const DappSwapComparisonInner = () => {
             onClick={hideDappSwapComparisonBanner}
             ariaLabel="close-dapp-swap-comparison-banner"
           />
-          {dappTypeSelected && (
-            <>
-              <div className="dapp-swap_callout-arrow" />
-              <Text
-                className="dapp-swap_callout-text"
-                color={TextColor.TextDefault}
-                variant={TextVariant.BodySm}
-              >
-                {t('dappSwapAdvantage')}
-              </Text>
-              <Text
-                className="dapp-swap_text-save"
-                variant={TextVariant.BodySm}
-              >
-                {t('dappSwapQuoteDifference', [
-                  `$${(gasDifference + tokenAmountDifference).toFixed(2)}`,
-                ])}
-              </Text>
-            </>
-          )}
-          {!dappTypeSelected && (
-            <Text className="dapp-swap_text-save" variant={TextVariant.BodySm}>
-              {t('dappSwapQuoteDetails', [
-                `$${gasDifference.toFixed(2)}`,
-                `$${tokenAmountDifference.toFixed(2)}`,
-                destinationTokenSymbol?.toUpperCase(),
-              ])}
-            </Text>
-          )}
+          <div className="dapp-swap_callout-arrow" />
+          <Text
+            className="dapp-swap_callout-text"
+            color={TextColor.TextDefault}
+            variant={TextVariant.BodySm}
+          >
+            {t('dappSwapAdvantage')}
+          </Text>
+          <Text
+            className="dapp-swap_text-save"
+            color={TextColor.TextAlternative}
+            variant={TextVariant.BodyXs}
+          >
+            {t('dappSwapQuoteDifference', [
+              `$${(gasDifference + tokenAmountDifference).toFixed(2)}`,
+            ])}
+          </Text>
           <Text color={TextColor.TextAlternative} variant={TextVariant.BodyXs}>
             {t('dappSwapBenefits')}
           </Text>

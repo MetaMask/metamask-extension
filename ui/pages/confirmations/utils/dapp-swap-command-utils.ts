@@ -2,7 +2,39 @@ import { GenericQuoteRequest } from '@metamask/bridge-controller';
 import { Hex } from '@metamask/utils';
 import { Interface } from '@ethersproject/abi';
 
-import { UNISWAP_ROUTER_COMMANDS } from '../../../../app/scripts/lib/transaction/decode/uniswap-commands';
+const ROUTER_COMMANDS_V3 = {
+  '0': {
+    name: 'V3_SWAP_EXACT_IN',
+    params: [
+      {
+        type: 'address',
+        description: 'The recipient of the output of the trade',
+        name: 'recipient',
+      },
+      {
+        type: 'uint256',
+        description: 'The amount of input tokens for the trade',
+        name: 'amountIn',
+      },
+      {
+        type: 'uint256',
+        description: 'The minimum amount of output tokens the user wants',
+        name: 'amountOutMin',
+      },
+      {
+        type: 'bytes',
+        description: 'The UniswapV3 encoded path to trade along',
+        name: 'path',
+      },
+      {
+        type: 'bool',
+        description:
+          'A flag for whether the input tokens should come from the msg.sender (through Permit2) or whether the funds are already in the UniversalRouter',
+        name: 'payerIsUser',
+      },
+    ],
+  },
+};
 
 const POOL_KEY_STRUCT =
   '(address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks)';
@@ -10,15 +42,9 @@ const POOL_KEY_STRUCT =
 const PATH_KEY_STRUCT =
   '(address intermediateCurrency,uint256 fee,int24 tickSpacing,address hooks,bytes hookData)';
 
-const SWAP_EXACT_IN_SINGLE_STRUCT =
-  '(' +
-  POOL_KEY_STRUCT +
-  ' poolKey,bool zeroForOne,uint128 amountIn,uint128 amountOutMinimum,bytes hookData)';
+const SWAP_EXACT_IN_SINGLE_STRUCT = `(${POOL_KEY_STRUCT} poolKey,bool zeroForOne,uint128 amountIn,uint128 amountOutMinimum,bytes hookData)`;
 
-const SWAP_EXACT_IN_STRUCT =
-  '(address currencyIn,' +
-  PATH_KEY_STRUCT +
-  '[] path,uint128 amountIn,uint128 amountOutMinimum)';
+const SWAP_EXACT_IN_STRUCT = `(address currencyIn,${PATH_KEY_STRUCT} path,uint128 amountIn,uint128 amountOutMinimum)`;
 
 const decodeV4SwapCommandData = (data: string) => {
   const abiDecoder = Interface.getAbiCoder();
@@ -34,9 +60,7 @@ const decodeCommandDataV4 = (type: string, data: string) => {
 
 const decodeCommandDataV3 = (action: string, data: string) => {
   const definition =
-    UNISWAP_ROUTER_COMMANDS[
-      String(action) as keyof typeof UNISWAP_ROUTER_COMMANDS
-    ];
+    ROUTER_COMMANDS_V3[String(action) as keyof typeof ROUTER_COMMANDS_V3];
   const types = definition.params.map((param) => param.type);
   const abiDecoder = Interface.getAbiCoder();
   return abiDecoder.decode(types, data);
@@ -83,7 +107,7 @@ function handleV4CommandSwapExactIn(
   const result = decodeCommandDataV4(SWAP_EXACT_IN_STRUCT, data);
 
   return {
-    amountMin: result.amountOutMinimum.toNumber(),
+    amountMin: result.amountOutMinimum.toHexString(),
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount: result.amountIn.toHexString(),
@@ -101,7 +125,7 @@ function handleV4CommandSwapExactInSingle(
   const result = decodeCommandDataV4(SWAP_EXACT_IN_SINGLE_STRUCT, data);
 
   return {
-    amountMin: result.amountOutMinimum.toNumber(),
+    amountMin: result.amountOutMinimum.toHexString(),
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount: result.amountIn.toHexString(),
@@ -141,7 +165,7 @@ function handleV3SwapExactInCommand(
     result[3],
   );
   return {
-    amountMin: result[2].toNumber(),
+    amountMin: result[2].toHexString(),
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount: result[1].toHexString(),

@@ -156,7 +156,7 @@ export function useDappSwapComparisonInfo() {
   useEffect(() => {
     try {
       if (
-        !amountMin ||
+        amountMin === undefined ||
         !bestQuote ||
         !quotesInput ||
         !simulationData ||

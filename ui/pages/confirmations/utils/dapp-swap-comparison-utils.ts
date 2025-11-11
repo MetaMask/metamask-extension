@@ -145,7 +145,7 @@ export function getBestQuote(
     const quoteMinGreaterThanAmountMin = new BigNumber(
       quote.minDestTokenAmount,
       10,
-    ).greaterThanOrEqualTo(new BigNumber(amountMin, 10));
+    ).greaterThanOrEqualTo(new BigNumber(amountMin, 16));
 
     if (
       (minBelowAmountMin && quoteMinGreaterThanAmountMin) ||
