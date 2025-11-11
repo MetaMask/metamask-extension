@@ -135,6 +135,7 @@ async function mockStripeSubscriptionFlow(
       .thenJson(200, [
         {
           id: SHIELD_CLAIMS_RESPONSE.claimId,
+          shortId: 1,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           chainId: '1',

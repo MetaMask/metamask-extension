@@ -226,23 +226,6 @@ class Driver {
     if (typeof locator === 'string') {
       // If locator is a string we assume its a css selector
       return By.css(locator);
-    } else if (locator.value && locator.css) {
-      // Providing both css and value props will use xpath to look for an element
-      // matching the css selector that has a value attribute matching the provided value.
-      // If a testId prop was provided along with value, convert that to a css prop and continue
-      if (locator.testId) {
-        locator.css = `[data-testid="${locator.testId}"]`;
-      }
-
-      // Use cssToXPath to build an xpath string that matches the css selector
-      // and has a value attribute matching the provided value
-      const quotedValue = quoteXPathText(locator.value);
-      // Build XPath: convert CSS to XPath base, then add @value attribute condition
-      const baseXpath = cssToXPath.parse(locator.css).toXPath();
-      // Append the value attribute condition to the base XPath
-      // The base XPath ends with ']', so we replace it with the value condition
-      const xpath = baseXpath.replace(/\]$/u, ` and @value=${quotedValue}]`);
-      return By.xpath(xpath);
     } else if (locator.value) {
       // For backwards compatibility, checking if the locator has a value prop
       // (but no css prop) tells us this is a Selenium locator
