@@ -66,8 +66,6 @@ function handleV4SwapCommand(
   commandBytes = commandBytes.map((byte: string) => `10_${byte}`);
   const result = getCommandValues(commandBytes, decoded[1], chainId);
 
-  console.log('*********************', result);
-
   return {
     amountMin: result.amountMin,
     quotesInput: {
@@ -84,7 +82,6 @@ function handleV4CommandSwapExactIn(
 ) {
   const result = decodeCommandDataV4(SWAP_EXACT_IN_STRUCT, data);
 
-  console.log('********************* decodeCommandDataV4', result);
   return {
     amountMin: result.amountOutMinimum.toNumber(),
     quotesInput: {
@@ -176,8 +173,6 @@ export function getCommandValues(
     gasIncluded7702: false,
   } as GenericQuoteRequest;
 
-  console.log('*********************', commandBytes, inputs);
-
   DAPP_SWAP_COMMANDS.forEach((command) => {
     const data = getCommandData(commandBytes, inputs, command.value);
     if (data === undefined) {
@@ -196,8 +191,6 @@ export function getCommandValues(
       }
     }
   });
-
-  console.log('*********************', quotesInput, amountMin);
 
   return {
     quotesInput,

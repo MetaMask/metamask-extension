@@ -53,7 +53,6 @@ export function useDappSwapComparisonInfo() {
       properties: Record<string, string>;
       sensitiveProperties?: Record<string, string>;
     }) => {
-      console.log('==============================================', params);
       updateTransactionEventFragment(
         {
           ...params,
@@ -75,7 +74,7 @@ export function useDappSwapComparisonInfo() {
       const result = getDataFromSwap(
         chainId,
         transactionData,
-        txParams?.to as string,
+        txParams?.from as string,
       );
       updateRequestDetectionLatency();
       return result;
@@ -92,7 +91,7 @@ export function useDappSwapComparisonInfo() {
     chainId,
     data,
     nestedTransactions,
-    txParams?.to,
+    txParams?.from,
     updateRequestDetectionLatency,
   ]);
 
@@ -125,9 +124,7 @@ export function useDappSwapComparisonInfo() {
 
     updateQuoteRequestLatency();
     const startTime = new Date().getTime();
-    console.log('==============================================', quotesInput);
     const quotesList = await fetchQuotes(quotesInput);
-    console.log('==============================================', quotesList);
     updateQuoteResponseLatency(startTime);
     return quotesList;
   }, [
@@ -138,7 +135,7 @@ export function useDappSwapComparisonInfo() {
   ]);
 
   const { bestQuote, bestFilteredQuote: selectedQuote } = useMemo(() => {
-    if (!amountMin || !quotes?.length || tokenInfoPending) {
+    if (amountMin === undefined || !quotes?.length || tokenInfoPending) {
       return { bestQuote: undefined, bestFilteredQuote: undefined };
     }
 

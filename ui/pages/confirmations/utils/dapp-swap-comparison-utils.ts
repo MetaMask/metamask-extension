@@ -97,7 +97,6 @@ export function getDataFromSwap(
       ],
     };
   } catch (error) {
-    console.log('********************* error', error);
     captureException(error);
     return {
       amountMin: undefined,
@@ -146,7 +145,7 @@ export function getBestQuote(
     const quoteMinGreaterThanAmountMin = new BigNumber(
       quote.minDestTokenAmount,
       10,
-    ).greaterThanOrEqualTo(new BigNumber(amountMin, 16));
+    ).greaterThanOrEqualTo(new BigNumber(amountMin, 10));
 
     if (
       (minBelowAmountMin && quoteMinGreaterThanAmountMin) ||
