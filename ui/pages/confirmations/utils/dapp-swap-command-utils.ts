@@ -143,12 +143,7 @@ function handleCommandSwapExactOut(
   throw new Error('Exact out commands are not supported');
 }
 
-const getTokenAddressesFromBytes = (args: string[]) => {
-  let bytes = '';
-  for (let i = 6; i < args.length; i++) {
-    bytes += args[i];
-  }
-  bytes = bytes.replace(/(00)+$/u, '');
+const getTokenAddressesFromBytes = (bytes: string) => {
   const slices = bytes.match(/.{1,46}/gu);
   const srcTokenAddress = `0x${slices?.[0].substring(0, 40).toLowerCase()}`;
   const destTokenAddress = `0x${slices?.[slices.length - 1].substring(0, 40).toLowerCase()}`;
