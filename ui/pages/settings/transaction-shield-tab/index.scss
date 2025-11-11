@@ -53,6 +53,18 @@
       margin-inline: -16px;
     }
   }
+
+  &-shield-icon {
+    &__container {
+      height: 36px;
+      width: 36px;
+    }
+
+    &__canvas {
+      height: 100%;
+      width: 100%;
+    }
+  }
 }
 
 .account-selector-modal {

@@ -99,6 +99,7 @@ import { MINUTE } from '../../../../shared/constants/time';
 import Name from '../../../components/app/name';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
+import ShieldIconAnimation from './shield-icon-animation';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -750,6 +751,12 @@ const TransactionShield = () => {
                 />
               ) : (
                 <Icon name={detail.icon} size={IconSize.Xl} />
+              )}
+              {!showSkeletonLoader && !isMembershipInactive && (
+                <ShieldIconAnimation
+                  containerClassName="transaction-shield-page-shield-icon__container"
+                  canvasClassName="transaction-shield-page-shield-icon__canvas"
+                />
               )}
               <Box
                 width={BlockSize.Full}
