@@ -10,7 +10,7 @@ import {
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
 
-// Skipping this test because it's failing with BIP44
+// BUG #37690 Sending a transaction on TestDapp with BIP44 on fails with exception
 // eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('Solana Wallet Standard - Transfer SOL', function () {
   describe('Send a transaction', function () {
