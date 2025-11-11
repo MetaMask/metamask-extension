@@ -142,12 +142,19 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
       filename: 'background.[contenthash].js',
       import: join(appRoot, 'scripts/background.js'),
     };
-    addHtml('../offscreen/offscreen.html');
   }
 
   for (const filename of readdirSync(appRoot)) {
-    // ignore non-htm/html files and background.html, as that is already handled above
-    if (/\.html?$/iu.test(filename) && filename !== 'background.html') {
+    // ignore non-htm/html files
+    if (/\.html?$/iu.test(filename)) {
+      // ignore background.html, as that is already handled above
+      if (filename === 'background.html') {
+        continue;
+      }
+      // ignore offscreen.html for MV2 extensions
+      if (manifest.manifest_version === 2 && filename === 'offscreen.html') {
+        continue;
+      }
       addHtml(filename);
     }
   }

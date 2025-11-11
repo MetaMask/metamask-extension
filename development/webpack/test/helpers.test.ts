@@ -197,7 +197,7 @@ describe('./utils/helpers.ts', () => {
         filename: 'background.[contenthash].js',
         import: '<app-root>/scripts/background.js',
       },
-      offscreen: 'offscreen/offscreen.html',
+      offscreen: 'app/offscreen.html',
       'background.js': {
         chunkLoading: false,
         filename: 'background.js',
@@ -267,7 +267,7 @@ describe('./utils/helpers.ts', () => {
         filename: 'background.[contenthash].js',
         import: '<app-root>/scripts/background.js',
       },
-      offscreen: 'offscreen/offscreen.html',
+      offscreen: 'app/offscreen.html',
     });
   });
 

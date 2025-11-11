@@ -212,7 +212,7 @@ function createScriptTasks({
             case 'content-script':
               return './app/vendor/trezor/content-script.js';
             case 'offscreen':
-              return './offscreen/scripts/offscreen.ts';
+              return './app/offscreen/offscreen.ts';
             default:
               return `./app/scripts/${label}.js`;
           }
@@ -1303,10 +1303,7 @@ function renderHtmlFile({
 
   const scriptTags = scripts.join('\n    ');
 
-  const htmlFilePath =
-    htmlName === 'offscreen'
-      ? `./offscreen/${htmlName}.html`
-      : `./app/${htmlName}.html`;
+  const htmlFilePath = `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
   const eta = new Eta({ views: './app/' });
