@@ -5,10 +5,12 @@ import {
   BtcMethod,
   BtcAccountType,
   SolAccountType,
+  TrxAccountType,
   EthScope,
   BtcScope,
   SolMethod,
   SolScope,
+  TrxScope,
 } from '@metamask/keyring-api';
 import {
   ETH_EOA_METHODS,
@@ -169,12 +171,60 @@ export const MOCK_ACCOUNT_SOLANA_MAINNET: InternalAccount = {
   },
 };
 
+export const MOCK_ACCOUNT_TRON_MAINNET: InternalAccount = {
+  id: 'tron-mainnet-account-id',
+  address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+  options: {},
+  methods: ['tron_signTransaction'],
+  scopes: [TrxScope.Mainnet],
+  type: TrxAccountType.Eoa,
+  metadata: {
+    name: 'Tron Account',
+    keyring: { type: KeyringTypes.snap },
+    importTime: 1691565967600,
+    lastSelected: 1955565967656,
+  },
+};
+
+export const MOCK_ACCOUNT_TRON_NILE: InternalAccount = {
+  id: 'tron-nile-account-id',
+  address: 'TXYZaUPwfHwgrmWK1aAXHFy2pUPiB7cZSr',
+  options: {},
+  methods: ['tron_signTransaction'],
+  scopes: [TrxScope.Nile],
+  type: TrxAccountType.Eoa,
+  metadata: {
+    name: 'Tron Nile Account',
+    keyring: { type: KeyringTypes.snap },
+    importTime: 1691565967600,
+    lastSelected: 1955565967656,
+  },
+};
+
+export const MOCK_ACCOUNT_TRON_SHASTA: InternalAccount = {
+  id: 'tron-shasta-account-id',
+  address: 'TXYZaUPwfHwgrmWK1aAXHFy2pUPiB7cZSr',
+  options: {},
+  methods: ['tron_signTransaction'],
+  scopes: [TrxScope.Shasta],
+  type: TrxAccountType.Eoa,
+  metadata: {
+    name: 'Tron Shasta Account',
+    keyring: { type: KeyringTypes.snap },
+    importTime: 1691565967600,
+    lastSelected: 1955565967656,
+  },
+};
+
 export const MOCK_ACCOUNTS = {
   [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
   [MOCK_ACCOUNT_ERC4337.id]: MOCK_ACCOUNT_ERC4337,
   [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
   [MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET.id]: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
   [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
+  [MOCK_ACCOUNT_TRON_MAINNET.id]: MOCK_ACCOUNT_TRON_MAINNET,
+  [MOCK_ACCOUNT_TRON_NILE.id]: MOCK_ACCOUNT_TRON_NILE,
+  [MOCK_ACCOUNT_TRON_SHASTA.id]: MOCK_ACCOUNT_TRON_SHASTA,
   [MOCK_ACCOUNT_HARDWARE.id]: MOCK_ACCOUNT_HARDWARE,
   [MOCK_ACCOUNT_PRIVATE_KEY.id]: MOCK_ACCOUNT_PRIVATE_KEY,
 };
