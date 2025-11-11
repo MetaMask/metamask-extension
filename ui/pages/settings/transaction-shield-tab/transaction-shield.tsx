@@ -193,9 +193,9 @@ const TransactionShield = () => {
   const isSubscriptionEndingSoon =
     getIsShieldSubscriptionEndingSoon(subscriptions);
 
-  // user can cancel subscription if not canceled and not cancel at period end
+  // user can cancel subscription if not canceled and current subscription not cancel at period end
   const canCancel =
-    !isCancelled && !displayedShieldSubscription?.cancelAtPeriodEnd;
+    !isCancelled && !currentShieldSubscription?.cancelAtPeriodEnd;
 
   const isCryptoPayment =
     displayedShieldSubscription?.paymentMethod &&
