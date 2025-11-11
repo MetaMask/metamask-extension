@@ -48,11 +48,16 @@ export type MultichainAddressRowsListProps = {
    * The child element that triggers the popover on hover.
    */
   children: React.ReactNode;
+  /**
+   * The position of the popover when the user hovers over the child element.
+   */
+  hoverPosition?: PopoverPosition;
 };
 
 export const MultichainHoveredAddressRowsList = ({
   groupId,
   children,
+  hoverPosition = PopoverPosition.Auto,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
@@ -236,7 +241,7 @@ export const MultichainHoveredAddressRowsList = ({
       <Popover
         referenceElement={referenceElement}
         isOpen={isHoverOpen}
-        position={PopoverPosition.BottomStart}
+        position={hoverPosition}
         flip={false}
         preventOverflow={true}
         backgroundColor={BackgroundColor.backgroundDefault}

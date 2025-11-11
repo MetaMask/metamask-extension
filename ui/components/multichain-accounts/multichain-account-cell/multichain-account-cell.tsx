@@ -18,6 +18,8 @@ import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
 } from '../../../helpers/constants/connected-sites';
+import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
+import { MultichainHoveredAddressRowsList } from '../multichain-address-rows-hovered-list';
 
 export type MultichainAccountCellProps = {
   accountId: AccountGroupId;
@@ -124,17 +126,22 @@ export const MultichainAccountCell = ({
           >
             {accountName}
           </Text>
-          {walletName && (
-            <Text
-              className="multichain-account-cell__account-name"
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodySmMedium}
-              marginLeft={3}
-              ellipsis
-            >
-              {walletName}
-            </Text>
-          )}
+          <Box>
+            <MultichainHoveredAddressRowsList groupId={accountId}>
+              <MultichainAccountNetworkGroup groupId={accountId} limit={4} />
+            </MultichainHoveredAddressRowsList>
+            {walletName && (
+              <Text
+                className="multichain-account-cell__account-name"
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodySmMedium}
+                marginLeft={3}
+                ellipsis
+              >
+                {walletName}
+              </Text>
+            )}
+          </Box>
         </Box>
       </Box>
       <Box
