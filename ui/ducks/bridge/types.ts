@@ -1,27 +1,43 @@
-import type { Hex, CaipChainId, CaipAssetType } from '@metamask/utils';
+import type { Hex, CaipChainId } from '@metamask/utils';
 import {
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
   type ChainId,
-  type GenericQuoteRequest,
 } from '@metamask/bridge-controller';
-import { type KeyringAccountType } from '@metamask/keyring-api';
+import {
+  CaipAssetTypeStruct,
+  CaipChainIdStruct,
+  type KeyringAccountType,
+} from '@metamask/keyring-api';
+import {
+  optional,
+  string,
+  type,
+  number,
+  boolean,
+  type Infer,
+} from '@metamask/superstruct';
 import { type TxAlert } from '../../../shared/types/security-alerts-api';
 
-export type BridgeToken = {
-  address: string;
-  assetId: CaipAssetType;
-  symbol: string;
-  image: string;
-  decimals: number;
-  chainId: number | Hex | ChainId | CaipChainId;
-  balance: string; // raw balance
-  // TODO deprecate this field and use balance instead
-  string: string | undefined; // normalized balance as a stringified number
+export const BridgeAssetV2Schema = type({
+  assetId: CaipAssetTypeStruct,
+  symbol: string(),
+  decimals: number(),
+  name: string(),
+  image: string(),
+  chainId: CaipChainIdStruct,
+  noFee: optional(
+    type({
+      isDestination: boolean(),
+      isSource: boolean(),
+    }),
+  ),
+});
+
+export type BridgeToken = Infer<typeof BridgeAssetV2Schema> & {
+  balance?: string; // raw balance
   tokenFiatAmount?: number | null;
-  occurrences?: number;
-  aggregators?: string[];
   accountType?: KeyringAccountType;
 };
 
@@ -49,18 +65,11 @@ export type BridgeState = {
 
 export type ChainIdPayload = { payload: ChainId | Hex | CaipChainId | null };
 export type TokenPayload = {
-  payload: {
-    address: GenericQuoteRequest['srcTokenAddress'];
-    symbol: string;
-    decimals: number;
-    chainId: Exclude<ChainIdPayload['payload'], null>;
-    balance?: string;
-    string?: string;
-    image?: string;
-    iconUrl?: string | null;
-    icon?: string | null;
-    assetId?: CaipAssetType;
-    aggregators?: string[];
-    occurrences?: number;
-  } | null;
+  payload:
+    | (Omit<BridgeToken, 'image' | 'chainId'> & {
+        address?: string;
+        image?: string;
+        chainId: number | CaipChainId | Hex;
+      })
+    | null;
 };

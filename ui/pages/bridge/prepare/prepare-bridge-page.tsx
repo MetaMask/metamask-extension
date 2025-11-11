@@ -10,6 +10,7 @@ import classnames from 'classnames';
 import { debounce } from 'lodash';
 import { type TokenListMap } from '@metamask/assets-controllers';
 import { zeroAddress } from 'ethereumjs-util';
+import { type NetworkConfiguration } from '@metamask/network-controller';
 import {
   formatChainIdToCaip,
   isNonEvmChainId,
@@ -22,7 +23,12 @@ import {
   formatChainIdToHex,
   isBitcoinChainId,
 } from '@metamask/bridge-controller';
-import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
+import {
+  type CaipChainId,
+  type Hex,
+  parseCaipAssetType,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -245,7 +251,7 @@ const PrepareBridgePage = ({
   });
 
   const shouldShowMaxButton =
-    fromToken && isNativeAddress(fromToken.address)
+    fromToken && isNativeAddress(fromToken.assetId)
       ? gasIncluded || gasIncluded7702
       : true;
 
@@ -283,12 +289,12 @@ const PrepareBridgePage = ({
           // Determine the address format based on chain type
           // We need to make evm tokens lowercase for comparison as sometimes they are checksummed
           let address = '';
-          if (isNativeAddress(fromToken.address)) {
+          if (isNativeAddress(fromToken.assetId)) {
             address = '';
           } else if (isNonEvmChainId(fromChain.chainId)) {
-            address = fromToken.address || '';
+            address = fromToken.assetId || '';
           } else {
-            address = fromToken.address?.toLowerCase() || '';
+            address = fromToken.assetId?.toLowerCase() || '';
           }
 
           return {
@@ -367,53 +373,55 @@ const PrepareBridgePage = ({
 
   const quoteParams:
     | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
-    | undefined = useMemo(
-    () =>
-      selectedAccount?.address
-        ? {
-            srcTokenAddress: fromToken?.address,
-            destTokenAddress: toToken?.address,
-            srcTokenAmount:
-              fromAmount && fromToken?.decimals
-                ? calcTokenValue(
-                    // Treat empty or incomplete amount as 0 to reject NaN
-                    ['', '.'].includes(fromAmount) ? '0' : fromAmount,
-                    fromToken.decimals,
-                  )
-                    .toFixed()
-                    // Length of decimal part cannot exceed token.decimals
-                    .split('.')[0]
-                : undefined,
-            srcChainId: fromChain?.chainId,
-            destChainId: toChain?.chainId,
-            // This override allows quotes to be returned when the rpcUrl is a forked network
-            // Otherwise quotes get filtered out by the bridge-api when the wallet's real
-            // balance is less than the tenderly balance
-            insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
-              ? true
-              : undefined,
-            slippage,
-            walletAddress: selectedAccount.address,
-            destWalletAddress: selectedDestinationAccount?.address,
-            gasIncluded: gasIncluded || gasIncluded7702,
-            gasIncluded7702,
-          }
+    | undefined = useMemo(() => {
+    if (!selectedAccount?.address) {
+      return undefined;
+    }
+    const { chainId, assetReference } = fromToken?.assetId
+      ? parseCaipAssetType(fromToken.assetId)
+      : {};
+    const { chainId: toChainId, assetReference: toAssetReference } =
+      toToken?.assetId ? parseCaipAssetType(toToken.assetId) : {};
+    return {
+      srcTokenAddress: assetReference ?? fromToken?.assetId,
+      destTokenAddress: toAssetReference ?? toToken?.assetId,
+      srcTokenAmount:
+        fromAmount && fromToken?.decimals
+          ? calcTokenValue(
+              // Treat empty or incomplete amount as 0 to reject NaN
+              ['', '.'].includes(fromAmount) ? '0' : fromAmount,
+              fromToken.decimals,
+            )
+              .toFixed()
+              // Length of decimal part cannot exceed token.decimals
+              .split('.')[0]
+          : undefined,
+      srcChainId: chainId,
+      destChainId: toChainId,
+      // This override allows quotes to be returned when the rpcUrl is a forked network
+      // Otherwise quotes get filtered out by the bridge-api when the wallet's real
+      // balance is less than the tenderly balance
+      insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
+        ? true
         : undefined,
-    [
-      fromToken?.address,
-      fromToken?.decimals,
-      toToken?.address,
-      fromAmount,
-      fromChain?.chainId,
-      toChain?.chainId,
       slippage,
-      selectedAccount?.address,
-      selectedDestinationAccount?.address,
-      providerConfig?.rpcUrl,
-      gasIncluded,
+      walletAddress: selectedAccount.address,
+      destWalletAddress: selectedDestinationAccount?.address,
+      gasIncluded: gasIncluded || gasIncluded7702,
       gasIncluded7702,
-    ],
-  );
+    };
+  }, [
+    fromToken?.assetId,
+    fromToken?.decimals,
+    toToken?.assetId,
+    fromAmount,
+    slippage,
+    selectedAccount?.address,
+    selectedDestinationAccount?.address,
+    providerConfig?.rpcUrl,
+    gasIncluded,
+    gasIncluded7702,
+  ]);
 
   const debouncedUpdateQuoteRequestInController = useCallback(
     debounce((...args: Parameters<typeof updateQuoteRequestParams>) => {
@@ -523,11 +531,7 @@ const PrepareBridgePage = ({
             dispatch(setFromTokenInputValue(e));
           }}
           onAssetChange={(token) => {
-            const bridgeToken = {
-              ...token,
-              address: token.address ?? zeroAddress(),
-            };
-            dispatch(setFromToken(bridgeToken));
+            dispatch(setFromToken(token));
           }}
           networkProps={{
             network: fromChain,
@@ -695,11 +699,7 @@ const PrepareBridgePage = ({
             header={getToInputHeader()}
             token={toToken}
             onAssetChange={(token) => {
-              const bridgeToken = {
-                ...token,
-                address: token.address ?? zeroAddress(),
-              };
-              dispatch(setToToken(bridgeToken));
+              dispatch(setToToken(token));
             }}
             networkProps={{
               network: toChain,
