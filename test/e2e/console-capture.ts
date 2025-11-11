@@ -160,11 +160,10 @@ export function saveCapturedToTemp(testName?: string): void {
  * Save captured data to a test-specific temp file
  * This allows incremental snapshot generation - re-run only failed tests
  *
- * @param captured - The captured warnings/errors
- * @param data
- * @param data.warnings
+ * @param data - The captured warnings/errors
+ * @param data.warnings - Array of captured warnings
+ * @param data.errors - Array of captured errors
  * @param testName - The test name to use as unique identifier
- * @param data.errors
  */
 function saveTestSnapshot(
   data: { warnings: unknown[]; errors: unknown[] },
@@ -187,8 +186,8 @@ function saveTestSnapshot(
 
   // Create sanitized filename from test name
   const sanitizedName = testName
-    .replace(/[^a-z0-9]+/gi, '-') // Replace non-alphanumeric with dash
-    .replace(/^-|-$/g, '') // Remove leading/trailing dashes
+    .replace(/[^a-z0-9]+/giu, '-') // Replace non-alphanumeric with dash
+    .replace(/^-|-$/gu, '') // Remove leading/trailing dashes
     .substring(0, 100); // Limit length
 
   const tempFile = path.join(

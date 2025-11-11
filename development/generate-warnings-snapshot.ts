@@ -94,8 +94,11 @@ async function main(): Promise<void> {
           const fullPath = path.join(dir, entry.name);
           if (entry.isDirectory()) {
             countTestFiles(fullPath);
-          } else if (entry.name.endsWith('.spec.ts') || entry.name.endsWith('.spec.js')) {
-            totalTests++;
+          } else if (
+            entry.name.endsWith('.spec.ts') ||
+            entry.name.endsWith('.spec.js')
+          ) {
+            totalTests += 1;
           }
         }
       };
@@ -106,14 +109,14 @@ async function main(): Promise<void> {
       console.log(`📂 Found ${tempFileCount} temp file(s) from previous run.`);
       console.log(`   Expecting ${totalTests} total to generate snapshot.`);
       if (missingTests > 0) {
-        console.log(`   ${missingTests} temp file(s) still need to be generated.`);
+        console.log(
+          `   ${missingTests} temp file(s) still need to be generated.`,
+        );
       }
       console.log('   Re-running all tests...\n');
     } else {
       // For unit/integration, we use workers so can't predict exact temp file count
-      console.log(
-        `📂 Found ${tempFileCount} temp file(s) from previous run.`,
-      );
+      console.log(`📂 Found ${tempFileCount} temp file(s) from previous run.`);
       console.log('   Re-running tests to update temp files...\n');
     }
   }
