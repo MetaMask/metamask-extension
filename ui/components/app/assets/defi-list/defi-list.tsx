@@ -85,6 +85,7 @@ export default function DefiList({ onClick }: DefiListProps) {
           marketValue: formatCurrencyWithMinThreshold(marketValue, 'USD'),
           chainId: chainId as Hex,
           iconGroup,
+          tokenFiatAmount: marketValue,
         };
       }),
     );

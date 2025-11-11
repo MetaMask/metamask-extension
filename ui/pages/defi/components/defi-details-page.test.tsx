@@ -6,16 +6,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import mockState from '../../../../test/data/mock-state.json';
 import DeFiPage from './defi-details-page';
 
-const mockUseParams = jest
-  .fn()
-  .mockReturnValue({ chainId: CHAIN_IDS.MAINNET, protocolId: 'aave' });
-
-jest.mock('react-router-dom', () => {
-  return {
-    ...jest.requireActual('react-router-dom'),
-    useParams: () => mockUseParams(),
-  };
-});
+const mockNavigate = jest.fn();
 
 describe('DeFiDetailsPage', () => {
   const mockStore = {
@@ -79,7 +70,7 @@ describe('DeFiDetailsPage', () => {
 
   const store = configureMockStore([thunk])(mockStore);
 
-  beforeAll(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
@@ -89,7 +80,13 @@ describe('DeFiDetailsPage', () => {
   });
 
   it('renders defi asset page', () => {
-    const { container } = renderWithProvider(<DeFiPage />, store);
+    const { container } = renderWithProvider(
+      <DeFiPage
+        navigate={mockNavigate}
+        params={{ chainId: CHAIN_IDS.MAINNET, protocolId: 'aave' }}
+      />,
+      store,
+    );
 
     expect(container).toMatchSnapshot();
   });

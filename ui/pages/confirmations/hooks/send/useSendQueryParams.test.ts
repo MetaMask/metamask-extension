@@ -121,6 +121,9 @@ describe('useSendQueryParams', () => {
           if (param === 'chainId') {
             return nft.chainId;
           }
+          if (param === 'tokenId') {
+            return nft.tokenId;
+          }
           return undefined;
         },
       },

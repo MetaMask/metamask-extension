@@ -6,6 +6,7 @@ import {
   BlockSize,
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
+import { ASSET_CELL_HEIGHT } from '../../constants';
 
 type GenericAssetCellLayoutProps = {
   onClick?: () => void;
@@ -54,7 +55,7 @@ export default function GenericAssetCellLayout({
         paddingRight={4}
         width={BlockSize.Full}
         style={{
-          height: 62,
+          height: ASSET_CELL_HEIGHT,
           cursor: onClick ? 'pointer' : 'auto',
           backgroundColor:
             !disableHover && isHovered

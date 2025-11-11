@@ -10,6 +10,7 @@ import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import { ControllerInitFunction } from '../types';
 import { ShieldControllerInitMessenger } from '../messengers/shield/shield-controller-messenger';
 import { normalizeSignatureRequest as ppomNormalizeSignatureRequest } from '../../lib/ppom/ppom-util';
+import { loadShieldConfig } from '../../../../shared/modules/shield';
 
 /**
  * Normalizes the signature request before getting the signature coverage results in the Shield controller.
@@ -46,6 +47,8 @@ const normalizeSignatureRequest = (
   return request;
 };
 
+const shieldConfig = loadShieldConfig();
+
 export const ShieldControllerInit: ControllerInitFunction<
   ShieldController,
   ShieldControllerMessenger,
@@ -53,9 +56,7 @@ export const ShieldControllerInit: ControllerInitFunction<
 > = (request) => {
   const { controllerMessenger, initMessenger, persistedState } = request;
 
-  const baseUrl =
-    process.env.SHIELD_RULE_ENGINE_URL ??
-    'https://shield-rule-engine.dev-api.cx.metamask.io';
+  const baseUrl = shieldConfig.ruleEngineUrl;
 
   const getAccessToken = () =>
     initMessenger.call('AuthenticationController:getBearerToken');

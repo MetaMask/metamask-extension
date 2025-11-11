@@ -30,11 +30,12 @@ export function useDappSwapComparisonInfo() {
     id: transactionId,
     simulationData,
     txParams,
+    txParamsOriginal,
     nestedTransactions,
   } = currentConfirmation ?? {
     txParams: {},
   };
-  const { data, gas } = txParams ?? {};
+  const { data, gas } = txParamsOriginal ?? txParams ?? {};
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const {
     requestDetectionLatency,
@@ -111,11 +112,10 @@ export function useDappSwapComparisonInfo() {
       },
     });
 
-    const startTime = new Date().getTime();
     updateQuoteRequestLatency();
+    const startTime = new Date().getTime();
 
     const quotesList = await fetchQuotes(quotesInput);
-
     updateQuoteResponseLatency(startTime);
     return quotesList;
   }, [
@@ -369,6 +369,7 @@ export function useDappSwapComparisonInfo() {
   ]);
 
   return {
+    selectedQuote,
     selectedQuoteValueDifference,
     gasDifference,
     tokenAmountDifference,

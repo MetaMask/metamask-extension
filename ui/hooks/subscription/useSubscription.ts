@@ -9,12 +9,16 @@ import {
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionParams,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { getUserSubscriptions } from '../../selectors/subscription';
 import {
   addTransaction,
   cancelSubscription,
+  estimateGas,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
   getSubscriptionsEligibilities,
@@ -170,12 +174,13 @@ export const useSubscriptionCryptoApprovalTransaction = (
       spenderAddress,
       amount: decimalToHex(selectedToken.approvalAmount.approveAmount),
     });
-    const transactionParams = {
+    const transactionParams: TransactionParams = {
       from: evmInternalAccount?.address as Hex,
       to: selectedToken.address as Hex,
       value: '0x0',
       data: approvalData,
     };
+    transactionParams.gas = await estimateGas(transactionParams);
     const transactionOptions = {
       type: TransactionType.shieldSubscriptionApprove,
       networkClientId: networkClientId as string,

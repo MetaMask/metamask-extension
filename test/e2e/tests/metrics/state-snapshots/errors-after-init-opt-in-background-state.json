@@ -67,6 +67,7 @@
     "throttledOrigins": "object",
     "trezorModel": null,
     "updateModalLastDismissedAt": null,
+    "isWalletResetInProgress": "boolean",
     "hasShownMultichainAccountsIntroModal": "boolean",
     "showShieldEntryModalOnce": "boolean",
     "addressSecurityAlertResponses": "object",
@@ -100,6 +101,8 @@
     "minimumBalanceForRentExemptionInLamports": "string"
   },
   "BridgeStatusController": { "txHistory": "object" },
+  "ClaimsController": "object",
+  "ClaimsService": "undefined",
   "CronjobController": { "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
@@ -350,8 +353,8 @@
   "SnapInsightsController": { "insights": "object" },
   "SnapInterfaceController": { "interfaces": "object" },
   "SnapsRegistry": {
-    "database": null,
-    "lastUpdated": null,
+    "database": "object",
+    "lastUpdated": "number",
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },

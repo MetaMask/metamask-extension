@@ -88,6 +88,7 @@ describe('Hide Token Confirmation Modal', () => {
     expect(actions.ignoreTokens).toHaveBeenCalledWith({
       tokensToIgnore: tokenState.address,
       networkClientId: 'goerli',
+      chainId: '0x5',
     });
   });
 
@@ -131,6 +132,7 @@ describe('Hide Token Confirmation Modal', () => {
     expect(actions.ignoreTokens).toHaveBeenCalledWith({
       tokensToIgnore: tokenState2.address,
       networkClientId: 'bsc',
+      chainId: '0x89',
     });
   });
 });

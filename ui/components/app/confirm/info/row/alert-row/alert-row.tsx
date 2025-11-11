@@ -108,8 +108,10 @@ export const ConfirmInfoAlertRow = ({
       <InlineAlert
         alertKey={alertKey}
         severity={selectedAlertSeverity}
-        showArrow={selectedAlertShowArrow}
-        textOverride={selectedAlertInlineAlertText}
+        showArrow={Boolean(
+          selectedAlertShowArrow && selectedAlertInlineAlertText,
+        )}
+        textOverride={selectedAlertInlineAlertText || ''}
         onClick={onClickHandler}
       />
     </Box>

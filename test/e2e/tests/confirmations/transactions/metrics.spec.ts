@@ -18,6 +18,12 @@ import { assertAdvancedGasDetails } from './shared';
 const { withFixtures, getEventPayloads } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 
+// Type definition for event structure
+type MetricsEvent = {
+  event: string;
+  [key: string]: unknown;
+};
+
 describe('Metrics', function () {
   it('Sends a contract interaction type 2 transaction (EIP1559) with the right properties in the metric events', async function () {
     await withFixtures(
@@ -74,6 +80,18 @@ describe('Metrics', function () {
         );
         await transactionConfirmation.checkGasFeeSymbol('ETH');
         await transactionConfirmation.checkGasFee('0.0009');
+
+        // Wait for Transaction Added events before enabling advanced view
+        // This ensures contract interaction "Added" events have transaction_advanced_view: undefined
+        await driver.wait(async () => {
+          const currentEvents = await getEventPayloads(driver, mockedEndpoints);
+          const addedEvents = currentEvents.filter(
+            (event: MetricsEvent) =>
+              event.event === 'Transaction Added' ||
+              event.event === 'Transaction Added Anon',
+          );
+          return addedEvents.length >= 4; // Wait for 4 "Added" events (2 deployment + 2 contract interaction)
+        }, 10000);
 
         // enable the advanced view
         await transactionConfirmation.clickAdvancedDetailsButton();

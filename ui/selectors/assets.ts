@@ -111,7 +111,7 @@ export function getAssetsMetadata(state: AssetsState) {
  * @returns An object containing all ignored assets.
  */
 export function getAllIgnoredAssets(state: AssetsState) {
-  return state.metamask.allIgnoredAssets;
+  return state.metamask.allIgnoredAssets ?? EMPTY_OBJECT;
 }
 
 /**

@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { waitFor, fireEvent } from '@testing-library/react';
+import { waitFor, fireEvent, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';
 import * as Environment from '../../../../shared/modules/environment';
@@ -24,6 +24,20 @@ jest.mock('react-router-dom-v5-compat', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
+
+jest.mock('./fox-appear-animation', () => ({
+  __esModule: true,
+  default: () => <div data-testid="fox-appear-animation" />,
+}));
+
+jest.mock('./metamask-wordmark-animation', () => ({
+  __esModule: true,
+  default: ({ setIsAnimationComplete }) => {
+    // Simulate animation completion immediately using setTimeout
+    setTimeout(() => setIsAnimationComplete(true), 0);
+    return <div data-testid="metamask-wordmark-animation" />;
+  },
+}));
 
 const mockIntersectionObserver = jest.fn();
 mockIntersectionObserver.mockReturnValue({
@@ -56,40 +70,26 @@ describe('Welcome Page', () => {
     enabledMetricsSpy = jest.spyOn(Actions, 'setParticipateInMetaMetrics');
   });
 
-  it('should render', () => {
-    const { getByText } = renderWithProvider(<Welcome />, mockStore);
-
-    expect(getByText(`Let's get started!`)).toBeInTheDocument();
-
-    const createButton = getByText('Create a new wallet');
-    expect(createButton).toBeInTheDocument();
-
-    const importButton = getByText('I have an existing wallet');
-    expect(importButton).toBeInTheDocument();
+  it('render matches snapshot', async () => {
+    const { container } = renderWithProvider(<Welcome />, mockStore);
+    await waitFor(() => {
+      expect(container).toMatchSnapshot();
+    });
   });
 
-  it('should render with seedless onboarding feature disabled', () => {
-    jest
-      .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
-      .mockReturnValue(false);
-
+  it('render buttons', async () => {
     const { getByText } = renderWithProvider(<Welcome />, mockStore);
-
-    expect(getByText(`Let's get started!`)).toBeInTheDocument();
-
-    expect(Environment.getIsSeedlessOnboardingFeatureEnabled()).toBe(false);
-
-    expect(
-      getByText('Import using Secret Recovery Phrase'),
-    ).toBeInTheDocument();
-
-    jest
-      .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
-      .mockReturnValue(true);
+    await waitFor(() => {
+      expect(getByText('Create a new wallet')).toBeInTheDocument();
+      expect(getByText('I have an existing wallet')).toBeInTheDocument();
+    });
   });
 
   it('should show the error modal when the error thrown in login', async () => {
     jest.resetAllMocks();
+    jest
+      .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+      .mockReturnValue(true);
     jest
       .spyOn(Actions, 'startOAuthLogin')
       .mockReturnValueOnce(jest.fn().mockRejectedValueOnce(new Error('test')));
@@ -99,13 +99,30 @@ describe('Welcome Page', () => {
       mockStore,
     );
 
+    await waitFor(() => {
+      expect(getByText('Create a new wallet')).toBeInTheDocument();
+    });
+
     const createButton = getByText('Create a new wallet');
-    fireEvent.click(createButton);
+
+    await act(async () => {
+      fireEvent.click(createButton);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    });
+
+    await waitFor(() => {
+      expect(
+        getByTestId('onboarding-create-with-google-button'),
+      ).toBeInTheDocument();
+    });
 
     const createWithGoogleButton = getByTestId(
       'onboarding-create-with-google-button',
     );
-    fireEvent.click(createWithGoogleButton);
+
+    await act(async () => {
+      fireEvent.click(createWithGoogleButton);
+    });
 
     await waitFor(() => {
       expect(getByTestId('login-error-modal')).toBeInTheDocument();
@@ -113,6 +130,9 @@ describe('Welcome Page', () => {
   });
 
   it('should track onboarding events when the user clicks on Social Login Create button', async () => {
+    jest
+      .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+      .mockReturnValue(true);
     const { getByText, getByTestId } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <Welcome />
@@ -120,13 +140,30 @@ describe('Welcome Page', () => {
       mockStore,
     );
 
+    await waitFor(() => {
+      expect(getByText('Create a new wallet')).toBeInTheDocument();
+    });
+
     const createButton = getByText('Create a new wallet');
-    fireEvent.click(createButton);
+
+    await act(async () => {
+      fireEvent.click(createButton);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    });
+
+    await waitFor(() => {
+      expect(
+        getByTestId('onboarding-create-with-google-button'),
+      ).toBeInTheDocument();
+    });
 
     const createWithGoogleButton = getByTestId(
       'onboarding-create-with-google-button',
     );
-    fireEvent.click(createWithGoogleButton);
+
+    await act(async () => {
+      fireEvent.click(createWithGoogleButton);
+    });
 
     await waitFor(() => {
       expect(startOAuthLoginSpy).toHaveBeenCalled();
@@ -157,6 +194,9 @@ describe('Welcome Page', () => {
   });
 
   it('should track onboarding events when the user clicks on Social Login Import button', async () => {
+    jest
+      .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+      .mockReturnValue(true);
     const { getByText, getByTestId } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <Welcome />
@@ -164,13 +204,30 @@ describe('Welcome Page', () => {
       mockStore,
     );
 
+    await waitFor(() => {
+      expect(getByText('I have an existing wallet')).toBeInTheDocument();
+    });
+
     const createButton = getByText('I have an existing wallet');
-    fireEvent.click(createButton);
+
+    await act(async () => {
+      fireEvent.click(createButton);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    });
+
+    await waitFor(() => {
+      expect(
+        getByTestId('onboarding-import-with-google-button'),
+      ).toBeInTheDocument();
+    });
 
     const importWithGoogleButton = getByTestId(
       'onboarding-import-with-google-button',
     );
-    fireEvent.click(importWithGoogleButton);
+
+    await act(async () => {
+      fireEvent.click(importWithGoogleButton);
+    });
 
     await waitFor(() => {
       expect(startOAuthLoginSpy).toHaveBeenCalled();
@@ -201,6 +258,9 @@ describe('Welcome Page', () => {
   });
 
   it('should not set Metametrics optin status for social login in Firefox', async () => {
+    jest
+      .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+      .mockReturnValue(true);
     const getBrowserNameSpy = jest
       .spyOn(BrowserRuntimeUtils, 'getBrowserName')
       .mockReturnValue(PLATFORM_FIREFOX);
@@ -212,13 +272,30 @@ describe('Welcome Page', () => {
       mockStore,
     );
 
+    await waitFor(() => {
+      expect(getByText('I have an existing wallet')).toBeInTheDocument();
+    });
+
     const createButton = getByText('I have an existing wallet');
-    fireEvent.click(createButton);
+
+    await act(async () => {
+      fireEvent.click(createButton);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    });
+
+    await waitFor(() => {
+      expect(
+        getByTestId('onboarding-import-with-google-button'),
+      ).toBeInTheDocument();
+    });
 
     const importWithGoogleButton = getByTestId(
       'onboarding-import-with-google-button',
     );
-    fireEvent.click(importWithGoogleButton);
+
+    await act(async () => {
+      fireEvent.click(importWithGoogleButton);
+    });
 
     await waitFor(() => {
       expect(startOAuthLoginSpy).toHaveBeenCalled();
@@ -251,6 +328,9 @@ describe('Welcome Page', () => {
   });
 
   it('should not set Metametrics optin status for SPR user', async () => {
+    jest
+      .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+      .mockReturnValue(true);
     const { getByText, getByTestId } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <Welcome />
@@ -258,13 +338,30 @@ describe('Welcome Page', () => {
       mockStore,
     );
 
+    await waitFor(() => {
+      expect(getByText('Create a new wallet')).toBeInTheDocument();
+    });
+
     const createButton = getByText('Create a new wallet');
-    fireEvent.click(createButton);
+
+    await act(async () => {
+      fireEvent.click(createButton);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    });
+
+    await waitFor(() => {
+      expect(
+        getByTestId('onboarding-create-with-srp-button'),
+      ).toBeInTheDocument();
+    });
 
     const createWithGoogleButton = getByTestId(
       'onboarding-create-with-srp-button',
     );
-    fireEvent.click(createWithGoogleButton);
+
+    await act(async () => {
+      fireEvent.click(createWithGoogleButton);
+    });
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);

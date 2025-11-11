@@ -61,7 +61,7 @@ export const useSendActions = () => {
             fromAccountId: fromAccount?.id as string,
             toAddress: toAddress as string,
             assetId: asset.assetId as CaipAssetType,
-            amount: addLeadingZeroIfNeeded(value) as string,
+            amount: addLeadingZeroIfNeeded(value || ('0' as string)) as string,
           },
         );
         history.push(DEFAULT_ROUTE);

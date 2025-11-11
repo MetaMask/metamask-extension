@@ -180,6 +180,7 @@ export function useShieldCoverageAlert(): Alert[] {
         showArrow: false,
         isOpenModalOnClick: true,
         hideFromAlertNavigation: true,
+        acknowledgeBypass: true,
       },
     ];
   }, [status, modalBodyStr, showAlert, t]);

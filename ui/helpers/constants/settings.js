@@ -14,7 +14,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
-  TRANSACTION_SHIELD_CLAIM_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
 } from './routes';
 
 /**
@@ -498,7 +498,7 @@ const SETTINGS_CONSTANTS = [
     tabMessage: (t) => t('shieldClaim'),
     sectionMessage: (t) => t('shieldClaim'),
     descriptionMessage: (t) => t('shieldClaim'),
-    route: `${TRANSACTION_SHIELD_CLAIM_ROUTE}`,
+    route: `${TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL}`,
     iconName: IconName.ShieldLock,
   },
   // experimental settingsRefs[0]

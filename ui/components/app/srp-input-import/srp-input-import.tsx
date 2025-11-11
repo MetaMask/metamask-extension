@@ -60,17 +60,23 @@ export default function SrpInputImport({
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
 
-  const checkForInvalidWords = useCallback(() => {
-    draftSrp.forEach((word) => {
-      const isInWordlist = wordlist.includes(word.word);
-      const alreadyInMisspelled = misSpelledWords.some((w) => w.id === word.id);
-      if (isInWordlist && alreadyInMisspelled) {
-        setMisSpelledWords((prev) => prev.filter((w) => w.id !== word.id));
-      } else if (!isInWordlist && !alreadyInMisspelled && word.word !== '') {
-        setMisSpelledWords((prev) => [...prev, word]);
-      }
-    });
-  }, [draftSrp, misSpelledWords]);
+  const checkForInvalidWords = useCallback(
+    (srp?: DraftSrp[]) => {
+      const draftSrpToCheck = srp ?? draftSrp;
+      draftSrpToCheck.forEach((word) => {
+        const isInWordlist = wordlist.includes(word.word);
+        const alreadyInMisspelled = misSpelledWords.some(
+          (w) => w.id === word.id,
+        );
+        if (isInWordlist && alreadyInMisspelled) {
+          setMisSpelledWords((prev) => prev.filter((w) => w.id !== word.id));
+        } else if (!isInWordlist && !alreadyInMisspelled && word.word !== '') {
+          setMisSpelledWords((prev) => [...prev, word]);
+        }
+      });
+    },
+    [draftSrp, misSpelledWords],
+  );
 
   const initializeSrp = () => {
     const firstWordId = uuidv4();
@@ -109,6 +115,7 @@ export default function SrpInputImport({
       });
     }
 
+    checkForInvalidWords(newDraftSrp);
     setDraftSrp(newDraftSrp);
   };
 

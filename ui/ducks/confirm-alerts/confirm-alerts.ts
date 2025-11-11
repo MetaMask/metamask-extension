@@ -44,6 +44,12 @@ export type Alert = {
   isOpenModalOnClick?: boolean;
 
   /**
+   * Whether acknowledgement requirements should be bypassed for this alert,
+   * even when the severity is set to Danger.
+   */
+  acknowledgeBypass?: boolean;
+
+  /**
    * The unique key of the alert.
    */
   key: string;

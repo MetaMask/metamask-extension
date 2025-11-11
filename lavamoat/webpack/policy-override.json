@@ -49,7 +49,7 @@
         "PerformanceObserver": true,
         "chrome.app": true,
         "chrome.runtime": true,
-        "location": true,
+        "location": false,
         "location.href": true,
         "top": true
       }
@@ -206,6 +206,41 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "bitcoin-address-validation": true
+      }
+    },
+    "@rive-app/react-canvas>@rive-app/canvas": {
+      "globals": {
+        "AudioContext": false,
+        "DOMMatrix": false,
+        "FinalizationRegistry": false,
+        "Iterator": false,
+        "MouseEvent": false,
+        "ResizeObserver": false,
+        "crypto": false,
+        "define": false,
+        "devicePixelRatio": false,
+        "h": false,
+        "importScripts": false,
+        "location": false,
+        "prompt": false,
+        "readline": false,
+        "webkitAudioContext": false,
+        "fetch": false,
+        "XMLHttpRequest": false,
+        "document": false,
+        "document.createElement": true,
+        "navigator": false,
+        "navigator.userAgent": true
+      }
+    },
+    "@rive-app/react-canvas": {
+      "globals": {
+        "IntersectionObserver": false,
+        "ResizeObserver": false,
+        "devicePixelRatio": false,
+        "innerHeight": false,
+        "innerWidth": false,
+        "matchMedia": false
       }
     }
   }
