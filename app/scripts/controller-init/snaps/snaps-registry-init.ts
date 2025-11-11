@@ -24,6 +24,13 @@ export const SnapsRegistryInit: ControllerInitFunction<
     state: persistedState.SnapsRegistry,
     messenger: controllerMessenger,
     refetchOnAllowlistMiss: requireAllowlist,
+
+    url: {
+      registry: 'https://acl.dev.execution.metamask.io/latest/registry.json',
+      signature: 'https://acl.dev.execution.metamask.io/latest/signature.json',
+    },
+    publicKey:
+      '0x036b933172302bb25ffa52efb3ca73d1c0b40ae159830126e79f420aeb48236128',
   });
 
   return {
