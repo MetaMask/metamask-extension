@@ -129,7 +129,7 @@ function handleCommandSwapExactOut(
   return {
     amountMin: undefined,
     isExactOut: true,
-    quotesInput: undefined,
+    quotesInput: {} as GenericQuoteRequest,
   };
 }
 
