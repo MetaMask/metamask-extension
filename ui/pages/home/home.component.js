@@ -339,13 +339,9 @@ export default class Home extends PureComponent {
     }
 
     // Check for pending Shield cohort evaluation
-    if (
-      pendingShieldCohort &&
-      pendingShieldCohort !== prevPendingShieldCohort &&
-      evaluateCohortEligibility
-    ) {
-      evaluateCohortEligibility(pendingShieldCohort);
+    if (pendingShieldCohort && evaluateCohortEligibility) {
       setPendingShieldCohort(null);
+      evaluateCohortEligibility(pendingShieldCohort);
     }
 
     // Check for redirect after default page on updates
