@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
 import {
+  Box,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -36,6 +37,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import ShieldIllustrationAnimation from './shield-illustration-animation';
 
 const ShieldEntryModal = () => {
   const t = useI18nContext();
@@ -112,10 +114,14 @@ const ShieldEntryModal = () => {
               ? t('shieldEntryModalSubtitleA', ['$10,000'])
               : t('shieldEntryModalSubtitleB', ['$10,000'])}
           </Text>
-          <img
-            src="/images/shield-entry-modal.png"
-            alt="Shield Entry Illustration"
-          />
+          <Box className="grid place-items-center">
+            <img
+              src="/images/shield-entry-modal-bg.png"
+              alt="Shield Entry Illustration"
+              className="col-start-1 row-start-1"
+            />
+            <ShieldIllustrationAnimation className="col-start-1 row-start-1" />
+          </Box>
         </ModalBody>
         <ModalFooter
           display={Display.Flex}
