@@ -62,7 +62,7 @@ function handleV4SwapCommand(
     amountMin: result.amountMin,
     isExactOut: result.isExactOut,
     quotesInput: {
-      ...quotesInput,
+      ...(quotesInput ?? {}),
       ...result.quotesInput,
     } as GenericQuoteRequest,
   };
@@ -78,7 +78,7 @@ function handleV4CommandSwapExactIn(
     amountMin: argToAmount(args[4]),
     isExactOut: false,
     quotesInput: {
-      ...quotesInput,
+      ...(quotesInput ?? {}),
       srcTokenAmount: argToAmount(args[3]),
       srcTokenAddress: argToAddress(args[1]),
       destTokenAddress: argToAddress(args[7]),
@@ -96,7 +96,7 @@ function handleV4CommandSwapExactInSingle(
     amountMin: argToAmount(args[9]),
     isExactOut: false,
     quotesInput: {
-      ...quotesInput,
+      ...(quotesInput ?? {}),
       srcTokenAmount: argToAmount(args[7]),
       srcTokenAddress: argToAddress(args[1]),
       destTokenAddress: argToAddress(args[2]),
@@ -114,7 +114,7 @@ function handleV4CommandTake(
     amountMin: undefined,
     isExactOut: false,
     quotesInput: {
-      ...quotesInput,
+      ...(quotesInput ?? {}),
       walletAddress: argToAddress(args[1]),
     } as GenericQuoteRequest,
   };
@@ -129,7 +129,7 @@ function handleCommandSwapExactOut(
   return {
     amountMin: undefined,
     isExactOut: true,
-    quotesInput: {} as GenericQuoteRequest,
+    quotesInput: undefined,
   };
 }
 
@@ -157,7 +157,7 @@ function handleV3SwapExactInCommand(
     amountMin: argToAmount(args[2]),
     isExactOut: false,
     quotesInput: {
-      ...quotesInput,
+      ...(quotesInput ?? {}),
       walletAddress: argToAddress(args[0]),
       srcTokenAmount: argToAmount(args[1]),
       srcTokenAddress,
@@ -176,7 +176,7 @@ function handleWrapEthCommand(
     amountMin: undefined,
     isExactOut: false,
     quotesInput: {
-      ...quotesInput,
+      ...(quotesInput ?? {}),
       srcTokenAddress: getNativeTokenAddress(chainId),
       srcTokenAmount: argToAmount(args[1]),
     } as GenericQuoteRequest,
@@ -193,7 +193,7 @@ function handlePermit2PermitCommand(
     amountMin: undefined,
     isExactOut: false,
     quotesInput: {
-      ...quotesInput,
+      ...(quotesInput ?? {}),
       srcTokenAddress: argToAddress(args[0]),
     } as GenericQuoteRequest,
   };
@@ -209,7 +209,7 @@ function handleSweepCommand(
     amountMin: argToAmount(args[2]),
     isExactOut: false,
     quotesInput: {
-      ...quotesInput,
+      ...(quotesInput ?? {}),
       destTokenAddress: argToAddress(args[0]),
       walletAddress: argToAddress(args[1]),
     } as GenericQuoteRequest,
@@ -226,7 +226,7 @@ function handleUnwrapWethCommand(
     amountMin: argToAmount(args[1]),
     isExactOut: false,
     quotesInput: {
-      ...quotesInput,
+      ...(quotesInput ?? {}),
       destTokenAddress: getNativeTokenAddress(chainId),
       walletAddress: argToAddress(args[0]),
     } as GenericQuoteRequest,
