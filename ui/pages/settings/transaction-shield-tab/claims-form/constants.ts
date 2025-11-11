@@ -5,7 +5,6 @@ import {
   SubmitClaimField,
 } from '../types';
 
-export const VALID_SUBMISSION_WINDOW_DAYS = 21;
 export const MAX_FILE_SIZE_MB = 5;
 export const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
@@ -26,7 +25,6 @@ export const ERROR_MESSAGE_MAP: Partial<
   },
   [SUBMIT_CLAIM_ERROR_CODES.SUBMISSION_WINDOW_EXPIRED]: {
     messageKey: 'shieldClaimSubmissionWindowExpired',
-    params: [VALID_SUBMISSION_WINDOW_DAYS.toString()],
   },
   [SUBMIT_CLAIM_ERROR_CODES.MAX_CLAIMS_LIMIT_EXCEEDED]: {
     messageKey: 'shieldClaimMaxClaimsLimitExceeded',

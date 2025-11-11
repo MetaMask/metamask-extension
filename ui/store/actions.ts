@@ -77,7 +77,11 @@ import {
   CachedLastSelectedPaymentMethods,
 } from '@metamask/subscription-controller';
 
-import { Claim, SubmitClaimConfig } from '@metamask/claims-controller';
+import {
+  Claim,
+  CreateClaimRequest,
+  SubmitClaimConfig,
+} from '@metamask/claims-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -7779,16 +7783,9 @@ export async function getLayer1GasFeeValue({
  * @param params.signature - Claim signature.
  * @returns The subscription response.
  */
-export async function submitShieldClaim(params: {
-  chainId: string;
-  email: string;
-  impactedWalletAddress: string;
-  impactedTransactionHash: string;
-  reimbursementWalletAddress: string;
-  caseDescription: string;
-  signature: string;
-  files?: FileList;
-}) {
+export async function submitShieldClaim(
+  params: CreateClaimRequest & { files?: FileList },
+) {
   const submitClaimConfig = await submitRequestToBackground<SubmitClaimConfig>(
     'getSubmitClaimConfig',
     [params],
@@ -7799,12 +7796,12 @@ export async function submitShieldClaim(params: {
   formData.append('chainId', params.chainId);
   formData.append('email', params.email);
   formData.append('impactedWalletAddress', params.impactedWalletAddress);
-  formData.append('impactedTxHash', params.impactedTransactionHash);
+  formData.append('impactedTxHash', params.impactedTxHash);
   formData.append(
     'reimbursementWalletAddress',
     params.reimbursementWalletAddress,
   );
-  formData.append('description', params.caseDescription);
+  formData.append('description', params.description);
   formData.append('signature', params.signature);
   formData.append('timestamp', Date.now().toString());
 
@@ -7820,7 +7817,6 @@ export async function submitShieldClaim(params: {
     const response = await fetch(url, {
       method,
       body: formData,
-      // FIXME: remove `Content-Type: multipart/form-data` from the controller
       headers: {
         Authorization: headers.Authorization,
       },
