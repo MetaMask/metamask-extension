@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Атрибуции"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "URL-адрес Infura RPC больше не поддерживает Aurora."
-  },
   "authorizedPermissions": {
     "message": "Вы предоставили следующие разрешения"
   },
@@ -1821,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Внесите криптовалюту с другого счета, используя адрес кошелька или QR-код."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Из-за обновлений системы Ethereum тестовая сеть Goerli скоро будет закрыта."
   },
   "deprecatedNetwork": {
     "message": "Эта сеть устарела"

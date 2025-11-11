@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Zuschreibungen"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Die Infura RPC URL unterstützt Aurora nicht mehr."
-  },
   "authorizedPermissions": {
     "message": "Sie haben die folgenden Genehmigungen autorisiert."
   },
@@ -1821,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Zahlen Sie Krypto von einem anderen Konto über eine Wallet-Adresse oder einen QR-Code ein."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Aufgrund von Aktualisierungen des Ethereum-Systems wird das Goerli-Testnetzwerk bald eingestellt."
   },
   "deprecatedNetwork": {
     "message": "Dieses Netzwerk ist veraltet"

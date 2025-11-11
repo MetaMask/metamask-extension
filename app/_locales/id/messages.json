@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Atribusi"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "URL RPC Infura tidak lagi mendukung Aurora."
-  },
   "authorizedPermissions": {
     "message": "Anda telah mengotorisasi izin berikut"
   },
@@ -1821,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Mendeposit kripto dari akun lain dengan alamat dompet atau kode QR."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Karena pembaruan pada sistem Ethereum, jaringan uji Goerli akan segera dihentikan."
   },
   "deprecatedNetwork": {
     "message": "Jaringan ini tidak digunakan lagi"

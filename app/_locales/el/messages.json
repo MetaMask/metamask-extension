@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Αποδόσεις"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Η διεύθυνση URL του Infura RPC δεν υποστηρίζει πλέον την Aurora."
-  },
   "authorizedPermissions": {
     "message": "Έχετε εξουσιοδοτήσει τα ακόλουθα δικαιώματα"
   },
@@ -1821,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Κατάθεση κρυπτονομισμάτων από άλλο λογαριασμό με διεύθυνση πορτοφολιού ή κωδικό QR."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Εξαιτίας των ενημερώσεων στο σύστημα Ethereum, το δίκτυο δοκιμών Goerli θα καταργηθεί σύντομα."
   },
   "deprecatedNetwork": {
     "message": "Αυτό το δίκτυο έχει καταργηθεί"

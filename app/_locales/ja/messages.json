@@ -630,9 +630,6 @@
   "attributions": {
     "message": "属性"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Infura RPC URLでAuroraがサポートされなくなりました。"
-  },
   "authorizedPermissions": {
     "message": "以下の権限を承認しました"
   },
@@ -1821,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "ウォレットアドレスまたはQRコードを使った別のアカウントからの仮想通貨のデポジット"
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "イーサリアムシステムのアップデートに伴い、Goerliテストネットワークはまもなく段階的に廃止される予定です。"
   },
   "deprecatedNetwork": {
     "message": "このネットワークはサポートされなくなりました"

@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Ghi nhận đóng góp"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "URL Infura RPC không còn hỗ trợ Aurora nữa."
-  },
   "authorizedPermissions": {
     "message": "Bạn đã cấp các quyền sau đây"
   },
@@ -1821,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Nạp tiền mã hóa từ tài khoản khác bằng địa chỉ ví hoặc mã QR."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Do các cập nhật của hệ thống Ethereum, mạng thử nghiệm Goerli sẽ sớm được loại bỏ dần."
   },
   "deprecatedNetwork": {
     "message": "Mạng này đã ngừng sử dụng"

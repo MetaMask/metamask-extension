@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Özellikler"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Infura RPC URL adresi artık Aurora'yı desteklemiyor."
-  },
   "authorizedPermissions": {
     "message": "Aşağıdaki izinleri verdiniz"
   },
@@ -1821,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Cüzdan adresi veya QR kodu ile başka bir hesaptan kripto yatırın."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Ethereum sistemindeki güncellemelerden dolayı Goerli test ağı yakında aşamalı olarak devre dışı bırakılacaktır."
   },
   "deprecatedNetwork": {
     "message": "Bu ağ artık kullanılmıyor"
