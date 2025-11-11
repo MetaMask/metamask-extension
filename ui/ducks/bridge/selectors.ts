@@ -300,8 +300,8 @@ export const getNetworkFilterOrTopChain = createSelector(
 
 // This returns undefined if the selected chain is not supported by swap/bridge (i.e, testnets)
 export const getFromChain = createDeepEqualSelector(
-  [getFromChains, getMultichainProviderConfig, getNetworkFilterOrTopChain],
-  (fromChains, providerConfig, networkFilterOrTopChain) => {
+  [getFromChains, getMultichainProviderConfig],
+  (fromChains, providerConfig) => {
     // When the page loads the global network always matches the network filter
     // Because useBridging checks whether the lastSelectedNetwork matches the provider config
     // Then useBridgeQueryParams sets the global network to lastSelectedNetwork as needed
