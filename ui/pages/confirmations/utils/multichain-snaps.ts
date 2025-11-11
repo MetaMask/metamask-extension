@@ -43,11 +43,9 @@ export async function validateAmountMultichain(
   });
 }
 
-// {"accountId": "525249ab-21cc-43ab-b6c0-61373fdee1d5", "assetId": "tron:728126428/slip44:195", "options": {"purpose": "ENERGY"}, "value": "1"}
-
-export async function confirmTronStake() {
+export async function confirmTronStake(fromAccountId?: string) {
   const defaultParams = {
-    fromAccountId: 'b833d6a1-c07a-4405-9500-a9093b9eb4c7',
+    fromAccountId: fromAccountId,
     assetId: 'tron:728126428/slip44:195' as CaipAssetType,
     options: { purpose: 'ENERGY' },
     value: '1',
@@ -64,3 +62,20 @@ export async function confirmTronStake() {
   });
 }
 
+export async function validateTronStakeAmount(fromAccountId?: string) {
+  const defaultParams = {
+    fromAccountId: fromAccountId,
+    assetId: 'tron:728126428/slip44:195' as CaipAssetType,
+    value: '1',
+  };
+
+  return await handleSnapRequest({
+    snapId: 'local:http://localhost:8080',
+    origin: 'metamask',
+    handler: HandlerType.OnClientRequest,
+    request: {
+      method: 'onStakeAmountInput',
+      params: defaultParams,
+    },
+  });
+}

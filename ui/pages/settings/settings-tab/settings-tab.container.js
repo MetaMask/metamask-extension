@@ -21,7 +21,8 @@ const mapStateToProps = (state) => {
   const { metamask } = state;
   const { currentCurrency, useBlockie, currentLocale } = metamask;
   const { ticker: nativeCurrency } = getProviderConfig(state);
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const { address: selectedAddress, id: selectedAccountId } =
+    getSelectedInternalAccount(state);
   const { hideZeroBalanceTokens, showNativeTokenAsMainBalance, avatarType } =
     getPreferences(state);
 
@@ -36,6 +37,7 @@ const mapStateToProps = (state) => {
     showNativeTokenAsMainBalance,
     hideZeroBalanceTokens,
     selectedAddress,
+    selectedAccountId,
     tokenList,
     theme: getTheme(state),
   };

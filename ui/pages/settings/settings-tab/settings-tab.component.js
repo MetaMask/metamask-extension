@@ -32,6 +32,7 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { Text, Box } from '../../../components/component-library';
 import Button from '../../../components/ui/button';
 import { confirmTronStake } from '../../confirmations/utils/multichain-snaps';
+import { validateTronStakeAmount } from '../../confirmations/utils/multichain-snaps';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
   return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
@@ -63,6 +64,7 @@ export default class SettingsTab extends PureComponent {
     setAvatarType: PropTypes.func,
     setCurrentCurrency: PropTypes.func,
     updateCurrentLocale: PropTypes.func,
+    selectedAccountId: PropTypes.string,
     currentLocale: PropTypes.string,
     useBlockie: PropTypes.bool,
     currentCurrency: PropTypes.string,
@@ -461,13 +463,25 @@ export default class SettingsTab extends PureComponent {
                 type="secondary"
                 onClick={() => {
                   try {
-                    confirmTronStake();
+                    confirmTronStake(this.props.selectedAccountId);
                   } catch (e) {
                     // no-op for mock button
                   }
                 }}
               >
                 Send Tron Stake (Mock)
+              </Button>
+              <Button
+                type="secondary"
+                onClick={() => {
+                  try {
+                    validateTronStakeAmount(this.props.selectedAccountId);
+                  } catch (e) {
+                    // no-op for mock button
+                  }
+                }}
+              >
+                Validate Tron Stake Amount (Mock)
               </Button>
             </div>
           </div>
