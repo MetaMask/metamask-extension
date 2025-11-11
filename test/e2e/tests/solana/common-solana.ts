@@ -1726,7 +1726,7 @@ export async function withSolanaAccountSnap(
         }
 
         if (withProtocolSnap) {
-          mockList.push((await mockProtocolSnap(mockServer)));
+          mockList.push(await mockProtocolSnap(mockServer));
         }
         if (withCustomMocks) {
           const customMocksResult = await withCustomMocks(mockServer);

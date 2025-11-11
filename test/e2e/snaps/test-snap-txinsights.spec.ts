@@ -43,6 +43,7 @@ describe('Test Snap TxInsights', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectTransactionInsightButton',
+          { port: 8081 },
         );
 
         // open the test-dapp page
@@ -86,6 +87,7 @@ describe('Test Snap TxInsights', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectTransactionInsightButton',
+          { port: 8081 },
         );
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
@@ -136,6 +138,7 @@ describe('Test Snap TxInsights', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectTransactionInsightButton',
+          { port: 8081 },
         );
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });

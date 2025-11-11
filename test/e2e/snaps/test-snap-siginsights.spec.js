@@ -1,5 +1,10 @@
 const { withFixtures, unlockWallet } = require('../helpers');
-const { DAPP_URL, WINDOW_TITLES, DAPP_PATH } = require('../constants');
+const {
+  DAPP_ONE_URL,
+  DAPP_PATH,
+  DAPP_URL,
+  WINDOW_TITLES,
+} = require('../constants');
 const FixtureBuilder = require('../fixture-builder');
 const {
   mockSignatureInsightsSnap,
@@ -26,7 +31,7 @@ describe('Test Snap Signature Insights', function () {
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect
-        await driver.openNewPage(DAPP_URL);
+        await driver.openNewPage(DAPP_ONE_URL);
 
         // wait for page to load
         await driver.waitForSelector({

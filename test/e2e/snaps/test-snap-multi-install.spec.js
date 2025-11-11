@@ -1,11 +1,10 @@
-const { DAPP_PATH } = require('../constants');
+const { DAPP_PATH, DAPP_URL } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
   mockBip32Snap,
   mockBip44Snap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 async function mockSnapBinaries(mockServer) {
   return [await mockBip32Snap(mockServer), await mockBip44Snap(mockServer)];
@@ -27,7 +26,7 @@ describe('Test Snap Multi Install', function () {
         await unlockWallet(driver);
 
         // navigate to test snaps page and multi-install snaps
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.openNewPage(DAPP_URL);
 
         // wait for page to load
         await driver.waitForSelector({
