@@ -807,6 +807,10 @@ export default class MetamaskController extends EventEmitter {
         );
 
         if (hasActiveShieldSubscription) {
+          // fetch claims configurations when shield subscription is active
+          this.claimsController.fetchClaimsConfigurations().catch((err) => {
+            log.error('Error fetching claims configurations', err);
+          });
           this.shieldController.start();
         } else {
           this.shieldController.stop();
