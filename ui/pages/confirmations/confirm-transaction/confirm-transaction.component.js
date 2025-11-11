@@ -6,6 +6,7 @@ import {
   Route,
   useNavigate,
   useParams,
+  useLocation,
 } from 'react-router-dom-v5-compat';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -61,9 +62,13 @@ const ConfirmTransaction = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const urlParams = useParams();
+  const hookLocation = useLocation();
 
   // Use params from props (v5 route) if available, otherwise fall back to useParams (v6)
   const { id: paramsTransactionId } = routeParams || urlParams;
+
+  // Use location from props (v5 route) if available, otherwise fall back to useLocation (v6)
+  const location = routeLocation || hookLocation;
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
@@ -214,7 +219,7 @@ const ConfirmTransaction = ({
     // This strips the base '/confirm-transaction/:id' from the pathname
     // Example: '/confirm-transaction/123/decrypt-message-request' -> '/decrypt-message-request'
     const relativeLocation = getRelativeLocationForNestedRoutes(
-      routeLocation,
+      location,
       `${CONFIRM_TRANSACTION_ROUTE}/${paramsTransactionId || ''}`,
     );
 
