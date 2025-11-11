@@ -636,7 +636,7 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
 export function setShowShieldEntryModalOnce(
   show: boolean | null,
   shouldSubmitEvents: boolean = false,
-  modalType?: ModalType = MODAL_TYPE.A,
+  modalType: ModalType = MODAL_TYPE.A,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
