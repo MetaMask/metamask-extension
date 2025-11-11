@@ -25,6 +25,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAddressRowsList } from '../../../components/multichain-accounts/multichain-address-rows-list';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import { AddressQRCodeModal } from '../../../components/multichain-accounts/address-qr-code-modal/address-qr-code-modal';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import {
   AddressListQueryParams,
   AddressListSource,
@@ -111,7 +112,7 @@ export const MultichainAccountAddressListPage = ({
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             data-testid="multichain-account-address-list-page-back-button"
           />
         }

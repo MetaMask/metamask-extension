@@ -1,11 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { parseCaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import {
-  useNavigate,
-  useParams,
-  useLocation,
-} from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import {
   Page,
   Header,
@@ -24,6 +20,7 @@ import {
   BackgroundColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import QrCodeView from '../../../components/ui/qr-code-view';
 import { getInternalAccountByAddress } from '../../../selectors';
 import { getMultichainNetwork } from '../../../selectors/multichain';
@@ -102,7 +99,7 @@ export const AddressQRCode = ({
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
           />
         }
       >

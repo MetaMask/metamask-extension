@@ -61,13 +61,24 @@ import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { SiteCell } from './site-cell/site-cell';
 
-export const ReviewPermissions = () => {
+type ReviewPermissionsProps = {
+  params?: { origin: string };
+  navigate?: (to: string | number, options?: { replace?: boolean; state?: Record<string, unknown> }) => void;
+};
+
+export const ReviewPermissions = ({ params, navigate: navigateProp }: ReviewPermissionsProps = {}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const urlParams = useParams<{ origin: string }>();
+  const navigateHook = useNavigate();
+  const urlParamsHook = useParams<{ origin: string }>();
+
+  // Use props if provided, otherwise fall back to hooks
+  const navigate = navigateProp || navigateHook;
+  const urlParams = params || urlParamsHook;
+
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const securedOrigin = decodeURIComponent(urlParams.origin);
+
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);

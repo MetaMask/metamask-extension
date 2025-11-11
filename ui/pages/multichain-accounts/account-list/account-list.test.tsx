@@ -64,7 +64,7 @@ describe('AccountList', () => {
     expect(screen.getByText('Account 2')).toBeInTheDocument();
   });
 
-  it('calls history.goBack when back button is clicked', () => {
+  it('calls navigate when back button is clicked', () => {
     renderComponent();
 
     const backButton = screen.getByLabelText('Back');

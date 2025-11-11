@@ -54,7 +54,7 @@ export const MultichainAccountsTree = ({
       );
       onClose();
     },
-    [history, onClose],
+    [navigate, onClose],
   );
 
   const accountsTree = useMemo(() => {

@@ -475,7 +475,7 @@ const ShieldPlan = mmLazy(
 // End Lazy Routes
 
 const MemoizedReviewPermissionsWrapper = React.memo(
-  (props: RouteComponentProps) => (
+  (props: { params?: { origin: string }; navigate?: V5CompatNavigate }) => (
     <State2Wrapper
       {...props}
       state1Component={ReviewPermissions}
@@ -734,10 +734,14 @@ export default function Routes() {
             path={NOTIFICATIONS_SETTINGS_ROUTE}
             component={NotificationsSettings}
           />
-          <Authenticated
-            path={`${NOTIFICATIONS_ROUTE}/:uuid`}
-            component={NotificationDetails}
-          />
+          <Route path={`${NOTIFICATIONS_ROUTE}/:uuid`} exact>
+            {createV5CompatRoute<{ uuid: string }>(NotificationDetails, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </Route>
           <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
           <Authenticated path={SNAPS_ROUTE} component={SnapList} exact />
           <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
@@ -745,7 +749,15 @@ export default function Routes() {
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
             component={ConfirmTransaction}
           />
-          <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
+          <Route path={`${SEND_ROUTE}/:page?`}>
+            {createV5CompatRoute<{ page?: string }>(SendPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              includeLocation: true,
+              paramsAsProps: false,
+            })}
+          </Route>
           <Route path={SWAPS_ROUTE}>
             {createV5CompatRoute(Swaps, {
               wrapper: AuthenticatedV5Compat,
@@ -848,10 +860,14 @@ export default function Routes() {
               paramsAsProps: false,
             })}
           </Route>
-          <Authenticated
-            path={`${CONNECTIONS}/:origin`}
-            component={Connections}
-          />
+          <Route path={`${CONNECTIONS}/:origin`} exact>
+            {createV5CompatRoute<{ origin: string }>(Connections, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </Route>
           <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
           <Authenticated
             path={GATOR_PERMISSIONS}
@@ -863,162 +879,112 @@ export default function Routes() {
             component={TokenTransferPage}
             exact
           />
-          <Authenticated
+          <Route
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
-            component={ReviewGatorPermissionsPage}
             exact
-          />
-          <Authenticated
-            path={`${REVIEW_PERMISSIONS}/:origin`}
-            component={MemoizedReviewPermissionsWrapper}
-            exact
-          />
+          >
+            {createV5CompatRoute<{
+              chainId: string;
+              permissionGroupName: string;
+            }>(ReviewGatorPermissionsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </Route>
+          <Route path={`${REVIEW_PERMISSIONS}/:origin`} exact>
+            {createV5CompatRoute<{ origin: string }>(
+              MemoizedReviewPermissionsWrapper,
+              {
+                wrapper: AuthenticatedV5Compat,
+                includeParams: true,
+                includeNavigate: true,
+                paramsAsProps: false,
+              },
+            )}
+          </Route>
           <Route path={ACCOUNT_LIST_PAGE_ROUTE} exact>
-            {() => {
-              const AccountListComponent = AccountList as React.ComponentType;
-              return (
-                <AuthenticatedV5Compat>
-                  <AccountListComponent />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute(AccountList, {
+              wrapper: AuthenticatedV5Compat,
+            })}
           </Route>
           <Route
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
             exact
           >
-            {(props: RouteComponentProps<{ accountGroupId: string }>) => {
-              const { location: v5Location, match } = props;
-              const MultichainAccountAddressListPageComponent =
-                MultichainAccountAddressListPage as React.ComponentType<{
-                  location: RouteComponentProps['location'];
-                  params: { accountGroupId: string };
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <MultichainAccountAddressListPageComponent
-                    location={v5Location}
-                    params={match.params}
-                  />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ accountGroupId: string }>(
+              MultichainAccountAddressListPage,
+              {
+                wrapper: AuthenticatedV5Compat,
+                includeLocation: true,
+                includeParams: true,
+                paramsAsProps: false,
+              },
+            )}
           </Route>
           <Route
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
             exact
           >
-            {(props: RouteComponentProps<{ accountGroupId: string }>) => {
-              const { match } = props;
-              const MultichainAccountPrivateKeyListPageComponent =
-                MultichainAccountPrivateKeyListPage as React.ComponentType<{
-                  params: { accountGroupId: string };
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <MultichainAccountPrivateKeyListPageComponent
-                    params={match.params}
-                  />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ accountGroupId: string }>(
+              MultichainAccountPrivateKeyListPage,
+              {
+                wrapper: AuthenticatedV5Compat,
+                includeParams: true,
+                paramsAsProps: false,
+              },
+            )}
           </Route>
           <Route path={ADD_WALLET_PAGE_ROUTE} exact>
-            {() => {
-              const AddWalletPageComponent =
-                AddWalletPage as React.ComponentType;
-              return (
-                <AuthenticatedV5Compat>
-                  <AddWalletPageComponent />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute(AddWalletPage, {
+              wrapper: AuthenticatedV5Compat,
+            })}
           </Route>
           <Route path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`} exact>
-            {(props: RouteComponentProps<{ id: string }>) => {
-              const { match } = props;
-              const MultichainAccountDetailsPageComponent =
-                MultichainAccountDetailsPage as React.ComponentType<{
-                  params: { id: string };
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <MultichainAccountDetailsPageComponent
-                    params={match.params}
-                  />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ id: string }>(MultichainAccountDetailsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
           </Route>
           <Route path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`} exact>
-            {(props: RouteComponentProps<{ address: string }>) => {
-              const { match } = props;
-              const SmartAccountPageComponent =
-                SmartAccountPage as React.ComponentType<{
-                  params: { address: string };
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <SmartAccountPageComponent params={match.params} />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ address: string }>(SmartAccountPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
           </Route>
           <Route path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`} exact>
-            {(props: RouteComponentProps<{ id: string }>) => {
-              const { match } = props;
-              const WalletDetailsPageComponent =
-                WalletDetailsPage as React.ComponentType<{
-                  params: { id: string };
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <WalletDetailsPageComponent params={match.params} />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ id: string }>(WalletDetailsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
           </Route>
           <Route path={WALLET_DETAILS_ROUTE} exact>
-            {(props: RouteComponentProps<{ id: string }>) => {
-              const { match } = props;
-              const WalletDetailsComponent =
-                WalletDetails as React.ComponentType<{
-                  params: { id: string };
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <WalletDetailsComponent params={match.params} />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ id: string }>(WalletDetails, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
           </Route>
           <Route path={`${ACCOUNT_DETAILS_ROUTE}/:address`} exact>
-            {(props: RouteComponentProps<{ address: string }>) => {
-              const { match } = props;
-              const MultichainAccountDetailsComponent =
-                MultichainAccountDetails as React.ComponentType<{
-                  params: { address: string };
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <MultichainAccountDetailsComponent params={match.params} />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ address: string }>(
+              MultichainAccountDetails,
+              {
+                wrapper: AuthenticatedV5Compat,
+                includeParams: true,
+                paramsAsProps: false,
+              },
+            )}
           </Route>
           <Route path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`} exact>
-            {(props: RouteComponentProps<{ address: string }>) => {
-              const { match } = props;
-              const AddressQRCodeComponent =
-                AddressQRCode as React.ComponentType<{
-                  params: { address: string };
-                }>;
-              return (
-                <AuthenticatedV5Compat>
-                  <AddressQRCodeComponent params={match.params} />
-                </AuthenticatedV5Compat>
-              );
-            }}
+            {createV5CompatRoute<{ address: string }>(AddressQRCode, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
           </Route>
           <Authenticated
             path={NONEVM_BALANCE_CHECK_ROUTE}

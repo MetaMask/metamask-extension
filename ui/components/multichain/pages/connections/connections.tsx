@@ -65,10 +65,27 @@ import {
 } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
 
-export const Connections = () => {
+type ConnectionsProps = {
+  params?: { origin: string };
+  navigate?: (
+    to: string | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => void;
+};
+
+export const Connections = ({
+  params,
+  navigate: navigateProp,
+}: ConnectionsProps = {}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigateHook = useNavigate();
+  const urlParamsHook = useParams<{ origin: string }>();
+
+  // Use props if provided, otherwise fall back to hooks
+  const navigate = navigateProp || navigateHook;
+  const urlParams = params || urlParamsHook;
+
   const [showConnectAccountsModal, setShowConnectAccountsModal] =
     useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
@@ -83,7 +100,6 @@ export const Connections = () => {
     setShowDisconnectedAllAccountsUpdatedToast,
   ] = useState(false);
 
-  const urlParams = useParams<{ origin: string }>();
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const activeTabOrigin = decodeURIComponent(urlParams.origin);
 

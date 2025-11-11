@@ -69,11 +69,21 @@ export enum MultichainReviewPermissionsPageMode {
   EditAccounts = 'edit-accounts',
 }
 
-export const MultichainReviewPermissions = () => {
+type MultichainReviewPermissionsProps = {
+  params?: { origin: string };
+  navigate?: (to: string | number, options?: { replace?: boolean; state?: Record<string, unknown> }) => void;
+};
+
+export const MultichainReviewPermissions = ({ params, navigate: navigateProp }: MultichainReviewPermissionsProps = {}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const urlParams = useParams<{ origin: string }>();
+  const navigateHook = useNavigate();
+  const urlParamsHook = useParams<{ origin: string }>();
+
+  // Use props if provided, otherwise fall back to hooks
+  const navigate = navigateProp || navigateHook;
+  const urlParams = params || urlParamsHook;
+
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const securedOrigin = decodeURIComponent(urlParams.origin);
   const [showAccountToast, setShowAccountToast] = useState(false);

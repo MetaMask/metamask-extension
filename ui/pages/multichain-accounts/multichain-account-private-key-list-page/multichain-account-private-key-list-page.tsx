@@ -28,6 +28,7 @@ import {
 } from '../../../components/component-library';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
 type MultichainAccountPrivateKeyListPageProps = {
   params?: { accountGroupId: string };
@@ -84,7 +85,7 @@ export const MultichainAccountPrivateKeyListPage = ({
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             data-testid="multichain-account-address-list-page-back-button"
           />
         }
@@ -105,7 +106,7 @@ export const MultichainAccountPrivateKeyListPage = ({
           {decodedAccountGroupId ? (
             <MultichainPrivateKeyList
               groupId={decodedAccountGroupId}
-              goBack={() => navigate(-1)}
+              goBack={() => navigate(PREVIOUS_ROUTE)}
               data-testid="multichain-account-private-key-list"
             />
           ) : null}

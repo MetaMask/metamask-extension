@@ -31,6 +31,7 @@ import {
   getAccountTree,
   getNormalizedGroupsMetadata,
 } from '../../../selectors/multichain-accounts/account-tree';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
@@ -126,7 +127,7 @@ export const AccountList = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
           />
         }
       >

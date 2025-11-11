@@ -15,6 +15,7 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SmartContractAccountToggleSection } from '../../../components/multichain-accounts/smart-contract-account-toggle-section';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
 type SmartAccountPageProps = {
   params?: { address: string };
@@ -46,7 +47,7 @@ export const SmartAccountPage = ({
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             data-testid="smart-account-page-back-button"
           />
         }

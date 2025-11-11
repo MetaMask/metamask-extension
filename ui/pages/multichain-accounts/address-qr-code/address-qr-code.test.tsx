@@ -3,7 +3,6 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { ACCOUNT_DETAILS_QR_CODE_ROUTE } from '../../../helpers/constants/routes';
 import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';

@@ -158,7 +158,7 @@ export const MultichainAccountMenu = ({
   }, [
     accountGroupId,
     handleAccountRenameAction,
-    history,
+    navigate,
     isRemovable,
     isPinned,
     isHidden,

@@ -455,7 +455,7 @@ export const MultichainAccountList = ({
     hdEntropyIndex,
     defaultHomeActiveTabName,
     dispatch,
-    history,
+    navigate,
     isInSearchMode,
     displayWalletHeader,
     allBalances,

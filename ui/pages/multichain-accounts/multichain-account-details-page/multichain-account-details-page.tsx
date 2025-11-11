@@ -40,6 +40,7 @@ import {
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
@@ -177,7 +178,7 @@ export const MultichainAccountDetailsPage = ({
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             data-testid="back-button"
           />
         }

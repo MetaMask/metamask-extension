@@ -33,6 +33,7 @@ import {
 import {
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { IconName } from '../../../components/component-library/icon';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
@@ -97,7 +98,7 @@ export const BaseAccountDetails = ({
 
   const handleNavigation = useCallback(() => {
     dispatch(setAccountDetailsAddress(''));
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate, dispatch]);
 
   // we can never have a scenario where an account is not associated with a wallet.
@@ -149,7 +150,7 @@ export const BaseAccountDetails = ({
     chainId,
     accountType,
     hdEntropyIndex,
-    history,
+    navigate,
   ]);
 
   return (

@@ -16,6 +16,7 @@ import {
 import { TextVariant as LegacyTextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ImportAccount } from '../../../components/multichain/import-account/import-account';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
 /**
  *
@@ -29,7 +30,7 @@ export const AddWalletPage = () => {
   const onActionComplete = useCallback(
     async (confirmed: boolean) => {
       if (confirmed) {
-        navigate(-1);
+        navigate(PREVIOUS_ROUTE);
       }
     },
     [navigate],
@@ -46,7 +47,7 @@ export const AddWalletPage = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             data-testid="add-wallet-page-back-button"
           />
         }

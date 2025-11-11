@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { Tooltip } from 'react-tippy';
@@ -72,7 +73,10 @@ import {
   SendPageRecipientInput,
 } from './components';
 
-export const SendPage = () => {
+export const SendPage = ({
+  navigate: navigateProp,
+  location: locationProp,
+} = {}) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
@@ -92,8 +96,12 @@ export const SendPage = () => {
   const sendStage = useSelector(getSendStage);
   const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigateHook = useNavigate();
+  const locationHook = useLocation();
+
+  // Use props if provided, otherwise fall back to hooks
+  const navigate = navigateProp || navigateHook;
+  const location = locationProp || locationHook;
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
@@ -291,7 +299,7 @@ export const SendPage = () => {
           name: TraceName.SendCompleted,
         },
         async () => {
-          await dispatch(signTransaction(history));
+          await dispatch(signTransaction(navigate));
         },
       );
       trackEvent({
@@ -455,4 +463,9 @@ export const SendPage = () => {
       </Footer>
     </Page>
   );
+};
+
+SendPage.propTypes = {
+  navigate: PropTypes.func,
+  location: PropTypes.object,
 };

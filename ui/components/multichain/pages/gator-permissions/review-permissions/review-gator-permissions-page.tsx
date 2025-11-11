@@ -32,10 +32,19 @@ import {
 } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { ReviewGatorPermissionItem } from '../components';
 
-export const ReviewGatorPermissionsPage = () => {
+type ReviewGatorPermissionsPageProps = {
+  params?: { chainId: string; permissionGroupName: string };
+  navigate?: (to: string | number, options?: { replace?: boolean; state?: Record<string, unknown> }) => void;
+};
+
+export const ReviewGatorPermissionsPage = ({ params, navigate: navigateProp }: ReviewGatorPermissionsPageProps = {}) => {
   const t = useI18nContext();
-  const navigate = useNavigate();
-  const { chainId } = useParams();
+  const navigateHook = useNavigate();
+  const urlParamsHook = useParams<{ chainId: string; permissionGroupName: string }>();
+
+  // Use props if provided, otherwise fall back to hooks
+  const navigate = navigateProp || navigateHook;
+  const { chainId } = params || urlParamsHook;
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );

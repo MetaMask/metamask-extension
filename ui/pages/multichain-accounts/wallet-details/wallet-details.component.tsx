@@ -58,6 +58,7 @@ import {
 import {
   ACCOUNT_DETAILS_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
@@ -123,7 +124,7 @@ const WalletDetails = ({ params: propsParams }: WalletDetailsProps = {}) => {
   };
 
   const handleBack = () => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   };
 
   if (!wallet) {

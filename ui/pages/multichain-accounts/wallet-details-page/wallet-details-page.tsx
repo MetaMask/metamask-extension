@@ -32,7 +32,10 @@ import {
 } from '../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
-import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACCOUNT_LIST_PAGE_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
 import { AddMultichainAccount } from '../../../components/multichain-accounts/add-multichain-account';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
@@ -82,7 +85,7 @@ export const WalletDetailsPage = ({
   };
 
   const handleBack = () => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   };
 
   const multichainAccountCells = useMemo(
