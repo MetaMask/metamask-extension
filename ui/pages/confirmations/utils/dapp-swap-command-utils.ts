@@ -1,5 +1,5 @@
-import { Hex } from '@metamask/utils';
 import { GenericQuoteRequest } from '@metamask/bridge-controller';
+import { Hex } from '@metamask/utils';
 import { Interface } from '@ethersproject/abi';
 import { addHexPrefix } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
@@ -183,22 +183,6 @@ function handleWrapEthCommand(
   };
 }
 
-function handlePermit2PermitCommand(
-  args: string[],
-  _chainId: Hex,
-  quotesInput: GenericQuoteRequest,
-  _data: string,
-) {
-  return {
-    amountMin: undefined,
-    isExactOut: false,
-    quotesInput: {
-      ...(quotesInput ?? {}),
-      srcTokenAddress: argToAddress(args[0]),
-    } as GenericQuoteRequest,
-  };
-}
-
 function handleSweepCommand(
   args: string[],
   _chainId: Hex,
@@ -237,7 +221,6 @@ const DAPP_SWAP_COMMANDS = [
   { value: '00', handler: handleV3SwapExactInCommand },
   { value: '01', handler: handleCommandSwapExactOut },
   { value: '10', handler: handleV4SwapCommand },
-  { value: '0a', handler: handlePermit2PermitCommand },
   { value: '0b', handler: handleWrapEthCommand },
   { value: '04', handler: handleSweepCommand },
   { value: '0c', handler: handleUnwrapWethCommand },
