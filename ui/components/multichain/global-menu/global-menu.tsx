@@ -406,7 +406,9 @@ export const GlobalMenu = ({
               category: MetaMetricsEventCategory.Navigation,
               properties: {
                 location: METRICS_LOCATION,
-                to: isSidePanelDefault ? ENVIRONMENT_TYPE_POPUP : ENVIRONMENT_TYPE_SIDEPANEL,
+                to: isSidePanelDefault
+                  ? ENVIRONMENT_TYPE_POPUP
+                  : ENVIRONMENT_TYPE_SIDEPANEL,
               },
             });
             closeMenu();
