@@ -7890,9 +7890,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "@metamask/subscription-controller@npm:3.3.0"
+"@metamask/subscription-controller@npm:@metamask-previews/subscription-controller@3.3.0-preview-6b23dd6":
+  version: 3.3.0-preview-6b23dd6
+  resolution: "@metamask-previews/subscription-controller@npm:3.3.0-preview-6b23dd6"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.15.0"
@@ -7903,7 +7903,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
   peerDependencies:
     "@metamask/profile-sync-controller": ^26.0.0
-  checksum: 10/0fe72a78e8cb8c49975c55eee906ec7e15dc343656895ff7810fe30805702406694bc5142b67aa7262efee21f6f5f305b6eea2be1762f9dc5b63a119363df822
+  checksum: 10/c21a9713675bd745944c22916843d15b6523735e4cb092c38d162a2e50341cb13925c019831acf9964fb3712176401df7d7e37b57c523994fc1c311f6b327378
   languageName: node
   linkType: hard
 

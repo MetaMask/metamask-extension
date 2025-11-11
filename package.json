@@ -133,6 +133,7 @@
   },
   "resolutions": {
     "http-cache-semantics": "^4.1.1",
+    "@metamask/subscription-controller@^3.3.0": "npm:@metamask-previews/subscription-controller@3.3.0-preview-6b23dd6",
     "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",
     "base-x@3.0.9": "^3.0.11",
