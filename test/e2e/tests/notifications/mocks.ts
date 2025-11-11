@@ -95,8 +95,15 @@ date.setMonth(date.getMonth() - 1);
 
 export function getMockWalletNotificationItemId(trigger: TRIGGER_TYPES) {
   return (
-    mockListNotificationsResponse.response.find((n) => n.data.kind === trigger)
-      ?.id ?? 'DOES NOT EXIST'
+    mockListNotificationsResponse.response.find((n) => {
+      if (n.notification_type === 'on-chain') {
+        return n.payload.data.kind === trigger;
+      }
+      if (n.notification_type === 'platform') {
+        return n.notification_type === trigger;
+      }
+      return false;
+    })?.id ?? 'DOES NOT EXIST'
   );
 }
 

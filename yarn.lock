@@ -7085,13 +7085,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^19.0.0":
-  version: 19.0.0
-  resolution: "@metamask/notification-services-controller@npm:19.0.0"
+"@metamask/notification-services-controller@npm:@metamask-previews/notification-services-controller@19.0.0-preview-ba016213":
+  version: 19.0.0-preview-ba016213
+  resolution: "@metamask-previews/notification-services-controller@npm:19.0.0-preview-ba016213"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/controller-utils": "npm:^11.15.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.8.1"
     bignumber.js: "npm:^9.1.2"
@@ -7102,7 +7102,7 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^24.0.0
     "@metamask/profile-sync-controller": ^26.0.0
-  checksum: 10/a5298e802159548e724feab156a0f4fa9055d4ec0c88d091c15eb4767577062019e1cde264d101d7f31f211bf8d582f2aa4406f97e41f6a308b17ca9325a5573
+  checksum: 10/a213cea86cde73270557ac5a2577f74e143c1492d4654ebe27d5affe960bb12e081fe37312f6be54514f166e77b56e676f94a12bb99732671956a5af79e9a311
   languageName: node
   linkType: hard
 
@@ -32076,7 +32076,7 @@ __metadata:
     "@metamask/name-controller": "npm:^9.0.0"
     "@metamask/network-controller": "npm:^25.0.0"
     "@metamask/network-enablement-controller": "npm:^3.1.0"
-    "@metamask/notification-services-controller": "npm:^19.0.0"
+    "@metamask/notification-services-controller": "npm:@metamask-previews/notification-services-controller@19.0.0-preview-ba016213"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^12.1.0"
