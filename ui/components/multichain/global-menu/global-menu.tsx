@@ -417,9 +417,7 @@ export const GlobalMenu = ({
       ) : null}
 
       {/* Expand view button: shows when sidepanel disabled (any browser) OR when sidepanel enabled (Firefox only) */}
-      {getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
-      (!getIsSidePanelFeatureEnabled() ||
-        getBrowserName() === PLATFORM_FIREFOX) ? (
+      {getEnvironmentType() === ENVIRONMENT_TYPE_POPUP && (
         <MenuItem
           iconName={IconName.Expand}
           onClick={() => {
@@ -437,7 +435,7 @@ export const GlobalMenu = ({
         >
           {t('expandView')}
         </MenuItem>
-      ) : null}
+      )}
       <MenuItem
         data-testid="global-menu-networks"
         iconName={IconName.Hierarchy}
