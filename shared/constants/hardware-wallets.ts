@@ -55,6 +55,15 @@ export enum HardwareDeviceNames {
   qr = 'QR Hardware',
 }
 
+export enum QrHardwareDeviceNames {
+  Keystone = 'Keystone',
+  AirGap = 'AirGap Vault',
+  CoolWallet = 'CoolWallet',
+  Dcent = 'Dcent',
+  Ngrave = 'Ngrave',
+  ImToken = 'ImToken',
+}
+
 export enum HardwareTransportStates {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -158,6 +167,12 @@ export enum WebHIDConnectedStatuses {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   unknown = 'unknown',
+}
+
+export enum MarketingActionNames {
+  BuyNow = 'Buy Now',
+  LearnMore = 'Learn More',
+  Tutorial = 'Tutorial',
 }
 
 export const LEDGER_USB_VENDOR_ID = '0x2c97';
