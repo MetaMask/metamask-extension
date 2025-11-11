@@ -91,7 +91,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       const shieldSubscriptionEligibility =
         await getShieldSubscriptionEligibility();
       if (
-        !shieldSubscriptionEligibility?.canSubscribe &&
+        shieldSubscriptionEligibility?.canSubscribe &&
         shieldSubscriptionEligibility?.canViewEntryModal &&
         shieldSubscriptionEligibility?.minBalanceUSD &&
         totalFiatBalance &&
