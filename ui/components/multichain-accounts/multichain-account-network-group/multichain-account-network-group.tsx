@@ -33,9 +33,19 @@ export type MultichainAccountNetworkGroupProps = {
 };
 
 /**
- * A reusable component that displays a group of network avatars
- * Can fetch networks based on account group ID or accept explicit chain IDs
- * Handles conversion from CAIP chain IDs to hex format for EVM chains
+ * A reusable component that displays a group of network avatars.
+ * Can fetch networks based on account group ID or accept explicit chain IDs.
+ * Handles conversion from CAIP chain IDs to hex format for EVM chains.
+ *
+ * @param props - The component props
+ * @param props.groupId - The account group ID to fetch networks for. When provided, fetches chain IDs from the account group.
+ * @param props.chainIds - Array of specific chain IDs to display. Behavior depends on groupId:
+ *   - If provided with groupId: shows only chains that exist in both the group and this list (intersection)
+ *   - If provided without groupId: shows only these specific chains
+ * @param props.excludeTestNetworks - Whether to exclude test networks from display. Defaults to true.
+ * @param props.limit - Maximum number of avatars to display before showing "+X" indicator. Defaults to 4.
+ * @param props.className - Optional CSS class name for additional styling
+ * @returns A React component displaying network avatars in a group
  */
 export const MultichainAccountNetworkGroup: React.FC<
   MultichainAccountNetworkGroupProps

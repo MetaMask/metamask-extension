@@ -20,6 +20,7 @@ import { getNetworksByScopes } from '../../../../shared/modules/selectors/networ
 import { ButtonIcon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 type MultichainAggregatedAddressListRowProps = {
