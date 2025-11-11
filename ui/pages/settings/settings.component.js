@@ -31,7 +31,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
-  TRANSACTION_SHIELD_CLAIM_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -62,6 +62,7 @@ import {
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
+import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -74,8 +75,8 @@ import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
+import ClaimsArea from './transaction-shield-tab/claims-area';
 import TransactionShield from './transaction-shield-tab';
-import SubmitClaimForm from './transaction-shield-tab/submit-claim-form';
 
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
@@ -97,6 +98,7 @@ class SettingsPage extends PureComponent {
     backRoute: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
+    hasSubscribedToShield: PropTypes.bool,
     isAddressEntryPage: PropTypes.bool,
     isMetaMaskShieldFeatureEnabled: PropTypes.bool,
     isPasswordChangePage: PropTypes.bool,
@@ -122,6 +124,7 @@ class SettingsPage extends PureComponent {
     lastFetchedConversionDate: null,
     searchResults: [],
     searchText: '',
+    showShieldEntryModal: false,
   };
 
   componentDidMount() {
@@ -184,6 +187,12 @@ class SettingsPage extends PureComponent {
           },
         )}
       >
+        {this.state.showShieldEntryModal && (
+          <ShieldEntryModal
+            skipEventSubmission
+            onClose={() => this.setState({ showShieldEntryModal: false })}
+          />
+        )}
         {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
         <Box
           className="settings-page__header"
@@ -377,6 +386,7 @@ class SettingsPage extends PureComponent {
       useExternalServices,
       settingsPageSnaps,
       isMetaMaskShieldFeatureEnabled,
+      hasSubscribedToShield,
     } = this.props;
     const { t } = this.context;
 
@@ -472,11 +482,15 @@ class SettingsPage extends PureComponent {
           }
           return matchPath(key, currentPath);
         }}
-        onSelect={(key) =>
+        onSelect={(key) => {
+          if (key === TRANSACTION_SHIELD_ROUTE && !hasSubscribedToShield) {
+            this.setState({ showShieldEntryModal: true });
+            return;
+          }
           navigate(key, {
             state: { fromPage: currentPath },
-          })
-        }
+          });
+        }}
       />
     );
   }
@@ -531,9 +545,8 @@ class SettingsPage extends PureComponent {
           element={<TransactionShield />}
         />
         <Route
-          exact
-          path={TRANSACTION_SHIELD_CLAIM_ROUTE}
-          element={<SubmitClaimForm />}
+          path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}/*`}
+          element={<ClaimsArea />}
         />
         <Route path={EXPERIMENTAL_ROUTE} element={<ExperimentalTab />} />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||

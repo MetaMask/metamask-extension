@@ -79,11 +79,13 @@ export function useGatorPermissions(
           setLoading(true);
         }
 
-        await fetchAndUpdateGatorPermissions();
         // Note: We don't need to manually update state here because:
         // 1. fetchAndUpdateGatorPermissions updates the controller state
         // 2. Controller state automatically syncs to Redux
         // 3. The selector will pick up the new data and trigger re-render
+        await fetchAndUpdateGatorPermissions({
+          isRevoked: false,
+        });
       } catch (err) {
         if (!cancelled) {
           setError(err as Error);

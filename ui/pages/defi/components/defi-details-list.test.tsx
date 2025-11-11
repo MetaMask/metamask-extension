@@ -22,7 +22,7 @@ jest.mock('react-router-dom-v5-compat', () => {
 describe('DeFiDetailsPage', () => {
   const store = configureMockStore([thunk])(mockState);
 
-  beforeAll(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 

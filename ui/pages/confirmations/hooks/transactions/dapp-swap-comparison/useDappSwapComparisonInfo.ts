@@ -30,11 +30,12 @@ export function useDappSwapComparisonInfo() {
     id: transactionId,
     simulationData,
     txParams,
+    txParamsOriginal,
     nestedTransactions,
   } = currentConfirmation ?? {
     txParams: {},
   };
-  const { data, gas } = txParams ?? {};
+  const { data, gas } = txParamsOriginal ?? txParams ?? {};
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const {
     requestDetectionLatency,
@@ -62,7 +63,7 @@ export function useDappSwapComparisonInfo() {
     [transactionId, updateTransactionEventFragment],
   );
 
-  const { quotesInput, amountMin, tokenAddresses } = useMemo(() => {
+  const { commands, quotesInput, amountMin, tokenAddresses } = useMemo(() => {
     try {
       let transactionData = data;
       if (nestedTransactions?.length) {
@@ -76,6 +77,7 @@ export function useDappSwapComparisonInfo() {
     } catch (error) {
       captureException(error);
       return {
+        commands: '',
         quotesInput: undefined,
         amountMin: undefined,
         tokenAddresses: [],
@@ -104,18 +106,20 @@ export function useDappSwapComparisonInfo() {
     captureDappSwapComparisonMetricsProperties({
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        dapp_swap_comparison: 'loading',
+        swap_dapp_comparison: 'loading',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_dapp_commands: commands,
       },
     });
 
-    const startTime = new Date().getTime();
     updateQuoteRequestLatency();
+    const startTime = new Date().getTime();
 
     const quotesList = await fetchQuotes(quotesInput);
-
     updateQuoteResponseLatency(startTime);
     return quotesList;
   }, [
+    commands,
     captureDappSwapComparisonMetricsProperties,
     quotesInput,
     requestDetectionLatency,
@@ -185,7 +189,9 @@ export function useDappSwapComparisonInfo() {
       captureDappSwapComparisonMetricsProperties({
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          dapp_swap_comparison: 'completed',
+          swap_dapp_comparison: 'completed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_commands: commands,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_from_token_simulated_value_usd: getTokenUSDValue(
             srcTokenAmount,
@@ -363,6 +369,7 @@ export function useDappSwapComparisonInfo() {
   ]);
 
   return {
+    selectedQuote,
     selectedQuoteValueDifference,
     gasDifference,
     tokenAmountDifference,

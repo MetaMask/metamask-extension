@@ -1591,15 +1591,6 @@ export function setupController(
 
     controller.rejectAllPendingApprovals();
   }
-
-  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
-  if (
-    Object.values(controller.snapController.state.snaps).some(
-      (snap) => !snap.preinstalled,
-    )
-  ) {
-    controller.snapController.updateRegistry();
-  }
 }
 
 //
@@ -1677,7 +1668,7 @@ function handleOnInstalled([details]) {
     details.previousVersion &&
     details.previousVersion !== platform.getVersion()
   ) {
-    onUpdate();
+    onUpdate(details.previousVersion);
   }
 }
 
@@ -1730,11 +1721,16 @@ if (
 
 /**
  * Trigger actions that should happen only upon update installation
+ *
+ * @param previousVersion
  */
-async function onUpdate() {
+async function onUpdate(previousVersion) {
   await isInitialized;
   log.debug('Update installation detected');
   controller.appStateController.setLastUpdatedAt(Date.now());
+  if (previousVersion) {
+    controller.appStateController.setLastUpdatedFromVersion(previousVersion);
+  }
 }
 
 /**
