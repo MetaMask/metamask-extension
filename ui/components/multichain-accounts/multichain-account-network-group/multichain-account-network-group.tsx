@@ -1,0 +1,125 @@
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { AccountGroupId } from '@metamask/account-api';
+import { AvatarGroup } from '../../multichain/avatar-group';
+import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
+
+export interface MultichainAccountNetworkGroupProps {
+  /**
+   * The account group ID to fetch networks for
+   */
+  groupId?: AccountGroupId;
+  /**
+   * Array of specific chain IDs to display
+   * - If provided with groupId: shows only chains that exist in both the group and this list
+   * - If provided without groupId: shows only these specific chains
+   */
+  chainIds?: string[];
+  /**
+   * Whether to exclude test networks (default: true)
+   */
+  excludeTestNetworks?: boolean;
+  /**
+   * Maximum number of avatars to display before showing "+X"
+   */
+  limit?: number;
+  /**
+   * Optional className for additional styling
+   */
+  className?: string;
+}
+
+/**
+ * A reusable component that displays a group of network avatars
+ * Can fetch networks based on account group ID or accept explicit chain IDs
+ * Handles conversion from CAIP chain IDs to hex format for EVM chains
+ */
+export const MultichainAccountNetworkGroup: React.FC<
+  MultichainAccountNetworkGroupProps
+> = ({
+  groupId,
+  chainIds: filterChainIds,
+  excludeTestNetworks = true,
+  limit = 4,
+  className,
+}) => {
+  // Fetch chain IDs from account group if groupId is provided
+  const accountGroupScopes = useSelector((state) =>
+    groupId
+      ? getInternalAccountListSpreadByScopesByGroupId(state, groupId)
+      : [],
+  );
+
+  const chainIds = useMemo(() => {
+    // If only filterChainIds is provided (no groupId), show those chains
+    if (filterChainIds && !groupId) {
+      return filterChainIds;
+    }
+
+    // If groupId is provided
+    if (groupId && accountGroupScopes.length > 0) {
+      // Extract unique chain IDs from account group scopes
+      const groupChainIds = new Set<string>();
+      accountGroupScopes.forEach((item) => {
+        groupChainIds.add(item.scope);
+      });
+
+      // If filterChainIds is also provided, show intersection
+      if (filterChainIds) {
+        const filterSet = new Set(filterChainIds);
+        return Array.from(groupChainIds).filter((chainId) =>
+          filterSet.has(chainId),
+        );
+      }
+
+      // Otherwise, show all chains from the group
+      return Array.from(groupChainIds);
+    }
+
+    return [];
+  }, [filterChainIds, groupId, accountGroupScopes]);
+
+  const networkData = useMemo(() => {
+    let filteredChainIds = chainIds;
+
+    if (excludeTestNetworks) {
+      // TODO: Add test network filtering logic here
+      // For now, we'll keep all networks
+    }
+
+    return filteredChainIds
+      .map((chain) => {
+        let hexChainId = chain;
+        // Convert CAIP chain ID to hex format for EVM chains
+        if (chain.startsWith('eip155:')) {
+          try {
+            hexChainId = convertCaipToHexChainId(
+              chain as `${string}:${string}`,
+            );
+          } catch {
+            // If conversion fails, fall back to using the original chain ID
+            hexChainId = chain;
+          }
+        }
+        return {
+          avatarValue:
+            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+              hexChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+            ],
+        };
+      })
+      .filter((network) => network.avatarValue); // Only include networks with valid avatar images
+  }, [chainIds, excludeTestNetworks]);
+
+  return (
+    <AvatarGroup
+      limit={limit}
+      members={networkData}
+      avatarType={AvatarType.NETWORK}
+      className={className}
+    />
+  );
+};

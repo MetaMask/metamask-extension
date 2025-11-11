@@ -281,30 +281,35 @@ type Story = StoryObj<typeof MultichainHoveredAddressRowsList>;
 export const MultipleDifferentAccounts: Story = {
   args: {
     groupId: GROUP_ID,
+    children: <button>Hover to see multiple accounts</button>,
   },
 };
 
 export const SingleEthereumAccount: Story = {
   args: {
     groupId: GROUP_ID,
+    children: <button>Hover to see Ethereum account</button>,
   },
 };
 
 export const SpecificNetworkAccount: Story = {
   args: {
     groupId: GROUP_ID,
+    children: <button>Hover to see specific network</button>,
   },
 };
 
 export const SolanaOnly: Story = {
   args: {
     groupId: GROUP_ID,
+    children: <button>Hover to see Solana account</button>,
   },
 };
 
 export const MultiChainSingleAccount: Story = {
   args: {
     groupId: GROUP_ID,
+    children: <button>Hover to see multi-chain account</button>,
   },
   parameters: {
     docs: {
@@ -319,6 +324,7 @@ export const MultiChainSingleAccount: Story = {
 export const NonEvmOnly: Story = {
   args: {
     groupId: GROUP_ID,
+    children: <button>Hover to see non-EVM networks</button>,
   },
   parameters: {
     docs: {
@@ -332,12 +338,14 @@ export const NonEvmOnly: Story = {
 export const EmptyState: Story = {
   args: {
     groupId: GROUP_ID,
+    children: <button>Hover to see empty state</button>,
   },
 };
 
 export const AllAccounts: Story = {
   args: {
     groupId: GROUP_ID,
+    children: <button>Hover to see all accounts</button>,
   },
   parameters: {
     docs: {

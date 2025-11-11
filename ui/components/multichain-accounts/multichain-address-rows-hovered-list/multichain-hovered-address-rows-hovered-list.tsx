@@ -1,4 +1,10 @@
-import React, { useMemo, useCallback } from 'react';
+import React, {
+  useMemo,
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
@@ -17,6 +23,8 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useHistory } from 'react-router-dom';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
+import { Popover, PopoverPosition } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
@@ -36,18 +44,50 @@ export type MultichainAddressRowsListProps = {
    * The account group ID.
    */
   groupId: AccountGroupId;
+  /**
+   * The child element that triggers the popover on hover.
+   */
+  children: React.ReactNode;
 };
 
 export const MultichainHoveredAddressRowsList = ({
   groupId,
+  children,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
   const history = useHistory();
+  const [isHoverOpen, setIsHoverOpen] = useState(false);
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
+    null,
+  );
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
   );
+
+  const handleMouseEnter = useCallback(() => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setIsHoverOpen(true);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsHoverOpen(false);
+    }, 300);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const sortByPriorityNetworks = useCallback(
     (items: typeof getAccountsSpreadByNetworkByGroupId) => {
@@ -180,24 +220,58 @@ export const MultichainHoveredAddressRowsList = ({
   ]);
 
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Column}
-      data-testid="multichain-address-rows-list"
-    >
-      <Box marginBottom={2}>{renderedRows}</Box>
-      <Button variant={ButtonVariant.Secondary} onClick={handleViewAllClick}>
+    <>
+      <Box
+        ref={setReferenceElement}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          ...(isHoverOpen && {
+            backgroundColor: 'var(--color-background-default-hover)',
+          }),
+        }}
+      >
+        {children}
+      </Box>
+      <Popover
+        referenceElement={referenceElement}
+        isOpen={isHoverOpen}
+        position={PopoverPosition.BottomStart}
+        flip={false}
+        preventOverflow={true}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          zIndex: 1000,
+          maxHeight: '400px',
+          overflowY: 'auto',
+          minWidth: '320px',
+        }}
+      >
         <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={4}
+          flexDirection={BoxFlexDirection.Column}
+          data-testid="multichain-address-rows-list"
         >
-          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-            {t('multichainAddressViewAll')}
-          </Text>
-          <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
+          <Box marginBottom={2}>{renderedRows}</Box>
+          <Button
+            variant={ButtonVariant.Secondary}
+            onClick={handleViewAllClick}
+          >
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={4}
+            >
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+                {t('multichainAddressViewAll')}
+              </Text>
+              <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
+            </Box>
+          </Button>
         </Box>
-      </Button>
-    </Box>
+      </Popover>
+    </>
   );
 };
 

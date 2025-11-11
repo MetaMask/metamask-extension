@@ -15,14 +15,12 @@ import { useSelector } from 'react-redux';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { AvatarGroup } from '../../multichain/avatar-group';
-import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { CopyParams } from '../multichain-address-row/multichain-address-row';
 import { getNetworksByScopes } from '../../../../shared/modules/selectors/networks';
-import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { ButtonIcon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
+import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 type MultichainAggregatedAddressListRowProps = {
   /**
@@ -51,7 +49,7 @@ export const MultichainAggregatedAddressListRow = ({
 }: MultichainAggregatedAddressListRowProps) => {
   const t = useI18nContext();
 
-  const truncatedAddress = shortenAddress(address); // Shorten address for display
+  const truncatedAddress = shortenAddress(normalizeSafeAddress(address)); // Shorten address for display
   const [displayText, setDisplayText] = useState(truncatedAddress); // Text to display (address or copy message)
   const [copyIcon, setCopyIcon] = useState(IconName.Copy); // Default copy icon state
   const [addressCopied, setAddressCopied] = useState(false);
@@ -74,27 +72,6 @@ export const MultichainAggregatedAddressListRow = ({
       }
     };
   }, []);
-
-  const networkData = useMemo(() => {
-    return chainIds.map((chain) => {
-      let hexChainId = chain;
-      // Convert CAIP chain ID to hex format for EVM chains
-      if (chain.startsWith('eip155:')) {
-        try {
-          hexChainId = convertCaipToHexChainId(chain as `${string}:${string}`);
-        } catch {
-          // If conversion fails, fall back to using the original chain ID
-          hexChainId = chain;
-        }
-      }
-      return {
-        avatarValue:
-          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-            hexChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-          ],
-      };
-    });
-  }, [chainIds]);
 
   const networks = useSelector((state) => getNetworksByScopes(state, chainIds));
 
@@ -167,11 +144,7 @@ export const MultichainAggregatedAddressListRow = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <Box gap={4} flexDirection={BoxFlexDirection.Row}>
-        <AvatarGroup
-          limit={4}
-          members={networkData}
-          avatarType={AvatarType.NETWORK}
-        />
+        <MultichainAccountNetworkGroup chainIds={chainIds} limit={4} />
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Bold}>
           {groupName}
         </Text>

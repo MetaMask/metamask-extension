@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -245,7 +245,9 @@ const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
   const store = mockStore(createMockState());
   return render(
     <Provider store={store}>
-      <MultichainHoveredAddressRowsList groupId={groupId} />
+      <MultichainHoveredAddressRowsList groupId={groupId}>
+        <div data-testid="hover-trigger">Hover Me</div>
+      </MultichainHoveredAddressRowsList>
     </Provider>,
   );
 };
@@ -522,6 +524,136 @@ describe('MultichainHoveredAddressRowsList', () => {
       expect(mockPush).toHaveBeenCalledWith(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(SPECIAL_GROUP_ID)}`,
       );
+    });
+  });
+
+  describe('Hover Functionality', () => {
+    it('renders children element correctly', () => {
+      renderComponent();
+
+      expect(screen.getByTestId('hover-trigger')).toBeInTheDocument();
+      expect(screen.getByText('Hover Me')).toBeInTheDocument();
+    });
+
+    it('shows address list on hover', async () => {
+      renderComponent();
+
+      const triggerElement = screen.getByTestId('hover-trigger');
+
+      // Initially, the address list should not be visible
+      expect(
+        screen.queryByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+      ).not.toBeInTheDocument();
+
+      // Hover over the trigger element
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+
+      // Wait for the popover to appear
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      // Verify content is displayed
+      expect(screen.getByText(TEST_STRINGS.EVM_NETWORKS)).toBeInTheDocument();
+      expect(screen.getByText(TEST_STRINGS.BITCOIN_NETWORK)).toBeInTheDocument();
+    });
+
+    it('hides address list on mouse leave with delay', async () => {
+      jest.useFakeTimers();
+      renderComponent();
+
+      const triggerElement = screen.getByTestId('hover-trigger');
+
+      // Show the popover
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      // Leave hover
+      fireEvent.mouseLeave(triggerElement.parentElement as HTMLElement);
+
+      // Popover should still be visible immediately after mouse leave
+      expect(
+        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+      ).toBeInTheDocument();
+
+      // Fast forward timers to trigger the hide
+      jest.advanceTimersByTime(300);
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).not.toBeInTheDocument();
+      });
+
+      jest.useRealTimers();
+    });
+
+    it('keeps popover open when hovering over it', async () => {
+      jest.useFakeTimers();
+      renderComponent();
+
+      const triggerElement = screen.getByTestId('hover-trigger');
+
+      // Show the popover
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      // Leave trigger element
+      fireEvent.mouseLeave(triggerElement.parentElement as HTMLElement);
+
+      // Immediately hover over the popover
+      const popoverContent = screen.getByTestId(
+        TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST,
+      );
+      fireEvent.mouseEnter(popoverContent);
+
+      // Fast forward timers
+      jest.advanceTimersByTime(300);
+
+      // Popover should still be visible
+      expect(
+        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+      ).toBeInTheDocument();
+
+      jest.useRealTimers();
+    });
+
+    it('applies hover styles to trigger element', () => {
+      renderComponent();
+
+      const triggerElement = screen.getByTestId('hover-trigger');
+      const containerElement = triggerElement.parentElement as HTMLElement;
+
+      // Initially no hover styles
+      expect(containerElement.style.backgroundColor).toBe('');
+
+      // Hover over the trigger
+      fireEvent.mouseEnter(containerElement);
+
+      // Check hover styles are applied
+      expect(containerElement.style.backgroundColor).toBe(
+        'var(--color-background-default-hover)',
+      );
+
+      // Leave hover
+      fireEvent.mouseLeave(containerElement);
+
+      // Hover styles should be removed (after delay)
+      setTimeout(() => {
+        expect(containerElement.style.backgroundColor).toBe('');
+      }, 300);
     });
   });
 });
