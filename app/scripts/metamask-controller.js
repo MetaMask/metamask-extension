@@ -2564,6 +2564,9 @@ export default class MetamaskController extends EventEmitter {
       getRewardsSeasonMetadata: this.rewardsController.getSeasonMetadata.bind(
         this.rewardsController,
       ),
+      getRewardsSeasonStatus: this.rewardsController.getSeasonStatus.bind(
+        this.rewardsController,
+      ),
       getRewardsHasAccountOptedIn:
         this.rewardsController.getHasAccountOptedIn.bind(
           this.rewardsController,
