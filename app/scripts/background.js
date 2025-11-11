@@ -1663,15 +1663,15 @@ const addAppInstalledEvent = () => {
  *
  * @param {[chrome.runtime.InstalledDetails]} params - Array containing a single installation details object.
  */
-function handleOnInstalled([details]) {
+async function handleOnInstalled([details]) {
   if (details.reason === 'install') {
     onInstall();
-  } else if (
-    details.reason === 'update' &&
-    details.previousVersion &&
-    details.previousVersion !== platform.getVersion()
-  ) {
-    onUpdate(details.previousVersion);
+  } else if (details.reason === 'update') {
+    const { previousVersion } = details;
+    if (!previousVersion || previousVersion === platform.getVersion()) {
+      return;
+    }
+    await onUpdate(previousVersion);
   }
 }
 
@@ -1709,72 +1709,60 @@ if (
 }
 ///: END:ONLY_INCLUDE_IF
 
-// // On first install, open a new tab with MetaMask
-// async function onInstall() {
-//   const storeAlreadyExisted = Boolean(await localStore.get());
-//   // If the store doesn't exist, then this is the first time running this script,
-//   // and is therefore an install
-//   if (process.env.IN_TEST) {
-//     addAppInstalledEvent();
-//   } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
-//     addAppInstalledEvent();
-//     platform.openExtensionInBrowser();
-//   }
-// }
-
 /**
  * Trigger actions that should happen only upon update installation
  *
- * @param previousVersion
+ * @param {string} previousVersion
  */
 async function onUpdate(previousVersion) {
   await isInitialized;
-  log.debug('Update installation detected');
-  controller.appStateController.setLastUpdatedAt(Date.now());
-  if (previousVersion) {
-    const recordedLastUpdatedFromVersion =
-      controller.appStateController.state.lastUpdatedFromVersion;
-    log.info(`onUpdate called`);
-    log.info(`Updated from version ${previousVersion}`);
-    log.info(
-      `Recorded last updated from version: ${recordedLastUpdatedFromVersion}`,
-    );
-    log.info(`Current version: ${platform.getVersion()}`);
-    // Work around Chromium bug https://issues.chromium.org/issues/40805401
-    // by doing a safe reload after an update. We'll be able to gate this
-    // behind a Chromium version check once we know the chromium version #
-    // that fixes this bug, ETA: December 2025 (likely in `143.0.7465.0`).
-    // Once we no longer support the affected Chromium versions, we should
-    // remove this workaround.
-    // We only want to do the safe reload when the version actually changed, just
-    // as a safe guard (in case Chrome keeps firing this event each time we
-    // restart) -- as we really don't want to send Chrome into an restart loop!
-    // This is 100% overkill, as `onUpdate` is only called when
-    // `details.previousVersion !== platform.getVersion()`, but better safe
-    // than better safe than better safe than... looping forever. :-)
-    if (!isFirefox && previousVersion !== recordedLastUpdatedFromVersion) {
-      const shouldReload =
-        controller.remoteFeatureFlagController.state.remoteFeatureFlags
-          ?.extensionPlatformAutoReloadAfterUpdate;
-      if (shouldReload) {
-        // wait for the store to update; when `update` is called the persistence
-        // layer will start writing the state to the database. Once that starts we
-        // will `requestSafeReload` to ensure its the last state update before the
-        // reload happens.
-        controller.store.once('update', () => {
-          // use set immediate to be absolutely sure the reload happens after all
-          // other "update" events triggered by the `setLastUpdatedFromVersion`
-          // call immediately below have been processed.
-          log.info(
-            `Requesting safe reload after update to ${platform.getVersion()}`,
-          );
-          setImmediate(requestSafeReload);
-        });
-      }
-    }
 
-    controller.appStateController.setLastUpdatedFromVersion(previousVersion);
+  log.debug('Update installation detected');
+  const recordedLastUpdatedFromVersion =
+    controller.appStateController.state.lastUpdatedFromVersion;
+  log.info(`onUpdate called`);
+  log.info(`Updated from version ${previousVersion}`);
+  log.info(
+    `Recorded last updated from version: ${recordedLastUpdatedFromVersion}`,
+  );
+  log.info(`Current version: ${platform.getVersion()}`);
+  log.info(`isFirefox: ${isFirefox}`);
+  // Work around Chromium bug https://issues.chromium.org/issues/40805401
+  // by doing a safe reload after an update. We'll be able to gate this
+  // behind a Chromium version check once we know the chromium version #
+  // that fixes this bug, ETA: December 2025 (likely in `143.0.7465.0`).
+  // Once we no longer support the affected Chromium versions, we should
+  // remove this workaround.
+  // We only want to do the safe reload when the version actually changed, just
+  // as a safe guard, as Chrome fires this event each time we call
+  // // `runtime.reload` -- as we really don't want to send Chrome into an
+  //  restart loop! This is overkill, as `onUpdate` is already only called
+  // when `details.previousVersion !== platform.getVersion()`, but better safe
+  // than better safe than better safe than... looping forever. :-)
+  if (!isFirefox && previousVersion !== recordedLastUpdatedFromVersion) {
+    const shouldReload =
+      controller.remoteFeatureFlagController.state.remoteFeatureFlags
+        ?.extensionPlatformAutoReloadAfterUpdate;
+    if (shouldReload) {
+      // wait for the store to update; when `update` is called the persistence
+      // layer will start writing the state to the database. Once that starts we
+      // will `requestSafeReload` to ensure its the last state update before the
+      // reload happens.
+      controller.store.once('update', () => {
+        log.info(
+          `Requesting "safe reload" after update to ${platform.getVersion()}`,
+        );
+        // use set immediate to be absolutely sure the reload happens after all
+        // other "update" events triggered by the `setLastUpdatedFromVersion`
+        // call immediately below have been processed.
+        setImmediate(requestSafeReload);
+      });
+    }
+  } else {
+    log.info(`No safe reload needed after update.`);
   }
+  controller.appStateController.setLastUpdatedAt(Date.now());
+  controller.appStateController.setLastUpdatedFromVersion(previousVersion);
 }
 
 /**
