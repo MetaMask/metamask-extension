@@ -437,32 +437,45 @@ export function compareWithSnapshot(
  */
 export function formatComparisonResults(results: ComparisonResult): string {
   const lines: string[] = [];
+  const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
+  const snapshotFileName = `test/test-warnings-snapshot-${snapshotType}.json`;
 
   if (results.newWarnings.length > 0) {
     lines.push('\n❌ New console warnings detected:');
     lines.push('='.repeat(80));
+    lines.push(`\nPlease fix the code or add to ${snapshotFileName}:\n`);
     results.newWarnings.forEach((warning, index) => {
-      lines.push(`${index + 1}. ${warning}`);
+      lines.push(
+        `${index + 1}. Copy-paste the following warning into "warnings" array:`,
+      );
+      // Escape quotes for JSON
+      const escaped = warning.replace(/\\/gu, '\\\\').replace(/"/gu, '\\"');
+      lines.push(`   "${escaped}"`);
+      lines.push('');
     });
-    lines.push('');
   }
 
   if (results.newErrors.length > 0) {
     lines.push('\n❌ New console errors detected:');
     lines.push('='.repeat(80));
+    lines.push(`\nPlease fix the code or add to ${snapshotFileName}:\n`);
     results.newErrors.forEach((error, index) => {
-      lines.push(`${index + 1}. ${error}`);
+      lines.push(
+        `${index + 1}. Copy-paste the following error into "errors" array:`,
+      );
+      // Escape quotes for JSON
+      const escaped = error.replace(/\\/gu, '\\\\').replace(/"/gu, '\\"');
+      lines.push(`   "${escaped}"`);
+      lines.push('');
     });
-    lines.push('');
   }
 
   if (lines.length > 0) {
-    const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
-    const updateCommand = `yarn test:warnings:update:${snapshotType}`;
-    const snapshotFileName = `test/test-warnings-snapshot-${snapshotType}.json`;
-    lines.push('\nTo update the snapshot with these new warnings/errors, run:');
-    lines.push(`  ${updateCommand}\n`);
-    lines.push(`Or manually edit ${snapshotFileName} to add these entries.\n`);
+    lines.push('='.repeat(80));
+    lines.push(
+      '\n📝 Or run this command to update the snapshot automatically (this is not guaranteed to work though, since all warnings/errors are not deterministic):',
+    );
+    lines.push(`   yarn test:warnings:update:${snapshotType}\n`);
   }
 
   return lines.join('\n');
