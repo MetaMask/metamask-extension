@@ -88,7 +88,6 @@ const DappSwapComparisonInner = () => {
     selectedQuoteValueDifference,
     gasDifference,
     tokenAmountDifference,
-    destinationTokenSymbol,
   } = useDappSwapComparisonInfo();
   const { isQuotedSwap } = useSwapCheck();
   const dispatch = useDispatch();
@@ -165,10 +164,9 @@ const DappSwapComparisonInner = () => {
   ]);
 
   if (
-    !dappSwapUi?.enabled
-    // ||
-    // selectedQuoteValueDifference <
-    //   (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD)
+    !dappSwapUi?.enabled ||
+    selectedQuoteValueDifference <
+      (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD)
   ) {
     return null;
   }
@@ -193,7 +191,7 @@ const DappSwapComparisonInner = () => {
               : SwapButtonType.Text
           }
           onClick={updateSwapToCurrent}
-          label={t('current')}
+          label={t('metamaskRate')}
         />
         <SwapButton
           className="dapp-swap_mm-swap-button"

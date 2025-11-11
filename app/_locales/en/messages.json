@@ -3669,6 +3669,9 @@
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
   },
+  "metamaskRate": {
+    "message": "Metamask rate"
+  },
   "metamaskSwap": {
     "message": "Metamask Swap"
   },
