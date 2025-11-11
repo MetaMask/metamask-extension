@@ -203,7 +203,7 @@ describe('useBridging', () => {
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         jest
-          .spyOn(bridgeSelectors, 'getNetworkFilterOrTopChain')
+          .spyOn(bridgeSelectors, 'getLastSelectedChain')
           .mockReturnValueOnce({
             chainId: CHAIN_IDS.MAINNET,
           } as unknown as NetworkConfiguration);

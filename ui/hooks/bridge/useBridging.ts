@@ -34,7 +34,7 @@ import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import {
   getFromChains,
-  getNetworkFilterOrTopChain,
+  getLastSelectedChain,
 } from '../../ducks/bridge/selectors';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { getMultichainProviderConfig } from '../../selectors/multichain';
@@ -48,7 +48,7 @@ const useBridging = () => {
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
-  const lastSelectedChain = useSelector(getNetworkFilterOrTopChain);
+  const lastSelectedChain = useSelector(getLastSelectedChain);
   const providerConfig = useSelector(getMultichainProviderConfig);
   const fromChains = useSelector(getFromChains);
 

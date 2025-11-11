@@ -3,7 +3,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import nock from 'nock';
 import {
   CHAIN_IDS,
@@ -104,10 +103,6 @@ describe('AssetPage', () => {
       remoteFeatureFlags: {
         bridgeConfig: {
           support: true,
-          chainRanking: [
-            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
-            { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
-          ],
         },
       },
       tokenList: {},

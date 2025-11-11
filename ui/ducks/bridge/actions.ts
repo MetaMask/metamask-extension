@@ -10,8 +10,7 @@ import {
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
-import { type CaipChainId } from '@metamask/utils';
-import type { NetworkConfiguration } from '@metamask/network-controller';
+import { type Hex, type CaipChainId } from '@metamask/utils';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import {
   forceUpdateMetamaskState,
@@ -29,6 +28,7 @@ import {
   setEVMSrcNativeBalance,
 } from './bridge';
 import type { TokenPayload } from './types';
+import { type BridgeAppState, getFromChains } from './selectors';
 
 const {
   setToChainId,
@@ -142,32 +142,36 @@ export const setEVMSrcTokenBalance = (
 };
 
 export const setFromChain = ({
-  networkConfig,
+  chainId,
   selectedAccount,
   token = null,
 }: {
-  networkConfig?:
-    | NetworkConfiguration
-    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
+  chainId?: Hex | CaipChainId;
   selectedAccount: InternalAccount | null;
   token?: TokenPayload['payload'];
 }) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    if (!networkConfig) {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => BridgeAppState,
+  ) => {
+    if (!chainId) {
       return;
     }
 
     // Check for ALL non-EVM chains
-    const isNonEvm = isNonEvmChainId(networkConfig.chainId);
+    const isNonEvm = isNonEvmChainId(chainId);
 
     // Set the src network
     if (isNonEvm) {
-      dispatch(setActiveNetworkWithError(networkConfig.chainId));
+      dispatch(setActiveNetworkWithError(chainId));
     } else {
-      const networkId =
-        networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
-          ?.networkClientId;
-      if (networkId) {
+      const networkConfig = getFromChains(getState()).find(
+        (chain) => chain.chainId === chainId,
+      );
+      if (networkConfig) {
+        const networkId =
+          networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
+            ?.networkClientId;
         dispatch(setActiveNetworkWithError(networkId));
       }
     }
@@ -177,12 +181,12 @@ export const setFromChain = ({
       dispatch(setFromToken(token));
     } else if (isNonEvm) {
       // Auto-select native token for non-EVM chains when switching
-      const nativeAsset = getNativeAssetForChainId(networkConfig.chainId);
+      const nativeAsset = getNativeAssetForChainId(chainId);
       if (nativeAsset) {
         dispatch(
           setFromToken({
             ...nativeAsset,
-            chainId: networkConfig.chainId,
+            chainId,
           }),
         );
       }
@@ -193,7 +197,7 @@ export const setFromChain = ({
       trace({
         name: TraceName.BridgeBalancesUpdated,
         data: {
-          srcChainId: formatChainIdToCaip(networkConfig.chainId),
+          srcChainId: formatChainIdToCaip(chainId),
           isNative: true,
         },
         startTime: Date.now(),
@@ -201,7 +205,7 @@ export const setFromChain = ({
       await dispatch(
         setEVMSrcNativeBalance({
           selectedAddress: selectedAccount.address,
-          chainId: networkConfig.chainId,
+          chainId,
         }),
       );
     }
