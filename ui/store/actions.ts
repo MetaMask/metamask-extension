@@ -77,6 +77,7 @@ import {
   CachedLastSelectedPaymentMethods,
 } from '@metamask/subscription-controller';
 
+import { Claim, SubmitClaimConfig } from '@metamask/claims-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -182,7 +183,6 @@ import {
 } from '../../shared/types/rewards';
 import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
 import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
-import { loadShieldConfig } from '../../shared/modules/shield';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -639,7 +639,6 @@ export function restoreSocialBackupAndGetSeedPhrase(
       await forceUpdateMetamaskState(dispatch);
       return mnemonic;
     } catch (error) {
-      log.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
       dispatch(displayWarning(error.message));
       throw error;
     }
@@ -3059,6 +3058,32 @@ export function ignoreTokens({
       await submitRequestToBackground('ignoreTokens', [
         _tokensToIgnore,
         networkClientId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning(error));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * To ignore multichain assets (non-EVM tokens like Solana, Bitcoin)
+ *
+ * @param assetIds - The CAIP asset IDs (includes chain information)
+ * @param accountId - The account ID to add the asset to
+ */
+export function multichainIgnoreAssets(
+  assetIds: string[],
+  accountId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('multichainIgnoreAssets', [
+        assetIds,
+        accountId,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -7697,8 +7722,6 @@ export async function getLayer1GasFeeValue({
   ]);
 }
 
-const shieldConfig = loadShieldConfig();
-
 /**
  * Submits a shield claim.
  *
@@ -7710,6 +7733,7 @@ const shieldConfig = loadShieldConfig();
  * @param params.reimbursementWalletAddress - The reimbursement wallet address.
  * @param params.caseDescription - The description.
  * @param params.files - The files.
+ * @param params.signature - Claim signature.
  * @returns The subscription response.
  */
 export async function submitShieldClaim(params: {
@@ -7719,11 +7743,15 @@ export async function submitShieldClaim(params: {
   impactedTransactionHash: string;
   reimbursementWalletAddress: string;
   caseDescription: string;
+  signature: string;
   files?: FileList;
 }) {
-  const baseUrl = shieldConfig.claimUrl;
+  const submitClaimConfig = await submitRequestToBackground<SubmitClaimConfig>(
+    'getSubmitClaimConfig',
+    [params],
+  );
+  const { headers, method, url } = submitClaimConfig;
 
-  const claimsUrl = `${baseUrl}/claims`;
   const formData = new FormData();
   formData.append('chainId', params.chainId);
   formData.append('email', params.email);
@@ -7734,11 +7762,7 @@ export async function submitShieldClaim(params: {
     params.reimbursementWalletAddress,
   );
   formData.append('description', params.caseDescription);
-  // TODO: temporary value for signature, update to correct signature after implement signature verification
-  formData.append(
-    'signature',
-    '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
-  );
+  formData.append('signature', params.signature);
   formData.append('timestamp', Date.now().toString());
 
   // add files to form data
@@ -7748,15 +7772,14 @@ export async function submitShieldClaim(params: {
     });
   }
 
-  const accessToken = await submitRequestToBackground<string>('getBearerToken');
-
   try {
     // we do the request here instead of background controllers because files are not serializable
-    const response = await fetch(claimsUrl, {
-      method: 'POST',
+    const response = await fetch(url, {
+      method,
       body: formData,
+      // FIXME: remove `Content-Type: multipart/form-data` from the controller
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: headers.Authorization,
       },
     });
 
@@ -7770,32 +7793,39 @@ export async function submitShieldClaim(params: {
 
     return ClaimSubmitToastType.Success;
   } catch (error) {
-    console.error(error);
+    log.error('[submitShieldClaim] Failed to submit shield claim:', error);
     throw new SubmitClaimError(ClaimSubmitToastType.Errored);
   }
 }
 
+/**
+ * Fetches all shield claims, relates to the current user profile ID.
+ *
+ * @returns The shield claims.
+ */
 export async function getShieldClaims() {
-  const baseUrl = shieldConfig.claimUrl;
-
-  const claimsUrl = `${baseUrl}/claims`;
-  const accessToken = await submitRequestToBackground<string>('getBearerToken');
-
   try {
-    const response = await fetch(claimsUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorBody = await response.json();
-      throw new Error(errorBody.error || 'Failed to get shield claims');
-    }
-    return await response.json();
+    const claims = await submitRequestToBackground<Claim[]>('getClaims');
+    return claims;
   } catch (error) {
-    console.error('Failed to get shield claims:', error);
+    log.error('[getShieldClaims] Failed to get shield claims:', error);
     throw error;
   }
+}
+
+/**
+ * Generates a signature for a claim.
+ *
+ * @param chainId - The chain ID.
+ * @param walletAddress - The wallet address.
+ * @returns The signature.
+ */
+export async function generateClaimSignature(
+  chainId: string,
+  walletAddress: string,
+) {
+  return await submitRequestToBackground<string>('generateClaimSignature', [
+    chainId,
+    walletAddress,
+  ]);
 }

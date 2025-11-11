@@ -974,6 +974,13 @@
         "lodash": true
       }
     },
+    "@metamask/claims-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -1422,7 +1429,7 @@
         "@metamask/utils": true,
         "@noble/curves": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true
+        "@scure/base": true
       }
     },
     "@metamask/keyring-api": {
@@ -2046,7 +2053,7 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@scure/base": true,
         "@swc/helpers": true,
         "chalk": true,
         "cron-parser": true,
@@ -2152,7 +2159,7 @@
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@scure/base": true,
         "buffer": true,
         "nock>debug": true,
         "lodash": true,
@@ -2169,7 +2176,7 @@
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@scure/base": true,
         "buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2185,7 +2192,7 @@
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@scure/base": true,
         "buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2389,6 +2396,12 @@
         "react": true
       }
     },
+    "@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
     "@metamask/eth-sig-util>@scure/base": {
       "globals": {
         "TextDecoder": true,
@@ -2396,12 +2409,6 @@
       }
     },
     "@metamask/scure-bip39>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/utils>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
