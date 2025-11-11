@@ -3,6 +3,7 @@ import {
   SimulationErrorCode,
   TransactionContainerType,
   TransactionMeta,
+  TransactionStatus,
 } from '@metamask/transaction-controller';
 import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -35,6 +36,7 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -60,6 +62,7 @@ export type SimulationDetailsProps = {
   metricsOnly?: boolean;
   staticRows?: StaticRow[];
   transaction: TransactionMeta;
+  smartTransactionStatus?: string;
 };
 
 /**
@@ -115,7 +118,12 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
 const EmptyContent: React.FC = () => {
   const t = useI18nContext();
   return (
-    <Text color={TextColor.textDefault} variant={TextVariant.bodyMd}>
+    <Text
+      color={TextColor.textDefault}
+      variant={TextVariant.bodyMd}
+      width={BlockSize.ElevenTwelfths}
+      textAlign={TextAlign.Right}
+    >
       {t('simulationDetailsNoChanges')}
     </Text>
   );
@@ -306,7 +314,7 @@ const SimulationDetailsLayout: React.FC<{
           : BorderColor.borderDefault
       }
       paddingInline={3}
-      paddingTop={1}
+      paddingTop={2}
       paddingBottom={2}
       margin={isTransactionsRedesign ? null : 4}
       gap={3}
@@ -347,6 +355,8 @@ const BalanceChangesAlert = ({ transactionId }: { transactionId: string }) => {
           <InlineAlert
             onClick={handleInlineAlertClick}
             severity={selectedAlertSeverity}
+            showArrow={false}
+            textOverride={''}
           />
         </Box>
       )}
@@ -374,6 +384,7 @@ const BalanceChangesAlert = ({ transactionId }: { transactionId: string }) => {
  * used inside the transaction redesign flow.
  * @param props.metricsOnly - Whether to only track metrics and not render the UI.
  * @param props.staticRows - Optional static rows to display.
+ * @param props.smartTransactionStatus - Optional Smart Transaction status to override transaction status for immediate UI updates.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   transaction,
@@ -381,6 +392,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   isTransactionsRedesign = false,
   metricsOnly = false,
   staticRows = [],
+  smartTransactionStatus,
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
   const { chainId, id: transactionId, simulationData } = transaction;
@@ -462,6 +474,50 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const outgoing = balanceChanges.filter((bc) => bc.amount.isNegative());
   const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
 
+  // Determine the appropriate heading text based on transaction status
+  const getHeadingText = (translationKeys: {
+    default: string;
+    inProgress: string;
+    completed: string;
+  }) => {
+    const { status } = transaction;
+
+    // If we have Smart Transaction status, use it as priority
+    // This fixes the delay issue between Smart Transaction and regular transaction status updates
+    if (smartTransactionStatus === 'success') {
+      return t(translationKeys.completed);
+    } else if (smartTransactionStatus === 'pending') {
+      return t(translationKeys.inProgress);
+    }
+
+    // Fallback to regular transaction status
+    if (status === TransactionStatus.confirmed) {
+      return t(translationKeys.completed);
+    } else if (
+      status === TransactionStatus.submitted ||
+      status === TransactionStatus.signed ||
+      status === TransactionStatus.approved
+    ) {
+      return t(translationKeys.inProgress);
+    }
+    // Default for confirmation flows and other statuses (unapproved, failed, etc.)
+    return t(translationKeys.default);
+  };
+
+  const getOutgoingHeadingText = () =>
+    getHeadingText({
+      default: 'simulationDetailsOutgoingHeading',
+      inProgress: 'simulationDetailsOutgoingHeadingSending',
+      completed: 'simulationDetailsOutgoingHeadingSent',
+    });
+
+  const getIncomingHeadingText = () =>
+    getHeadingText({
+      default: 'simulationDetailsIncomingHeading',
+      inProgress: 'simulationDetailsIncomingHeadingReceiving',
+      completed: 'simulationDetailsIncomingHeadingReceived',
+    });
+
   return (
     <SimulationDetailsLayout
       isTransactionsRedesign={isTransactionsRedesign}
@@ -479,12 +535,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           </Fragment>
         ))}
         <BalanceChangeList
-          heading={t('simulationDetailsOutgoingHeading')}
+          heading={getOutgoingHeadingText()}
           balanceChanges={outgoing}
           testId="simulation-rows-outgoing"
         />
         <BalanceChangeList
-          heading={t('simulationDetailsIncomingHeading')}
+          heading={getIncomingHeadingText()}
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
         />

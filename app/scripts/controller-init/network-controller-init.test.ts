@@ -168,7 +168,7 @@ describe('NetworkControllerInit', () => {
             "chainId": "0x38",
             "defaultBlockExplorerUrlIndex": 0,
             "defaultRpcEndpointIndex": 0,
-            "name": "BSC Mainnet",
+            "name": "BNB Chain",
             "nativeCurrency": "BNB",
             "rpcEndpoints": [
               {
@@ -186,7 +186,7 @@ describe('NetworkControllerInit', () => {
             "chainId": "0x531",
             "defaultBlockExplorerUrlIndex": 0,
             "defaultRpcEndpointIndex": 0,
-            "name": "Sei Mainnet",
+            "name": "Sei",
             "nativeCurrency": "SEI",
             "rpcEndpoints": [
               {
@@ -219,7 +219,7 @@ describe('NetworkControllerInit', () => {
             "chainId": "0x89",
             "defaultBlockExplorerUrlIndex": 0,
             "defaultRpcEndpointIndex": 0,
-            "name": "Polygon Mainnet",
+            "name": "Polygon",
             "nativeCurrency": "POL",
             "rpcEndpoints": [
               {
@@ -237,7 +237,7 @@ describe('NetworkControllerInit', () => {
             "chainId": "0xa",
             "defaultBlockExplorerUrlIndex": 0,
             "defaultRpcEndpointIndex": 0,
-            "name": "Optimism Mainnet",
+            "name": "OP",
             "nativeCurrency": "ETH",
             "rpcEndpoints": [
               {
@@ -255,7 +255,7 @@ describe('NetworkControllerInit', () => {
             "chainId": "0xa4b1",
             "defaultBlockExplorerUrlIndex": 0,
             "defaultRpcEndpointIndex": 0,
-            "name": "Arbitrum One",
+            "name": "Arbitrum",
             "nativeCurrency": "ETH",
             "rpcEndpoints": [
               {

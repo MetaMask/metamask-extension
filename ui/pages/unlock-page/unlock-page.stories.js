@@ -1,4 +1,3 @@
-import { createBrowserHistory } from 'history';
 import React from 'react';
 import README from './README.mdx';
 import UnlockPage from './unlock-page.component';
@@ -13,7 +12,8 @@ export default {
     },
   },
   argTypes: {
-    history: { control: 'object' },
+    navigate: { control: 'object' },
+    location: { control: 'object' },
     isUnlocked: { control: 'boolean' },
     onRestore: { action: 'onRestore' },
     onSubmit: { action: 'onSubmit' },
@@ -22,8 +22,9 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  const history = createBrowserHistory();
-  return <UnlockPage {...args} history={history} />;
+  const navigate = (path) => console.log('Navigate to:', path);
+  const location = { pathname: '/unlock', search: '', state: null };
+  return <UnlockPage {...args} navigate={navigate} location={location} />;
 };
 
 DefaultStory.storyName = 'Default';
