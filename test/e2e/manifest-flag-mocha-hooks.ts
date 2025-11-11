@@ -41,6 +41,20 @@ if (typeof afterEach === 'function' && process.env.SELENIUM_BROWSER) {
   });
 }
 
+// Global after hook to validate console warnings/errors
+if (typeof after === 'function' && process.env.SELENIUM_BROWSER) {
+  after(async function () {
+    // Skip validation in generation mode (handled by generate script)
+    if (process.env.GENERATE_WARNINGS_SNAPSHOT === 'true') {
+      return;
+    }
+
+    // Validate captured console warnings/errors against snapshot
+    const { validateSnapshot } = await import('./console-capture.js');
+    await validateSnapshot();
+  });
+}
+
 function backupManifest(newExtension = 'backup') {
   fs.cpSync(
     `${folder}/manifest.json`,
