@@ -24,6 +24,7 @@ import {
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
   onboardingMetricsFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
 
@@ -89,6 +90,9 @@ describe('MetaMask onboarding', function () {
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -255,6 +259,9 @@ describe('MetaMask onboarding', function () {
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('10', 'ETH');
@@ -285,6 +292,9 @@ describe('MetaMask onboarding', function () {
 
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

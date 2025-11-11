@@ -15,6 +15,31 @@ import LoginPage from '../pages/login-page';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 
 /**
+ * Helper function to handle post-onboarding navigation for sidepanel builds.
+ * When sidepanel is enabled, clicking "Done" doesn't navigate the current window,
+ * so we need to manually navigate to home.html.
+ *
+ * @param driver - The WebDriver instance
+ */
+export const handleSidepanelPostOnboarding = async (
+  driver: Driver,
+): Promise<void> => {
+  // Check if sidepanel is enabled by checking if the API is available
+  const isSidepanelEnabled = await driver.executeScript(`
+    return typeof chrome !== 'undefined' && chrome.sidePanel !== undefined;
+  `);
+
+  if (isSidepanelEnabled) {
+    // Give the onboarding completion time to process (needed for sidepanel)
+    await driver.delay(1000);
+
+    // Navigate directly to home page in current window
+    // With sidepanel enabled, this ensures we load home page in the test window
+    await driver.driver.get(`${driver.extensionUrl}/home.html`);
+  }
+};
+
+/**
  * Navigate to the onboarding welcome login page
  *
  * @param options - The options object.
@@ -373,7 +398,19 @@ export const completeCreateNewWalletOnboardingFlow = async ({
   if (!skipSRPBackup) {
     await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
   }
+
   await onboardingCompletePage.completeOnboarding();
+
+  // Handle sidepanel navigation if needed
+  await handleSidepanelPostOnboarding(driver);
+
+  // Wait for the home page to load
+  await driver.waitForSelector('[data-testid="eth-overview-send"]');
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  // For non-sidepanel builds, wait for the home page to load after onboarding
+  await driver.waitForSelector('[data-testid="eth-overview-send"]');
+  ///: END:ONLY_INCLUDE_IF
 };
 
 /**
@@ -416,7 +453,14 @@ export const completeImportSRPOnboardingFlow = async ({
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.checkPageIsLoaded();
   await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+
   await onboardingCompletePage.completeOnboarding();
+
+  // Handle sidepanel navigation if needed
+  await handleSidepanelPostOnboarding(driver);
+
+  // Wait for the home page to load
+  await driver.waitForSelector('[data-testid="eth-overview-send"]');
 };
 
 /**
@@ -467,7 +511,19 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
 
   await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
   await onboardingCompletePage.checkPageIsLoaded();
+
   await onboardingCompletePage.completeOnboarding();
+
+  // Handle sidepanel navigation if needed
+  await handleSidepanelPostOnboarding(driver);
+
+  // Wait for the home page to load
+  await driver.waitForSelector('[data-testid="eth-overview-send"]');
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  // For non-sidepanel builds, wait for the home page to load after onboarding
+  await driver.waitForSelector('[data-testid="eth-overview-send"]');
+  ///: END:ONLY_INCLUDE_IF
 };
 
 /**
@@ -503,7 +559,19 @@ export const completeVaultRecoveryOnboardingFlow = async ({
   // finish up onboarding screens
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.checkPageIsLoaded();
+
   await onboardingCompletePage.completeOnboarding();
+
+  // Handle sidepanel navigation if needed
+  await handleSidepanelPostOnboarding(driver);
+
+  // Wait for the home page to load
+  await driver.waitForSelector('[data-testid="eth-overview-send"]');
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  // For non-sidepanel builds, wait for the home page to load after onboarding
+  await driver.waitForSelector('[data-testid="eth-overview-send"]');
+  ///: END:ONLY_INCLUDE_IF
 
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
