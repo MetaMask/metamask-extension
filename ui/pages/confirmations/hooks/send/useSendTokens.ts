@@ -19,7 +19,7 @@ export const useSendTokens = (): Asset[] => {
   const assetsWithBalance = useMemo(() => {
     return flatAssets.filter((asset) => {
       const haveBalance = asset.rawBalance !== '0x0';
-      return haveBalance;
+      return asset.isNative || haveBalance;
     });
   }, [flatAssets]);
 
