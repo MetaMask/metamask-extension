@@ -105,7 +105,8 @@ export const MultichainAggregatedAddressListRow = ({
   };
 
   // Handle "Copy" button click events
-  const handleCopyClick = () => {
+  const handleCopyClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     // Clear existing timeout if clicking multiple times in rapid succession
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
