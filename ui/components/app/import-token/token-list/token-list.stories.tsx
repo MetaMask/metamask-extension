@@ -33,7 +33,7 @@ export const Default = Template.bind({});
 Default.args = {
   currentNetwork: {
     name: 'Ethereum',
-    chainId: 1,
+    chainId: '0x1',
     nickname: 'Ethereum',
     rpcPrefs: {
       imageUrl: './images/eth_logo.svg',
@@ -48,18 +48,22 @@ Default.args = {
       name: 'Ethereum',
       address: '0x9f9d0248bc87bee3ef76f9bb46aaaa01d80cc339',
       iconUrl: './images/eth_logo.svg',
+      chainId: '0x1',
     },
     {
       symbol: 'DAI',
       name: 'Dai Stablecoin',
       address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-      iconUrl: 'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png',
+      iconUrl:
+        'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png',
+      chainId: '0x1',
     },
     {
       symbol: 'XYZ',
       name: 'XYZ Token',
       address: '0x1234567890abcdef',
       iconUrl: 'https://example.com/xyz.png',
+      chainId: '0x1',
     },
   ],
 };
