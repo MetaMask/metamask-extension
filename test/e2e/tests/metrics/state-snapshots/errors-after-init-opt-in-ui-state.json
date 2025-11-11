@@ -114,6 +114,7 @@
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "firstTimeFlowType": "import",
+    "claims": "object",
     "completedOnboarding": true,
     "knownMethodData": "object",
     "use4ByteResolution": true,
@@ -325,6 +326,7 @@
     "isUpdatingMetamaskNotifications": "boolean",
     "isFetchingMetamaskNotifications": "boolean",
     "isUpdatingMetamaskNotificationsAccount": "object",
+    "isWalletResetInProgress": "boolean",
     "isCheckingAccountsPresence": "boolean",
     "isPushEnabled": "boolean",
     "fcmToken": "string",
@@ -401,6 +403,7 @@
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
+    "pendingRevocations": "object",
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
     "storageMetadata": {},

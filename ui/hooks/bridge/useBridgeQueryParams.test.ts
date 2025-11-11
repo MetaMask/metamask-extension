@@ -1,6 +1,7 @@
 import * as bridgeControllerUtils from '@metamask/bridge-controller';
 import { BigNumber } from 'ethers';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { useLocation } from 'react-router-dom-v5-compat';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import * as assetUtils from '../../../shared/lib/asset-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -8,8 +9,20 @@ import { mockNetworkState } from '../../../test/stub/networks';
 
 import { useBridgeQueryParams } from './useBridgeQueryParams';
 
+// Helper hook that combines useBridgeQueryParams with useLocation
+// so we can inspect the router state from the same v5-compat context
+const useBridgeQueryParamsWithLocation = () => {
+  const location = useLocation();
+  useBridgeQueryParams();
+  return { location };
+};
+
 const renderUseBridgeQueryParams = (mockStoreState: object, path?: string) =>
-  renderHookWithProvider(() => useBridgeQueryParams(), mockStoreState, path);
+  renderHookWithProvider(
+    () => useBridgeQueryParamsWithLocation(),
+    mockStoreState,
+    path,
+  );
 
 let calcLatestSrcBalanceSpy: jest.SpyInstance;
 
@@ -61,16 +74,17 @@ describe('useBridgeQueryParams', () => {
       amount: '100',
       swaps: 'true',
     });
-
-    const { history, waitForNextUpdate, store } = renderUseBridgeQueryParams(
+    const renderResult = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
-    await waitForNextUpdate();
+    const { waitForNextUpdate, store, result } = renderResult;
 
-    expect(history.location.search).toBe('swaps=true');
+    await waitForNextUpdate();
+    expect(result.current.location.search).toBe('?swaps=true');
+    expect(result.current.location.pathname).toBe('/');
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -128,7 +142,7 @@ describe('useBridgeQueryParams', () => {
       swaps: 'true',
     });
 
-    const { history, waitForNextUpdate, store } = renderUseBridgeQueryParams(
+    const { result, waitForNextUpdate, store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
@@ -136,7 +150,7 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    expect(history.location.search).toBe('swaps=true');
+    expect(result.current.location.search).toBe('?swaps=true');
     expect(store).toBeDefined();
     const {
       fromToken,
@@ -186,7 +200,7 @@ describe('useBridgeQueryParams', () => {
       swaps: 'true',
     });
 
-    const { history, waitForNextUpdate, store } = renderUseBridgeQueryParams(
+    const { result, waitForNextUpdate, store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
@@ -194,7 +208,7 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    expect(history.location.search).toBe('swaps=true');
+    expect(result.current.location.search).toBe('?swaps=true');
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -239,7 +253,7 @@ describe('useBridgeQueryParams', () => {
       from: 'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
     });
 
-    const { history, waitForNextUpdate, store } = renderUseBridgeQueryParams(
+    const { result, waitForNextUpdate, store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
@@ -247,7 +261,7 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    expect(history.location.search).toBe('');
+    expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -292,7 +306,7 @@ describe('useBridgeQueryParams', () => {
       from: 'eip155:59144/slip44:60',
     });
 
-    const { history, waitForNextUpdate, store } = renderUseBridgeQueryParams(
+    const { result, waitForNextUpdate, store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
@@ -300,7 +314,7 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    expect(history.location.search).toBe('');
+    expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -322,9 +336,9 @@ describe('useBridgeQueryParams', () => {
 
     const mockStoreState = createBridgeMockStore();
 
-    const { history, store } = renderUseBridgeQueryParams(mockStoreState);
+    const { result, store } = renderUseBridgeQueryParams(mockStoreState);
 
-    expect(history.location.search).toBe('');
+    expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -371,7 +385,7 @@ describe('useBridgeQueryParams', () => {
       to: 'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
     });
 
-    const { history, waitForNextUpdate, store } = renderUseBridgeQueryParams(
+    const { result, waitForNextUpdate, store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
@@ -379,7 +393,7 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    expect(history.location.search).toBe('');
+    expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -426,7 +440,7 @@ describe('useBridgeQueryParams', () => {
       from: 'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
     });
 
-    const { history, waitForNextUpdate, store } = renderUseBridgeQueryParams(
+    const { result, waitForNextUpdate, store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
@@ -434,7 +448,7 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    expect(history.location.search).toBe('');
+    expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -470,13 +484,12 @@ describe('useBridgeQueryParams', () => {
       amount: '100',
     });
 
-    const { history, store } = renderUseBridgeQueryParams(
+    const { result, store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
-
-    expect(history.location.search).toBe('');
+    expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};

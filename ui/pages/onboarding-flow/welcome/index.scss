@@ -76,6 +76,13 @@
     align-items: flex-end;
     pointer-events: none;
 
+    @include design-system.screen-md-max {
+      height: 300px;
+      width: 400px;
+      max-width: 400px;
+      margin-bottom: -70px;
+    }
+
     &--loader {
       height: 550px;
       width: 550px;

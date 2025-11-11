@@ -34,6 +34,8 @@ import {
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getAllPermittedAccountsForCurrentTab,
+  getIsSocialLoginFlow,
+  getFirstTimeFlowType,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -292,8 +294,15 @@ async function runInitialActions(store) {
     };
     await validateSeedlessPasswordOutdated(initialState);
     // periodically check seedless password outdated when app UI is open
-    setInterval(() => {
+    const pwdCheckIntervalId = setInterval(() => {
       const state = store.getState();
+      const firstTimeFlowType = getFirstTimeFlowType(state);
+      const isSocialLoginFlow = getIsSocialLoginFlow(state);
+      if (firstTimeFlowType !== null && !isSocialLoginFlow) {
+        // if the onboarding type is not social login, after wallet reset, we should stop checking for password outdated
+        clearInterval(pwdCheckIntervalId);
+        return;
+      }
       validateSeedlessPasswordOutdated(state);
     }, SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS);
   } catch (e) {
