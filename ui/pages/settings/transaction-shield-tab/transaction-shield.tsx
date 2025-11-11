@@ -446,7 +446,10 @@ const TransactionShield = () => {
     useSubscriptionCryptoApprovalTransaction(paymentToken);
 
   const handlePaymentError = useCallback(async () => {
-    if (
+    if (isCancelled) {
+      // go to shield plan page to renew subscription for cancelled subscription
+      navigate(SHIELD_PLAN_ROUTE);
+    } else if (
       shieldSubscription &&
       isCryptoPaymentMethod(shieldSubscription.paymentMethod)
     ) {
@@ -467,6 +470,8 @@ const TransactionShield = () => {
       await executeUpdateSubscriptionCardPaymentMethod();
     }
   }, [
+    isCancelled,
+    navigate,
     shieldSubscription,
     isInsufficientFundsCrypto,
     isAllowanceNeededCrypto,
