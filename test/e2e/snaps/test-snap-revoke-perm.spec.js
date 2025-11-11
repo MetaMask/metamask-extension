@@ -99,13 +99,16 @@ describe('Test Snap revoke permission', function () {
         // switch to metamask window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // wait for and click next
+        // wait for and click Connect
         await driver.waitForSelector({
-          text: 'Next',
+          text: 'Connect',
           tag: 'button',
         });
         await driver.clickElement({
-          text: 'Next',
+          text: 'Account 1',
+        });
+        await driver.clickElement({
+          text: 'Connect',
           tag: 'button',
         });
 
@@ -187,13 +190,16 @@ describe('Test Snap revoke permission', function () {
         // switch to metamask dialog
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // wait for and click next
+        // wait for and click Connect
         await driver.waitForSelector({
-          text: 'Next',
+          text: 'Connect',
           tag: 'button',
         });
         await driver.clickElement({
-          text: 'Next',
+          text: 'Account 1',
+        });
+        await driver.clickElement({
+          text: 'Connect',
           tag: 'button',
         });
 
