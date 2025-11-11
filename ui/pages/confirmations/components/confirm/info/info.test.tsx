@@ -144,12 +144,7 @@ describe('Info', () => {
 
     const state = getMockAddEthereumChainConfirmState();
     const mockStore = configureMockStore([])(state);
-    renderWithConfirmContextProvider(
-      <Info />,
-      mockStore,
-      DEFAULT_ROUTE,
-      MOCK_CONFIRMATION_ID,
-    );
+    renderWithConfirmContextProvider(<Info />, mockStore, DEFAULT_ROUTE);
 
     expect(screen.getByText('Test Network')).toBeInTheDocument();
     expect(screen.getByText('example.com')).toBeInTheDocument();

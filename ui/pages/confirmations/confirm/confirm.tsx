@@ -41,8 +41,8 @@ const GasFeeContextProviderWrapper: React.FC<{
   );
 };
 
-const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => (
-  <ConfirmContextProvider confirmationId={confirmationId}>
+const Confirm: React.FC = () => (
+  <ConfirmContextProvider>
     <TransactionModalContextProvider>
       {/* This context should be removed once we implement the new edit gas fees popovers */}
       <GasFeeContextProviderWrapper>

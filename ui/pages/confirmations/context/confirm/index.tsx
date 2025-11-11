@@ -26,12 +26,11 @@ export const ConfirmContext = createContext<ConfirmContextType | undefined>(
 
 export const ConfirmContextProvider: React.FC<{
   children: ReactElement;
-  confirmationId?: string;
-}> = ({ children, confirmationId }) => {
+}> = ({ children }) => {
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
-  const { currentConfirmation } = useCurrentConfirmation(confirmationId);
-  useSyncConfirmPath(currentConfirmation, confirmationId);
+  const { currentConfirmation } = useCurrentConfirmation();
+  useSyncConfirmPath(currentConfirmation);
   const dispatch = useDispatch();
 
   const value = useMemo(
