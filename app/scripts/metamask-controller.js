@@ -1382,7 +1382,11 @@ export default class MetamaskController extends EventEmitter {
         (snap) => !snap.preinstalled,
       )
     ) {
-      this.snapController.updateRegistry();
+      try {
+        this.snapController.updateRegistry();
+      } catch {
+        // Ignore
+      }
     }
   }
 
