@@ -8,7 +8,15 @@ import {
 import {
   createPendingNonceMiddleware,
   createPendingTxMiddleware,
+  type GetPendingNonce,
+  type GetPendingTransactionByHash,
 } from './middleware/pending';
+
+type Options = Parameters<typeof createWalletMiddleware>[0] & {
+  version: string;
+  getPendingNonce: GetPendingNonce;
+  getPendingTransactionByHash: GetPendingTransactionByHash;
+};
 
 export default function createMetamaskMiddleware({
   version,
@@ -23,13 +31,15 @@ export default function createMetamaskMiddleware({
   getPendingNonce,
   getPendingTransactionByHash,
   processRequestExecutionPermissions,
-}) {
+}: Options) {
   const engine = JsonRpcEngineV2.create({
     middleware: [
+      /* eslint-disable @typescript-eslint/naming-convention */
       createScaffoldMiddleware({
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
       }),
+      /* eslint-enable @typescript-eslint/naming-convention */
       createWalletMiddleware({
         getAccounts,
         processTransaction,

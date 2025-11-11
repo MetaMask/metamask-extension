@@ -1,7 +1,19 @@
-import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine/v2';
+import type {
+  JsonRpcMiddleware,
+  JsonRpcRequest,
+} from '@metamask/json-rpc-engine/v2';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 
 import { formatTxMetaForRpcResult } from '../util';
+
+export type GetPendingNonce = (
+  address: string,
+  networkClientId: string,
+) => Promise<number>;
+
+type PendingNonceMiddlewareOptions = {
+  getPendingNonce: GetPendingNonce;
+};
 
 /**
  * Middleware to get the pending nonce for a given address,
@@ -13,12 +25,7 @@ import { formatTxMetaForRpcResult } from '../util';
  */
 export function createPendingNonceMiddleware({
   getPendingNonce,
-}: {
-  getPendingNonce: (
-    address: string,
-    networkClientId: string,
-  ) => Promise<number>;
-}): JsonRpcMiddleware {
+}: PendingNonceMiddlewareOptions): JsonRpcMiddleware<JsonRpcRequest> {
   return async ({ request, context, next }) => {
     const { method, params } = request;
     if (method !== 'eth_getTransactionCount') {
@@ -36,6 +43,14 @@ export function createPendingNonceMiddleware({
   };
 }
 
+export type GetPendingTransactionByHash = (
+  hash: string,
+) => TransactionMeta | undefined;
+
+type PendingTxMiddlewareOptions = {
+  getPendingTransactionByHash: GetPendingTransactionByHash;
+};
+
 /**
  * Middleware to get the pending transaction by hash,
  * implementing the `eth_getTransactionByHash` RPC method.
@@ -46,9 +61,7 @@ export function createPendingNonceMiddleware({
  */
 export function createPendingTxMiddleware({
   getPendingTransactionByHash,
-}: {
-  getPendingTransactionByHash: (hash: string) => TransactionMeta | undefined;
-}): JsonRpcMiddleware {
+}: PendingTxMiddlewareOptions): JsonRpcMiddleware<JsonRpcRequest> {
   return async ({ request, next }) => {
     const { method, params } = request;
     if (method !== 'eth_getTransactionByHash') {
