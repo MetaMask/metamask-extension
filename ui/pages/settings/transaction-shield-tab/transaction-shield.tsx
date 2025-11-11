@@ -725,10 +725,12 @@ const TransactionShield = () => {
               </Text>
             )}
           </Box>
-          <ShieldIllustrationAnimation
-            containerClassName="transaction-shield-page-shield-illustration__container"
-            canvasClassName="transaction-shield-page-shield-illustration__canvas"
-          />
+          {!showSkeletonLoader && !isMembershipInactive && (
+            <ShieldIllustrationAnimation
+              containerClassName="transaction-shield-page-shield-illustration__container"
+              canvasClassName="transaction-shield-page-shield-illustration__canvas"
+            />
+          )}
         </Box>
 
         <Box
