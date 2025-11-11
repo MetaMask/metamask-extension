@@ -1199,7 +1199,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
   });
 });
 
-
 describe('getAssetsBySelectedAccountGroup', () => {
   beforeEach(() => {
     getAssetsBySelectedAccountGroup.clearCache();
