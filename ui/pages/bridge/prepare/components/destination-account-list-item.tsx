@@ -6,7 +6,6 @@ import {
   isBitcoinChainId,
   ChainId,
 } from '@metamask/bridge-controller';
-import { TrxScope } from '@metamask/keyring-api';
 import { isCaipChainId } from '@metamask/utils';
 import {
   Icon,
@@ -14,7 +13,7 @@ import {
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType, TrxScope } from '@metamask/keyring-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {

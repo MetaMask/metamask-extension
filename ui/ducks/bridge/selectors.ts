@@ -706,11 +706,7 @@ export const getFromTokenConversionRate = createSelector(
         );
       }
 
-      if (
-        isTronChainId(fromChain.chainId) &&
-        nativeAssetId &&
-        tokenAssetId
-      ) {
+      if (isTronChainId(fromChain.chainId) && nativeAssetId && tokenAssetId) {
         // For Tron tokens, we use the conversion rates provided by the multichain rates controller
         const nativeAssetRate = Number(
           conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
