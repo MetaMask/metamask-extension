@@ -5,7 +5,6 @@ import {
   ProductType,
   RecurringInterval,
   Subscription,
-  SubscriptionEligibility,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useNavigate } from 'react-router-dom-v5-compat';
@@ -14,6 +13,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { SubscriptionEligibilityWithModalType } from '../../selectors/subscription/subscription';
 import { getUserSubscriptions } from '../../selectors/subscription';
 import {
   addTransaction,
@@ -212,7 +212,7 @@ export const useSubscriptionEligibility = (product: ProductType) => {
   const isUnlocked = useSelector(getIsUnlocked);
 
   const getSubscriptionEligibility = useCallback(async (): Promise<
-    (SubscriptionEligibility & { modalType?: 'A' | 'B' }) | undefined
+    SubscriptionEligibilityWithModalType | undefined
   > => {
     try {
       // if user is not signed in or unlocked, return undefined

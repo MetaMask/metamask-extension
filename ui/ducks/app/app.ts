@@ -13,6 +13,7 @@ import {
   PasswordChangeToastType,
   ClaimSubmitToastType,
 } from '../../../shared/constants/app-state';
+import { ModalType } from '../../selectors/subscription';
 
 type AppState = {
   customNonceValue: string;
@@ -137,7 +138,7 @@ type AppState = {
   shieldEntryModal?: {
     show: boolean;
     shouldSubmitEvents: boolean;
-    modalType: 'A' | 'B';
+    modalType: ModalType;
   };
 };
 

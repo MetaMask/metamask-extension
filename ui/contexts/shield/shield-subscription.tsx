@@ -17,6 +17,7 @@ import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/envir
 import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
+  MODAL_TYPE,
 } from '../../selectors/subscription';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 
@@ -90,14 +91,15 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       const shieldSubscriptionEligibility =
         await getShieldSubscriptionEligibility();
       if (
-        shieldSubscriptionEligibility?.canSubscribe &&
+        !shieldSubscriptionEligibility?.canSubscribe &&
         shieldSubscriptionEligibility?.canViewEntryModal &&
         shieldSubscriptionEligibility?.minBalanceUSD &&
         totalFiatBalance &&
         Number(totalFiatBalance) >= shieldSubscriptionEligibility?.minBalanceUSD
       ) {
         const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event
-        const modalType = shieldSubscriptionEligibility?.modalType || 'A';
+        const modalType =
+          shieldSubscriptionEligibility?.modalType || MODAL_TYPE.A;
         dispatch(
           setShowShieldEntryModalOnce(true, shouldSubmitUserEvents, modalType),
         );

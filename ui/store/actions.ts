@@ -83,6 +83,11 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
+import {
+  MODAL_TYPE,
+  ModalType,
+  SubscriptionEligibilityWithModalType,
+} from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -420,14 +425,29 @@ export function subscriptionsStartPolling(): ThunkAction<
  * @returns The subscription eligibilities.
  */
 export function getSubscriptionsEligibilities(): ThunkAction<
-  (SubscriptionEligibility & { modalType?: 'A' | 'B' })[],
+  SubscriptionEligibilityWithModalType[],
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      return await submitRequestToBackground('getSubscriptionsEligibilities');
+      const eligibilities = await submitRequestToBackground<
+        SubscriptionEligibility[]
+      >('getSubscriptionsEligibilities');
+
+      // Temporary: Update modalType when SubscriptionEligibility type is updated
+      return eligibilities.map((eligibility) => {
+        const eligibilityWithModalType: SubscriptionEligibilityWithModalType = {
+          ...eligibility,
+          modalType:
+            'modalType' in eligibility
+              ? ((eligibility as SubscriptionEligibilityWithModalType)
+                  .modalType ?? MODAL_TYPE.A)
+              : MODAL_TYPE.A,
+        };
+        return eligibilityWithModalType;
+      });
     } catch (error) {
       log.error('[getSubscriptionsEligibilities] error', error);
       dispatch(displayWarning(error));
@@ -616,7 +636,7 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
 export function setShowShieldEntryModalOnce(
   show: boolean | null,
   shouldSubmitEvents: boolean = false,
-  modalType?: 'A' | 'B' = 'A',
+  modalType?: ModalType = MODAL_TYPE.A,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -639,7 +659,7 @@ export function setShowShieldEntryModalOnce(
 export function setShowShieldEntryModalOnceAction(payload: {
   show: boolean;
   shouldSubmitEvents: boolean;
-  modalType: 'A' | 'B';
+  modalType: ModalType;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
     type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
