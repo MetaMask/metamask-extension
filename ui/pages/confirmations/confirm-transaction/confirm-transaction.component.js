@@ -27,6 +27,7 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { isTokenMethodAction } from '../../../helpers/utils/transactions.util';
+import { getRelativeLocationForNestedRoutes } from '../../routes/utils';
 import usePolling from '../../../hooks/usePolling';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
@@ -208,14 +209,23 @@ const ConfirmTransaction = ({
   // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
   // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
   if (isValidTransactionId) {
+    // CRITICAL: Transform location to be relative for nested v5-compat Routes
+    // v5-compat requires nested Routes to use RELATIVE paths, not absolute paths
+    // This strips the base '/confirm-transaction/:id' from the pathname
+    // Example: '/confirm-transaction/123/decrypt-message-request' -> '/decrypt-message-request'
+    const relativeLocation = getRelativeLocationForNestedRoutes(
+      routeLocation,
+      `${CONFIRM_TRANSACTION_ROUTE}/${paramsTransactionId || ''}`,
+    );
+
     return (
-      <Routes location={routeLocation}>
+      <Routes location={relativeLocation}>
         <Route
-          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
+          path={DECRYPT_MESSAGE_REQUEST_PATH}
           element={<ConfirmDecryptMessage />}
         />
         <Route
-          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
+          path={ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}
           element={<ConfirmEncryptionPublicKey />}
         />
         <Route path="*" element={<ConfirmTransactionSwitch />} />
