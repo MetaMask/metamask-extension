@@ -5741,10 +5741,6 @@
     "message": "Mura gcealaíonn tú, ní bheidh do sparán ná d'idirbhearta clúdaithe ag tosú le $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxCancelWhenPausedDetails": {
-    "message": "Níl do chlúdach gníomhach agus é ar sos. Má chealaíonn tú, cuirfear deireadh le do bhallraíocht ar $1.",
-    "description": "The $1 is the date subscription ends"
-  },
   "shieldTxDetails1Description": {
     "message": "Cosnaíonn sé do shócmhainní ó idirbhearta contúirteacha"
   },
