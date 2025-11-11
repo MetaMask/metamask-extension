@@ -28,10 +28,7 @@ import {
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { getIsSocialLoginFlow } from '../../selectors';
-import {
-  resetWallet as resetWalletAction,
-  forceUpdateMetamaskState,
-} from '../../store/actions';
+import { resetWallet as resetWalletAction } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -55,11 +52,9 @@ export default function ResetPasswordModal({
     setResetWallet((prev) => !prev);
   };
 
-  const handleResetWalletConfirm = () => {
-    console.log('handleResetWalletConfirm');
+  const handleResetWalletConfirm = async () => {
     onClose();
-    dispatch(resetWalletAction());
-    dispatch(forceUpdateMetamaskState(dispatch));
+    await dispatch(resetWalletAction());
     history.push(DEFAULT_ROUTE);
   };
 
