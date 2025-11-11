@@ -13,10 +13,8 @@ export const useSidePanelEnabled = (): boolean => {
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
 
   const isSidePanelEnabled = useMemo(() => {
-    // First check if the build supports sidepanel
     const isBuildEnabled = getIsSidePanelFeatureEnabled();
 
-    // Then check if the LaunchDarkly feature flag is enabled
     const isFeatureFlagEnabled = Boolean(
       remoteFeatureFlags?.extensionUxSidepanel,
     );

@@ -18,6 +18,7 @@ import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
  * Helper function to handle post-onboarding navigation for sidepanel builds.
  * When sidepanel is enabled, clicking "Done" doesn't navigate the current window,
  * so we need to manually navigate to home.html.
+ * Note: Sidepanel is only supported on Chrome-based browsers, not Firefox.
  *
  * @param driver - The WebDriver instance
  */
@@ -25,7 +26,10 @@ export const handleSidepanelPostOnboarding = async (
   driver: Driver,
 ): Promise<void> => {
   // Check if sidepanel is enabled via build configuration
-  const isSidepanelEnabled = process.env.IS_SIDEPANEL === 'true';
+  // AND we're not running on Firefox (which doesn't support sidepanel)
+  const isSidepanelEnabled =
+    process.env.IS_SIDEPANEL === 'true' &&
+    process.env.SELENIUM_BROWSER !== Browser.FIREFOX;
 
   if (isSidepanelEnabled) {
     // Give the onboarding completion time to process (needed for sidepanel)
@@ -399,16 +403,7 @@ export const completeCreateNewWalletOnboardingFlow = async ({
 
   await onboardingCompletePage.completeOnboarding();
 
-  // Handle sidepanel navigation if needed
   await handleSidepanelPostOnboarding(driver);
-
-  // Wait for the home page to load
-  await driver.waitForSelector('[data-testid="eth-overview-send"]');
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  // For non-sidepanel builds, wait for the home page to load after onboarding
-  await driver.waitForSelector('[data-testid="eth-overview-send"]');
-  ///: END:ONLY_INCLUDE_IF
 };
 
 /**
@@ -512,16 +507,7 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
 
   await onboardingCompletePage.completeOnboarding();
 
-  // Handle sidepanel navigation if needed
   await handleSidepanelPostOnboarding(driver);
-
-  // Wait for the home page to load
-  await driver.waitForSelector('[data-testid="eth-overview-send"]');
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  // For non-sidepanel builds, wait for the home page to load after onboarding
-  await driver.waitForSelector('[data-testid="eth-overview-send"]');
-  ///: END:ONLY_INCLUDE_IF
 };
 
 /**
@@ -560,16 +546,7 @@ export const completeVaultRecoveryOnboardingFlow = async ({
 
   await onboardingCompletePage.completeOnboarding();
 
-  // Handle sidepanel navigation if needed
   await handleSidepanelPostOnboarding(driver);
-
-  // Wait for the home page to load
-  await driver.waitForSelector('[data-testid="eth-overview-send"]');
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  // For non-sidepanel builds, wait for the home page to load after onboarding
-  await driver.waitForSelector('[data-testid="eth-overview-send"]');
-  ///: END:ONLY_INCLUDE_IF
 
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
