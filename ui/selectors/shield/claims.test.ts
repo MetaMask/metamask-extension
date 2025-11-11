@@ -1,9 +1,15 @@
-import { DEFAULT_CLAIMS_CONFIGURATIONS, ClaimsControllerState } from "@metamask/claims-controller";
-import { getSupportedNetworksForClaim, getValidSubmissionWindowDays } from "./claims";
+import {
+  DEFAULT_CLAIMS_CONFIGURATIONS,
+  ClaimsControllerState,
+} from '@metamask/claims-controller';
+import {
+  getSupportedNetworksForClaim,
+  getValidSubmissionWindowDays,
+} from './claims';
 
 describe('shield claims selectors', () => {
   const DEFAULT_STATE: ClaimsControllerState = {
-    ...DEFAULT_CLAIMS_CONFIGURATIONS,
+    claimsConfigurations: DEFAULT_CLAIMS_CONFIGURATIONS,
     claims: [],
   };
 
@@ -11,13 +17,17 @@ describe('shield claims selectors', () => {
     const result = getSupportedNetworksForClaim({
       metamask: DEFAULT_STATE,
     });
-    expect(result).toEqual(DEFAULT_STATE.supportedNetworks);
+    expect(result).toEqual(
+      DEFAULT_STATE.claimsConfigurations.supportedNetworks,
+    );
   });
 
   it('should return the valid submission window days for claim', () => {
     const result = getValidSubmissionWindowDays({
       metamask: DEFAULT_STATE,
     });
-    expect(result).toEqual(DEFAULT_STATE.validSubmissionWindowDays);
+    expect(result).toEqual(
+      DEFAULT_STATE.claimsConfigurations.validSubmissionWindowDays,
+    );
   });
 });

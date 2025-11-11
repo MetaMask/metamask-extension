@@ -115,6 +115,7 @@
     },
     "firstTimeFlowType": "import",
     "claims": "object",
+    "claimsConfigurations": "object",
     "completedOnboarding": true,
     "knownMethodData": "object",
     "use4ByteResolution": true,
