@@ -238,16 +238,14 @@ export const CoinOverview = ({
   );
   const isRewardsEnabled = useSelector(selectRewardsEnabled);
 
-  const accountGroupBalance = useSelector(
-    selectAccountGroupBalanceForEmptyState,
-  );
+  const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const isTestnet = useSelector(getMultichainIsTestnet);
 
   const shouldShowBalanceEmptyState =
     isMultichainAccountsState2Enabled &&
     !isTestnet &&
     !balanceIsCached &&
-    accountGroupBalance === 0;
+    !hasBalance;
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));

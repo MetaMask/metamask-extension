@@ -1089,7 +1089,7 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     userCurrency: 'usd',
   });
 
-  it('should return correct balance for EVM networks', () => {
+  it('should return true when balance is greater than 0 for EVM networks', () => {
     const state = createMockStateWithEVMNetworks();
     const expectedBalance = 750.25;
     const mockResult = createMockBalanceResult(expectedBalance);
@@ -1099,11 +1099,11 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
 
     const result = selectAccountGroupBalanceForEmptyState(state);
 
-    expect(result).toBe(expectedBalance);
+    expect(result).toBe(true);
     expect(calculateBalanceForAllWallets).toHaveBeenCalledTimes(1);
   });
 
-  it('should return correct balance for non-EVM networks like Solana', () => {
+  it('should return true when balance is greater than 0 for non-EVM networks like Solana', () => {
     const state = createMockStateWithNonEVMNetworks();
     const expectedBalance = 500.5;
     const mockResult = createMockBalanceResult(expectedBalance);
@@ -1113,8 +1113,44 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
 
     const result = selectAccountGroupBalanceForEmptyState(state);
 
-    expect(result).toBe(expectedBalance);
+    expect(result).toBe(true);
     expect(calculateBalanceForAllWallets).toHaveBeenCalledTimes(1);
+  });
+
+  it('should return false when balance is 0', () => {
+    const state = createMockStateWithEVMNetworks();
+    const mockResult = createMockBalanceResult(0);
+    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
+      mockResult,
+    );
+
+    const result = selectAccountGroupBalanceForEmptyState(state);
+
+    expect(result).toBe(false);
+  });
+
+  it('should return true for small positive balances', () => {
+    const state = createMockStateWithEVMNetworks();
+    const mockResult = createMockBalanceResult(0.01);
+    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
+      mockResult,
+    );
+
+    const result = selectAccountGroupBalanceForEmptyState(state);
+
+    expect(result).toBe(true);
+  });
+
+  it('should return false for negative balances', () => {
+    const state = createMockStateWithEVMNetworks();
+    const mockResult = createMockBalanceResult(-10);
+    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
+      mockResult,
+    );
+
+    const result = selectAccountGroupBalanceForEmptyState(state);
+
+    expect(result).toBe(false);
   });
 
   it('should exclude EVM testnets from balance calculation', () => {
@@ -1162,6 +1198,7 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     );
   });
 });
+
 
 describe('getAssetsBySelectedAccountGroup', () => {
   beforeEach(() => {

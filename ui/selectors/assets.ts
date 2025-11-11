@@ -977,10 +977,12 @@ const selectAllMainnetNetworksEnabledMap = createSelector(
 );
 
 /**
- * Calculates total balance across all enabled networks for the selected account group.
+ * Determines whether the selected account group has a balance greater than zero.
+ * This selector returns a boolean to prevent unnecessary re-renders - it only changes
+ * when the balance crosses the zero threshold, not on every balance update.
  *
  * @param state - Redux state containing all required controller states for balance calculation.
- * @returns The total balance in user currency for the selected account group, or 0 if no group is selected.
+ * @returns true if the account group has a balance > 0, false otherwise.
  */
 export const selectAccountGroupBalanceForEmptyState = createSelector(
   [
@@ -1006,10 +1008,10 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     tokensState,
     currencyRateState,
     allMainnetNetworksMap,
-  ): number => {
+  ): boolean => {
     const selectedGroupId = accountTreeState?.accountTree?.selectedAccountGroup;
     if (!selectedGroupId) {
-      return 0;
+      return false;
     }
 
     // Use the pre-computed memoized network map for better performance
@@ -1031,12 +1033,12 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     const wallet = allBalances.wallets[walletId] ?? null;
 
     if (!wallet?.groups[selectedGroupId]) {
-      return 0;
+      return false;
     }
 
     const balance = wallet.groups[selectedGroupId].totalBalanceInUserCurrency;
 
-    return balance;
+    return balance > 0;
   },
 );
 
