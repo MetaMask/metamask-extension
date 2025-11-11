@@ -23,6 +23,11 @@ describe('Send Solana', function () {
 
         await nonEvmHomepage.clickOnSendButton();
 
+        // Navigating immediate will not work - we wait in the asset page to catch up
+        await driver.waitForSelector({
+          text: '50 SOL',
+        });
+
         await sendPage.createSendRequest({
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           symbol: 'SOL',

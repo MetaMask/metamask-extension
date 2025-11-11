@@ -1,7 +1,8 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Hex } from '@metamask/utils';
+import { Hex, isStrictHexString } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
@@ -14,9 +15,10 @@ import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import {
-  getChainIdsToPoll,
+  getEnabledChainIds,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
+import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import { detectNfts } from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
@@ -50,7 +52,19 @@ export const AccountOverviewTabs = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
-  const selectedChainIds = useSelector(getChainIdsToPoll);
+  const selectedChainIds = useSelector(getEnabledChainIds);
+
+  // Get all enabled networks (what the user has actually selected)
+  const allEnabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
+
+  // Convert enabled networks to CAIP format for metrics
+  const networkFilterForMetrics = useMemo(
+    () =>
+      allEnabledNetworks.map((chainId) =>
+        isStrictHexString(chainId) ? toEvmCaipChainId(chainId) : chainId,
+      ),
+    [allEnabledNetworks],
+  );
 
   // EVM specific tokenBalance polling, updates state via polling loop per chainId
   useTokenBalances({
@@ -70,6 +84,10 @@ export const AccountOverviewTabs = ({
             ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[
               tabName as keyof typeof ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP
             ],
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            network_filter: networkFilterForMetrics,
+          },
         });
       }
       if (defaultHomeActiveTabName) {
@@ -83,7 +101,7 @@ export const AccountOverviewTabs = ({
         name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
       });
     },
-    [onTabClick],
+    [networkFilterForMetrics, onTabClick],
   );
 
   const onClickAsset = useCallback(

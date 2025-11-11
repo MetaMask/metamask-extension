@@ -456,6 +456,7 @@ env:
   - METAMASK_SHIELD_ENABLED: 'false'
 
   # Snaps
+  - AUTO_UPDATE_PREINSTALLED_SNAPS: 'true'
   # This should only be used for local testing, and should not be enabled in any
   # production builds (including beta and Flask).
   - FORCE_PREINSTALLED_SNAPS: 'false'

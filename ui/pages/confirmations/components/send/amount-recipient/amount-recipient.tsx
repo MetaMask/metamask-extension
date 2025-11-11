@@ -74,7 +74,7 @@ export const AmountRecipient = () => {
       justifyContent={JustifyContent.spaceBetween}
       paddingLeft={4}
       paddingRight={4}
-      style={{ flex: 1 }}
+      style={{ flex: 1, height: '100%' }}
     >
       <Box>
         <SendHero asset={asset as Asset} />

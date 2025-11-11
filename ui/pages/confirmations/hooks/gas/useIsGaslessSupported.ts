@@ -1,7 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
-import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../../context/confirm';
 import { isRelaySupported } from '../../../../store/actions';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
@@ -21,8 +19,7 @@ export function useIsGaslessSupported() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { chainId, txParams } = transactionMeta ?? {};
-  const { from } = txParams ?? {};
+  const { chainId } = transactionMeta ?? {};
 
   const {
     isSmartTransaction,
@@ -33,17 +30,6 @@ export function useIsGaslessSupported() {
   const shouldCheck7702Eligibility =
     !pending && !isSmartTransactionAndBundleSupported;
 
-  const { value: atomicBatchSupportResult } = useAsyncResult(async () => {
-    if (!shouldCheck7702Eligibility) {
-      return undefined;
-    }
-
-    return isAtomicBatchSupported({
-      address: from as Hex,
-      chainIds: [chainId],
-    });
-  }, [chainId, from, shouldCheck7702Eligibility]);
-
   const { value: relaySupportsChain } = useAsyncResult(async () => {
     if (!shouldCheck7702Eligibility) {
       return undefined;
@@ -52,14 +38,8 @@ export function useIsGaslessSupported() {
     return isRelaySupported(chainId);
   }, [chainId, shouldCheck7702Eligibility]);
 
-  const atomicBatchChainSupport = atomicBatchSupportResult?.find(
-    (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
-  );
-
-  // Currently requires upgraded account, can also support no `delegationAddress` in future.
   const is7702Supported = Boolean(
-    atomicBatchChainSupport?.isSupported &&
-      relaySupportsChain &&
+    relaySupportsChain &&
       // contract deployments can't be delegated
       transactionMeta?.txParams.to !== undefined,
   );

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useHistory, useParams, Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import {
   Display,
@@ -45,22 +45,25 @@ const useExtractUnderlyingTokens = (
     );
   }, [positions]);
 
-const DeFiPage = () => {
-  const { chainId, protocolId } = useParams<{
-    chainId: '0x' & string;
-    protocolId: string;
-  }>() as { chainId: '0x' & string; protocolId: string };
+type DeFiPageProps = {
+  navigate: (to: string | number) => void;
+  params: { chainId: string; protocolId: string };
+};
+
+const DeFiPage = ({ navigate, params }: DeFiPageProps) => {
   const { formatCurrencyWithMinThreshold } = useFormatters();
+  const { chainId, protocolId } = params;
   const defiPositions = useSelector(getDefiPositions);
   const selectedAccount = useSelector(getSelectedAccount);
 
-  const history = useHistory();
   const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
 
   // TODO: Get value in user's preferred currency
   const protocolPosition =
-    defiPositions[selectedAccount.address]?.[chainId]?.protocols[protocolId];
+    defiPositions[selectedAccount.address]?.[
+      chainId as keyof (typeof defiPositions)[string]
+    ]?.protocols[protocolId];
 
   const extractedTokens = useMemo(() => {
     return Object.keys(protocolPosition?.positionTypes || {}).reduce(
@@ -82,7 +85,7 @@ const DeFiPage = () => {
   };
 
   if (!protocolPosition) {
-    return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+    return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
   return (
@@ -100,7 +103,7 @@ const DeFiPage = () => {
           size={ButtonIconSize.Sm}
           ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
-          onClick={() => history.push(DEFAULT_ROUTE)}
+          onClick={() => navigate(DEFAULT_ROUTE)}
         />
       </Box>
 
@@ -119,7 +122,7 @@ const DeFiPage = () => {
           {protocolPosition.protocolDetails.name}
         </Text>
         <AssetCellBadge
-          chainId={chainId}
+          chainId={chainId as (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS]}
           tokenImage={protocolPosition.protocolDetails.iconUrl}
           symbol={protocolPosition.protocolDetails.name}
           data-testid="defi-details-page-protocol-badge"

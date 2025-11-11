@@ -19,7 +19,7 @@ import {
   TextVariant,
   IconSize,
 } from '@metamask/design-system-react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -64,12 +64,12 @@ import {
 import { SubmitClaimError } from '../claim-error';
 import AccountSelector from '../account-selector';
 import NetworkSelector from '../network-selector';
+import { getValidSubmissionWindowDays } from '../../../../selectors/shield/claims';
 import {
   ERROR_MESSAGE_MAP,
   FIELD_ERROR_MESSAGE_KEY_MAP,
   MAX_FILE_SIZE_BYTES,
   MAX_FILE_SIZE_MB,
-  VALID_SUBMISSION_WINDOW_DAYS,
 } from './constants';
 import { isValidTransactionHash } from './utils';
 
@@ -78,6 +78,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { refetchClaims, pendingClaims } = useClaims();
+  const validSubmissionWindowDays = useSelector(getValidSubmissionWindowDays);
   const [isSubmittingClaim, setIsSubmittingClaim] = useState(false);
 
   const {
@@ -314,12 +315,12 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       await submitShieldClaim({
         chainId: chainIdNumber.toString(),
         email,
-        impactedWalletAddress,
-        impactedTransactionHash,
-        reimbursementWalletAddress,
-        caseDescription,
+        impactedWalletAddress: impactedWalletAddress as `0x${string}`,
+        impactedTxHash: impactedTransactionHash as `0x${string}`,
+        reimbursementWalletAddress: reimbursementWalletAddress as `0x${string}`,
+        description: caseDescription,
+        signature: claimSignature as `0x${string}`,
         files,
-        signature: claimSignature,
       });
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
       // update claims
@@ -378,7 +379,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               </TextButton>,
             ])
           : t('shieldClaimDetails', [
-              VALID_SUBMISSION_WINDOW_DAYS,
+              validSubmissionWindowDays,
               <TextButton key="here-link" className="min-w-0" asChild>
                 <a
                   href={TRANSACTION_SHIELD_LINK}

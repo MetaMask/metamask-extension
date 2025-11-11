@@ -62,6 +62,7 @@ describe('SnapControllerInit', () => {
         rejectInvalidPlatformVersion: false,
         requireAllowlist: false,
         forcePreinstalledSnaps: false,
+        autoUpdatePreinstalledSnaps: false,
       },
       getFeatureFlags: expect.any(Function),
       getMnemonicSeed: expect.any(Function),

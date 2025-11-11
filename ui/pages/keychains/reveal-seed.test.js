@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -29,24 +29,13 @@ const mockRequestRevealSeedWords = jest
   .fn()
   .mockImplementation(mockSuccessfulSrpReveal);
 const mockShowModal = jest.fn();
-const mockUseParams = jest
-  .fn()
-  .mockReturnValue({ keyringId: 'ULID01234567890ABCDEFGHIJKLMN' });
+const mockNavigate = jest.fn();
 const password = 'password';
 
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   requestRevealSeedWords: (userPassword, keyringId) =>
     mockRequestRevealSeedWords(userPassword, keyringId),
-}));
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: jest.fn(),
-    goBack: jest.fn(),
-  }),
-  useParams: () => mockUseParams(),
 }));
 
 const mockStateWithModal = {
@@ -68,19 +57,26 @@ const mockStateWithModal = {
 describe('Reveal Seed Page', () => {
   const mockStore = configureMockStore([thunk])(mockStateWithModal);
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('should match snapshot', () => {
-    const { container } = renderWithProvider(<RevealSeedPage />, mockStore);
+    const { container } = renderWithProvider(
+      <RevealSeedPage navigate={mockNavigate} />,
+      mockStore,
+    );
 
     expect(container).toMatchSnapshot();
   });
 
   it('form submit', async () => {
     const { queryByTestId, queryByText } = renderWithProvider(
-      <RevealSeedPage />,
+      <RevealSeedPage navigate={mockNavigate} />,
       mockStore,
     );
 
@@ -97,7 +93,7 @@ describe('Reveal Seed Page', () => {
 
   it('shows hold to reveal', async () => {
     const { queryByTestId, queryByText } = renderWithProvider(
-      <RevealSeedPage />,
+      <RevealSeedPage navigate={mockNavigate} />,
       mockStore,
     );
 
@@ -116,7 +112,7 @@ describe('Reveal Seed Page', () => {
     mockRequestRevealSeedWords.mockImplementation(mockUnsuccessfulSrpReveal);
 
     const { queryByTestId, queryByText } = renderWithProvider(
-      <RevealSeedPage />,
+      <RevealSeedPage navigate={mockNavigate} />,
       mockStore,
     );
 
@@ -138,7 +134,7 @@ describe('Reveal Seed Page', () => {
     const { queryByTestId, queryByText } = renderWithProvider(
       <div>
         <Modal />
-        <RevealSeedPage />
+        <RevealSeedPage navigate={mockNavigate} />
       </div>,
       store,
     );
@@ -168,7 +164,7 @@ describe('Reveal Seed Page', () => {
       renderWithProvider(
         <MetaMetricsContext.Provider value={mockTrackEvent}>
           <Modal />
-          <RevealSeedPage />
+          <RevealSeedPage navigate={mockNavigate} />
         </MetaMetricsContext.Provider>,
         store,
       );
@@ -344,7 +340,7 @@ describe('Reveal Seed Page', () => {
     const mockTrackEvent = jest.fn();
     const { queryByText } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <RevealSeedPage />
+        <RevealSeedPage navigate={mockNavigate} />
       </MetaMetricsContext.Provider>,
       mockStore,
     );
@@ -375,9 +371,8 @@ describe('Reveal Seed Page', () => {
   describe('multi-srp', () => {
     it('passes the keyringId to the requestRevealSeedWords action', async () => {
       const keyringId = 'ULID01234567890ABCDEFGHIJKLMN';
-      mockUseParams.mockReturnValue({ keyringId });
       const { queryByTestId, queryByText } = renderWithProvider(
-        <RevealSeedPage />,
+        <RevealSeedPage navigate={mockNavigate} keyringId={keyringId} />,
         mockStore,
       );
 
@@ -397,9 +392,8 @@ describe('Reveal Seed Page', () => {
 
     it('passes undefined for keyringId if there is no param', async () => {
       const keyringId = undefined;
-      mockUseParams.mockReturnValue({ keyringId });
       const { queryByTestId, queryByText } = renderWithProvider(
-        <RevealSeedPage />,
+        <RevealSeedPage navigate={mockNavigate} keyringId={keyringId} />,
         mockStore,
       );
 

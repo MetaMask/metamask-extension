@@ -321,6 +321,7 @@ export type ControllerStatePropertiesEnumerated = {
   rewardsSeasonStatuses: RewardsControllerState['rewardsSeasonStatuses'];
   rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
   claims: ClaimsControllerState['claims'];
+  claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &

@@ -56,3 +56,26 @@ export const MULTICHAIN_NETWORK_TO_ASSET_TYPES: Record<
   [MultichainNetworks.TRON_NILE]: [MultichainNativeAssets.TRON_NILE],
   [MultichainNetworks.TRON_SHASTA]: [MultichainNativeAssets.TRON_SHASTA],
 } as const;
+
+/**
+ * Tron resource types that should be filtered out from asset selectors.
+ * These are virtual resources used for Tron network operations, not actual tokens.
+ */
+export const TRON_RESOURCE = {
+  ENERGY: 'energy',
+  BANDWIDTH: 'bandwidth',
+  MAX_ENERGY: 'max-energy',
+  MAX_BANDWIDTH: 'max-bandwidth',
+  STRX_ENERGY: 'strx-energy',
+  STRX_BANDWIDTH: 'strx-bandwidth',
+} as const;
+
+export type TronResourceSymbol =
+  (typeof TRON_RESOURCE)[keyof typeof TRON_RESOURCE];
+
+export const TRON_RESOURCE_SYMBOLS = Object.values(
+  TRON_RESOURCE,
+) as readonly TronResourceSymbol[];
+
+export const TRON_RESOURCE_SYMBOLS_SET: ReadonlySet<TronResourceSymbol> =
+  new Set(TRON_RESOURCE_SYMBOLS);
