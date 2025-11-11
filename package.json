@@ -380,6 +380,7 @@
     "@sentry/utils": "^8.33.1",
     "@solana/addresses": "2.0.0-rc.4",
     "@swc/core": "^1.13.2",
+    "@tanstack/react-virtual": "^3.10.8",
     "@trezor/connect-web": "~9.6.0",
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "0.21.3",
