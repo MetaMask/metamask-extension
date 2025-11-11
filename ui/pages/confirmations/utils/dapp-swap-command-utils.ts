@@ -75,7 +75,7 @@ function handleV4CommandSwapExactIn(
   _2: string,
 ) {
   return {
-    amountMin: undefined,
+    amountMin: argToAmount(args[4]),
     isExactOut: false,
     quotesInput: {
       ...quotesInput,
