@@ -94,7 +94,6 @@ export type ControllerStatePropertiesEnumerated = {
   pendingApprovalCount: ApprovalControllerState['pendingApprovalCount'];
   timeoutMinutes: AppStateControllerState['timeoutMinutes'];
   connectedStatusPopoverHasBeenShown: AppStateControllerState['connectedStatusPopoverHasBeenShown'];
-  defaultHomeActiveTabName: AppStateControllerState['defaultHomeActiveTabName'];
   browserEnvironment: AppStateControllerState['browserEnvironment'];
   popupGasPollTokens: AppStateControllerState['popupGasPollTokens'];
   notificationGasPollTokens: AppStateControllerState['notificationGasPollTokens'];

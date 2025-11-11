@@ -33,7 +33,6 @@ import {
   gasFeeStartPollingByNetworkClientId,
   gasFeeStopPollingByPollingToken,
   getContractMethodData,
-  setDefaultHomeActiveTabName,
 } from '../../../store/actions';
 import ConfirmDecryptMessage from '../../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../../confirm-encryption-public-key';
@@ -155,9 +154,7 @@ const ConfirmTransaction = () => {
         dispatch(getContractMethodData(data, use4ByteResolution));
       }
     } else if (prevTransactionId && !transactionId && !totalUnapproved) {
-      dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
-        history.replace(DEFAULT_ROUTE);
-      });
+      history.replace(`${DEFAULT_ROUTE}?tab=activity`);
     } else if (
       prevTransactionId &&
       transactionId &&

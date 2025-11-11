@@ -48,7 +48,6 @@
         "os": "mac"
       },
       "connectedStatusPopoverHasBeenShown": true,
-      "defaultHomeActiveTabName": null,
       "enableEnforcedSimulations": true,
       "enforcedSimulationsSlippage": 10,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,

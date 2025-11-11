@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom-v5-compat';
 import {
   BtcAccountType,
   EthAccountType,
@@ -36,7 +37,6 @@ import {
   getSelectedInternalAccount,
   getHDEntropyIndex,
   getAllChainsToPoll,
-  getDefaultHomeActiveTabName,
   getUpdatedAndSortedAccounts,
   getHiddenAccountsList,
 } from '../../../selectors';
@@ -114,6 +114,7 @@ export const AccountListMenu = ({
   ) as AccountConnections;
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -135,9 +136,15 @@ export const AccountListMenu = ({
     return _searchResults;
   }, [filteredAccounts, filteredUpdatedAccountList, searchQuery]);
 
-  const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
-    getDefaultHomeActiveTabName,
-  );
+  // Get current tab from URL query parameters
+  const currentTabFromUrl = searchParams.get('tab');
+  const currentTab: AccountOverviewTabKey =
+    currentTabFromUrl &&
+    Object.values(AccountOverviewTabKey).includes(
+      currentTabFromUrl as AccountOverviewTabKey,
+    )
+      ? (currentTabFromUrl as AccountOverviewTabKey)
+      : AccountOverviewTabKey.Tokens;
 
   const onAccountListItemItemClicked = useCallback(
     (account: MergedInternalAccount) => {
@@ -153,26 +160,15 @@ export const AccountListMenu = ({
         },
       });
       endTrace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-          defaultHomeActiveTabName
-        ],
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[currentTab],
       });
       trace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-          defaultHomeActiveTabName
-        ],
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[currentTab],
       });
       dispatch(setSelectedAccount(account.address));
       dispatch(detectNfts(allChainIds));
     },
-    [
-      dispatch,
-      onClose,
-      trackEvent,
-      defaultHomeActiveTabName,
-      hdEntropyIndex,
-      allChainIds,
-    ],
+    [dispatch, onClose, trackEvent, currentTab, hdEntropyIndex, allChainIds],
   );
 
   const accountListItems = useMemo(() => {

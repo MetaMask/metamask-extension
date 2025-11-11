@@ -10,6 +10,7 @@ import { TabsProps, TabChild } from './tabs.types';
 
 export const Tabs = <TKey extends string = string>({
   defaultActiveTabKey,
+  activeTabKey,
   onTabClick,
   children,
   subHeader = null,
@@ -44,9 +45,18 @@ export const Tabs = <TKey extends string = string>({
     Math.max(findChildByKey(defaultActiveTabKey), 0),
   );
 
+  // If activeTabKey is provided (controlled mode), use it. Otherwise use internal state.
+  const isControlled = activeTabKey !== undefined;
+  const currentActiveIndex = isControlled
+    ? Math.max(findChildByKey(activeTabKey), 0)
+    : activeTabIndex;
+
   const handleTabClick = (tabIndex: number, tabKey: TKey): void => {
-    if (tabIndex !== activeTabIndex) {
-      setActiveTabIndex(tabIndex);
+    if (tabIndex !== currentActiveIndex) {
+      // Update internal state only in uncontrolled mode
+      if (!isControlled) {
+        setActiveTabIndex(tabIndex);
+      }
       onTabClick?.(tabKey);
     }
   };
@@ -62,7 +72,7 @@ export const Tabs = <TKey extends string = string>({
         ...child.props,
         onClick: (idx: number) => handleTabClick(idx, tabKey),
         tabIndex: index,
-        isActive: numberOfTabs > 1 && index === activeTabIndex,
+        isActive: numberOfTabs > 1 && index === currentActiveIndex,
         key: tabKey,
       });
     });
@@ -75,11 +85,11 @@ export const Tabs = <TKey extends string = string>({
       return null;
     }
 
-    if (activeTabIndex >= validChildren.length || activeTabIndex < 0) {
-      throw new Error(`Tab at index '${activeTabIndex}' does not exist`);
+    if (currentActiveIndex >= validChildren.length || currentActiveIndex < 0) {
+      throw new Error(`Tab at index '${currentActiveIndex}' does not exist`);
     }
 
-    const activeChild = validChildren[activeTabIndex];
+    const activeChild = validChildren[currentActiveIndex];
     return activeChild?.props.children || null;
   };
 

@@ -20,7 +20,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import EthOverview from './eth-overview';
 
-// We need to mock `dispatch` since we use it for `setDefaultHomeActiveTabName`.
 const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),

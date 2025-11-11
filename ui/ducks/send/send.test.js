@@ -101,7 +101,6 @@ describe('Send Slice', () => {
 
   let addTransactionAndRouteToConfirmationPageStub;
   let addTransactionAndWaitForPublishStub;
-  let setDefaultHomeActiveTabNameStub;
 
   beforeEach(() => {
     setBackgroundConnection({
@@ -139,9 +138,6 @@ describe('Send Slice', () => {
     addTransactionAndWaitForPublishStub = jest
       .spyOn(Actions, 'addTransactionAndWaitForPublish')
       .mockImplementation(({ id }) => Promise.resolve({ id }));
-    setDefaultHomeActiveTabNameStub = jest
-      .spyOn(Actions, 'setDefaultHomeActiveTabName')
-      .mockImplementation(() => ({ type: '' }));
     jest
       .spyOn(Actions, 'estimateGas')
       .mockImplementation(() => Promise.resolve('0x0'));
@@ -3142,10 +3138,6 @@ describe('Send Slice', () => {
 
           const history = { push: jest.fn() };
           await store.dispatch(signTransaction(history));
-
-          expect(
-            setDefaultHomeActiveTabNameStub.mock.calls[0][0],
-          ).toStrictEqual('activity');
 
           expect(
             addTransactionAndWaitForPublishStub.mock.calls[0][0].data,

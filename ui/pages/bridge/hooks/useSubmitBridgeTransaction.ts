@@ -7,7 +7,6 @@ import {
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
@@ -84,8 +83,9 @@ export default function useSubmitBridgeTransaction() {
         await dispatch(
           submitBridgeTx(fromAccount.address, quoteResponse, false),
         );
-        await dispatch(setDefaultHomeActiveTabName('activity'));
-        navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+        navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+          state: { stayOnHomePage: true },
+        });
         return;
       }
 
@@ -102,14 +102,14 @@ export default function useSubmitBridgeTransaction() {
         dispatch(setWasTxDeclined(true));
         navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       } else {
-        await dispatch(setDefaultHomeActiveTabName('activity'));
-        navigate(DEFAULT_ROUTE);
+        navigate(`${DEFAULT_ROUTE}?tab=activity`);
       }
       return;
     }
     // Route user to activity tab on Home page
-    await dispatch(setDefaultHomeActiveTabName('activity'));
-    navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+      state: { stayOnHomePage: true },
+    });
   };
 
   return {

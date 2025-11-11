@@ -1,6 +1,7 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom-v5-compat';
 import { Hex } from '@metamask/utils';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
@@ -37,9 +38,23 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showDefi?: boolean;
 };
 
+// Map query param values to AccountOverviewTabKey
+const QUERY_PARAM_TO_TAB_KEY: Record<string, AccountOverviewTabKey> = {
+  tokens: AccountOverviewTabKey.Tokens,
+  nft: AccountOverviewTabKey.Nfts,
+  defi: AccountOverviewTabKey.DeFi,
+  activity: AccountOverviewTabKey.Activity,
+};
+
+// Map AccountOverviewTabKey to query param values
+const TAB_KEY_TO_QUERY_PARAM: Record<AccountOverviewTabKey, string> = {
+  [AccountOverviewTabKey.Tokens]: 'tokens',
+  [AccountOverviewTabKey.Nfts]: 'nft',
+  [AccountOverviewTabKey.DeFi]: 'defi',
+  [AccountOverviewTabKey.Activity]: 'activity',
+};
+
 export const AccountOverviewTabs = ({
-  onTabClick,
-  defaultHomeActiveTabName,
   showTokens,
   showTokensLinks,
   showNfts,
@@ -47,6 +62,7 @@ export const AccountOverviewTabs = ({
   showDefi,
 }: AccountOverviewTabsProps) => {
   const history = useHistory();
+  const [searchParams, setSearchParams] = useSearchParams();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
@@ -57,12 +73,31 @@ export const AccountOverviewTabs = ({
     chainIds: selectedChainIds as Hex[],
   });
 
+  // Get active tab from query parameter
+  const activeTabFromQuery = useMemo(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && tabParam in QUERY_PARAM_TO_TAB_KEY) {
+      return QUERY_PARAM_TO_TAB_KEY[tabParam];
+    }
+    // Default to tokens tab
+    return AccountOverviewTabKey.Tokens;
+  }, [searchParams]);
+
+  // Track the previous active tab for tracing
+  const [previousTab, setPreviousTab] =
+    React.useState<AccountOverviewTabKey | null>(activeTabFromQuery);
+
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTabKey) => {
-      onTabClick(tabName);
+      // Update URL query parameter
+      setSearchParams({ tab: TAB_KEY_TO_QUERY_PARAM[tabName] });
+
+      // Detect NFTs when switching to NFT tab
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
       }
+
+      // Track metrics
       if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP) {
         trackEvent({
           category: MetaMetricsEventCategory.Home,
@@ -72,18 +107,23 @@ export const AccountOverviewTabs = ({
             ],
         });
       }
-      if (defaultHomeActiveTabName) {
+
+      // End trace for previous tab
+      if (previousTab) {
         endTrace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[previousTab],
         });
       }
+
+      // Start trace for new tab
       trace({
         name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
       });
+
+      // Update previous tab
+      setPreviousTab(tabName);
     },
-    [onTabClick],
+    [setSearchParams, dispatch, selectedChainIds, trackEvent, previousTab],
   );
 
   const onClickAsset = useCallback(
@@ -111,7 +151,7 @@ export const AccountOverviewTabs = ({
       <AssetListTokenDetection />
 
       <Tabs<AccountOverviewTabKey>
-        defaultActiveTabKey={defaultHomeActiveTabName ?? undefined}
+        activeTabKey={activeTabFromQuery}
         onTabClick={handleTabClick}
         tabListProps={{
           className: 'px-4',

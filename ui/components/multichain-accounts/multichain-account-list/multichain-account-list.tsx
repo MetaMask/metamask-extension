@@ -13,6 +13,7 @@ import {
 } from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom-v5-compat';
 import { parseCaipAccountId } from '@metamask/utils';
 import {
   Box,
@@ -52,7 +53,6 @@ import {
 } from '../../../../shared/constants/app-state';
 import {
   getAllPermittedAccountsForCurrentTab,
-  getDefaultHomeActiveTabName,
   getHDEntropyIndex,
   getPreferences,
 } from '../../../selectors';
@@ -89,11 +89,20 @@ export const MultichainAccountList = ({
 }: MultichainAccountListProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const [searchParams] = useSearchParams();
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
-  const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
-    getDefaultHomeActiveTabName,
-  );
+
+  // Get current tab from URL query parameters
+  const currentTabFromUrl = searchParams.get('tab');
+  const currentTab: AccountOverviewTabKey =
+    currentTabFromUrl &&
+    Object.values(AccountOverviewTabKey).includes(
+      currentTabFromUrl as AccountOverviewTabKey,
+    )
+      ? (currentTabFromUrl as AccountOverviewTabKey)
+      : AccountOverviewTabKey.Tokens;
+
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const allBalances = useSelector(selectBalanceForAllWallets);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -205,14 +214,10 @@ export const MultichainAccountList = ({
         },
       });
       endTrace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-          defaultHomeActiveTabName
-        ],
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[currentTab],
       });
       trace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-          defaultHomeActiveTabName
-        ],
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[currentTab],
       });
 
       dispatch(setSelectedMultichainAccount(accountGroupId));
@@ -453,7 +458,7 @@ export const MultichainAccountList = ({
     hiddenGroups,
     trackEvent,
     hdEntropyIndex,
-    defaultHomeActiveTabName,
+    currentTab,
     dispatch,
     history,
     isInSearchMode,

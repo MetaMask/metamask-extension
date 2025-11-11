@@ -47,10 +47,7 @@ import {
   DEFAULT_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
 } from '../../../../helpers/constants/routes';
-import {
-  submitShieldClaim,
-  setDefaultHomeActiveTabName,
-} from '../../../../store/actions';
+import { submitShieldClaim } from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
@@ -300,9 +297,8 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   );
 
   const handleOpenActivityTab = useCallback(async () => {
-    dispatch(setDefaultHomeActiveTabName('activity'));
-    navigate(DEFAULT_ROUTE);
-  }, [dispatch, navigate]);
+    navigate(`${DEFAULT_ROUTE}?tab=activity`);
+  }, [navigate]);
 
   const handleSubmitClaim = useCallback(async () => {
     if (isInvalidData) {

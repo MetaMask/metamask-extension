@@ -58,7 +58,6 @@ export const SENTRY_BACKGROUND_STATE = {
     currentPopupId: false,
     onboardingDate: false,
     currentExtensionPopupId: false,
-    defaultHomeActiveTabName: true,
     enableEnforcedSimulations: true,
     enableEnforcedSimulationsForTransactions: false,
     fullScreenGasPollTokens: true,
