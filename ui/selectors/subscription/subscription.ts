@@ -51,3 +51,8 @@ export function getLastUsedShieldSubscriptionPaymentDetails(
 ): CachedLastSelectedPaymentMethod | undefined {
   return state.metamask.lastSelectedPaymentMethod?.[PRODUCT_TYPES.SHIELD];
 }
+
+export function getHasSubscribedToShield(state: SubscriptionState): boolean {
+  const hasSubscribedToShield = state.metamask.customerId;
+  return Boolean(hasSubscribedToShield);
+}
