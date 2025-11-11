@@ -26,7 +26,7 @@ function runImportScripts() {
 
   const startImportScriptsTime = performance.now();
 
-  const files = process.env.FILE_NAMES ? process.env.FILE_NAMES.split(',') : [];
+  const files = process.env.FILE_NAMES as unknown as string[];
 
   importScripts(...files);
 

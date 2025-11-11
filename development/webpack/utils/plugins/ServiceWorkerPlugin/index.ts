@@ -27,10 +27,9 @@ export const serviceWorkerPlugin = (
           const background = compilation.entrypoints.get('background');
           if (!background) return;
           const backgroundFiles = [...background.getEntrypointChunk().files];
-          const backgroundFileNames = backgroundFiles.join(',');
           const assetName = extensionToJs(manifest.background.service_worker);
           const searchValue = 'process.env.FILE_NAMES';
-          const replaceValue = JSON.stringify(backgroundFileNames);
+          const replaceValue = JSON.stringify(backgroundFiles);
           compilation.updateAsset(assetName, (source) =>
             replaceSource(source, assetName, searchValue, replaceValue),
           );
