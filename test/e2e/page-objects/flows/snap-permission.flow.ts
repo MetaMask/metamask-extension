@@ -68,15 +68,11 @@ export async function approveAccount(driver: Driver) {
 
   await driver.waitForSelector({
     text: 'Connect with MetaMask',
-    tag: 'h4',
+    tag: 'h3',
   });
 
   await driver.clickElement({
-    text: 'Account 1',
-  });
-
-  await driver.clickElement({
-    text: 'Connect',
+    text: 'Next',
     tag: 'button',
   });
 
