@@ -140,24 +140,26 @@ describe('extractIdFromPathname', () => {
 
   describe('type safety', () => {
     it('returns null for null pathname', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect(extractIdFromPathname(null as any, BASE_ROUTE)).toBeNull();
+      expect(
+        extractIdFromPathname(null as unknown as string, BASE_ROUTE),
+      ).toBeNull();
     });
 
     it('returns null for undefined pathname', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect(extractIdFromPathname(undefined as any, BASE_ROUTE)).toBeNull();
+      expect(
+        extractIdFromPathname(undefined as unknown as string, BASE_ROUTE),
+      ).toBeNull();
     });
 
     it('returns null for null baseRoute', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect(extractIdFromPathname(EXAMPLE_PATHNAME, null as any)).toBeNull();
+      expect(
+        extractIdFromPathname(EXAMPLE_PATHNAME, null as unknown as string),
+      ).toBeNull();
     });
 
     it('returns null for undefined baseRoute', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect(
-        extractIdFromPathname(EXAMPLE_PATHNAME, undefined as any),
+        extractIdFromPathname(EXAMPLE_PATHNAME, undefined as unknown as string),
       ).toBeNull();
     });
   });

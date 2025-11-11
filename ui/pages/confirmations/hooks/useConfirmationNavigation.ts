@@ -105,9 +105,13 @@ export function navigateToConfirmation(
 ) {
   // Helper function to handle both navigate (v5-compat) and history (v5) APIs
   const navigateTo = (path: string, replace = true) => {
-    // Skip navigation if we're already on the target path
-    if (currentPathname && currentPathname === path) {
-      return;
+    // Skip navigation if we're already on the target path (compare pathnames only)
+    if (currentPathname) {
+      // Extract pathname from path (strip query params and hash)
+      const targetPathname = path.split(/[?#]/u)[0];
+      if (currentPathname === targetPathname) {
+        return;
+      }
     }
 
     if (
