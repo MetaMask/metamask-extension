@@ -90,7 +90,28 @@ export const MultichainAccountNetworkGroup: React.FC<
       // For now, we'll keep all networks
     }
 
-    return filteredChainIds
+    // Define chain priority - these chains will appear first in this order
+    const chainPriority: Record<string, number> = {
+      // Ethereum mainnet
+      'eip155:1': 1,
+      '0x1': 1,
+      // Linea mainnet
+      'eip155:59144': 2,
+      '0xe708': 2,
+      // Solana mainnet
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 3,
+      // Bitcoin mainnet
+      'bip122:000000000019d6689c085ae165831e93': 4,
+    };
+
+    // Sort chainIds based on priority
+    const sortedChainIds = [...filteredChainIds].sort((a, b) => {
+      const priorityA = chainPriority[a] || 999;
+      const priorityB = chainPriority[b] || 999;
+      return priorityA - priorityB;
+    });
+
+    return sortedChainIds
       .map((chain) => {
         let hexChainId = chain;
         // Convert CAIP chain ID to hex format for EVM chains
