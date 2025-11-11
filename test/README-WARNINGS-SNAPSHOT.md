@@ -126,9 +126,9 @@ Each contains:
 
 ```json
 {
-  "warnings": ["Warning message 1", "Warning message 2"],
+  "_metadata": { ... },
   "errors": ["Error message 1"],
-  "_metadata": { ... }
+  "warnings": ["Warning message 1", "Warning message 2"]
 }
 ```
 

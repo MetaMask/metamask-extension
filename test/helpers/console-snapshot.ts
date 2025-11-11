@@ -52,14 +52,14 @@ export type CapturedData = {
 };
 
 type SnapshotData = {
-  warnings: string[];
-  errors: string[];
   _metadata?: {
     generatedAt: string;
     lastUpdatedAt?: string;
     description: string;
     note?: string;
   };
+  errors: string[];
+  warnings: string[];
 };
 
 type ComparisonResult = {
@@ -183,9 +183,8 @@ export function saveSnapshot(snapshot: SnapshotData): void {
       fs.mkdirSync(dir, { recursive: true });
     }
 
-    // Sort entries for consistent output
-    snapshot.warnings.sort();
-    snapshot.errors.sort();
+    // Note: warnings and errors are already sorted in generateSnapshot()
+    // No need to sort again here
 
     // Write to temp file first, then rename atomically
     const tempFile = `${snapshotFile}.tmp.${Date.now()}.${process.pid}`;
@@ -332,8 +331,6 @@ export function generateSnapshot(captured: CapturedData): SnapshotData {
   const existingSnapshot = loadSnapshot();
 
   const snapshot: SnapshotData = {
-    warnings: [...existingSnapshot.warnings], // Start with existing
-    errors: [...existingSnapshot.errors], // Start with existing
     // eslint-disable-next-line @typescript-eslint/naming-convention
     _metadata: {
       generatedAt: new Date().toISOString(),
@@ -342,6 +339,8 @@ export function generateSnapshot(captured: CapturedData): SnapshotData {
         'Snapshot of console warnings and errors captured during test execution',
       note: 'This snapshot is ADDITIVE - new warnings/errors are added but never automatically removed. To remove entries, manually edit this file or delete it and regenerate.',
     },
+    errors: [...existingSnapshot.errors], // Start with existing
+    warnings: [...existingSnapshot.warnings], // Start with existing
   };
 
   // Add new unique warnings (additive)
@@ -371,6 +370,10 @@ export function generateSnapshot(captured: CapturedData): SnapshotData {
       newErrorsAdded += 1;
     }
   }
+
+  // Sort warnings and errors alphabetically for consistent ordering
+  snapshot.warnings.sort();
+  snapshot.errors.sort();
 
   // Log what was added
   if (newWarningsAdded > 0 || newErrorsAdded > 0) {
