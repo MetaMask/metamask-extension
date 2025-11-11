@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip } from 'react-tippy';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 import {
   AlignItems,
   BackgroundColor,
@@ -22,12 +26,13 @@ import {
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
-import { PreferredAvatar } from '../../../../app/preferred-avatar';
+import { getAvatarType } from '../../../../app/preferred-avatar/preferred-avatar';
 
 export const SiteCellTooltip = ({ accounts, networks }) => {
   const t = useI18nContext();
   const AVATAR_GROUP_LIMIT = 4;
   const TOOLTIP_LIMIT = 4;
+  const avatarAccountVariant = useSelector(getAvatarType);
 
   const avatarAccountsData = accounts?.map((account) => ({
     avatarValue: account.address,
@@ -60,9 +65,11 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
                   paddingInline={2}
                   gap={2}
                 >
-                  <PreferredAvatar
-                    address={acc.address}
+                  <AvatarAccount
                     size={AvatarAccountSize.Xs}
+                    address={acc.address}
+                    variant={avatarAccountVariant}
+                    borderStyle={BorderStyle.none}
                   />
                   <Text
                     color={TextColor.overlayInverse}
