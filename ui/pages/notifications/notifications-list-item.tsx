@@ -1,6 +1,7 @@
 import React, { useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { hasProperty } from '@metamask/utils';
+import type { INotification } from '@metamask/notification-services-controller/notification-services';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -20,14 +21,13 @@ import {
   TRIGGER_TYPES,
   hasNotificationComponents,
 } from './notification-components';
-import { type Notification } from './notification-components/types/notifications/notifications';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsListItem({
   notification,
 }: {
-  notification: Notification;
+  notification: INotification;
 }) {
   const navigate = useNavigate();
   const trackEvent = useContext(MetaMetricsContext);

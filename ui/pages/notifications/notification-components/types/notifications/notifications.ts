@@ -1,7 +1,5 @@
 import type { FC } from 'react';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
-
-export type Notification = NotificationServicesController.Types.INotification;
+import type { INotification } from '@metamask/notification-services-controller/notification-services';
 
 /**
  * Computes and combines intersection types for a more "prettier" type (more human readable)
@@ -15,7 +13,7 @@ type EmptyObj = {};
  * NotificationFC is the shared component interface for all notification components
  */
 type NotificationFC<
-  Notif = Notification,
+  Notif = INotification,
   AdditionalProps extends Record<string, unknown> = EmptyObj,
 > = FC<Compute<{ notification: Notif } & AdditionalProps>>;
 
@@ -28,7 +26,7 @@ export enum NotificationComponentType {
   SnapFooter = 'footer_snap_notification',
 }
 
-type BodyOnChainNotification<Notif = Notification> = {
+type BodyOnChainNotification<Notif = INotification> = {
   type: NotificationComponentType.OnChainBody;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -65,7 +63,7 @@ type BodyOnChainNotification<Notif = Notification> = {
   NetworkFee?: NotificationFC<Notif>;
 };
 
-type BodyFeatureAnnouncement<Notif = Notification> = {
+type BodyFeatureAnnouncement<Notif = INotification> = {
   type: NotificationComponentType.AnnouncementBody;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -75,21 +73,21 @@ type BodyFeatureAnnouncement<Notif = Notification> = {
   Description: NotificationFC<Notif>;
 };
 
-type BodySnapNotification<Notif = Notification> = {
+type BodySnapNotification<Notif = INotification> = {
   type: NotificationComponentType.SnapBody;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Content: NotificationFC<Notif>;
 };
 
-type FooterOnChainNotification<Notif = Notification> = {
+type FooterOnChainNotification<Notif = INotification> = {
   type: NotificationComponentType.OnChainFooter;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   ScanLink: NotificationFC<Notif>;
 };
 
-type FooterFeatureAnnouncement<Notif = Notification> = {
+type FooterFeatureAnnouncement<Notif = INotification> = {
   type: NotificationComponentType.AnnouncementFooter;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -99,7 +97,7 @@ type FooterFeatureAnnouncement<Notif = Notification> = {
   ExternalLink: NotificationFC<Notif>;
 };
 
-type FooterSnapNotification<Notif = Notification> = {
+type FooterSnapNotification<Notif = INotification> = {
   type: NotificationComponentType.SnapFooter;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -110,18 +108,19 @@ type FooterSnapNotification<Notif = Notification> = {
  * This is the object shape that contains all the components of the particular notification.
  * the `guardFn` can be used to narrow a wide notification into the specific notification required.
  */
-export type NotificationComponent<Notif extends Notification = Notification> = {
-  guardFn: (n: Notification) => n is Notif;
-  item: NotificationFC<Notif, { onClick: () => void }>;
-  details?: {
-    title: NotificationFC<Notif>;
-    body:
-      | BodyFeatureAnnouncement<Notif>
-      | BodyOnChainNotification<Notif>
-      | BodySnapNotification<Notif>;
-    footer:
-      | FooterFeatureAnnouncement<Notif>
-      | FooterOnChainNotification<Notif>
-      | FooterSnapNotification<Notif>;
+export type NotificationComponent<Notif extends INotification = INotification> =
+  {
+    guardFn: (n: INotification) => n is Notif;
+    item: NotificationFC<Notif, { onClick: () => void }>;
+    details?: {
+      title: NotificationFC<Notif>;
+      body:
+        | BodyFeatureAnnouncement<Notif>
+        | BodyOnChainNotification<Notif>
+        | BodySnapNotification<Notif>;
+      footer:
+        | FooterFeatureAnnouncement<Notif>
+        | FooterOnChainNotification<Notif>
+        | FooterSnapNotification<Notif>;
+    };
   };
-};
