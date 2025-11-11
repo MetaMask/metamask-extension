@@ -293,13 +293,15 @@ export const MultichainAccountList = ({
               ) : undefined
             }
             endAccessory={
-              <MultichainAccountMenu
-                accountGroupId={groupId as AccountGroupId}
-                isRemovable={isRemovable}
-                handleAccountRenameAction={handleAccountRenameAction}
-                isOpen={openMenuAccountId === groupId}
-                onToggle={() => handleMenuToggle(groupId as AccountGroupId)}
-              />
+              showAccountCheckbox ? undefined : (
+                <MultichainAccountMenu
+                  accountGroupId={groupId as AccountGroupId}
+                  isRemovable={isRemovable}
+                  handleAccountRenameAction={handleAccountRenameAction}
+                  isOpen={openMenuAccountId === groupId}
+                  onToggle={() => handleMenuToggle(groupId as AccountGroupId)}
+                />
+              )
             }
           />
         </Box>
