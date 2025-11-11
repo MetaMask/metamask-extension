@@ -12,7 +12,13 @@ import {
   useRiveWasmFile,
 } from '../../../contexts/rive-wasm';
 
-const ShieldIllustrationAnimation = ({ className }: { className?: string }) => {
+const ShieldIllustrationAnimation = ({
+  containerClassName,
+  canvasClassName,
+}: {
+  containerClassName?: string;
+  canvasClassName?: string;
+}) => {
   const isTestEnvironment = Boolean(process.env.IN_TEST);
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError } = context;
@@ -72,14 +78,12 @@ const ShieldIllustrationAnimation = ({ className }: { className?: string }) => {
     isTestEnvironment ||
     status === 'failed'
   ) {
-    return <Box className="riv-animation__shield-illustration-container"></Box>;
+    return <Box className={containerClassName}></Box>;
   }
 
   return (
-    <Box
-      className={`riv-animation__shield-illustration-container ${className}`}
-    >
-      <RiveComponent className="riv-animation__canvas" />
+    <Box className={containerClassName}>
+      <RiveComponent className={canvasClassName} />
     </Box>
   );
 };

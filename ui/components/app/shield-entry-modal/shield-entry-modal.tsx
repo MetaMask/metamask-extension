@@ -120,7 +120,10 @@ const ShieldEntryModal = () => {
               alt="Shield Entry Illustration"
               className="col-start-1 row-start-1"
             />
-            <ShieldIllustrationAnimation className="col-start-1 row-start-1" />
+            <ShieldIllustrationAnimation
+              containerClassName="shield-entry-modal-shield-illustration__container col-start-1 row-start-1"
+              canvasClassName="shield-entry-modal-shield-illustration__canvas"
+            />
           </Box>
         </ModalBody>
         <ModalFooter
