@@ -13,6 +13,24 @@ export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
   minimumVersion: '0.0.0',
   maxRefreshCount: 5,
   support: true,
+  chains: {
+    '1': {
+      isActiveSrc: true,
+      isActiveDest: true,
+    },
+    '42161': {
+      isActiveSrc: true,
+      isActiveDest: true,
+    },
+    '59144': {
+      isActiveSrc: true,
+      isActiveDest: true,
+    },
+    '8453': {
+      isActiveSrc: true,
+      isActiveDest: true,
+    },
+  },
   // @ts-expect-error chainRanking is not a valid property in the FeatureFlagResponse type yet
   chainRanking: [
     { chainId: formatChainIdToCaip(ChainId.ETH) },
