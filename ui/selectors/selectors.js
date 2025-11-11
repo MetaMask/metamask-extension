@@ -3194,6 +3194,17 @@ export function getIsBitcoinTestnetSupportEnabled(state) {
   return Boolean(bitcoinTestnetsEnabled);
 }
 
+/**
+ * Get the state of the `tronTestnetsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `tronTestnetsEnabled` remote feature flag.
+ */
+export function getIsTronTestnetSupportEnabled(state) {
+  const { tronTestnetsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(tronTestnetsEnabled);
+}
+
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
@@ -3226,6 +3237,21 @@ export function getIsBitcoinSupportEnabled(
 export function getIsSolanaSupportEnabled(state) {
   const { solanaAccounts } = getRemoteFeatureFlags(state);
   return isMultichainFeatureEnabled(solanaAccounts);
+}
+
+/**
+ * Get the state of the `tronSupportEnabled` remote feature flag.
+ *
+ * @param {*} _state
+ * @returns The state of the `tronSupportEnabled` remote feature flag.
+ */
+export function getIsTronSupportEnabled(_state) {
+  let enabled = false;
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  const { tronAccounts } = getRemoteFeatureFlags(_state);
+  enabled = isMultichainFeatureEnabled(tronAccounts);
+  ///: END:ONLY_INCLUDE_IF
+  return enabled;
 }
 
 /**

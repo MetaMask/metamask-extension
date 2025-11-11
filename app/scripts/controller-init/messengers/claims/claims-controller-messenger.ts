@@ -5,6 +5,7 @@ import {
 } from '@metamask/messenger';
 import {
   ClaimsControllerMessenger,
+  ClaimsServiceFetchClaimsConfigurationsAction,
   ClaimsServiceGenerateMessageForClaimSignatureAction,
   ClaimsServiceGetClaimsAction,
   ClaimsServiceGetClaimsApiUrlAction,
@@ -15,6 +16,7 @@ import { RootMessenger } from '../../../lib/messenger';
 
 type AllowedActions =
   | MessengerActions<ClaimsControllerMessenger>
+  | ClaimsServiceFetchClaimsConfigurationsAction
   | ClaimsServiceGetRequestHeadersAction
   | ClaimsServiceGetClaimsApiUrlAction
   | ClaimsServiceGenerateMessageForClaimSignatureAction
@@ -41,6 +43,7 @@ export function getClaimsControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
+      'ClaimsService:fetchClaimsConfigurations',
       'ClaimsService:getClaimsApiUrl',
       'ClaimsService:getRequestHeaders',
       'ClaimsService:generateMessageForClaimSignature',

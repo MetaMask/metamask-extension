@@ -2,7 +2,9 @@ import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import TokenCell from '../token-cell';
+import { ASSET_CELL_HEIGHT } from '../constants';
 import {
   getEnabledNetworksByNamespace,
   getIsMultichainAccountsState2Enabled,
@@ -34,8 +36,12 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { isGlobalNetworkSelectorRemoved } from '../../../../selectors/selectors';
-import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import {
+  isEvmChainId,
+  isTronResource,
+} from '../../../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
+import { useScrollContainer } from '../../../../contexts/scroll-container';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -45,6 +51,7 @@ type TokenListProps = {
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick, safeChains }: TokenListProps) {
+  const scrollContainerRef = useScrollContainer();
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const newTokensImported = useSelector(getNewTokensImported);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
@@ -104,6 +111,9 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
         // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
         return assets.filter((asset) => {
+          if (isTronResource(asset)) {
+            return false;
+          }
           if (shouldHideZeroBalanceTokens && asset.balance === '0') {
             return false;
           }
@@ -145,6 +155,13 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     allEnabledNetworksForAllNamespaces,
   ]);
 
+  const virtualizer = useVirtualizer({
+    count: sortedFilteredTokens.length,
+    getScrollElement: () => scrollContainerRef?.current || null,
+    estimateSize: () => ASSET_CELL_HEIGHT,
+    overscan: 5,
+  });
+
   useEffect(() => {
     if (sortedFilteredTokens) {
       endTrace({ name: TraceName.AccountOverviewAssetListTab });
@@ -179,24 +196,39 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     });
   };
 
+  const virtualItems = virtualizer.getVirtualItems();
+
   return (
-    <>
-      {sortedFilteredTokens.map((token: TokenWithFiatAmount) => {
+    <div
+      className="relative w-full"
+      style={{
+        height: `${virtualizer.getTotalSize()}px`,
+      }}
+    >
+      {virtualItems.map((virtualItem) => {
+        const token = sortedFilteredTokens[virtualItem.index];
         const isNonEvmTestnet = NON_EVM_TESTNET_IDS.includes(
           token.chainId as CaipChainId,
         );
 
         return (
-          <TokenCell
+          <div
             key={`${token.chainId}-${token.symbol}-${token.address}`}
-            token={token}
-            privacyMode={privacyMode}
-            onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
-            safeChains={safeChains}
-          />
+            className="absolute top-0 left-0 w-full"
+            style={{
+              transform: `translateY(${virtualItem.start}px)`,
+            }}
+          >
+            <TokenCell
+              token={token}
+              privacyMode={privacyMode}
+              onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
+              safeChains={safeChains}
+            />
+          </div>
         );
       })}
-    </>
+    </div>
   );
 }
 

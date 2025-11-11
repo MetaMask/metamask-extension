@@ -37,18 +37,32 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import {
+  MODAL_TYPE,
+  ModalType,
+} from '../../../selectors/subscription/subscription';
 import ShieldIllustrationAnimation from './shield-illustration-animation';
 
-const ShieldEntryModal = () => {
+const ShieldEntryModal = ({
+  skipEventSubmission = false,
+  onClose,
+}: {
+  skipEventSubmission?: boolean;
+  onClose?: () => void;
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const shouldSubmitEvent = useSelector(
     getShouldSubmitEventsForShieldEntryModal,
   );
-  const modalType = useSelector(getModalTypeForShieldEntryModal);
+  const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
 
   const handleOnClose = () => {
+    if (skipEventSubmission) {
+      onClose?.();
+      return;
+    }
     if (shouldSubmitEvent) {
       dispatch(
         submitSubscriptionUserEvents({
@@ -101,7 +115,7 @@ const ShieldEntryModal = () => {
             fontWeight={FontWeight.Regular}
             className="shield-entry-modal__title text-center text-accent04-light"
           >
-            {modalType === 'A'
+            {modalType === MODAL_TYPE.A
               ? t('shieldEntryModalTitleA')
               : t('shieldEntryModalTitleB')}
           </Text>
@@ -110,7 +124,7 @@ const ShieldEntryModal = () => {
             fontWeight={FontWeight.Medium}
             className="text-center"
           >
-            {modalType === 'A'
+            {modalType === MODAL_TYPE.A
               ? t('shieldEntryModalSubtitleA', ['$10,000'])
               : t('shieldEntryModalSubtitleB', ['$10,000'])}
           </Text>

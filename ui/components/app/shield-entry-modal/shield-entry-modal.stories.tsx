@@ -7,7 +7,7 @@ export default {
 };
 
 export const DefaultStory = () => {
-  return <ShieldEntryModal onClose={() => {}} onGetStarted={() => {}} />;
+  return <ShieldEntryModal onClose={() => {}} skipEventSubmission />;
 };
 
 DefaultStory.storyName = 'Default';
