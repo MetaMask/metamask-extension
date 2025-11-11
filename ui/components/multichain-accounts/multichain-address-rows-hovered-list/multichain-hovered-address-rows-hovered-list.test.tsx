@@ -557,7 +557,9 @@ describe('MultichainHoveredAddressRowsList', () => {
 
       // Verify content is displayed
       expect(screen.getByText(TEST_STRINGS.EVM_NETWORKS)).toBeInTheDocument();
-      expect(screen.getByText(TEST_STRINGS.BITCOIN_NETWORK)).toBeInTheDocument();
+      expect(
+        screen.getByText(TEST_STRINGS.BITCOIN_NETWORK),
+      ).toBeInTheDocument();
     });
 
     it('hides address list on mouse leave with delay', async () => {

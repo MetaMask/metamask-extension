@@ -7,7 +7,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
 
-export interface MultichainAccountNetworkGroupProps {
+export type MultichainAccountNetworkGroupProps = {
   /**
    * The account group ID to fetch networks for
    */
@@ -30,7 +30,7 @@ export interface MultichainAccountNetworkGroupProps {
    * Optional className for additional styling
    */
   className?: string;
-}
+};
 
 /**
  * A reusable component that displays a group of network avatars
@@ -41,7 +41,7 @@ export const MultichainAccountNetworkGroup: React.FC<
   MultichainAccountNetworkGroupProps
 > = ({
   groupId,
-  chainIds: filterChainIds,
+  chainIds,
   excludeTestNetworks = true,
   limit = 4,
   className,
@@ -53,10 +53,10 @@ export const MultichainAccountNetworkGroup: React.FC<
       : [],
   );
 
-  const chainIds = useMemo(() => {
+  const filteredChainIds = useMemo(() => {
     // If only filterChainIds is provided (no groupId), show those chains
-    if (filterChainIds && !groupId) {
-      return filterChainIds;
+    if (chainIds && !groupId) {
+      return chainIds;
     }
 
     // If groupId is provided
@@ -68,8 +68,8 @@ export const MultichainAccountNetworkGroup: React.FC<
       });
 
       // If filterChainIds is also provided, show intersection
-      if (filterChainIds) {
-        const filterSet = new Set(filterChainIds);
+      if (chainIds) {
+        const filterSet = new Set(chainIds);
         return Array.from(groupChainIds).filter((chainId) =>
           filterSet.has(chainId),
         );
@@ -80,11 +80,9 @@ export const MultichainAccountNetworkGroup: React.FC<
     }
 
     return [];
-  }, [filterChainIds, groupId, accountGroupScopes]);
+  }, [chainIds, groupId, accountGroupScopes]);
 
   const networkData = useMemo(() => {
-    let filteredChainIds = chainIds;
-
     if (excludeTestNetworks) {
       // TODO: Add test network filtering logic here
       // For now, we'll keep all networks
