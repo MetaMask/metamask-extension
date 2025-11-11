@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useTokenList should return all tokens sorted by balance 1`] = `
+[
+  {
+    "assetId": "eip155:1/slip44:60",
+    "balance": "0.00000000000000001",
+    "chainId": "eip155:1",
+    "decimals": 18,
+    "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+    "name": "Ethereum",
+    "symbol": "ETH",
+  },
+  {
+    "assetId": "eip155:1/erc20:0x12652c6d93fdb6f4f37d48a8687783c782bb0d10",
+    "chainId": "eip155:1",
+    "decimals": 18,
+    "name": "Entangle",
+    "symbol": "NGL",
+  },
+  {
+    "assetId": "eip155:1/erc20:0xb50721bcf8d664c30412cfbc6cf7a15145234ad1",
+    "chainId": "eip155:1",
+    "decimals": 18,
+    "name": "Arbitrum",
+    "symbol": "ARB",
+  },
+  {
+    "assetId": "eip155:1/erc20:0x4d0528598f916fd1d8dc80e5f54a8feedcfd4b18",
+    "chainId": "eip155:1",
+    "decimals": 18,
+    "name": "Atoshi",
+    "symbol": "ATOS",
+  },
+  {
+    "assetId": "eip155:1/erc20:0x57b946008913b82e4df85f501cbaed910e58d26c",
+    "chainId": "eip155:1",
+    "decimals": 18,
+    "name": "POND",
+    "symbol": "POND",
+  },
+  {
+    "assetId": "eip155:1/erc20:0x5eed99d066a8caf10f3e4327c1b3d8b673485eed",
+    "chainId": "eip155:1",
+    "decimals": 18,
+    "name": "SEED",
+    "symbol": "SEED",
+  },
+  {
+    "assetId": "eip155:1/erc20:0x487d62468282bd04ddf976631c23128a425555ee",
+    "chainId": "eip155:1",
+    "decimals": 5,
+    "name": "UPCX",
+    "symbol": "UPC",
+  },
+  {
+    "assetId": "eip155:1/erc20:0xd3210f246ae54c5a45a7b4a83315bf718f591bfc",
+    "chainId": "eip155:1",
+    "decimals": 9,
+    "name": "ArkiTech",
+    "symbol": "ARKI",
+  },
+  {
+    "assetId": "eip155:1/erc20:0x7d51888c5abb7cdfa9cdd6a50673c7f8afaccd7f",
+    "chainId": "eip155:1",
+    "decimals": 18,
+    "name": "DuckDAO Token",
+    "symbol": "DD",
+  },
+  {
+    "assetId": "eip155:1/erc20:0x49642110b712c1fd7261bc074105e9e44676c68f",
+    "chainId": "eip155:1",
+    "decimals": 18,
+    "name": "DinoLFG",
+    "symbol": "DINO",
+  },
+  {
+    "assetId": "eip155:1/erc20:0xb8baa0e4287890a5f79863ab62b7f175cecbd433",
+    "chainId": "eip155:1",
+    "decimals": 18,
+    "name": "Swerve DAO Token",
+    "symbol": "SWRV",
+  },
+]
+`;
