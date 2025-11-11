@@ -324,6 +324,41 @@ describe('useSeasonStatus', () => {
       expect(mockOnAuthorizationError).not.toHaveBeenCalled();
     });
 
+    const SUB_IDS = ['pending', 'retry', 'error'] as const;
+    type PendingState = (typeof SUB_IDS)[number];
+
+    SUB_IDS.forEach((subId: PendingState) => {
+      it(`sets to null and does not call actions when subscriptionId is ${subId}`, async () => {
+        const { result, store } = renderHookWithProvider(
+          () =>
+            useSeasonStatus({
+              subscriptionId: subId,
+              onAuthorizationError: mockOnAuthorizationError,
+            }),
+          {
+            metamask: {
+              isUnlocked: false, // prevent auto-fetch via useEffect
+              useExternalServices: true,
+              remoteFeatureFlags: { rewardsEnabled: true },
+              rewardsActiveAccount: null,
+              rewardsSubscriptions: {},
+            },
+          },
+        );
+
+        await act(async () => {
+          await result.current.fetchSeasonStatus();
+        });
+
+        expect(getRewardsSeasonMetadata).not.toHaveBeenCalled();
+        expect(getRewardsSeasonStatus).not.toHaveBeenCalled();
+        const rewardsState = getRewardsSlice(store);
+        expect(rewardsState.seasonStatus).toBeNull();
+        expect(rewardsState.seasonStatusLoading).toBe(false);
+        expect(rewardsState.seasonStatusError).toBeNull();
+      });
+    });
+
     it('calls onAuthorizationError and clears state on authorization failure', async () => {
       (getRewardsSeasonMetadata as jest.Mock).mockImplementation(
         () => async () => mockSeasonMetadata,

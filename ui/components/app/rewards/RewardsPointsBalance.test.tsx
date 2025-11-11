@@ -201,13 +201,10 @@ describe('RewardsPointsBalance', () => {
     ).toHaveTextContent('0 points');
   });
 
-  it('should handle undefined seasonStatus gracefully', () => {
+  it('should render skeleton when seasonStatus is undefined', () => {
     setSelectorValues({ seasonStatus: null });
     render(<RewardsPointsBalance />);
-    expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('rewards-points-balance-value'),
-    ).toHaveTextContent('0 points');
+    expect(screen.getByTestId('skeleton')).toBeInTheDocument();
   });
 
   it('should render with correct CSS classes and structure', () => {
@@ -240,8 +237,6 @@ describe('RewardsPointsBalance', () => {
     render(<RewardsPointsBalance />);
     expect(mockUseSelector).toHaveBeenCalledWith(selectRewardsEnabled);
     expect(mockUseSelector).toHaveBeenCalledWith(selectSeasonStatus);
-    expect(mockUseSelector).toHaveBeenCalledWith(selectSeasonStatusLoading);
-    expect(mockUseSelector).toHaveBeenCalledWith(selectCandidateSubscriptionId);
   });
 
   it('should handle undefined balance total gracefully', () => {
@@ -305,11 +300,10 @@ describe('RewardsPointsBalance', () => {
     ).toHaveTextContent('12.345 points');
   });
 
-  it('should not render skeleton when seasonStatus is null and not loading', () => {
+  it('should render skeleton when seasonStatus is null and not loading', () => {
     setSelectorValues({ seasonStatus: null, seasonStatusLoading: false });
     render(<RewardsPointsBalance />);
-    expect(screen.queryByTestId('skeleton')).not.toBeInTheDocument();
-    expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
+    expect(screen.getByTestId('skeleton')).toBeInTheDocument();
   });
 
   it('should apply correct boxClassName to RewardsBadge', () => {
@@ -360,18 +354,39 @@ describe('RewardsPointsBalance', () => {
     expect(textElement).toHaveTextContent("Couldn't load");
   });
 
-  it('should not render error state when loading', () => {
+  it('should render error state even when subscriptionId is loading (no balance)', () => {
     setSelectorValues({
       seasonStatus: null,
       seasonStatusError: 'Error occurred',
-      seasonStatusLoading: true,
+      seasonStatusLoading: false,
+      candidateSubscriptionId: 'pending',
     });
 
     render(<RewardsPointsBalance />);
 
-    expect(screen.getByTestId('skeleton')).toBeInTheDocument();
-    expect(
-      screen.queryByTestId('rewards-points-balance'),
-    ).not.toBeInTheDocument();
+    const container = screen.getByTestId('rewards-points-balance');
+    const textElement = screen.getByTestId('rewards-points-balance-value');
+
+    expect(container).toHaveClass('gap-1', 'bg-background-transparent');
+    expect(textElement).toHaveClass('text-alternative');
+    expect(textElement).toHaveTextContent("Couldn't load");
+  });
+
+  it('should render error state when candidateSubscriptionId is error and not loading', () => {
+    setSelectorValues({
+      seasonStatus: null,
+      seasonStatusError: null,
+      seasonStatusLoading: false,
+      candidateSubscriptionId: 'error',
+    });
+
+    render(<RewardsPointsBalance />);
+
+    const container = screen.getByTestId('rewards-points-balance');
+    const textElement = screen.getByTestId('rewards-points-balance-value');
+
+    expect(container).toHaveClass('gap-1', 'bg-background-transparent');
+    expect(textElement).toHaveClass('text-alternative');
+    expect(textElement).toHaveTextContent("Couldn't load");
   });
 });

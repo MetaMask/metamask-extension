@@ -19,7 +19,7 @@ import {
 } from '../../ducks/rewards';
 
 type UseSeasonStatusOptions = {
-  subscriptionId: string | null;
+  subscriptionId: string | 'pending' | 'retry' | 'error' | null;
   onAuthorizationError: () => Promise<void>;
 };
 
@@ -49,7 +49,13 @@ export const useSeasonStatus = ({
 
   const fetchSeasonStatus = useCallback(async (): Promise<void> => {
     // Don't fetch if no subscriptionId or season metadata
-    if (!subscriptionId || !isRewardsEnabled) {
+    if (
+      !subscriptionId ||
+      subscriptionId === 'pending' ||
+      subscriptionId === 'retry' ||
+      subscriptionId === 'error' ||
+      !isRewardsEnabled
+    ) {
       dispatch(setSeasonStatus(null));
       dispatch(setSeasonStatusLoading(false));
       return;

@@ -9,7 +9,6 @@ import {
   selectRewardsEnabled,
   selectSeasonStatus,
   selectSeasonStatusError,
-  selectSeasonStatusLoading,
 } from '../../../ducks/rewards/selectors';
 import { useCandidateSubscriptionId } from '../../../hooks/rewards/useCandidateSubscriptionId';
 import { useSeasonStatus } from '../../../hooks/rewards/useSeasonStatus';
@@ -33,7 +32,6 @@ export const RewardsPointsBalance = () => {
 
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const seasonStatus = useSelector(selectSeasonStatus);
-  const seasonStatusLoading = useSelector(selectSeasonStatusLoading);
   const seasonStatusError = useSelector(selectSeasonStatusError);
   const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
   const rewardsActiveAccountSubscriptionId = useAppSelector(
@@ -91,13 +89,6 @@ export const RewardsPointsBalance = () => {
   }
 
   if (
-    (seasonStatusLoading && !seasonStatus?.balance) ||
-    candidateSubscriptionIdLoading
-  ) {
-    return <Skeleton width="100px" />;
-  }
-
-  if (
     (seasonStatusError && !seasonStatus?.balance) ||
     candidateSubscriptionIdError
   ) {
@@ -117,10 +108,18 @@ export const RewardsPointsBalance = () => {
     seasonStatus?.balance?.total ?? 0,
   );
 
-  return (
-    <RewardsBadge
-      formattedPoints={formattedPoints}
-      boxClassName="gap-1 px-1.5 bg-background-muted rounded"
-    />
-  );
+  if (
+    seasonStatus &&
+    candidateSubscriptionId &&
+    !candidateSubscriptionIdLoading
+  ) {
+    return (
+      <RewardsBadge
+        formattedPoints={formattedPoints}
+        boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+      />
+    );
+  }
+
+  return <Skeleton width="100px" />;
 };
