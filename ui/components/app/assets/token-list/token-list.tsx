@@ -34,7 +34,10 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { isGlobalNetworkSelectorRemoved } from '../../../../selectors/selectors';
-import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import {
+  isEvmChainId,
+  isTronResource,
+} from '../../../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 
 type TokenListProps = {
@@ -104,6 +107,9 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
         // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
         return assets.filter((asset) => {
+          if (isTronResource(asset)) {
+            return false;
+          }
           if (shouldHideZeroBalanceTokens && asset.balance === '0') {
             return false;
           }
