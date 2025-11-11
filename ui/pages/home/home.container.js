@@ -2,6 +2,7 @@ import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { useNavState } from '../../contexts/navigation-state';
 import {
   activeTabHasPermissions,
   getUseExternalServices,
@@ -253,9 +254,11 @@ const mapDispatchToProps = (dispatch) => {
 
 // Strip unused 'match' prop from withRouter
 // It causes cascading, unnecessary re-renders
+// Also inject navState from NavigationStateContext for v5-compat navigation
 // eslint-disable-next-line react/prop-types
 const HomeWithRouter = ({ match: _match, ...props }) => {
-  return <Home {...props} />;
+  const navState = useNavState();
+  return <Home {...props} navState={navState} />;
 };
 
 export default compose(
