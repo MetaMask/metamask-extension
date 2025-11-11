@@ -6,14 +6,29 @@ import {
   SubscriptionControllerGetSubscriptionsAction,
   SubscriptionControllerStartShieldSubscriptionWithCardAction,
   SubscriptionControllerUpdatePaymentMethodAction,
+  SubscriptionControllerSubmitSponsorshipIntentsAction,
 } from '@metamask/subscription-controller';
 import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
+import {
+  TransactionControllerGetTransactionsAction,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
+import { AccountsControllerGetStateAction } from '@metamask/accounts-controller';
+import { SmartTransactionsControllerGetStateAction } from '@metamask/smart-transactions-controller';
+import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
+import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { SwapsControllerGetStateAction } from '../../controllers/swaps/swaps.types';
 
 export const SERVICE_NAME = 'SubscriptionService';
 
 export type ServiceName = typeof SERVICE_NAME;
+
+export type SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction = {
+  type: `${ServiceName}:submitSubscriptionSponsorshipIntent`;
+  handler: (txMeta: TransactionMeta) => Promise<void>;
+};
 
 export type SubscriptionServiceAction =
   | SubscriptionControllerGetPricingAction
@@ -22,6 +37,14 @@ export type SubscriptionServiceAction =
   | SubscriptionControllerGetSubscriptionsAction
   | SubscriptionControllerGetCryptoApproveTransactionParamsAction
   | SubscriptionControllerGetBillingPortalUrlAction
+  | SubscriptionControllerSubmitSponsorshipIntentsAction
+  | SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
+  | TransactionControllerGetTransactionsAction
+  | PreferencesControllerGetStateAction
+  | AccountsControllerGetStateAction
+  | SmartTransactionsControllerGetStateAction
+  | SwapsControllerGetStateAction
+  | NetworkControllerGetStateAction
   | AuthenticationControllerGetBearerToken;
 
 export type SubscriptionServiceEvent = never;
