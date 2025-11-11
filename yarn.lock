@@ -7324,12 +7324,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preinstalled-example-snap@npm:^0.7.2":
-  version: 0.7.2
-  resolution: "@metamask/preinstalled-example-snap@npm:0.7.2"
+"@metamask/preinstalled-example-snap@npm:0.7.1":
+  version: 0.7.1
+  resolution: "@metamask/preinstalled-example-snap@npm:0.7.1"
   dependencies:
-    "@metamask/snaps-sdk": "npm:^10.1.0"
-  checksum: 10/9605e6f2d120e85ee0ec6b43ff7d407ff07b57a4b790312ff6b176e2eb306a4c997acca034e2612155f327e12bdccdf258291e16b406d98658b45092cb4b63a3
+    "@metamask/snaps-sdk": "npm:^9.3.0"
+  checksum: 10/6b8a0e81de0cb6591d8379084711a5b110e967355b8151a8e23c03c5d62d735c1c19f0c6537b4e70f72ae57207b962630dfd47d2722c15b0f5e09bec807261ce
   languageName: node
   linkType: hard
 
@@ -32060,7 +32060,7 @@ __metadata:
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/ppom-validator": "npm:0.39.0"
     "@metamask/preferences-controller": "npm:^21.0.0"
-    "@metamask/preinstalled-example-snap": "npm:^0.7.2"
+    "@metamask/preinstalled-example-snap": "npm:0.7.1"
     "@metamask/profile-sync-controller": "npm:^26.0.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
