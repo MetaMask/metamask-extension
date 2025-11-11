@@ -37,7 +37,13 @@ import {
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
 
-const ShieldEntryModal = () => {
+const ShieldEntryModal = ({
+  skipEventSubmission = false,
+  onClose,
+}: {
+  skipEventSubmission?: boolean;
+  onClose?: () => void;
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -47,6 +53,10 @@ const ShieldEntryModal = () => {
   const modalType = useSelector(getModalTypeForShieldEntryModal);
 
   const handleOnClose = () => {
+    if (skipEventSubmission) {
+      onClose?.();
+      return;
+    }
     if (shouldSubmitEvent) {
       dispatch(
         submitSubscriptionUserEvents({
