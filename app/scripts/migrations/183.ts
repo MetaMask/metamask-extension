@@ -100,18 +100,6 @@ function transformState(state: Record<string, unknown>) {
     return state;
   }
 
-  // Check if we have an Infura project ID to match against
-  const infuraProjectId = process.env.INFURA_PROJECT_ID;
-  const infuraUrlPattern = infuraProjectId
-    ? new RegExp(
-        `https://${escapeRegExp(SEI_INFURA_SUBDOMAIN)}\\.infura\\.io/v3/${escapeRegExp(infuraProjectId)}`,
-        'u',
-      )
-    : new RegExp(
-        `https://${escapeRegExp(SEI_INFURA_SUBDOMAIN)}\\.infura\\.io/v3/`,
-        'u',
-      );
-
   // Update RPC endpoints to add failover URL if needed
   seiNetworkConfiguration.rpcEndpoints =
     seiNetworkConfiguration.rpcEndpoints.map((rpcEndpoint) => {
@@ -133,16 +121,9 @@ function transformState(state: Record<string, unknown>) {
         return rpcEndpoint;
       }
 
-      // Check if this is a Sei Infura endpoint
-      const isSeiInfuraEndpoint =
-        rpcEndpoint.url.match(infuraUrlPattern) !== null ||
-        (rpcEndpoint.type === RpcEndpointType.Infura &&
-          rpcEndpoint.url.includes(SEI_INFURA_SUBDOMAIN));
-
-      // Add QuickNode failover URL if this is a
-      // Sei Infura endpoint and we have a QuickNode URL configured
+      // Add QuickNode failover URL
       const quickNodeUrl = process.env.QUICKNODE_SEI_URL;
-      if (isSeiInfuraEndpoint && quickNodeUrl) {
+      if (quickNodeUrl) {
         return {
           ...rpcEndpoint,
           failoverUrls: [quickNodeUrl],
