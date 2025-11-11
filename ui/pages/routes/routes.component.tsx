@@ -89,7 +89,6 @@ import {
   getShowExtensionInFullSizeView,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
-  getSelectedInternalAccount,
   oldestPendingConfirmationSelector,
   getUnapprovedTransactions,
   getPendingApprovals,
@@ -121,7 +120,6 @@ import {
 } from '../../ducks/metamask/metamask';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
 ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 ///: END:ONLY_INCLUDE_IF
@@ -498,10 +496,6 @@ export default function Routes() {
     useAppSelector(getPreferences);
   const completedOnboarding = useAppSelector(getCompletedOnboarding);
 
-  // If there is more than one connected account to activeTabOrigin,
-  // *BUT* the current account is not one of them, show the banner
-  const account = useAppSelector(getSelectedInternalAccount);
-
   const networkToAutomaticallySwitchTo = useAppSelector(
     getNetworkToAutomaticallySwitchTo,
   );
@@ -513,10 +507,6 @@ export default function Routes() {
   ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   const approvalFlows = useAppSelector(getApprovalFlows);
   ///: END:ONLY_INCLUDE_IF
-
-  const shouldShowSeedPhraseReminder = useAppSelector((state) =>
-    getShouldShowSeedPhraseReminder(state, account),
-  );
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
