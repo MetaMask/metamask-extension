@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useState, useEffect } from 'react';
 import {
   Box,
   Text,
@@ -28,16 +28,26 @@ type SrpInputFormProps = {
   error?: string;
   setSecretRecoveryPhrase: (secretRecoveryPhrase: string) => void;
   onClearCallback: () => void;
+  showDescription?: boolean;
+  openSrpDetailsModal?: boolean;
+  openSrpDetailsModalCallback?: () => void;
 };
 
 const SrpInputForm = ({
   error,
   setSecretRecoveryPhrase,
   onClearCallback,
+  showDescription = true,
+  openSrpDetailsModal = false,
+  openSrpDetailsModalCallback,
 }: SrpInputFormProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
+
+  useEffect(() => {
+    setShowSrpDetailsModal(openSrpDetailsModal);
+  }, [openSrpDetailsModal]);
 
   const onShowSrpDetailsModal = useCallback(() => {
     trackEvent({
@@ -53,7 +63,12 @@ const SrpInputForm = ({
   return (
     <>
       {showSrpDetailsModal && (
-        <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
+        <SRPDetailsModal
+          onClose={() => {
+            setShowSrpDetailsModal(false);
+            openSrpDetailsModalCallback?.();
+          }}
+        />
       )}
       <Box
         display={Display.Flex}
@@ -61,18 +76,23 @@ const SrpInputForm = ({
         gap={4}
         height={BlockSize.Full}
       >
-        <Box display={Display.Flex} alignItems={AlignItems.center}>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('typeYourSRP')}
-          </Text>
-          <ButtonIcon
-            iconName={IconName.Info}
-            size={ButtonIconSize.Sm}
-            color={IconColor.iconAlternative}
-            onClick={onShowSrpDetailsModal}
-            ariaLabel="info"
-          />
-        </Box>
+        {showDescription && (
+          <Box display={Display.Flex} alignItems={AlignItems.center}>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
+              {t('typeYourSRP')}
+            </Text>
+            <ButtonIcon
+              iconName={IconName.Info}
+              size={ButtonIconSize.Sm}
+              color={IconColor.iconAlternative}
+              onClick={onShowSrpDetailsModal}
+              ariaLabel="info"
+            />
+          </Box>
+        )}
         <Box width={BlockSize.Full}>
           <form onSubmit={(e) => e.preventDefault()}>
             <SrpInputImport

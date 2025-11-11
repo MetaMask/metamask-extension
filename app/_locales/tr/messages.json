@@ -2442,7 +2442,7 @@
   },
   "forgotPasswordSocialStep1": {
     "message": "Bir cihazda $1 ile (Face ID gibi) MetaMask'te oturum açtıysanız şifrenizi orada sıfırlayabilirsiniz.",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "biyometri açıldı"
@@ -4678,12 +4678,6 @@
   "rank": {
     "message": "Sıralama"
   },
-  "reAddAccounts": {
-    "message": "diğer hesapları yeniden ekle"
-  },
-  "reAdded": {
-    "message": "yeniden eklendi"
-  },
   "readdToken": {
     "message": "Gelecekte bu tokeni hesap seçenekleri menüsünde “Tokeni İçe Aktar”' kısmına giderek tekrar ekleyebilirsiniz."
   },
@@ -4831,33 +4825,6 @@
   },
   "resetWallet": {
     "message": "Cüzdanınızı sıfırlayın"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMask, şifrenizin bir kopyasını tutmaz. Hesabınızın kilidini açarken sorun yaşıyorsanız cüzdanınızı sıfırlamanız gerekir. Bunu, cüzdanınızı kurarken kullandığınız Gizli Kurtarma İfadesini sunarak yapabilirsin."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMask, şifrenizin bir kopyasını saklamaz. Hesabınızın kilidini açma konusunda sorun yaşıyorsanız cüzdanınızı sıfırlamanız gerekir. Gizli Kurtarma İfadeniz varsa mevcut cüzdanınızı hesap listenizle birlikte bu cihazdan silmek için onu kullanabilirsiniz."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Bu eylem, düzenlediğiniz hesapların listesiyle birlikte mevcut cüzdanınızı ve Gizli Kurtarma İfadenizi bu cihazdan siler. Bir Gizli Kurtarma İfadesi ile sıfırlama yaptıktan sonra sıfırlamak için kullandığınız Gizli Kurtarma İfadesine dayalı bir hesap listesi göreceksiniz. Bu yeni liste otomatik olarak bakiyesi olan hesapları içerecektir. Ayrıca daha önce oluşturulmuş $1 hesabınızı oluşturabileceksiniz. İçe aktardığınız özel hesapların $2 olması ve bir hesaba eklediğiniz özel tokenlerin de $3 olması gerekir."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Bir Gizli Kurtarma İfadesi ile sıfırlama gerçekleştirdikten sonra yeni bir hesap listesi göreceksiniz. Bu liste, bakiyesi bulunan hesapları içerecektir. Daha önce yaptığınız gibi $1 işlemi gerçekleştirebilirsiniz. Ancak içe aktardığınız tüm $2 ve $3 geri eklenmelidir. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "tüm diğer hesapları geri ekle"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "özel hesaplar"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "özel token'lar"
-  },
-  "resetWalletWarning": {
-    "message": "Devam etmeden önce doğru Gizli Kurtarma İfadesini kullandığından emin ol. Bunu geri alamazsın."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Sıfırlamadan önce doğru Gizli Kurtarma İfadesini kullandığınızdan emin olun. Bu işlem geri alınamaz."
   },
   "restartMetamask": {
     "message": "MetaMask'i yeniden başlat"

@@ -1,5 +1,6 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   Box,
@@ -23,8 +24,15 @@ import {
   IconColor,
   TextVariant,
   TextColor,
+  TextAlign,
+  JustifyContent,
 } from '../../helpers/constants/design-system';
 import { getIsSocialLoginFlow } from '../../selectors';
+import {
+  resetWallet as resetWalletAction,
+  forceUpdateMetamaskState,
+} from '../../store/actions';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -38,6 +46,22 @@ export default function ResetPasswordModal({
   const t = useI18nContext();
 
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
+  const [resetWallet, setResetWallet] = useState(false);
+  const history = useHistory();
+
+  const dispatch = useDispatch();
+
+  const handleResetWallet = () => {
+    setResetWallet((prev) => !prev);
+  };
+
+  const handleResetWalletConfirm = () => {
+    console.log('handleResetWalletConfirm');
+    onClose();
+    dispatch(resetWalletAction());
+    dispatch(forceUpdateMetamaskState(dispatch));
+    history.push(DEFAULT_ROUTE);
+  };
 
   const socialLoginContent = () => {
     return (
@@ -107,7 +131,7 @@ export default function ResetPasswordModal({
         <Button
           data-testid="reset-password-modal-button-link"
           variant={ButtonVariant.Link}
-          onClick={onRestore}
+          onClick={handleResetWallet}
           size={ButtonSize.Lg}
           block
           color={TextColor.primaryDefault}
@@ -139,7 +163,7 @@ export default function ResetPasswordModal({
         <Button
           data-testid="reset-password-modal-button-link"
           variant={ButtonVariant.Link}
-          onClick={onRestore}
+          onClick={handleResetWallet}
           size={ButtonSize.Lg}
           block
           color={TextColor.primaryDefault}
@@ -150,6 +174,70 @@ export default function ResetPasswordModal({
     );
   };
 
+  const resetWalletContent = () => {
+    return (
+      <Box paddingInline={4}>
+        <Text
+          variant={TextVariant.bodyMd}
+          marginBottom={4}
+          color={TextColor.textDefault}
+        >
+          {t('resetWalletDescriptionOne')}
+        </Text>
+        <Text
+          variant={TextVariant.bodyMd}
+          marginBottom={4}
+          color={TextColor.textDefault}
+        >
+          {t('resetWalletDescriptionTwo', [
+            <Text
+              variant={TextVariant.inherit}
+              fontWeight={FontWeight.Bold}
+              key="reset-wallet-bold-text-one"
+            >
+              {t('resetWalletBoldTextOne')}
+            </Text>,
+            <Text
+              variant={TextVariant.inherit}
+              fontWeight={FontWeight.Bold}
+              key="reset-wallet-bold-text-two"
+            >
+              {t('resetWalletBoldTextTwo')}
+            </Text>,
+          ])}
+        </Text>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={4}
+        >
+          <Button
+            data-testid="reset-password-modal-button"
+            variant={ButtonVariant.Primary}
+            onClick={handleResetWalletConfirm}
+            size={ButtonSize.Lg}
+            block
+            danger
+          >
+            {t('resetWalletButton')}
+          </Button>
+          <Button
+            data-testid="reset-password-modal-button-link"
+            variant={ButtonVariant.Secondary}
+            onClick={handleResetWallet}
+            size={ButtonSize.Lg}
+            block
+          >
+            {t('resetWalletButtonCancel')}
+          </Button>
+        </Box>
+      </Box>
+    );
+  };
+
+  const restoreContent = () =>
+    isSocialLoginEnabled ? socialLoginContent() : srpLoginContent();
+
   return (
     <Modal
       isOpen
@@ -159,10 +247,37 @@ export default function ResetPasswordModal({
     >
       <ModalOverlay />
       <ModalContent alignItems={AlignItems.center}>
-        <ModalHeader onClose={onClose}>
-          {t('forgotPasswordModalTitle')}
+        <ModalHeader
+          onClose={onClose}
+          childrenWrapperProps={{
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+            alignItems: AlignItems.center,
+            justifyContent: JustifyContent.center,
+            gap: 4,
+          }}
+        >
+          {resetWallet && (
+            <Icon
+              name={IconName.Danger}
+              size={IconSize.Xl}
+              color={IconColor.errorDefault}
+              style={{
+                margin: '0 auto',
+              }}
+            />
+          )}
+          <Text
+            variant={TextVariant.headingSm}
+            marginBottom={4}
+            color={TextColor.textDefault}
+            marginInline={'auto'}
+            textAlign={TextAlign.Center}
+          >
+            {t(resetWallet ? 'resetWalletTitle' : 'forgotPasswordModalTitle')}
+          </Text>
         </ModalHeader>
-        {isSocialLoginEnabled ? socialLoginContent() : srpLoginContent()}
+        {resetWallet ? resetWalletContent() : restoreContent()}
       </ModalContent>
     </Modal>
   );

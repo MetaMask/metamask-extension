@@ -2442,7 +2442,7 @@
   },
   "forgotPasswordSocialStep1": {
     "message": "$1（Face IDなど）が搭載されたデバイスでMetaMaskにログインしている場合は、そこでパスワードをリセットできます。",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "生体認証がオンになっています"
@@ -4678,12 +4678,6 @@
   "rank": {
     "message": "ランク"
   },
-  "reAddAccounts": {
-    "message": "他のアカウントを再度追加"
-  },
-  "reAdded": {
-    "message": "再度追加されました"
-  },
   "readdToken": {
     "message": "アカウントオプションメニューで「トークンのインポート」を選択することによって、今後このトークンを戻すことができます。"
   },
@@ -4831,33 +4825,6 @@
   },
   "resetWallet": {
     "message": "ウォレットをリセットする"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMaskはパスワードのコピーを保管しません。アカウントのロックを解除できない場合は、ウォレットをリセットする必要があります。これは、ウォレットのセットアップ時に使用したシークレットリカバリーフレーズを入力することで行えます。"
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMaskはパスワードのコピーを保存しません。アカウントのロック解除で問題が発生している場合は、ウォレットをリセットする必要があります。シークレットリカバリーフレーズをお持ちの場合は、それを使用してこのデバイスから現在のウォレットとアカウントリストを削除できます。"
-  },
-  "resetWalletUsingSRP": {
-    "message": "この操作により、このデバイスから現在のウォレットとシークレットリカバリーフレーズ、および作成されたアカウントのリストが削除されます。シークレットリカバリーフレーズでリセットすると、リセットに使用されたシークレットリカバリーフレーズに基づくアカウントのリストが表示されます。この新しいリストには、残高のあるアカウントが自動的に含まれます。また、以前作成された$1することもできます。インポートしたカスタムアカウントは$2である必要があり、アカウントに追加されたカスタムトークンも$3である必要があります。"
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "シークレットリカバリーフレーズを使ってリセットを行うと、新しいアカウントリストが表示されます。このリストには、残高のあるアカウントが含まれます。以前作成した$1することもできます。ただし、インポートした$2や$3は再度追加する必要があります。"
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "他のアカウントを再追加"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "カスタムアカウント"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "カスタムトークン"
-  },
-  "resetWalletWarning": {
-    "message": "続行する前に、正しいシークレットリカバリーフレーズを使用していることを確認してください。これは元に戻せません。"
-  },
-  "resetWalletWarningSocial": {
-    "message": "リセットを行う前に、正しいシークレットリカバリーフレーズを使用していることを確認してください。この操作は元に戻すことができません。"
   },
   "restartMetamask": {
     "message": "MetaMask を再起動"

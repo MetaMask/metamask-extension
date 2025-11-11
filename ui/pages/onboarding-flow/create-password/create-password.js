@@ -2,19 +2,6 @@ import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  JustifyContent,
-  AlignItems,
-  TextVariant,
-  TextColor,
-  BlockSize,
-  IconColor,
-  Display,
-  FlexDirection,
-  BackgroundColor,
-  BorderRadius,
-} from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
@@ -23,7 +10,6 @@ import {
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   getFirstTimeFlowType,
   getCurrentKeyring,
@@ -39,19 +25,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  Box,
-  Button,
-  ButtonIcon,
-  ButtonIconSize,
-  ButtonSize,
-  ButtonVariant,
-  Checkbox,
-  IconName,
-  Text,
-} from '../../../components/component-library';
+import { Box } from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import PasswordForm from '../../../components/app/password-form/password-form';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import {
@@ -62,6 +37,7 @@ import {
 } from '../../../store/actions';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
+import CreatePasswordForm from '../../create-password-form';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
@@ -70,9 +46,6 @@ export default function CreatePassword({
   importWithRecoveryPhrase,
   secretRecoveryPhrase,
 }) {
-  const t = useI18nContext();
-  const [password, setPassword] = useState('');
-  const [termsChecked, setTermsChecked] = useState(false);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
   const navigate = useNavigate();
@@ -150,19 +123,6 @@ export default function CreatePassword({
     isWalletResetInProgress,
   ]);
 
-  const handleLearnMoreClick = (event) => {
-    event.stopPropagation();
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.ExternalLinkClicked,
-      properties: {
-        text: 'Learn More',
-        location: 'create_password',
-        url: ZENDESK_URLS.PASSWORD_ARTICLE,
-      },
-    });
-  };
-
   // Helper function to determine account type for analytics
   const getAccountType = (baseType, includesSocialLogin = false) => {
     if (includesSocialLogin && socialLoginType) {
@@ -172,7 +132,7 @@ export default function CreatePassword({
     return baseType;
   };
 
-  const handleWalletImport = async () => {
+  const handleWalletImport = async (password) => {
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletImportAttempted,
@@ -211,7 +171,7 @@ export default function CreatePassword({
     }
   };
 
-  const handleCreateNewWallet = async () => {
+  const handleCreateNewWallet = async (password, termsChecked) => {
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletCreationAttempted,
@@ -309,9 +269,7 @@ export default function CreatePassword({
     console.error(error);
   };
 
-  const handleCreatePassword = async (event) => {
-    event?.preventDefault();
-
+  const handleCreatePassword = async (password) => {
     if (!password) {
       return;
     }
@@ -322,7 +280,7 @@ export default function CreatePassword({
         secretRecoveryPhrase &&
         firstTimeFlowType === FirstTimeFlowType.import
       ) {
-        await handleWalletImport();
+        await handleWalletImport(password);
       } else {
         // Otherwise we are in create new wallet flow
         await handleCreateNewWallet();
@@ -336,129 +294,13 @@ export default function CreatePassword({
     }
   };
 
-  const createPasswordLink = (
-    <a
-      onClick={handleLearnMoreClick}
-      key="create-password__link-text"
-      href={ZENDESK_URLS.PASSWORD_ARTICLE}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <span className="create-password__link-text">
-        {t('learnMoreUpperCaseWithDot')}
-      </span>
-    </a>
-  );
-
-  const checkboxLabel = isSocialLoginFlow
-    ? t('createPasswordMarketing')
-    : t('passwordTermsWarning');
-
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      height={BlockSize.Full}
-      width={BlockSize.Full}
-      gap={4}
-      as="form"
-      className="create-password"
-      data-testid="create-password"
-      onSubmit={handleCreatePassword}
-    >
-      <Box>
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            color={IconColor.iconDefault}
-            size={ButtonIconSize.Md}
-            data-testid="create-password-back-button"
-            type="button"
-            onClick={handleBackClick}
-            ariaLabel={t('back')}
-          />
-        </Box>
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
-          <Text variant={TextVariant.headingLg} as="h2">
-            {t('createPassword')}
-          </Text>
-          {isSocialLoginFlow ? (
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              as="h2"
-            >
-              {t('createPasswordDetailsSocial')}
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.warningDefault}
-                as="span"
-              >
-                {t('createPasswordDetailsSocialReset')}
-              </Text>
-            </Text>
-          ) : (
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              as="h2"
-            >
-              {t('createPasswordDetails')}
-            </Text>
-          )}
-        </Box>
-        <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
-        <Box
-          className="create-password__terms-container"
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={6}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          padding={3}
-          borderRadius={BorderRadius.LG}
-        >
-          <Checkbox
-            inputProps={{ 'data-testid': 'create-password-terms' }}
-            alignItems={AlignItems.flexStart}
-            isChecked={termsChecked}
-            onChange={() => {
-              setTermsChecked(!termsChecked);
-            }}
-            label={
-              <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
-                {checkboxLabel}
-                {!isSocialLoginFlow && (
-                  <>
-                    <br />
-                    {createPasswordLink}
-                  </>
-                )}
-              </Text>
-            }
-          />
-        </Box>
-      </Box>
-      <Box>
-        <Button
-          data-testid="create-password-submit"
-          variant={ButtonVariant.Primary}
-          width={BlockSize.Full}
-          size={ButtonSize.Lg}
-          className="create-password__form--submit-button"
-          disabled={!password || (!isSocialLoginFlow && !termsChecked)}
-        >
-          {t('createPasswordCreate')}
-        </Button>
-      </Box>
+    <Box>
+      <CreatePasswordForm
+        isSocialLoginFlow={isSocialLoginFlow}
+        onSubmit={handleCreatePassword}
+        onBack={handleBackClick}
+      />
       {shouldInjectMetametricsIframe ? (
         <iframe
           src={analyticsIframeUrl}

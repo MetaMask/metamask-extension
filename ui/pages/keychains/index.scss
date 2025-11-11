@@ -79,3 +79,19 @@
     font-size: inherit;
   }
 }
+
+.import-srp-restore-vault {
+  flex-flow: column nowrap;
+  z-index: 55;
+  padding: 24px;
+  width: 100%;
+  max-width: 446px;
+  min-height: 756px;
+  height: 756px;
+  margin: auto;
+
+  @include design-system.screen-sm-max {
+    min-height: auto;
+    height: 100%;
+  }
+}

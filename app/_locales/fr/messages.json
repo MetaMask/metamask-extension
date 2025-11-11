@@ -2442,7 +2442,7 @@
   },
   "forgotPasswordSocialStep1": {
     "message": "Si vous êtes connecté(e) à MetaMask sur un appareil sur lequel $1 (comme Face ID), vous pouvez réinitialiser votre mot de passe à partir de cet appareil.",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "l’authentification biométrique est activée"
@@ -4678,12 +4678,6 @@
   "rank": {
     "message": "Rang"
   },
-  "reAddAccounts": {
-    "message": "ajouter de nouveau tous les autres comptes"
-  },
-  "reAdded": {
-    "message": "ajouté à nouveau"
-  },
   "readdToken": {
     "message": "Vous pourrez ajouter à nouveau ce jeton en allant sur « Ajouter un jeton » dans le menu des options de votre compte."
   },
@@ -4831,33 +4825,6 @@
   },
   "resetWallet": {
     "message": "Réinitialisez votre portefeuille"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMask ne conserve pas de copie de votre mot de passe. Si vous avez des difficultés à déverrouiller votre compte, vous devrez réinitialiser votre portefeuille. Vous pouvez le faire en fournissant la phrase de récupération secrète que vous avez saisie lors de la configuration de votre portefeuille."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMask ne conserve pas de copie de votre mot de passe. Si vous avez des difficultés à déverrouiller votre compte, vous devrez réinitialiser votre portefeuille. Si vous disposez d’une phrase secrète de récupération, vous pouvez l’utiliser pour effacer votre portefeuille actuel ainsi que la liste de vos comptes de cet appareil."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Cette action supprimera votre portefeuille actuel et votre phrase de récupération secrète de cet appareil, ainsi que la liste des comptes que vous avez sélectionnés. Après la réinitialisation avec une phrase de récupération secrète, vous verrez une liste de comptes basés sur la phrase de récupération secrète que vous utilisez pour réinitialiser. Cette nouvelle liste comprendra automatiquement les comptes qui ont un solde. Vous pourrez également $1 créé auparavant. Les comptes personnalisés que vous avez importés devront être $2 et tous les jetons personnalisés que vous avez ajoutés à un compte devront également être $3."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Après la réinitialisation à l’aide d’une phrase secrète de récupération, vous verrez s’afficher une nouvelle liste de comptes qui ont un solde. Vous pourrez $1 que vous avez créés auparavant. Mais vous devrez ajouter à nouveau tous les $2 et les $3 que vous avez importés. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "ajouter à nouveau tous les autres comptes"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "comptes personnalisés"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "jetons personnalisés"
-  },
-  "resetWalletWarning": {
-    "message": "Vérifiez que vous avez saisi correctement la phrase de récupération secrète avant de continuer. Vous ne pourrez pas annuler cette action."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Assurez-vous d’utiliser la bonne phrase secrète de récupération avant de procéder à la réinitialisation, car cette opération est irréversible."
   },
   "restartMetamask": {
     "message": "Redémarrer MetaMask"
