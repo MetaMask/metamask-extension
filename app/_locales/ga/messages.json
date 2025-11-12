@@ -5661,28 +5661,8 @@
   "shieldCovered": {
     "message": "Clúdaithe"
   },
-  "shieldEntryModalAssetCoverage": {
-    "message": "Clúdach sócmhainne $1 in aghaidh an idirbhirt",
-    "description": "The $1 is the amount of asset coverage per transaction"
-  },
-  "shieldEntryModalDescription": {
-    "message": "Athnuaitear ar $1/mí, cealaítear am ar bith. $2",
-    "description": "The $1 is the price of the shield and $2 is a link to the learn more page"
-  },
   "shieldEntryModalGetStarted": {
     "message": "Tosaigh"
-  },
-  "shieldEntryModalProtection": {
-    "message": "Cosaint ar fud do chuntais uile"
-  },
-  "shieldEntryModalSkip": {
-    "message": "Scipeáil"
-  },
-  "shieldEntryModalSubtitle": {
-    "message": "Sciath Idirbhirt, saor in aisce ar feadh 14 lá."
-  },
-  "shieldEntryModalSupport": {
-    "message": "Tacaíocht do chustaiméirí tosaíochta"
   },
   "shieldFooterAgreement": {
     "message": "Trí leanúint ar aghaidh, aontaím le Sciath Idirbhirt $1."

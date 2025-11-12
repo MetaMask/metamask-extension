@@ -1,10 +1,15 @@
 import { SignatureRequest } from '@metamask/signature-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { Severity } from '../../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  IconColor,
+  Severity,
+} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getCoverageStatus,
@@ -12,6 +17,8 @@ import {
 } from '../../../../selectors/shield/coverage';
 import { useConfirmContext } from '../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../transactions/useEnableShieldCoverageChecks';
+import { IconName } from '../../../../components/component-library';
+import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 import { ShieldCoverageAlertMessage } from './transactions/ShieldCoverageAlertMessage';
 
 const getModalBodyStr = (reasonCode: string | undefined) => {
@@ -131,6 +138,7 @@ const getModalBodyStr = (reasonCode: string | undefined) => {
 
 export function useShieldCoverageAlert(): Alert[] {
   const t = useI18nContext();
+
   const { currentConfirmation } = useConfirmContext<
     TransactionMeta | SignatureRequest
   >();
@@ -138,32 +146,51 @@ export function useShieldCoverageAlert(): Alert[] {
   const { reasonCode, status } = useSelector((state) =>
     getCoverageStatus(state as ShieldState, currentConfirmation?.id),
   );
+
+  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
+
   const isCovered = status === 'covered';
-  const modalBodyStr = isCovered
+  let modalBodyStr = isCovered
     ? 'shieldCoverageAlertCovered'
     : getModalBodyStr(reasonCode);
+  if (isPaused) {
+    modalBodyStr = 'shieldCoverageAlertMessagePaused';
+  }
 
-  const isEnableShieldCoverageChecks = useEnableShieldCoverageChecks();
-  const showAlert = isEnableShieldCoverageChecks && Boolean(status);
+  const showAlert =
+    (isEnabled && Boolean(status)) ||
+    // show paused alert when subscription is paused without coverage status
+    isPaused;
+
+  const navigate = useNavigate();
+  const onPausedAcknowledgeClick = useCallback(() => {
+    navigate(TRANSACTION_SHIELD_ROUTE);
+  }, [navigate]);
 
   return useMemo<Alert[]>((): Alert[] => {
     if (!showAlert) {
       return [];
     }
 
-    let severity = Severity.Info;
-    let inlineAlertText = t('shieldNotCovered');
-    let modalTitle = t('shieldCoverageAlertMessageTitle');
-    switch (status) {
-      case 'covered':
-        severity = Severity.Success;
-        inlineAlertText = t('shieldCovered');
-        modalTitle = t('shieldCoverageAlertMessageTitleCovered');
-        break;
-      case 'malicious':
-        severity = Severity.Danger;
-        break;
-      default:
+    let severity = Severity.Disabled;
+    let inlineAlertText = isPaused ? t('shieldPaused') : t('shieldNotCovered');
+    let modalTitle = isPaused
+      ? t('shieldCoverageAlertMessageTitlePaused')
+      : t('shieldCoverageAlertMessageTitle');
+    let inlineAlertTextBackgroundColor;
+    if (!isPaused) {
+      switch (status) {
+        case 'covered':
+          severity = Severity.Success;
+          inlineAlertText = t('shieldCovered');
+          modalTitle = t('shieldCoverageAlertMessageTitleCovered');
+          break;
+        case 'malicious':
+          severity = Severity.Danger;
+          inlineAlertTextBackgroundColor = BackgroundColor.errorMuted;
+          break;
+        default:
+      }
     }
 
     return [
@@ -177,11 +204,22 @@ export function useShieldCoverageAlert(): Alert[] {
         }),
         isBlocking: false,
         inlineAlertText,
+        inlineAlertTextPill: true,
+        inlineAlertTextBackgroundColor,
+        inlineAlertIconRight: true,
+        iconName: IconName.Info,
+        iconColor: IconColor.inherit,
         showArrow: false,
         isOpenModalOnClick: true,
         hideFromAlertNavigation: true,
         acknowledgeBypass: true,
+        customAcknowledgeButtonText: isPaused
+          ? t('shieldCoverageAlertMessagePausedAcknowledgeButton')
+          : undefined,
+        customAcknowledgeButtonOnClick: isPaused
+          ? onPausedAcknowledgeClick
+          : undefined,
       },
     ];
-  }, [status, modalBodyStr, showAlert, t]);
+  }, [status, modalBodyStr, showAlert, t, isPaused, onPausedAcknowledgeClick]);
 }
