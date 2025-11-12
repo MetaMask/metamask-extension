@@ -9,7 +9,6 @@ import {
   SeasonDtoState,
   SeasonStatusState,
 } from '../../../shared/types/rewards';
-import { useAppSelector } from '../../store/store';
 import { selectRewardsEnabled } from '../../ducks/rewards/selectors';
 import {
   setSeasonStatus,
@@ -43,9 +42,6 @@ export const useSeasonStatus = ({
   const isUnlocked = useSelector(getIsUnlocked);
   const isRewardsEnabled = useSelector(selectRewardsEnabled);
 
-  const activeRewardsCaipAccountId = useAppSelector(
-    (state) => state.metamask.rewardsActiveAccount?.account,
-  );
   const isLoading = useRef(false);
 
   const fetchSeasonStatus = useCallback(async (): Promise<void> => {
@@ -108,10 +104,10 @@ export const useSeasonStatus = ({
 
   // Fetch season status when dependencies change
   useEffect(() => {
-    if (isUnlocked && activeRewardsCaipAccountId) {
+    if (isUnlocked && subscriptionId) {
       fetchSeasonStatus();
     }
-  }, [isUnlocked, fetchSeasonStatus, activeRewardsCaipAccountId]);
+  }, [isUnlocked, fetchSeasonStatus, subscriptionId]);
 
   return {
     fetchSeasonStatus,

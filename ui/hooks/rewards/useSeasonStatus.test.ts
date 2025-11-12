@@ -142,31 +142,6 @@ describe('useSeasonStatus', () => {
       });
     });
 
-    it('does nothing when active account ID is missing', async () => {
-      const { store } = renderHookWithProvider(
-        () =>
-          useSeasonStatus({
-            subscriptionId: 'sub-1',
-            onAuthorizationError: mockOnAuthorizationError,
-          }),
-        {
-          metamask: {
-            isUnlocked: true,
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: true },
-            rewardsActiveAccount: null,
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      await waitFor(() => {
-        expect(getRewardsSeasonMetadata).not.toHaveBeenCalled();
-        const rewardsState = getRewardsSlice(store);
-        expect(rewardsState.seasonStatus).toBeNull();
-      });
-    });
-
     it('fetches when unlocked and rewards enabled with subscriptionId', async () => {
       (getRewardsSeasonMetadata as jest.Mock).mockImplementation(
         () => async () => mockSeasonMetadata,
