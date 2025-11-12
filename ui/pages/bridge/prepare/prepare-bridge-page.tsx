@@ -545,7 +545,6 @@ const PrepareBridgePage = ({
               dispatch(
                 setFromChain({
                   chainId: networkConfig.chainId,
-                  selectedAccount,
                 }),
               );
             },
@@ -684,7 +683,6 @@ const PrepareBridgePage = ({
                     setFromChain({
                       chainId: toChain?.chainId,
                       token: toToken,
-                      selectedAccount,
                     }),
                   );
                 }

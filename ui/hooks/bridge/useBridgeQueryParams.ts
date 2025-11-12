@@ -12,7 +12,6 @@ import {
   isCrossChain,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { type NetworkConfiguration } from '@metamask/network-controller';
 import {
   type AssetMetadata,
@@ -21,18 +20,13 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
-  setEVMSrcTokenBalance,
-  setEVMSrcNativeBalance,
+  setEvmBalances,
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
   setToToken,
 } from '../../ducks/bridge/actions';
-import {
-  getFromAccount,
-  getFromChain,
-  getFromToken,
-} from '../../ducks/bridge/selectors';
+import { getFromChain, getFromToken } from '../../ducks/bridge/selectors';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -81,7 +75,6 @@ export const useBridgeQueryParams = () => {
   const dispatch = useDispatch();
   const fromChain = useSelector(getFromChain);
   const fromToken = useSelector(getFromToken);
-  const selectedAccount = useSelector(getFromAccount);
 
   const abortController = useRef<AbortController>(new AbortController());
 
@@ -167,12 +160,7 @@ export const useBridgeQueryParams = () => {
 
   // Set fromChain and fromToken
   const setFromChainAndToken = useCallback(
-    (
-      fromTokenMetadata,
-      fromAsset,
-      account: InternalAccount | null,
-      network?: NetworkConfiguration,
-    ) => {
+    (fromTokenMetadata, fromAsset, network?: NetworkConfiguration) => {
       const { chainId: assetChainId } = fromAsset;
 
       if (fromTokenMetadata) {
@@ -197,7 +185,6 @@ export const useBridgeQueryParams = () => {
           dispatch(
             setFromChain({
               chainId: assetChainId,
-              selectedAccount: account,
               token,
             }),
           );
@@ -238,13 +225,8 @@ export const useBridgeQueryParams = () => {
       ];
 
     // Process from chain/token first
-    setFromChainAndToken(
-      fromTokenMetadata,
-      parsedFromAssetId,
-      selectedAccount,
-      fromChain,
-    );
-  }, [assetMetadataByAssetId, parsedFromAssetId, fromChain, selectedAccount]);
+    setFromChainAndToken(fromTokenMetadata, parsedFromAssetId, fromChain);
+  }, [assetMetadataByAssetId, parsedFromAssetId, fromChain]);
 
   // Set toChainId and toToken
   useEffect(() => {
@@ -291,18 +273,17 @@ export const useBridgeQueryParams = () => {
       // Wait for url params to be applied
       !parsedFromAssetId &&
       !searchParams.get(BridgeQueryParams.FROM) &&
-      fromToken &&
+      fromToken?.chainId &&
       // Wait for network to be changed if needed
-      !isCrossChain(fromToken.chainId, fromChain?.chainId) &&
-      selectedAccount
+      !isCrossChain(fromToken.chainId, fromChain?.chainId)
     ) {
-      dispatch(setEVMSrcTokenBalance(fromToken, selectedAccount.address));
-      dispatch(
-        setEVMSrcNativeBalance({
-          selectedAddress: selectedAccount.address,
-          chainId: fromToken.chainId,
-        }),
-      );
+      dispatch(setEvmBalances(fromToken.chainId, fromToken.address));
     }
-  }, [parsedFromAssetId, selectedAccount, fromToken, fromChain, searchParams]);
+  }, [
+    parsedFromAssetId,
+    fromToken?.chainId,
+    fromToken?.address,
+    fromChain?.chainId,
+    searchParams,
+  ]);
 };
