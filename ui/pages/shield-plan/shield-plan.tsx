@@ -92,13 +92,16 @@ const ShieldPlan = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  // Stripe Test clocks
-  const [enableStripeTestClocks, setEnableStripeTestClocks] = useState(false);
-  const showTestClocksCheckbox = isDevOrUatBuild() || isDevOrTestEnvironment();
-
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
+
+  // Stripe Test clocks
+  const [enableStripeTestClock, setEnableStripeTestClock] = useState(
+    lastUsedPaymentDetails?.useTestClock ?? false,
+  );
+  const showTestClocksCheckbox = isDevOrUatBuild() || isDevOrTestEnvironment();
+
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts
     getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
@@ -234,7 +237,7 @@ const ShieldPlan = () => {
           paymentTokenAddress: selectedToken?.address as Hex,
           paymentTokenSymbol: selectedToken?.symbol,
           plan: selectedPlan,
-          useTestClock: enableStripeTestClocks,
+          useTestClock: enableStripeTestClock,
         }),
       );
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
@@ -243,8 +246,7 @@ const ShieldPlan = () => {
             products: [PRODUCT_TYPES.SHIELD],
             isTrialRequested: !isTrialed,
             recurringInterval: selectedPlan,
-            // @ts-expect-error - useTestClock is not a valid prop for startSubscriptionWithCard
-            useTestClock: enableStripeTestClocks,
+            useTestClock: enableStripeTestClock,
           }),
         );
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
@@ -260,6 +262,7 @@ const ShieldPlan = () => {
       selectedPlan,
       selectedToken,
       subscriptionPricing,
+      enableStripeTestClock,
     ]);
 
   const tokensSupported = useMemo(() => {
@@ -526,10 +529,10 @@ const ShieldPlan = () => {
                   variant: TextVariant.BodySm,
                 }}
                 onChange={() =>
-                  setEnableStripeTestClocks(!enableStripeTestClocks)
+                  setEnableStripeTestClock(!enableStripeTestClock)
                 }
                 id="stripe-test-clocks"
-                isSelected={enableStripeTestClocks}
+                isSelected={enableStripeTestClock}
               />
             )}
             <Button
