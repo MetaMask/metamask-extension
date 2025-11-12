@@ -1695,6 +1695,8 @@ if (
     }
   });
 }
+///: END:ONLY_INCLUDE_IF
+
 /**
  * Trigger actions that should happen only when an update is available
  */
