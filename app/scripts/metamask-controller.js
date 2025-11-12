@@ -63,6 +63,11 @@ import {
   BtcScope,
   ///: END:ONLY_INCLUDE_IF
   SolScope,
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  TrxScope,
+  TrxAccountType,
+  ///: END:ONLY_INCLUDE_IF
+  BtcAccountType,
 } from '@metamask/keyring-api';
 import {
   hexToBigInt,
@@ -124,7 +129,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { COHORT_NAMES, PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
   findAtomicBatchSupportForChain,
@@ -203,6 +208,9 @@ import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
+///: BEGIN:ONLY_INCLUDE_IF(tron)
+import { TRON_WALLET_SNAP_ID } from '../../shared/lib/accounts/tron-wallet-snap';
+///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
@@ -255,6 +263,7 @@ import {
   previousValueComparator,
   initializeRpcProviderDomains,
   getPlatform,
+  getBooleanFlag,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import {
@@ -799,6 +808,10 @@ export default class MetamaskController extends EventEmitter {
         );
 
         if (hasActiveShieldSubscription) {
+          // fetch claims configurations when shield subscription is active
+          this.claimsController.fetchClaimsConfigurations().catch((err) => {
+            log.error('Error fetching claims configurations', err);
+          });
           this.shieldController.start();
         } else {
           this.shieldController.stop();
@@ -1381,6 +1394,20 @@ export default class MetamaskController extends EventEmitter {
 
     if (usePhishDetect) {
       this.phishingController.maybeUpdateState();
+    }
+
+    if (
+      getBooleanFlag(process.env.AUTO_UPDATE_PREINSTALLED_SNAPS) ||
+      // Check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
+      Object.values(this.snapController.state.snaps).some(
+        (snap) => !snap.preinstalled,
+      )
+    ) {
+      try {
+        this.snapController.updateRegistry();
+      } catch {
+        // Ignore
+      }
     }
   }
 
@@ -2502,6 +2529,9 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.getSubscriptionsEligibilities.bind(
           this.subscriptionController,
         ),
+      assignUserToCohort: this.subscriptionController.assignUserToCohort.bind(
+        this.subscriptionController,
+      ),
       getSubscriptions: this.subscriptionController.getSubscriptions.bind(
         this.subscriptionController,
       ),
@@ -2554,6 +2584,9 @@ export default class MetamaskController extends EventEmitter {
           this.rewardsController,
         ),
       getRewardsSeasonMetadata: this.rewardsController.getSeasonMetadata.bind(
+        this.rewardsController,
+      ),
+      getRewardsSeasonStatus: this.rewardsController.getSeasonStatus.bind(
         this.rewardsController,
       ),
       getRewardsHasAccountOptedIn:
@@ -2881,6 +2914,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setShowShieldEntryModalOnce:
         appStateController.setShowShieldEntryModalOnce.bind(appStateController),
+      setPendingShieldCohort:
+        appStateController.setPendingShieldCohort.bind(appStateController),
       setShieldPausedToastLastClickedOrClosed:
         appStateController.setShieldPausedToastLastClickedOrClosed.bind(
           appStateController,
@@ -3484,6 +3519,9 @@ export default class MetamaskController extends EventEmitter {
       // Multichain Assets Controller
       multichainAddAssets: (assetIds, accountId) =>
         this.multichainAssetsController.addAssets(assetIds, accountId),
+
+      multichainIgnoreAssets: (assetIds, accountId) =>
+        this.multichainAssetsController.ignoreAssets(assetIds, accountId),
 
       // MultichainBalancesController
       multichainUpdateBalance: (accountId) =>
@@ -4388,15 +4426,24 @@ export default class MetamaskController extends EventEmitter {
     const counts = {
       Bitcoin: 0,
       Solana: 0,
+      Tron: 0,
     };
 
     const solanaAccountTypes = Object.values(SolAccountType);
+    const bitcoinAccountTypes = Object.values(BtcAccountType);
+    const tronAccountTypes = Object.values(TrxAccountType);
 
     for (const account of accounts) {
       // Newly supported account types should be added here
       // No BTC discovery/account creation until the provider is added to the MultichainAccountsService
       if (solanaAccountTypes.includes(account.type)) {
         counts.Solana += 1;
+      }
+      if (bitcoinAccountTypes.includes(account.type)) {
+        counts.Bitcoin += 1;
+      }
+      if (tronAccountTypes.includes(account.type)) {
+        counts.Tron += 1;
       }
     }
 
@@ -4437,6 +4484,7 @@ export default class MetamaskController extends EventEmitter {
       return {
         Bitcoin: 0,
         Solana: 0,
+        Tron: 0,
       };
     }
   }
@@ -4665,7 +4713,6 @@ export default class MetamaskController extends EventEmitter {
 
       return mnemonic;
     } catch (error) {
-      log.error('Error restoring social backup and getting seed phrase', error);
       if (error instanceof RecoveryError) {
         throw new JsonRpcError(-32603, error.message, error.data);
       }
@@ -4887,6 +4934,7 @@ export default class MetamaskController extends EventEmitter {
       const discoveredAccounts = {
         Bitcoin: 0,
         Solana: 0,
+        Tron: 0,
       };
 
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
@@ -4930,12 +4978,32 @@ export default class MetamaskController extends EventEmitter {
         }
       }
 
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
+      const tronClient =
+        await this._getMultichainWalletSnapClient(TRON_WALLET_SNAP_ID);
+      const tronScope = TrxScope.Mainnet;
+      const tronAccounts = await tronClient.discoverAccounts(
+        entropySource,
+        tronScope,
+      );
+
+      discoveredAccounts.Tron = tronAccounts.length;
+
+      // If none accounts got discovered, we still create the first (default) one.
+      if (tronAccounts.length === 0) {
+        await this._addSnapAccount(entropySource, tronClient, {
+          scope: tronScope,
+        });
+      }
+      ///: END:ONLY_INCLUDE_IF
+
       return discoveredAccounts;
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
       return {
         Bitcoin: 0,
         Solana: 0,
+        Tron: 0,
       };
     }
   }
@@ -8457,9 +8525,26 @@ export default class MetamaskController extends EventEmitter {
    * @param transactionMeta - The transaction metadata.
    */
   async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
+    const { isGasFeeSponsored, chainId } = transactionMeta;
+    const bundlerSupported = await isSendBundleSupported(chainId);
+    const isSponsored = isGasFeeSponsored && bundlerSupported;
     await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
       transactionMeta,
+      isSponsored,
     );
+
+    // Mark send/transfer/swap transactions for Shield post_tx cohort evaluation
+    const isPostTxTransaction = [
+      TransactionType.simpleSend,
+      TransactionType.tokenMethodTransfer,
+      TransactionType.swap,
+      TransactionType.swapAndSend,
+    ].includes(transactionMeta.type);
+
+    const { pendingShieldCohort } = this.appStateController.state;
+    if (isPostTxTransaction && !pendingShieldCohort) {
+      this.appStateController.setPendingShieldCohort(COHORT_NAMES.POST_TX);
+    }
   }
 
   /**
