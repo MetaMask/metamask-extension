@@ -205,8 +205,7 @@ const quotes = [
   },
 ] as unknown as QuoteResponse[];
 
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('useDappSwapComparisonInfo', () => {
+describe('useDappSwapComparisonInfo', () => {
   const fetchQuotesMock = jest.mocked(fetchQuotes);
 
   beforeEach(() => {
