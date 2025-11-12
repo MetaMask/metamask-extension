@@ -101,6 +101,14 @@ export default class SelectHardware extends Component {
               { vendorId: 0x1209, productId: 0x53c1 },
             ],
           });
+
+          this.context.trackEvent({
+            event:
+              MetaMetricsEventName.ConnectHardwareWalletContinueButtonClicked,
+            properties: {
+              device_type: selectedDevice,
+            },
+          });
         } catch (e) {
           if (!e.message.match('No device selected')) {
             throw e;
@@ -116,7 +124,6 @@ export default class SelectHardware extends Component {
           device_type: selectedDevice,
         },
       });
-      this.props.connectToHardwareWallet(selectedDevice);
     }
     return null;
   };
