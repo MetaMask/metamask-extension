@@ -8,6 +8,7 @@ import { toHex } from '@metamask/controller-utils';
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { calculateTokenAmount } from '../../../utils/token';
+import { getTokenValueFromRecord } from '../../../utils/dapp-swap-comparison-utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { SimulationDetailsLayout } from '../../simulation-details/simulation-details';
 import { BalanceChangeRow } from '../../simulation-details/balance-change-row';
@@ -34,7 +35,7 @@ const getSrcAssetBalanceChange = (
       sourceTokenAmount ?? '0x0',
       srcAsset.decimals,
       16,
-      fiatRates[srcAsset.address.toLowerCase().toLowerCase() as Hex] ?? 0,
+      getTokenValueFromRecord(fiatRates, srcAsset.address as Hex) ?? 0,
     )
       .negated()
       .toNumber(),
@@ -59,7 +60,7 @@ const getDestAssetBalanceChange = (
       destTokenAmount,
       destAsset.decimals,
       10,
-      fiatRates[destAsset.address.toLowerCase().toLowerCase() as Hex] ?? 0,
+      getTokenValueFromRecord(fiatRates, destAsset.address as Hex) ?? 0,
     ).toNumber(),
     usdAmount: 0,
   };
