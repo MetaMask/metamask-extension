@@ -674,8 +674,8 @@ export function setShowShieldEntryModalOnce(
         setShowShieldEntryModalOnceAction({
           show: Boolean(show),
           shouldSubmitEvents,
-          modalType,
           triggeringCohort,
+          modalType,
         }),
       );
     } catch (error) {
@@ -689,8 +689,8 @@ export function setShowShieldEntryModalOnce(
 export function setShowShieldEntryModalOnceAction(payload: {
   show: boolean;
   shouldSubmitEvents: boolean;
-  modalType: ModalType;
   triggeringCohort?: string;
+  modalType: ModalType;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
     type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
