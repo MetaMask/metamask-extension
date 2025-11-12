@@ -1,7 +1,6 @@
 import { getCommandValues } from './dapp-swap-command-utils';
 
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('dapp-swap command utils', () => {
+describe('dapp-swap command utils', () => {
   describe('getCommandValues - exactin', () => {
     describe('V4 swaps', () => {
       it('returns the correct result for v4 erc20 -> erc20 swap', () => {
@@ -14,7 +13,7 @@ describe.skip('dapp-swap command utils', () => {
           '0x2105',
         );
         expect(result).toEqual({
-          amountMin: '0x17d36',
+          amountMin: '0x017d36',
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0xfde4c96c8593536e31f229ea8f37b2ada2699bb2',
@@ -22,8 +21,7 @@ describe.skip('dapp-swap command utils', () => {
             gasIncluded7702: false,
             srcChainId: '0x2105',
             srcTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-            srcTokenAmount: '0x186a0',
-            walletAddress: '0x68d3ad12ea94779cb37262be1c179dbd8e208afe',
+            srcTokenAmount: '0x0186a0',
           },
         });
       });
@@ -48,8 +46,7 @@ describe.skip('dapp-swap command utils', () => {
             gasIncluded7702: false,
             srcChainId: '0x2105',
             srcTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-            srcTokenAmount: '0x186a0',
-            walletAddress: '0x68d3ad12ea94779cb37262be1c179dbd8e208afe',
+            srcTokenAmount: '0x0186a0',
           },
         });
       });
@@ -65,7 +62,7 @@ describe.skip('dapp-swap command utils', () => {
           '0x2105',
         );
         expect(result).toEqual({
-          amountMin: '0x10b34',
+          amountMin: '0x010b34',
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
@@ -74,7 +71,6 @@ describe.skip('dapp-swap command utils', () => {
             srcChainId: '0x2105',
             srcTokenAddress: '0x0000000000000000000000000000000000000000',
             srcTokenAmount: '0x12309ce54000',
-            walletAddress: '0x68d3ad12ea94779cb37262be1c179dbd8e208afe',
           },
         });
       });
@@ -90,7 +86,7 @@ describe.skip('dapp-swap command utils', () => {
           '0x2105',
         );
         expect(result).toEqual({
-          amountMin: '0x17c8d',
+          amountMin: '0x017c8d',
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0xfde4c96c8593536e31f229ea8f37b2ada2699bb2',
@@ -98,8 +94,7 @@ describe.skip('dapp-swap command utils', () => {
             gasIncluded7702: false,
             srcChainId: '0x2105',
             srcTokenAddress: '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798',
-            srcTokenAmount: '0x16345785d8a0000',
-            walletAddress: '0x5206d14bfa10bd18989038fe628a79a135f2ee2f',
+            srcTokenAmount: '0x016345785d8a0000',
           },
         });
       });
@@ -123,8 +118,7 @@ describe.skip('dapp-swap command utils', () => {
             gasIncluded7702: false,
             srcChainId: '0x2105',
             srcTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-            srcTokenAmount: '0x186a0',
-            walletAddress: '0x5206d14bfa10bd18989038fe628a79a135f2ee2f',
+            srcTokenAmount: '0x0186a0',
           },
         });
       });
@@ -141,7 +135,7 @@ describe.skip('dapp-swap command utils', () => {
           '0x2105',
         );
         expect(result).toEqual({
-          amountMin: '0x17d2a',
+          amountMin: '0x017d2a',
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0xfde4c96c8593536e31f229ea8f37b2ada2699bb2',
@@ -149,8 +143,7 @@ describe.skip('dapp-swap command utils', () => {
             gasIncluded7702: false,
             srcChainId: '0x2105',
             srcTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-            srcTokenAmount: '0x186a0',
-            walletAddress: '0x68d3ad12ea94779cb37262be1c179dbd8e208afe',
+            srcTokenAmount: '0x0186a0',
           },
         });
       });
@@ -175,8 +168,7 @@ describe.skip('dapp-swap command utils', () => {
             gasIncluded7702: false,
             srcChainId: '0x2105',
             srcTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-            srcTokenAmount: '0x186a0',
-            walletAddress: '0x68d3ad12ea94779cb37262be1c179dbd8e208afe',
+            srcTokenAmount: '0x0186a0',
           },
         });
       });
@@ -193,7 +185,7 @@ describe.skip('dapp-swap command utils', () => {
           '0x2105',
         );
         expect(result).toEqual({
-          amountMin: '0x10b04',
+          amountMin: '0x010b04',
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
@@ -202,7 +194,6 @@ describe.skip('dapp-swap command utils', () => {
             srcChainId: '0x2105',
             srcTokenAddress: '0x0000000000000000000000000000000000000000',
             srcTokenAmount: '0x12309ce54000',
-            walletAddress: '0x68d3ad12ea94779cb37262be1c179dbd8e208afe',
           },
         });
       });
@@ -218,7 +209,7 @@ describe.skip('dapp-swap command utils', () => {
           '0x2105',
         );
         expect(result).toEqual({
-          amountMin: '0x17c96',
+          amountMin: '0x017c96',
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0xfde4c96c8593536e31f229ea8f37b2ada2699bb2',
@@ -226,8 +217,7 @@ describe.skip('dapp-swap command utils', () => {
             gasIncluded7702: false,
             srcChainId: '0x2105',
             srcTokenAddress: '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798',
-            srcTokenAmount: '0x16345785d8a0000',
-            walletAddress: '0x5206d14bfa10bd18989038fe628a79a135f2ee2f',
+            srcTokenAmount: '0x016345785d8a0000',
           },
         });
       });
@@ -251,8 +241,7 @@ describe.skip('dapp-swap command utils', () => {
             gasIncluded7702: false,
             srcChainId: '0x2105',
             srcTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-            srcTokenAmount: '0x186a0',
-            walletAddress: '0x5206d14bfa10bd18989038fe628a79a135f2ee2f',
+            srcTokenAmount: '0x0186a0',
           },
         });
       });
@@ -339,16 +328,13 @@ describe.skip('dapp-swap command utils', () => {
       ];
       exactOutCommands.forEach((input) => {
         it(`returns no result for the swap ${input[0] as string}`, () => {
-          const result = getCommandValues(
-            input[1] as string[],
-            input[2] as string[],
-            '0x2105',
-          );
-          expect(result).toEqual({
-            amountMin: undefined,
-            isExactOut: true,
-            quotesInput: undefined,
-          });
+          expect(() =>
+            getCommandValues(
+              input[1] as string[],
+              input[2] as string[],
+              '0x2105',
+            ),
+          ).toThrow();
         });
       });
     });

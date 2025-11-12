@@ -2,6 +2,7 @@
 import { GenericQuoteRequest } from '@metamask/bridge-controller';
 import { Hex } from '@metamask/utils';
 import { Interface, Result } from '@ethersproject/abi';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 
 // eslint-disable-next-line import/no-restricted-paths
 import { decodeUniswapPath } from '../../../../app/scripts/lib/transaction/decode/uniswap';
@@ -12,6 +13,9 @@ enum Commands {
   V2_SWAP_EXACT_IN = '08',
   V2_SWAP_EXACT_OUT = '09',
   V4_SWAP = '10',
+  SWEEP = '04',
+  WRAP_ETH = '0b',
+  UNWRAP_WETH = '0c',
 }
 
 const BASE_COMMANDS_ABI_DEFINITION: Partial<
@@ -38,6 +42,40 @@ const BASE_COMMANDS_ABI_DEFINITION: Partial<
     {
       type: 'bool',
       name: 'payerIsUser',
+    },
+  ],
+  [Commands.SWEEP]: [
+    {
+      type: 'address',
+      name: 'token',
+    },
+    {
+      type: 'address',
+      name: 'recipient',
+    },
+    {
+      type: 'uint256',
+      name: 'amountMin',
+    },
+  ],
+  [Commands.WRAP_ETH]: [
+    {
+      type: 'address',
+      name: 'recipient',
+    },
+    {
+      type: 'uint256',
+      name: 'amountMin',
+    },
+  ],
+  [Commands.UNWRAP_WETH]: [
+    {
+      type: 'address',
+      name: 'recipient',
+    },
+    {
+      type: 'uint256',
+      name: 'amountMin',
     },
   ],
 };
@@ -93,7 +131,6 @@ type PathKey = {
 
 type COMMAND_VALUES_RESULT = {
   amountMin?: string | undefined;
-  isExactOut?: boolean | undefined;
   quotesInput?: GenericQuoteRequest | undefined;
 };
 
@@ -105,7 +142,6 @@ type DAPP_SWAP_COMMANDS_PARSER_TYPE = {
     _chainId: Hex,
   ) => {
     amountMin: string | undefined;
-    isExactOut?: boolean | undefined;
     quotesInput: GenericQuoteRequest;
   };
 };
@@ -113,12 +149,77 @@ type DAPP_SWAP_COMMANDS_PARSER_TYPE = {
 const DAPP_SWAP_COMMANDS_PARSER: DAPP_SWAP_COMMANDS_PARSER_TYPE[] = [
   { value: '00', handler: handleV3SwapExactInCommand },
   { value: '10', handler: handleV4SwapCommand },
+  { value: '04', handler: handleCommandSweep },
+  { value: '0b', handler: handleCommandWrapETH },
+  { value: '0c', handler: handleCommandUnwrapETH },
 ];
 
 const V4_SWAP_ACTIONS_PARSER: DAPP_SWAP_COMMANDS_PARSER_TYPE[] = [
   { value: '06', handler: handleV4CommandSwapExactInSingle },
   { value: '07', handler: handleV4CommandSwapExactIn },
 ];
+
+function handleCommandSweep(
+  data: string,
+  quotesInput: GenericQuoteRequest,
+  _chainId: Hex,
+) {
+  const result = decodeCommandData(
+    Commands.SWEEP,
+    data,
+    BASE_COMMANDS_ABI_DEFINITION,
+  );
+
+  return {
+    amountMin: result[2].toHexString(),
+    quotesInput,
+  };
+}
+
+function handleCommandWrapETH(
+  data: string,
+  quotesInput: GenericQuoteRequest,
+  chainId: Hex,
+) {
+  const result = decodeCommandData(
+    Commands.WRAP_ETH,
+    data,
+    BASE_COMMANDS_ABI_DEFINITION,
+  );
+
+  console.log(
+    '*********************result',
+    result,
+    getNativeTokenAddress(chainId),
+  );
+  return {
+    amountMin: result[1].toHexString(),
+    quotesInput: {
+      ...(quotesInput ?? {}),
+      srcTokenAddress: getNativeTokenAddress(chainId),
+    },
+  };
+}
+
+function handleCommandUnwrapETH(
+  data: string,
+  quotesInput: GenericQuoteRequest,
+  chainId: Hex,
+) {
+  const result = decodeCommandData(
+    Commands.UNWRAP_WETH,
+    data,
+    BASE_COMMANDS_ABI_DEFINITION,
+  );
+
+  return {
+    amountMin: result[1].toHexString(),
+    quotesInput: {
+      ...(quotesInput ?? {}),
+      destTokenAddress: getNativeTokenAddress(chainId),
+    },
+  };
+}
 
 const decodeV4SwapCommandData = (data: string) => {
   const abiDecoder = Interface.getAbiCoder();
@@ -236,13 +337,16 @@ function handleV4CommandSwapExactIn(
   const parsedResult = parseV4ExactIn(result[0]);
   return {
     amountMin: parsedResult.amountOutMinimum.toHexString(),
-    isExactOut: false,
     quotesInput: {
       ...(quotesInput ?? {}),
-      srcTokenAmount: parsedResult.amountIn,
-      srcTokenAddress: parsedResult.currencyIn,
+      srcTokenAmount: parsedResult.amountIn.toHexString(),
+      srcTokenAddress:
+        quotesInput.srcTokenAddress ?? parsedResult.currencyIn.toLowerCase(),
       destTokenAddress:
-        parsedResult.path[parsedResult.path.length - 1].intermediateCurrency,
+        quotesInput.destTokenAddress ??
+        parsedResult.path[
+          parsedResult.path.length - 1
+        ].intermediateCurrency.toLowerCase(),
     } as GenericQuoteRequest,
   };
 }
@@ -261,16 +365,17 @@ function handleV4CommandSwapExactInSingle(
 
   return {
     amountMin: parsedResult.amountOutMinimum.toHexString(),
-    isExactOut: false,
     quotesInput: {
       ...(quotesInput ?? {}),
-      srcTokenAmount: parsedResult.amountIn,
-      srcTokenAddress: parsedResult.zeroForOne
-        ? parsedResult.poolKey.currency0
-        : parsedResult.poolKey.currency1,
-      destTokenAddress: parsedResult.zeroForOne
-        ? parsedResult.poolKey.currency1
-        : parsedResult.poolKey.currency0,
+      srcTokenAmount: parsedResult.amountIn.toHexString(),
+      srcTokenAddress:
+        (quotesInput.srcTokenAddress ?? parsedResult.zeroForOne)
+          ? parsedResult.poolKey.currency0.toLowerCase()
+          : parsedResult.poolKey.currency1.toLowerCase(),
+      destTokenAddress:
+        (quotesInput.destTokenAddress ?? parsedResult.zeroForOne)
+          ? parsedResult.poolKey.currency1.toLowerCase()
+          : parsedResult.poolKey.currency0.toLowerCase(),
     } as GenericQuoteRequest,
   };
 }
@@ -287,8 +392,11 @@ function handleV3SwapExactInCommand(
   );
 
   const decodedPath = decodeUniswapPath(result[3]);
-  const srcTokenAddress = decodedPath[0].firstAddress;
-  const destTokenAddress = decodedPath[decodedPath.length - 1].secondAddress;
+  const srcTokenAddress =
+    quotesInput.srcTokenAddress ?? decodedPath[0].firstAddress.toLowerCase();
+  const destTokenAddress =
+    quotesInput.destTokenAddress ??
+    decodedPath[decodedPath.length - 1].secondAddress.toLowerCase();
 
   return {
     amountMin: result[2].toHexString(),
@@ -306,6 +414,7 @@ function getGenericValues(
   inputs: string[],
   chainId: Hex,
   parserDefinition: DAPP_SWAP_COMMANDS_PARSER_TYPE[],
+  swapCommandsAllowed: string[],
   CommandsDefinition: typeof Commands | typeof V4Actions,
 ): COMMAND_VALUES_RESULT {
   if (commandBytes.length === 0) {
@@ -316,6 +425,10 @@ function getGenericValues(
   }
 
   const swapCommands = commandBytes.filter((commandByte) =>
+    Object.values(swapCommandsAllowed).includes(commandByte),
+  );
+
+  const commands = commandBytes.filter((commandByte) =>
     Object.values(CommandsDefinition).includes(commandByte),
   );
 
@@ -331,31 +444,25 @@ function getGenericValues(
     gasIncluded7702: false,
   } as GenericQuoteRequest;
 
-  const isExactOutRequest = false;
+  commands.forEach((command) => {
+    const data = getCommandData(commandBytes, inputs, command);
 
-  const data = getCommandData(commandBytes, inputs, swapCommands[0]);
-
-  if (data !== undefined) {
-    const commandParser: DAPP_SWAP_COMMANDS_PARSER_TYPE | undefined =
-      parserDefinition.find(
-        (parser: DAPP_SWAP_COMMANDS_PARSER_TYPE) =>
-          parser.value === swapCommands[0],
-      );
-
-    const result = commandParser?.handler(data, quotesInput, chainId);
-    if (result) {
-      if (result.amountMin !== undefined) {
-        amountMin = result.amountMin;
-      }
-      if (result.quotesInput) {
-        quotesInput = result.quotesInput;
+    if (data !== undefined) {
+      const commandParser: DAPP_SWAP_COMMANDS_PARSER_TYPE | undefined =
+        parserDefinition.find(
+          (parser: DAPP_SWAP_COMMANDS_PARSER_TYPE) => parser.value === command,
+        );
+      const result = commandParser?.handler(data, quotesInput, chainId);
+      if (result) {
+        if (result.amountMin !== undefined) {
+          amountMin = result.amountMin;
+        }
+        if (result.quotesInput) {
+          quotesInput = result.quotesInput;
+        }
       }
     }
-  }
-
-  if (isExactOutRequest) {
-    return { isExactOut: true };
-  }
+  });
 
   return {
     quotesInput,
@@ -373,6 +480,7 @@ function getV4SwapActionValues(
     actionParameters,
     chainId,
     V4_SWAP_ACTIONS_PARSER,
+    ['06', '07'],
     V4Actions,
   );
 }
@@ -387,6 +495,7 @@ export function getCommandValues(
     inputs,
     chainId,
     DAPP_SWAP_COMMANDS_PARSER,
+    ['00', '10'],
     Commands,
   );
 }
