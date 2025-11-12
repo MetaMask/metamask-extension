@@ -258,11 +258,15 @@ export const MultichainHoveredAddressRowsList = ({
     [handleCopy, t],
   );
 
-  const handleViewAllClick = useCallback(() => {
-    history.push(
-      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(groupId)}`,
-    );
-  }, [groupId, history]);
+  const handleViewAllClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      history.push(
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(groupId)}`,
+      );
+    },
+    [groupId, history],
+  );
 
   const renderedRows = useMemo(() => {
     const rows = sortByPriorityNetworks(getAccountsSpreadByNetworkByGroupId);
