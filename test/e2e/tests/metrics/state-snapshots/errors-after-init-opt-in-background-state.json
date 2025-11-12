@@ -50,6 +50,8 @@
     "notificationGasPollTokens": "object",
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
+    "pendingShieldCohort": null,
+    "pendingShieldCohortTxType": null,
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
@@ -353,8 +355,8 @@
   "SnapInsightsController": { "insights": "object" },
   "SnapInterfaceController": { "interfaces": "object" },
   "SnapsRegistry": {
-    "database": null,
-    "lastUpdated": null,
+    "database": "object",
+    "lastUpdated": "number",
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },

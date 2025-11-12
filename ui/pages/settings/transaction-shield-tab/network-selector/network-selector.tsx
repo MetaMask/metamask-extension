@@ -14,7 +14,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import classnames from 'classnames';
 import {
   Modal,
@@ -28,18 +27,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules
 import { NetworkListItem } from '../../../../components/multichain/network-list-item';
 import { getImageForChainId } from '../../../../selectors/multichain';
 import { TextVariant as DsTextVariant } from '../../../../helpers/constants/design-system';
-
-const SUPPORTED_CHAIN_IDS: `0x${string}`[] = [
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.LINEA_MAINNET,
-  CHAIN_IDS.ARBITRUM,
-  CHAIN_IDS.AVALANCHE,
-  CHAIN_IDS.OPTIMISM,
-  CHAIN_IDS.BASE,
-  CHAIN_IDS.POLYGON,
-  CHAIN_IDS.BSC,
-  CHAIN_IDS.SEI,
-];
+import { getSupportedNetworksForClaim } from '../../../../selectors/shield/claims';
 
 const NetworkSelector = ({
   label,
@@ -57,13 +45,14 @@ const NetworkSelector = ({
   const [showNetworkListMenu, setShowNetworkListMenu] = useState(false);
 
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const claimsSupportedNetworks = useSelector(getSupportedNetworksForClaim);
 
   const networksList = useMemo(
     () =>
       Object.values(allNetworks).filter((network) =>
-        SUPPORTED_CHAIN_IDS.includes(network.chainId),
+        claimsSupportedNetworks.includes(network.chainId),
       ),
-    [allNetworks],
+    [allNetworks, claimsSupportedNetworks],
   );
 
   const selectedNetworkInfo = useMemo(() => {

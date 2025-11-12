@@ -953,6 +953,9 @@ export enum MetaMetricsEventName {
   HardwareWalletForgotten = 'Hardware Wallet Forgotten',
   HardwareWalletMarketingButtonClicked = 'Hardware Wallet Marketing Button Clicked',
   HardwareWalletConnectionFailed = 'Hardware Wallet Connection Failed',
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  ViewportSwitched = 'Viewport Switched',
+  ///: END:ONLY_INCLUDE_IF
 }
 
 export enum MetaMetricsEventAccountType {

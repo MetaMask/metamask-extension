@@ -75,9 +75,16 @@ import {
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
   CachedLastSelectedPaymentMethods,
+  SubscriptionEligibility,
+  BalanceCategory,
 } from '@metamask/subscription-controller';
 
-import { Claim, SubmitClaimConfig } from '@metamask/claims-controller';
+import {
+  Claim,
+  CreateClaimRequest,
+  SubmitClaimConfig,
+} from '@metamask/claims-controller';
+import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -412,9 +419,13 @@ export function subscriptionsStartPolling(): ThunkAction<
 /**
  * Fetches the subscription eligibilities.
  *
+ * @param params
+ * @param params.balanceCategory
  * @returns The subscription eligibilities.
  */
-export function getSubscriptionsEligibilities(): ThunkAction<
+export function getSubscriptionsEligibilities(params?: {
+  balanceCategory?: BalanceCategory;
+}): ThunkAction<
   SubscriptionEligibility[],
   MetaMaskReduxState,
   unknown,
@@ -422,7 +433,9 @@ export function getSubscriptionsEligibilities(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      return await submitRequestToBackground('getSubscriptionsEligibilities');
+      return await submitRequestToBackground('getSubscriptionsEligibilities', [
+        params,
+      ]);
     } catch (error) {
       log.error('[getSubscriptionsEligibilities] error', error);
       dispatch(displayWarning(error));
@@ -435,6 +448,8 @@ export function getSubscriptionsEligibilities(): ThunkAction<
  * Submits a user event.
  *
  * @param eventRequest - The event request.
+ * @param eventRequest.event - The event type.
+ * @param eventRequest.cohort - Optional cohort ID.
  * @returns resolved promise.
  */
 export function submitSubscriptionUserEvents(
@@ -448,6 +463,27 @@ export function submitSubscriptionUserEvents(
     } catch (error) {
       log.error('[submitSubscriptionUserEvents] error', error);
       dispatch(displayWarning(error));
+    }
+  };
+}
+
+/**
+ * Assigns a user to a cohort.
+ *
+ * @param params - The cohort assignment parameters.
+ * @param params.cohort - The cohort to assign the user to.
+ * @returns resolved promise.
+ */
+export function assignUserToCohort(params: {
+  cohort: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('assignUserToCohort', [params]);
+    } catch (error) {
+      log.error('[assignUserToCohort] error', error);
+      dispatch(displayWarning(error));
+      throw error;
     }
   };
 }
@@ -510,12 +546,14 @@ export async function getSubscriptionCryptoApprovalAmount(
  * @param params.products - The list of products.
  * @param params.isTrialRequested - Is trial requested.
  * @param params.recurringInterval - The recurring interval.
+ * @param params.useTestClock - Whether to use test clocks.
  * @returns The subscription response.
  */
 export function startSubscriptionWithCard(params: {
   products: ProductType[];
   isTrialRequested: boolean;
   recurringInterval: RecurringInterval;
+  useTestClock: boolean;
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -611,6 +649,8 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
 export function setShowShieldEntryModalOnce(
   show: boolean | null,
   shouldSubmitEvents: boolean = false,
+  triggeringCohort?: string,
+  modalType?: ModalType,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -619,6 +659,8 @@ export function setShowShieldEntryModalOnce(
         setShowShieldEntryModalOnceAction({
           show: Boolean(show),
           shouldSubmitEvents,
+          triggeringCohort,
+          modalType,
         }),
       );
     } catch (error) {
@@ -632,10 +674,30 @@ export function setShowShieldEntryModalOnce(
 export function setShowShieldEntryModalOnceAction(payload: {
   show: boolean;
   shouldSubmitEvents: boolean;
+  triggeringCohort?: string;
+  modalType: ModalType;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
     type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
     payload,
+  };
+}
+
+export function setPendingShieldCohort(
+  cohort: string | null,
+  txType?: string | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setPendingShieldCohort', [
+        cohort,
+        txType,
+      ]);
+    } catch (error) {
+      log.error('[setPendingShieldCohort] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
   };
 }
 
@@ -7779,16 +7841,9 @@ export async function getLayer1GasFeeValue({
  * @param params.signature - Claim signature.
  * @returns The subscription response.
  */
-export async function submitShieldClaim(params: {
-  chainId: string;
-  email: string;
-  impactedWalletAddress: string;
-  impactedTransactionHash: string;
-  reimbursementWalletAddress: string;
-  caseDescription: string;
-  signature: string;
-  files?: FileList;
-}) {
+export async function submitShieldClaim(
+  params: CreateClaimRequest & { files?: FileList },
+) {
   const submitClaimConfig = await submitRequestToBackground<SubmitClaimConfig>(
     'getSubmitClaimConfig',
     [params],
@@ -7799,12 +7854,12 @@ export async function submitShieldClaim(params: {
   formData.append('chainId', params.chainId);
   formData.append('email', params.email);
   formData.append('impactedWalletAddress', params.impactedWalletAddress);
-  formData.append('impactedTxHash', params.impactedTransactionHash);
+  formData.append('impactedTxHash', params.impactedTxHash);
   formData.append(
     'reimbursementWalletAddress',
     params.reimbursementWalletAddress,
   );
-  formData.append('description', params.caseDescription);
+  formData.append('description', params.description);
   formData.append('signature', params.signature);
   formData.append('timestamp', Date.now().toString());
 
@@ -7820,7 +7875,6 @@ export async function submitShieldClaim(params: {
     const response = await fetch(url, {
       method,
       body: formData,
-      // FIXME: remove `Content-Type: multipart/form-data` from the controller
       headers: {
         Authorization: headers.Authorization,
       },

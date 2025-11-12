@@ -2605,6 +2605,24 @@
         "browserify>browser-resolve": true
       }
     },
+    "@tanstack/react-virtual": {
+      "globals": {
+        "document": true,
+        "scrollY": true
+      },
+      "packages": {
+        "@tanstack/react-virtual>@tanstack/virtual-core": true,
+        "react": true,
+        "react-dom": true
+      }
+    },
+    "@tanstack/react-virtual>@tanstack/virtual-core": {
+      "globals": {
+        "console.info": true,
+        "console.warn": true,
+        "requestAnimationFrame": true
+      }
+    },
     "@toruslabs/eccrypto": {
       "globals": {
         "crypto": true,
