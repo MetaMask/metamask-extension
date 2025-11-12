@@ -18,6 +18,7 @@ import {
   setTokenNetworkFilter,
   updateNetwork,
 } from '../../../../store/actions';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { NetworksForm } from './networks-form';
 
 jest.mock('../../../../../ui/store/actions', () => ({
@@ -87,6 +88,12 @@ describe('NetworkForm Component', () => {
   });
 
   beforeEach(() => {
+    // Clear mock call history to ensure test isolation and accurate assertions
+    // Each test verifies these actions are called with specific arguments
+    updateNetwork.mockClear(); // Reset calls from network update tests
+    addNetwork.mockClear(); // Reset calls from network creation tests
+    setTokenNetworkFilter.mockClear(); // Reset calls from token filter tests
+
     nock('https://chainid.network:443', { encodedQueryParams: true })
       .get('/chains.json')
       .reply(200, [
@@ -455,6 +462,178 @@ describe('NetworkForm Component', () => {
         },
       );
       expect(setTokenNetworkFilter).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('should track RPC update event when trackRpcUpdateFromBanner is true', async () => {
+    const mockTrackEvent = jest.fn();
+    const store = configureMockStore([thunk])({
+      metamask: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        useSafeChainsListValidation: true,
+        orderedNetworkList: {
+          networkId: '0x1',
+          networkRpcUrl: 'https://mainnet.infura.io/v3/',
+        },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
+      },
+    });
+
+    const { getByText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <NetworksForm
+          {...propNetworkDisplay}
+          existingNetwork={{
+            chainId: '0x64',
+            name: 'Ethereum',
+            nativeCurrency: 'ETH',
+            rpcEndpoints: [
+              {
+                url: 'https://mainnet.infura.io/v3/',
+              },
+            ],
+            defaultRpcEndpointIndex: 0,
+          }}
+          trackRpcUpdateFromBanner
+        />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+
+    const saveButton = getByText('Save');
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(updateNetwork).toHaveBeenCalled();
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: 'Network',
+        event: 'Network Connection Banner RPC Updated',
+        properties: {
+          chain_id_caip: 'eip155:100',
+          rpc_endpoint_url: 'mainnet.infura.io',
+        },
+      });
+    });
+  });
+
+  it('should not track RPC update event when trackRpcUpdateFromBanner is not set', async () => {
+    const mockTrackEvent = jest.fn();
+    const store = configureMockStore([thunk])({
+      metamask: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        useSafeChainsListValidation: true,
+        orderedNetworkList: {
+          networkId: '0x1',
+          networkRpcUrl: 'https://mainnet.infura.io/v3/',
+        },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
+      },
+    });
+
+    const { getByText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <NetworksForm
+          {...propNetworkDisplay}
+          existingNetwork={{
+            chainId: '0x64',
+            name: 'Ethereum',
+            nativeCurrency: 'ETH',
+            rpcEndpoints: [
+              {
+                url: 'https://mainnet.infura.io/v3/',
+              },
+            ],
+            defaultRpcEndpointIndex: 0,
+          }}
+          // trackRpcUpdateFromBanner not set
+        />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+
+    const saveButton = getByText('Save');
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(updateNetwork).toHaveBeenCalled();
+      // Should not have called the banner tracking event
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: 'Network Connection Banner RPC Updated',
+        }),
+      );
+    });
+  });
+
+  it('should track custom RPC URL when endpoint is not public', async () => {
+    const mockTrackEvent = jest.fn();
+    const store = configureMockStore([thunk])({
+      metamask: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        useSafeChainsListValidation: true,
+        orderedNetworkList: {
+          networkId: '0x1',
+          networkRpcUrl: 'https://mainnet.infura.io/v3/',
+        },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
+      },
+    });
+
+    const { getByText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <NetworksForm
+          {...propNetworkDisplay}
+          networkFormState={{
+            ...propNetworkDisplay.networkFormState,
+            rpcUrls: {
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://custom-rpc.example.com',
+                  type: 'custom',
+                },
+              ],
+            },
+          }}
+          existingNetwork={{
+            chainId: '0x64',
+            name: 'Ethereum',
+            nativeCurrency: 'ETH',
+            rpcEndpoints: [
+              {
+                url: 'https://custom-rpc.example.com',
+              },
+            ],
+            defaultRpcEndpointIndex: 0,
+          }}
+          trackRpcUpdateFromBanner
+        />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+
+    const saveButton = getByText('Save');
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(updateNetwork).toHaveBeenCalled();
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: 'Network',
+        event: 'Network Connection Banner RPC Updated',
+        properties: {
+          chain_id_caip: 'eip155:100',
+          rpc_endpoint_url: 'custom',
+        },
+      });
     });
   });
 });
