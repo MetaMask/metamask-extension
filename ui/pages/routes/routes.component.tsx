@@ -745,7 +745,7 @@ export default function Routes() {
             authenticated
             path={SETTINGS_ROUTE}
             component={Settings}
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated
@@ -911,7 +911,7 @@ export default function Routes() {
             path={PERMISSIONS}
             component={PermissionsPage}
             exact
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated

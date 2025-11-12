@@ -54,7 +54,7 @@
 @include design-system.screen-sm-min {
   .main-container {
     // width: 85vw;
-    min-height: 90vh;
+    // min-height: 90vh;
 
     &--has-shadow {
       box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
@@ -65,7 +65,7 @@
 @include design-system.screen-md-min {
   .main-container {
     // width: 80vw;
-    min-height: 82vh;
+    // min-height: 82vh;
 
     &--has-shadow {
       box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
@@ -76,7 +76,7 @@
 @include design-system.screen-lg-min {
   .main-container {
     // width: 62vw;
-    min-height: 82vh;
+    // min-height: 82vh;
 
     &--has-shadow {
       box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
@@ -97,6 +97,7 @@
 }
 
 // Side panel specific styles - all width constraints in one place
+/*
 .app--sidepanel {
   // Main containers
   .main-container {
@@ -167,6 +168,8 @@
     width: 100%;
   }
 }
+*/
+
 
 // first time
 .first-view-main {
@@ -213,4 +216,9 @@
   .redesigned__send__wrapper {
     min-width: 320px;
   }
+}
+
+// To migrate to layouts
+.main-container {
+  height: 100%;
 }

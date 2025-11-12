@@ -10,13 +10,16 @@ type Props = {
   authenticated?: boolean;
 };
 
+/*
+Once migrated, we can use layouts like this:
+  <Route path="/settings" element={<SettingsLayout />}>
+    <Route index element={<SettingsGeneral />} />
+    <Route path="advanced" element={<SettingsAdvanced />} />
+  </Route>
+*/
+
 /**
- * Interim helper to wrap a component with a layout while we migrate to React Router v6
- * Once migrated, we can use layouts like this:
- * <Route path="/settings" element={<SettingsLayout />}>
- *   <Route index element={<SettingsGeneral />} />
- *   <Route path="advanced" element={<SettingsAdvanced />} />
- * </Route>
+ * Interim helper to wrap a component with a layout while we migrate React Router
  *
  * @param props - Route props
  * @param props.path - Path for the route

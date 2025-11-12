@@ -1,17 +1,13 @@
 import React, { type ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
-import { AppHeader } from '../components/multichain';
-import { hideAppHeader, showAppHeader } from '../pages/routes/utils';
+import { Header } from './header';
 
 export const RootLayout = ({ children }: { children: ReactNode }) => {
-  const location = useLocation();
-
   return (
-    <div className="w-full sm:max-w-[576px] sm:mx-auto xl:max-w-[1280px]">
-      {process.env.REMOVE_GNS
-        ? showAppHeader({ location }) && <AppHeader location={location} />
-        : !hideAppHeader({ location }) && <AppHeader location={location} />}
-      {children}
+    <div className="w-full h-full flex flex-col max-w-[clamp(576px,85vw,798px)] sm:mx-auto">
+      <Header />
+
+      {/* Note: Consider a sticky header instead of overflow */}
+      <div className="flex flex-col flex-1 overflow-y-auto">{children}</div>
     </div>
   );
 };
