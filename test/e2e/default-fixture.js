@@ -123,6 +123,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         snapsInstallPrivacyWarningShown: true,
         hasShownMultichainAccountsIntroModal: true,
         showShieldEntryModalOnce: false,
+        pendingShieldCohort: null,
         appActiveTab: {
           id: 1,
           title: 'E2E Test Dapp',
