@@ -74,6 +74,40 @@ async function getE2eTestPaths(): Promise<string[]> {
   return testPaths;
 }
 
+async function checkAllE2eTestsHaveTempFiles(
+  tempDirPath: string,
+): Promise<boolean> {
+  const fs = await import('fs');
+  const path = await import('path');
+
+  const testPaths = await getE2eTestPaths();
+  const existingTempFiles = fs.readdirSync(tempDirPath);
+  const completedTests = new Set();
+
+  // Build set of completed test names from temp files
+  for (const tempFile of existingTempFiles) {
+    const match = tempFile.match(/warnings-e2e-test-(.+)\.json$/u);
+    if (match) {
+      completedTests.add(match[1]);
+    }
+  }
+
+  // Check if all test files have corresponding temp files
+  for (const testPath of testPaths) {
+    const basename = path.basename(testPath);
+    const testName = basename.replace(/\.(spec|test)\.(ts|js)$/iu, '');
+    const sanitizedTestName = testName
+      .replace(/[^a-z0-9]+/giu, '-')
+      .replace(/^-|-$/gu, '');
+
+    if (!completedTests.has(sanitizedTestName)) {
+      return false; // Found a test without a temp file
+    }
+  }
+
+  return true; // All tests have temp files
+}
+
 async function main(): Promise<void> {
   const fs = await import('fs');
   const path = await import('path');
@@ -423,36 +457,58 @@ async function main(): Promise<void> {
       process.exit(1);
     }
 
-    // All tests passed - aggregate and save final snapshot
+    // Aggregate and save snapshot based on mode
     if (specificTestFile) {
+      // Specific test mode: Always aggregate if the test passed
       console.log(
         '\n✅ Test passed! Aggregating and updating snapshot with this test...',
       );
-    } else {
-      console.log('\n✅ All tests passed! Aggregating and saving snapshot...');
-    }
 
-    // Ensure WARNINGS_SNAPSHOT_TYPE is set in THIS process for aggregation
-    process.env.WARNINGS_SNAPSHOT_TYPE = snapshotType;
+      process.env.WARNINGS_SNAPSHOT_TYPE = snapshotType;
+      const { aggregateAndSaveSnapshot } = await import(
+        '../test/helpers/console-snapshot.js'
+      );
+      aggregateAndSaveSnapshot();
 
-    const { aggregateAndSaveSnapshot } = await import(
-      '../test/helpers/console-snapshot.js'
-    );
-    aggregateAndSaveSnapshot();
-
-    const typeLabel =
-      snapshotType.charAt(0).toUpperCase() + snapshotType.slice(1);
-
-    if (specificTestFile) {
       console.log(
         `\n✅ Snapshot updated with warnings from: ${specificTestFile}`,
       );
       console.log(`   Check test/test-warnings-snapshot-${snapshotType}.json`);
       console.log('\n🧹 Temporary file has been cleaned up.');
     } else {
-      console.log(`\n✅ ${typeLabel} tests snapshot generation complete!`);
-      console.log(`   Check test/test-warnings-snapshot-${snapshotType}.json`);
-      console.log('\n🧹 All temporary files have been cleaned up.');
+      // All tests mode: Only aggregate if ALL tests have temp files
+      const shouldAggregate =
+        snapshotType === 'e2e'
+          ? await checkAllE2eTestsHaveTempFiles(tempDir)
+          : true; // For unit/integration, trust exitCode === 0
+
+      if (shouldAggregate) {
+        console.log(
+          '\n✅ All tests passed! Aggregating and saving snapshot...',
+        );
+
+        process.env.WARNINGS_SNAPSHOT_TYPE = snapshotType;
+        const { aggregateAndSaveSnapshot } = await import(
+          '../test/helpers/console-snapshot.js'
+        );
+        aggregateAndSaveSnapshot();
+
+        const typeLabel =
+          snapshotType.charAt(0).toUpperCase() + snapshotType.slice(1);
+        console.log(`\n✅ ${typeLabel} tests snapshot generation complete!`);
+        console.log(
+          `   Check test/test-warnings-snapshot-${snapshotType}.json`,
+        );
+        console.log('\n🧹 All temporary files have been cleaned up.');
+      } else {
+        console.log(
+          '\n⚠️  Not all tests have temp files yet. Snapshot not generated.',
+        );
+        console.log(
+          '   Run the command again to continue from where you left off.',
+        );
+        process.exit(1);
+      }
     }
   } catch (error) {
     console.error('Error generating snapshot:', error);
