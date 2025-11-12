@@ -308,7 +308,7 @@ export const MultichainHoveredAddressRowsList = ({
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
             >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Bold}>
                 {accountGroup?.metadata.name}
               </Text>
               <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
