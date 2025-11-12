@@ -11,7 +11,7 @@ import { type TxAlert } from '../../../shared/types/security-alerts-api';
 
 export type BridgeToken = {
   address: string;
-  assetId?: CaipAssetType;
+  assetId: CaipAssetType;
   symbol: string;
   image: string;
   decimals: number;
