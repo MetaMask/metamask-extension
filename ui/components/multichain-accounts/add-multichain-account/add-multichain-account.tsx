@@ -14,7 +14,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { createNextMultichainAccountGroup } from '../../../store/actions';
-import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
+import { useAccountsWalletOperationsLoadingStates } from '../../../hooks/accounts/useAccountsWalletOperationsLoadingStates';
 
 export type AddMultichainAccountProps = {
   walletId: AccountWalletId;
@@ -28,14 +28,14 @@ export const AddMultichainAccount = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const {
-    isAccountTreeSyncingInProgress,
+    areAnyOperationsLoading,
     loadingMessage: accountOperationLoadingMessage,
-  } = useAccountsOperationsLoadingStates();
+  } = useAccountsWalletOperationsLoadingStates(walletId);
 
-  const isLoadingState = isLoading || isAccountTreeSyncingInProgress;
+  const isLoadingState = isLoading || areAnyOperationsLoading;
 
   const actionLabel = useMemo(() => {
-    if (isAccountTreeSyncingInProgress) {
+    if (areAnyOperationsLoading) {
       return accountOperationLoadingMessage;
     }
 
@@ -47,7 +47,7 @@ export const AddMultichainAccount = ({
   }, [
     isLoadingState,
     accountOperationLoadingMessage,
-    isAccountTreeSyncingInProgress,
+    areAnyOperationsLoading,
     t,
   ]);
 
