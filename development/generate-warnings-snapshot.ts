@@ -78,8 +78,9 @@ async function main(): Promise<void> {
   const fs = await import('fs');
   const path = await import('path');
 
-  // Get snapshot type from command line argument
+  // Get snapshot type and optional test file path from command line arguments
   const snapshotType = process.argv[2] || 'unit';
+  const specificTestFile = process.argv[3]; // Optional: path to specific test file
 
   if (!['unit', 'integration', 'e2e'].includes(snapshotType)) {
     console.error(
@@ -87,15 +88,33 @@ async function main(): Promise<void> {
     );
     console.error(`   Received: ${snapshotType}`);
     console.error('\nUsage:');
-    console.error('  yarn test:warnings:update:unit');
-    console.error('  yarn test:warnings:update:integration');
-    console.error('  yarn test:warnings:update:e2e');
+    console.error('  yarn test:warnings:update:unit [test-file-path]');
+    console.error('  yarn test:warnings:update:integration [test-file-path]');
+    console.error('  yarn test:warnings:update:e2e [test-file-path]');
+    console.error('\nExamples:');
+    console.error('  yarn test:warnings:update:e2e  # Run all tests');
+    console.error(
+      '  yarn test:warnings:update:e2e test/e2e/tests/account/add-account.spec.ts  # Run specific test',
+    );
     process.exit(1);
   }
 
-  console.log(
-    `Running ${snapshotType} tests to capture warnings and errors...\n`,
-  );
+  if (specificTestFile) {
+    // Validate that the test file exists
+    if (!fs.existsSync(specificTestFile)) {
+      console.error(`\n❌ Test file not found: ${specificTestFile}`);
+      console.error('\nPlease provide a valid path to a test file.');
+      process.exit(1);
+    }
+    console.log(
+      `Running specific ${snapshotType} test to capture warnings and errors...\n`,
+    );
+    console.log(`   Test file: ${specificTestFile}\n`);
+  } else {
+    console.log(
+      `Running ${snapshotType} tests to capture warnings and errors...\n`,
+    );
+  }
 
   // Check if we have existing temp files
   const tempDir = path.join(
@@ -181,8 +200,41 @@ async function main(): Promise<void> {
     const failedTests: string[] = [];
     let missingTests: string[] = [];
 
-    // For e2e tests, intelligently run only missing tests if temp files exist
-    if (snapshotType === 'e2e' && hasExistingTempFiles) {
+    // Handle specific test file if provided
+    if (specificTestFile) {
+      console.log('🎯 Running single test file...\n');
+
+      const originalEnv = process.env;
+      process.env = { ...originalEnv, ...env };
+
+      try {
+        if (snapshotType === 'e2e') {
+          await runInShell('node', [
+            'test/e2e/run-e2e-test.js',
+            specificTestFile,
+          ]);
+        } else if (snapshotType === 'unit') {
+          await runInShell('yarn', [
+            'jest',
+            '--passWithNoTests',
+            specificTestFile,
+          ]);
+        } else if (snapshotType === 'integration') {
+          await runInShell('yarn', [
+            'test:integration',
+            '--passWithNoTests',
+            specificTestFile,
+          ]);
+        }
+        console.log(`\n✅ Test passed: ${specificTestFile}\n`);
+      } catch (error: unknown) {
+        console.log(`\n❌ Test failed: ${specificTestFile}\n`);
+        exitCode = 1;
+      } finally {
+        process.env = originalEnv;
+      }
+    } else if (snapshotType === 'e2e' && hasExistingTempFiles) {
+      // For e2e tests, intelligently run only missing tests if temp files exist
       const testPaths = await getE2eTestPaths();
       const existingTempFiles = fs.readdirSync(tempDir);
       const completedTests = new Set();
@@ -267,7 +319,15 @@ async function main(): Promise<void> {
       console.error(
         '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
       );
-      console.error('❌ Some tests failed. Snapshot cannot be generated yet.');
+      if (specificTestFile) {
+        console.error(
+          '❌ Test failed. Snapshot will not be updated for this test.',
+        );
+      } else {
+        console.error(
+          '❌ Some tests failed. Snapshot cannot be generated yet.',
+        );
+      }
       console.error(
         '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n',
       );
@@ -314,7 +374,18 @@ async function main(): Promise<void> {
 
       console.log('🔧 Next Steps:\n');
 
-      if (snapshotType === 'e2e') {
+      if (specificTestFile) {
+        // Specific test file failed
+        console.log('   Step 1: Review the error output above');
+        console.log('   Step 2: Fix the test');
+        console.log('   Step 3: Re-run to add its warnings to snapshot:');
+        console.log(
+          `           yarn test:warnings:update:${snapshotType} ${specificTestFile}\n`,
+        );
+        console.log(
+          '   💡 Note: The test must pass before its warnings can be added to snapshot.',
+        );
+      } else if (snapshotType === 'e2e') {
         if (failedTests.length > 0) {
           console.log('   Step 1: Debug a failing test:');
           if (failedTests.length === 1) {
@@ -353,7 +424,13 @@ async function main(): Promise<void> {
     }
 
     // All tests passed - aggregate and save final snapshot
-    console.log('\n✅ All tests passed! Aggregating and saving snapshot...');
+    if (specificTestFile) {
+      console.log(
+        '\n✅ Test passed! Aggregating and updating snapshot with this test...',
+      );
+    } else {
+      console.log('\n✅ All tests passed! Aggregating and saving snapshot...');
+    }
 
     // Ensure WARNINGS_SNAPSHOT_TYPE is set in THIS process for aggregation
     process.env.WARNINGS_SNAPSHOT_TYPE = snapshotType;
@@ -365,9 +442,18 @@ async function main(): Promise<void> {
 
     const typeLabel =
       snapshotType.charAt(0).toUpperCase() + snapshotType.slice(1);
-    console.log(`\n✅ ${typeLabel} tests snapshot generation complete!`);
-    console.log(`   Check test/test-warnings-snapshot-${snapshotType}.json`);
-    console.log('\n🧹 All temporary files have been cleaned up.');
+
+    if (specificTestFile) {
+      console.log(
+        `\n✅ Snapshot updated with warnings from: ${specificTestFile}`,
+      );
+      console.log(`   Check test/test-warnings-snapshot-${snapshotType}.json`);
+      console.log('\n🧹 Temporary file has been cleaned up.');
+    } else {
+      console.log(`\n✅ ${typeLabel} tests snapshot generation complete!`);
+      console.log(`   Check test/test-warnings-snapshot-${snapshotType}.json`);
+      console.log('\n🧹 All temporary files have been cleaned up.');
+    }
   } catch (error) {
     console.error('Error generating snapshot:', error);
     throw error;
