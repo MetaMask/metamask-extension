@@ -77,6 +77,10 @@ export const MultichainAggregatedAddressListRow = ({
   const networks = useSelector((state) => getNetworksByScopes(state, chainIds));
 
   const groupName = useMemo(() => {
+    if (networks[0]?.name === 'Bitcoin') {
+      return t('networkNameBitcoinSegwit');
+    }
+
     return chainIds.some((chain) => chain.startsWith('eip155:'))
       ? t('networkNameEthereum')
       : networks[0]?.name;
@@ -104,8 +108,19 @@ export const MultichainAggregatedAddressListRow = ({
     return IconColor.iconAlternative;
   };
 
+  const getBackgroundColor = useMemo(() => {
+    if (addressCopied) {
+      return BoxBackgroundColor.SuccessMuted;
+    }
+    if (isHovered) {
+      return BoxBackgroundColor.BackgroundMuted;
+    }
+    return BoxBackgroundColor.BackgroundDefault;
+  }, [addressCopied, isHovered]);
+
   // Handle "Copy" button click events
-  const handleCopyClick = () => {
+  const handleCopyClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     // Clear existing timeout if clicking multiple times in rapid succession
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -130,21 +145,27 @@ export const MultichainAggregatedAddressListRow = ({
   return (
     <Box
       className={`multichain-address-row ${className}`}
+      style={{
+        marginLeft: -16,
+        marginRight: -16,
+        paddingLeft: 16,
+        paddingRight: 16,
+      }}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
       gap={4}
       data-testid="multichain-address-row"
-      backgroundColor={
-        addressCopied
-          ? BoxBackgroundColor.SuccessMuted
-          : BoxBackgroundColor.BackgroundDefault
-      }
+      backgroundColor={getBackgroundColor}
       onClick={handleCopyClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Box gap={4} flexDirection={BoxFlexDirection.Row}>
+      <Box
+        gap={4}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+      >
         <MultichainAccountNetworkGroup chainIds={chainIds} limit={4} />
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Bold}>
           {groupName}

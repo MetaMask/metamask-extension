@@ -13,6 +13,7 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  BoxJustifyContent,
   Button,
   ButtonVariant,
   FontWeight,
@@ -27,8 +28,13 @@ import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Popover, PopoverPosition } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  getAllAccountGroups,
+  getInternalAccountListSpreadByScopesByGroupId,
+} from '../../../selectors/multichain-accounts/account-tree';
 import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import { selectBalanceForAllWallets } from '../../../selectors/assets';
+import { useFormatters } from '../../../hooks/useFormatters';
 import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
 
 // Priority networks that should appear first (using CAIP chain IDs)
@@ -39,6 +45,8 @@ const PRIORITY_CHAIN_IDS = new Map<CaipChainId, number>([
   ['tron:0x2b6653dc' as CaipChainId, 3], // Tron mainnet
 ]);
 
+const MAX_NETWORK_AVATARS = 4;
+
 export type MultichainAddressRowsListProps = {
   /**
    * The account group ID.
@@ -48,11 +56,21 @@ export type MultichainAddressRowsListProps = {
    * The child element that triggers the popover on hover.
    */
   children: React.ReactNode;
+  /**
+   * Whether to show the account header and balance.
+   */
+  showAccountHeaderAndBalance?: boolean;
+  /**
+   * The delay of the hover.
+   */
+  hoverCloseDelay?: number;
 };
 
 export const MultichainHoveredAddressRowsList = ({
   groupId,
   children,
+  showAccountHeaderAndBalance = true,
+  hoverCloseDelay = 100,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
@@ -61,25 +79,61 @@ export const MultichainHoveredAddressRowsList = ({
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
     null,
   );
+  const [dynamicPosition, setDynamicPosition] = useState<PopoverPosition>(
+    PopoverPosition.BottomStart,
+  );
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const allAccountGroups = useSelector(getAllAccountGroups);
+
+  const allBalances = useSelector(selectBalanceForAllWallets);
+  const { balance, currency, accountGroup } = useMemo(() => {
+    const group = allAccountGroups.find((g) => g.id === groupId);
+    const account = allBalances?.wallets?.[group?.walletId]?.groups?.[groupId];
+    const bal = account?.totalBalanceInUserCurrency ?? 0;
+    const curr = account?.userCurrency ?? '';
+    return { balance: bal, currency: curr, accountGroup: group };
+  }, [allBalances, groupId, allAccountGroups]);
+
+  const { formatCurrencyWithMinThreshold } = useFormatters();
 
   const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
   );
+
+  // Calculate whether popover should show above or below
+  const calculatePopoverPosition = useCallback(() => {
+    if (!referenceElement) {
+      return PopoverPosition.BottomStart;
+    }
+
+    const rect = referenceElement.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const popoverEstimatedHeight = 400; // Based on the maxHeight set on the popover
+    const spaceBelow = viewportHeight - rect.bottom;
+
+    // If there's not enough space below, use TopStart
+    if (spaceBelow < popoverEstimatedHeight) {
+      return PopoverPosition.TopStart;
+    }
+
+    // Default to BottomStart
+    return PopoverPosition.BottomStart;
+  }, [referenceElement]);
 
   const handleMouseEnter = useCallback(() => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
       hoverTimeoutRef.current = null;
     }
+    setDynamicPosition(calculatePopoverPosition());
     setIsHoverOpen(true);
-  }, []);
+  }, [calculatePopoverPosition]);
 
   const handleMouseLeave = useCallback(() => {
     hoverTimeoutRef.current = setTimeout(() => {
       setIsHoverOpen(false);
-    }, 300);
-  }, []);
+    }, hoverCloseDelay);
+  }, [hoverCloseDelay]);
 
   useEffect(() => {
     return () => {
@@ -192,7 +246,7 @@ export const MultichainHoveredAddressRowsList = ({
       return (
         <MultichainAggregatedAddressListRow
           key={`${item.account.address}-${index}`}
-          chainIds={item.scopes}
+          chainIds={item.scopes.slice(0, MAX_NETWORK_AVATARS)}
           address={item.account.address}
           copyActionParams={{
             message: t('multichainAccountAddressCopied'),
@@ -204,11 +258,15 @@ export const MultichainHoveredAddressRowsList = ({
     [handleCopy, t],
   );
 
-  const handleViewAllClick = useCallback(() => {
-    history.push(
-      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(groupId)}`,
-    );
-  }, [groupId, history]);
+  const handleViewAllClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      history.push(
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(groupId)}`,
+      );
+    },
+    [groupId, history],
+  );
 
   const renderedRows = useMemo(() => {
     const rows = sortByPriorityNetworks(getAccountsSpreadByNetworkByGroupId);
@@ -225,27 +283,22 @@ export const MultichainHoveredAddressRowsList = ({
         ref={setReferenceElement}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        style={{
-          ...(isHoverOpen && {
-            backgroundColor: 'var(--color-background-default-hover)',
-          }),
-        }}
       >
         {children}
       </Box>
       <Popover
         referenceElement={referenceElement}
         isOpen={isHoverOpen}
-        position={PopoverPosition.BottomStart}
-        flip={false}
-        preventOverflow={true}
+        position={dynamicPosition}
+        hasArrow={true}
         backgroundColor={BackgroundColor.backgroundDefault}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        preventOverflow
+        isPortal={true}
         style={{
-          zIndex: 1000,
+          zIndex: 99999,
           maxHeight: '400px',
-          overflowY: 'auto',
           minWidth: '320px',
         }}
       >
@@ -253,6 +306,20 @@ export const MultichainHoveredAddressRowsList = ({
           flexDirection={BoxFlexDirection.Column}
           data-testid="multichain-address-rows-list"
         >
+          {showAccountHeaderAndBalance && (
+            <Box
+              marginBottom={2}
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+            >
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Bold}>
+                {accountGroup?.metadata.name}
+              </Text>
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+                {formatCurrencyWithMinThreshold(balance, currency)}
+              </Text>
+            </Box>
+          )}
           <Box marginBottom={2}>{renderedRows}</Box>
           <Button
             variant={ButtonVariant.Secondary}
