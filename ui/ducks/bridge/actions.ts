@@ -8,6 +8,7 @@ import {
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
   isNonEvmChainId,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { type Hex, type CaipChainId } from '@metamask/utils';
@@ -166,7 +167,7 @@ export const setFromChain = ({
       dispatch(setActiveNetworkWithError(chainId));
     } else {
       const networkConfig = getFromChains(getState()).find(
-        (chain) => chain.chainId === chainId,
+        (chain) => chain.chainId === formatChainIdToHex(chainId),
       );
       if (networkConfig) {
         const networkId =

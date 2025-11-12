@@ -538,10 +538,6 @@ const PrepareBridgePage = ({
               address: token.address ?? zeroAddress(),
             };
             dispatch(setFromToken(bridgeToken));
-            dispatch(setFromTokenInputValue(null));
-            if (token.address === toToken?.address) {
-              dispatch(setToToken(null));
-            }
           }}
           networkProps={{
             network: fromChain,

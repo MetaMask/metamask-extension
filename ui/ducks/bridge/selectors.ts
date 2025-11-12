@@ -289,14 +289,9 @@ export const getLastSelectedChain = createSelector(
     if (enabledEvmNetworks.length > 1) {
       return fromChains[0];
     }
-    // If there is no match for the filter (i.e testnets), return first chain ranked by bridge feature flags
-    const lastEnabledChainId = enabledEvmNetworks.find((chainId) =>
-      fromChains.some(({ chainId: fromChainId }) => fromChainId === chainId),
-    );
-    return (
-      fromChains.find(
-        ({ chainId: fromChainId }) => fromChainId === lastEnabledChainId,
-      ) ?? fromChains[0]
+    // Find the matching bridge fromChain for the selected network filter
+    return fromChains.find(
+      ({ chainId: fromChainId }) => fromChainId === enabledEvmNetworks[0],
     );
   },
 );

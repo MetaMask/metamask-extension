@@ -31,7 +31,6 @@ import {
 import {
   getFromAccount,
   getFromChain,
-  getFromChains,
   getFromToken,
 } from '../../ducks/bridge/selectors';
 
@@ -80,7 +79,6 @@ const fetchAssetMetadata = async (
  */
 export const useBridgeQueryParams = () => {
   const dispatch = useDispatch();
-  const fromChains = useSelector(getFromChains);
   const fromChain = useSelector(getFromChain);
   const fromToken = useSelector(getFromToken);
   const selectedAccount = useSelector(getFromAccount);
@@ -172,7 +170,6 @@ export const useBridgeQueryParams = () => {
     (
       fromTokenMetadata,
       fromAsset,
-      networks: NetworkConfiguration[],
       account: InternalAccount | null,
       network?: NetworkConfiguration,
     ) => {
@@ -197,19 +194,13 @@ export const useBridgeQueryParams = () => {
         if (network && assetChainId === formatChainIdToCaip(network.chainId)) {
           dispatch(setFromToken(token));
         } else {
-          // Find the chain matching the srcAsset's chainId
-          const targetChain = networks.find(
-            (chain) => formatChainIdToCaip(chain.chainId) === assetChainId,
+          dispatch(
+            setFromChain({
+              chainId: assetChainId,
+              selectedAccount: account,
+              token,
+            }),
           );
-          if (targetChain) {
-            dispatch(
-              setFromChain({
-                networkConfig: targetChain,
-                selectedAccount: account,
-                token,
-              }),
-            );
-          }
         }
       }
     },
@@ -236,7 +227,7 @@ export const useBridgeQueryParams = () => {
 
   // Main effect to orchestrate the parameter processing
   useEffect(() => {
-    if (!parsedFromAssetId || !assetMetadataByAssetId || !fromChains.length) {
+    if (!parsedFromAssetId || !assetMetadataByAssetId) {
       return;
     }
 
@@ -250,17 +241,10 @@ export const useBridgeQueryParams = () => {
     setFromChainAndToken(
       fromTokenMetadata,
       parsedFromAssetId,
-      fromChains,
       selectedAccount,
       fromChain,
     );
-  }, [
-    assetMetadataByAssetId,
-    parsedFromAssetId,
-    fromChains,
-    fromChain,
-    selectedAccount,
-  ]);
+  }, [assetMetadataByAssetId, parsedFromAssetId, fromChain, selectedAccount]);
 
   // Set toChainId and toToken
   useEffect(() => {
