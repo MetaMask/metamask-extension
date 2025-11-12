@@ -7,7 +7,6 @@ import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
-import { Box } from '@metamask/design-system-react';
 
 export type MultichainAccountNetworkGroupProps = {
   /**
