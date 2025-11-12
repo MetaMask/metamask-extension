@@ -475,8 +475,29 @@ async function withFixtures(options, testSuite) {
           : null);
 
       if (validateSnapshotFn && typeof validateSnapshotFn === 'function') {
-        // Pass test title for incremental snapshot generation
-        await validateSnapshotFn(title);
+        // Automatically extract test file path for 1-1 mapping (no test changes needed!)
+        // This allows us to map temp files directly to test files
+        let testIdentifier = title; // Default fallback
+
+        // Try to extract test file path from call stack
+        try {
+          const stack = new Error().stack;
+          // Look for .spec.ts or .spec.js files in the stack trace
+          const specFileMatch = stack.match(/\((.*\.spec\.(ts|js)):/);
+          if (specFileMatch && specFileMatch[1]) {
+            testIdentifier = specFileMatch[1];
+          } else {
+            // Try alternative stack format (without parentheses)
+            const altMatch = stack.match(/at.*?(\/.*\.spec\.(ts|js)):/);
+            if (altMatch && altMatch[1]) {
+              testIdentifier = altMatch[1];
+            }
+          }
+        } catch {
+          // If stack extraction fails, use title (maintains backward compatibility)
+        }
+
+        await validateSnapshotFn(testIdentifier);
       } else {
         // Silently skip if not available (snapshot system is optional)
         console.warn('Snapshot validation not available - skipping');

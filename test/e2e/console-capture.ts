@@ -163,11 +163,11 @@ export function saveCapturedToTemp(testName?: string): void {
  * @param data - The captured warnings/errors
  * @param data.warnings - Array of captured warnings
  * @param data.errors - Array of captured errors
- * @param testName - The test name to use as unique identifier
+ * @param testIdentifier - The test identifier (file path or test name)
  */
 function saveTestSnapshot(
   data: { warnings: unknown[]; errors: unknown[] },
-  testName: string,
+  testIdentifier: string,
 ): void {
   // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
   const fs = require('fs');
@@ -184,8 +184,16 @@ function saveTestSnapshot(
     fs.mkdirSync(tempDir, { recursive: true });
   }
 
-  // Create sanitized filename from test name
-  const sanitizedName = testName
+  // If testIdentifier looks like a file path, extract just the filename
+  let identifier = testIdentifier;
+  if (testIdentifier.includes('/') || testIdentifier.includes('\\')) {
+    // It's a file path - extract basename without extension
+    const basename = path.basename(testIdentifier);
+    identifier = basename.replace(/\.(spec|test)\.(ts|js)$/i, '');
+  }
+
+  // Create sanitized filename from identifier
+  const sanitizedName = identifier
     .replace(/[^a-z0-9]+/giu, '-') // Replace non-alphanumeric with dash
     .replace(/^-|-$/gu, '') // Remove leading/trailing dashes
     .substring(0, 100); // Limit length
