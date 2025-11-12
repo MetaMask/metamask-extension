@@ -46,7 +46,9 @@ export const TokenTransferPage = () => {
 
   const handlePermissionGroupItemClick = (chainId: Hex) => {
     const baseRoute = `${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/${permissionGroupName}`;
-    history.push(origin ? `${baseRoute}/${origin}` : baseRoute);
+    history.push(
+      origin ? `${baseRoute}/${encodeURIComponent(origin)}` : baseRoute,
+    );
   };
 
   const renderPageContent = () =>
