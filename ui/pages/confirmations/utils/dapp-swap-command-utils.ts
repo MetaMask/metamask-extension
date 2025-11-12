@@ -8,9 +8,7 @@ import { decodeCommandV3Path } from '../../../../shared/modules/decoding';
 
 enum SwapCommands {
   V3_SWAP_EXACT_IN = '00',
-  V3_SWAP_EXACT_OUT = '01',
   V2_SWAP_EXACT_IN = '08',
-  V2_SWAP_EXACT_OUT = '09',
   V4_SWAP = '10',
 }
 
@@ -25,8 +23,6 @@ type Commands = SwapCommands | NonSwapCommands;
 enum V4Actions {
   SWAP_EXACT_IN_SINGLE = '06',
   SWAP_EXACT_IN = '07',
-  SWAP_EXACT_OUT_SINGLE = '08',
-  SWAP_EXACT_OUT = '09',
 }
 
 const BASE_COMMANDS_ABI_DEFINITION: Partial<
@@ -434,7 +430,9 @@ function getGenericValues(
   );
 
   if (swapCommands.length !== 1) {
-    throw new Error(`Found swap commands ${swapCommands.length} instead of 1`);
+    throw new Error(
+      `Found exact-in swap commands ${swapCommands.length} instead of 1`,
+    );
   }
   let nonSwapCommands: string[] = [];
   if (nonSwapCommandsDefinition) {
