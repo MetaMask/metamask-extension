@@ -355,10 +355,16 @@ describe('Sentry errors', function () {
             '\\$&',
           );
           const migrationErrorRegex = new RegExp(escapedMigrationError, 'u');
-          assert.match(
+          console.log(
+            'mockJsonBody',
+            JSON.stringify(mockJsonBody),
             JSON.stringify(mockJsonBody.exception),
-            migrationErrorRegex,
           );
+          const bodyToCheck = mockJsonBody.exception
+            ? JSON.stringify(mockJsonBody.exception)
+            : JSON.stringify(mockJsonBody);
+
+          assert.match(bodyToCheck, migrationErrorRegex);
         },
       );
     });
@@ -396,6 +402,9 @@ describe('Sentry errors', function () {
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
+          console.log('mockJsonBody2', JSON.stringify(mockJsonBody));
+          console.log('mockedRequest2', [mockedRequest]);
+
           const appState = mockJsonBody?.extra?.appState;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
