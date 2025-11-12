@@ -14,7 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
+import classnames from 'classnames';
 import {
   Modal,
   ModalBody,
@@ -27,40 +27,32 @@ import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules
 import { NetworkListItem } from '../../../../components/multichain/network-list-item';
 import { getImageForChainId } from '../../../../selectors/multichain';
 import { TextVariant as DsTextVariant } from '../../../../helpers/constants/design-system';
-
-const SUPPORTED_CHAIN_IDS: `0x${string}`[] = [
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.LINEA_MAINNET,
-  CHAIN_IDS.ARBITRUM,
-  CHAIN_IDS.AVALANCHE,
-  CHAIN_IDS.OPTIMISM,
-  CHAIN_IDS.BASE,
-  CHAIN_IDS.POLYGON,
-  CHAIN_IDS.BSC,
-  CHAIN_IDS.SEI,
-];
+import { getSupportedNetworksForClaim } from '../../../../selectors/shield/claims';
 
 const NetworkSelector = ({
   label,
   modalTitle,
   onNetworkSelect,
   selectedChainId,
+  disabled = false,
 }: {
   label: string;
   modalTitle: string;
   onNetworkSelect: (chainId: string) => void;
   selectedChainId: string;
+  disabled?: boolean;
 }) => {
   const [showNetworkListMenu, setShowNetworkListMenu] = useState(false);
 
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const claimsSupportedNetworks = useSelector(getSupportedNetworksForClaim);
 
   const networksList = useMemo(
     () =>
       Object.values(allNetworks).filter((network) =>
-        SUPPORTED_CHAIN_IDS.includes(network.chainId),
+        claimsSupportedNetworks.includes(network.chainId),
       ),
-    [allNetworks],
+    [allNetworks, claimsSupportedNetworks],
   );
 
   const selectedNetworkInfo = useMemo(() => {
@@ -72,7 +64,9 @@ const NetworkSelector = ({
       <Text
         variant={TextVariant.BodyMd}
         fontWeight={FontWeight.Medium}
-        className="mb-2"
+        className={classnames('mb-2', {
+          'opacity-50': disabled,
+        })}
       >
         {label}
       </Text>
@@ -83,7 +77,7 @@ const NetworkSelector = ({
         onClick={() => setShowNetworkListMenu(true)}
         aria-label={modalTitle}
       >
-        <button data-testid="network-selector-button">
+        <button data-testid="network-selector-button" disabled={disabled}>
           {selectedNetworkInfo ? (
             <>
               <AvatarNetwork
