@@ -242,24 +242,21 @@ export const AppHeaderUnlockedContent = ({
           <>{!isMultichainAccountsState2Enabled && CopyButton}</>
         </Text>
         {selectedMultichainAccountId && (
-          <Box paddingLeft={2}>
+          <Box
+            paddingLeft={2}
+            paddingTop={1}
+            paddingBottom={1}
+            style={{ width: 'fit-content' }}
+            data-testid="networks-subtitle-test-id"
+          >
             <MultichainHoveredAddressRowsList
               groupId={selectedMultichainAccountId}
               showAccountHeaderAndBalance={false}
             >
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                paddingTop={1}
-                paddingBottom={1}
-                borderRadius={BorderRadius.SM}
-                data-testid="networks-subtitle-test-id"
-              >
-                <MultichainAccountNetworkGroup
-                  groupId={selectedMultichainAccountId}
-                  limit={4}
-                />
-              </Box>
+              <MultichainAccountNetworkGroup
+                groupId={selectedMultichainAccountId}
+                limit={4}
+              />
             </MultichainHoveredAddressRowsList>
           </Box>
         )}
