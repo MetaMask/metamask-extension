@@ -307,6 +307,10 @@ export function getShouldSubmitEventsForShieldEntryModal(state) {
   return state.appState.shieldEntryModal?.shouldSubmitEvents;
 }
 
+export function getModalTypeForShieldEntryModal(state) {
+  return state.appState.shieldEntryModal?.modalType;
+}
+
 export function getShieldEntryModalTriggeringCohort(state) {
   return state.appState.shieldEntryModal?.triggeringCohort;
 }
