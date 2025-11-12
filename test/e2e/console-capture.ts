@@ -189,7 +189,7 @@ function saveTestSnapshot(
   if (testIdentifier.includes('/') || testIdentifier.includes('\\')) {
     // It's a file path - extract basename without extension
     const basename = path.basename(testIdentifier);
-    identifier = basename.replace(/\.(spec|test)\.(ts|js)$/i, '');
+    identifier = basename.replace(/\.(spec|test)\.(ts|js)$/iu, '');
   }
 
   // Create sanitized filename from identifier

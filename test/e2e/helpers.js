@@ -481,14 +481,14 @@ async function withFixtures(options, testSuite) {
 
         // Try to extract test file path from call stack
         try {
-          const stack = new Error().stack;
+          const { stack } = new Error();
           // Look for .spec.ts or .spec.js files in the stack trace
-          const specFileMatch = stack.match(/\((.*\.spec\.(ts|js)):/);
+          const specFileMatch = stack.match(/\((.*\.spec\.(ts|js)):/u);
           if (specFileMatch && specFileMatch[1]) {
             testIdentifier = specFileMatch[1];
           } else {
             // Try alternative stack format (without parentheses)
-            const altMatch = stack.match(/at.*?(\/.*\.spec\.(ts|js)):/);
+            const altMatch = stack.match(/at.*?(\/.*\.spec\.(ts|js)):/u);
             if (altMatch && altMatch[1]) {
               testIdentifier = altMatch[1];
             }
