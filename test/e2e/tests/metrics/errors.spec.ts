@@ -360,11 +360,11 @@ describe('Sentry errors', function () {
             JSON.stringify(mockJsonBody),
             JSON.stringify(mockJsonBody.exception),
           );
-          const bodyToCheck = mockJsonBody.exception
-            ? JSON.stringify(mockJsonBody.exception)
-            : JSON.stringify(mockJsonBody);
 
-          assert.match(bodyToCheck, migrationErrorRegex);
+          assert.match(
+            JSON.stringify(mockJsonBody.exception),
+            migrationErrorRegex,
+          );
         },
       );
     });

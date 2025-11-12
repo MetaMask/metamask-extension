@@ -100,6 +100,9 @@ describe('Test Snap Get Locale', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
+        // Wait for homepage to be loaded
+        await driver.waitForSelector('[data-testid="account-menu-icon"]');
+
         // click on the global action menu
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
