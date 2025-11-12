@@ -1,7 +1,7 @@
 import { Interface, TransactionDescription } from '@ethersproject/abi';
 import { Hex } from '@metamask/utils';
 
-import { decodeCommandV3Path } from '../../../../../shared/modules/uniswap';
+import { decodeCommandV3Path } from '../../../../../shared/modules/decoding';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { UNISWAP_ROUTER_COMMANDS } from './uniswap-commands';
 

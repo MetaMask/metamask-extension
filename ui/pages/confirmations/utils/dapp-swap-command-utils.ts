@@ -3,7 +3,7 @@ import { GenericQuoteRequest } from '@metamask/bridge-controller';
 import { Hex } from '@metamask/utils';
 import { Interface, Result } from '@ethersproject/abi';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { decodeCommandV3Path } from '../../../../shared/modules/uniswap';
+import { decodeCommandV3Path } from '../../../../shared/modules/decoding';
 
 enum Commands {
   V3_SWAP_EXACT_IN = '00',
