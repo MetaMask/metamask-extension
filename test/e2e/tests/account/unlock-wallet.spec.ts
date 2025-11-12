@@ -56,6 +56,7 @@ describe('Unlock wallet - ', function () {
             userEmail: MOCK_GOOGLE_ACCOUNT,
           });
         },
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
       },
       async ({ driver }: { driver: Driver }) => {
         await importWalletWithSocialLoginOnboardingFlow({
