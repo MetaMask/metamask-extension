@@ -141,11 +141,9 @@ describe('Preinstalled example Snap', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
-          const mocks = [
-            await mockTestSnapsSite(mockServer),
-            await mockSentryTestError(mockServer),
-          ];
-          return mocks;
+          // Only return Sentry as it's the one we need for the assertions
+          await mockTestSnapsSite(mockServer);
+          return await mockSentryTestError(mockServer);
         },
         manifestFlags: {
           sentry: { forceEnable: false },
@@ -195,11 +193,9 @@ describe('Preinstalled example Snap', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
-          const mocks = [
-            await mockTestSnapsSite(mockServer),
-            await mockSegment(mockServer),
-          ];
-          return mocks;
+          // Only return Sentry as it's the one we need for the assertions
+          await mockTestSnapsSite(mockServer);
+          return await mockSegment(mockServer);
         },
       },
       async ({ driver, mockedEndpoint }) => {
@@ -245,11 +241,9 @@ describe('Preinstalled example Snap', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
-          const mocks = [
-            await mockTestSnapsSite(mockServer),
-            await mockSentryTrace(mockServer),
-          ];
-          return mocks;
+          // Only return Sentry as it's the one we need for the assertions
+          await mockTestSnapsSite(mockServer);
+          return await mockSentryTrace(mockServer);
         },
         manifestFlags: {
           sentry: { forceEnable: false },
