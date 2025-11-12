@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { BigNumber } from 'bignumber.js';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
 import { QuoteResponse } from '@metamask/bridge-controller';
@@ -8,11 +7,63 @@ import { toHex } from '@metamask/controller-utils';
 
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { calculateTokenAmount } from '../../../utils/token';
 import { useConfirmContext } from '../../../context/confirm';
 import { SimulationDetailsLayout } from '../../simulation-details/simulation-details';
 import { BalanceChangeRow } from '../../simulation-details/balance-change-row';
 import { TokenAssetIdentifier } from '../../simulation-details/types';
 
+const getSrcAssetBalanceChange = (
+  srcAsset: QuoteResponse['quote']['srcAsset'],
+  tokenDetails: Record<Hex, TokenStandAndDetails>,
+  sourceTokenAmount: string | undefined,
+  fiatRates: Record<Hex, number | undefined>,
+) => {
+  return {
+    asset: {
+      ...tokenDetails[srcAsset.address as Hex],
+      chainId: toHex(srcAsset.chainId),
+      address: srcAsset.address as Hex,
+    } as unknown as TokenAssetIdentifier,
+    amount: calculateTokenAmount(
+      sourceTokenAmount ?? '0x0',
+      srcAsset.decimals,
+      16,
+    ).negated(),
+    fiatAmount: calculateTokenAmount(
+      sourceTokenAmount ?? '0x0',
+      srcAsset.decimals,
+      16,
+      fiatRates[srcAsset.address.toLowerCase() as Hex] ?? 0,
+    )
+      .negated()
+      .toNumber(),
+    usdAmount: 0,
+  };
+};
+
+const getDestAssetBalanceChange = (
+  destAsset: QuoteResponse['quote']['destAsset'],
+  tokenDetails: Record<Hex, TokenStandAndDetails>,
+  destTokenAmount: string,
+  fiatRates: Record<Hex, number | undefined>,
+) => {
+  return {
+    asset: {
+      ...tokenDetails[destAsset.address as Hex],
+      chainId: toHex(destAsset.chainId),
+      address: destAsset.address as Hex,
+    } as unknown as TokenAssetIdentifier,
+    amount: calculateTokenAmount(destTokenAmount, destAsset.decimals),
+    fiatAmount: calculateTokenAmount(
+      destTokenAmount,
+      destAsset.decimals,
+      10,
+      fiatRates[destAsset.address.toLowerCase() as Hex] ?? 0,
+    ).toNumber(),
+    usdAmount: 0,
+  };
+};
 export const QuoteSwapSimulationDetails = ({
   fiatRates,
   quote,
@@ -34,37 +85,18 @@ export const QuoteSwapSimulationDetails = ({
     }
     const { srcAsset, destAsset, destTokenAmount } = quote.quote;
     return {
-      srcAssetBalanceChange: {
-        asset: {
-          ...tokenDetails[srcAsset.address as Hex],
-          chainId: toHex(srcAsset.chainId),
-          address: srcAsset.address as Hex,
-        } as unknown as TokenAssetIdentifier,
-        amount: new BigNumber(sourceTokenAmount ?? '0x0', 16)
-          .negated()
-          .dividedBy(new BigNumber(10).pow(srcAsset.decimals)),
-        fiatAmount: new BigNumber(sourceTokenAmount ?? '0x0', 16)
-          .negated()
-          .dividedBy(new BigNumber(10).pow(srcAsset.decimals))
-          .times(fiatRates[srcAsset.address.toLowerCase() as Hex] ?? 0)
-          .toNumber(),
-        usdAmount: 0,
-      },
-      destAssetBalanceChange: {
-        asset: {
-          ...tokenDetails[destAsset.address as Hex],
-          chainId: toHex(destAsset.chainId),
-          address: destAsset.address as Hex,
-        } as unknown as TokenAssetIdentifier,
-        amount: new BigNumber(destTokenAmount).dividedBy(
-          new BigNumber(10).pow(destAsset.decimals),
-        ),
-        fiatAmount: new BigNumber(destTokenAmount)
-          .dividedBy(new BigNumber(10).pow(destAsset.decimals))
-          .times(fiatRates[destAsset.address.toLowerCase() as Hex] ?? 0)
-          .toNumber(),
-        usdAmount: 0,
-      },
+      srcAssetBalanceChange: getSrcAssetBalanceChange(
+        srcAsset,
+        tokenDetails,
+        sourceTokenAmount,
+        fiatRates,
+      ),
+      destAssetBalanceChange: getDestAssetBalanceChange(
+        destAsset,
+        tokenDetails,
+        destTokenAmount,
+        fiatRates,
+      ),
     };
   }, [fiatRates, quote, sourceTokenAmount, tokenDetails]);
 
