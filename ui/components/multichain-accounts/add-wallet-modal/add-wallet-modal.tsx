@@ -113,6 +113,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       route: CONNECT_HARDWARE_ROUTE,
       metricsEvent: {
         event: MetaMetricsEventName.AddHardwareWalletClicked,
+        category: MetaMetricsEventCategory.Navigation,
       },
     },
     ...(institutionalWalletsEnabled
