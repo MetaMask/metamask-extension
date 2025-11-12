@@ -14,8 +14,12 @@ import {
 import {
   CaptureShieldEntryModalEventParams,
   CaptureShieldSubscriptionRequestParams,
+  CaptureShieldSubscriptionRestartRequestParams,
 } from './types';
-import { formatDefaultShieldSubscriptionRequestEventProps } from './utils';
+import {
+  formatDefaultShieldSubscriptionRequestEventProps,
+  formatDefaultShieldSubscriptionRestartRequestEventProps,
+} from './utils';
 
 export const useSubscriptionMetrics = () => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -95,8 +99,29 @@ export const useSubscriptionMetrics = () => {
     [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
+  const captureShieldSubscriptionRestartRequestEvent = useCallback(
+    (params: CaptureShieldSubscriptionRestartRequestParams) => {
+      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+        selectedAccount,
+        hdKeyingsMetadata,
+      );
+      const formattedParams =
+        formatDefaultShieldSubscriptionRestartRequestEventProps(params);
+      trackEvent({
+        event: MetaMetricsEventName.ShieldSubscriptionRestartRequest,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...userAccountTypeAndCategory,
+          ...formattedParams,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata],
+  );
+
   return {
     captureShieldEntryModalEvent,
     captureShieldSubscriptionRequestEvent,
+    captureShieldSubscriptionRestartRequestEvent,
   };
 };

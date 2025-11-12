@@ -948,6 +948,7 @@ export enum MetaMetricsEventName {
   // Shield
   ShieldEntryModal = 'Shield Entry Modal',
   ShieldSubscriptionRequest = 'Shield Subscription Request',
+  ShieldSubscriptionRestartRequest = 'Shield Subscription Restart Request',
 }
 
 export enum MetaMetricsEventAccountType {

@@ -2,7 +2,10 @@ import {
   getBillingCyclesForMetrics,
   getBillingIntervalForMetrics,
 } from '../../../../shared/modules/shield';
-import { CaptureShieldSubscriptionRequestParams } from './types';
+import {
+  CaptureShieldSubscriptionRequestParams,
+  CaptureShieldSubscriptionRestartRequestParams,
+} from './types';
 
 export function formatDefaultShieldSubscriptionRequestEventProps(
   params: CaptureShieldSubscriptionRequestParams,
@@ -59,5 +62,37 @@ export function formatDefaultShieldSubscriptionRequestEventProps(
     // eslint-disable-next-line @typescript-eslint/naming-convention
     error_message: params.errorMessage,
     status: params.requestStatus,
+  };
+}
+
+export function formatDefaultShieldSubscriptionRestartRequestEventProps(
+  params: CaptureShieldSubscriptionRestartRequestParams,
+) {
+  const selectedBillingInterval = getBillingIntervalForMetrics(
+    params.billingInterval,
+  );
+
+  return {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    subscription_status: params.subscriptionStatus,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    payment_type: params.paymentType,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    crypto_payment_chain: params.cryptoPaymentChain,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    crypto_payment_currency: params.cryptoPaymentCurrency,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    billing_interval: selectedBillingInterval,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    error_message: params.errorMessage,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    status: params.restartStatus,
   };
 }

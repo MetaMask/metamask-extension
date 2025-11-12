@@ -28,14 +28,6 @@ export enum EntryModalSourceEnum {
   PostTransaction = 'post_transaction', // after a transaction
 }
 
-export enum ShieldUserBalanceRangeCategoryEnum {
-  LessThan100 = '<100',
-  Between100And1K = '100-1k',
-  Between1KAnd10K = '1k-10k',
-  Between10KAnd100K = '10k-100k',
-  MoreThan100K = '>100k',
-}
-
 export enum ShieldUserAccountCategoryEnum {
   PRIMARY = 'primary',
   ImportedAccount = 'imported_account',

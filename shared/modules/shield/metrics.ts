@@ -1,4 +1,6 @@
 import {
+  BALANCE_CATEGORIES,
+  BalanceCategory,
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   RecurringInterval,
@@ -16,7 +18,6 @@ import { Json } from '@metamask/utils';
 import {
   ShieldUserAccountCategoryEnum,
   ShieldUserAccountTypeEnum,
-  ShieldUserBalanceRangeCategoryEnum,
 } from '../../constants/subscriptions';
 import { getShieldSubscription } from '../../lib/shield';
 import { KeyringType } from '../../constants/keyring';
@@ -170,19 +171,29 @@ export function getUserAccountCategory(
   return ShieldUserAccountCategoryEnum.ImportedAccount;
 }
 
-export function getUserBalanceCategory(
-  balanceInUSD: number,
-): ShieldUserBalanceRangeCategoryEnum {
-  if (balanceInUSD < 100) {
-    return ShieldUserBalanceRangeCategoryEnum.LessThan100;
-  } else if (balanceInUSD >= 100 && balanceInUSD < 1000) {
-    return ShieldUserBalanceRangeCategoryEnum.Between100And1K;
-  } else if (balanceInUSD >= 1000 && balanceInUSD < 10000) {
-    return ShieldUserBalanceRangeCategoryEnum.Between1KAnd10K;
-  } else if (balanceInUSD >= 10000 && balanceInUSD < 100000) {
-    return ShieldUserBalanceRangeCategoryEnum.Between10KAnd100K;
+/**
+ * Converts a balance in USD to a balance category
+ *
+ * @param balanceInUSD - The balance in USD
+ * @returns The balance category string
+ */
+export function getUserBalanceCategory(balanceInUSD: number): BalanceCategory {
+  if (balanceInUSD >= 1000000) {
+    return BALANCE_CATEGORIES.RANGE_1M_PLUS;
   }
-  return ShieldUserBalanceRangeCategoryEnum.MoreThan100K;
+  if (balanceInUSD >= 100000) {
+    return BALANCE_CATEGORIES.RANGE_100K_999_9K;
+  }
+  if (balanceInUSD >= 10000) {
+    return BALANCE_CATEGORIES.RANGE_10K_99_9K;
+  }
+  if (balanceInUSD >= 1000) {
+    return BALANCE_CATEGORIES.RANGE_1K_9_9K;
+  }
+  if (balanceInUSD >= 100) {
+    return BALANCE_CATEGORIES.RANGE_100_999;
+  }
+  return BALANCE_CATEGORIES.RANGE_0_99;
 }
 
 export function getUserAccountTypeAndCategory(
