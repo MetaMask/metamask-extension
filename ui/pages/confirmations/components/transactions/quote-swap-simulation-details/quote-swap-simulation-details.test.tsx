@@ -84,7 +84,7 @@ function render(args: Record<string, string> = {}) {
 describe('<QuoteSwapSimulationDetails />', () => {
   it('renders component without errors', () => {
     const { getByText } = render();
-    expect(getByText('Estimated changes')).toBeInTheDocument();
+    expect(getByText('Best quote')).toBeInTheDocument();
     expect(getByText('You send')).toBeInTheDocument();
     expect(getByText('You receive')).toBeInTheDocument();
     expect(getByText('- 0.1')).toBeInTheDocument();

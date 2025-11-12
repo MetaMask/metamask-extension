@@ -129,7 +129,13 @@ const EmptyContent: React.FC = () => {
   );
 };
 
-const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
+const HeaderWithAlert = ({
+  title,
+  transactionId,
+}: {
+  title?: string;
+  transactionId: string;
+}) => {
   const t = useI18nContext();
   const isEnforcedSimulationsSupported = useIsEnforcedSimulationsSupported();
 
@@ -145,9 +151,11 @@ const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
     TransactionContainerType.EnforcedSimulations,
   );
 
-  const label = isEnforced
-    ? t('simulationDetailsTitleEnforced')
-    : t('simulationDetailsTitle');
+  const label =
+    title ??
+    (isEnforced
+      ? t('simulationDetailsTitleEnforced')
+      : t('simulationDetailsTitle'));
 
   const tooltip = isEnforced
     ? t('simulationDetailsTitleTooltipEnforced')
@@ -241,7 +249,8 @@ const LegacyHeader = () => {
 const HeaderLayout: React.FC<{
   isTransactionsRedesign: boolean;
   transactionId: string;
-}> = ({ children, isTransactionsRedesign, transactionId }) => {
+  title?: string;
+}> = ({ children, isTransactionsRedesign, transactionId, title }) => {
   return (
     <Box
       display={Display.Flex}
@@ -250,7 +259,7 @@ const HeaderLayout: React.FC<{
       justifyContent={JustifyContent.spaceBetween}
     >
       {isTransactionsRedesign ? (
-        <HeaderWithAlert transactionId={transactionId} />
+        <HeaderWithAlert title={title} transactionId={transactionId} />
       ) : (
         <LegacyHeader />
       )}
@@ -269,10 +278,11 @@ const HeaderLayout: React.FC<{
  * @param props.transactionId
  */
 export const SimulationDetailsLayout: React.FC<{
+  title?: string;
   inHeader?: React.ReactNode;
   isTransactionsRedesign: boolean;
   transactionId: string;
-}> = ({ inHeader, isTransactionsRedesign, transactionId, children }) =>
+}> = ({ title, inHeader, isTransactionsRedesign, transactionId, children }) =>
   isTransactionsRedesign ? (
     <ConfirmInfoSection noPadding>
       <Box
@@ -295,6 +305,7 @@ export const SimulationDetailsLayout: React.FC<{
         <HeaderLayout
           isTransactionsRedesign={isTransactionsRedesign}
           transactionId={transactionId}
+          title={title}
         >
           {inHeader}
         </HeaderLayout>

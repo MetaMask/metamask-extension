@@ -832,6 +832,9 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
   },
+  "bestQuote": {
+    "message": "Best quote"
+  },
   "beta": {
     "message": "Beta"
   },

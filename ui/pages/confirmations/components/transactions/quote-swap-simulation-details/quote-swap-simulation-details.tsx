@@ -115,6 +115,7 @@ export const QuoteSwapSimulationDetails = ({
     <SimulationDetailsLayout
       isTransactionsRedesign
       transactionId={transactionId}
+      title={t('bestQuote')}
     >
       <Box
         flexDirection={BoxFlexDirection.Column}
