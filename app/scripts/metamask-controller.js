@@ -5214,9 +5214,9 @@ export default class MetamaskController extends EventEmitter {
         // This also allows to create missing accounts if new account providers
         // have been added.
         await Promise.allSettled(
-          this.getHDEntropySources().map(async (entropySource) => {
-            await this.discoverAndCreateAccounts(entropySource);
-          }),
+          this.getHDEntropySources().map(async (entropySource) =>
+            await this.discoverAndCreateAccounts(entropySource)
+          ),
         );
       };
 
