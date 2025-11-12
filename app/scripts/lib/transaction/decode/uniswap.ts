@@ -175,7 +175,7 @@ function decodeUniswapCommand(
   };
 }
 
-function decodeUniswapPath(rawPath: string): UniswapPathPool[] {
+export function decodeUniswapPath(rawPath: string): UniswapPathPool[] {
   const pools: UniswapPathPool[] = [];
   let remainingData = stripHexPrefix(rawPath);
   let currentPool = {} as UniswapPathPool;
