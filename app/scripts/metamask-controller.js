@@ -5208,7 +5208,9 @@ export default class MetamaskController extends EventEmitter {
       // This allows to create missing accounts if new account providers have been added.
       // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
       // for mobile, but for now, this easy fix should cover new provider accounts.
-      await this.multichainAccountService.alignWallets();
+      // NOTE: We run this asynchronously on purpose, see FIXME^.
+      // eslint-disable-next-line no-void
+      void this.multichainAccountService.alignWallets();
     }
   }
 
