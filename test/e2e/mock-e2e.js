@@ -198,9 +198,6 @@ async function setupMocking(
       };
     });
 
-  // Subscriptions Eligibility
-  // Global mock - will only be used if test-specific mock doesn't match
-  // Test-specific mocks should use .always() to ensure they take precedence
   await server
     .forGet(
       'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
