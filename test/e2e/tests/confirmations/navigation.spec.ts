@@ -9,7 +9,7 @@ import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import SignTypedData from '../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { DAPP_PATH, MOCK_META_METRICS_ID } from '../../constants';
+import { DAPP_ONE_URL, DAPP_PATH, MOCK_META_METRICS_ID } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { withTransactionEnvelopeTypeFixtures } from './helpers';
@@ -132,7 +132,7 @@ describe('Confirmation Navigation', function (this: Suite) {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectDialogsButton',
-          { port: 8081 },
+          { url: DAPP_ONE_URL },
         );
         await testSnaps.scrollAndClickButton('confirmationButton');
 

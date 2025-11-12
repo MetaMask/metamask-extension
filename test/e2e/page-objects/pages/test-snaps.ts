@@ -163,14 +163,14 @@ export class TestSnaps {
 
   private readonly installedSnapsHeader = '[data-testid="InstalledSnaps"]';
 
+  private readonly networkUrlInput = '#fetchUrl';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async openPage(port?: number) {
-    const targetUrl =
-      typeof port === 'number' ? `http://127.0.0.1:${port}/` : DAPP_URL;
-    await this.driver.openNewPage(targetUrl);
+  async openPage(url?: string) {
+    await this.driver.openNewPage(url ?? DAPP_URL);
     await this.driver.waitForSelector(this.installedSnapsHeader);
   }
 
@@ -352,6 +352,11 @@ export class TestSnaps {
       );
     }
     console.log('Preferences result span JSON is valid');
+  }
+
+  async fillNetworkInput(name: string) {
+    console.log(`Filling network input with ${name}`);
+    await this.driver.fill(this.networkUrlInput, name);
   }
 
   /**

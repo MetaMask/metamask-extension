@@ -9,6 +9,8 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { DAPP_PATH, MOCK_META_METRICS_ID } from '../../constants';
+import { mockTestSnapsSite } from '../../mock-response-data/snaps/snap-local-sites/test-snaps-site-mocks';
+import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
 
 async function mockSentryTestError(mockServer: Mockttp) {
   return await mockServer
@@ -56,6 +58,7 @@ describe('Preinstalled example Snap', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockTestSnapsSite,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -76,8 +79,9 @@ describe('Preinstalled example Snap', function () {
         // Navigate to `test-snaps` page, we don't need to connect because the Snap uses
         // initialConnections to pre-approve the dapp.
         const testSnaps = new TestSnaps(driver);
-        await testSnaps.openPage();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+        // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
+        // So instead, we go to the real URL and we use a proxy it so the responses come from the localhost test-snap server.
+        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await testSnaps.clickButton('getSettingsStateButton');
         const jsonTextValidation = JSON.stringify(
           { setting1: true, setting2: 'option2', setting3: 'option2' },
@@ -99,13 +103,16 @@ describe('Preinstalled example Snap', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockTestSnapsSite,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
-        await testSnaps.openPage();
+        // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
+        // So instead, we go to the real URL and we use a proxy it so the responses come from the localhost test-snap server.
+        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
 
         // This test clicks this button without connecting and functions as E2E
         // for the initialConnections functionality.
@@ -133,7 +140,10 @@ describe('Preinstalled example Snap', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSentryTestError,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockTestSnapsSite(mockServer);
+          return await mockSentryTestError(mockServer);
+        },
         manifestFlags: {
           sentry: { forceEnable: false },
         },
@@ -142,7 +152,9 @@ describe('Preinstalled example Snap', function () {
         await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
-        await testSnaps.openPage();
+        // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
+        // So instead, we go to the real URL and we use a proxy it so the responses come from the localhost test-snap server.
+        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
 
         // Click the button to track an error.
         await testSnaps.scrollAndClickButton('trackErrorButton');
@@ -179,13 +191,18 @@ describe('Preinstalled example Snap', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockTestSnapsSite(mockServer);
+          return await mockSegment(mockServer);
+        },
       },
       async ({ driver, mockedEndpoint }) => {
         await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
-        await testSnaps.openPage();
+        // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
+        // So instead, we go to the real URL and we use a proxy it so the responses come from the localhost test-snap server.
+        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
 
         // Click the button to track an event.
         await testSnaps.scrollAndClickButton('trackEventButton');
@@ -221,7 +238,10 @@ describe('Preinstalled example Snap', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSentryTrace,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockTestSnapsSite(mockServer);
+          return await mockSentryTrace(mockServer);
+        },
         manifestFlags: {
           sentry: { forceEnable: false },
         },
@@ -230,7 +250,9 @@ describe('Preinstalled example Snap', function () {
         await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
-        await testSnaps.openPage();
+        // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
+        // So instead, we go to the real URL and we use a proxy it so the responses come from the localhost test-snap server.
+        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
 
         // Click the button to start and end a trace.
         await testSnaps.scrollAndClickButton('startTraceButton');

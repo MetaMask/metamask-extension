@@ -16,7 +16,7 @@ import { TestSuiteArguments } from '../tests/confirmations/transactions/shared';
 import TransactionConfirmation from '../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import SnapTxInsights from '../page-objects/pages/dialog/snap-txinsight';
 import { mockInsightsSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import { DAPP_PATH } from '../constants';
+import { DAPP_ONE_URL, DAPP_PATH } from '../constants';
 
 describe('Test Snap TxInsights', function () {
   it('shows insight for ERC20 transactions', async function () {
@@ -43,7 +43,7 @@ describe('Test Snap TxInsights', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectTransactionInsightButton',
-          { port: 8081 },
+          { url: DAPP_ONE_URL },
         );
 
         // open the test-dapp page
@@ -87,7 +87,7 @@ describe('Test Snap TxInsights', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectTransactionInsightButton',
-          { port: 8081 },
+          { url: DAPP_ONE_URL },
         );
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
@@ -138,7 +138,7 @@ describe('Test Snap TxInsights', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectTransactionInsightButton',
-          { port: 8081 },
+          { url: DAPP_ONE_URL },
         );
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
