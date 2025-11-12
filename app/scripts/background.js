@@ -1576,11 +1576,6 @@ export function setupController(
     controller.rejectAllPendingApprovals();
   }
 
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.DECRYPT_MESSAGE_MANAGER_UPDATE_BADGE,
-    () => updateRemoteFeatureFlags(controller),
-  );
-
   updateNetworkControllerRpcFailoverFromRemoteFeatureFlagController(
     controller.networkController,
     controller.remoteFeatureFlagController,
