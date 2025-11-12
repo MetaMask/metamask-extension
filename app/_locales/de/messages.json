@@ -2330,9 +2330,6 @@
   "existingChainId": {
     "message": "Die von Ihnen eingegebenen Informationen sind mit einer bestehenden Chain-ID verknüpft."
   },
-  "expandView": {
-    "message": "Ansicht erweitern"
-  },
   "experimental": {
     "message": "Experimentell"
   },
