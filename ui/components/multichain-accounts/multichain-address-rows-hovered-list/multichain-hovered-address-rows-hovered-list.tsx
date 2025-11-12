@@ -33,9 +33,9 @@ import {
   getInternalAccountListSpreadByScopesByGroupId,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
-import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
 
 // Priority networks that should appear first (using CAIP chain IDs)
 const PRIORITY_CHAIN_IDS = new Map<CaipChainId, number>([
@@ -57,21 +57,9 @@ export type MultichainAddressRowsListProps = {
    */
   children: React.ReactNode;
   /**
-   * The position of the popover when the user hovers over the child element.
+   * Whether to show the account header and balance.
    */
-  hoverPosition?: PopoverPosition;
-  /**
-   * Whether to show the account name.
-   */
-  showAccountName?: boolean;
-  /**
-   * Whether to show the account balance.
-   */
-  showAccountBalance?: boolean;
-  /**
-   * The style of the popover.
-   */
-  style?: React.CSSProperties;
+  showAccountHeaderAndBalance?: boolean;
   /**
    * The delay of the hover.
    */
@@ -81,11 +69,8 @@ export type MultichainAddressRowsListProps = {
 export const MultichainHoveredAddressRowsList = ({
   groupId,
   children,
-  hoverPosition = PopoverPosition.Auto,
-  style,
-  showAccountName,
-  showAccountBalance,
-  hoverCloseDelay = 150,
+  showAccountHeaderAndBalance = true,
+  hoverCloseDelay = 100,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
@@ -94,17 +79,19 @@ export const MultichainHoveredAddressRowsList = ({
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
     null,
   );
+  const [dynamicPosition, setDynamicPosition] = useState<PopoverPosition>(
+    PopoverPosition.BottomStart,
+  );
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const allAccountGroups = useSelector(getAllAccountGroups);
 
   const allBalances = useSelector(selectBalanceForAllWallets);
   const { balance, currency, accountGroup } = useMemo(() => {
-    const accountGroup = allAccountGroups.find((group) => group.id === groupId);
-    const account =
-      allBalances?.wallets?.[accountGroup?.walletId]?.groups?.[groupId];
-    const balance = account?.totalBalanceInUserCurrency ?? 0;
-    const currency = account?.userCurrency ?? '';
-    return { balance, currency, accountGroup };
+    const group = allAccountGroups.find((g) => g.id === groupId);
+    const account = allBalances?.wallets?.[group?.walletId]?.groups?.[groupId];
+    const bal = account?.totalBalanceInUserCurrency ?? 0;
+    const curr = account?.userCurrency ?? '';
+    return { balance: bal, currency: curr, accountGroup: group };
   }, [allBalances, groupId, allAccountGroups]);
 
   const { formatCurrencyWithMinThreshold } = useFormatters();
@@ -113,19 +100,40 @@ export const MultichainHoveredAddressRowsList = ({
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
   );
 
+  // Calculate whether popover should show above or below
+  const calculatePopoverPosition = useCallback(() => {
+    if (!referenceElement) {
+      return PopoverPosition.BottomStart;
+    }
+
+    const rect = referenceElement.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const popoverEstimatedHeight = 400; // Based on the maxHeight set on the popover
+    const spaceBelow = viewportHeight - rect.bottom;
+
+    // If there's not enough space below, use TopStart
+    if (spaceBelow < popoverEstimatedHeight) {
+      return PopoverPosition.TopStart;
+    }
+
+    // Default to BottomStart
+    return PopoverPosition.BottomStart;
+  }, [referenceElement]);
+
   const handleMouseEnter = useCallback(() => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
       hoverTimeoutRef.current = null;
     }
+    setDynamicPosition(calculatePopoverPosition());
     setIsHoverOpen(true);
-  }, []);
+  }, [calculatePopoverPosition]);
 
   const handleMouseLeave = useCallback(() => {
     hoverTimeoutRef.current = setTimeout(() => {
       setIsHoverOpen(false);
     }, hoverCloseDelay);
-  }, []);
+  }, [hoverCloseDelay]);
 
   useEffect(() => {
     return () => {
@@ -277,15 +285,16 @@ export const MultichainHoveredAddressRowsList = ({
       <Popover
         referenceElement={referenceElement}
         isOpen={isHoverOpen}
-        position={hoverPosition}
+        position={dynamicPosition}
         hasArrow={true}
         backgroundColor={BackgroundColor.backgroundDefault}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        preventOverflow
+        isPortal={true}
         style={{
-          zIndex: 1000,
+          zIndex: 99999,
           maxHeight: '400px',
-          overflowY: 'auto',
           minWidth: '320px',
         }}
       >
@@ -293,22 +302,20 @@ export const MultichainHoveredAddressRowsList = ({
           flexDirection={BoxFlexDirection.Column}
           data-testid="multichain-address-rows-list"
         >
-          <Box
-            marginBottom={2}
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-          >
-            {showAccountName && (
+          {showAccountHeaderAndBalance && (
+            <Box
+              marginBottom={2}
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+            >
               <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
                 {accountGroup?.metadata.name}
               </Text>
-            )}
-            {showAccountBalance && (
               <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
                 {formatCurrencyWithMinThreshold(balance, currency)}
               </Text>
-            )}
-          </Box>
+            </Box>
+          )}
           <Box marginBottom={2}>{renderedRows}</Box>
           <Button
             variant={ButtonVariant.Secondary}

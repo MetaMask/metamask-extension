@@ -251,6 +251,7 @@ export const AppHeaderUnlockedContent = ({
           <Box paddingLeft={2}>
             <MultichainHoveredAddressRowsList
               groupId={selectedMultichainAccountId}
+              showAccountHeaderAndBalance={false}
             >
               <Box
                 display={Display.Flex}
