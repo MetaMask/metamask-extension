@@ -9,11 +9,20 @@ import {
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { AccountGroupId } from '@metamask/account-api';
+import {
+  AccountGroupId,
+  AccountGroupType,
+  AccountWalletType,
+  toAccountWalletId,
+} from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
-import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  getInternalAccountListSpreadByScopesByGroupId,
+  getAllAccountGroups,
+} from '../../../selectors/multichain-accounts/account-tree';
 import { getNetworksByScopes } from '../../../../shared/modules/selectors/networks';
+import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-rows-hovered-list';
 
 const mockStore = configureStore([]);
@@ -29,11 +38,33 @@ jest.mock('react-router-dom', () => ({
 jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
   ...jest.requireActual('../../../selectors/multichain-accounts/account-tree'),
   getInternalAccountListSpreadByScopesByGroupId: jest.fn(),
+  getAllAccountGroups: jest.fn(),
 }));
 
 jest.mock('../../../../shared/modules/selectors/networks', () => ({
   ...jest.requireActual('../../../../shared/modules/selectors/networks'),
   getNetworksByScopes: jest.fn(),
+}));
+
+jest.mock('../../../selectors/assets', () => ({
+  ...jest.requireActual('../../../selectors/assets'),
+  selectBalanceForAllWallets: jest.fn(),
+}));
+
+jest.mock('../../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: jest.fn(
+      (value, currency) => `${currency}${value}`,
+    ),
+  }),
+}));
+
+jest.mock('../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => key,
+}));
+
+jest.mock('../../../../app/scripts/lib/multichain/address', () => ({
+  normalizeSafeAddress: jest.fn((address: string) => address),
 }));
 
 const mockHandleCopy = jest.fn();
@@ -44,8 +75,8 @@ jest.mock('../../../hooks/useCopyToClipboard', () => ({
 // Test constants
 const TEST_STRINGS = {
   VIEW_ALL_TEXT: 'multichainAddressViewAll',
-  EVM_NETWORKS: '[networkNameEthereum]', // Translation key shown for EVM networks
-  BITCOIN_NETWORK: 'Bitcoin',
+  EVM_NETWORKS: 'networkNameEthereum',
+  BITCOIN_NETWORK: 'networkNameBitcoinSegwit',
   SOLANA_NETWORK: 'Solana',
   TRON_NETWORK: 'Tron',
 } as const;
@@ -62,11 +93,13 @@ const CSS_CLASSES = {
   AVATAR_NETWORK: 'avatar-network',
 } as const;
 
-const WALLET_ID_MOCK = 'entropy:01K437Z7EJ0VCMFDE9TQKRV60A';
-const GROUP_ID_MOCK =
-  'entropy:01K437Z7EJ0VCMFDE9TQKRV60A:multichain-account:01K437Z7EJ0VCMFDE9TQKRV60A' as AccountGroupId;
-const SPECIAL_GROUP_ID =
-  'group:with/special?chars&symbols=test' as AccountGroupId;
+const mockWalletEntropySource = '01K437Z7EJ0VCMFDE9TQKRV60A';
+const WALLET_ID_MOCK = toAccountWalletId(
+  AccountWalletType.Entropy,
+  mockWalletEntropySource,
+);
+const GROUP_ID_MOCK = `${WALLET_ID_MOCK}/0` as AccountGroupId;
+const SPECIAL_GROUP_ID = `${WALLET_ID_MOCK}/special-0` as AccountGroupId;
 const ACCOUNT_EVM_ID_MOCK =
   'entropy:01K437Z7EJ0VCMFDE9TQKRV60A:multichain-account:01K437Z7EJ0VCMFDE9TQKRV60A:eoa:0x1234567890123456789012345678901234567890';
 const ACCOUNT_BITCOIN_ID_MOCK =
@@ -247,6 +280,52 @@ const createMockState = () => ({
   },
 });
 
+const createMockAccountGroup = (
+  groupId: AccountGroupId,
+  walletId: string,
+  name: string,
+  groupIndex: number,
+  accounts: string[],
+) => ({
+  id: groupId,
+  walletId,
+  type: AccountGroupType.MultichainAccount,
+  metadata: {
+    name,
+    entropy: {
+      groupIndex,
+    },
+    pinned: false,
+    hidden: false,
+  },
+  accounts,
+});
+
+const createMockBalance = (
+  walletId: string,
+  groupId: AccountGroupId,
+  totalBalance: number,
+  currency: string,
+) => ({
+  totalBalanceInUserCurrency: totalBalance,
+  userCurrency: currency,
+  wallets: {
+    [walletId]: {
+      walletId,
+      totalBalanceInUserCurrency: totalBalance,
+      userCurrency: currency,
+      groups: {
+        [groupId]: {
+          totalBalanceInUserCurrency: totalBalance,
+          userCurrency: currency,
+          walletId,
+          groupId,
+        },
+      },
+    },
+  },
+});
+
 const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
   const store = mockStore(createMockState());
   return render(
@@ -265,10 +344,31 @@ const mockedGetInternalAccountListSpreadByScopesByGroupId =
 const mockedGetNetworksByScopes = getNetworksByScopes as jest.MockedFunction<
   typeof getNetworksByScopes
 >;
+const mockedGetAllAccountGroups = getAllAccountGroups as jest.MockedFunction<
+  typeof getAllAccountGroups
+>;
+const mockedSelectBalanceForAllWallets =
+  selectBalanceForAllWallets as jest.MockedFunction<
+    typeof selectBalanceForAllWallets
+  >;
 
 describe('MultichainHoveredAddressRowsList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockedGetAllAccountGroups.mockReturnValue([
+      createMockAccountGroup(
+        GROUP_ID_MOCK,
+        WALLET_ID_MOCK,
+        'Test Account Group',
+        0,
+        [ACCOUNT_EVM_ID_MOCK],
+      ),
+    ] as never);
+
+    mockedSelectBalanceForAllWallets.mockReturnValue(
+      createMockBalance(WALLET_ID_MOCK, GROUP_ID_MOCK, 100.5, 'USD') as never,
+    );
 
     mockedGetNetworksByScopes.mockImplementation((_, scopes) => {
       const networkMap: Record<string, { name: string; chainId: string }> = {
@@ -616,6 +716,25 @@ describe('MultichainHoveredAddressRowsList', () => {
     });
 
     it('navigates with properly encoded group ID', async () => {
+      mockedGetAllAccountGroups.mockReturnValue([
+        createMockAccountGroup(
+          SPECIAL_GROUP_ID,
+          WALLET_ID_MOCK,
+          'Special Group',
+          1,
+          [ACCOUNT_EVM_ID_MOCK],
+        ),
+      ] as never);
+
+      mockedSelectBalanceForAllWallets.mockReturnValue(
+        createMockBalance(
+          WALLET_ID_MOCK,
+          SPECIAL_GROUP_ID,
+          200,
+          'USD',
+        ) as never,
+      );
+
       renderComponent(SPECIAL_GROUP_ID);
 
       const triggerElement = screen.getByTestId('hover-trigger');

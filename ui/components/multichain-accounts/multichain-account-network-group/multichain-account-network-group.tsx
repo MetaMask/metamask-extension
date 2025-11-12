@@ -143,7 +143,7 @@ export const MultichainAccountNetworkGroup: React.FC<
         };
       })
       .filter((network) => network.avatarValue); // Only include networks with valid avatar images
-  }, [chainIds, excludeTestNetworks]);
+  }, [filteredChainIds, excludeTestNetworks]);
 
   return (
     <Box
