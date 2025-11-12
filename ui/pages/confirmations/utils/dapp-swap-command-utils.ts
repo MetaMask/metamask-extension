@@ -433,7 +433,7 @@ function getGenericValues(
     throw new Error(`Found swap commands ${swapCommands.length} instead of 1`);
   }
 
-  let amountMin;
+  let amountMin = '0x0';
   let quotesInput = {
     srcChainId: chainId,
     destChainId: chainId,
@@ -451,7 +451,7 @@ function getGenericValues(
         );
       const result = commandParser?.handler(data, quotesInput, chainId);
       if (result) {
-        if (result.amountMin !== undefined) {
+        if (result.amountMin) {
           amountMin = result.amountMin;
         }
         if (result.quotesInput) {
