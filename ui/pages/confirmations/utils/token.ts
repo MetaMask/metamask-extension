@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js';
 import { memoize } from 'lodash';
 import { Hex } from '@metamask/utils';
 import { AssetsContractController } from '@metamask/assets-controllers';
@@ -135,4 +136,14 @@ export const fetchAllTokenDetails = async (
   return Object.fromEntries(
     tokenDetails.map((tokenDetail, i) => [uniqueAddresses[i], tokenDetail]),
   );
+};
+
+export const calculateTokenAmount = (
+  value: string,
+  decimals: number,
+  base: number = 10,
+  conversionRate: number = 1,
+) => {
+  const divisor = new BigNumber(10).pow(decimals ?? 0);
+  return new BigNumber(String(value), base).div(divisor).times(conversionRate);
 };
