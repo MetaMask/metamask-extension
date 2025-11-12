@@ -119,6 +119,7 @@ export type ConnectPageProps = {
     origin: string;
     subjectType: string;
   };
+  isSubmitting?: boolean;
 };
 
 export const ConnectPage: React.FC<ConnectPageProps> = ({
@@ -127,6 +128,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   rejectPermissionsRequest,
   approveConnection,
   targetSubjectMetadata,
+  isSubmitting = false,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -428,6 +430,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   }, [permissionsRequestId, rejectPermissionsRequest]);
 
   const onConfirm = useCallback(() => {
+    // Prevent double submission (guard is also in parent, but keep for safety)
+    if (isSubmitting) {
+      return;
+    }
+
     const _request = {
       ...request,
       permissions: {
@@ -446,6 +453,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     selectedCaipAccountAddresses,
     selectedChainIds,
     approveConnection,
+    isSubmitting,
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
@@ -693,6 +701,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               size={ButtonSize.Lg}
               onClick={onConfirm}
               disabled={
+                isSubmitting ||
                 selectedCaipAccountAddresses.length === 0 ||
                 selectedChainIds.length === 0
               }

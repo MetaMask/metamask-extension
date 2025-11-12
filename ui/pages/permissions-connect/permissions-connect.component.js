@@ -157,6 +157,7 @@ export default class PermissionConnect extends Component {
     origin: this.props.origin,
     targetSubjectMetadata: this.props.targetSubjectMetadata || {},
     snapsInstallPrivacyWarningShown: this.props.snapsInstallPrivacyWarningShown,
+    isSubmitting: false,
   };
 
   componentDidMount() {
@@ -393,6 +394,7 @@ export default class PermissionConnect extends Component {
       permissionsRequestId: this.props.permissionsRequestId,
       approveConnection: this.approveConnection,
       targetSubjectMetadata: this.props.targetSubjectMetadata,
+      isSubmitting: this.state.isSubmitting,
     };
 
     return <ConnectPage {...connectPageProps} />;
@@ -407,6 +409,7 @@ export default class PermissionConnect extends Component {
       permissionsRequestId: this.props.permissionsRequestId,
       approveConnection: this.approveConnection,
       targetSubjectMetadata: this.props.targetSubjectMetadata,
+      isSubmitting: this.state.isSubmitting,
     };
 
     return <MultichainAccountsConnectPage {...connectPageProps} />;
@@ -437,6 +440,13 @@ export default class PermissionConnect extends Component {
   }
 
   approveConnection = (...args) => {
+    // Prevent double submission
+    if (this.state.isSubmitting) {
+      return;
+    }
+
+    this.setState({ isSubmitting: true });
+
     const { approvePermissionsRequest } = this.props;
     approvePermissionsRequest(...args);
     this.redirect(true);
@@ -505,6 +515,12 @@ export default class PermissionConnect extends Component {
                 <PermissionPageContainer
                   request={permissionsRequest || {}}
                   approvePermissionsRequest={(...args) => {
+                    // Prevent double submission
+                    if (this.state.isSubmitting) {
+                      return;
+                    }
+
+                    this.setState({ isSubmitting: true });
                     approvePermissionsRequest(...args);
                     this.redirect(true);
                   }}
@@ -526,6 +542,7 @@ export default class PermissionConnect extends Component {
                   setSnapsInstallPrivacyWarningShownStatus={
                     setSnapsInstallPrivacyWarningShownStatus
                   }
+                  isSubmitting={this.state.isSubmitting}
                 />
               }
             />
