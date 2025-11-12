@@ -942,6 +942,7 @@ export default function Routes() {
             layout={LegacyLayout}
           />
           <RouteWithLayout
+            authenticated
             path={ACCOUNT_LIST_PAGE_ROUTE}
             component={AccountList}
             exact
