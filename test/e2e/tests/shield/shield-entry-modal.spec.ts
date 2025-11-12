@@ -65,14 +65,14 @@ async function mockSubscriptionApiCalls(
           product: 'shield',
           cohorts: [
             {
-              cohort: 'post_tx',
-              eligible: true,
-              eligibilityRate: 0.8,
-            },
-            {
               cohort: 'wallet_home',
               eligible: true,
-              eligibilityRate: 0.2,
+              eligibilityRate: 1.0,
+            },
+            {
+              cohort: 'post_tx',
+              eligible: true,
+              eligibilityRate: 1.0,
             },
           ],
           assignedCohort: null,
