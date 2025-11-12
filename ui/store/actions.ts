@@ -547,12 +547,14 @@ export async function getSubscriptionCryptoApprovalAmount(
  * @param params.products - The list of products.
  * @param params.isTrialRequested - Is trial requested.
  * @param params.recurringInterval - The recurring interval.
+ * @param params.useTestClock - Whether to use test clocks.
  * @returns The subscription response.
  */
 export function startSubscriptionWithCard(params: {
   products: ProductType[];
   isTrialRequested: boolean;
   recurringInterval: RecurringInterval;
+  useTestClock: boolean;
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -684,10 +686,14 @@ export function setShowShieldEntryModalOnceAction(payload: {
 
 export function setPendingShieldCohort(
   cohort: string | null,
+  txType?: string | null,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setPendingShieldCohort', [cohort]);
+      await submitRequestToBackground('setPendingShieldCohort', [
+        cohort,
+        txType,
+      ]);
     } catch (error) {
       log.error('[setPendingShieldCohort] error', error);
       dispatch(displayWarning(error));

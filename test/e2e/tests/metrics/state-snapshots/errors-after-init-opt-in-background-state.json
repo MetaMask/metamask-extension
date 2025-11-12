@@ -51,6 +51,7 @@
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
     "pendingShieldCohort": null,
+    "pendingShieldCohortTxType": null,
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,

@@ -308,6 +308,7 @@ export const useSubscriptionEligibility = (product: ProductType) => {
  * @param options.selectedPlan - The plan selected by the user.
  * @param options.defaultOptions - The default options for the subscription request.
  * @param options.isTrialed - Whether the user is trialing the subscription.
+ * @param options.useTestClock - Whether to use a test clock for the subscription.
  * @returns An object with the handleSubscription function and the subscription result.
  */
 export const useHandleSubscription = ({
@@ -316,6 +317,7 @@ export const useHandleSubscription = ({
   selectedPlan,
   defaultOptions,
   isTrialed,
+  useTestClock = false,
 }: {
   defaultOptions: DefaultSubscriptionPaymentOptions;
   subscriptionState?: SubscriptionStatus;
@@ -323,6 +325,7 @@ export const useHandleSubscription = ({
   selectedPlan: RecurringInterval;
   isTrialed: boolean;
   selectedToken?: TokenWithApprovalAmount;
+  useTestClock?: boolean;
 }) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
@@ -376,6 +379,7 @@ export const useHandleSubscription = ({
               products: [PRODUCT_TYPES.SHIELD],
               isTrialRequested: !isTrialed,
               recurringInterval: selectedPlan,
+              useTestClock,
             }),
           );
           // capture the event when the Shield subscription request is completed

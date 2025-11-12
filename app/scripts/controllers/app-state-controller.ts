@@ -125,6 +125,7 @@ export type AppStateControllerState = {
   hasShownMultichainAccountsIntroModal: boolean;
   showShieldEntryModalOnce: boolean | null;
   pendingShieldCohort: string | null;
+  pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
 
   /**
@@ -279,6 +280,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   hasShownMultichainAccountsIntroModal: false,
   showShieldEntryModalOnce: null,
   pendingShieldCohort: null,
+  pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
 
   ...getInitialStateOverrides(),
@@ -621,6 +623,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   pendingShieldCohort: {
     includeInStateLogs: true,
     persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  pendingShieldCohortTxType: {
+    includeInStateLogs: true,
+    persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
@@ -1544,9 +1552,12 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setPendingShieldCohort(cohort: string | null): void {
+  setPendingShieldCohort(cohort: string | null, txType?: string | null): void {
     this.update((state) => {
       state.pendingShieldCohort = cohort;
+      if (txType !== undefined) {
+        state.pendingShieldCohortTxType = txType;
+      }
     });
   }
 
