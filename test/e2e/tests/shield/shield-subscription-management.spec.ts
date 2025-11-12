@@ -196,6 +196,11 @@ describe('Shield Plan Stripe Integration', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer: Mockttp) =>
           mockStripeSubscriptionFlow(mockServer, testData),
+        ignoredConsoleErrors: [
+          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+          'Could not load Rive WASM file',
+          'XMLHttpRequest is not a constructor',
+        ],
       },
       async ({ driver }) => {
         // Login and validate balance
@@ -263,6 +268,11 @@ describe('Shield Plan Stripe Integration', function () {
         fixtures: createShieldFixture().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockStripeSubscriptionFlow,
+        ignoredConsoleErrors: [
+          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+          'Could not load Rive WASM file',
+          'XMLHttpRequest is not a constructor',
+        ],
       },
       async ({ driver }) => {
         // Login and validate balance
