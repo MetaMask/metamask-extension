@@ -39,8 +39,16 @@ export const handleSidepanelPostOnboarding = async (
     // With sidepanel enabled, this ensures we load home page in the test window
     await driver.driver.get(`${driver.extensionUrl}/home.html`);
 
-    // Wait for the home page to initialize after navigation
+    // Wait for the home page to fully load
     await driver.waitForSelector('[data-testid="account-menu-icon"]');
+
+    // Wait for balances to load - check that any loading overlay is gone
+    await driver.assertElementNotPresent('.loading-overlay', {
+      timeout: 10000,
+    });
+
+    // Additional small delay to ensure all async operations complete
+    await driver.delay(500);
   }
 };
 
