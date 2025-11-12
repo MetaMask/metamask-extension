@@ -90,6 +90,7 @@ export function getNetworkControllerInitMessenger(
     actions: [
       'MetaMetricsController:getMetaMetricsId',
       'MetaMetricsController:trackEvent',
+      'RemoteFeatureFlagController:getState',
     ],
     events: [
       'NetworkController:rpcEndpointUnavailable',
