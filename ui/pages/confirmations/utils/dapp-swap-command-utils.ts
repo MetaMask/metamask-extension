@@ -3,9 +3,7 @@ import { GenericQuoteRequest } from '@metamask/bridge-controller';
 import { Hex } from '@metamask/utils';
 import { Interface, Result } from '@ethersproject/abi';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-
-// eslint-disable-next-line import/no-restricted-paths
-import { decodeUniswapPath } from '../../../../app/scripts/lib/transaction/decode/uniswap';
+import { decodeCommandV3Path } from '../../../../shared/modules/uniswap';
 
 enum Commands {
   V3_SWAP_EXACT_IN = '00',
@@ -21,7 +19,6 @@ enum Commands {
 const BASE_COMMANDS_ABI_DEFINITION: Partial<
   Record<Commands, { name: string; type: string }[]>
 > = {
-  // Swapping commands
   [Commands.V3_SWAP_EXACT_IN]: [
     {
       type: 'address',
@@ -80,7 +77,7 @@ const BASE_COMMANDS_ABI_DEFINITION: Partial<
   ],
 };
 
-export enum V4Actions {
+enum V4Actions {
   // swapping
   SWAP_EXACT_IN_SINGLE = '06',
   SWAP_EXACT_IN = '07',
@@ -138,7 +135,7 @@ type DAPP_SWAP_COMMANDS_PARSER_TYPE = {
   value: string;
   handler: (
     data: string,
-    quotesInput: GenericQuoteRequest,
+    decodedResult: COMMAND_VALUES_RESULT,
     _chainId: Hex,
   ) => {
     amountMin: string | undefined;
@@ -159,11 +156,15 @@ const V4_SWAP_ACTIONS_PARSER: DAPP_SWAP_COMMANDS_PARSER_TYPE[] = [
   { value: '07', handler: handleV4CommandSwapExactIn },
 ];
 
+const SUPPORTED_DAPP_SWAP_COMMANDS = ['00', '10'];
+const SUPPORTED_V4_SWAP_ACTIONS = ['06', '07'];
+
 function handleCommandSweep(
   data: string,
-  quotesInput: GenericQuoteRequest,
+  decodedResult: COMMAND_VALUES_RESULT,
   _chainId: Hex,
 ) {
+  const { quotesInput } = decodedResult;
   const result = decodeCommandData(
     Commands.SWEEP,
     data,
@@ -172,35 +173,31 @@ function handleCommandSweep(
 
   return {
     amountMin: result[2].toHexString(),
-    quotesInput,
+    quotesInput: quotesInput as GenericQuoteRequest,
   };
 }
 
 function handleCommandWrapETH(
-  data: string,
-  quotesInput: GenericQuoteRequest,
+  _data: string,
+  decodedResult: COMMAND_VALUES_RESULT,
   chainId: Hex,
 ) {
-  const result = decodeCommandData(
-    Commands.WRAP_ETH,
-    data,
-    BASE_COMMANDS_ABI_DEFINITION,
-  );
-
+  const { amountMin, quotesInput } = decodedResult;
   return {
-    amountMin: undefined,
+    amountMin,
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAddress: getNativeTokenAddress(chainId),
-    },
+    } as GenericQuoteRequest,
   };
 }
 
 function handleCommandUnwrapETH(
   data: string,
-  quotesInput: GenericQuoteRequest,
+  decodedResult: COMMAND_VALUES_RESULT,
   chainId: Hex,
 ) {
+  const { quotesInput } = decodedResult;
   const result = decodeCommandData(
     Commands.UNWRAP_WETH,
     data,
@@ -212,7 +209,7 @@ function handleCommandUnwrapETH(
     quotesInput: {
       ...(quotesInput ?? {}),
       destTokenAddress: getNativeTokenAddress(chainId),
-    },
+    } as GenericQuoteRequest,
   };
 }
 
@@ -256,16 +253,17 @@ function getCommandData(
 
 function handleV4SwapCommand(
   data: string,
-  quotesInput: GenericQuoteRequest,
+  decodedResult: COMMAND_VALUES_RESULT,
   chainId: Hex,
 ) {
+  const { amountMin, quotesInput } = decodedResult;
   const decoded = decodeV4SwapCommandData(data);
   const actionBytes = decoded[0].slice(2).match(/.{1,2}/gu) ?? [];
   const actionParameters = decoded[1];
   const result = getV4SwapActionValues(actionBytes, actionParameters, chainId);
 
   return {
-    amountMin: result.amountMin,
+    amountMin: amountMin || result.amountMin,
     quotesInput: {
       ...(quotesInput ?? {}),
       ...result.quotesInput,
@@ -321,9 +319,10 @@ function parseV4ExactIn(data: Result) {
 
 function handleV4CommandSwapExactIn(
   data: string,
-  quotesInput: GenericQuoteRequest,
+  decodedResult: COMMAND_VALUES_RESULT,
   _chainId: Hex,
 ) {
+  const { amountMin, quotesInput } = decodedResult;
   const result = decodeCommandData(
     V4Actions.SWAP_EXACT_IN,
     data,
@@ -331,14 +330,14 @@ function handleV4CommandSwapExactIn(
   );
   const parsedResult = parseV4ExactIn(result[0]);
   return {
-    amountMin: parsedResult.amountOutMinimum.toHexString(),
+    amountMin: amountMin || parsedResult.amountOutMinimum.toHexString(),
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount: parsedResult.amountIn.toHexString(),
       srcTokenAddress:
-        quotesInput.srcTokenAddress ?? parsedResult.currencyIn.toLowerCase(),
+        quotesInput?.srcTokenAddress ?? parsedResult.currencyIn.toLowerCase(),
       destTokenAddress:
-        quotesInput.destTokenAddress ??
+        quotesInput?.destTokenAddress ??
         parsedResult.path[
           parsedResult.path.length - 1
         ].intermediateCurrency.toLowerCase(),
@@ -348,9 +347,10 @@ function handleV4CommandSwapExactIn(
 
 function handleV4CommandSwapExactInSingle(
   data: string,
-  quotesInput: GenericQuoteRequest,
+  decodedResult: COMMAND_VALUES_RESULT,
   _chainId: Hex,
 ) {
+  const { amountMin, quotesInput } = decodedResult;
   const result = decodeCommandData(
     V4Actions.SWAP_EXACT_IN_SINGLE,
     data,
@@ -359,17 +359,17 @@ function handleV4CommandSwapExactInSingle(
   const parsedResult = parseV4ExactInSingle(result[0]);
 
   return {
-    amountMin: parsedResult.amountOutMinimum.toHexString(),
+    amountMin: amountMin || parsedResult.amountOutMinimum.toHexString(),
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount: parsedResult.amountIn.toHexString(),
       srcTokenAddress:
-        quotesInput.srcTokenAddress ??
+        quotesInput?.srcTokenAddress ??
         (parsedResult.zeroForOne
           ? parsedResult.poolKey.currency0.toLowerCase()
           : parsedResult.poolKey.currency1.toLowerCase()),
       destTokenAddress:
-        quotesInput.destTokenAddress ??
+        quotesInput?.destTokenAddress ??
         (parsedResult.zeroForOne
           ? parsedResult.poolKey.currency1.toLowerCase()
           : parsedResult.poolKey.currency0.toLowerCase()),
@@ -379,24 +379,25 @@ function handleV4CommandSwapExactInSingle(
 
 function handleV3SwapExactInCommand(
   data: string,
-  quotesInput: GenericQuoteRequest,
+  decodedResult: COMMAND_VALUES_RESULT,
   _chainId: Hex,
 ) {
+  const { amountMin, quotesInput } = decodedResult;
   const result = decodeCommandData(
     Commands.V3_SWAP_EXACT_IN,
     data,
     BASE_COMMANDS_ABI_DEFINITION,
   );
 
-  const decodedPath = decodeUniswapPath(result[3]);
+  const decodedPath = decodeCommandV3Path(result[3]);
   const srcTokenAddress =
-    quotesInput.srcTokenAddress ?? decodedPath[0].firstAddress.toLowerCase();
+    quotesInput?.srcTokenAddress ?? decodedPath[0].firstAddress.toLowerCase();
   const destTokenAddress =
-    quotesInput.destTokenAddress ??
+    quotesInput?.destTokenAddress ??
     decodedPath[decodedPath.length - 1].secondAddress.toLowerCase();
 
   return {
-    amountMin: result[2].toHexString(),
+    amountMin: amountMin || result[2].toHexString(),
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount: result[1].toHexString(),
@@ -425,21 +426,23 @@ function getGenericValues(
     Object.values(swapCommandsAllowed).includes(commandByte),
   );
 
-  const commands = commandBytes.filter((commandByte) =>
-    Object.values(CommandsDefinition).includes(commandByte),
-  );
-
   if (swapCommands.length !== 1) {
     throw new Error(`Found swap commands ${swapCommands.length} instead of 1`);
   }
 
-  let amountMin = '0x0';
-  let quotesInput = {
-    srcChainId: chainId,
-    destChainId: chainId,
-    gasIncluded: false,
-    gasIncluded7702: false,
-  } as GenericQuoteRequest;
+  const commands = commandBytes.filter((commandByte) =>
+    Object.values(CommandsDefinition).includes(commandByte),
+  );
+
+  let decodingResult: COMMAND_VALUES_RESULT = {
+    amountMin: undefined,
+    quotesInput: {
+      srcChainId: chainId,
+      destChainId: chainId,
+      gasIncluded: false,
+      gasIncluded7702: false,
+    } as GenericQuoteRequest,
+  };
 
   commands.forEach((command) => {
     const data = getCommandData(commandBytes, inputs, command);
@@ -449,22 +452,14 @@ function getGenericValues(
         parserDefinition.find(
           (parser: DAPP_SWAP_COMMANDS_PARSER_TYPE) => parser.value === command,
         );
-      const result = commandParser?.handler(data, quotesInput, chainId);
+      const result = commandParser?.handler(data, decodingResult, chainId);
       if (result) {
-        if (result.amountMin) {
-          amountMin = result.amountMin;
-        }
-        if (result.quotesInput) {
-          quotesInput = result.quotesInput;
-        }
+        decodingResult = result;
       }
     }
   });
 
-  return {
-    quotesInput,
-    amountMin,
-  };
+  return decodingResult;
 }
 
 function getV4SwapActionValues(
@@ -477,7 +472,7 @@ function getV4SwapActionValues(
     actionParameters,
     chainId,
     V4_SWAP_ACTIONS_PARSER,
-    ['06', '07'],
+    SUPPORTED_V4_SWAP_ACTIONS,
     V4Actions,
   );
 }
@@ -492,7 +487,7 @@ export function getCommandValues(
     inputs,
     chainId,
     DAPP_SWAP_COMMANDS_PARSER,
-    ['00', '10'],
+    SUPPORTED_DAPP_SWAP_COMMANDS,
     Commands,
   );
 }
