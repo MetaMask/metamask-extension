@@ -98,8 +98,10 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import Name from '../../../components/app/name';
+import ShieldIllustrationAnimation from '../../../components/app/shield-entry-modal/shield-illustration-animation';
 import CancelMembershipModal from './cancel-membership-modal';
-import { isCryptoPaymentMethod } from './types';
+import { isCryptoPaymentMethod, SHIELD_ICON_ARTBOARD_NAMES } from './types';
+import ShieldSubscriptionIconAnimation from './shield-subscription-icon-animation';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -299,12 +301,12 @@ const TransactionShield = () => {
 
   const shieldDetails = [
     {
-      icon: IconName.ShieldLock,
+      icon: SHIELD_ICON_ARTBOARD_NAMES.PROTECTION,
       title: t('shieldTxDetails1Title'),
       description: t('shieldTxDetails1Description'),
     },
     {
-      icon: IconName.Flash,
+      icon: SHIELD_ICON_ARTBOARD_NAMES.PRIORITY,
       title: t('shieldTxDetails2Title'),
       description: t('shieldTxDetails2Description'),
     },
@@ -688,6 +690,7 @@ const TransactionShield = () => {
           {...rowsStyleProps}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.spaceBetween}
+          paddingRight={2}
         >
           <Box
             width={BlockSize.Full}
@@ -753,10 +756,31 @@ const TransactionShield = () => {
               </Text>
             )}
           </Box>
+          {!showSkeletonLoader && !isMembershipInactive && (
+            <ShieldIllustrationAnimation
+              containerClassName="transaction-shield-page-shield-illustration__container"
+              canvasClassName="transaction-shield-page-shield-illustration__canvas"
+            />
+          )}
         </Box>
 
         <Box
-          className="transaction-shield-page__row"
+          data-theme={ThemeType.dark}
+          className={classnames(
+            'transaction-shield-page__row',
+            'transaction-shield-page__details',
+            {
+              'transaction-shield-page__details--loading': showSkeletonLoader,
+            },
+            {
+              'transaction-shield-page__details--inactive':
+                isMembershipInactive && !showSkeletonLoader,
+            },
+            {
+              'transaction-shield-page__details--active':
+                !isMembershipInactive && !showSkeletonLoader,
+            },
+          )}
           {...rowsStyleProps}
           flexDirection={FlexDirection.Column}
           paddingTop={2}
@@ -779,7 +803,11 @@ const TransactionShield = () => {
                   style={{ flexShrink: 0 }}
                 />
               ) : (
-                <Icon name={detail.icon} size={IconSize.Xl} />
+                <ShieldSubscriptionIconAnimation
+                  artboardName={detail.icon}
+                  containerClassName="transaction-shield-page-shield-icon__container"
+                  canvasClassName="transaction-shield-page-shield-icon__canvas"
+                />
               )}
               <Box
                 width={BlockSize.Full}
