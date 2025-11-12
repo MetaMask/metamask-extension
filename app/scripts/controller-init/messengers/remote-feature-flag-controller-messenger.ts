@@ -5,6 +5,7 @@ import {
   PreferencesControllerStateChangeEvent,
 } from '../../controllers/preferences-controller';
 import { RootMessenger } from '../../lib/messenger';
+import type { OnboardingControllerGetStateAction, OnboardingControllerStateChangeEvent } from '../../controllers/onboarding';
 
 export type RemoteFeatureFlagControllerMessenger = ReturnType<
   typeof getRemoteFeatureFlagControllerMessenger
@@ -33,9 +34,10 @@ export function getRemoteFeatureFlagControllerMessenger(
 
 type AllowedInitializationActions =
   | MetaMetricsControllerGetMetaMetricsIdAction
-  | PreferencesControllerGetStateAction;
+  | PreferencesControllerGetStateAction
+  | OnboardingControllerGetStateAction;
 
-type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
+type AllowedInitializationEvents = PreferencesControllerStateChangeEvent | OnboardingControllerStateChangeEvent;
 
 export type RemoteFeatureFlagControllerInitMessenger = ReturnType<
   typeof getRemoteFeatureFlagControllerInitMessenger
@@ -68,8 +70,12 @@ export function getRemoteFeatureFlagControllerInitMessenger(
     actions: [
       'MetaMetricsController:getMetaMetricsId',
       'PreferencesController:getState',
+      'OnboardingController:getState'
     ],
-    events: ['PreferencesController:stateChange'],
+    events: [
+      'PreferencesController:stateChange',
+      'OnboardingController:stateChange',
+    ],
   });
   return controllerInitMessenger;
 }

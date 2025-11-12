@@ -26,6 +26,9 @@ export async function updateRemoteFeatureFlags(
       return;
     }
 
+    const { completedOnboarding } = metamaskController.onboardingController.state;
+    if (!completedOnboarding) return;
+
     const remoteController: RemoteFeatureFlagController =
       metamaskController.remoteFeatureFlagController;
     // initialize the request to fetch remote feature flags

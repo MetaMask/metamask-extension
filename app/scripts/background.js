@@ -750,10 +750,6 @@ async function initialize(backup) {
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
 
-  // we don't wait for `updateRemoteFeatureFlags` to finish, as it's not
-  // critical to extension initialization, as cached/persisted values are fine.
-  updateRemoteFeatureFlags(controller);
-
   if (!isManifestV3) {
     await loadPhishingWarningPage();
   }
@@ -1250,6 +1246,7 @@ export function setupController(
       controller.setupTrustedCommunication(portStream, remotePort.sender);
       trackAppOpened(processName);
 
+      // lazily update the remote feature flags every time the UI is opened.
       updateRemoteFeatureFlags(controller);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
@@ -1578,6 +1575,11 @@ export function setupController(
 
     controller.rejectAllPendingApprovals();
   }
+
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.DECRYPT_MESSAGE_MANAGER_UPDATE_BADGE,
+    () => updateRemoteFeatureFlags(controller),
+  );
 
   updateNetworkControllerRpcFailoverFromRemoteFeatureFlagController(
     controller.networkController,
