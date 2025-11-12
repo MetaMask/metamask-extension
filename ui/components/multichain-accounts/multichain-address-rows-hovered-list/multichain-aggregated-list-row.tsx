@@ -77,6 +77,10 @@ export const MultichainAggregatedAddressListRow = ({
   const networks = useSelector((state) => getNetworksByScopes(state, chainIds));
 
   const groupName = useMemo(() => {
+    if (networks[0]?.name === 'Bitcoin') {
+      return t('networkNameBitcoinSegwit');
+    }
+
     return chainIds.some((chain) => chain.startsWith('eip155:'))
       ? t('networkNameEthereum')
       : networks[0]?.name;
