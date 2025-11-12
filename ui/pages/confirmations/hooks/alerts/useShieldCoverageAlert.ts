@@ -178,17 +178,19 @@ export function useShieldCoverageAlert(): Alert[] {
       ? t('shieldCoverageAlertMessageTitlePaused')
       : t('shieldCoverageAlertMessageTitle');
     let inlineAlertTextBackgroundColor;
-    switch (status) {
-      case 'covered':
-        severity = Severity.Success;
-        inlineAlertText = t('shieldCovered');
-        modalTitle = t('shieldCoverageAlertMessageTitleCovered');
-        break;
-      case 'malicious':
-        severity = Severity.Danger;
-        inlineAlertTextBackgroundColor = BackgroundColor.errorMuted;
-        break;
-      default:
+    if (!isPaused) {
+      switch (status) {
+        case 'covered':
+          severity = Severity.Success;
+          inlineAlertText = t('shieldCovered');
+          modalTitle = t('shieldCoverageAlertMessageTitleCovered');
+          break;
+        case 'malicious':
+          severity = Severity.Danger;
+          inlineAlertTextBackgroundColor = BackgroundColor.errorMuted;
+          break;
+        default:
+      }
     }
 
     return [
