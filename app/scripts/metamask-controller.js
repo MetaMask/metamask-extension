@@ -4469,6 +4469,9 @@ export default class MetamaskController extends EventEmitter {
       // Ensure the snap keyring is initialized
       await this.getSnapKeyring();
 
+      // Ensure the account tree is synced with user storage before discovering accounts.
+      await this.accountTreeController.syncWithUserStorageAtLeastOnce();
+
       const wallet = this.controllerMessenger.call(
         'MultichainAccountService:getMultichainAccountWallet',
         { entropySource: keyringIdToDiscover },
@@ -5203,6 +5206,25 @@ export default class MetamaskController extends EventEmitter {
       await this.getSnapKeyring(),
       this.accountTreeController.getSelectedAccountGroup(),
     );
+
+    if (this.isMultichainAccountsFeatureState2Enabled()) {
+      const syncAndDiscoverAccounts = async () => {
+        // We just run discovery every time we unlock to check if new accounts have
+        // been created on some other external wallets.
+        // This also allows to create missing accounts if new account providers
+        // have been added.
+        await Promise.allSettled(
+          this.getHDEntropySources().map(async (entropySource) => {
+            await this.discoverAndCreateAccounts(entropySource);
+          }),
+        );
+      };
+
+      // In order to avoid blocking the background thread, we don't await for the sync and
+      // discover accounts to complete.
+      // eslint-disable-next-line no-void
+      void syncAndDiscoverAccounts();
+    }
   }
 
   async _loginUser(password) {
@@ -6329,6 +6351,17 @@ export default class MetamaskController extends EventEmitter {
       signatureController: this.signatureController,
       transactionController: this.txController,
     });
+  }
+
+  /**
+   * Returns the list of known entropy sources.
+   *
+   * @returns {string[]} The list of entropy sources.
+   */
+  getHDEntropySources() {
+    return this.keyringController.state.keyrings
+      .filter((keyring) => keyring.type === KeyringTypes.hd)
+      .map((keyring) => keyring.metadata.id);
   }
 
   /**
