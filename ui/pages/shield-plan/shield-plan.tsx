@@ -10,6 +10,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import { Checkbox, TextVariant } from '@metamask/design-system-react';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
@@ -50,7 +51,7 @@ import {
   JustifyContent,
   TextAlign,
   TextColor,
-  TextVariant,
+  TextVariant as DSTextVariant,
 } from '../../helpers/constants/design-system';
 import {
   SETTINGS_ROUTE,
@@ -78,6 +79,10 @@ import { selectNetworkConfigurationByChainId } from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constants/subscriptions';
+import {
+  isDevOrTestEnvironment,
+  isDevOrUatBuild,
+} from '../../../shared/modules/shield/config';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -86,6 +91,11 @@ const ShieldPlan = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
+
+  // Stripe Test clocks
+  const [enableStripeTestClocks, setEnableStripeTestClocks] = useState(false);
+  const showTestClocksCheckbox = isDevOrUatBuild() || isDevOrTestEnvironment();
+
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
@@ -224,6 +234,7 @@ const ShieldPlan = () => {
           paymentTokenAddress: selectedToken?.address as Hex,
           paymentTokenSymbol: selectedToken?.symbol,
           plan: selectedPlan,
+          useTestClocks: enableStripeTestClocks,
         }),
       );
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
@@ -232,6 +243,8 @@ const ShieldPlan = () => {
             products: [PRODUCT_TYPES.SHIELD],
             isTrialRequested: !isTrialed,
             recurringInterval: selectedPlan,
+            // @ts-expect-error - useTestClocks is not a valid prop for startSubscriptionWithCard
+            useTestClocks: enableStripeTestClocks,
           }),
         );
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
@@ -333,7 +346,7 @@ const ShieldPlan = () => {
     <Page className="shield-plan-page" data-testid="shield-plan-page">
       <Header
         textProps={{
-          variant: TextVariant.headingSm,
+          variant: DSTextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
@@ -378,8 +391,8 @@ const ShieldPlan = () => {
                     textAlign={TextAlign.Left}
                     className="shield-plan-page__radio-label"
                   >
-                    <Text variant={TextVariant.bodySm}>{plan.label}</Text>
-                    <Text variant={TextVariant.headingMd}>{plan.price}</Text>
+                    <Text variant={DSTextVariant.bodySm}>{plan.label}</Text>
+                    <Text variant={DSTextVariant.headingMd}>{plan.price}</Text>
                   </Box>
                   {plan.id === RECURRING_INTERVALS.year && (
                     <Box
@@ -391,7 +404,7 @@ const ShieldPlan = () => {
                       className="shield-plan-page__save-badge"
                     >
                       <Text
-                        variant={TextVariant.bodyXsMedium}
+                        variant={DSTextVariant.bodyXsMedium}
                         color={TextColor.iconInverse}
                       >
                         {t('shieldPlanSave')}
@@ -409,7 +422,7 @@ const ShieldPlan = () => {
                 onClick={() => setShowPaymentModal(true)}
                 width={BlockSize.Full}
               >
-                <Text variant={TextVariant.bodyLgMedium}>
+                <Text variant={DSTextVariant.bodyLgMedium}>
                   {t('shieldPlanPayWith')}
                 </Text>
 
@@ -447,7 +460,7 @@ const ShieldPlan = () => {
                   ) : (
                     <Icon size={IconSize.Xl} name={IconName.Card} />
                   )}
-                  <Text variant={TextVariant.bodyLgMedium}>
+                  <Text variant={DSTextVariant.bodyLgMedium}>
                     {selectedPaymentMethod === PAYMENT_TYPES.byCrypto
                       ? selectedToken?.symbol || ''
                       : t('shieldPlanCard')}
@@ -462,7 +475,7 @@ const ShieldPlan = () => {
                 {...rowsStyleProps}
                 display={Display.Block}
               >
-                <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
+                <Text variant={DSTextVariant.bodyLgMedium} marginBottom={4}>
                   {t('shieldPlanDetails')}
                 </Text>
                 <Box
@@ -483,7 +496,7 @@ const ShieldPlan = () => {
                           color={IconColor.primaryDefault}
                         />
                       </Box>
-                      <Text variant={TextVariant.bodySm}>{detail}</Text>
+                      <Text variant={DSTextVariant.bodySm}>{detail}</Text>
                     </Box>
                   ))}
                 </Box>
@@ -506,6 +519,19 @@ const ShieldPlan = () => {
             flexDirection={FlexDirection.Column}
             backgroundColor={BackgroundColor.backgroundMuted}
           >
+            {showTestClocksCheckbox && (
+              <Checkbox
+                label="Enable Stripe Test clocks (for development and testing only)"
+                labelProps={{
+                  variant: TextVariant.BodySm,
+                }}
+                onChange={() =>
+                  setEnableStripeTestClocks(!enableStripeTestClocks)
+                }
+                id="stripe-test-clocks"
+                isSelected={enableStripeTestClocks}
+              />
+            )}
             <Button
               size={ButtonSize.Lg}
               variant={ButtonVariant.Primary}
