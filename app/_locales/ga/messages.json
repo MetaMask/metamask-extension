@@ -4883,16 +4883,16 @@
     "message": "Sciath Idirbhirt MetaMask curtha ar sos"
   },
   "pushNotificationShieldClaimCreatedDescriptionShort": {
-    "message": "Tá do éileamh fada oscailte anois."
+    "message": "Tá d'éileamh cruthaithe"
   },
   "pushNotificationShieldClaimCreatedTitle": {
-    "message": "Éileamh fada oscailte"
+    "message": "Éileamh cruthaithe"
   },
   "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
-    "message": "Tá do éileamh fada oscailte anois."
+    "message": "Tá d'éileamh nuashonraithe"
   },
   "pushNotificationShieldClaimStatusUpdatedTitle": {
-    "message": "Éileamh fada a chur leis"
+    "message": "Éileamh nuashonraithe"
   },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Dhún do $1 fada ag do stad-chaillteanas.",
