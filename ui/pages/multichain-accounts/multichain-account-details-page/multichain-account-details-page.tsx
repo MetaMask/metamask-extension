@@ -62,22 +62,10 @@ export const MultichainAccountDetailsPage = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const { id } = useParams();
 
-  // Validate URL parameter early
-  if (!id) {
-    history.push(DEFAULT_ROUTE);
-    return null;
-  }
-
-  const accountGroupId = decodeURIComponent(id) as AccountGroupId;
+  const accountGroupId = decodeURIComponent(id ?? '') as AccountGroupId;
   const multichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, accountGroupId),
   );
-
-  // Redirect if account doesn't exist
-  if (!multichainAccount) {
-    history.push(DEFAULT_ROUTE);
-    return null;
-  }
 
   const walletId = extractWalletIdFromGroupId(accountGroupId);
   const wallet = useSelector((state) => getWallet(state, walletId));
@@ -158,7 +146,12 @@ export const MultichainAccountDetailsPage = () => {
     history.push(walletRoute);
   };
 
-  return (
+  // Redirect if account doesn't exist
+  if (!id || !multichainAccount) {
+    history.push(DEFAULT_ROUTE);
+  }
+
+  return id && multichainAccount ? (
     <Page className="multichain-account-details-page">
       <Header
         textProps={{
@@ -317,5 +310,5 @@ export const MultichainAccountDetailsPage = () => {
         )}
       </Content>
     </Page>
-  );
+  ) : null;
 };
