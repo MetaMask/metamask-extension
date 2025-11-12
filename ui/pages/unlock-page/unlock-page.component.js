@@ -500,7 +500,11 @@ class UnlockPage extends Component {
         }
         width={BlockSize.Full}
         paddingBottom={12} // offset header to center content
-        className={isRehydrationFlow ? '' : 'unlock-page__container'}
+        className={
+          isRehydrationFlow
+            ? ''
+            : `unlock-page__container--${isDarkTheme ? 'dark' : 'light'}`
+        }
       >
         {showResetPasswordModal && (
           <ResetPasswordModal

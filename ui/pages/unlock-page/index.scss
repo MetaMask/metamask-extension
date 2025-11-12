@@ -4,9 +4,11 @@
   max-width: 400px;
 
   &__container {
-    background-color: var(--welcome-bg-light);
+    &--light {
+      background-color: var(--welcome-bg-light);
+    }
 
-    @media (prefers-color-scheme: dark) {
+    &--dark {
       background-color: var(--color-accent02-dark);
     }
   }
