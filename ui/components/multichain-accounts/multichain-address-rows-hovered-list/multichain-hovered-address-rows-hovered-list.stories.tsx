@@ -4,7 +4,11 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipChainId } from '@metamask/utils';
-import { AccountGroupId } from '@metamask/account-api';
+import {
+  AccountGroupId,
+  AccountWalletType,
+  toAccountWalletId,
+} from '@metamask/account-api';
 import mockState from '../../../../test/data/mock-state.json';
 import {
   MOCK_ACCOUNT_EOA,
@@ -16,9 +20,12 @@ import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-r
 
 const mockStore = configureStore([]);
 
-const WALLET_ID = 'entropy:01234567890ABCDEFGHIJKLMNOP';
-const GROUP_ID =
-  `${WALLET_ID}:multichain-account:01234567890ABCDEFGHIJKLMNOP` as AccountGroupId;
+const mockWalletEntropySource = '01234567890ABCDEFGHIJKLMNOP';
+const WALLET_ID = toAccountWalletId(
+  AccountWalletType.Entropy,
+  mockWalletEntropySource,
+);
+const GROUP_ID = `${WALLET_ID}/0` as AccountGroupId;
 
 const accounts: Record<string, InternalAccount> = {
   ethereum: {
@@ -105,7 +112,14 @@ const createMockState = () => ({
             [GROUP_ID]: {
               type: 'multichain-account',
               id: GROUP_ID,
-              metadata: {},
+              metadata: {
+                name: 'Storybook Account Group',
+                entropy: {
+                  groupIndex: 0,
+                },
+                pinned: false,
+                hidden: false,
+              },
               accounts: Object.keys(accounts).map(
                 (key) => accounts[key as keyof typeof accounts].id,
               ),
@@ -250,6 +264,25 @@ const createMockState = () => ({
         Object.values(accounts).map((acc) => [acc.id, acc]),
       ),
     },
+    balances: {
+      totalBalanceInUserCurrency: 1234.56,
+      userCurrency: 'USD',
+      wallets: {
+        [WALLET_ID]: {
+          walletId: WALLET_ID,
+          totalBalanceInUserCurrency: 1234.56,
+          userCurrency: 'USD',
+          groups: {
+            [GROUP_ID]: {
+              totalBalanceInUserCurrency: 1234.56,
+              userCurrency: 'USD',
+              walletId: WALLET_ID,
+              groupId: GROUP_ID,
+            },
+          },
+        },
+      },
+    },
   },
 });
 
@@ -264,15 +297,6 @@ const meta: Meta<typeof MultichainHoveredAddressRowsList> = {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <Provider store={mockStore(createMockState())}>
-        <div style={{ width: '400px', padding: '16px' }}>
-          <Story />
-        </div>
-      </Provider>
-    ),
-  ],
 };
 
 export default meta;
@@ -283,6 +307,25 @@ export const MultipleDifferentAccounts: Story = {
     groupId: GROUP_ID,
     children: <button>Hover to see multiple accounts</button>,
   },
+  decorators: [
+    (Story) => {
+      const state = createMockState();
+      state.metamask.accountTree.wallets[WALLET_ID].groups[GROUP_ID].accounts =
+        [
+          accounts.ethereum.id,
+          accounts.polygon.id,
+          accounts.solana.id,
+          accounts.bitcoin.id,
+        ];
+      return (
+        <Provider store={mockStore(state)}>
+          <div style={{ width: '400px', padding: '16px' }}>
+            <Story />
+          </div>
+        </Provider>
+      );
+    },
+  ],
 };
 
 export const SingleEthereumAccount: Story = {
@@ -290,6 +333,20 @@ export const SingleEthereumAccount: Story = {
     groupId: GROUP_ID,
     children: <button>Hover to see Ethereum account</button>,
   },
+  decorators: [
+    (Story) => {
+      const state = createMockState();
+      state.metamask.accountTree.wallets[WALLET_ID].groups[GROUP_ID].accounts =
+        [accounts.ethereum.id];
+      return (
+        <Provider store={mockStore(state)}>
+          <div style={{ width: '400px', padding: '16px' }}>
+            <Story />
+          </div>
+        </Provider>
+      );
+    },
+  ],
 };
 
 export const SpecificNetworkAccount: Story = {
@@ -297,6 +354,20 @@ export const SpecificNetworkAccount: Story = {
     groupId: GROUP_ID,
     children: <button>Hover to see specific network</button>,
   },
+  decorators: [
+    (Story) => {
+      const state = createMockState();
+      state.metamask.accountTree.wallets[WALLET_ID].groups[GROUP_ID].accounts =
+        [accounts.polygon.id];
+      return (
+        <Provider store={mockStore(state)}>
+          <div style={{ width: '400px', padding: '16px' }}>
+            <Story />
+          </div>
+        </Provider>
+      );
+    },
+  ],
 };
 
 export const SolanaOnly: Story = {
@@ -304,6 +375,20 @@ export const SolanaOnly: Story = {
     groupId: GROUP_ID,
     children: <button>Hover to see Solana account</button>,
   },
+  decorators: [
+    (Story) => {
+      const state = createMockState();
+      state.metamask.accountTree.wallets[WALLET_ID].groups[GROUP_ID].accounts =
+        [accounts.solana.id, accounts.solanaTestnet.id];
+      return (
+        <Provider store={mockStore(state)}>
+          <div style={{ width: '400px', padding: '16px' }}>
+            <Story />
+          </div>
+        </Provider>
+      );
+    },
+  ],
 };
 
 export const MultiChainSingleAccount: Story = {
@@ -319,6 +404,20 @@ export const MultiChainSingleAccount: Story = {
       },
     },
   },
+  decorators: [
+    (Story) => {
+      const state = createMockState();
+      state.metamask.accountTree.wallets[WALLET_ID].groups[GROUP_ID].accounts =
+        [accounts.multiChainAccount.id];
+      return (
+        <Provider store={mockStore(state)}>
+          <div style={{ width: '400px', padding: '16px' }}>
+            <Story />
+          </div>
+        </Provider>
+      );
+    },
+  ],
 };
 
 export const NonEvmOnly: Story = {
@@ -333,6 +432,20 @@ export const NonEvmOnly: Story = {
       },
     },
   },
+  decorators: [
+    (Story) => {
+      const state = createMockState();
+      state.metamask.accountTree.wallets[WALLET_ID].groups[GROUP_ID].accounts =
+        [accounts.bitcoin.id, accounts.solana.id];
+      return (
+        <Provider store={mockStore(state)}>
+          <div style={{ width: '400px', padding: '16px' }}>
+            <Story />
+          </div>
+        </Provider>
+      );
+    },
+  ],
 };
 
 export const EmptyState: Story = {
@@ -340,6 +453,20 @@ export const EmptyState: Story = {
     groupId: GROUP_ID,
     children: <button>Hover to see empty state</button>,
   },
+  decorators: [
+    (Story) => {
+      const state = createMockState();
+      state.metamask.accountTree.wallets[WALLET_ID].groups[GROUP_ID].accounts =
+        [];
+      return (
+        <Provider store={mockStore(state)}>
+          <div style={{ width: '400px', padding: '16px' }}>
+            <Story />
+          </div>
+        </Provider>
+      );
+    },
+  ],
 };
 
 export const AllAccounts: Story = {
@@ -355,4 +482,18 @@ export const AllAccounts: Story = {
       },
     },
   },
+  decorators: [
+    (Story) => {
+      const state = createMockState();
+      state.metamask.accountTree.wallets[WALLET_ID].groups[GROUP_ID].accounts =
+        Object.values(accounts).map((acc) => acc.id);
+      return (
+        <Provider store={mockStore(state)}>
+          <div style={{ width: '400px', padding: '16px' }}>
+            <Story />
+          </div>
+        </Provider>
+      );
+    },
+  ],
 };
