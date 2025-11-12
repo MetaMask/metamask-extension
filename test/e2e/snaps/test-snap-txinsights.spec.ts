@@ -1,4 +1,3 @@
-import { Mockttp } from 'mockttp';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
@@ -29,9 +28,7 @@ describe('Test Snap TxInsights', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        testSpecificMock: async (mockServer: Mockttp) => {
-          return await mockInsightsSnap(mockServer);
-        },
+        testSpecificMock: mockInsightsSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -70,9 +67,7 @@ describe('Test Snap TxInsights', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
-        testSpecificMock: async (mockServer: Mockttp) => {
-          return await mockInsightsSnap(mockServer);
-        },
+        testSpecificMock: mockInsightsSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -121,9 +116,7 @@ describe('Test Snap TxInsights', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
-        testSpecificMock: async (mockServer: Mockttp) => {
-          return await mockInsightsSnap(mockServer);
-        },
+        testSpecificMock: mockInsightsSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry }: TestSuiteArguments) => {

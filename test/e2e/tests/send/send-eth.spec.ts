@@ -135,10 +135,10 @@ describe('Send ETH', function () {
           inputChainId: CHAIN_IDS.MAINNET,
         }).build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: Mockttp) => [
-          await mockSendRedesignFeatureFlag(mockServer),
-          await mockLookupSnap(mockServer),
-        ],
+        testSpecificMock: async (mockServer: Mockttp) => {
+          mockSendRedesignFeatureFlag(mockServer);
+          mockLookupSnap(mockServer);
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);

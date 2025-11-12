@@ -47,9 +47,9 @@ describe('Test Snap networkAccess', function () {
         // click on alert dialog and validate the message
         await testSnaps.fillNetworkInput(
           'https://metamask.github.io/snaps/test-snaps/2.28.1/test-data.json',
-        )
+        );
         await testSnaps.clickButton('sendNetworkAccessTestButton');
-        await driver.delay(1000);
+        await driver.delay(500);
         await testSnaps.checkMessageResultSpan(
           'networkAccessResultSpan',
           '"hello": "world"',

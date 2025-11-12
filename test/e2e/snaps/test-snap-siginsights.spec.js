@@ -22,9 +22,7 @@ describe('Test Snap Signature Insights', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        testSpecificMock: async (mockServer) => {
-          return await mockSignatureInsightsSnap(mockServer, { port: 8081 });
-        },
+        testSpecificMock: mockSignatureInsightsSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

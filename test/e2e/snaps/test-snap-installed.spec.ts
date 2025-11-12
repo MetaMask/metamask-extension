@@ -46,11 +46,11 @@ async function mockedSnapInstall(mockServer: Mockttp) {
 describe('Test Snap installed', function () {
   it('metrics are sent correctly and error snap validation', async function () {
     async function mockSegmentAndSnaps(mockServer: Mockttp) {
-      const mocks: MockedEndpoint[] = [];
-      mocks.push(await mockedSnapInstall(mockServer));
-      mocks.push(await mockErrorSnap(mockServer));
-      mocks.push(await mockDialogSnap(mockServer));
-      return mocks;
+      return [
+        await mockedSnapInstall(mockServer),
+        await mockErrorSnap(mockServer),
+        await mockDialogSnap(mockServer),
+      ];
     }
 
     await withFixtures(
