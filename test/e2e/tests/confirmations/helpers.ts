@@ -258,8 +258,8 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
                 },
                 supportedChains: ['0xaa36a7', '0x539', '0x1'],
               },
-              BIP44_STAGE_TWO,
             },
+            BIP44_STAGE_TWO,
           ],
         };
       }),
