@@ -1,7 +1,11 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { SubscriptionUserEvent } from '@metamask/subscription-controller';
+import {
+  MODAL_TYPE,
+  ModalType,
+  SubscriptionUserEvent,
+} from '@metamask/subscription-controller';
 import {
   Box,
   Button,
@@ -27,8 +31,9 @@ import {
 } from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
 import {
-  getModalTypeForShieldEntryModal,
   getShouldSubmitEventsForShieldEntryModal,
+  getShieldEntryModalTriggeringCohort,
+  getModalTypeForShieldEntryModal,
 } from '../../../selectors';
 import {
   AlignItems,
@@ -37,10 +42,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import {
-  MODAL_TYPE,
-  ModalType,
-} from '../../../selectors/subscription/subscription';
 import ShieldIllustrationAnimation from './shield-illustration-animation';
 
 const ShieldEntryModal = ({
@@ -57,6 +58,7 @@ const ShieldEntryModal = ({
     getShouldSubmitEventsForShieldEntryModal,
   );
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
+  const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
   const handleOnClose = () => {
     if (skipEventSubmission) {
@@ -67,6 +69,7 @@ const ShieldEntryModal = ({
       dispatch(
         submitSubscriptionUserEvents({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
+          cohort: triggeringCohort,
         }),
       );
     }

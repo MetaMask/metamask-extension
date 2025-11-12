@@ -5,6 +5,8 @@ import {
   ProductType,
   RecurringInterval,
   Subscription,
+  BalanceCategory,
+  SubscriptionEligibility,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useNavigate } from 'react-router-dom-v5-compat';
@@ -13,7 +15,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { SubscriptionEligibilityWithModalType } from '../../selectors/subscription/subscription';
 import { getUserSubscriptions } from '../../selectors/subscription';
 import {
   addTransaction,
@@ -242,35 +243,40 @@ export const useSubscriptionEligibility = (product: ProductType) => {
   const isSignedIn = useSelector(selectIsSignedIn);
   const isUnlocked = useSelector(getIsUnlocked);
 
-  const getSubscriptionEligibility = useCallback(async (): Promise<
-    SubscriptionEligibilityWithModalType | undefined
-  > => {
-    try {
-      // if user is not signed in or unlocked, return undefined
-      if (!isSignedIn || !isUnlocked) {
+  const getSubscriptionEligibility = useCallback(
+    async (params?: {
+      balanceCategory?: BalanceCategory;
+    }): Promise<SubscriptionEligibility | undefined> => {
+      try {
+        // if user is not signed in or unlocked, return undefined
+        if (!isSignedIn || !isUnlocked) {
+          return undefined;
+        }
+
+        // get the subscriptions before making the eligibility request
+        // here, we cannot `useUserSubscriptions` hook as the hook's initial state has empty subscriptions array and loading state is false
+        // that mistakenly makes `user does not have a subscription` and triggers the eligibility request
+        const subscriptions = await dispatch(getSubscriptions());
+        const isShieldSubscriptionActive =
+          getIsShieldSubscriptionActive(subscriptions);
+
+        if (!isShieldSubscriptionActive) {
+          // only if shield subscription is not active, get the eligibility
+          const eligibilities = await dispatch(
+            getSubscriptionsEligibilities(params),
+          );
+          return eligibilities.find(
+            (eligibility) => eligibility.product === product,
+          );
+        }
+        return undefined;
+      } catch (error) {
+        log.error('[useSubscriptionEligibility] error', error);
         return undefined;
       }
-
-      // get the subscriptions before making the eligibility request
-      // here, we cannot `useUserSubscriptions` hook as the hook's initial state has empty subscriptions array and loading state is false
-      // that mistakenly makes `user does not have a subscription` and triggers the eligibility request
-      const subscriptions = await dispatch(getSubscriptions());
-      const isShieldSubscriptionActive =
-        getIsShieldSubscriptionActive(subscriptions);
-
-      if (!isShieldSubscriptionActive) {
-        // only if shield subscription is not active, get the eligibility
-        const eligibilities = await dispatch(getSubscriptionsEligibilities());
-        return eligibilities.find(
-          (eligibility) => eligibility.product === product,
-        );
-      }
-      return undefined;
-    } catch (error) {
-      log.error('[useSubscriptionEligibility] error', error);
-      return undefined;
-    }
-  }, [isSignedIn, isUnlocked, dispatch, product]);
+    },
+    [isSignedIn, isUnlocked, dispatch, product],
+  );
 
   return {
     getSubscriptionEligibility,

@@ -4,6 +4,7 @@ import type {
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { Action, AnyAction } from 'redux';
+import { ModalType } from '@metamask/subscription-controller';
 import {
   HardwareTransportStates,
   WebHIDConnectedStatuses,
@@ -13,7 +14,6 @@ import {
   PasswordChangeToastType,
   ClaimSubmitToastType,
 } from '../../../shared/constants/app-state';
-import { ModalType } from '../../selectors/subscription';
 
 type AppState = {
   customNonceValue: string;
@@ -138,7 +138,8 @@ type AppState = {
   shieldEntryModal?: {
     show: boolean;
     shouldSubmitEvents: boolean;
-    modalType: ModalType;
+    modalType?: ModalType;
+    triggeringCohort?: string;
   };
 };
 
