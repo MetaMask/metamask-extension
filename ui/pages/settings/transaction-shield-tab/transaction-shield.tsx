@@ -98,6 +98,7 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import Name from '../../../components/app/name';
+import ShieldIllustrationAnimation from '../../../components/app/shield-entry-modal/shield-illustration-animation';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod, SHIELD_ICON_ARTBOARD_NAMES } from './types';
 import ShieldSubscriptionIconAnimation from './shield-subscription-icon-animation';
@@ -689,6 +690,7 @@ const TransactionShield = () => {
           {...rowsStyleProps}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.spaceBetween}
+          paddingRight={2}
         >
           <Box
             width={BlockSize.Full}
@@ -754,6 +756,12 @@ const TransactionShield = () => {
               </Text>
             )}
           </Box>
+          {!showSkeletonLoader && !isMembershipInactive && (
+            <ShieldIllustrationAnimation
+              containerClassName="transaction-shield-page-shield-illustration__container"
+              canvasClassName="transaction-shield-page-shield-illustration__canvas"
+            />
+          )}
         </Box>
 
         <Box
