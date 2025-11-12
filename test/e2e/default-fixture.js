@@ -244,11 +244,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           hyperliquid: {},
         },
       },
-      RemoteFeatureFlagController: {
-        remoteFeatureFlags: {
-          extensionUxSidepanel: true,
-        },
-      },
       SelectedNetworkController: {
         domains: {},
       },
