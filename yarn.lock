@@ -7556,7 +7556,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/shield-controller@npm:^1.1.0":
+"@metamask/shield-controller@npm:^1.2.0":
   version: 1.2.0
   resolution: "@metamask/shield-controller@npm:1.2.0"
   dependencies:
@@ -32116,7 +32116,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^5.0.0"
     "@metamask/selected-network-controller": "npm:^25.0.0"
-    "@metamask/shield-controller": "npm:^1.1.0"
+    "@metamask/shield-controller": "npm:^1.2.0"
     "@metamask/signature-controller": "npm:^35.0.0"
     "@metamask/smart-transactions-controller": "npm:^20.0.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
