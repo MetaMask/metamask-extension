@@ -93,6 +93,14 @@ const shieldTranslations = {
     t('pushNotificationShieldSubscriptionPaymentFailedTitle'),
   ShieldSubscriptionPaymentFailedDescriptionShort: () =>
     t('pushNotificationShieldSubscriptionPaymentFailedDescriptionShort'),
+  ShieldClaimCreatedTitle: () =>
+    t('pushNotificationShieldClaimCreatedTitle'),
+  ShieldClaimCreatedDescriptionShort: () =>
+    t('pushNotificationShieldClaimCreatedDescriptionShort'),
+  ShieldClaimStatusUpdatedTitle: () =>
+    t('pushNotificationShieldClaimStatusUpdatedTitle'),
+  ShieldClaimStatusUpdatedDescriptionShort: () =>
+    t('pushNotificationShieldClaimStatusUpdatedDescriptionShort'),
 };
 
 const translations = {

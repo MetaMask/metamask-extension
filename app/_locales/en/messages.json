@@ -5132,6 +5132,18 @@
   "pushNotificationShieldSubscriptionPaymentFailedTitle": {
     "message": "MetaMask Transaction Shield paused"
   },
+  "pushNotificationShieldClaimCreatedDescriptionShort": {
+    "message": "Your claim has been created"
+  },
+  "pushNotificationShieldClaimCreatedTitle": {
+    "message": "Claim created"
+  },
+  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
+    "message": "Your claim has been updated"
+  },
+  "pushNotificationShieldClaimStatusUpdatedTitle": {
+    "message": "Claim updated"
+  },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Your $1 long closed at your stop loss.",
     "description": "$1 is the asset symbol"

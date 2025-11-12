@@ -4882,6 +4882,18 @@
   "pushNotificationShieldSubscriptionPaymentFailedTitle": {
     "message": "Sciath Idirbhirt MetaMask curtha ar sos"
   },
+  "pushNotificationShieldClaimCreatedDescriptionShort": {
+    "message": "Tá do éileamh fada oscailte anois."
+  },
+  "pushNotificationShieldClaimCreatedTitle": {
+    "message": "Éileamh fada oscailte"
+  },
+  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
+    "message": "Tá do éileamh fada oscailte anois."
+  },
+  "pushNotificationShieldClaimStatusUpdatedTitle": {
+    "message": "Éileamh fada a chur leis"
+  },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Dhún do $1 fada ag do stad-chaillteanas.",
     "description": "$1 is the asset symbol"
