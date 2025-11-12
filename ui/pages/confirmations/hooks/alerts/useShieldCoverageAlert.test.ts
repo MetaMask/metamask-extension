@@ -6,7 +6,14 @@ import { Severity } from '../../../../helpers/constants/design-system';
 import { useShieldCoverageAlert } from './useShieldCoverageAlert';
 
 jest.mock('../transactions/useEnableShieldCoverageChecks', () => ({
-  useEnableShieldCoverageChecks: jest.fn(() => true),
+  useEnableShieldCoverageChecks: jest.fn(() => ({
+    isEnabled: true,
+    isPaused: false,
+  })),
+}));
+
+jest.mock('react-router-dom-v5-compat', () => ({
+  useNavigate: jest.fn(() => jest.fn()),
 }));
 
 describe('useShieldCoverageAlert', () => {
@@ -16,7 +23,10 @@ describe('useShieldCoverageAlert', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    useEnableShieldCoverageChecks.mockReturnValue(true);
+    useEnableShieldCoverageChecks.mockReturnValue({
+      isEnabled: true,
+      isPaused: false,
+    });
   });
 
   const getStateWithCoverage = (
@@ -47,7 +57,10 @@ describe('useShieldCoverageAlert', () => {
   };
 
   it('returns empty array when shield coverage checks are disabled', () => {
-    useEnableShieldCoverageChecks.mockReturnValue(false);
+    useEnableShieldCoverageChecks.mockReturnValue({
+      isEnabled: false,
+      isPaused: false,
+    });
 
     const baseState = getMockApproveConfirmState();
     const { metamask } = baseState as unknown as {
@@ -102,7 +115,7 @@ describe('useShieldCoverageAlert', () => {
 
     expect(result.current).toHaveLength(1);
     const alert = result.current[0];
-    expect(alert.severity).toBe(Severity.Info);
+    expect(alert.severity).toBe(Severity.Disabled);
     expect(alert.inlineAlertText).toBe(tEn('shieldNotCovered'));
     expect(alert.isOpenModalOnClick).toBe(true);
   });

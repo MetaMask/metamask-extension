@@ -301,6 +301,9 @@
   "addNewSolanaAccountLabel": {
     "message": "Solana account"
   },
+  "addNewTronAccountLabel": {
+    "message": "Tron account"
+  },
   "addNft": {
     "message": "Add NFT"
   },
@@ -938,7 +941,7 @@
     "message": "You're allowing access to $1 $2. The contract won't access any additional funds."
   },
   "bridgeApprovalWarningForHardware": {
-    "message": "You'll need to allow access to $1 $2 for bridging, and then approve bridging to $2. This will require two separate confirmations."
+    "message": "You'll need to allow access to $1 $2 for bridging, and then approve bridging to $3. This will require two separate confirmations."
   },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Block explorer link copied!"
@@ -1840,14 +1843,8 @@
   "customToken": {
     "message": "Custom token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Token detection is not available on this network yet. Please import token manually and make sure you trust it. Learn about $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Anyone can create a token, including creating fake versions of existing tokens. Learn about $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Make sure you trust a token before you import it. Learn how to avoid $1. You can also enable token detection $2."
   },
   "customerSupport": {
     "message": "customer support"
@@ -2006,6 +2003,9 @@
   },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
+  },
+  "deepLink_thePredictPage": {
+    "message": "the predict page"
   },
   "deepLink_theRewardsPage": {
     "message": "the MetaMask Rewards page"
@@ -3176,9 +3176,6 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "inYourSettings": {
-    "message": "in your Settings"
-  },
   "included": {
     "message": "included"
   },
@@ -4018,6 +4015,9 @@
   },
   "networkNameTestnet": {
     "message": "Testnet"
+  },
+  "networkNameTron": {
+    "message": "Tron"
   },
   "networkNameZkSyncEra": {
     "message": "zkSync Era"
@@ -5120,6 +5120,18 @@
   "pushNotificationPositionLiquidatedTitle": {
     "message": "Position liquidated"
   },
+  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
+    "message": "Welcome to MetaMask Transaction Shield! Explore benefits"
+  },
+  "pushNotificationShieldSubscriptionCreatedTitle": {
+    "message": "MetaMask Transaction Shield activated"
+  },
+  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
+    "message": "Membership is inactive due to payment issue. Update your payment to restore coverage"
+  },
+  "pushNotificationShieldSubscriptionPaymentFailedTitle": {
+    "message": "MetaMask Transaction Shield paused"
+  },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Your $1 long closed at your stop loss.",
     "description": "$1 is the asset symbol"
@@ -5535,6 +5547,10 @@
   "rewardsPointsBalance": {
     "message": "$1 points",
     "description": "$1 is the formatted number of rewards points"
+  },
+  "rewardsPointsBalance_couldntLoad": {
+    "message": "Couldn't load",
+    "description": "Text shown when points balance couldn't be loaded"
   },
   "rewardsPointsIcon": {
     "message": "Rewards Points",
@@ -6011,6 +6027,12 @@
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
     "message": "Learn how coverage works"
   },
+  "shieldCoverageAlertMessagePaused": {
+    "message": "There was an issue with your Transaction Shield membership payment. Please update your payment method to resume coverage."
+  },
+  "shieldCoverageAlertMessagePausedAcknowledgeButton": {
+    "message": "Update payment method"
+  },
   "shieldCoverageAlertMessagePotentialRisks": {
     "message": "This transaction has potential risks, so it isn't protected by Transaction Shield. $1."
   },
@@ -6022,6 +6044,9 @@
   },
   "shieldCoverageAlertMessageTitleCovered": {
     "message": "This transaction is covered"
+  },
+  "shieldCoverageAlertMessageTitlePaused": {
+    "message": "Transaction Shield paused"
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
     "message": "This transaction type is not supported, so it isn't protected by Transaction Shield. $1."
@@ -6073,6 +6098,9 @@
   },
   "shieldNotCovered": {
     "message": "Not covered"
+  },
+  "shieldPaused": {
+    "message": "Paused"
   },
   "shieldPaymentDeclined": {
     "message": "Shield payment declined"
@@ -6160,6 +6188,10 @@
   },
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
+    "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxCancelWhenPausedDetails": {
+    "message": "Your coverage isn't active while paused. If you cancel, your membership will end on $1.",
     "description": "The $1 is the date subscription ends"
   },
   "shieldTxDetails1Description": {
@@ -6348,11 +6380,23 @@
   "simulationDetailsIncomingHeading": {
     "message": "You receive"
   },
+  "simulationDetailsIncomingHeadingReceived": {
+    "message": "You've received"
+  },
+  "simulationDetailsIncomingHeadingReceiving": {
+    "message": "You're receiving"
+  },
   "simulationDetailsNoChanges": {
     "message": "No changes"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "You send"
+  },
+  "simulationDetailsOutgoingHeadingSending": {
+    "message": "You're sending"
+  },
+  "simulationDetailsOutgoingHeadingSent": {
+    "message": "You sent"
   },
   "simulationDetailsRevokeSetApprovalForAllDesc": {
     "message": "You're removing someone else's permission to withdraw NFTs from your account."
@@ -7654,9 +7698,6 @@
   "tokenPermissionsCount": {
     "message": "$1 token permissions",
     "description": "$1 is the count of token permissions (plural form)"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "token scams and security risks"
   },
   "tokenStandard": {
     "message": "Token standard"
