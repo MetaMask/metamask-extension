@@ -53,7 +53,7 @@ export const Asset = () => {
     <Box
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
-      style={{ flex: 1 }}
+      style={{ flex: 1, height: '100%' }}
     >
       <AssetFilterInput
         searchQuery={searchQuery}

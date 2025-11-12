@@ -29,6 +29,7 @@ describe('Shield Entry Modal', () => {
       shieldEntryModal: {
         show: true,
         shouldSubmitEvents: false,
+        triggeringCohort: 'cohort-1',
       },
     },
   };
@@ -53,11 +54,11 @@ describe('Shield Entry Modal', () => {
     expect(shieldEntryModal).toBeInTheDocument();
   });
 
-  it('should call onClose when the skip button is clicked', () => {
+  it('should call onClose when the close button is clicked', () => {
     const { getByTestId } = renderWithProvider(<ShieldEntryModal />, mockStore);
 
-    const skipButton = getByTestId('shield-entry-modal-skip-button');
-    fireEvent.click(skipButton);
+    const closeButton = getByTestId('shield-entry-modal-close-button');
+    fireEvent.click(closeButton);
     expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
   });
 
@@ -91,11 +92,12 @@ describe('Shield Entry Modal', () => {
       customStore,
     );
 
-    const skipButton = getByTestId('shield-entry-modal-skip-button');
+    const skipButton = getByTestId('shield-entry-modal-close-button');
     fireEvent.click(skipButton);
     await waitFor(() => {
       expect(submitSubscriptionUserEventsSpy).toHaveBeenCalledWith({
         event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        cohort: mockState.appState.shieldEntryModal.triggeringCohort,
       });
       expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
     });
