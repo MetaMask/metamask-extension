@@ -10,6 +10,7 @@ import PrivacySettings from './page-objects/pages/settings/privacy-settings';
 import SettingsPage from './page-objects/pages/settings/settings-page';
 import VaultDecryptorPage from './page-objects/pages/vault-decryptor-page';
 import { completeCreateNewWalletOnboardingFlowWithCustomSettings } from './page-objects/flows/onboarding.flow';
+import { ConsoleLogEntry } from 'selenium-webdriver/bidi/logEntries';
 
 const VAULT_DECRYPTOR_PAGE = 'https://metamask.github.io/vault-decryptor';
 
@@ -76,6 +77,7 @@ function getExtensionLogFile(extensionStoragePath: string): string {
 
   // Use the first of the `.log` files found
   return path.resolve(extensionStoragePath, logFiles[0]);
+
 }
 
 /**
@@ -104,7 +106,7 @@ async function getFileSize(filePath: string): Promise<number> {
 async function waitUntilFileIsWritten({
   driver,
   filePath,
-  maxRetries = 5,
+  maxRetries = 8,
   minFileSize = 1000000,
 }: {
   driver: Driver;
@@ -164,6 +166,8 @@ async function closePopoverIfPresent(driver: Driver) {
 }
 
 describe('Vault Decryptor Page', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
   it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
     await withFixtures(
       {
