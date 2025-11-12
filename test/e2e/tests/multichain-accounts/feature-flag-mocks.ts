@@ -73,12 +73,13 @@ export const mockMultichainAccountsFeatureFlagStateOne = (
 
 export const mockMultichainAccountsFeatureFlagStateTwo = (
   mockServer: Mockttp,
-) =>
+) => {
+  const distribution = (process.env.TEST_SUITE_NAME?.includes('flask')) ? 'flask' : 'main'
   mockServer
     .forGet(FEATURE_FLAGS_URL)
     .withQuery({
       client: 'extension',
-      distribution: 'main',
+      distribution,
       environment: 'dev',
     })
     .thenCallback(() => {
@@ -88,6 +89,7 @@ export const mockMultichainAccountsFeatureFlagStateTwo = (
         json: [BIP44_STAGE_TWO],
       };
     });
+  }
 
 export const mockMultichainAccountsFeatureFlagDisabled = (
   mockServer: Mockttp,
