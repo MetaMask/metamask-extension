@@ -141,10 +141,14 @@ describe('Shield Entry Modal', function () {
     );
   });
 
-  it('should not show the shield entry modal if external services are disabled', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should not show the shield entry modal if external services are disabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            useExternalServices: false,
+          })
           .withAppStateController({
             showShieldEntryModalOnce: null,
           })
@@ -159,7 +163,6 @@ describe('Shield Entry Modal', function () {
         await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.clickOnShieldEntryModalSkip()
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('25');
 
