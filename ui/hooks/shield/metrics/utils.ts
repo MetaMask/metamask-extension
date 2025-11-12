@@ -4,7 +4,7 @@ import {
 } from '../../../../shared/modules/shield';
 import {
   CaptureShieldSubscriptionRequestParams,
-  CaptureShieldSubscriptionRestartRequestParams,
+  ExistingSubscriptionEventParams,
 } from './types';
 
 export function formatDefaultShieldSubscriptionRequestEventProps(
@@ -65,8 +65,8 @@ export function formatDefaultShieldSubscriptionRequestEventProps(
   };
 }
 
-export function formatDefaultShieldSubscriptionRestartRequestEventProps(
-  params: CaptureShieldSubscriptionRestartRequestParams,
+export function formatExistingSubscriptionEventProps(
+  params: ExistingSubscriptionEventParams,
 ) {
   const selectedBillingInterval = getBillingIntervalForMetrics(
     params.billingInterval,
@@ -88,11 +88,5 @@ export function formatDefaultShieldSubscriptionRestartRequestEventProps(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     billing_interval: selectedBillingInterval,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    error_message: params.errorMessage,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    status: params.restartStatus,
   };
 }

@@ -2,10 +2,13 @@ import {
   BALANCE_CATEGORIES,
   BalanceCategory,
   PAYMENT_TYPES,
+  PaymentType,
   PRODUCT_TYPES,
+  RECURRING_INTERVALS,
   RecurringInterval,
   Subscription,
   SubscriptionControllerState,
+  SubscriptionCryptoPaymentMethod,
   SubscriptionStatus,
 } from '@metamask/subscription-controller';
 import {
@@ -48,6 +51,80 @@ export function getLatestSubscriptionStatus(
 ): SubscriptionStatus | undefined {
   const currentShieldSubscription = getShieldSubscription(subscriptions);
   return currentShieldSubscription?.status || lastSubscription?.status;
+}
+
+export function getUserAccountType(
+  account: InternalAccount,
+): ShieldUserAccountTypeEnum {
+  if (account.type === 'eip155:eoa') {
+    return ShieldUserAccountTypeEnum.EOA;
+  } else if (account.type === 'eip155:erc4337') {
+    return ShieldUserAccountTypeEnum.ERC4337;
+  }
+  // Shield is currently only supported for EVM accounts, so this should never happen
+  throw new Error('Unsupported account type');
+}
+
+export function getUserAccountCategory(
+  account: InternalAccount,
+  keyringsMetadata: KeyringObject[],
+): ShieldUserAccountCategoryEnum {
+  const entropySource = account.options?.entropySource;
+  const isHdKeyringAccount =
+    account.metadata.keyring.type === KeyringType.hdKeyTree;
+
+  if (entropySource && isHdKeyringAccount) {
+    const keyringIndex = keyringsMetadata.findIndex(
+      (keyring) => keyring.metadata.id === entropySource,
+    );
+    if (keyringIndex === 0) {
+      return ShieldUserAccountCategoryEnum.PRIMARY;
+    } else if (keyringIndex > 0) {
+      return ShieldUserAccountCategoryEnum.ImportedWallet;
+    }
+  }
+  return ShieldUserAccountCategoryEnum.ImportedAccount;
+}
+
+/**
+ * Converts a balance in USD to a balance category
+ *
+ * @param balanceInUSD - The balance in USD
+ * @returns The balance category string
+ */
+export function getUserBalanceCategory(balanceInUSD: number): BalanceCategory {
+  if (balanceInUSD >= 1000000) {
+    return BALANCE_CATEGORIES.RANGE_1M_PLUS;
+  }
+  if (balanceInUSD >= 100000) {
+    return BALANCE_CATEGORIES.RANGE_100K_999_9K;
+  }
+  if (balanceInUSD >= 10000) {
+    return BALANCE_CATEGORIES.RANGE_10K_99_9K;
+  }
+  if (balanceInUSD >= 1000) {
+    return BALANCE_CATEGORIES.RANGE_1K_9_9K;
+  }
+  if (balanceInUSD >= 100) {
+    return BALANCE_CATEGORIES.RANGE_100_999;
+  }
+  return BALANCE_CATEGORIES.RANGE_0_99;
+}
+
+export function getUserAccountTypeAndCategory(
+  account: InternalAccount,
+  keyringsMetadata: KeyringObject[],
+) {
+  const userAccountType = getUserAccountType(account);
+  const userAccountCategory = getUserAccountCategory(account, keyringsMetadata);
+  return {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    user_account_type: userAccountType,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    user_account_category: userAccountCategory,
+  };
 }
 
 /**
@@ -138,80 +215,6 @@ export function getSubscriptionRequestTrackingProps(
   };
 }
 
-export function getUserAccountType(
-  account: InternalAccount,
-): ShieldUserAccountTypeEnum {
-  if (account.type === 'eip155:eoa') {
-    return ShieldUserAccountTypeEnum.EOA;
-  } else if (account.type === 'eip155:erc4337') {
-    return ShieldUserAccountTypeEnum.ERC4337;
-  }
-  // Shield is currently only supported for EVM accounts, so this should never happen
-  throw new Error('Unsupported account type');
-}
-
-export function getUserAccountCategory(
-  account: InternalAccount,
-  keyringsMetadata: KeyringObject[],
-): ShieldUserAccountCategoryEnum {
-  const entropySource = account.options?.entropySource;
-  const isHdKeyringAccount =
-    account.metadata.keyring.type === KeyringType.hdKeyTree;
-
-  if (entropySource && isHdKeyringAccount) {
-    const keyringIndex = keyringsMetadata.findIndex(
-      (keyring) => keyring.metadata.id === entropySource,
-    );
-    if (keyringIndex === 0) {
-      return ShieldUserAccountCategoryEnum.PRIMARY;
-    } else if (keyringIndex > 0) {
-      return ShieldUserAccountCategoryEnum.ImportedWallet;
-    }
-  }
-  return ShieldUserAccountCategoryEnum.ImportedAccount;
-}
-
-/**
- * Converts a balance in USD to a balance category
- *
- * @param balanceInUSD - The balance in USD
- * @returns The balance category string
- */
-export function getUserBalanceCategory(balanceInUSD: number): BalanceCategory {
-  if (balanceInUSD >= 1000000) {
-    return BALANCE_CATEGORIES.RANGE_1M_PLUS;
-  }
-  if (balanceInUSD >= 100000) {
-    return BALANCE_CATEGORIES.RANGE_100K_999_9K;
-  }
-  if (balanceInUSD >= 10000) {
-    return BALANCE_CATEGORIES.RANGE_10K_99_9K;
-  }
-  if (balanceInUSD >= 1000) {
-    return BALANCE_CATEGORIES.RANGE_1K_9_9K;
-  }
-  if (balanceInUSD >= 100) {
-    return BALANCE_CATEGORIES.RANGE_100_999;
-  }
-  return BALANCE_CATEGORIES.RANGE_0_99;
-}
-
-export function getUserAccountTypeAndCategory(
-  account: InternalAccount,
-  keyringsMetadata: KeyringObject[],
-) {
-  const userAccountType = getUserAccountType(account);
-  const userAccountCategory = getUserAccountCategory(account, keyringsMetadata);
-  return {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    user_account_type: userAccountType,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    user_account_category: userAccountCategory,
-  };
-}
-
 /**
  * Capture a Shield subscription request event with crypto payment.
  *
@@ -251,4 +254,39 @@ export function captureShieldSubscriptionRequestEvent(
       status: requestStatus,
     },
   });
+}
+
+/**
+ * Get the previous subscription payment data.
+ *
+ * @param previousSubscription - The previous subscription.
+ * @returns The previous subscription payment data.
+ */
+export function getPreviousSubscriptionPaymentData(
+  previousSubscription?: Subscription,
+): {
+  paymentType: PaymentType;
+  billingInterval: RecurringInterval;
+  cryptoPaymentChain?: string;
+  cryptoPaymentCurrency?: string;
+} {
+  const paymentType =
+    previousSubscription?.paymentMethod.type || PAYMENT_TYPES.byCard;
+  const billingInterval =
+    previousSubscription?.interval || RECURRING_INTERVALS.year;
+  let cryptoPaymentChain: string | undefined;
+  let cryptoPaymentCurrency: string | undefined;
+  if (paymentType === PAYMENT_TYPES.byCrypto) {
+    const cryptoPaymentMethod =
+      previousSubscription?.paymentMethod as SubscriptionCryptoPaymentMethod;
+    cryptoPaymentChain = cryptoPaymentMethod.crypto.chainId;
+    cryptoPaymentCurrency = cryptoPaymentMethod.crypto.tokenSymbol;
+  }
+
+  return {
+    paymentType,
+    billingInterval,
+    cryptoPaymentChain,
+    cryptoPaymentCurrency,
+  };
 }

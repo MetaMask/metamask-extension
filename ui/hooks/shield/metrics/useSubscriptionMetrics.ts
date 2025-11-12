@@ -12,13 +12,14 @@ import {
   getUserBalanceCategory,
 } from '../../../../shared/modules/shield';
 import {
+  CaptureShieldBillingHistoryOpenedEventParams,
   CaptureShieldEntryModalEventParams,
   CaptureShieldSubscriptionRequestParams,
   CaptureShieldSubscriptionRestartRequestParams,
 } from './types';
 import {
   formatDefaultShieldSubscriptionRequestEventProps,
-  formatDefaultShieldSubscriptionRestartRequestEventProps,
+  formatExistingSubscriptionEventProps,
 } from './utils';
 
 export const useSubscriptionMetrics = () => {
@@ -105,10 +106,34 @@ export const useSubscriptionMetrics = () => {
         selectedAccount,
         hdKeyingsMetadata,
       );
-      const formattedParams =
-        formatDefaultShieldSubscriptionRestartRequestEventProps(params);
+      const formattedParams = formatExistingSubscriptionEventProps(params);
       trackEvent({
         event: MetaMetricsEventName.ShieldSubscriptionRestartRequest,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...userAccountTypeAndCategory,
+          ...formattedParams,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_message: params.errorMessage,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          status: params.restartStatus,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata],
+  );
+
+  const captureShieldBillingHistoryOpenedEvent = useCallback(
+    (params: CaptureShieldBillingHistoryOpenedEventParams) => {
+      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+        selectedAccount,
+        hdKeyingsMetadata,
+      );
+      const formattedParams = formatExistingSubscriptionEventProps(params);
+      trackEvent({
+        event: MetaMetricsEventName.ShieldBillingHistoryOpened,
         category: MetaMetricsEventCategory.Shield,
         properties: {
           ...userAccountTypeAndCategory,
@@ -123,5 +148,6 @@ export const useSubscriptionMetrics = () => {
     captureShieldEntryModalEvent,
     captureShieldSubscriptionRequestEvent,
     captureShieldSubscriptionRestartRequestEvent,
+    captureShieldBillingHistoryOpenedEvent,
   };
 };

@@ -56,15 +56,11 @@ export type CaptureShieldSubscriptionRequestParams =
       requestStatus: 'started' | 'completed' | 'failed';
     };
 
-export type CaptureShieldSubscriptionRestartRequestParams = {
+export type ExistingSubscriptionEventParams = {
   /**
    * Current subscription status before restarting the subscription. (e.g. cancelled, expired, etc.)
    */
   subscriptionStatus: SubscriptionStatus;
-
-  errorMessage?: string;
-
-  restartStatus: 'succeeded' | 'failed';
 
   /**
    * The payment type used for the previous subscription.
@@ -86,3 +82,13 @@ export type CaptureShieldSubscriptionRestartRequestParams = {
    */
   cryptoPaymentCurrency?: string;
 };
+
+export type CaptureShieldSubscriptionRestartRequestParams =
+  ExistingSubscriptionEventParams & {
+    errorMessage?: string;
+
+    restartStatus: 'succeeded' | 'failed';
+  };
+
+export type CaptureShieldBillingHistoryOpenedEventParams =
+  ExistingSubscriptionEventParams;
