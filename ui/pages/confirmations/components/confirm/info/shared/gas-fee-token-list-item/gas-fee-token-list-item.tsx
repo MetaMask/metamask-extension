@@ -55,6 +55,11 @@ export function GasFeeTokenListItem({
 
   const { amountFiat, amountFormatted, balanceFiat, symbol } = gasFeeToken;
 
+  // Only show balance text when balanceFiat is defined
+  const balanceText = balanceFiat
+    ? `${t('confirmGasFeeTokenBalance')} ${balanceFiat} ${currentCurrency.toUpperCase()}`
+    : '';
+
   return (
     <ListItem
       image={
@@ -65,10 +70,8 @@ export function GasFeeTokenListItem({
       }
       isSelected={isSelected}
       leftPrimary={symbol}
-      leftSecondary={`${t(
-        'confirmGasFeeTokenBalance',
-      )} ${balanceFiat} ${currentCurrency.toUpperCase()}`}
-      rightPrimary={amountFiat}
+      leftSecondary={balanceText}
+      rightPrimary={amountFiat || ''}
       rightSecondary={`${amountFormatted} ${symbol}`}
       warning={warning && <WarningIndicator text={warning} />}
       onClick={() => onClick?.(gasFeeToken)}
