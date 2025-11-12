@@ -41,14 +41,20 @@ import {
   useSubscriptionPricing,
 } from './useSubscriptionPricing';
 
+/**
+ * get user subscriptions information
+ *
+ * @param options - The options for the hook.
+ * @param options.refetch - whether to refetch the subscriptions
+ * @returns user subscriptions information
+ */
 export const useUserSubscriptions = (
   { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isSignedIn = useSelector(selectIsSignedIn);
   const isUnlocked = useSelector(getIsUnlocked);
-  const { customerId, subscriptions, trialedProducts } =
-    useSelector(getUserSubscriptions);
+  const userSubscriptions = useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
     if (!isSignedIn || !refetch || !isUnlocked) {
@@ -58,14 +64,19 @@ export const useUserSubscriptions = (
   }, [refetch, dispatch, isSignedIn, isUnlocked]);
 
   return {
-    customerId,
-    subscriptions,
-    trialedProducts,
+    ...userSubscriptions,
     loading: result.pending,
     error: result.error,
   };
 };
 
+/**
+ * get user subscription by product from list of subscriptions
+ *
+ * @param product - The product to get the subscription for.
+ * @param subscriptions - The subscriptions to get the subscription from.
+ * @returns The subscription for the product.
+ */
 export const useUserSubscriptionByProduct = (
   product: ProductType,
   subscriptions?: Subscription[],
@@ -76,6 +87,26 @@ export const useUserSubscriptionByProduct = (
         subscription.products.some((p) => p.name === product),
       ),
     [subscriptions, product],
+  );
+};
+
+/**
+ * get user last subscription by product
+ *
+ * @param product - The product to get the subscription for.
+ * @param lastSubscription - The last subscription to get the subscription from.
+ * @returns The subscription for the product.
+ */
+export const useUserLastSubscriptionByProduct = (
+  product: ProductType,
+  lastSubscription?: Subscription,
+): Subscription | undefined => {
+  return useMemo(
+    () =>
+      lastSubscription?.products.some((p) => p.name === product)
+        ? lastSubscription
+        : undefined,
+    [lastSubscription, product],
   );
 };
 
