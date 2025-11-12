@@ -317,7 +317,6 @@ export default class Home extends PureComponent {
 
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
-      pendingShieldCohort: prevPendingShieldCohort,
     } = _prevProps;
     const { notificationClosing } = this.state;
 
