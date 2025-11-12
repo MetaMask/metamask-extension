@@ -986,6 +986,13 @@
         "lodash": true
       }
     },
+    "@metamask/claims-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -1434,7 +1441,7 @@
         "@metamask/utils": true,
         "@noble/curves": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true
+        "@scure/base": true
       }
     },
     "@metamask/keyring-api": {
@@ -2046,7 +2053,7 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@scure/base": true,
         "@swc/helpers": true,
         "chalk": true,
         "cron-parser": true,
@@ -2066,7 +2073,8 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "@metamask/transaction-controller": true
+        "@metamask/transaction-controller": true,
+        "@metamask/subscription-controller>bignumber.js": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": {
@@ -2151,7 +2159,7 @@
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@scure/base": true,
         "buffer": true,
         "nock>debug": true,
         "lodash": true,
@@ -2168,7 +2176,7 @@
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@scure/base": true,
         "buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2372,6 +2380,12 @@
         "react": true
       }
     },
+    "@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
     "@metamask/eth-sig-util>@scure/base": {
       "globals": {
         "TextDecoder": true,
@@ -2379,12 +2393,6 @@
       }
     },
     "@metamask/scure-bip39>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/utils>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2664,6 +2672,24 @@
       "packages": {
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary": true,
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
+      }
+    },
+    "@tanstack/react-virtual": {
+      "globals": {
+        "document": true,
+        "scrollY": true
+      },
+      "packages": {
+        "@tanstack/react-virtual>@tanstack/virtual-core": true,
+        "react": true,
+        "react-dom": true
+      }
+    },
+    "@tanstack/react-virtual>@tanstack/virtual-core": {
+      "globals": {
+        "console.info": true,
+        "console.warn": true,
+        "requestAnimationFrame": true
       }
     },
     "@toruslabs/eccrypto": {
@@ -3081,6 +3107,11 @@
       }
     },
     "@metamask/smart-transactions-controller>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/subscription-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }
