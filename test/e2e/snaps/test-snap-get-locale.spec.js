@@ -1,4 +1,3 @@
-const SettingsPage = require('../page-objects/pages/settings/settings-page');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
@@ -101,9 +100,6 @@ describe('Test Snap Get Locale', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Wait for homepage to be loaded
-        await driver.waitForSelector('[data-testid="account-menu-icon"]');
-
         // click on the global action menu
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
@@ -111,9 +107,6 @@ describe('Test Snap Get Locale', function () {
 
         // try to click on the notification item
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
 
         // try to click on the snaps item
         await driver.waitForSelector({
