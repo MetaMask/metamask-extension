@@ -88,11 +88,7 @@ describe('NetworkForm Component', () => {
   });
 
   beforeEach(() => {
-    // Clear mock call history to ensure test isolation and accurate assertions
-    // Each test verifies these actions are called with specific arguments
-    updateNetwork.mockClear(); // Reset calls from network update tests
-    addNetwork.mockClear(); // Reset calls from network creation tests
-    setTokenNetworkFilter.mockClear(); // Reset calls from token filter tests
+    jest.clearAllMocks();
 
     nock('https://chainid.network:443', { encodedQueryParams: true })
       .get('/chains.json')

@@ -316,18 +316,16 @@ export const NetworksForm = ({
           // Track RPC update from network connection banner
           if (trackRpcUpdateFromBanner) {
             const selectedRpcEndpoint =
-              networkPayload.rpcEndpoints?.[
+              networkPayload.rpcEndpoints[
                 networkPayload.defaultRpcEndpointIndex
               ];
             const chainIdAsDecimal = hexToNumber(chainIdHex);
-            const sanitizedRpcUrl =
-              selectedRpcEndpoint &&
-              isPublicEndpointUrl(
-                selectedRpcEndpoint.url,
-                infuraProjectId ?? '',
-              )
-                ? onlyKeepHost(selectedRpcEndpoint.url)
-                : 'custom';
+            const sanitizedRpcUrl = isPublicEndpointUrl(
+              selectedRpcEndpoint.url,
+              infuraProjectId ?? '',
+            )
+              ? onlyKeepHost(selectedRpcEndpoint.url)
+              : 'custom';
 
             trackEvent({
               category: MetaMetricsEventCategory.Network,
