@@ -21,7 +21,7 @@ const getSrcAssetBalanceChange = (
 ) => {
   return {
     asset: {
-      ...tokenDetails[srcAsset.address as Hex],
+      ...tokenDetails[srcAsset.address.toLowerCase() as Hex],
       chainId: toHex(srcAsset.chainId),
       address: srcAsset.address as Hex,
     } as unknown as TokenAssetIdentifier,
@@ -34,7 +34,7 @@ const getSrcAssetBalanceChange = (
       sourceTokenAmount ?? '0x0',
       srcAsset.decimals,
       16,
-      fiatRates[srcAsset.address.toLowerCase() as Hex] ?? 0,
+      fiatRates[srcAsset.address.toLowerCase().toLowerCase() as Hex] ?? 0,
     )
       .negated()
       .toNumber(),
@@ -50,7 +50,7 @@ const getDestAssetBalanceChange = (
 ) => {
   return {
     asset: {
-      ...tokenDetails[destAsset.address as Hex],
+      ...tokenDetails[destAsset.address.toLowerCase() as Hex],
       chainId: toHex(destAsset.chainId),
       address: destAsset.address as Hex,
     } as unknown as TokenAssetIdentifier,
@@ -59,7 +59,7 @@ const getDestAssetBalanceChange = (
       destTokenAmount,
       destAsset.decimals,
       10,
-      fiatRates[destAsset.address.toLowerCase() as Hex] ?? 0,
+      fiatRates[destAsset.address.toLowerCase().toLowerCase() as Hex] ?? 0,
     ).toNumber(),
     usdAmount: 0,
   };
