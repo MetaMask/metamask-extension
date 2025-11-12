@@ -68,7 +68,6 @@ const ShieldIconAnimation = ({
   // Trigger the animation start when rive is loaded
   useEffect(() => {
     if (rive && isWasmReady && !bufferLoading && buffer) {
-      console.log('check: rive', rive);
       const inputs = rive.stateMachineInputs('Animate');
       if (inputs) {
         const startTrigger = inputs.find((input) => input.name === 'Start');
