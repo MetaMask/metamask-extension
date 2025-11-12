@@ -223,7 +223,7 @@ export default function CreationSuccessful() {
           width={BlockSize.Full}
           onClick={onDone}
         >
-          {process.env.METAMASK_BUILD_TYPE === 'experimental'
+          {process.env.METAMASK_BUILD_TYPE === 'experimental' && !isFirefox
             ? t('openWallet')
             : t('done')}
         </Button>
