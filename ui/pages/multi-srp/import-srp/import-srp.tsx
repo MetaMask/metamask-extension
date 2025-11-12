@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -32,11 +32,6 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 
 export const ImportSrp = () => {
   const t = useI18nContext();
@@ -46,7 +41,6 @@ export const ImportSrp = () => {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
-  const trackEvent = useContext(MetaMetricsContext);
 
   // Providing duplicate SRP throws an error in metamask-controller, which results in a warning in the UI
   // We want to hide the warning when the component unmounts
@@ -71,15 +65,6 @@ export const ImportSrp = () => {
         }
       }
       await dispatch(importMnemonicToVault(secretRecoveryPhrase));
-
-      // Track the event for the continue button click.
-      // Removed the hd_entropy_index property because it is not needed for this event.
-      // As we already track that in the ImportSecretRecoveryPhraseCompleted event i.e. (dispatch(importMnemonicToVault(secretRecoveryPhrase))) above.
-      trackEvent({
-        category: MetaMetricsEventCategory.Wallet,
-        event:
-          MetaMetricsEventName.ImportSecretRecoveryPhraseContinueButtonClicked,
-      });
 
       navigate(DEFAULT_ROUTE);
       dispatch(setShowNewSrpAddedToast(true));

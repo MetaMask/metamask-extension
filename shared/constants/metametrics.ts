@@ -721,7 +721,6 @@ export enum MetaMetricsEventName {
   ExternalLinkClicked = 'External Link Clicked',
   ImportSecretRecoveryPhraseClicked = 'Import Secret Recovery Phrase Clicked',
   ImportSecretRecoveryPhraseCompleted = 'Import Secret Recovery Phrase Completed',
-  ImportSecretRecoveryPhraseContinueButtonClicked = 'Import Secret Recovery Phrase Continue Button Clicked',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
   KeyExportFailed = 'Key Export Failed',
