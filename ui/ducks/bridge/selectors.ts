@@ -17,14 +17,12 @@ import {
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   isCrossChain,
-  ChainId,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import {
   SolAccountType,
   BtcAccountType,
   TrxAccountType,
-  TrxScope,
 } from '@metamask/keyring-api';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { uniqBy } from 'lodash';
@@ -38,7 +36,6 @@ import {
   type CaipAssetType,
   type CaipChainId,
   type Hex,
-  isCaipChainId,
 } from '@metamask/utils';
 import type {
   CurrencyRateState,
