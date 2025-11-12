@@ -58,7 +58,7 @@ const ShieldFooterCoverageIndicator = () => {
       // the existing
       style={{ boxShadow: '0 -4px 16px -8px var(--color-shadow-default)' }}
     >
-      <Box marginTop={2}>
+      <Box marginTop={1}>
         <ShieldIconAnimation
           severity={animationSeverity}
           playAnimation={!isPaused}
