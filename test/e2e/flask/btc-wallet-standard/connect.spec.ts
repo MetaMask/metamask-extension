@@ -18,7 +18,7 @@ describe('Bitcoin Wallet Standard - e2e tests', function () {
       await withBtcAccountSnap(
         {
           ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
-          numberOfAccounts: 0,
+          numberOfAccounts: 1,
           title: this.test?.fullTitle(),
         },
         async (driver) => {
@@ -26,19 +26,15 @@ describe('Bitcoin Wallet Standard - e2e tests', function () {
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
 
-          await driver.delay(10000000);
-
           await connectBitcoinTestDapp(driver, testDapp, { onboard: true });
 
-          await driver.delay(10000000);
+          const header = await testDapp.getHeader();
 
-          // const header = await testDapp.getHeader();
+          const connectionStatus = await header.getConnectionStatus();
+          assertConnected(connectionStatus);
 
-          // const connectionStatus = await header.getConnectionStatus();
-          // assertConnected(connectionStatus);
-
-          // const account = await header.getAccount();
-          // assertConnected(account, DEFAULT_BTC_ADDRESS);
+          const account = await header.getAccount();
+          assertConnected(account, DEFAULT_BTC_ADDRESS);
         },
       );
     });

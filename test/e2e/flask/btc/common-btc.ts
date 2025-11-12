@@ -17,7 +17,7 @@ import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
 export async function withBtcAccountSnap(
   {
     title,
-    numberOfAccounts = 1,
+    numberOfAccounts = 0,
     dappPaths,
   }: {
     title?: string;
