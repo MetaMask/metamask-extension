@@ -137,6 +137,7 @@ type AppState = {
   shieldEntryModal?: {
     show: boolean;
     shouldSubmitEvents: boolean;
+    triggeringCohort?: string;
   };
 };
 
