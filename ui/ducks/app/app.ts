@@ -112,6 +112,7 @@ type AppState = {
         nickname?: string;
         editCompleted?: boolean;
         newNetwork?: boolean;
+        trackRpcUpdateFromBanner?: boolean;
       }
     | undefined;
   newNetworkAddedConfigurationId: string;
