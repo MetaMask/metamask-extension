@@ -243,7 +243,7 @@ function handleV4CommandSwapExactIn(
   );
   const parsedResult = parseV4ExactIn(result[0]);
   return {
-    amountMin: parsedResult.amountOutMinimum.toNumber(),
+    amountMin: parsedResult.amountOutMinimum.toHexString(),
     isExactOut: false,
     quotesInput: {
       ...(quotesInput ?? {}),
@@ -268,7 +268,7 @@ function handleV4CommandSwapExactInSingle(
   const parsedResult = parseV4ExactInSingle(result[0]);
 
   return {
-    amountMin: parsedResult.amountOutMinimum.toNumber(),
+    amountMin: parsedResult.amountOutMinimum.toHexString(),
     isExactOut: false,
     quotesInput: {
       ...(quotesInput ?? {}),
