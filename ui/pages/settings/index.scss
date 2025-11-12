@@ -497,6 +497,7 @@
       .tab-bar__tab {
         @include design-system.screen-sm-min {
           @include design-system.H4;
+
           max-height: none;
         }
 
