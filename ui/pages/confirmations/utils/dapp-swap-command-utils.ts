@@ -2,10 +2,11 @@
 import { GenericQuoteRequest } from '@metamask/bridge-controller';
 import { Hex } from '@metamask/utils';
 import { Interface, Result } from '@ethersproject/abi';
+
 // eslint-disable-next-line import/no-restricted-paths
 import { decodeUniswapPath } from '../../../../app/scripts/lib/transaction/decode/uniswap';
 
-export enum Commands {
+enum Commands {
   V3_SWAP_EXACT_IN = '00',
   V3_SWAP_EXACT_OUT = '01',
   V2_SWAP_EXACT_IN = '08',
@@ -91,7 +92,7 @@ type PathKey = {
 };
 
 type COMMAND_VALUES_RESULT = {
-  amountMin?: number | undefined;
+  amountMin?: string | undefined;
   isExactOut?: boolean | undefined;
   quotesInput?: GenericQuoteRequest | undefined;
 };
@@ -103,7 +104,7 @@ type DAPP_SWAP_COMMANDS_PARSER_TYPE = {
     quotesInput: GenericQuoteRequest,
     _chainId: Hex,
   ) => {
-    amountMin: number | undefined;
+    amountMin: string | undefined;
     isExactOut?: boolean | undefined;
     quotesInput: GenericQuoteRequest;
   };
@@ -125,16 +126,6 @@ const decodeV4SwapCommandData = (data: string) => {
   return values;
 };
 
-function decodeCommandData(
-  action: Commands,
-  data: string,
-  ABI_DEFINITION: typeof BASE_COMMANDS_ABI_DEFINITION,
-): Result;
-function decodeCommandData(
-  action: V4Actions,
-  data: string,
-  ABI_DEFINITION: typeof V4_BASE_ACTIONS_ABI_DEFINITION,
-): Result;
 function decodeCommandData(
   action: Commands | V4Actions,
   data: string,
@@ -185,6 +176,7 @@ function handleV4SwapCommand(
     } as GenericQuoteRequest,
   };
 }
+
 function parseV4ExactInSingle(data: Result) {
   const [poolKey, zeroForOne, amountIn, amountOutMinimum, hookData] = data;
   const [currency0, currency1, fee, tickSpacing, hooks] = poolKey;
