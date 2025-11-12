@@ -11,11 +11,19 @@ import {
   useRiveWasmContext,
   useRiveWasmFile,
 } from '../../../contexts/rive-wasm';
+import { SHIELD_ICON_ARTBOARD_NAMES, ShieldIconArtboardName } from './types';
 
-const ShieldIllustrationAnimation = ({
+const ARTBOARD_FILE_MAP = {
+  [SHIELD_ICON_ARTBOARD_NAMES.PROTECTION]: 'shield_icon_protection.riv',
+  [SHIELD_ICON_ARTBOARD_NAMES.PRIORITY]: 'shield_icon_priority.riv',
+};
+
+const ShieldIconAnimation = ({
+  artboardName,
   containerClassName,
   canvasClassName,
 }: {
+  artboardName: ShieldIconArtboardName;
   containerClassName?: string;
   canvasClassName?: string;
 }) => {
@@ -26,7 +34,9 @@ const ShieldIllustrationAnimation = ({
     buffer,
     error: bufferError,
     loading: bufferLoading,
-  } = useRiveWasmFile('./images/riv_animations/shield_subscription_icons.riv');
+  } = useRiveWasmFile(
+    `./images/riv_animations/${ARTBOARD_FILE_MAP[artboardName]}`,
+  );
 
   useEffect(() => {
     if (wasmError) {
@@ -89,4 +99,4 @@ const ShieldIllustrationAnimation = ({
   );
 };
 
-export default ShieldIllustrationAnimation;
+export default ShieldIconAnimation;
