@@ -1,6 +1,5 @@
-import { RpcEndpointType } from '@metamask/network-controller';
 import { getErrorMessage, hasProperty, Hex, isObject } from '@metamask/utils';
-import { cloneDeep, escapeRegExp } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { captureException } from '../../../shared/lib/sentry';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 
@@ -12,7 +11,6 @@ type VersionedData = {
 export const version = 183;
 
 const SEI_CHAIN_ID: Hex = CHAIN_IDS.SEI;
-const SEI_INFURA_SUBDOMAIN = 'sei-mainnet';
 
 /**
  * This migration adds QuickNode failover URL to Sei network RPC endpoints
