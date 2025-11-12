@@ -116,7 +116,7 @@ const getIgnoredKeys = (): string[] => [
 ];
 
 const shouldIgnoreKey = (key: string, ignoredKeys: string[]): boolean => {
-  if (key.match(/\[\d+\]$/u)) {
+  if (key.split('.').some((part) => /\[\d+\]/u.test(part))) {
     return true;
   }
 
