@@ -5692,10 +5692,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^1.4.5":
-  version: 1.4.5
-  resolution: "@metamask/bitcoin-wallet-snap@npm:1.4.5"
-  checksum: 10/861d2d4d6b036897cd9dde29f52e598e4b654993307cce99b6f8d0c2616b1728ebfa8d138cefe1fa40e97244a2a7eb6ba86393f8c2610e0247bd6154b9e0a28f
+"@metamask/bitcoin-wallet-snap@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:1.5.0"
+  checksum: 10/39a1b26132ceaf676a069295b1b2307d80ec6e80db41bde0cf600593a4fcbe880fd29b8740ddea3205ba69b7beb73c0cd845a4916281a240afae9aa24e9a2ae9
   languageName: node
   linkType: hard
 
@@ -6484,9 +6484,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gator-permissions-snap@npm:^0.6.1":
-  version: 0.6.1
-  resolution: "@metamask/gator-permissions-snap@npm:0.6.1"
+"@metamask/gator-permissions-snap@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@metamask/gator-permissions-snap@npm:0.7.0"
   dependencies:
     "@metamask/abi-utils": "npm:3.0.0"
     "@metamask/delegation-core": "npm:0.2.0"
@@ -6494,7 +6494,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:8.1.0"
     "@metamask/utils": "npm:11.4.2"
     zod: "npm:3.25.76"
-  checksum: 10/99e93ee4237e47d98668882998dae12376a4b8ac0ba2f4e7f3164f3a4f2ad2334b0b07c14ee0e972bec3bf51ba5578a38e360fcdcc7d6ec04e9a17eb9c85ddeb
+  checksum: 10/3bd043f4aa64a39af362d832cb37c416f5f9e994ca36cb32d23b7c0c39200d9f3b0980dbe05abf23af075d9067627774a42e44e48319a8bd25c0f6a7885eb798
   languageName: node
   linkType: hard
 
@@ -32025,7 +32025,7 @@ __metadata:
     "@metamask/assets-controllers": "npm:^88.0.0"
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^1.4.5"
+    "@metamask/bitcoin-wallet-snap": "npm:^1.5.0"
     "@metamask/bridge-controller": "npm:^59.0.0"
     "@metamask/bridge-status-controller": "npm:^56.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
@@ -32066,7 +32066,7 @@ __metadata:
     "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^25.0.0"
     "@metamask/gator-permissions-controller": "npm:^0.4.0"
-    "@metamask/gator-permissions-snap": "npm:^0.6.1"
+    "@metamask/gator-permissions-snap": "npm:^0.7.0"
     "@metamask/institutional-wallet-snap": "npm:1.3.4"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
     "@metamask/json-rpc-engine": "npm:^10.0.0"
