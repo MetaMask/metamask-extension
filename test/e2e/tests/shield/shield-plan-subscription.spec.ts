@@ -192,8 +192,8 @@ describe('Shield Subscription Tests', function () {
           await settingsPage.goToTransactionShieldPage();
 
           // // Handle entry modal that appears when navigating to Transaction Shield page
-          // await homePage.checkShieldEntryModalIsDisplayed();
-          // await homePage.clickOnShieldEntryModalGetStarted();
+          await homePage.checkShieldEntryModalIsDisplayed();
+          await homePage.clickOnShieldEntryModalGetStarted();
 
           const shieldPlanPage = new ShieldPlanPage(driver);
           await shieldPlanPage.completeShieldPlanSubscriptionFlow('annual');
