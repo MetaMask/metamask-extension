@@ -683,10 +683,14 @@ export function setShowShieldEntryModalOnceAction(payload: {
 
 export function setPendingShieldCohort(
   cohort: string | null,
+  txType?: string | null,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setPendingShieldCohort', [cohort]);
+      await submitRequestToBackground('setPendingShieldCohort', [
+        cohort,
+        txType,
+      ]);
     } catch (error) {
       log.error('[setPendingShieldCohort] error', error);
       dispatch(displayWarning(error));
