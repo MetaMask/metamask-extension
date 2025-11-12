@@ -75,6 +75,7 @@ import {
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
   CachedLastSelectedPaymentMethods,
+  BalanceCategory,
 } from '@metamask/subscription-controller';
 
 import {
@@ -417,9 +418,13 @@ export function subscriptionsStartPolling(): ThunkAction<
 /**
  * Fetches the subscription eligibilities.
  *
+ * @param params
+ * @param params.balanceCategory
  * @returns The subscription eligibilities.
  */
-export function getSubscriptionsEligibilities(): ThunkAction<
+export function getSubscriptionsEligibilities(params?: {
+  balanceCategory?: BalanceCategory;
+}): ThunkAction<
   SubscriptionEligibility[],
   MetaMaskReduxState,
   unknown,
@@ -427,7 +432,9 @@ export function getSubscriptionsEligibilities(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      return await submitRequestToBackground('getSubscriptionsEligibilities');
+      return await submitRequestToBackground('getSubscriptionsEligibilities', [
+        params,
+      ]);
     } catch (error) {
       log.error('[getSubscriptionsEligibilities] error', error);
       dispatch(displayWarning(error));
@@ -440,6 +447,8 @@ export function getSubscriptionsEligibilities(): ThunkAction<
  * Submits a user event.
  *
  * @param eventRequest - The event request.
+ * @param eventRequest.event - The event type.
+ * @param eventRequest.cohort - Optional cohort ID.
  * @returns resolved promise.
  */
 export function submitSubscriptionUserEvents(
@@ -453,6 +462,27 @@ export function submitSubscriptionUserEvents(
     } catch (error) {
       log.error('[submitSubscriptionUserEvents] error', error);
       dispatch(displayWarning(error));
+    }
+  };
+}
+
+/**
+ * Assigns a user to a cohort.
+ *
+ * @param params - The cohort assignment parameters.
+ * @param params.cohort - The cohort to assign the user to.
+ * @returns resolved promise.
+ */
+export function assignUserToCohort(params: {
+  cohort: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('assignUserToCohort', [params]);
+    } catch (error) {
+      log.error('[assignUserToCohort] error', error);
+      dispatch(displayWarning(error));
+      throw error;
     }
   };
 }
@@ -616,6 +646,7 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
 export function setShowShieldEntryModalOnce(
   show: boolean | null,
   shouldSubmitEvents: boolean = false,
+  triggeringCohort?: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -624,6 +655,7 @@ export function setShowShieldEntryModalOnce(
         setShowShieldEntryModalOnceAction({
           show: Boolean(show),
           shouldSubmitEvents,
+          triggeringCohort,
         }),
       );
     } catch (error) {
@@ -637,10 +669,25 @@ export function setShowShieldEntryModalOnce(
 export function setShowShieldEntryModalOnceAction(payload: {
   show: boolean;
   shouldSubmitEvents: boolean;
+  triggeringCohort?: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
     type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
     payload,
+  };
+}
+
+export function setPendingShieldCohort(
+  cohort: string | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setPendingShieldCohort', [cohort]);
+    } catch (error) {
+      log.error('[setPendingShieldCohort] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
   };
 }
 

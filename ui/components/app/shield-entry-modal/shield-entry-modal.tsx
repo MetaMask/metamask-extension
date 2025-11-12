@@ -34,7 +34,10 @@ import {
   submitSubscriptionUserEvents,
 } from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
-import { getShouldSubmitEventsForShieldEntryModal } from '../../../selectors';
+import {
+  getShouldSubmitEventsForShieldEntryModal,
+  getShieldEntryModalTriggeringCohort,
+} from '../../../selectors';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
   EntryModalSourceEnum,
@@ -58,6 +61,7 @@ export default function ShieldEntryModal({
   const shouldSubmitEvent = useSelector(
     getShouldSubmitEventsForShieldEntryModal,
   );
+  const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
   const handleOnClose = (ctaActionClicked: string = 'dismiss') => {
     captureShieldEntryModalEvent({
@@ -73,6 +77,7 @@ export default function ShieldEntryModal({
       dispatch(
         submitSubscriptionUserEvents({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
+          cohort: triggeringCohort,
         }),
       );
     }

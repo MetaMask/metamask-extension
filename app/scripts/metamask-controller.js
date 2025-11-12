@@ -129,7 +129,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { COHORT_NAMES, PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
   findAtomicBatchSupportForChain,
@@ -2532,6 +2532,9 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.getSubscriptionsEligibilities.bind(
           this.subscriptionController,
         ),
+      assignUserToCohort: this.subscriptionController.assignUserToCohort.bind(
+        this.subscriptionController,
+      ),
       getSubscriptions: this.subscriptionController.getSubscriptions.bind(
         this.subscriptionController,
       ),
@@ -2914,6 +2917,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setShowShieldEntryModalOnce:
         appStateController.setShowShieldEntryModalOnce.bind(appStateController),
+      setPendingShieldCohort:
+        appStateController.setPendingShieldCohort.bind(appStateController),
       setShieldPausedToastLastClickedOrClosed:
         appStateController.setShieldPausedToastLastClickedOrClosed.bind(
           appStateController,
@@ -8527,6 +8532,9 @@ export default class MetamaskController extends EventEmitter {
    * @param transactionMeta - The transaction metadata.
    */
   async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
+    const { isGasFeeSponsored, chainId } = transactionMeta;
+    const bundlerSupported = await isSendBundleSupported(chainId);
+    const isSponsored = isGasFeeSponsored && bundlerSupported;
     const subscriptionControllerState = this.subscriptionController.state;
     const { defaultSubscriptionPaymentOptions } = this.appStateController.state;
     const trackingProps = getSubscriptionRequestTrackingProps(
@@ -8547,7 +8555,21 @@ export default class MetamaskController extends EventEmitter {
       });
       await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
         transactionMeta,
+        isSponsored,
       );
+
+      // Mark send/transfer/swap transactions for Shield post_tx cohort evaluation
+      const isPostTxTransaction = [
+        TransactionType.simpleSend,
+        TransactionType.tokenMethodTransfer,
+        TransactionType.swap,
+        TransactionType.swapAndSend,
+      ].includes(transactionMeta.type);
+
+      const { pendingShieldCohort } = this.appStateController.state;
+      if (isPostTxTransaction && !pendingShieldCohort) {
+        this.appStateController.setPendingShieldCohort(COHORT_NAMES.POST_TX);
+      }
       this.metaMetricsController.trackEvent({
         event: MetaMetricsEventName.ShieldSubscriptionRequestCompleted,
         category: MetaMetricsEventCategory.Shield,

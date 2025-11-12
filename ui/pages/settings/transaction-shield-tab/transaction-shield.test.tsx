@@ -52,6 +52,7 @@ describe('Transaction Shield Page', () => {
               displayBrand: 'Visa',
             },
           },
+          isEligibleForSupport: true,
         } satisfies Subscription,
       ],
     },

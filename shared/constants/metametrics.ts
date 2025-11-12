@@ -942,6 +942,9 @@ export enum MetaMetricsEventName {
   ExtensionPinned = 'Extension Pinned',
   // Extension Port Stream
   PortStreamChunked = 'Port Stream Chunked',
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  ViewportSwitched = 'Viewport Switched',
+  ///: END:ONLY_INCLUDE_IF
   // Shield
   ShieldEntryModal = 'Shield Entry Modal',
   ShieldSubscriptionRequestStarted = 'Shield Subscription Request Started',

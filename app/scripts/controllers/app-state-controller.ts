@@ -127,6 +127,7 @@ export type AppStateControllerState = {
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
   showShieldEntryModalOnce: boolean | null;
+  pendingShieldCohort: string | null;
   defaultSubscriptionPaymentOptions?: {
     defaultPlan: RecurringInterval;
     defaultPaymentType: PaymentType;
@@ -285,6 +286,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
   showShieldEntryModalOnce: null,
+  pendingShieldCohort: null,
   isWalletResetInProgress: false,
 
   ...getInitialStateOverrides(),
@@ -621,6 +623,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   showShieldEntryModalOnce: {
     includeInStateLogs: true,
     persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  pendingShieldCohort: {
+    includeInStateLogs: true,
+    persist: false,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
@@ -1541,6 +1549,12 @@ export class AppStateController extends BaseController<
   setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
     this.update((state) => {
       state.showShieldEntryModalOnce = showShieldEntryModalOnce;
+    });
+  }
+
+  setPendingShieldCohort(cohort: string | null): void {
+    this.update((state) => {
+      state.pendingShieldCohort = cohort;
     });
   }
 
