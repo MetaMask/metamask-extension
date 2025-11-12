@@ -110,13 +110,17 @@ export const MultichainHoveredAddressRowsList = ({
     const viewportHeight = window.innerHeight;
     const popoverEstimatedHeight = 400; // Based on the maxHeight set on the popover
     const spaceBelow = viewportHeight - rect.bottom;
+    const spaceAbove = rect.top;
 
-    // If there's not enough space below, use TopStart
-    if (spaceBelow < popoverEstimatedHeight) {
+    // Only use TopStart if there's not enough space below AND there's enough space above
+    if (
+      spaceBelow < popoverEstimatedHeight &&
+      spaceAbove > popoverEstimatedHeight
+    ) {
       return PopoverPosition.TopStart;
     }
 
-    // Default to BottomStart
+    // Default to BottomStart (preventOverflow will handle if needed)
     return PopoverPosition.BottomStart;
   }, [referenceElement]);
 
