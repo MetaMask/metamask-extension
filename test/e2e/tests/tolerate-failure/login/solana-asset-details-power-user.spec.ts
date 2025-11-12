@@ -7,8 +7,9 @@ import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
-import TimerHelper from '../utils/TimersHelper';
-import { setupTimerReporting } from '../utils/testSetup';
+
+import { setupTimerReporting } from '../utils/testSetup.js';
+import Timers from '../../timers/Timers.js';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 describe('Power user persona', function () {
@@ -53,14 +54,13 @@ describe('Power user persona', function () {
         await homePage.checkTokenListIsDisplayed();
         await homePage.checkTokenListPricesAreDisplayed();
         await assetListPage.clickOnAsset('Solana');
-        const timer1 = new TimerHelper(
+        const timer1 = Timers.createTimer(
           'Time since the user clicks on the asset until the price chart is shown',
         );
-        await driver.delay(1000); // workaround to avoid race condition
-        timer1.start();
+        timer1.startTimer();
         await assetListPage.checkPriceChartIsShown();
         await assetListPage.checkPriceChartLoaded(SOL_TOKEN_ADDRESS); // SOL address
-        timer1.stop();
+        timer1.stopTimer();
         console.log(`Timer 1:  ${timer1.getDurationInSeconds()} s`);
       },
     );

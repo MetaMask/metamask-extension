@@ -9,11 +9,11 @@ import OnboardingPasswordPage from '../../../page-objects/pages/onboarding/onboa
 import SecureWalletPage from '../../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
 
-import TimerHelper from '../utils/TimersHelper';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import FixtureBuilder from '../../../fixture-builder';
-import { getCommonMocks } from '../utils/commonMocks';
-import { setupTimerReporting } from '../utils/testSetup';
+import { getCommonMocks } from '../utils/commonMocks.js';
+import { setupTimerReporting } from '../utils/testSetup.js';
+import Timers from '../../timers/Timers.js';
 
 describe('MetaMask onboarding', function () {
   // Setup timer reporting for all tests in this describe block
@@ -38,22 +38,22 @@ describe('MetaMask onboarding', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        const timer1 = new TimerHelper(
+        const timer1 = Timers.createTimer(
           'Time since the user clicks on "Create new wallet" button until "Social sign up" is visible',
         );
-        const timer2 = new TimerHelper(
+        const timer2 = Timers.createTimer(
           'Time since the user clicks on "use SRP" button until "Metamask password" form is visible',
         );
-        const timer3 = new TimerHelper(
+        const timer3 = Timers.createTimer(
           'Time since the user clicks on "Create password" button until "Recovery Phrase" screen is visible',
         );
-        const timer4 = new TimerHelper(
+        const timer4 = Timers.createTimer(
           'Time since the user clicks on "Skip" button until "Metrics" screen is visible',
         );
-        const timer5 = new TimerHelper(
+        const timer5 = Timers.createTimer(
           'Time since the user clicks on "I agree" button until "Onboarding Success" screen is visible',
         );
-        const timer6 = new TimerHelper(
+        const timer6 = Timers.createTimer(
           'Time since the user clicks on "Done" button until "Home" screen is visible',
         );
 
@@ -63,36 +63,36 @@ describe('MetaMask onboarding', function () {
         console.log('Metrics:', metrics);
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp(false);
-        timer1.start();
+        timer1.startTimer();
         await startOnboardingPage.checkSocialSignUpFormIsVisible();
-        timer1.stop();
+        timer1.stopTimer();
 
-        timer2.start();
+        timer2.startTimer();
         await startOnboardingPage.clickCreateWithSrpButton();
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.checkPageIsLoaded();
-        timer2.stop();
+        timer2.stopTimer();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
-        timer3.start();
+        timer3.startTimer();
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
-        timer3.stop();
+        timer3.stopTimer();
         await secureWalletPage.skipSRPBackup();
-        timer4.start();
+        timer4.startTimer();
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
         await onboardingMetricsPage.checkPageIsLoaded();
-        timer4.stop();
+        timer4.stopTimer();
         await onboardingMetricsPage.clickOnContinueButton();
-        timer5.start();
+        timer5.startTimer();
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.checkPageIsLoaded();
-        timer5.stop();
+        timer5.stopTimer();
         await onboardingCompletePage.completeOnboarding();
-        timer6.start();
+        timer6.startTimer();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkTokenListIsDisplayed();
-        timer6.stop();
+        timer6.stopTimer();
         await homePage.clickBackupRemindMeLaterButton();
         await driver.delay(1000);
         await homePage.checkPageIsLoaded();

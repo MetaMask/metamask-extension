@@ -6,8 +6,8 @@ import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
-import TimerHelper from '../utils/TimersHelper';
-import { setupTimerReporting } from '../utils/testSetup';
+import { setupTimerReporting } from '../utils/testSetup.js';
+import Timers from '../../timers/Timers.js';
 
 describe('Power user persona', function () {
   // Setup timer reporting for all tests in this describe block
@@ -50,16 +50,16 @@ describe('Power user persona', function () {
         await homePage.checkTokenListIsDisplayed();
         await homePage.checkTokenListPricesAreDisplayed();
         await assetListPage.clickOnAsset('USDC');
-        const timer1 = new TimerHelper(
+        const timer1 = Timers.createTimer(
           'Time since the user clicks on the asset until the price chart is shown',
         );
-        timer1.start();
         await driver.delay(1000); // workaround to avoid race condition
+        timer1.startTimer();
         await assetListPage.checkPriceChartIsShown();
         await assetListPage.checkPriceChartLoaded(
           '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         ); // USDC address
-        timer1.stop();
+        timer1.stopTimer();
         console.log(`Timer 1:  ${timer1.getDurationInSeconds()} s`);
       },
     );

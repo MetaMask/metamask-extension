@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import Timers, { TimerWithId } from './Timers';
-import TimerHelper from './TimersHelper';
+import Timers, { type TimerWithId } from '../../timers/Timers.js';
 
 export type TimerTestResult = {
   testName: string;
@@ -11,21 +10,20 @@ export type TimerTestResult = {
 };
 
 /**
- * Performance tracker that collects TimerHelper instances and generates reports
+ * Performance tracker that generates timer reports for test suites
  */
 class TestPerformanceTracker {
-  private timers: TimerHelper[] = [];
+  private static instance: TestPerformanceTracker;
 
-  addTimer(timer: TimerHelper): void {
-    this.timers.push(timer);
+  private constructor() {
+    // Private constructor to prevent direct instantiation
   }
 
-  getAllTimers(): TimerHelper[] {
-    return [...this.timers];
-  }
-
-  clear(): void {
-    this.timers = [];
+  static getInstance(): TestPerformanceTracker {
+    if (!TestPerformanceTracker.instance) {
+      TestPerformanceTracker.instance = new TestPerformanceTracker();
+    }
+    return TestPerformanceTracker.instance;
   }
 
   generateReport(testName: string, testFilePath: string): void {
@@ -48,7 +46,7 @@ class TestPerformanceTracker {
       };
 
       // Create results directory if it doesn't exist
-      const resultsDir = path.join(__dirname, '..', 'results');
+      const resultsDir = path.join(__dirname, '..', 'test-results');
       if (!fs.existsSync(resultsDir)) {
         fs.mkdirSync(resultsDir, { recursive: true });
       }
@@ -75,13 +73,10 @@ class TestPerformanceTracker {
   }
 }
 
-// Global performance tracker instance for the test suite
-const performanceTracker = new TestPerformanceTracker();
-
 /**
- * Export the performance tracker for direct use in tests
+ * Export the singleton performance tracker instance for direct use in tests
  */
-export { performanceTracker };
+export const performanceTracker = TestPerformanceTracker.getInstance();
 
 /**
  * Setup function that configures automatic timer reporting for test suites
@@ -90,7 +85,6 @@ export function setupTimerReporting(): void {
   // Clear any previous timers at the start of each test
   beforeEach(function () {
     Timers.resetTimers();
-    performanceTracker.clear();
   });
 
   // Generate timer report after each test
