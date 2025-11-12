@@ -16,6 +16,7 @@ jobs:
     with:
       build-name: build-dist-browserify
       build-command: yarn build dist
+      builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
   build-dist-mv2-browserify:
@@ -25,6 +26,7 @@ jobs:
       build-command: yarn build dist
       mozilla-lint: true
       enable-mv3: false
+      builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
   build-experimental-browserify:
@@ -32,6 +34,7 @@ jobs:
     with:
       build-name: build-experimental-browserify
       build-command: yarn build --build-type experimental dist
+      builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
   build-experimental-mv2-browserify:
@@ -41,6 +44,7 @@ jobs:
       build-command: yarn build --build-type experimental dist
       mozilla-lint: true
       enable-mv3: false
+      builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
   post-nightly-builds:
