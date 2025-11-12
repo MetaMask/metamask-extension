@@ -23,7 +23,6 @@ import {
   getFromChain,
   getFromChains,
   getFromToken,
-  getIsBridgeTx,
   getIsSwap,
   getToChain,
   getToChains,
@@ -477,63 +476,6 @@ describe('Bridge selectors', () => {
       `);
       expect(result).not.toContain(undefined);
       expect(result).not.toContain(null);
-    });
-  });
-
-  describe('getIsBridgeTx', () => {
-    it('returns false if toChainId is null', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: { toChainId: null },
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId: '0x1' }),
-        },
-      });
-
-      const result = getIsBridgeTx(state as never);
-
-      expect(result).toBe(false);
-    });
-
-    it('returns false if fromChain and toChainId have the same chainId', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x1') },
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId: '0x1' }),
-        },
-      });
-
-      const result = getIsBridgeTx(state as never);
-
-      expect(result).toBe(false);
-    });
-
-    it('returns true if fromChain and toChainId have different chainIds', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {
-            chainRanking: [
-              { chainId: formatChainIdToCaip(ChainId.ETH) },
-              { chainId: formatChainIdToCaip(ChainId.LINEA) },
-            ],
-          },
-        },
-        bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
-        },
-        metamaskStateOverrides: {
-          ...mockNetworkState(
-            { chainId: CHAIN_IDS.MAINNET },
-            ...FEATURED_RPCS.filter(
-              (network) => network.chainId !== CHAIN_IDS.LINEA_MAINNET, // Linea is both a built in network, as well as featured RPC
-            ),
-          ),
-          useExternalServices: true,
-        },
-      });
-
-      const result = getIsBridgeTx(state as never);
-
-      expect(result).toBe(true);
     });
   });
 
