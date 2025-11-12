@@ -37,10 +37,9 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getVariables } from './utils/config';
+import { getVariables, reactCompilerOptions } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
-import { reactCompilerOptions } from './constants';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -317,26 +316,22 @@ const config = {
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [
-          {
-            loader: reactCompilerLoader,
-            options: defineReactCompilerLoaderOption(reactCompilerOptions),
-          },
-          tsxLoader,
-          codeFenceLoader,
-        ],
+        use: [tsxLoader, codeFenceLoader],
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
+        use: [jsxLoader, codeFenceLoader],
+      },
+      {
+        test: /\.(?:ts|mts|tsx|js|mjs|jsx)$/u,
+        include: join(context, '../ui'),
         use: [
           {
             loader: reactCompilerLoader,
             options: defineReactCompilerLoaderOption(reactCompilerOptions),
           },
-          jsxLoader,
-          codeFenceLoader,
         ],
       },
       // vendor javascript. We must transform all npm modules to ensure browser
