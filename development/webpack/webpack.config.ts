@@ -104,7 +104,8 @@ const plugins: WebpackPluginInstance[] = [
   new HtmlBundlerPlugin({
     preprocessorOptions: { useWith: false },
     minify: args.minify,
-    test: /\.html$/u, // default is eta/html, we only want html
+    // default is eta/html, we only want html files that aren't in node_modules
+    test: /^(?!.*[\\/]node_modules[\\/]).*\.html$/u,
     data: {
       isTest: args.test,
       shouldIncludeSnow: args.snow,
