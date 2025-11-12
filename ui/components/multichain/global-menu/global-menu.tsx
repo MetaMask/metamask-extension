@@ -348,7 +348,7 @@ export const GlobalMenu = ({
       {(getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
         getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
         <MenuItem
-          iconName={IconName.Expand}
+          iconName={IconName.Export}
           onClick={() => {
             global?.platform?.openExtensionInBrowser?.();
             trackEvent({
@@ -362,15 +362,13 @@ export const GlobalMenu = ({
           }}
           data-testid="global-menu-expand-view"
         >
-          <Box>
-            <Text>{t('openFullScreen')}</Text>
-            <Text
-              variant={TextVariant.bodySmMedium}
-              color={TextColor.textAlternative}
-            >
-              {t('metamaskExtension')}
-            </Text>
-          </Box>
+          {t('openFullScreen')}
+          <Text
+            variant={TextVariant.bodySmMedium}
+            color={TextColor.textAlternative}
+          >
+            {t('metamaskExtension')}
+          </Text>
         </MenuItem>
       )}
       {account &&
