@@ -92,6 +92,11 @@ export function normalizeMessage(message: string): string {
     )
     .replace(/0x[0-9a-f]{40,}/giu, '<ADDRESS>')
     .replace(/[0-9a-f]{64}/giu, '<HASH>')
+    // Replace Chrome extension IDs (32-character alphanumeric)
+    .replace(
+      /chrome-extension:\/\/[a-z]{32}\//giu,
+      'chrome-extension://<EXTENSION_ID>/',
+    )
     // Replace file paths (normalize to relative paths)
     .replace(/[/\\][^/\\]+[/\\]node_modules[/\\][^/\\]+/gu, '<NODE_MODULE>')
     .replace(/[A-Z]:[/\\][^/\\]+/gu, '<ABSOLUTE_PATH>') // Windows paths
