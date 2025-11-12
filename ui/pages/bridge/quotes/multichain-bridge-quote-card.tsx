@@ -266,20 +266,23 @@ export const MultichainBridgeQuoteCard = ({
               </Tooltip>
             </Row>
             {gasSponsored && (
-            <Row gap={1} data-testid="network-fees-sponsored">
-              <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
-                {t('swapGasFeesSponsored')}
-              </Text>
-              <Tooltip
-                title={t('swapGasFeesSponsored')}
-                position={PopoverPosition.TopStart}
-                offset={[-16, 16]}
-              >
-                {t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol])}
-              </Tooltip>
-            </Row>
-          )}
-          {!gasSponsored && activeQuote.quote.gasIncluded && (
+              <Row gap={1} data-testid="network-fees-sponsored">
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textDefault}
+                >
+                  {t('swapGasFeesSponsored')}
+                </Text>
+                <Tooltip
+                  title={t('swapGasFeesSponsored')}
+                  position={PopoverPosition.TopStart}
+                  offset={[-16, 16]}
+                >
+                  {t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol])}
+                </Tooltip>
+              </Row>
+            )}
+            {!gasSponsored && activeQuote.quote.gasIncluded && (
               <Row gap={1} data-testid="network-fees-included">
                 <Text
                   variant={TextVariant.bodySm}
