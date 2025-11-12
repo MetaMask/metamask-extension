@@ -243,11 +243,14 @@ jobs:
     secrets: inherit
 
   build-test-mv2-webpack:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-mv2-webpack
       build-command: yarn build:test:webpack:mv2
       validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   run-benchmarks:
