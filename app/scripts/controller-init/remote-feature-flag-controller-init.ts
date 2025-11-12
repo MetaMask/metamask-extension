@@ -79,7 +79,8 @@ export const RemoteFeatureFlagControllerInit: ControllerInitFunction<
    *
    * @returns `true` if it should be disabled, `false` otherwise.
    */
-  const getIsDisabled = () => !hasCompletedOnboarding || !canUseExternalServices;
+  const getIsDisabled = () =>
+    !hasCompletedOnboarding || !canUseExternalServices;
 
   const controller = new RemoteFeatureFlagController({
     state: persistedState.RemoteFeatureFlagController,
@@ -102,9 +103,9 @@ export const RemoteFeatureFlagControllerInit: ControllerInitFunction<
    * Enables or disables the controller based on the current state of other
    * controllers.
    */
-  function toggle(){
+  function toggle() {
     const shouldBeDisabled = getIsDisabled();
-    if(shouldBeDisabled) {
+    if (shouldBeDisabled) {
       controller.disable();
     } else {
       controller.enable();
