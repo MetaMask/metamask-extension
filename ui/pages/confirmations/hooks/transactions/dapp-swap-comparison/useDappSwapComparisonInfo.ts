@@ -71,7 +71,11 @@ export function useDappSwapComparisonInfo() {
           trxnData?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
         )?.data;
       }
-      const result = getDataFromSwap(chainId, transactionData);
+      const result = getDataFromSwap(
+        chainId,
+        transactionData,
+        txParams?.from as string,
+      );
       updateRequestDetectionLatency();
       return result;
     } catch (error) {
@@ -83,7 +87,13 @@ export function useDappSwapComparisonInfo() {
         tokenAddresses: [],
       };
     }
-  }, [chainId, data, nestedTransactions, updateRequestDetectionLatency]);
+  }, [
+    chainId,
+    data,
+    nestedTransactions,
+    txParams?.from,
+    updateRequestDetectionLatency,
+  ]);
 
   const {
     fiatRates,
@@ -115,7 +125,6 @@ export function useDappSwapComparisonInfo() {
 
     updateQuoteRequestLatency();
     const startTime = new Date().getTime();
-
     const quotesList = await fetchQuotes(quotesInput);
     updateQuoteResponseLatency(startTime);
     return quotesList;
@@ -127,7 +136,7 @@ export function useDappSwapComparisonInfo() {
   ]);
 
   const { bestQuote, bestFilteredQuote: selectedQuote } = useMemo(() => {
-    if (!amountMin || !quotes?.length || tokenInfoPending) {
+    if (amountMin === undefined || !quotes?.length || tokenInfoPending) {
       return { bestQuote: undefined, bestFilteredQuote: undefined };
     }
 
@@ -148,7 +157,7 @@ export function useDappSwapComparisonInfo() {
   useEffect(() => {
     try {
       if (
-        !amountMin ||
+        amountMin === undefined ||
         !bestQuote ||
         !quotesInput ||
         !simulationData ||
@@ -262,6 +271,7 @@ export function useDappSwapComparisonInfo() {
     amountMin,
     bestQuote,
     captureDappSwapComparisonMetricsProperties,
+    commands,
     gas,
     gasLimitNoBuffer,
     gasUsed,

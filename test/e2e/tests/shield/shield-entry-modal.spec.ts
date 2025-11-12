@@ -125,6 +125,11 @@ describe('Shield Entry Modal', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSubscriptionApiCalls,
+        ignoredConsoleErrors: [
+          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+          'Could not load Rive WASM file',
+          'XMLHttpRequest is not a constructor',
+        ],
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);

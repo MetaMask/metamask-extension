@@ -1879,16 +1879,13 @@
     "description": "$1 represents the Dapp's origin"
   },
   "dappSwapAdvantage": {
-    "message": "Save + Earn using MetaMask Swap:"
+    "message": "Save and earn with MetaMask Swaps"
   },
   "dappSwapBenefits": {
-    "message": "No additional cost • Priority support • Network fees refunded on failed swaps"
-  },
-  "dappSwapQuoteDetails": {
-    "message": "Save $1 network fee, get $2 more $3"
+    "message": "Network fees refunded on failed swaps"
   },
   "dappSwapQuoteDifference": {
-    "message": "Save about $1"
+    "message": "Save $1"
   },
   "darkTheme": {
     "message": "Dark"
@@ -3674,6 +3671,12 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
+  },
+  "metamaskRate": {
+    "message": "Metamask rate"
+  },
+  "metamaskSwap": {
+    "message": "Metamask Swap"
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
@@ -5570,9 +5573,6 @@
   },
   "save": {
     "message": "Save"
-  },
-  "saveAndEarn": {
-    "message": "Save + Earn"
   },
   "scanInstructions": {
     "message": "Place the QR code in front of your camera"

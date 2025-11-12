@@ -31,6 +31,9 @@
   &__membership {
     background-size: 85px;
     height: 85px;
+    background-image: url('/images/shield-membership-shadow.png');
+    background-repeat: no-repeat;
+    background-position: right -10px center;
     margin-bottom: 0;
 
     .transaction-shield-page__membership-text {
@@ -38,7 +41,6 @@
     }
 
     &--active {
-      background: url('/images/shield-membership-active.png') no-repeat right -10px center;
       background-color: var(--color-accent03-dark);
     }
 
@@ -47,7 +49,6 @@
     }
 
     &--inactive {
-      background: url('/images/shield-membership-inactive.png') no-repeat right -10px center;
       background-color: var(--color-background-subsection);
 
       .transaction-shield-page__membership-text {
@@ -65,6 +66,18 @@
 
     @include design-system.screen-sm-max {
       margin-inline: -16px;
+    }
+  }
+
+  &-shield-illustration {
+    &__container {
+      height: 85px;
+      width: 85px;
+    }
+
+    &__canvas {
+      height: 100%;
+      width: 100%;
     }
   }
 
