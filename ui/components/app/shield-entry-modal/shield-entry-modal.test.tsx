@@ -16,6 +16,12 @@ jest.mock('react-router-dom-v5-compat', () => {
   };
 });
 
+jest.mock('./shield-illustration-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => <div data-testid="shield-illustration-animation" />,
+}));
+
 describe('Shield Entry Modal', () => {
   const mockState = {
     metamask: {
