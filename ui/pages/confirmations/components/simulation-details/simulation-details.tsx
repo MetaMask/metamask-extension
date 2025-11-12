@@ -245,6 +245,7 @@ const LegacyHeader = () => {
  * @param props.children
  * @param props.isTransactionsRedesign
  * @param props.transactionId
+ * @param props.title
  */
 const HeaderLayout: React.FC<{
   isTransactionsRedesign: boolean;
@@ -272,6 +273,7 @@ const HeaderLayout: React.FC<{
  * Top-level layout for the simulation preview.
  *
  * @param props
+ * @param props.title
  * @param props.inHeader
  * @param props.isTransactionsRedesign
  * @param props.children
