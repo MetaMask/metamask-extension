@@ -67,6 +67,11 @@ const ShieldIllustrationAnimation = ({
         rive.play();
       }
     }
+    return () => {
+      if (rive) {
+        rive.stop();
+      }
+    };
   }, [rive, isWasmReady, bufferLoading, buffer]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
