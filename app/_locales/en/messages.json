@@ -3669,6 +3669,9 @@
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
+  "metamaskExtension": {
+    "message": "MetaMask Extension"
+  },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
   },
@@ -4582,6 +4585,9 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
+  },
+  "openFullScreen": {
+    "message": "Open full screen"
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Go to full screen to connect your Ledger.",
@@ -7562,6 +7568,9 @@
   "switchToNetwork": {
     "message": "Switch to $1",
     "description": "$1 represents the custom network that has previously been added"
+  },
+  "switchToSidePanel": {
+    "message": "Switch to side panel"
   },
   "switchToThisAccount": {
     "message": "Switch to this account"

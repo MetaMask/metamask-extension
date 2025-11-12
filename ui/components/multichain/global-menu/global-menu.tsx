@@ -1,9 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import browser from 'webextension-polyfill';
-///: END:ONLY_INCLUDE_IF
 import {
   useUnreadNotificationsCounter,
   useReadNotificationsCounter,
@@ -39,6 +37,7 @@ import {
   Popover,
   PopoverPosition,
   Tag,
+  Text,
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
@@ -47,9 +46,7 @@ import { MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
-  ///: END:ONLY_INCLUDE_IF
   PLATFORM_FIREFOX,
 } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
@@ -194,7 +191,6 @@ export const GlobalMenu = ({
       const newValue = !isSidePanelDefault;
       await dispatch(setUseSidePanelAsDefault(newValue));
 
-      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
       // If switching from sidepanel to popup view, close the current sidepanel
       if (
         isSidePanelDefault &&
@@ -231,7 +227,6 @@ export const GlobalMenu = ({
           console.error('Error opening side panel:', error);
         }
       }
-      ///: END:ONLY_INCLUDE_IF
     } catch (error) {
       console.error('Error toggling default view:', error);
     }
@@ -349,22 +344,53 @@ export const GlobalMenu = ({
           closeMenu={closeMenu}
         />
       )}
-      {account && (
-        <>
-          <AccountDetailsMenuItem
-            metricsLocation={METRICS_LOCATION}
-            closeMenu={closeMenu}
-            address={account.address}
-          />
-          {isMultichainAccountsState2Enabled ? null : (
-            <ViewExplorerMenuItem
+
+      {(getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
+        <MenuItem
+          iconName={IconName.Expand}
+          onClick={() => {
+            global?.platform?.openExtensionInBrowser?.();
+            trackEvent({
+              event: MetaMetricsEventName.AppWindowExpanded,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: METRICS_LOCATION,
+              },
+            });
+            closeMenu();
+          }}
+          data-testid="global-menu-expand-view"
+        >
+          <Box>
+            <Text>{t('openFullScreen')}</Text>
+            <Text
+              variant={TextVariant.bodySmMedium}
+              color={TextColor.textAlternative}
+            >
+              {t('metamaskExtension')}
+            </Text>
+          </Box>
+        </MenuItem>
+      )}
+      {account &&
+        getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP &&
+        getEnvironmentType() !== ENVIRONMENT_TYPE_SIDEPANEL && (
+          <>
+            <AccountDetailsMenuItem
               metricsLocation={METRICS_LOCATION}
               closeMenu={closeMenu}
-              account={account}
+              address={account.address}
             />
-          )}
-        </>
-      )}
+            {isMultichainAccountsState2Enabled ? null : (
+              <ViewExplorerMenuItem
+                metricsLocation={METRICS_LOCATION}
+                closeMenu={closeMenu}
+                account={account}
+              />
+            )}
+          </>
+        )}
       <Box
         borderColor={BorderColor.borderMuted}
         width={BlockSize.Full}
@@ -392,9 +418,8 @@ export const GlobalMenu = ({
       >
         {t('allPermissions')}
       </MenuItem>
-
       {/* Toggle between popup and sidepanel - only for Chrome when sidepanel is enabled */}
-      {getBrowserName() !== PLATFORM_FIREFOX && isSidePanelEnabled ? (
+      {getBrowserName() !== PLATFORM_FIREFOX && isSidePanelEnabled && (
         <MenuItem
           iconName={IconName.Expand}
           onClick={async () => {
@@ -410,28 +435,7 @@ export const GlobalMenu = ({
           }}
           data-testid="global-menu-toggle-view"
         >
-          {isSidePanelDefault ? t('popupView') : t('sidePanelView')}
-        </MenuItem>
-      ) : null}
-
-      {/* Expand view button: shows when sidepanel disabled (any browser) OR when sidepanel enabled (Firefox only) */}
-      {getEnvironmentType() === ENVIRONMENT_TYPE_POPUP && (
-        <MenuItem
-          iconName={IconName.Expand}
-          onClick={() => {
-            global?.platform?.openExtensionInBrowser?.();
-            trackEvent({
-              event: MetaMetricsEventName.AppWindowExpanded,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                location: METRICS_LOCATION,
-              },
-            });
-            closeMenu();
-          }}
-          data-testid="global-menu-expand-view"
-        >
-          {t('expandView')}
+          {isSidePanelDefault ? t('popupView') : t('switchToSidePanel')}
         </MenuItem>
       )}
       <MenuItem
