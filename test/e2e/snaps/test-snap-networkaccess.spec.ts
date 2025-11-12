@@ -19,8 +19,11 @@ describe('Test Snap networkAccess', function () {
         },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: async (mockServer: Mockttp) => {
-          await mockTestSnapsSite(mockServer);
-          return await mockNetworkSnap(mockServer);
+          const mocks = [
+            await mockTestSnapsSite(mockServer),
+            await mockNetworkSnap(mockServer),
+          ];
+          return mocks;
         },
         title: this.test?.fullTitle(),
       },

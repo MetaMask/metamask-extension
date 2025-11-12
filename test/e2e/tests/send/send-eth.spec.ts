@@ -135,7 +135,7 @@ describe('Send ETH', function () {
           inputChainId: CHAIN_IDS.MAINNET,
         }).build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: Mockttp) => {
+        testSpecificMock: (mockServer: Mockttp) => {
           mockSendRedesignFeatureFlag(mockServer);
           mockLookupSnap(mockServer);
         },
