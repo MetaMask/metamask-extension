@@ -145,9 +145,6 @@ describe('Shield Entry Modal', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            useExternalServices: false,
-          })
           .withAppStateController({
             showShieldEntryModalOnce: null,
           })
@@ -162,6 +159,7 @@ describe('Shield Entry Modal', function () {
         await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
+        await homePage.clickOnShieldEntryModalSkip()
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('25');
 
