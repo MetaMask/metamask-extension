@@ -329,6 +329,7 @@ export const WINDOW_TITLES = Object.freeze({
   TestDappSendIndividualRequest: 'E2E Test Dapp - Send Individual Request',
   MultichainTestDApp: 'Multichain Test Dapp',
   SolanaTestDApp: 'Solana Test Dapp',
+  BitcoinTestDApp: 'Bitcoin Test Dapp',
   TronTestDApp: 'Tron Test Dapp',
   TestE2EPage: 'E2E Test Page',
   TestSnaps: 'Test Snaps',
