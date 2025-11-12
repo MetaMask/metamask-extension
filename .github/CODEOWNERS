@@ -126,7 +126,7 @@ shared/lib/shield.ts                            @MetaMask/web3auth
 ui/components/app/modals/add-funds-modal        @MetaMask/web3auth
 ui/components/app/shield-entry-modal            @MetaMask/web3auth
 ui/contexts/claims                              @MetaMask/web3auth
-ui/contexts/shield/shield-subscription.tsx      @MetaMask/web3auth
+ui/contexts/shield                              @MetaMask/web3auth
 ui/hooks/claims                                 @MetaMask/web3auth
 ui/hooks/subscription                           @MetaMask/web3auth
 ui/pages/shield-plan                            @MetaMask/web3auth
