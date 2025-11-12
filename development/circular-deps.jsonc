@@ -66,10 +66,6 @@
     "ui/components/app/permission-page-container/permission-page-container.container.js"
   ],
   [
-    "ui/components/app/rewards/RewardsErrorToast.tsx",
-    "ui/ducks/rewards/index.ts"
-  ],
-  [
     "ui/components/app/transaction-list-item/index.js",
     "ui/components/app/transaction-list-item/transaction-list-item.component.js",
     "ui/components/app/transaction-list/index.js",

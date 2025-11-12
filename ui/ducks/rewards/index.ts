@@ -2,8 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type {
   RewardsGeoMetadata,
   SeasonStatusState,
+  RewardsErrorToastState,
 } from '../../../shared/types/rewards';
-import { RewardsErrorToastProps } from '../../components/app/rewards/RewardsErrorToast';
 import { CandidateSubscriptionId, OnboardingStep } from './types';
 
 export type RewardsState = {
@@ -27,7 +27,7 @@ export type RewardsState = {
   // Feature flag
   rewardsEnabled: boolean;
   // Error
-  errorToast: RewardsErrorToastProps;
+  errorToast: RewardsErrorToastState;
 };
 
 export const initialState: RewardsState = {
@@ -144,7 +144,7 @@ const rewardsSlice = createSlice({
       state.seasonStatusError = action.payload;
     },
 
-    setErrorToast: (state, action: PayloadAction<RewardsErrorToastProps>) => {
+    setErrorToast: (state, action: PayloadAction<RewardsErrorToastState>) => {
       state.errorToast = action.payload;
     },
   },

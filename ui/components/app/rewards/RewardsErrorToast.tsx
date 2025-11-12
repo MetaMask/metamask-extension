@@ -7,14 +7,6 @@ import { selectErrorToast } from '../../../ducks/rewards/selectors';
 import { setErrorToast } from '../../../ducks/rewards';
 import { Toast } from '../../multichain/toast/toast';
 
-export type RewardsErrorToastProps = {
-  isOpen: boolean;
-  title: string;
-  description: string;
-  actionText?: string;
-  onActionClick?: () => void;
-};
-
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RewardsErrorToast() {
   const { isOpen, title, description, actionText, onActionClick } =

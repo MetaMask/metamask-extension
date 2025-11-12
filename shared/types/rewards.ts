@@ -201,6 +201,17 @@ export type EstimatedPointsDto = {
   bonusBips: number;
 };
 
+/**
+ * UI toast state for rewards errors.
+ */
+export type RewardsErrorToastState = {
+  isOpen: boolean;
+  title: string;
+  description: string;
+  actionText?: string;
+  onActionClick?: () => void;
+};
+
 export type RewardsGeoMetadata = {
   /**
    * The geographic location string (e.g., 'US', 'CA-ON', 'FR')
