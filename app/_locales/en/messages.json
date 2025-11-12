@@ -6030,6 +6030,9 @@
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
     "message": "Learn how coverage works"
   },
+  "shieldCoverageAlertHighRiskTransaction": {
+    "message": "This is a high risk transaction, so it isn't protected by Transaction Shield. $1."
+  },
   "shieldCoverageAlertMessagePaused": {
     "message": "There was an issue with your Transaction Shield membership payment. Please update your payment method to resume coverage."
   },
@@ -6056,6 +6059,9 @@
   },
   "shieldCoverageAlertMessageUnknown": {
     "message": "This request can't be verified, so it isn't protected by Transaction Shield. $1."
+  },
+  "shieldCoverageAlertMessageTokenTrustSignalWarning": {
+    "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds. $1."
   },
   "shieldCoverageEnding": {
     "message": "Shield coverage ends soon"
