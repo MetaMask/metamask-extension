@@ -35,6 +35,7 @@ export const components: NotificationComponent<PlatformNotification> = {
         description={getDescription(notification)}
         createdAt={new Date(notification.createdAt)}
         onClick={onClick}
+        cta={notification.template.cta}
       />
     );
   },

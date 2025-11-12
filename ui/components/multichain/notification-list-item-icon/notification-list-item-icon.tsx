@@ -56,6 +56,7 @@ const AvatarTokenComponent = ({ src }: { src: string }): JSX.Element => (
   <AvatarToken
     data-testid="avatar-token"
     src={src}
+    padding={1}
     borderStyle={BorderStyle.none}
     size={AvatarTokenSize.Md}
   />
