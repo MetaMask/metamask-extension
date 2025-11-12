@@ -160,7 +160,11 @@ export const useBridgeQueryParams = () => {
 
   // Set fromChain and fromToken
   const setFromChainAndToken = useCallback(
-    (fromTokenMetadata, fromAsset, network?: NetworkConfiguration) => {
+    (
+      fromTokenMetadata: AssetMetadata,
+      fromAsset: NonNullable<ReturnType<typeof parseAsset>>,
+      network?: NetworkConfiguration,
+    ) => {
       const { chainId: assetChainId } = fromAsset;
 
       if (fromTokenMetadata) {

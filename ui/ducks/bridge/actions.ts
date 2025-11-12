@@ -169,23 +169,20 @@ export const setFromChain = ({
   chainId,
   token = null,
 }: {
-  chainId?: Hex | CaipChainId;
+  chainId: Hex | CaipChainId | number | string;
   token?: TokenPayload['payload'];
 }) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
     getState: () => BridgeAppState,
   ) => {
-    if (!chainId) {
-      return;
-    }
-
     // Check for ALL non-EVM chains
     const isNonEvm = isNonEvmChainId(chainId);
 
     // Set the src network
     if (isNonEvm) {
-      dispatch(setActiveNetworkWithError(chainId));
+      const caipChainId = formatChainIdToCaip(chainId);
+      dispatch(setActiveNetworkWithError(caipChainId));
     } else {
       const networkConfig = getFromChains(getState()).find(
         (chain) => chain.chainId === formatChainIdToHex(chainId),
@@ -203,14 +200,7 @@ export const setFromChain = ({
       dispatch(setFromToken(token));
     } else {
       const nativeAsset = getNativeAssetForChainId(chainId);
-      if (nativeAsset) {
-        dispatch(
-          setFromToken({
-            ...nativeAsset,
-            chainId,
-          }),
-        );
-      }
+      dispatch(setFromToken(nativeAsset));
     }
   };
 };

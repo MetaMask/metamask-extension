@@ -93,7 +93,7 @@ import {
   toBridgeToken,
   isNonEvmChain,
 } from './utils';
-import type { BridgeState } from './types';
+import type { BridgeState, BridgeToken } from './types';
 
 /**
  * Helper function to determine the CAIP asset type for non-EVM native assets
@@ -422,7 +422,7 @@ export const getFromToken = createSelector(
 
 export const getToToken = createSelector(
   [getFromToken, getToChain, (state) => state.bridge.toToken],
-  (fromToken, toChain, toToken) => {
+  (fromToken, toChain, toToken): BridgeToken | null => {
     if (!toChain || !fromToken) {
       return null;
     }
