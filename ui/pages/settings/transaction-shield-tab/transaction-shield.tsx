@@ -98,6 +98,7 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import Name from '../../../components/app/name';
+import { useShieldAddFundTrigger } from '../../../hooks/subscription/useAddFundTrigger';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
 
@@ -143,6 +144,9 @@ const TransactionShield = () => {
   // show current active shield subscription or last subscription if no active subscription
   const displayedShieldSubscription =
     currentShieldSubscription ?? lastShieldSubscription;
+
+  // watch handle add fund trigger server check subscription paused because of insufficient funds
+  useShieldAddFundTrigger();
 
   const [timeoutCancelled, setTimeoutCancelled] = useState(false);
   useEffect(() => {

@@ -25,6 +25,7 @@ import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
+import { MetaMaskReduxDispatch } from '../../store/store';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 
 /**
@@ -71,7 +72,7 @@ export const useShieldSubscriptionContext = () => {
 };
 
 export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isBasicFunctionalityEnabled = Boolean(
     useSelector(getUseExternalServices),
   );
