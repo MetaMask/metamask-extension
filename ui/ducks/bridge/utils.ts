@@ -34,6 +34,9 @@ import type { TokenPayload, BridgeToken } from './types';
 // Re-export isNonEvmChainId from bridge-controller for backward compatibility
 export { isNonEvmChainId as isNonEvmChain } from '@metamask/bridge-controller';
 
+// Re-export isTronChainId from confirmations utils for consistency
+export { isTronChainId } from '../../pages/confirmations/utils/network';
+
 /**
  * Safely gets the native token name for a given chainId.
  * Returns undefined if the chainId is not supported by the bridge controller.

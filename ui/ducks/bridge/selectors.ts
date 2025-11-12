@@ -101,22 +101,9 @@ import {
   getDefaultToToken,
   toBridgeToken,
   isNonEvmChain,
+  isTronChainId,
 } from './utils';
 import type { BridgeState } from './types';
-
-// TODO: Import isTronChainId from @metamask/bridge-controller once it's exported from the main entry point
-/**
- * Helper function to check if a chain ID is a Tron chain ID
- *
- * @param chainId - The chain ID to check
- * @returns True if the chain ID is a Tron chain ID
- */
-const isTronChainId = (chainId: Hex | number | CaipChainId | string) => {
-  if (isCaipChainId(chainId)) {
-    return chainId === TrxScope.Mainnet.toString();
-  }
-  return chainId.toString() === ChainId.TRON.toString();
-};
 
 /**
  * Helper function to determine the CAIP asset type for non-EVM native assets

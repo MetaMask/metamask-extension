@@ -12,8 +12,7 @@ import { type TokenListMap } from '@metamask/assets-controllers';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
-  isSolanaChainId,
-  isBitcoinChainId,
+  isNonEvmChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
@@ -21,10 +20,9 @@ import {
   UnifiedSwapBridgeEventName,
   type BridgeController,
   isCrossChain,
-  ChainId,
+  isBitcoinChainId,
 } from '@metamask/bridge-controller';
-import { TrxScope } from '@metamask/keyring-api';
-import { Hex, parseCaipChainId, isCaipChainId } from '@metamask/utils';
+import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -190,24 +188,9 @@ const PrepareBridgePage = ({
   const toChains = useSelector(getToChains);
   const toChain = useSelector(getToChain);
 
-  // TODO: Import isTronChainId from @metamask/bridge-controller once it's exported from the main entry point
-  // Helper to check if chain is Tron
-  const isTronChainId = (chainId: string | number) => {
-    if (isCaipChainId(chainId)) {
-      return chainId === TrxScope.Mainnet.toString();
-    }
-    return chainId.toString() === ChainId.TRON.toString();
-  };
-
   const isFromTokensLoading = useMemo(() => {
     // Non-EVM chains (Solana, Bitcoin, Tron) don't use the EVM token list
-    // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
-    if (
-      fromChain &&
-      (isSolanaChainId(fromChain.chainId) ||
-        isBitcoinChainId(fromChain.chainId) ||
-        isTronChainId(fromChain.chainId))
-    ) {
+    if (fromChain && isNonEvmChainId(fromChain.chainId)) {
       return false;
     }
     return Object.keys(fromTokens).length === 0;
@@ -298,12 +281,7 @@ const PrepareBridgePage = ({
           let address = '';
           if (isNativeAddress(fromToken.address)) {
             address = '';
-          } else if (
-            // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
-            isSolanaChainId(fromChain.chainId) ||
-            isBitcoinChainId(fromChain.chainId) ||
-            isTronChainId(fromChain.chainId)
-          ) {
+          } else if (isNonEvmChainId(fromChain.chainId)) {
             address = fromToken.address || '';
           } else {
             address = fromToken.address?.toLowerCase() || '';

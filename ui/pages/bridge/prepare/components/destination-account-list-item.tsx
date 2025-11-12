@@ -2,11 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   formatChainIdToHex,
-  isSolanaChainId,
-  isBitcoinChainId,
-  ChainId,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { isCaipChainId } from '@metamask/utils';
 import {
   Icon,
   IconColor,
@@ -89,25 +86,13 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
     formattedTokensWithBalancesPerChain,
   );
 
-  // TODO: Import isTronChainId from @metamask/bridge-controller once it's exported from the main entry point
-  // Helper to check if chain is Tron
-  const isTronChainId = (chainId: string | number) => {
-    if (isCaipChainId(chainId)) {
-      return chainId === TrxScope.Mainnet.toString();
-    }
-    return chainId.toString() === ChainId.TRON.toString();
-  };
-
   let balanceToTranslate;
   if (isEvmNetwork) {
     balanceToTranslate = totalFiatBalance;
   } else {
-    // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
     const chainIdInHexOrCaip =
       toChain?.chainId &&
-      (isSolanaChainId(toChain?.chainId) ||
-      isBitcoinChainId(toChain?.chainId) ||
-      isTronChainId(toChain?.chainId)
+      (isNonEvmChainId(toChain?.chainId)
         ? toChain.chainId
         : formatChainIdToHex(toChain?.chainId));
     balanceToTranslate = chainIdInHexOrCaip
@@ -191,11 +176,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
           <AvatarNetwork
             src={
               CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                // TODO: Use isNonEvmChainId from @metamask/bridge-controller instead of checking all three chains
-                toChain?.chainId &&
-                !isSolanaChainId(toChain?.chainId) &&
-                !isBitcoinChainId(toChain?.chainId) &&
-                !isTronChainId(toChain?.chainId)
+                toChain?.chainId && !isNonEvmChainId(toChain?.chainId)
                   ? formatChainIdToHex(toChain?.chainId)
                   : (toChain?.chainId ?? '')
               ]

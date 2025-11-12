@@ -3,10 +3,8 @@ import { useSelector } from 'react-redux';
 import {
   isSolanaChainId,
   isBitcoinChainId,
-  ChainId,
 } from '@metamask/bridge-controller';
-import { TrxScope } from '@metamask/keyring-api';
-import { isCaipChainId } from '@metamask/utils';
+import { isTronChainId } from '../../../../ducks/bridge/utils';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
 import {
   TextField,
@@ -54,15 +52,6 @@ export const DestinationAccountPickerModal = ({
   const isDestinationBitcoin = toChain?.chainId
     ? isBitcoinChainId(toChain.chainId)
     : false;
-
-  // TODO: Import isTronChainId from @metamask/bridge-controller once it's exported from the main entry point
-  // Helper to check if chain is Tron
-  const isTronChainId = (chainId: string | number) => {
-    if (isCaipChainId(chainId)) {
-      return chainId === TrxScope.Mainnet.toString();
-    }
-    return chainId.toString() === ChainId.TRON.toString();
-  };
 
   const isDestinationTron = toChain?.chainId
     ? isTronChainId(toChain.chainId)
