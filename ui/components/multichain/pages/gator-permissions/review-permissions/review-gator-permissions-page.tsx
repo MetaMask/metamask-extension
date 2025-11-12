@@ -34,13 +34,22 @@ import { ReviewGatorPermissionItem } from '../components';
 
 type ReviewGatorPermissionsPageProps = {
   params?: { chainId: string; permissionGroupName: string };
-  navigate?: (to: string | number, options?: { replace?: boolean; state?: Record<string, unknown> }) => void;
+  navigate?: (
+    to: string | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => void;
 };
 
-export const ReviewGatorPermissionsPage = ({ params, navigate: navigateProp }: ReviewGatorPermissionsPageProps = {}) => {
+export const ReviewGatorPermissionsPage = ({
+  params,
+  navigate: navigateProp,
+}: ReviewGatorPermissionsPageProps = {}) => {
   const t = useI18nContext();
   const navigateHook = useNavigate();
-  const urlParamsHook = useParams<{ chainId: string; permissionGroupName: string }>();
+  const urlParamsHook = useParams<{
+    chainId: string;
+    permissionGroupName: string;
+  }>();
 
   // Use props if provided, otherwise fall back to hooks
   const navigate = navigateProp || navigateHook;

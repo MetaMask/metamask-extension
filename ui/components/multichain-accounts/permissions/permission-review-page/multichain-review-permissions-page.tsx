@@ -71,10 +71,16 @@ export enum MultichainReviewPermissionsPageMode {
 
 type MultichainReviewPermissionsProps = {
   params?: { origin: string };
-  navigate?: (to: string | number, options?: { replace?: boolean; state?: Record<string, unknown> }) => void;
+  navigate?: (
+    to: string | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => void;
 };
 
-export const MultichainReviewPermissions = ({ params, navigate: navigateProp }: MultichainReviewPermissionsProps = {}) => {
+export const MultichainReviewPermissions = ({
+  params,
+  navigate: navigateProp,
+}: MultichainReviewPermissionsProps = {}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigateHook = useNavigate();

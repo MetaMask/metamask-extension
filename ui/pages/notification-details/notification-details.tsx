@@ -61,12 +61,18 @@ function useEffectOnNotificationView(notificationData?: Notification) {
 
 type NotificationDetailsProps = {
   params?: { uuid: string };
-  navigate?: (to: string | number, options?: { replace?: boolean; state?: Record<string, unknown> }) => void;
+  navigate?: (
+    to: string | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => void;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function NotificationDetails({ params, navigate: navigateProp }: NotificationDetailsProps = {}) {
+export default function NotificationDetails({
+  params,
+  navigate: navigateProp,
+}: NotificationDetailsProps = {}) {
   const navigateHook = useNavigate();
   const navigate = navigateProp || navigateHook;
   const { notification } = useNotificationByPath(params);
