@@ -268,6 +268,7 @@ describe('MetaMask onboarding', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
+        ignoredConsoleErrors: ['The Snaps platform requires basic functionality to be used. Enable basic functionality in the settings to use the Snaps platform.']
       },
       async ({ driver }) => {
         await importSRPOnboardingFlow({ driver });

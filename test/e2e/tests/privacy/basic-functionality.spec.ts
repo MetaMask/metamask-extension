@@ -111,6 +111,7 @@ describe('MetaMask onboarding', function () {
             userStorageMockttpController,
             mockedAccountSyncResponse,
           ),
+        ignoredConsoleErrors: ['The Snaps platform requires basic functionality to be used. Enable basic functionality in the settings to use the Snaps platform.']
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await importSRPOnboardingFlow({ driver });
