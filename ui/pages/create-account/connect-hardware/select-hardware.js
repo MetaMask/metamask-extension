@@ -124,6 +124,7 @@ export default class SelectHardware extends Component {
           device_type: selectedDevice,
         },
       });
+      this.props.connectToHardwareWallet(selectedDevice);
     }
     return null;
   };
