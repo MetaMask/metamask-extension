@@ -5203,6 +5203,13 @@ export default class MetamaskController extends EventEmitter {
       await this.getSnapKeyring(),
       this.accountTreeController.getSelectedAccountGroup(),
     );
+
+    if (this.isMultichainAccountsFeatureState2Enabled()) {
+      // This allows to create missing accounts if new account providers have been added.
+      // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
+      // for mobile, but for now, this easy fix should cover new provider accounts.
+      await this.multichainAccountService.alignWallets();
+    }
   }
 
   async _loginUser(password) {
