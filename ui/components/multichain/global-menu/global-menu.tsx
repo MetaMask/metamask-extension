@@ -46,7 +46,6 @@ import { MenuItem } from '../../ui/menu';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
   ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -395,9 +394,7 @@ export const GlobalMenu = ({
       </MenuItem>
 
       {/* Toggle between popup and sidepanel - only for Chrome when sidepanel is enabled */}
-      {getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN &&
-      getBrowserName() !== PLATFORM_FIREFOX &&
-      isSidePanelEnabled ? (
+      {getBrowserName() !== PLATFORM_FIREFOX && isSidePanelEnabled ? (
         <MenuItem
           iconName={IconName.Expand}
           onClick={async () => {
