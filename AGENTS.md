@@ -23,12 +23,15 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 5. **NEVER use class components** (use functional components with hooks)
 6. **NEVER modify git config** or run destructive git operations
 7. **NEVER commit** unless explicitly requested by user
+8. **NEVER create inline functions/objects in JSX** (especially in lists)
+9. **NEVER use array index as key** in dynamic lists (use unique IDs)
 
 ### Comprehensive Guidelines Location
 
 Read these files for detailed coding standards:
 - Controller patterns: `.cursor/rules/controller-guidelines.mdc`
 - Testing standards: `.cursor/rules/unit-testing-guidelines.mdc`
+- React performance: `.cursor/rules/react-performance-guidelines.mdc`
 - PR workflow: `.cursor/rules/pull-request-guidelines.mdc`
 - Code style: `.cursor/rules/coding-guidelines.mdc`
 - Official guidelines: `.github/guidelines/CODING_GUIDELINES.md`
@@ -491,8 +494,11 @@ metamask-extension/
 - Functional components with hooks (no class components)
 - Props destructured in function parameters
 - Redux for global state, local state for UI-only data
+- Performance optimizations: useMemo, useCallback, React.memo
+- No inline functions/objects in JSX (especially in lists)
+- Unique IDs as keys (not array index for dynamic lists)
 - Organized in component folders with tests, styles, and types
-- See `.cursor/rules/coding-guidelines.mdc` for component standards
+- See `.cursor/rules/coding-guidelines.mdc` and `.cursor/rules/react-performance-guidelines.mdc`
 
 **Testing**:
 - Unit tests colocated with source files (`.test.ts`)
@@ -944,7 +950,7 @@ component-name/
 ### React Best Practices
 
 ```typescript
-// ✅ CORRECT: Functional component with destructured props
+// ✅ CORRECT: Functional component with destructured props and performance optimizations
 interface TokenListProps {
   tokens: Token[];
   onSelect: (token: Token) => void;
@@ -954,13 +960,13 @@ export const TokenList = ({ tokens, onSelect }: TokenListProps) => {
   // Use hooks
   const [selected, setSelected] = useState<Token | null>(null);
 
-  // Memoize expensive computations
+  // Memoize expensive computations (sorting large arrays)
   const sortedTokens = useMemo(() =>
     [...tokens].sort((a, b) => a.symbol.localeCompare(b.symbol)),
-    [tokens]
+    [tokens]  // Only re-sort when tokens array changes
   );
 
-  // Memoize callbacks passed to children
+  // Memoize callbacks passed to children to prevent unnecessary re-renders
   const handleClick = useCallback((token: Token) => {
     setSelected(token);
     onSelect(token);
@@ -970,9 +976,9 @@ export const TokenList = ({ tokens, onSelect }: TokenListProps) => {
     <div>
       {sortedTokens.map(token => (
         <TokenItem
-          key={token.address}
+          key={token.address}  // Use unique ID, not array index
           token={token}
-          onClick={handleClick}
+          onClick={handleClick}  // Stable reference prevents child re-renders
         />
       ))}
     </div>
@@ -980,7 +986,169 @@ export const TokenList = ({ tokens, onSelect }: TokenListProps) => {
 };
 ```
 
-**Detailed Guidelines:** See `.cursor/rules/coding-guidelines.mdc`
+**Performance Anti-Patterns to Avoid:**
+
+```typescript
+// ❌ WRONG: Inline functions create new references on every render
+{tokens.map((token, index) => (
+  <TokenItem
+    key={index}  // Don't use index as key for dynamic lists
+    onClick={() => handleClick(token)}  // New function on every render!
+    style={{ padding: 16 }}  // New object on every render!
+  />
+))}
+
+// ❌ WRONG: No memoization for expensive operations
+const sortedTokens = tokens.sort((a, b) => a.value - b.value);  // Runs on every render
+
+// ❌ WRONG: Using useEffect for derived state
+const [displayName, setDisplayName] = useState('');
+useEffect(() => {
+  setDisplayName(`${token.symbol} (${token.name})`);  // Should calculate during render
+}, [token]);
+```
+
+**Detailed Guidelines:**
+- General coding: `.cursor/rules/coding-guidelines.mdc`
+- Performance optimization: `.cursor/rules/react-performance-guidelines.mdc`
+
+---
+
+## React Performance Optimization
+
+### Critical Performance Rules
+
+When writing React components, follow these performance best practices:
+
+#### 1. Never Create Inline Functions in Lists
+
+```typescript
+// ❌ WRONG: Creates new function for each item on every render
+{accounts.map((account) => (
+  <AccountItem
+    key={account.address}
+    onClick={() => handleClick(account)}  // BAD!
+  />
+))}
+
+// ✅ CORRECT: Use memoized callback
+const handleClick = useCallback((address: string) => {
+  // handle click
+}, []);
+
+{accounts.map((account) => (
+  <AccountItem
+    key={account.address}
+    onClick={handleClick}
+    address={account.address}  // Pass as prop
+  />
+))}
+```
+
+#### 2. Never Create Inline Objects in JSX
+
+```typescript
+// ❌ WRONG: Creates new object on every render
+<Popover
+  style={{ zIndex: 10, display: 'flex' }}  // BAD!
+  options={{ showIcon: true }}  // BAD!
+/>
+
+// ✅ CORRECT: Define outside component
+const POPOVER_STYLE = { zIndex: 10, display: 'flex' };
+const POPOVER_OPTIONS = { showIcon: true };
+
+<Popover
+  style={POPOVER_STYLE}
+  options={POPOVER_OPTIONS}
+/>
+
+// Or if dynamic, use useMemo:
+const popoverOptions = useMemo(() => ({
+  showIcon: shouldShowIcon
+}), [shouldShowIcon]);
+```
+
+#### 3. Always Use Unique IDs as Keys
+
+```typescript
+// ❌ WRONG: Using index as key for dynamic list
+{tokens.map((token, index) => (
+  <TokenItem key={index} token={token} />  // BAD!
+))}
+
+// ✅ CORRECT: Use unique identifier
+{tokens.map((token) => (
+  <TokenItem key={token.address} token={token} />
+))}
+```
+
+#### 4. Memoize Expensive Calculations
+
+```typescript
+// ❌ WRONG: Sorts on every render
+const TokenList = ({ tokens }) => {
+  const sortedTokens = tokens.sort((a, b) => b.balance - a.balance);  // BAD!
+  return <div>{sortedTokens.map(...)}</div>;
+};
+
+// ✅ CORRECT: Memoize with useMemo
+const TokenList = ({ tokens }) => {
+  const sortedTokens = useMemo(() =>
+    [...tokens].sort((a, b) => b.balance - a.balance),
+    [tokens]
+  );
+  return <div>{sortedTokens.map(...)}</div>;
+};
+```
+
+#### 5. Don't Use useEffect for Derived State
+
+```typescript
+// ❌ WRONG: Using effect for derived state
+const TokenDisplay = ({ token }) => {
+  const [displayName, setDisplayName] = useState('');
+
+  useEffect(() => {
+    setDisplayName(`${token.symbol} (${token.name})`);  // BAD!
+  }, [token]);
+
+  return <div>{displayName}</div>;
+};
+
+// ✅ CORRECT: Calculate during render
+const TokenDisplay = ({ token }) => {
+  const displayName = `${token.symbol} (${token.name})`;
+  return <div>{displayName}</div>;
+};
+```
+
+### Performance Checklist for Components
+
+Before marking a component complete:
+
+```
+✓ No inline arrow functions in JSX (especially in .map())
+✓ No inline object literals in JSX
+✓ List keys use unique IDs (token.address, tx.hash), not array index
+✓ Expensive operations wrapped in useMemo (sorting, filtering)
+✓ Callbacks passed to children wrapped in useCallback
+✓ Static objects/styles defined as constants outside component
+✓ No useEffect where render-time calculation would work
+✓ Large lists (100+ items) consider virtualization (react-window)
+```
+
+### When to Optimize
+
+- **DO optimize:** Frequently rendered components (list items, modals)
+- **DO optimize:** Components with expensive calculations (sorting 100+ items)
+- **DO optimize:** Deep component trees that re-render often
+- **DON'T optimize:** Simple components that render quickly
+- **DON'T optimize:** Components that rarely re-render
+
+**Rule of thumb:** Profile first with React DevTools, then optimize what matters.
+
+**See:** `.cursor/rules/react-performance-guidelines.mdc` for complete guide with 50+ examples.
 
 ---
 
@@ -1215,6 +1383,15 @@ IF you changed behavior significantly:
 ✓ LavaMoat policies updated (if dependencies changed)
 ✓ Circular dependencies checked
 ✓ Build completes without errors
+
+Performance Checks (React Components):
+✓ No inline functions in JSX (especially in .map())
+✓ No inline objects in JSX (e.g., style={{}})
+✓ Unique IDs used as keys (not array index)
+✓ Expensive calculations wrapped in useMemo
+✓ Callbacks to children wrapped in useCallback
+✓ No useEffect for derived state (calculate during render)
+✓ Large lists (100+ items) use virtualization if applicable
 ```
 
 ---
@@ -1232,6 +1409,7 @@ IF you changed behavior significantly:
 
 - **Controller Patterns:** [.cursor/rules/controller-guidelines.mdc](./.cursor/rules/controller-guidelines.mdc)
 - **Unit Testing:** [.cursor/rules/unit-testing-guidelines.mdc](./.cursor/rules/unit-testing-guidelines.mdc)
+- **React Performance:** [.cursor/rules/react-performance-guidelines.mdc](./.cursor/rules/react-performance-guidelines.mdc)
 - **Pull Requests:** [.cursor/rules/pull-request-guidelines.mdc](./.cursor/rules/pull-request-guidelines.mdc)
 - **General Coding:** [.cursor/rules/coding-guidelines.mdc](./.cursor/rules/coding-guidelines.mdc)
 - **Official Guidelines:** [.github/guidelines/CODING_GUIDELINES.md](./.github/guidelines/CODING_GUIDELINES.md)
