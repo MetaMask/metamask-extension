@@ -29,6 +29,7 @@ describe('Shield Entry Modal', () => {
       shieldEntryModal: {
         show: true,
         shouldSubmitEvents: false,
+        triggeringCohort: 'cohort-1',
       },
     },
   };
@@ -96,6 +97,7 @@ describe('Shield Entry Modal', () => {
     await waitFor(() => {
       expect(submitSubscriptionUserEventsSpy).toHaveBeenCalledWith({
         event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        cohort: mockState.appState.shieldEntryModal.triggeringCohort,
       });
       expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
     });
