@@ -34,7 +34,10 @@ import {
   submitSubscriptionUserEvents,
 } from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
-import { getShouldSubmitEventsForShieldEntryModal } from '../../../selectors';
+import {
+  getShouldSubmitEventsForShieldEntryModal,
+  getShieldEntryModalTriggeringCohort,
+} from '../../../selectors';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -52,6 +55,7 @@ export default function ShieldEntryModal({
   const shouldSubmitEvent = useSelector(
     getShouldSubmitEventsForShieldEntryModal,
   );
+  const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
   const handleOnClose = () => {
     if (skipEventSubmission) {
@@ -62,6 +66,7 @@ export default function ShieldEntryModal({
       dispatch(
         submitSubscriptionUserEvents({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
+          cohort: triggeringCohort,
         }),
       );
     }
