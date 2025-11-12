@@ -664,28 +664,10 @@ export default function Routes() {
   }, [currentCurrency, dispatch]);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-  // Navigate to confirmations when there are pending approvals (from non-home pages)
+  // Navigate to confirmations when there are pending approvals and user is on asset details page
   useEffect(() => {
-    // Don't navigate if already on a confirmation-related route, snap flow, homepage, send, swaps, bridge, account management, onboarding, or vault recovery flow
-    const isOnConfirmationRoute =
-      location.pathname === DEFAULT_ROUTE ||
-      location.pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
-      location.pathname.startsWith(CONNECT_ROUTE) ||
-      location.pathname.startsWith(PERMISSIONS) ||
-      location.pathname.startsWith(REVIEW_PERMISSIONS) ||
-      location.pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
-      location.pathname.startsWith(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE) ||
-      location.pathname.startsWith(CONFIRM_ADD_SUGGESTED_NFT_ROUTE) ||
-      location.pathname.startsWith(SNAPS_ROUTE) ||
-      location.pathname.startsWith(SEND_ROUTE) ||
-      location.pathname.startsWith(SWAPS_ROUTE) ||
-      location.pathname.startsWith(CROSS_CHAIN_SWAP_ROUTE) ||
-      location.pathname.startsWith(ACCOUNT_LIST_PAGE_ROUTE) ||
-      location.pathname.startsWith(WALLET_DETAILS_ROUTE) ||
-      location.pathname.startsWith(MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE) ||
-      location.pathname.startsWith(MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE) ||
-      location.pathname.startsWith(ONBOARDING_ROUTE) ||
-      location.pathname.startsWith(RESTORE_VAULT_ROUTE);
+    // Only navigate to confirmations when user is on an asset details page
+    const isOnAssetDetailsPage = location.pathname.startsWith(ASSET_ROUTE);
 
     // Network operations (addEthereumChain, switchEthereumChain) have their own UI
     // and shouldn't trigger auto-navigation
@@ -696,7 +678,7 @@ export default function Routes() {
     );
 
     if (
-      !isOnConfirmationRoute &&
+      isOnAssetDetailsPage &&
       !hasNonNavigableApprovals &&
       isUnlocked &&
       (pendingApprovals.length > 0 || approvalFlows?.length > 0)
