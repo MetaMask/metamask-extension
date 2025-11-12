@@ -1579,8 +1579,6 @@ export function setupController(
     controller.rejectAllPendingApprovals();
   }
 
-  // TODO: only do this when onboarding completed? or does the controller itself
-  // already "know" not to call out ot the network in this case?
   updateNetworkControllerRpcFailoverFromRemoteFeatureFlagController(
     controller.networkController,
     controller.remoteFeatureFlagController,
