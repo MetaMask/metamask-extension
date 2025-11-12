@@ -171,6 +171,9 @@ import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
+import { RootLayout } from '../../layouts/root-layout';
+import { LegacyLayout } from '../../layouts/legacy-layout';
+import { RouteWithLayout } from '../../layouts/route-with-layout';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -687,10 +690,17 @@ export default function Routes() {
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
         <Switch>
-          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
-          <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
-          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
-          <Route path={LOCK_ROUTE} component={Lock} exact />
+          <RouteWithLayout
+            path={ONBOARDING_ROUTE}
+            component={OnboardingFlow}
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            path={LOCK_ROUTE}
+            component={Lock}
+            exact
+            layout={LegacyLayout}
+          />
           <Route
             path={UNLOCK_ROUTE}
             // v5 Route supports exact with render props, but TS types don't recognize it
@@ -714,9 +724,11 @@ export default function Routes() {
             component={RestoreVaultPage}
             exact
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={SMART_ACCOUNT_UPDATE}
             component={SmartAccountUpdate}
+            layout={LegacyLayout}
           />
           <Route path={`${REVEAL_SEED_ROUTE}/:keyringId?`}>
             {createV5CompatRoute<{ keyringId?: string }>(
@@ -728,24 +740,60 @@ export default function Routes() {
               },
             )}
           </Route>
-          <Authenticated path={IMPORT_SRP_ROUTE} component={ImportSrpPage} />
-          <Authenticated path={SETTINGS_ROUTE} component={Settings} />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
+            path={IMPORT_SRP_ROUTE}
+            component={ImportSrpPage}
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            authenticated
+            path={SETTINGS_ROUTE}
+            component={Settings}
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            authenticated
             path={NOTIFICATIONS_SETTINGS_ROUTE}
             component={NotificationsSettings}
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={`${NOTIFICATIONS_ROUTE}/:uuid`}
             component={NotificationDetails}
+            layout={LegacyLayout}
           />
-          <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
-          <Authenticated path={SNAPS_ROUTE} component={SnapList} exact />
-          <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
+            path={NOTIFICATIONS_ROUTE}
+            component={Notifications}
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            authenticated
+            path={SNAPS_ROUTE}
+            component={SnapList}
+            exact
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            authenticated
+            path={SNAPS_VIEW_ROUTE}
+            component={SnapView}
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            authenticated
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
             component={ConfirmTransaction}
           />
-          <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
+          <RouteWithLayout
+            authenticated
+            path={`${SEND_ROUTE}/:page?`}
+            component={SendPage}
+            layout={LegacyLayout}
+          />
           <Route path={SWAPS_ROUTE}>
             {createV5CompatRoute(Swaps, {
               wrapper: AuthenticatedV5Compat,
@@ -776,23 +824,31 @@ export default function Routes() {
               includeLocation: true,
             })}
           </Route>
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
             component={ConfirmAddSuggestedTokenPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
             component={ConfirmAddSuggestedNftPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
             component={ConfirmationPage}
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
+            layout={LegacyLayout}
           />
           <Route path={`${CONNECT_ROUTE}/:id`}>
             {createV5CompatRoute<{ id: string }>(PermissionsConnect, {
@@ -848,87 +904,135 @@ export default function Routes() {
               paramsAsProps: false,
             })}
           </Route>
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
+            layout={LegacyLayout}
           />
-          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
+            path={PERMISSIONS}
+            component={PermissionsPage}
+            exact
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            authenticated
             path={GATOR_PERMISSIONS}
             component={GatorPermissionsPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={TOKEN_TRANSFER_ROUTE}
             component={TokenTransferPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
             component={ReviewGatorPermissionsPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             component={MemoizedReviewPermissionsWrapper}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
             path={ACCOUNT_LIST_PAGE_ROUTE}
             component={AccountList}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
             component={MultichainAccountAddressListPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
             component={MultichainAccountPrivateKeyListPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={ADD_WALLET_PAGE_ROUTE}
             component={AddWalletPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
             component={MultichainAccountDetailsPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
             component={SmartAccountPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
             component={WalletDetailsPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={WALLET_DETAILS_ROUTE}
             component={WalletDetails}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
             component={MultichainAccountDetails}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
             component={AddressQRCode}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={NONEVM_BALANCE_CHECK_ROUTE}
             component={NonEvmBalanceCheck}
+            layout={LegacyLayout}
           />
-          <Authenticated path={SHIELD_PLAN_ROUTE} component={ShieldPlan} />
-          <Authenticated path={DEFAULT_ROUTE} component={Home} />
+
+          <RouteWithLayout
+            authenticated
+            path={SHIELD_PLAN_ROUTE}
+            component={ShieldPlan}
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            authenticated
+            path={DEFAULT_ROUTE}
+            component={Home}
+            layout={RootLayout}
+          />
         </Switch>
       </Suspense>
     );
@@ -1082,10 +1186,9 @@ export default function Routes() {
         />
       ) : null}
 
-      <Box className="main-container-wrapper">
-        {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-        {renderRoutes()}
-      </Box>
+      {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
+      {renderRoutes()}
+
       {isUnlocked ? <Alerts history={history} /> : null}
       {React.createElement(
         ToastMaster as React.ComponentType<{
