@@ -48,7 +48,7 @@ describe('GasFeeTokenListItem', () => {
     expect(result.getByText('Bal: $2,345.00 USD')).toBeInTheDocument();
   });
 
-  it('hides balance and fiat amount when currency rate check is disabled', () => {
+  it('shows token balance when currency rate check is disabled', () => {
     const storeWithoutCurrencyRateCheck = configureStore(
       getMockConfirmStateForTransaction(
         genUnapprovedContractInteractionConfirmation({
@@ -72,12 +72,12 @@ describe('GasFeeTokenListItem', () => {
       storeWithoutCurrencyRateCheck,
     );
 
-    // Should not show balance text with "Bal:"
-    expect(result.queryByText(/Bal:/u)).not.toBeInTheDocument();
+    // Should show balance with token amount instead of fiat
+    expect(result.getByText(/Bal:/u)).toBeInTheDocument();
+    // Should show token balance with symbol (e.g., "Bal: 2.345 TEST")
+    expect(result.getByText(/Bal: .*TEST/u)).toBeInTheDocument();
     // Should not show "undefined" text anywhere
     expect(result.queryByText(/undefined/iu)).not.toBeInTheDocument();
-    // Should still show token symbol
-    expect(result.getByText('TEST')).toBeInTheDocument();
   });
 
   it('renders token amount', () => {
