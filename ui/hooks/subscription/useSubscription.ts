@@ -49,6 +49,7 @@ import {
   ShieldEntryModalTypeEnum,
 } from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
+import { getLatestSubscriptionStatus } from '../../../shared/modules/shield';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -309,7 +310,6 @@ export const useSubscriptionEligibility = (product: ProductType) => {
  * @returns An object with the handleSubscription function and the subscription result.
  */
 export const useHandleSubscription = ({
-  subscriptionState,
   selectedPaymentMethod,
   selectedToken,
   selectedPlan,
@@ -317,7 +317,7 @@ export const useHandleSubscription = ({
   isTrialed,
 }: {
   defaultOptions: DefaultSubscriptionPaymentOptions;
-  subscriptionState: SubscriptionStatus | 'none';
+  subscriptionState?: SubscriptionStatus;
   selectedPaymentMethod: PaymentType;
   selectedPlan: RecurringInterval;
   isTrialed: boolean;
@@ -326,11 +326,15 @@ export const useHandleSubscription = ({
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
+  const { subscriptions, lastSubscription } = useUserSubscriptions();
   const {
     captureShieldSubscriptionRequestStartedEvent,
     captureShieldSubscriptionRequestCompletedEvent,
     captureShieldSubscriptionRequestFailedEvent,
   } = useSubscriptionMetrics();
+
+  const latestSubscriptionStatus =
+    getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
 
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
@@ -346,7 +350,7 @@ export const useHandleSubscription = ({
 
       const subscriptionRequestTrackingParams: CaptureShieldSubscriptionRequestParams =
         {
-          subscriptionState,
+          subscriptionState: latestSubscriptionStatus,
           defaultPaymentType: defaultOptions.defaultPaymentType,
           defaultPaymentCurrency: defaultOptions.defaultPaymentCurrency,
           defaultBillingInterval: defaultOptions.defaultBillingInterval,

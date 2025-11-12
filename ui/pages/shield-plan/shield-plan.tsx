@@ -70,7 +70,6 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constants/subscriptions';
-import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
 import { getIsTrialSubscription } from '../../../shared/modules/shield';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
@@ -82,7 +81,6 @@ const ShieldPlan = () => {
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
-  useSubscriptionMetrics();
   const {
     subscriptions,
     trialedProducts,
@@ -210,15 +208,6 @@ const ShieldPlan = () => {
     }
   }, [selectedToken, setSelectedPaymentMethod]);
 
-  const { handleSubscription, subscriptionResult } = useHandleSubscription({
-    subscriptionState: shieldSubscription?.status || 'none',
-    selectedPaymentMethod,
-    selectedToken,
-    selectedPlan,
-    defaultOptions,
-    isTrialed,
-  });
-
   const tokensSupported = useMemo(() => {
     const chainsAndTokensSupported = cryptoPaymentMethod?.chains ?? [];
 
@@ -230,6 +219,14 @@ const ShieldPlan = () => {
       ),
     ];
   }, [cryptoPaymentMethod?.chains]);
+
+  const { handleSubscription, subscriptionResult } = useHandleSubscription({
+    selectedPaymentMethod,
+    selectedToken,
+    selectedPlan,
+    defaultOptions,
+    isTrialed,
+  });
 
   const loading =
     subscriptionsLoading ||

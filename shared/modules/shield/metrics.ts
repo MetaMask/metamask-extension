@@ -2,11 +2,17 @@ import {
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   RecurringInterval,
+  Subscription,
   SubscriptionControllerState,
+  SubscriptionStatus,
 } from '@metamask/subscription-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringObject } from '@metamask/keyring-controller';
+import { Json } from '@metamask/utils';
 import {
   ShieldUserAccountCategoryEnum,
   ShieldUserAccountTypeEnum,
@@ -15,6 +21,12 @@ import {
 import { getShieldSubscription } from '../../lib/shield';
 import { KeyringType } from '../../constants/keyring';
 import { DefaultSubscriptionPaymentOptions } from '../../types';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../constants/metametrics';
+// eslint-disable-next-line import/no-restricted-paths
+import MetaMetricsController from '../../../app/scripts/controllers/metametrics-controller';
 import {
   getDefaultSubscriptionPaymentOptions,
   getIsTrialSubscription,
@@ -29,6 +41,14 @@ export function getBillingCyclesForMetrics(interval: RecurringInterval) {
   return interval === 'month' ? '12' : '1';
 }
 
+export function getLatestSubscriptionStatus(
+  subscriptions: Subscription[],
+  lastSubscription: Subscription | undefined,
+): SubscriptionStatus | undefined {
+  const currentShieldSubscription = getShieldSubscription(subscriptions);
+  return currentShieldSubscription?.status || lastSubscription?.status;
+}
+
 /**
  * Get the tracking props for the subscription request for the Shield metrics.
  *
@@ -41,9 +61,13 @@ export function getSubscriptionRequestTrackingProps(
   defaultSubscriptionPaymentOptions: DefaultSubscriptionPaymentOptions,
   subscriptionControllerState: SubscriptionControllerState,
   transactionMeta: TransactionMeta,
-): Record<string, string | boolean | undefined> {
-  const { lastSelectedPaymentMethod, trialedProducts, subscriptions } =
-    subscriptionControllerState;
+): Record<string, Json> {
+  const {
+    lastSelectedPaymentMethod,
+    trialedProducts,
+    subscriptions,
+    lastSubscription,
+  } = subscriptionControllerState;
 
   if (!lastSelectedPaymentMethod?.shield) {
     // This should never happen, since this function is only called after the user has selected a payment method for the Shield subscription
@@ -69,12 +93,12 @@ export function getSubscriptionRequestTrackingProps(
   );
   const paymentChain = transactionMeta.chainId;
 
-  const shieldSubscription = getShieldSubscription(subscriptions);
-  const currentSubscriptionStatus = shieldSubscription?.status || 'none';
+  const latestSubscriptionStatus =
+    getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
 
   return {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    subscription_state: currentSubscriptionStatus,
+    subscription_state: latestSubscriptionStatus,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     default_payment_type: defaultPaymentType,
@@ -83,7 +107,7 @@ export function getSubscriptionRequestTrackingProps(
     default_payment_currency: defaultPaymentCurrency,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    default_payment_chain: defaultPaymentChain,
+    default_payment_chain: defaultPaymentChain || null,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     default_billing_interval: getBillingIntervalForMetrics(
@@ -95,7 +119,9 @@ export function getSubscriptionRequestTrackingProps(
       lastSelectedPaymentMethod.shield.type || PAYMENT_TYPES.byCrypto,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    payment_currency: lastSelectedPaymentMethod.shield.paymentTokenSymbol,
+    payment_currency:
+      lastSelectedPaymentMethod.shield.paymentTokenSymbol ||
+      defaultPaymentCurrency,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     billing_interval: billingInterval,
@@ -173,4 +199,42 @@ export function getUserAccountTypeAndCategory(
     // eslint-disable-next-line @typescript-eslint/naming-convention
     user_account_category: userAccountCategory,
   };
+}
+
+/**
+ * Capture a Shield subscription request event with crypto payment.
+ *
+ * @param subscriptionControllerState - The subscription controller state.
+ * @param transactionMeta - The transaction meta.
+ * @param defaultSubscriptionPaymentOptions - The default subscription payment options.
+ * @param metaMetricsController - The meta metrics controller.
+ * @param event - The event name.
+ * @param extrasProps - The extra properties.
+ */
+export function captureShieldSubscriptionRequestEvent(
+  subscriptionControllerState: SubscriptionControllerState,
+  transactionMeta: TransactionMeta,
+  defaultSubscriptionPaymentOptions: DefaultSubscriptionPaymentOptions,
+  metaMetricsController: MetaMetricsController,
+  event: MetaMetricsEventName,
+  extrasProps: Record<string, Json>,
+) {
+  if (transactionMeta.type !== TransactionType.shieldSubscriptionApprove) {
+    return;
+  }
+
+  const trackingProps = getSubscriptionRequestTrackingProps(
+    defaultSubscriptionPaymentOptions,
+    subscriptionControllerState,
+    transactionMeta,
+  );
+
+  metaMetricsController.trackEvent({
+    event,
+    category: MetaMetricsEventCategory.Shield,
+    properties: {
+      ...trackingProps,
+      ...extrasProps,
+    },
+  });
 }

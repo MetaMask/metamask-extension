@@ -220,8 +220,8 @@ import {
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
+  captureShieldSubscriptionRequestEvent,
   getShieldGatewayConfig,
-  getSubscriptionRequestTrackingProps,
 } from '../../shared/modules/shield';
 import {
   HYPERLIQUID_ORIGIN,
@@ -815,6 +815,8 @@ export default class MetamaskController extends EventEmitter {
           this.claimsController.fetchClaimsConfigurations().catch((err) => {
             log.error('Error fetching claims configurations', err);
           });
+          // shield subscribers have to turn on metametrics
+          this.metaMetricsController.setParticipateInMetaMetrics(true);
           this.shieldController.start();
         } else {
           this.shieldController.stop();
@@ -8533,26 +8535,24 @@ export default class MetamaskController extends EventEmitter {
    */
   async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
     const { isGasFeeSponsored, chainId } = transactionMeta;
-    const bundlerSupported = await isSendBundleSupported(chainId);
-    const isSponsored = isGasFeeSponsored && bundlerSupported;
     const subscriptionControllerState = this.subscriptionController.state;
     const { defaultSubscriptionPaymentOptions } = this.appStateController.state;
-    const trackingProps = getSubscriptionRequestTrackingProps(
-      defaultSubscriptionPaymentOptions,
-      subscriptionControllerState,
-      transactionMeta,
-    );
+    const bundlerSupported = await isSendBundleSupported(chainId);
+    const isSponsored = isGasFeeSponsored && bundlerSupported;
+
     try {
-      this.metaMetricsController.trackEvent({
-        event: MetaMetricsEventName.ShieldSubscriptionRequestStarted,
-        category: MetaMetricsEventCategory.Shield,
-        properties: {
-          ...trackingProps,
+      captureShieldSubscriptionRequestEvent(
+        subscriptionControllerState,
+        transactionMeta,
+        defaultSubscriptionPaymentOptions,
+        this.metaMetricsController,
+        MetaMetricsEventName.ShieldSubscriptionRequestStarted,
+        {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           has_sufficient_crypto_balance: true,
         },
-      });
+      );
       await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
         transactionMeta,
         isSponsored,
@@ -8570,28 +8570,32 @@ export default class MetamaskController extends EventEmitter {
       if (isPostTxTransaction && !pendingShieldCohort) {
         this.appStateController.setPendingShieldCohort(COHORT_NAMES.POST_TX);
       }
-      this.metaMetricsController.trackEvent({
-        event: MetaMetricsEventName.ShieldSubscriptionRequestCompleted,
-        category: MetaMetricsEventCategory.Shield,
-        properties: {
-          ...trackingProps,
+      captureShieldSubscriptionRequestEvent(
+        subscriptionControllerState,
+        transactionMeta,
+        defaultSubscriptionPaymentOptions,
+        this.metaMetricsController,
+        MetaMetricsEventName.ShieldSubscriptionRequestCompleted,
+        {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           gas_sponsored: true,
         },
-      });
+      );
     } catch (error) {
       log.error('Error on Shield subscription approval transaction', error);
-      this.metaMetricsController.trackEvent({
-        event: MetaMetricsEventName.ShieldSubscriptionRequestFailed,
-        category: MetaMetricsEventCategory.Shield,
-        properties: {
-          ...trackingProps,
+      captureShieldSubscriptionRequestEvent(
+        subscriptionControllerState,
+        transactionMeta,
+        defaultSubscriptionPaymentOptions,
+        this.metaMetricsController,
+        MetaMetricsEventName.ShieldSubscriptionRequestFailed,
+        {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_message: error.message,
         },
-      });
+      );
       throw error;
     }
   }
