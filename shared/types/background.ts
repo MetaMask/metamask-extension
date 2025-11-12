@@ -58,6 +58,7 @@ import type {
 } from '@metamask/notification-services-controller';
 import type { SmartTransactionsControllerState } from '@metamask/smart-transactions-controller';
 
+import type { ClaimsControllerState } from '@metamask/claims-controller';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
 import type { AccountOrderControllerState } from '../../app/scripts/controllers/account-order';
 import type { PreferencesControllerState } from '../../app/scripts/controllers/preferences-controller';
@@ -138,12 +139,15 @@ export type ControllerStatePropertiesEnumerated = {
   lastUpdatedAt: AppStateControllerState['lastUpdatedAt'];
   lastUpdatedFromVersion: AppStateControllerState['lastUpdatedFromVersion'];
   showShieldEntryModalOnce: AppStateControllerState['showShieldEntryModalOnce'];
+  pendingShieldCohort: AppStateControllerState['pendingShieldCohort'];
+  pendingShieldCohortTxType: AppStateControllerState['pendingShieldCohortTxType'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
   enableEnforcedSimulations: AppStateControllerState['enableEnforcedSimulations'];
   enableEnforcedSimulationsForTransactions: AppStateControllerState['enableEnforcedSimulationsForTransactions'];
   enforcedSimulationsSlippage: AppStateControllerState['enforcedSimulationsSlippage'];
   enforcedSimulationsSlippageForTransactions: AppStateControllerState['enforcedSimulationsSlippageForTransactions'];
   networkConnectionBanner: AppStateControllerState['networkConnectionBanner'];
+  isWalletResetInProgress: AppStateControllerState['isWalletResetInProgress'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
@@ -318,6 +322,8 @@ export type ControllerStatePropertiesEnumerated = {
   rewardsSeasons: RewardsControllerState['rewardsSeasons'];
   rewardsSeasonStatuses: RewardsControllerState['rewardsSeasonStatuses'];
   rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
+  claims: ClaimsControllerState['claims'];
+  claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &
@@ -332,6 +338,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   AppStateControllerState &
   BridgeControllerState &
   BridgeStatusControllerState &
+  ClaimsControllerState &
   CronjobControllerState &
   CurrencyRateState &
   DecryptMessageControllerState &

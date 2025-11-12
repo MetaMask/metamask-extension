@@ -123,6 +123,13 @@ export type AppStateControllerState = {
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
   showShieldEntryModalOnce: boolean | null;
+  pendingShieldCohort: string | null;
+  pendingShieldCohortTxType: string | null;
+
+  /**
+   * Whether the wallet reset is in progress.
+   */
+  isWalletResetInProgress: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -270,6 +277,10 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
   showShieldEntryModalOnce: null,
+  pendingShieldCohort: null,
+  pendingShieldCohortTxType: null,
+  isWalletResetInProgress: false,
+
   ...getInitialStateOverrides(),
 });
 
@@ -606,6 +617,24 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
+  },
+  pendingShieldCohort: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  pendingShieldCohortTxType: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  isWalletResetInProgress: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
   },
 };
 
@@ -1515,9 +1544,28 @@ export class AppStateController extends BaseController<
     });
   }
 
+  setPendingShieldCohort(cohort: string | null, txType?: string | null): void {
+    this.update((state) => {
+      state.pendingShieldCohort = cohort;
+      if (txType !== undefined) {
+        state.pendingShieldCohortTxType = txType;
+      }
+    });
+  }
+
   setCanTrackWalletFundsObtained(enabled: boolean): void {
     this.update((state) => {
       state.canTrackWalletFundsObtained = enabled;
     });
+  }
+
+  setIsWalletResetInProgress(isResetting: boolean): void {
+    this.update((state) => {
+      state.isWalletResetInProgress = isResetting;
+    });
+  }
+
+  getIsWalletResetInProgress(): boolean {
+    return this.state.isWalletResetInProgress;
   }
 }

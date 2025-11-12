@@ -1,33 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Box, Text, TextVariant } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useRewardsContext } from '../../../contexts/rewards';
 import { Skeleton } from '../../component-library/skeleton';
-
-const RewardsBadge = ({ text }: { text: string }) => {
-  const t = useI18nContext();
-
-  return (
-    <Box
-      className="flex items-center gap-1 px-1.5 bg-background-muted rounded"
-      data-testid="rewards-points-balance"
-    >
-      <img
-        src="./images/metamask-rewards-points.svg"
-        alt={t('rewardsPointsIcon')}
-        style={{ width: '16px', height: '16px' }}
-      />
-      <Text
-        variant={TextVariant.BodySm}
-        data-testid="rewards-points-balance-value"
-      >
-        {text}
-      </Text>
-    </Box>
-  );
-};
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { RewardsBadge } from './RewardsBadge';
 
 /**
  * Component to display the rewards points balance
@@ -35,21 +12,24 @@ const RewardsBadge = ({ text }: { text: string }) => {
  * (i.e., when rewardsActiveAccount?.subscriptionId is null)
  */
 export const RewardsPointsBalance = () => {
-  const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
-
+  const t = useI18nContext();
   const {
     rewardsEnabled,
     seasonStatus,
     seasonStatusLoading,
+    seasonStatusError,
     candidateSubscriptionId,
+    refetchSeasonStatus,
   } = useRewardsContext();
 
-  if (!rewardsEnabled) {
-    return null;
-  }
+  useEffect(() => {
+    if (rewardsEnabled) {
+      refetchSeasonStatus();
+    }
+  }, [refetchSeasonStatus, rewardsEnabled]);
 
-  if (!candidateSubscriptionId) {
+  if (!rewardsEnabled || !candidateSubscriptionId) {
     return null;
   }
 
@@ -57,10 +37,27 @@ export const RewardsPointsBalance = () => {
     return <Skeleton width="100px" />;
   }
 
+  if (seasonStatusError && !seasonStatus?.balance) {
+    return (
+      <RewardsBadge
+        formattedPoints={t('rewardsPointsBalance_couldntLoad')}
+        withPointsSuffix={false}
+        boxClassName="gap-1 bg-background-transparent"
+        textClassName="text-alternative"
+        useAlternativeIconColor
+      />
+    );
+  }
+
   // Format the points balance with proper locale-aware number formatting
   const formattedPoints = new Intl.NumberFormat(locale).format(
     seasonStatus?.balance?.total ?? 0,
   );
 
-  return <RewardsBadge text={t('rewardsPointsBalance', [formattedPoints])} />;
+  return (
+    <RewardsBadge
+      formattedPoints={formattedPoints}
+      boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+    />
+  );
 };

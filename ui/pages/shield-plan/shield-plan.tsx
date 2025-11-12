@@ -10,6 +10,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import { Checkbox, TextVariant } from '@metamask/design-system-react';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
@@ -50,7 +51,7 @@ import {
   JustifyContent,
   TextAlign,
   TextColor,
-  TextVariant,
+  TextVariant as DSTextVariant,
 } from '../../helpers/constants/design-system';
 import {
   SETTINGS_ROUTE,
@@ -78,6 +79,10 @@ import { selectNetworkConfigurationByChainId } from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constants/subscriptions';
+import {
+  isDevOrTestEnvironment,
+  isDevOrUatBuild,
+} from '../../../shared/modules/shield/config';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -86,9 +91,17 @@ const ShieldPlan = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
+
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
+
+  // Stripe Test clocks
+  const [enableStripeTestClock, setEnableStripeTestClock] = useState(
+    lastUsedPaymentDetails?.useTestClock ?? false,
+  );
+  const showTestClocksCheckbox = isDevOrUatBuild() || isDevOrTestEnvironment();
+
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts
     getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
@@ -135,11 +148,12 @@ const ShieldPlan = () => {
     return pricingPlans?.find((plan) => plan.interval === selectedPlan);
   }, [pricingPlans, selectedPlan]);
 
-  const availableTokenBalances = useAvailableTokenBalances({
-    paymentChains: cryptoPaymentMethod?.chains,
-    price: selectedProductPrice,
-    productType: PRODUCT_TYPES.SHIELD,
-  });
+  const { availableTokenBalances, pending: pendingAvailableTokenBalances } =
+    useAvailableTokenBalances({
+      paymentChains: cryptoPaymentMethod?.chains,
+      price: selectedProductPrice,
+      productType: PRODUCT_TYPES.SHIELD,
+    });
   const hasAvailableToken = availableTokenBalances.length > 0;
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
@@ -165,17 +179,23 @@ const ShieldPlan = () => {
 
   // set selected token to the first available token if no token is selected
   useEffect(() => {
-    if (selectedToken || availableTokenBalances.length === 0) {
+    if (
+      pendingAvailableTokenBalances ||
+      selectedToken ||
+      availableTokenBalances.length === 0
+    ) {
       return;
     }
 
     const lastUsedPaymentToken = lastUsedPaymentDetails?.paymentTokenAddress;
     const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
+    const lastUsedPaymentPlan = lastUsedPaymentDetails?.plan;
 
     let lastUsedSelectedToken = availableTokenBalances[0];
     if (
       lastUsedPaymentToken &&
-      lastUsedPaymentMethod === PAYMENT_TYPES.byCrypto
+      lastUsedPaymentMethod === PAYMENT_TYPES.byCrypto &&
+      lastUsedPaymentPlan === selectedPlan
     ) {
       lastUsedSelectedToken =
         availableTokenBalances.find(
@@ -185,11 +205,18 @@ const ShieldPlan = () => {
 
     setSelectedToken(lastUsedSelectedToken);
   }, [
+    pendingAvailableTokenBalances,
     availableTokenBalances,
     selectedToken,
     setSelectedToken,
     lastUsedPaymentDetails,
+    selectedPlan,
   ]);
+
+  // reset selected token if selected plan changes
+  useEffect(() => {
+    setSelectedToken(undefined);
+  }, [selectedPlan, setSelectedToken]);
 
   // set default selected payment method to crypto if selected token available
   useEffect(() => {
@@ -210,6 +237,7 @@ const ShieldPlan = () => {
           paymentTokenAddress: selectedToken?.address as Hex,
           paymentTokenSymbol: selectedToken?.symbol,
           plan: selectedPlan,
+          useTestClock: enableStripeTestClock,
         }),
       );
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
@@ -218,6 +246,7 @@ const ShieldPlan = () => {
             products: [PRODUCT_TYPES.SHIELD],
             isTrialRequested: !isTrialed,
             recurringInterval: selectedPlan,
+            useTestClock: enableStripeTestClock,
           }),
         );
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
@@ -233,6 +262,7 @@ const ShieldPlan = () => {
       selectedPlan,
       selectedToken,
       subscriptionPricing,
+      enableStripeTestClock,
     ]);
 
   const tokensSupported = useMemo(() => {
@@ -273,7 +303,6 @@ const ShieldPlan = () => {
         ) ?? [],
     [pricingPlans, t],
   );
-  const selectedPlanData = plans.find((plan) => plan.id === selectedPlan);
 
   const planDetails = useMemo(() => {
     const details = [];
@@ -285,14 +314,20 @@ const ShieldPlan = () => {
         ]),
       );
     }
-    details.push(
-      selectedPaymentMethod === PAYMENT_TYPES.byCrypto
-        ? t('shieldPlanDetails2')
-        : t('shieldPlanDetails2Card'),
-    );
-    details.push(t('shieldPlanDetails3'));
+
+    let planDetails2 = t('shieldPlanDetails2Card');
+    if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
+      planDetails2 =
+        selectedPlan === RECURRING_INTERVALS.year
+          ? t('shieldPlanDetails2CryptoYear')
+          : t('shieldPlanDetails2CryptoMonth');
+    }
+    details.push(planDetails2);
+    if (selectedPlan === RECURRING_INTERVALS.month) {
+      details.push(t('shieldPlanDetails3'));
+    }
     return details;
-  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice]);
+  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice, selectedPlan]);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
@@ -314,7 +349,7 @@ const ShieldPlan = () => {
     <Page className="shield-plan-page" data-testid="shield-plan-page">
       <Header
         textProps={{
-          variant: TextVariant.headingSm,
+          variant: DSTextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
@@ -359,8 +394,8 @@ const ShieldPlan = () => {
                     textAlign={TextAlign.Left}
                     className="shield-plan-page__radio-label"
                   >
-                    <Text variant={TextVariant.bodySm}>{plan.label}</Text>
-                    <Text variant={TextVariant.headingMd}>{plan.price}</Text>
+                    <Text variant={DSTextVariant.bodySm}>{plan.label}</Text>
+                    <Text variant={DSTextVariant.headingMd}>{plan.price}</Text>
                   </Box>
                   {plan.id === RECURRING_INTERVALS.year && (
                     <Box
@@ -372,7 +407,7 @@ const ShieldPlan = () => {
                       className="shield-plan-page__save-badge"
                     >
                       <Text
-                        variant={TextVariant.bodyXsMedium}
+                        variant={DSTextVariant.bodyXsMedium}
                         color={TextColor.iconInverse}
                       >
                         {t('shieldPlanSave')}
@@ -390,7 +425,7 @@ const ShieldPlan = () => {
                 onClick={() => setShowPaymentModal(true)}
                 width={BlockSize.Full}
               >
-                <Text variant={TextVariant.bodyLgMedium}>
+                <Text variant={DSTextVariant.bodyLgMedium}>
                   {t('shieldPlanPayWith')}
                 </Text>
 
@@ -428,7 +463,7 @@ const ShieldPlan = () => {
                   ) : (
                     <Icon size={IconSize.Xl} name={IconName.Card} />
                   )}
-                  <Text variant={TextVariant.bodyLgMedium}>
+                  <Text variant={DSTextVariant.bodyLgMedium}>
                     {selectedPaymentMethod === PAYMENT_TYPES.byCrypto
                       ? selectedToken?.symbol || ''
                       : t('shieldPlanCard')}
@@ -443,7 +478,7 @@ const ShieldPlan = () => {
                 {...rowsStyleProps}
                 display={Display.Block}
               >
-                <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
+                <Text variant={DSTextVariant.bodyLgMedium} marginBottom={4}>
                   {t('shieldPlanDetails')}
                 </Text>
                 <Box
@@ -464,7 +499,7 @@ const ShieldPlan = () => {
                           color={IconColor.primaryDefault}
                         />
                       </Box>
-                      <Text variant={TextVariant.bodySm}>{detail}</Text>
+                      <Text variant={DSTextVariant.bodySm}>{detail}</Text>
                     </Box>
                   ))}
                 </Box>
@@ -485,9 +520,21 @@ const ShieldPlan = () => {
           <Footer
             className="shield-plan-page__footer"
             flexDirection={FlexDirection.Column}
-            gap={3}
             backgroundColor={BackgroundColor.backgroundMuted}
           >
+            {showTestClocksCheckbox && (
+              <Checkbox
+                label="Enable Stripe Test clocks (for development and testing only)"
+                labelProps={{
+                  variant: TextVariant.BodySm,
+                }}
+                onChange={() =>
+                  setEnableStripeTestClock(!enableStripeTestClock)
+                }
+                id="stripe-test-clocks"
+                isSelected={enableStripeTestClock}
+              />
+            )}
             <Button
               size={ButtonSize.Lg}
               variant={ButtonVariant.Primary}
@@ -497,13 +544,6 @@ const ShieldPlan = () => {
             >
               {t('continue')}
             </Button>
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-              textAlign={TextAlign.Center}
-            >
-              {t('shieldPlanAutoRenew', [selectedPlanData?.price])}
-            </Text>
           </Footer>
         </>
       )}

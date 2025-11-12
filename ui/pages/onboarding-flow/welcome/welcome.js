@@ -7,8 +7,7 @@ import React, {
   Suspense,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useSearchParams } from 'react-router-dom-v5-compat';
-import log from 'loglevel';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { Box } from '../../../components/component-library';
 import {
   ONBOARDING_COMPLETION_ROUTE,
@@ -41,7 +40,10 @@ import {
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import {
+  isUserCancelledLoginError,
+  OAuthErrorMessages,
+} from '../../../../shared/modules/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
   AlignItems,
@@ -50,6 +52,8 @@ import {
   JustifyContent,
   BlockSize,
 } from '../../../helpers/constants/design-system';
+import { useRiveWasmContext } from '../../../contexts/rive-wasm';
+import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
 import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE } from './types';
 import LoginErrorModal from './login-error-modal';
@@ -63,11 +67,11 @@ const FoxAppearAnimation = lazy(() => import('./fox-appear-animation'));
 export default function OnboardingWelcome() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
   const isUserAuthenticatedWithSocialLogin = useSelector(
     getIsSocialLoginUserAuthenticated,
   );
@@ -81,10 +85,10 @@ export default function OnboardingWelcome() {
   const [loginError, setLoginError] = useState(null);
   const isTestEnvironment = Boolean(process.env.IN_TEST);
 
-  // Check if user is returning from another page (skip animations)
-  const fromParam = searchParams.get('from');
-  const shouldSkipAnimation =
-    fromParam === 'unlock' || fromParam === 'account-exist';
+  const { animationCompleted } = useRiveWasmContext();
+  const shouldSkipAnimation = Boolean(
+    animationCompleted?.MetamaskWordMarkAnimation,
+  );
 
   // In test environments or when returning from another page, skip animations
   const [isAnimationComplete, setIsAnimationComplete] = useState(
@@ -95,7 +99,11 @@ export default function OnboardingWelcome() {
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
-    if (currentKeyring && !newAccountCreationInProgress) {
+    if (
+      currentKeyring &&
+      !newAccountCreationInProgress &&
+      !isWalletResetInProgress
+    ) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.restore
@@ -126,6 +134,7 @@ export default function OnboardingWelcome() {
     isParticipateInMetaMetricsSet,
     isUserAuthenticatedWithSocialLogin,
     isFireFox,
+    isWalletResetInProgress,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -185,6 +194,7 @@ export default function OnboardingWelcome() {
             socialConnectionType,
             bufferedTrace,
             bufferedEndTrace,
+            trackEvent,
           ),
         );
         bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
@@ -198,6 +208,7 @@ export default function OnboardingWelcome() {
       onboardingParentContext,
       bufferedTrace,
       bufferedEndTrace,
+      trackEvent,
     ],
   );
 
@@ -207,7 +218,7 @@ export default function OnboardingWelcome() {
         error instanceof Error ? error.message : 'Unknown error';
 
       // Map raw OAuth error messages to UI modal-friendly constants
-      if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+      if (isUserCancelledLoginError(error)) {
         setLoginError(null);
         return;
       }
@@ -347,9 +358,7 @@ export default function OnboardingWelcome() {
   );
 
   const handleLoginError = useCallback((error) => {
-    log.error('handleLoginError::error', error);
-    const errorMessage = error.message;
-    if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+    if (isUserCancelledLoginError(error)) {
       setLoginError(null);
     } else {
       setLoginError(LOGIN_ERROR.GENERIC);
@@ -441,7 +450,7 @@ export default function OnboardingWelcome() {
 
           {loginError !== null && (
             <LoginErrorModal
-              onClose={() => setLoginError(null)}
+              onDone={() => setLoginError(null)}
               loginError={loginError}
             />
           )}

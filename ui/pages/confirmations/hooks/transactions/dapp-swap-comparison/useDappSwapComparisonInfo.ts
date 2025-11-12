@@ -30,11 +30,12 @@ export function useDappSwapComparisonInfo() {
     id: transactionId,
     simulationData,
     txParams,
+    txParamsOriginal,
     nestedTransactions,
   } = currentConfirmation ?? {
     txParams: {},
   };
-  const { data, gas } = txParams ?? {};
+  const { data, gas } = txParamsOriginal ?? txParams ?? {};
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const {
     requestDetectionLatency,
@@ -85,6 +86,7 @@ export function useDappSwapComparisonInfo() {
   }, [chainId, data, nestedTransactions, updateRequestDetectionLatency]);
 
   const {
+    fiatRates,
     getGasUSDValue,
     getTokenUSDValue,
     getDestinationTokenUSDValue,
@@ -111,11 +113,10 @@ export function useDappSwapComparisonInfo() {
       },
     });
 
-    const startTime = new Date().getTime();
     updateQuoteRequestLatency();
+    const startTime = new Date().getTime();
 
     const quotesList = await fetchQuotes(quotesInput);
-
     updateQuoteResponseLatency(startTime);
     return quotesList;
   }, [
@@ -369,9 +370,13 @@ export function useDappSwapComparisonInfo() {
   ]);
 
   return {
-    selectedQuoteValueDifference,
-    gasDifference,
-    tokenAmountDifference,
+    fiatRates,
     destinationTokenSymbol,
+    gasDifference,
+    selectedQuote,
+    selectedQuoteValueDifference,
+    sourceTokenAmount: quotesInput?.srcTokenAmount,
+    tokenAmountDifference,
+    tokenDetails,
   };
 }

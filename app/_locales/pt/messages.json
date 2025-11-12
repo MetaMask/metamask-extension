@@ -1630,14 +1630,8 @@
   "customToken": {
     "message": "Token personalizado"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "A detecção de tokens ainda não está disponível nesta rede. Por favor, importe o token manualmente e certifique-se de que ele é confiável. Saiba mais sobre $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Qualquer pessoa pode criar um token, inclusive versões falsas de tokens existentes. Saiba mais sobre $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Certifique-se de que confia no token antes de importá-lo. Saiba como evitar $1. Você também pode ativar a detecção de tokens $2."
   },
   "customerSupport": {
     "message": "suporte ao cliente"
@@ -2787,9 +2781,6 @@
   "imported": {
     "message": "Importada",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "em suas Configurações"
   },
   "included": {
     "message": "incluída"
@@ -5103,10 +5094,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Esta é a sua $1. Anote-a na ordem correta e guarde-a em um lugar seguro. Se alguém tiver sua Frase de Recuperação Secreta, poderá acessar sua carteira. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Não a compartilhe com ninguém, nunca."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Salve sua Frase de Recuperação Secreta"
@@ -5240,9 +5228,6 @@
   },
   "shieldEntryModalGetStarted": {
     "message": "Começar"
-  },
-  "shieldEntryModalSkip": {
-    "message": "Ignorar"
   },
   "show": {
     "message": "Exibir"
@@ -6607,9 +6592,6 @@
   "tokenMarketplace": {
     "message": "Marketplace de tokens"
   },
-  "tokenScamSecurityRisk": {
-    "message": "golpes e riscos de segurança envolvendo tokens"
-  },
   "tokenStandard": {
     "message": "Padrão de token"
   },
@@ -7060,24 +7042,11 @@
     "message": "$1 você pode guardar esta frase em segurança para nunca perder o acesso ao seu dinheiro.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Você pode fazer backup de suas carteiras ou ver sua Frase de Recuperação Secreta em Configurações > Segurança e Senha."
-  },
   "walletReadyLoseSrp": {
     "message": "Se perder sua Frase de Recuperação Secreta, você não poderá usar sua carteira."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Esta Frase de Recuperação Secreta pode te ajudar a recuperar o acesso se você esquecer sua senha ou perder o acesso ao seu login."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Se não fizer backup da sua Frase de Recuperação Secreta, você perderá o acesso aos seus valores se não conseguir entrar no app ou se passar a usar um novo dispositivo."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Você pode fazer login em sua carteira quando quiser com sua conta $1 e a respectiva senha.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Se você esquecer sua senha, não será possível acessar sua carteira."
   },
   "wantToAddThisNetwork": {
     "message": "Desejar adicionar esta rede?"
@@ -7183,8 +7152,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Mantenha sua Frase de Recuperação Secreta segura!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Lembraremos você mais tarde"
   }
 }
