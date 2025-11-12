@@ -38,7 +38,9 @@ const ShieldFooterCoverageIndicator = () => {
     return selectedAlertSeverity;
   }, [isPaused, selectedAlertSeverity]);
 
-  if (!currentConfirmation || !isEnabled) {
+  const isShowShieldFooterCoverageIndicator = isEnabled || isPaused;
+
+  if (!isShowShieldFooterCoverageIndicator) {
     return null;
   }
 
