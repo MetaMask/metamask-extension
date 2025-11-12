@@ -46,7 +46,6 @@ export type MultichainAccountNetworkGroupProps = {
  * @param props.excludeTestNetworks - Whether to exclude test networks from display. Defaults to true.
  * @param props.limit - Maximum number of avatars to display before showing "+X" indicator. Defaults to 4.
  * @param props.className - Optional CSS class name for additional styling
- * @param props.showTag - Whether to show the "+X" tag when there are more than MAX_NETWORK_AVATARS networks. Defaults to true.
  * @returns A React component displaying network avatars in a group
  */
 export const MultichainAccountNetworkGroup: React.FC<
