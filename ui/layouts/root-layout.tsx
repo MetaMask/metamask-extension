@@ -1,13 +1,20 @@
 import React, { type ReactNode } from 'react';
+import cn from 'classnames';
 import { Header } from './header';
+import { ScrollContainer } from '../contexts/scroll-container';
+
+const width = 'max-w-[clamp(var(--width-sm),85vw,var(--width-max))]';
+const sidepanel = 'group-[.app--sidepanel]:max-w-[var(--width-max-sidepanel)]';
 
 export const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="w-full h-full flex flex-col max-w-[clamp(576px,85vw,798px)] sm:mx-auto group-[.app--sidepanel]:max-w-[490px]">
+    <div className={cn('w-full h-full flex flex-col', width, sidepanel)}>
       <Header />
 
       {/* Note: Consider a sticky header instead of overflow */}
-      <div className="flex flex-col flex-1 overflow-y-auto">{children}</div>
+      <ScrollContainer className="flex flex-col flex-1 overflow-y-auto no-scrollbar">
+        {children}
+      </ScrollContainer>
     </div>
   );
 };

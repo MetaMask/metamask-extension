@@ -5,7 +5,8 @@ import Authenticated from '../helpers/higher-order-components/authenticated/auth
 type Props = {
   path: string;
   exact?: boolean;
-  component: ComponentType<RouteComponentProps>;
+  component?: ComponentType<RouteComponentProps>;
+  children?: ReactNode;
   layout: ComponentType<{ children: ReactNode }>;
   authenticated?: boolean;
 };
@@ -23,8 +24,9 @@ Once migrated, we can use layouts like this:
  *
  * @param props - Route props
  * @param props.path - Path for the route
- * @param props.component - The component to render for the route
  * @param props.exact - Whether the route should match exactly
+ * @param props.component - The component to render for the route (receives route props)
+ * @param props.children - Alternative to component prop, renders children directly
  * @param props.layout - The layout to use for the route
  * @param props.authenticated - Whether to wrap with the Authenticated component
  * @returns Component wrapped in the layout
@@ -32,17 +34,24 @@ Once migrated, we can use layouts like this:
 export const RouteWithLayout = ({
   layout: Layout,
   component: Component,
+  children,
   authenticated,
   ...routeProps
 }: Props) => {
-  const WrappedComponent = useMemo(
-    () => (props: RouteComponentProps) => (
+  const WrappedComponent = useMemo(() => {
+    if (Component) {
+      return (props: RouteComponentProps) => (
+        <Layout>
+          <Component {...props} />
+        </Layout>
+      );
+    }
+    return (props: RouteComponentProps) => (
       <Layout>
-        <Component {...props} />
+        {typeof children === 'function' ? children(props) : children}
       </Layout>
-    ),
-    [Layout, Component],
-  );
+    );
+  }, [Layout, Component, children]);
 
   if (authenticated) {
     return <Authenticated {...routeProps} component={WrappedComponent} />;
@@ -54,7 +63,13 @@ export const RouteWithLayout = ({
       // @ts-expect-error RouteProps type doesn't include render prop
       render={(props: RouteComponentProps) => (
         <Layout>
-          <Component {...props} />
+          {Component ? (
+            <Component {...props} />
+          ) : typeof children === 'function' ? (
+            children(props)
+          ) : (
+            children
+          )}
         </Layout>
       )}
     />

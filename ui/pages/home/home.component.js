@@ -888,7 +888,7 @@ export default class Home extends PureComponent {
       !isSocialLoginFlow;
 
     return (
-      <ScrollContainer className="main-container main-container--has-shadow">
+      <div className="main-container main-container--has-shadow">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Route
           path={CONNECTED_ACCOUNTS_ROUTE}
@@ -946,7 +946,7 @@ export default class Home extends PureComponent {
           </div>
           {this.renderNotifications()}
         </div>
-      </ScrollContainer>
+      </div>
     );
   }
 }

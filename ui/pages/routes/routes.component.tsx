@@ -696,8 +696,9 @@ export default function Routes() {
             exact
             layout={LegacyLayout}
           />
-          <Route
+          <RouteWithLayout
             path={UNLOCK_ROUTE}
+            layout={LegacyLayout}
             // v5 Route supports exact with render props, but TS types don't recognize it
             // Using spread operator with type assertion to bypass incorrect type definitions
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -708,12 +709,12 @@ export default function Routes() {
               includeNavigate: true,
               includeLocation: true,
             })}
-          </Route>
-          <Route path={DEEP_LINK_ROUTE}>
+          </RouteWithLayout>
+          <RouteWithLayout path={DEEP_LINK_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(DeepLink, {
               includeLocation: true,
             })}
-          </Route>
+          </RouteWithLayout>
           <RestoreVaultComponent
             path={RESTORE_VAULT_ROUTE}
             component={RestoreVaultPage}
@@ -725,7 +726,10 @@ export default function Routes() {
             component={SmartAccountUpdate}
             layout={LegacyLayout}
           />
-          <Route path={`${REVEAL_SEED_ROUTE}/:keyringId?`}>
+          <RouteWithLayout
+            path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
+            layout={RootLayout}
+          >
             {createV5CompatRoute<{ keyringId?: string }>(
               RevealSeedConfirmation,
               {
@@ -734,7 +738,7 @@ export default function Routes() {
                 includeParams: true,
               },
             )}
-          </Route>
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={IMPORT_SRP_ROUTE}
@@ -751,19 +755,19 @@ export default function Routes() {
             authenticated
             path={NOTIFICATIONS_SETTINGS_ROUTE}
             component={NotificationsSettings}
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated
             path={`${NOTIFICATIONS_ROUTE}/:uuid`}
             component={NotificationDetails}
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated
             path={NOTIFICATIONS_ROUTE}
             component={Notifications}
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated
@@ -788,16 +792,17 @@ export default function Routes() {
             authenticated
             path={`${SEND_ROUTE}/:page?`}
             component={SendPage}
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
-          <Route path={SWAPS_ROUTE}>
+          <RouteWithLayout path={SWAPS_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(Swaps, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
             })}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
+            layout={LegacyLayout}
             // v5 Route supports exact with render props, but TS types don't recognize it
             // Using spread operator with type assertion to bypass incorrect type definitions
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -813,13 +818,13 @@ export default function Routes() {
                 paramsAsProps: false, // Pass as params object
               },
             )}
-          </Route>
-          <Route path={CROSS_CHAIN_SWAP_ROUTE}>
+          </RouteWithLayout>
+          <RouteWithLayout path={CROSS_CHAIN_SWAP_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(CrossChainSwap, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
             })}
-          </Route>
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
@@ -846,22 +851,28 @@ export default function Routes() {
             component={CreateAccountPage}
             layout={LegacyLayout}
           />
-          <Route path={`${CONNECT_ROUTE}/:id`}>
+          <RouteWithLayout path={`${CONNECT_ROUTE}/:id`} layout={RootLayout}>
             {createV5CompatRoute<{ id: string }>(PermissionsConnect, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
               includeMatch: true,
             })}
-          </Route>
-          <Route path={`${ASSET_ROUTE}/image/:asset/:id`}>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${ASSET_ROUTE}/image/:asset/:id`}
+            layout={RootLayout}
+          >
             {createV5CompatRoute<{ asset: string; id: string }>(NftFullImage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route path={`${ASSET_ROUTE}/:chainId/:asset/:id`}>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
+            layout={RootLayout}
+          >
             {createV5CompatRoute<{
               chainId: string;
               asset: string;
@@ -871,8 +882,11 @@ export default function Routes() {
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route path={`${ASSET_ROUTE}/:chainId/:asset/`}>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${ASSET_ROUTE}/:chainId/:asset/`}
+            layout={RootLayout}
+          >
             {createV5CompatRoute<{
               chainId: string;
               asset: string;
@@ -881,15 +895,18 @@ export default function Routes() {
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route path={`${ASSET_ROUTE}/:chainId`}>
+          </RouteWithLayout>
+          <RouteWithLayout path={`${ASSET_ROUTE}/:chainId`} layout={RootLayout}>
             {createV5CompatRoute<{ chainId: string }>(Asset, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route path={`${DEFI_ROUTE}/:chainId/:protocolId`}>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${DEFI_ROUTE}/:chainId/:protocolId`}
+            layout={RootLayout}
+          >
             {createV5CompatRoute<{
               chainId: string;
               protocolId: string;
@@ -899,7 +916,7 @@ export default function Routes() {
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${CONNECTIONS}/:origin`}
@@ -946,14 +963,14 @@ export default function Routes() {
             path={ACCOUNT_LIST_PAGE_ROUTE}
             component={AccountList}
             exact
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
             component={MultichainAccountAddressListPage}
             exact
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated
@@ -967,28 +984,28 @@ export default function Routes() {
             path={ADD_WALLET_PAGE_ROUTE}
             component={AddWalletPage}
             exact
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
             component={MultichainAccountDetailsPage}
             exact
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated
             path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
             component={SmartAccountPage}
             exact
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated
             path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
             component={WalletDetailsPage}
             exact
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated

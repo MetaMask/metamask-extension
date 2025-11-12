@@ -136,5 +136,10 @@
 
 // Remove once LegacyLayout is removed
 .main-container {
-  height: 100%;
+  flex: 1;
+}
+
+.redesigned__send__wrapper {
+  width: 100%;
+  background: var(--color-background-default)
 }
