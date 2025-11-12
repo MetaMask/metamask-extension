@@ -188,7 +188,7 @@ function handleCommandWrapETH(
   );
 
   return {
-    amountMin: result[1].toHexString(),
+    amountMin: undefined,
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAddress: getNativeTokenAddress(chainId),
