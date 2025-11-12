@@ -234,7 +234,7 @@ const ShieldPlan = () => {
           paymentTokenAddress: selectedToken?.address as Hex,
           paymentTokenSymbol: selectedToken?.symbol,
           plan: selectedPlan,
-          useTestClocks: enableStripeTestClocks,
+          useTestClock: enableStripeTestClocks,
         }),
       );
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
@@ -243,8 +243,8 @@ const ShieldPlan = () => {
             products: [PRODUCT_TYPES.SHIELD],
             isTrialRequested: !isTrialed,
             recurringInterval: selectedPlan,
-            // @ts-expect-error - useTestClocks is not a valid prop for startSubscriptionWithCard
-            useTestClocks: enableStripeTestClocks,
+            // @ts-expect-error - useTestClock is not a valid prop for startSubscriptionWithCard
+            useTestClock: enableStripeTestClocks,
           }),
         );
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
