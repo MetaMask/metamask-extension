@@ -654,10 +654,10 @@ const PrepareBridgePage = ({
                         token_symbol_destination: fromToken.symbol,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_address_source: fromToken.assetId,
+                        token_address_source: toToken.assetId,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_address_destination: toToken.assetId,
+                        token_address_destination: fromToken.assetId,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         chain_id_source: formatChainIdToCaip(toChain.chainId),
