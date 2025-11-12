@@ -120,6 +120,11 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             break;
           }
         }
+
+        // Fallback: assign the last cohort if none selected
+        if (!selectedCohort) {
+          selectedCohort = sortedCohorts[sortedCohorts.length - 1];
+        }
       }
 
       if (selectedCohort) {
