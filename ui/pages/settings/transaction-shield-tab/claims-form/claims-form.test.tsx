@@ -66,7 +66,14 @@ describe('Submit Claim Form', () => {
   let store: ReturnType<typeof configureStore>;
 
   beforeEach(() => {
-    store = configureStore({});
+    store = configureStore({
+      metamask: {
+        claimsConfigurations: {
+          validSubmissionWindowDays: 10,
+          supportedNetworks: ['0x1', '0x5'],
+        },
+      },
+    });
   });
 
   it('should render', () => {

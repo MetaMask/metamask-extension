@@ -142,6 +142,9 @@ ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 app/scripts/controller-init/smart-transactions    @MetaMask/transactions
 app/scripts/lib/smart-transaction                 @MetaMask/transactions
 
+# New networks
+shared/lib/multichain/addresses/* @MetaMask/new-networks
+
 # QA Team - E2E Framework
 test/e2e/page-objects/                            @MetaMask/qa
 test/e2e/seeder/                                  @MetaMask/qa

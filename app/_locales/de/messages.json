@@ -1630,14 +1630,8 @@
   "customToken": {
     "message": "Benutzerdefiniertes Token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Die Token-Erkennung ist in diesem Netzwerk noch nicht verfügbar. Bitte importieren Sie das Token manuell und stellen Sie sicher, dass Sie ihm vertrauen. Erfahren Sie mehr über $1."
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Jeder kann einen Token erstellen, auch gefälschte Versionen von bestehenden Token. Erfahren Sie mehr über $1."
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Stellen Sie sicher, dass Sie einem Token vertrauen, bevor Sie es importieren. Erfahren Sie, wie Sie 1$ vermeiden und die Token-Erkennung $2 aktivieren können."
   },
   "customerSupport": {
     "message": "Kundensupport"
@@ -2787,9 +2781,6 @@
   "imported": {
     "message": "Importiert",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "in Ihren Einstellungen"
   },
   "included": {
     "message": "einschließlich"
@@ -5238,9 +5229,6 @@
   "shieldEntryModalGetStarted": {
     "message": "Erste Schritte"
   },
-  "shieldEntryModalSkip": {
-    "message": "Überspringen"
-  },
   "show": {
     "message": "Zeigen"
   },
@@ -6603,9 +6591,6 @@
   },
   "tokenMarketplace": {
     "message": "Token-Marktplatz"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "Token-Betrügereien und Sicherheitsrisiken"
   },
   "tokenStandard": {
     "message": "Token-Standard"
