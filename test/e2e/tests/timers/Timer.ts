@@ -72,4 +72,3 @@ export class Timer {
     return this._duration !== null;
   }
 }
-

@@ -17,7 +17,6 @@ import { getCommonMocks } from '../utils/commonMocks.js';
 import { setupTimerReporting } from '../utils/testSetup.js';
 import Timers from '../../timers/Timers.js';
 
-
 const E2E_SRP = process.env.E2E_POWER_USER_SRP || 'srp test phrase'; // default SRP for testing
 describe('MetaMask onboarding', function () {
   // Setup timer reporting for all tests in this describe block

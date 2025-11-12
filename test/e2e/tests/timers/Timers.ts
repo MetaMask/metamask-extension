@@ -35,6 +35,8 @@ class Timers {
   /**
    * Create a new timer with the given ID
    * Returns existing timer if one with the same ID already exists
+   *
+   * @param id
    */
   createTimer(id: string): Timer {
     if (this.timers.has(id)) {
@@ -49,6 +51,8 @@ class Timers {
 
   /**
    * Get a timer by ID
+   *
+   * @param id
    */
   getTimer(id: string): Timer {
     const timer = this.timers.get(id);
