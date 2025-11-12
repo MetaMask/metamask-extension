@@ -116,6 +116,7 @@ import {
   FEATURED_NETWORK_CHAIN_IDS,
   TOKEN_OCCURRENCES_MAP,
   MINIMUM_TOKEN_OCCURRENCES,
+  type ChainId,
 } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
