@@ -63,10 +63,16 @@ import { SiteCell } from './site-cell/site-cell';
 
 type ReviewPermissionsProps = {
   params?: { origin: string };
-  navigate?: (to: string | number, options?: { replace?: boolean; state?: Record<string, unknown> }) => void;
+  navigate?: (
+    to: string | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => void;
 };
 
-export const ReviewPermissions = ({ params, navigate: navigateProp }: ReviewPermissionsProps = {}) => {
+export const ReviewPermissions = ({
+  params,
+  navigate: navigateProp,
+}: ReviewPermissionsProps = {}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigateHook = useNavigate();

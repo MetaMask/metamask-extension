@@ -145,7 +145,7 @@ const metamaskDecorator = (story, context) => {
 
   // Get initial entries from story parameters, default to ['/'] if not provided
   const initialEntries = context.parameters?.initialEntries || ['/'];
-  const path = context.parameters?.path || '';
+  const path = context.parameters?.path || '*';
 
   return (
     <Provider store={store}>
