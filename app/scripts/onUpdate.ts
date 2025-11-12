@@ -1,0 +1,119 @@
+import log from 'loglevel';
+import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-controller';
+import { PLATFORM_FIREFOX } from '../../shared/constants/app';
+import { getPlatform } from './lib/util';
+import type MetaMaskController from './metamask-controller';
+import type ExtensionPlatform from './platforms/extension';
+import { MetaMaskStateType } from './lib/stores/base-store';
+import {
+  AppStateController,
+  AppStateControllerState,
+} from './controllers/app-state-controller';
+/**
+ * Trigger actions that should happen only upon update installation. Calling
+ * this might result in the extension restarting on Chromium-based browsers.
+ *
+ * @param controller - The MetaMask controller instance.
+ * @param controller.store
+ * @param platform - The ExtensionPlatform API.
+ * @param controller.remoteFeatureFlagController
+ * @param previousVersion - The previous version string.
+ * @param controller.appStateController
+ * @param requestSafeReload - A function to request a safe reload of the
+ * extension background process.
+ */
+export function onUpdate(
+  // we use a custom type here because the `MetaMaskController` type doesn't
+  // include the actual controllers as properties.
+  controller: {
+    store: MetaMaskController['store'];
+    remoteFeatureFlagController: RemoteFeatureFlagController;
+    appStateController: AppStateController;
+  },
+  platform: ExtensionPlatform,
+  previousVersion: string,
+  requestSafeReload: () => void,
+): void {
+  const { appStateController } = controller;
+  const { lastUpdatedFromVersion } = appStateController.state;
+  const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+
+  log.debug('[onUpdate]: Update installation detected');
+  log.info(`[onUpdate]: Updated from version ${previousVersion}`);
+  log.info(
+    `[onUpdate]: Recorded last updated from version: ${lastUpdatedFromVersion}`,
+  );
+  log.info(`[onUpdate]: isFirefox: ${isFirefox}`);
+  log.info(`[onUpdate]: Current version: ${platform.getVersion()}`);
+
+  // Browser might trigger an update event even when the version hasn't changed,
+  // like when reloading the extension manually.
+  if (previousVersion === lastUpdatedFromVersion) {
+    return;
+  }
+
+  const lastUpdatedAt = Date.now();
+
+  if (!isFirefox) {
+    // Work around Chromium bug https://issues.chromium.org/issues/40805401
+    // by doing a safe reload after an update. We'll be able to gate this
+    // behind a Chromium version check once we know the chromium version #
+    // that fixes this bug, ETA: December 2025 (likely in `143.0.7465.0`).
+    // Once we no longer support the affected Chromium versions, we should
+    // remove this workaround.
+    // We only want to do the safe reload when the version actually changed,
+    // just as a safe guard, as Chrome fires this event each time we call
+    // `runtime.reload` -- as we really don't want to send Chrome into a restart
+    // loop! This is overkill, as `onUpdate` is already only called when
+    // `previousVersion !== platform.getVersion()`, but better safe than better
+    // safe than better safe than... rebooting forever. :-)
+    const { remoteFeatureFlagController } = controller;
+    const shouldReload = remoteFeatureFlagController.state.remoteFeatureFlags
+      .extensionPlatformAutoReloadAfterUpdate as boolean | undefined;
+    log.info(`[onUpdate]: Should reload: ${shouldReload}`);
+    if (shouldReload === true) {
+      /**
+       * We wait for the store to update; when `update` is called the
+       * persistence layer will start writing the state to the database. Once
+       * that starts we will `requestSafeReload` to ensure its the last state
+       * update before the reload happens.
+       *
+       * @param newState - The new MetaMask state.
+       */
+      function handleUpdate(newState: MetaMaskStateType) {
+        log.info('[onUpdate]: Controller store `update` event fired.');
+        // ensure the new state matches the lastUpdatedFromVersion, otherwise
+        // we might reload before the state is fully persisted, potentially
+        // causing a restart loop.
+        const appStateControllerState =
+          newState.AppStateController as AppStateControllerState;
+        if (
+          appStateControllerState.lastUpdatedFromVersion === previousVersion &&
+          appStateControllerState.lastUpdatedAt === lastUpdatedAt
+        ) {
+          // we have our updated state
+          controller.store.removeListener('update', handleUpdate);
+
+          log.info(
+            `[onUpdate]: Requesting "safe reload" after update to ${platform.getVersion()}`,
+          );
+          // use `setImmediate` to be absolutely sure the reload happens after
+          // other "update" events triggered by the `setLastUpdatedFromVersion`
+          // and `setLastUpdatedAt` calls immediately below have been processed.
+          // I think there _is_ still a risk of a race condition here, mostly
+          // due to the complexity of state storage's locks, debounce, and async
+          // nature.
+          setImmediate(requestSafeReload);
+        } else {
+          log.info(
+            `[onUpdate]: Not requesting "safe reload", as state is incorrect`,
+          );
+        }
+      }
+
+      controller.store.on('update', handleUpdate);
+    }
+  }
+  appStateController.setLastUpdatedAt(lastUpdatedAt);
+  appStateController.setLastUpdatedFromVersion(previousVersion);
+}
