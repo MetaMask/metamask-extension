@@ -4590,6 +4590,9 @@
   "openInBlockExplorer": {
     "message": "Open in block explorer"
   },
+  "openWallet": {
+    "message": "Open Wallet"
+  },
   "optional": {
     "message": "Optional"
   },

@@ -59,6 +59,8 @@ import { LottieAnimation } from '../../../components/component-library/lottie-an
 ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import { getIsSidePanelFeatureEnabled } from '../../../../shared/modules/environment';
 ///: END:ONLY_INCLUDE_IF
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import WalletReadyAnimation from './wallet-ready-animation';
 
 export default function CreationSuccessful() {
@@ -73,6 +75,7 @@ export default function CreationSuccessful() {
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isTestEnvironment = Boolean(process.env.IN_TEST);
+  const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -163,7 +166,7 @@ export default function CreationSuccessful() {
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     // Side Panel - only if feature flag is enabled
-    if (getIsSidePanelFeatureEnabled()) {
+    if (getIsSidePanelFeatureEnabled() && !isFirefox) {
       try {
         if (browser?.sidePanel?.open) {
           const tabs = await browser.tabs.query({
@@ -183,7 +186,9 @@ export default function CreationSuccessful() {
       }
     }
     // Fallback to regular onboarding completion
-    await dispatch(setCompletedOnboarding());
+    if (!isFirefox) {
+      await dispatch(setCompletedOnboarding());
+    }
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     // Regular onboarding completion for non-experimental builds
@@ -200,6 +205,7 @@ export default function CreationSuccessful() {
     trackEvent,
     firstTimeFlowType,
     isFromSettingsSecurity,
+    isFirefox,
   ]);
 
   const renderDoneButton = () => {
@@ -217,7 +223,9 @@ export default function CreationSuccessful() {
           width={BlockSize.Full}
           onClick={onDone}
         >
-          {t('done')}
+          {process.env.METAMASK_BUILD_TYPE === 'experimental'
+            ? t('openWallet')
+            : t('done')}
         </Button>
       </Box>
     );
