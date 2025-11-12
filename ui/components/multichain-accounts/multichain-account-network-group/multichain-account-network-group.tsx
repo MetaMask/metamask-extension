@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
+import { Box } from '@metamask/design-system-react';
 import { AvatarGroup } from '../../multichain/avatar-group';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
@@ -41,8 +42,8 @@ export type MultichainAccountNetworkGroupProps = {
  * @param props - The component props
  * @param props.groupId - The account group ID to fetch networks for. When provided, fetches chain IDs from the account group.
  * @param props.chainIds - Array of specific chain IDs to display. Behavior depends on groupId:
- *   - If provided with groupId: shows only chains that exist in both the group and this list (intersection)
- *   - If provided without groupId: shows only these specific chains
+ * - If provided with groupId: shows only chains that exist in both the group and this list (intersection)
+ * - If provided without groupId: shows only these specific chains
  * @param props.excludeTestNetworks - Whether to exclude test networks from display. Defaults to true.
  * @param props.limit - Maximum number of avatars to display before showing "+X" indicator. Defaults to 4.
  * @param props.className - Optional CSS class name for additional styling

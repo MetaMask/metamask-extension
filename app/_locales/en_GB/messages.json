@@ -3942,13 +3942,6 @@
   "network": {
     "message": "Network"
   },
-  "networkAddress": {
-    "message": "1 network address"
-  },
-  "networkAddresses": {
-    "message": "$1 network addresses",
-    "description": "$1 is the number of accounts"
-  },
   "networkChanged": {
     "message": "Network changed"
   },
