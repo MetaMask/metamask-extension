@@ -283,6 +283,7 @@ describe('Shield Plan Stripe Integration', function () {
 
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
+        await driver.delay(1000);
         await settingsPage.goToTransactionShieldPage();
 
         const shieldDetailPage = new ShieldDetailPage(driver);
