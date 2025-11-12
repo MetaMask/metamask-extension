@@ -55,15 +55,13 @@ export function NotificationsListItem({
       event: MetaMetricsEventName.NotificationClicked,
       properties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+        /* eslint-disable @typescript-eslint/naming-convention */
         notification_id: notification.id,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         notification_type: notification.type,
         ...otherNotificationProperties(),
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         previously_read: notification.isRead,
+        data: notification, // data blob for feature teams to analyse their notification shapes
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     });
 

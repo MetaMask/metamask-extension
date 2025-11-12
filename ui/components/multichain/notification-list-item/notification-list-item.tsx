@@ -49,11 +49,18 @@ export type NotificationListItemProps =
   | NotificationToken
   | NotificationPlatform;
 
-const CTAButton = (props: { content: string; link: string }) => (
+const CTAButton = (props: {
+  content: string;
+  link: string;
+  onClick: () => void;
+}) => (
   <Button
     variant={ButtonVariant.Secondary}
     size={ButtonSize.Md}
-    onClick={() => global.platform.openTab({ url: props.link })}
+    onClick={() => {
+      props.onClick();
+      global.platform.openTab({ url: props.link });
+    }}
     isFullWidth
     endIconName={IconName.Arrow2UpRight}
   >
@@ -86,7 +93,7 @@ export const NotificationListItem = ({
   ...restProps
 }: NotificationListItemProps) => {
   const handleClick = () => {
-    onClick?.();
+    onClick();
   };
 
   return (
@@ -190,7 +197,11 @@ export const NotificationListItem = ({
 
       {/* CTA Button */}
       {'cta' in restProps && restProps.cta && (
-        <CTAButton content={restProps.cta.content} link={restProps.cta.link} />
+        <CTAButton
+          content={restProps.cta.content}
+          link={restProps.cta.link}
+          onClick={handleClick}
+        />
       )}
     </Box>
   );
