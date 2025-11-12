@@ -74,7 +74,7 @@ import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constant
 import {
   isDevOrTestEnvironment,
   isDevOrUatBuild,
-  getIsTrialSubscription,
+  getIsTrialedSubscription,
 } from '../../../shared/modules/shield';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
@@ -105,7 +105,7 @@ const ShieldPlan = () => {
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
-  const isTrialed = getIsTrialSubscription(
+  const isTrialed = getIsTrialedSubscription(
     trialedProducts,
     PRODUCT_TYPES.SHIELD,
   );

@@ -74,9 +74,9 @@ import {
   Subscription,
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
-  CachedLastSelectedPaymentMethods,
   SubscriptionEligibility,
   BalanceCategory,
+  CachedLastSelectedPaymentMethod,
 } from '@metamask/subscription-controller';
 
 import {
@@ -704,7 +704,7 @@ export function setPendingShieldCohort(
 
 export function setLastUsedSubscriptionPaymentDetails(
   product: ProductType,
-  payload: CachedLastSelectedPaymentMethods,
+  payload: CachedLastSelectedPaymentMethod,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {

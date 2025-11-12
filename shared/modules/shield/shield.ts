@@ -119,13 +119,13 @@ export function getDefaultSubscriptionPaymentOptions(
 }
 
 /**
- * Check if a product is a trial subscription
+ * Check if a product is an already trialed subscription
  *
  * @param trialProducts - The trial products.
  * @param product - The product.
- * @returns True if the product is a trial subscription, false otherwise.
+ * @returns True if the product is a trialed subscription, false otherwise.
  */
-export function getIsTrialSubscription(
+export function getIsTrialedSubscription(
   trialProducts: ProductType[],
   product: ProductType,
 ): boolean {

@@ -30,7 +30,7 @@ import {
 import MetaMetricsController from '../../../app/scripts/controllers/metametrics-controller';
 import {
   getDefaultSubscriptionPaymentOptions,
-  getIsTrialSubscription,
+  getIsTrialedSubscription,
 } from './shield';
 
 export function getBillingIntervalForMetrics(interval: RecurringInterval) {
@@ -88,7 +88,7 @@ export function getSubscriptionRequestTrackingProps(
   const billingCycles = getBillingCyclesForMetrics(
     lastSelectedPaymentMethod.shield.plan,
   );
-  const isTrialed = getIsTrialSubscription(
+  const isTrialed = getIsTrialedSubscription(
     trialedProducts,
     PRODUCT_TYPES.SHIELD,
   );
@@ -134,7 +134,7 @@ export function getSubscriptionRequestTrackingProps(
     payment_chain: paymentChain,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    is_trial: isTrialed,
+    is_trial: !isTrialed,
   };
 }
 

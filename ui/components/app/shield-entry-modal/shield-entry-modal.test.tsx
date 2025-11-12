@@ -6,7 +6,7 @@ import { SubscriptionUserEvent } from '@metamask/subscription-controller';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import * as actions from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
-import mockState from '../../../../test/data/mock-state.json';
+import MockState from '../../../../test/data/mock-state.json';
 import ShieldEntryModal from './shield-entry-modal';
 
 const mockUseNavigate = jest.fn();
@@ -18,10 +18,10 @@ jest.mock('react-router-dom-v5-compat', () => {
 });
 
 describe('Shield Entry Modal', () => {
-  const state = {
-    ...mockState,
+  const mockState = {
+    ...MockState,
     appState: {
-      ...mockState.appState,
+      ...MockState.appState,
       shieldEntryModal: {
         show: true,
         shouldSubmitEvents: false,
@@ -29,7 +29,7 @@ describe('Shield Entry Modal', () => {
       },
     },
   };
-  const mockStore = configureMockStore([thunk])(state);
+  const mockStore = configureMockStore([thunk])(mockState);
   let setShowShieldEntryModalOnceSpy: jest.SpyInstance;
   let submitSubscriptionUserEventsSpy: jest.SpyInstance;
 
@@ -74,11 +74,11 @@ describe('Shield Entry Modal', () => {
 
   it('should submit user event when `shieldEntryModal.shouldSubmitEvents` is true', async () => {
     const customStore = configureMockStore([thunk])({
-      ...state,
+      ...mockState,
       appState: {
-        ...state.appState,
+        ...mockState.appState,
         shieldEntryModal: {
-          ...state.appState.shieldEntryModal,
+          ...mockState.appState.shieldEntryModal,
           shouldSubmitEvents: true,
         },
       },
@@ -93,7 +93,7 @@ describe('Shield Entry Modal', () => {
     await waitFor(() => {
       expect(submitSubscriptionUserEventsSpy).toHaveBeenCalledWith({
         event: SubscriptionUserEvent.ShieldEntryModalViewed,
-        cohort: state.appState.shieldEntryModal.triggeringCohort,
+        cohort: mockState.appState.shieldEntryModal.triggeringCohort,
       });
       expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
     });

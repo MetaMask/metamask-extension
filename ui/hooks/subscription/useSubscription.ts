@@ -346,6 +346,7 @@ export const useHandleSubscription = ({
           paymentTokenAddress: selectedToken?.address as Hex,
           paymentTokenSymbol: selectedToken?.symbol,
           plan: selectedPlan,
+          useTestClock,
         }),
       );
 
@@ -414,6 +415,8 @@ export const useHandleSubscription = ({
       selectedPlan,
       selectedToken,
       executeSubscriptionCryptoApprovalTransaction,
+      useTestClock,
+      captureShieldSubscriptionRequestEvent,
     ]);
 
   return {
