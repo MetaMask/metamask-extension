@@ -1,4 +1,3 @@
-import { SignatureRequest } from '@metamask/signature-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
@@ -15,25 +14,26 @@ import {
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../../../../hooks/transactions/useEnableShieldCoverageChecks';
+import { isSignatureTransactionType } from '../../../../utils';
+import { isCorrectDeveloperTransactionType } from '../../../../../../../shared/lib/confirmation.utils';
 import useAlerts from '../../../../../../hooks/useAlerts';
-import { useUserSubscriptions } from '../../../../../../hooks/subscription/useSubscription';
-import { getIsShieldSubscriptionPaused } from '../../../../../../../shared/lib/shield';
 import ShieldIconAnimation from './shield-icon-animation';
 
 const ShieldFooterCoverageIndicator = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<
-    TransactionMeta | SignatureRequest
-  >();
-  const isShowShieldFooterCoverageIndicator = useEnableShieldCoverageChecks();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const isSignature = isSignatureTransactionType(currentConfirmation);
+  const isTransactionConfirmation = isCorrectDeveloperTransactionType(
+    currentConfirmation?.type,
+  );
   const { getFieldAlerts } = useAlerts(currentConfirmation?.id ?? '');
-  const { subscriptions } = useUserSubscriptions();
-
-  const isPaused = getIsShieldSubscriptionPaused(subscriptions);
-
   const fieldAlerts = getFieldAlerts(RowAlertKey.ShieldFooterCoverageIndicator);
   const selectedAlert = fieldAlerts[0];
   const selectedAlertSeverity = selectedAlert?.severity;
+
+  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
+  const isShowShieldFooterCoverageIndicator =
+    (isSignature || isTransactionConfirmation) && (isEnabled || isPaused);
 
   const animationSeverity = useMemo(() => {
     if (isPaused) {
