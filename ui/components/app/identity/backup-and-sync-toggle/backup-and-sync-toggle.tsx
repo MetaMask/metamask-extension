@@ -87,13 +87,38 @@ export const BackupAndSyncToggle = () => {
     [trackEvent, isBackupAndSyncEnabled, isMetamaskNotificationsEnabled],
   );
 
-  // Cascading side effects
+  // Cascading side effects - disable backup & sync when basic functionality is disabled
   useEffect(() => {
-    if (!isBasicFunctionalityEnabled && isBackupAndSyncEnabled) {
-      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);
+    // Check both basic functionality states: production and onboarding
+    const isBasicFunctionalityDisabled =
+      isBasicFunctionalityEnabled === false ||
+      isOnboardingBasicFunctionalityEnabled === false;
+
+    if (isBasicFunctionalityDisabled && isBackupAndSyncEnabled) {
+      (async () => {
+        try {
+          // Turn off main backup and sync
+          await setIsBackupAndSyncFeatureEnabled(
+            BACKUPANDSYNC_FEATURES.main,
+            false,
+          );
+          // Also turn off all sub-features when basic functionality is disabled
+          await setIsBackupAndSyncFeatureEnabled(
+            BACKUPANDSYNC_FEATURES.accountSyncing,
+            false,
+          );
+          await setIsBackupAndSyncFeatureEnabled(
+            BACKUPANDSYNC_FEATURES.contactSyncing,
+            false,
+          );
+        } catch (err) {
+          console.error('Failed to disable backup and sync features:', err);
+        }
+      })();
     }
   }, [
     isBasicFunctionalityEnabled,
+    isOnboardingBasicFunctionalityEnabled,
     isBackupAndSyncEnabled,
     setIsBackupAndSyncFeatureEnabled,
   ]);
@@ -101,8 +126,18 @@ export const BackupAndSyncToggle = () => {
   const handleBackupAndSyncToggleSetValue = async () => {
     if (isBackupAndSyncEnabled) {
       trackBackupAndSyncToggleEvent(false);
+      // Turn off main backup and sync
       await setIsBackupAndSyncFeatureEnabled(
         BACKUPANDSYNC_FEATURES.main,
+        false,
+      );
+      // Also turn off all sub-features when main toggle is disabled
+      await setIsBackupAndSyncFeatureEnabled(
+        BACKUPANDSYNC_FEATURES.accountSyncing,
+        false,
+      );
+      await setIsBackupAndSyncFeatureEnabled(
+        BACKUPANDSYNC_FEATURES.contactSyncing,
         false,
       );
     } else {
@@ -116,16 +151,36 @@ export const BackupAndSyncToggle = () => {
           showModal({
             name: CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
             enableBackupAndSync: async () => {
+              // Turn on main backup and sync
               await setIsBackupAndSyncFeatureEnabled(
                 BACKUPANDSYNC_FEATURES.main,
+                true,
+              );
+              // Also turn on all sub-features for convenient 1-click restore
+              await setIsBackupAndSyncFeatureEnabled(
+                BACKUPANDSYNC_FEATURES.accountSyncing,
+                true,
+              );
+              await setIsBackupAndSyncFeatureEnabled(
+                BACKUPANDSYNC_FEATURES.contactSyncing,
                 true,
               );
             },
           }),
         );
       } else {
+        // Turn on main backup and sync
         await setIsBackupAndSyncFeatureEnabled(
           BACKUPANDSYNC_FEATURES.main,
+          true,
+        );
+        // Also turn on all sub-features for convenient 1-click restore
+        await setIsBackupAndSyncFeatureEnabled(
+          BACKUPANDSYNC_FEATURES.accountSyncing,
+          true,
+        );
+        await setIsBackupAndSyncFeatureEnabled(
+          BACKUPANDSYNC_FEATURES.contactSyncing,
           true,
         );
       }

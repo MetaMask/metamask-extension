@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { isValidHexAddress } from '@metamask/controller-utils';
-import { isStrictHexString } from '@metamask/utils';
 import {
   Box,
   BoxAlignItems,
@@ -20,7 +19,7 @@ import {
   TextVariant,
   IconSize,
 } from '@metamask/design-system-react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -60,81 +59,26 @@ import { FileUploader } from '../../../../components/component-library/file-uplo
 import {
   SUBMIT_CLAIM_ERROR_CODES,
   SUBMIT_CLAIM_FIELDS,
-  SubmitClaimErrorCode,
   SubmitClaimField,
 } from '../types';
 import { SubmitClaimError } from '../claim-error';
 import AccountSelector from '../account-selector';
 import NetworkSelector from '../network-selector';
-
-const VALID_SUBMISSION_WINDOW_DAYS = 21;
-const MAX_FILE_SIZE_MB = 5;
-const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
-
-// Error codes for codes on the root level of the error response
-const ERROR_MESSAGE_MAP: Partial<
-  Record<
-    SubmitClaimErrorCode,
-    {
-      messageKey: string;
-      params?: (string | number)[];
-      field?: SubmitClaimField;
-    }
-  >
-> = {
-  [SUBMIT_CLAIM_ERROR_CODES.TRANSACTION_NOT_ELIGIBLE]: {
-    messageKey: 'shieldClaimImpactedTxHashNotEligible',
-    field: SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
-  },
-  [SUBMIT_CLAIM_ERROR_CODES.SUBMISSION_WINDOW_EXPIRED]: {
-    messageKey: 'shieldClaimSubmissionWindowExpired',
-    params: [VALID_SUBMISSION_WINDOW_DAYS.toString()],
-  },
-  [SUBMIT_CLAIM_ERROR_CODES.MAX_CLAIMS_LIMIT_EXCEEDED]: {
-    messageKey: 'shieldClaimMaxClaimsLimitExceeded',
-  },
-  [SUBMIT_CLAIM_ERROR_CODES.DUPLICATE_CLAIM_EXISTS]: {
-    messageKey: 'shieldClaimDuplicateClaimExists',
-  },
-  [SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]: {
-    messageKey: 'shieldClaimSameWalletAddressesError',
-    field: SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
-  },
-  [SUBMIT_CLAIM_ERROR_CODES.FILES_SIZE_EXCEEDED]: {
-    messageKey: 'shieldClaimFileErrorSizeExceeded',
-  },
-  [SUBMIT_CLAIM_ERROR_CODES.FILES_COUNT_EXCEEDED]: {
-    messageKey: 'shieldClaimFileErrorCountExceeded',
-  },
-  [SUBMIT_CLAIM_ERROR_CODES.INVALID_FILES_TYPE]: {
-    messageKey: 'shieldClaimFileErrorInvalidType',
-  },
-  [SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]: {
-    messageKey: 'shieldClaimInvalidRequired',
-  },
-};
-
-// Error codes for fields in the error response
-const FIELD_ERROR_MESSAGE_KEY_MAP: Partial<Record<SubmitClaimField, string>> = {
-  [SUBMIT_CLAIM_FIELDS.CHAIN_ID]: 'shieldClaimInvalidChainId',
-  [SUBMIT_CLAIM_FIELDS.EMAIL]: 'shieldClaimInvalidEmail',
-  [SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS]:
-    'shieldClaimInvalidWalletAddress',
-  [SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH]: 'shieldClaimInvalidTxHash',
-  [SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS]:
-    'shieldClaimInvalidWalletAddress',
-};
-
-function isValidTransactionHash(hash: string): boolean {
-  // Check if it's exactly 66 characters (0x + 64 hex chars)
-  return hash.length === 66 && isStrictHexString(hash);
-}
+import { getValidSubmissionWindowDays } from '../../../../selectors/shield/claims';
+import {
+  ERROR_MESSAGE_MAP,
+  FIELD_ERROR_MESSAGE_KEY_MAP,
+  MAX_FILE_SIZE_BYTES,
+  MAX_FILE_SIZE_MB,
+} from './constants';
+import { isValidTransactionHash } from './utils';
 
 const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { refetchClaims, pendingClaims } = useClaims();
+  const validSubmissionWindowDays = useSelector(getValidSubmissionWindowDays);
   const [isSubmittingClaim, setIsSubmittingClaim] = useState(false);
 
   const {
@@ -153,6 +97,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     files,
     setFiles,
     uploadedFiles,
+    claimSignature,
   } = useClaimState(isView);
 
   const [errors, setErrors] = useState<
@@ -370,10 +315,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       await submitShieldClaim({
         chainId: chainIdNumber.toString(),
         email,
-        impactedWalletAddress,
-        impactedTransactionHash,
-        reimbursementWalletAddress,
-        caseDescription,
+        impactedWalletAddress: impactedWalletAddress as `0x${string}`,
+        impactedTxHash: impactedTransactionHash as `0x${string}`,
+        reimbursementWalletAddress: reimbursementWalletAddress as `0x${string}`,
+        description: caseDescription,
+        signature: claimSignature as `0x${string}`,
         files,
       });
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
@@ -397,6 +343,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     dispatch,
     navigate,
     refetchClaims,
+    claimSignature,
     handleSubmitClaimError,
   ]);
 
@@ -432,7 +379,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               </TextButton>,
             ])
           : t('shieldClaimDetails', [
-              VALID_SUBMISSION_WINDOW_DAYS,
+              validSubmissionWindowDays,
               <TextButton key="here-link" className="min-w-0" asChild>
                 <a
                   href={TRANSACTION_SHIELD_LINK}
@@ -652,7 +599,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
             {uploadedFiles.map((file, index) => (
               <Box
                 asChild
-                key={file.key || index}
+                key={file.originalname || index}
                 alignItems={BoxAlignItems.Center}
                 flexDirection={BoxFlexDirection.Row}
                 backgroundColor={BoxBackgroundColor.BackgroundSection}
@@ -670,7 +617,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
                 >
                   <Icon
                     name={
-                      file.mimetype?.includes('image')
+                      file.contentType?.includes('image')
                         ? IconName.Image
                         : IconName.File
                     }
