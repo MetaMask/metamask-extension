@@ -751,6 +751,30 @@ describe('MultichainAccountList', () => {
         ),
       ).not.toBeInTheDocument();
     });
+
+    it('hides account menu (3 dots) when showAccountCheckbox is true', () => {
+      const { rerender } = renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: false,
+      });
+
+      // With checkboxes disabled, menu buttons should be visible
+      let menuButtons = document.querySelectorAll(menuButtonSelector);
+      expect(menuButtons.length).toBe(2);
+
+      // Enable checkboxes
+      rerender(
+        <MultichainAccountList
+          wallets={mockWallets}
+          selectedAccountGroups={[walletOneGroupId]}
+          showAccountCheckbox={true}
+        />,
+      );
+
+      // With checkboxes enabled, menu buttons should be hidden
+      menuButtons = document.querySelectorAll(menuButtonSelector);
+      expect(menuButtons.length).toBe(0);
+    });
   });
 
   describe('Connection Status', () => {

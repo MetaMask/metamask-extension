@@ -70,6 +70,7 @@ describe('useAlerts', () => {
       [Severity.Warning]: 2,
       [Severity.Info]: 1,
       [Severity.Success]: 0,
+      [Severity.Disabled]: 0,
     };
 
     return [...alerts].sort(

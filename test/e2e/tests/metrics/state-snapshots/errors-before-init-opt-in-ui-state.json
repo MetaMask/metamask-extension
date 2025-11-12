@@ -51,6 +51,8 @@
       "snapsInstallPrivacyWarningShown": true,
       "hasShownMultichainAccountsIntroModal": "boolean",
       "showShieldEntryModalOnce": "boolean",
+      "pendingShieldCohort": null,
+      "pendingShieldCohortTxType": null,
       "appActiveTab": "object"
     },
     "BridgeController": {},

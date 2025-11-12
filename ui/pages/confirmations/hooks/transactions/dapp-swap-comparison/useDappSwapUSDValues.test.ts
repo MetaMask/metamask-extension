@@ -92,5 +92,10 @@ describe('useDappSwapUSDValues', () => {
     expect(result.getGasUSDValue(new BigNumber('1'))).toBe(
       '0.00000003879076790654',
     );
+    expect(result.fiatRates).toEqual({
+      '0x0000000000000000000000000000000000000000': 4052.27,
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': 0.999804,
+      '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798': 1,
+    });
   });
 });

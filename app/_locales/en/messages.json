@@ -832,6 +832,9 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
   },
+  "bestQuote": {
+    "message": "Best quote"
+  },
   "beta": {
     "message": "Beta"
   },
@@ -1876,16 +1879,13 @@
     "description": "$1 represents the Dapp's origin"
   },
   "dappSwapAdvantage": {
-    "message": "Save + Earn using MetaMask Swap:"
+    "message": "Save and earn with MetaMask Swaps"
   },
   "dappSwapBenefits": {
-    "message": "No additional cost • Priority support • Network fees refunded on failed swaps"
-  },
-  "dappSwapQuoteDetails": {
-    "message": "Save $1 network fee, get $2 more $3"
+    "message": "Network fees refunded on failed swaps"
   },
   "dappSwapQuoteDifference": {
-    "message": "Save about $1"
+    "message": "Save $1"
   },
   "darkTheme": {
     "message": "Dark"
@@ -3671,6 +3671,12 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
+  },
+  "metamaskRate": {
+    "message": "Metamask rate"
+  },
+  "metamaskSwap": {
+    "message": "Metamask Swap"
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
@@ -5568,9 +5574,6 @@
   "save": {
     "message": "Save"
   },
-  "saveAndEarn": {
-    "message": "Save + Earn"
-  },
   "scanInstructions": {
     "message": "Place the QR code in front of your camera"
   },
@@ -6027,6 +6030,12 @@
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
     "message": "Learn how coverage works"
   },
+  "shieldCoverageAlertMessagePaused": {
+    "message": "There was an issue with your Transaction Shield membership payment. Please update your payment method to resume coverage."
+  },
+  "shieldCoverageAlertMessagePausedAcknowledgeButton": {
+    "message": "Update payment method"
+  },
   "shieldCoverageAlertMessagePotentialRisks": {
     "message": "This transaction has potential risks, so it isn't protected by Transaction Shield. $1."
   },
@@ -6038,6 +6047,9 @@
   },
   "shieldCoverageAlertMessageTitleCovered": {
     "message": "This transaction is covered"
+  },
+  "shieldCoverageAlertMessageTitlePaused": {
+    "message": "Transaction Shield paused"
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
     "message": "This transaction type is not supported, so it isn't protected by Transaction Shield. $1."
@@ -6058,28 +6070,22 @@
   "shieldCovered": {
     "message": "Covered"
   },
-  "shieldEntryModalAssetCoverage": {
-    "message": "$1 asset coverage per transaction",
-    "description": "The $1 is the amount of asset coverage per transaction"
-  },
-  "shieldEntryModalDescription": {
-    "message": "Renews at $1/month, cancel anytime. $2",
-    "description": "The $1 is the price of the shield and $2 is a link to the learn more page"
-  },
   "shieldEntryModalGetStarted": {
-    "message": "Get started"
+    "message": "Start 14-day free trial"
   },
-  "shieldEntryModalProtection": {
-    "message": "Protection across all your accounts"
+  "shieldEntryModalSubtitleA": {
+    "message": "Transaction Shield provides protection up to $1 and 24/7 priority support.",
+    "description": "The $1 is the amount of transaction protection"
   },
-  "shieldEntryModalSkip": {
-    "message": "Skip"
+  "shieldEntryModalSubtitleB": {
+    "message": "Transact with added confidence with up to $1 in protection and 24/7 priority support.",
+    "description": "The $1 is the amount of transaction protection"
   },
-  "shieldEntryModalSubtitle": {
-    "message": "Transaction Shield, free for 14 days."
+  "shieldEntryModalTitleA": {
+    "message": "Transact with added confidence"
   },
-  "shieldEntryModalSupport": {
-    "message": "Priority customer support"
+  "shieldEntryModalTitleB": {
+    "message": "Introducing Transaction Shield"
   },
   "shieldEstimatedChangesMonthlyTooltipText": {
     "message": "Authorize up to $1 for the full year. You'll be billed $2 each month, not the full amount now."
@@ -6089,6 +6095,9 @@
   },
   "shieldNotCovered": {
     "message": "Not covered"
+  },
+  "shieldPaused": {
+    "message": "Paused"
   },
   "shieldPaymentDeclined": {
     "message": "Shield payment declined"
