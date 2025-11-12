@@ -1600,7 +1600,7 @@
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": false,
-        "showNativeTokenAsMainBalance": true,
+        "showNativeTokenAsMainBalance": false,
         "showTestNetworks": false,
         "skipDeepLinkInterstitial": false,
         "smartAccountOptIn": true,
