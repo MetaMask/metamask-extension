@@ -2608,9 +2608,6 @@
   "existingChainId": {
     "message": "The information you have entered is associated with an existing chain ID."
   },
-  "expandView": {
-    "message": "Expand view"
-  },
   "experimental": {
     "message": "Experimental"
   },
@@ -4599,6 +4596,9 @@
   "openInBlockExplorer": {
     "message": "Open in block explorer"
   },
+  "openWallet": {
+    "message": "Open wallet"
+  },
   "optional": {
     "message": "Optional"
   },
@@ -6340,9 +6340,6 @@
   },
   "showTestnetNetworksDescription": {
     "message": "Select this to show test networks in network list"
-  },
-  "sidePanelView": {
-    "message": "Side panel view"
   },
   "sign": {
     "message": "Sign"

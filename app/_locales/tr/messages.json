@@ -2330,9 +2330,6 @@
   "existingChainId": {
     "message": "Girdiğiniz bilgiler mevcut bir zincir kimliği ile ilişkilidir."
   },
-  "expandView": {
-    "message": "Görünümü genişlet"
-  },
   "experimental": {
     "message": "Deneysel"
   },
