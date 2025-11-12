@@ -514,16 +514,7 @@ export default class PermissionConnect extends Component {
               element={
                 <PermissionPageContainer
                   request={permissionsRequest || {}}
-                  approvePermissionsRequest={(...args) => {
-                    // Prevent double submission
-                    if (this.state.isSubmitting) {
-                      return;
-                    }
-
-                    this.setState({ isSubmitting: true });
-                    approvePermissionsRequest(...args);
-                    this.redirect(true);
-                  }}
+                  approvePermissionsRequest={this.approveConnection}
                   rejectPermissionsRequest={(requestId) =>
                     this.cancelPermissionsRequest(requestId)
                   }
