@@ -53,7 +53,7 @@
 
 @include design-system.screen-sm-min {
   .main-container {
-    width: 85vw;
+    // width: 85vw;
     min-height: 90vh;
 
     &--has-shadow {
@@ -64,7 +64,7 @@
 
 @include design-system.screen-md-min {
   .main-container {
-    width: 80vw;
+    // width: 80vw;
     min-height: 82vh;
 
     &--has-shadow {
@@ -75,7 +75,7 @@
 
 @include design-system.screen-lg-min {
   .main-container {
-    width: 62vw;
+    // width: 62vw;
     min-height: 82vh;
 
     &--has-shadow {

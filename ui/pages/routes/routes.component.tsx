@@ -15,7 +15,6 @@ import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
 import { useAppSelector } from '../../store/store';
-import Authenticated from '../../helpers/higher-order-components/authenticated';
 import AuthenticatedV5Compat from '../../helpers/higher-order-components/authenticated/authenticated-v5-compat';
 import Initialized from '../../helpers/higher-order-components/initialized';
 import InitializedV5Compat from '../../helpers/higher-order-components/initialized/initialized-v5-compat';
@@ -23,7 +22,6 @@ import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
-  AppHeader,
   AccountListMenu,
   NetworkListMenu,
   AccountDetails,
@@ -140,7 +138,6 @@ import {
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import DeprecatedNetworks from '../../components/ui/deprecated-networks/deprecated-networks';
-import { Box } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -176,10 +173,8 @@ import { LegacyLayout } from '../../layouts/legacy-layout';
 import { RouteWithLayout } from '../../layouts/route-with-layout';
 import {
   getConnectingLabel,
-  hideAppHeader,
   isConfirmTransactionRoute,
   setTheme,
-  showAppHeader,
 } from './utils';
 
 // V5-compat navigate function type for bridging v5 routes with v5-compat components
@@ -787,6 +782,7 @@ export default function Routes() {
             authenticated
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
             component={ConfirmTransaction}
+            layout={LegacyLayout}
           />
           <RouteWithLayout
             authenticated
@@ -1136,9 +1132,6 @@ export default function Routes() {
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />
-      {process.env.REMOVE_GNS
-        ? showAppHeader({ location }) && <AppHeader location={location} />
-        : !hideAppHeader({ location }) && <AppHeader location={location} />}
       {isConfirmTransactionRoute(location.pathname) && (
         <MultichainMetaFoxLogo />
       )}
@@ -1187,6 +1180,7 @@ export default function Routes() {
       ) : null}
 
       {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
+
       {renderRoutes()}
 
       {isUnlocked ? <Alerts history={history} /> : null}
