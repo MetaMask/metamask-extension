@@ -97,7 +97,7 @@ class HomePage {
     '[data-testid="shield-entry-modal-get-started-button"]';
 
   private readonly shieldEntryModalSkip =
-    '[data-testid="shield-entry-modal-skip-button"]';
+    '[data-testid="shield-entry-modal-close-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
