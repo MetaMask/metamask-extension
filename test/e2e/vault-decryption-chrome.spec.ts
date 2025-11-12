@@ -75,9 +75,6 @@ function getExtensionLogFile(extensionStoragePath: string): string {
     .readdirSync(extensionStoragePath)
     .filter((filename: string) => filename.endsWith('.log'));
 
-  console.log(
-    `Extension Log Number of files =========================: ${logFiles.length}`,
-  );
   // Use the first of the `.log` files found
   return path.resolve(extensionStoragePath, logFiles[0]);
 
@@ -169,6 +166,8 @@ async function closePopoverIfPresent(driver: Driver) {
 }
 
 describe('Vault Decryptor Page', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
   it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
     await withFixtures(
       {
