@@ -138,7 +138,8 @@ type AppState = {
   shieldEntryModal?: {
     show: boolean;
     shouldSubmitEvents: boolean;
-    modalType: ModalType;
+    modalType?: ModalType;
+    triggeringCohort?: string;
   };
 };
 

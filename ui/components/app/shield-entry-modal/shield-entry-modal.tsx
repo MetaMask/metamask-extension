@@ -26,8 +26,9 @@ import {
 } from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
 import {
-  getModalTypeForShieldEntryModal,
   getShouldSubmitEventsForShieldEntryModal,
+  getShieldEntryModalTriggeringCohort,
+  getModalTypeForShieldEntryModal,
 } from '../../../selectors';
 import {
   AlignItems,
@@ -55,6 +56,7 @@ const ShieldEntryModal = ({
     getShouldSubmitEventsForShieldEntryModal,
   );
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
+  const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
   const handleOnClose = () => {
     if (skipEventSubmission) {
@@ -65,6 +67,7 @@ const ShieldEntryModal = ({
       dispatch(
         submitSubscriptionUserEvents({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
+          cohort: triggeringCohort,
         }),
       );
     }
