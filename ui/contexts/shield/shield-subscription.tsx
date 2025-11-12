@@ -24,7 +24,6 @@ import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/envir
 import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
-  MODAL_TYPE,
 } from '../../selectors/subscription';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 
@@ -201,7 +200,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
         const assignedCohortName = shieldEligibility.assignedCohort;
         const isUserPending = Boolean(assignedCohortName);
         const hasExpired = shieldEligibility.hasAssignedCohortExpired;
-        const modalType = shieldEligibility?.modalType || MODAL_TYPE.A;
+        const { modalType } = shieldEligibility;
 
         // User has an assigned cohort
         if (isUserPending) {

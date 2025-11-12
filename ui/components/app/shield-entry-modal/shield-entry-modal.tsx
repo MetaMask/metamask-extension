@@ -1,7 +1,11 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { SubscriptionUserEvent } from '@metamask/subscription-controller';
+import {
+  MODAL_TYPE,
+  ModalType,
+  SubscriptionUserEvent,
+} from '@metamask/subscription-controller';
 import {
   Button,
   ButtonSize,
@@ -37,10 +41,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import {
-  MODAL_TYPE,
-  ModalType,
-} from '../../../selectors/subscription/subscription';
 
 const ShieldEntryModal = ({
   skipEventSubmission = false,

@@ -84,11 +84,7 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
-import {
-  MODAL_TYPE,
-  ModalType,
-  SubscriptionEligibilityWithModalType,
-} from '../selectors/subscription/subscription';
+import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -430,29 +426,16 @@ export function subscriptionsStartPolling(): ThunkAction<
 export function getSubscriptionsEligibilities(params?: {
   balanceCategory?: BalanceCategory;
 }): ThunkAction<
-  SubscriptionEligibilityWithModalType[],
+  SubscriptionEligibility[],
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      const eligibilities = await submitRequestToBackground<
-        SubscriptionEligibility[]
-      >('getSubscriptionsEligibilities', [params]);
-
-      // Temporary: Update modalType when SubscriptionEligibility type is updated
-      return eligibilities.map((eligibility) => {
-        const eligibilityWithModalType: SubscriptionEligibilityWithModalType = {
-          ...eligibility,
-          modalType:
-            'modalType' in eligibility
-              ? ((eligibility as SubscriptionEligibilityWithModalType)
-                  .modalType ?? MODAL_TYPE.A)
-              : MODAL_TYPE.A,
-        };
-        return eligibilityWithModalType;
-      });
+      return await submitRequestToBackground('getSubscriptionsEligibilities', [
+        params,
+      ]);
     } catch (error) {
       log.error('[getSubscriptionsEligibilities] error', error);
       dispatch(displayWarning(error));
@@ -665,7 +648,7 @@ export function setShowShieldEntryModalOnce(
   show: boolean | null,
   shouldSubmitEvents: boolean = false,
   triggeringCohort?: string,
-  modalType: ModalType = MODAL_TYPE.A,
+  modalType?: ModalType,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
