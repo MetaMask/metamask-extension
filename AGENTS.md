@@ -1,27 +1,37 @@
 # AGENTS.md
 
-AI agent instructions for MetaMask Browser Extension development.
+Instructions for AI coding agents working on MetaMask Browser Extension.
 
 ---
 
-## Project Overview
+## Agent Instructions Summary
 
-**MetaMask** is a cryptocurrency wallet and gateway to blockchain applications, available as a browser extension for Chrome, Firefox, and other Chromium-based browsers. This is a large-scale TypeScript/React project with complex build infrastructure and security requirements.
+**Project Type:** Browser extension (Chrome/Firefox)
+**Languages:** TypeScript (required for new code), JavaScript (legacy)
+**UI Framework:** React 17 with functional components + hooks
+**State Management:** Redux + BaseController architecture
+**Testing:** Jest (unit), Playwright (E2E)
+**Build System:** Browserify (production), Webpack (development)
+**Security:** LavaMoat policies required for all dependency changes
 
-**Key Technologies:**
-- TypeScript & React (functional components + hooks)
-- Redux for state management
-- BaseController architecture for business logic
-- LavaMoat for supply chain security
-- Jest & Playwright for testing
-- Multiple build systems (Browserify for production, Webpack for development)
+### Critical Rules for Agents
 
-**For comprehensive coding standards, see:**
+1. **ALWAYS use TypeScript** for new files (never JavaScript)
+2. **ALWAYS run `yarn lint:changed:fix`** before committing
+3. **ALWAYS update LavaMoat policies** after dependency changes: `yarn lavamoat:auto`
+4. **ALWAYS colocate tests** with source files (`.test.ts`/`.test.tsx`)
+5. **NEVER use class components** (use functional components with hooks)
+6. **NEVER modify git config** or run destructive git operations
+7. **NEVER commit** unless explicitly requested by user
+
+### Comprehensive Guidelines Location
+
+Read these files for detailed coding standards:
 - Controller patterns: `.cursor/rules/controller-guidelines.mdc`
-- Testing best practices: `.cursor/rules/unit-testing-guidelines.mdc`
+- Testing standards: `.cursor/rules/unit-testing-guidelines.mdc`
 - PR workflow: `.cursor/rules/pull-request-guidelines.mdc`
-- General coding style: `.cursor/rules/coding-guidelines.mdc`
-- General guidelines: `.github/guidelines/CODING_GUIDELINES.md`
+- Code style: `.cursor/rules/coding-guidelines.mdc`
+- Official guidelines: `.github/guidelines/CODING_GUIDELINES.md`
 
 ---
 
@@ -219,6 +229,203 @@ yarn attributions:generate
 
 ---
 
+## Common Agent Workflows
+
+### Workflow: Adding a New Feature
+
+```bash
+# 1. Start development build
+yarn start
+
+# 2. Create new files (MUST be TypeScript)
+# - Component: ui/components/feature-name/feature-name.tsx
+# - Test: ui/components/feature-name/feature-name.test.tsx
+# - Types: ui/components/feature-name/feature-name.types.ts
+
+# 3. Make changes
+
+# 4. Run lint and tests on changed files
+yarn lint:changed:fix
+yarn test:unit path/to/feature-name.test.tsx
+
+# 5. If test needs E2E, build test build
+yarn build:test
+yarn test:e2e:single test/e2e/tests/new-test.spec.js --browser=chrome
+```
+
+### Workflow: Modifying Existing Code
+
+```bash
+# 1. Identify file type and read relevant guidelines
+# - Controller? Read .cursor/rules/controller-guidelines.mdc
+# - React component? Read .cursor/rules/coding-guidelines.mdc
+# - Test? Read .cursor/rules/unit-testing-guidelines.mdc
+
+# 2. Make changes following guidelines
+
+# 3. Run linter on changed files
+yarn lint:changed:fix
+
+# 4. Run existing tests
+yarn test:unit path/to/modified-file.test.ts
+
+# 5. Update tests if behavior changed
+
+# 6. Check for circular dependencies
+yarn circular-deps:check
+```
+
+### Workflow: Adding/Updating Dependencies
+
+```bash
+# 1. Add or update package
+yarn add package-name
+# OR
+yarn upgrade package-name
+
+# 2. REQUIRED: Deduplicate lockfile
+yarn lint:lockfile:dedupe:fix
+
+# 3. REQUIRED: Update allow-scripts
+yarn allow-scripts auto
+
+# 4. REQUIRED: Update LavaMoat policies (this may take several minutes)
+yarn lavamoat:auto
+
+# 5. REQUIRED: Update attributions
+yarn attributions:generate
+
+# 6. Test the build
+yarn build:test
+
+# 7. Commit all changes including:
+#    - package.json
+#    - yarn.lock
+#    - lavamoat/browserify/*/policy.json
+#    - lavamoat/build-system/policy.json
+#    - attribution.txt
+```
+
+### Workflow: Fixing a Bug
+
+```bash
+# 1. Create a failing test that reproduces the bug
+# Add test to existing .test.ts file or create new one
+
+# 2. Run the test to confirm it fails
+yarn test:unit path/to/test-file.test.ts
+
+# 3. Fix the bug in source code
+
+# 4. Run test again to confirm fix
+yarn test:unit path/to/test-file.test.ts
+
+# 5. Run all related tests
+yarn test:unit
+
+# 6. Lint changes
+yarn lint:changed:fix
+
+# 7. If bug is in E2E scenario
+yarn build:test
+yarn test:e2e:single path/to/test.spec.js --browser=chrome
+```
+
+### Workflow: Creating a Controller
+
+```bash
+# 1. MUST read controller guidelines first
+# Read .cursor/rules/controller-guidelines.mdc
+
+# 2. Create controller file (TypeScript only)
+# Location: app/scripts/controllers/your-controller/your-controller.ts
+
+# 3. Controller MUST:
+#    - Extend BaseController from @metamask/base-controller
+#    - Define state type
+#    - Define metadata for all state properties
+#    - Export getDefaultYourControllerState() function
+#    - Use messenger for inter-controller communication
+#    - Use selectors for derived state (not getter methods)
+
+# 4. Create test file
+# Location: app/scripts/controllers/your-controller/your-controller.test.ts
+
+# 5. Create types file
+# Location: app/scripts/controllers/your-controller/types.ts
+
+# 6. Run tests
+yarn test:unit app/scripts/controllers/your-controller/your-controller.test.ts
+
+# 7. Lint
+yarn lint:changed:fix
+```
+
+### Decision: Which Test Build to Use?
+
+```
+IF you need to run E2E tests:
+  IF you're iterating/debugging:
+    → Use `yarn start:test` (faster, LavaMoat disabled)
+  IF you're doing final verification:
+    → Use `yarn build:test` (slower, LavaMoat enabled, matches production)
+
+IF you're developing with feature flags:
+  → Use `FEATURE_FLAG=1 yarn build:test`
+  → Then run E2E: `yarn test:e2e:single path/to/test.spec.js`
+
+IF you're working on Firefox compatibility:
+  → Use `yarn build:test:mv2`
+  → Then test: `yarn test:e2e:firefox`
+```
+
+### Decision: Where to Put New Code?
+
+```
+IF creating a controller:
+  → app/scripts/controllers/controller-name/
+
+IF creating a UI component:
+  → ui/components/component-name/ (for reusable components)
+  → ui/pages/page-name/ (for page-level components)
+
+IF creating a utility function:
+  → shared/lib/ (if used by both background and UI)
+  → app/scripts/lib/ (if only used by background)
+  → ui/helpers/ (if only used by UI)
+
+IF creating constants:
+  → shared/constants/
+
+IF creating TypeScript types:
+  → shared/types/ (for shared types)
+  → types/ (for project-wide types)
+  → [component-dir]/types.ts (for component-specific types)
+
+IF creating a state migration:
+  → Run: yarn generate:migration
+  → Edits: app/scripts/migrations/[number].ts
+```
+
+### Decision: Which Browser Target?
+
+```
+IF user specifies Chrome, Edge, or Brave:
+  → Use MV3 (Manifest V3)
+  → Commands: yarn start, yarn dist, yarn build:test
+
+IF user specifies Firefox:
+  → Use MV2 (Manifest V2)
+  → Commands: yarn start:mv2, yarn dist:mv2, yarn build:test:mv2
+  → Set ENABLE_MV3=false
+
+IF user doesn't specify:
+  → Default to Chrome MV3
+  → Use: yarn start
+```
+
+---
+
 ## Project Structure
 
 ### High-Level Directory Layout
@@ -292,6 +499,50 @@ metamask-extension/
 - Jest for unit tests, Playwright for E2E
 - Test files organized with `describe` blocks by method/function
 - See `.cursor/rules/unit-testing-guidelines.mdc` for testing patterns
+
+### File Modification Patterns
+
+When you modify certain files, you typically need to update related files:
+
+**When modifying a Controller:**
+```
+app/scripts/controllers/foo/foo-controller.ts → ALSO UPDATE:
+├── app/scripts/controllers/foo/foo-controller.test.ts (tests)
+├── app/scripts/controllers/foo/types.ts (if types changed)
+└── app/scripts/metamask-controller.ts (if adding/removing controller)
+```
+
+**When modifying a React Component:**
+```
+ui/components/foo/foo.tsx → ALSO UPDATE:
+├── ui/components/foo/foo.test.tsx (tests)
+├── ui/components/foo/foo.types.ts (if props changed)
+├── ui/components/foo/foo.stories.tsx (if props changed)
+└── ui/components/foo/index.ts (if exports changed)
+```
+
+**When modifying Redux State (ducks):**
+```
+ui/ducks/foo/foo.ts → ALSO UPDATE:
+├── ui/ducks/foo/foo.test.ts (tests)
+├── ui/selectors/foo.ts (selectors that depend on this state)
+└── ui/components/*/foo-component.tsx (components using this state)
+```
+
+**When adding/removing dependencies:**
+```
+package.json → MUST UPDATE:
+├── yarn.lock (run yarn install)
+├── lavamoat/browserify/*/policy.json (run yarn lavamoat:auto)
+├── lavamoat/build-system/policy.json (run yarn lavamoat:auto)
+└── attribution.txt (run yarn attributions:generate)
+```
+
+**When modifying state shape:**
+```
+app/scripts/controllers/foo/foo-controller.ts → MUST CREATE:
+└── app/scripts/migrations/[next-number].ts (migration for state change)
+```
 
 ---
 
@@ -733,6 +984,76 @@ export const TokenList = ({ tokens, onSelect }: TokenListProps) => {
 
 ---
 
+## Error Handling for Agents
+
+### When You Encounter a Build Error
+
+```
+1. Read the error message carefully
+2. Check if it's a known issue in tables below
+3. Apply the solution from the table
+4. If not in table, check if it's a:
+   - LavaMoat policy error → Run `yarn lavamoat:auto`
+   - TypeScript error → Run `yarn lint:tsc`
+   - Dependency error → Run `yarn install`
+5. If still failing, try nuclear option:
+   rm -rf node_modules/ dist/ build/
+   yarn install
+   yarn lavamoat:auto
+```
+
+### When Tests Fail
+
+```
+1. IF test was passing before your changes:
+   → Your changes broke something
+   → Revert changes and understand what the test expects
+   → Fix code to match expected behavior
+
+2. IF test expects old behavior but you're changing behavior:
+   → Update the test to match new expected behavior
+   → Document why behavior changed in test/PR description
+
+3. IF E2E test fails:
+   → Check if you built test build: `yarn build:test`
+   → Check if test build is stale: delete dist/ and rebuild
+   → Run with --debug flag for more info
+   → Run with --leave-running to inspect browser state
+
+4. IF snapshot test fails:
+   → Review the snapshot diff carefully
+   → IF change is intentional: `yarn test:unit -u`
+   → IF change is not intentional: fix your code
+```
+
+### When LavaMoat Policies Fail
+
+```
+1. ALWAYS run after dependency changes: `yarn lavamoat:auto`
+2. IF auto-generation fails:
+   → Try: rm -rf node_modules/ && yarn && yarn lavamoat:auto
+3. IF still fails:
+   → Check if on correct platform (macOS vs Linux)
+   → Platform-specific dependencies need regeneration on that platform
+4. IF blocked during development:
+   → Temporarily use: yarn start --apply-lavamoat=false
+   → MUST fix before merging
+```
+
+### When You Get Circular Dependency Errors
+
+```
+1. Run: yarn circular-deps:check
+2. Fix the circular dependency by:
+   → Moving shared code to a common location
+   → Using dependency injection
+   → Breaking circular imports
+3. After fixing: yarn circular-deps:update
+4. Commit the updated development/circular-deps.jsonc
+```
+
+---
+
 ## Troubleshooting
 
 ### Build Issues
@@ -777,6 +1098,127 @@ export const TokenList = ({ tokens, onSelect }: TokenListProps) => {
 
 ---
 
+## Agent Pre-Completion Checklist
+
+Before completing your task, verify you've done ALL of the following:
+
+### Code Quality Checks
+
+```bash
+# 1. Run linter and auto-fix
+yarn lint:changed:fix
+
+# 2. Run TypeScript type checking
+yarn lint:tsc
+
+# 3. Check for circular dependencies
+yarn circular-deps:check
+
+# 4. Verify no console.log or debug code remains
+# grep -r "console.log" in modified files
+```
+
+### Testing Checks
+
+```bash
+# 1. Run unit tests for modified files
+yarn test:unit path/to/modified-file.test.ts
+
+# 2. If you modified a controller, run controller tests
+yarn test:unit app/scripts/controllers/
+
+# 3. If you modified UI components, run component tests
+yarn test:unit ui/components/
+
+# 4. If behavior changed, ensure tests are updated
+# Tests must reflect new expected behavior
+```
+
+### Build Checks
+
+```bash
+# 1. Verify dev build works
+yarn start
+# (Let it build, check for errors, then Ctrl+C)
+
+# 2. If E2E-related, verify test build works
+yarn build:test
+# (Check for build errors)
+```
+
+### Dependency Checks (ONLY if you modified dependencies)
+
+```bash
+# 1. Deduplicate lockfile
+yarn lint:lockfile:dedupe:fix
+
+# 2. Update allow-scripts
+yarn allow-scripts auto
+
+# 3. Update LavaMoat policies
+yarn lavamoat:auto
+
+# 4. Update attributions
+yarn attributions:generate
+
+# 5. Verify all policy files are included in changes:
+# - lavamoat/browserify/*/policy.json
+# - lavamoat/build-system/policy.json
+# - attribution.txt
+```
+
+### File Completeness Checks
+
+```typescript
+// For NEW TypeScript files, verify they have:
+// 1. Proper imports
+// 2. Type definitions
+// 3. JSDoc comments for public functions
+// 4. Colocated .test.ts file
+// 5. Exported from index.ts (if in component folder)
+
+// For MODIFIED files, verify:
+// 1. No commented-out code
+// 2. No unused imports
+// 3. Consistent formatting
+// 4. Updated tests if behavior changed
+```
+
+### Documentation Checks
+
+```
+IF you created a new component:
+  → Add/update component README.md
+  → Add/update Storybook story (.stories.tsx)
+
+IF you changed public API (controller methods, props, etc.):
+  → Update JSDoc comments
+  → Update TypeScript types
+
+IF you changed behavior significantly:
+  → Add comment explaining why
+  → Update relevant documentation files
+```
+
+### Final Verification
+
+```
+✓ All new code is TypeScript (not JavaScript)
+✓ All tests pass: yarn test:unit
+✓ All linting passes: yarn lint:changed
+✓ No console.log or debug code
+✓ Changes are colocated with tests
+✓ Used functional components (not class components)
+✓ Props are destructured
+✓ Controllers extend BaseController
+✓ Updated related files (see File Modification Patterns)
+✓ LavaMoat policies updated (if dependencies changed)
+✓ Circular dependencies checked
+✓ Build completes without errors
+```
+
+---
+
 ## Additional Resources
 
 ### Documentation
@@ -800,65 +1242,3 @@ export const TokenList = ({ tokens, onSelect }: TokenListProps) => {
 - **MetaMask Developer Docs:** https://docs.metamask.io/
 - **Community Forum:** https://community.metamask.io/
 - **User Support:** https://support.metamask.io/
-
-### Getting Help
-
-- **Internal:** Ask in team Slack channels
-- **External:** Post in [MetaMask Community Forum](https://community.metamask.io/)
-- **Bugs:** File issue on GitHub
-- **Security:** security@metamask.io (do not file public issues)
-
----
-
-## Quick Reference Card
-
-### Most Common Workflows
-
-```bash
-# Start fresh development session
-nvm use
-yarn install
-cp .metamaskrc.dist .metamaskrc  # If first time
-# Edit .metamaskrc with Infura key
-yarn start
-
-# Make changes and test
-yarn lint:changed:fix            # Lint changed files
-yarn test:unit path/to/file      # Test specific file
-yarn build:test                  # Build for E2E
-yarn test:e2e:single path/to/test.spec.js --browser=chrome
-
-# Before committing
-yarn lint
-yarn test
-yarn circular-deps:check
-
-# After changing dependencies
-yarn lint:lockfile:dedupe:fix
-yarn allow-scripts auto
-yarn lavamoat:auto
-yarn attributions:generate
-
-# Create PR
-# Write good description (context, problem, solution)
-# Add screenshots for UI changes
-# Link related issues
-```
-
-### Emergency Commands
-
-```bash
-# Something's broken, start from scratch
-rm -rf node_modules/ dist/ build/ .cache/
-yarn install
-yarn lavamoat:auto
-yarn start
-
-# Tests are failing mysteriously
-yarn build:test                  # Rebuild test build
-rm -rf dist/ && yarn build:test  # Nuclear option
-
-# Can't build at all
-yarn start --apply-lavamoat=false  # Disable LavaMoat temporarily
-```
-

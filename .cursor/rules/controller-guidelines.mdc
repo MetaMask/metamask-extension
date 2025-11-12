@@ -131,42 +131,51 @@ export const defaultFooControllerState = {
 - Create a `${controllerName}Metadata` variable
 - Pass metadata to `BaseController` constructor
 
-#### Metadata Properties:
+#### Metadata Properties (Current):
+- `includeInDebugSnapshot`: Include in Sentry debug logs? (true/false) - Must exclude PII
+- `includeInStateLogs`: Include in user-downloaded state logs? (true/false) - Must exclude sensitive data
 - `persist`: Should property be in persistent storage? (true/false)
-- `anonymous`: Has no PII, safe for Sentry? (true/false)
 - `usedInUi`: Is property used in the UI? (true/false)
 
-**Legacy metadata (being phased out):**
-- `includeInDebugSnapshot`: Include in Sentry debug logs? (use `anonymous` instead)
-- `includeInStateLogs`: Include in user-downloaded state logs? (true/false)
+**Alternative metadata (can be used instead of `includeInDebugSnapshot`):**
+- `anonymous`: Has no PII, safe for Sentry? (true/false) - Can be used as an alternative to `includeInDebugSnapshot`
 
 Example:
 ```typescript
-const tokensControllerMetadata = {
-  tokens: {
+const keyringControllerMetadata = {
+  vault: {
+    // This property can be used to identify a user, so we want to make sure we
+    // do not include it in Sentry.
+    includeInDebugSnapshot: false,
+    // We don't want to include this in state logs because it contains sensitive key material.
+    includeInStateLogs: false,
+    // We want to persist this property so it's restored automatically, as we
+    // cannot reconstruct it otherwise.
     persist: true,
-    anonymous: false, // Contains user token data
-    usedInUi: true,
-  },
-  detectedTokens: {
-    persist: false, // Can be reconstructed
-    anonymous: false,
-    usedInUi: true,
-  },
-  isPolling: {
-    persist: false, // Ephemeral state
-    anonymous: true, // No PII
+    // This property is only used in the controller, not in the UI.
     usedInUi: false,
+  },
+  isUnlocked: {
+    // This value is not sensitive, and is useful for diagnosing errors reported through support.
+    includeInStateLogs: true,
+    // We do not need to persist this property in state, as we want to
+    // initialize state with the wallet locked.
+    persist: false,
+    // This property has no PII, so it is safe to send to Sentry.
+    // (Can use 'anonymous: true' as alternative to 'includeInDebugSnapshot: true')
+    anonymous: true,
+    // This is used in the UI
+    usedInUi: true,
   },
 };
 
-class TokensController extends BaseController</*...*/> {
-  constructor({ messenger, state = {} }: TokensControllerOptions) {
+class KeyringController extends BaseController</*...*/> {
+  constructor({ messenger, state = {} }: KeyringControllerOptions) {
     super({
-      name: 'TokensController',
-      metadata: tokensControllerMetadata,
+      name: 'KeyringController',
+      metadata: keyringControllerMetadata,
       messenger,
-      state: { ...getDefaultTokensControllerState(), ...state },
+      state: { ...getDefaultKeyringControllerState(), ...state },
     });
   }
 }
@@ -619,7 +628,7 @@ Before submitting a controller, ensure:
 - [ ] `getDefault${ControllerName}State` function is exported
 - [ ] Constructor accepts optional `Partial<State>`
 - [ ] State metadata is defined for all properties
-- [ ] Metadata includes `persist`, `anonymous`, and `usedInUi`
+- [ ] Metadata includes required properties (`includeInDebugSnapshot` or `anonymous`, `includeInStateLogs`, `persist`, `usedInUi`)
 - [ ] State is updated only via `this.update()`
 - [ ] State is minimal (no derived values stored)
 
