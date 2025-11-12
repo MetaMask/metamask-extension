@@ -127,20 +127,19 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   const handleOptionClick = (option: WalletOption) => {
     onClose?.();
 
-    // Track the event for the selected option.
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event:
-        option.id === 'import-wallet'
-          ? MetaMetricsEventName.ImportSecretRecoveryPhraseClicked
-          : t(option.titleKey),
-      properties: {
-        location: 'Main Menu',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: null,
-      },
-    });
+    if (option.id === 'import-wallet') {
+      // Track the event for the selected option.
+      trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
+        properties: {
+          location: 'Main Menu',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: null,
+        },
+      });
+    }
 
     // Hardware wallet connections require expanded view
     if (option.id === 'hardware-wallet') {
