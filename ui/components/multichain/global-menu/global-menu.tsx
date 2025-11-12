@@ -318,7 +318,6 @@ export const GlobalMenu = ({
       style={{
         overflow: 'hidden',
         minWidth: 225,
-        zIndex: 10000, // TODO: Use portal
       }}
       offset={[0, 8]}
       position={PopoverPosition.BottomEnd}
