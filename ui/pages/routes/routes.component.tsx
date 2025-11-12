@@ -1123,7 +1123,7 @@ export default function Routes() {
         [`os-${os}`]: Boolean(os),
         [`browser-${browser}`]: Boolean(browser),
         ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-        'app--sidepanel': isSidepanel,
+        'group app--sidepanel': isSidepanel,
         ///: END:ONLY_INCLUDE_IF
       })}
       dir={textDirection}
