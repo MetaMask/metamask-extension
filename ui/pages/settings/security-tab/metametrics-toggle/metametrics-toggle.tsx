@@ -24,6 +24,7 @@ import {
   getParticipateInMetaMetrics,
   getUseExternalServices,
 } from '../../../../selectors';
+import { getIsActiveShieldSubscription } from '../../../../selectors/subscription';
 
 const MetametricsToggle = ({
   dataCollectionForMarketing,
@@ -48,6 +49,11 @@ const MetametricsToggle = ({
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const useExternalServices = useSelector(getUseExternalServices);
+  const isActiveShieldSubscription = useSelector(getIsActiveShieldSubscription);
+  console.log('isActiveShieldSubscription', isActiveShieldSubscription);
+  // we will enable the metametrics option if the user has a shield subscription and user can't toggle the metametrics option with active shield subscription
+  const disableMetametricsToggle =
+    isActiveShieldSubscription || !useExternalServices;
 
   const handleUseParticipateInMetaMetrics = async (isParticipated: boolean) => {
     if (isParticipated) {
@@ -116,7 +122,7 @@ const MetametricsToggle = ({
         >
           <ToggleButton
             value={participateInMetaMetrics}
-            disabled={!useExternalServices}
+            disabled={disableMetametricsToggle}
             onToggle={(value) => handleUseParticipateInMetaMetrics(!value)}
             offLabel={t('off')}
             onLabel={t('on')}

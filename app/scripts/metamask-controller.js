@@ -8575,7 +8575,7 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController,
         'completed',
         {
-          gas_sponsored: true,
+          gas_sponsored: isSponsored,
         },
       );
     } catch (error) {

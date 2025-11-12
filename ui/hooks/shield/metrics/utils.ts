@@ -58,8 +58,6 @@ export function formatDefaultShieldSubscriptionRequestEventProps(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     error_message: params.errorMessage,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    request_status: params.requestStatus,
+    status: params.requestStatus,
   };
 }
