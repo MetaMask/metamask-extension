@@ -1,11 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  isSolanaChainId,
-  isBitcoinChainId,
-} from '@metamask/bridge-controller';
-import { isTronChainId } from '../../../../ducks/bridge/utils';
+import { isSolanaChainId, isBitcoinChainId } from '@metamask/bridge-controller';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
+import { isTronChainId } from '../../../../ducks/bridge/utils';
 import {
   TextField,
   Text,

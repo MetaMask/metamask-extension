@@ -10,7 +10,7 @@ import {
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
-import { isEvmAccountType, TrxScope } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {
