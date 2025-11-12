@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
   CRYPTO_PAYMENT_METHOD_ERRORS,
@@ -17,7 +11,6 @@ import {
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
-import { useDispatch, useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import {
   BannerAlert,
@@ -73,22 +66,7 @@ import {
   useSubscriptionPaymentMethods,
   useSubscriptionPricing,
 } from '../../../hooks/subscription/useSubscriptionPricing';
-import {
-  getSubscriptionCryptoApprovalAmount,
-  setSecurityAlertsEnabled,
-  setUsePhishDetect,
-  setUseTransactionSimulations,
-} from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  getIsSecurityAlertsEnabled,
-  getUsePhishDetect,
-  getUseTransactionSimulations,
-} from '../../../selectors/selectors';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
+import { getSubscriptionCryptoApprovalAmount } from '../../../store/actions';
 import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
 import {
   getIsShieldSubscriptionEndingSoon,
@@ -115,14 +93,6 @@ const TransactionShield = () => {
   }, [search]);
 
   const { formatCurrency } = useFormatters();
-
-  const trackEvent = useContext(MetaMetricsContext);
-
-  const securityAlertsEnabled = useSelector(getIsSecurityAlertsEnabled);
-  const usePhishDetect = useSelector(getUsePhishDetect);
-  const useTransactionSimulations = useSelector(getUseTransactionSimulations);
-
-  const dispatch = useDispatch();
 
   const {
     customerId,
@@ -245,41 +215,6 @@ const TransactionShield = () => {
     isWaitingForSubscriptionCreation ||
     subscriptionsLoading ||
     subscriptionPricingLoading;
-
-  // set security alerts enabled, phishing detection, and transaction simulations to true if not already set
-  useEffect(() => {
-    if (currentShieldSubscription) {
-      // set security alerts enabled to true
-      if (!securityAlertsEnabled) {
-        trackEvent({
-          category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.SettingsUpdated,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            blockaid_alerts_enabled: true,
-          },
-        });
-        setSecurityAlertsEnabled(true);
-      }
-
-      // set phishing detection to true
-      if (!usePhishDetect) {
-        dispatch(setUsePhishDetect(true));
-      }
-
-      // set transaction simulations to true
-      if (!useTransactionSimulations) {
-        setUseTransactionSimulations(true);
-      }
-    }
-  }, [
-    currentShieldSubscription,
-    securityAlertsEnabled,
-    usePhishDetect,
-    useTransactionSimulations,
-    dispatch,
-    trackEvent,
-  ]);
 
   // redirect to shield plan page if user doesn't have a subscription
   useEffect(() => {

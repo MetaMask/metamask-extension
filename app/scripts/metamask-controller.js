@@ -222,6 +222,7 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   captureShieldSubscriptionRequestEvent,
   getShieldGatewayConfig,
+  updatePreferencesAndMetricsForShieldSubscription,
 } from '../../shared/modules/shield';
 import {
   HYPERLIQUID_ORIGIN,
@@ -815,8 +816,11 @@ export default class MetamaskController extends EventEmitter {
           this.claimsController.fetchClaimsConfigurations().catch((err) => {
             log.error('Error fetching claims configurations', err);
           });
-          // shield subscribers have to turn on metametrics
-          this.metaMetricsController.setParticipateInMetaMetrics(true);
+          // update preferences and metrics optin status after shield subscription is active
+          updatePreferencesAndMetricsForShieldSubscription(
+            this.metaMetricsController,
+            this.preferencesController,
+          );
           this.shieldController.start();
         } else {
           this.shieldController.stop();

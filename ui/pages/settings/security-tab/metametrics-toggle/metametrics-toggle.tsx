@@ -50,7 +50,6 @@ const MetametricsToggle = ({
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const useExternalServices = useSelector(getUseExternalServices);
   const isActiveShieldSubscription = useSelector(getIsActiveShieldSubscription);
-  console.log('isActiveShieldSubscription', isActiveShieldSubscription);
   // we will enable the metametrics option if the user has a shield subscription and user can't toggle the metametrics option with active shield subscription
   const disableMetametricsToggle =
     isActiveShieldSubscription || !useExternalServices;

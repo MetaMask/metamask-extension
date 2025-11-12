@@ -6,6 +6,10 @@ import {
 } from '@metamask/subscription-controller';
 import { getIsShieldSubscriptionActive } from '../../lib/shield';
 import { DefaultSubscriptionPaymentOptions } from '../../types/metametrics';
+// eslint-disable-next-line import/no-restricted-paths
+import { PreferencesController } from '../../../app/scripts/controllers/preferences-controller';
+// eslint-disable-next-line import/no-restricted-paths
+import MetaMetricsController from '../../../app/scripts/controllers/metametrics-controller';
 import { loadShieldConfig } from './config';
 
 export async function getShieldGatewayConfig(
@@ -126,4 +130,24 @@ export function getIsTrialSubscription(
   product: ProductType,
 ): boolean {
   return Boolean(trialProducts?.includes(product));
+}
+
+/**
+ * Update the preferences after a shield subscription is active
+ *
+ * @param metaMetricsController - MetaMetricsController instance.
+ * @param preferencesController - PreferencesController instance.
+ */
+export function updatePreferencesAndMetricsForShieldSubscription(
+  metaMetricsController: MetaMetricsController,
+  preferencesController: PreferencesController,
+) {
+  // shield subscribers have to turn on metametrics
+  metaMetricsController.setParticipateInMetaMetrics(true);
+  // shield subscribers have to turn on security alerts
+  preferencesController.setSecurityAlertsEnabled(true);
+  // shield subscribers have to turn on phishing detection
+  preferencesController.setUsePhishDetect(true);
+  // shield subscribers have to turn on transaction simulations
+  preferencesController.setUseTransactionSimulations(true);
 }
