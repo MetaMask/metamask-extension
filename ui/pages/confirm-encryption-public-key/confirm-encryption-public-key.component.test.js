@@ -10,6 +10,7 @@ const baseProps = {
   clearConfirmTransaction: () => undefined,
   cancelEncryptionPublicKey: () => undefined,
   encryptionPublicKey: () => undefined,
+  navigate: jest.fn(),
   mostRecentOverviewPage: '/',
   requesterAddress: '0x123456789abcdef',
   txData: {
