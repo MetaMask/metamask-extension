@@ -5,9 +5,9 @@ import {
   getMultichainAccountsByWalletId,
   getWalletIdAndNameByAccountAddress,
   getSelectedAccountGroup,
+  getInternalAccountsFromGroupById,
 } from '../../selectors/multichain-accounts/account-tree';
 import { setCandidateSubscriptionId } from '../../ducks/rewards';
-import { getIsMultichainAccountsState2Enabled } from '../../selectors/multichain-accounts';
 import { getSelectedAccount } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -15,11 +15,14 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
-import { rewardsOptIn, updateMetaMetricsTraits } from '../../store/actions';
+import {
+  rewardsOptIn,
+  rewardsLinkAccountsToSubscriptionCandidate,
+  updateMetaMetricsTraits,
+} from '../../store/actions';
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
 import { useI18nContext } from '../useI18nContext';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
-import { useLinkAccountGroup } from './useLinkAccountGroup';
 
 export type UseOptinResult = {
   /**
@@ -47,11 +50,6 @@ export const useOptIn = (): UseOptinResult => {
   const [optinLoading, setOptinLoading] = useState<boolean>(false);
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
-
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const selectedAccount = useSelector(getSelectedAccount);
   const { id: walletId } = useSelector((state) =>
@@ -71,8 +69,24 @@ export const useOptIn = (): UseOptinResult => {
     [accountGroupsByWallet],
   );
 
-  const { linkAccountGroup } = useLinkAccountGroup(
-    sideEffectAccountGroupIdToLink as AccountGroupId | undefined,
+  // Get accounts for side effect account group
+  const sideEffectAccounts = useSelector((state) =>
+    sideEffectAccountGroupIdToLink
+      ? getInternalAccountsFromGroupById(
+          state,
+          sideEffectAccountGroupIdToLink as AccountGroupId,
+        )
+      : [],
+  );
+
+  // Get accounts for active (selected) account group
+  const activeGroupAccounts = useSelector((state) =>
+    selectedAccountGroupId
+      ? getInternalAccountsFromGroupById(
+          state,
+          selectedAccountGroupId as AccountGroupId,
+        )
+      : [],
   );
 
   const handleOptIn = useCallback(
@@ -95,11 +109,34 @@ export const useOptIn = (): UseOptinResult => {
         setOptinLoading(true);
         setOptinError(null);
 
+        // First, opt in with side effect accounts
+        const accountsToOptIn =
+          sideEffectAccountGroupIdToLink && sideEffectAccounts.length > 0
+            ? sideEffectAccounts
+            : activeGroupAccounts;
+
+        const accountsToLinkAfterOptIn =
+          sideEffectAccountGroupIdToLink && sideEffectAccounts.length > 0
+            ? activeGroupAccounts
+            : sideEffectAccounts;
+
         subscriptionId = (await dispatch(
-          rewardsOptIn({ referralCode }),
+          rewardsOptIn({ accounts: accountsToOptIn, referralCode }),
         )) as unknown as string | null;
 
         if (subscriptionId) {
+          if (accountsToLinkAfterOptIn.length > 0) {
+            try {
+              await dispatch(
+                rewardsLinkAccountsToSubscriptionCandidate(
+                  accountsToLinkAfterOptIn,
+                ),
+              );
+            } catch {
+              // Failed to link active group accounts.
+            }
+          }
+
           trackEvent({
             category: MetaMetricsEventCategory.Rewards,
             event: MetaMetricsEventName.RewardsOptInCompleted,
@@ -132,19 +169,6 @@ export const useOptIn = (): UseOptinResult => {
         setOptinError(errorMessage);
       }
 
-      if (
-        isMultichainAccountsState2Enabled &&
-        sideEffectAccountGroupIdToLink &&
-        sideEffectAccountGroupIdToLink !== selectedAccountGroupId &&
-        subscriptionId
-      ) {
-        try {
-          await linkAccountGroup();
-        } catch {
-          // Failed to link first account group in same wallet.
-        }
-      }
-
       if (subscriptionId) {
         dispatch(setCandidateSubscriptionId(subscriptionId));
       }
@@ -153,11 +177,11 @@ export const useOptIn = (): UseOptinResult => {
     },
     [
       trackEvent,
-      isMultichainAccountsState2Enabled,
       sideEffectAccountGroupIdToLink,
+      sideEffectAccounts,
+      activeGroupAccounts,
       dispatch,
       t,
-      linkAccountGroup,
     ],
   );
 

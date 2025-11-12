@@ -20,6 +20,7 @@ import {
 import {
   setOnboardingActiveStep,
   setOnboardingModalOpen,
+  setOnboardingModalRendered,
 } from '../../../../ducks/rewards';
 import { OnboardingStep } from '../../../../ducks/rewards/types';
 import { useTheme } from '../../../../hooks/useTheme';
@@ -45,7 +46,12 @@ export default function OnboardingModal() {
   }, [dispatch]);
 
   const renderContent = useCallback(() => {
-    if (candidateSubscriptionId) {
+    if (
+      candidateSubscriptionId &&
+      candidateSubscriptionId !== 'error' &&
+      candidateSubscriptionId !== 'pending' &&
+      candidateSubscriptionId !== 'retry'
+    ) {
       // TODO: render mobile QR code
       return null;
     }
@@ -67,7 +73,16 @@ export default function OnboardingModal() {
   }, [candidateSubscriptionId, onboardingStep]);
 
   useEffect(() => {
-    if (candidateSubscriptionId) {
+    dispatch(setOnboardingModalRendered(true));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (
+      candidateSubscriptionId &&
+      candidateSubscriptionId !== 'error' &&
+      candidateSubscriptionId !== 'pending' &&
+      candidateSubscriptionId !== 'retry'
+    ) {
       handleClose();
     }
   }, [candidateSubscriptionId, handleClose]);

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import log from 'loglevel';
 import {
   getRewardsSeasonMetadata,
   getRewardsSeasonStatus,
@@ -17,9 +16,11 @@ import {
   setSeasonStatusError,
   setSeasonStatusLoading,
 } from '../../ducks/rewards';
+import { CandidateSubscriptionId } from '../../ducks/rewards/types';
+import { REWARDS_ERROR_MESSAGES } from '../../../shared/constants/rewards';
 
 type UseSeasonStatusOptions = {
-  subscriptionId: string | 'pending' | 'retry' | 'error' | null;
+  subscriptionId: CandidateSubscriptionId;
   onAuthorizationError: () => Promise<void>;
 };
 
@@ -57,6 +58,7 @@ export const useSeasonStatus = ({
       !isRewardsEnabled
     ) {
       dispatch(setSeasonStatus(null));
+      dispatch(setSeasonStatusError(null));
       dispatch(setSeasonStatusLoading(false));
       return;
     }
@@ -87,13 +89,12 @@ export const useSeasonStatus = ({
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
-      log.error('[useSeasonStatus] Error fetching season status:', error);
       dispatch(setSeasonStatusError(errorMessage));
 
-      // If authorization failed, trigger callback
+      // If authorization failed or season not found, trigger callback
       if (
-        (errorMessage.includes('Authorization') ||
-          errorMessage.includes('Unauthorized')) &&
+        (errorMessage.includes(REWARDS_ERROR_MESSAGES.AUTHORIZATION_FAILED) ||
+          errorMessage.includes(REWARDS_ERROR_MESSAGES.SEASON_NOT_FOUND)) &&
         onAuthorizationError
       ) {
         await onAuthorizationError();

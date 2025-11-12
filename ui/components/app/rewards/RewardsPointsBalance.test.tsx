@@ -1,13 +1,13 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   selectCandidateSubscriptionId,
+  selectOnboardingModalRendered,
   selectRewardsEnabled,
   selectSeasonStatus,
   selectSeasonStatusError,
-  selectSeasonStatusLoading,
 } from '../../../ducks/rewards/selectors';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { RewardsPointsBalance } from './RewardsPointsBalance';
@@ -51,8 +51,32 @@ jest.mock('../../component-library/skeleton', () => ({
   ),
 }));
 
+jest.mock('../../../store/store', () => ({
+  useAppSelector: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/storage-helpers', () => ({
+  getStorageItem: jest.fn(),
+  setStorageItem: jest.fn(),
+}));
+
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
 const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
+
+const { useAppSelector } = jest.requireMock('../../../store/store');
+const { getStorageItem, setStorageItem } = jest.requireMock(
+  '../../../../shared/lib/storage-helpers',
+);
+
+const mockUseAppSelector = useAppSelector as jest.MockedFunction<
+  typeof useAppSelector
+>;
+const mockGetStorageItem = getStorageItem as jest.MockedFunction<
+  typeof getStorageItem
+>;
+const mockSetStorageItem = setStorageItem as jest.MockedFunction<
+  typeof setStorageItem
+>;
 
 describe('RewardsPointsBalance', () => {
   // Mock season status with complete structure
@@ -89,15 +113,19 @@ describe('RewardsPointsBalance', () => {
     rewardsEnabled = true,
     candidateSubscriptionId = 'test-subscription-id',
     seasonStatus = mockSeasonStatus,
-    seasonStatusLoading = false,
     seasonStatusError = null,
+    rewardsActiveAccountSubscriptionId = 'active-subscription-id',
+    hasSeenOnboarding = true,
+    onboardingModalRendered = true,
   }: {
     locale?: string;
     rewardsEnabled?: boolean;
     candidateSubscriptionId?: string | null;
     seasonStatus?: typeof mockSeasonStatus | null;
-    seasonStatusLoading?: boolean;
     seasonStatusError?: string | null;
+    rewardsActiveAccountSubscriptionId?: string | undefined;
+    hasSeenOnboarding?: boolean;
+    onboardingModalRendered?: boolean;
   }) => {
     mockUseSelector.mockImplementation((selector: unknown) => {
       if (selector === getIntlLocale) {
@@ -112,20 +140,43 @@ describe('RewardsPointsBalance', () => {
       if (selector === selectSeasonStatus) {
         return seasonStatus;
       }
-      if (selector === selectSeasonStatusLoading) {
-        return seasonStatusLoading;
-      }
       if (selector === selectSeasonStatusError) {
         return seasonStatusError;
       }
+      if (selector === selectOnboardingModalRendered) {
+        return onboardingModalRendered;
+      }
       return undefined;
     });
+
+    mockUseAppSelector.mockImplementation(
+      (selector: (state: unknown) => unknown) => {
+        // Create a mock state structure that matches what the selector expects
+        const mockState = {
+          metamask: {
+            rewardsActiveAccount: rewardsActiveAccountSubscriptionId
+              ? { subscriptionId: rewardsActiveAccountSubscriptionId }
+              : undefined,
+          },
+        };
+        return selector(mockState);
+      },
+    );
+
+    mockGetStorageItem.mockResolvedValue(hasSeenOnboarding ? 'true' : null);
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
     setSelectorValues({});
     mockUseDispatch.mockReturnValue(jest.fn());
+    mockSetStorageItem.mockResolvedValue(undefined);
+    // Set IN_TEST to prevent onboarding modal from opening
+    process.env.IN_TEST = 'true';
+  });
+
+  afterEach(() => {
+    delete process.env.IN_TEST;
   });
 
   it('should render null when rewards are not enabled', () => {
@@ -149,15 +200,46 @@ describe('RewardsPointsBalance', () => {
     ).toHaveTextContent('rewardsSignUp');
   });
 
-  it('should render skeleton when loading and no balance exists', () => {
-    setSelectorValues({ seasonStatus: null, seasonStatusLoading: true });
+  it('should render skeleton when candidateSubscriptionId is pending and no active subscription', () => {
+    setSelectorValues({
+      seasonStatus: null,
+      candidateSubscriptionId: 'pending',
+      rewardsActiveAccountSubscriptionId: undefined,
+    });
     render(<RewardsPointsBalance />);
     expect(screen.getByTestId('skeleton')).toBeInTheDocument();
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
-  it('should not render skeleton when loading but balance exists', () => {
-    setSelectorValues({ seasonStatusLoading: true });
+  it('should render skeleton when candidateSubscriptionId is retry and no active subscription', () => {
+    setSelectorValues({
+      seasonStatus: null,
+      candidateSubscriptionId: 'retry',
+      rewardsActiveAccountSubscriptionId: undefined,
+    });
+    render(<RewardsPointsBalance />);
+    expect(screen.getByTestId('skeleton')).toBeInTheDocument();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+  });
+
+  it('should not render skeleton when candidateSubscriptionId is pending but active subscription exists', () => {
+    setSelectorValues({
+      candidateSubscriptionId: 'pending',
+      rewardsActiveAccountSubscriptionId: 'active-subscription-id',
+    });
+    render(<RewardsPointsBalance />);
+    expect(screen.queryByTestId('skeleton')).not.toBeInTheDocument();
+    expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('rewards-points-balance-value'),
+    ).toHaveTextContent('1,000 points');
+  });
+
+  it('should not render skeleton when balance exists and not loading', () => {
+    setSelectorValues({
+      candidateSubscriptionId: 'test-subscription-id',
+      rewardsActiveAccountSubscriptionId: undefined,
+    });
     render(<RewardsPointsBalance />);
     expect(screen.queryByTestId('skeleton')).not.toBeInTheDocument();
     expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
@@ -239,29 +321,37 @@ describe('RewardsPointsBalance', () => {
     expect(mockUseSelector).toHaveBeenCalledWith(selectSeasonStatus);
   });
 
-  it('should handle undefined balance total gracefully', () => {
+  it('should handle undefined balance total gracefully', async () => {
     setSelectorValues({
       seasonStatus: {
         ...mockSeasonStatus,
         balance: { total: undefined as unknown as number },
       } as unknown as typeof mockSeasonStatus,
     });
-    render(<RewardsPointsBalance />);
-    expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
+    await act(async () => {
+      render(<RewardsPointsBalance />);
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
+    });
     expect(
       screen.getByTestId('rewards-points-balance-value'),
     ).toHaveTextContent('0 points');
   });
 
-  it('should handle null balance gracefully', () => {
+  it('should handle null balance gracefully', async () => {
     setSelectorValues({
       seasonStatus: {
         ...mockSeasonStatus,
         balance: null as unknown as { total: number },
       } as unknown as typeof mockSeasonStatus,
     });
-    render(<RewardsPointsBalance />);
-    expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
+    await act(async () => {
+      render(<RewardsPointsBalance />);
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
+    });
     expect(
       screen.getByTestId('rewards-points-balance-value'),
     ).toHaveTextContent('0 points');
@@ -301,7 +391,10 @@ describe('RewardsPointsBalance', () => {
   });
 
   it('should render skeleton when seasonStatus is null and not loading', () => {
-    setSelectorValues({ seasonStatus: null, seasonStatusLoading: false });
+    setSelectorValues({
+      seasonStatus: null,
+      candidateSubscriptionId: 'test-subscription-id',
+    });
     render(<RewardsPointsBalance />);
     expect(screen.getByTestId('skeleton')).toBeInTheDocument();
   });
@@ -324,7 +417,7 @@ describe('RewardsPointsBalance', () => {
     setSelectorValues({
       seasonStatus: null,
       seasonStatusError: 'Failed to fetch season status',
-      seasonStatusLoading: false,
+      candidateSubscriptionId: 'test-subscription-id',
     });
 
     render(<RewardsPointsBalance />);
@@ -341,7 +434,7 @@ describe('RewardsPointsBalance', () => {
     setSelectorValues({
       seasonStatus: null,
       seasonStatusError: 'Network error',
-      seasonStatusLoading: false,
+      candidateSubscriptionId: 'test-subscription-id',
     });
 
     render(<RewardsPointsBalance />);
@@ -358,8 +451,8 @@ describe('RewardsPointsBalance', () => {
     setSelectorValues({
       seasonStatus: null,
       seasonStatusError: 'Error occurred',
-      seasonStatusLoading: false,
       candidateSubscriptionId: 'pending',
+      rewardsActiveAccountSubscriptionId: undefined,
     });
 
     render(<RewardsPointsBalance />);
@@ -372,11 +465,10 @@ describe('RewardsPointsBalance', () => {
     expect(textElement).toHaveTextContent("Couldn't load");
   });
 
-  it('should render error state when candidateSubscriptionId is error and not loading', () => {
+  it('should render error state when candidateSubscriptionId is error', () => {
     setSelectorValues({
       seasonStatus: null,
       seasonStatusError: null,
-      seasonStatusLoading: false,
       candidateSubscriptionId: 'error',
     });
 
@@ -388,5 +480,97 @@ describe('RewardsPointsBalance', () => {
     expect(container).toHaveClass('gap-1', 'bg-background-transparent');
     expect(textElement).toHaveClass('text-alternative');
     expect(textElement).toHaveTextContent("Couldn't load");
+  });
+
+  it('should not open onboarding modal when hasSeenOnboarding is true', () => {
+    const dispatchMock = jest.fn();
+    mockUseDispatch.mockReturnValue(dispatchMock);
+    setSelectorValues({ hasSeenOnboarding: true });
+
+    render(<RewardsPointsBalance />);
+
+    expect(dispatchMock).not.toHaveBeenCalled();
+  });
+
+  it('should not open onboarding modal in test environment even if hasSeenOnboarding is false', () => {
+    const dispatchMock = jest.fn();
+    mockUseDispatch.mockReturnValue(dispatchMock);
+    setSelectorValues({ hasSeenOnboarding: false });
+    process.env.IN_TEST = 'true';
+
+    render(<RewardsPointsBalance />);
+
+    expect(dispatchMock).not.toHaveBeenCalled();
+  });
+
+  it('should not open onboarding modal when onboardingModalRendered is false', () => {
+    const dispatchMock = jest.fn();
+    mockUseDispatch.mockReturnValue(dispatchMock);
+    delete process.env.IN_TEST;
+    setSelectorValues({
+      hasSeenOnboarding: false,
+      candidateSubscriptionId: null,
+      rewardsActiveAccountSubscriptionId: undefined,
+      onboardingModalRendered: false,
+    });
+
+    render(<RewardsPointsBalance />);
+
+    expect(dispatchMock).not.toHaveBeenCalled();
+  });
+
+  it('should call setStorageItem when candidateSubscriptionId is set', async () => {
+    setSelectorValues({
+      candidateSubscriptionId: 'new-subscription-id',
+      rewardsActiveAccountSubscriptionId: undefined,
+    });
+
+    await act(async () => {
+      render(<RewardsPointsBalance />);
+    });
+
+    await waitFor(() => {
+      expect(mockSetStorageItem).toHaveBeenCalledWith(
+        'REWARDS_GTM_MODAL_SHOWN',
+        'true',
+      );
+    });
+  });
+
+  it('should handle setStorageItem errors gracefully', async () => {
+    mockSetStorageItem.mockRejectedValue(new Error('Storage error'));
+    setSelectorValues({
+      candidateSubscriptionId: 'new-subscription-id',
+      rewardsActiveAccountSubscriptionId: undefined,
+    });
+
+    await act(async () => {
+      render(<RewardsPointsBalance />);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
+    });
+    // Component should still render despite storage error
+    expect(
+      screen.getByTestId('rewards-points-balance-value'),
+    ).toHaveTextContent('1,000 points');
+  });
+
+  it('should handle getStorageItem errors gracefully', async () => {
+    mockGetStorageItem.mockRejectedValue(new Error('Storage error'));
+    setSelectorValues({});
+
+    await act(async () => {
+      render(<RewardsPointsBalance />);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
+    });
+    // Component should still render despite storage error
+    expect(
+      screen.getByTestId('rewards-points-balance-value'),
+    ).toHaveTextContent('1,000 points');
   });
 });

@@ -5550,6 +5550,12 @@
   "reward": {
     "message": "Reward"
   },
+  "rewardsAuthFailDescription": {
+    "message": "An unknown error occurred while authenticating this account with the rewards program. Please try again later."
+  },
+  "rewardsAuthFailTitle": {
+    "message": "Unknown Error."
+  },
   "rewardsErrorMessagesAccountAlreadyRegistered": {
     "message": "This account is already registered with another Rewards profile. Please switch account to continue."
   },
@@ -5582,6 +5588,9 @@
   },
   "rewardsOnboardingIntroHardwareWalletTitle": {
     "message": "Account not supported"
+  },
+  "rewardsOnboardingIntroRewardsAuthFailRetry": {
+    "message": "Retry"
   },
   "rewardsOnboardingIntroStepConfirm": {
     "message": "Claim 250 points"

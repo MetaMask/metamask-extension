@@ -6918,12 +6918,15 @@ export function getRewardsGeoMetadata(): ThunkAction<
 }
 
 export function rewardsOptIn({
+  accounts,
   referralCode,
 }: {
+  accounts: InternalAccount[];
   referralCode?: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     return await submitRequestToBackground<string | null>('rewardsOptIn', [
+      accounts,
       referralCode,
     ]);
   };

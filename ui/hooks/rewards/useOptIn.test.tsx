@@ -1,22 +1,24 @@
 import { act } from '@testing-library/react-hooks';
 import React from 'react';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventName,
+  MetaMetricsUserTrait,
+} from '../../../shared/constants/metametrics';
 import { useOptIn } from './useOptIn';
 
 // Mocks
 jest.mock('../../store/actions', () => ({
   rewardsOptIn: jest.fn(() => async () => 'sub-123'),
+  rewardsLinkAccountsToSubscriptionCandidate: jest.fn(() => async () => [
+    { account: {} as InternalAccount, success: true },
+  ]),
+  updateMetaMetricsTraits: jest.fn(() => async () => {
+    // noop
+  }),
 }));
-
-jest.mock('../../selectors/multichain-accounts', () => {
-  const actual = jest.requireActual('../../selectors/multichain-accounts');
-  return {
-    ...actual,
-    getIsMultichainAccountsState2Enabled: jest.fn(() => false),
-  };
-});
 
 jest.mock('../../selectors', () => {
   const actual = jest.requireActual('../../selectors');
@@ -25,6 +27,38 @@ jest.mock('../../selectors', () => {
     getSelectedAccount: jest.fn(() => ({ address: '0x111' })),
   };
 });
+
+const mockSideEffectAccounts: InternalAccount[] = [
+  {
+    id: 'acc-1',
+    address: '0x111',
+    metadata: {
+      name: 'Account 1',
+      keyring: { type: 'HD Key Tree' },
+      importTime: Date.now(),
+    },
+    options: {},
+    methods: [],
+    type: 'eip155:eoa',
+    scopes: ['eip155:1'],
+  },
+];
+
+const mockActiveGroupAccounts: InternalAccount[] = [
+  {
+    id: 'acc-0',
+    address: '0x000',
+    metadata: {
+      name: 'Account 0',
+      keyring: { type: 'HD Key Tree' },
+      importTime: Date.now(),
+    },
+    options: {},
+    methods: [],
+    type: 'eip155:eoa',
+    scopes: [],
+  },
+];
 
 jest.mock('../../selectors/multichain-accounts/account-tree', () => {
   const actual = jest.requireActual(
@@ -61,6 +95,15 @@ jest.mock('../../selectors/multichain-accounts/account-tree', () => {
         accounts: ['acc-0'],
       },
     })),
+    getInternalAccountsFromGroupById: jest.fn((_state, groupId: string) => {
+      if (groupId === 'entropy:test/1') {
+        return mockSideEffectAccounts;
+      }
+      if (groupId === 'entropy:test/0') {
+        return mockActiveGroupAccounts;
+      }
+      return [];
+    }),
   };
 });
 
@@ -68,12 +111,6 @@ jest.mock('../../ducks/rewards', () => ({
   setCandidateSubscriptionId: jest.fn((sid: string) => ({
     type: 'SET_SID',
     payload: sid,
-  })),
-}));
-
-jest.mock('./useLinkAccountGroup', () => ({
-  useLinkAccountGroup: jest.fn(() => ({
-    linkAccountGroup: jest.fn(async () => ({ success: true, byAddress: {} })),
   })),
 }));
 
@@ -87,18 +124,21 @@ jest.mock(
 const { rewardsOptIn } = jest.requireMock('../../store/actions') as {
   rewardsOptIn: jest.Mock;
 };
+const { rewardsLinkAccountsToSubscriptionCandidate } = jest.requireMock(
+  '../../store/actions',
+) as { rewardsLinkAccountsToSubscriptionCandidate: jest.Mock };
+const { updateMetaMetricsTraits } = jest.requireMock('../../store/actions') as {
+  updateMetaMetricsTraits: jest.Mock;
+};
 const { setCandidateSubscriptionId } = jest.requireMock(
   '../../ducks/rewards',
 ) as { setCandidateSubscriptionId: jest.Mock };
-const { getIsMultichainAccountsState2Enabled } = jest.requireMock(
-  '../../selectors/multichain-accounts',
-) as { getIsMultichainAccountsState2Enabled: jest.Mock };
-const { useLinkAccountGroup } = jest.requireMock('./useLinkAccountGroup') as {
-  useLinkAccountGroup: jest.Mock;
-};
 const { getSelectedAccountGroup } = jest.requireMock(
   '../../selectors/multichain-accounts/account-tree',
 ) as { getSelectedAccountGroup: jest.Mock };
+const { getInternalAccountsFromGroupById } = jest.requireMock(
+  '../../selectors/multichain-accounts/account-tree',
+) as { getInternalAccountsFromGroupById: jest.Mock };
 
 // MetaMetrics provider container
 const mockTrackEvent = jest.fn();
@@ -112,8 +152,28 @@ describe('useOptIn', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (rewardsOptIn as jest.Mock).mockImplementation(() => async () => 'sub-123');
-    getIsMultichainAccountsState2Enabled.mockReturnValue(false);
+    (
+      rewardsLinkAccountsToSubscriptionCandidate as jest.Mock
+    ).mockImplementation(() => async () => [
+      { account: {} as InternalAccount, success: true },
+    ]);
+    (updateMetaMetricsTraits as jest.Mock).mockImplementation(
+      () => async () => {
+        // noop
+      },
+    );
     getSelectedAccountGroup.mockReturnValue('entropy:test/0');
+    (getInternalAccountsFromGroupById as jest.Mock).mockImplementation(
+      (_state, groupId: string) => {
+        if (groupId === 'entropy:test/1') {
+          return mockSideEffectAccounts;
+        }
+        if (groupId === 'entropy:test/0') {
+          return mockActiveGroupAccounts;
+        }
+        return [];
+      },
+    );
   });
 
   describe('Initial State', () => {
@@ -138,8 +198,7 @@ describe('useOptIn', () => {
   });
 
   describe('Successful opt-in', () => {
-    it('tracks started/completed, dispatches candidate SID, and toggles loading', async () => {
-      getIsMultichainAccountsState2Enabled.mockReturnValue(false);
+    it('tracks started/completed, dispatches candidate SID, updates traits, and toggles loading', async () => {
       (rewardsOptIn as jest.Mock).mockImplementation(
         () => async () => 'sub-abc',
       );
@@ -160,11 +219,14 @@ describe('useOptIn', () => {
       expect(events).toContain(MetaMetricsEventName.RewardsOptInCompleted);
 
       expect(setCandidateSubscriptionId).toHaveBeenCalledWith('sub-abc');
+      expect(updateMetaMetricsTraits).toHaveBeenCalledWith({
+        [MetaMetricsUserTrait.HasRewardsOptedIn]: 'on',
+      });
       expect(result.current.optinLoading).toBe(false);
       expect(result.current.optinError).toBeNull();
     });
 
-    it('includes referral metrics properties when referralCode is provided', async () => {
+    it('includes referral metrics properties and traits when referralCode is provided', async () => {
       const { result } = renderHookWithProvider(
         () => useOptIn(),
         {},
@@ -183,6 +245,170 @@ describe('useOptIn', () => {
       );
       expect(started?.properties?.referred).toBe(true);
       expect(started?.properties?.referral_code_used).toBe('REF-CODE');
+
+      expect(updateMetaMetricsTraits).toHaveBeenCalledWith({
+        [MetaMetricsUserTrait.HasRewardsOptedIn]: 'on',
+        [MetaMetricsUserTrait.RewardsReferred]: true,
+        [MetaMetricsUserTrait.RewardsReferralCodeUsed]: 'REF-CODE',
+      });
+    });
+
+    it('uses side effect accounts for opt-in when available and links active group accounts', async () => {
+      (rewardsOptIn as jest.Mock).mockImplementation(
+        () => async () => 'sub-side-effect',
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useOptIn(),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.optin();
+      });
+
+      // Should opt-in with side effect accounts (entropy:test/1)
+      expect(rewardsOptIn).toHaveBeenCalledWith({
+        accounts: mockSideEffectAccounts,
+        referralCode: undefined,
+      });
+
+      // Should link active group accounts after opt-in
+      expect(rewardsLinkAccountsToSubscriptionCandidate).toHaveBeenCalledWith(
+        mockActiveGroupAccounts,
+      );
+    });
+
+    it('uses active group accounts for opt-in when no side effect accounts available', async () => {
+      // Mock to return empty array for side effect accounts
+      (getInternalAccountsFromGroupById as jest.Mock).mockImplementation(
+        (_state, groupId: string) => {
+          if (groupId === 'entropy:test/1') {
+            return [];
+          }
+          if (groupId === 'entropy:test/0') {
+            return mockActiveGroupAccounts;
+          }
+          return [];
+        },
+      );
+
+      (rewardsOptIn as jest.Mock).mockImplementation(
+        () => async () => 'sub-active',
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useOptIn(),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.optin();
+      });
+
+      // Should opt-in with active group accounts
+      expect(rewardsOptIn).toHaveBeenCalledWith({
+        accounts: mockActiveGroupAccounts,
+        referralCode: undefined,
+      });
+
+      // Should not link accounts when there are no accounts to link
+      expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
+    });
+
+    it('does not link accounts when accountsToLinkAfterOptIn is empty', async () => {
+      // Mock to return empty array for active group accounts
+      (getInternalAccountsFromGroupById as jest.Mock).mockImplementation(
+        (_state, groupId: string) => {
+          if (groupId === 'entropy:test/1') {
+            return mockSideEffectAccounts;
+          }
+          if (groupId === 'entropy:test/0') {
+            return [];
+          }
+          return [];
+        },
+      );
+
+      (rewardsOptIn as jest.Mock).mockImplementation(
+        () => async () => 'sub-no-link',
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useOptIn(),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.optin();
+      });
+
+      // Should not link accounts when there are no accounts to link
+      expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
+    });
+
+    it('swallows link errors without affecting final state', async () => {
+      (rewardsOptIn as jest.Mock).mockImplementation(
+        () => async () => 'sub-link-error',
+      );
+      (
+        rewardsLinkAccountsToSubscriptionCandidate as jest.Mock
+      ).mockImplementation(() => async () => {
+        throw new Error('link fail');
+      });
+
+      const { result } = renderHookWithProvider(
+        () => useOptIn(),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.optin();
+      });
+
+      expect(result.current.optinError).toBeNull();
+      expect(result.current.optinLoading).toBe(false);
+      expect(setCandidateSubscriptionId).toHaveBeenCalledWith('sub-link-error');
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      expect(events).toContain(MetaMetricsEventName.RewardsOptInCompleted);
+    });
+
+    it('swallows traits update errors without affecting final state', async () => {
+      (rewardsOptIn as jest.Mock).mockImplementation(
+        () => async () => 'sub-traits-error',
+      );
+      (updateMetaMetricsTraits as jest.Mock).mockImplementation(
+        () => async () => {
+          throw new Error('traits fail');
+        },
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useOptIn(),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.optin();
+      });
+
+      expect(result.current.optinError).toBeNull();
+      expect(result.current.optinLoading).toBe(false);
+      expect(setCandidateSubscriptionId).toHaveBeenCalledWith(
+        'sub-traits-error',
+      );
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      expect(events).toContain(MetaMetricsEventName.RewardsOptInCompleted);
     });
   });
 
@@ -208,18 +434,11 @@ describe('useOptIn', () => {
       expect(result.current.optinLoading).toBe(false);
       expect(result.current.optinError).toBe('mock error');
       expect(setCandidateSubscriptionId).not.toHaveBeenCalled();
+      expect(updateMetaMetricsTraits).not.toHaveBeenCalled();
     });
-  });
 
-  describe('Side-effect account group linking', () => {
-    it('calls linkAccountGroup when multichain state2 enabled and different group with subscriptionId', async () => {
-      getIsMultichainAccountsState2Enabled.mockReturnValue(true);
-      getSelectedAccountGroup.mockReturnValue('entropy:test/2');
-      (rewardsOptIn as jest.Mock).mockImplementation(
-        () => async () => 'sub-side-1',
-      );
-      const mockLink = jest.fn(async () => ({ success: true, byAddress: {} }));
-      useLinkAccountGroup.mockReturnValue({ linkAccountGroup: mockLink });
+    it('does not dispatch candidate SID when subscriptionId is null', async () => {
+      (rewardsOptIn as jest.Mock).mockImplementation(() => async () => null);
 
       const { result } = renderHookWithProvider(
         () => useOptIn(),
@@ -232,38 +451,10 @@ describe('useOptIn', () => {
         await result.current.optin();
       });
 
-      expect(useLinkAccountGroup).toHaveBeenCalled();
+      expect(setCandidateSubscriptionId).not.toHaveBeenCalled();
+      expect(updateMetaMetricsTraits).not.toHaveBeenCalled();
       const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
-      expect(events).toContain(MetaMetricsEventName.RewardsOptInStarted);
-      expect(events).toContain(MetaMetricsEventName.RewardsOptInCompleted);
-    });
-
-    it('swallows link errors without affecting final state', async () => {
-      getIsMultichainAccountsState2Enabled.mockReturnValue(true);
-      getSelectedAccountGroup.mockReturnValue('entropy:test/2');
-      (rewardsOptIn as jest.Mock).mockImplementation(
-        () => async () => 'sub-side-2',
-      );
-      const mockLink = jest.fn(async () => {
-        throw new Error('link fail');
-      });
-      useLinkAccountGroup.mockReturnValue({ linkAccountGroup: mockLink });
-
-      const { result } = renderHookWithProvider(
-        () => useOptIn(),
-        {},
-        undefined,
-        Container,
-      );
-
-      await act(async () => {
-        await result.current.optin();
-      });
-
-      expect(useLinkAccountGroup).toHaveBeenCalled();
-      expect(result.current.optinError).toBeNull();
-      expect(result.current.optinLoading).toBe(false);
-      expect(setCandidateSubscriptionId).toHaveBeenCalled();
+      expect(events).not.toContain(MetaMetricsEventName.RewardsOptInCompleted);
     });
   });
 });

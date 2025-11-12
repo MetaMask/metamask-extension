@@ -519,7 +519,10 @@ export type Patch = {
  */
 export type RewardsControllerOptInAction = {
   type: 'RewardsController:optIn';
-  handler: (referralCode?: string) => Promise<string | null>;
+  handler: (
+    accounts: InternalAccount[],
+    referralCode?: string,
+  ) => Promise<string | null>;
 };
 
 /**

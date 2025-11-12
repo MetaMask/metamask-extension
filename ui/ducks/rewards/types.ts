@@ -5,3 +5,10 @@ export enum OnboardingStep {
   STEP3 = 'STEP_3',
   STEP4 = 'STEP_4',
 }
+
+export type CandidateSubscriptionId =
+  | 'pending'
+  | 'retry'
+  | 'error'
+  | string
+  | null;

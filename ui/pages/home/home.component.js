@@ -938,7 +938,11 @@ export default class Home extends PureComponent {
           ) : null}
           {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
           {showShieldEntryModal && <ShieldEntryModal />}
-          {rewardsEnabled && <RewardsOnboardingModal />}
+          {rewardsEnabled &&
+            !showTermsOfUse &&
+            !showWhatsNew &&
+            !showMultiRpcEditModal &&
+            !displayUpdateModal && <RewardsOnboardingModal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}

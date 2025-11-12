@@ -6,13 +6,17 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setOnboardingModalOpen } from '../../../ducks/rewards';
 import {
   selectCandidateSubscriptionId,
+  selectOnboardingModalRendered,
   selectRewardsEnabled,
   selectSeasonStatus,
   selectSeasonStatusError,
 } from '../../../ducks/rewards/selectors';
 import { useCandidateSubscriptionId } from '../../../hooks/rewards/useCandidateSubscriptionId';
 import { useSeasonStatus } from '../../../hooks/rewards/useSeasonStatus';
-import { getStorageItem } from '../../../../shared/lib/storage-helpers';
+import {
+  getStorageItem,
+  setStorageItem,
+} from '../../../../shared/lib/storage-helpers';
 import { useAppSelector } from '../../../store/store';
 import { RewardsBadge } from './RewardsBadge';
 import { REWARDS_GTM_MODAL_SHOWN } from './utils/constants';
@@ -26,14 +30,11 @@ export const RewardsPointsBalance = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const openRewardsModal = useCallback(() => {
-    dispatch(setOnboardingModalOpen(true));
-  }, [dispatch]);
-
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const seasonStatus = useSelector(selectSeasonStatus);
   const seasonStatusError = useSelector(selectSeasonStatusError);
   const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
+  const onboardingModalRendered = useSelector(selectOnboardingModalRendered);
   const rewardsActiveAccountSubscriptionId = useAppSelector(
     (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
   );
@@ -46,6 +47,10 @@ export const RewardsPointsBalance = () => {
 
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(true);
   const isTestEnv = Boolean(process.env.IN_TEST);
+
+  const openRewardsOnboardingModal = useCallback(() => {
+    dispatch(setOnboardingModalOpen(true));
+  }, [dispatch]);
 
   // entry point hooks
   const { fetchCandidateSubscriptionId } = useCandidateSubscriptionId();
@@ -68,10 +73,49 @@ export const RewardsPointsBalance = () => {
 
   // dispatch onboarding modal open if not seen before
   useEffect(() => {
-    if (!isTestEnv && rewardsEnabled && !hasSeenOnboarding) {
-      openRewardsModal();
+    if (
+      !isTestEnv &&
+      rewardsEnabled &&
+      !hasSeenOnboarding &&
+      candidateSubscriptionId === null && // determined that it's null
+      !rewardsActiveAccountSubscriptionId && // determined that it's not the active account
+      onboardingModalRendered
+    ) {
+      openRewardsOnboardingModal();
     }
-  }, [hasSeenOnboarding, openRewardsModal, rewardsEnabled, isTestEnv]);
+  }, [
+    hasSeenOnboarding,
+    openRewardsOnboardingModal,
+    rewardsEnabled,
+    isTestEnv,
+    candidateSubscriptionId,
+    rewardsActiveAccountSubscriptionId,
+    onboardingModalRendered,
+  ]);
+
+  const setHasSeenOnboardingInStorage = useCallback(async () => {
+    try {
+      await setStorageItem(REWARDS_GTM_MODAL_SHOWN, 'true');
+    } catch (_e) {
+      // Silently fail - should not block the user from seeing the points balance
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      candidateSubscriptionId &&
+      candidateSubscriptionId !== 'pending' &&
+      candidateSubscriptionId !== 'retry' &&
+      candidateSubscriptionId !== 'error'
+    ) {
+      try {
+        setHasSeenOnboardingInStorage();
+      } catch (_e) {
+        // Silently fail - should not block the user from seeing the points balance
+      }
+      setHasSeenOnboarding(true);
+    }
+  }, [candidateSubscriptionId, setHasSeenOnboardingInStorage]);
 
   if (!rewardsEnabled) {
     return null;
@@ -83,7 +127,7 @@ export const RewardsPointsBalance = () => {
         boxClassName="gap-1 px-1.5 bg-background-muted rounded"
         formattedPoints={t('rewardsSignUp')}
         withPointsSuffix={false}
-        onClick={openRewardsModal}
+        onClick={openRewardsOnboardingModal}
       />
     );
   }
@@ -103,16 +147,15 @@ export const RewardsPointsBalance = () => {
     );
   }
 
-  // Format the points balance with proper locale-aware number formatting
-  const formattedPoints = new Intl.NumberFormat(locale).format(
-    seasonStatus?.balance?.total ?? 0,
-  );
-
   if (
     seasonStatus &&
     candidateSubscriptionId &&
     !candidateSubscriptionIdLoading
   ) {
+    // Format the points balance with proper locale-aware number formatting
+    // Handle null/undefined balance by defaulting to 0
+    const balanceTotal = seasonStatus.balance?.total ?? 0;
+    const formattedPoints = new Intl.NumberFormat(locale).format(balanceTotal);
     return (
       <RewardsBadge
         formattedPoints={formattedPoints}

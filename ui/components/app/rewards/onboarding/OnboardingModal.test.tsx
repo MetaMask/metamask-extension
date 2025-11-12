@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -152,5 +152,196 @@ describe('OnboardingModal', () => {
 
     const header = screen.getByTestId('rewards-onboarding-modal-header');
     expect(header).toHaveAttribute('data-theme', ThemeType.dark);
+  });
+
+  it('renders the correct step component when onboardingStep is STEP1', () => {
+    setupSelectors({
+      isOpen: true,
+      step: OnboardingStep.STEP1,
+      candidateSubscriptionId: null,
+    });
+    const dispatchMock = jest.fn();
+    mockedUseDispatch.mockReturnValue(dispatchMock);
+
+    render(<OnboardingModal />);
+
+    expect(screen.getByTestId('step1')).toBeInTheDocument();
+  });
+
+  it('renders the correct step component when onboardingStep is STEP3', () => {
+    setupSelectors({
+      isOpen: true,
+      step: OnboardingStep.STEP3,
+      candidateSubscriptionId: null,
+    });
+    const dispatchMock = jest.fn();
+    mockedUseDispatch.mockReturnValue(dispatchMock);
+
+    render(<OnboardingModal />);
+
+    expect(screen.getByTestId('step3')).toBeInTheDocument();
+  });
+
+  it('renders the correct step component when onboardingStep is STEP4', () => {
+    setupSelectors({
+      isOpen: true,
+      step: OnboardingStep.STEP4,
+      candidateSubscriptionId: null,
+    });
+    const dispatchMock = jest.fn();
+    mockedUseDispatch.mockReturnValue(dispatchMock);
+
+    render(<OnboardingModal />);
+
+    expect(screen.getByTestId('step4')).toBeInTheDocument();
+  });
+
+  it('renders intro step as default when onboardingStep is invalid', () => {
+    setupSelectors({
+      isOpen: true,
+      step: 'invalid-step' as OnboardingStep,
+      candidateSubscriptionId: null,
+    });
+    const dispatchMock = jest.fn();
+    mockedUseDispatch.mockReturnValue(dispatchMock);
+
+    render(<OnboardingModal />);
+
+    expect(screen.getByTestId('intro-step')).toBeInTheDocument();
+  });
+
+  it('hides close button when onboardingStep is INTRO', () => {
+    setupSelectors({
+      isOpen: true,
+      step: OnboardingStep.INTRO,
+      candidateSubscriptionId: null,
+    });
+    const dispatchMock = jest.fn();
+    mockedUseDispatch.mockReturnValue(dispatchMock);
+
+    render(<OnboardingModal />);
+
+    const header = screen.getByTestId('rewards-onboarding-modal-header');
+    // The close button is rendered but hidden via style.display
+    const closeButton = header.querySelector('[aria-label]');
+    if (closeButton) {
+      expect(closeButton).toHaveStyle({ display: 'none' });
+    }
+  });
+
+  it('shows close button when onboardingStep is not INTRO', () => {
+    setupSelectors({
+      isOpen: true,
+      step: OnboardingStep.STEP1,
+      candidateSubscriptionId: null,
+    });
+    const dispatchMock = jest.fn();
+    mockedUseDispatch.mockReturnValue(dispatchMock);
+
+    render(<OnboardingModal />);
+
+    const header = screen.getByTestId('rewards-onboarding-modal-header');
+    // The close button should be visible
+    const closeButton = header.querySelector('[aria-label]');
+    if (closeButton) {
+      expect(closeButton).toHaveStyle({ display: 'block' });
+    }
+  });
+
+  it('does not close modal when candidateSubscriptionId is "error"', async () => {
+    setupSelectors({
+      isOpen: true,
+      step: OnboardingStep.STEP1,
+      candidateSubscriptionId: 'error',
+    });
+    const dispatchMock = jest.fn();
+    mockedUseDispatch.mockReturnValue(dispatchMock);
+
+    render(<OnboardingModal />);
+
+    await waitFor(() => {
+      expect(dispatchMock).not.toHaveBeenCalledWith(
+        setOnboardingModalOpen(false),
+      );
+    });
+    expect(screen.getByTestId('step1')).toBeInTheDocument();
+  });
+
+  it('does not close modal when candidateSubscriptionId is "pending"', async () => {
+    setupSelectors({
+      isOpen: true,
+      step: OnboardingStep.STEP1,
+      candidateSubscriptionId: 'pending',
+    });
+    const dispatchMock = jest.fn();
+    mockedUseDispatch.mockReturnValue(dispatchMock);
+
+    render(<OnboardingModal />);
+
+    await waitFor(() => {
+      expect(dispatchMock).not.toHaveBeenCalledWith(
+        setOnboardingModalOpen(false),
+      );
+    });
+    expect(screen.getByTestId('step1')).toBeInTheDocument();
+  });
+
+  it('does not close modal when candidateSubscriptionId is "retry"', async () => {
+    setupSelectors({
+      isOpen: true,
+      step: OnboardingStep.STEP1,
+      candidateSubscriptionId: 'retry',
+    });
+    const dispatchMock = jest.fn();
+    mockedUseDispatch.mockReturnValue(dispatchMock);
+
+    render(<OnboardingModal />);
+
+    await waitFor(() => {
+      expect(dispatchMock).not.toHaveBeenCalledWith(
+        setOnboardingModalOpen(false),
+      );
+    });
+    expect(screen.getByTestId('step1')).toBeInTheDocument();
+  });
+
+  it('returns null content when candidateSubscriptionId is valid', () => {
+    setupSelectors({
+      isOpen: true,
+      step: OnboardingStep.STEP1,
+      candidateSubscriptionId: 'valid-subscription-id',
+    });
+    const dispatchMock = jest.fn();
+    mockedUseDispatch.mockReturnValue(dispatchMock);
+
+    render(<OnboardingModal />);
+
+    expect(screen.queryByTestId('step1')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('intro-step')).not.toBeInTheDocument();
+  });
+
+  it('dispatches close and resets step when close button is clicked', () => {
+    setupSelectors({
+      isOpen: true,
+      step: OnboardingStep.STEP2,
+      candidateSubscriptionId: null,
+    });
+    const dispatchMock = jest.fn();
+    mockedUseDispatch.mockReturnValue(dispatchMock);
+
+    render(<OnboardingModal />);
+
+    // Find and click the close button in the header
+    const header = screen.getByTestId('rewards-onboarding-modal-header');
+    const closeButton = header.querySelector('[aria-label]');
+    expect(closeButton).toBeInTheDocument();
+
+    if (closeButton) {
+      fireEvent.click(closeButton);
+      expect(dispatchMock).toHaveBeenCalledWith(setOnboardingModalOpen(false));
+      expect(dispatchMock).toHaveBeenCalledWith(
+        setOnboardingActiveStep(OnboardingStep.INTRO),
+      );
+    }
   });
 });

@@ -4,12 +4,13 @@ import type {
   SeasonStatusState,
 } from '../../../shared/types/rewards';
 import { RewardsErrorToastProps } from '../../components/app/rewards/RewardsErrorToast';
-import { OnboardingStep } from './types';
+import { CandidateSubscriptionId, OnboardingStep } from './types';
 
 export type RewardsState = {
   // Onboarding state
   onboardingModalOpen: boolean;
   onboardingActiveStep: OnboardingStep;
+  onboardingModalRendered: boolean;
 
   // Geolocation state
   geoLocation: string | null;
@@ -18,7 +19,7 @@ export type RewardsState = {
   optinAllowedForGeoError: boolean;
 
   // Rewards subscription / season status state
-  candidateSubscriptionId: string | 'pending' | 'error' | 'retry' | null;
+  candidateSubscriptionId: CandidateSubscriptionId;
   seasonStatus: SeasonStatusState | null;
   seasonStatusError: string | null;
   seasonStatusLoading: boolean;
@@ -32,6 +33,7 @@ export type RewardsState = {
 export const initialState: RewardsState = {
   onboardingModalOpen: false,
   onboardingActiveStep: OnboardingStep.INTRO,
+  onboardingModalRendered: false,
 
   geoLocation: null,
   optinAllowedForGeo: null,
@@ -70,6 +72,10 @@ const rewardsSlice = createSlice({
 
     setOnboardingActiveStep: (state, action: PayloadAction<OnboardingStep>) => {
       state.onboardingActiveStep = action.payload;
+    },
+
+    setOnboardingModalRendered: (state, action: PayloadAction<boolean>) => {
+      state.onboardingModalRendered = action.payload;
     },
 
     setRewardsGeoMetadata: (
@@ -148,6 +154,7 @@ export const {
   resetRewardsState,
   setOnboardingModalOpen,
   setOnboardingActiveStep,
+  setOnboardingModalRendered,
   setCandidateSubscriptionId,
   setSeasonStatusLoading,
   setSeasonStatus,

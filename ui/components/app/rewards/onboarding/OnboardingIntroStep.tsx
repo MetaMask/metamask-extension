@@ -28,6 +28,7 @@ import {
   selectOptinAllowedForGeoLoading,
 } from '../../../../ducks/rewards/selectors';
 import { useGeoRewardsMetadata } from '../../../../hooks/rewards/useGeoRewardsMetadata';
+import { useCandidateSubscriptionId } from '../../../../hooks/rewards/useCandidateSubscriptionId';
 import { useAppSelector } from '../../../../store/store';
 import { isHardwareWallet } from '../../../../../shared/modules/selectors';
 
@@ -69,10 +70,26 @@ const OnboardingIntroStep: React.FC = () => {
       (!candidateSubscriptionId || candidateSubscriptionIdError),
   });
 
+  const { fetchCandidateSubscriptionId } = useCandidateSubscriptionId();
+
   /**
    * Handles the confirm/continue button press
    */
   const handleNext = useCallback(async () => {
+    // Show error modal if candidate subscription ID fetch failed
+    if (candidateSubscriptionIdError) {
+      dispatch(
+        setErrorToast({
+          isOpen: true,
+          title: t('rewardsAuthFailTitle'),
+          description: t('rewardsAuthFailDescription'),
+          onActionClick: fetchCandidateSubscriptionId,
+          actionText: t('rewardsOnboardingIntroRewardsAuthFailRetry'),
+        }),
+      );
+      return;
+    }
+
     // Show error modal if geo check failed
     if (
       optinAllowedForGeoError &&
@@ -93,7 +110,7 @@ const OnboardingIntroStep: React.FC = () => {
     }
 
     // Show error modal if unsupported region
-    if (!optinAllowedForGeo) {
+    if (optinAllowedForGeo === false) {
       dispatch(
         setErrorToast({
           isOpen: true,
@@ -119,7 +136,9 @@ const OnboardingIntroStep: React.FC = () => {
     // Proceed to next onboarding step
     dispatch(setOnboardingActiveStep(OnboardingStep.STEP1));
   }, [
+    candidateSubscriptionIdError,
     dispatch,
+    fetchCandidateSubscriptionId,
     fetchGeoRewardsMetadata,
     hardwareWalletUsed,
     optinAllowedForGeo,
@@ -196,6 +215,17 @@ const OnboardingIntroStep: React.FC = () => {
       <Button
         variant={ButtonVariant.Primary}
         size={ButtonSize.Lg}
+        isLoading={
+          optinAllowedForGeoLoading ||
+          candidateSubscriptionId === 'pending' ||
+          candidateSubscriptionId === 'retry'
+        }
+        isDisabled={
+          optinAllowedForGeoLoading ||
+          Boolean(rewardsActiveAccountSubscriptionId) ||
+          candidateSubscriptionId === 'pending' ||
+          candidateSubscriptionId === 'retry'
+        }
         onClick={handleNext}
         className="w-full my-2 bg-white"
       >

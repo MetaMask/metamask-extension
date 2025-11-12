@@ -3377,6 +3377,22 @@ describe('Actions', () => {
   });
 
   describe('#rewardsOptIn', () => {
+    const mockAccounts = [
+      {
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        address: '0xFirstAddress',
+        metadata: {
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: ETH_EOA_METHODS,
+        type: EthAccountType.Eoa,
+      },
+    ];
+
     afterEach(() => {
       sinon.restore();
     });
@@ -3390,10 +3406,15 @@ describe('Actions', () => {
       setBackgroundConnection(background);
 
       const result = await store.dispatch(
-        actions.rewardsOptIn({ referralCode: 'ABCDEF' }),
+        actions.rewardsOptIn({
+          accounts: mockAccounts,
+          referralCode: 'ABCDEF',
+        }),
       );
 
-      expect(background.rewardsOptIn.calledWith('ABCDEF')).toBe(true);
+      expect(background.rewardsOptIn.calledWith(mockAccounts, 'ABCDEF')).toBe(
+        true,
+      );
       expect(result).toStrictEqual('sub_123');
       expect(store.getActions()).toStrictEqual([]);
     });
@@ -3406,9 +3427,13 @@ describe('Actions', () => {
       };
       setBackgroundConnection(background);
 
-      const result = await store.dispatch(actions.rewardsOptIn({}));
+      const result = await store.dispatch(
+        actions.rewardsOptIn({ accounts: mockAccounts }),
+      );
 
-      expect(background.rewardsOptIn.calledWith(undefined)).toBe(true);
+      expect(background.rewardsOptIn.calledWith(mockAccounts, undefined)).toBe(
+        true,
+      );
       expect(result).toBeNull();
       expect(store.getActions()).toStrictEqual([]);
     });
@@ -3421,9 +3446,9 @@ describe('Actions', () => {
       };
       setBackgroundConnection(background);
 
-      await expect(store.dispatch(actions.rewardsOptIn({}))).rejects.toThrow(
-        'opt-in failed',
-      );
+      await expect(
+        store.dispatch(actions.rewardsOptIn({ accounts: mockAccounts })),
+      ).rejects.toThrow('opt-in failed');
       expect(store.getActions()).toStrictEqual([]);
     });
   });
