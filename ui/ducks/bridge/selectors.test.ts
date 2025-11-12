@@ -1998,6 +1998,9 @@ describe('Bridge selectors', () => {
           fromToken: {
             address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
             decimals: 6,
+            chainId: ChainId.SOLANA,
+            assetId:
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
           },
         },
         featureFlagOverrides: {
@@ -2043,10 +2046,7 @@ describe('Bridge selectors', () => {
         },
         bridgeSliceOverrides: {
           fromTokenExchangeRate: 1.0,
-          fromToken: {
-            address: zeroAddress(),
-            decimals: 18,
-          },
+          fromToken: toBridgeToken(getNativeAssetForChainId(ChainId.SOLANA)),
         },
         featureFlagOverrides: {
           bridgeConfig: {
@@ -2227,6 +2227,8 @@ describe('Bridge selectors', () => {
           toToken: {
             address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
             decimals: 6,
+            assetId:
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
           },
         },
         featureFlagOverrides: {
