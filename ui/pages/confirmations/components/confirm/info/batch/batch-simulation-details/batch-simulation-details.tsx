@@ -75,14 +75,7 @@ export function BatchSimulationDetails() {
         balanceChanges: finalBalanceChanges ?? [],
       },
     ];
-  }, [approveBalanceChanges, handleEdit, t]);
-
-  if (
-    transactionMeta?.type === TransactionType.revokeDelegation ||
-    isUpgradeOnly
-  ) {
-    return null;
-  }
+  }, [approveBalanceChanges, handleEdit]);
 
   if (
     transactionMeta?.type === TransactionType.revokeDelegation ||
