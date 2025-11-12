@@ -374,10 +374,13 @@ export const GlobalMenu = ({
           onClick={async () => {
             await toggleDefaultView();
             trackEvent({
-              event: MetaMetricsEventName.AppWindowExpanded,
+              event: MetaMetricsEventName.ViewportSwitched,
               category: MetaMetricsEventCategory.Navigation,
               properties: {
                 location: METRICS_LOCATION,
+                to: isSidePanelDefault
+                  ? ENVIRONMENT_TYPE_POPUP
+                  : ENVIRONMENT_TYPE_SIDEPANEL,
               },
             });
             closeMenu();
