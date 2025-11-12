@@ -4870,18 +4870,6 @@
   "pushNotificationPositionLiquidatedTitle": {
     "message": "Post leachtaithe"
   },
-  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
-    "message": "Fáilte go Sciath Idirbhirt MetaMask! Féach ar na buntáistí"
-  },
-  "pushNotificationShieldSubscriptionCreatedTitle": {
-    "message": "Sciath Idirbhirt MetaMask gníomhachaithe"
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "Tá an bhallraíocht neamhghníomhach mar gheall ar fhadhb íocaíochta. Nuashonraigh d'íocaíocht chun clúdach a atosú"
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedTitle": {
-    "message": "Sciath Idirbhirt MetaMask curtha ar sos"
-  },
   "pushNotificationShieldClaimCreatedDescriptionShort": {
     "message": "Tá d'éileamh cruthaithe"
   },
@@ -4893,6 +4881,18 @@
   },
   "pushNotificationShieldClaimStatusUpdatedTitle": {
     "message": "Éileamh nuashonraithe"
+  },
+  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
+    "message": "Fáilte go Sciath Idirbhirt MetaMask! Féach ar na buntáistí"
+  },
+  "pushNotificationShieldSubscriptionCreatedTitle": {
+    "message": "Sciath Idirbhirt MetaMask gníomhachaithe"
+  },
+  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
+    "message": "Tá an bhallraíocht neamhghníomhach mar gheall ar fhadhb íocaíochta. Nuashonraigh d'íocaíocht chun clúdach a atosú"
+  },
+  "pushNotificationShieldSubscriptionPaymentFailedTitle": {
+    "message": "Sciath Idirbhirt MetaMask curtha ar sos"
   },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Dhún do $1 fada ag do stad-chaillteanas.",
