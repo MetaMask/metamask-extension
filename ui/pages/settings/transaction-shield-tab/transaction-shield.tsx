@@ -100,7 +100,7 @@ import { MINUTE } from '../../../../shared/constants/time';
 import Name from '../../../components/app/name';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod, SHIELD_ICON_ARTBOARD_NAMES } from './types';
-import ShieldIconAnimation from './shield-icon-animation';
+import ShieldSubscriptionIconAnimation from './shield-subscription-icon-animation';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -795,7 +795,7 @@ const TransactionShield = () => {
                   style={{ flexShrink: 0 }}
                 />
               ) : (
-                <ShieldIconAnimation
+                <ShieldSubscriptionIconAnimation
                   artboardName={detail.icon}
                   containerClassName="transaction-shield-page-shield-icon__container"
                   canvasClassName="transaction-shield-page-shield-icon__canvas"

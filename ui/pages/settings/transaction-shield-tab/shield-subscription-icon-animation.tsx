@@ -18,7 +18,7 @@ const ARTBOARD_FILE_MAP = {
   [SHIELD_ICON_ARTBOARD_NAMES.PRIORITY]: 'shield_icon_priority.riv',
 };
 
-const ShieldIconAnimation = ({
+const ShieldSubscriptionIconAnimation = ({
   artboardName,
   containerClassName,
   canvasClassName,
@@ -77,6 +77,12 @@ const ShieldIconAnimation = ({
         rive.play();
       }
     }
+
+    return () => {
+      if (rive) {
+        rive.stop();
+      }
+    };
   }, [rive, isWasmReady, bufferLoading, buffer]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
@@ -98,4 +104,4 @@ const ShieldIconAnimation = ({
   );
 };
 
-export default ShieldIconAnimation;
+export default ShieldSubscriptionIconAnimation;
