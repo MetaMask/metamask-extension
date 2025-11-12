@@ -191,6 +191,10 @@ describe('Shield Subscription Tests', function () {
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToTransactionShieldPage();
 
+          // // Handle entry modal that appears when navigating to Transaction Shield page
+          // await homePage.checkShieldEntryModalIsDisplayed();
+          // await homePage.clickOnShieldEntryModalGetStarted();
+
           const shieldPlanPage = new ShieldPlanPage(driver);
           await shieldPlanPage.completeShieldPlanSubscriptionFlow('annual');
 
@@ -220,6 +224,10 @@ describe('Shield Subscription Tests', function () {
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToTransactionShieldPage();
+
+          // Handle entry modal that appears when navigating to Transaction Shield page
+          await homePage.checkShieldEntryModalIsDisplayed();
+          await homePage.clickOnShieldEntryModalGetStarted();
 
           const shieldPlanPage = new ShieldPlanPage(driver);
           await shieldPlanPage.completeShieldPlanSubscriptionFlow('monthly');

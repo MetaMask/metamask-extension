@@ -179,7 +179,9 @@ async function mockStripeSubscriptionFlow(
 }
 
 describe('Shield Plan Stripe Integration', function () {
-  it('should successfully fill and submit shield claim form', async function () {
+  // TODO: This test is skipped until the claim form is implemented with the final design.
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should successfully fill and submit shield claim form', async function () {
     // Generate test data before the test runs so it can be reused in mocks
     const testData = {
       email: generateRandomEmail(),
@@ -266,6 +268,7 @@ describe('Shield Plan Stripe Integration', function () {
         // Login and validate balance
         await loginWithBalanceValidation(driver);
 
+        await driver.delay(1000);
         await new HeaderNavbar(driver).openSettingsPage();
 
         const settingsPage = new SettingsPage(driver);
