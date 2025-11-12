@@ -11,12 +11,6 @@ import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
-  Icon,
-  IconName as IconNameDesignSystem,
-  IconSize as IconSizeDesignSystem,
-  IconColor as IconColorDesignSystem,
-} from '@metamask/design-system-react';
-import {
   AlignItems,
   BackgroundColor,
   BlockSize,
