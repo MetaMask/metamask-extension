@@ -3,6 +3,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import { CoverageStatus } from '@metamask/shield-controller';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
@@ -19,6 +20,9 @@ import { useConfirmContext } from '../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../transactions/useEnableShieldCoverageChecks';
 import { IconName } from '../../../../components/component-library';
 import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
+import { useSignatureEventFragment } from '../useSignatureEventFragment';
+import { useTransactionEventFragment } from '../useTransactionEventFragment';
+import { isSignatureTransactionType } from '../../utils';
 import { ShieldCoverageAlertMessage } from './transactions/ShieldCoverageAlertMessage';
 
 const getModalBodyStr = (reasonCode: string | undefined) => {
@@ -132,8 +136,25 @@ const getModalBodyStr = (reasonCode: string | undefined) => {
     default:
       modalBodyStr = 'shieldCoverageAlertMessageUnknown';
   }
-
   return modalBodyStr;
+};
+
+const getShieldResult = (
+  status?: CoverageStatus | 'not_shown',
+): 'covered' | 'not_covered' | 'not_covered_malicious' | 'loading' => {
+  switch (status) {
+    case 'covered':
+      return 'covered';
+    case 'malicious':
+      return 'not_covered_malicious';
+    case 'unknown':
+      return 'not_covered';
+    case undefined:
+    case 'not_shown':
+      return 'loading';
+    default:
+      return 'loading';
+  }
 };
 
 export function useShieldCoverageAlert(): Alert[] {
@@ -143,8 +164,11 @@ export function useShieldCoverageAlert(): Alert[] {
     TransactionMeta | SignatureRequest
   >();
 
+  const { updateSignatureEventFragment } = useSignatureEventFragment();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
+  const { id } = currentConfirmation ?? {};
   const { reasonCode, status } = useSelector((state) =>
-    getCoverageStatus(state as ShieldState, currentConfirmation?.id),
+    getCoverageStatus(state as ShieldState, id),
   );
 
   const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
@@ -153,6 +177,7 @@ export function useShieldCoverageAlert(): Alert[] {
   let modalBodyStr = isCovered
     ? 'shieldCoverageAlertCovered'
     : getModalBodyStr(reasonCode);
+
   if (isPaused) {
     modalBodyStr = 'shieldCoverageAlertMessagePaused';
   }
@@ -166,6 +191,29 @@ export function useShieldCoverageAlert(): Alert[] {
   const onPausedAcknowledgeClick = useCallback(() => {
     navigate(TRANSACTION_SHIELD_ROUTE);
   }, [navigate]);
+
+  // Only update fragments if shield coverage checks are enabled
+  if (isEnabled || isPaused) {
+    const properties = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      shield_result: getShieldResult(status),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      shield_reason: modalBodyStr,
+    };
+
+    if (isSignatureTransactionType(currentConfirmation)) {
+      updateSignatureEventFragment({
+        properties,
+      });
+    } else {
+      updateTransactionEventFragment(
+        {
+          properties,
+        },
+        id,
+      );
+    }
+  }
 
   return useMemo<Alert[]>((): Alert[] => {
     if (!showAlert) {
