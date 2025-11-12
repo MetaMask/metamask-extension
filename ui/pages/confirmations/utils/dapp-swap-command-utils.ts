@@ -6,21 +6,33 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 
 import { decodeCommandV3Path } from '../../../../shared/modules/decoding';
 
-enum Commands {
+enum SwapCommands {
   V3_SWAP_EXACT_IN = '00',
   V3_SWAP_EXACT_OUT = '01',
   V2_SWAP_EXACT_IN = '08',
   V2_SWAP_EXACT_OUT = '09',
   V4_SWAP = '10',
+}
+
+enum NonSwapCommands {
   SWEEP = '04',
   WRAP_ETH = '0b',
   UNWRAP_WETH = '0c',
 }
 
+type Commands = SwapCommands | NonSwapCommands;
+
+enum V4Actions {
+  SWAP_EXACT_IN_SINGLE = '06',
+  SWAP_EXACT_IN = '07',
+  SWAP_EXACT_OUT_SINGLE = '08',
+  SWAP_EXACT_OUT = '09',
+}
+
 const BASE_COMMANDS_ABI_DEFINITION: Partial<
   Record<Commands, { name: string; type: string }[]>
 > = {
-  [Commands.V3_SWAP_EXACT_IN]: [
+  [SwapCommands.V3_SWAP_EXACT_IN]: [
     {
       type: 'address',
       name: 'recipient',
@@ -42,7 +54,7 @@ const BASE_COMMANDS_ABI_DEFINITION: Partial<
       name: 'payerIsUser',
     },
   ],
-  [Commands.SWEEP]: [
+  [NonSwapCommands.SWEEP]: [
     {
       type: 'address',
       name: 'token',
@@ -56,7 +68,7 @@ const BASE_COMMANDS_ABI_DEFINITION: Partial<
       name: 'amountMin',
     },
   ],
-  [Commands.WRAP_ETH]: [
+  [NonSwapCommands.WRAP_ETH]: [
     {
       type: 'address',
       name: 'recipient',
@@ -66,7 +78,7 @@ const BASE_COMMANDS_ABI_DEFINITION: Partial<
       name: 'amountMin',
     },
   ],
-  [Commands.UNWRAP_WETH]: [
+  [NonSwapCommands.UNWRAP_WETH]: [
     {
       type: 'address',
       name: 'recipient',
@@ -77,14 +89,6 @@ const BASE_COMMANDS_ABI_DEFINITION: Partial<
     },
   ],
 };
-
-enum V4Actions {
-  // swapping
-  SWAP_EXACT_IN_SINGLE = '06',
-  SWAP_EXACT_IN = '07',
-  SWAP_EXACT_OUT_SINGLE = '08',
-  SWAP_EXACT_OUT = '09',
-}
 
 const POOL_KEY_STRUCT =
   '(address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks)';
@@ -157,9 +161,6 @@ const V4_SWAP_ACTIONS_PARSER: DAPP_SWAP_COMMANDS_PARSER_TYPE[] = [
   { value: '07', handler: handleV4CommandSwapExactIn },
 ];
 
-const SUPPORTED_DAPP_SWAP_COMMANDS = ['00', '10'];
-const SUPPORTED_V4_SWAP_ACTIONS = ['06', '07'];
-
 function handleCommandSweep(
   data: string,
   decodedResult: COMMAND_VALUES_RESULT,
@@ -167,7 +168,7 @@ function handleCommandSweep(
 ) {
   const { quotesInput } = decodedResult;
   const result = decodeCommandData(
-    Commands.SWEEP,
+    NonSwapCommands.SWEEP,
     data,
     BASE_COMMANDS_ABI_DEFINITION,
   );
@@ -200,7 +201,7 @@ function handleCommandUnwrapETH(
 ) {
   const { quotesInput } = decodedResult;
   const result = decodeCommandData(
-    Commands.UNWRAP_WETH,
+    NonSwapCommands.UNWRAP_WETH,
     data,
     BASE_COMMANDS_ABI_DEFINITION,
   );
@@ -385,7 +386,7 @@ function handleV3SwapExactInCommand(
 ) {
   const { amountMin, quotesInput } = decodedResult;
   const result = decodeCommandData(
-    Commands.V3_SWAP_EXACT_IN,
+    SwapCommands.V3_SWAP_EXACT_IN,
     data,
     BASE_COMMANDS_ABI_DEFINITION,
   );
@@ -413,8 +414,10 @@ function getGenericValues(
   inputs: string[],
   chainId: Hex,
   parserDefinition: DAPP_SWAP_COMMANDS_PARSER_TYPE[],
-  swapCommandsAllowed: string[],
-  CommandsDefinition: typeof Commands | typeof V4Actions,
+  commandsDefinition: {
+    swapCommandsDefinition: typeof SwapCommands | typeof V4Actions;
+    nonSwapCommandsDefinition?: typeof NonSwapCommands;
+  },
 ): COMMAND_VALUES_RESULT {
   if (commandBytes.length === 0) {
     return {
@@ -423,17 +426,26 @@ function getGenericValues(
     };
   }
 
+  const { swapCommandsDefinition, nonSwapCommandsDefinition } =
+    commandsDefinition;
+
   const swapCommands = commandBytes.filter((commandByte) =>
-    Object.values(swapCommandsAllowed).includes(commandByte),
+    Object.values(swapCommandsDefinition).includes(commandByte),
   );
 
   if (swapCommands.length !== 1) {
     throw new Error(`Found swap commands ${swapCommands.length} instead of 1`);
   }
+  let nonSwapCommands: string[] = [];
+  if (nonSwapCommandsDefinition) {
+    nonSwapCommands = commandBytes.filter((commandByte) =>
+      Object.values(nonSwapCommandsDefinition).includes(
+        commandByte as NonSwapCommands,
+      ),
+    );
+  }
 
-  const commands = commandBytes.filter((commandByte) =>
-    Object.values(CommandsDefinition).includes(commandByte),
-  );
+  const commands = [...swapCommands, ...nonSwapCommands];
 
   let decodingResult: COMMAND_VALUES_RESULT = {
     amountMin: undefined,
@@ -473,8 +485,9 @@ function getV4SwapActionValues(
     actionParameters,
     chainId,
     V4_SWAP_ACTIONS_PARSER,
-    SUPPORTED_V4_SWAP_ACTIONS,
-    V4Actions,
+    {
+      swapCommandsDefinition: V4Actions,
+    },
   );
 }
 
@@ -488,7 +501,9 @@ export function getCommandValues(
     inputs,
     chainId,
     DAPP_SWAP_COMMANDS_PARSER,
-    SUPPORTED_DAPP_SWAP_COMMANDS,
-    Commands,
+    {
+      swapCommandsDefinition: SwapCommands,
+      nonSwapCommandsDefinition: NonSwapCommands,
+    },
   );
 }
