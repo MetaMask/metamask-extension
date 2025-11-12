@@ -852,7 +852,6 @@ export enum MetaMetricsEventName {
   AccountRemoveFailed = 'Account Remove Failed',
   AccountPinned = 'Account Pinned',
   AccountHidden = 'Account Hidden',
-  AccountListViewed = 'Account List Viewed',
   TestNetworksDisplayed = 'Test Networks Displayed',
   AddNetworkButtonClick = 'Add Network Button Clicked',
   CustomNetworkAdded = 'Custom Network Added',
