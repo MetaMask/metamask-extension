@@ -1,8 +1,11 @@
 import {
+  PAYMENT_TYPES,
+  ProductType,
   RECURRING_INTERVALS,
   Subscription,
 } from '@metamask/subscription-controller';
 import { getIsShieldSubscriptionActive } from '../../lib/shield';
+import { DefaultSubscriptionPaymentOptions } from '../../types/metametrics';
 import { loadShieldConfig } from './config';
 
 export async function getShieldGatewayConfig(
@@ -85,4 +88,42 @@ export function calculateSubscriptionRemainingBillingCycles({
   // Assume the period end and endDate have the same month, day of the month and time
   // Current period is inclusive, so we need to add 1
   return yearDiff + 1;
+}
+
+/**
+ * Get the default subscription payment options displayed to the user in the Shield plan page.
+ * Since we can't access the UI here, we get from the AppStateController.
+ *
+ * @param defaultOption - The default option.
+ * @returns The default subscription payment options.
+ */
+export function getDefaultSubscriptionPaymentOptions(
+  defaultOption?: DefaultSubscriptionPaymentOptions,
+) {
+  const defaultBillingInterval =
+    defaultOption?.defaultBillingInterval || RECURRING_INTERVALS.year;
+  const defaultPaymentType =
+    defaultOption?.defaultPaymentType || PAYMENT_TYPES.byCard;
+  const defaultPaymentCurrency = defaultOption?.defaultPaymentCurrency || 'USD';
+  const defaultPaymentChain = defaultOption?.defaultPaymentChain;
+  return {
+    defaultBillingInterval,
+    defaultPaymentType,
+    defaultPaymentCurrency,
+    defaultPaymentChain,
+  };
+}
+
+/**
+ * Check if a product is a trial subscription
+ *
+ * @param trialProducts - The trial products.
+ * @param product - The product.
+ * @returns True if the product is a trial subscription, false otherwise.
+ */
+export function getIsTrialSubscription(
+  trialProducts: ProductType[],
+  product: ProductType,
+): boolean {
+  return trialProducts.includes(product);
 }

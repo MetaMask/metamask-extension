@@ -219,7 +219,10 @@ import {
 } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { getShieldGatewayConfig } from '../../shared/modules/shield';
+import {
+  getShieldGatewayConfig,
+  getSubscriptionRequestTrackingProps,
+} from '../../shared/modules/shield';
 import {
   HYPERLIQUID_ORIGIN,
   METAMASK_REFERRAL_CODE,
@@ -2919,9 +2922,13 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShieldEndingToastLastClickedOrClosed.bind(
           appStateController,
         ),
-
       setAppActiveTab:
         appStateController.setAppActiveTab.bind(appStateController),
+      setDefaultSubscriptionPaymentOptions:
+        appStateController.setDefaultSubscriptionPaymentOptions.bind(
+          appStateController,
+        ),
+
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -8520,9 +8527,45 @@ export default class MetamaskController extends EventEmitter {
    * @param transactionMeta - The transaction metadata.
    */
   async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
-    await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
+    const subscriptionControllerState = this.subscriptionController.state;
+    const { defaultSubscriptionPaymentOptions } = this.appStateController.state;
+    const trackingProps = getSubscriptionRequestTrackingProps(
+      defaultSubscriptionPaymentOptions,
+      subscriptionControllerState,
       transactionMeta,
     );
+    try {
+      this.metaMetricsController.trackEvent({
+        event: MetaMetricsEventName.ShieldSubscriptionRequestStarted,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...trackingProps,
+          has_sufficient_crypto_balance: true,
+        },
+      });
+      await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
+        transactionMeta,
+      );
+      this.metaMetricsController.trackEvent({
+        event: MetaMetricsEventName.ShieldSubscriptionRequestCompleted,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...trackingProps,
+          gas_sponsored: true,
+        },
+      });
+    } catch (error) {
+      log.error('Error on Shield subscription approval transaction', error);
+      this.metaMetricsController.trackEvent({
+        event: MetaMetricsEventName.ShieldSubscriptionRequestFailed,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...trackingProps,
+          error_message: error.message,
+        },
+      });
+      throw error;
+    }
   }
 
   /**

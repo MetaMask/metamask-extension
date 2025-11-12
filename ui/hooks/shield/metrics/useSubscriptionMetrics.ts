@@ -4,8 +4,9 @@ import { MetaMetricsEventCategory, MetaMetricsEventName } from "../../../../shar
 import { useSelector } from "react-redux";
 import { getMetaMaskHdKeyrings, getSelectedAccount } from "../../../selectors";
 import { CaptureShieldEntryModalEventParams, CaptureShieldSubscriptionRequestCompletedEventParams, CaptureShieldSubscriptionRequestFailedEventParams, CaptureShieldSubscriptionRequestStartedEventParams } from "./types";
-import { formatDefaultShieldSubscriptionRequestEventProps, getUserAccountTypeAndCategory, getUserBalanceCategory } from "./utils";
+import { formatDefaultShieldSubscriptionRequestEventProps } from "./utils";
 import { useAccountTotalFiatBalance } from "../../useAccountTotalFiatBalance";
+import { getUserAccountTypeAndCategory, getUserBalanceCategory } from "../../../../shared/modules/shield";
 
 export const useSubscriptionMetrics = () => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -65,7 +66,7 @@ export const useSubscriptionMetrics = () => {
     const formattedParams = formatDefaultShieldSubscriptionRequestEventProps(params);
 
     trackEvent({
-      event: MetaMetricsEventName.ShieldSubscriptionRequestStarted,
+      event: MetaMetricsEventName.ShieldSubscriptionRequestCompleted,
       category: MetaMetricsEventCategory.Shield,
       properties: {
         ...userAccountTypeAndCategory,
@@ -84,7 +85,7 @@ export const useSubscriptionMetrics = () => {
     const formattedParams = formatDefaultShieldSubscriptionRequestEventProps(params);
 
     trackEvent({
-      event: MetaMetricsEventName.ShieldSubscriptionRequestStarted,
+      event: MetaMetricsEventName.ShieldSubscriptionRequestFailed,
       category: MetaMetricsEventCategory.Shield,
       properties: {
         ...userAccountTypeAndCategory,

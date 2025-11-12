@@ -2,10 +2,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useMemo } from 'react';
 import {
   PAYMENT_TYPES,
+  PaymentType,
+  PRODUCT_TYPES,
   ProductType,
   RecurringInterval,
   Subscription,
   SubscriptionEligibility,
+  SubscriptionStatus,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useNavigate } from 'react-router-dom-v5-compat';
@@ -22,6 +25,9 @@ import {
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
   getSubscriptionsEligibilities,
+  setDefaultSubscriptionPaymentOptions,
+  setLastUsedSubscriptionPaymentDetails,
+  startSubscriptionWithCard,
   unCancelSubscription,
   updateSubscriptionCardPaymentMethod,
 } from '../../store/actions';
@@ -35,6 +41,13 @@ import { decimalToHex } from '../../../shared/modules/conversion.utils';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { selectNetworkConfigurationByChainId } from '../../selectors';
+import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
+import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
+import {
+  EntryModalSourceEnum,
+  ShieldEntryModalTypeEnum,
+} from '../../../shared/constants/subscriptions';
+import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -243,5 +256,120 @@ export const useSubscriptionEligibility = (product: ProductType) => {
 
   return {
     getSubscriptionEligibility,
+  };
+};
+
+/**
+ * Hook to handle the subscription request.
+ *
+ * @param options - The options for the subscription request.
+ * @param options.subscriptionState - The state of the subscription before the request was started (cancelled, expired, etc.).
+ * @param options.selectedPaymentMethod - The payment method selected by the user.
+ * @param options.selectedToken - The token selected by the user.
+ * @param options.selectedPlan - The plan selected by the user.
+ * @param options.defaultOptions - The default options for the subscription request.
+ * @param options.isTrialed - Whether the user is trialing the subscription.
+ * @returns An object with the handleSubscription function and the subscription result.
+ */
+export const useHandleSubscription = ({
+  subscriptionState,
+  selectedPaymentMethod,
+  selectedToken,
+  selectedPlan,
+  defaultOptions,
+  isTrialed,
+}: {
+  defaultOptions: DefaultSubscriptionPaymentOptions;
+  subscriptionState: SubscriptionStatus | 'none';
+  selectedPaymentMethod: PaymentType;
+  selectedPlan: RecurringInterval;
+  isTrialed: boolean;
+  selectedToken?: TokenWithApprovalAmount;
+}) => {
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const { execute: executeSubscriptionCryptoApprovalTransaction } =
+    useSubscriptionCryptoApprovalTransaction(selectedToken);
+  const {
+    captureShieldSubscriptionRequestStartedEvent,
+    captureShieldSubscriptionRequestCompletedEvent,
+    captureShieldSubscriptionRequestFailedEvent,
+  } = useSubscriptionMetrics();
+
+  const [handleSubscription, subscriptionResult] =
+    useAsyncCallback(async () => {
+      // save the last used subscription payment method and plan to Redux store
+      await dispatch(
+        setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
+          type: selectedPaymentMethod,
+          paymentTokenAddress: selectedToken?.address as Hex,
+          paymentTokenSymbol: selectedToken?.symbol,
+          plan: selectedPlan,
+        }),
+      );
+
+      const subscriptionRequestTrackingParams: CaptureShieldSubscriptionRequestParams =
+        {
+          subscriptionState,
+          defaultPaymentType: defaultOptions.defaultPaymentType,
+          defaultPaymentCurrency: defaultOptions.defaultPaymentCurrency,
+          defaultBillingInterval: defaultOptions.defaultBillingInterval,
+          defaultPaymentChain: defaultOptions.defaultPaymentChain,
+          paymentType: selectedPaymentMethod,
+          paymentCurrency: 'USD',
+          isTrialSubscription: !isTrialed,
+          billingInterval: selectedPlan,
+          source: EntryModalSourceEnum.Settings,
+          type: ShieldEntryModalTypeEnum.TypeA,
+        };
+
+      if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
+        try {
+          // capture the event when the Shield subscription request is started
+          captureShieldSubscriptionRequestStartedEvent({
+            ...subscriptionRequestTrackingParams,
+            paymentCurrency: 'USD',
+          });
+          await dispatch(
+            startSubscriptionWithCard({
+              products: [PRODUCT_TYPES.SHIELD],
+              isTrialRequested: !isTrialed,
+              recurringInterval: selectedPlan,
+            }),
+          );
+          // capture the event when the Shield subscription request is completed
+          captureShieldSubscriptionRequestCompletedEvent({
+            ...subscriptionRequestTrackingParams,
+            paymentCurrency: 'USD',
+          });
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : 'Unknown error';
+          // capture the event when the Shield subscription request fails
+          captureShieldSubscriptionRequestFailedEvent({
+            ...subscriptionRequestTrackingParams,
+            paymentCurrency: 'USD',
+            errorMessage,
+          });
+          throw error;
+        }
+      } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
+        // We need to pass the default options to the background app state controller
+        // so that the crypto subscription request can use it for the metrics capture
+        await dispatch(setDefaultSubscriptionPaymentOptions(defaultOptions));
+        await executeSubscriptionCryptoApprovalTransaction();
+      }
+    }, [
+      dispatch,
+      defaultOptions,
+      isTrialed,
+      selectedPaymentMethod,
+      selectedPlan,
+      selectedToken,
+      executeSubscriptionCryptoApprovalTransaction,
+    ]);
+
+  return {
+    handleSubscription,
+    subscriptionResult,
   };
 };

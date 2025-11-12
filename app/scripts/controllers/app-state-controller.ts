@@ -19,6 +19,10 @@ import {
   KeyringControllerGetStateAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import {
+  PaymentType,
+  RecurringInterval,
+} from '@metamask/subscription-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -123,6 +127,12 @@ export type AppStateControllerState = {
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
   showShieldEntryModalOnce: boolean | null;
+  defaultSubscriptionPaymentOptions?: {
+    defaultPlan: RecurringInterval;
+    defaultPaymentType: PaymentType;
+    defaultPaymentCurrency: string;
+    defaultPaymentChain?: string;
+  };
 
   /**
    * Whether the wallet reset is in progress.
@@ -619,6 +629,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
     includeInStateLogs: true,
+  },
+  defaultSubscriptionPaymentOptions: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
   },
 };
 
@@ -1542,5 +1558,16 @@ export class AppStateController extends BaseController<
 
   getIsWalletResetInProgress(): boolean {
     return this.state.isWalletResetInProgress;
+  }
+
+  setDefaultSubscriptionPaymentOptions(defaultSubscriptionPaymentOptions: {
+    defaultPlan: RecurringInterval;
+    defaultPaymentType: PaymentType;
+    defaultPaymentCurrency: string;
+  }): void {
+    this.update((state) => {
+      state.defaultSubscriptionPaymentOptions =
+        defaultSubscriptionPaymentOptions;
+    });
   }
 }

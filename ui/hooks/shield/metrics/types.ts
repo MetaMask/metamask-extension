@@ -1,6 +1,7 @@
 import { SubscriptionStatus, PaymentType, RecurringInterval } from "@metamask/subscription-controller";
-import { TransactionType } from "viem";
 import { EntryModalSourceEnum, ShieldEntryModalTypeEnum } from "../../../../shared/constants/subscriptions";
+import { DefaultSubscriptionPaymentOptions } from "../../../../shared/types";
+import { TransactionType } from "@metamask/transaction-controller";
 
 export type CaptureShieldEntryModalEventParams = {
   source: EntryModalSourceEnum;
@@ -22,19 +23,11 @@ export type CaptureShieldEntryModalEventParams = {
   postTransactionType?: TransactionType;
 }
 
-export type CaptureShieldSubscriptionRequestParams = Omit<CaptureShieldEntryModalEventParams, 'modalCtaActionClicked'> & {
+export type CaptureShieldSubscriptionRequestParams = DefaultSubscriptionPaymentOptions & Omit<CaptureShieldEntryModalEventParams, 'modalCtaActionClicked'> & {
   /**
    * Current subscription status before the new subscription request was started (cancelled, expired, etc.)
    */
-  subscriptionState: SubscriptionStatus;
-
-  /**
-   * The default options provided to the user in the UI.
-   */
-  defaultPaymentType: PaymentType;
-  defaultPaymentCurrency: string;
-  defaultBillingInterval: RecurringInterval;
-  defaultPaymentChain?: string;
+  subscriptionState: SubscriptionStatus | 'none';
 
   /**
    * Actual options selected by the user for the new subscription request.
@@ -47,7 +40,7 @@ export type CaptureShieldSubscriptionRequestParams = Omit<CaptureShieldEntryModa
 }
 
 export type CaptureShieldSubscriptionRequestStartedEventParams = CaptureShieldSubscriptionRequestParams & {
-  hasSufficientCryptoBalance: boolean;
+  hasSufficientCryptoBalance?: boolean;
 }
 
 export type CaptureShieldSubscriptionRequestCompletedEventParams = CaptureShieldSubscriptionRequestParams & {

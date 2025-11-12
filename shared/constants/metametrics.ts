@@ -942,6 +942,11 @@ export enum MetaMetricsEventName {
   ExtensionPinned = 'Extension Pinned',
   // Extension Port Stream
   PortStreamChunked = 'Port Stream Chunked',
+  // Shield
+  ShieldEntryModal = 'Shield Entry Modal',
+  ShieldSubscriptionRequestStarted = 'Shield Subscription Request Started',
+  ShieldSubscriptionRequestCompleted = 'Shield Subscription Request Completed',
+  ShieldSubscriptionRequestFailed = 'Shield Subscription Request Failed',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1006,6 +1011,7 @@ export enum MetaMetricsEventCategory {
   Confirmations = 'Confirmations',
   CrossChainSwaps = 'Cross Chain Swaps',
   PortStream = 'Port Stream',
+  Shield = 'Shield',
 }
 
 export enum MetaMetricsEventLinkType {
