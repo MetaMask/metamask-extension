@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { Interface, TransactionDescription } from '@ethersproject/abi';
 import {
+  GenericQuoteRequest,
   isNativeAddress,
   QuoteResponse,
   TxData,
@@ -10,7 +11,10 @@ import {
   SimulationData,
   SimulationTokenBalanceChange,
 } from '@metamask/transaction-controller';
+
 import { getCommandValues } from './dapp-swap-command-utils';
+
+const DEFAULT_QUOTEFEE = 250;
 
 export const ABI = [
   {
@@ -80,7 +84,10 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
   return {
     amountMin,
     commands,
-    quotesInput,
+    quotesInput: {
+      ...quotesInput,
+      fee: DEFAULT_QUOTEFEE,
+    } as GenericQuoteRequest,
     tokenAddresses: [
       quotesInput?.destTokenAddress,
       quotesInput?.srcTokenAddress,

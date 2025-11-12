@@ -106,6 +106,7 @@ export function useDappSwapUSDValues({
     getTokenUSDValue,
     getDestinationTokenUSDValue,
     tokenDetails,
+    fiatRates,
     tokenInfoPending: fiatRatesPending || tokenDetailsPending,
   };
 }

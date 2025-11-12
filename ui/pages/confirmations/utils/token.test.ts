@@ -1,6 +1,9 @@
+import { BigNumber } from 'bignumber.js';
+
 import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 import { ERC20_DEFAULT_DECIMALS } from '../constants/token';
 import {
+  calculateTokenAmount,
   fetchAllErc20Decimals,
   fetchAllTokenDetails,
   fetchErc20Decimals,
@@ -97,5 +100,19 @@ describe('fetchAllTokenDetails', () => {
         balance: '1000000000000000000',
       },
     });
+  });
+});
+
+describe('calculateTokenAmount', () => {
+  it('returns the correct token amount', () => {
+    expect(calculateTokenAmount('1000000000000000000', 18)).toEqual(
+      new BigNumber('1'),
+    );
+    expect(calculateTokenAmount('0xB1A2BC2EC50000', 10, 16)).toEqual(
+      new BigNumber('5000000'),
+    );
+    expect(calculateTokenAmount('0xB1A2BC2EC50000', 10, 16, 2)).toEqual(
+      new BigNumber('10000000'),
+    );
   });
 });

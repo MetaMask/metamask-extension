@@ -36,6 +36,7 @@ const MOCK_SUBSCRIPTION: Subscription = {
       last4: '1234',
     },
   },
+  isEligibleForSupport: true,
 };
 
 const setup = ({

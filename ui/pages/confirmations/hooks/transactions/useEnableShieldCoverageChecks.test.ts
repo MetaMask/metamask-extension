@@ -48,7 +48,8 @@ describe('useEnableShieldCoverageChecks', () => {
       useEnableShieldCoverageChecks(),
     );
 
-    expect(result.current).toBe(true);
+    expect(result.current.isEnabled).toBe(true);
+    expect(result.current.isPaused).toBe(false);
   });
 
   it('returns false when user has no SHIELD subscription and env flag is not true', () => {
@@ -63,7 +64,8 @@ describe('useEnableShieldCoverageChecks', () => {
       useEnableShieldCoverageChecks(),
     );
 
-    expect(result.current).toBe(false);
+    expect(result.current.isEnabled).toBe(false);
+    expect(result.current.isPaused).toBe(false);
   });
 
   it('returns false when env flag is false (even with active subscription)', () => {
@@ -83,6 +85,7 @@ describe('useEnableShieldCoverageChecks', () => {
       useEnableShieldCoverageChecks(),
     );
 
-    expect(result.current).toBe(false);
+    expect(result.current.isEnabled).toBe(false);
+    expect(result.current.isPaused).toBe(false);
   });
 });
