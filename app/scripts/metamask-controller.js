@@ -8543,7 +8543,10 @@ export default class MetamaskController extends EventEmitter {
 
     const { pendingShieldCohort } = this.appStateController.state;
     if (isPostTxTransaction && !pendingShieldCohort) {
-      this.appStateController.setPendingShieldCohort(COHORT_NAMES.POST_TX);
+      this.appStateController.setPendingShieldCohort(
+        COHORT_NAMES.POST_TX,
+        transactionMeta.type,
+      );
     }
   }
 
