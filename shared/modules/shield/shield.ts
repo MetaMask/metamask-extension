@@ -125,5 +125,5 @@ export function getIsTrialSubscription(
   trialProducts: ProductType[],
   product: ProductType,
 ): boolean {
-  return trialProducts.includes(product);
+  return Boolean(trialProducts?.includes(product));
 }

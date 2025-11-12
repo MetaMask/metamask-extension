@@ -7,9 +7,10 @@ import {
   ProductType,
   RecurringInterval,
   Subscription,
-  SubscriptionEligibility,
   BalanceCategory,
+  SubscriptionEligibility,
   SubscriptionStatus,
+  ModalType,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useNavigate } from 'react-router-dom-v5-compat';
@@ -41,13 +42,13 @@ import { generateERC20ApprovalData } from '../../pages/confirmations/send-legacy
 import { decimalToHex } from '../../../shared/modules/conversion.utils';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
-import { selectNetworkConfigurationByChainId } from '../../selectors';
+import {
+  getModalTypeForShieldEntryModal,
+  selectNetworkConfigurationByChainId,
+} from '../../selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
-import {
-  EntryModalSourceEnum,
-  ShieldEntryModalTypeEnum,
-} from '../../../shared/constants/subscriptions';
+import { EntryModalSourceEnum } from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import { getLatestSubscriptionStatus } from '../../../shared/modules/shield';
 import {
@@ -327,11 +328,8 @@ export const useHandleSubscription = ({
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
   const { subscriptions, lastSubscription } = useUserSubscriptions();
-  const {
-    captureShieldSubscriptionRequestStartedEvent,
-    captureShieldSubscriptionRequestCompletedEvent,
-    captureShieldSubscriptionRequestFailedEvent,
-  } = useSubscriptionMetrics();
+  const { captureShieldSubscriptionRequestEvent } = useSubscriptionMetrics();
+  const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
 
   const latestSubscriptionStatus =
     getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
@@ -348,27 +346,30 @@ export const useHandleSubscription = ({
         }),
       );
 
-      const subscriptionRequestTrackingParams: CaptureShieldSubscriptionRequestParams =
-        {
-          subscriptionState: latestSubscriptionStatus,
-          defaultPaymentType: defaultOptions.defaultPaymentType,
-          defaultPaymentCurrency: defaultOptions.defaultPaymentCurrency,
-          defaultBillingInterval: defaultOptions.defaultBillingInterval,
-          defaultPaymentChain: defaultOptions.defaultPaymentChain,
-          paymentType: selectedPaymentMethod,
-          paymentCurrency: 'USD',
-          isTrialSubscription: !isTrialed,
-          billingInterval: selectedPlan,
-          source: EntryModalSourceEnum.Settings,
-          type: ShieldEntryModalTypeEnum.TypeA,
-        };
+      const subscriptionRequestTrackingParams: Omit<
+        CaptureShieldSubscriptionRequestParams,
+        'requestStatus'
+      > = {
+        subscriptionState: latestSubscriptionStatus,
+        defaultPaymentType: defaultOptions.defaultPaymentType,
+        defaultPaymentCurrency: defaultOptions.defaultPaymentCurrency,
+        defaultBillingInterval: defaultOptions.defaultBillingInterval,
+        defaultPaymentChain: defaultOptions.defaultPaymentChain,
+        paymentType: selectedPaymentMethod,
+        paymentCurrency: 'USD',
+        isTrialSubscription: !isTrialed,
+        billingInterval: selectedPlan,
+        source: EntryModalSourceEnum.Settings,
+        type: modalType,
+      };
 
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
         try {
           // capture the event when the Shield subscription request is started
-          captureShieldSubscriptionRequestStartedEvent({
+          captureShieldSubscriptionRequestEvent({
             ...subscriptionRequestTrackingParams,
             paymentCurrency: 'USD',
+            requestStatus: 'started',
           });
           await dispatch(
             startSubscriptionWithCard({
@@ -378,18 +379,20 @@ export const useHandleSubscription = ({
             }),
           );
           // capture the event when the Shield subscription request is completed
-          captureShieldSubscriptionRequestCompletedEvent({
+          captureShieldSubscriptionRequestEvent({
             ...subscriptionRequestTrackingParams,
             paymentCurrency: 'USD',
+            requestStatus: 'completed',
           });
         } catch (error) {
           const errorMessage =
             error instanceof Error ? error.message : 'Unknown error';
           // capture the event when the Shield subscription request fails
-          captureShieldSubscriptionRequestFailedEvent({
+          captureShieldSubscriptionRequestEvent({
             ...subscriptionRequestTrackingParams,
             paymentCurrency: 'USD',
             errorMessage,
+            requestStatus: 'failed',
           });
           throw error;
         }

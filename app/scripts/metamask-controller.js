@@ -8546,10 +8546,8 @@ export default class MetamaskController extends EventEmitter {
         transactionMeta,
         defaultSubscriptionPaymentOptions,
         this.metaMetricsController,
-        MetaMetricsEventName.ShieldSubscriptionRequestStarted,
+        'started',
         {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           has_sufficient_crypto_balance: true,
         },
       );
@@ -8575,10 +8573,8 @@ export default class MetamaskController extends EventEmitter {
         transactionMeta,
         defaultSubscriptionPaymentOptions,
         this.metaMetricsController,
-        MetaMetricsEventName.ShieldSubscriptionRequestCompleted,
+        'completed',
         {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           gas_sponsored: true,
         },
       );
@@ -8589,10 +8585,8 @@ export default class MetamaskController extends EventEmitter {
         transactionMeta,
         defaultSubscriptionPaymentOptions,
         this.metaMetricsController,
-        MetaMetricsEventName.ShieldSubscriptionRequestFailed,
+        'failed',
         {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           error_message: error.message,
         },
       );

@@ -185,8 +185,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
         });
 
         if (
-          !shieldEligibility ||
-          !shieldEligibility.canSubscribe ||
+          !shieldEligibility?.canSubscribe ||
           !shieldEligibility.canViewEntryModal ||
           !shieldEligibility.minBalanceUSD ||
           !totalFiatBalance ||
@@ -201,6 +200,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
         const assignedCohortName = shieldEligibility.assignedCohort;
         const isUserPending = Boolean(assignedCohortName);
         const hasExpired = shieldEligibility.hasAssignedCohortExpired;
+        const { modalType } = shieldEligibility;
 
         // User has an assigned cohort
         if (isUserPending) {
@@ -221,6 +221,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
               true,
               shouldSubmitUserEvents,
               entrypointCohort,
+              modalType,
             ),
           );
           return;
@@ -239,6 +240,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
                 true,
                 shouldSubmitUserEvents,
                 selectedCohort.cohort,
+                modalType,
               ),
             );
           }

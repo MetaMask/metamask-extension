@@ -28,11 +28,6 @@ export enum EntryModalSourceEnum {
   PostTransaction = 'post_transaction', // after a transaction
 }
 
-export enum ShieldEntryModalTypeEnum {
-  TypeA = 'type_a',
-  TypeB = 'type_b',
-}
-
 export enum ShieldUserBalanceRangeCategoryEnum {
   LessThan100 = '<100',
   Between100And1K = '100-1k',

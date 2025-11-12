@@ -947,9 +947,7 @@ export enum MetaMetricsEventName {
   ///: END:ONLY_INCLUDE_IF
   // Shield
   ShieldEntryModal = 'Shield Entry Modal',
-  ShieldSubscriptionRequestStarted = 'Shield Subscription Request Started',
-  ShieldSubscriptionRequestCompleted = 'Shield Subscription Request Completed',
-  ShieldSubscriptionRequestFailed = 'Shield Subscription Request Failed',
+  ShieldSubscriptionRequest = 'Shield Subscription Request',
 }
 
 export enum MetaMetricsEventAccountType {

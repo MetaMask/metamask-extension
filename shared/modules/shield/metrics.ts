@@ -208,7 +208,7 @@ export function getUserAccountTypeAndCategory(
  * @param transactionMeta - The transaction meta.
  * @param defaultSubscriptionPaymentOptions - The default subscription payment options.
  * @param metaMetricsController - The meta metrics controller.
- * @param event - The event name.
+ * @param requestStatus - The request status.
  * @param extrasProps - The extra properties.
  */
 export function captureShieldSubscriptionRequestEvent(
@@ -216,7 +216,7 @@ export function captureShieldSubscriptionRequestEvent(
   transactionMeta: TransactionMeta,
   defaultSubscriptionPaymentOptions: DefaultSubscriptionPaymentOptions,
   metaMetricsController: MetaMetricsController,
-  event: MetaMetricsEventName,
+  requestStatus: 'started' | 'completed' | 'failed',
   extrasProps: Record<string, Json>,
 ) {
   if (transactionMeta.type !== TransactionType.shieldSubscriptionApprove) {
@@ -230,11 +230,14 @@ export function captureShieldSubscriptionRequestEvent(
   );
 
   metaMetricsController.trackEvent({
-    event,
+    event: MetaMetricsEventName.ShieldSubscriptionRequest,
     category: MetaMetricsEventCategory.Shield,
     properties: {
       ...trackingProps,
       ...extrasProps,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      request_status: requestStatus,
     },
   });
 }

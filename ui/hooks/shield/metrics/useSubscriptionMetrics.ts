@@ -13,9 +13,7 @@ import {
 } from '../../../../shared/modules/shield';
 import {
   CaptureShieldEntryModalEventParams,
-  CaptureShieldSubscriptionRequestCompletedEventParams,
-  CaptureShieldSubscriptionRequestFailedEventParams,
-  CaptureShieldSubscriptionRequestStartedEventParams,
+  CaptureShieldSubscriptionRequestParams,
 } from './types';
 import { formatDefaultShieldSubscriptionRequestEventProps } from './utils';
 
@@ -71,8 +69,8 @@ export const useSubscriptionMetrics = () => {
   /**
    * Capture the event when the Shield subscription request is started.
    */
-  const captureShieldSubscriptionRequestStartedEvent = useCallback(
-    (params: CaptureShieldSubscriptionRequestStartedEventParams) => {
+  const captureShieldSubscriptionRequestEvent = useCallback(
+    (params: CaptureShieldSubscriptionRequestParams) => {
       const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
         selectedAccount,
         hdKeyingsMetadata,
@@ -81,7 +79,7 @@ export const useSubscriptionMetrics = () => {
         formatDefaultShieldSubscriptionRequestEventProps(params);
 
       trackEvent({
-        event: MetaMetricsEventName.ShieldSubscriptionRequestStarted,
+        event: MetaMetricsEventName.ShieldSubscriptionRequest,
         category: MetaMetricsEventCategory.Shield,
         properties: {
           ...userAccountTypeAndCategory,
@@ -91,73 +89,6 @@ export const useSubscriptionMetrics = () => {
             Number(totalFiatBalance),
           ),
           ...formattedParams,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          has_sufficient_crypto_balance: params.hasSufficientCryptoBalance,
-        },
-      });
-    },
-    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
-  );
-
-  /**
-   * Capture the event when the Shield subscription request is completed.
-   */
-  const captureShieldSubscriptionRequestCompletedEvent = useCallback(
-    (params: CaptureShieldSubscriptionRequestCompletedEventParams) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
-        selectedAccount,
-        hdKeyingsMetadata,
-      );
-      const formattedParams =
-        formatDefaultShieldSubscriptionRequestEventProps(params);
-
-      trackEvent({
-        event: MetaMetricsEventName.ShieldSubscriptionRequestCompleted,
-        category: MetaMetricsEventCategory.Shield,
-        properties: {
-          ...userAccountTypeAndCategory,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          user_balance_category: getUserBalanceCategory(
-            Number(totalFiatBalance),
-          ),
-          ...formattedParams,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          gas_sponsored: Boolean(params.gasSponsored),
-        },
-      });
-    },
-    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
-  );
-
-  /**
-   * Capture the event when the Shield subscription request fails.
-   */
-  const captureShieldSubscriptionRequestFailedEvent = useCallback(
-    (params: CaptureShieldSubscriptionRequestFailedEventParams) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
-        selectedAccount,
-        hdKeyingsMetadata,
-      );
-      const formattedParams =
-        formatDefaultShieldSubscriptionRequestEventProps(params);
-
-      trackEvent({
-        event: MetaMetricsEventName.ShieldSubscriptionRequestFailed,
-        category: MetaMetricsEventCategory.Shield,
-        properties: {
-          ...userAccountTypeAndCategory,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          user_balance_category: getUserBalanceCategory(
-            Number(totalFiatBalance),
-          ),
-          ...formattedParams,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: params.errorMessage,
         },
       });
     },
@@ -166,8 +97,6 @@ export const useSubscriptionMetrics = () => {
 
   return {
     captureShieldEntryModalEvent,
-    captureShieldSubscriptionRequestStartedEvent,
-    captureShieldSubscriptionRequestCompletedEvent,
-    captureShieldSubscriptionRequestFailedEvent,
+    captureShieldSubscriptionRequestEvent,
   };
 };

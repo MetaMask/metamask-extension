@@ -6067,28 +6067,22 @@
   "shieldCovered": {
     "message": "Covered"
   },
-  "shieldEntryModalAssetCoverage": {
-    "message": "$1 asset coverage per transaction",
-    "description": "The $1 is the amount of asset coverage per transaction"
-  },
-  "shieldEntryModalDescription": {
-    "message": "Renews at $1/month, cancel anytime. $2",
-    "description": "The $1 is the price of the shield and $2 is a link to the learn more page"
-  },
   "shieldEntryModalGetStarted": {
-    "message": "Get started"
+    "message": "Start 14-day free trial"
   },
-  "shieldEntryModalProtection": {
-    "message": "Protection across all your accounts"
+  "shieldEntryModalSubtitleA": {
+    "message": "Transaction Shield provides protection up to $1 and 24/7 priority support.",
+    "description": "The $1 is the amount of transaction protection"
   },
-  "shieldEntryModalSkip": {
-    "message": "Skip"
+  "shieldEntryModalSubtitleB": {
+    "message": "Transact with added confidence with up to $1 in protection and 24/7 priority support.",
+    "description": "The $1 is the amount of transaction protection"
   },
-  "shieldEntryModalSubtitle": {
-    "message": "Transaction Shield, free for 14 days."
+  "shieldEntryModalTitleA": {
+    "message": "Transact with added confidence"
   },
-  "shieldEntryModalSupport": {
-    "message": "Priority customer support"
+  "shieldEntryModalTitleB": {
+    "message": "Introducing Transaction Shield"
   },
   "shieldEstimatedChangesMonthlyTooltipText": {
     "message": "Authorize up to $1 for the full year. You'll be billed $2 each month, not the full amount now."
