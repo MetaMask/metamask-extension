@@ -22,6 +22,7 @@ buildTypes:
       - multichain
       - bitcoin
       - bitcoin-swaps
+      - tron
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -54,6 +55,7 @@ buildTypes:
       - bitcoin
       - bitcoin-swaps
       - multi-srp
+      - tron
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
@@ -89,6 +91,7 @@ buildTypes:
       - multichain
       - bitcoin
       - bitcoin-swaps
+      - tron
     env:
       - INFURA_EXPERIMENTAL_PROJECT_ID
       - SEGMENT_EXPERIMENTAL_WRITE_KEY
@@ -118,6 +121,7 @@ buildTypes:
       - build-flask
       - keyring-snaps
       - bitcoin
+      - tron
       - multi-srp
       - multichain
       - gator-permissions
@@ -188,6 +192,10 @@ features:
     assets:
       - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/bitcoin-wallet-snap.json
+  tron:
+    assets:
+      - src: ./node_modules/@metamask/tron-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/tron-wallet-snap.json
   multi-srp:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
@@ -448,6 +456,7 @@ env:
   - METAMASK_SHIELD_ENABLED: 'false'
 
   # Snaps
+  - AUTO_UPDATE_PREINSTALLED_SNAPS: 'true'
   # This should only be used for local testing, and should not be enabled in any
   # production builds (including beta and Flask).
   - FORCE_PREINSTALLED_SNAPS: 'false'

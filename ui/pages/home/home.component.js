@@ -22,6 +22,7 @@ import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+import { ScrollContainer } from '../../contexts/scroll-container';
 
 import {
   FontWeight,
@@ -906,7 +907,7 @@ export default class Home extends PureComponent {
       !isSocialLoginFlow;
 
     return (
-      <div className="main-container main-container--has-shadow">
+      <ScrollContainer className="main-container main-container--has-shadow">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Route
           path={CONNECTED_ACCOUNTS_ROUTE}
@@ -964,7 +965,7 @@ export default class Home extends PureComponent {
           </div>
           {this.renderNotifications()}
         </div>
-      </div>
+      </ScrollContainer>
     );
   }
 }

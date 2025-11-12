@@ -41,7 +41,14 @@ import {
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function ShieldEntryModal() {
+export default function ShieldEntryModal({
+  // Whether to skip event submission (e.g., when opened from a user action)
+  skipEventSubmission = false,
+  onClose,
+}: {
+  skipEventSubmission?: boolean;
+  onClose?: () => void;
+}) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -51,6 +58,10 @@ export default function ShieldEntryModal() {
   const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
   const handleOnClose = () => {
+    if (skipEventSubmission) {
+      onClose?.();
+      return;
+    }
     if (shouldSubmitEvent) {
       dispatch(
         submitSubscriptionUserEvents({
