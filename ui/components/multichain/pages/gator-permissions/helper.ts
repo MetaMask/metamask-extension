@@ -22,3 +22,14 @@ export const extractNetworkName = (
   }
   return 'unknownNetworkForGatorPermissions';
 };
+
+/**
+ * Formats the origin for display by removing the protocol.
+ *
+ * @param origin - The origin string (can be encoded or decoded).
+ * @returns The origin without the protocol prefix.
+ */
+export const getDisplayOrigin = (origin: string): string => {
+  const decoded = decodeURIComponent(origin);
+  return decoded.replace(/^https?:\/\//u, '');
+};

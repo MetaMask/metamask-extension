@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -23,19 +23,30 @@ import { PermissionGroupListItem } from '../components';
 import {
   AppState,
   getPermissionGroupMetaData,
+  getPermissionGroupMetaDataByOrigin,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
+import { getDisplayOrigin } from '../helper';
 
 export const TokenTransferPage = () => {
   const t = useI18nContext();
   const history = useHistory();
+  const { origin } = useParams<{ origin?: string }>();
+
   const permissionGroupName = 'token-transfer';
+
+  // Get permissions - filtered by origin if provided, otherwise all
   const permissionGroupMetaData = useSelector((state: AppState) =>
-    getPermissionGroupMetaData(state, permissionGroupName),
+    origin
+      ? getPermissionGroupMetaDataByOrigin(state, {
+          permissionGroupName,
+          siteOrigin: origin,
+        })
+      : getPermissionGroupMetaData(state, permissionGroupName),
   );
+
   const handlePermissionGroupItemClick = (chainId: Hex) => {
-    history.push(
-      `${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/${permissionGroupName}`,
-    );
+    const baseRoute = `${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/${permissionGroupName}`;
+    history.push(origin ? `${baseRoute}/${origin}` : baseRoute);
   };
 
   const renderPageContent = () =>
@@ -79,7 +90,9 @@ export const TokenTransferPage = () => {
           textAlign={TextAlign.Center}
           data-testid="token-transfer-page-title"
         >
-          {t('tokenTransfer')}
+          {origin
+            ? `${getDisplayOrigin(origin)}: ${t('tokenTransfer')}`
+            : t('tokenTransfer')}
         </Text>
       </Header>
       <Content padding={0}>

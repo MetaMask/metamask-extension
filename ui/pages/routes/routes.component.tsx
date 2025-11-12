@@ -864,7 +864,17 @@ export default function Routes() {
             exact
           />
           <Authenticated
+            path={`${TOKEN_TRANSFER_ROUTE}/:origin`}
+            component={TokenTransferPage}
+            exact
+          />
+          <Authenticated
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
+            component={ReviewGatorPermissionsPage}
+            exact
+          />
+          <Authenticated
+            path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin`}
             component={ReviewGatorPermissionsPage}
             exact
           />
