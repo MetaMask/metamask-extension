@@ -301,6 +301,9 @@
   "addNewSolanaAccountLabel": {
     "message": "Solana account"
   },
+  "addNewTronAccountLabel": {
+    "message": "Tron account"
+  },
   "addNft": {
     "message": "Add NFT"
   },
@@ -4013,6 +4016,9 @@
   "networkNameTestnet": {
     "message": "Testnet"
   },
+  "networkNameTron": {
+    "message": "Tron"
+  },
   "networkNameZkSyncEra": {
     "message": "zkSync Era"
   },
@@ -5542,6 +5548,10 @@
     "message": "$1 points",
     "description": "$1 is the formatted number of rewards points"
   },
+  "rewardsPointsBalance_couldntLoad": {
+    "message": "Couldn't load",
+    "description": "Text shown when points balance couldn't be loaded"
+  },
   "rewardsPointsIcon": {
     "message": "Rewards Points",
     "description": "Alt text for the rewards points icon"
@@ -6166,6 +6176,10 @@
   },
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
+    "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxCancelWhenPausedDetails": {
+    "message": "Your coverage isn't active while paused. If you cancel, your membership will end on $1.",
     "description": "The $1 is the date subscription ends"
   },
   "shieldTxDetails1Description": {
