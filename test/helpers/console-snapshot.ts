@@ -324,9 +324,13 @@ export function aggregateAndSaveSnapshot(): void {
  * ADDITIVE MODE: Merges with existing snapshot, never removes entries
  *
  * @param captured - Object with warnings and errors arrays
+ * @param silent - If true, don't log messages (for validation mode)
  * @returns The generated snapshot (merged with existing)
  */
-export function generateSnapshot(captured: CapturedData): SnapshotData {
+export function generateSnapshot(
+  captured: CapturedData,
+  silent = false,
+): SnapshotData {
   // Load existing snapshot to merge with
   const existingSnapshot = loadSnapshot();
 
@@ -375,19 +379,21 @@ export function generateSnapshot(captured: CapturedData): SnapshotData {
   snapshot.warnings.sort();
   snapshot.errors.sort();
 
-  // Log what was added
-  if (newWarningsAdded > 0 || newErrorsAdded > 0) {
-    console.log(
-      `\n📊 Added ${newWarningsAdded} new warning(s) and ${newErrorsAdded} new error(s) to snapshot.`,
-    );
-    console.log(
-      `   Total: ${snapshot.warnings.length} warnings, ${snapshot.errors.length} errors`,
-    );
-  } else {
-    console.log(`\n✅ No new warnings or errors found.`);
-    console.log(
-      `   Snapshot unchanged: ${snapshot.warnings.length} warnings, ${snapshot.errors.length} errors`,
-    );
+  // Log what was added (only if not in silent mode)
+  if (!silent) {
+    if (newWarningsAdded > 0 || newErrorsAdded > 0) {
+      console.log(
+        `\n📊 Found ${newWarningsAdded} new warning(s) and ${newErrorsAdded} new error(s).`,
+      );
+      console.log(
+        `   Total: ${snapshot.warnings.length} warnings, ${snapshot.errors.length} errors`,
+      );
+    } else {
+      console.log(`\n✅ No new warnings or errors found.`);
+      console.log(
+        `   Snapshot unchanged: ${snapshot.warnings.length} warnings, ${snapshot.errors.length} errors`,
+      );
+    }
   }
 
   return snapshot;
@@ -404,7 +410,7 @@ export function compareWithSnapshot(
   captured: CapturedData,
   snapshot: SnapshotData,
 ): ComparisonResult {
-  const capturedSnapshot = generateSnapshot(captured);
+  const capturedSnapshot = generateSnapshot(captured, true); // silent mode for comparison
   const newWarnings: string[] = [];
   const newErrors: string[] = [];
 
