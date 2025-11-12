@@ -13,6 +13,7 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  BoxJustifyContent,
   Button,
   ButtonVariant,
   FontWeight,
@@ -27,9 +28,14 @@ import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Popover, PopoverPosition } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  getAllAccountGroups,
+  getInternalAccountListSpreadByScopesByGroupId,
+} from '../../../selectors/multichain-accounts/account-tree';
 import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
+import { selectBalanceForAllWallets } from '../../../selectors/assets';
+import { useFormatters } from '../../../hooks/useFormatters';
 
 // Priority networks that should appear first (using CAIP chain IDs)
 const PRIORITY_CHAIN_IDS = new Map<CaipChainId, number>([
@@ -38,6 +44,8 @@ const PRIORITY_CHAIN_IDS = new Map<CaipChainId, number>([
   ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipChainId, 2], // Solana mainnet
   ['tron:0x2b6653dc' as CaipChainId, 3], // Tron mainnet
 ]);
+
+const MAX_NETWORK_AVATARS = 4;
 
 export type MultichainAddressRowsListProps = {
   /**
@@ -52,12 +60,32 @@ export type MultichainAddressRowsListProps = {
    * The position of the popover when the user hovers over the child element.
    */
   hoverPosition?: PopoverPosition;
+  /**
+   * Whether to show the account name.
+   */
+  showAccountName?: boolean;
+  /**
+   * Whether to show the account balance.
+   */
+  showAccountBalance?: boolean;
+  /**
+   * The style of the popover.
+   */
+  style?: React.CSSProperties;
+  /**
+   * The delay of the hover.
+   */
+  hoverCloseDelay?: number;
 };
 
 export const MultichainHoveredAddressRowsList = ({
   groupId,
   children,
   hoverPosition = PopoverPosition.Auto,
+  style,
+  showAccountName,
+  showAccountBalance,
+  hoverCloseDelay = 150,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
@@ -67,6 +95,19 @@ export const MultichainHoveredAddressRowsList = ({
     null,
   );
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const allAccountGroups = useSelector(getAllAccountGroups);
+
+  const allBalances = useSelector(selectBalanceForAllWallets);
+  const { balance, currency, accountGroup } = useMemo(() => {
+    const accountGroup = allAccountGroups.find((group) => group.id === groupId);
+    const account =
+      allBalances?.wallets?.[accountGroup?.walletId]?.groups?.[groupId];
+    const balance = account?.totalBalanceInUserCurrency ?? 0;
+    const currency = account?.userCurrency ?? '';
+    return { balance, currency, accountGroup };
+  }, [allBalances, groupId, allAccountGroups]);
+
+  const { formatCurrencyWithMinThreshold } = useFormatters();
 
   const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
@@ -83,7 +124,7 @@ export const MultichainHoveredAddressRowsList = ({
   const handleMouseLeave = useCallback(() => {
     hoverTimeoutRef.current = setTimeout(() => {
       setIsHoverOpen(false);
-    }, 300);
+    }, hoverCloseDelay);
   }, []);
 
   useEffect(() => {
@@ -197,7 +238,7 @@ export const MultichainHoveredAddressRowsList = ({
       return (
         <MultichainAggregatedAddressListRow
           key={`${item.account.address}-${index}`}
-          chainIds={item.scopes}
+          chainIds={item.scopes.slice(0, MAX_NETWORK_AVATARS)}
           address={item.account.address}
           copyActionParams={{
             message: t('multichainAccountAddressCopied'),
@@ -230,11 +271,6 @@ export const MultichainHoveredAddressRowsList = ({
         ref={setReferenceElement}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        style={{
-          ...(isHoverOpen && {
-            backgroundColor: 'var(--color-background-default-hover)',
-          }),
-        }}
       >
         {children}
       </Box>
@@ -242,8 +278,7 @@ export const MultichainHoveredAddressRowsList = ({
         referenceElement={referenceElement}
         isOpen={isHoverOpen}
         position={hoverPosition}
-        flip={false}
-        preventOverflow={true}
+        hasArrow={true}
         backgroundColor={BackgroundColor.backgroundDefault}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -258,6 +293,22 @@ export const MultichainHoveredAddressRowsList = ({
           flexDirection={BoxFlexDirection.Column}
           data-testid="multichain-address-rows-list"
         >
+          <Box
+            marginBottom={2}
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+          >
+            {showAccountName && (
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+                {accountGroup?.metadata.name}
+              </Text>
+            )}
+            {showAccountBalance && (
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+                {formatCurrencyWithMinThreshold(balance, currency)}
+              </Text>
+            )}
+          </Box>
           <Box marginBottom={2}>{renderedRows}</Box>
           <Button
             variant={ButtonVariant.Secondary}

@@ -248,36 +248,25 @@ export const AppHeaderUnlockedContent = ({
           <>{!isMultichainAccountsState2Enabled && CopyButton}</>
         </Text>
         {selectedMultichainAccountId && (
-          <MultichainHoveredAddressRowsList
-            groupId={selectedMultichainAccountId}
-          >
-            <Box
-              display={Display.Flex}
-              className="networks-subtitle"
-              alignItems={AlignItems.center}
-              gap={1}
-              paddingInline={2}
-              paddingTop={1}
-              paddingBottom={1}
-              borderRadius={BorderRadius.SM}
-              data-testid="networks-subtitle-test-id"
-              style={{
-                cursor: 'pointer',
-                transition: 'background-color 0.2s ease',
-              }}
+          <Box paddingLeft={2}>
+            <MultichainHoveredAddressRowsList
+              groupId={selectedMultichainAccountId}
             >
-              <MultichainAccountNetworkGroup
-                groupId={selectedMultichainAccountId}
-                limit={4}
-              />
-              <Icon
-                name={IconNameDesignSystem.Copy}
-                size={IconSizeDesignSystem.Xs}
-                color={IconColorDesignSystem.IconAlternative}
-                data-testid="copy-network-addresses-icon"
-              />
-            </Box>
-          </MultichainHoveredAddressRowsList>
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                paddingTop={1}
+                paddingBottom={1}
+                borderRadius={BorderRadius.SM}
+                data-testid="networks-subtitle-test-id"
+              >
+                <MultichainAccountNetworkGroup
+                  groupId={selectedMultichainAccountId}
+                  limit={4}
+                />
+              </Box>
+            </MultichainHoveredAddressRowsList>
+          </Box>
         )}
       </Box>
     );

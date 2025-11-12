@@ -6,6 +6,7 @@ import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
+import { Box } from '@metamask/design-system-react';
 
 export type MultichainAccountNetworkGroupProps = {
   /**
@@ -45,6 +46,7 @@ export type MultichainAccountNetworkGroupProps = {
  * @param props.excludeTestNetworks - Whether to exclude test networks from display. Defaults to true.
  * @param props.limit - Maximum number of avatars to display before showing "+X" indicator. Defaults to 4.
  * @param props.className - Optional CSS class name for additional styling
+ * @param props.showTag - Whether to show the "+X" tag when there are more than MAX_NETWORK_AVATARS networks. Defaults to true.
  * @returns A React component displaying network avatars in a group
  */
 export const MultichainAccountNetworkGroup: React.FC<
@@ -144,11 +146,18 @@ export const MultichainAccountNetworkGroup: React.FC<
   }, [chainIds, excludeTestNetworks]);
 
   return (
-    <AvatarGroup
-      limit={limit}
-      members={networkData}
-      avatarType={AvatarType.NETWORK}
-      className={className}
-    />
+    <Box
+      style={{
+        flexShrink: 1,
+        width: 'fit-content',
+      }}
+    >
+      <AvatarGroup
+        limit={limit}
+        members={networkData}
+        avatarType={AvatarType.NETWORK}
+        className={className}
+      />
+    </Box>
   );
 };
