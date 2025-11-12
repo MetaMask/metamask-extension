@@ -454,9 +454,6 @@ export const completeImportSRPOnboardingFlow = async ({
 
   // Handle sidepanel navigation if needed
   await handleSidepanelPostOnboarding(driver);
-
-  // Wait for the home page to load
-  await driver.waitForSelector('[data-testid="eth-overview-send"]');
 };
 
 /**
