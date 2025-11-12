@@ -87,8 +87,6 @@ export class TestDappBitcoin {
 
         await metaMaskButton.click();
 
-        await this.driver.delay(1000000);
-
         if (lib === 'sats-connect') {
           await this.driver.clickElement({
             testId: dataTestIds.testPage.walletSelectionModal.satsConnectButton,
