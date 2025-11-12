@@ -55,6 +55,9 @@ export function onUpdate(
 
   const lastUpdatedAt = Date.now();
 
+  appStateController.setLastUpdatedAt(lastUpdatedAt);
+  appStateController.setLastUpdatedFromVersion(previousVersion);
+
   if (!isFirefox) {
     // Work around Chromium bug https://issues.chromium.org/issues/40805401
     // by doing a safe reload after an update. We'll be able to gate this
@@ -73,48 +76,16 @@ export function onUpdate(
       .extensionPlatformAutoReloadAfterUpdate as boolean | undefined;
     log.info(`[onUpdate]: Should reload: ${shouldReload}`);
     if (shouldReload === true) {
-      controller.store.on('update', handleUpdate);
-    }
-  }
-  appStateController.setLastUpdatedAt(lastUpdatedAt);
-  appStateController.setLastUpdatedFromVersion(previousVersion);
-
-  /**
-   * We wait for the store to update; when `update` is called the
-   * persistence layer will start writing the state to the database. Once
-   * that starts we will `requestSafeReload` to ensure its the last state
-   * update before the reload happens.
-   *
-   * @param newState - The new MetaMask state.
-   */
-  function handleUpdate(newState: MetaMaskStateType) {
-    log.info('[onUpdate]: Controller store `update` event fired.');
-    // ensure the new state matches the lastUpdatedFromVersion, otherwise
-    // we might reload before the state is fully persisted, potentially
-    // causing a restart loop.
-    const appStateControllerState =
-      newState.AppStateController as AppStateControllerState;
-    if (
-      appStateControllerState.lastUpdatedFromVersion === previousVersion &&
-      appStateControllerState.lastUpdatedAt === lastUpdatedAt
-    ) {
-      // we have our updated state
-      controller.store.removeListener('update', handleUpdate);
-
       log.info(
         `[onUpdate]: Requesting "safe reload" after update to ${platform.getVersion()}`,
       );
       // use `setImmediate` to be absolutely sure the reload happens after
       // other "update" events triggered by the `setLastUpdatedFromVersion`
-      // and `setLastUpdatedAt` calls immediately below have been processed.
+      // and `setLastUpdatedAt` calls above have been processed by storage.
       // I think there _is_ still a risk of a race condition here, mostly
       // due to the complexity of state storage's locks, debounce, and async
       // nature.
       setImmediate(requestSafeReload);
-    } else {
-      log.info(
-        `[onUpdate]: Not requesting "safe reload", as state is incorrect`,
-      );
     }
   }
 }
