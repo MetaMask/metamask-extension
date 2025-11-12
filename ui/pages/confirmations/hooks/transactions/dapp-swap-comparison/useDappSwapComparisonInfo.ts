@@ -270,6 +270,7 @@ export function useDappSwapComparisonInfo() {
     amountMin,
     bestQuote,
     captureDappSwapComparisonMetricsProperties,
+    commands,
     gas,
     gasLimitNoBuffer,
     gasUsed,

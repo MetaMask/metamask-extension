@@ -187,11 +187,6 @@ function handleCommandWrapETH(
     BASE_COMMANDS_ABI_DEFINITION,
   );
 
-  console.log(
-    '*********************result',
-    result,
-    getNativeTokenAddress(chainId),
-  );
   return {
     amountMin: result[1].toHexString(),
     quotesInput: {
@@ -369,13 +364,15 @@ function handleV4CommandSwapExactInSingle(
       ...(quotesInput ?? {}),
       srcTokenAmount: parsedResult.amountIn.toHexString(),
       srcTokenAddress:
-        (quotesInput.srcTokenAddress ?? parsedResult.zeroForOne)
+        quotesInput.srcTokenAddress ??
+        (parsedResult.zeroForOne
           ? parsedResult.poolKey.currency0.toLowerCase()
-          : parsedResult.poolKey.currency1.toLowerCase(),
+          : parsedResult.poolKey.currency1.toLowerCase()),
       destTokenAddress:
-        (quotesInput.destTokenAddress ?? parsedResult.zeroForOne)
+        quotesInput.destTokenAddress ??
+        (parsedResult.zeroForOne
           ? parsedResult.poolKey.currency1.toLowerCase()
-          : parsedResult.poolKey.currency0.toLowerCase(),
+          : parsedResult.poolKey.currency0.toLowerCase()),
     } as GenericQuoteRequest,
   };
 }
