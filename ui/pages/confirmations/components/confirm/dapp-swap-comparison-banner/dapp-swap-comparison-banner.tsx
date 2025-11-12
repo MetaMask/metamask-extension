@@ -28,7 +28,7 @@ import { updateTransaction } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 import { useSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
-import { QuoteSwapSimulationDetails } from '../quote-swap-simulation-details/quote-swap-simulation-details';
+import { QuoteSwapSimulationDetails } from '../../transactions/quote-swap-simulation-details/quote-swap-simulation-details';
 
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
 const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
