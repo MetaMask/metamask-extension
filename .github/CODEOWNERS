@@ -118,6 +118,20 @@ ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @M
 # Web3Auth / Onboarding
 ui/pages/onboarding-flow              @MetaMask/web3auth
 
+# Web3Auth / Shield
+app/scripts/controller-init/claims              @MetaMask/web3auth
+app/scripts/controller-init/shield              @MetaMask/web3auth
+app/scripts/controller-init/subscription        @MetaMask/web3auth
+shared/lib/shield.ts                            @MetaMask/web3auth
+ui/components/app/modals/add-funds-modal        @MetaMask/web3auth
+ui/components/app/shield-entry-modal            @MetaMask/web3auth
+ui/contexts/claims                              @MetaMask/web3auth
+ui/contexts/shield/shield-subscription.tsx      @MetaMask/web3auth
+ui/hooks/claims                                 @MetaMask/web3auth
+ui/hooks/subscription                           @MetaMask/web3auth
+ui/pages/shield-plan                            @MetaMask/web3auth
+ui/pages/settings/transaction-shield-tab        @MetaMask/web3auth
+
 # Confirmations team to own code for confirmations on UI.
 app/scripts/controller-init/confirmations                                           @MetaMask/confirmations
 app/scripts/lib/ppom                                                                @MetaMask/confirmations
