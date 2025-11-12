@@ -1,5 +1,4 @@
 import { Suite } from 'mocha';
-import { Mockttp } from 'mockttp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { withSignatureFixtures } from '../confirmations/helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
