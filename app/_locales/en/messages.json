@@ -5026,9 +5026,6 @@
   "popularNetworks": {
     "message": "Popular networks"
   },
-  "popupView": {
-    "message": "Popup view"
-  },
   "preparingSwap": {
     "message": "Preparing swap..."
   },
@@ -7571,6 +7568,9 @@
   "switchToNetwork": {
     "message": "Switch to $1",
     "description": "$1 represents the custom network that has previously been added"
+  },
+  "switchToPopup": {
+    "message": "Switch to popup"
   },
   "switchToSidePanel": {
     "message": "Switch to side panel"

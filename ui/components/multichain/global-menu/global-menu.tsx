@@ -436,7 +436,7 @@ export const GlobalMenu = ({
           }}
           data-testid="global-menu-toggle-view"
         >
-          {isSidePanelDefault ? t('popupView') : t('switchToSidePanel')}
+          {isSidePanelDefault ? t('switchToPopup') : t('switchToSidePanel')}
         </MenuItem>
       )}
       <MenuItem
