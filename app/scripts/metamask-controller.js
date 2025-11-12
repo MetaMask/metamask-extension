@@ -129,7 +129,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { COHORT_NAMES, PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
   findAtomicBatchSupportForChain,
@@ -8541,8 +8541,9 @@ export default class MetamaskController extends EventEmitter {
       TransactionType.swapAndSend,
     ].includes(transactionMeta.type);
 
-    if (isPostTxTransaction) {
-      this.appStateController.setPendingShieldCohort('post_tx');
+    const { pendingShieldCohort } = this.appStateController.state;
+    if (isPostTxTransaction && !pendingShieldCohort) {
+      this.appStateController.setPendingShieldCohort(COHORT_NAMES.POST_TX);
     }
   }
 

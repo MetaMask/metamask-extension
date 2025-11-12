@@ -63,12 +63,32 @@ async function mockSubscriptionApiCalls(
           canViewEntryModal: true,
           minBalanceUSD: 1000,
           product: 'shield',
+          cohorts: [
+            {
+              cohort: 'post_tx',
+              eligible: true,
+              eligibilityRate: 0.8,
+            },
+            {
+              cohort: 'wallet_home',
+              eligible: true,
+              eligibilityRate: 0.2,
+            },
+          ],
+          assignedCohort: null,
+          hasAssignedCohortExpired: null,
         },
       ]),
     await mockServer
       .forPost('https://subscription.dev-api.cx.metamask.io/v1/user-events')
       .thenJson(200, {
         status: 'success',
+      }),
+    await mockServer
+      .forPost('https://subscription.dev-api.cx.metamask.io/v1/cohorts/assign')
+      .thenJson(200, {
+        cohort: 'wallet_home',
+        expiresAt: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days from now
       }),
   ];
 }
