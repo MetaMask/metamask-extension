@@ -14,6 +14,8 @@ import {
 import { captureException } from '@sentry/browser';
 import { getCommandValues } from './dapp-swap-command-utils';
 
+const DEFAULT_QUOTEFEE = 250;
+
 export const ABI = [
   {
     constant: true,
@@ -90,6 +92,7 @@ export function getDataFromSwap(
       quotesInput: {
         ...quotesInput,
         walletAddress,
+        fee: DEFAULT_QUOTEFEE,
       } as GenericQuoteRequest,
       tokenAddresses: [
         quotesInput?.destTokenAddress,

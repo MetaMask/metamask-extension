@@ -96,6 +96,7 @@ export function useDappSwapComparisonInfo() {
   ]);
 
   const {
+    fiatRates,
     getGasUSDValue,
     getTokenUSDValue,
     getDestinationTokenUSDValue,
@@ -379,10 +380,13 @@ export function useDappSwapComparisonInfo() {
   ]);
 
   return {
+    fiatRates,
+    destinationTokenSymbol,
+    gasDifference,
     selectedQuote,
     selectedQuoteValueDifference,
-    gasDifference,
+    sourceTokenAmount: quotesInput?.srcTokenAmount,
     tokenAmountDifference,
-    destinationTokenSymbol,
+    tokenDetails,
   };
 }
