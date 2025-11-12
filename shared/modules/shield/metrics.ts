@@ -1,12 +1,24 @@
-import { PAYMENT_TYPES, PRODUCT_TYPES, RecurringInterval, SubscriptionControllerState } from "@metamask/subscription-controller";
-import { getShieldSubscription } from "../../lib/shield";
-import { getDefaultSubscriptionPaymentOptions, getIsTrialSubscription } from "./shield";
-import { TransactionMeta } from "@metamask/transaction-controller";
-import { InternalAccount } from "@metamask/keyring-internal-api";
-import { ShieldUserAccountCategoryEnum, ShieldUserAccountTypeEnum, ShieldUserBalanceRangeCategoryEnum } from "../../constants/subscriptions";
-import { KeyringObject } from "@metamask/keyring-controller";
-import { KeyringType } from "../../constants/keyring";
-import { DefaultSubscriptionPaymentOptions } from "../../types";
+import {
+  PAYMENT_TYPES,
+  PRODUCT_TYPES,
+  RecurringInterval,
+  SubscriptionControllerState,
+} from '@metamask/subscription-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { KeyringObject } from '@metamask/keyring-controller';
+import {
+  ShieldUserAccountCategoryEnum,
+  ShieldUserAccountTypeEnum,
+  ShieldUserBalanceRangeCategoryEnum,
+} from '../../constants/subscriptions';
+import { getShieldSubscription } from '../../lib/shield';
+import { KeyringType } from '../../constants/keyring';
+import { DefaultSubscriptionPaymentOptions } from '../../types';
+import {
+  getDefaultSubscriptionPaymentOptions,
+  getIsTrialSubscription,
+} from './shield';
 
 export function getBillingIntervalForMetrics(interval: RecurringInterval) {
   // TODO: Looks Odd, update the segment schema maybe?
@@ -38,7 +50,12 @@ export function getSubscriptionRequestTrackingProps(
     throw new Error('Last selected payment method is not set');
   }
 
-  const { defaultBillingInterval, defaultPaymentType, defaultPaymentCurrency, defaultPaymentChain } = getDefaultSubscriptionPaymentOptions(defaultSubscriptionPaymentOptions);
+  const {
+    defaultBillingInterval,
+    defaultPaymentType,
+    defaultPaymentCurrency,
+    defaultPaymentChain,
+  } = getDefaultSubscriptionPaymentOptions(defaultSubscriptionPaymentOptions);
 
   const billingInterval = getBillingIntervalForMetrics(
     lastSelectedPaymentMethod.shield.plan,
@@ -58,27 +75,45 @@ export function getSubscriptionRequestTrackingProps(
   return {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     subscription_state: currentSubscriptionStatus,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     default_payment_type: defaultPaymentType,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     default_payment_currency: defaultPaymentCurrency,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     default_payment_chain: defaultPaymentChain,
-    default_billing_interval: getBillingIntervalForMetrics(defaultBillingInterval),
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    default_billing_interval: getBillingIntervalForMetrics(
+      defaultBillingInterval,
+    ),
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     payment_type:
       lastSelectedPaymentMethod.shield.type || PAYMENT_TYPES.byCrypto,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     payment_currency: lastSelectedPaymentMethod.shield.paymentTokenSymbol,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     billing_interval: billingInterval,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     billing_cycles: billingCycles,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     payment_chain: paymentChain,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     is_trial: isTrialed,
   };
 }
 
-export function getUserAccountType(account: InternalAccount): ShieldUserAccountTypeEnum {
+export function getUserAccountType(
+  account: InternalAccount,
+): ShieldUserAccountTypeEnum {
   if (account.type === 'eip155:eoa') {
     return ShieldUserAccountTypeEnum.EOA;
   } else if (account.type === 'eip155:erc4337') {
@@ -88,12 +123,18 @@ export function getUserAccountType(account: InternalAccount): ShieldUserAccountT
   throw new Error('Unsupported account type');
 }
 
-export function getUserAccountCategory(account: InternalAccount, keyringsMetadata: KeyringObject[]): ShieldUserAccountCategoryEnum {
+export function getUserAccountCategory(
+  account: InternalAccount,
+  keyringsMetadata: KeyringObject[],
+): ShieldUserAccountCategoryEnum {
   const entropySource = account.options?.entropySource;
-  const isHdKeyringAccount = account.metadata.keyring.type === KeyringType.hdKeyTree;
+  const isHdKeyringAccount =
+    account.metadata.keyring.type === KeyringType.hdKeyTree;
 
   if (entropySource && isHdKeyringAccount) {
-    const keyringIndex = keyringsMetadata.findIndex((keyring) => keyring.metadata.id === entropySource);
+    const keyringIndex = keyringsMetadata.findIndex(
+      (keyring) => keyring.metadata.id === entropySource,
+    );
     if (keyringIndex === 0) {
       return ShieldUserAccountCategoryEnum.PRIMARY;
     } else if (keyringIndex > 0) {
@@ -103,7 +144,9 @@ export function getUserAccountCategory(account: InternalAccount, keyringsMetadat
   return ShieldUserAccountCategoryEnum.ImportedAccount;
 }
 
-export function getUserBalanceCategory(balanceInUSD: number): ShieldUserBalanceRangeCategoryEnum {
+export function getUserBalanceCategory(
+  balanceInUSD: number,
+): ShieldUserBalanceRangeCategoryEnum {
   if (balanceInUSD < 100) {
     return ShieldUserBalanceRangeCategoryEnum.LessThan100;
   } else if (balanceInUSD >= 100 && balanceInUSD < 1000) {
@@ -112,16 +155,22 @@ export function getUserBalanceCategory(balanceInUSD: number): ShieldUserBalanceR
     return ShieldUserBalanceRangeCategoryEnum.Between1KAnd10K;
   } else if (balanceInUSD >= 10000 && balanceInUSD < 100000) {
     return ShieldUserBalanceRangeCategoryEnum.Between10KAnd100K;
-  } else {
-    return ShieldUserBalanceRangeCategoryEnum.MoreThan100K;
   }
+  return ShieldUserBalanceRangeCategoryEnum.MoreThan100K;
 }
 
-export function getUserAccountTypeAndCategory(account: InternalAccount, keyringsMetadata: KeyringObject[]) {
+export function getUserAccountTypeAndCategory(
+  account: InternalAccount,
+  keyringsMetadata: KeyringObject[],
+) {
   const userAccountType = getUserAccountType(account);
   const userAccountCategory = getUserAccountCategory(account, keyringsMetadata);
   return {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     user_account_type: userAccountType,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     user_account_category: userAccountCategory,
   };
 }
