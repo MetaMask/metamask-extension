@@ -16,12 +16,6 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../../../../hooks/transactions/useEnableShieldCoverageChecks';
 import useAlerts from '../../../../../../hooks/useAlerts';
-import { useUserSubscriptions } from '../../../../../../hooks/subscription/useSubscription';
-import {
-  getIsShieldSubscriptionPaused,
-  getIsShieldSubscriptionProvisional,
-  getIsShieldSubscriptionTrialing,
-} from '../../../../../../../shared/lib/shield';
 import ShieldIconAnimation from './shield-icon-animation';
 
 const ShieldFooterCoverageIndicator = () => {
@@ -29,17 +23,13 @@ const ShieldFooterCoverageIndicator = () => {
   const { currentConfirmation } = useConfirmContext<
     TransactionMeta | SignatureRequest
   >();
-  const isShowShieldFooterCoverageIndicator = useEnableShieldCoverageChecks();
   const { getFieldAlerts } = useAlerts(currentConfirmation?.id ?? '');
-  const { subscriptions } = useUserSubscriptions();
-
-  const isPaused = getIsShieldSubscriptionPaused(subscriptions);
-  const isTrialing = getIsShieldSubscriptionTrialing(subscriptions);
-  const isProvisional = getIsShieldSubscriptionProvisional(subscriptions);
 
   const fieldAlerts = getFieldAlerts(RowAlertKey.ShieldFooterCoverageIndicator);
   const selectedAlert = fieldAlerts[0];
   const selectedAlertSeverity = selectedAlert?.severity;
+
+  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
 
   const animationSeverity = useMemo(() => {
     if (isPaused) {
@@ -48,7 +38,7 @@ const ShieldFooterCoverageIndicator = () => {
     return selectedAlertSeverity;
   }, [isPaused, selectedAlertSeverity]);
 
-  if (!currentConfirmation || !isShowShieldFooterCoverageIndicator) {
+  if (!currentConfirmation || !isEnabled) {
     return null;
   }
 
@@ -67,7 +57,7 @@ const ShieldFooterCoverageIndicator = () => {
       <Box marginTop={1}>
         <ShieldIconAnimation
           severity={animationSeverity}
-          playAnimation={isTrialing || isProvisional}
+          playAnimation={!isPaused}
         />
       </Box>
       <ConfirmInfoAlertRow

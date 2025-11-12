@@ -1,8 +1,4 @@
-import {
-  PRODUCT_TYPES,
-  SUBSCRIPTION_STATUSES,
-  Subscription,
-} from '@metamask/subscription-controller';
+import { PRODUCT_TYPES, Subscription } from '@metamask/subscription-controller';
 import {
   ActiveSubscriptionStatuses,
   PausedSubscriptionStatuses,
@@ -33,27 +29,15 @@ export function getShieldSubscription(
   return shieldSubscription;
 }
 
-function getValidShieldSubscription(
-  subscriptions: Subscription | Subscription[],
-): Subscription | undefined {
-  // check the feature flag first
-  if (!getIsMetaMaskShieldFeatureEnabled()) {
-    return undefined;
-  }
-
-  const shieldSubscription = getShieldSubscription(subscriptions);
-
-  if (!shieldSubscription) {
-    return undefined;
-  }
-
-  return shieldSubscription;
-}
-
 export function getIsShieldSubscriptionActive(
   subscriptions: Subscription | Subscription[],
 ): boolean {
-  const shieldSubscription = getValidShieldSubscription(subscriptions);
+  // check the feature flag first
+  if (!getIsMetaMaskShieldFeatureEnabled()) {
+    return false;
+  }
+
+  const shieldSubscription = getShieldSubscription(subscriptions);
 
   if (!shieldSubscription) {
     return false;
@@ -65,37 +49,18 @@ export function getIsShieldSubscriptionActive(
 export function getIsShieldSubscriptionPaused(
   subscriptions: Subscription | Subscription[],
 ): boolean {
-  const shieldSubscription = getValidShieldSubscription(subscriptions);
+  // check the feature flag first
+  if (!getIsMetaMaskShieldFeatureEnabled()) {
+    return false;
+  }
+
+  const shieldSubscription = getShieldSubscription(subscriptions);
 
   if (!shieldSubscription) {
     return false;
   }
 
   return PausedSubscriptionStatuses.includes(shieldSubscription.status);
-}
-
-export function getIsShieldSubscriptionTrialing(
-  subscriptions: Subscription | Subscription[],
-): boolean {
-  const shieldSubscription = getValidShieldSubscription(subscriptions);
-
-  if (!shieldSubscription) {
-    return false;
-  }
-
-  return shieldSubscription.status === SUBSCRIPTION_STATUSES.trialing;
-}
-
-export function getIsShieldSubscriptionProvisional(
-  subscriptions: Subscription | Subscription[],
-): boolean {
-  const shieldSubscription = getValidShieldSubscription(subscriptions);
-
-  if (!shieldSubscription) {
-    return false;
-  }
-
-  return shieldSubscription.status === SUBSCRIPTION_STATUSES.provisional;
 }
 
 export function getIsShieldSubscriptionEndingSoon(
