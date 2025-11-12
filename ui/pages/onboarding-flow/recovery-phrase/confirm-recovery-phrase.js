@@ -41,6 +41,7 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVEAL_SRP_ROUTE,
+  PREVIOUS_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
@@ -216,7 +217,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
               color={IconColor.iconDefault}
               size={ButtonIconSize.Md}
               data-testid="reveal-recovery-phrase-confirm-back-button"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate(PREVIOUS_ROUTE)}
               ariaLabel={t('back')}
             />
             <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
@@ -243,7 +244,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
                 color={IconColor.iconDefault}
                 size={ButtonIconSize.Md}
                 data-testid="confirm-recovery-phrase-back-button"
-                onClick={() => navigate(-1)}
+                onClick={() => navigate(PREVIOUS_ROUTE)}
                 ariaLabel={t('back')}
               />
             </Box>
