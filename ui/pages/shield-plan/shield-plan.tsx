@@ -92,13 +92,16 @@ const ShieldPlan = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  // Stripe Test clocks
-  const [enableStripeTestClock, setEnableStripeTestClock] = useState(false);
-  const showTestClocksCheckbox = isDevOrUatBuild() || isDevOrTestEnvironment();
-
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
+
+  // Stripe Test clocks
+  const [enableStripeTestClock, setEnableStripeTestClock] = useState(
+    lastUsedPaymentDetails?.useTestClock ?? false,
+  );
+  const showTestClocksCheckbox = isDevOrUatBuild() || isDevOrTestEnvironment();
+
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts
     getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
