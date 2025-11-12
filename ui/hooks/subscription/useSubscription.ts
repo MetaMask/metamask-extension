@@ -5,8 +5,8 @@ import {
   ProductType,
   RecurringInterval,
   Subscription,
-  SubscriptionEligibility,
   BalanceCategory,
+  SubscriptionEligibility,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useNavigate } from 'react-router-dom-v5-compat';
