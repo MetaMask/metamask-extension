@@ -35,6 +35,11 @@ import {
 } from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
 import { getShouldSubmitEventsForShieldEntryModal } from '../../../selectors';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import {
+  EntryModalSourceEnum,
+  ShieldEntryModalTypeEnum,
+} from '../../../../shared/constants/subscriptions';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -49,27 +54,34 @@ export default function ShieldEntryModal({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { captureShieldEntryModalEvent } = useSubscriptionMetrics();
   const shouldSubmitEvent = useSelector(
     getShouldSubmitEventsForShieldEntryModal,
   );
 
-  const handleOnClose = () => {
+  const handleOnClose = (ctaActionClicked: string = 'dismiss') => {
+    captureShieldEntryModalEvent({
+      source: EntryModalSourceEnum.Homepage,
+      type: ShieldEntryModalTypeEnum.TypeA,
+      modalCtaActionClicked: ctaActionClicked,
+    });
+
     if (skipEventSubmission) {
       onClose?.();
       return;
-    }
-    if (shouldSubmitEvent) {
+    } else if (shouldSubmitEvent) {
       dispatch(
         submitSubscriptionUserEvents({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
         }),
       );
     }
+
     dispatch(setShowShieldEntryModalOnce(false));
   };
 
-  const handleOnGetStarted = () => {
-    handleOnClose();
+  const handleOnGetStarted = (ctaActionClicked: string) => {
+    handleOnClose(ctaActionClicked);
     navigate(SHIELD_PLAN_ROUTE);
   };
 
@@ -77,7 +89,7 @@ export default function ShieldEntryModal({
     <Modal
       data-testid="shield-entry-modal"
       isOpen
-      onClose={handleOnClose}
+      onClose={() => handleOnClose('skip')}
       className="shield-entry-modal"
     >
       <ModalOverlay />
@@ -148,7 +160,7 @@ export default function ShieldEntryModal({
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               block
-              onClick={handleOnClose}
+              onClick={() => handleOnClose('skip')}
             >
               {t('shieldEntryModalSkip')}
             </Button>
@@ -156,7 +168,7 @@ export default function ShieldEntryModal({
               data-testid="shield-entry-modal-get-started-button"
               size={ButtonSize.Lg}
               block
-              onClick={handleOnGetStarted}
+              onClick={() => handleOnGetStarted('get-started')}
             >
               {t('shieldEntryModalGetStarted')}
             </Button>
