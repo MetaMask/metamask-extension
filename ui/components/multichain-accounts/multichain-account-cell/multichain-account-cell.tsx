@@ -9,6 +9,7 @@ import {
   BorderColor,
   BorderRadius,
   Display,
+  FlexDirection,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -18,6 +19,8 @@ import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
 } from '../../../helpers/constants/connected-sites';
+import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
+import { MultichainHoveredAddressRowsList } from '../multichain-address-rows-hovered-list';
 
 export type MultichainAccountCellProps = {
   accountId: AccountGroupId;
@@ -124,45 +127,49 @@ export const MultichainAccountCell = ({
           >
             {accountName}
           </Text>
-          {walletName && (
-            <Text
-              className="multichain-account-cell__account-name"
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodySmMedium}
-              marginLeft={3}
-              ellipsis
-            >
-              {walletName}
-            </Text>
-          )}
+          <Box marginLeft={3} marginRight={0} style={{ width: 'fit-content' }}>
+            <MultichainHoveredAddressRowsList groupId={accountId}>
+              <MultichainAccountNetworkGroup groupId={accountId} limit={4} />
+            </MultichainHoveredAddressRowsList>
+          </Box>
         </Box>
       </Box>
       <Box
         display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
         style={{ flexShrink: 0 }}
+        marginRight={2}
       >
         <SensitiveText
           className="multichain-account-cell__account-balance"
           data-testid="balance-display"
           variant={TextVariant.bodyMdMedium}
-          marginRight={2}
           isHidden={privacyMode}
           ellipsis
         >
           {balance}
         </SensitiveText>
-        <Box
-          className="multichain-account-cell__end_accessory"
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.flexEnd}
-          data-testid="multichain-account-cell-end-accessory"
-          aria-label={`${ariaLabelName} options`}
-        >
-          {endAccessory}
-        </Box>
+        {walletName && (
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodySmMedium}
+            ellipsis
+          >
+            {walletName}
+          </Text>
+        )}
+      </Box>
+      <Box
+        className="multichain-account-cell__end_accessory"
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.flexEnd}
+        data-testid="multichain-account-cell-end-accessory"
+        aria-label={`${ariaLabelName} options`}
+      >
+        {endAccessory}
       </Box>
     </Box>
   );

@@ -180,6 +180,7 @@ export const MultichainAggregatedAddressListRow = ({
           variant={TextVariant.BodyXs}
           fontWeight={FontWeight.Medium}
           color={getTextColor()}
+          style={{ minWidth: 90 }}
         >
           {displayText}
         </Text>
