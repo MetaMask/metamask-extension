@@ -228,7 +228,7 @@ class Driver {
       return By.css(locator);
     } else if (locator.value) {
       // For backwards compatibility, checking if the locator has a value prop
-      // (but no css prop) tells us this is a Selenium locator
+      // tells us this is a Selenium locator
       return locator;
     } else if (locator.xpath) {
       // Providing an xpath prop to the object will consume the locator as an
