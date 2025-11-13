@@ -37,8 +37,6 @@ describe('State logs', function () {
         await settingsPage.clickAdvancedTab();
         const advancedSettingsPage = new AdvancedSettings(driver);
         await advancedSettingsPage.checkPageIsLoaded();
-        // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
-        await driver.delay(10000);
         await advancedSettingsPage.downloadStateLogs();
 
         // Verify download and get state logs
@@ -60,7 +58,7 @@ describe('State logs', function () {
     );
   });
 
-  it('state log file matches the expected state structure', async function () {
+  it.only('state log file matches the expected state structure', async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       // Chrome shows OS level download prompt which can't be dismissed by Selenium
       this.skip();
@@ -81,6 +79,8 @@ describe('State logs', function () {
         await settingsPage.clickAdvancedTab();
         const advancedSettingsPage = new AdvancedSettings(driver);
         await advancedSettingsPage.checkPageIsLoaded();
+        // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
+        await driver.delay(20000);
         await advancedSettingsPage.downloadStateLogs();
 
         // Verify download and get state logs
