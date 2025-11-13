@@ -252,12 +252,12 @@ const Footer = () => {
     onAddEthereumChain,
   ]);
 
-  const handleFooterCancel = useCallback(async () => {
+  const handleFooterCancel = useCallback(() => {
     if (shouldThrottleOrigin) {
       setShowOriginThrottleModal(true);
       return;
     }
-    await onCancel({ location: MetaMetricsEventLocation.Confirmation });
+    onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
     navigateNext(currentConfirmation.id);
   }, [navigateNext, onCancel, shouldThrottleOrigin, currentConfirmation]);
