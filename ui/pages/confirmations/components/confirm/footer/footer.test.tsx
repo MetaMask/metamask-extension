@@ -19,7 +19,7 @@ import {
 } from '../../../../../../test/data/confirmations/personal_sign';
 import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { fireEvent, waitFor } from '../../../../../../test/jest';
+import { fireEvent } from '../../../../../../test/jest';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -37,23 +37,9 @@ import Footer from './footer';
 jest.mock('../../../hooks/gas/useIsGaslessLoading');
 jest.mock('../../../hooks/alerts/transactions/useInsufficientBalanceAlerts');
 jest.mock('../../../hooks/gas/useIsGaslessSupported');
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let mockStore: any = null;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockDispatch: any = jest.fn((action: unknown) => {
-  if (typeof action === 'function') {
-    // Thunk actions need both dispatch and getState
-    const mockGetState = mockStore ? mockStore.getState : jest.fn(() => ({}));
-    return action(mockDispatch, mockGetState);
-  }
-  return action;
-});
-
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: () => mockDispatch,
+  useDispatch: () => jest.fn(),
 }));
 jest.mock('../../../hooks/useConfirmationNavigation', () => ({
   useConfirmationNavigation: jest.fn(() => ({
@@ -73,24 +59,6 @@ jest.mock(
 );
 
 jest.mock('../../../hooks/useOriginThrottling');
-jest.mock('../../../hooks/useAddEthereumChain', () => ({
-  useAddEthereumChain: jest.fn(() => ({
-    onSubmit: jest.fn().mockResolvedValue(undefined),
-  })),
-  isAddEthereumChainType: jest.fn(
-    (confirmation) => confirmation?.type === 'wallet_addEthereumChain',
-  ),
-}));
-jest.mock('../../../hooks/transactions/useTransactionConfirm', () => ({
-  useTransactionConfirm: jest.fn(() => ({
-    onTransactionConfirm: jest.fn().mockResolvedValue(undefined),
-  })),
-}));
-jest.mock('../../../hooks/useConfirmSendNavigation', () => ({
-  useConfirmSendNavigation: jest.fn(() => ({
-    navigateBackIfSend: jest.fn(),
-  })),
-}));
 
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
@@ -104,7 +72,6 @@ jest.mock('react-router-dom-v5-compat', () => {
 
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
-  mockStore = store;
 
   return renderWithConfirmContextProvider(<Footer />, store);
 };
@@ -127,10 +94,6 @@ describe('ConfirmFooter', () => {
   const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    mockDispatch.mockClear();
-    mockStore = null;
-
     mockUseOriginThrottling.mockReturnValue({
       shouldThrottleOrigin: false,
     });
@@ -284,62 +247,50 @@ describe('ConfirmFooter', () => {
     });
   });
 
-  it('invoke required actions when cancel button is clicked', async () => {
+  it('invoke required actions when cancel button is clicked', () => {
     const { getAllByRole } = render();
     const cancelButton = getAllByRole('button')[0];
     const rejectSpy = jest
       .spyOn(Actions, 'rejectPendingApproval')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => Promise.resolve() as any);
+      .mockImplementation(() => ({}) as any);
     const updateCustomNonceSpy = jest
       .spyOn(Actions, 'updateCustomNonce')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockReturnValue({} as any);
+      .mockImplementation(() => ({}) as any);
     const setNextNonceSpy = jest
       .spyOn(Actions, 'setNextNonce')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockReturnValue({} as any);
-
+      .mockImplementation(() => ({}) as any);
     fireEvent.click(cancelButton);
-
-    // Wait for async onCancel to complete
-    await waitFor(() => {
-      expect(rejectSpy).toHaveBeenCalled();
-    });
-
+    expect(rejectSpy).toHaveBeenCalled();
     expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
     expect(setNextNonceSpy).toHaveBeenCalledWith('');
   });
 
-  it('invoke required actions when submit button is clicked', async () => {
+  it('invoke required actions when submit button is clicked', () => {
     const { getAllByRole } = render();
     const submitButton = getAllByRole('button')[1];
     const resolveSpy = jest
       .spyOn(Actions, 'resolvePendingApproval')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => Promise.resolve() as any);
+      .mockImplementation(() => ({}) as any);
     const updateCustomNonceSpy = jest
       .spyOn(Actions, 'updateCustomNonce')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockReturnValue({} as any);
+      .mockImplementation(() => ({}) as any);
     const setNextNonceSpy = jest
       .spyOn(Actions, 'setNextNonce')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockReturnValue({} as any);
-
+      .mockImplementation(() => ({}) as any);
     fireEvent.click(submitButton);
-
-    // Wait for async onSubmit to complete
-    await waitFor(() => {
-      expect(resolveSpy).toHaveBeenCalled();
-    });
-
+    expect(resolveSpy).toHaveBeenCalled();
     expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
     expect(setNextNonceSpy).toHaveBeenCalledWith('');
   });
@@ -540,7 +491,7 @@ describe('ConfirmFooter', () => {
       // @ts-expect-error This is missing from the Mocha type definitions
       it.each(['Confirm', 'Cancel'])(
         'on %s button click',
-        async (buttonText: string) => {
+        (buttonText: string) => {
           const navigateNextMock = jest.fn();
           useConfirmationNavigationMock.mockReturnValue({
             navigateNext: navigateNextMock,
@@ -550,21 +501,17 @@ describe('ConfirmFooter', () => {
           const mockStateWithContractInteractionConfirmation =
             getMockContractInteractionConfirmState();
 
-          // Get the actual transaction from the transactions array
-          const contractInteractionConfirmation =
-            mockStateWithContractInteractionConfirmation.metamask
-              .transactions[0];
-
           mockStateWithContractInteractionConfirmation.metamask.pendingApprovals =
             {
+              [addEthereumChainApproval.id]: addEthereumChainApproval,
               ...mockStateWithContractInteractionConfirmation.metamask
                 .pendingApprovals,
-              [addEthereumChainApproval.id]: addEthereumChainApproval,
             };
           mockStateWithContractInteractionConfirmation.metamask.pendingApprovalCount = 2;
 
+          // Current confirmation is add ethereum chain
           jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-            currentConfirmation: contractInteractionConfirmation,
+            currentConfirmation: addEthereumChainApproval,
             isScrollToBottomCompleted: true,
             setIsScrollToBottomCompleted: () => undefined,
           });
@@ -575,13 +522,10 @@ describe('ConfirmFooter', () => {
           const button = getByText(buttonText);
           fireEvent.click(button);
 
-          // Wait for async operations to complete
-          await waitFor(() => {
-            expect(navigateNextMock).toHaveBeenCalledTimes(1);
-          });
-
+          // It will navigate to transaction confirmation
+          expect(navigateNextMock).toHaveBeenCalledTimes(1);
           expect(navigateNextMock).toHaveBeenCalledWith(
-            contractInteractionConfirmation.id,
+            addEthereumChainApproval.id,
           );
         },
       );
