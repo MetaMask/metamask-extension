@@ -6,11 +6,15 @@ import { withFixtures, unlockWallet, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import NotificationsListPage from '../page-objects/pages/notifications-list-page';
 import { mockCronjobDurationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 
 describe('Test Snap Cronjob Duration', function () {
   it('runs a cronjob every 10 seconds that sends a notification', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockCronjobDurationSnap,
         title: this.test?.fullTitle(),

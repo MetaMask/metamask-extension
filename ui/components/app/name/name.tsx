@@ -45,6 +45,11 @@ export type NameProps = {
    * The fallback value to display if the name is not found or cannot be resolved.
    */
   fallbackName?: string;
+
+  /**
+   * Whether to show the full name.
+   */
+  showFullName?: boolean;
 };
 
 const Name = memo(
