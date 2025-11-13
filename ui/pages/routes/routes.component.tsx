@@ -15,7 +15,6 @@ import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
 import { useAppSelector } from '../../store/store';
-import Authenticated from '../../helpers/higher-order-components/authenticated';
 import AuthenticatedV5Compat from '../../helpers/higher-order-components/authenticated/authenticated-v5-compat';
 import Initialized from '../../helpers/higher-order-components/initialized';
 import InitializedV5Compat from '../../helpers/higher-order-components/initialized/initialized-v5-compat';
@@ -23,7 +22,6 @@ import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
-  AppHeader,
   AccountListMenu,
   NetworkListMenu,
   AccountDetails,
@@ -136,7 +134,6 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
-import { Box } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -167,12 +164,13 @@ import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
+import { RootLayout } from '../../layouts/root-layout';
+import { LegacyLayout } from '../../layouts/legacy-layout';
+import { RouteWithLayout } from '../../layouts/route-with-layout';
 import {
   getConnectingLabel,
-  hideAppHeader,
   isConfirmTransactionRoute,
   setTheme,
-  showAppHeader,
 } from './utils';
 
 // V5-compat navigate function type for bridging v5 routes with v5-compat components
@@ -471,7 +469,7 @@ const ShieldPlan = mmLazy(
 // End Lazy Routes
 
 const MemoizedReviewPermissionsWrapper = React.memo(
-  (props: RouteComponentProps<{ origin: string }>) => (
+  (props: RouteComponentProps) => (
     <State2Wrapper
       {...props}
       state1Component={ReviewPermissions}
@@ -694,12 +692,20 @@ export default function Routes() {
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
         <Switch>
-          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
-          <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
-          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
-          <Route path={LOCK_ROUTE} component={Lock} exact />
-          <Route
+          <RouteWithLayout
+            path={ONBOARDING_ROUTE}
+            component={OnboardingFlow}
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            path={LOCK_ROUTE}
+            component={Lock}
+            exact
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
             path={UNLOCK_ROUTE}
+            layout={LegacyLayout}
             // v5 Route supports exact with render props, but TS types don't recognize it
             // Using spread operator with type assertion to bypass incorrect type definitions
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -710,22 +716,27 @@ export default function Routes() {
               includeNavigate: true,
               includeLocation: true,
             })}
-          </Route>
-          <Route path={DEEP_LINK_ROUTE}>
+          </RouteWithLayout>
+          <RouteWithLayout path={DEEP_LINK_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(DeepLink, {
               includeLocation: true,
             })}
-          </Route>
+          </RouteWithLayout>
           <RestoreVaultComponent
             path={RESTORE_VAULT_ROUTE}
             component={RestoreVaultPage}
             exact
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={SMART_ACCOUNT_UPDATE}
             component={SmartAccountUpdate}
+            layout={LegacyLayout}
           />
-          <Route path={`${REVEAL_SEED_ROUTE}/:keyringId?`}>
+          <RouteWithLayout
+            path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
+            layout={RootLayout}
+          >
             {createV5CompatRoute<{ keyringId?: string }>(
               RevealSeedConfirmation,
               {
@@ -734,19 +745,30 @@ export default function Routes() {
                 includeParams: true,
               },
             )}
-          </Route>
-          <Authenticated path={IMPORT_SRP_ROUTE} component={ImportSrpPage} />
-          <Authenticated path={SETTINGS_ROUTE} component={Settings} />
-          <Authenticated
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
+            path={IMPORT_SRP_ROUTE}
+            component={ImportSrpPage}
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            authenticated
+            path={SETTINGS_ROUTE}
+            component={Settings}
+            layout={RootLayout}
+          />
+          <RouteWithLayout
+            authenticated
             path={NOTIFICATIONS_SETTINGS_ROUTE}
             component={NotificationsSettings}
+            layout={RootLayout}
           />
-          <Route
+          <RouteWithLayout
+            authenticated
             path={`${NOTIFICATIONS_ROUTE}/:uuid`}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            layout={RootLayout}
+            exact
           >
             {createV5CompatRoute<{ uuid: string }>(NotificationDetails, {
               wrapper: AuthenticatedV5Compat,
@@ -754,15 +776,37 @@ export default function Routes() {
               includeNavigate: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
-          <Authenticated path={SNAPS_ROUTE} component={SnapList} exact />
-          <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
-          <Authenticated
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
+            path={NOTIFICATIONS_ROUTE}
+            component={Notifications}
+            layout={RootLayout}
+          />
+          <RouteWithLayout
+            authenticated
+            path={SNAPS_ROUTE}
+            component={SnapList}
+            exact
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            authenticated
+            path={SNAPS_VIEW_ROUTE}
+            component={SnapView}
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            authenticated
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
             component={ConfirmTransaction}
+            layout={LegacyLayout}
           />
-          <Route path={`${SEND_ROUTE}/:page?`}>
+          <RouteWithLayout
+            authenticated
+            path={`${SEND_ROUTE}/:page?`}
+            layout={RootLayout}
+          >
             {createV5CompatRoute<{ page?: string }>(SendPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
@@ -770,15 +814,16 @@ export default function Routes() {
               includeLocation: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route path={SWAPS_ROUTE}>
+          </RouteWithLayout>
+          <RouteWithLayout path={SWAPS_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(Swaps, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
             })}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
+            layout={LegacyLayout}
             // v5 Route supports exact with render props, but TS types don't recognize it
             // Using spread operator with type assertion to bypass incorrect type definitions
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -794,47 +839,61 @@ export default function Routes() {
                 paramsAsProps: false, // Pass as params object
               },
             )}
-          </Route>
-          <Route path={CROSS_CHAIN_SWAP_ROUTE}>
+          </RouteWithLayout>
+          <RouteWithLayout path={CROSS_CHAIN_SWAP_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(CrossChainSwap, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
             })}
-          </Route>
-          <Authenticated
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
             component={ConfirmAddSuggestedTokenPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
             component={ConfirmAddSuggestedNftPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
             component={ConfirmationPage}
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
+            layout={LegacyLayout}
           />
-          <Route path={`${CONNECT_ROUTE}/:id`}>
+          <RouteWithLayout path={`${CONNECT_ROUTE}/:id`} layout={RootLayout}>
             {createV5CompatRoute<{ id: string }>(PermissionsConnect, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
               includeMatch: true,
             })}
-          </Route>
-          <Route path={`${ASSET_ROUTE}/image/:asset/:id`}>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${ASSET_ROUTE}/image/:asset/:id`}
+            layout={RootLayout}
+          >
             {createV5CompatRoute<{ asset: string; id: string }>(NftFullImage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route path={`${ASSET_ROUTE}/:chainId/:asset/:id`}>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
+            layout={RootLayout}
+          >
             {createV5CompatRoute<{
               chainId: string;
               asset: string;
@@ -844,8 +903,11 @@ export default function Routes() {
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route path={`${ASSET_ROUTE}/:chainId/:asset/`}>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${ASSET_ROUTE}/:chainId/:asset/`}
+            layout={RootLayout}
+          >
             {createV5CompatRoute<{
               chainId: string;
               asset: string;
@@ -854,15 +916,18 @@ export default function Routes() {
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route path={`${ASSET_ROUTE}/:chainId`}>
+          </RouteWithLayout>
+          <RouteWithLayout path={`${ASSET_ROUTE}/:chainId`} layout={RootLayout}>
             {createV5CompatRoute<{ chainId: string }>(Asset, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route path={`${DEFI_ROUTE}/:chainId/:protocolId`}>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${DEFI_ROUTE}/:chainId/:protocolId`}
+            layout={RootLayout}
+          >
             {createV5CompatRoute<{
               chainId: string;
               protocolId: string;
@@ -872,13 +937,12 @@ export default function Routes() {
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={`${CONNECTIONS}/:origin`}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            layout={LegacyLayout}
+            exact
           >
             {createV5CompatRoute<{ origin: string }>(Connections, {
               wrapper: AuthenticatedV5Compat,
@@ -886,24 +950,33 @@ export default function Routes() {
               includeNavigate: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
-          <Authenticated
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
+            path={PERMISSIONS}
+            component={PermissionsPage}
+            exact
+            layout={RootLayout}
+          />
+          <RouteWithLayout
+            authenticated
             path={GATOR_PERMISSIONS}
             component={GatorPermissionsPage}
             exact
+            layout={LegacyLayout}
           />
-          <Authenticated
+          <RouteWithLayout
+            authenticated
             path={TOKEN_TRANSFER_ROUTE}
             component={TokenTransferPage}
             exact
+            layout={LegacyLayout}
           />
-          <Route
+          <RouteWithLayout
+            authenticated
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            exact
+            layout={LegacyLayout}
           >
             {createV5CompatRoute<{
               chainId: string;
@@ -914,13 +987,12 @@ export default function Routes() {
               includeNavigate: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            exact
+            layout={LegacyLayout}
           >
             {createV5CompatRoute<{ origin: string }>(
               MemoizedReviewPermissionsWrapper,
@@ -931,24 +1003,22 @@ export default function Routes() {
                 paramsAsProps: false,
               },
             )}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={ACCOUNT_LIST_PAGE_ROUTE}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            exact
+            layout={RootLayout}
           >
             {createV5CompatRoute(AccountList, {
               wrapper: AuthenticatedV5Compat,
             })}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            exact
+            layout={RootLayout}
           >
             {createV5CompatRoute<{ accountGroupId: string }>(
               MultichainAccountAddressListPage,
@@ -959,13 +1029,12 @@ export default function Routes() {
                 paramsAsProps: false,
               },
             )}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            exact
+            layout={LegacyLayout}
           >
             {createV5CompatRoute<{ accountGroupId: string }>(
               MultichainAccountPrivateKeyListPage,
@@ -975,76 +1044,70 @@ export default function Routes() {
                 paramsAsProps: false,
               },
             )}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={ADD_WALLET_PAGE_ROUTE}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            exact
+            layout={RootLayout}
           >
             {createV5CompatRoute(AddWalletPage, {
               wrapper: AuthenticatedV5Compat,
             })}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            exact
+            layout={RootLayout}
           >
             {createV5CompatRoute<{ id: string }>(MultichainAccountDetailsPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            exact
+            layout={RootLayout}
           >
             {createV5CompatRoute<{ address: string }>(SmartAccountPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            exact
+            layout={RootLayout}
           >
             {createV5CompatRoute<{ id: string }>(WalletDetailsPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={WALLET_DETAILS_ROUTE}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            exact
+            layout={LegacyLayout}
           >
             {createV5CompatRoute<{ id: string }>(WalletDetails, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            exact
+            layout={LegacyLayout}
           >
             {createV5CompatRoute<{ address: string }>(
               MultichainAccountDetails,
@@ -1054,26 +1117,39 @@ export default function Routes() {
                 paramsAsProps: false,
               },
             )}
-          </Route>
-          <Route
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
-            // v5 Route supports exact with render props, but TS types don't recognize it
-            // Using spread operator with type assertion to bypass incorrect type definitions
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ exact: true } as any)}
+            component={AddressQRCode}
+            exact
+            layout={LegacyLayout}
           >
             {createV5CompatRoute<{ address: string }>(AddressQRCode, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
-          <Authenticated
+          </RouteWithLayout>
+          <RouteWithLayout
+            authenticated
             path={NONEVM_BALANCE_CHECK_ROUTE}
             component={NonEvmBalanceCheck}
+            layout={LegacyLayout}
           />
-          <Authenticated path={SHIELD_PLAN_ROUTE} component={ShieldPlan} />
-          <Authenticated path={DEFAULT_ROUTE} component={Home} />
+
+          <RouteWithLayout
+            authenticated
+            path={SHIELD_PLAN_ROUTE}
+            component={ShieldPlan}
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            authenticated
+            path={DEFAULT_ROUTE}
+            component={Home}
+            layout={RootLayout}
+          />
         </Switch>
       </Suspense>
     );
@@ -1161,7 +1237,7 @@ export default function Routes() {
         [`os-${os}`]: Boolean(os),
         [`browser-${browser}`]: Boolean(browser),
         ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-        'app--sidepanel': isSidepanel,
+        'group app--sidepanel': isSidepanel,
         ///: END:ONLY_INCLUDE_IF
       })}
       dir={textDirection}
@@ -1169,9 +1245,6 @@ export default function Routes() {
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />
-      {process.env.REMOVE_GNS
-        ? showAppHeader({ location }) && <AppHeader location={location} />
-        : !hideAppHeader({ location }) && <AppHeader location={location} />}
       {isConfirmTransactionRoute(location.pathname) && (
         <MultichainMetaFoxLogo />
       )}
@@ -1219,10 +1292,10 @@ export default function Routes() {
         />
       ) : null}
 
-      <Box className="main-container-wrapper">
-        {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-        {renderRoutes()}
-      </Box>
+      {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
+
+      {renderRoutes()}
+
       {isUnlocked ? <Alerts history={history} /> : null}
       {React.createElement(
         ToastMaster as React.ComponentType<{
