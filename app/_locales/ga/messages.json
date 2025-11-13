@@ -675,9 +675,6 @@
   "attributions": {
     "message": "Admhálacha"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Níl URL RPC Infura ag tacú le Aurora a thuilleadh."
-  },
   "authorizedPermissions": {
     "message": "Tá na ceadanna seo a leanas údaraithe agat"
   },
@@ -1931,9 +1928,6 @@
   "depositCrypto": {
     "message": "Taisce cripte ó chuntas eile le seoladh sparán nó cód QR."
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Mar gheall ar nuashonruithe ar chóras Ethereum, cuirfear deireadh de réir a chéile le líonra tástála Goerli go luath."
-  },
   "deprecatedNetwork": {
     "message": "Tá an líonra seo imithe i léig"
   },
@@ -2456,9 +2450,6 @@
   },
   "existingChainId": {
     "message": "Tá an fhaisnéis atá curtha isteach agat bainteach le haitheantas slabhra atá ann cheana féin."
-  },
-  "expandView": {
-    "message": "Leathnaigh an radharc"
   },
   "experimental": {
     "message": "Turgnamhach"
@@ -3701,13 +3692,6 @@
   "network": {
     "message": "Líonra"
   },
-  "networkAddress": {
-    "message": "1 seoladh líonra"
-  },
-  "networkAddresses": {
-    "message": "Seoltaí líonra $1",
-    "description": "$1 is the number of accounts"
-  },
   "networkChanged": {
     "message": "Athraíodh an líonra"
   },
@@ -4870,6 +4854,18 @@
   "pushNotificationPositionLiquidatedTitle": {
     "message": "Post leachtaithe"
   },
+  "pushNotificationShieldClaimCreatedDescriptionShort": {
+    "message": "Tá d'éileamh cruthaithe"
+  },
+  "pushNotificationShieldClaimCreatedTitle": {
+    "message": "Éileamh cruthaithe"
+  },
+  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
+    "message": "Tá d'éileamh nuashonraithe"
+  },
+  "pushNotificationShieldClaimStatusUpdatedTitle": {
+    "message": "Éileamh nuashonraithe"
+  },
   "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
     "message": "Fáilte go Sciath Idirbhirt MetaMask! Féach ar na buntáistí"
   },
@@ -5661,28 +5657,8 @@
   "shieldCovered": {
     "message": "Clúdaithe"
   },
-  "shieldEntryModalAssetCoverage": {
-    "message": "Clúdach sócmhainne $1 in aghaidh an idirbhirt",
-    "description": "The $1 is the amount of asset coverage per transaction"
-  },
-  "shieldEntryModalDescription": {
-    "message": "Athnuaitear ar $1/mí, cealaítear am ar bith. $2",
-    "description": "The $1 is the price of the shield and $2 is a link to the learn more page"
-  },
   "shieldEntryModalGetStarted": {
     "message": "Tosaigh"
-  },
-  "shieldEntryModalProtection": {
-    "message": "Cosaint ar fud do chuntais uile"
-  },
-  "shieldEntryModalSkip": {
-    "message": "Scipeáil"
-  },
-  "shieldEntryModalSubtitle": {
-    "message": "Sciath Idirbhirt, saor in aisce ar feadh 14 lá."
-  },
-  "shieldEntryModalSupport": {
-    "message": "Tacaíocht do chustaiméirí tosaíochta"
   },
   "shieldFooterAgreement": {
     "message": "Trí leanúint ar aghaidh, aontaím le Sciath Idirbhirt $1."
@@ -7111,10 +7087,6 @@
   },
   "switchNetwork": {
     "message": "Athraigh líonra"
-  },
-  "switchToNetwork": {
-    "message": "Lasc go $1",
-    "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
     "message": "Lasc chuig an gcuntas seo"

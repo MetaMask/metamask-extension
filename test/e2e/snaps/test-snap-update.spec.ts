@@ -10,6 +10,7 @@ import {
   mockWebpackPluginOldSnap,
   mockWebpackPluginSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 
 async function mockSnapExamples(mockServer: Mockttp) {
   return [
@@ -22,6 +23,9 @@ describe('Test Snap update', function () {
   it('can install an old and then updated version', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapExamples,
         title: this.test?.fullTitle(),

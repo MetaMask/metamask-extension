@@ -10,6 +10,7 @@ import {
   mockDialogSnap,
   mockErrorSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
@@ -54,7 +55,9 @@ describe('Test Snap installed', function () {
 
     await withFixtures(
       {
-        dappOptions: { numberOfTestDapps: 1 },
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
@@ -87,7 +90,7 @@ describe('Test Snap installed', function () {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: 'npm:@metamask/dialog-example-snap',
-          origin: 'https://metamask.github.io',
+          origin: 'http://127.0.0.1:8080',
           version: '2.3.1',
           category: 'Snaps',
           locale: 'en',

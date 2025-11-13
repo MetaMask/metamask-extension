@@ -692,7 +692,7 @@
         "prop-types": true,
         "react": true,
         "react-dom": true,
-        "react-redux>react-is": true,
+        "@material-ui/core>react-is": true,
         "react-transition-group": true
       }
     },
@@ -735,7 +735,7 @@
       "packages": {
         "@babel/runtime": true,
         "prop-types": true,
-        "react-redux>react-is": true
+        "@material-ui/core>@material-ui/utils>react-is": true
       }
     },
     "@metamask/abi-utils": {
@@ -2603,6 +2603,24 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary": true,
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true,
         "browserify>browser-resolve": true
+      }
+    },
+    "@tanstack/react-virtual": {
+      "globals": {
+        "document": true,
+        "scrollY": true
+      },
+      "packages": {
+        "@tanstack/react-virtual>@tanstack/virtual-core": true,
+        "react": true,
+        "react-dom": true
+      }
+    },
+    "@tanstack/react-virtual>@tanstack/virtual-core": {
+      "globals": {
+        "console.info": true,
+        "console.warn": true,
+        "requestAnimationFrame": true
       }
     },
     "@toruslabs/eccrypto": {
@@ -4732,12 +4750,27 @@
         "react": true
       }
     },
+    "@material-ui/core>react-is": {
+      "globals": {
+        "console": true
+      }
+    },
+    "@material-ui/core>@material-ui/utils>react-is": {
+      "globals": {
+        "console": true
+      }
+    },
     "react-redux>hoist-non-react-statics>react-is": {
       "globals": {
         "console": true
       }
     },
     "prop-types>react-is": {
+      "globals": {
+        "console": true
+      }
+    },
+    "react-markdown>react-is": {
       "globals": {
         "console": true
       }
@@ -4761,7 +4794,7 @@
         "prop-types": true,
         "react-markdown>property-information": true,
         "react": true,
-        "react-redux>react-is": true,
+        "react-markdown>react-is": true,
         "react-markdown>remark-parse": true,
         "react-markdown>remark-rehype": true,
         "react-markdown>space-separated-tokens": true,
