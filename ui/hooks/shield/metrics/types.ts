@@ -5,7 +5,11 @@ import {
   ModalType,
 } from '@metamask/subscription-controller';
 import { TransactionType } from '@metamask/transaction-controller';
-import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
+import {
+  EntryModalSourceEnum,
+  ShieldCtaActionClickedEnum,
+  ShieldCtaSourceEnum,
+} from '../../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../../shared/types';
 
 export type CaptureShieldEntryModalEventParams = {
@@ -127,3 +131,18 @@ export type CaptureShieldPaymentMethodUpdatedEventParams =
 
 export type CaptureShieldBillingHistoryOpenedEventParams =
   ExistingSubscriptionEventParams;
+
+export type CaptureShieldCtaClickedEventParams = {
+  source: ShieldCtaSourceEnum;
+
+  ctaActionClicked: ShieldCtaActionClickedEnum;
+
+  redirectToPage?: string;
+
+  redirectToUrl?: string;
+
+  /**
+   * The UTM ID used if source is marketing campaign
+   */
+  marketingUtmId?: string;
+};

@@ -13,6 +13,7 @@ import {
 } from '../../../../shared/modules/shield';
 import {
   CaptureShieldBillingHistoryOpenedEventParams,
+  CaptureShieldCtaClickedEventParams,
   CaptureShieldEntryModalEventParams,
   CaptureShieldMembershipCancelledEventParams,
   CaptureShieldPaymentMethodChangeEventParams,
@@ -22,6 +23,7 @@ import {
   CaptureShieldSubscriptionRestartRequestParams,
 } from './types';
 import {
+  formatCaptureShieldCtaClickedEventProps,
   formatCaptureShieldPaymentMethodChangeEventProps,
   formatDefaultShieldSubscriptionRequestEventProps,
   formatExistingSubscriptionEventProps,
@@ -253,6 +255,25 @@ export const useSubscriptionMetrics = () => {
     [trackEvent, selectedAccount, hdKeyingsMetadata],
   );
 
+  const captureShieldCtaClickedEvent = useCallback(
+    (params: CaptureShieldCtaClickedEventParams) => {
+      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+        selectedAccount,
+        hdKeyingsMetadata,
+      );
+      const formattedParams = formatCaptureShieldCtaClickedEventProps(params);
+      trackEvent({
+        event: MetaMetricsEventName.ShieldCtaClicked,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...userAccountTypeAndCategory,
+          ...formattedParams,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata],
+  );
+
   return {
     captureShieldEntryModalEvent,
     captureShieldSubscriptionRequestEvent,
@@ -262,5 +283,6 @@ export const useSubscriptionMetrics = () => {
     captureShieldPaymentMethodChangeEvent,
     captureShieldPaymentMethodRetriedEvent,
     captureShieldPaymentMethodUpdatedEvent,
+    captureShieldCtaClickedEvent,
   };
 };

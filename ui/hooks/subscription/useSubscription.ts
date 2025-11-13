@@ -172,6 +172,7 @@ export const useCancelSubscription = (subscription?: Subscription) => {
       }
       const subscriptionId = subscription.id;
       await dispatch(cancelSubscription({ subscriptionId }));
+      trackMembershipCancelledEvent('succeeded');
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';

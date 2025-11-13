@@ -3,6 +3,7 @@ import {
   getBillingIntervalForMetrics,
 } from '../../../../shared/modules/shield';
 import {
+  CaptureShieldCtaClickedEventParams,
   CaptureShieldPaymentMethodChangeEventParams,
   CaptureShieldSubscriptionRequestParams,
   ExistingSubscriptionEventParams,
@@ -109,5 +110,21 @@ export function formatCaptureShieldPaymentMethodChangeEventProps(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     new_crypto_payment_chain: params.newCryptoPaymentChain,
+  };
+}
+
+export function formatCaptureShieldCtaClickedEventProps(
+  params: CaptureShieldCtaClickedEventParams,
+) {
+  return {
+    source: params.source,
+    page: params.redirectToPage,
+    url: params.redirectToUrl,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    cta_action_clicked: params.ctaActionClicked,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    marketing_utm_id: params.marketingUtmId,
   };
 }

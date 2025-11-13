@@ -65,6 +65,11 @@ import { SubmitClaimError } from '../claim-error';
 import AccountSelector from '../account-selector';
 import NetworkSelector from '../network-selector';
 import { getValidSubmissionWindowDays } from '../../../../selectors/shield/claims';
+import { useSubscriptionMetrics } from '../../../../hooks/shield/metrics/useSubscriptionMetrics';
+import {
+  ShieldCtaActionClickedEnum,
+  ShieldCtaSourceEnum,
+} from '../../../../../shared/constants/subscriptions';
 import {
   ERROR_MESSAGE_MAP,
   FIELD_ERROR_MESSAGE_KEY_MAP,
@@ -79,6 +84,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const navigate = useNavigate();
   const { refetchClaims, pendingClaims } = useClaims();
   const validSubmissionWindowDays = useSelector(getValidSubmissionWindowDays);
+  const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
   const [isSubmittingClaim, setIsSubmittingClaim] = useState(false);
 
   const {
@@ -301,9 +307,13 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   );
 
   const handleOpenActivityTab = useCallback(async () => {
+    captureShieldCtaClickedEvent({
+      source: ShieldCtaSourceEnum.Settings,
+      ctaActionClicked: ShieldCtaActionClickedEnum.FindingTxHash,
+    });
     dispatch(setDefaultHomeActiveTabName('activity'));
     navigate(DEFAULT_ROUTE);
-  }, [dispatch, navigate]);
+  }, [dispatch, navigate, captureShieldCtaClickedEvent]);
 
   const handleSubmitClaim = useCallback(async () => {
     if (isInvalidData) {
