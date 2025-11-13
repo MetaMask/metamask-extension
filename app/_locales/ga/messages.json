@@ -3701,13 +3701,6 @@
   "network": {
     "message": "Líonra"
   },
-  "networkAddress": {
-    "message": "1 seoladh líonra"
-  },
-  "networkAddresses": {
-    "message": "Seoltaí líonra $1",
-    "description": "$1 is the number of accounts"
-  },
   "networkChanged": {
     "message": "Athraíodh an líonra"
   },
