@@ -39,7 +39,7 @@ import {
   BorderRadius,
   TextColor as DsTextColor,
 } from '../../../../helpers/constants/design-system';
-import { useClaimState } from '../../../../hooks/claims/useClaimState';
+import { useClaimState } from '../../../../hooks/shield/useClaimState';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';

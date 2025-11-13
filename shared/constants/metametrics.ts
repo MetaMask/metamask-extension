@@ -976,6 +976,10 @@ export enum MetaMetricsEventName {
   RewardsAccountLinkingStarted = 'REWARDS_ACCOUNT_LINKING_STARTED',
   RewardsAccountLinkingCompleted = 'REWARDS_ACCOUNT_LINKING_COMPLETED',
   RewardsAccountLinkingFailed = 'REWARDS_ACCOUNT_LINKING_FAILED',
+  // Shield
+  ShieldEntryModal = 'Shield Entry Modal',
+  ShieldSubscriptionRequest = 'Shield Subscription Request',
+  ShieldSubscriptionRestartRequest = 'Shield Subscription Restart Request',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1041,6 +1045,7 @@ export enum MetaMetricsEventCategory {
   CrossChainSwaps = 'Cross Chain Swaps',
   PortStream = 'Port Stream',
   Rewards = 'Rewards',
+  Shield = 'Shield',
 }
 
 export enum MetaMetricsEventLinkType {

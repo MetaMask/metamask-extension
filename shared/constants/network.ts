@@ -285,8 +285,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
-// `DEPRECATED_NETWORKS` and optionally add network specific logic to
-// `ui/components/ui/deprecated-networks/deprecated-networks.js`.
+// `DEPRECATED_NETWORKS`
 export const DEPRECATED_NETWORKS = [
   CHAIN_IDS.GOERLI,
   CHAIN_IDS.ARBITRUM_GOERLI,

@@ -219,7 +219,11 @@ import {
 } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { getShieldGatewayConfig } from '../../shared/modules/shield';
+import {
+  captureShieldSubscriptionRequestEvent,
+  getShieldGatewayConfig,
+  updatePreferencesAndMetricsForShieldSubscription,
+} from '../../shared/modules/shield';
 import {
   HYPERLIQUID_ORIGIN,
   METAMASK_REFERRAL_CODE,
@@ -812,6 +816,11 @@ export default class MetamaskController extends EventEmitter {
           this.claimsController.fetchClaimsConfigurations().catch((err) => {
             log.error('Error fetching claims configurations', err);
           });
+          // update preferences and metrics optin status after shield subscription is active
+          updatePreferencesAndMetricsForShieldSubscription(
+            this.metaMetricsController,
+            this.preferencesController,
+          );
           this.shieldController.start();
         } else {
           this.shieldController.stop();
@@ -2942,9 +2951,13 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShieldEndingToastLastClickedOrClosed.bind(
           appStateController,
         ),
-
       setAppActiveTab:
         appStateController.setAppActiveTab.bind(appStateController),
+      setDefaultSubscriptionPaymentOptions:
+        appStateController.setDefaultSubscriptionPaymentOptions.bind(
+          appStateController,
+        ),
+
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -8549,27 +8562,66 @@ export default class MetamaskController extends EventEmitter {
    */
   async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
     const { isGasFeeSponsored, chainId } = transactionMeta;
+    const subscriptionControllerState = this.subscriptionController.state;
+    const { defaultSubscriptionPaymentOptions } = this.appStateController.state;
     const bundlerSupported = await isSendBundleSupported(chainId);
     const isSponsored = isGasFeeSponsored && bundlerSupported;
-    await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
-      transactionMeta,
-      isSponsored,
-    );
 
-    // Mark send/transfer/swap transactions for Shield post_tx cohort evaluation
-    const isPostTxTransaction = [
-      TransactionType.simpleSend,
-      TransactionType.tokenMethodTransfer,
-      TransactionType.swap,
-      TransactionType.swapAndSend,
-    ].includes(transactionMeta.type);
-
-    const { pendingShieldCohort } = this.appStateController.state;
-    if (isPostTxTransaction && !pendingShieldCohort) {
-      this.appStateController.setPendingShieldCohort(
-        COHORT_NAMES.POST_TX,
-        transactionMeta.type,
+    try {
+      // TODO: Move this to the subscription service once `submitShieldSubscriptionCryptoApproval` action is exported from the subscription controller
+      captureShieldSubscriptionRequestEvent(
+        subscriptionControllerState,
+        transactionMeta,
+        defaultSubscriptionPaymentOptions,
+        this.metaMetricsController,
+        'started',
+        {
+          has_sufficient_crypto_balance: true,
+        },
       );
+      await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
+        transactionMeta,
+        isSponsored,
+      );
+
+      // Mark send/transfer/swap transactions for Shield post_tx cohort evaluation
+      const isPostTxTransaction = [
+        TransactionType.simpleSend,
+        TransactionType.tokenMethodTransfer,
+        TransactionType.swap,
+        TransactionType.swapAndSend,
+      ].includes(transactionMeta.type);
+
+      const { pendingShieldCohort } = this.appStateController.state;
+      if (isPostTxTransaction && !pendingShieldCohort) {
+        this.appStateController.setPendingShieldCohort(
+          COHORT_NAMES.POST_TX,
+          transactionMeta.type,
+        );
+      }
+      captureShieldSubscriptionRequestEvent(
+        subscriptionControllerState,
+        transactionMeta,
+        defaultSubscriptionPaymentOptions,
+        this.metaMetricsController,
+        'completed',
+        {
+          gas_sponsored: isSponsored,
+        },
+      );
+    } catch (error) {
+      log.error('Error on Shield subscription approval transaction', error);
+      captureShieldSubscriptionRequestEvent(
+        subscriptionControllerState,
+        transactionMeta,
+        defaultSubscriptionPaymentOptions,
+        this.metaMetricsController,
+        'failed',
+        {
+          error_message: error.message,
+        },
+      );
+      throw error;
     }
   }
 
