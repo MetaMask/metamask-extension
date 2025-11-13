@@ -1,6 +1,6 @@
 import { SignatureRequest } from '@metamask/signature-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { CoverageStatus } from '@metamask/shield-controller';
@@ -212,28 +212,40 @@ export function useShieldCoverageAlert(): Alert[] {
     navigate(TRANSACTION_SHIELD_ROUTE);
   }, [navigate]);
 
-  // Only update fragments if shield coverage checks are enabled
-  if (isEnabled || isPaused) {
-    const properties = {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      shield_result: getShieldResult(status),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      shield_reason: modalBodyStr,
-    };
+  // Update metrics only when relevant values change
+  useEffect(() => {
+    // Only update fragments if shield coverage checks are enabled or paused
+    if (isEnabled || isPaused) {
+      const properties = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        shield_result: getShieldResult(status),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        shield_reason: modalBodyStr,
+      };
 
-    if (isSignatureTransactionType(currentConfirmation)) {
-      updateSignatureEventFragment({
-        properties,
-      });
-    } else {
-      updateTransactionEventFragment(
-        {
+      if (isSignatureTransactionType(currentConfirmation)) {
+        updateSignatureEventFragment({
           properties,
-        },
-        id,
-      );
+        });
+      } else {
+        updateTransactionEventFragment(
+          {
+            properties,
+          },
+          id,
+        );
+      }
     }
-  }
+  }, [
+    status,
+    modalBodyStr,
+    isEnabled,
+    isPaused,
+    currentConfirmation,
+    id,
+    updateSignatureEventFragment,
+    updateTransactionEventFragment,
+  ]);
 
   return useMemo<Alert[]>((): Alert[] => {
     if (!showAlert) {
