@@ -37,6 +37,7 @@ import type {
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { BridgeToken } from '../../ducks/bridge/types';
+import { isTronEnergyOrBandwidthResource } from '../../ducks/bridge/utils';
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
 const buildTokenData = (
@@ -260,11 +261,7 @@ export const useTokensWithFiltering = (
         for (const token of multichainTokensWithBalance) {
           // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
           // as they are not tradeable assets
-          if (
-            token.chainId?.includes('tron:') &&
-            (token.symbol?.toUpperCase().includes('ENERGY') ||
-              token.symbol?.toUpperCase().includes('BANDWIDTH'))
-          ) {
+          if (isTronEnergyOrBandwidthResource(token.chainId, token.symbol)) {
             continue;
           }
           if (shouldAddToken(token.symbol, token.address, token.chainId)) {
@@ -334,11 +331,7 @@ export const useTokensWithFiltering = (
           // as they are not tradeable assets
           if (
             token &&
-            !(
-              chainId?.toString().includes('tron:') &&
-              (token.symbol?.toUpperCase().includes('ENERGY') ||
-                token.symbol?.toUpperCase().includes('BANDWIDTH'))
-            ) &&
+            !isTronEnergyOrBandwidthResource(chainId, token.symbol) &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
             yield token;
@@ -355,11 +348,7 @@ export const useTokensWithFiltering = (
           if (
             token &&
             token.symbol.indexOf('$') === -1 &&
-            !(
-              chainId?.toString().includes('tron:') &&
-              (token.symbol?.toUpperCase().includes('ENERGY') ||
-                token.symbol?.toUpperCase().includes('BANDWIDTH'))
-            ) &&
+            !isTronEnergyOrBandwidthResource(chainId, token.symbol) &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
             yield token;

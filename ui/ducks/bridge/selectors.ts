@@ -126,7 +126,9 @@ const getNonEvmNativeAssetType = (
   }
   if (isTronChainId(chainId)) {
     // Tron bridge only supports mainnet
-    return MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.TRX;
+    return isNativeAddress(address)
+      ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.TRX
+      : (assetId ?? address);
   }
   return assetId ?? address;
 };
