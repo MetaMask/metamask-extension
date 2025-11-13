@@ -97,10 +97,22 @@ export function normalizeMessage(message: string): string {
       /chrome-extension:\/\/[a-z]{32}\//giu,
       'chrome-extension://<EXTENSION_ID>/',
     )
-    // Collapse translator warnings - normalize locale and key names
+    // Replace Solana addresses (base58, typically 32-44 characters)
+    .replace(/\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/gu, '<SOLANA_ADDRESS>')
+    // Collapse all translator warnings (repeated or not) into a single pattern
     .replace(
-      /Translator - Unable to find value of key "[^"]+" for locale "[^"]+"/gu,
-      'Translator - Unable to find value of key "<KEY>" for locale "<LOCALE>"',
+      /(?:Translator - Unable to find value of key "[^"]+" for locale "[^"]+"\s*)+/gu,
+      'Translator - Unable to find value of key "<KEY>" for locale "<LOCALE>" [repeated]',
+    )
+    // Collapse repeated Solana balance/decimals errors
+    .replace(
+      /(?:Could not find (?:balances for account|balance for asset): [^\s]+(?:, [^\s]+)*\s*)+/gu,
+      'Could not find balance/decimals for Solana account/asset [repeated]',
+    )
+    // Collapse repeated ObjectMultiplex orphaned data warnings
+    .replace(
+      /(?:ObjectMultiplex - orphaned data for stream "[^"]+"\s*)+/gu,
+      'ObjectMultiplex - orphaned data for stream "<STREAM>" [repeated]',
     )
     // Replace webpack chunk filenames with hashes (common-abc123.js, bootstrap.xyz789.js, etc.)
     .replace(/\/[a-z-]+[.-][0-9a-f]{8,}\.js/giu, '/<CHUNK_FILE>')
