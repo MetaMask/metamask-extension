@@ -38,7 +38,7 @@ describe('AccountGroupBalanceChange', () => {
 
   const renderComponent = () =>
     renderWithProvider(
-      <AccountGroupBalanceChange period="1d" portfolioButton={() => null} />,
+      <AccountGroupBalanceChange period="1d" trailingChild={() => null} />,
       mockStore,
     );
 

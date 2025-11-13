@@ -256,6 +256,11 @@ const createMockState = (overrides = {}) => {
       defaultHomeActiveTabName: 'activity',
       ...overrides,
     },
+    activeTab: {
+      origin: 'https://test-dapp.com',
+      protocol: 'https:',
+      url: 'https://test-dapp.com',
+    },
   };
 };
 

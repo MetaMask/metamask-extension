@@ -66,14 +66,20 @@ describe('Preinstalled example Snap', function () {
         await navigateToPreInstalledExample(driver);
 
         await preInstalledExample.clickToggleButtonOn();
+        // TODO: Remove this when the race condition is fixed in the Snap.
+        await driver.delay(largeDelayMs);
+
         await preInstalledExample.selectRadioOption('Option 2');
+        // TODO: Remove this when the race condition is fixed in the Snap.
+        await driver.delay(largeDelayMs);
+
         await preInstalledExample.selectDropdownOption('Option 2');
+        // TODO: Remove this when the race condition is fixed in the Snap.
+        await driver.delay(largeDelayMs);
+
         await preInstalledExample.checkIsToggleOn();
-        assert.equal(
-          await preInstalledExample.checkSelectedRadioOption('Option 2'),
-          true,
-        );
-        await preInstalledExample.checkSelectedDropdownOption('Option 2');
+        await preInstalledExample.checkSelectedRadioOption('option2');
+        await preInstalledExample.checkSelectedDropdownOption('option2');
         await driver.clickElement(
           '.settings-page__header__title-container__close-button',
         );
@@ -84,7 +90,11 @@ describe('Preinstalled example Snap', function () {
         await testSnaps.openPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.clickButton('getSettingsStateButton');
-        const jsonTextValidation = '"setting1": true';
+        const jsonTextValidation = JSON.stringify(
+          { setting1: true, setting2: 'option2', setting3: 'option2' },
+          null,
+          2,
+        );
         await testSnaps.checkMessageResultSpan(
           'rpcResultSpan',
           jsonTextValidation,
@@ -146,7 +156,7 @@ describe('Preinstalled example Snap', function () {
         await driver.wait(async () => {
           const isPending = await mockedEndpoint.isPending();
           return isPending === false;
-        }, largeDelayMs);
+        }, 5000);
 
         const requests = await mockedEndpoint.getSeenRequests();
         assert.equal(requests.length, 1, 'Expected one request to Sentry.');
@@ -186,7 +196,7 @@ describe('Preinstalled example Snap', function () {
         await driver.wait(async () => {
           const isPending = await mockedEndpoint.isPending();
           return isPending === false;
-        }, largeDelayMs);
+        }, 5000);
 
         const requests = await mockedEndpoint.getSeenRequests();
         assert.equal(requests.length, 1, 'Expected one request to Segment.');
@@ -230,7 +240,7 @@ describe('Preinstalled example Snap', function () {
         await driver.wait(async () => {
           const isPending = await mockedEndpoint.isPending();
           return isPending === false;
-        }, largeDelayMs);
+        }, 5000);
 
         const requests = await mockedEndpoint.getSeenRequests();
         assert.equal(requests.length, 1, 'Expected one request to Sentry.');

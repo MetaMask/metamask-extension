@@ -49,6 +49,7 @@ export function getSnapKeyringBuilderMessenger(
       'SnapController:get',
       'SnapController:isMinimumPlatformVersion',
       'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
     ],
   });
   return keyringMessenger;

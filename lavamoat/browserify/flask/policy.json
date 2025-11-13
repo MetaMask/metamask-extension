@@ -852,7 +852,7 @@
         "lodash": true,
         "@metamask/assets-controllers>multiformats": true,
         "reselect": true,
-        "single-call-balance-checker-abi": true,
+        "@metamask/assets-controllers>single-call-balance-checker-abi": true,
         "uuid": true
       }
     },
@@ -1021,6 +1021,13 @@
         "@metamask/utils": true,
         "lodash": true,
         "uuid": true
+      }
+    },
+    "@metamask/eip-7702-internal-rpc-middleware": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/ens-controller": {
@@ -1303,6 +1310,10 @@
       }
     },
     "@metamask/gator-permissions-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/delegation-core": true,
@@ -1982,7 +1993,8 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "@metamask/transaction-controller": true
+        "@metamask/transaction-controller": true,
+        "@metamask/subscription-controller>bignumber.js": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": {
@@ -2229,6 +2241,68 @@
         "URLSearchParams": true,
         "console": true,
         "document.defaultView": true
+      }
+    },
+    "@rive-app/react-canvas>@rive-app/canvas": {
+      "globals": {
+        "AudioContext": false,
+        "Blob": true,
+        "DOMMatrix": false,
+        "FinalizationRegistry": false,
+        "HTMLCanvasElement": true,
+        "Image": true,
+        "Iterator": false,
+        "MouseEvent": false,
+        "Path2D": true,
+        "Request": true,
+        "ResizeObserver": false,
+        "TextDecoder": true,
+        "URL.createObjectURL": true,
+        "URL.revokeObjectURL": true,
+        "WebAssembly": true,
+        "XMLHttpRequest": false,
+        "cancelAnimationFrame": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "crypto": false,
+        "define": false,
+        "devicePixelRatio": false,
+        "document": false,
+        "document.createElement": true,
+        "fetch": false,
+        "h": false,
+        "importScripts": false,
+        "location.href": false,
+        "navigator": false,
+        "navigator.userAgent": true,
+        "performance.now": true,
+        "prompt": false,
+        "readline": false,
+        "requestAnimationFrame": true,
+        "setTimeout": true,
+        "webkitAudioContext": false
+      }
+    },
+    "@rive-app/react-canvas": {
+      "globals": {
+        "IntersectionObserver": false,
+        "ResizeObserver": false,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "devicePixelRatio": false,
+        "document.documentElement.clientHeight": true,
+        "document.documentElement.clientWidth": true,
+        "innerHeight": false,
+        "innerWidth": false,
+        "matchMedia": false,
+        "removeEventListener": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@rive-app/react-canvas>@rive-app/canvas": true,
+        "react": true
       }
     },
     "@metamask/eth-sig-util>@scure/base": {
@@ -2931,6 +3005,12 @@
       }
     },
     "@metamask/smart-transactions-controller>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "@metamask/subscription-controller>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true

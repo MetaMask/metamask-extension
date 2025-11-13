@@ -129,10 +129,10 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
                 >
                   <div
-                    class="flex flex-row"
+                    class="flex flex-row min-w-0"
                   >
                     <div
-                      class="flex flex-row gap-2"
+                      class="flex flex-row gap-2 min-w-0"
                     >
                       <div
                         class="token-cell-title--ellipsis"

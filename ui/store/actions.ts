@@ -174,6 +174,15 @@ import {
   ClaimSubmitToastType,
   type NetworkConnectionBanner,
 } from '../../shared/constants/app-state';
+import {
+  SeasonDtoState,
+  SeasonStatusState,
+  EstimatePointsDto,
+  EstimatedPointsDto,
+} from '../../shared/types/rewards';
+import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
+import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
+import { loadShieldConfig } from '../../shared/modules/shield';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -630,7 +639,6 @@ export function restoreSocialBackupAndGetSeedPhrase(
       await forceUpdateMetamaskState(dispatch);
       return mnemonic;
     } catch (error) {
-      log.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
       dispatch(displayWarning(error.message));
       throw error;
     }
@@ -740,7 +748,15 @@ export function tryUnlockMetamask(
 export function checkIsSeedlessPasswordOutdated(
   skipCache = true,
 ): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
+    const isSocialLoginFlow = getIsSocialLoginFlow(getState());
+    if (!isSocialLoginFlow) {
+      return false;
+    }
+
     let isPasswordOutdated = false;
     try {
       isPasswordOutdated = await submitRequestToBackground<boolean>(
@@ -4409,6 +4425,28 @@ export function resetOnboardingAction() {
   };
 }
 
+/**
+ * Reset the wallet
+ *
+ * @returns void
+ */
+export function resetWallet() {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      // reset onboarding
+      await dispatch(resetOnboarding());
+
+      await submitRequestToBackground('resetWallet');
+
+      // force update metamask state
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error('resetWallet error', error);
+      throw error;
+    }
+  };
+}
+
 export function setServiceWorkerKeepAlivePreference(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -6067,23 +6105,6 @@ export async function tokenRatesStopPollingByPollingToken(
 }
 
 /**
- * Starts polling on accountTrackerController with the networkClientId
- *
- * @param networkClientId - The network client ID to pull balances for.
- * @returns polling token used to stop polling
- */
-export async function accountTrackerStartPolling(
-  networkClientId: string,
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'accountTrackerStartPolling',
-    [networkClientId],
-  );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
  * Stops polling on the account tracker controller.
  *
  * @param pollingToken - polling token to use to stop polling.
@@ -6631,6 +6652,81 @@ export function cancelQrCodeScan(): ThunkAction<
 > {
   return async () => {
     await submitRequestToBackground('cancelQrCodeScan');
+  };
+}
+
+// Rewards
+
+export function getRewardsHasAccountOptedIn(
+  account: CaipAccountId,
+): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    return await submitRequestToBackground<boolean>(
+      'getRewardsHasAccountOptedIn',
+      [account],
+    );
+  };
+}
+
+export function getRewardsCandidateSubscriptionId(): ThunkAction<
+  Promise<string | null>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<string | null>(
+      'getRewardsCandidateSubscriptionId',
+    );
+  };
+}
+
+export function getRewardsSeasonMetadata(
+  type?: 'current' | 'next',
+): ThunkAction<
+  Promise<SeasonDtoState>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<SeasonDtoState>(
+      'getRewardsSeasonMetadata',
+      type ? [type] : [],
+    );
+  };
+}
+
+export function getRewardsSeasonStatus(
+  subscriptionId: string,
+  seasonId: string,
+): ThunkAction<
+  Promise<SeasonStatusState>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<SeasonStatusState>(
+      'getRewardsSeasonStatus',
+      [subscriptionId, seasonId],
+    );
+  };
+}
+
+export function estimateRewardsPoints(
+  request: EstimatePointsDto,
+): ThunkAction<
+  Promise<EstimatedPointsDto>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<EstimatedPointsDto>(
+      'estimateRewardsPoints',
+      [request],
+    );
   };
 }
 
@@ -7576,6 +7672,8 @@ export async function getLayer1GasFeeValue({
   ]);
 }
 
+const shieldConfig = loadShieldConfig();
+
 /**
  * Submits a shield claim.
  *
@@ -7598,9 +7696,7 @@ export async function submitShieldClaim(params: {
   caseDescription: string;
   files?: FileList;
 }) {
-  const baseUrl =
-    process.env.SHIELD_CLAIMS_API_URL ??
-    'https://claims.dev-api.cx.metamask.io';
+  const baseUrl = shieldConfig.claimUrl;
 
   const claimsUrl = `${baseUrl}/claims`;
   const formData = new FormData();
@@ -7629,22 +7725,52 @@ export async function submitShieldClaim(params: {
 
   const accessToken = await submitRequestToBackground<string>('getBearerToken');
 
-  // we do the request here instead of background controllers because files are not serializable
-  const response = await fetch(claimsUrl, {
-    method: 'POST',
-    body: formData,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  try {
+    // we do the request here instead of background controllers because files are not serializable
+    const response = await fetch(claimsUrl, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-  if (!response.ok) {
-    const errorMessage = await response.json();
-    if (errorMessage.message) {
-      throw new Error(errorMessage.message);
+    if (!response.ok) {
+      const error = (await response.json()) as SubmitClaimErrorResponse;
+      if (error?.errorCode) {
+        throw new SubmitClaimError(error.message, error);
+      }
+      throw new SubmitClaimError(ClaimSubmitToastType.Errored);
     }
-    throw new Error(ClaimSubmitToastType.Errored);
-  }
 
-  return ClaimSubmitToastType.Success;
+    return ClaimSubmitToastType.Success;
+  } catch (error) {
+    console.error(error);
+    throw new SubmitClaimError(ClaimSubmitToastType.Errored);
+  }
+}
+
+export async function getShieldClaims() {
+  const baseUrl = shieldConfig.claimUrl;
+
+  const claimsUrl = `${baseUrl}/claims`;
+  const accessToken = await submitRequestToBackground<string>('getBearerToken');
+
+  try {
+    const response = await fetch(claimsUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json();
+      throw new Error(errorBody.error || 'Failed to get shield claims');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to get shield claims:', error);
+    throw error;
+  }
 }

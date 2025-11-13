@@ -20,6 +20,10 @@ jest.mock('../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
 }));
 
+jest.mock('./hooks/useBatchApproveBalanceChanges', () => ({
+  useBatchApproveBalanceChanges: jest.fn(),
+}));
+
 jest.mock(
   '../../../../../components/app/alert-system/contexts/alertMetricsContext',
   () => ({
