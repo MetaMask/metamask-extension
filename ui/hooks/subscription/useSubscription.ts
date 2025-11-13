@@ -469,7 +469,7 @@ export const useHandleSubscription = ({
       // Shield subscription metrics requests can use them for the metrics capture
       // and also the background app state controller can use them for the metrics capture
       await dispatch(setDefaultSubscriptionPaymentOptions(defaultOptions));
-      setShieldSubscriptionMetricsPropsToBackground({
+      await setShieldSubscriptionMetricsPropsToBackground({
         source: determineSubscriptionRequestSource(),
         marketingUtmId: getMarketingUtmId(),
       });

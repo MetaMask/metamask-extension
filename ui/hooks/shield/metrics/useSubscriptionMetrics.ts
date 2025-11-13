@@ -54,8 +54,11 @@ export const useSubscriptionMetrics = () => {
    * @param props.source - The source of the Shield subscription metrics.
    */
   const setShieldSubscriptionMetricsPropsToBackground = useCallback(
-    (props: { marketingUtmId?: string; source: EntryModalSourceEnum }) => {
-      dispatch(
+    async (props: {
+      marketingUtmId?: string;
+      source: EntryModalSourceEnum;
+    }) => {
+      await dispatch(
         setShieldSubscriptionMetricsProps({
           marketingUtmId: props.marketingUtmId,
           source: props.source,
