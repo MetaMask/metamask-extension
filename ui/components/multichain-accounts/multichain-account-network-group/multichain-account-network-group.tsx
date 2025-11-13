@@ -1,9 +1,16 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
-import { Box } from '@metamask/design-system-react';
-import { AvatarGroup } from '../../multichain/avatar-group';
-import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
+import {
+  AvatarBaseSize,
+  AvatarGroup,
+  AvatarGroupVariant,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
@@ -135,13 +142,18 @@ export const MultichainAccountNetworkGroup: React.FC<
           }
         }
         return {
-          avatarValue:
-            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-              hexChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-            ],
+          src: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+            hexChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+          ],
+          imageProps: {
+            style: {
+              borderRadius: '2px',
+            },
+            className: 'rounded bg-default border-default align-middle',
+          },
         };
       })
-      .filter((network) => network.avatarValue); // Only include networks with valid avatar images
+      .filter((network) => network.src); // Only include networks with valid avatar images
   }, [filteredChainIds, excludeTestNetworks]);
 
   return (
@@ -150,12 +162,24 @@ export const MultichainAccountNetworkGroup: React.FC<
         flexShrink: 1,
         width: 'fit-content',
       }}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
     >
       <AvatarGroup
-        limit={limit}
-        members={networkData}
-        avatarType={AvatarType.NETWORK}
+        max={limit}
+        size={AvatarBaseSize.Xs}
+        avatarPropsArr={networkData}
+        variant={AvatarGroupVariant.Network}
         className={className}
+        overflowTextProps={{
+          style: {
+            marginLeft: '4px',
+          },
+          className: 'bg-transparent text-alternative',
+          fallbackTextProps: {
+            color: TextColor.TextAlternative,
+          },
+        }}
       />
     </Box>
   );
