@@ -5753,15 +5753,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/browser-passworder@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "@metamask/browser-passworder@npm:4.3.0"
-  dependencies:
-    "@metamask/utils": "npm:^8.2.0"
-  checksum: 10/8ba5c50cd6274b0cc0f90a1ee16b960ee150f14c29083f3515f4abe018a28ead32c21f5f4a62a6e27a946b1228adc2ff1f195e71e38782fa39fa8fff116173e6
-  languageName: node
-  linkType: hard
-
 "@metamask/browser-passworder@npm:^6.0.0":
   version: 6.0.0
   resolution: "@metamask/browser-passworder@npm:6.0.0"
@@ -6736,13 +6727,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@24.0.0-preview-cb2e5c04":
-  version: 24.0.0-preview-cb2e5c04
-  resolution: "@metamask-previews/keyring-controller@npm:24.0.0-preview-cb2e5c04"
+"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@24.0.0-preview-20df3e99":
+  version: 24.0.0-preview-20df3e99
+  resolution: "@metamask-previews/keyring-controller@npm:24.0.0-preview-20df3e99"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/browser-passworder": "npm:^4.3.0"
+    "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/eth-hd-keyring": "npm:^13.0.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-simple-keyring": "npm:^11.0.0"
@@ -6755,7 +6746,7 @@ __metadata:
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
     ulid: "npm:^2.3.0"
-  checksum: 10/51c936cc4097605ab4daf422c0564449a0d7b31e0a02b7dfdc7b7969b0a598d52d657b68770afb9850507dad129824feed7c15814ae157731bcd74bbce4716eb
+  checksum: 10/f5332805b9ff74cefeae49b5b3b4cf9b6b1617535e78f30e052ccf79a8eaff9cef49527873b28f0249cd6528f3a823c4b9e1e4b3b1124854886eb8ace1540372
   languageName: node
   linkType: hard
 
@@ -8113,7 +8104,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^8.1.0, @metamask/utils@npm:^8.2.0, @metamask/utils@npm:^8.3.0":
+"@metamask/utils@npm:^8.1.0, @metamask/utils@npm:^8.3.0":
   version: 8.5.0
   resolution: "@metamask/utils@npm:8.5.0"
   dependencies:
