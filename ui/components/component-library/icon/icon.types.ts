@@ -201,6 +201,7 @@ export enum IconName {
   Plug = 'plug',
   PlusAndMinus = 'plus-and-minus',
   PolicyAlert = 'policy-alert',
+  Popup = 'popup',
   Print = 'print',
   PriorityHigh = 'priority-high',
   PrivacyTip = 'privacy-tip',
