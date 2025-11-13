@@ -379,10 +379,11 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
           );
         }
 
-        // HACK: This account name we have might have conflicts (race-condition), and
-        // we still have unique names constraint on the `AccountsController`, so for
-        // now, we just omit renaming the account since those names are no longer in use
-        // with the multichain accounts new state 2 UI.
+        // HACK: In state 2, account creations can run in parallel, thus, `accountName`
+        // sometimes conflict with other concurrent renaming. Since we don't rely on those
+        // account names anymore, we just omit this part and make this race-free.
+        // FIXME: We still rely on the old behavior in some e2e, so we cannot remove this
+        // entirely.
         if (!this.#isMultichainAccountsFeatureState2Enabled()) {
           if (accountName) {
             this.#messenger.call(
