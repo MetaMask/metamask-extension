@@ -5,8 +5,8 @@ import {
   formatChainIdToCaip,
   isNativeAddress,
 } from '@metamask/bridge-controller';
+import { handleFetch } from '@metamask/controller-utils';
 import { isEvmChainId, toAssetId } from '../../shared/lib/asset-utils';
-import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { formatCompactCurrency } from '../helpers/utils/token-insights';
 import { useFormatters } from './useFormatters';
 import {
@@ -45,7 +45,9 @@ jest.mock('../../shared/lib/asset-utils', () => ({
   toAssetId: jest.fn(),
 }));
 
-jest.mock('../../shared/lib/fetch-with-cache');
+jest.mock('@metamask/controller-utils', () => ({
+  handleFetch: jest.fn(),
+}));
 
 jest.mock('./useFormatters', () => ({
   useFormatters: jest.fn(),
@@ -60,7 +62,7 @@ const mockIsEvmChainId = isEvmChainId as jest.Mock;
 const mockIsNativeAddress = isNativeAddress as jest.Mock;
 const mockFormatChainIdToCaip = formatChainIdToCaip as jest.Mock;
 const mockToAssetId = toAssetId as jest.Mock;
-const mockFetchWithCache = fetchWithCache as jest.Mock;
+const mockHandleFetch = handleFetch as jest.Mock;
 const mockUseFormatters = useFormatters as jest.Mock;
 const mockFormatCompactCurrency = formatCompactCurrency as jest.Mock;
 
@@ -135,7 +137,7 @@ describe('useTokenInsightsData', () => {
         dilutedMarketCap: 55000000,
       });
       expect(result.current.error).toBe(null);
-      expect(mockFetchWithCache).not.toHaveBeenCalled();
+      expect(mockHandleFetch).not.toHaveBeenCalled();
     });
 
     it('should convert EVM token prices to fiat', () => {
@@ -221,7 +223,7 @@ describe('useTokenInsightsData', () => {
         },
       };
 
-      mockFetchWithCache.mockResolvedValue(apiResponse);
+      mockHandleFetch.mockResolvedValue(apiResponse);
 
       const { result } = renderHook(() => useTokenInsightsData(defaultToken));
 
@@ -238,16 +240,15 @@ describe('useTokenInsightsData', () => {
         dilutedMarketCap: 80000000,
       });
 
-      expect(mockFetchWithCache).toHaveBeenCalledWith({
-        url: expect.stringContaining(
+      expect(mockHandleFetch).toHaveBeenCalledWith(
+        expect.stringContaining(
           'https://price.api.cx.metamask.io/v3/spot-prices',
         ),
-        cacheOptions: { cacheRefreshTime: 30000 },
-        functionName: 'fetchTokenInsightsData',
-        fetchOptions: {
+        {
+          method: 'GET',
           headers: { 'X-Client-Id': 'extension' },
         },
-      });
+      );
     });
 
     it('should use direct values for non-EVM tokens without conversion', async () => {
@@ -264,7 +265,7 @@ describe('useTokenInsightsData', () => {
         },
       };
 
-      mockFetchWithCache.mockResolvedValue(apiResponse);
+      mockHandleFetch.mockResolvedValue(apiResponse);
 
       const { result } = renderHook(() => useTokenInsightsData(defaultToken));
 
@@ -332,7 +333,7 @@ describe('useTokenInsightsData', () => {
         .mockReturnValueOnce(defaultCurrencyRates) // getCurrencyRates
         .mockReturnValueOnce(null); // getMarketData
 
-      mockFetchWithCache.mockRejectedValue(new Error('Network error'));
+      mockHandleFetch.mockRejectedValue(new Error('Network error'));
 
       const { result } = renderHook(() => useTokenInsightsData(defaultToken));
 
@@ -350,7 +351,7 @@ describe('useTokenInsightsData', () => {
         .mockReturnValueOnce(defaultCurrencyRates) // getCurrencyRates
         .mockReturnValueOnce(null); // getMarketData
 
-      mockFetchWithCache.mockResolvedValue({});
+      mockHandleFetch.mockResolvedValue({});
 
       const { result } = renderHook(() => useTokenInsightsData(defaultToken));
 
@@ -368,16 +369,16 @@ describe('useTokenInsightsData', () => {
         .mockReturnValueOnce(defaultCurrencyRates) // getCurrencyRates
         .mockReturnValueOnce(null); // getMarketData
 
-      mockFetchWithCache.mockResolvedValue({});
+      mockHandleFetch.mockResolvedValue({});
 
       renderHook(() => useTokenInsightsData(defaultToken));
 
       await waitFor(() => {
-        expect(mockFetchWithCache).toHaveBeenCalled();
+        expect(mockHandleFetch).toHaveBeenCalled();
       });
 
-      const callArgs = mockFetchWithCache.mock.calls[0][0];
-      expect(callArgs.url).toContain('vsCurrency=eur');
+      const callArgs = mockHandleFetch.mock.calls[0][0];
+      expect(callArgs).toContain('vsCurrency=eur');
     });
   });
 
@@ -435,7 +436,7 @@ describe('useTokenInsightsData', () => {
       expect(result.current.isLoading).toBe(false);
       expect(result.current.error).toBe(null);
       expect(result.current.isNativeToken).toBe(false);
-      expect(mockFetchWithCache).not.toHaveBeenCalled();
+      expect(mockHandleFetch).not.toHaveBeenCalled();
     });
 
     it('should handle token without address', () => {
@@ -485,7 +486,7 @@ describe('useTokenInsightsData', () => {
 
       renderHook(() => useTokenInsightsData(defaultToken));
 
-      expect(mockFetchWithCache).not.toHaveBeenCalled();
+      expect(mockHandleFetch).not.toHaveBeenCalled();
     });
 
     it('should handle zero price change', async () => {
@@ -503,7 +504,7 @@ describe('useTokenInsightsData', () => {
         },
       };
 
-      mockFetchWithCache.mockResolvedValue(apiResponse);
+      mockHandleFetch.mockResolvedValue(apiResponse);
 
       const { result } = renderHook(() => useTokenInsightsData(defaultToken));
 
