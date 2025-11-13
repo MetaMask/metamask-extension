@@ -226,9 +226,6 @@
   "etherscanView": {
     "message": "መለያውን በ Etherscan ላይ ይመልከቱ"
   },
-  "expandView": {
-    "message": "እይታን ዘርጋ"
-  },
   "failed": {
     "message": "አልተሳካም"
   },

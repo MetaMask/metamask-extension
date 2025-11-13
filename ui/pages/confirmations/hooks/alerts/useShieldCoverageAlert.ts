@@ -25,62 +25,6 @@ const getModalBodyStr = (reasonCode: string | undefined) => {
   // grouping codes with a fallthrough pattern is not allowed by the linter
   let modalBodyStr: string;
   switch (reasonCode) {
-    // Local setup
-    case 'E104':
-      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
-      break;
-    // Sender type not supported
-    case 'E200':
-      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
-      break;
-    // Receiver type not supported
-    case 'E300':
-      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
-      break;
-    // Transaction type not supported
-    case 'E400':
-      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
-      break;
-    // Transaction to not supported
-    case 'E401':
-      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
-      break;
-    // Malicious domain
-    case 'E101':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Risky domain
-    case 'E102':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Scan origin error
-    case 'E103':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Receiver contract malicious
-    case 'E301':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Receiver contract risky
-    case 'E302':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Method params contract malicious
-    case 'E500':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Method params contract unknown
-    case 'E501':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Malicious token contract
-    case 'E600':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Risky token contract
-    case 'E601':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
     // Invalid blockaid result
     case 'E001':
       modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
@@ -107,11 +51,71 @@ const getModalBodyStr = (reasonCode: string | undefined) => {
       break;
     // Unknown error
     case 'E007':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      modalBodyStr = 'shieldCoverageAlertMessageUnknown';
       break;
     // Unsupported chain id
     case 'E008':
       modalBodyStr = 'shieldCoverageAlertMessageChainNotSupported';
+      break;
+    // Malicious domain
+    case 'E101':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Risky domain
+    case 'E102':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Scan origin error
+    case 'E103':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Local setup
+    case 'E104':
+      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
+      break;
+    // Sender type not supported
+    case 'E200':
+      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
+      break;
+    // Receiver type not supported
+    case 'E300':
+      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
+      break;
+    // Receiver contract malicious
+    case 'E301':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Receiver contract risky
+    case 'E302':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Transaction type not supported
+    case 'E400':
+      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
+      break;
+    // Transaction to not supported
+    case 'E401':
+      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
+      break;
+    // Transaction decoding failed
+    case 'E402':
+      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
+      break;
+    // Method params contract malicious
+    case 'E500':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Method params contract unknown
+    case 'E501':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Malicious token contract
+    case 'E600':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Risky token contract
+    case 'E601':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
       break;
     // Signature method not supported
     case 'E700':
@@ -128,6 +132,22 @@ const getModalBodyStr = (reasonCode: string | undefined) => {
     // SIWE account mismatch
     case 'E703':
       modalBodyStr = 'shieldCoverageAlertMessageSignatureNotSupported';
+      break;
+    // malicious token receiver contract in swap
+    case 'E800':
+      modalBodyStr = 'shieldCoverageAlertHighRiskTransaction';
+      break;
+    // token shows potential malicious behavior
+    case 'E801':
+      modalBodyStr = 'shieldCoverageAlertMessageTokenTrustSignalWarning';
+      break;
+    // invalid sentinel result for token check
+    case 'E802':
+      modalBodyStr = 'shieldCoverageAlertMessageUnknown';
+      break;
+    // invalid sentinel result
+    case 'E803':
+      modalBodyStr = 'shieldCoverageAlertMessageUnknown';
       break;
     default:
       modalBodyStr = 'shieldCoverageAlertMessageUnknown';

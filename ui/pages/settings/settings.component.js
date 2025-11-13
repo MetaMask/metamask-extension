@@ -194,11 +194,7 @@ class SettingsPage extends PureComponent {
           />
         )}
         {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
-        <Box
-          className="settings-page__header"
-          padding={4}
-          paddingBottom={[2, 4]}
-        >
+        <Box className="settings-page__header" padding={4} paddingBottom={2}>
           <div
             className={classnames('settings-page__header__title-container', {
               'settings-page__header__title-container--hide-search':
