@@ -8,20 +8,18 @@ import { TestDappBitcoin } from '../../page-objects/pages/test-dapp-bitcoin';
 import { withBtcAccountSnap } from '../btc/common-btc';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
-import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import { DEFAULT_BTC_ADDRESS } from '../../constants';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
-// export const account1 = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
-// export const account1Short = '4tE7...Uxer';
-// export const account2Short = 'ExTE...GNtt';
+export const account1Short = `${DEFAULT_BTC_ADDRESS.slice(0, 4)}...${DEFAULT_BTC_ADDRESS.slice(-4)}`;
 
 /**
  * Default options for setting up Bitcoin E2E test environment
  */
 export const DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS = {
+  numberOfAccounts: 1,
   dappPaths: [
     path.join(
       '..',
@@ -170,37 +168,40 @@ export const switchToAccount = async (
   await nonEvmHomepage.checkPageIsLoaded();
 };
 
+enum ConnectionStatus {
+  Connected = 'Connected',
+  NotConnected = 'Not connected',
+}
+
 /**
  * Asserts that the connection status is as expected.
  *
  * @param connectionStatus
  * @param expectedAddress
  */
-export const assertConnected = async (
-  connectionStatus: 'Connected' | 'Disconnected' | string,
+export const assertConnected = (
+  connectionStatus: string,
   expectedAddress?: string,
-): Promise<void> => {
+): void => {
   assert.strictEqual(
     connectionStatus,
-    expectedAddress ? `${expectedAddress}` : 'Connected',
+    expectedAddress ? `${expectedAddress}` : ConnectionStatus.Connected,
     `Connection status should be ${
-      expectedAddress ? `"${expectedAddress}"` : 'Connected'
+      expectedAddress ? `"${expectedAddress}"` : ConnectionStatus.Connected
     }`,
   );
 };
 
 /**
- * Asserts that the connection status is "Disconnected".
+ * Asserts that the connection status is "Not connected".
  *
  * @param connectionStatus
  */
-export const assertDisconnected = async (
-  connectionStatus: string,
-): Promise<void> => {
+export const assertDisconnected = (connectionStatus: string): void => {
   assert.strictEqual(
     connectionStatus,
-    'Disconnected',
-    'Connection status should be "Disconnected"',
+    ConnectionStatus.NotConnected,
+    `Connection status should be "${ConnectionStatus.NotConnected}"`,
   );
 };
 
