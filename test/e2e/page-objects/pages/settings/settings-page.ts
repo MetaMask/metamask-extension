@@ -75,8 +75,16 @@ class SettingsPage {
     await this.driver.waitForSelector(this.settingsPageTitle);
   }
 
+  async waitForTransactionShieldButtonReady(): Promise<void> {
+    console.log('Waiting for Transaction Shield button to be ready');
+    await this.driver.findClickableElement(this.transactionShieldButton);
+    await this.driver.waitForElementToStopMoving(this.transactionShieldButton);
+    console.log('Transaction Shield button is ready');
+  }
+
   async goToTransactionShieldPage(): Promise<void> {
     console.log('Navigating to Transaction Shield page');
+    await this.waitForTransactionShieldButtonReady();
     await this.driver.clickElement(this.transactionShieldButton);
   }
 

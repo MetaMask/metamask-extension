@@ -1,9 +1,5 @@
 // ShieldClaimPage class for interacting with the Shield Claim form page
 import { Driver } from '../../../../webdriver/driver';
-import { quoteXPathText } from '../../../../../helpers/quoteXPathText';
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-const cssToXPath = require('css-to-xpath');
 
 export default class ShieldClaimPage {
   private readonly driver: Driver;
@@ -172,28 +168,6 @@ export default class ShieldClaimPage {
   }
 
   /**
-   * Build an XPath selector for an element matching the CSS selector with a specific value attribute
-   *
-   * @param cssSelector - The CSS selector to convert to XPath
-   * @param value - The expected value attribute
-   * @returns XPath selector object
-   */
-  private buildXPathWithValue(
-    cssSelector: string,
-    value: string,
-  ): {
-    xpath: string;
-  } {
-    const quotedValue = quoteXPathText(value);
-    const baseXpath = cssToXPath.parse(cssSelector).toXPath();
-    // Handle both cases: XPaths with predicates ending in ']' and simple XPaths without predicates
-    const xpath = baseXpath.endsWith(']')
-      ? baseXpath.replace(/\]$/u, ` and @value=${quotedValue}]`)
-      : `${baseXpath}[@value=${quotedValue}]`;
-    return { xpath };
-  }
-
-  /**
    * Verify claim data is displayed correctly in view mode
    *
    * @param claimData - The claim data to verify
@@ -210,35 +184,32 @@ export default class ShieldClaimPage {
   }): Promise<void> {
     console.log('Verifying claim data is displayed correctly');
 
-    // Verify email - using XPath with value attribute
-    await this.driver.waitForSelector(
-      this.buildXPathWithValue(this.emailInput, claimData.email),
-    );
+    // Verify email - using css and value pattern
+    await this.driver.waitForSelector({
+      css: this.emailInput,
+      value: claimData.email,
+    });
     console.log(`Email verified: ${claimData.email}`);
 
     // Verify reimbursement wallet address
-    await this.driver.waitForSelector(
-      this.buildXPathWithValue(
-        this.reimbursementWalletAddressInput,
-        claimData.reimbursementWalletAddress,
-      ),
-    );
+    await this.driver.waitForSelector({
+      css: this.reimbursementWalletAddressInput,
+      value: claimData.reimbursementWalletAddress,
+    });
     console.log(
       `Reimbursement wallet address verified: ${claimData.reimbursementWalletAddress}`,
     );
 
     // Verify impacted transaction hash
-    await this.driver.waitForSelector(
-      this.buildXPathWithValue(
-        this.impactedTxHashInput,
-        claimData.impactedTxHash,
-      ),
-    );
+    await this.driver.waitForSelector({
+      css: this.impactedTxHashInput,
+      value: claimData.impactedTxHash,
+    });
     console.log(
       `Impacted transaction hash verified: ${claimData.impactedTxHash}`,
     );
 
-    // Verify description - using css and value pattern
+    // Verify description - using css and text pattern
     await this.driver.waitForSelector({
       css: this.descriptionTextarea,
       text: claimData.description,

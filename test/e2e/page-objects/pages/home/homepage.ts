@@ -118,6 +118,13 @@ class HomePage {
     console.log('Home page is loaded');
   }
 
+  async checkShieldEntryModalNotPresent(): Promise<void> {
+    console.log('Check shield entry modal is not present on homepage');
+    await this.driver.assertElementNotPresent(this.shieldEntryModal, {
+      timeout: 2000,
+    });
+  }
+
   async checkPageIsNotLoaded(): Promise<void> {
     console.log('Check home page is not loaded');
     await this.driver.assertElementNotPresent(this.activityTab, {
@@ -442,36 +449,6 @@ class HomePage {
   async clickOnShieldEntryModalSkip(): Promise<void> {
     console.log('Click on shield entry modal skip');
     await this.driver.clickElement(this.shieldEntryModalSkip);
-  }
-
-  async clickOnShieldEntryModalSkipWithRetries(): Promise<void> {
-    console.log(
-      'Click on shield entry modal skip and wait for it to disappear',
-    );
-    const maxRetries = 3;
-    let retryCount = 0;
-
-    while (retryCount < maxRetries) {
-      await this.driver.delay(1000);
-      await this.driver.clickElement(this.shieldEntryModalSkip);
-
-      try {
-        await this.driver.assertElementNotPresent(this.shieldEntryModal, {
-          timeout: 2000,
-        });
-        console.log('Modal successfully dismissed and stayed gone');
-        return;
-      } catch (e) {
-        retryCount += 1;
-        console.log(
-          `Modal still present, retrying click (attempt ${retryCount}/${maxRetries})`,
-        );
-      }
-    }
-
-    throw new Error(
-      `Failed to dismiss shield entry modal after ${maxRetries} attempts`,
-    );
   }
 
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {

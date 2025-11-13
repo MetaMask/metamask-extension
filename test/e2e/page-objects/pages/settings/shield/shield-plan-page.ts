@@ -7,6 +7,8 @@ export default class ShieldPlanPage {
   private readonly annualPlanButton =
     '[data-testid="shield-plan-annual-button"]';
 
+  private readonly backButton = '[data-testid="shield-plan-back-button"]';
+
   private readonly continueButton =
     '[data-testid="shield-plan-continue-button"]';
 
@@ -44,6 +46,11 @@ export default class ShieldPlanPage {
       this.shieldPlanPageMonthlyPlan,
     ]);
     console.log('Shield plan page is loaded');
+  }
+
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking back button on Shield plan page');
+    await this.driver.clickElement(this.backButton);
   }
 
   async selectAnnualPlan(): Promise<void> {

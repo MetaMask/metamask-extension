@@ -5,6 +5,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
 import ShieldClaimPage from '../../page-objects/pages/settings/shield/shield-claim-page';
@@ -17,12 +18,6 @@ import {
   SHIELD_USER_EVENTS_RESPONSE,
   SHIELD_CLAIMS_RESPONSE,
 } from '../../helpers/shield/constants';
-import {
-  generateRandomEmail,
-  generateRandomWalletAddress,
-  generateRandomTxHash,
-  generateRandomDescription,
-} from '../../helpers/test-data-generators';
 
 // Local fixture for this spec file
 function createShieldFixture() {
@@ -182,12 +177,12 @@ describe('Shield Plan Stripe Integration', function () {
   // TODO: This test is skipped until the claim form is implemented with the final design.
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should successfully fill and submit shield claim form', async function () {
-    // Generate test data before the test runs so it can be reused in mocks
     const testData = {
-      email: generateRandomEmail(),
-      impactedTxHash: generateRandomTxHash(),
-      reimbursementWalletAddress: generateRandomWalletAddress(),
-      description: generateRandomDescription(),
+      email: 'test@metamask.io',
+      impactedTxHash:
+        '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+      reimbursementWalletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+      description: 'This is a test claim description',
     };
 
     await withFixtures(
@@ -204,6 +199,10 @@ describe('Shield Plan Stripe Integration', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkShieldEntryModalNotPresent();
 
         await new HeaderNavbar(driver).openSettingsPage();
 
@@ -267,12 +266,14 @@ describe('Shield Plan Stripe Integration', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await driver.delay(1000);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkShieldEntryModalNotPresent();
+
         await new HeaderNavbar(driver).openSettingsPage();
 
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await driver.delay(1000);
         await settingsPage.goToTransactionShieldPage();
 
         const shieldDetailPage = new ShieldDetailPage(driver);

@@ -7,7 +7,6 @@ import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan
 import HomePage from '../../page-objects/pages/home/homepage';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import {
   BASE_SHIELD_SUBSCRIPTION,
@@ -219,20 +218,19 @@ describe('Shield Subscription Tests', function () {
 
           const homePage = new HomePage(driver);
           await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalSkipWithRetries();
+          await homePage.clickOnShieldEntryModalGetStarted();
 
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openSettingsPage();
+          const shieldPlanPage = new ShieldPlanPage(driver);
+          await shieldPlanPage.checkPageIsLoaded();
+          await shieldPlanPage.clickBackButton();
 
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToTransactionShieldPage();
 
-          // // Handle entry modal that appears when navigating to Transaction Shield page
           await homePage.checkShieldEntryModalIsDisplayed();
           await homePage.clickOnShieldEntryModalGetStarted();
 
-          const shieldPlanPage = new ShieldPlanPage(driver);
           await shieldPlanPage.completeShieldPlanSubscriptionFlow('annual');
 
           const shieldDetailPage = new ShieldDetailPage(driver);
@@ -258,20 +256,17 @@ describe('Shield Subscription Tests', function () {
 
           const homePage = new HomePage(driver);
           await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalSkipWithRetries();
+          await homePage.clickOnShieldEntryModalGetStarted();
 
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openSettingsPage();
+          const shieldPlanPage = new ShieldPlanPage(driver);
+          await shieldPlanPage.checkPageIsLoaded();
+          await shieldPlanPage.clickBackButton();
 
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToTransactionShieldPage();
 
-          // Handle entry modal that appears when navigating to Transaction Shield page
-          await homePage.checkShieldEntryModalIsDisplayed();
           await homePage.clickOnShieldEntryModalGetStarted();
-
-          const shieldPlanPage = new ShieldPlanPage(driver);
           await shieldPlanPage.completeShieldPlanSubscriptionFlow('monthly');
 
           const shieldDetailPage = new ShieldDetailPage(driver);

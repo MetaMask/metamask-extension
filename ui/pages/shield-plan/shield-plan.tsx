@@ -357,6 +357,7 @@ const ShieldPlan = () => {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={handleBack}
+            data-testid="shield-plan-back-button"
           />
         }
       >
