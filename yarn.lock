@@ -7336,13 +7336,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^19.0.0":
-  version: 19.0.0
-  resolution: "@metamask/notification-services-controller@npm:19.0.0"
+"@metamask/notification-services-controller@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@metamask/notification-services-controller@npm:20.0.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/controller-utils": "npm:^11.15.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.8.1"
     bignumber.js: "npm:^9.1.2"
@@ -7353,7 +7353,7 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^24.0.0
     "@metamask/profile-sync-controller": ^26.0.0
-  checksum: 10/a5298e802159548e724feab156a0f4fa9055d4ec0c88d091c15eb4767577062019e1cde264d101d7f31f211bf8d582f2aa4406f97e41f6a308b17ca9325a5573
+  checksum: 10/1ec52c32d302a0c6c7fdfa9e2e2bfeb6e8fad36c04206c960afbc98c13b3d4b11b8c6ac7cda5f5b0277f25ad895d6292e0ae2d08a77805a64ab40c623e4bc06b
   languageName: node
   linkType: hard
 
@@ -32581,7 +32581,7 @@ __metadata:
     "@metamask/name-controller": "npm:^9.0.0"
     "@metamask/network-controller": "npm:^25.0.0"
     "@metamask/network-enablement-controller": "npm:^3.1.0"
-    "@metamask/notification-services-controller": "npm:^19.0.0"
+    "@metamask/notification-services-controller": "npm:^20.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^12.1.0"
