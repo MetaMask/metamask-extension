@@ -142,7 +142,9 @@ describe('PermissionsCell', () => {
     const listItem = getByTestId('permissions-cell-connection-list-item');
     fireEvent.click(listItem);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith('/gator-permissions/token-transfer');
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/gator-permissions/token-transfer',
+    );
   });
 
   it('returns null when totalCount is 0', () => {
