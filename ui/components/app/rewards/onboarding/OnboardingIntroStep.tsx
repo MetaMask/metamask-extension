@@ -191,8 +191,8 @@ const OnboardingIntroStep: React.FC = () => {
    */
   const renderImage = () => (
     <Box
-      className="flex justify-center items-center my-4 absolute"
-      style={{ top: 180 }}
+      className="flex justify-center items-center absolute"
+      style={{ top: '25%' }}
       data-testid="rewards-onboarding-intro-image"
     >
       <img
@@ -227,7 +227,7 @@ const OnboardingIntroStep: React.FC = () => {
           candidateSubscriptionId === 'retry'
         }
         onClick={handleNext}
-        className="w-full my-2 bg-white"
+        className="w-full my-2 bg-white hover:bg-default-hover"
       >
         <Text variant={TextVariant.BodyMd} className="text-black font-medium">
           {t('rewardsOnboardingIntroStepConfirm')}
