@@ -1,4 +1,8 @@
-import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
+import {
+  isCaipAssetType,
+  parseCaipAssetType,
+  isStrictHexString,
+} from '@metamask/utils';
 import { isNativeAddress as isNativeAddressFromBridge } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { TextColor } from '../constants/design-system';
@@ -72,7 +76,7 @@ export const formatCompactCurrency = (
  * Formats a contract address, handling CAIP format if needed
  *
  * @param address - The address to format
- * @returns Checksummed address
+ * @returns Checksummed address for EVM chains, or the original address for non-EVM chains
  */
 export const formatContractAddress = (address: string | null): string => {
   if (!address) {
@@ -81,10 +85,19 @@ export const formatContractAddress = (address: string | null): string => {
 
   if (isCaipAssetType(address)) {
     const { assetReference } = parseCaipAssetType(address);
-    return toChecksumHexAddress(assetReference);
+
+    if (isStrictHexString(assetReference)) {
+      return toChecksumHexAddress(assetReference);
+    }
+
+    return assetReference;
   }
 
-  return toChecksumHexAddress(address);
+  if (isStrictHexString(address)) {
+    return toChecksumHexAddress(address);
+  }
+
+  return address;
 };
 
 /**
