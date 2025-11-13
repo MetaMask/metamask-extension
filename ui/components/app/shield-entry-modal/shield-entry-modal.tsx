@@ -35,6 +35,8 @@ import {
   getShieldEntryModalTriggeringCohort,
   getModalTypeForShieldEntryModal,
 } from '../../../selectors';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
 import {
   AlignItems,
   Display,
@@ -54,18 +56,24 @@ const ShieldEntryModal = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { captureShieldEntryModalEvent } = useSubscriptionMetrics();
   const shouldSubmitEvent = useSelector(
     getShouldSubmitEventsForShieldEntryModal,
   );
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
   const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
-  const handleOnClose = () => {
+  const handleOnClose = (ctaActionClicked: string = 'dismiss') => {
+    captureShieldEntryModalEvent({
+      source: EntryModalSourceEnum.Homepage,
+      type: modalType,
+      modalCtaActionClicked: ctaActionClicked,
+    });
+
     if (skipEventSubmission) {
       onClose?.();
       return;
-    }
-    if (shouldSubmitEvent) {
+    } else if (shouldSubmitEvent) {
       dispatch(
         submitSubscriptionUserEvents({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
@@ -73,11 +81,12 @@ const ShieldEntryModal = ({
         }),
       );
     }
+
     dispatch(setShowShieldEntryModalOnce(false));
   };
 
   const handleOnGetStarted = () => {
-    handleOnClose();
+    handleOnClose('get-started');
     navigate(SHIELD_PLAN_ROUTE);
   };
 
@@ -88,7 +97,7 @@ const ShieldEntryModal = ({
       autoFocus={false}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
-      onClose={handleOnClose}
+      onClose={() => handleOnClose('skip')}
       className="shield-entry-modal"
       data-theme={ThemeType.dark}
     >
