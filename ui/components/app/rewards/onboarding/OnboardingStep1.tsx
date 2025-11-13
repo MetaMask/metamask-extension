@@ -31,7 +31,7 @@ const OnboardingStep1: React.FC = () => {
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
         focusable="false"
-        style={{ left: 0 }}
+        style={{ left: 0, top: 0 }}
       >
         <path
           d="M 302.98438 0 L 213.17773 113.25586 L 162.85742 113.25586 L 162.85742 224.83594 L 162.84766 224.83594 L 162.84766 113.09766 L 62.902344 113.09766 L -37.042969 226.49805 L -37.042969 339.89844 L 62.902344 339.89844 L 162.8125 226.53711 L 162.8125 339.9707 L 212.77539 339.9707 L 212.77539 340.4043 L 302.69336 453.79883 L 392.61523 453.79883 L 392.61523 340.4043 L 361.58008 301.26758 L 361.58008 224.83594 L 304.5332 224.83594 L 392.90625 113.39453 L 392.90625 0 L 302.98438 0 z "
@@ -41,15 +41,16 @@ const OnboardingStep1: React.FC = () => {
 
       <img
         src="https://images.ctfassets.net/9sy2a0egs6zh/5ieKFEvd1qM3crY76W751i/ab846811e550d4a84c12a063f468f30c/rewards-onboarding-step1.png"
-        className="w-full z-10 object-contain"
+        className="z-10 object-contain"
         data-testid="rewards-onboarding-step1-image"
+        width={'94%'}
       />
     </>
   );
 
   const renderStepInfo = () => (
     <Box
-      className="flex flex-col min-h-30 gap-2 flex-1 justify-end"
+      className="flex flex-col gap-2 flex-1 justify-end"
       data-testid="rewards-onboarding-step1-info"
     >
       <Text variant={TextVariant.HeadingLg} className="text-center">

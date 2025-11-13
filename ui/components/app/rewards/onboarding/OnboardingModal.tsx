@@ -102,7 +102,7 @@ export default function OnboardingModal() {
           paddingTop: 0,
           paddingBottom: 0,
           style: {
-            height: '800px',
+            height: '740px',
             alignItems: 'center',
             justifyContent: 'center',
           },
