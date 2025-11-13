@@ -649,6 +649,7 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   // Navigate to confirmations when there are pending approvals and user is on asset details page
   // This behavior is only enabled in sidepanel to avoid interfering with popup/extension flows
   useEffect(() => {
@@ -684,6 +685,7 @@ export default function Routes() {
       );
     }
   }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
+  ///: END:ONLY_INCLUDE_IF
 
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
