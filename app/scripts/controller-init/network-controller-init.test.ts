@@ -1,5 +1,6 @@
 import { ControllerStateChangeEvent } from '@metamask/base-controller';
 import {
+  ActionConstraint,
   MOCK_ANY_NAMESPACE,
   Messenger,
   MockAnyNamespace,
@@ -41,7 +42,7 @@ jest.mock('@metamask/network-controller', () => {
 function getInitRequestMock(
   messenger = new Messenger<
     MockAnyNamespace,
-    RemoteFeatureFlagControllerGetStateAction,
+    RemoteFeatureFlagControllerGetStateAction | ActionConstraint,
     ControllerStateChangeEvent<
       'RemoteFeatureFlagController',
       RemoteFeatureFlagControllerState
