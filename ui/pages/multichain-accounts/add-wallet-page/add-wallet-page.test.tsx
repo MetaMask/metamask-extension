@@ -99,6 +99,7 @@ describe('AddWalletPage', () => {
     });
     fireEvent.click(cancelButton);
 
-    expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 });

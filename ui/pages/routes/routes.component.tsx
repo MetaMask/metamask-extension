@@ -476,6 +476,8 @@ const MemoizedReviewPermissionsWrapper = React.memo(
       {...props}
       state1Component={ReviewPermissions}
       state2Component={MultichainReviewPermissions}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      {...({} as any)}
     />
   ),
 );
@@ -741,7 +743,13 @@ export default function Routes() {
             path={NOTIFICATIONS_SETTINGS_ROUTE}
             component={NotificationsSettings}
           />
-          <Route path={`${NOTIFICATIONS_ROUTE}/:uuid`} exact>
+          <Route
+            path={`${NOTIFICATIONS_ROUTE}/:uuid`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ uuid: string }>(NotificationDetails, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
@@ -867,7 +875,13 @@ export default function Routes() {
               paramsAsProps: false,
             })}
           </Route>
-          <Route path={`${CONNECTIONS}/:origin`} exact>
+          <Route
+            path={`${CONNECTIONS}/:origin`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ origin: string }>(Connections, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
@@ -900,7 +914,13 @@ export default function Routes() {
               paramsAsProps: false,
             })}
           </Route>
-          <Route path={`${REVIEW_PERMISSIONS}/:origin`} exact>
+          <Route
+            path={`${REVIEW_PERMISSIONS}/:origin`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ origin: string }>(
               MemoizedReviewPermissionsWrapper,
               {
@@ -911,14 +931,23 @@ export default function Routes() {
               },
             )}
           </Route>
-          <Route path={ACCOUNT_LIST_PAGE_ROUTE} exact>
+          <Route
+            path={ACCOUNT_LIST_PAGE_ROUTE}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute(AccountList, {
               wrapper: AuthenticatedV5Compat,
             })}
           </Route>
           <Route
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
-            exact
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
           >
             {createV5CompatRoute<{ accountGroupId: string }>(
               MultichainAccountAddressListPage,
@@ -932,7 +961,10 @@ export default function Routes() {
           </Route>
           <Route
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
-            exact
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
           >
             {createV5CompatRoute<{ accountGroupId: string }>(
               MultichainAccountPrivateKeyListPage,
@@ -943,40 +975,76 @@ export default function Routes() {
               },
             )}
           </Route>
-          <Route path={ADD_WALLET_PAGE_ROUTE} exact>
+          <Route
+            path={ADD_WALLET_PAGE_ROUTE}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute(AddWalletPage, {
               wrapper: AuthenticatedV5Compat,
             })}
           </Route>
-          <Route path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`} exact>
+          <Route
+            path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ id: string }>(MultichainAccountDetailsPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
           </Route>
-          <Route path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`} exact>
+          <Route
+            path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ address: string }>(SmartAccountPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
           </Route>
-          <Route path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`} exact>
+          <Route
+            path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ id: string }>(WalletDetailsPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
           </Route>
-          <Route path={WALLET_DETAILS_ROUTE} exact>
+          <Route
+            path={WALLET_DETAILS_ROUTE}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ id: string }>(WalletDetails, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
           </Route>
-          <Route path={`${ACCOUNT_DETAILS_ROUTE}/:address`} exact>
+          <Route
+            path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ address: string }>(
               MultichainAccountDetails,
               {
@@ -986,7 +1054,13 @@ export default function Routes() {
               },
             )}
           </Route>
-          <Route path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`} exact>
+          <Route
+            path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ address: string }>(AddressQRCode, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,

@@ -79,7 +79,7 @@ export const ReviewPermissions = ({
   const urlParamsHook = useParams<{ origin: string }>();
 
   // Use props if provided, otherwise fall back to hooks
-  const navigate = navigateProp || navigateHook;
+  const navigate: typeof navigateProp = navigateProp || navigateHook;
   const urlParams = params || urlParamsHook;
 
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters

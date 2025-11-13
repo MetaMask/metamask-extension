@@ -83,7 +83,7 @@ export const Connections = ({
   const urlParamsHook = useParams<{ origin: string }>();
 
   // Use props if provided, otherwise fall back to hooks
-  const navigate = navigateProp || navigateHook;
+  const navigate: typeof navigateProp = navigateProp || navigateHook;
   const urlParams = params || urlParamsHook;
 
   const [showConnectAccountsModal, setShowConnectAccountsModal] =
