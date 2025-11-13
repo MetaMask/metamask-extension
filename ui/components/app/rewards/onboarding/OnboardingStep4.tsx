@@ -96,16 +96,17 @@ const OnboardingStep4: React.FC = () => {
 
   const renderStepInfo = () => (
     <Box
-      className="flex flex-col min-h-30 gap-4 flex-1 justify-end"
+      className="flex flex-col flex-1 gap-4 justify-center"
       data-testid="rewards-onboarding-step4-info"
     >
       <img
         src="https://images.ctfassets.net/9sy2a0egs6zh/2W921m9iDZsozDlv1pNx4z/c04e3577afd665ae5434d8b7115c4bcc/rewards-onboarding-step4.png"
-        className="z-10 object-contain self-center my-4"
+        className="z-10 object-contain self-center"
         width={100}
         height={100}
         alt={t('rewardsOnboardingStep4Title')}
       />
+
       <Text variant={TextVariant.HeadingLg} className="text-center">
         {referralCodeIsValid
           ? t('rewardsOnboardingStep4TitleWithReferralCode')
