@@ -675,9 +675,6 @@
   "attributions": {
     "message": "Admhálacha"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Níl URL RPC Infura ag tacú le Aurora a thuilleadh."
-  },
   "authorizedPermissions": {
     "message": "Tá na ceadanna seo a leanas údaraithe agat"
   },
@@ -1930,9 +1927,6 @@
   },
   "depositCrypto": {
     "message": "Taisce cripte ó chuntas eile le seoladh sparán nó cód QR."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Mar gheall ar nuashonruithe ar chóras Ethereum, cuirfear deireadh de réir a chéile le líonra tástála Goerli go luath."
   },
   "deprecatedNetwork": {
     "message": "Tá an líonra seo imithe i léig"
@@ -7096,10 +7090,6 @@
   },
   "switchNetwork": {
     "message": "Athraigh líonra"
-  },
-  "switchToNetwork": {
-    "message": "Lasc go $1",
-    "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
     "message": "Lasc chuig an gcuntas seo"
