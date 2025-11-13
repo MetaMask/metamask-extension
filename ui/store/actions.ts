@@ -74,9 +74,9 @@ import {
   Subscription,
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
-  CachedLastSelectedPaymentMethods,
   SubscriptionEligibility,
   BalanceCategory,
+  CachedLastSelectedPaymentMethod,
 } from '@metamask/subscription-controller';
 
 import {
@@ -195,6 +195,7 @@ import {
 } from '../../shared/types/rewards';
 import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
 import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
+import { DefaultSubscriptionPaymentOptions } from '../../shared/types';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -437,7 +438,7 @@ export function getSubscriptionsEligibilities(params?: {
         params,
       ]);
     } catch (error) {
-      log.error('[getSubscriptionsEligibilities] error', error);
+      log.warn('[getSubscriptionsEligibilities] error', error);
       dispatch(displayWarning(error));
       throw error;
     }
@@ -546,12 +547,14 @@ export async function getSubscriptionCryptoApprovalAmount(
  * @param params.products - The list of products.
  * @param params.isTrialRequested - Is trial requested.
  * @param params.recurringInterval - The recurring interval.
+ * @param params.useTestClock - Whether to use test clocks.
  * @returns The subscription response.
  */
 export function startSubscriptionWithCard(params: {
   products: ProductType[];
   isTrialRequested: boolean;
   recurringInterval: RecurringInterval;
+  useTestClock: boolean;
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -683,10 +686,14 @@ export function setShowShieldEntryModalOnceAction(payload: {
 
 export function setPendingShieldCohort(
   cohort: string | null,
+  txType?: string | null,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setPendingShieldCohort', [cohort]);
+      await submitRequestToBackground('setPendingShieldCohort', [
+        cohort,
+        txType,
+      ]);
     } catch (error) {
       log.error('[setPendingShieldCohort] error', error);
       dispatch(displayWarning(error));
@@ -697,7 +704,7 @@ export function setPendingShieldCohort(
 
 export function setLastUsedSubscriptionPaymentDetails(
   product: ProductType,
-  payload: CachedLastSelectedPaymentMethods,
+  payload: CachedLastSelectedPaymentMethod,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -707,6 +714,22 @@ export function setLastUsedSubscriptionPaymentDetails(
       ]);
     } catch (error) {
       log.error('[setLastUsedSubscriptionPaymentDetails] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+export function setDefaultSubscriptionPaymentOptions(
+  payload: DefaultSubscriptionPaymentOptions,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setDefaultSubscriptionPaymentOptions', [
+        payload,
+      ]);
+    } catch (error) {
+      log.error('[setDefaultSubscriptionPaymentOptions] error', error);
       dispatch(displayWarning(error));
       throw error;
     }
