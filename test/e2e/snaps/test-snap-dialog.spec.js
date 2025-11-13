@@ -1,14 +1,17 @@
+const { DAPP_PATH, DAPP_URL_LOCALHOST } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
   mockDialogSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Dialog', function () {
   it('test all four snap_dialog types', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockDialogSnap,
         title: this.test.fullTitle(),
@@ -17,7 +20,7 @@ describe('Test Snap Dialog', function () {
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect to dialog snap
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         // wait for page to load
         await driver.waitForSelector({

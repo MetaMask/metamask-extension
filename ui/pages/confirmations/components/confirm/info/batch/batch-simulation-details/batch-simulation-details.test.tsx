@@ -21,6 +21,7 @@ import {
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { Confirmation } from '../../../../../types/confirm';
 import { updateApprovalAmount } from '../../../../../../../../shared/lib/transactions/approvals';
+import * as SwapCheckHook from '../../../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { BatchSimulationDetails } from './batch-simulation-details';
 
 jest.mock('../../../../../../../../shared/lib/transactions/approvals');
@@ -288,6 +289,14 @@ describe('BatchSimulationDetails', () => {
 
   it('return null for transaction of type revokeDelegation', () => {
     const { container } = render(downgradeAccountConfirmation);
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('return null for MetaMask Swap transaction', () => {
+    jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
+      isQuotedSwap: true,
+    });
+    const { container } = render();
     expect(container.firstChild).toBeNull();
   });
 

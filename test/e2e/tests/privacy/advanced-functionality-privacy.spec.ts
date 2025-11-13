@@ -9,6 +9,7 @@ import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/o
 import {
   importSRPOnboardingFlow,
   completeImportSRPOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
@@ -75,6 +76,9 @@ describe('MetaMask onboarding ', function () {
 
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
 
         // Refresh tokens before asserting to mitigate flakiness
         const homePage = new HomePage(driver);
