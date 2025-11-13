@@ -942,6 +942,13 @@ export enum MetaMetricsEventName {
   ExtensionPinned = 'Extension Pinned',
   // Extension Port Stream
   PortStreamChunked = 'Port Stream Chunked',
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  ViewportSwitched = 'Viewport Switched',
+  ///: END:ONLY_INCLUDE_IF
+  // Shield
+  ShieldEntryModal = 'Shield Entry Modal',
+  ShieldSubscriptionRequest = 'Shield Subscription Request',
+  ShieldSubscriptionRestartRequest = 'Shield Subscription Restart Request',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1006,6 +1013,7 @@ export enum MetaMetricsEventCategory {
   Confirmations = 'Confirmations',
   CrossChainSwaps = 'Cross Chain Swaps',
   PortStream = 'Port Stream',
+  Shield = 'Shield',
 }
 
 export enum MetaMetricsEventLinkType {

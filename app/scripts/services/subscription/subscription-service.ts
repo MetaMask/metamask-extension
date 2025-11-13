@@ -18,6 +18,11 @@ import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
 import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
+import { getSubscriptionRequestTrackingProps } from '../../../../shared/modules/shield/metrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -117,33 +122,41 @@ export class SubscriptionService {
     params: StartSubscriptionRequest,
     currentTabId?: number,
   ) {
-    const redirectUrl = this.#webAuthenticator.getRedirectURL();
+    try {
+      const redirectUrl = this.#webAuthenticator.getRedirectURL();
 
-    const { checkoutSessionUrl } = await this.#messenger.call(
-      'SubscriptionController:startShieldSubscriptionWithCard',
-      {
-        ...params,
-        successUrl: redirectUrl,
-      },
-    );
-
-    await this.#openAndWaitForTabToClose({
-      url: checkoutSessionUrl,
-      successUrl: redirectUrl,
-    });
-
-    if (!currentTabId) {
-      // open extension browser shield settings if open from pop up (no current tab)
-      this.#platform.openExtensionInBrowser(
-        // need `waitForSubscriptionCreation` param to wait for subscription creation happen in the background and not redirect to the shield plan page immediately
-        '/settings/transaction-shield/?waitForSubscriptionCreation=true',
+      const { checkoutSessionUrl } = await this.#messenger.call(
+        'SubscriptionController:startShieldSubscriptionWithCard',
+        {
+          ...params,
+          successUrl: redirectUrl,
+        },
       );
-    }
 
-    const subscriptions = await this.#messenger.call(
-      'SubscriptionController:getSubscriptions',
-    );
-    return subscriptions;
+      await this.#openAndWaitForTabToClose({
+        url: checkoutSessionUrl,
+        successUrl: redirectUrl,
+      });
+
+      if (!currentTabId) {
+        // open extension browser shield settings if open from pop up (no current tab)
+        this.#platform.openExtensionInBrowser(
+          // need `waitForSubscriptionCreation` param to wait for subscription creation happen in the background and not redirect to the shield plan page immediately
+          '/settings/transaction-shield/?waitForSubscriptionCreation=true',
+        );
+      }
+
+      const subscriptions = await this.#messenger.call(
+        'SubscriptionController:getSubscriptions',
+      );
+      this.#trackSubscriptionRequestEvent('completed');
+      return subscriptions;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.#trackSubscriptionRequestEvent('failed', errorMessage);
+      throw error;
+    }
   }
 
   async submitSubscriptionSponsorshipIntent(txMeta: TransactionMeta) {
@@ -270,5 +283,33 @@ export class SubscriptionService {
       return swapsControllerState;
     }
     return swapsControllerState;
+  }
+
+  #trackSubscriptionRequestEvent(
+    requestStatus: 'completed' | 'failed',
+    errorMessage?: string,
+  ) {
+    const subscriptionControllerState = this.#messenger.call(
+      'SubscriptionController:getState',
+    );
+    const appStateControllerState = this.#messenger.call(
+      'AppStateController:getState',
+    );
+    const { defaultSubscriptionPaymentOptions } = appStateControllerState;
+    const trackingProps = getSubscriptionRequestTrackingProps(
+      subscriptionControllerState,
+      defaultSubscriptionPaymentOptions,
+    );
+    this.#messenger.call('MetaMetricsController:trackEvent', {
+      event: MetaMetricsEventName.ShieldSubscriptionRequest,
+      category: MetaMetricsEventCategory.Shield,
+      properties: {
+        ...trackingProps,
+        status: requestStatus,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_message: errorMessage || null,
+      },
+    });
   }
 }
