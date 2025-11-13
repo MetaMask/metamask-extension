@@ -6,6 +6,7 @@ import { SubscriptionUserEvent } from '@metamask/subscription-controller';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import * as actions from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
+import MockState from '../../../../test/data/mock-state.json';
 import ShieldEntryModal from './shield-entry-modal';
 
 const mockUseNavigate = jest.fn();
@@ -16,16 +17,17 @@ jest.mock('react-router-dom-v5-compat', () => {
   };
 });
 
+jest.mock('./shield-illustration-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => <div data-testid="shield-illustration-animation" />,
+}));
+
 describe('Shield Entry Modal', () => {
   const mockState = {
-    metamask: {
-      internalAccounts: {
-        accounts: {},
-        selectedAccount: '',
-      },
-      metaMetricsId: '0x00000000',
-    },
+    ...MockState,
     appState: {
+      ...MockState.appState,
       shieldEntryModal: {
         show: true,
         shouldSubmitEvents: false,
