@@ -111,9 +111,6 @@
   "etherscanView": {
     "message": "ดูบัญชีบน Etherscan"
   },
-  "expandView": {
-    "message": "ขยายมุมมอง"
-  },
   "failed": {
     "message": "ล้มเหลว"
   },

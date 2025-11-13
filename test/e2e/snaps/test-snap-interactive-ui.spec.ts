@@ -6,11 +6,15 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { mockInteractiveUiSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 
 describe('Interactive UI Snap', function () {
   it('validate the interactive ui elements', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockInteractiveUiSnap,
         title: this.test?.fullTitle(),

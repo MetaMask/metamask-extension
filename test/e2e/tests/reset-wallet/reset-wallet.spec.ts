@@ -10,6 +10,7 @@ import {
   completeImportSRPOnboardingFlow,
   importWalletWithSocialLoginOnboardingFlow,
   onboardingMetricsFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -157,6 +158,9 @@ describe('Reset Wallet - ', function () {
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
 
         await homePage.headerNavbar.checkPageIsLoaded();
       },
