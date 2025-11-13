@@ -5,11 +5,11 @@ import {
   isNativeAddress as isNativeAddressFromBridge,
 } from '@metamask/bridge-controller';
 import { isCaipChainId, Hex } from '@metamask/utils';
+import { handleFetch } from '@metamask/controller-utils';
 import { isEvmChainId, toAssetId } from '../../shared/lib/asset-utils';
 import { getMarketData } from '../selectors';
 import { getCurrentCurrency } from '../ducks/metamask/metamask';
 import { getCurrencyRates } from '../selectors/selectors';
-import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { formatCompactCurrency } from '../helpers/utils/token-insights';
 import { useFormatters } from './useFormatters';
 
@@ -130,13 +130,9 @@ export const useTokenInsightsData = (
 
         const url = `https://price.api.cx.metamask.io/v3/spot-prices?assetIds=${assetId}&includeMarketData=true&vsCurrency=${currentCurrency.toLowerCase()}`;
 
-        const response = await fetchWithCache({
-          url,
-          cacheOptions: { cacheRefreshTime: 30 * 1000 }, // 30 seconds
-          functionName: 'fetchTokenInsightsData',
-          fetchOptions: {
-            headers: { 'X-Client-Id': 'extension' },
-          },
+        const response = await handleFetch(url, {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
         });
 
         const tokenData = assetId ? response?.[assetId] : null;
