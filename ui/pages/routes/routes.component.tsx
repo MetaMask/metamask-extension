@@ -663,9 +663,16 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   // Navigate to confirmations when there are pending approvals and user is on asset details page
+  // This behavior is only enabled in sidepanel to avoid interfering with popup/extension flows
   useEffect(() => {
+    const windowType = getEnvironmentType();
+
+    // Only run this navigation logic in sidepanel
+    if (windowType !== ENVIRONMENT_TYPE_SIDEPANEL) {
+      return;
+    }
+
     // Only navigate to confirmations when user is on an asset details page
     const isOnAssetDetailsPage = location.pathname.startsWith(ASSET_ROUTE);
 
@@ -691,7 +698,6 @@ export default function Routes() {
       );
     }
   }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
-  ///: END:ONLY_INCLUDE_IF
 
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
