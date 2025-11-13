@@ -131,9 +131,11 @@ const EmptyContent: React.FC = () => {
 
 const HeaderWithAlert = ({
   title,
+  titleTooltip,
   transactionId,
 }: {
   title?: string;
+  titleTooltip?: string;
   transactionId: string;
 }) => {
   const t = useI18nContext();
@@ -157,9 +159,11 @@ const HeaderWithAlert = ({
       ? t('simulationDetailsTitleEnforced')
       : t('simulationDetailsTitle'));
 
-  const tooltip = isEnforced
-    ? t('simulationDetailsTitleTooltipEnforced')
-    : t('simulationDetailsTitleTooltip');
+  const tooltip =
+    titleTooltip ??
+    (isEnforced
+      ? t('simulationDetailsTitleTooltipEnforced')
+      : t('simulationDetailsTitleTooltip'));
 
   const [settingsModalVisible, setSettingsModalVisible] =
     useState<boolean>(false);
@@ -251,7 +255,14 @@ const HeaderLayout: React.FC<{
   isTransactionsRedesign: boolean;
   transactionId: string;
   title?: string;
-}> = ({ children, isTransactionsRedesign, transactionId, title }) => {
+  titleTooltip?: string;
+}> = ({
+  children,
+  isTransactionsRedesign,
+  transactionId,
+  title,
+  titleTooltip,
+}) => {
   return (
     <Box
       display={Display.Flex}
@@ -260,7 +271,11 @@ const HeaderLayout: React.FC<{
       justifyContent={JustifyContent.spaceBetween}
     >
       {isTransactionsRedesign ? (
-        <HeaderWithAlert title={title} transactionId={transactionId} />
+        <HeaderWithAlert
+          title={title}
+          titleTooltip={titleTooltip}
+          transactionId={transactionId}
+        />
       ) : (
         <LegacyHeader />
       )}
@@ -281,10 +296,18 @@ const HeaderLayout: React.FC<{
  */
 export const SimulationDetailsLayout: React.FC<{
   title?: string;
+  titleTooltip?: string;
   inHeader?: React.ReactNode;
   isTransactionsRedesign: boolean;
   transactionId: string;
-}> = ({ title, inHeader, isTransactionsRedesign, transactionId, children }) =>
+}> = ({
+  title,
+  titleTooltip,
+  inHeader,
+  isTransactionsRedesign,
+  transactionId,
+  children,
+}) =>
   isTransactionsRedesign ? (
     <ConfirmInfoSection noPadding>
       <Box
@@ -308,6 +331,7 @@ export const SimulationDetailsLayout: React.FC<{
           isTransactionsRedesign={isTransactionsRedesign}
           transactionId={transactionId}
           title={title}
+          titleTooltip={titleTooltip}
         >
           {inHeader}
         </HeaderLayout>
@@ -335,6 +359,7 @@ export const SimulationDetailsLayout: React.FC<{
       <HeaderLayout
         isTransactionsRedesign={isTransactionsRedesign}
         transactionId={transactionId}
+        titleTooltip={titleTooltip}
       >
         {inHeader}
       </HeaderLayout>
