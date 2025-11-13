@@ -1630,14 +1630,8 @@
   "customToken": {
     "message": "Token kustom"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Deteksi token belum tersedia di jaringan ini. Harap impor token secara manual dan pastikan keamanannya. Pelajari seputar $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Siapa pun dapat membuat token, termasuk membuat versi palsu dari token yang ada. Pelajari tentang $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Pastikan keamanan token sebelum mengimpornya. Pelajari cara menghindari $1. Anda juga dapat mengaktifkan deteksi token $2."
   },
   "customerSupport": {
     "message": "dukungan pelanggan"
@@ -2787,9 +2781,6 @@
   "imported": {
     "message": "Diimpor",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "di Pengaturan Anda"
   },
   "included": {
     "message": "termasuk"
@@ -5238,9 +5229,6 @@
   "shieldEntryModalGetStarted": {
     "message": "Mulai"
   },
-  "shieldEntryModalSkip": {
-    "message": "Lewati"
-  },
   "show": {
     "message": "Tampil"
   },
@@ -6603,9 +6591,6 @@
   },
   "tokenMarketplace": {
     "message": "Pasar token"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "penipuan dan risiko keamanan token"
   },
   "tokenStandard": {
     "message": "Standar token"

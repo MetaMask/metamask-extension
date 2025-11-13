@@ -1630,14 +1630,8 @@
   "customToken": {
     "message": "カスタムトークン"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "このネットワークではまだトークンの検出を利用できません。トークンを手動でインポートし、信頼できることを確認してください。$1の詳細をご覧ください"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "手動でトークンをインポートする前に、信頼できることを確認してください。$1の詳細をご覧ください。"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "インポートする前にトークンが信頼できることを確認してください。$1を避ける方法の詳細をご覧ください。また、$2トークンの検出を有効にすることもできます。"
   },
   "customerSupport": {
     "message": "カスタマーサポート"
@@ -2787,9 +2781,6 @@
   "imported": {
     "message": "インポート済み",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "設定で"
   },
   "included": {
     "message": "含む"
@@ -5238,9 +5229,6 @@
   "shieldEntryModalGetStarted": {
     "message": "利用を開始する"
   },
-  "shieldEntryModalSkip": {
-    "message": "スキップ"
-  },
   "show": {
     "message": "表示"
   },
@@ -6603,9 +6591,6 @@
   },
   "tokenMarketplace": {
     "message": "トークンマーケットプレイス"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "トークン関連の詐欺やセキュリティのリスク"
   },
   "tokenStandard": {
     "message": "トークン規格"

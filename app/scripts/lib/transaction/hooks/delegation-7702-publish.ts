@@ -9,7 +9,9 @@ import {
   PublishHookResult,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { Hex, createProjectLogger } from '@metamask/utils';
+import { Hex, add0x, createProjectLogger } from '@metamask/utils';
+import { toHex } from '@metamask/controller-utils';
+import { NetworkClientId } from '@metamask/network-controller';
 import {
   BATCH_DEFAULT_MODE,
   Caveat,
@@ -41,6 +43,7 @@ import {
   submitRelayTransaction,
   waitForRelayResult,
 } from '../transaction-relay';
+import { stripSingleLeadingZero } from '../util';
 
 const EMPTY_HEX = '0x';
 const POLLING_INTERVAL_MS = 1000; // 1 Second
@@ -58,17 +61,28 @@ export class Delegation7702PublishHook {
 
   #messenger: TransactionControllerInitMessenger;
 
+  #getNextNonce: (
+    address: string,
+    networkClientId: NetworkClientId,
+  ) => Promise<Hex>;
+
   constructor({
     isAtomicBatchSupported,
     messenger,
+    getNextNonce,
   }: {
     isAtomicBatchSupported: (
       request: IsAtomicBatchSupportedRequest,
     ) => Promise<IsAtomicBatchSupportedResult>;
     messenger: TransactionControllerInitMessenger;
+    getNextNonce: (
+      address: string,
+      networkClientId: NetworkClientId,
+    ) => Promise<Hex>;
   }) {
     this.#isAtomicBatchSupported = isAtomicBatchSupported;
     this.#messenger = messenger;
+    this.#getNextNonce = getNextNonce;
   }
 
   getHook(): PublishHook {
@@ -348,8 +362,11 @@ export class Delegation7702PublishHook {
     transactionMeta: TransactionMeta,
     upgradeContractAddress?: Hex,
   ): Promise<AuthorizationList> {
-    const { chainId, txParams } = transactionMeta;
-    const { from, nonce } = txParams;
+    const { chainId, txParams, networkClientId } = transactionMeta;
+    const { from, nonce: txNonce } = txParams;
+    const nextNonce = await this.#getNextNonce(from, networkClientId);
+
+    const nonce = txNonce ?? nextNonce;
 
     log('Including authorization as not upgraded');
 
@@ -393,10 +410,10 @@ export class Delegation7702PublishHook {
   }
 
   #decodeAuthorizationSignature(signature: Hex) {
-    const r = signature.slice(0, 66) as Hex;
-    const s = `0x${signature.slice(66, 130)}` as Hex;
+    const r = stripSingleLeadingZero(signature.slice(0, 66)) as Hex;
+    const s = stripSingleLeadingZero(add0x(signature.slice(66, 130))) as Hex;
     const v = parseInt(signature.slice(130, 132), 16);
-    const yParity = v - 27 === 0 ? ('0x' as const) : ('0x1' as const);
+    const yParity = toHex(v - 27 === 0 ? 0 : 1);
 
     return {
       r,

@@ -1630,14 +1630,8 @@
   "customToken": {
     "message": "Token tùy chỉnh"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Tính năng phát hiện token hiện chưa khả dụng trong mạng này. Vui lòng nhập token theo cách thủ công và đảm bảo bạn tin tưởng. Tìm hiểu về $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Bất kỳ ai cũng có thể tạo token, bao gồm cả việc tạo phiên bản giả mạo của token hiện có. Tìm hiểu về $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Đảm bảo bạn tin tưởng token trước khi nhập token đó. Tìm hiểu cách phòng tránh $1. Bạn cũng có thể bật tính năng phát hiện token $2."
   },
   "customerSupport": {
     "message": "hỗ trợ khách hàng"
@@ -2787,9 +2781,6 @@
   "imported": {
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "trong phần Cài đặt"
   },
   "included": {
     "message": "đã bao gồm"
@@ -5238,9 +5229,6 @@
   "shieldEntryModalGetStarted": {
     "message": "Bắt đầu"
   },
-  "shieldEntryModalSkip": {
-    "message": "Bỏ qua"
-  },
   "show": {
     "message": "Hiển thị"
   },
@@ -6603,9 +6591,6 @@
   },
   "tokenMarketplace": {
     "message": "Thị trường token"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "rủi ro về bảo mật và lừa đảo token"
   },
   "tokenStandard": {
     "message": "Tiêu chuẩn token"

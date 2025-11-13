@@ -1630,14 +1630,8 @@
   "customToken": {
     "message": "Jeton personnalisé"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "La détection de token n’est pas encore disponible sur ce réseau. Veuillez importer le token manuellement et vous assurer que vous lui faites bien confiance. En savoir plus sur $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Tout un chacun peut créer un jeton, y compris créer de fausses copies de jetons existants. En savoir plus sur $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Veuillez vous assurer que le jeton est authentique avant de l’importer. Apprenez à éviter $1. Vous pouvez également activer la détection des jetons $2."
   },
   "customerSupport": {
     "message": "service client"
@@ -2787,9 +2781,6 @@
   "imported": {
     "message": "Importé",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "dans vos paramètres"
   },
   "included": {
     "message": "inclus"
@@ -5238,9 +5229,6 @@
   "shieldEntryModalGetStarted": {
     "message": "Commencer"
   },
-  "shieldEntryModalSkip": {
-    "message": "Ignorer"
-  },
   "show": {
     "message": "Afficher"
   },
@@ -6603,9 +6591,6 @@
   },
   "tokenMarketplace": {
     "message": "Marché des jetons"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "les arnaques et les risques de piratage informatique"
   },
   "tokenStandard": {
     "message": "Jeton standard"
