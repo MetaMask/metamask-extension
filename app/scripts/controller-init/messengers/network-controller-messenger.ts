@@ -15,7 +15,9 @@ import {
 } from '../../controllers/metametrics-controller';
 import { RootMessenger } from '../../lib/messenger';
 
-type AllowedActions = ErrorReportingServiceCaptureExceptionAction;
+type AllowedActions =
+  | ErrorReportingServiceCaptureExceptionAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 export type NetworkControllerMessenger = ReturnType<
   typeof getNetworkControllerMessenger

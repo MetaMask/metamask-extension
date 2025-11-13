@@ -40,26 +40,34 @@ jest.mock('@metamask/network-controller', () => {
 });
 
 function getInitRequestMock(
-  baseMessenger = getRootMessenger<never, never>(),
+  messenger = new Messenger<
+    MockAnyNamespace,
+    RemoteFeatureFlagControllerGetStateAction,
+    ControllerStateChangeEvent<
+      'RemoteFeatureFlagController',
+      RemoteFeatureFlagControllerState
+    >
+  >({ namespace: MOCK_ANY_NAMESPACE }),
 ): jest.Mocked<
   ControllerInitRequest<
     NetworkControllerMessenger,
     NetworkControllerInitMessenger
   >
 > {
-  const requestMock = {
-    ...buildControllerInitRequestMock(),
-    controllerMessenger: getNetworkControllerMessenger(baseMessenger),
-    initMessenger: getNetworkControllerInitMessenger(baseMessenger),
-  };
-
-  baseMessenger.registerActionHandler(
-    // @ts-expect-error: I don't know wtf is going on.
+  messenger.registerActionHandler(
     'RemoteFeatureFlagController:getState',
     jest.fn().mockReturnValue({
-      walletFrameworkRpcFailoverEnabled: true,
+      remoteFeatureFlags: {
+        walletFrameworkRpcFailoverEnabled: true,
+      },
     }),
   );
+
+  const requestMock = {
+    ...buildControllerInitRequestMock(),
+    controllerMessenger: getNetworkControllerMessenger(messenger),
+    initMessenger: getNetworkControllerInitMessenger(messenger),
+  };
 
   return requestMock;
 }
@@ -89,6 +97,7 @@ describe('NetworkControllerInit', () => {
       getBlockTrackerOptions: expect.any(Function),
       getRpcServiceOptions: expect.any(Function),
       infuraProjectId: undefined,
+      isRpcFailoverEnabled: true,
     });
   });
 
@@ -370,7 +379,7 @@ describe('NetworkControllerInit', () => {
   it('disables RPC failover when the `walletFrameworkRpcFailoverEnabled` feature flag is disabled', () => {
     const messenger = new Messenger<
       MockAnyNamespace,
-      never,
+      RemoteFeatureFlagControllerGetStateAction,
       ControllerStateChangeEvent<
         'RemoteFeatureFlagController',
         RemoteFeatureFlagControllerState

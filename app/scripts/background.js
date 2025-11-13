@@ -81,7 +81,7 @@ import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
-import { onUpdate } from './onUpdate';
+import { onUpdate } from './on-update';
 
 /* eslint-enable import/first */
 
