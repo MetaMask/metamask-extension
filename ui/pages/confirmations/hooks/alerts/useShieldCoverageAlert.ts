@@ -195,7 +195,7 @@ export function useShieldCoverageAlert(): Alert[] {
 
     let severity = Severity.Disabled;
     let inlineAlertText = isPaused ? t('shieldPaused') : t('shieldNotCovered');
-    const isSignatureRequest = isSignatureTransactionType();
+    const isSignatureRequest = isSignatureTransactionType(currentConfirmation);
     let modalTitle = isPaused
       ? t('shieldCoverageAlertMessageTitlePaused')
       : t('shieldCoverageAlertMessageTitle');
@@ -248,5 +248,13 @@ export function useShieldCoverageAlert(): Alert[] {
           : undefined,
       },
     ];
-  }, [status, modalBodyStr, showAlert, t, isPaused, onPausedAcknowledgeClick]);
+  }, [
+    showAlert,
+    isPaused,
+    t,
+    currentConfirmation,
+    modalBodyStr,
+    onPausedAcknowledgeClick,
+    status,
+  ]);
 }
