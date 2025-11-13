@@ -1,4 +1,7 @@
-import { SignatureRequest } from '@metamask/signature-controller';
+import {
+  SignatureRequest,
+  SignatureRequestType,
+} from '@metamask/signature-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -187,6 +190,14 @@ export function useShieldCoverageAlert(): Alert[] {
     navigate(TRANSACTION_SHIELD_ROUTE);
   }, [navigate]);
 
+  const getIsSignatureRequest = useCallback(() => {
+    const type = currentConfirmation?.type;
+    return (
+      type === SignatureRequestType.PersonalSign ||
+      type === SignatureRequestType.TypedSign
+    );
+  }, [currentConfirmation]);
+
   return useMemo<Alert[]>((): Alert[] => {
     if (!showAlert) {
       return [];
@@ -194,16 +205,22 @@ export function useShieldCoverageAlert(): Alert[] {
 
     let severity = Severity.Disabled;
     let inlineAlertText = isPaused ? t('shieldPaused') : t('shieldNotCovered');
+    const isSignatureRequest = getIsSignatureRequest();
     let modalTitle = isPaused
       ? t('shieldCoverageAlertMessageTitlePaused')
       : t('shieldCoverageAlertMessageTitle');
+    if (isSignatureRequest && !isPaused) {
+      modalTitle = t('shieldCoverageAlertMessageTitleSignatureRequest');
+    }
     let inlineAlertTextBackgroundColor;
     if (!isPaused) {
       switch (status) {
         case 'covered':
           severity = Severity.Success;
           inlineAlertText = t('shieldCovered');
-          modalTitle = t('shieldCoverageAlertMessageTitleCovered');
+          modalTitle = isSignatureRequest
+            ? t('shieldCoverageAlertMessageTitleSignatureRequestCovered')
+            : t('shieldCoverageAlertMessageTitleCovered');
           break;
         case 'malicious':
           severity = Severity.Danger;
@@ -241,5 +258,13 @@ export function useShieldCoverageAlert(): Alert[] {
           : undefined,
       },
     ];
-  }, [status, modalBodyStr, showAlert, t, isPaused, onPausedAcknowledgeClick]);
+  }, [
+    status,
+    modalBodyStr,
+    showAlert,
+    t,
+    isPaused,
+    onPausedAcknowledgeClick,
+    getIsSignatureRequest,
+  ]);
 }
