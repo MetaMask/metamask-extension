@@ -23,6 +23,7 @@ import {
 import { Header } from '../pages/page';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
 export const PermissionsHeader = ({
   securedOrigin,
@@ -47,7 +48,7 @@ export const PermissionsHeader = ({
           iconName={IconName.ArrowLeft}
           className="connections-header__start-accessory"
           color={IconColor.iconDefault}
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(PREVIOUS_ROUTE)}
           data-testid="back-button"
         />
       }

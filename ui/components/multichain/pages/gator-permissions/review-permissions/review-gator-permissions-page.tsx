@@ -31,6 +31,7 @@ import {
   getAggregatedGatorPermissionByChainId,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { ReviewGatorPermissionItem } from '../components';
+import { PREVIOUS_ROUTE } from '../../../../../helpers/constants/routes';
 
 type ReviewGatorPermissionsPageProps = {
   params?: { chainId: string; permissionGroupName: string };
@@ -136,7 +137,7 @@ export const ReviewGatorPermissionsPage = ({
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.IconDefault}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             size={ButtonIconSize.Sm}
           />
         }
