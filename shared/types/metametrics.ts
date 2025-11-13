@@ -3,6 +3,10 @@ import type { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from 'viem';
+import {
+  PaymentType,
+  RecurringInterval,
+} from '@metamask/subscription-controller';
 import type {
   MetaMetricsEventFragment,
   MetaMetricsPageObject,
@@ -78,4 +82,14 @@ export type TransactionEventPayload = {
 export type TransactionMetaEventPayload = TransactionMeta & {
   actionId?: string;
   error?: string;
+};
+
+/**
+ * The default options provided to the user in the UI.
+ */
+export type DefaultSubscriptionPaymentOptions = {
+  defaultBillingInterval: RecurringInterval;
+  defaultPaymentType: PaymentType;
+  defaultPaymentCurrency: string;
+  defaultPaymentChain?: string;
 };

@@ -32,7 +32,7 @@
     flex-direction: row;
     height: 100%;
     width: 100%;
-    max-width: 420px;
+    max-width: calc(490px - 32px); // 490px (sidepanel max-width) - 32px (side padding)
   }
 
   &__currency-wrapper {

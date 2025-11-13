@@ -1,8 +1,15 @@
 import {
+  PAYMENT_TYPES,
+  ProductType,
   RECURRING_INTERVALS,
   Subscription,
 } from '@metamask/subscription-controller';
 import { getIsShieldSubscriptionActive } from '../../lib/shield';
+import { DefaultSubscriptionPaymentOptions } from '../../types/metametrics';
+// eslint-disable-next-line import/no-restricted-paths
+import { PreferencesController } from '../../../app/scripts/controllers/preferences-controller';
+// eslint-disable-next-line import/no-restricted-paths
+import MetaMetricsController from '../../../app/scripts/controllers/metametrics-controller';
 import { loadShieldConfig } from './config';
 
 export async function getShieldGatewayConfig(
@@ -85,4 +92,62 @@ export function calculateSubscriptionRemainingBillingCycles({
   // Assume the period end and endDate have the same month, day of the month and time
   // Current period is inclusive, so we need to add 1
   return yearDiff + 1;
+}
+
+/**
+ * Get the default subscription payment options displayed to the user in the Shield plan page.
+ * Since we can't access the UI here, we get from the AppStateController.
+ *
+ * @param defaultOption - The default option.
+ * @returns The default subscription payment options.
+ */
+export function getDefaultSubscriptionPaymentOptions(
+  defaultOption?: DefaultSubscriptionPaymentOptions,
+) {
+  const defaultBillingInterval =
+    defaultOption?.defaultBillingInterval || RECURRING_INTERVALS.year;
+  const defaultPaymentType =
+    defaultOption?.defaultPaymentType || PAYMENT_TYPES.byCard;
+  const defaultPaymentCurrency = defaultOption?.defaultPaymentCurrency || 'USD';
+  const defaultPaymentChain = defaultOption?.defaultPaymentChain;
+  return {
+    defaultBillingInterval,
+    defaultPaymentType,
+    defaultPaymentCurrency,
+    defaultPaymentChain,
+  };
+}
+
+/**
+ * Check if a product is an already trialed subscription
+ *
+ * @param trialProducts - The trial products.
+ * @param product - The product.
+ * @returns True if the product is a trialed subscription, false otherwise.
+ */
+export function getIsTrialedSubscription(
+  trialProducts: ProductType[],
+  product: ProductType,
+): boolean {
+  return Boolean(trialProducts?.includes(product));
+}
+
+/**
+ * Update the preferences after a shield subscription is active
+ *
+ * @param metaMetricsController - MetaMetricsController instance.
+ * @param preferencesController - PreferencesController instance.
+ */
+export function updatePreferencesAndMetricsForShieldSubscription(
+  metaMetricsController: MetaMetricsController,
+  preferencesController: PreferencesController,
+) {
+  // shield subscribers have to turn on metametrics
+  metaMetricsController.setParticipateInMetaMetrics(true);
+  // shield subscribers have to turn on security alerts
+  preferencesController.setSecurityAlertsEnabled(true);
+  // shield subscribers have to turn on phishing detection
+  preferencesController.setUsePhishDetect(true);
+  // shield subscribers have to turn on transaction simulations
+  preferencesController.setUseTransactionSimulations(true);
 }
