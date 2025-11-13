@@ -5875,7 +5875,7 @@
     "message": "Provide a brief summary of the incident"
   },
   "shieldClaimDetails": {
-    "message": "You may file a single claim per incident within $1 days of the incident. View the full coverage policy $2.",
+    "message": "You may file a single claim per incident within $1 days of the incident. View the full list of what’s covered $2.",
     "description": "The $1 is the number of days and $2 is a link to the full coverage policy"
   },
   "shieldClaimDetailsViewClaims": {
