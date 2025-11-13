@@ -216,10 +216,12 @@ const ShieldPlan = () => {
 
   // set default selected payment method to crypto if selected token available
   useEffect(() => {
-    if (selectedToken) {
+    const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
+    // if the last used payment method is not crypto, don't set default method
+    if (selectedToken && lastUsedPaymentMethod !== PAYMENT_TYPES.byCard) {
       setSelectedPaymentMethod(PAYMENT_TYPES.byCrypto);
     }
-  }, [selectedToken, setSelectedPaymentMethod]);
+  }, [selectedToken, setSelectedPaymentMethod, lastUsedPaymentDetails]);
 
   const tokensSupported = useMemo(() => {
     const chainsAndTokensSupported = cryptoPaymentMethod?.chains ?? [];
