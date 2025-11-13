@@ -65,6 +65,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Decrease time before activating QuickNode when Infura is degraded or unavailable; decrease time before allowing users to (#37002)
   interact with a custom network following connection issues
 - Update default bridge slippage to 2% (#37367)
+- Stops reloading of animation once completed (#37581)
+- Fixes error saying alIgnoredTokens is undefined (#37660)
+- Fixes unexpected error modal shown after user has cancelled the social login in firefox (#37658)
+- Fixes infinite spinner shown on send flow when sending very low BTC (#37657)
+- Fixed a bug causing advanced permissions requests on mainnet to fail before showing the permission picker (#37675)
+- Fixes BTC redeposits not shown in individual asset activity (#37732)
+- Automatically creates new account types on wallet unlock (#37762)
 
 ## [13.8.0]
 
