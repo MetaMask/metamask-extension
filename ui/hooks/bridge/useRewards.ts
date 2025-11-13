@@ -128,7 +128,6 @@ export const useRewards = ({
       : null,
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedEstimatePoints = useCallback(
     debounce(
       async (
