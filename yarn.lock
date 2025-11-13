@@ -6157,21 +6157,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^21.0.0":
-  version: 21.0.0
-  resolution: "@metamask/eth-json-rpc-middleware@npm:21.0.0"
+"@metamask/eth-json-rpc-middleware@npm:@metamask-previews/eth-json-rpc-middleware@21.0.0-preview-5a558267":
+  version: 21.0.0-preview-5a558267
+  resolution: "@metamask-previews/eth-json-rpc-middleware@npm:21.0.0-preview-5a558267"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^14.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^5.0.1"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/json-rpc-engine": "npm:^10.1.1"
+    "@metamask/message-manager": "npm:^14.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.8.1"
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/3859035c7647202160fa73a8b2837153454b0097713bf822b4c22a14e971176895546c548e5899f0e600d1adbc3b79071ad468a8a1df3f06247ff5bd8b867353
+  checksum: 10/80a89d05cdc8b3a06be15799a6dfc9c07b837ee71e598599072543ff0dc6fcd822510409af6f49fb2e94b14c3121760d4c3d08e7fadbe6fd8e4875187ea0d34c
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-json-rpc-provider@npm:@metamask-previews/eth-json-rpc-provider@5.0.1-preview-5a558267":
+  version: 5.0.1-preview-5a558267
+  resolution: "@metamask-previews/eth-json-rpc-provider@npm:5.0.1-preview-5a558267"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^10.1.1"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.8.1"
+    nanoid: "npm:^3.3.8"
+  checksum: 10/45304cb4333ce4fd5b2c12dbe14c8817ea5065fcd4ec5a40061e72dfb900e5c98f689b288309eaa98edb9c1962aa8fcb23add8a4277e4aa7bcbd8a092f9d7eb4
   languageName: node
   linkType: hard
 
@@ -6188,7 +6201,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-provider@npm:^5.0.0, @metamask/eth-json-rpc-provider@npm:^5.0.1":
+"@metamask/eth-json-rpc-provider@npm:^5.0.0":
   version: 5.0.1
   resolution: "@metamask/eth-json-rpc-provider@npm:5.0.1"
   dependencies:
@@ -6525,7 +6538,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^10.0.0, @metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3, @metamask/json-rpc-engine@npm:^10.1.0, @metamask/json-rpc-engine@npm:^10.1.1":
+"@metamask/json-rpc-engine@npm:@metamask-previews/json-rpc-engine@10.1.1-preview-5a558267":
+  version: 10.1.1-preview-5a558267
+  resolution: "@metamask-previews/json-rpc-engine@npm:10.1.1-preview-5a558267"
+  dependencies:
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.8.1"
+    "@types/deep-freeze-strict": "npm:^1.1.0"
+    deep-freeze-strict: "npm:^1.1.1"
+    klona: "npm:^2.0.6"
+  checksum: 10/5ffca4557871874b80da5d238523459d02288664c1cb94ff152af91c985bee9b66defe5060b4ce74bdbf8baea686131d1ac50ecf978278886df3e88081e16507
+  languageName: node
+  linkType: hard
+
+"@metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3, @metamask/json-rpc-engine@npm:^10.1.0":
   version: 10.1.1
   resolution: "@metamask/json-rpc-engine@npm:10.1.1"
   dependencies:
@@ -7027,12 +7054,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^25.0.0":
-  version: 25.0.0
-  resolution: "@metamask/network-controller@npm:25.0.0"
+"@metamask/network-controller@npm:@metamask-previews/network-controller@25.0.0-preview-5a558267":
+  version: 25.0.0-preview-5a558267
+  resolution: "@metamask-previews/network-controller@npm:25.0.0-preview-5a558267"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/controller-utils": "npm:^11.15.0"
     "@metamask/eth-block-tracker": "npm:^14.0.0"
     "@metamask/eth-json-rpc-infura": "npm:^10.3.0"
     "@metamask/eth-json-rpc-middleware": "npm:^21.0.0"
@@ -7052,7 +7079,7 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/error-reporting-service": ^3.0.0
-  checksum: 10/1fcad4f22f4b090b7de64134fdc6e4085f5bb4bb1dea53d7d25122c708f18d90a61caa5e6098a483ecbbb8cd93cdd2a145484cb129c7e8def4a9b726e9b4ee4c
+  checksum: 10/4ce760c93bdb64cc408b7bfdf4b015edb684927f4f8dadea8ed8a3de12b44342ee2c5a893741ced112619199323e28bbd57d2bad208e85605a5b1ad803750f6a
   languageName: node
   linkType: hard
 
