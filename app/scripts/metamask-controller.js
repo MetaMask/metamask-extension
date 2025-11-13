@@ -129,7 +129,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { COHORT_NAMES, PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
   findAtomicBatchSupportForChain,
@@ -219,7 +219,10 @@ import {
 } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { getShieldGatewayConfig } from '../../shared/modules/shield';
+import {
+  getShieldGatewayConfig,
+  updatePreferencesAndMetricsForShieldSubscription,
+} from '../../shared/modules/shield';
 import {
   HYPERLIQUID_ORIGIN,
   METAMASK_REFERRAL_CODE,
@@ -263,6 +266,7 @@ import {
   previousValueComparator,
   initializeRpcProviderDomains,
   getPlatform,
+  getBooleanFlag,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import {
@@ -752,7 +756,7 @@ export default class MetamaskController extends EventEmitter {
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
     this.accountTreeController = controllersByName.AccountTreeController;
     this.oauthService = controllersByName.OAuthService;
-    this.SubscriptionService = controllersByName.SubscriptionService;
+    this.subscriptionService = controllersByName.SubscriptionService;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
     this.subscriptionController = controllersByName.SubscriptionController;
@@ -807,6 +811,15 @@ export default class MetamaskController extends EventEmitter {
         );
 
         if (hasActiveShieldSubscription) {
+          // fetch claims configurations when shield subscription is active
+          this.claimsController.fetchClaimsConfigurations().catch((err) => {
+            log.error('Error fetching claims configurations', err);
+          });
+          // update preferences and metrics optin status after shield subscription is active
+          updatePreferencesAndMetricsForShieldSubscription(
+            this.metaMetricsController,
+            this.preferencesController,
+          );
           this.shieldController.start();
         } else {
           this.shieldController.stop();
@@ -1389,6 +1402,20 @@ export default class MetamaskController extends EventEmitter {
 
     if (usePhishDetect) {
       this.phishingController.maybeUpdateState();
+    }
+
+    if (
+      getBooleanFlag(process.env.AUTO_UPDATE_PREINSTALLED_SNAPS) ||
+      // Check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
+      Object.values(this.snapController.state.snaps).some(
+        (snap) => !snap.preinstalled,
+      )
+    ) {
+      try {
+        this.snapController.updateRegistry();
+      } catch {
+        // Ignore
+      }
     }
   }
 
@@ -2510,6 +2537,9 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.getSubscriptionsEligibilities.bind(
           this.subscriptionController,
         ),
+      assignUserToCohort: this.subscriptionController.assignUserToCohort.bind(
+        this.subscriptionController,
+      ),
       getSubscriptions: this.subscriptionController.getSubscriptions.bind(
         this.subscriptionController,
       ),
@@ -2536,20 +2566,20 @@ export default class MetamaskController extends EventEmitter {
           this.subscriptionController,
         ),
       startSubscriptionWithCard:
-        this.SubscriptionService.startSubscriptionWithCard.bind(
-          this.SubscriptionService,
+        this.subscriptionService.startSubscriptionWithCard.bind(
+          this.subscriptionService,
         ),
       updateSubscriptionCardPaymentMethod:
-        this.SubscriptionService.updateSubscriptionCardPaymentMethod.bind(
-          this.SubscriptionService,
+        this.subscriptionService.updateSubscriptionCardPaymentMethod.bind(
+          this.subscriptionService,
         ),
       startSubscriptionWithCrypto:
         this.subscriptionController.startSubscriptionWithCrypto.bind(
           this.subscriptionController,
         ),
       updateSubscriptionCryptoPaymentMethod:
-        this.SubscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
-          this.SubscriptionService,
+        this.subscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
+          this.subscriptionService,
         ),
       submitSubscriptionUserEvents:
         this.subscriptionController.submitUserEvent.bind(
@@ -2562,6 +2592,9 @@ export default class MetamaskController extends EventEmitter {
           this.rewardsController,
         ),
       getRewardsSeasonMetadata: this.rewardsController.getSeasonMetadata.bind(
+        this.rewardsController,
+      ),
+      getRewardsSeasonStatus: this.rewardsController.getSeasonStatus.bind(
         this.rewardsController,
       ),
       getRewardsHasAccountOptedIn:
@@ -2889,6 +2922,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setShowShieldEntryModalOnce:
         appStateController.setShowShieldEntryModalOnce.bind(appStateController),
+      setPendingShieldCohort:
+        appStateController.setPendingShieldCohort.bind(appStateController),
       setShieldPausedToastLastClickedOrClosed:
         appStateController.setShieldPausedToastLastClickedOrClosed.bind(
           appStateController,
@@ -2897,9 +2932,13 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShieldEndingToastLastClickedOrClosed.bind(
           appStateController,
         ),
-
       setAppActiveTab:
         appStateController.setAppActiveTab.bind(appStateController),
+      setDefaultSubscriptionPaymentOptions:
+        appStateController.setDefaultSubscriptionPaymentOptions.bind(
+          appStateController,
+        ),
+
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -4781,7 +4820,7 @@ export default class MetamaskController extends EventEmitter {
 
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       // Init multichain accounts after creating internal accounts.
-      this.multichainAccountService.init();
+      await this.multichainAccountService.init();
       ///: END:ONLY_INCLUDE_IF
 
       // And we re-init the account tree controller too, to use the
@@ -5166,7 +5205,7 @@ export default class MetamaskController extends EventEmitter {
     await this.accountsController.updateAccounts();
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     // Init multichain accounts after creating internal accounts.
-    this.multichainAccountService.init();
+    await this.multichainAccountService.init();
     ///: END:ONLY_INCLUDE_IF
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
@@ -8498,9 +8537,57 @@ export default class MetamaskController extends EventEmitter {
    * @param transactionMeta - The transaction metadata.
    */
   async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
-    await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
-      transactionMeta,
-    );
+    const { isGasFeeSponsored, chainId } = transactionMeta;
+    const bundlerSupported = await isSendBundleSupported(chainId);
+    const isSponsored = isGasFeeSponsored && bundlerSupported;
+
+    try {
+      this.subscriptionService.trackSubscriptionRequestEvent(
+        'started',
+        transactionMeta,
+        {
+          has_sufficient_crypto_balance: true,
+        },
+      );
+
+      await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
+        transactionMeta,
+        isSponsored,
+      );
+
+      // Mark send/transfer/swap transactions for Shield post_tx cohort evaluation
+      const isPostTxTransaction = [
+        TransactionType.simpleSend,
+        TransactionType.tokenMethodTransfer,
+        TransactionType.swap,
+        TransactionType.swapAndSend,
+      ].includes(transactionMeta.type);
+
+      const { pendingShieldCohort } = this.appStateController.state;
+      if (isPostTxTransaction && !pendingShieldCohort) {
+        this.appStateController.setPendingShieldCohort(
+          COHORT_NAMES.POST_TX,
+          transactionMeta.type,
+        );
+      }
+      this.subscriptionService.trackSubscriptionRequestEvent(
+        'completed',
+        transactionMeta,
+        {
+          gas_sponsored: isSponsored,
+        },
+      );
+    } catch (error) {
+      log.error('Error on Shield subscription approval transaction', error);
+      this.subscriptionService.trackSubscriptionRequestEvent(
+        'failed',
+        transactionMeta,
+        {
+          error_message: error.message,
+        },
+      );
+      throw error;
+    }
   }
 
   /**

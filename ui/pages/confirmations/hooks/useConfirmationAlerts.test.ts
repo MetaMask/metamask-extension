@@ -2,6 +2,10 @@ import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confi
 import mockState from '../../../../test/data/mock-state.json';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
+jest.mock('react-router-dom-v5-compat', () => ({
+  useNavigate: jest.fn(),
+}));
+
 describe('useConfirmationAlerts', () => {
   it('returns empty array if no alerts', () => {
     const { result } = renderHookWithConfirmContextProvider(

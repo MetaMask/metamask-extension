@@ -248,18 +248,6 @@
         flex: 0 0 40%;
         max-width: 197px;
       }
-
-      .tab-bar__tab {
-        @include design-system.screen-sm-min {
-          max-height: 50px;
-        }
-
-        &__caret {
-          @include design-system.screen-sm-min {
-            display: none;
-          }
-        }
-      }
     }
 
     &__modules {
@@ -507,8 +495,32 @@
       flex: 1 1 auto;
 
       .tab-bar__tab {
+        @include design-system.screen-sm-min {
+          @include design-system.H4;
+
+          max-height: none;
+        }
+
+        &__selected-indicator {
+          display: none;
+        }
+
         &__caret {
           display: block;
+        }
+
+        &__content {
+          &__title {
+            @include design-system.screen-sm-min {
+              @include design-system.H4;
+            }
+          }
+        }
+
+        &--active {
+          @include design-system.screen-sm-min {
+            background-color: unset;
+          }
         }
       }
     }

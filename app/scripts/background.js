@@ -1591,15 +1591,6 @@ export function setupController(
 
     controller.rejectAllPendingApprovals();
   }
-
-  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
-  if (
-    Object.values(controller.snapController.state.snaps).some(
-      (snap) => !snap.preinstalled,
-    )
-  ) {
-    controller.snapController.updateRegistry();
-  }
 }
 
 //
@@ -1800,7 +1791,8 @@ function onNavigateToTab() {
 // Set initial side panel behavior based on user preference
 const initSidePanelBehavior = async () => {
   // Only initialize sidepanel behavior if the feature flag is enabled
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+  // and the browser supports the sidePanel API (not Firefox)
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
     return;
   }
 
@@ -1829,7 +1821,8 @@ initSidePanelBehavior();
 // Listen for preference changes to update side panel behavior dynamically
 const setupPreferenceListener = async () => {
   // Only setup preference listener if the feature flag is enabled
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+  // and the browser supports the sidePanel API (not Firefox)
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
     return;
   }
 
