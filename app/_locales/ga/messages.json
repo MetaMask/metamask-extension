@@ -3701,13 +3701,6 @@
   "network": {
     "message": "Líonra"
   },
-  "networkAddress": {
-    "message": "1 seoladh líonra"
-  },
-  "networkAddresses": {
-    "message": "Seoltaí líonra $1",
-    "description": "$1 is the number of accounts"
-  },
   "networkChanged": {
     "message": "Athraíodh an líonra"
   },
@@ -4869,6 +4862,18 @@
   },
   "pushNotificationPositionLiquidatedTitle": {
     "message": "Post leachtaithe"
+  },
+  "pushNotificationShieldClaimCreatedDescriptionShort": {
+    "message": "Tá d'éileamh cruthaithe"
+  },
+  "pushNotificationShieldClaimCreatedTitle": {
+    "message": "Éileamh cruthaithe"
+  },
+  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
+    "message": "Tá d'éileamh nuashonraithe"
+  },
+  "pushNotificationShieldClaimStatusUpdatedTitle": {
+    "message": "Éileamh nuashonraithe"
   },
   "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
     "message": "Fáilte go Sciath Idirbhirt MetaMask! Féach ar na buntáistí"

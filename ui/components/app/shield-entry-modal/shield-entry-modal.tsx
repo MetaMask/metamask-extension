@@ -7,6 +7,7 @@ import {
   SubscriptionUserEvent,
 } from '@metamask/subscription-controller';
 import {
+  Box,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -34,6 +35,8 @@ import {
   getShieldEntryModalTriggeringCohort,
   getModalTypeForShieldEntryModal,
 } from '../../../selectors';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
 import {
   AlignItems,
   Display,
@@ -41,6 +44,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import ShieldIllustrationAnimation from './shield-illustration-animation';
 
 const ShieldEntryModal = ({
   skipEventSubmission = false,
@@ -52,18 +56,24 @@ const ShieldEntryModal = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { captureShieldEntryModalEvent } = useSubscriptionMetrics();
   const shouldSubmitEvent = useSelector(
     getShouldSubmitEventsForShieldEntryModal,
   );
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
   const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
-  const handleOnClose = () => {
+  const handleOnClose = (ctaActionClicked: string = 'dismiss') => {
+    captureShieldEntryModalEvent({
+      source: EntryModalSourceEnum.Homepage,
+      type: modalType,
+      modalCtaActionClicked: ctaActionClicked,
+    });
+
     if (skipEventSubmission) {
       onClose?.();
       return;
-    }
-    if (shouldSubmitEvent) {
+    } else if (shouldSubmitEvent) {
       dispatch(
         submitSubscriptionUserEvents({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
@@ -71,11 +81,12 @@ const ShieldEntryModal = ({
         }),
       );
     }
+
     dispatch(setShowShieldEntryModalOnce(false));
   };
 
   const handleOnGetStarted = () => {
-    handleOnClose();
+    handleOnClose('get-started');
     navigate(SHIELD_PLAN_ROUTE);
   };
 
@@ -86,7 +97,7 @@ const ShieldEntryModal = ({
       autoFocus={false}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
-      onClose={handleOnClose}
+      onClose={() => handleOnClose('skip')}
       className="shield-entry-modal"
       data-theme={ThemeType.dark}
     >
@@ -129,10 +140,17 @@ const ShieldEntryModal = ({
               ? t('shieldEntryModalSubtitleA', ['$10,000'])
               : t('shieldEntryModalSubtitleB', ['$10,000'])}
           </Text>
-          <img
-            src="/images/shield-entry-modal.png"
-            alt="Shield Entry Illustration"
-          />
+          <Box className="grid place-items-center">
+            <img
+              src="/images/shield-entry-modal-bg.png"
+              alt="Shield Entry Illustration"
+              className="col-start-1 row-start-1"
+            />
+            <ShieldIllustrationAnimation
+              containerClassName="shield-entry-modal-shield-illustration__container col-start-1 row-start-1"
+              canvasClassName="shield-entry-modal-shield-illustration__canvas"
+            />
+          </Box>
         </ModalBody>
         <ModalFooter
           display={Display.Flex}
