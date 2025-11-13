@@ -4,11 +4,7 @@ import { PLATFORM_FIREFOX } from '../../shared/constants/app';
 import { getPlatform } from './lib/util';
 import type MetaMaskController from './metamask-controller';
 import type ExtensionPlatform from './platforms/extension';
-import { MetaMaskStateType } from './lib/stores/base-store';
-import {
-  AppStateController,
-  AppStateControllerState,
-} from './controllers/app-state-controller';
+import { AppStateController } from './controllers/app-state-controller';
 /**
  * Trigger actions that should happen only upon update installation. Calling
  * this might result in the extension restarting on Chromium-based browsers.
