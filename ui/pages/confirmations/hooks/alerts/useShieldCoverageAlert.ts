@@ -1,7 +1,4 @@
-import {
-  SignatureRequest,
-  SignatureRequestType,
-} from '@metamask/signature-controller';
+import { SignatureRequest } from '@metamask/signature-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -22,6 +19,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../transactions/useEnableShieldCoverageChecks';
 import { IconName } from '../../../../components/component-library';
 import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
+import { isSignatureTransactionType } from '../../utils';
 import { ShieldCoverageAlertMessage } from './transactions/ShieldCoverageAlertMessage';
 
 const getModalBodyStr = (reasonCode: string | undefined) => {
@@ -190,14 +188,6 @@ export function useShieldCoverageAlert(): Alert[] {
     navigate(TRANSACTION_SHIELD_ROUTE);
   }, [navigate]);
 
-  const getIsSignatureRequest = useCallback(() => {
-    const type = currentConfirmation?.type;
-    return (
-      type === SignatureRequestType.PersonalSign ||
-      type === SignatureRequestType.TypedSign
-    );
-  }, [currentConfirmation]);
-
   return useMemo<Alert[]>((): Alert[] => {
     if (!showAlert) {
       return [];
@@ -205,7 +195,7 @@ export function useShieldCoverageAlert(): Alert[] {
 
     let severity = Severity.Disabled;
     let inlineAlertText = isPaused ? t('shieldPaused') : t('shieldNotCovered');
-    const isSignatureRequest = getIsSignatureRequest();
+    const isSignatureRequest = isSignatureTransactionType();
     let modalTitle = isPaused
       ? t('shieldCoverageAlertMessageTitlePaused')
       : t('shieldCoverageAlertMessageTitle');
@@ -258,13 +248,5 @@ export function useShieldCoverageAlert(): Alert[] {
           : undefined,
       },
     ];
-  }, [
-    status,
-    modalBodyStr,
-    showAlert,
-    t,
-    isPaused,
-    onPausedAcknowledgeClick,
-    getIsSignatureRequest,
-  ]);
+  }, [status, modalBodyStr, showAlert, t, isPaused, onPausedAcknowledgeClick]);
 }

@@ -6053,17 +6053,17 @@
   "shieldCoverageAlertMessageTitle": {
     "message": "This transaction isn't covered"
   },
-  "shieldCoverageAlertMessageTitleSignatureRequest": {
-    "message": "This signature request isn't covered"
-  },
   "shieldCoverageAlertMessageTitleCovered": {
     "message": "This transaction is covered"
   },
-  "shieldCoverageAlertMessageTitleSignatureRequestCovered": {
-    "message": "This signature request is covered"
-  },
   "shieldCoverageAlertMessageTitlePaused": {
     "message": "Transaction Shield paused"
+  },
+  "shieldCoverageAlertMessageTitleSignatureRequest": {
+    "message": "This signature request isn't covered"
+  },
+  "shieldCoverageAlertMessageTitleSignatureRequestCovered": {
+    "message": "This signature request is covered"
   },
   "shieldCoverageAlertMessageTokenTrustSignalWarning": {
     "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds. $1."
