@@ -13,6 +13,7 @@ import {
 } from '../../../../shared/modules/shield';
 import {
   CaptureShieldBillingHistoryOpenedEventParams,
+  CaptureShieldClaimSubmissionEventParams,
   CaptureShieldCtaClickedEventParams,
   CaptureShieldEntryModalEventParams,
   CaptureShieldMembershipCancelledEventParams,
@@ -248,6 +249,35 @@ export const useSubscriptionMetrics = () => {
     [trackEvent, selectedAccount, hdKeyingsMetadata],
   );
 
+  const captureShieldClaimSubmissionEvent = useCallback(
+    (params: CaptureShieldClaimSubmissionEventParams) => {
+      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+        selectedAccount,
+        hdKeyingsMetadata,
+      );
+      trackEvent({
+        event: MetaMetricsEventName.ShieldClaimSubmission,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...userAccountTypeAndCategory,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          subscription_status: params.subscriptionStatus,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          attachments_count: params.attachmentsCount,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          submission_status: params.submissionStatus,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_message: params.errorMessage,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata],
+  );
+
   return {
     captureShieldEntryModalEvent,
     captureShieldSubscriptionRequestEvent,
@@ -257,5 +287,6 @@ export const useSubscriptionMetrics = () => {
     captureShieldPaymentMethodRetriedEvent,
     captureShieldPaymentMethodUpdatedEvent,
     captureShieldCtaClickedEvent,
+    captureShieldClaimSubmissionEvent,
   };
 };

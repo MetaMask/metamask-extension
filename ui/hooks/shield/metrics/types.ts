@@ -139,3 +139,19 @@ export type CaptureShieldCtaClickedEventParams = {
    */
   marketingUtmId?: string;
 };
+
+export type CaptureShieldClaimSubmissionEventParams = {
+  /**
+   * The status of the subscription at the time of claim submission
+   */
+  subscriptionStatus: SubscriptionStatus;
+
+  /**
+   * The number of attachments included in the claim submission
+   */
+  attachmentsCount: number;
+
+  submissionStatus: 'started' | 'completed' | 'failed';
+
+  errorMessage?: string;
+};

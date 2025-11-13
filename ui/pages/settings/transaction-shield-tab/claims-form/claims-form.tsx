@@ -84,7 +84,8 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const navigate = useNavigate();
   const { refetchClaims, pendingClaims } = useClaims();
   const validSubmissionWindowDays = useSelector(getValidSubmissionWindowDays);
-  const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
+  const { captureShieldCtaClickedEvent, captureShieldClaimSubmissionEvent } =
+    useSubscriptionMetrics();
   const [isSubmittingClaim, setIsSubmittingClaim] = useState(false);
 
   const {
@@ -319,9 +320,25 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     if (isInvalidData) {
       return;
     }
+
+    const trackClaimSubmissionEvent = (
+      submissionStatus: 'started' | 'completed' | 'failed',
+      errorMessage?: string,
+    ) => {
+      captureShieldClaimSubmissionEvent({
+        subscriptionStatus: 'active',
+        attachmentsCount: files?.length ?? 0,
+        submissionStatus,
+        errorMessage,
+      });
+    };
+
     try {
       setIsSubmittingClaim(true);
       const chainIdNumber = Number(chainId);
+      // track the event when the claim submission is started
+      trackClaimSubmissionEvent('started');
+
       await submitShieldClaim({
         chainId: chainIdNumber.toString(),
         email,
@@ -332,12 +349,21 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         signature: claimSignature as `0x${string}`,
         files,
       });
+
+      // track the event when the claim submission is completed
+      trackClaimSubmissionEvent('completed');
+
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
       // update claims
       await refetchClaims();
       navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
     } catch (error) {
       handleSubmitClaimError(error as SubmitClaimError);
+      const errorMessage =
+        error instanceof SubmitClaimError ? error.message : undefined;
+
+      // track the event when the claim submission fails
+      trackClaimSubmissionEvent('failed', errorMessage);
     } finally {
       setIsSubmittingClaim(false);
     }
@@ -355,6 +381,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     refetchClaims,
     claimSignature,
     handleSubmitClaimError,
+    captureShieldClaimSubmissionEvent,
   ]);
 
   return (
