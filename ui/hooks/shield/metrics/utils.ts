@@ -3,6 +3,7 @@ import {
   getBillingIntervalForMetrics,
 } from '../../../../shared/modules/shield';
 import {
+  CaptureShieldPaymentMethodChangeEventParams,
   CaptureShieldSubscriptionRequestParams,
   ExistingSubscriptionEventParams,
 } from './types';
@@ -88,5 +89,25 @@ export function formatExistingSubscriptionEventProps(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     billing_interval: selectedBillingInterval,
+  };
+}
+
+export function formatCaptureShieldPaymentMethodChangeEventProps(
+  params: CaptureShieldPaymentMethodChangeEventParams,
+) {
+  const existingSubscriptionEventProps =
+    formatExistingSubscriptionEventProps(params);
+
+  return {
+    ...existingSubscriptionEventProps,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    new_payment_type: params.newPaymentType,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    new_billing_interval: params.newBillingInterval,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    new_crypto_payment_chain: params.newCryptoPaymentChain,
   };
 }

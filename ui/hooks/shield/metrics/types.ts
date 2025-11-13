@@ -90,5 +90,40 @@ export type CaptureShieldSubscriptionRestartRequestParams =
     restartStatus: 'succeeded' | 'failed';
   };
 
+export type CaptureShieldMembershipCancelledEventParams =
+  ExistingSubscriptionEventParams & {
+    cancellationStatus: 'succeeded' | 'failed';
+    errorMessage?: string;
+    /**
+     * The duration of the latest subscription in days.
+     */
+    latestSubscriptionDuration: number;
+  };
+
+/**
+ * Capture the event when the payment method is changed whilst the membership is active.
+ */
+export type CaptureShieldPaymentMethodChangeEventParams =
+  ExistingSubscriptionEventParams & {
+    newPaymentType: PaymentType;
+    newBillingInterval: RecurringInterval;
+    newCryptoPaymentChain?: string;
+    newCryptoPaymentCurrency?: string;
+    changeStatus: 'succeeded' | 'failed';
+    errorMessage?: string;
+  };
+
+/**
+ * Capture the event when the payment method is retried after unsuccessful deduction attempt.
+ */
+export type CaptureShieldPaymentMethodRetriedEventParams =
+  ExistingSubscriptionEventParams;
+
+/**
+ * Capture the event when payment failed due to insufficient allowance or users want to renew subscription that is ending soon.
+ */
+export type CaptureShieldPaymentMethodUpdatedEventParams =
+  ExistingSubscriptionEventParams;
+
 export type CaptureShieldBillingHistoryOpenedEventParams =
   ExistingSubscriptionEventParams;
