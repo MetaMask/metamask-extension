@@ -708,7 +708,7 @@ const TransactionShield = () => {
               </Text>
             )}
           </Box>
-          {!showSkeletonLoader && !isMembershipInactive && (
+          {!showSkeletonLoader && (
             <ShieldIllustrationAnimation
               containerClassName="transaction-shield-page-shield-illustration__container"
               canvasClassName="transaction-shield-page-shield-illustration__canvas"
