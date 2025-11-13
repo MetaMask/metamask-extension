@@ -124,10 +124,7 @@ export const AppHeader = ({ location }) => {
 
   return (
     <>
-      {isUnlocked &&
-      !popupStatus &&
-      !isSidepanel &&
-      true ? (
+      {isUnlocked && !popupStatus && !isSidepanel && true ? (
         <MultichainMetaFoxLogo />
       ) : null}
       <AppHeaderContainer isUnlocked={isUnlocked} popupStatus={popupStatus}>

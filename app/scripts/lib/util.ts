@@ -38,8 +38,7 @@ const getEnvironmentTypeMemo = memoize((url) => {
     return ENVIRONMENT_TYPE_FULLSCREEN;
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION;
-  }
-  else if (parsedUrl.pathname === '/sidepanel.html') {
+  } else if (parsedUrl.pathname === '/sidepanel.html') {
     return ENVIRONMENT_TYPE_SIDEPANEL;
   }
   return ENVIRONMENT_TYPE_BACKGROUND;
