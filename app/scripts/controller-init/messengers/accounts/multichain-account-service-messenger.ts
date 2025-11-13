@@ -22,6 +22,7 @@ import {
   RemoteFeatureFlagControllerStateChangeEvent,
   RemoteFeatureFlagControllerGetStateAction,
 } from '@metamask/remote-feature-flag-controller';
+import { ErrorReportingServiceCaptureExceptionAction } from '@metamask/error-reporting-service';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -38,7 +39,8 @@ type Actions =
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerGetKeyringsByTypeAction
   | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction;
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | ErrorReportingServiceCaptureExceptionAction;
 
 type Events =
   | KeyringControllerStateChangeEvent
@@ -88,6 +90,7 @@ export function getMultichainAccountServiceMessenger(
       'KeyringController:getKeyringsByType',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
+      'ErrorReportingService:captureException',
     ],
   });
   return serviceMessenger;
