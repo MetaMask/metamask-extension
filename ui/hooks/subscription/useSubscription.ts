@@ -350,6 +350,10 @@ export const useHandleSubscription = ({
         }),
       );
 
+      // We need to pass the default options to the background app state controller
+      // so that the Shield subscription request can use it for the metrics capture
+      await dispatch(setDefaultSubscriptionPaymentOptions(defaultOptions));
+
       const subscriptionRequestTrackingParams: Omit<
         CaptureShieldSubscriptionRequestParams,
         'requestStatus'
@@ -383,9 +387,6 @@ export const useHandleSubscription = ({
           }),
         );
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
-        // We need to pass the default options to the background app state controller
-        // so that the crypto subscription request can use it for the metrics capture
-        await dispatch(setDefaultSubscriptionPaymentOptions(defaultOptions));
         await executeSubscriptionCryptoApprovalTransaction();
       }
     }, [
