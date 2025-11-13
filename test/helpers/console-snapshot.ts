@@ -97,6 +97,11 @@ export function normalizeMessage(message: string): string {
       /chrome-extension:\/\/[a-z]{32}\//giu,
       'chrome-extension://<EXTENSION_ID>/',
     )
+    // Collapse translator warnings - normalize locale and key names
+    .replace(
+      /Translator - Unable to find value of key "[^"]+" for locale "[^"]+"/gu,
+      'Translator - Unable to find value of key "<KEY>" for locale "<LOCALE>"',
+    )
     // Replace file paths (normalize to relative paths)
     .replace(/[/\\][^/\\]+[/\\]node_modules[/\\][^/\\]+/gu, '<NODE_MODULE>')
     .replace(/[A-Z]:[/\\][^/\\]+/gu, '<ABSOLUTE_PATH>') // Windows paths
