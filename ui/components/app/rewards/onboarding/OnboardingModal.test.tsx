@@ -47,6 +47,11 @@ jest.mock('../RewardsErrorToast', () => () => (
   <div data-testid="rewards-error-toast">Toast</div>
 ));
 
+// Mock QR code to a simple marker for content assertions
+jest.mock('../RewardsQRCode', () => () => (
+  <div data-testid="rewards-qr">QR Code</div>
+));
+
 const mockedUseSelector = useSelector as jest.Mock;
 const mockedUseDispatch = useDispatch as jest.Mock;
 
@@ -120,6 +125,11 @@ describe('OnboardingModal', () => {
     mockedUseDispatch.mockReturnValue(dispatchMock);
 
     render(<OnboardingModal />);
+    const header = screen.getByTestId('rewards-onboarding-modal-header');
+    const closeButton = header.querySelector('button.absolute.z-10');
+    expect(closeButton).toBeTruthy();
+    // Click the close button to trigger handleClose
+    closeButton && (closeButton as HTMLButtonElement).click();
 
     await waitFor(() => {
       expect(dispatchMock).toHaveBeenCalledWith(setOnboardingModalOpen(false));
