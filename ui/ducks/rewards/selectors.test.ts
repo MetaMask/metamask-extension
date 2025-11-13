@@ -10,6 +10,7 @@ import {
   selectSeasonStatusError,
   selectErrorToast,
   selectRewardsEnabled,
+  selectRewardsBadgeHidden,
 } from './selectors';
 import { OnboardingStep } from './types';
 import { initialState as rewardsInitialState } from '.';
@@ -114,6 +115,13 @@ describe('rewards selectors', () => {
         rewards: { errorToast },
       });
       expect(selectErrorToast(state)).toBe(errorToast);
+    });
+
+    it('selectRewardsBadgeHidden returns hidden state', () => {
+      const state = buildState({
+        rewards: { rewardsBadgeHidden: true },
+      });
+      expect(selectRewardsBadgeHidden(state)).toBe(true);
     });
   });
 
