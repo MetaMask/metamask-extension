@@ -32,6 +32,9 @@ jest.mock('../selectors/selectors', () => ({
 }));
 
 jest.mock('@metamask/bridge-controller', () => ({
+  BridgeClientId: {
+    EXTENSION: 'extension',
+  },
   formatChainIdToCaip: jest.fn(),
   isNativeAddress: jest.fn(),
 }));
@@ -247,7 +250,7 @@ describe('useTokenInsightsData', () => {
         ),
         {
           method: 'GET',
-          headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
+          headers: { 'X-Client-Id': 'extension' },
         },
       );
     });
