@@ -146,6 +146,9 @@ export function normalizeMessage(message: string): string {
     .replace(/in \d+ms/gu, 'in <DURATION>ms') // Duration in milliseconds
     // Replace ALL numbers (not just large ones) to maximize normalization
     .replace(/\b\d+\b/gu, '<NUMBER>') // Any standalone number
+    // After number normalization, catch chunk files like js-<NUMBER>.hash123.js
+    .replace(/[a-z-]+-<NUMBER>\.[0-9a-f]{8,}\.js/giu, '<CHUNK_FILE>')
+    .replace(/\/[a-z-]+-<NUMBER>\.[0-9a-f]{8,}\.js/giu, '/<CHUNK_FILE>')
     // Normalize whitespace
     .replace(/\s+/gu, ' ')
     .trim();
