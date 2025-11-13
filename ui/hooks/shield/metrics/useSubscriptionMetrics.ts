@@ -1,5 +1,5 @@
 import { useCallback, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -11,6 +11,9 @@ import {
   getUserAccountTypeAndCategory,
   getUserBalanceCategory,
 } from '../../../../shared/modules/shield';
+import { MetaMaskReduxDispatch } from '../../../store/store';
+import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
+import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
 import {
   CaptureShieldBillingHistoryOpenedEventParams,
   CaptureShieldClaimSubmissionEventParams,
@@ -31,6 +34,7 @@ import {
 } from './utils';
 
 export const useSubscriptionMetrics = () => {
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const trackEvent = useContext(MetaMetricsContext);
   const selectedAccount = useSelector(getSelectedAccount);
   const hdKeyingsMetadata = useSelector(getMetaMaskHdKeyrings);
@@ -38,6 +42,28 @@ export const useSubscriptionMetrics = () => {
     selectedAccount,
     true, // hide zero balance tokens
     true, // use USD conversion rate instead of the current currency
+  );
+
+  /**
+   * Set the Shield subscription metrics properties to the background.
+   *
+   * Since some of the properties are not accessible in the background directly, we need to set them from the UI.
+   *
+   * @param props - The Shield subscription metrics properties.
+   * @param props.marketingUtmId - The UTM ID used if source is marketing campaign.
+   * @param props.source - The source of the Shield subscription metrics.
+   */
+  const setShieldSubscriptionMetricsPropsToBackground = useCallback(
+    (props: { marketingUtmId?: string; source: EntryModalSourceEnum }) => {
+      dispatch(
+        setShieldSubscriptionMetricsProps({
+          marketingUtmId: props.marketingUtmId,
+          source: props.source,
+          userBalanceInUSD: Number(totalFiatBalance),
+        }),
+      );
+    },
+    [dispatch, totalFiatBalance],
   );
 
   /**
@@ -57,7 +83,7 @@ export const useSubscriptionMetrics = () => {
           ...userAccountTypeAndCategory,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          user_balance_category: getUserBalanceCategory(
+          multi_chain_balance_category: getUserBalanceCategory(
             Number(totalFiatBalance),
           ),
           source: params.source,
@@ -98,7 +124,7 @@ export const useSubscriptionMetrics = () => {
           ...userAccountTypeAndCategory,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          user_balance_category: getUserBalanceCategory(
+          multi_chain_balance_category: getUserBalanceCategory(
             Number(totalFiatBalance),
           ),
           ...formattedParams,
@@ -305,6 +331,7 @@ export const useSubscriptionMetrics = () => {
   );
 
   return {
+    setShieldSubscriptionMetricsPropsToBackground,
     captureShieldEntryModalEvent,
     captureShieldSubscriptionRequestEvent,
     captureShieldBillingHistoryOpenedEvent,
