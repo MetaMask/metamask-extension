@@ -3,7 +3,7 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import ShieldPlanPage from '../../page-objects/pages/settings/shield-plan-page';
+import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
@@ -20,12 +20,6 @@ async function mockSubscriptionApiCalls(
     mockServer,
   );
   return [
-    await mockServer
-      .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
-      .thenJson(200, {
-        subscriptions: [],
-        trialedProducts: [],
-      }),
     await mockServer
       .forGet('https://subscription.dev-api.cx.metamask.io/v1/pricing')
       .thenJson(200, {
@@ -62,18 +56,39 @@ async function mockSubscriptionApiCalls(
       .forGet(
         'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
       )
+      .always()
       .thenJson(200, [
         {
           canSubscribe: !overrides?.mockNotEligible,
           canViewEntryModal: true,
           minBalanceUSD: 1000,
           product: 'shield',
+          cohorts: [
+            {
+              cohort: 'wallet_home',
+              eligible: true,
+              eligibilityRate: 1.0,
+            },
+            {
+              cohort: 'post_tx',
+              eligible: true,
+              eligibilityRate: 1.0,
+            },
+          ],
+          assignedCohort: null,
+          hasAssignedCohortExpired: null,
         },
       ]),
     await mockServer
       .forPost('https://subscription.dev-api.cx.metamask.io/v1/user-events')
       .thenJson(200, {
         status: 'success',
+      }),
+    await mockServer
+      .forPost('https://subscription.dev-api.cx.metamask.io/v1/cohorts/assign')
+      .thenJson(200, {
+        cohort: 'wallet_home',
+        expiresAt: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days from now
       }),
   ];
 }
@@ -110,9 +125,13 @@ describe('Shield Entry Modal', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSubscriptionApiCalls,
+        ignoredConsoleErrors: [
+          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+          'Could not load Rive WASM file',
+          'XMLHttpRequest is not a constructor',
+        ],
       },
       async ({ driver }) => {
-        await driver.delay(5_000);
         await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
@@ -129,11 +148,7 @@ describe('Shield Entry Modal', function () {
   it('should not show the shield entry modal if user does not have a shield subscription and has a balance less than the minimum fiat balance threshold', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withAppStateController({
-            showShieldEntryModalOnce: null,
-          })
-          .build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSubscriptionApiCalls,
       },

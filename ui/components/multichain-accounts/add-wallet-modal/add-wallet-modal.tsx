@@ -32,13 +32,16 @@ import {
   IMPORT_SRP_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   getIsAddSnapAccountEnabled,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   getIsWatchEthereumAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
@@ -50,7 +53,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
 import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
@@ -85,7 +88,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   );
   const trackEvent = useContext(MetaMetricsContext);
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
@@ -129,7 +132,10 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
 
     // Hardware wallet connections require expanded view
     if (option.id === 'hardware-wallet') {
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+      if (
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+      ) {
         global.platform.openExtensionInBrowser?.(option.route);
       } else {
         history.push(option.route);
@@ -158,7 +164,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
     });
   }, [trackEvent]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   const handleAddWatchAccount = useCallback(async () => {
     await trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -268,7 +274,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
             </Box>
           )}
           {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
             isAddWatchEthereumAccountEnabled && (
               <Box
                 key="watch-ethereum-account"

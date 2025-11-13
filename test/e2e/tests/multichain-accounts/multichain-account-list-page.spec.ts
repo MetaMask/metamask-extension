@@ -4,44 +4,16 @@ import { Driver } from '../../webdriver/driver';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import { DAPP_PATH } from '../../constants';
 import { WINDOW_TITLES } from '../../helpers';
-import {
-  AccountType,
-  mockMultichainAccountsFeatureFlagStateTwo,
-  withMultichainAccountsDesignEnabled,
-} from './common';
+import { AccountType, withMultichainAccountsDesignEnabled } from './common';
 
 describe('Multichain Accounts - Multichain accounts list page', function (this: Suite) {
-  it('displays basic wallets and accounts', async function () {
-    await withMultichainAccountsDesignEnabled(
-      {
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockMultichainAccountsFeatureFlagStateTwo,
-        state: 2,
-      },
-      async (driver: Driver) => {
-        const accountListPage = new AccountListPage(driver);
-
-        // Ensure that wallet information is displayed
-        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
-        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 2');
-
-        // Ensure that accounts within the wallets are displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
-        await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
-        // FIXME: Account index are scoped per wallet now, so we have now easy way
-        // to check for "Wallet 2" accounts.
-        // await accountListPage.checkMultichainAccountNameDisplayed('Account 2');
-      },
-    );
-  });
-
   it('displays wallet and accounts for hardware wallet', async function () {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
         accountType: AccountType.HardwareWallet,
-        testSpecificMock: mockMultichainAccountsFeatureFlagStateTwo,
         state: 2,
       },
       async (driver: Driver) => {
@@ -64,12 +36,10 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
       {
         title: this.test?.fullTitle(),
         accountType: AccountType.SSK,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
-        testSpecificMock: async (mockServer) => {
-          await mockSnapSimpleKeyringAndSite(mockServer);
-          return mockMultichainAccountsFeatureFlagStateTwo(mockServer);
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
+        testSpecificMock: mockSnapSimpleKeyringAndSite,
         state: 2,
       },
       async (driver: Driver) => {

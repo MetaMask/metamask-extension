@@ -33,6 +33,8 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+
+import { isMultichainFeatureEnabled } from '../../shared/lib/multichain-feature-flags';
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
   getCurrentChainId,
@@ -108,6 +110,12 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  ///: END:ONLY_INCLUDE_IF
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../shared/constants/app';
+import {
   getConversionRate,
   isNotEIP1559Network,
   isEIP1559Network,
@@ -126,7 +134,6 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -292,8 +299,24 @@ export function getShowShieldEntryModal(state) {
   return state.appState.shieldEntryModal?.show;
 }
 
+export function getPendingShieldCohort(state) {
+  return state.metamask.pendingShieldCohort;
+}
+
+export function getPendingShieldCohortTxType(state) {
+  return state.metamask.pendingShieldCohortTxType;
+}
+
 export function getShouldSubmitEventsForShieldEntryModal(state) {
   return state.appState.shieldEntryModal?.shouldSubmitEvents;
+}
+
+export function getModalTypeForShieldEntryModal(state) {
+  return state.appState.shieldEntryModal?.modalType;
+}
+
+export function getShieldEntryModalTriggeringCohort(state) {
+  return state.appState.shieldEntryModal?.triggeringCohort;
 }
 
 /** `metamask` slice selectors */
@@ -490,10 +513,8 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
         };
       }
 
-      return {
-        ...accounts,
-        [internalAccount.address]: account,
-      };
+      accounts[internalAccount.address] = account;
+      return accounts;
     }, {}),
 );
 /**
@@ -668,7 +689,16 @@ export function getHDEntropyIndex(state) {
  */
 export function getMetaMaskAccountBalances(state) {
   const currentChainId = getCurrentChainId(state);
-  return state.metamask?.accountsByChainId?.[currentChainId] ?? {};
+  const balancesForCurrentChain =
+    state.metamask?.accountsByChainId?.[currentChainId] ?? {};
+
+  return Object.entries(balancesForCurrentChain).reduce(
+    (acc, [address, value]) => {
+      acc[address.toLowerCase()] = value;
+      return acc;
+    },
+    {},
+  );
 }
 
 export function getMetaMaskCachedBalances(state, networkChainId) {
@@ -680,7 +710,7 @@ export function getMetaMaskCachedBalances(state, networkChainId) {
     if (state.metamask.accountsByChainId?.[chainId]) {
       return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
         (accumulator, [key, value]) => {
-          accumulator[key] = value.balance;
+          accumulator[key.toLowerCase()] = value.balance;
           return accumulator;
         },
         {},
@@ -694,7 +724,7 @@ export function getMetaMaskCachedBalances(state, networkChainId) {
   if (state.metamask.accountsByChainId?.[chainId]) {
     return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
       (accumulator, [key, value]) => {
-        accumulator[key] = value.balance;
+        accumulator[key.toLowerCase()] = value.balance;
         return accumulator;
       },
       {},
@@ -705,11 +735,11 @@ export function getMetaMaskCachedBalances(state, networkChainId) {
 
 export function getCrossChainMetaMaskCachedBalances(state) {
   const allAccountsByChainId = state.metamask.accountsByChainId;
-  return Object.keys(allAccountsByChainId).reduce((acc, topLevelKey) => {
-    acc[topLevelKey] = Object.keys(allAccountsByChainId[topLevelKey]).reduce(
-      (innerAcc, innerKey) => {
-        innerAcc[innerKey] =
-          allAccountsByChainId[topLevelKey][innerKey].balance;
+  return Object.keys(allAccountsByChainId).reduce((acc, chainId) => {
+    acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
+      (innerAcc, address) => {
+        innerAcc[address.toLowerCase()] =
+          allAccountsByChainId[chainId][address].balance;
         return innerAcc;
       },
       {},
@@ -729,12 +759,15 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
   const { accountsByChainId } = state.metamask;
   const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
 
+  const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
+
   const balancesByChainId = {};
   for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
-    if (accounts[selectedAddress]) {
-      balancesByChainId[chainId] = accounts[selectedAddress].balance;
+    if (accounts[checksummedSelectedAddress]) {
+      balancesByChainId[chainId] = accounts[checksummedSelectedAddress].balance;
     }
   }
+
   return balancesByChainId;
 }
 
@@ -836,10 +869,12 @@ export function getNativeTokenCachedBalanceByChainIdByAccountAddress(
 ) {
   const { accountsByChainId } = state.metamask;
 
+  const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
+
   const balancesByChainId = {};
   for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
-    if (accounts[selectedAddress]) {
-      balancesByChainId[chainId] = accounts[selectedAddress].balance;
+    if (accounts[checksummedSelectedAddress]) {
+      balancesByChainId[chainId] = accounts[checksummedSelectedAddress].balance;
     }
   }
   return balancesByChainId;
@@ -1826,7 +1861,20 @@ export function getFeatureFlags(state) {
   return state.metamask.featureFlags;
 }
 
+export function getAppActiveTab(state) {
+  // Safely access appActiveTab, return undefined if not available
+  return state?.metamask?.appActiveTab;
+}
+
 export function getOriginOfCurrentTab(state) {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  // For sidepanel, always use appActiveTab
+  if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
+    const appActiveTab = getAppActiveTab(state);
+    return appActiveTab?.origin;
+  }
+  ///: END:ONLY_INCLUDE_IF
+  // For all other cases, use activeTab
   return state.activeTab.origin;
 }
 
@@ -2576,7 +2624,9 @@ export function getNetworkToAutomaticallySwitchTo(state) {
   // for a given dapp, when there are no pending confimrations
   // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
+
   const selectedTabOrigin = getOriginOfCurrentTab(state);
+
   if (
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     getIsUnlocked(state) &&
@@ -2937,6 +2987,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.MOONBEAM,
     CHAIN_IDS.MOONRIVER,
     CHAIN_IDS.SEI,
+    CHAIN_IDS.MONAD,
   ].includes(chainId);
 }
 
@@ -3055,14 +3106,15 @@ export function getUsePhishDetect(state) {
  * Gets the cached address security alert response for a given address
  *
  * @param {*} state
- * @param {string} address - The address to get security alert for
- * @returns the cached address security alert response for the given address
+ * @param {string} cacheKey - The cache key in format "chain:address" to get security alert for. Use createCacheKey to generate the cache key.
+ * @returns the cached address security alert response for the given cache key
  */
-export function getAddressSecurityAlertResponse(state, address) {
-  if (!address) {
+export function getAddressSecurityAlertResponse(state, cacheKey) {
+  if (!cacheKey) {
     return undefined;
   }
-  return state.metamask.addressSecurityAlertResponses?.[address.toLowerCase()];
+
+  return state.metamask.addressSecurityAlertResponses?.[cacheKey];
 }
 
 /**
@@ -3155,30 +3207,64 @@ export function getIsBitcoinTestnetSupportEnabled(state) {
   return Boolean(bitcoinTestnetsEnabled);
 }
 
+/**
+ * Get the state of the `tronTestnetsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `tronTestnetsEnabled` remote feature flag.
+ */
+export function getIsTronTestnetSupportEnabled(state) {
+  const { tronTestnetsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(tronTestnetsEnabled);
+}
+
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
 
 /**
- * Get the state of the `bitcoinSupportEnabled` flag.
+ * Get the state of the `bitcoinAccounts` feature flag with version check.
  *
- * @param {*} state
- * @returns The state of the `bitcoinSupportEnabled` flag.
+ * @param {*} _state
+ * @returns The state of the `bitcoinAccounts` feature flag.
  */
-export function getIsBitcoinSupportEnabled(state) {
-  const { addBitcoinAccount } = getRemoteFeatureFlags(state);
-  return Boolean(addBitcoinAccount);
+export function getIsBitcoinSupportEnabled(
+  // Use `_` prefix to avoid lint issue if `bitcoin` code-fence is not enabled
+  _state,
+) {
+  // When bitcoin is not enabled, always return false
+  let enabled = false;
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  const { bitcoinAccounts } = getRemoteFeatureFlags(_state);
+  enabled = isMultichainFeatureEnabled(bitcoinAccounts);
+  ///: END:ONLY_INCLUDE_IF
+  return enabled;
 }
 
 /**
- * Get the state of the `solanaSupportEnabled` remote feature flag.
+ * Get the state of the `solanaAccounts` feature flag with version check.
  *
  * @param {*} state
- * @returns The state of the `solanaSupportEnabled` remote feature flag.
+ * @returns The state of the `solanaAccounts` feature flag.
  */
 export function getIsSolanaSupportEnabled(state) {
-  const { addSolanaAccount } = getRemoteFeatureFlags(state);
-  return Boolean(addSolanaAccount);
+  const { solanaAccounts } = getRemoteFeatureFlags(state);
+  return isMultichainFeatureEnabled(solanaAccounts);
+}
+
+/**
+ * Get the state of the `tronSupportEnabled` remote feature flag.
+ *
+ * @param {*} _state
+ * @returns The state of the `tronSupportEnabled` remote feature flag.
+ */
+export function getIsTronSupportEnabled(_state) {
+  let enabled = false;
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  const { tronAccounts } = getRemoteFeatureFlags(_state);
+  enabled = isMultichainFeatureEnabled(tronAccounts);
+  ///: END:ONLY_INCLUDE_IF
+  return enabled;
 }
 
 /**
@@ -3659,7 +3745,8 @@ export function getPermittedEVMAccountsForSelectedTab(state, activeTab) {
 }
 
 export function getAllPermittedAccountsForCurrentTab(state) {
-  return getAllPermittedAccounts(state, getOriginOfCurrentTab(state));
+  const origin = getOriginOfCurrentTab(state);
+  return getAllPermittedAccounts(state, origin);
 }
 
 export function getAllPermittedAccountsForSelectedTab(state, activeTab) {
@@ -3881,16 +3968,11 @@ export function getAccountToConnectToActiveTab(state) {
   const numberOfAccounts = Object.keys(accounts).length;
 
   if (
-    connectedAccounts.length &&
-    connectedAccounts.length !== numberOfAccounts
+    connectedAccounts.length > 0 &&
+    connectedAccounts.length !== numberOfAccounts &&
+    !connectedAccounts.includes(selectedInternalAccount.address)
   ) {
-    if (
-      connectedAccounts.findIndex(
-        (address) => address === selectedInternalAccount.address,
-      ) === -1
-    ) {
-      return getInternalAccount(state, selectedInternalAccount.id);
-    }
+    return getInternalAccount(state, selectedInternalAccount.id);
   }
 
   return undefined;
@@ -3940,6 +4022,7 @@ export function getPermissionsForActiveTab(state) {
   const { subjects = {} } = metamask;
 
   const permissions = subjects[activeTab.origin]?.permissions ?? {};
+
   return Object.keys(permissions).map((parentCapability) => {
     return {
       key: parentCapability,
@@ -4057,6 +4140,16 @@ export function getShowUpdateModal(state) {
     enoughTimePassedSinceLastUpdate;
 
   return showUpdateModal;
+}
+
+/**
+ * Gets the previous version that the extension was updated from.
+ *
+ * @param {import('../../ui/store/store').MetaMaskReduxState} state - The MetaMask state.
+ * @returns {string | null} The previous version string, or null if not available.
+ */
+export function getLastUpdatedFromVersion(state) {
+  return state.metamask.lastUpdatedFromVersion;
 }
 
 /**

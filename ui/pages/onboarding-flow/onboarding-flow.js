@@ -93,6 +93,9 @@ export default function OnboardingFlow() {
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
   const completedOnboarding = useSelector(getCompletedOnboarding);
+  const openedWithSidepanel = useSelector(
+    (state) => state.metamask.openedWithSidepanel,
+  );
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const isFromSettingsSecurity = new URLSearchParams(search).get(
@@ -123,10 +126,10 @@ export default function OnboardingFlow() {
   }, []);
 
   useEffect(() => {
-    if (completedOnboarding && !isFromReminder) {
+    if (completedOnboarding && !isFromReminder && !openedWithSidepanel) {
       navigate(DEFAULT_ROUTE);
     }
-  }, [navigate, completedOnboarding, isFromReminder]);
+  }, [navigate, completedOnboarding, isFromReminder, openedWithSidepanel]);
 
   useEffect(() => {
     const isSRPBackupRoute = [
@@ -160,12 +163,14 @@ export default function OnboardingFlow() {
   ]);
 
   useEffect(() => {
-    const trace = bufferedTrace?.({
+    bufferedTrace?.({
       name: TraceName.OnboardingJourneyOverall,
       op: TraceOperation.OnboardingUserJourney,
     });
     if (onboardingParentContext) {
-      onboardingParentContext.current = trace;
+      onboardingParentContext.current = {
+        _name: TraceName.OnboardingJourneyOverall,
+      };
     }
   }, [onboardingParentContext, bufferedTrace]);
 

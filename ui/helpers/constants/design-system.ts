@@ -308,6 +308,9 @@ export enum BorderColor {
   backgroundDefault = 'background-default', // exception for border color when element is meant to look "cut out"
 }
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum TextColor {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -404,6 +407,9 @@ export enum TextColor {
   transparent = 'transparent',
 }
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum IconColor {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -488,6 +494,9 @@ export enum IconColor {
   transparent = 'transparent',
 }
 
+/**
+ * @deprecated This type has been deprecated in favor of TextVariant from @metamask/design-system-react
+ */
 export enum TypographyVariant {
   H1 = 'h1',
   H2 = 'h2',
@@ -506,6 +515,9 @@ export enum TypographyVariant {
   span = 'span',
 }
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum TextVariant {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -920,6 +932,7 @@ export enum Severity {
   Warning = 'warning',
   Info = 'info',
   Success = 'success',
+  Disabled = 'disabled',
 }
 
 /**

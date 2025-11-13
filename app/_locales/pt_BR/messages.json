@@ -697,9 +697,6 @@
   "etherscanViewOn": {
     "message": "Ver no Etherscan"
   },
-  "expandView": {
-    "message": "Expandir exibição"
-  },
   "experimental": {
     "message": "Experimental"
   },
@@ -750,10 +747,6 @@
   },
   "from": {
     "message": "De"
-  },
-  "fromAddress": {
-    "message": "De: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "gas": {
     "message": "Gás"
@@ -1892,10 +1885,6 @@
   "to": {
     "message": "Para"
   },
-  "toAddress": {
-    "message": "Para: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
   "token": {
     "message": "Token"
   },
@@ -2090,9 +2079,6 @@
   },
   "welcomeBack": {
     "message": "Bem-vindo(a) novamente!"
-  },
-  "welcomeToMetaMask": {
-    "message": "Vamos começar"
   },
   "whatsThis": {
     "message": "O que é isso?"

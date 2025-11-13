@@ -1,14 +1,12 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { ButtonVariant } from '@metamask/snaps-sdk';
-import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import log from 'loglevel';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
-import { useBackupAndSync } from '../../../hooks/identity/useBackupAndSync';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -138,17 +136,6 @@ export default function PrivacySettings() {
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
-  const { setIsBackupAndSyncFeatureEnabled, error: backupAndSyncError } =
-    useBackupAndSync();
-
-  useEffect(() => {
-    if (externalServicesOnboardingToggleState) {
-      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, true);
-    } else {
-      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);
-    }
-  }, [externalServicesOnboardingToggleState, setIsBackupAndSyncFeatureEnabled]);
-
   const handleSubmit = () => {
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
@@ -160,11 +147,6 @@ export default function PrivacySettings() {
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
     setUseExternalNameSources(turnOnExternalNameSources);
 
-    // Backup and sync Setup
-    if (!externalServicesOnboardingToggleState) {
-      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);
-    }
-
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
       dispatch(setIpfsGateway(host));
@@ -172,7 +154,7 @@ export default function PrivacySettings() {
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
+      event: MetaMetricsEventName.SettingsUpdated,
       properties: {
         settings_group: 'onboarding_advanced_configuration',
         is_profile_syncing_enabled: isBackupAndSyncEnabled,
@@ -424,18 +406,6 @@ export default function PrivacySettings() {
                   />
 
                   <BackupAndSyncToggle />
-
-                  {backupAndSyncError && (
-                    <Box paddingBottom={4}>
-                      <Text
-                        as="p"
-                        color={TextColor.errorDefault}
-                        variant={TextVariant.bodySm}
-                      >
-                        {t('notificationsSettingsBoxError')}
-                      </Text>
-                    </Box>
-                  )}
 
                   <Setting
                     title={t('onboardingAdvancedPrivacyNetworkTitle')}

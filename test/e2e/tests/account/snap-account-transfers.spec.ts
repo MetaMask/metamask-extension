@@ -1,11 +1,6 @@
 import { Suite } from 'mocha';
-import {
-  veryLargeDelayMs,
-  PRIVATE_KEY_TWO,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import { PRIVATE_KEY_TWO, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { DAPP_PATH, DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -22,14 +17,17 @@ describe('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
 
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
@@ -43,6 +41,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         );
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('SSK Account');
+        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         // send 1 ETH from snap account to account 1
         await sendRedesignedTransactionWithSnapAccount({
@@ -50,13 +49,15 @@ describe('Snap Account Transfers', function (this: Suite) {
           recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
           amount: '1',
         });
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+
         await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
         // check the balance of the 2 accounts are updated
-        await driver.delay(veryLargeDelayMs);
         await accountList.checkAccountBalanceDisplayed('$44,200');
         await accountList.checkAccountBalanceDisplayed('$40,799');
       },
@@ -68,12 +69,15 @@ describe('Snap Account Transfers', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
 
         await installSnapSimpleKeyring(driver, false);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
@@ -87,6 +91,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         );
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('SSK Account');
+        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         // send 1 ETH from snap account to account 1 and approve the transaction
         await sendRedesignedTransactionWithSnapAccount({
@@ -95,13 +100,15 @@ describe('Snap Account Transfers', function (this: Suite) {
           amount: '1',
           isSyncFlow: false,
         });
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+
         await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
         // check the balance of the 2 accounts are updated
-        await driver.delay(veryLargeDelayMs);
         await accountList.checkAccountBalanceDisplayed('$44,200');
         await accountList.checkAccountBalanceDisplayed('$40,799');
       },
@@ -113,13 +120,16 @@ describe('Snap Account Transfers', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['Request rejected by user or snap.'],
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
 
         await installSnapSimpleKeyring(driver, false);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
@@ -133,6 +143,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         );
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('SSK Account');
+        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         // send 1 ETH from snap account to account 1 and reject the transaction
         await sendRedesignedTransactionWithSnapAccount({

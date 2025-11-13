@@ -52,6 +52,10 @@ class AssetListPage {
   private readonly importTokensNextButton =
     '[data-testid="import-tokens-button-next"]';
 
+  private readonly multichainTokenListButton = {
+    testId: 'multichain-token-list-button',
+  };
+
   private readonly networksToggle = '[data-testid="sort-by-networks"]';
 
   private readonly priceChart = '[data-testid="asset-price-chart"]';
@@ -258,15 +262,19 @@ class AssetListPage {
     symbol?: string,
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage`);
+    await this.driver.waitForSelector(this.multichainTokenListButton, {
+      waitAtLeastGuard: 1000,
+    });
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
-    await this.driver.clickElement(this.customTokenModalOption);
-    await this.driver.waitForSelector(this.modalWarningBanner);
     await this.driver.clickElement(this.tokenChainDropdown);
     await this.driver.clickElementAndWaitToDisappear(
       this.tokenImportSelectNetwork(chainId),
     );
+    await this.driver.waitForSelector(this.customTokenModalOption);
+    await this.driver.clickElement(this.customTokenModalOption);
+    await this.driver.waitForSelector(this.modalWarningBanner);
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
     await this.driver.waitForSelector(this.tokenSymbolTitle);
 
@@ -290,6 +298,7 @@ class AssetListPage {
 
   async importTokenBySearch(tokenName: string) {
     console.log(`Import token ${tokenName} on homepage by search`);
+    await this.driver.waitForSelector(this.multichainTokenListButton);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
@@ -306,6 +315,7 @@ class AssetListPage {
     console.log(
       `Importing tokens ${tokenNames.join(', ')} on homepage by search`,
     );
+    await this.driver.waitForSelector(this.multichainTokenListButton);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
@@ -507,7 +517,7 @@ class AssetListPage {
       `Check that token amount ${tokenAmount} is displayed in token details modal for token ${tokenName}`,
     );
     await this.driver.clickElement({
-      tag: 'span',
+      testId: 'multichain-token-list-item-token-name',
       text: tokenName,
     });
     await this.driver.waitForSelector({

@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Özellikler"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Infura RPC URL adresi artık Aurora'yı desteklemiyor."
-  },
   "authorizedPermissions": {
     "message": "Aşağıdaki izinleri verdiniz"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Özel Token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Token algılama henüz bu ağda mevcut değil. Lütfen tokeni manuel olarak içe aktarın ve ona güvendiğinizden emin olun. $1 hakkında bilgi edinin"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Mevcut tokenlerin sahteleri de dahil olmak üzere herkes bir token oluşturabilir. $1 hakkında bilgi edinin"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Bir tokeni içe aktarmadan önce ona güvendiğinizden emin olun. $1 kaçınmayı öğrenin. Ayrıca token algılamayı $2 etkinleştirebilirsiniz."
   },
   "customerSupport": {
     "message": "müşteri hizmetleri"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Cüzdan adresi veya QR kodu ile başka bir hesaptan kripto yatırın."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Ethereum sistemindeki güncellemelerden dolayı Goerli test ağı yakında aşamalı olarak devre dışı bırakılacaktır."
   },
   "deprecatedNetwork": {
     "message": "Bu ağ artık kullanılmıyor"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "Girdiğiniz bilgiler mevcut bir zincir kimliği ile ilişkilidir."
   },
-  "expandView": {
-    "message": "Görünümü genişlet"
-  },
   "experimental": {
     "message": "Deneysel"
   },
@@ -2462,10 +2447,6 @@
   },
   "from": {
     "message": "Kimden"
-  },
-  "fromAddress": {
-    "message": "Kimden: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "fromTokenLists": {
     "message": "Token listelerinden: $1"
@@ -2757,32 +2738,11 @@
   "importNFTTokenIdToolTip": {
     "message": "Hiçbir iki NFT kimliği birbiriyle aynı olmadığı için her NFT kimliği benzersiz bir tanımlayıcıdır. Yine, OpenSea'de bu sayı 'Detaylar' kısmının altında yer alır. Not alın veya panonuza kopyalayın."
   },
-  "importNWordSRP": {
-    "message": "$1 sözcükten oluşan kurtarma ifadem var",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Özel Anahtar"
   },
-  "importSRPDescription": {
-    "message": "12 veya 24 sözcükten oluşan gizli kurtarma ifadenizle mevcut bir cüzdanı içe aktarın."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Gizli Kurtarma İfadeleri 12 veya 24 sözcükten oluşur"
-  },
-  "importSRPWordError": {
-    "message": "$1 sözcüğü yanlış veya yanlış yazılmış.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "$1 ve $2 sözcükleri yanlış veya yanlış yazılmış.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesini İçe Aktar"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Bilinmeyen bir hata oluştu."
   },
   "importSelectedTokens": {
     "message": "Seçilen tokenleri içe aktar?"
@@ -2802,9 +2762,6 @@
   "importTokensError": {
     "message": "Tokenleri içe aktaramadık. Lütfen daha sonra tekrar deneyin."
   },
-  "importWallet": {
-    "message": "Cüzdanı içe aktar"
-  },
   "importWalletOrAccountHeader": {
     "message": "Bir cüzdanı veya hesabı içe aktar"
   },
@@ -2815,9 +2772,6 @@
   "imported": {
     "message": "İçe Aktarıldı",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "Ayarlar kısmında"
   },
   "included": {
     "message": "dahil"
@@ -4077,9 +4031,6 @@
     "message": "$1 simgesi",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Devam etmek için bir seçenek seçin"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Uzantıyı başlat"
   },
@@ -5134,10 +5085,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Bu size ait $1. Doğru sıralamada yazın ve güvenli bir şekilde saklayın. Gizli Kurtarma İfadenizi elinde bulunduran biri cüzdanınıza erişim sağlayabilir. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Asla hiç kimseyle paylaşmayın."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Gizli Kurtarma İfadenizi kaydedin"
@@ -5271,9 +5219,6 @@
   },
   "shieldEntryModalGetStarted": {
     "message": "Başlarken"
-  },
-  "shieldEntryModalSkip": {
-    "message": "Atla"
   },
   "show": {
     "message": "Göster"
@@ -6528,10 +6473,6 @@
   "switchNetwork": {
     "message": "Ağı değiştir"
   },
-  "switchToNetwork": {
-    "message": "$1 ağına geçin",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Bu hesaba geç"
   },
@@ -6599,10 +6540,6 @@
   "to": {
     "message": "Kime"
   },
-  "toAddress": {
-    "message": "Alıcı: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
   "toggleDecodeDescription": {
     "message": "Şifre çözmek ve daha okunabilir işlem verileri göstermek için 4byte.directory ve Sourcify hizmetlerini kullanıyoruz. Bu da, bekleyen ve geçmiş işlemlerinin sonucunu anlamanıza yardımcı olur ancak IP adresinizin paylaşılmasıyla sonuçlanabilir."
   },
@@ -6641,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Token pazar yeri"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "token dolandırıcılıkları ve güvenlik riskleri"
   },
   "tokenStandard": {
     "message": "Token standardı"
@@ -7095,24 +7029,11 @@
     "message": "$1 paranıza erişimi asla kaybetmemeniz için bu ifadeyi güvenli bir şekilde saklayabilirsiniz.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Şurada cüzdanlarınızı yedekleyebilir veya Gizli Kurtarma İfadenizi görebilirsiniz: Ayarlar > Güvenlik ve Şifre."
-  },
   "walletReadyLoseSrp": {
     "message": "Gizli Kurtarma İfadenizi kaybederseniz cüzdanınızı kullanamayacaksınız."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Bu Gizli Kurtarma İfadesi, şifrenizi unutmanız veya oturumunuza erişimi kaybetmeniz durumunda yeniden erişim kazanmanıza yardımcı olabilir."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Gizli Kurtarma İfadenizi yedeklemezseniz uygulamanın dışında kalmanız veya yeni bir cihaz edinmeniz durumunda paranıza erişimi kaybedersiniz."
-  },
-  "walletReadySocialDetails1": {
-    "message": "$1 hesabı ve şifresi ile dilediğiniz zaman cüzdanınızda oturum açabilirsiniz.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Şifrenizi unutursanız cüzdanınıza erişim sağlayamayacaksınız."
   },
   "wantToAddThisNetwork": {
     "message": "Bu ağı eklemek istiyor musunuz?"
@@ -7155,9 +7076,6 @@
   },
   "welcomeBack": {
     "message": "Tekrar hoş geldiniz"
-  },
-  "welcomeToMetaMask": {
-    "message": "Başlayalım"
   },
   "whatsThis": {
     "message": "Bu nedir?"
@@ -7221,8 +7139,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Gizli Kurtarma İfadenizi güvenli bir şekilde saklayın!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Size daha sonra hatırlatacağız"
   }
 }

@@ -8,6 +8,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcScope,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  TrxScope,
+  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 import {
   Box,
@@ -85,6 +88,9 @@ const WalletDetails = () => {
   const solanaClient = useMultichainWalletSnapClient(WalletClientType.Solana);
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const bitcoinClient = useMultichainWalletSnapClient(WalletClientType.Bitcoin);
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  const tronClient = useMultichainWalletSnapClient(WalletClientType.Tron);
   ///: END:ONLY_INCLUDE_IF
 
   const totalBalance = useMemo(
@@ -192,6 +198,11 @@ const WalletDetails = () => {
         client = bitcoinClient;
       }
       ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
+      else if (clientType === WalletClientType.Tron) {
+        client = tronClient;
+      }
+      ///: END:ONLY_INCLUDE_IF
       else {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -242,6 +253,14 @@ const WalletDetails = () => {
       success = await handleCreateSnapAccount(
         WalletClientType.Bitcoin,
         BtcScope.Mainnet as CaipChainId,
+      );
+    }
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(tron)
+    else if (accountType === WalletClientType.Tron) {
+      success = await handleCreateSnapAccount(
+        WalletClientType.Tron,
+        TrxScope.Mainnet as CaipChainId,
       );
     }
     ///: END:ONLY_INCLUDE_IF

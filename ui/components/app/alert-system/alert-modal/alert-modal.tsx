@@ -104,6 +104,16 @@ function getSeverityStyle(severity?: Severity) {
   }
 }
 
+function requiresAcknowledgement(alert: Alert) {
+  return (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    alert.severity === Severity.Danger &&
+    !alert.isBlocking &&
+    !alert.acknowledgeBypass
+  );
+}
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function AlertHeader({
@@ -114,7 +124,7 @@ function AlertHeader({
   customTitle?: string;
 }) {
   const t = useI18nContext();
-  const { severity, reason } = selectedAlert;
+  const { severity, reason, iconName, iconColor } = selectedAlert;
   const severityStyle = getSeverityStyle(severity);
   return (
     <Box
@@ -124,9 +134,14 @@ function AlertHeader({
       textAlign={TextAlign.Center}
     >
       <Icon
-        name={severity === Severity.Info ? IconName.Info : IconName.Danger}
+        name={
+          iconName ??
+          (severity === Severity.Info || severity === Severity.Success
+            ? IconName.Info
+            : IconName.Danger)
+        }
         size={IconSize.Xl}
-        color={severityStyle.icon}
+        color={iconColor ?? severityStyle.icon}
       />
       <Text
         variant={TextVariant.headingSm}
@@ -243,13 +258,12 @@ export function AcknowledgeCheckboxBase({
   isConfirmed: boolean;
   label?: string;
 }) {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  if (selectedAlert.isBlocking || selectedAlert.severity !== Severity.Danger) {
+  const t = useI18nContext();
+
+  if (!requiresAcknowledgement(selectedAlert)) {
     return null;
   }
 
-  const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
     <Box
@@ -279,11 +293,13 @@ function AcknowledgeButton({
   isConfirmed,
   hasActions,
   isBlocking,
+  label,
 }: {
   onAcknowledgeClick: () => void;
   isConfirmed: boolean;
   hasActions?: boolean;
   isBlocking?: boolean;
+  label?: string;
 }) {
   const t = useI18nContext();
 
@@ -296,7 +312,7 @@ function AcknowledgeButton({
       data-testid="alert-modal-button"
       disabled={!isBlocking && !isConfirmed}
     >
-      {t('gotIt')}
+      {label ?? t('gotIt')}
     </Button>
   );
 }
@@ -381,8 +397,8 @@ export function AlertModal({
   const isConfirmed = selectedAlert
     ? isAlertConfirmed(selectedAlert.key)
     : false;
-  const isAlertDanger = selectedAlert
-    ? selectedAlert.severity === Severity.Danger
+  const acknowledgementRequired = selectedAlert
+    ? requiresAcknowledgement(selectedAlert)
     : false;
 
   const handleCheckboxClick = useCallback(() => {
@@ -396,7 +412,12 @@ export function AlertModal({
   }
 
   return (
-    <Modal isOpen onClose={handleClose} data-testid="alert-modal">
+    <Modal
+      isOpen
+      onClose={handleClose}
+      data-testid="alert-modal"
+      autoFocus={false}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
@@ -438,10 +459,14 @@ export function AlertModal({
             {customAcknowledgeButton ?? (
               <>
                 <AcknowledgeButton
-                  onAcknowledgeClick={onAcknowledgeClick}
-                  isConfirmed={!isAlertDanger || isConfirmed}
+                  onAcknowledgeClick={
+                    selectedAlert.customAcknowledgeButtonOnClick ??
+                    onAcknowledgeClick
+                  }
+                  isConfirmed={acknowledgementRequired ? isConfirmed : true}
                   hasActions={Boolean(selectedAlert.actions)}
                   isBlocking={selectedAlert.isBlocking}
+                  label={selectedAlert.customAcknowledgeButtonText}
                 />
                 {(selectedAlert.actions ?? []).map(
                   (action: { key: string; label: string }) => (
