@@ -113,6 +113,9 @@ export function formatCaptureShieldPaymentMethodChangeEventProps(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     new_crypto_payment_chain: params.newCryptoPaymentChain,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    new_payment_currency: params.newPaymentCurrency,
   };
 }
 

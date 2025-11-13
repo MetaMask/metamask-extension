@@ -104,8 +104,8 @@ export type CaptureShieldPaymentMethodChangeEventParams =
   ExistingSubscriptionEventParams & {
     newPaymentType: PaymentType;
     newBillingInterval: RecurringInterval;
+    newPaymentCurrency: string;
     newCryptoPaymentChain?: string;
-    newCryptoPaymentCurrency?: string;
     changeStatus: 'succeeded' | 'failed';
     errorMessage?: string;
   };
