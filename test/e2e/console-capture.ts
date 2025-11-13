@@ -230,7 +230,7 @@ export async function validateSnapshot(testName?: string): Promise<void> {
     comparison.newWarnings.length > 0 || comparison.newErrors.length > 0;
 
   if (hasNewIssues) {
-    const errorMessage = formatComparisonResults(comparison);
+    const errorMessage = formatComparisonResults(comparison, testName);
     console.error(errorMessage);
     throw new Error('New console warnings or errors detected in e2e tests');
   }
