@@ -67,12 +67,13 @@ export const ImportSrp = () => {
           return;
         }
       }
-      await dispatch(importMnemonicToVault(secretRecoveryPhrase));
 
       trackEvent({
         event:
           MetaMetricsEventName.ImportSecretRecoveryPhraseContinueButtonClicked,
       });
+
+      await dispatch(importMnemonicToVault(secretRecoveryPhrase));
 
       navigate(DEFAULT_ROUTE);
       dispatch(setShowNewSrpAddedToast(true));
