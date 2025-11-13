@@ -219,8 +219,7 @@ describe('Shield Subscription Tests', function () {
 
           const homePage = new HomePage(driver);
           await homePage.checkShieldEntryModalIsDisplayed();
-          await driver.delay(1000);
-          await homePage.clickOnShieldEntryModalSkip();
+          await homePage.clickOnShieldEntryModalSkipWithRetries();
 
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.openSettingsPage();
@@ -259,8 +258,7 @@ describe('Shield Subscription Tests', function () {
 
           const homePage = new HomePage(driver);
           await homePage.checkShieldEntryModalIsDisplayed();
-          await driver.delay(1000);
-          await homePage.clickOnShieldEntryModalSkip();
+          await homePage.clickOnShieldEntryModalSkipWithRetries();
 
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.openSettingsPage();

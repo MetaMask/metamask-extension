@@ -444,6 +444,40 @@ class HomePage {
     await this.driver.clickElement(this.shieldEntryModalSkip);
   }
 
+  async clickOnShieldEntryModalSkipWithRetries(): Promise<void> {
+    console.log(
+      'Click on shield entry modal skip and wait for it to disappear',
+    );
+    const maxRetries = 3;
+    let retryCount = 0;
+
+    while (retryCount < maxRetries) {
+      await this.driver.delay(1000);
+      // Click the skip button
+      await this.driver.clickElement(this.shieldEntryModalSkip);
+
+      // Wait for modal to be detached from DOM
+      try {
+        await this.driver.waitForSelector(this.shieldEntryModal, {
+          timeout: 2000,
+        });
+      } catch (e) {
+        console.log('Modal successfully dismissed and stayed gone');
+        return;
+      }
+
+      retryCount += 1;
+      console.log(
+        `Modal reappeared, retrying click (attempt ${retryCount}/${maxRetries})`,
+      );
+    }
+
+    // If we've exhausted retries, throw an error
+    throw new Error(
+      `Failed to dismiss shield entry modal after ${maxRetries} attempts`,
+    );
+  }
+
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
     console.log('Check no shield entry modal is displayed on homepage');
     await this.driver.assertElementNotPresent(this.shieldEntryModal, {
