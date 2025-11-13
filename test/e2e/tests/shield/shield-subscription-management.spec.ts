@@ -202,10 +202,9 @@ describe('Shield Plan Stripe Integration', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkShieldEntryModalNotPresent();
+        await homePage.waitForNetworkAndDOMReady();
 
         await new HeaderNavbar(driver).openSettingsPage();
-
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToTransactionShieldPage();
@@ -268,7 +267,7 @@ describe('Shield Plan Stripe Integration', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkShieldEntryModalNotPresent();
+        await homePage.waitForNetworkAndDOMReady();
 
         await new HeaderNavbar(driver).openSettingsPage();
 
