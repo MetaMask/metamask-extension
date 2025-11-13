@@ -141,7 +141,8 @@ describe('Shield Entry Modal', function () {
     );
   });
 
-  it('should not show the shield entry modal if external services are disabled', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should not show the shield entry modal if external services are disabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

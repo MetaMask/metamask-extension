@@ -14,7 +14,6 @@ describe('Test Snap revoke permission', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        const flaskBuild = process.env.TEST_SUITE_NAME?.includes('flask');
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect to ethereum-provider snap
@@ -98,21 +97,14 @@ describe('Test Snap revoke permission', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for and click Connect
-        if (flaskBuild) {
-          await driver.clickElement({
-            text: 'Next',
-            tag: 'button',
-          });
-        } else {
-          await driver.clickElement({
-            text: 'Account 1',
-          });
+        await driver.clickElement({
+          text: 'Account 1',
+        });
 
-          await driver.clickElement({
-            text: 'Connect',
-            tag: 'button',
-          });
-        }
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
 
         // delay added for rendering time (deflake)
         await driver.delay(500);
@@ -193,22 +185,14 @@ describe('Test Snap revoke permission', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for and click Connect
-        // wait for and click Connect
-        if (flaskBuild) {
-          await driver.clickElement({
-            text: 'Next',
-            tag: 'button',
-          });
-        } else {
-          await driver.clickElement({
-            text: 'Account 1',
-          });
+        await driver.clickElement({
+          text: 'Account 1',
+        });
 
-          await driver.clickElement({
-            text: 'Connect',
-            tag: 'button',
-          });
-        }
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
 
         // delay added for rendering time (deflake)
         await driver.delay(500);

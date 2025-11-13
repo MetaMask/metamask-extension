@@ -48,4 +48,6 @@ export const loginWithBalanceValidation = async (
   } else {
     await homePage.checkExpectedBalanceIsDisplayed(value);
   }
+
+  await driver.assertElementNotPresent('[data-testid="app-header-copy-button"]');
 };
