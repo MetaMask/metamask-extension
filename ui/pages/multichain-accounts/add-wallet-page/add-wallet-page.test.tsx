@@ -21,7 +21,7 @@ jest.mock(
     ImportAccount: ({
       onActionComplete,
     }: {
-      onActionComplete: (success: boolean) => void;
+      onActionComplete: (success?: boolean) => void;
     }) => (
       <div>
         <button onClick={() => onActionComplete(true)}>
@@ -30,6 +30,7 @@ jest.mock(
         <button onClick={() => onActionComplete(false)}>
           Mock Import Failure
         </button>
+        <button onClick={() => onActionComplete()}>Mock Cancel</button>
       </div>
     ),
   }),
@@ -88,5 +89,16 @@ describe('AddWalletPage', () => {
     fireEvent.click(failureButton);
 
     expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('navigates back when user cancels', () => {
+    renderComponent();
+
+    const cancelButton = screen.getByRole('button', {
+      name: 'Mock Cancel',
+    });
+    fireEvent.click(cancelButton);
+
+    expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
   });
 });

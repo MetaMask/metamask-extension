@@ -32,7 +32,10 @@ import {
   IMPORT_SRP_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -129,7 +132,10 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
 
     // Hardware wallet connections require expanded view
     if (option.id === 'hardware-wallet') {
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+      if (
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+      ) {
         global.platform.openExtensionInBrowser?.(option.route);
       } else {
         navigate(option.route);

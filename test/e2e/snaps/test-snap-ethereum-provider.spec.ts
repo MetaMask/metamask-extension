@@ -8,11 +8,15 @@ import {
   approveAccount,
   approvePersonalSignMessage,
 } from '../page-objects/flows/snap-permission.flow';
+import { DAPP_PATH } from '../constants';
 
 describe('Test Snap ethereum_provider', function () {
   it('can use the ethereum_provider endowment', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockEthereumProviderSnap,
         title: this.test?.fullTitle(),

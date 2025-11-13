@@ -10,6 +10,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import log from 'loglevel';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { Json } from '@metamask/utils';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
@@ -18,6 +20,15 @@ import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
 import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
+import {
+  getSubscriptionRequestTrackingProps,
+  getSubscriptionRestartRequestTrackingProps,
+  getUserAccountTypeAndCategory,
+} from '../../../../shared/modules/shield/metrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -117,33 +128,45 @@ export class SubscriptionService {
     params: StartSubscriptionRequest,
     currentTabId?: number,
   ) {
-    const redirectUrl = this.#webAuthenticator.getRedirectURL();
+    try {
+      const redirectUrl = this.#webAuthenticator.getRedirectURL();
 
-    const { checkoutSessionUrl } = await this.#messenger.call(
-      'SubscriptionController:startShieldSubscriptionWithCard',
-      {
-        ...params,
-        successUrl: redirectUrl,
-      },
-    );
-
-    await this.#openAndWaitForTabToClose({
-      url: checkoutSessionUrl,
-      successUrl: redirectUrl,
-    });
-
-    if (!currentTabId) {
-      // open extension browser shield settings if open from pop up (no current tab)
-      this.#platform.openExtensionInBrowser(
-        // need `waitForSubscriptionCreation` param to wait for subscription creation happen in the background and not redirect to the shield plan page immediately
-        '/settings/transaction-shield/?waitForSubscriptionCreation=true',
+      const { checkoutSessionUrl } = await this.#messenger.call(
+        'SubscriptionController:startShieldSubscriptionWithCard',
+        {
+          ...params,
+          successUrl: redirectUrl,
+        },
       );
-    }
 
-    const subscriptions = await this.#messenger.call(
-      'SubscriptionController:getSubscriptions',
-    );
-    return subscriptions;
+      await this.#openAndWaitForTabToClose({
+        url: checkoutSessionUrl,
+        successUrl: redirectUrl,
+      });
+
+      if (!currentTabId) {
+        // open extension browser shield settings if open from pop up (no current tab)
+        this.#platform.openExtensionInBrowser(
+          // need `waitForSubscriptionCreation` param to wait for subscription creation happen in the background and not redirect to the shield plan page immediately
+          '/settings/transaction-shield/?waitForSubscriptionCreation=true',
+        );
+      }
+
+      const subscriptions = await this.#messenger.call(
+        'SubscriptionController:getSubscriptions',
+      );
+      this.trackSubscriptionRequestEvent('completed');
+      return subscriptions;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.trackSubscriptionRequestEvent('failed', undefined, {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_message: errorMessage,
+      });
+      throw error;
+    }
   }
 
   async submitSubscriptionSponsorshipIntent(txMeta: TransactionMeta) {
@@ -180,6 +203,69 @@ export class SubscriptionService {
     } catch (error) {
       log.error('Failed to submit sponsorship intent', error);
     }
+  }
+
+  /**
+   * Track the subscription request event.
+   *
+   * @param requestStatus - The request status.
+   * @param transactionMeta - The transaction meta (for crypto subscription requests).
+   * @param extrasProps - The extra properties.
+   */
+  trackSubscriptionRequestEvent(
+    requestStatus: 'started' | 'completed' | 'failed',
+    transactionMeta?: TransactionMeta,
+    extrasProps?: Record<string, Json>,
+  ) {
+    if (
+      transactionMeta &&
+      transactionMeta.type !== TransactionType.shieldSubscriptionApprove
+    ) {
+      return;
+    }
+
+    const subscriptionControllerState = this.#messenger.call(
+      'SubscriptionController:getState',
+    );
+    const appStateControllerState = this.#messenger.call(
+      'AppStateController:getState',
+    );
+    const { defaultSubscriptionPaymentOptions } = appStateControllerState;
+
+    const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
+
+    const trackingProps = getSubscriptionRequestTrackingProps(
+      subscriptionControllerState,
+      defaultSubscriptionPaymentOptions,
+      transactionMeta,
+    );
+
+    const isRenewal = trackingProps.subscription_state !== 'none';
+
+    if (isRenewal) {
+      const renewalTrackingProps = getSubscriptionRestartRequestTrackingProps(
+        subscriptionControllerState,
+        requestStatus,
+        extrasProps?.error_message as string | undefined,
+      );
+
+      this.#messenger.call('MetaMetricsController:trackEvent', {
+        event: MetaMetricsEventName.ShieldMembershipRestartRequest,
+        category: MetaMetricsEventCategory.Shield,
+        properties: renewalTrackingProps,
+      });
+    }
+
+    this.#messenger.call('MetaMetricsController:trackEvent', {
+      event: MetaMetricsEventName.ShieldSubscriptionRequest,
+      category: MetaMetricsEventCategory.Shield,
+      properties: {
+        ...accountTypeAndCategory,
+        ...trackingProps,
+        status: requestStatus,
+        ...extrasProps,
+      },
+    });
   }
 
   async #openAndWaitForTabToClose(params: { url: string; successUrl: string }) {
@@ -270,5 +356,22 @@ export class SubscriptionService {
       return swapsControllerState;
     }
     return swapsControllerState;
+  }
+
+  #getAccountTypeAndCategoryForMetrics() {
+    const { internalAccounts } = this.#messenger.call(
+      'AccountsController:getState',
+    );
+    const selectedInternalAccount =
+      internalAccounts.accounts[internalAccounts.selectedAccount];
+    const keyringsMetadata = this.#messenger.call('KeyringController:getState');
+    const hdKeyringsMetadata = keyringsMetadata.keyrings.filter(
+      (keyring) => keyring.type === KeyringTypes.hd,
+    );
+
+    return getUserAccountTypeAndCategory(
+      selectedInternalAccount,
+      hdKeyringsMetadata,
+    );
   }
 }

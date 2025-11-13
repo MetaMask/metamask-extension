@@ -30,3 +30,6 @@ export const VAULT_RECOVERY_LINK = `https://support.metamask.io/configure/wallet
 
 export const HYPERLIQUID_REFERRAL_LEARN_MORE_URL =
   'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals';
+
+export const SHIELD_TERMS_OF_USE_URL =
+  'https://consensys.io/transaction-shield-supplemental-terms';
