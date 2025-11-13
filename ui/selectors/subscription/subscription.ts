@@ -1,10 +1,15 @@
 import {
+  CachedLastSelectedPaymentMethod,
   PricingResponse,
+  PRODUCT_TYPES,
   ProductType,
   Subscription,
   SubscriptionControllerState,
 } from '@metamask/subscription-controller';
-import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield';
+import {
+  getIsShieldSubscriptionActive,
+  getShieldSubscription,
+} from '../../../shared/lib/shield';
 
 export type SubscriptionState = {
   metamask: SubscriptionControllerState & {
@@ -22,11 +27,13 @@ export function getUserSubscriptions(state: SubscriptionState): {
   customerId?: string;
   subscriptions: Subscription[];
   trialedProducts: ProductType[];
+  lastSubscription?: Subscription;
 } {
   return {
     customerId: state.metamask.customerId,
     subscriptions: state.metamask.subscriptions,
     trialedProducts: state.metamask.trialedProducts,
+    lastSubscription: state.metamask.lastSubscription,
   };
 }
 
@@ -40,4 +47,22 @@ export function getHasShieldEntryModalShownOnce(
   state: SubscriptionState,
 ): boolean {
   return Boolean(state.metamask.showShieldEntryModalOnce !== null);
+}
+
+export function getLastUsedShieldSubscriptionPaymentDetails(
+  state: SubscriptionState,
+): CachedLastSelectedPaymentMethod | undefined {
+  return state.metamask.lastSelectedPaymentMethod?.[PRODUCT_TYPES.SHIELD];
+}
+
+export function getHasSubscribedToShield(state: SubscriptionState): boolean {
+  const currentShieldSubscription = getShieldSubscription(
+    state.metamask.subscriptions,
+  );
+  const lastShieldSubscription =
+    state.metamask.lastSubscription &&
+    getShieldSubscription(state.metamask.lastSubscription);
+  const hasSubscribedToShield =
+    Boolean(currentShieldSubscription) || Boolean(lastShieldSubscription);
+  return hasSubscribedToShield;
 }

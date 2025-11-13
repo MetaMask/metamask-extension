@@ -2,8 +2,9 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
+  StateMetadata,
 } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import log from 'loglevel';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
@@ -41,29 +42,29 @@ const defaultTransientState = {
  * using the `persist` flag; and if they can be sent to Sentry or not, using
  * the `anonymous` flag.
  */
-const controllerMetadata = {
+const controllerMetadata: StateMetadata<OnboardingControllerState> = {
   seedPhraseBackedUp: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   firstTimeFlowType: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   completedOnboarding: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   onboardingTabs: {
     includeInStateLogs: true,
     persist: false,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
 };
@@ -108,12 +109,10 @@ export type AllowedEvents = never;
 /**
  * Messenger type for the {@link OnboardingController}.
  */
-export type OnboardingControllerMessenger = RestrictedMessenger<
+export type OnboardingControllerMessenger = Messenger<
   typeof controllerName,
   OnboardingControllerActions | AllowedActions,
-  OnboardingControllerControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  OnboardingControllerControllerEvents | AllowedEvents
 >;
 
 /**
@@ -200,7 +199,7 @@ export default class OnboardingController extends BaseController<
       log.debug('Ignoring registerOnboarding; user already onboarded');
       return;
     }
-    const { onboardingTabs } = { ...(this.state ?? {}) };
+    const { onboardingTabs } = { ...this.state };
 
     if (!onboardingTabs) {
       return;
@@ -235,5 +234,17 @@ export default class OnboardingController extends BaseController<
       firstTimeFlowType === FirstTimeFlowType.socialCreate ||
       firstTimeFlowType === FirstTimeFlowType.socialImport
     );
+  }
+
+  /**
+   * Reset the onboarding controller state.
+   */
+  resetOnboarding(): void {
+    this.update((state) => {
+      state.completedOnboarding = false;
+      state.firstTimeFlowType = null;
+      state.seedPhraseBackedUp = null;
+      state.onboardingTabs = {};
+    });
   }
 }

@@ -1,9 +1,10 @@
-import { Severity } from '../helpers/constants/design-system';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import {
-  ConfirmAlertsState,
+  Alert,
   AlertSeverity,
+  ConfirmAlertsState,
 } from '../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../helpers/constants/design-system';
 import useAlerts from './useAlerts';
 
 describe('useAlerts', () => {
@@ -63,10 +64,25 @@ describe('useAlerts', () => {
     return renderHookUseAlert(ownerId, state).result;
   };
 
+  const sortBySeverityDesc = (alerts: Alert[]) => {
+    const severityOrder = {
+      [Severity.Danger]: 3,
+      [Severity.Warning]: 2,
+      [Severity.Info]: 1,
+      [Severity.Success]: 0,
+      [Severity.Disabled]: 0,
+    };
+
+    return [...alerts].sort(
+      (a, b) => severityOrder[b.severity] - severityOrder[a.severity],
+    );
+  };
+
   describe('alerts', () => {
     it('returns all alerts', () => {
       const result = renderAndReturnResult();
-      expect(result.current.alerts).toEqual(alertsMock);
+      const expectedAlerts = sortBySeverityDesc(alertsMock);
+      expect(result.current.alerts).toEqual(expectedAlerts);
       expect(result.current.hasAlerts).toEqual(true);
       expect(result.current.hasDangerAlerts).toEqual(true);
       expect(result.current.hasUnconfirmedDangerAlerts).toEqual(false);
@@ -199,7 +215,10 @@ describe('useAlerts', () => {
         },
       });
 
-      expect(result.current.generalAlerts).toEqual(expectedGeneralAlerts);
+      const expectedSortedGeneralAlerts = sortBySeverityDesc(
+        expectedGeneralAlerts,
+      );
+      expect(result.current.generalAlerts).toEqual(expectedSortedGeneralAlerts);
     });
   });
 
@@ -228,15 +247,82 @@ describe('useAlerts', () => {
   describe('fieldAlerts', () => {
     it('returns all alerts with field property', () => {
       const result = renderAndReturnResult();
-      expect(result.current.fieldAlerts).toEqual([
-        alertsMock[0],
-        alertsMock[2],
-      ]);
+      const expectedFieldAlerts = sortBySeverityDesc(
+        [alertsMock[0], alertsMock[2]].filter(
+          (alert) => typeof alert !== 'undefined',
+        ) as Alert[],
+      );
+      expect(result.current.fieldAlerts).toEqual(expectedFieldAlerts);
     });
 
     it('returns empty array if no alerts with field property', () => {
       const result = renderAndReturnResult('mockedOwnerId');
       expect(result.current.fieldAlerts).toEqual([]);
+    });
+  });
+
+  describe('navigable alerts', () => {
+    it('excludes alerts that hide from alert navigation', () => {
+      const hiddenFieldAlertKey = 'hidden-field';
+      const generalAlertKey = 'general';
+      const hiddenGeneralAlertKey = 'hidden-general';
+
+      const fieldVisibleAlert = {
+        key: fromAlertKeyMock,
+        field: fromAlertKeyMock,
+        severity: Severity.Danger as AlertSeverity,
+        message: 'Visible Field Alert',
+      };
+      const fieldHiddenAlert = {
+        key: hiddenFieldAlertKey,
+        field: fromAlertKeyMock,
+        severity: Severity.Warning as AlertSeverity,
+        message: 'Hidden Field Alert',
+        hideFromAlertNavigation: true,
+      };
+      const generalVisibleAlert = {
+        key: generalAlertKey,
+        severity: Severity.Info as AlertSeverity,
+        message: 'Visible General Alert',
+      };
+      const generalHiddenAlert = {
+        key: hiddenGeneralAlertKey,
+        severity: Severity.Success as AlertSeverity,
+        message: 'Hidden General Alert',
+        hideFromAlertNavigation: true,
+      };
+
+      const state = {
+        confirmAlerts: {
+          alerts: {
+            [ownerIdMock]: [
+              fieldVisibleAlert,
+              fieldHiddenAlert,
+              generalVisibleAlert,
+              generalHiddenAlert,
+            ],
+          },
+          confirmed: {},
+        },
+      };
+
+      const result = renderAndReturnResult(undefined, state);
+
+      expect(
+        result.current.navigableAlerts.map(({ key }: Alert) => key),
+      ).toEqual([fieldVisibleAlert.key, generalVisibleAlert.key]);
+      expect(
+        result.current.navigableFieldAlerts.map(({ key }: Alert) => key),
+      ).toEqual([fieldVisibleAlert.key]);
+      expect(
+        result.current.navigableGeneralAlerts.map(({ key }: Alert) => key),
+      ).toEqual([generalVisibleAlert.key]);
+      expect(
+        result.current
+          .getNavigableFieldAlerts(fromAlertKeyMock)
+          .map(({ key }: Alert) => key),
+      ).toEqual([fieldVisibleAlert.key]);
+      expect(result.current.getNavigableFieldAlerts('unknown')).toEqual([]);
     });
   });
 

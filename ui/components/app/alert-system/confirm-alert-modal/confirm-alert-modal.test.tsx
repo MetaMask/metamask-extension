@@ -111,6 +111,39 @@ describe('ConfirmAlertModal', () => {
     expect(getByTestId('alert-modal-button')).toBeInTheDocument();
   });
 
+  it('enables submit button when danger alert has acknowledgeBypass flag', () => {
+    const bypassState = {
+      confirmAlerts: {
+        alerts: {
+          [OWNER_ID_MOCK]: [
+            {
+              key: DATA_ALERT_KEY_MOCK,
+              field: DATA_ALERT_KEY_MOCK,
+              severity: Severity.Danger,
+              message: DATA_ALERT_MESSAGE_MOCK,
+              acknowledgeBypass: true,
+            },
+          ],
+        },
+        confirmed: {
+          [OWNER_ID_MOCK]: {
+            [DATA_ALERT_KEY_MOCK]: false,
+          },
+        },
+      },
+    };
+
+    const bypassStore = configureMockStore([])(bypassState);
+
+    const { queryByTestId, getByTestId } = renderWithProvider(
+      <ConfirmAlertModal {...defaultProps} />,
+      bypassStore,
+    );
+
+    expect(queryByTestId('alert-modal-acknowledge-checkbox')).toBeNull();
+    expect(getByTestId('confirm-alert-modal-submit-button')).toBeEnabled();
+  });
+
   describe('when there are multiple alerts', () => {
     it('renders the next alert when the "Got it" button is clicked', () => {
       const mockStoreAcknowledgeAlerts = configureMockStore([])({

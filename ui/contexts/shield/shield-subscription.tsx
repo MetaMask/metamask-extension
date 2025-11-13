@@ -1,9 +1,16 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import {
+  PRODUCT_TYPES,
+  COHORT_NAMES,
+  BALANCE_CATEGORIES,
+  type Cohort,
+  type BalanceCategory,
+} from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useSubscriptionEligibility } from '../../hooks/subscription/useSubscription';
 import {
+  assignUserToCohort,
   setShowShieldEntryModalOnce,
   subscriptionsStartPolling,
 } from '../../store/actions';
@@ -20,17 +27,36 @@ import {
 } from '../../selectors/subscription';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 
+/**
+ * Converts a balance in USD to a balance category
+ *
+ * @param balanceUsd - The balance in USD
+ * @returns The balance category string
+ */
+function getBalanceCategory(balanceUsd: number): BalanceCategory {
+  if (balanceUsd >= 1000000) {
+    return BALANCE_CATEGORIES.RANGE_1M_PLUS;
+  }
+  if (balanceUsd >= 100000) {
+    return BALANCE_CATEGORIES.RANGE_100K_999_9K;
+  }
+  if (balanceUsd >= 10000) {
+    return BALANCE_CATEGORIES.RANGE_10K_99_9K;
+  }
+  if (balanceUsd >= 1000) {
+    return BALANCE_CATEGORIES.RANGE_1K_9_9K;
+  }
+  if (balanceUsd >= 100) {
+    return BALANCE_CATEGORIES.RANGE_100_999;
+  }
+  return BALANCE_CATEGORIES.RANGE_0_99;
+}
+
 export const ShieldSubscriptionContext = React.createContext<{
-  resetShieldEntryModalShownStatus: () => void;
-  setShieldEntryModalShownStatus: (
-    showShieldEntryModalOnce: boolean | null,
-  ) => void;
+  evaluateCohortEligibility: (entrypointCohort: string) => Promise<void>;
 }>({
-  resetShieldEntryModalShownStatus: () => {
-    // Default empty function
-  },
-  setShieldEntryModalShownStatus: () => {
-    // Default empty function
+  evaluateCohortEligibility: async () => {
+    // Default no-op implementation
   },
 });
 
@@ -66,99 +92,202 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   );
 
   /**
-   * Check if the user's balance criteria is met to show the shield entry modal.
-   * Shield entry modal will be shown if:
-   * - Subscription is not active
-   * - User is signed in
-   * - User has a balance greater than the minimum fiat balance threshold (1K USD)
-   * - User has not shown the shield entry modal before
+   * Assigns a user to a cohort based on eligibility rate (80/20 split).
+   * Returns the selected cohort or null.
    */
-  const evaluateShieldEntryPointModal = useCallback(async () => {
-    try {
-      if (isShieldSubscriptionActive) {
-        dispatch(setShowShieldEntryModalOnce(false));
-        return;
-      } else if (
-        !selectedAccount ||
-        !isSignedIn ||
-        !isUnlocked ||
-        hasShieldEntryModalShownOnce
-      ) {
-        return;
+  const assignToCohort = useCallback(
+    async (cohorts: Cohort[]): Promise<Cohort | null> => {
+      if (cohorts.length === 0) {
+        return null;
       }
 
-      const shieldSubscriptionEligibility =
-        await getShieldSubscriptionEligibility();
-      if (
-        shieldSubscriptionEligibility?.canSubscribe &&
-        shieldSubscriptionEligibility?.canViewEntryModal &&
-        shieldSubscriptionEligibility?.minBalanceUSD &&
-        totalFiatBalance &&
-        Number(totalFiatBalance) >= shieldSubscriptionEligibility?.minBalanceUSD
-      ) {
-        const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event
-        dispatch(setShowShieldEntryModalOnce(true, shouldSubmitUserEvents));
+      const sortedCohorts = [...cohorts].sort(
+        (a, b) => a.priority - b.priority,
+      );
+
+      let selectedCohort: Cohort | null = null;
+
+      if (sortedCohorts.length === 1) {
+        selectedCohort = sortedCohorts[0];
+      } else if (sortedCohorts.length >= 2) {
+        const random = Math.random();
+        let cumulativeRate = 0;
+
+        for (const cohort of sortedCohorts) {
+          cumulativeRate += cohort.eligibilityRate;
+          if (random <= cumulativeRate) {
+            selectedCohort = cohort;
+            break;
+          }
+        }
+
+        // Fallback: assign the last cohort if none selected
+        if (!selectedCohort) {
+          selectedCohort = sortedCohorts[sortedCohorts.length - 1];
+        }
       }
-    } catch (error) {
-      log.warn('[getIsUserBalanceCriteriaMet] error', error);
-    }
-  }, [
-    isShieldSubscriptionActive,
-    getShieldSubscriptionEligibility,
-    selectedAccount,
-    isSignedIn,
-    isUnlocked,
-    totalFiatBalance,
-    hasShieldEntryModalShownOnce,
-    dispatch,
-  ]);
+
+      if (selectedCohort) {
+        try {
+          await dispatch(assignUserToCohort({ cohort: selectedCohort.cohort }));
+          return selectedCohort;
+        } catch (error) {
+          log.error('[ShieldSubscription] Failed to assign cohort', error);
+          return null;
+        }
+      }
+
+      return null;
+    },
+    [dispatch],
+  );
+
+  /**
+   * Evaluates cohort eligibility at a specific entrypoint.
+   * Follows the flowchart logic for cohort assignment and modal display.
+   *
+   * Shield entry modal will be shown if:
+   * - MetaMask Shield feature is enabled
+   * - Basic functionality is enabled
+   * - Subscription is not active
+   * - User is signed in and unlocked
+   * - User has not shown the shield entry modal before
+   * - User's balance meets the minimum fiat balance threshold
+   * - User meets cohort-specific eligibility criteria
+   */
+  const evaluateCohortEligibility = useCallback(
+    async (entrypointCohort: string): Promise<void> => {
+      try {
+        if (!isMetaMaskShieldFeatureEnabled || !isBasicFunctionalityEnabled) {
+          return;
+        }
+
+        if (isShieldSubscriptionActive) {
+          dispatch(setShowShieldEntryModalOnce(false));
+          return;
+        }
+
+        if (
+          !selectedAccount ||
+          !isSignedIn ||
+          !isUnlocked ||
+          hasShieldEntryModalShownOnce
+        ) {
+          return;
+        }
+
+        const balanceCategory = totalFiatBalance
+          ? getBalanceCategory(Number(totalFiatBalance))
+          : undefined;
+
+        const shieldEligibility = await getShieldSubscriptionEligibility({
+          balanceCategory,
+        });
+
+        if (
+          !shieldEligibility?.canSubscribe ||
+          !shieldEligibility.canViewEntryModal ||
+          !shieldEligibility.minBalanceUSD ||
+          !totalFiatBalance ||
+          Number(totalFiatBalance) < shieldEligibility.minBalanceUSD
+        ) {
+          return;
+        }
+
+        const eligibleCohorts = shieldEligibility.cohorts.filter(
+          (c: Cohort) => c.eligible,
+        );
+        const assignedCohortName = shieldEligibility.assignedCohort;
+        const isUserPending = Boolean(assignedCohortName);
+        const hasExpired = shieldEligibility.hasAssignedCohortExpired;
+        const { modalType } = shieldEligibility;
+
+        // User has an assigned cohort
+        if (isUserPending) {
+          // At wallet_home entrypoint: wait for expiry before showing cohort 2
+          if (entrypointCohort !== COHORT_NAMES.POST_TX && !hasExpired) {
+            return;
+          }
+          const cohort = eligibleCohorts.find(
+            (c) => c.cohort === entrypointCohort,
+          );
+          if (!cohort) {
+            return;
+          }
+
+          const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event
+          dispatch(
+            setShowShieldEntryModalOnce(
+              true,
+              shouldSubmitUserEvents,
+              entrypointCohort,
+              modalType,
+            ),
+          );
+          return;
+        }
+
+        // New user - only assign from wallet_home entrypoint
+        if (
+          entrypointCohort === COHORT_NAMES.WALLET_HOME &&
+          eligibleCohorts.length > 0
+        ) {
+          const selectedCohort = await assignToCohort(eligibleCohorts);
+          if (selectedCohort?.cohort === COHORT_NAMES.WALLET_HOME) {
+            const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event
+            dispatch(
+              setShowShieldEntryModalOnce(
+                true,
+                shouldSubmitUserEvents,
+                selectedCohort.cohort,
+                modalType,
+              ),
+            );
+          }
+        }
+      } catch (error) {
+        log.warn('[evaluateCohortEligibility] error', error);
+      }
+    },
+    [
+      dispatch,
+      isMetaMaskShieldFeatureEnabled,
+      isBasicFunctionalityEnabled,
+      isShieldSubscriptionActive,
+      selectedAccount,
+      isSignedIn,
+      isUnlocked,
+      hasShieldEntryModalShownOnce,
+      totalFiatBalance,
+      getShieldSubscriptionEligibility,
+      assignToCohort,
+    ],
+  );
 
   useEffect(() => {
-    if (!isMetaMaskShieldFeatureEnabled || !isBasicFunctionalityEnabled) {
-      return;
-    }
-
-    evaluateShieldEntryPointModal();
-  }, [
-    dispatch,
-    isMetaMaskShieldFeatureEnabled,
-    evaluateShieldEntryPointModal,
-    isBasicFunctionalityEnabled,
-  ]);
-
-  useEffect(() => {
-    if (selectedAccount && isSignedIn && isUnlocked) {
+    if (
+      isMetaMaskShieldFeatureEnabled &&
+      isBasicFunctionalityEnabled &&
+      selectedAccount &&
+      isSignedIn &&
+      isUnlocked
+    ) {
       // start polling for the subscriptions
       dispatch(subscriptionsStartPolling());
     }
-  }, [isSignedIn, selectedAccount, dispatch, isUnlocked]);
-
-  const resetShieldEntryModalShownStatus = useCallback(() => {
-    if (!isShieldSubscriptionActive) {
-      dispatch(setShowShieldEntryModalOnce(null));
-    }
-  }, [isShieldSubscriptionActive, dispatch]);
-
-  const setShieldEntryModalShownStatus = useCallback(
-    (showShieldEntryModalOnce: boolean | null) => {
-      if (!isShieldSubscriptionActive) {
-        const shouldSubmitUserEvents = Boolean(showShieldEntryModalOnce); // submits `shield_entry_modal_viewed` event
-        dispatch(
-          setShowShieldEntryModalOnce(
-            showShieldEntryModalOnce,
-            shouldSubmitUserEvents,
-          ),
-        );
-      }
-    },
-    [dispatch, isShieldSubscriptionActive],
-  );
+  }, [
+    isMetaMaskShieldFeatureEnabled,
+    isSignedIn,
+    selectedAccount,
+    dispatch,
+    isUnlocked,
+    isBasicFunctionalityEnabled,
+  ]);
 
   return (
     <ShieldSubscriptionContext.Provider
       value={{
-        resetShieldEntryModalShownStatus,
-        setShieldEntryModalShownStatus,
+        evaluateCohortEligibility,
       }}
     >
       {children}

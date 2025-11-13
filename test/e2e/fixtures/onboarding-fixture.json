@@ -72,6 +72,8 @@
       "showNetworkBanner": true,
       "showPermissionsTour": true,
       "showShieldEntryModalOnce": null,
+      "pendingShieldCohort": null,
+      "pendingShieldCohortTxType": null,
       "showTestnetMessageInDropdown": true,
       "slides": [],
       "surveyLinkLastClickedOrClosed": null,
@@ -201,7 +203,8 @@
     },
     "MultichainAssetsController": {
       "accountsAssets": {},
-      "assetsMetadata": {}
+      "assetsMetadata": {},
+      "allIgnoredAssets": {}
     },
     "MultichainAssetsRatesController": {
       "conversionRates": {}

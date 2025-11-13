@@ -1,10 +1,15 @@
 import { SignatureRequest } from '@metamask/signature-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { Severity } from '../../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  IconColor,
+  Severity,
+} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getCoverageStatus,
@@ -12,68 +17,14 @@ import {
 } from '../../../../selectors/shield/coverage';
 import { useConfirmContext } from '../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../transactions/useEnableShieldCoverageChecks';
+import { IconName } from '../../../../components/component-library';
+import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 import { ShieldCoverageAlertMessage } from './transactions/ShieldCoverageAlertMessage';
 
 const getModalBodyStr = (reasonCode: string | undefined) => {
   // grouping codes with a fallthrough pattern is not allowed by the linter
   let modalBodyStr: string;
   switch (reasonCode) {
-    // Local setup
-    case 'E104':
-      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
-      break;
-    // Sender type not supported
-    case 'E200':
-      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
-      break;
-    // Receiver type not supported
-    case 'E300':
-      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
-      break;
-    // Transaction type not supported
-    case 'E400':
-      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
-      break;
-    // Transaction to not supported
-    case 'E401':
-      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
-      break;
-    // Malicious domain
-    case 'E101':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Risky domain
-    case 'E102':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Scan origin error
-    case 'E103':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Receiver contract malicious
-    case 'E301':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Receiver contract risky
-    case 'E302':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Method params contract malicious
-    case 'E500':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Method params contract unknown
-    case 'E501':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Malicious token contract
-    case 'E600':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
-    // Risky token contract
-    case 'E601':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
-      break;
     // Invalid blockaid result
     case 'E001':
       modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
@@ -100,11 +51,71 @@ const getModalBodyStr = (reasonCode: string | undefined) => {
       break;
     // Unknown error
     case 'E007':
-      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      modalBodyStr = 'shieldCoverageAlertMessageUnknown';
       break;
     // Unsupported chain id
     case 'E008':
       modalBodyStr = 'shieldCoverageAlertMessageChainNotSupported';
+      break;
+    // Malicious domain
+    case 'E101':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Risky domain
+    case 'E102':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Scan origin error
+    case 'E103':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Local setup
+    case 'E104':
+      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
+      break;
+    // Sender type not supported
+    case 'E200':
+      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
+      break;
+    // Receiver type not supported
+    case 'E300':
+      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
+      break;
+    // Receiver contract malicious
+    case 'E301':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Receiver contract risky
+    case 'E302':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Transaction type not supported
+    case 'E400':
+      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
+      break;
+    // Transaction to not supported
+    case 'E401':
+      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
+      break;
+    // Transaction decoding failed
+    case 'E402':
+      modalBodyStr = 'shieldCoverageAlertMessageTxTypeNotSupported';
+      break;
+    // Method params contract malicious
+    case 'E500':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Method params contract unknown
+    case 'E501':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Malicious token contract
+    case 'E600':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
+      break;
+    // Risky token contract
+    case 'E601':
+      modalBodyStr = 'shieldCoverageAlertMessagePotentialRisks';
       break;
     // Signature method not supported
     case 'E700':
@@ -122,6 +133,22 @@ const getModalBodyStr = (reasonCode: string | undefined) => {
     case 'E703':
       modalBodyStr = 'shieldCoverageAlertMessageSignatureNotSupported';
       break;
+    // malicious token receiver contract in swap
+    case 'E800':
+      modalBodyStr = 'shieldCoverageAlertHighRiskTransaction';
+      break;
+    // token shows potential malicious behavior
+    case 'E801':
+      modalBodyStr = 'shieldCoverageAlertMessageTokenTrustSignalWarning';
+      break;
+    // invalid sentinel result for token check
+    case 'E802':
+      modalBodyStr = 'shieldCoverageAlertMessageUnknown';
+      break;
+    // invalid sentinel result
+    case 'E803':
+      modalBodyStr = 'shieldCoverageAlertMessageUnknown';
+      break;
     default:
       modalBodyStr = 'shieldCoverageAlertMessageUnknown';
   }
@@ -131,6 +158,7 @@ const getModalBodyStr = (reasonCode: string | undefined) => {
 
 export function useShieldCoverageAlert(): Alert[] {
   const t = useI18nContext();
+
   const { currentConfirmation } = useConfirmContext<
     TransactionMeta | SignatureRequest
   >();
@@ -138,32 +166,51 @@ export function useShieldCoverageAlert(): Alert[] {
   const { reasonCode, status } = useSelector((state) =>
     getCoverageStatus(state as ShieldState, currentConfirmation?.id),
   );
+
+  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
+
   const isCovered = status === 'covered';
-  const modalBodyStr = isCovered
+  let modalBodyStr = isCovered
     ? 'shieldCoverageAlertCovered'
     : getModalBodyStr(reasonCode);
+  if (isPaused) {
+    modalBodyStr = 'shieldCoverageAlertMessagePaused';
+  }
 
-  const isEnableShieldCoverageChecks = useEnableShieldCoverageChecks();
-  const showAlert = isEnableShieldCoverageChecks && Boolean(status);
+  const showAlert =
+    (isEnabled && Boolean(status)) ||
+    // show paused alert when subscription is paused without coverage status
+    isPaused;
+
+  const navigate = useNavigate();
+  const onPausedAcknowledgeClick = useCallback(() => {
+    navigate(TRANSACTION_SHIELD_ROUTE);
+  }, [navigate]);
 
   return useMemo<Alert[]>((): Alert[] => {
     if (!showAlert) {
       return [];
     }
 
-    let severity = Severity.Info;
-    let inlineAlertText = t('shieldNotCovered');
-    let modalTitle = t('shieldCoverageAlertMessageTitle');
-    switch (status) {
-      case 'covered':
-        severity = Severity.Success;
-        inlineAlertText = t('shieldCovered');
-        modalTitle = t('shieldCoverageAlertMessageTitleCovered');
-        break;
-      case 'malicious':
-        severity = Severity.Danger;
-        break;
-      default:
+    let severity = Severity.Disabled;
+    let inlineAlertText = isPaused ? t('shieldPaused') : t('shieldNotCovered');
+    let modalTitle = isPaused
+      ? t('shieldCoverageAlertMessageTitlePaused')
+      : t('shieldCoverageAlertMessageTitle');
+    let inlineAlertTextBackgroundColor;
+    if (!isPaused) {
+      switch (status) {
+        case 'covered':
+          severity = Severity.Success;
+          inlineAlertText = t('shieldCovered');
+          modalTitle = t('shieldCoverageAlertMessageTitleCovered');
+          break;
+        case 'malicious':
+          severity = Severity.Danger;
+          inlineAlertTextBackgroundColor = BackgroundColor.errorMuted;
+          break;
+        default:
+      }
     }
 
     return [
@@ -177,9 +224,22 @@ export function useShieldCoverageAlert(): Alert[] {
         }),
         isBlocking: false,
         inlineAlertText,
+        inlineAlertTextPill: true,
+        inlineAlertTextBackgroundColor,
+        inlineAlertIconRight: true,
+        iconName: IconName.Info,
+        iconColor: IconColor.inherit,
         showArrow: false,
         isOpenModalOnClick: true,
+        hideFromAlertNavigation: true,
+        acknowledgeBypass: true,
+        customAcknowledgeButtonText: isPaused
+          ? t('shieldCoverageAlertMessagePausedAcknowledgeButton')
+          : undefined,
+        customAcknowledgeButtonOnClick: isPaused
+          ? onPausedAcknowledgeClick
+          : undefined,
       },
     ];
-  }, [status, modalBodyStr, showAlert, t]);
+  }, [status, modalBodyStr, showAlert, t, isPaused, onPausedAcknowledgeClick]);
 }
