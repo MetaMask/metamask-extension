@@ -10,8 +10,8 @@ import { getMarketData } from '../selectors';
 import { getCurrentCurrency } from '../ducks/metamask/metamask';
 import { getCurrencyRates } from '../selectors/selectors';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { formatCompactCurrency } from '../helpers/utils/token-insights';
+import { useFormatters } from './useFormatters';
 
 export type TokenInsightsToken = {
   address: string | null;
@@ -66,6 +66,7 @@ export const useTokenInsightsData = (
   const currentCurrency = useSelector(getCurrentCurrency) as string;
   const currencyRates = useSelector(getCurrencyRates) as CurrencyRatesMap;
   const isEvm = token ? isEvmChainId(token.chainId as Hex) : false;
+  const { formatCurrencyWithMinThreshold } = useFormatters();
 
   // Check TokenRatesController cache (EVM only)
   const marketDataState = useSelector(getMarketData) as
@@ -177,8 +178,14 @@ export const useTokenInsightsData = (
     return apiData;
   }, [evmMarketData, apiData]);
 
-  // Calculate fiat values and formatted strings
   const marketDataFiat = useMemo(() => {
+    const formatPriceWithThreshold = (price: number | undefined): string => {
+      if (!price) {
+        return '—';
+      }
+      return formatCurrencyWithMinThreshold(price, currentCurrency);
+    };
+
     // For non-EVM tokens or when no exchange rate, use direct values
     if (!isEvm || !evmMarketData || !exchangeRate) {
       const price = marketData?.price;
@@ -189,9 +196,7 @@ export const useTokenInsightsData = (
         price,
         volume,
         marketCap,
-        formattedPrice: price
-          ? formatCurrency(String(price), currentCurrency)
-          : '—',
+        formattedPrice: formatPriceWithThreshold(price),
         formattedVolume: formatCompactCurrency(volume, currentCurrency),
         formattedMarketCap: formatCompactCurrency(marketCap, currentCurrency),
       };
@@ -227,9 +232,7 @@ export const useTokenInsightsData = (
       price: priceFiat,
       volume: volumeFiat,
       marketCap: marketCapFiat,
-      formattedPrice: priceFiat
-        ? formatCurrency(String(priceFiat), currentCurrency)
-        : '—',
+      formattedPrice: formatPriceWithThreshold(priceFiat),
       formattedVolume: formatCompactCurrency(volumeFiat, currentCurrency),
       formattedMarketCap: formatCompactCurrency(marketCapFiat, currentCurrency),
     };
@@ -242,6 +245,7 @@ export const useTokenInsightsData = (
     token,
     currencyRates,
     currentCurrency,
+    formatCurrencyWithMinThreshold,
   ]);
 
   return {
