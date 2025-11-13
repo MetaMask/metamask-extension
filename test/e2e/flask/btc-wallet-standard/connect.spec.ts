@@ -6,6 +6,7 @@ import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/r
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import { DEFAULT_BTC_ADDRESS } from '../../constants';
 import {
+  account1Short,
   assertConnected,
   assertDisconnected,
   connectBitcoinTestDapp,
@@ -14,36 +15,12 @@ import {
 
 describe('Bitcoin Wallet Standard - e2e tests', function () {
   describe('Bitcoin Wallet Standard - Connect & disconnect', function () {
-    it.only('Should onboard and connect when there are no existing Bitcoin accounts in the wallet', async function () {
+    // TODO: Re-activate this test when BIP-44 is fully supported in E2E
+    it.skip('Should onboard and connect when there are no existing Bitcoin accounts in the wallet', async function () {
       await withBtcAccountSnap(
         {
           ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
-          numberOfAccounts: 1,
-          title: this.test?.fullTitle(),
-        },
-        async (driver) => {
-          const testDapp = new TestDappBitcoin(driver);
-          await testDapp.openTestDappPage();
-          await testDapp.checkPageIsLoaded();
-
-          await connectBitcoinTestDapp(driver, testDapp, { onboard: true });
-
-          const header = await testDapp.getHeader();
-
-          const connectionStatus = await header.getConnectionStatus();
-          assertConnected(connectionStatus);
-
-          const account = await header.getAccount();
-          assertConnected(account, DEFAULT_BTC_ADDRESS);
-        },
-      );
-    });
-
-    /* it('Should connect when there is an existing Solana account in the wallet', async function () {
-      await withBtcAccountSnap(
-        {
-          ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
-          numberOfAccounts: 1,
+          numberOfAccounts: 0,
           title: this.test?.fullTitle(),
         },
         async (driver) => {
@@ -59,10 +36,11 @@ describe('Bitcoin Wallet Standard - e2e tests', function () {
           assertConnected(connectionStatus);
 
           const account = await header.getAccount();
-          assertConnected(account, DEFAULT_BTC_ADDRESS);
+          assertConnected(account, account1Short);
         },
       );
-    }); */
+    });
+
     it('Should be able to cancel connection and connect again', async function () {
       await withBtcAccountSnap(
         {
@@ -108,11 +86,11 @@ describe('Bitcoin Wallet Standard - e2e tests', function () {
           assertConnected(connectionStatusAfterConnect);
 
           const account = await header.getAccount();
-          assertConnected(account, DEFAULT_BTC_ADDRESS);
+          assertConnected(account, account1Short);
         },
       );
     });
-    it('Should not create session when Solana permissions are deselected', async function () {
+    it('Should not create session when Bitcoin permissions are deselected', async function () {
       await withBtcAccountSnap(
         {
           ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
