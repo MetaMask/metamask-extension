@@ -28,8 +28,10 @@ export const AddWalletPage = () => {
   const navigate = useNavigate();
 
   const onActionComplete = useCallback(
-    async (confirmed: boolean) => {
-      if (confirmed) {
+    async (confirmed?: boolean) => {
+      // Navigate back if import succeeded (true) or user cancelled (undefined)
+      // Stay on page if import failed (false) to allow retry
+      if (confirmed !== false) {
         navigate(PREVIOUS_ROUTE);
       }
     },

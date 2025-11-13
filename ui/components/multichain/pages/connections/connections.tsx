@@ -13,7 +13,10 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  CONNECT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -83,7 +86,9 @@ export const Connections = ({
   const urlParamsHook = useParams<{ origin: string }>();
 
   // Use props if provided, otherwise fall back to hooks
-  const navigate = navigateProp || navigateHook;
+  const navigate = (navigateProp || navigateHook) as NonNullable<
+    typeof navigateProp
+  >;
   const urlParams = params || urlParamsHook;
 
   const [showConnectAccountsModal, setShowConnectAccountsModal] =
@@ -230,7 +235,7 @@ export const Connections = ({
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             size={ButtonIconSize.Sm}
           />
         }

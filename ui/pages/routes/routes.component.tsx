@@ -89,7 +89,6 @@ import {
   getShowExtensionInFullSizeView,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
-  getSelectedInternalAccount,
   oldestPendingConfirmationSelector,
   getUnapprovedTransactions,
   getPendingApprovals,
@@ -121,12 +120,10 @@ import {
 } from '../../ducks/metamask/metamask';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
 ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 ///: END:ONLY_INCLUDE_IF
 import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -139,7 +136,6 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
-import DeprecatedNetworks from '../../components/ui/deprecated-networks/deprecated-networks';
 import { Box } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
@@ -475,7 +471,7 @@ const ShieldPlan = mmLazy(
 // End Lazy Routes
 
 const MemoizedReviewPermissionsWrapper = React.memo(
-  (props: { params?: { origin: string }; navigate?: V5CompatNavigate }) => (
+  (props: RouteComponentProps<{ origin: string }>) => (
     <State2Wrapper
       {...props}
       state1Component={ReviewPermissions}
@@ -500,10 +496,6 @@ export default function Routes() {
     useAppSelector(getPreferences);
   const completedOnboarding = useAppSelector(getCompletedOnboarding);
 
-  // If there is more than one connected account to activeTabOrigin,
-  // *BUT* the current account is not one of them, show the banner
-  const account = useAppSelector(getSelectedInternalAccount);
-
   const networkToAutomaticallySwitchTo = useAppSelector(
     getNetworkToAutomaticallySwitchTo,
   );
@@ -515,10 +507,6 @@ export default function Routes() {
   ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   const approvalFlows = useAppSelector(getApprovalFlows);
   ///: END:ONLY_INCLUDE_IF
-
-  const shouldShowSeedPhraseReminder = useAppSelector((state) =>
-    getShouldShowSeedPhraseReminder(state, account),
-  );
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
@@ -663,10 +651,30 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-  // Navigate to confirmations when there are pending approvals (from any page)
+  // Navigate to confirmations when there are pending approvals and user is on asset details page
+  // This behavior is only enabled in sidepanel to avoid interfering with popup/extension flows
   useEffect(() => {
+    const windowType = getEnvironmentType();
+
+    // Only run this navigation logic in sidepanel
+    if (windowType !== ENVIRONMENT_TYPE_SIDEPANEL) {
+      return;
+    }
+
+    // Only navigate to confirmations when user is on an asset details page
+    const isOnAssetDetailsPage = location.pathname.startsWith(ASSET_ROUTE);
+
+    // Network operations (addEthereumChain, switchEthereumChain) have their own UI
+    // and shouldn't trigger auto-navigation
+    const hasNonNavigableApprovals = pendingApprovals.some(
+      (approval) =>
+        approval.type === 'wallet_addEthereumChain' ||
+        approval.type === 'wallet_switchEthereumChain',
+    );
+
     if (
+      isOnAssetDetailsPage &&
+      !hasNonNavigableApprovals &&
       isUnlocked &&
       (pendingApprovals.length > 0 || approvalFlows?.length > 0)
     ) {
@@ -677,8 +685,7 @@ export default function Routes() {
         history,
       );
     }
-  }, [isUnlocked, pendingApprovals, approvalFlows, history]);
-  ///: END:ONLY_INCLUDE_IF
+  }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
 
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
@@ -734,7 +741,13 @@ export default function Routes() {
             path={NOTIFICATIONS_SETTINGS_ROUTE}
             component={NotificationsSettings}
           />
-          <Route path={`${NOTIFICATIONS_ROUTE}/:uuid`} exact>
+          <Route
+            path={`${NOTIFICATIONS_ROUTE}/:uuid`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ uuid: string }>(NotificationDetails, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
@@ -860,7 +873,13 @@ export default function Routes() {
               paramsAsProps: false,
             })}
           </Route>
-          <Route path={`${CONNECTIONS}/:origin`} exact>
+          <Route
+            path={`${CONNECTIONS}/:origin`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ origin: string }>(Connections, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
@@ -881,7 +900,10 @@ export default function Routes() {
           />
           <Route
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
-            exact
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
           >
             {createV5CompatRoute<{
               chainId: string;
@@ -893,7 +915,13 @@ export default function Routes() {
               paramsAsProps: false,
             })}
           </Route>
-          <Route path={`${REVIEW_PERMISSIONS}/:origin`} exact>
+          <Route
+            path={`${REVIEW_PERMISSIONS}/:origin`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ origin: string }>(
               MemoizedReviewPermissionsWrapper,
               {
@@ -904,14 +932,23 @@ export default function Routes() {
               },
             )}
           </Route>
-          <Route path={ACCOUNT_LIST_PAGE_ROUTE} exact>
+          <Route
+            path={ACCOUNT_LIST_PAGE_ROUTE}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute(AccountList, {
               wrapper: AuthenticatedV5Compat,
             })}
           </Route>
           <Route
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
-            exact
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
           >
             {createV5CompatRoute<{ accountGroupId: string }>(
               MultichainAccountAddressListPage,
@@ -925,7 +962,10 @@ export default function Routes() {
           </Route>
           <Route
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
-            exact
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
           >
             {createV5CompatRoute<{ accountGroupId: string }>(
               MultichainAccountPrivateKeyListPage,
@@ -936,40 +976,76 @@ export default function Routes() {
               },
             )}
           </Route>
-          <Route path={ADD_WALLET_PAGE_ROUTE} exact>
+          <Route
+            path={ADD_WALLET_PAGE_ROUTE}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute(AddWalletPage, {
               wrapper: AuthenticatedV5Compat,
             })}
           </Route>
-          <Route path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`} exact>
+          <Route
+            path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ id: string }>(MultichainAccountDetailsPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
           </Route>
-          <Route path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`} exact>
+          <Route
+            path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ address: string }>(SmartAccountPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
           </Route>
-          <Route path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`} exact>
+          <Route
+            path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ id: string }>(WalletDetailsPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
           </Route>
-          <Route path={WALLET_DETAILS_ROUTE} exact>
+          <Route
+            path={WALLET_DETAILS_ROUTE}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ id: string }>(WalletDetails, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
           </Route>
-          <Route path={`${ACCOUNT_DETAILS_ROUTE}/:address`} exact>
+          <Route
+            path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ address: string }>(
               MultichainAccountDetails,
               {
@@ -979,7 +1055,13 @@ export default function Routes() {
               },
             )}
           </Route>
-          <Route path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`} exact>
+          <Route
+            path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
+            // v5 Route supports exact with render props, but TS types don't recognize it
+            // Using spread operator with type assertion to bypass incorrect type definitions
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ exact: true } as any)}
+          >
             {createV5CompatRoute<{ address: string }>(AddressQRCode, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
@@ -1022,13 +1104,6 @@ export default function Routes() {
   const loadMessage = loadingMessage
     ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
     : null;
-
-  const windowType = getEnvironmentType();
-
-  const shouldShowNetworkDeprecationWarning =
-    windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
-    isUnlocked &&
-    !shouldShowSeedPhraseReminder;
 
   const paramsConfirmationId: string = location.pathname.split(
     '/confirm-transaction/',
@@ -1091,7 +1166,6 @@ export default function Routes() {
       })}
       dir={textDirection}
     >
-      {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />

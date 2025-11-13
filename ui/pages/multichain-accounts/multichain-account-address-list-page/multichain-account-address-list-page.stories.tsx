@@ -14,17 +14,6 @@ interface WrapperProps {
   initialEntries?: string[];
 }
 
-const Wrapper: React.FC<WrapperProps> = ({
-  children,
-  initialEntries = ['/accounts'],
-}) => (
-  <MemoryRouter initialEntries={initialEntries}>
-    <Route path="/multichain-account-address-list/:accountGroupId">
-      {children}
-    </Route>
-  </MemoryRouter>
-);
-
 // Use actual group IDs from mock-state.json
 const MOCK_GROUP_ID = 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0' as AccountGroupId;
 const MOCK_WALLET_ID = 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8';
@@ -43,19 +32,20 @@ export const Default: Story = {
       const store = mockStore(mockState);
       return (
         <Provider store={store}>
-          <Wrapper
-            initialEntries={[
-              `/multichain-account-address-list/${encodeURIComponent(
-                MOCK_GROUP_ID,
-              )}`,
-            ]}
-          >
-            <Story />
-          </Wrapper>
+          <Story />
         </Provider>
       );
     },
   ],
+  parameters: {
+    initialEntries: [`/multichain-account-address-list/${encodeURIComponent(
+      MOCK_GROUP_ID,
+    )}?source=receive`],
+    path: '/multichain-account-address-list/:accountGroupId',
+    backgrounds: {
+      default: 'light',
+    },
+  },
 };
 
 export const ReceivingAddress: Story = {
@@ -64,15 +54,7 @@ export const ReceivingAddress: Story = {
       const store = mockStore(mockState);
       return (
         <Provider store={store}>
-          <Wrapper
-            initialEntries={[
-              `/multichain-account-address-list/${encodeURIComponent(
-                MOCK_GROUP_ID,
-              )}?source=receive`,
-            ]}
-          >
-            <Story />
-          </Wrapper>
+          <Story />
         </Provider>
       );
     },
@@ -106,15 +88,7 @@ export const NoAccounts: Story = {
       });
       return (
         <Provider store={store}>
-          <Wrapper
-            initialEntries={[
-              `/multichain-account-address-list/${encodeURIComponent(
-                MOCK_GROUP_ID,
-              )}`,
-            ]}
-          >
-            <Story />
-          </Wrapper>
+          <Story />
         </Provider>
       );
     },
