@@ -689,7 +689,7 @@ export default function Routes() {
       );
     }
   }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
-  
+
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
 
