@@ -2,6 +2,7 @@ import { waitFor } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import {
+  BridgeClientId,
   formatChainIdToCaip,
   isNativeAddress,
 } from '@metamask/bridge-controller';
@@ -246,7 +247,7 @@ describe('useTokenInsightsData', () => {
         ),
         {
           method: 'GET',
-          headers: { 'X-Client-Id': 'extension' },
+          headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
         },
       );
     });
