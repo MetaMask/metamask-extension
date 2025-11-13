@@ -19,7 +19,7 @@ import {
   IconName,
   Icon,
 } from '../../component-library';
-import { AccountListItem } from '..';
+import { AccountListItem } from '../account-list-item';
 
 import {
   JustifyContent,
