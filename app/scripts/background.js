@@ -1758,10 +1758,10 @@ const initSidePanelBehavior = async () => {
     // Wait for controller to be initialized
     await isInitialized;
 
-    // Get user preference (default to true for side panel)
+    // Get user preference (default to false for side panel)
     const useSidePanelAsDefault =
       controller?.preferencesController?.state?.preferences
-        ?.useSidePanelAsDefault ?? true;
+        ?.useSidePanelAsDefault ?? false;
 
     // Set panel behavior based on preference
     if (browser?.sidePanel?.setPanelBehavior) {
@@ -1769,6 +1769,18 @@ const initSidePanelBehavior = async () => {
         openPanelOnActionClick: useSidePanelAsDefault,
       });
     }
+
+    // Setup remote feature flag listener to update sidepanel preferences
+    controller?.controllerMessenger?.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (state) => {
+        const extensionUxSidepanel =
+          state?.remoteFeatureFlags?.extensionUxSidepanel;
+        if (extensionUxSidepanel === false) {
+          controller?.preferencesController?.setUseSidePanelAsDefault(false);
+        }
+      },
+    );
   } catch (error) {
     console.error('Error setting side panel behavior:', error);
   }
@@ -1792,7 +1804,8 @@ const setupPreferenceListener = async () => {
       'PreferencesController:stateChange',
       (state) => {
         const useSidePanelAsDefault =
-          state?.preferences?.useSidePanelAsDefault ?? true;
+          state?.preferences?.useSidePanelAsDefault ?? false;
+
         if (browser?.sidePanel?.setPanelBehavior) {
           browser.sidePanel
             .setPanelBehavior({
