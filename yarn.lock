@@ -8180,9 +8180,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "@metamask/subscription-controller@npm:4.2.1"
+"@metamask/subscription-controller@npm:^4.2.2":
+  version: 4.2.2
+  resolution: "@metamask/subscription-controller@npm:4.2.2"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.15.0"
@@ -8193,7 +8193,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
   peerDependencies:
     "@metamask/profile-sync-controller": ^26.0.0
-  checksum: 10/f25829e9e34868fa86e8033ca3ad67247c16636ecd60fa95496d55c8ca07a0bd5bc7fdf7c7bc5d9968e64e1aa7147781f8556700a85f8221c92ef1de3ac3d75b
+  checksum: 10/36aeb3b1fa4b840e43dd8afc6aa2c435ac3a0d3126946c847db5a6941b4830afe71382617ec55474afa7bd29426f0ef10f61860b8201863e7199185e1940dbe8
   languageName: node
   linkType: hard
 
@@ -32615,7 +32615,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^2.4.6"
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": "npm:^4.2.1"
+    "@metamask/subscription-controller": "npm:^4.2.2"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
