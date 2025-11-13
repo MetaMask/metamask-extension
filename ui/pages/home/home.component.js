@@ -21,7 +21,6 @@ import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
-import { ScrollContainer } from '../../contexts/scroll-container';
 
 import {
   FontWeight,

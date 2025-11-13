@@ -61,17 +61,18 @@ export const RouteWithLayout = ({
     <Route
       {...routeProps}
       // @ts-expect-error RouteProps type doesn't include render prop
-      render={(props: RouteComponentProps) => (
-        <Layout>
-          {Component ? (
-            <Component {...props} />
-          ) : typeof children === 'function' ? (
-            children(props)
-          ) : (
-            children
-          )}
-        </Layout>
-      )}
+      render={(props: RouteComponentProps) => {
+        let content;
+        if (Component) {
+          content = <Component {...props} />;
+        } else if (typeof children === 'function') {
+          content = children(props);
+        } else {
+          content = children;
+        }
+
+        return <Layout>{content}</Layout>;
+      }}
     />
   );
 };

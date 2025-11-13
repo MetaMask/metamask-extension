@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import cn from 'classnames';
-import { Header } from './header';
 import { ScrollContainer } from '../contexts/scroll-container';
+import { Header } from './header';
 
 const width = 'max-w-[clamp(var(--width-sm),85vw,var(--width-max))]';
 const sidepanel = 'group-[.app--sidepanel]:max-w-[var(--width-max-sidepanel)]';
