@@ -13,18 +13,6 @@
     }
   }
 
-  &__password-input {
-    &-container {
-      border-color: var(--color-border-default);
-    }
-
-    background-color: transparent;
-
-    & > input::placeholder {
-      color: var(--color-text-alternative);
-    }
-  }
-
 
   &__mascot-container {
     position: relative;

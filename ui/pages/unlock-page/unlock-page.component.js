@@ -495,16 +495,9 @@ class UnlockPage extends Component {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        backgroundColor={
-          isRehydrationFlow ? BackgroundColor.backgroundDefault : ''
-        }
+        backgroundColor={BackgroundColor.backgroundDefault}
         width={BlockSize.Full}
         paddingBottom={12} // offset header to center content
-        className={
-          isRehydrationFlow
-            ? ''
-            : `unlock-page__container--${isDarkTheme ? 'dark' : 'light'}`
-        }
       >
         {showResetPasswordModal && (
           <ResetPasswordModal
@@ -589,7 +582,6 @@ class UnlockPage extends Component {
                   ? t('enterYourPasswordSocialLoginFlow')
                   : t('enterYourPassword')
               }
-              className="unlock-page__password-input-container"
               size={FormTextFieldSize.Lg}
               placeholderColor={TextColor.textDefault}
               inputProps={{
@@ -598,7 +590,6 @@ class UnlockPage extends Component {
               }}
               textFieldProps={{
                 disabled: isLocked,
-                className: 'unlock-page__password-input',
               }}
               onChange={(event) => this.handleInputChange(event)}
               type={TextFieldType.Password}
