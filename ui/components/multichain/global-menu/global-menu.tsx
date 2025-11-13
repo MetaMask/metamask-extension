@@ -1,9 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import browser from 'webextension-polyfill';
-///: END:ONLY_INCLUDE_IF
 import {
   useUnreadNotificationsCounter,
   useReadNotificationsCounter,
@@ -25,11 +23,9 @@ import {
   toggleNetworkMenu,
   setUseSidePanelAsDefault,
 } from '../../../store/actions';
-import {
-  getIsSidePanelFeatureEnabled,
-  isGatorPermissionsRevocationFeatureEnabled,
-} from '../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import {
   selectIsMetamaskNotificationsEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
@@ -41,6 +37,7 @@ import {
   Popover,
   PopoverPosition,
   Tag,
+  Text,
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
@@ -48,11 +45,8 @@ import { MenuItem } from '../../ui/menu';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
-  ///: END:ONLY_INCLUDE_IF
   PLATFORM_FIREFOX,
 } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
@@ -168,7 +162,10 @@ export const GlobalMenu = ({
 
   // Check if side panel is currently the default (vs popup)
   const preferences = useSelector(getPreferences);
-  const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? true;
+  const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? false;
+
+  // Check if sidepanel feature is enabled (both build flag and LaunchDarkly flag)
+  const isSidePanelEnabled = useSidePanelEnabled();
 
   const showPriorityTag = useMemo(
     () =>
@@ -186,7 +183,7 @@ export const GlobalMenu = ({
    */
   const toggleDefaultView = async () => {
     // Only allow sidepanel functionality if the feature flag is enabled
-    if (!getIsSidePanelFeatureEnabled()) {
+    if (!isSidePanelEnabled) {
       return;
     }
 
@@ -194,7 +191,6 @@ export const GlobalMenu = ({
       const newValue = !isSidePanelDefault;
       await dispatch(setUseSidePanelAsDefault(newValue));
 
-      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
       // If switching from sidepanel to popup view, close the current sidepanel
       if (
         isSidePanelDefault &&
@@ -231,7 +227,6 @@ export const GlobalMenu = ({
           console.error('Error opening side panel:', error);
         }
       }
-      ///: END:ONLY_INCLUDE_IF
     } catch (error) {
       console.error('Error toggling default view:', error);
     }
@@ -349,22 +344,51 @@ export const GlobalMenu = ({
           closeMenu={closeMenu}
         />
       )}
-      {account && (
-        <>
-          <AccountDetailsMenuItem
-            metricsLocation={METRICS_LOCATION}
-            closeMenu={closeMenu}
-            address={account.address}
-          />
-          {isMultichainAccountsState2Enabled ? null : (
-            <ViewExplorerMenuItem
+
+      {(getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
+        <MenuItem
+          iconName={IconName.Export}
+          onClick={() => {
+            global?.platform?.openExtensionInBrowser?.();
+            trackEvent({
+              event: MetaMetricsEventName.AppWindowExpanded,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: METRICS_LOCATION,
+              },
+            });
+            closeMenu();
+          }}
+          data-testid="global-menu-expand-view"
+        >
+          {t('openFullScreen')}
+          <Text
+            variant={TextVariant.bodySmMedium}
+            color={TextColor.textAlternative}
+          >
+            {t('metamaskExtension')}
+          </Text>
+        </MenuItem>
+      )}
+      {account &&
+        getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP &&
+        getEnvironmentType() !== ENVIRONMENT_TYPE_SIDEPANEL && (
+          <>
+            <AccountDetailsMenuItem
               metricsLocation={METRICS_LOCATION}
               closeMenu={closeMenu}
-              account={account}
+              address={account.address}
             />
-          )}
-        </>
-      )}
+            {isMultichainAccountsState2Enabled ? null : (
+              <ViewExplorerMenuItem
+                metricsLocation={METRICS_LOCATION}
+                closeMenu={closeMenu}
+                account={account}
+              />
+            )}
+          </>
+        )}
       <Box
         borderColor={BorderColor.borderMuted}
         width={BlockSize.Full}
@@ -392,55 +416,35 @@ export const GlobalMenu = ({
       >
         {t('allPermissions')}
       </MenuItem>
-
       {/* Toggle between popup and sidepanel - only for Chrome when sidepanel is enabled */}
-      {getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN &&
-      getBrowserName() !== PLATFORM_FIREFOX &&
-      getIsSidePanelFeatureEnabled() ? (
-        <MenuItem
-          iconName={IconName.Expand}
-          onClick={async () => {
-            await toggleDefaultView();
-            trackEvent({
-              event: MetaMetricsEventName.ViewportSwitched,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                location: METRICS_LOCATION,
-                to: isSidePanelDefault
-                  ? ENVIRONMENT_TYPE_POPUP
-                  : ENVIRONMENT_TYPE_SIDEPANEL,
-              },
-            });
-            closeMenu();
-          }}
-          data-testid="global-menu-toggle-view"
-        >
-          {isSidePanelDefault ? t('popupView') : t('sidePanelView')}
-        </MenuItem>
-      ) : null}
-
-      {/* Expand view button: shows when sidepanel disabled (any browser) OR when sidepanel enabled (Firefox only) */}
-      {getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
-      (!getIsSidePanelFeatureEnabled() ||
-        getBrowserName() === PLATFORM_FIREFOX) ? (
-        <MenuItem
-          iconName={IconName.Expand}
-          onClick={() => {
-            global?.platform?.openExtensionInBrowser?.();
-            trackEvent({
-              event: MetaMetricsEventName.AppWindowExpanded,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                location: METRICS_LOCATION,
-              },
-            });
-            closeMenu();
-          }}
-          data-testid="global-menu-expand-view"
-        >
-          {t('expandView')}
-        </MenuItem>
-      ) : null}
+      {getBrowserName() !== PLATFORM_FIREFOX &&
+        isSidePanelEnabled &&
+        (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
+          <MenuItem
+            iconName={IconName.Expand}
+            onClick={async () => {
+              await toggleDefaultView();
+              trackEvent({
+                event: MetaMetricsEventName.ViewportSwitched,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  location: METRICS_LOCATION,
+                  to:
+                    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+                      ? ENVIRONMENT_TYPE_POPUP
+                      : ENVIRONMENT_TYPE_SIDEPANEL,
+                },
+              });
+              closeMenu();
+            }}
+            data-testid="global-menu-toggle-view"
+          >
+            {getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+              ? t('switchToPopup')
+              : t('switchToSidePanel')}
+          </MenuItem>
+        )}
       <MenuItem
         data-testid="global-menu-networks"
         iconName={IconName.Hierarchy}

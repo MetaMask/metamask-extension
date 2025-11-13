@@ -17,11 +17,11 @@ describe('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
+        fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockSnapSimpleKeyringAndSite,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

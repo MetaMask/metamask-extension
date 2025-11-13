@@ -5,6 +5,7 @@ import {
   mockBip32Snap,
   mockJsonRpcSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { Driver } from '../webdriver/driver';
@@ -19,6 +20,9 @@ describe('Test Snap RPC', function () {
   it('can use the cross-snap RPC endowment and produce a public key', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapBinaries,
         title: this.test?.fullTitle(),
