@@ -2599,9 +2599,6 @@
   "existingChainId": {
     "message": "The information you have entered is associated with an existing chain ID."
   },
-  "expandView": {
-    "message": "Expand view"
-  },
   "experimental": {
     "message": "Experimental"
   },
@@ -3663,6 +3660,9 @@
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
+  "metamaskExtension": {
+    "message": "MetaMask Extension"
+  },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
   },
@@ -4582,6 +4582,9 @@
     "message": "Only connect with sites you trust. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
+  "openFullScreen": {
+    "message": "Open full screen"
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "Go to full screen to connect your Ledger.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -5018,9 +5021,6 @@
   },
   "popularNetworks": {
     "message": "Popular networks"
-  },
-  "popupView": {
-    "message": "Popup view"
   },
   "preparingSwap": {
     "message": "Preparing swap..."
@@ -6346,9 +6346,6 @@
   "showTestnetNetworksDescription": {
     "message": "Select this to show test networks in network list"
   },
-  "sidePanelView": {
-    "message": "Side panel view"
-  },
   "sign": {
     "message": "Sign"
   },
@@ -7578,6 +7575,12 @@
   },
   "switchNetwork": {
     "message": "Switch network"
+  },
+  "switchToPopup": {
+    "message": "Switch to popup"
+  },
+  "switchToSidePanel": {
+    "message": "Switch to side panel"
   },
   "switchToThisAccount": {
     "message": "Switch to this account"

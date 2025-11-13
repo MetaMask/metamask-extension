@@ -2324,9 +2324,6 @@
   "existingChainId": {
     "message": "입력한 정보는 기존 체인 ID와 연결되어 있습니다."
   },
-  "expandView": {
-    "message": "보기 확장"
-  },
   "experimental": {
     "message": "실험적"
   },
