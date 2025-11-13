@@ -102,6 +102,14 @@ export function normalizeMessage(message: string): string {
       /Translator - Unable to find value of key "[^"]+" for locale "[^"]+"/gu,
       'Translator - Unable to find value of key "<KEY>" for locale "<LOCALE>"',
     )
+    // Replace webpack chunk filenames with hashes (common-abc123.js, bootstrap.xyz789.js, etc.)
+    .replace(/\/[a-z-]+[.-][0-9a-f]{8,}\.js/giu, '/<CHUNK_FILE>')
+    .replace(/[a-z-]+[.-][0-9a-f]{8,}\.js/giu, '<CHUNK_FILE>')
+    // Collapse repeated token loading failures into a single pattern
+    .replace(
+      /(?:failed to load (?:decimals|balance) for token at <ADDRESS>\s*)+/gu,
+      'failed to load decimals/balance for token at <ADDRESS> [repeated]',
+    )
     // Replace file paths (normalize to relative paths)
     .replace(/[/\\][^/\\]+[/\\]node_modules[/\\][^/\\]+/gu, '<NODE_MODULE>')
     .replace(/[A-Z]:[/\\][^/\\]+/gu, '<ABSOLUTE_PATH>') // Windows paths
@@ -449,9 +457,13 @@ export function compareWithSnapshot(
  * Format comparison results for error message
  *
  * @param results - Comparison results with newWarnings and newErrors
+ * @param testFilePath - Optional test file path to show in command suggestion
  * @returns Formatted error message
  */
-export function formatComparisonResults(results: ComparisonResult): string {
+export function formatComparisonResults(
+  results: ComparisonResult,
+  testFilePath?: string,
+): string {
   const lines: string[] = [];
   const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
   const snapshotFileName = `test/test-warnings-snapshot-${snapshotType}.json`;
@@ -491,7 +503,13 @@ export function formatComparisonResults(results: ComparisonResult): string {
     lines.push(
       '\n📝 Or run this command to update the snapshot automatically (this is not guaranteed to work though, since all warnings/errors are not deterministic):',
     );
-    lines.push(`   yarn test:warnings:update:${snapshotType}\n`);
+    if (testFilePath) {
+      lines.push(
+        `   yarn test:warnings:update:${snapshotType} ${testFilePath}\n`,
+      );
+    } else {
+      lines.push(`   yarn test:warnings:update:${snapshotType}\n`);
+    }
   }
 
   return lines.join('\n');
