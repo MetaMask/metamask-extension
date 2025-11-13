@@ -1016,6 +1016,12 @@ export class PreferencesController extends BaseController<
     });
   }
 
+  setUseSidePanelAsDefault(value: boolean): void {
+    this.update((state) => {
+      state.preferences.useSidePanelAsDefault = value;
+    });
+  }
+
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setSnapsAddSnapAccountModalDismissed(value: boolean): void {
     this.update((state) => {

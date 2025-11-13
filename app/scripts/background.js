@@ -1800,17 +1800,10 @@ const initSidePanelBehavior = async () => {
     // Wait for controller to be initialized
     await isInitialized;
 
-    // Check LaunchDarkly flag and get user preference (defaults to false)
-    const { remoteFeatureFlags } =
-      controller?.controllerMessenger?.call(
-        'RemoteFeatureFlagController:getState',
-      ) ?? {};
-
-    const useSidePanelAsDefault = Boolean(
-      remoteFeatureFlags?.extensionUxSidepanel &&
-        controller?.preferencesController?.state?.preferences
-          ?.useSidePanelAsDefault,
-    );
+    // Get user preference (default to false for side panel)
+    const useSidePanelAsDefault =
+      controller?.preferencesController?.state?.preferences
+        ?.useSidePanelAsDefault ?? false;
 
     // Set panel behavior based on preference
     if (browser?.sidePanel?.setPanelBehavior) {
@@ -1818,6 +1811,17 @@ const initSidePanelBehavior = async () => {
         openPanelOnActionClick: useSidePanelAsDefault,
       });
     }
+
+    // Setup remote feature flag listener to update sidepanel preferences
+    controller?.controllerMessenger?.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (state) => {
+        const extensionUxSidepanel = state?.remoteFeatureFlags?.extensionUxSidepanel;
+        if (extensionUxSidepanel === false) {
+          controller?.preferencesController?.setUseSidePanelAsDefault(false);
+        }
+      },
+    );
   } catch (error) {
     console.error('Error setting side panel behavior:', error);
   }
@@ -1840,16 +1844,8 @@ const setupPreferenceListener = async () => {
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
       (state) => {
-        // Check LaunchDarkly flag and get user preference (defaults to false)
-        const { remoteFeatureFlags } =
-          controller?.controllerMessenger?.call(
-            'RemoteFeatureFlagController:getState',
-          ) ?? {};
-
-        const useSidePanelAsDefault = Boolean(
-          remoteFeatureFlags?.extensionUxSidepanel &&
-            state?.preferences?.useSidePanelAsDefault,
-        );
+        const useSidePanelAsDefault =
+          state?.preferences?.useSidePanelAsDefault ?? false;
 
         if (browser?.sidePanel?.setPanelBehavior) {
           browser.sidePanel

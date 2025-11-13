@@ -53,6 +53,7 @@ import {
   setCompletedOnboarding,
   ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   setCompletedOnboardingWithSidepanel,
+  setUseSidePanelAsDefault,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
@@ -175,6 +176,7 @@ export default function CreationSuccessful() {
           });
           if (tabs && tabs.length > 0) {
             await browser.sidePanel.open({ windowId: tabs[0].windowId });
+            await dispatch(setUseSidePanelAsDefault(true));
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
             return;
