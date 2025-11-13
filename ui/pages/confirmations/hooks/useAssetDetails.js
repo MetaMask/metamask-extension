@@ -51,11 +51,8 @@ export function useAssetDetails(
   });
 
   useEffect(() => {
-    if (
-      !isMounted.current ||
-      (!tokenAddress && !userAddress && !transactionData)
-    ) {
-      return () => undefined;
+    if (!tokenAddress && !userAddress && !transactionData) {
+      return;
     }
 
     async function getAndSetAssetDetails() {
@@ -87,10 +84,6 @@ export function useAssetDetails(
     ) {
       getAndSetAssetDetails();
     }
-
-    return () => {
-      isMounted.current = false;
-    };
   }, [
     chainId,
     dispatch,
