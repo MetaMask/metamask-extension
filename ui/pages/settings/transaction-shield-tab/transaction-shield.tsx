@@ -182,9 +182,7 @@ const TransactionShield = () => {
   );
 
   const [executeCancelSubscription, cancelSubscriptionResult] =
-    useCancelSubscription({
-      subscriptionId: currentShieldSubscription?.id,
-    });
+    useCancelSubscription(currentShieldSubscription);
 
   const [executeUnCancelSubscription, unCancelSubscriptionResult] =
     useUnCancelSubscription({
@@ -194,14 +192,14 @@ const TransactionShield = () => {
   const [
     executeOpenGetSubscriptionBillingPortal,
     openGetSubscriptionBillingPortalResult,
-  ] = useOpenGetSubscriptionBillingPortal();
+  ] = useOpenGetSubscriptionBillingPortal(displayedShieldSubscription);
 
   const [
     executeUpdateSubscriptionCardPaymentMethod,
     updateSubscriptionCardPaymentMethodResult,
   ] = useUpdateSubscriptionCardPaymentMethod({
-    subscriptionId: currentShieldSubscription?.id,
-    recurringInterval: currentShieldSubscription?.interval,
+    subscription: currentShieldSubscription,
+    newRecurringInterval: currentShieldSubscription?.interval,
   });
 
   const isWaitingForSubscriptionCreation =

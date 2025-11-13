@@ -2,13 +2,10 @@ import {
   BALANCE_CATEGORIES,
   BalanceCategory,
   PAYMENT_TYPES,
-  PaymentType,
   PRODUCT_TYPES,
-  RECURRING_INTERVALS,
   RecurringInterval,
   Subscription,
   SubscriptionControllerState,
-  SubscriptionCryptoPaymentMethod,
   SubscriptionStatus,
 } from '@metamask/subscription-controller';
 import {
@@ -254,39 +251,4 @@ export function captureShieldSubscriptionRequestEvent(
       status: requestStatus,
     },
   });
-}
-
-/**
- * Get the previous subscription payment data.
- *
- * @param previousSubscription - The previous subscription.
- * @returns The previous subscription payment data.
- */
-export function getPreviousSubscriptionPaymentData(
-  previousSubscription?: Subscription,
-): {
-  paymentType: PaymentType;
-  billingInterval: RecurringInterval;
-  cryptoPaymentChain?: string;
-  cryptoPaymentCurrency?: string;
-} {
-  const paymentType =
-    previousSubscription?.paymentMethod.type || PAYMENT_TYPES.byCard;
-  const billingInterval =
-    previousSubscription?.interval || RECURRING_INTERVALS.year;
-  let cryptoPaymentChain: string | undefined;
-  let cryptoPaymentCurrency: string | undefined;
-  if (paymentType === PAYMENT_TYPES.byCrypto) {
-    const cryptoPaymentMethod =
-      previousSubscription?.paymentMethod as SubscriptionCryptoPaymentMethod;
-    cryptoPaymentChain = cryptoPaymentMethod.crypto.chainId;
-    cryptoPaymentCurrency = cryptoPaymentMethod.crypto.tokenSymbol;
-  }
-
-  return {
-    paymentType,
-    billingInterval,
-    cryptoPaymentChain,
-    cryptoPaymentCurrency,
-  };
 }
