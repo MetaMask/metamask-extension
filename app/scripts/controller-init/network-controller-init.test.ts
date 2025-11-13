@@ -57,7 +57,7 @@ function getInitRequestMock(
     // @ts-expect-error: I don't know wtf is going on.
     'RemoteFeatureFlagController:getState',
     jest.fn().mockReturnValue({
-      completedOnboarding: true,
+      walletFrameworkRpcFailoverEnabled: true,
     }),
   );
 
