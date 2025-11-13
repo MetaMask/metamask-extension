@@ -794,7 +794,6 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
-            component={ConfirmTransaction}
             layout={LegacyLayout}
           >
             {createV5CompatRoute<{ id?: string }>(ConfirmTransaction, {
@@ -856,7 +855,6 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
-            component={ConfirmAddSuggestedNftPage}
             exact
             layout={LegacyLayout}
           >
