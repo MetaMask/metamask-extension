@@ -297,7 +297,7 @@ export const MultichainHoveredAddressRowsList = ({
         onMouseLeave={handleMouseLeave}
         preventOverflow
         isPortal={true}
-        offset={[0, 0]}
+        offset={[0, 2]}
         style={{
           zIndex: 99999,
           maxHeight: '400px',

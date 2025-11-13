@@ -9,7 +9,6 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   TextColor,
-  TextVariant,
 } from '@metamask/design-system-react';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
