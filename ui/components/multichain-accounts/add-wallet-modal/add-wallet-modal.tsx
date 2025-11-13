@@ -137,7 +137,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
         event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
         properties: {
           status: 'started',
-          location: 'Import Wallet From Add Wallet Modal',
+          location: 'Add Wallet Modal',
         },
       });
     }

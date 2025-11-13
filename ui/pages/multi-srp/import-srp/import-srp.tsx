@@ -72,7 +72,7 @@ export const ImportSrp = () => {
         event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
         properties: {
           status: 'continue_button_clicked',
-          location: 'Multi SRP Import Continue Button Clicked',
+          location: 'Multi SRP Import',
         },
       });
 
