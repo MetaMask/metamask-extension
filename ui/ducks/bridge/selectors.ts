@@ -646,11 +646,7 @@ export const getFromTokenConversionRate = createSelector(
         };
       }
       // For non-EVM tokens (Solana, Bitcoin, Tron), we use the conversion rates provided by the multichain rates controller
-      if (
-        isNonEvmChain(fromChain.chainId) &&
-        nativeAssetId &&
-        tokenAssetId
-      ) {
+      if (isNonEvmChain(fromChain.chainId) && nativeAssetId && tokenAssetId) {
         const nativeAssetRate = Number(
           conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
         );
@@ -732,11 +728,7 @@ export const getToTokenConversionRate = createDeepEqualSelector(
       );
 
       // For non-EVM tokens (Solana, Bitcoin, Tron), we use the conversion rates provided by the multichain rates controller
-      if (
-        isNonEvmChain(toChain.chainId) &&
-        nativeAssetId &&
-        tokenAssetId
-      ) {
+      if (isNonEvmChain(toChain.chainId) && nativeAssetId && tokenAssetId) {
         const nativeAssetRate = Number(
           conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
         );
