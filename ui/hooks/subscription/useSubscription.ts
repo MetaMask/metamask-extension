@@ -37,7 +37,11 @@ import { useAsyncCallback, useAsyncResult } from '../useAsync';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
-import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield';
+import {
+  getIsShieldSubscriptionActive,
+  getSubscriptionDurationInDays,
+  getSubscriptionPaymentData,
+} from '../../../shared/lib/shield';
 import { generateERC20ApprovalData } from '../../pages/confirmations/send-legacy/send.utils';
 import { decimalToHex } from '../../../shared/modules/conversion.utils';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
@@ -125,18 +129,57 @@ export const useUserLastSubscriptionByProduct = (
   );
 };
 
-export const useCancelSubscription = ({
-  subscriptionId,
-}: {
-  subscriptionId?: string;
-}) => {
+export const useCancelSubscription = (subscription?: Subscription) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const { captureShieldMembershipCancelledEvent } = useSubscriptionMetrics();
+
+  const latestSubscriptionDuration = useMemo(() => {
+    return subscription ? getSubscriptionDurationInDays(subscription) : 0;
+  }, [subscription]);
+
+  const trackMembershipCancelledEvent = useCallback(
+    (cancellationStatus: 'succeeded' | 'failed', errorMessage?: string) => {
+      if (!subscription) {
+        return;
+      }
+
+      const { cryptoPaymentChain, cryptoPaymentCurrency } =
+        getSubscriptionPaymentData(subscription);
+
+      // capture the event when the Shield membership is cancelled
+      captureShieldMembershipCancelledEvent({
+        subscriptionStatus: subscription.status,
+        paymentType: subscription.paymentMethod.type,
+        billingInterval: subscription.interval,
+        cryptoPaymentChain,
+        cryptoPaymentCurrency,
+        cancellationStatus,
+        errorMessage,
+        latestSubscriptionDuration,
+      });
+    },
+    [
+      subscription,
+      captureShieldMembershipCancelledEvent,
+      latestSubscriptionDuration,
+    ],
+  );
+
   return useAsyncCallback(async () => {
-    if (!subscriptionId) {
-      return;
+    try {
+      if (!subscription) {
+        return;
+      }
+      const subscriptionId = subscription.id;
+      await dispatch(cancelSubscription({ subscriptionId }));
+      trackMembershipCancelledEvent('succeeded');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      trackMembershipCancelledEvent('failed', errorMessage);
+      throw error;
     }
-    await dispatch(cancelSubscription({ subscriptionId }));
-  }, [dispatch, subscriptionId]);
+  }, [dispatch, subscription, captureShieldMembershipCancelledEvent]);
 };
 
 export const useUnCancelSubscription = ({
@@ -153,34 +196,68 @@ export const useUnCancelSubscription = ({
   }, [dispatch, subscriptionId]);
 };
 
-export const useOpenGetSubscriptionBillingPortal = () => {
+export const useOpenGetSubscriptionBillingPortal = (
+  subscription?: Subscription,
+) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const { captureShieldBillingHistoryOpenedEvent } = useSubscriptionMetrics();
+
+  const trackBillingHistoryOpenedEvent = useCallback(() => {
+    if (!subscription) {
+      return;
+    }
+    const { cryptoPaymentChain, cryptoPaymentCurrency } =
+      getSubscriptionPaymentData(subscription);
+
+    // capture the event when the billing history is opened
+    captureShieldBillingHistoryOpenedEvent({
+      subscriptionStatus: subscription.status,
+      paymentType: subscription.paymentMethod.type,
+      billingInterval: subscription.interval,
+      cryptoPaymentChain,
+      cryptoPaymentCurrency,
+    });
+  }, [captureShieldBillingHistoryOpenedEvent, subscription]);
+
   return useAsyncCallback(async () => {
     const { url } = await dispatch(getSubscriptionBillingPortalUrl());
+    trackBillingHistoryOpenedEvent();
     return await platform.openTab({ url });
-  }, [dispatch]);
+  }, [dispatch, trackBillingHistoryOpenedEvent]);
 };
 
 export const useUpdateSubscriptionCardPaymentMethod = ({
-  subscriptionId,
-  recurringInterval,
+  subscription,
+  newRecurringInterval,
 }: {
-  subscriptionId?: string;
-  recurringInterval?: RecurringInterval;
+  subscription?: Subscription;
+  newRecurringInterval?: RecurringInterval;
 }) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const { captureShieldPaymentMethodUpdatedEvent } = useSubscriptionMetrics();
+
   return useAsyncCallback(async () => {
-    if (!subscriptionId || !recurringInterval) {
+    if (!subscription || !newRecurringInterval) {
       throw new Error('Subscription ID and recurring interval are required');
     }
+
+    const subscriptionId = subscription.id;
+
     await dispatch(
       updateSubscriptionCardPaymentMethod({
         subscriptionId,
         paymentType: PAYMENT_TYPES.byCard,
-        recurringInterval,
+        recurringInterval: newRecurringInterval,
       }),
     );
-  }, [dispatch, subscriptionId, recurringInterval]);
+
+    // capture the event when the payment method is updated
+    captureShieldPaymentMethodUpdatedEvent({
+      subscriptionStatus: subscription.status,
+      paymentType: subscription.paymentMethod.type,
+      billingInterval: newRecurringInterval,
+    });
+  }, [dispatch, subscription, newRecurringInterval]);
 };
 
 export const useSubscriptionCryptoApprovalTransaction = (

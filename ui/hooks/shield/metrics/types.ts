@@ -5,7 +5,11 @@ import {
   ModalType,
 } from '@metamask/subscription-controller';
 import { TransactionType } from '@metamask/transaction-controller';
-import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
+import {
+  EntryModalSourceEnum,
+  ShieldCtaActionClickedEnum,
+  ShieldCtaSourceEnum,
+} from '../../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../../shared/types';
 
 export type CaptureShieldEntryModalEventParams = {
@@ -56,15 +60,11 @@ export type CaptureShieldSubscriptionRequestParams =
       requestStatus: 'started' | 'completed' | 'failed';
     };
 
-export type CaptureShieldSubscriptionRestartRequestParams = {
+export type ExistingSubscriptionEventParams = {
   /**
    * Current subscription status before restarting the subscription. (e.g. cancelled, expired, etc.)
    */
   subscriptionStatus: SubscriptionStatus;
-
-  errorMessage?: string;
-
-  restartStatus: 'succeeded' | 'failed';
 
   /**
    * The payment type used for the previous subscription.
@@ -85,4 +85,91 @@ export type CaptureShieldSubscriptionRestartRequestParams = {
    * The crypto payment currency used for the previous subscription.
    */
   cryptoPaymentCurrency?: string;
+};
+
+export type CaptureShieldMembershipCancelledEventParams =
+  ExistingSubscriptionEventParams & {
+    cancellationStatus: 'succeeded' | 'failed';
+    errorMessage?: string;
+    /**
+     * The duration of the latest subscription in days.
+     */
+    latestSubscriptionDuration: number;
+  };
+
+/**
+ * Capture the event when the payment method is changed whilst the membership is active.
+ */
+export type CaptureShieldPaymentMethodChangeEventParams =
+  ExistingSubscriptionEventParams & {
+    newPaymentType: PaymentType;
+    newBillingInterval: RecurringInterval;
+    newPaymentCurrency: string;
+    newCryptoPaymentChain?: string;
+    changeStatus: 'succeeded' | 'failed';
+    errorMessage?: string;
+  };
+
+/**
+ * Capture the event when the payment method is retried after unsuccessful deduction attempt.
+ */
+export type CaptureShieldPaymentMethodRetriedEventParams =
+  ExistingSubscriptionEventParams;
+
+/**
+ * Capture the event when payment failed due to insufficient allowance or users want to renew subscription that is ending soon.
+ */
+export type CaptureShieldPaymentMethodUpdatedEventParams =
+  ExistingSubscriptionEventParams;
+
+export type CaptureShieldBillingHistoryOpenedEventParams =
+  ExistingSubscriptionEventParams;
+
+/**
+ * Triggered when the user has opened the crypto confirmation screen for a subscription or rejected the approval transaction.
+ */
+export type CaptureShieldCryptoConfirmationEventParams =
+  CaptureShieldSubscriptionRequestParams & {
+    /**
+     * The status of the crypto confirmation screen.
+     */
+    confirmationScreenStatus: 'opened' | 'rejected';
+
+    /**
+     * Whether the user has insufficient gas to confirm the transaction.
+     */
+    hasInsufficientGas: boolean;
+
+    gasSponsored: boolean;
+  };
+
+export type CaptureShieldCtaClickedEventParams = {
+  source: ShieldCtaSourceEnum;
+
+  ctaActionClicked: ShieldCtaActionClickedEnum;
+
+  redirectToPage?: string;
+
+  redirectToUrl?: string;
+
+  /**
+   * The UTM ID used if source is marketing campaign
+   */
+  marketingUtmId?: string;
+};
+
+export type CaptureShieldClaimSubmissionEventParams = {
+  /**
+   * The status of the subscription at the time of claim submission
+   */
+  subscriptionStatus: SubscriptionStatus;
+
+  /**
+   * The number of attachments included in the claim submission
+   */
+  attachmentsCount: number;
+
+  submissionStatus: 'started' | 'completed' | 'failed';
+
+  errorMessage?: string;
 };

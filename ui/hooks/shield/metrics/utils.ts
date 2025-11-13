@@ -3,8 +3,10 @@ import {
   getBillingIntervalForMetrics,
 } from '../../../../shared/modules/shield';
 import {
+  CaptureShieldCtaClickedEventParams,
+  CaptureShieldPaymentMethodChangeEventParams,
   CaptureShieldSubscriptionRequestParams,
-  CaptureShieldSubscriptionRestartRequestParams,
+  ExistingSubscriptionEventParams,
 } from './types';
 
 export function formatDefaultShieldSubscriptionRequestEventProps(
@@ -65,8 +67,8 @@ export function formatDefaultShieldSubscriptionRequestEventProps(
   };
 }
 
-export function formatDefaultShieldSubscriptionRestartRequestEventProps(
-  params: CaptureShieldSubscriptionRestartRequestParams,
+export function formatExistingSubscriptionEventProps(
+  params: ExistingSubscriptionEventParams,
 ) {
   const selectedBillingInterval = getBillingIntervalForMetrics(
     params.billingInterval,
@@ -88,11 +90,47 @@ export function formatDefaultShieldSubscriptionRestartRequestEventProps(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     billing_interval: selectedBillingInterval,
+  };
+}
+
+export function formatCaptureShieldPaymentMethodChangeEventProps(
+  params: CaptureShieldPaymentMethodChangeEventParams,
+) {
+  const existingSubscriptionEventProps =
+    formatExistingSubscriptionEventProps(params);
+  const newBillingInterval = getBillingIntervalForMetrics(
+    params.newBillingInterval,
+  );
+
+  return {
+    ...existingSubscriptionEventProps,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    error_message: params.errorMessage,
+    new_payment_type: params.newPaymentType,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    status: params.restartStatus,
+    new_billing_interval: newBillingInterval,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    new_crypto_payment_chain: params.newCryptoPaymentChain,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    new_payment_currency: params.newPaymentCurrency,
+  };
+}
+
+export function formatCaptureShieldCtaClickedEventProps(
+  params: CaptureShieldCtaClickedEventParams,
+) {
+  return {
+    source: params.source,
+    page: params.redirectToPage,
+    url: params.redirectToUrl,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    cta_action_clicked: params.ctaActionClicked,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    marketing_utm_id: params.marketingUtmId,
   };
 }

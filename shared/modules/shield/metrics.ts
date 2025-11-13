@@ -8,10 +8,7 @@ import {
   SubscriptionControllerState,
   SubscriptionStatus,
 } from '@metamask/subscription-controller';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { Json } from '@metamask/utils';
@@ -19,15 +16,13 @@ import {
   ShieldUserAccountCategoryEnum,
   ShieldUserAccountTypeEnum,
 } from '../../constants/subscriptions';
-import { getShieldSubscription } from '../../lib/shield';
+import {
+  getShieldSubscription,
+  getSubscriptionPaymentData,
+} from '../../lib/shield';
 import { KeyringType } from '../../constants/keyring';
 import { DefaultSubscriptionPaymentOptions } from '../../types';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../constants/metametrics';
 // eslint-disable-next-line import/no-restricted-paths
-import MetaMetricsController from '../../../app/scripts/controllers/metametrics-controller';
 import {
   getDefaultSubscriptionPaymentOptions,
   getIsTrialedSubscription,
@@ -48,6 +43,80 @@ export function getLatestSubscriptionStatus(
 ): SubscriptionStatus | undefined {
   const currentShieldSubscription = getShieldSubscription(subscriptions);
   return currentShieldSubscription?.status || lastSubscription?.status;
+}
+
+export function getUserAccountType(
+  account: InternalAccount,
+): ShieldUserAccountTypeEnum {
+  if (account.type === 'eip155:eoa') {
+    return ShieldUserAccountTypeEnum.EOA;
+  } else if (account.type === 'eip155:erc4337') {
+    return ShieldUserAccountTypeEnum.ERC4337;
+  }
+  // Shield is currently only supported for EVM accounts, so this should never happen
+  throw new Error('Unsupported account type');
+}
+
+export function getUserAccountCategory(
+  account: InternalAccount,
+  keyringsMetadata: KeyringObject[],
+): ShieldUserAccountCategoryEnum {
+  const entropySource = account.options?.entropySource;
+  const isHdKeyringAccount =
+    account.metadata.keyring.type === KeyringType.hdKeyTree;
+
+  if (entropySource && isHdKeyringAccount) {
+    const keyringIndex = keyringsMetadata.findIndex(
+      (keyring) => keyring.metadata.id === entropySource,
+    );
+    if (keyringIndex === 0) {
+      return ShieldUserAccountCategoryEnum.PRIMARY;
+    } else if (keyringIndex > 0) {
+      return ShieldUserAccountCategoryEnum.ImportedWallet;
+    }
+  }
+  return ShieldUserAccountCategoryEnum.ImportedAccount;
+}
+
+/**
+ * Converts a balance in USD to a balance category
+ *
+ * @param balanceInUSD - The balance in USD
+ * @returns The balance category string
+ */
+export function getUserBalanceCategory(balanceInUSD: number): BalanceCategory {
+  if (balanceInUSD >= 1000000) {
+    return BALANCE_CATEGORIES.RANGE_1M_PLUS;
+  }
+  if (balanceInUSD >= 100000) {
+    return BALANCE_CATEGORIES.RANGE_100K_999_9K;
+  }
+  if (balanceInUSD >= 10000) {
+    return BALANCE_CATEGORIES.RANGE_10K_99_9K;
+  }
+  if (balanceInUSD >= 1000) {
+    return BALANCE_CATEGORIES.RANGE_1K_9_9K;
+  }
+  if (balanceInUSD >= 100) {
+    return BALANCE_CATEGORIES.RANGE_100_999;
+  }
+  return BALANCE_CATEGORIES.RANGE_0_99;
+}
+
+export function getUserAccountTypeAndCategory(
+  account: InternalAccount,
+  keyringsMetadata: KeyringObject[],
+) {
+  const userAccountType = getUserAccountType(account);
+  const userAccountCategory = getUserAccountCategory(account, keyringsMetadata);
+  return {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    user_account_type: userAccountType,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    user_account_category: userAccountCategory,
+  };
 }
 
 /**
@@ -138,117 +207,45 @@ export function getSubscriptionRequestTrackingProps(
   };
 }
 
-export function getUserAccountType(
-  account: InternalAccount,
-): ShieldUserAccountTypeEnum {
-  if (account.type === 'eip155:eoa') {
-    return ShieldUserAccountTypeEnum.EOA;
-  } else if (account.type === 'eip155:erc4337') {
-    return ShieldUserAccountTypeEnum.ERC4337;
-  }
-  // Shield is currently only supported for EVM accounts, so this should never happen
-  throw new Error('Unsupported account type');
-}
-
-export function getUserAccountCategory(
-  account: InternalAccount,
-  keyringsMetadata: KeyringObject[],
-): ShieldUserAccountCategoryEnum {
-  const entropySource = account.options?.entropySource;
-  const isHdKeyringAccount =
-    account.metadata.keyring.type === KeyringType.hdKeyTree;
-
-  if (entropySource && isHdKeyringAccount) {
-    const keyringIndex = keyringsMetadata.findIndex(
-      (keyring) => keyring.metadata.id === entropySource,
-    );
-    if (keyringIndex === 0) {
-      return ShieldUserAccountCategoryEnum.PRIMARY;
-    } else if (keyringIndex > 0) {
-      return ShieldUserAccountCategoryEnum.ImportedWallet;
-    }
-  }
-  return ShieldUserAccountCategoryEnum.ImportedAccount;
-}
-
 /**
- * Converts a balance in USD to a balance category
+ * Get the tracking props for the subscription restart request for the Shield metrics.
  *
- * @param balanceInUSD - The balance in USD
- * @returns The balance category string
+ * @param subscriptionControllerState - The subscription controller state.
+ * @param requestStatus - The request status.
+ * @param errorMessage - The error message.
+ * @returns The tracking props.
  */
-export function getUserBalanceCategory(balanceInUSD: number): BalanceCategory {
-  if (balanceInUSD >= 1000000) {
-    return BALANCE_CATEGORIES.RANGE_1M_PLUS;
-  }
-  if (balanceInUSD >= 100000) {
-    return BALANCE_CATEGORIES.RANGE_100K_999_9K;
-  }
-  if (balanceInUSD >= 10000) {
-    return BALANCE_CATEGORIES.RANGE_10K_99_9K;
-  }
-  if (balanceInUSD >= 1000) {
-    return BALANCE_CATEGORIES.RANGE_1K_9_9K;
-  }
-  if (balanceInUSD >= 100) {
-    return BALANCE_CATEGORIES.RANGE_100_999;
-  }
-  return BALANCE_CATEGORIES.RANGE_0_99;
-}
-
-export function getUserAccountTypeAndCategory(
-  account: InternalAccount,
-  keyringsMetadata: KeyringObject[],
-) {
-  const userAccountType = getUserAccountType(account);
-  const userAccountCategory = getUserAccountCategory(account, keyringsMetadata);
+export function getSubscriptionRestartRequestTrackingProps(
+  subscriptionControllerState: SubscriptionControllerState,
+  requestStatus: 'started' | 'completed' | 'failed',
+  errorMessage?: string,
+): Record<string, Json> {
+  const { subscriptions, lastSubscription } = subscriptionControllerState;
+  const latestSubscriptionStatus =
+    getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
+  const lastSubscriptionData = getSubscriptionPaymentData(lastSubscription);
+  const billingInterval = getBillingIntervalForMetrics(
+    lastSubscriptionData.billingInterval,
+  );
   return {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    user_account_type: userAccountType,
+    subscription_status: latestSubscriptionStatus,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    user_account_category: userAccountCategory,
+    payment_type: lastSubscriptionData.paymentType,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    crypto_payment_chain: lastSubscriptionData.cryptoPaymentChain || null,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    crypto_payment_currency: lastSubscriptionData.cryptoPaymentCurrency || null,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    billing_interval: billingInterval,
+    status: requestStatus,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    error_message: errorMessage || null,
   };
-}
-
-/**
- * Capture a Shield subscription request event with crypto payment.
- *
- * @param subscriptionControllerState - The subscription controller state.
- * @param transactionMeta - The transaction meta.
- * @param defaultSubscriptionPaymentOptions - The default subscription payment options.
- * @param metaMetricsController - The meta metrics controller.
- * @param requestStatus - The request status.
- * @param extrasProps - The extra properties.
- */
-export function captureShieldSubscriptionRequestEvent(
-  subscriptionControllerState: SubscriptionControllerState,
-  transactionMeta: TransactionMeta,
-  defaultSubscriptionPaymentOptions: DefaultSubscriptionPaymentOptions,
-  metaMetricsController: MetaMetricsController,
-  requestStatus: 'started' | 'completed' | 'failed',
-  extrasProps: Record<string, Json>,
-) {
-  if (transactionMeta.type !== TransactionType.shieldSubscriptionApprove) {
-    return;
-  }
-
-  const trackingProps = getSubscriptionRequestTrackingProps(
-    subscriptionControllerState,
-    defaultSubscriptionPaymentOptions,
-    transactionMeta,
-  );
-
-  metaMetricsController.trackEvent({
-    event: MetaMetricsEventName.ShieldSubscriptionRequest,
-    category: MetaMetricsEventCategory.Shield,
-    properties: {
-      ...trackingProps,
-      ...extrasProps,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      status: requestStatus,
-    },
-  });
 }

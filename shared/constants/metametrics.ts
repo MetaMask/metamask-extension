@@ -948,7 +948,16 @@ export enum MetaMetricsEventName {
   // Shield
   ShieldEntryModal = 'Shield Entry Modal',
   ShieldSubscriptionRequest = 'Shield Subscription Request',
-  ShieldSubscriptionRestartRequest = 'Shield Subscription Restart Request',
+  ShieldMembershipRestartRequest = 'Shield Membership Restart Request',
+  ShieldMembershipCancelled = 'Shield Membership Cancelled',
+  ShieldPaymentMethodChange = 'Shield Payment Method Change',
+  ShieldPaymentMethodRetried = 'Shield Payment Method Retried',
+  ShieldPaymentMethodUpdated = 'Shield Payment Method Updated',
+  ShieldBillingHistoryOpened = 'Shield Billing History Opened',
+  ShieldMembershipErrorStateClicked = 'Shield Membership Error State Clicked',
+  ShieldCtaClicked = 'Shield CTA Clicked',
+  ShieldClaimSubmission = 'Shield Claim Submission',
+  ShieldSubscriptionCryptoConfirmation = 'Shield Subscription Crypto Confirmation',
 }
 
 export enum MetaMetricsEventAccountType {

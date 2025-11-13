@@ -77,6 +77,11 @@ import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import Name from '../../../components/app/name';
 import ShieldIllustrationAnimation from '../../../components/app/shield-entry-modal/shield-illustration-animation';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import {
+  ShieldCtaActionClickedEnum,
+  ShieldCtaSourceEnum,
+} from '../../../../shared/constants/subscriptions';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod, SHIELD_ICON_ARTBOARD_NAMES } from './types';
 import ShieldSubscriptionIconAnimation from './shield-subscription-icon-animation';
@@ -85,6 +90,7 @@ const TransactionShield = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { search } = useLocation();
+  const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
   const shouldWaitForSubscriptionCreation = useMemo(() => {
     const searchParams = new URLSearchParams(search);
     // param to wait for subscription creation happen in the background
@@ -182,9 +188,7 @@ const TransactionShield = () => {
   );
 
   const [executeCancelSubscription, cancelSubscriptionResult] =
-    useCancelSubscription({
-      subscriptionId: currentShieldSubscription?.id,
-    });
+    useCancelSubscription(currentShieldSubscription);
 
   const [executeUnCancelSubscription, unCancelSubscriptionResult] =
     useUnCancelSubscription({
@@ -194,14 +198,14 @@ const TransactionShield = () => {
   const [
     executeOpenGetSubscriptionBillingPortal,
     openGetSubscriptionBillingPortalResult,
-  ] = useOpenGetSubscriptionBillingPortal();
+  ] = useOpenGetSubscriptionBillingPortal(displayedShieldSubscription);
 
   const [
     executeUpdateSubscriptionCardPaymentMethod,
     updateSubscriptionCardPaymentMethodResult,
   ] = useUpdateSubscriptionCardPaymentMethod({
-    subscriptionId: currentShieldSubscription?.id,
-    recurringInterval: currentShieldSubscription?.interval,
+    subscription: currentShieldSubscription,
+    newRecurringInterval: currentShieldSubscription?.interval,
   });
 
   const isWaitingForSubscriptionCreation =
@@ -577,6 +581,15 @@ const TransactionShield = () => {
     cryptoPaymentMethod,
   ]);
 
+  const handleViewFullBenefitsClicked = useCallback(() => {
+    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
+    captureShieldCtaClickedEvent({
+      source: ShieldCtaSourceEnum.Settings,
+      ctaActionClicked: ShieldCtaActionClickedEnum.ViewFullBenefits,
+      redirectToUrl: TRANSACTION_SHIELD_LINK,
+    });
+  }, [captureShieldCtaClickedEvent]);
+
   return (
     <Box
       className="transaction-shield-page"
@@ -771,13 +784,7 @@ const TransactionShield = () => {
         </Box>
         {buttonRow(
           t('shieldTxMembershipViewFullBenefits'),
-          () => {
-            window.open(
-              TRANSACTION_SHIELD_LINK,
-              '_blank',
-              'noopener noreferrer',
-            );
-          },
+          handleViewFullBenefitsClicked,
           'shield-detail-view-benefits-button',
         )}
         {displayedShieldSubscription?.isEligibleForSupport &&
