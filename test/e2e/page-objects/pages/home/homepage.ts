@@ -121,6 +121,7 @@ class HomePage {
   async checkShieldEntryModalNotPresent(): Promise<void> {
     console.log('Check shield entry modal is not present on homepage');
     await this.driver.assertElementNotPresent(this.shieldEntryModal, {
+      waitAtLeastGuard: 2000,
       timeout: 2000,
     });
   }
