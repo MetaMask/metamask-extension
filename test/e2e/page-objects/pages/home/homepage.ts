@@ -282,46 +282,32 @@ class HomePage {
     expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
-    // First, try to find the regular balance display
     try {
       await this.driver.waitForSelector({
         css: this.balance,
         text: expectedBalance,
       });
-      console.log(
-        `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
-      );
-    } catch (balanceError) {
-      // Balance element not found, check if empty state is displayed instead
-      try {
-        await this.driver.waitForSelector(this.emptyBalance, {
-          timeout: 2000,
-        });
-        // Empty state is displayed
-        if (expectedBalance === '0') {
-          console.log(
-            'Balance empty state is displayed as expected for 0 balance',
-          );
-          return;
-        }
-        const errorMessage = `Expected balance ${expectedBalance} ${symbol}, but balance empty state is displayed instead`;
-        console.log(errorMessage);
-        throw new Error(errorMessage);
-      } catch (emptyStateError) {
-        // Neither balance nor empty state found, try to get actual balance for error message
-        try {
-          const balance = await this.driver.waitForSelector(this.balance);
-          const currentBalance = parseFloat(await balance.getText());
-          const errorMessage = `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} ${symbol}`;
-          console.log(errorMessage);
-          throw new Error(errorMessage);
-        } catch (finalError) {
-          // Can't find anything, throw original error
-          console.log('Could not find balance or empty state element');
-          throw balanceError;
-        }
-      }
+    } catch (e) {
+      const balance = await this.driver.waitForSelector(this.balance);
+      const currentBalance = parseFloat(await balance.getText());
+      const errorMessage = `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} ${symbol}`;
+      console.log(errorMessage, e);
+      throw e;
     }
+    console.log(
+      `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
+    );
+  }
+
+  /**
+   * Checks if the balance empty state is displayed on homepage.
+   * This empty state is shown when the account group has a zero balance
+   * across all aggregated mainnet networks.
+   */
+  async checkBalanceEmptyStateIsDisplayed(): Promise<void> {
+    console.log('Checking if balance empty state is displayed');
+    await this.driver.waitForSelector(this.emptyBalance);
+    console.log('Balance empty state is displayed as expected');
   }
 
   /**
