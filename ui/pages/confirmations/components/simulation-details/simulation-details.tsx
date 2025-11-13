@@ -250,6 +250,7 @@ const LegacyHeader = () => {
  * @param props.isTransactionsRedesign
  * @param props.transactionId
  * @param props.title
+ * @param props.titleTooltip
  */
 const HeaderLayout: React.FC<{
   isTransactionsRedesign: boolean;
@@ -289,6 +290,7 @@ const HeaderLayout: React.FC<{
  *
  * @param props
  * @param props.title
+ * @param props.titleTooltip
  * @param props.inHeader
  * @param props.isTransactionsRedesign
  * @param props.children
