@@ -398,6 +398,8 @@ export const useHandleSubscription = ({
       executeSubscriptionCryptoApprovalTransaction,
       useTestClock,
       captureShieldSubscriptionRequestEvent,
+      latestSubscriptionStatus,
+      modalType,
     ]);
 
   return {
