@@ -154,6 +154,10 @@ const DAPP_SWAP_COMMANDS_PARSER: DAPP_SWAP_COMMANDS_PARSER_TYPE[] = [
     value: '01',
     handler: handleCommandExactOut as DAPP_SWAP_COMMANDS_PARSER_TYPE['handler'],
   },
+  {
+    value: '09',
+    handler: handleCommandExactOut as DAPP_SWAP_COMMANDS_PARSER_TYPE['handler'],
+  },
   { value: '10', handler: handleV4CommandSwap },
   { value: '04', handler: handleCommandSweep },
   { value: '0b', handler: handleCommandWrapETH },
