@@ -341,12 +341,29 @@ export function aggregateAndSaveSnapshot(specificTestFile?: string): boolean {
       }
     }
 
+    // Check if there are any warnings/errors to add
+    const hasContent =
+      aggregated.warnings.length > 0 || aggregated.errors.length > 0;
+
+    if (!hasContent) {
+      // No warnings/errors captured - snapshot won't change
+      console.log('\n✅ No warnings or errors captured from this test.');
+      console.log('   Snapshot unchanged.');
+      return false;
+    }
+
+    // Load existing snapshot to compare
+    const existingSnapshot = loadSnapshot();
+    const beforeCount =
+      existingSnapshot.warnings.length + existingSnapshot.errors.length;
+
     // Generate final snapshot from aggregated data
     const snapshot = generateSnapshot(aggregated);
-    const hasChanges =
-      (snapshot as SnapshotData & { _hasChanges?: boolean })._hasChanges ||
-      false;
     saveSnapshot(snapshot);
+
+    // Check if snapshot changed
+    const afterCount = snapshot.warnings.length + snapshot.errors.length;
+    const hasChanges = afterCount > beforeCount;
 
     // Clean up temp files after successful snapshot generation
     if (!specificTestFile) {
@@ -449,14 +466,7 @@ export function generateSnapshot(
     }
   }
 
-  // Add flag to indicate if there were changes (will be read by aggregateAndSaveSnapshot)
-  // Using type assertion since this is internal metadata
-  const snapshotWithChanges = snapshot as SnapshotData & {
-    _hasChanges: boolean;
-  };
-  snapshotWithChanges._hasChanges = newWarningsAdded > 0 || newErrorsAdded > 0;
-
-  return snapshotWithChanges;
+  return snapshot;
 }
 
 /**
