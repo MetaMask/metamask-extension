@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "הצג חשבון ב- Etherscan"
   },
-  "expandView": {
-    "message": "הרחב תצוגה"
-  },
   "failed": {
     "message": "נכשל"
   },

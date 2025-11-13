@@ -3,6 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { PREVIOUS_ROUTE } from '../../../../helpers/constants/routes';
 import { useShieldConfirm } from './useShieldConfirm';
 
 jest.mock('react-router-dom-v5-compat', () => ({
@@ -63,7 +64,7 @@ describe('useShieldConfirm', () => {
         txMeta,
       );
 
-      expect(mockNavigate).toHaveBeenCalledWith(-1);
+      expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
 
     it('does not navigate when transaction type is not shieldSubscriptionApprove', () => {

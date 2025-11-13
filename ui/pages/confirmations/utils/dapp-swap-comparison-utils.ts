@@ -11,7 +11,7 @@ import {
   SimulationData,
   SimulationTokenBalanceChange,
 } from '@metamask/transaction-controller';
-
+import { captureException } from '@sentry/browser';
 import { getCommandValues } from './dapp-swap-command-utils';
 
 const DEFAULT_QUOTEFEE = 250;
@@ -72,27 +72,42 @@ function parseTransactionData(data?: string) {
   return { commands, commandBytes, inputs };
 }
 
-export function getDataFromSwap(chainId: Hex, data?: string) {
-  const { commands, commandBytes, inputs } = parseTransactionData(data);
+export function getDataFromSwap(
+  chainId: Hex,
+  data?: string,
+  walletAddress?: string,
+) {
+  try {
+    const { commands, commandBytes, inputs } = parseTransactionData(data);
 
-  const { amountMin, quotesInput } = getCommandValues(
-    commandBytes,
-    inputs,
-    chainId,
-  );
+    const { amountMin, quotesInput } = getCommandValues(
+      commandBytes,
+      inputs,
+      chainId,
+    );
 
-  return {
-    amountMin,
-    commands,
-    quotesInput: {
-      ...quotesInput,
-      fee: DEFAULT_QUOTEFEE,
-    } as GenericQuoteRequest,
-    tokenAddresses: [
-      quotesInput?.destTokenAddress,
-      quotesInput?.srcTokenAddress,
-    ],
-  };
+    return {
+      amountMin,
+      commands,
+      quotesInput: {
+        ...quotesInput,
+        walletAddress,
+        fee: DEFAULT_QUOTEFEE,
+      } as GenericQuoteRequest,
+      tokenAddresses: [
+        quotesInput?.destTokenAddress,
+        quotesInput?.srcTokenAddress,
+      ],
+    };
+  } catch (error) {
+    captureException(error);
+    return {
+      amountMin: undefined,
+      commands: '',
+      quotesInput: undefined,
+      tokenAddresses: [],
+    };
+  }
 }
 
 export function getBestQuote(

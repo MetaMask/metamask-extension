@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Zuschreibungen"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Die Infura RPC URL unterstützt Aurora nicht mehr."
-  },
   "authorizedPermissions": {
     "message": "Sie haben die folgenden Genehmigungen autorisiert."
   },
@@ -1822,9 +1819,6 @@
   "depositCrypto": {
     "message": "Zahlen Sie Krypto von einem anderen Konto über eine Wallet-Adresse oder einen QR-Code ein."
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Aufgrund von Aktualisierungen des Ethereum-Systems wird das Goerli-Testnetzwerk bald eingestellt."
-  },
   "deprecatedNetwork": {
     "message": "Dieses Netzwerk ist veraltet"
   },
@@ -2329,9 +2323,6 @@
   },
   "existingChainId": {
     "message": "Die von Ihnen eingegebenen Informationen sind mit einer bestehenden Chain-ID verknüpft."
-  },
-  "expandView": {
-    "message": "Ansicht erweitern"
   },
   "experimental": {
     "message": "Experimentell"
@@ -6481,10 +6472,6 @@
   },
   "switchNetwork": {
     "message": "Netzwerk wechseln"
-  },
-  "switchToNetwork": {
-    "message": "Zu $1 wechseln",
-    "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
     "message": "Zu diesem Konto wechseln"

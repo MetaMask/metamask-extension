@@ -31,4 +31,16 @@
       }
     }
   }
+
+  &-shield-illustration {
+    &__container {
+      height: 200px;
+      width: 247px;
+    }
+
+    &__canvas {
+      height: 100%;
+      width: 100%;
+    }
+  }
 }

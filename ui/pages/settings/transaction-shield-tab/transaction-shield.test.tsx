@@ -23,6 +23,15 @@ jest.mock('react-router-dom-v5-compat', () => {
   };
 });
 
+jest.mock(
+  '../../../components/app/shield-entry-modal/shield-illustration-animation',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => <div data-testid="shield-illustration-animation" />,
+  }),
+);
+
 jest.mock('./shield-subscription-icon-animation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
@@ -31,6 +40,7 @@ jest.mock('./shield-subscription-icon-animation', () => ({
 
 describe('Transaction Shield Page', () => {
   const STATE_MOCK = {
+    ...mockState,
     metamask: {
       ...mockState.metamask,
       customerId: '1',

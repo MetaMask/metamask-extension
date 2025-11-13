@@ -630,9 +630,6 @@
   "attributions": {
     "message": "एट्रीब्यूशन्स"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Infura RPC URL अब Aurora को सपोर्ट नहीं कर रहा है।"
-  },
   "authorizedPermissions": {
     "message": "आपने निम्नलिखित अनुमतियों को अधिकृत किया है"
   },
@@ -1822,9 +1819,6 @@
   "depositCrypto": {
     "message": "वॉलेट एड्रेस या QR कोड के साथ किसी अन्य अकाउंट से क्रिप्टो डिपॉज़िट करना।"
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Ethereum सिस्टम में हुए अपडेट के कारण, Goerli टेस्ट नेटवर्क को जल्द ही चरणबद्ध तरीके से हटा दिया जाएगा।"
-  },
   "deprecatedNetwork": {
     "message": "इस नेटवर्क को हटा दिया गया है"
   },
@@ -2329,9 +2323,6 @@
   },
   "existingChainId": {
     "message": "आपके द्वारा दर्ज की गई जानकारी मौजूदा चेन ID से जुड़ी है।"
-  },
-  "expandView": {
-    "message": "व्यू को बड़ा करें"
   },
   "experimental": {
     "message": "एक्सपेरिमेंटल"
@@ -6475,10 +6466,6 @@
   },
   "switchNetwork": {
     "message": "नेटवर्क स्विच करें"
-  },
-  "switchToNetwork": {
-    "message": "$1 पर स्विच करें",
-    "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
     "message": "इस अकाउंट पर स्विच करें"

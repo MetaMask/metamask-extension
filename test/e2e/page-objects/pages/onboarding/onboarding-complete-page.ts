@@ -68,9 +68,10 @@ class OnboardingCompletePage {
   }
 
   async clickCreateWalletDoneButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.onboardingCompleteDoneButton,
-    );
+    // With sidepanel enabled, clicking done opens a new window instead of
+    // navigating in the current window, so the button doesn't "disappear"
+    // We just click it without waiting for it to disappear
+    await this.driver.clickElement(this.onboardingCompleteDoneButton);
   }
 
   async displayDownloadAppPageAndContinue(): Promise<void> {

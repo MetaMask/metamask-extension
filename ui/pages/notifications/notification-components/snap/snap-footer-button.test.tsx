@@ -3,6 +3,7 @@ import { processNotification } from '@metamask/notification-services-controller/
 import { fireEvent, waitFor } from '@testing-library/react';
 import { createMockSnapNotification } from '@metamask/notification-services-controller/notification-services/mocks';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { SnapFooterButton } from './snap-footer-button';
 import { DetailedViewData, SnapNotification } from './types';
 
@@ -59,7 +60,7 @@ describe('SnapFooterButton', () => {
     const button = getByText('Go Home');
     expect(button).toBeInTheDocument();
     fireEvent.click(button);
-    expect(mockUseNavigate).toHaveBeenCalledWith('/');
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('opens SnapLinkWarning when external link is clicked', async () => {

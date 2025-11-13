@@ -396,6 +396,7 @@ describe('Sentry errors', function () {
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
+
           const appState = mockJsonBody?.extra?.appState;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
@@ -738,6 +739,7 @@ describe('Sentry errors', function () {
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
+          console.log('mockJsonBody', mockJsonBody);
           const { extensionId, installType } = mockJsonBody.extra;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',

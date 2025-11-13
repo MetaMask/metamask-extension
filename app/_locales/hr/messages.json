@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Prikaži račun na Etherscanu"
   },
-  "expandView": {
-    "message": "Proširi prikaz"
-  },
   "failed": {
     "message": "Neuspješno"
   },

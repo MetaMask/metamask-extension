@@ -66,3 +66,14 @@ export function getHasSubscribedToShield(state: SubscriptionState): boolean {
     Boolean(currentShieldSubscription) || Boolean(lastShieldSubscription);
   return hasSubscribedToShield;
 }
+
+export function getLatestShieldSubscription(
+  state: SubscriptionState,
+): Subscription | undefined {
+  const { subscriptions, lastSubscription } = state.metamask;
+  const currentShieldSubscription = getShieldSubscription(subscriptions);
+  if (lastSubscription && !currentShieldSubscription) {
+    return getShieldSubscription(lastSubscription);
+  }
+  return currentShieldSubscription;
+}

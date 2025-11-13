@@ -23,6 +23,10 @@ on:
         type: boolean
         default: true
         description: Whether to enable MV3 or not
+      builds-from-run:
+        required: true
+        type: string
+        description: The run ID to get builds from
 
 jobs:
   run-build:
@@ -32,6 +36,7 @@ jobs:
     env:
       # Build parameter
       ENABLE_MV3: ${{ inputs.enable-mv3 }}
+      SHOULD_BUILD: ${{ inputs.builds-from-run == github.run_id }}
       # Environment variables not used in production builds
       APPLE_CLIENT_ID_FLASK_UAT: ${{ secrets.APPLE_CLIENT_ID_FLASK_UAT }}
       APPLE_CLIENT_ID_UAT: ${{ secrets.APPLE_CLIENT_ID_UAT }}
@@ -84,6 +89,7 @@ jobs:
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
     steps:
       - name: Checkout and setup environment
+        if: ${{ env.SHOULD_BUILD == 'true' }}
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: true
@@ -91,17 +97,19 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Run build
+        if: ${{ env.SHOULD_BUILD == 'true' }}
         run: ${{ inputs.build-command }}
 
       - name: Validate source maps
-        if: ${{ inputs.validate-source-maps }}
+        if: ${{ env.SHOULD_BUILD == 'true' && inputs.validate-source-maps }}
         run: yarn validate-source-maps
 
       - name: Run mozilla-lint
-        if: ${{ inputs.mozilla-lint }}
+        if: ${{ env.SHOULD_BUILD == 'true' && inputs.mozilla-lint }}
         run: yarn mozilla-lint
 
       - name: Upload artifact '${{ inputs.build-name }}'
+        if: ${{ env.SHOULD_BUILD == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.build-name }}
@@ -110,7 +118,7 @@ jobs:
             dist
 
       - name: Upload 'builds' to S3
-        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        if: ${{ env.SHOULD_BUILD == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}

@@ -57,7 +57,7 @@ import {
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-import { getIsSidePanelFeatureEnabled } from '../../../../shared/modules/environment';
+import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 ///: END:ONLY_INCLUDE_IF
 import WalletReadyAnimation from './wallet-ready-animation';
 
@@ -73,6 +73,9 @@ export default function CreationSuccessful() {
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isTestEnvironment = Boolean(process.env.IN_TEST);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  const isSidePanelEnabled = useSidePanelEnabled();
+  ///: END:ONLY_INCLUDE_IF
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -163,7 +166,7 @@ export default function CreationSuccessful() {
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     // Side Panel - only if feature flag is enabled
-    if (getIsSidePanelFeatureEnabled()) {
+    if (isSidePanelEnabled) {
       try {
         if (browser?.sidePanel?.open) {
           const tabs = await browser.tabs.query({
@@ -200,6 +203,9 @@ export default function CreationSuccessful() {
     trackEvent,
     firstTimeFlowType,
     isFromSettingsSecurity,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+    isSidePanelEnabled,
+    ///: END:ONLY_INCLUDE_IF
   ]);
 
   const renderDoneButton = () => {

@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Mga Attribution"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Ang Infura RPC URL ay hindi na sinusuportahan ang Aurora."
-  },
   "authorizedPermissions": {
     "message": "Inawtorisahan mo ang mga sumusunod na pahintulot"
   },
@@ -1822,9 +1819,6 @@
   "depositCrypto": {
     "message": "Magdeposito ng crypto mula sa ibang account gamit ang wallet address o QR code."
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Dahil sa mga update sa sistema ng Ethereum, ang Goerli test network malapit nang itigil."
-  },
   "deprecatedNetwork": {
     "message": "Ang network na ito ay hindi na suportado"
   },
@@ -2329,9 +2323,6 @@
   },
   "existingChainId": {
     "message": "Ang impormasyon na iyong inilagay ay nauugnay sa isang umiiral na ID ng chain."
-  },
-  "expandView": {
-    "message": "I-expand ang view"
   },
   "experimental": {
     "message": "Eksperimental"
@@ -6481,10 +6472,6 @@
   },
   "switchNetwork": {
     "message": "Lumipat ng network"
-  },
-  "switchToNetwork": {
-    "message": "Lumipat sa $1",
-    "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
     "message": "Lumipat sa account na ito"
