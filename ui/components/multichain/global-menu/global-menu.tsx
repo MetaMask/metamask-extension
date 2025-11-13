@@ -430,16 +430,19 @@ export const GlobalMenu = ({
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   location: METRICS_LOCATION,
-                  to: isSidePanelDefault
-                    ? ENVIRONMENT_TYPE_POPUP
-                    : ENVIRONMENT_TYPE_SIDEPANEL,
+                  to:
+                    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+                      ? ENVIRONMENT_TYPE_POPUP
+                      : ENVIRONMENT_TYPE_SIDEPANEL,
                 },
               });
               closeMenu();
             }}
             data-testid="global-menu-toggle-view"
           >
-            {isSidePanelDefault ? t('switchToPopup') : t('switchToSidePanel')}
+            {getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+              ? t('switchToPopup')
+              : t('switchToSidePanel')}
           </MenuItem>
         )}
       <MenuItem
