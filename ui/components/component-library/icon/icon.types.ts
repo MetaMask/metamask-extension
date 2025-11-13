@@ -241,6 +241,7 @@ export enum IconName {
   ShieldLock = 'shield-lock',
   ShoppingBag = 'shopping-bag',
   ShoppingCart = 'shopping-cart',
+  Sidepanel = 'sidepanel',
   SignalCellular = 'signal-cellular',
   Slash = 'slash',
   Sms = 'sms',
