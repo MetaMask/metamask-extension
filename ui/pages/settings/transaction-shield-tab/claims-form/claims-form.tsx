@@ -387,6 +387,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     claimSignature,
     handleSubmitClaimError,
     captureShieldClaimSubmissionEvent,
+    latestShieldSubscription,
   ]);
 
   return (
