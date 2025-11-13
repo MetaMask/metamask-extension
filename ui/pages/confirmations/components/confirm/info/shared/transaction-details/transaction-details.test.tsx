@@ -17,8 +17,8 @@ import {
 } from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
-import { RecipientRow, TransactionDetails } from './transaction-details';
 import * as useUserPreferencedCurrencyModule from '../../../../../../../hooks/useUserPreferencedCurrency';
+import { RecipientRow, TransactionDetails } from './transaction-details';
 
 jest.mock(
   '../../../../../../../components/app/alert-system/contexts/alertMetricsContext',
