@@ -15,6 +15,7 @@ import rewardsReducer, {
   setSeasonStatusLoading,
   setSeasonStatusError,
   setErrorToast,
+  setRewardsBadgeHidden,
 } from '.';
 
 describe('Ducks - Rewards', () => {
@@ -192,6 +193,22 @@ describe('Ducks - Rewards', () => {
       expect(actions[0].type).toBe('rewards/setErrorToast');
       const newState = rewardsReducer(initialState, actions[0]);
       expect(newState.errorToast).toStrictEqual(toast);
+    });
+
+    it('setRewardsBadgeHidden updates rewardsBadgeHidden to true', () => {
+      store.dispatch(setRewardsBadgeHidden(true));
+      const actions = store.getActions();
+      expect(actions[0].type).toBe('rewards/setRewardsBadgeHidden');
+      const newState = rewardsReducer(initialState, actions[0]);
+      expect(newState.rewardsBadgeHidden).toBe(true);
+    });
+
+    it('setRewardsBadgeHidden updates rewardsBadgeHidden to false', () => {
+      store.dispatch(setRewardsBadgeHidden(false));
+      const actions = store.getActions();
+      expect(actions[0].type).toBe('rewards/setRewardsBadgeHidden');
+      const newState = rewardsReducer(initialState, actions[0]);
+      expect(newState.rewardsBadgeHidden).toBe(false);
     });
   });
 });

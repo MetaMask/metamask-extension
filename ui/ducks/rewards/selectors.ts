@@ -63,3 +63,6 @@ export const selectRewardsEnabled = createSelector(
 
 export const selectErrorToast = (state: MetaMaskReduxState) =>
   state.rewards.errorToast;
+
+export const selectRewardsBadgeHidden = (state: MetaMaskReduxState) =>
+  state.rewards.rewardsBadgeHidden;
