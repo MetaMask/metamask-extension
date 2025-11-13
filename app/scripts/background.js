@@ -1591,15 +1591,6 @@ export function setupController(
 
     controller.rejectAllPendingApprovals();
   }
-
-  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
-  if (
-    Object.values(controller.snapController.state.snaps).some(
-      (snap) => !snap.preinstalled,
-    )
-  ) {
-    controller.snapController.updateRegistry();
-  }
 }
 
 //
@@ -1800,7 +1791,8 @@ function onNavigateToTab() {
 // Set initial side panel behavior based on user preference
 const initSidePanelBehavior = async () => {
   // Only initialize sidepanel behavior if the feature flag is enabled
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+  // and the browser supports the sidePanel API (not Firefox)
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
     return;
   }
 
@@ -1808,10 +1800,10 @@ const initSidePanelBehavior = async () => {
     // Wait for controller to be initialized
     await isInitialized;
 
-    // Get user preference (default to true for side panel)
+    // Get user preference (default to false for side panel)
     const useSidePanelAsDefault =
       controller?.preferencesController?.state?.preferences
-        ?.useSidePanelAsDefault ?? true;
+        ?.useSidePanelAsDefault ?? false;
 
     // Set panel behavior based on preference
     if (browser?.sidePanel?.setPanelBehavior) {
@@ -1819,6 +1811,18 @@ const initSidePanelBehavior = async () => {
         openPanelOnActionClick: useSidePanelAsDefault,
       });
     }
+
+    // Setup remote feature flag listener to update sidepanel preferences
+    controller?.controllerMessenger?.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (state) => {
+        const extensionUxSidepanel =
+          state?.remoteFeatureFlags?.extensionUxSidepanel;
+        if (extensionUxSidepanel === false) {
+          controller?.preferencesController?.setUseSidePanelAsDefault(false);
+        }
+      },
+    );
   } catch (error) {
     console.error('Error setting side panel behavior:', error);
   }
@@ -1829,7 +1833,8 @@ initSidePanelBehavior();
 // Listen for preference changes to update side panel behavior dynamically
 const setupPreferenceListener = async () => {
   // Only setup preference listener if the feature flag is enabled
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+  // and the browser supports the sidePanel API (not Firefox)
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
     return;
   }
 
@@ -1841,7 +1846,8 @@ const setupPreferenceListener = async () => {
       'PreferencesController:stateChange',
       (state) => {
         const useSidePanelAsDefault =
-          state?.preferences?.useSidePanelAsDefault ?? true;
+          state?.preferences?.useSidePanelAsDefault ?? false;
+
         if (browser?.sidePanel?.setPanelBehavior) {
           browser.sidePanel
             .setPanelBehavior({
