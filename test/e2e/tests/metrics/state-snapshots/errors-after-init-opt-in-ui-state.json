@@ -405,6 +405,8 @@
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
     "pendingRevocations": "object",
+    "pendingShieldCohort": null,
+    "pendingShieldCohortTxType": null,
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
     "storageMetadata": {},

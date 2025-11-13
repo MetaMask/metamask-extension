@@ -72,6 +72,8 @@
       "showNetworkBanner": true,
       "showPermissionsTour": true,
       "showShieldEntryModalOnce": null,
+      "pendingShieldCohort": null,
+      "pendingShieldCohortTxType": null,
       "showTestnetMessageInDropdown": true,
       "slides": [],
       "surveyLinkLastClickedOrClosed": null,
