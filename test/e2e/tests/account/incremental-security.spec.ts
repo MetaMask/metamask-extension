@@ -106,9 +106,6 @@ describe('Incremental Security', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.clickAddressCopyButton();
-        const addressListModal = new AddressListModal(driver);
-        await addressListModal.clickCopyButton();
-        await addressListModal.goBack();
 
         // switched to Dapp and send eth to the current account
         const testDapp = new TestDappSendEthWithPrivateKey(driver);
