@@ -7,7 +7,10 @@ import React, { memo, useMemo } from 'react';
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
+import { Skeleton } from '../../../../../components/component-library/skeleton';
 import {
+  Display,
+  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
@@ -297,6 +300,31 @@ const ConfirmTitle: React.FC = memo(() => {
 
   if (!currentConfirmation) {
     return null;
+  }
+
+  // Show skeleton loaders while data is loading
+  if (spendingCapPending) {
+    return (
+      <>
+        <ConfirmBannerAlert ownerId={currentConfirmation.id} />
+        <Box
+          paddingTop={4}
+          paddingBottom={2}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+        >
+          <Skeleton height={32} width="60%" />
+        </Box>
+        <NestedTransactionTag />
+        <Box
+          paddingBottom={4}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+        >
+          <Skeleton height={20} width="70%" />
+        </Box>
+      </>
+    );
   }
 
   return (

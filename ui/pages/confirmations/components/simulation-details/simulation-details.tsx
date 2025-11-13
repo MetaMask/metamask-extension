@@ -25,6 +25,7 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
+import { Skeleton } from '../../../../components/component-library/skeleton';
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
 import Tooltip from '../../../../components/ui/tooltip';
 import {
@@ -72,9 +73,23 @@ export type SimulationDetailsProps = {
  */
 const LoadingIndicator: React.FC = () => {
   return (
-    <div role="progressbar">
-      <Preloader size={20} />
-    </div>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      gap={2}
+      role="progressbar"
+    >
+      {/* Simulate outgoing section */}
+      <Box>
+        <Skeleton height={16} width="40%" marginBottom={1} />
+        <Skeleton height={48} width="100%" />
+      </Box>
+      {/* Simulate incoming section */}
+      <Box>
+        <Skeleton height={16} width="40%" marginBottom={1} />
+        <Skeleton height={48} width="100%" />
+      </Box>
+    </Box>
   );
 };
 
