@@ -77,11 +77,13 @@
     "notifications",
     "scripting",
     "storage",
+    "tabs",
     "unlimitedStorage",
     "webRequest",
     "offscreen",
     "identity",
-    "sidePanel"
+    "sidePanel",
+    "contextMenus"
   ],
   "sandbox": {
     "pages": ["snaps/index.html"]
