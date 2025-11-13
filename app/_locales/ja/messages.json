@@ -2324,9 +2324,6 @@
   "existingChainId": {
     "message": "入力された情報は、既存のチェーンIDと関連付けられています。"
   },
-  "expandView": {
-    "message": "ビューを展開"
-  },
   "experimental": {
     "message": "試験運用"
   },
