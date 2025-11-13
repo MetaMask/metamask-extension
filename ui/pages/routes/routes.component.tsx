@@ -471,13 +471,11 @@ const ShieldPlan = mmLazy(
 // End Lazy Routes
 
 const MemoizedReviewPermissionsWrapper = React.memo(
-  (props: { params?: { origin: string }; navigate?: V5CompatNavigate }) => (
+  (props: RouteComponentProps<{ origin: string }>) => (
     <State2Wrapper
       {...props}
       state1Component={ReviewPermissions}
       state2Component={MultichainReviewPermissions}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      {...({} as any)}
     />
   ),
 );
