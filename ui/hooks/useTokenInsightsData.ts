@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  BridgeClientId,
   formatChainIdToCaip,
   isNativeAddress as isNativeAddressFromBridge,
 } from '@metamask/bridge-controller';
@@ -132,7 +133,7 @@ export const useTokenInsightsData = (
 
         const response = await handleFetch(url, {
           method: 'GET',
-          headers: { 'X-Client-Id': 'extension' },
+          headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
         });
 
         const tokenData = assetId ? response?.[assetId] : null;
