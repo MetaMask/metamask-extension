@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Преглед на акаунта в Etherscan"
   },
-  "expandView": {
-    "message": "Разгъване на изглед"
-  },
   "failed": {
     "message": "Неуспешно"
   },

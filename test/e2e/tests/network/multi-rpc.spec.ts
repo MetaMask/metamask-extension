@@ -20,6 +20,7 @@ import {
 import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
 import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
@@ -431,6 +432,10 @@ describe('MultiRpc:', function (this: Suite) {
 
         // finish onboarding and check the network successfully edited message is displayed
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
