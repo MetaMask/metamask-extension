@@ -336,13 +336,13 @@ export const GlobalMenu = ({
               <NotificationsTagCounter />
             </Box>
           </MenuItem>
+          <Box
+            borderColor={BorderColor.borderMuted}
+            width={BlockSize.Full}
+            style={{ height: '1px', borderBottomWidth: 0 }}
+          ></Box>
         </>
       )}
-      <Box
-        borderColor={BorderColor.borderMuted}
-        width={BlockSize.Full}
-        style={{ height: '1px', borderBottomWidth: 0 }}
-      ></Box>
       {rewardsEnabled && (
         <DiscoverMenuItem
           metricsLocation={METRICS_LOCATION}
