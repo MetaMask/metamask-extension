@@ -67,7 +67,7 @@ const FeatureToggle = ({
   section: (typeof backupAndSyncFeaturesTogglesSections)[number];
   isBackupAndSyncUpdateLoading: boolean;
   isBackupAndSyncEnabled: boolean;
-  key: number;
+  key: string | number;
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -206,14 +206,14 @@ export const BackupAndSyncFeaturesToggles = () => {
         {t('backupAndSyncManageWhatYouSyncDescription')}
       </Text>
 
-      {backupAndSyncFeaturesTogglesSections.map((section, index) =>
-        FeatureToggle({
-          section,
-          isBackupAndSyncUpdateLoading,
-          isBackupAndSyncEnabled,
-          key: index,
-        }),
-      )}
+      {backupAndSyncFeaturesTogglesSections.map((section) => (
+        <FeatureToggle
+          key={section.id}
+          section={section}
+          isBackupAndSyncUpdateLoading={isBackupAndSyncUpdateLoading}
+          isBackupAndSyncEnabled={isBackupAndSyncEnabled}
+        />
+      ))}
     </Box>
   );
 };
