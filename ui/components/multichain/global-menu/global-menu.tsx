@@ -422,7 +422,7 @@ export const GlobalMenu = ({
         (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
           getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
           <MenuItem
-            iconName={IconName.Expand}
+            iconName={IconName.Sidepanel}
             onClick={async () => {
               await toggleDefaultView();
               trackEvent({
