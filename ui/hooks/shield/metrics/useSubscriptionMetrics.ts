@@ -20,7 +20,6 @@ import {
   CaptureShieldPaymentMethodRetriedEventParams,
   CaptureShieldPaymentMethodUpdatedEventParams,
   CaptureShieldSubscriptionRequestParams,
-  CaptureShieldSubscriptionRestartRequestParams,
 } from './types';
 import {
   formatCaptureShieldCtaClickedEventProps,
@@ -123,31 +122,6 @@ export const useSubscriptionMetrics = () => {
         properties: {
           ...userAccountTypeAndCategory,
           ...formattedParams,
-        },
-      });
-    },
-    [trackEvent, selectedAccount, hdKeyingsMetadata],
-  );
-
-  const captureShieldMembershipRestartRequestEvent = useCallback(
-    (params: CaptureShieldSubscriptionRestartRequestParams) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
-        selectedAccount,
-        hdKeyingsMetadata,
-      );
-      const formattedParams = formatExistingSubscriptionEventProps(params);
-      trackEvent({
-        event: MetaMetricsEventName.ShieldMembershipRestartRequest,
-        category: MetaMetricsEventCategory.Shield,
-        properties: {
-          ...userAccountTypeAndCategory,
-          ...formattedParams,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: params.errorMessage,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          status: params.restartStatus,
         },
       });
     },
@@ -277,7 +251,6 @@ export const useSubscriptionMetrics = () => {
   return {
     captureShieldEntryModalEvent,
     captureShieldSubscriptionRequestEvent,
-    captureShieldMembershipRestartRequestEvent,
     captureShieldBillingHistoryOpenedEvent,
     captureShieldMembershipCancelledEvent,
     captureShieldPaymentMethodChangeEvent,

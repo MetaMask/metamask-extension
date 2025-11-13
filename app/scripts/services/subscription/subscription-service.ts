@@ -18,7 +18,10 @@ import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
 import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
-import { getSubscriptionRequestTrackingProps } from '../../../../shared/modules/shield/metrics';
+import {
+  getSubscriptionRequestTrackingProps,
+  getSubscriptionRestartRequestTrackingProps,
+} from '../../../../shared/modules/shield/metrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -292,14 +295,31 @@ export class SubscriptionService {
     const subscriptionControllerState = this.#messenger.call(
       'SubscriptionController:getState',
     );
-    const appStateControllerState = this.#messenger.call(
+    const { defaultSubscriptionPaymentOptions } = this.#messenger.call(
       'AppStateController:getState',
     );
-    const { defaultSubscriptionPaymentOptions } = appStateControllerState;
+
     const trackingProps = getSubscriptionRequestTrackingProps(
       subscriptionControllerState,
       defaultSubscriptionPaymentOptions,
     );
+
+    const isRenewal = trackingProps.subscription_state !== 'none';
+
+    if (isRenewal) {
+      const renewalTrackingProps = getSubscriptionRestartRequestTrackingProps(
+        subscriptionControllerState,
+        requestStatus,
+        errorMessage,
+      );
+
+      this.#messenger.call('MetaMetricsController:trackEvent', {
+        event: MetaMetricsEventName.ShieldMembershipRestartRequest,
+        category: MetaMetricsEventCategory.Shield,
+        properties: renewalTrackingProps,
+      });
+    }
+
     this.#messenger.call('MetaMetricsController:trackEvent', {
       event: MetaMetricsEventName.ShieldSubscriptionRequest,
       category: MetaMetricsEventCategory.Shield,

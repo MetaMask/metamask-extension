@@ -19,7 +19,10 @@ import {
   ShieldUserAccountCategoryEnum,
   ShieldUserAccountTypeEnum,
 } from '../../constants/subscriptions';
-import { getShieldSubscription } from '../../lib/shield';
+import {
+  getShieldSubscription,
+  getSubscriptionPaymentData,
+} from '../../lib/shield';
 import { KeyringType } from '../../constants/keyring';
 import { DefaultSubscriptionPaymentOptions } from '../../types';
 import {
@@ -213,6 +216,46 @@ export function getSubscriptionRequestTrackingProps(
 }
 
 /**
+ * Get the tracking props for the subscription restart request for the Shield metrics.
+ *
+ * @param subscriptionControllerState - The subscription controller state.
+ * @param requestStatus - The request status.
+ * @param errorMessage - The error message.
+ * @returns The tracking props.
+ */
+export function getSubscriptionRestartRequestTrackingProps(
+  subscriptionControllerState: SubscriptionControllerState,
+  requestStatus: 'started' | 'completed' | 'failed',
+  errorMessage?: string,
+): Record<string, Json> {
+  const { subscriptions, lastSubscription } = subscriptionControllerState;
+  const latestSubscriptionStatus =
+    getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
+  const lastSubscriptionData = getSubscriptionPaymentData(lastSubscription);
+  return {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    subscription_status: latestSubscriptionStatus,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    payment_type: lastSubscriptionData.paymentType,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    crypto_payment_chain: lastSubscriptionData.cryptoPaymentChain || null,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    crypto_payment_currency: lastSubscriptionData.cryptoPaymentCurrency || null,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    billing_interval: lastSubscriptionData.billingInterval,
+    status: requestStatus,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    error_message: errorMessage || null,
+  };
+}
+
+/**
  * Capture a Shield subscription request event with crypto payment.
  *
  * @param subscriptionControllerState - The subscription controller state.
@@ -239,6 +282,21 @@ export function captureShieldSubscriptionRequestEvent(
     defaultSubscriptionPaymentOptions,
     transactionMeta,
   );
+
+  const isRenewal = trackingProps.subscription_state !== 'none';
+  if (isRenewal) {
+    // if it's a renewal, we also need to capture the restart request event
+    const renewalTrackingProps = getSubscriptionRestartRequestTrackingProps(
+      subscriptionControllerState,
+      requestStatus,
+      extrasProps.error_message as string | undefined,
+    );
+    metaMetricsController.trackEvent({
+      event: MetaMetricsEventName.ShieldMembershipRestartRequest,
+      category: MetaMetricsEventCategory.Shield,
+      properties: renewalTrackingProps,
+    });
+  }
 
   metaMetricsController.trackEvent({
     event: MetaMetricsEventName.ShieldSubscriptionRequest,

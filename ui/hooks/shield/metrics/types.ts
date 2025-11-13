@@ -87,13 +87,6 @@ export type ExistingSubscriptionEventParams = {
   cryptoPaymentCurrency?: string;
 };
 
-export type CaptureShieldSubscriptionRestartRequestParams =
-  ExistingSubscriptionEventParams & {
-    errorMessage?: string;
-
-    restartStatus: 'succeeded' | 'failed';
-  };
-
 export type CaptureShieldMembershipCancelledEventParams =
   ExistingSubscriptionEventParams & {
     cancellationStatus: 'succeeded' | 'failed';
