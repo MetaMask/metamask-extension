@@ -7,8 +7,8 @@ import {
 } from '@metamask/bridge-controller';
 import { isEvmChainId, toAssetId } from '../../shared/lib/asset-utils';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { formatCompactCurrency } from '../helpers/utils/token-insights';
+import { useFormatters } from './useFormatters';
 import {
   useTokenInsightsData,
   TokenInsightsToken,
@@ -47,8 +47,8 @@ jest.mock('../../shared/lib/asset-utils', () => ({
 
 jest.mock('../../shared/lib/fetch-with-cache');
 
-jest.mock('../helpers/utils/confirm-tx.util', () => ({
-  formatCurrency: jest.fn(),
+jest.mock('./useFormatters', () => ({
+  useFormatters: jest.fn(),
 }));
 
 jest.mock('../helpers/utils/token-insights', () => ({
@@ -61,7 +61,7 @@ const mockIsNativeAddress = isNativeAddress as jest.Mock;
 const mockFormatChainIdToCaip = formatChainIdToCaip as jest.Mock;
 const mockToAssetId = toAssetId as jest.Mock;
 const mockFetchWithCache = fetchWithCache as jest.Mock;
-const mockFormatCurrency = formatCurrency as jest.Mock;
+const mockUseFormatters = useFormatters as jest.Mock;
 const mockFormatCompactCurrency = formatCompactCurrency as jest.Mock;
 
 describe('useTokenInsightsData', () => {
@@ -100,7 +100,11 @@ describe('useTokenInsightsData', () => {
     mockToAssetId.mockReturnValue(
       'eip155:1/erc20:0x1234567890123456789012345678901234567890',
     );
-    mockFormatCurrency.mockImplementation((value) => `$${value}`);
+    mockUseFormatters.mockReturnValue({
+      formatCurrencyWithMinThreshold: jest
+        .fn()
+        .mockImplementation((value) => `$${value}`),
+    });
     mockFormatCompactCurrency.mockImplementation((value) => {
       if (!value) {
         return '—';
