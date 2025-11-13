@@ -630,9 +630,6 @@
   "attributions": {
     "message": "属性"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Infura RPC URLでAuroraがサポートされなくなりました。"
-  },
   "authorizedPermissions": {
     "message": "以下の権限を承認しました"
   },
@@ -1822,9 +1819,6 @@
   "depositCrypto": {
     "message": "ウォレットアドレスまたはQRコードを使った別のアカウントからの仮想通貨のデポジット"
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "イーサリアムシステムのアップデートに伴い、Goerliテストネットワークはまもなく段階的に廃止される予定です。"
-  },
   "deprecatedNetwork": {
     "message": "このネットワークはサポートされなくなりました"
   },
@@ -2329,9 +2323,6 @@
   },
   "existingChainId": {
     "message": "入力された情報は、既存のチェーンIDと関連付けられています。"
-  },
-  "expandView": {
-    "message": "ビューを展開"
   },
   "experimental": {
     "message": "試験運用"
@@ -5229,9 +5220,6 @@
   "shieldEntryModalGetStarted": {
     "message": "利用を開始する"
   },
-  "shieldEntryModalSkip": {
-    "message": "スキップ"
-  },
   "show": {
     "message": "表示"
   },
@@ -6484,10 +6472,6 @@
   },
   "switchNetwork": {
     "message": "ネットワークを切り替える"
-  },
-  "switchToNetwork": {
-    "message": "$1に切り替える",
-    "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
     "message": "このアカウントに切り替える"

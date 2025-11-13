@@ -232,9 +232,6 @@
   "etherscanView": {
     "message": "Lihat akaun di Etherscan"
   },
-  "expandView": {
-    "message": "Kembangkan Paparan"
-  },
   "failed": {
     "message": "Gagal"
   },

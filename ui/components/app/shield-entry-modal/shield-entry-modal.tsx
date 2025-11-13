@@ -1,168 +1,214 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { SubscriptionUserEvent } from '@metamask/subscription-controller';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
+  MODAL_TYPE,
+  ModalType,
+  SubscriptionUserEvent,
+} from '@metamask/subscription-controller';
+import {
+  Box,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  FontFamily,
+  FontWeight,
+  Text,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Text,
-  Button,
   ModalFooter,
   ModalBody,
-  ButtonSize,
-  IconName,
-  Box,
-  AvatarIcon,
-  AvatarIconSize,
-  ButtonVariant,
-  ButtonLink,
-  ButtonLinkSize,
 } from '../../component-library';
-import { ThemeType } from '../../../../shared/constants/preferences';
 import {
   setShowShieldEntryModalOnce,
   submitSubscriptionUserEvents,
 } from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
-import { getShouldSubmitEventsForShieldEntryModal } from '../../../selectors';
+import {
+  getShouldSubmitEventsForShieldEntryModal,
+  getShieldEntryModalTriggeringCohort,
+  getModalTypeForShieldEntryModal,
+} from '../../../selectors';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import {
+  EntryModalSourceEnum,
+  ShieldCtaActionClickedEnum,
+  ShieldCtaSourceEnum,
+} from '../../../../shared/constants/subscriptions';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
+import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
+import { ThemeType } from '../../../../shared/constants/preferences';
+import ShieldIllustrationAnimation from './shield-illustration-animation';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export default function ShieldEntryModal({
-  // Whether to skip event submission (e.g., when opened from a user action)
+const ShieldEntryModal = ({
   skipEventSubmission = false,
   onClose,
 }: {
   skipEventSubmission?: boolean;
   onClose?: () => void;
-}) {
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { captureShieldEntryModalEvent, captureShieldCtaClickedEvent } =
+    useSubscriptionMetrics();
   const shouldSubmitEvent = useSelector(
     getShouldSubmitEventsForShieldEntryModal,
   );
+  const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
+  const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
-  const handleOnClose = () => {
+  const handleOnClose = (
+    ctaActionClicked: ShieldCtaActionClickedEnum = ShieldCtaActionClickedEnum.Dismiss,
+  ) => {
+    captureShieldEntryModalEvent({
+      source: EntryModalSourceEnum.Homepage,
+      type: modalType,
+      modalCtaActionClicked: ctaActionClicked,
+    });
+
+    if (ctaActionClicked === ShieldCtaActionClickedEnum.Dismiss) {
+      captureShieldCtaClickedEvent({
+        source: ShieldCtaSourceEnum.Homepage, // FIXME: get the correct source
+        ctaActionClicked: ShieldCtaActionClickedEnum.Dismiss,
+      });
+    }
+
     if (skipEventSubmission) {
       onClose?.();
       return;
-    }
-    if (shouldSubmitEvent) {
+    } else if (shouldSubmitEvent) {
       dispatch(
         submitSubscriptionUserEvents({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
+          cohort: triggeringCohort,
         }),
       );
     }
+
     dispatch(setShowShieldEntryModalOnce(false));
   };
 
   const handleOnGetStarted = () => {
-    handleOnClose();
+    handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
+
+    captureShieldCtaClickedEvent({
+      source: ShieldCtaSourceEnum.Homepage, // FIXME: get the correct source
+      ctaActionClicked: ShieldCtaActionClickedEnum.Start14DayTrial,
+      redirectToPage: SHIELD_PLAN_ROUTE,
+    });
+
     navigate(SHIELD_PLAN_ROUTE);
+  };
+
+  const handleOnLearnMoreClick = () => {
+    captureShieldCtaClickedEvent({
+      source: ShieldCtaSourceEnum.Homepage, // FIXME: get the correct source
+      ctaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
+      redirectToUrl: TRANSACTION_SHIELD_LINK,
+    });
+
+    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
   };
 
   return (
     <Modal
       data-testid="shield-entry-modal"
       isOpen
+      autoFocus={false}
+      isClosedOnOutsideClick={false}
+      isClosedOnEscapeKey={false}
       onClose={handleOnClose}
       className="shield-entry-modal"
+      data-theme={ThemeType.dark}
     >
       <ModalOverlay />
       <ModalContent
-        alignItems={AlignItems.flexStart}
-        modalDialogProps={{ paddingTop: 0, paddingBottom: 6 }}
+        modalDialogProps={{
+          className: 'shield-entry-modal__dialog',
+        }}
+        className="shield-entry-modal__content"
       >
-        {/* TODO: update with full image banner */}
         <ModalHeader
-          className="shield-entry-modal__header h-[160px]"
-          data-theme={ThemeType.dark}
+          onClose={handleOnClose}
           closeButtonProps={{
+            'data-testid': 'shield-entry-modal-close-button',
             className: 'absolute top-2 right-2',
           }}
-          onClose={handleOnClose}
         />
-        <ModalBody paddingTop={4}>
-          <Text variant={TextVariant.headingMd} marginBottom={1}>
-            {t('shieldEntryModalSubtitle')}
-          </Text>
-          <Text variant={TextVariant.bodySm} marginBottom={4}>
-            {/* TODO: update link to learn more page */}
-            {t('shieldEntryModalDescription', [
-              '$8',
-              <ButtonLink
-                key="learn-more-link"
-                size={ButtonLinkSize.Inherit}
-                target="_blank"
-                rel="noopener noreferrer"
-                href={TRANSACTION_SHIELD_LINK}
-              >
-                {t('learnMoreUpperCase')}
-              </ButtonLink>,
-            ])}
-          </Text>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={4}
+        <ModalBody
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          flexDirection={FlexDirection.Column}
+          gap={3}
+          paddingTop={4}
+        >
+          <Text
+            fontFamily={FontFamily.Hero}
+            fontWeight={FontWeight.Regular}
+            className="shield-entry-modal__title text-center text-accent04-light"
           >
-            <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-              <AvatarIcon size={AvatarIconSize.Sm} iconName={IconName.Plant} />
-              <Text variant={TextVariant.bodySm}>
-                {t('shieldEntryModalAssetCoverage', ['$10,000'])}
-              </Text>
-            </Box>
-            <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-              <AvatarIcon
-                size={AvatarIconSize.Sm}
-                iconName={IconName.ShieldLock}
-              />
-              <Text variant={TextVariant.bodySm}>
-                {t('shieldEntryModalProtection')}
-              </Text>
-            </Box>
-            <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-              <AvatarIcon size={AvatarIconSize.Sm} iconName={IconName.Flash} />
-              <Text variant={TextVariant.bodySm}>
-                {t('shieldEntryModalSupport')}
-              </Text>
-            </Box>
+            {modalType === MODAL_TYPE.A
+              ? t('shieldEntryModalTitleA')
+              : t('shieldEntryModalTitleB')}
+          </Text>
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            className="text-center"
+          >
+            {modalType === MODAL_TYPE.A
+              ? t('shieldEntryModalSubtitleA', ['$10,000'])
+              : t('shieldEntryModalSubtitleB', ['$10,000'])}
+          </Text>
+          <Box className="grid place-items-center">
+            <img
+              src="/images/shield-entry-modal-bg.png"
+              alt="Shield Entry Illustration"
+              className="col-start-1 row-start-1"
+            />
+            <ShieldIllustrationAnimation
+              containerClassName="shield-entry-modal-shield-illustration__container col-start-1 row-start-1"
+              canvasClassName="shield-entry-modal-shield-illustration__canvas"
+            />
           </Box>
         </ModalBody>
-        <ModalFooter>
-          <Box display={Display.Flex} gap={4}>
-            <Button
-              data-testid="shield-entry-modal-skip-button"
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Lg}
-              block
-              onClick={handleOnClose}
+        <ModalFooter
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          className="shield-entry-modal__footer"
+        >
+          <Button
+            data-testid="shield-entry-modal-get-started-button"
+            size={ButtonSize.Lg}
+            onClick={handleOnGetStarted}
+            className="w-full mb-2"
+          >
+            {t('shieldEntryModalGetStarted')}
+          </Button>
+          <Button asChild variant={ButtonVariant.Secondary} className="w-full">
+            <a
+              onClick={handleOnLearnMoreClick}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              {t('shieldEntryModalSkip')}
-            </Button>
-            <Button
-              data-testid="shield-entry-modal-get-started-button"
-              size={ButtonSize.Lg}
-              block
-              onClick={handleOnGetStarted}
-            >
-              {t('shieldEntryModalGetStarted')}
-            </Button>
-          </Box>
+              {t('learnMoreUpperCase')}
+            </a>
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
   );
-}
+};
+
+export default ShieldEntryModal;
