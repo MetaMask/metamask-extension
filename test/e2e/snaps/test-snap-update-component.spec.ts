@@ -12,6 +12,7 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { Driver } from '../webdriver/driver';
+import { DAPP_PATH } from '../constants';
 
 async function mockSnaps(mockServer: Mockttp) {
   return [
@@ -24,6 +25,9 @@ describe('Test Snap update via snaps component', function () {
   it('can install an old and then update via the snaps component', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnaps,
         title: this.test?.fullTitle(),
