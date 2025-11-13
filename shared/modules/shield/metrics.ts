@@ -224,6 +224,9 @@ export function getSubscriptionRestartRequestTrackingProps(
   const latestSubscriptionStatus =
     getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
   const lastSubscriptionData = getSubscriptionPaymentData(lastSubscription);
+  const billingInterval = getBillingIntervalForMetrics(
+    lastSubscriptionData.billingInterval,
+  );
   return {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -239,7 +242,7 @@ export function getSubscriptionRestartRequestTrackingProps(
     crypto_payment_currency: lastSubscriptionData.cryptoPaymentCurrency || null,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    billing_interval: lastSubscriptionData.billingInterval,
+    billing_interval: billingInterval,
     status: requestStatus,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention

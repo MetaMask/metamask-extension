@@ -230,7 +230,6 @@ export class SubscriptionService {
     const appStateControllerState = this.#messenger.call(
       'AppStateController:getState',
     );
-    console.log('appStateControllerState', appStateControllerState);
     const { defaultSubscriptionPaymentOptions } = appStateControllerState;
 
     const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();

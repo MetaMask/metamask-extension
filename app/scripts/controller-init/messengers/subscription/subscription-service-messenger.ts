@@ -41,6 +41,8 @@ export function getSubscriptionServiceMessenger(
       'SubscriptionController:submitSponsorshipIntents',
       'SubscriptionController:getState',
       'AppStateController:getState',
+      'SubscriptionController:getState',
+      'AppStateController:getState',
       'AuthenticationController:getBearerToken',
       'TransactionController:getTransactions',
       'AccountsController:getState',

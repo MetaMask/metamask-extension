@@ -8538,6 +8538,8 @@ export default class MetamaskController extends EventEmitter {
    */
   async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
     const { isGasFeeSponsored, chainId } = transactionMeta;
+    const subscriptionControllerState = this.subscriptionController.state;
+    const { defaultSubscriptionPaymentOptions } = this.appStateController.state;
     const bundlerSupported = await isSendBundleSupported(chainId);
     const isSponsored = isGasFeeSponsored && bundlerSupported;
 
