@@ -30,5 +30,19 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
 };
 
 export const getIsSidePanelFeatureEnabled = (): boolean => {
-  return process.env.IS_SIDEPANEL?.toString() === 'true';
+  // First check if build supports sidepanel
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+    return false;
+  }
+
+  // In browser context, check if the API exists (Firefox doesn't have it)
+  if (
+    typeof window !== 'undefined' &&
+    typeof chrome !== 'undefined' &&
+    !chrome.sidePanel
+  ) {
+    return false;
+  }
+
+  return true;
 };

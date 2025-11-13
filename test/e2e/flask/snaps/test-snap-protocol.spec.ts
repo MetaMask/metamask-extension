@@ -1,6 +1,6 @@
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../multichain-api/testHelpers';
-import { WINDOW_TITLES } from '../../helpers';
+import { DAPP_ONE_URL, WINDOW_TITLES } from '../../helpers';
 import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
@@ -27,6 +27,7 @@ describe('Test Protocol Snaps', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectProtocolButton',
+          { url: DAPP_ONE_URL },
         );
 
         const testDapp = new TestDappMultichain(driver);
