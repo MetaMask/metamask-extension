@@ -158,7 +158,7 @@ describe('Phishing Detection', function (this: Suite) {
           await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
           await phishingWarningPage.checkPageIsLoaded();
           await phishingWarningPage.clickProceedAnywayButton();
-          await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         },
       );
     });
