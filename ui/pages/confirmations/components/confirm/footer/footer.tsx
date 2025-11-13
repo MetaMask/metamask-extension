@@ -262,7 +262,8 @@ const Footer = () => {
     navigateNext(currentConfirmation.id);
   }, [navigateNext, onCancel, shouldThrottleOrigin, currentConfirmation]);
 
-  const isShowShieldFooterCoverageIndicator = useEnableShieldCoverageChecks();
+  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
+  const isShowShieldFooterCoverageIndicator = isEnabled || isPaused;
 
   return (
     <>
