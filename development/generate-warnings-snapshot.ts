@@ -468,11 +468,17 @@ async function main(): Promise<void> {
       const { aggregateAndSaveSnapshot } = await import(
         '../test/helpers/console-snapshot.js'
       );
-      aggregateAndSaveSnapshot();
+      const hasChanges = aggregateAndSaveSnapshot(specificTestFile);
 
-      console.log(
-        `\n✅ Snapshot updated with warnings from: ${specificTestFile}`,
-      );
+      if (hasChanges) {
+        console.log(
+          `\n✅ Snapshot updated with new warnings from: ${specificTestFile}`,
+        );
+      } else {
+        console.log(
+          `\n✅ No new warnings from this test. Snapshot unchanged.`,
+        );
+      }
       console.log(`   Check test/test-warnings-snapshot-${snapshotType}.json`);
       console.log('\n🧹 Temporary file has been cleaned up.');
     } else {

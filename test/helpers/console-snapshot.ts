@@ -256,8 +256,11 @@ export function saveWorkerSnapshot(captured: CapturedData): string {
  * Aggregate all worker snapshots and save the final snapshot
  * Call this in Jest global teardown after all workers have finished
  * Snapshot type is determined by WARNINGS_SNAPSHOT_TYPE env variable
+ *
+ * @param specificTestFile - Optional: if provided, only aggregate temp file for this test
+ * @returns True if snapshot was modified, false if unchanged
  */
-export function aggregateAndSaveSnapshot(): void {
+export function aggregateAndSaveSnapshot(specificTestFile?: string): boolean {
   try {
     const tempDir = getTempDir();
     const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
@@ -268,19 +271,44 @@ export function aggregateAndSaveSnapshot(): void {
       console.log('   Snapshot unchanged.');
       console.log('\n   Run tests first to generate temp files:');
       console.log(`   yarn test:warnings:update:${snapshotType}`);
-      return;
+      return false;
     }
 
-    // Read all temp files for this snapshot type (both worker and test-specific)
-    const tempFiles = fs
-      .readdirSync(tempDir)
-      .filter(
-        (file) =>
-          (file.startsWith(`warnings-${snapshotType}-worker-`) ||
-            file.startsWith(`warnings-${snapshotType}-test-`)) &&
-          file.endsWith('.json'),
-      )
-      .map((file) => path.join(tempDir, file));
+    // Read temp files - either all files or just the specific test's file
+    let tempFiles: string[];
+
+    if (specificTestFile) {
+      // Only aggregate the temp file for the specific test
+      const basename = path.basename(specificTestFile);
+      const testName = basename.replace(/\.(spec|test)\.(ts|js)$/iu, '');
+      const sanitizedName = testName
+        .replace(/[^a-z0-9]+/giu, '-')
+        .replace(/^-|-$/gu, '');
+
+      const specificTempFile = path.join(
+        tempDir,
+        `warnings-${snapshotType}-test-${sanitizedName}.json`,
+      );
+
+      if (fs.existsSync(specificTempFile)) {
+        tempFiles = [specificTempFile];
+      } else {
+        console.log('\n⚠️  No temp file found for this test.');
+        console.log(`   Expected: ${specificTempFile}`);
+        return false;
+      }
+    } else {
+      // Read all temp files for this snapshot type (both worker and test-specific)
+      tempFiles = fs
+        .readdirSync(tempDir)
+        .filter(
+          (file) =>
+            (file.startsWith(`warnings-${snapshotType}-worker-`) ||
+              file.startsWith(`warnings-${snapshotType}-test-`)) &&
+            file.endsWith('.json'),
+        )
+        .map((file) => path.join(tempDir, file));
+    }
 
     // Safety check: If no temp files found, don't touch snapshot
     if (tempFiles.length === 0) {
@@ -288,7 +316,7 @@ export function aggregateAndSaveSnapshot(): void {
       console.log('   Snapshot unchanged.');
       console.log('\n   Run tests first to generate temp files:');
       console.log(`   yarn test:warnings:update:${snapshotType}`);
-      return;
+      return false;
     }
 
     // Log temp file count for transparency
@@ -315,12 +343,17 @@ export function aggregateAndSaveSnapshot(): void {
 
     // Generate final snapshot from aggregated data
     const snapshot = generateSnapshot(aggregated);
+    const hasChanges =
+      (snapshot as SnapshotData & { _hasChanges?: boolean })._hasChanges ||
+      false;
     saveSnapshot(snapshot);
 
     // Clean up temp files after successful snapshot generation
-    console.log(
-      `   Cleaned up ${tempFiles.length} temporary file(s) after successful snapshot generation.`,
-    );
+    if (!specificTestFile) {
+      console.log(
+        `   Cleaned up ${tempFiles.length} temporary file(s) after successful snapshot generation.`,
+      );
+    }
 
     // Clean up temp directory if empty
     try {
@@ -331,6 +364,8 @@ export function aggregateAndSaveSnapshot(): void {
     } catch {
       // Ignore cleanup errors
     }
+
+    return hasChanges;
   } catch (error) {
     console.error('Error aggregating snapshots:', error);
     throw error;
@@ -414,7 +449,14 @@ export function generateSnapshot(
     }
   }
 
-  return snapshot;
+  // Add flag to indicate if there were changes (will be read by aggregateAndSaveSnapshot)
+  // Using type assertion since this is internal metadata
+  const snapshotWithChanges = snapshot as SnapshotData & {
+    _hasChanges: boolean;
+  };
+  snapshotWithChanges._hasChanges = newWarningsAdded > 0 || newErrorsAdded > 0;
+
+  return snapshotWithChanges;
 }
 
 /**
