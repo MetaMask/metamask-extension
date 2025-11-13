@@ -1879,16 +1879,13 @@
     "description": "$1 represents the Dapp's origin"
   },
   "dappSwapAdvantage": {
-    "message": "Save + Earn using MetaMask Swap:"
+    "message": "Save and earn with MetaMask Swaps"
   },
   "dappSwapBenefits": {
-    "message": "No additional cost • Priority support • Network fees refunded on failed swaps"
-  },
-  "dappSwapQuoteDetails": {
-    "message": "Save $1 network fee, get $2 more $3"
+    "message": "Network fees refunded on failed swaps"
   },
   "dappSwapQuoteDifference": {
-    "message": "Save about $1"
+    "message": "Save $1"
   },
   "darkTheme": {
     "message": "Dark"
@@ -3675,6 +3672,12 @@
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
   },
+  "metamaskRate": {
+    "message": "Metamask rate"
+  },
+  "metamaskSwap": {
+    "message": "Metamask Swap"
+  },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
   },
@@ -3790,6 +3793,9 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
+  },
+  "multichainAddressViewAll": {
+    "message": "View all"
   },
   "multichainQuoteCardRateExplanation": {
     "message": "The best rate we found from providers, including provider fees and a $1% MetaMask fee."
@@ -3942,13 +3948,6 @@
   "network": {
     "message": "Network"
   },
-  "networkAddress": {
-    "message": "1 network address"
-  },
-  "networkAddresses": {
-    "message": "$1 network addresses",
-    "description": "$1 is the number of accounts"
-  },
   "networkChanged": {
     "message": "Network changed"
   },
@@ -3994,6 +3993,9 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
+  },
+  "networkNameBitcoinSegwit": {
+    "message": "Bitcoin Native SegWit"
   },
   "networkNameDefinition": {
     "message": "The name associated with this network."
@@ -5571,9 +5573,6 @@
   "save": {
     "message": "Save"
   },
-  "saveAndEarn": {
-    "message": "Save + Earn"
-  },
   "scanInstructions": {
     "message": "Place the QR code in front of your camera"
   },
@@ -6024,6 +6023,9 @@
   "shieldCoverageAlertCovered": {
     "message": "You're protected up to $2 with Metamask Transaction Shield. $1."
   },
+  "shieldCoverageAlertHighRiskTransaction": {
+    "message": "This is a high risk transaction, so it isn't protected by Transaction Shield. $1."
+  },
   "shieldCoverageAlertMessageChainNotSupported": {
     "message": "This chain is not supported, so it isn't protected by Transaction Shield. $1."
   },
@@ -6050,6 +6052,9 @@
   },
   "shieldCoverageAlertMessageTitlePaused": {
     "message": "Transaction Shield paused"
+  },
+  "shieldCoverageAlertMessageTokenTrustSignalWarning": {
+    "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds. $1."
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
     "message": "This transaction type is not supported, so it isn't protected by Transaction Shield. $1."
