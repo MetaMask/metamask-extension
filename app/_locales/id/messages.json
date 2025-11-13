@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Atribusi"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "URL RPC Infura tidak lagi mendukung Aurora."
-  },
   "authorizedPermissions": {
     "message": "Anda telah mengotorisasi izin berikut"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Token kustom"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Deteksi token belum tersedia di jaringan ini. Harap impor token secara manual dan pastikan keamanannya. Pelajari seputar $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Siapa pun dapat membuat token, termasuk membuat versi palsu dari token yang ada. Pelajari tentang $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Pastikan keamanan token sebelum mengimpornya. Pelajari cara menghindari $1. Anda juga dapat mengaktifkan deteksi token $2."
   },
   "customerSupport": {
     "message": "dukungan pelanggan"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Mendeposit kripto dari akun lain dengan alamat dompet atau kode QR."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Karena pembaruan pada sistem Ethereum, jaringan uji Goerli akan segera dihentikan."
   },
   "deprecatedNetwork": {
     "message": "Jaringan ini tidak digunakan lagi"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "Informasi yang Anda masukkan terhubung dengan ID chain yang ada."
   },
-  "expandView": {
-    "message": "Perluas tampilan"
-  },
   "experimental": {
     "message": "Eksperimental"
   },
@@ -2753,32 +2738,11 @@
   "importNFTTokenIdToolTip": {
     "message": "ID NFT merupakan pengenal unik karena tidak ada dua NFT yang sama. Sekali lagi, angka ini berada di bawah 'Detail' pada OpenSea. Catat atau salin ke papan klip."
   },
-  "importNWordSRP": {
-    "message": "Saya memiliki frasa pemulihan $1 kata",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Kunci Pribadi"
   },
-  "importSRPDescription": {
-    "message": "Impor dompet yang ada dengan frasa pemulihan rahasia 12 atau 24 kata."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Frasa Pemulihan Rahasia terdiri dari 12 atau 24 kata"
-  },
-  "importSRPWordError": {
-    "message": "Kata $1 salah atau salah eja.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Kata $1 dan $2 salah atau salah eja.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Impor Frasa Pemulihan Rahasia"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Terjadi kesalahan yang tidak dikenal."
   },
   "importSelectedTokens": {
     "message": "Impor token yang dipilih?"
@@ -2798,9 +2762,6 @@
   "importTokensError": {
     "message": "Kami tidak dapat mengimpor token. Coba lagi nanti."
   },
-  "importWallet": {
-    "message": "Impor dompet"
-  },
   "importWalletOrAccountHeader": {
     "message": "Impor dompet atau akun"
   },
@@ -2811,9 +2772,6 @@
   "imported": {
     "message": "Diimpor",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "di Pengaturan Anda"
   },
   "included": {
     "message": "termasuk"
@@ -4073,9 +4031,6 @@
     "message": "Ikon $1",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Pilih opsi untuk melanjutkan"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Luncurkan ekstensi"
   },
@@ -5130,10 +5085,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Ini adalah $1 milik Anda. Tuliskan dalam urutan yang benar dan simpan dengan aman. Jika seseorang memiliki Frasa Pemulihan Rahasia ini, maka orang tersebut dapat mengakses dompet Anda. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Jangan pernah membaginya dengan siapa pun."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Simpan Frasa Pemulihan Rahasia"
@@ -5267,9 +5219,6 @@
   },
   "shieldEntryModalGetStarted": {
     "message": "Mulai"
-  },
-  "shieldEntryModalSkip": {
-    "message": "Lewati"
   },
   "show": {
     "message": "Tampil"
@@ -6524,10 +6473,6 @@
   "switchNetwork": {
     "message": "Beralih jaringan"
   },
-  "switchToNetwork": {
-    "message": "Beralih ke $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Beralih ke akun ini"
   },
@@ -6633,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Pasar token"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "penipuan dan risiko keamanan token"
   },
   "tokenStandard": {
     "message": "Standar token"
@@ -7087,24 +7029,11 @@
     "message": "$1 Anda dapat menyimpan frasa ini dengan aman sehingga Anda tidak akan pernah kehilangan akses ke uang Anda.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Anda dapat mencadangkan dompet atau melihat Frasa Pemulihan Rahasia di Pengaturan > Keamanan & Kata Sandi."
-  },
   "walletReadyLoseSrp": {
     "message": "Jika kehilangan Frasa Pemulihan Rahasia, Anda tidak dapat menggunakan dompet."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Frasa Pemulihan Rahasia ini dapat membantu Anda mendapatkan kembali akses jika lupa kata sandi atau kehilangan akses login Anda."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Jika Anda tidak mencadangkan Frasa Pemulihan Rahasia, Anda akan kehilangan akses ke dana Anda apabila terkunci dari aplikasi atau mendapatkan perangkat baru."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Anda dapat masuk ke dompet setiap saat dengan akun $1 dan kata sandi Anda.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Jika lupa kata sandi, Anda tidak dapat mengakses dompet."
   },
   "wantToAddThisNetwork": {
     "message": "Ingin menambahkan jaringan ini?"
@@ -7147,9 +7076,6 @@
   },
   "welcomeBack": {
     "message": "Selamat datang kembali"
-  },
-  "welcomeToMetaMask": {
-    "message": "Mari kita mulai"
   },
   "whatsThis": {
     "message": "Apa ini?"
@@ -7213,8 +7139,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Jaga agar Frasa Pemulihan Rahasia tetap aman!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Kami akan mengingatkan Anda nanti"
   }
 }

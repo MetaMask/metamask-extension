@@ -105,6 +105,16 @@ export function getAssetsMetadata(state: AssetsState) {
 }
 
 /**
+ * Gets non-EVM ignored assets.
+ *
+ * @param state - Redux state object.
+ * @returns An object containing all ignored assets.
+ */
+export function getAllIgnoredAssets(state: AssetsState) {
+  return state.metamask.allIgnoredAssets ?? EMPTY_OBJECT;
+}
+
+/**
  * Gets non-EVM accounts assets rates.
  *
  * @param state - Redux state object.
@@ -650,6 +660,18 @@ const selectMultichainBalancesStateForBalances = createSelector(
 );
 
 /**
+ * Wraps multichain assets for core balance computations.
+ */
+const selectMultichainAssetsStateForBalances = createSelector(
+  [getAccountAssets, getAssetsMetadata, getAllIgnoredAssets],
+  (accountsAssets, assetsMetadata, allIgnoredAssets) => ({
+    accountsAssets,
+    assetsMetadata,
+    allIgnoredAssets,
+  }),
+);
+
+/**
  * Normalizes tokens state and supplies explicit empty maps for optional pieces.
  *
  * @param state - Redux state providing `metamask.allTokens`.
@@ -697,6 +719,7 @@ export const selectBalanceForAllWallets = createSelector(
     selectTokenRatesStateForBalances,
     selectMultichainRatesStateForBalances,
     selectMultichainBalancesStateForBalances,
+    selectMultichainAssetsStateForBalances,
     selectTokensStateForBalances,
     selectCurrencyRateStateForBalances,
     selectEnabledNetworkMapForBalances,
@@ -708,6 +731,7 @@ export const selectBalanceForAllWallets = createSelector(
     tokenRatesState,
     multichainRatesState,
     multichainBalancesState,
+    multichainAssetsState,
     tokensState,
     currencyRateState,
     enabledNetworkMap,
@@ -720,6 +744,7 @@ export const selectBalanceForAllWallets = createSelector(
       tokenRatesState,
       multichainRatesState,
       multichainBalancesState,
+      multichainAssetsState,
       tokensState,
       currencyRateState,
       enabledNetworkMap,
@@ -742,6 +767,7 @@ export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
       selectTokenRatesStateForBalances,
       selectMultichainRatesStateForBalances,
       selectMultichainBalancesStateForBalances,
+      selectMultichainAssetsStateForBalances,
       selectTokensStateForBalances,
       selectCurrencyRateStateForBalances,
       selectEnabledNetworkMapForBalances,
@@ -753,6 +779,7 @@ export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
       tokenRatesState,
       multichainRatesState,
       multichainBalancesState,
+      multichainAssetsState,
       tokensState,
       currencyRateState,
       enabledNetworkMap,
@@ -765,6 +792,7 @@ export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
         tokenRatesState,
         multichainRatesState,
         multichainBalancesState,
+        multichainAssetsState,
         tokensState,
         currencyRateState,
         enabledNetworkMap,
@@ -799,6 +827,7 @@ export const selectBalanceChangeByAccountGroup = (
       selectTokenRatesStateForBalances,
       selectMultichainRatesStateForBalances,
       selectMultichainBalancesStateForBalances,
+      selectMultichainAssetsStateForBalances,
       selectTokensStateForBalances,
       selectCurrencyRateStateForBalances,
       selectEnabledNetworkMapForBalances,
@@ -810,6 +839,7 @@ export const selectBalanceChangeByAccountGroup = (
       tokenRatesState,
       multichainRatesState,
       multichainBalancesState,
+      multichainAssetsState,
       tokensState,
       currencyRateState,
       enabledNetworkMap,
@@ -822,6 +852,7 @@ export const selectBalanceChangeByAccountGroup = (
         tokenRatesState,
         multichainRatesState,
         multichainBalancesState,
+        multichainAssetsState,
         tokensState,
         currencyRateState,
         enabledNetworkMap,
@@ -856,6 +887,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       selectTokenRatesStateForBalances,
       selectMultichainRatesStateForBalances,
       selectMultichainBalancesStateForBalances,
+      selectMultichainAssetsStateForBalances,
       selectTokensStateForBalances,
       selectCurrencyRateStateForBalances,
       selectEnabledNetworkMapForBalances,
@@ -867,6 +899,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       tokenRatesState,
       multichainRatesState,
       multichainBalancesState,
+      multichainAssetsState,
       tokensState,
       currencyRateState,
       enabledNetworkMap,
@@ -883,6 +916,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
         tokenRatesState,
         multichainRatesState,
         multichainBalancesState,
+        multichainAssetsState,
         tokensState,
         currencyRateState,
         enabledNetworkMap,
@@ -982,6 +1016,7 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
     let multichainState = {
       accountsAssets: {},
       assetsMetadata: {},
+      allIgnoredAssets: {},
       balances: {},
       conversionRates: {},
     };
@@ -990,6 +1025,7 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
     multichainState = {
       accountsAssets: metamask.accountsAssets,
       assetsMetadata: metamask.assetsMetadata,
+      allIgnoredAssets: metamask.allIgnoredAssets,
       balances: metamask.balances,
       conversionRates: metamask.conversionRates,
     };
@@ -1002,4 +1038,17 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
   },
   (assetListState: AssetListState) =>
     selectAssetsBySelectedAccountGroup(assetListState),
+);
+
+export const getAsset = createSelector(
+  [
+    getAssetsBySelectedAccountGroup,
+    (_, assetId: string, _chainId: Hex | CaipChainId) => assetId,
+    (_, _assetId: string, chainId: Hex | CaipChainId) => chainId,
+  ],
+  (assetsBySelectedAccountGroup, assetId, chainId) => {
+    const chainAssets = assetsBySelectedAccountGroup[chainId];
+
+    return chainAssets?.find((item) => item.assetId === assetId);
+  },
 );

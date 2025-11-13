@@ -7,7 +7,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import FixtureBuilder from '../../fixture-builder';
-import { ACCOUNT_TYPE } from '../../constants';
+import { ACCOUNT_TYPE, DAPP_PATH } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -1560,7 +1560,7 @@ export async function withSolanaAccountSnap(
     mockSwapSOLtoUSDC,
     mockSwapWithNoQuotes,
     walletConnect = false,
-    dappPaths,
+    dappOptions,
     withProtocolSnap,
     withCustomMocks,
     withFixtureBuilder,
@@ -1579,7 +1579,10 @@ export async function withSolanaAccountSnap(
     mockSwapSOLtoUSDC?: boolean;
     mockSwapWithNoQuotes?: boolean;
     walletConnect?: boolean;
-    dappPaths?: string[];
+    dappOptions?: {
+      numberOfTestDapps?: number;
+      customDappPaths?: string[];
+    };
     withProtocolSnap?: boolean;
     withCustomMocks?: (
       mockServer: Mockttp,
@@ -1617,7 +1620,10 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       forceBip44Version: state === 2 ? 2 : 0,
-      dapp: true,
+      dappOptions: dappOptions ?? {
+        numberOfTestDapps: 1,
+        customDappPaths: [DAPP_PATH.TEST_SNAPS],
+      },
       manifestFlags: {
         // This flag is used to enable/disable the remote mode for the carousel
         // component, which will impact to the slides count.
@@ -1630,7 +1636,6 @@ export async function withSolanaAccountSnap(
             : featureFlags,
         },
       },
-      dappPaths,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList: MockedEndpoint[] = [];
         mockList.push(await simulateSolanaTransaction(mockServer));

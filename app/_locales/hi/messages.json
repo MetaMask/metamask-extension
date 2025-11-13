@@ -630,9 +630,6 @@
   "attributions": {
     "message": "एट्रीब्यूशन्स"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Infura RPC URL अब Aurora को सपोर्ट नहीं कर रहा है।"
-  },
   "authorizedPermissions": {
     "message": "आपने निम्नलिखित अनुमतियों को अधिकृत किया है"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "कस्टम टोकन"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "इस नेटवर्क पर अभी टोकन डिटेक्शन उपलब्ध नहीं है। कृपया टोकन को मैन्युअल रूप से इंपोर्ट करें और ये पक्का करें कि आपको उसपर भरोसा हो। $1 के बारे में जानें"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "कोई भी टोकन बना सकता है, जिसमें मौजूदा टोकन के नकली वर्शन को बनाना शामिल है। $1 के बारे में जानें"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "पक्का करें कि आप किसी टोकन को इम्पोर्ट करने से पहले उस पर भरोसा करते हैं। $1 को टालने का तरीका जानें। आप टोकन डिटेक्शन $2 भी इनेबल कर सकते हैं।"
   },
   "customerSupport": {
     "message": "कस्टमर सपोर्ट"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "वॉलेट एड्रेस या QR कोड के साथ किसी अन्य अकाउंट से क्रिप्टो डिपॉज़िट करना।"
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Ethereum सिस्टम में हुए अपडेट के कारण, Goerli टेस्ट नेटवर्क को जल्द ही चरणबद्ध तरीके से हटा दिया जाएगा।"
   },
   "deprecatedNetwork": {
     "message": "इस नेटवर्क को हटा दिया गया है"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "आपके द्वारा दर्ज की गई जानकारी मौजूदा चेन ID से जुड़ी है।"
   },
-  "expandView": {
-    "message": "व्यू को बड़ा करें"
-  },
   "experimental": {
     "message": "एक्सपेरिमेंटल"
   },
@@ -2753,32 +2738,11 @@
   "importNFTTokenIdToolTip": {
     "message": "किसी NFT की ID एक विशिष्ट पहचानकर्ता है क्योंकि कोई भी दो NFT एक जैसे नहीं होते हैं। फिर से, OpenSea पर यह संख्या 'डिटेल्स' के नीचे होगी। इसे नोट कर लें या अपने क्लिपबोर्ड पर कॉपी कर लें।"
   },
-  "importNWordSRP": {
-    "message": "मेरे पास $1 शब्द का रिकवरी फ्रेज़ है",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "प्राइवेट की (key)"
   },
-  "importSRPDescription": {
-    "message": "अपने 12 या 24-शब्द सीक्रेट रिकवरी फ्रेज़ के साथ एक मौजूदा वॉलेट इंपोर्ट करें।"
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "सीक्रेट रिकवरी फ्रेज़ में 12, या 24 शब्द होते हैं"
-  },
-  "importSRPWordError": {
-    "message": "शब्द $1 गलत है या इसकी स्पेलिंग गलत है।",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "शब्द $1 और $2 गलत है या इसकी स्पेलिंग गलत है।",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज़ इंपोर्ट करें"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "एक अज्ञात गड़बड़ी हुई।"
   },
   "importSelectedTokens": {
     "message": "चुना गया टोकन इम्पोर्ट करें?"
@@ -2798,9 +2762,6 @@
   "importTokensError": {
     "message": "हम टोकनों को इंपोर्ट नहीं कर सके। कृपया बाद में फिर से कोशिश करें।"
   },
-  "importWallet": {
-    "message": "वॉलेट इंपोर्ट करें"
-  },
   "importWalletOrAccountHeader": {
     "message": "वॉलेट या अकाउंट इंपोर्ट करें"
   },
@@ -2811,9 +2772,6 @@
   "imported": {
     "message": "इम्पोर्टित",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "आपके सेटिंग्स में"
   },
   "included": {
     "message": "शामिल है"
@@ -4073,9 +4031,6 @@
     "message": "$1 आइकन",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "जारी रखने के लिए कोई विकल्प चुनें"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "एक्सटेंशन लॉन्च करें"
   },
@@ -5124,10 +5079,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "यह आपका $1 है। इसे सही क्रम में लिखें और सुरक्षित रखें। अगर किसी के पास आपका सीक्रेट रिकवरी फ्रेज़ है, तो वह आपके वॉलेट तक पहुँच सकता है। $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "इसे कभी भी किसी के साथ साझा न करें।"
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "अपना सीक्रेट रिकवरी फ्रेज़ सेव करें"
@@ -5261,9 +5213,6 @@
   },
   "shieldEntryModalGetStarted": {
     "message": "शुरू करें"
-  },
-  "shieldEntryModalSkip": {
-    "message": "छोड़ें"
   },
   "show": {
     "message": "दिखाएं"
@@ -6518,10 +6467,6 @@
   "switchNetwork": {
     "message": "नेटवर्क स्विच करें"
   },
-  "switchToNetwork": {
-    "message": "$1 पर स्विच करें",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "इस अकाउंट पर स्विच करें"
   },
@@ -6627,9 +6572,6 @@
   },
   "tokenMarketplace": {
     "message": "टोकन मार्केटप्लेस"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "टोकन घोटाले और सुरक्षा जोखिम"
   },
   "tokenStandard": {
     "message": "टोकन स्टैंडर्ड"
@@ -7081,24 +7023,11 @@
     "message": "$1 आप इस फ्रेज़ को सुरक्षित रख सकते हैं ताकि आप कभी भी अपने पैसे तक पहुंच न खोएं।",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "आप अपने वॉलेट का बैकअप ले सकते हैं या सेटिंग्स > सुरक्षा और पासवर्ड में अपना सीक्रेट रिकवरी फ्रेज़ देख सकते हैं।"
-  },
   "walletReadyLoseSrp": {
     "message": "यदि आप अपना सीक्रेट रिकवरी फ्रेज़ खो देते हैं, तो आप अपने वॉलेट का उपयोग नहीं कर पाएंगे।"
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "यदि आप कभी अपना पासवर्ड भूल जाते हैं या अपने लॉगिन तक पहुंच खो देते हैं तो यह सीक्रेट रिकवरी फ्रेज़ आपको पुनः पहुंच प्राप्त करने में मदद कर सकता है।"
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "यदि आप अपने सीक्रेट रिकवरी फ्रेज़ का बैकअप नहीं लेते हैं, तो ऐप से लॉक होने या नया डिवाइस लेने पर आप अपने फंड्स तक पहुंच खो देंगे।"
-  },
-  "walletReadySocialDetails1": {
-    "message": "आप अपने $1 अकाउंट और पासवर्ड से कभी भी अपने वॉलेट में लॉग इन कर सकते हैं।",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "यदि आप अपना पासवर्ड भूल जाते हैं, तो आप अपने वॉलेट तक नहीं पहुंच पाएंगे।"
   },
   "wantToAddThisNetwork": {
     "message": "इस नेटवर्क को जोड़ना चाहते हैं?"
@@ -7141,9 +7070,6 @@
   },
   "welcomeBack": {
     "message": "वापसी पर स्वागत है"
-  },
-  "welcomeToMetaMask": {
-    "message": "चलिए शुरु करते हैं"
   },
   "whatsThis": {
     "message": "यह क्या है?"
@@ -7207,8 +7133,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "अपने सीक्रेट रिकवरी फ्रेज़ को सुरक्षित रखें!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "हम आपको बाद में याद दिलाएंगे"
   }
 }

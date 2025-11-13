@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import browser from 'webextension-polyfill';
 import {
   useUnreadNotificationsCounter,
   useReadNotificationsCounter,
@@ -20,8 +21,11 @@ import {
   setShowSupportDataConsentModal,
   showConfirmTurnOnMetamaskNotifications,
   toggleNetworkMenu,
+  setUseSidePanelAsDefault,
 } from '../../../store/actions';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import {
   selectIsMetamaskNotificationsEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
@@ -33,13 +37,19 @@ import {
   Popover,
   PopoverPosition,
   Tag,
+  Text,
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  PLATFORM_FIREFOX,
+} from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
@@ -58,6 +68,7 @@ import {
   getAnySnapUpdateAvailable,
   getThirdPartyNotifySnaps,
   getUseExternalServices,
+  getPreferences,
 } from '../../../selectors';
 import {
   AlignItems,
@@ -73,11 +84,18 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
+import {
+  AccountDetailsMenuItem,
+  DiscoverMenuItem,
+  ViewExplorerMenuItem,
+} from '../menu-items';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
-import { getIsShieldSubscriptionActive } from '../../../../shared/lib/shield';
+import {
+  getIsShieldSubscriptionActive,
+  getIsShieldSubscriptionPaused,
+} from '../../../../shared/lib/shield';
+import { useRewardsContext } from '../../../contexts/rewards';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -96,6 +114,7 @@ export const GlobalMenu = ({
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const basicFunctionality = useSelector(getUseExternalServices);
+  const { rewardsEnabled } = useRewardsContext();
 
   const history = useHistory();
 
@@ -105,6 +124,8 @@ export const GlobalMenu = ({
   const { subscriptions } = useUserSubscriptions();
   const isActiveShieldSubscription =
     getIsShieldSubscriptionActive(subscriptions);
+  const isPausedShieldSubscription =
+    getIsShieldSubscriptionPaused(subscriptions);
 
   const account = useSelector(getSelectedInternalAccount);
 
@@ -138,6 +159,78 @@ export const GlobalMenu = ({
   let hasThirdPartyNotifySnaps = false;
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
   hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
+
+  // Check if side panel is currently the default (vs popup)
+  const preferences = useSelector(getPreferences);
+  const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? true;
+
+  // Check if sidepanel feature is enabled (both build flag and LaunchDarkly flag)
+  const isSidePanelEnabled = useSidePanelEnabled();
+
+  const showPriorityTag = useMemo(
+    () =>
+      (isActiveShieldSubscription || isPausedShieldSubscription) &&
+      basicFunctionality,
+    [
+      isActiveShieldSubscription,
+      isPausedShieldSubscription,
+      basicFunctionality,
+    ],
+  );
+
+  /**
+   * Toggles between side panel and popup as the default extension behavior
+   */
+  const toggleDefaultView = async () => {
+    // Only allow sidepanel functionality if the feature flag is enabled
+    if (!isSidePanelEnabled) {
+      return;
+    }
+
+    try {
+      const newValue = !isSidePanelDefault;
+      await dispatch(setUseSidePanelAsDefault(newValue));
+
+      // If switching from sidepanel to popup view, close the current sidepanel
+      if (
+        isSidePanelDefault &&
+        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+      ) {
+        // Close only the sidepanel, not the entire browser window
+        window.close();
+      }
+      // If switching from popup to sidepanel view, open the sidepanel
+      else if (
+        !isSidePanelDefault &&
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+      ) {
+        try {
+          const browserWithSidePanel = browser as typeof browser & {
+            sidePanel?: {
+              open: (options: { windowId: number }) => Promise<void>;
+            };
+          };
+          if (browserWithSidePanel?.sidePanel?.open) {
+            const tabs = await browser.tabs.query({
+              active: true,
+              currentWindow: true,
+            });
+            if (tabs && tabs.length > 0 && tabs[0].windowId) {
+              await browserWithSidePanel.sidePanel.open({
+                windowId: tabs[0].windowId,
+              });
+              // Close the popup after successfully opening the sidepanel
+              window.close();
+            }
+          }
+        } catch (error) {
+          console.error('Error opening side panel:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling default view:', error);
+    }
+  };
 
   let supportText = t('support');
   let supportLink = SUPPORT_LINK || '';
@@ -245,22 +338,57 @@ export const GlobalMenu = ({
           </MenuItem>
         </>
       )}
-      {account && (
-        <>
-          <AccountDetailsMenuItem
-            metricsLocation={METRICS_LOCATION}
-            closeMenu={closeMenu}
-            address={account.address}
-          />
-          {isMultichainAccountsState2Enabled ? null : (
-            <ViewExplorerMenuItem
+      {rewardsEnabled && (
+        <DiscoverMenuItem
+          metricsLocation={METRICS_LOCATION}
+          closeMenu={closeMenu}
+        />
+      )}
+
+      {(getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
+        <MenuItem
+          iconName={IconName.Export}
+          onClick={() => {
+            global?.platform?.openExtensionInBrowser?.();
+            trackEvent({
+              event: MetaMetricsEventName.AppWindowExpanded,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: METRICS_LOCATION,
+              },
+            });
+            closeMenu();
+          }}
+          data-testid="global-menu-expand-view"
+        >
+          {t('openFullScreen')}
+          <Text
+            variant={TextVariant.bodySmMedium}
+            color={TextColor.textAlternative}
+          >
+            {t('metamaskExtension')}
+          </Text>
+        </MenuItem>
+      )}
+      {account &&
+        getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP &&
+        getEnvironmentType() !== ENVIRONMENT_TYPE_SIDEPANEL && (
+          <>
+            <AccountDetailsMenuItem
               metricsLocation={METRICS_LOCATION}
               closeMenu={closeMenu}
-              account={account}
+              address={account.address}
             />
-          )}
-        </>
-      )}
+            {isMultichainAccountsState2Enabled ? null : (
+              <ViewExplorerMenuItem
+                metricsLocation={METRICS_LOCATION}
+                closeMenu={closeMenu}
+                account={account}
+              />
+            )}
+          </>
+        )}
       <Box
         borderColor={BorderColor.borderMuted}
         width={BlockSize.Full}
@@ -288,26 +416,32 @@ export const GlobalMenu = ({
       >
         {t('allPermissions')}
       </MenuItem>
-
-      {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
-        <MenuItem
-          iconName={IconName.Expand}
-          onClick={() => {
-            global?.platform?.openExtensionInBrowser?.();
-            trackEvent({
-              event: MetaMetricsEventName.AppWindowExpanded,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                location: METRICS_LOCATION,
-              },
-            });
-            closeMenu();
-          }}
-          data-testid="global-menu-expand"
-        >
-          {t('expandView')}
-        </MenuItem>
-      )}
+      {/* Toggle between popup and sidepanel - only for Chrome when sidepanel is enabled */}
+      {getBrowserName() !== PLATFORM_FIREFOX &&
+        isSidePanelEnabled &&
+        (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
+          <MenuItem
+            iconName={IconName.Expand}
+            onClick={async () => {
+              await toggleDefaultView();
+              trackEvent({
+                event: MetaMetricsEventName.ViewportSwitched,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  location: METRICS_LOCATION,
+                  to: isSidePanelDefault
+                    ? ENVIRONMENT_TYPE_POPUP
+                    : ENVIRONMENT_TYPE_SIDEPANEL,
+                },
+              });
+              closeMenu();
+            }}
+            data-testid="global-menu-toggle-view"
+          >
+            {isSidePanelDefault ? t('switchToPopup') : t('switchToSidePanel')}
+          </MenuItem>
+        )}
       <MenuItem
         data-testid="global-menu-networks"
         iconName={IconName.Hierarchy}
@@ -355,7 +489,7 @@ export const GlobalMenu = ({
           justifyContent={JustifyContent.spaceBetween}
         >
           {supportText}
-          {isActiveShieldSubscription && basicFunctionality && (
+          {showPriorityTag && (
             <Tag
               label={t('priority')}
               labelProps={{

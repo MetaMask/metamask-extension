@@ -1,4 +1,9 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { OAuthServiceAction } from '../../../services/oauth/types';
+import { RootMessenger } from '../../../lib/messenger';
+import { OnboardingControllerGetStateAction } from '../../../controllers/onboarding';
+
+type AllowedActions = OAuthServiceAction | OnboardingControllerGetStateAction;
 
 export type OAuthServiceMessenger = ReturnType<typeof getOAuthServiceMessenger>;
 
@@ -9,10 +14,24 @@ export type OAuthServiceMessenger = ReturnType<typeof getOAuthServiceMessenger>;
  * @param messenger - The messenger to restrict.
  * @returns The restricted messenger.
  */
-export function getOAuthServiceMessenger(messenger: Messenger<never, never>) {
-  return messenger.getRestricted({
-    name: 'OAuthService',
-    allowedActions: ['SeedlessOnboardingController:getState' as never],
-    allowedEvents: [],
+export function getOAuthServiceMessenger(
+  messenger: RootMessenger<AllowedActions, never>,
+) {
+  const oauthMessenger = new Messenger<
+    'OAuthService',
+    AllowedActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'OAuthService',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: oauthMessenger,
+    actions: [
+      'SeedlessOnboardingController:getState',
+      'OnboardingController:getState',
+    ],
+  });
+  return oauthMessenger;
 }

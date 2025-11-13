@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Атрибуции"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "URL-адрес Infura RPC больше не поддерживает Aurora."
-  },
   "authorizedPermissions": {
     "message": "Вы предоставили следующие разрешения"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Пользовательский токен"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Определение токена пока недоступно в этой сети. Импортируйте токен вручную и убедитесь, что вы ему доверяете. Подробнее о $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Кто угодно может создать токен, в том числе поддельные версии существующих токенов. Узнайте подробнее о $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Перед импортом убедитесь, что вы доверяете токену. Узнайте, как избежать $1. Вы также можете включить определение токена $2."
   },
   "customerSupport": {
     "message": "поддержка клиентов"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Внесите криптовалюту с другого счета, используя адрес кошелька или QR-код."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Из-за обновлений системы Ethereum тестовая сеть Goerli скоро будет закрыта."
   },
   "deprecatedNetwork": {
     "message": "Эта сеть устарела"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "Введенная вами информация связана с существующим ID блокчейна."
   },
-  "expandView": {
-    "message": "Открыть в новой вкладке"
-  },
   "experimental": {
     "message": "Экспериментальные"
   },
@@ -2753,32 +2738,11 @@
   "importNFTTokenIdToolTip": {
     "message": "ID NFT является уникальным идентификатором, поскольку нет двух одинаковых NFT. Опять же, в OpenSea этот номер находится в разделе «Подробности». Запишите его или скопируйте в буфер обмена."
   },
-  "importNWordSRP": {
-    "message": "У меня есть фраза для восстановления из $1 слов",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Закрытый ключ"
   },
-  "importSRPDescription": {
-    "message": "Импортируйте существующий кошелек с помощью секретной фразы для восстановления из 12 или 24 слов."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Секретные фразы для восстановления содержат 12 слов или 24 слова"
-  },
-  "importSRPWordError": {
-    "message": "Слово $1 неверное или содержит орфографические ошибки.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Слова $1 и $2 неверные или содержат орфографические ошибки.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Импортировать секретную фразу для восстановления"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Произошла неизвестная ошибка."
   },
   "importSelectedTokens": {
     "message": "Импортировать выбранные токены?"
@@ -2798,9 +2762,6 @@
   "importTokensError": {
     "message": "Нам не удалось импортировать токены. Повторите попытку позже."
   },
-  "importWallet": {
-    "message": "Импортировать кошелек"
-  },
   "importWalletOrAccountHeader": {
     "message": "Импортировать кошелек или счет"
   },
@@ -2811,9 +2772,6 @@
   "imported": {
     "message": "Импортирован",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "в ваших Настройках"
   },
   "included": {
     "message": "включено"
@@ -4073,9 +4031,6 @@
     "message": "Значок $1",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Выберите вариант продолжения"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Запустить расширение"
   },
@@ -5130,10 +5085,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Это ваша $1. Запишите ее в правильном порядке и сохраните в безопасности. Если кто-либо узнает вашу секретную фразу для восстановления, он сможет получить доступ к вашему кошельку. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Никогда не передавайте ее никому."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Сохраните свою секретную фразу для восстановления"
@@ -5267,9 +5219,6 @@
   },
   "shieldEntryModalGetStarted": {
     "message": "С чего начать"
-  },
-  "shieldEntryModalSkip": {
-    "message": "Пропустить"
   },
   "show": {
     "message": "Показать"
@@ -6524,10 +6473,6 @@
   "switchNetwork": {
     "message": "Сменить сеть"
   },
-  "switchToNetwork": {
-    "message": "Сменить на $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Переключиться на этот счет"
   },
@@ -6633,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Торговая площадка для токенов"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "мошенничество с токенами и угрозы безопасности"
   },
   "tokenStandard": {
     "message": "Стандарт токена"
@@ -7087,24 +7029,11 @@
     "message": "$1 Вы можете сохранить эту фразу в надежном месте, чтобы никогда не потерять доступ к своим деньгам.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Вы можете создать резервную копию своих кошельков или посмотреть свою секретную фразу для восстановления в разделе «Настройки» > «Безопасность и пароль»."
-  },
   "walletReadyLoseSrp": {
     "message": "Если вы потеряете свою секретную фразу для восстановления, вы не сможете пользоваться своим кошельком."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Эта секретная фраза восстановления может помочь вам восстановить доступ, если вы когда-нибудь забудете свой пароль или потеряете доступ к своим данным для входа."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Если вы не сделаете резервную копию своей секретной фразы для восстановления, вы потеряете доступ к своим средствам, если не сможете войти в приложение или приобретете новое устройство."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Вы можете войти в свой кошелек в любое время, используя свой счет $1 и пароль.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Если вы забудете пароль, вы не сможете получить доступ к кошельку."
   },
   "wantToAddThisNetwork": {
     "message": "Хотите добавить эту сеть?"
@@ -7147,9 +7076,6 @@
   },
   "welcomeBack": {
     "message": "С возвращением!"
-  },
-  "welcomeToMetaMask": {
-    "message": "Давайте приступим к делу"
   },
   "whatsThis": {
     "message": "Что это?"
@@ -7213,8 +7139,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Храните свою секретную фразу для восстановления в безопасности!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Мы напомним вам позже"
   }
 }

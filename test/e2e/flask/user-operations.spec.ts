@@ -7,6 +7,7 @@ import {
 import FixtureBuilder from '../fixture-builder';
 import {
   BUNDLER_URL,
+  DAPP_PATH,
   DAPP_URL,
   ENTRYPOINT,
   ERC_4337_ACCOUNT,
@@ -200,8 +201,13 @@ async function withAccountSnap(
       title,
       useBundler: true,
       usePaymaster: Boolean(paymaster),
-      dapp: true,
-      dappPaths: ['test-dapp', 'snap-account-abstraction-keyring'],
+      dappOptions: {
+        numberOfTestDapps: 1,
+        customDappPaths: [
+          DAPP_PATH.SNAP_ACCOUNT_ABSTRACTION_KEYRING,
+          DAPP_PATH.TEST_SNAPS,
+        ],
+      },
       localNodeOptions: localNodeOptions || {
         hardfork: 'london',
         mnemonic:

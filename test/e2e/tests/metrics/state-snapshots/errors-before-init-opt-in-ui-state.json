@@ -19,7 +19,11 @@
     },
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": {
-      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+      "orderedNetworkList": {
+        "0": "object",
+        "1": "object",
+        "2": "object"
+      }
     },
     "NetworkEnablementController": {
       "enabledNetworkMap": { "eip155": "object", "solana": "object" }
@@ -39,14 +43,17 @@
       "popupGasPollTokens": "object",
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",
-      "showShieldEntryModalOnce": "boolean",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
       "isRampCardClosed": false,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true,
-      "hasShownMultichainAccountsIntroModal": "boolean"
+      "hasShownMultichainAccountsIntroModal": "boolean",
+      "showShieldEntryModalOnce": "boolean",
+      "pendingShieldCohort": null,
+      "pendingShieldCohortTxType": null,
+      "appActiveTab": "object"
     },
     "BridgeController": {},
     "CurrencyController": {
@@ -83,7 +90,6 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
-    "MultichainAccountService": "object",
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networkConfigurations": "object",
@@ -154,6 +160,7 @@
       "allIgnoredTokens": {},
       "allTokens": {}
     },
+    "MultichainAccountService": "object",
     "TransactionController": { "transactions": "object" },
     "config": "object",
     "firstTimeInfo": "object"

@@ -361,3 +361,66 @@ export const getPermissionMetaDataByOrigin = createSelector(
     };
   },
 );
+
+/**
+ * Get aggregated list of gator permissions for a specific chainId.
+ *
+ * @param _state - The current state
+ * @param options - The options to get permissions for (e.g. { aggregatedPermissionType: 'token-transfer', chainId: '0x1' })
+ * @param options.aggregatedPermissionType - The aggregated permission type to get permissions for (e.g. 'token-transfer' is a combination of the token streams and token subscriptions types)
+ * @param options.chainId - The chainId to get permissions for (e.g. 0x1)
+ * @returns A aggregated list of gator permissions filtered by chainId.
+ */
+export const getAggregatedGatorPermissionByChainId = createSelector(
+  [
+    getGatorPermissionsMap,
+    (
+      _state: AppState,
+      options: { aggregatedPermissionType: string; chainId: Hex },
+    ) => options,
+  ],
+  (
+    gatorPermissionsMap,
+    { aggregatedPermissionType, chainId },
+  ): StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>[] => {
+    switch (aggregatedPermissionType) {
+      case 'token-transfer': {
+        const nativeTokenStreams =
+          gatorPermissionsMap['native-token-stream'][chainId] || [];
+
+        const erc20TokenStreams =
+          gatorPermissionsMap['erc20-token-stream'][chainId] || [];
+
+        const nativeTokenPeriodicPermissions =
+          gatorPermissionsMap['native-token-periodic'][chainId] || [];
+
+        const erc20TokenPeriodicPermissions =
+          gatorPermissionsMap['erc20-token-periodic'][chainId] || [];
+
+        return [
+          ...nativeTokenStreams,
+          ...erc20TokenStreams,
+          ...nativeTokenPeriodicPermissions,
+          ...erc20TokenPeriodicPermissions,
+        ];
+      }
+      default: {
+        console.warn(
+          `Unknown aggregated permission type: ${aggregatedPermissionType}`,
+        );
+        return [];
+      }
+    }
+  },
+);
+
+/**
+ * Get the list of gator permissions pending a revocation transaction.
+ *
+ * @param state - The current state
+ * @returns The list of gator permissions pending a revocation transaction
+ */
+export const getPendingRevocations = createSelector(
+  [getMetamask],
+  (metamask) => metamask.pendingRevocations,
+);

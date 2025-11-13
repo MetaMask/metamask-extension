@@ -1,4 +1,4 @@
-import { Box } from '@metamask/design-system-react';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { Skeleton } from '../../../../../../components/component-library/skeleton';
@@ -8,35 +8,47 @@ const ShieldSubscriptionApproveLoader = () => {
     <Box paddingTop={4}>
       {/* Subscription Details */}
       <ConfirmInfoSection>
-        <Box paddingBottom={4}>
-          <Skeleton height={12} width={150} />
-        </Box>
-        <Box>
-          <Skeleton height={12} width={150} />
+        <Box flexDirection={BoxFlexDirection.Column} padding={2} gap={2}>
+          <Box>
+            <Skeleton height={24} width="100%" />
+          </Box>
+          <Box>
+            <Skeleton height={24} width="50%" />
+          </Box>
         </Box>
       </ConfirmInfoSection>
       {/* Estimated Changes */}
       <ConfirmInfoSection>
-        <Box paddingBottom={4}>
-          <Skeleton height={12} width={175} />
-        </Box>
-        <Box>
-          <Skeleton height={12} width={100} />
+        <Box flexDirection={BoxFlexDirection.Column} padding={2} gap={2}>
+          <Box>
+            <Skeleton height={24} width="50%" />
+          </Box>
+          <Box>
+            <Skeleton height={24} width="100%" />
+          </Box>
         </Box>
       </ConfirmInfoSection>
       {/* Account Details */}
       <ConfirmInfoSection>
-        <Box>
-          <Skeleton height={12} width={75} />
+        <Box padding={2}>
+          <Skeleton height={24} width="100%" />
+        </Box>
+      </ConfirmInfoSection>
+      {/* Billing Details */}
+      <ConfirmInfoSection>
+        <Box padding={2}>
+          <Skeleton height={24} width="100%" />
         </Box>
       </ConfirmInfoSection>
       {/* Gas Fees */}
       <ConfirmInfoSection>
-        <Box paddingBottom={4}>
-          <Skeleton height={12} width={75} />
-        </Box>
-        <Box>
-          <Skeleton height={12} width={75} />
+        <Box flexDirection={BoxFlexDirection.Column} padding={2} gap={2}>
+          <Box>
+            <Skeleton height={24} width="100%" />
+          </Box>
+          <Box>
+            <Skeleton height={24} width="100%" />
+          </Box>
         </Box>
       </ConfirmInfoSection>
     </Box>

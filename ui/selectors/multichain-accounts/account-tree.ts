@@ -313,6 +313,10 @@ export const getMultichainAccountGroupById = createDeepEqualSelector(
   getAccountTree,
   (_, accountId: AccountGroupId) => accountId,
   (accountTree: AccountTreeState, accountId: AccountGroupId) => {
+    if (!accountId) {
+      return undefined;
+    }
+
     const { wallets } = accountTree;
 
     const walletId = extractWalletIdFromGroupId(accountId);
@@ -858,9 +862,7 @@ export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
   [getInternalAccountsFromGroupById],
   (accounts: InternalAccount[]): string => {
     if (!accounts || accounts.length === 0) {
-      throw new Error(
-        'Error in getIconSeedAddressByAccountGroupId: No accounts found in the specified group',
-      );
+      return '';
     }
 
     for (const account of accounts) {

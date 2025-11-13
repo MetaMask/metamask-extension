@@ -130,7 +130,7 @@ describe('getRelativeLocationForNestedRoutes', () => {
       basePath,
     ) as typeof location;
 
-    expect(result.pathname).toBe('snaps-connect');
+    expect(result.pathname).toBe('/snaps-connect');
   });
 
   it('should return "/" when pathname is basePath with trailing slash', () => {

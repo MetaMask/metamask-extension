@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Atribuciones"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "La URL de RPC de Infura ya no es compatible con Aurora."
-  },
   "authorizedPermissions": {
     "message": "Ha autorizado los siguientes permisos"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Token personalizado"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "La detección de token aún no está disponible en esta red. Importe el token de forma manual y asegúrese de que confía en él. Más información sobre $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Cualquiera puede crear un token, incluida la creación de versiones falsas de tokens existentes. Aprenda más sobre $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Asegúrese de confiar en un token antes de agregarlo. Aprenda cómo evitar $1. También puede habilitar la detección de tokens $2."
   },
   "customerSupport": {
     "message": "atención al cliente"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Deposite criptomonedas desde otra cuenta con una dirección de monedero o un código QR."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Debido a las actualizaciones del sistema Ethereum, la red de prueba Goerli se eliminará pronto."
   },
   "deprecatedNetwork": {
     "message": "Esta red está en desuso"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "La información que ha ingresado está asociada con un ID de cadena existente."
   },
-  "expandView": {
-    "message": "Expandir vista"
-  },
   "experimental": {
     "message": "Experimental"
   },
@@ -2753,32 +2738,11 @@
   "importNFTTokenIdToolTip": {
     "message": "La ID de un NFT es un identificador único, ya que no hay dos NFT iguales. Nuevamente, en OpenSea, este número se encuentra en 'Detalles'. Tome nota de ello o cópielo en su portapapeles."
   },
-  "importNWordSRP": {
-    "message": "Tengo una frase de recuperación de $1 palabras",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Clave privada"
   },
-  "importSRPDescription": {
-    "message": "Importe una billetera existente con su frase secreta de recuperación de 12 o 24 palabras."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Las frases secretas de recuperación contienen 12 o 24 palabras"
-  },
-  "importSRPWordError": {
-    "message": "La palabra $1 es incorrecta o está mal escrita.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Las palabras $1 y $2 son incorrectas o están mal escritas.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Importar frase secreta de recuperación"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Se produjo un error desconocido."
   },
   "importSelectedTokens": {
     "message": "¿Agregar los tokens seleccionados?"
@@ -2798,9 +2762,6 @@
   "importTokensError": {
     "message": "No pudimos importar los tokens. Por favor, inténtelo de nuevo más tarde."
   },
-  "importWallet": {
-    "message": "Importar monedero"
-  },
   "importWalletOrAccountHeader": {
     "message": "Importar un monedero o una cuenta"
   },
@@ -2811,9 +2772,6 @@
   "imported": {
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "en su Configuración"
   },
   "included": {
     "message": "incluido"
@@ -4073,9 +4031,6 @@
     "message": "Ícono $1",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Elige una opción para continuar"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Lanzar la extensión"
   },
@@ -5130,10 +5085,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Esta es tu $1. Anótala en el orden correcto y guárdala. Si alguien accede a tu frase secreta de recuperación, podrá acceder a tu billetera. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "No la compartas con nadie, nunca."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Guarda tu frase secreta de recuperación"
@@ -5267,9 +5219,6 @@
   },
   "shieldEntryModalGetStarted": {
     "message": "Comenzar"
-  },
-  "shieldEntryModalSkip": {
-    "message": "Omitir"
   },
   "show": {
     "message": "Mostrar"
@@ -6524,10 +6473,6 @@
   "switchNetwork": {
     "message": "Cambiar red"
   },
-  "switchToNetwork": {
-    "message": "Cambiar a $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Cambiar a esta cuenta"
   },
@@ -6633,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Mercado de tokens"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "estafas de tokens y riesgos de seguridad"
   },
   "tokenStandard": {
     "message": "Estándar de tokenes"
@@ -7087,24 +7029,11 @@
     "message": "$1 puedes guardar esta frase de forma segura para nunca perder el acceso a tu dinero.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Puedes hacer una copia de seguridad de tus billeteras o ver tu frase secreta de recuperación en Configuración > Seguridad y contraseña."
-  },
   "walletReadyLoseSrp": {
     "message": "Si pierdes tu frase secreta de recuperación, no podrás usar tu billetera."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Esta frase secreta de recuperación puede ayudarte a recuperar el acceso si alguna vez olvidas tu contraseña o pierdes el acceso a tu inicio de sesión."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Si no realizas una copia de seguridad de tu frase secreta de recuperación, perderás el acceso a tus fondos si no puedes acceder a la aplicación o cambias de dispositivo."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Puedes iniciar sesión en tu billetera en cualquier momento con tu cuenta de $1 y la contraseña.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Si olvidas tu contraseña, no podrás acceder a tu billetera."
   },
   "wantToAddThisNetwork": {
     "message": "¿Desea añadir esta red?"
@@ -7147,9 +7076,6 @@
   },
   "welcomeBack": {
     "message": "Bienvenido de nuevo"
-  },
-  "welcomeToMetaMask": {
-    "message": "Comencemos"
   },
   "whatsThis": {
     "message": "¿Qué es esto?"
@@ -7213,8 +7139,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "¡Mantén segura tu frase secreta de recuperación!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Te lo recordaremos más tarde"
   }
 }

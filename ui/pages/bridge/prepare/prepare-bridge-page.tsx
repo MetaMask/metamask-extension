@@ -20,6 +20,7 @@ import {
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   type BridgeController,
+  isCrossChain,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
@@ -111,7 +112,12 @@ import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  FEATURED_NETWORK_CHAIN_IDS,
+  TOKEN_OCCURRENCES_MAP,
+  MINIMUM_TOKEN_OCCURRENCES,
+  type ChainId,
+} from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
@@ -273,7 +279,6 @@ const PrepareBridgePage = ({
     isLoading: isToTokensLoading,
   } = useTokensWithFiltering(
     toChain?.chainId ?? fromChain?.chainId,
-    toToken,
     fromChain?.chainId === toChain?.chainId && fromToken && fromChain
       ? (() => {
           // Determine the address format based on chain type
@@ -335,6 +340,10 @@ const PrepareBridgePage = ({
   // Scroll to bottom of the page when banners are shown
   const alertBannersRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    // If quotes are still loading, don't scroll to the warning area
+    if (isLoading) {
+      return;
+    }
     if (
       isEstimatedReturnLow ||
       isInsufficientGasForQuote ||
@@ -355,6 +364,7 @@ const PrepareBridgePage = ({
     tokenAlert,
     txAlert,
     isUsingHardwareWallet,
+    isLoading,
   ]);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
@@ -486,6 +496,15 @@ const PrepareBridgePage = ({
 
   const getToInputHeader = () => {
     return t('swapSelectToken');
+  };
+
+  const getTokenOccurrences = (chainId: Hex | undefined): number => {
+    if (!chainId) {
+      return MINIMUM_TOKEN_OCCURRENCES;
+    }
+    return (
+      TOKEN_OCCURRENCES_MAP[chainId as ChainId] ?? MINIMUM_TOKEN_OCCURRENCES
+    );
   };
 
   return (
@@ -706,6 +725,9 @@ const PrepareBridgePage = ({
                 dispatch(setToChainId(networkConfig.chainId));
               },
               header: t('yourNetworks'),
+              shouldDisableNetwork: ({ chainId }) =>
+                isBitcoinChainId(chainId) &&
+                !isCrossChain(chainId, fromChain?.chainId),
             }}
             customTokenListGenerator={toTokenListGenerator}
             amountInFiat={
@@ -845,7 +867,7 @@ const PrepareBridgePage = ({
           toToken &&
           toTokenIsNotNative &&
           Boolean(occurrences) &&
-          Number(occurrences) < 2 && (
+          Number(occurrences) < getTokenOccurrences(toChain?.chainId) && (
             <BannerAlert
               severity={BannerAlertSeverity.Warning}
               title={t('bridgeTokenCannotVerifyTitle')}
