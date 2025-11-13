@@ -12,8 +12,7 @@ class HeaderNavbar {
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
-  private readonly copyAddressButton =
-    '[data-testid="copy-network-addresses-icon"]';
+  private readonly copyAddressButton = '[aria-label="Copy address"]';
 
   private readonly threeDotMenuButton =
     '[data-testid="account-options-menu-button"]';
@@ -71,6 +70,7 @@ class HeaderNavbar {
   }
 
   async clickAddressCopyButton(): Promise<void> {
+    await this.driver.clickElement(this.networkAddressesLink);
     await this.driver.clickElement(this.copyAddressButton);
   }
 
