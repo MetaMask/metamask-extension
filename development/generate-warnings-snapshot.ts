@@ -475,9 +475,7 @@ async function main(): Promise<void> {
           `\n✅ Snapshot updated with new warnings from: ${specificTestFile}`,
         );
       } else {
-        console.log(
-          `\n✅ No new warnings from this test. Snapshot unchanged.`,
-        );
+        console.log(`\n✅ No new warnings from this test. Snapshot unchanged.`);
       }
       console.log(`   Check test/test-warnings-snapshot-${snapshotType}.json`);
       console.log('\n🧹 Temporary file has been cleaned up.');
