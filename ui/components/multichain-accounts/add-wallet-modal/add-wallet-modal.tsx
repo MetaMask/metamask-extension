@@ -134,9 +134,10 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       // Track the event for the selected option.
       trackEvent({
         category: MetaMetricsEventCategory.Navigation,
-        event: MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
+        event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
         properties: {
-          location: 'Main Menu',
+          status: 'started',
+          location: 'Import Wallet From Add Wallet Modal',
         },
       });
     }
