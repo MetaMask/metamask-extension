@@ -61,6 +61,7 @@ const ConfirmTransaction = ({
   location: routeLocation,
 } = {}) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const urlParams = useParams();
   const hookLocation = useLocation();
 
@@ -188,7 +189,7 @@ const ConfirmTransaction = ({
     ) {
       navigate(mostRecentOverviewPage, { replace: true });
     } else if (isSidePanelEnabled && !hasPendingApprovals) {
-      navigate(DEFAULT_ROUTE , { replace: true });
+      navigate(DEFAULT_ROUTE, { replace: true });
     }
   }, [
     dispatch,
