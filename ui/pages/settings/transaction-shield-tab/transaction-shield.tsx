@@ -328,7 +328,12 @@ const TransactionShield = () => {
         {showSkeletonLoader ? (
           <Skeleton width="40%" height={24} />
         ) : (
-          <Text variant={TextVariant.bodyMdMedium}>{key}</Text>
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.textAlternative}
+          >
+            {key}
+          </Text>
         )}
         {showSkeletonLoader ? (
           <Skeleton width="30%" height={24} />
@@ -830,8 +835,8 @@ const TransactionShield = () => {
               )}
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsCharges'),
-                isCryptoPayment
-                  ? `${getProductPrice(productInfo as Product)} ${productInfo?.currency.toUpperCase()} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
+                isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
+                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase()} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
                   : `${formatCurrency(
                       getProductPrice(productInfo as Product),
                       productInfo?.currency.toUpperCase(),
