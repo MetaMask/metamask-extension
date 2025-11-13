@@ -58,7 +58,6 @@ import {
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { getProductPrice } from '../../shield-plan/utils';
 import Tooltip from '../../../components/ui/tooltip';
-import { ThemeType } from '../../../../shared/constants/preferences';
 import { useFormatters } from '../../../hooks/useFormatters';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
@@ -82,9 +81,9 @@ import {
   ShieldCtaActionClickedEnum,
   ShieldCtaSourceEnum,
 } from '../../../../shared/constants/subscriptions';
+import { ThemeType } from '../../../../shared/constants/preferences';
 import CancelMembershipModal from './cancel-membership-modal';
-import { isCryptoPaymentMethod, SHIELD_ICON_ARTBOARD_NAMES } from './types';
-import ShieldSubscriptionIconAnimation from './shield-subscription-icon-animation';
+import { isCryptoPaymentMethod } from './types';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -240,12 +239,12 @@ const TransactionShield = () => {
 
   const shieldDetails = [
     {
-      icon: SHIELD_ICON_ARTBOARD_NAMES.PROTECTION,
+      icon: IconName.ShieldLock,
       title: t('shieldTxDetails1Title'),
       description: t('shieldTxDetails1Description'),
     },
     {
-      icon: SHIELD_ICON_ARTBOARD_NAMES.PRIORITY,
+      icon: IconName.Flash,
       title: t('shieldTxDetails2Title'),
       description: t('shieldTxDetails2Description'),
     },
@@ -669,11 +668,11 @@ const TransactionShield = () => {
                     label={t('shieldTxMembershipFreeTrial')}
                     labelProps={{
                       variant: TextVariant.bodySmMedium,
-                      color: TextColor.textAlternative,
+                      color: TextColor.successDefault,
                     }}
                     borderStyle={BorderStyle.none}
                     borderRadius={BorderRadius.SM}
-                    backgroundColor={BackgroundColor.backgroundMuted}
+                    backgroundColor={BackgroundColor.successMuted}
                     data-testid="shield-detail-trial-tag"
                   />
                 )}
@@ -713,22 +712,7 @@ const TransactionShield = () => {
         </Box>
 
         <Box
-          data-theme={ThemeType.dark}
-          className={classnames(
-            'transaction-shield-page__row',
-            'transaction-shield-page__details',
-            {
-              'transaction-shield-page__details--loading': showSkeletonLoader,
-            },
-            {
-              'transaction-shield-page__details--inactive':
-                isMembershipInactive && !showSkeletonLoader,
-            },
-            {
-              'transaction-shield-page__details--active':
-                !isMembershipInactive && !showSkeletonLoader,
-            },
-          )}
+          className="transaction-shield-page__row"
           {...rowsStyleProps}
           flexDirection={FlexDirection.Column}
           paddingTop={2}
@@ -751,11 +735,7 @@ const TransactionShield = () => {
                   style={{ flexShrink: 0 }}
                 />
               ) : (
-                <ShieldSubscriptionIconAnimation
-                  artboardName={detail.icon}
-                  containerClassName="transaction-shield-page-shield-icon__container"
-                  canvasClassName="transaction-shield-page-shield-icon__canvas"
-                />
+                <Icon name={detail.icon} size={IconSize.Xl} />
               )}
               <Box
                 width={BlockSize.Full}
