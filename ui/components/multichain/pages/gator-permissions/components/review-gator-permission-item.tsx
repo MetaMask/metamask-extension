@@ -109,6 +109,9 @@ export const ReviewGatorPermissionItem = ({
   const permissionType = permissionResponse.permission.type;
   const permissionContext = permissionResponse.context;
   const permissionAccount = permissionResponse.address || '0x';
+  const justification = permissionResponse.permission.data.justification as
+    | string
+    | undefined;
   const tokenAddress = permissionResponse.permission.data.tokenAddress as
     | Hex
     | undefined;
@@ -519,6 +522,40 @@ export const ReviewGatorPermissionItem = ({
 
         {isExpanded && (
           <>
+            {/* Justification row */}
+            {justification && (
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                style={{ flex: '1', alignSelf: 'center' }}
+                gap={4}
+                marginTop={2}
+              >
+                <Text
+                  textAlign={TextAlign.Left}
+                  color={TextColor.TextAlternative}
+                  variant={TextVariant.BodyMd}
+                >
+                  Justification
+                </Text>
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.End}
+                  style={{ flex: '1', alignSelf: 'center' }}
+                  gap={2}
+                >
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.TextAlternative}
+                    textAlign={TextAlign.Right}
+                    data-testid="review-gator-permission-justification"
+                  >
+                    {justification}
+                  </Text>
+                </Box>
+              </Box>
+            )}
+
             {/* Network name row */}
             <Box
               flexDirection={BoxFlexDirection.Row}

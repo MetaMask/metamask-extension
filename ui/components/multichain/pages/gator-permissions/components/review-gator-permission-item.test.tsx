@@ -162,6 +162,15 @@ describe('Permission List Item', () => {
         // Verify network name is rendered
         const networkName = getByTestId('review-gator-permission-network-name');
         expect(networkName).toHaveTextContent(mockNetworkName);
+
+        // Verify justification is rendered
+        const justification = getByTestId(
+          'review-gator-permission-justification',
+        );
+        expect(justification).toBeInTheDocument();
+        expect(justification).toHaveTextContent(
+          'This is a very important request for streaming allowance for some very important thing',
+        );
       });
 
       it('renders native token periodic permission correctly', () => {
@@ -209,6 +218,15 @@ describe('Permission List Item', () => {
         // Verify network name is rendered
         const networkName = getByTestId('review-gator-permission-network-name');
         expect(networkName).toHaveTextContent(mockNetworkName);
+
+        // Verify justification is rendered
+        const justification = getByTestId(
+          'review-gator-permission-justification',
+        );
+        expect(justification).toBeInTheDocument();
+        expect(justification).toHaveTextContent(
+          'This is a very important request for periodic allowance',
+        );
       });
     });
 
