@@ -739,7 +739,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        useSidePanelAsDefault: true,
+        useSidePanelAsDefault: false,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
