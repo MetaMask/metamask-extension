@@ -186,5 +186,5 @@ export const RewardsPointsBalance = () => {
     );
   }
 
-  return <Skeleton width="100px" />;
+  return rewardsBadgeHidden ? null : <Skeleton width="100px" />;
 };
