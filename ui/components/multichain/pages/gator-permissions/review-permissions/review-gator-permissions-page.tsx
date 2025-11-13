@@ -23,19 +23,24 @@ import {
 import { Content, Header, Page } from '../../page';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { extractNetworkName } from '../helper';
+import { extractNetworkName, getDisplayOrigin } from '../helper';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors';
 import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
 import {
   AppState,
   getAggregatedGatorPermissionByChainId,
+  getAggregatedGatorPermissionByChainIdAndOrigin,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { ReviewGatorPermissionItem } from '../components';
 
 export const ReviewGatorPermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const { chainId } = useParams();
+  const { chainId, origin } = useParams<{
+    chainId?: string;
+    origin?: string;
+  }>();
+
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -59,11 +64,18 @@ export const ReviewGatorPermissionsPage = () => {
     return networkNameFromTranslation;
   }, [chainId, evmNetworks, t]);
 
+  // Get permissions - filtered by origin if provided, otherwise all
   const gatorPermissions = useSelector((state: AppState) =>
-    getAggregatedGatorPermissionByChainId(state, {
-      aggregatedPermissionType: 'token-transfer',
-      chainId: chainId as Hex,
-    }),
+    origin
+      ? getAggregatedGatorPermissionByChainIdAndOrigin(state, {
+          aggregatedPermissionType: 'token-transfer',
+          chainId: chainId as Hex,
+          siteOrigin: origin,
+        })
+      : getAggregatedGatorPermissionByChainId(state, {
+          aggregatedPermissionType: 'token-transfer',
+          chainId: chainId as Hex,
+        }),
   );
 
   const { revokeGatorPermission } = useRevokeGatorPermissions({
@@ -128,7 +140,7 @@ export const ReviewGatorPermissionsPage = () => {
           textAlign={TextAlign.Center}
           data-testid="review-gator-permissions-page-title"
         >
-          {networkName}
+          {origin ? `${getDisplayOrigin(origin)}: ${networkName}` : networkName}
         </Text>
       </Header>
       <Content padding={0}>

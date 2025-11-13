@@ -363,6 +363,84 @@ export const getPermissionMetaDataByOrigin = createSelector(
 );
 
 /**
+ * Get permission group metadata (count per chain) filtered by origin.
+ *
+ * @param _state - The current state
+ * @param options - The options object
+ * @param options.permissionGroupName - The permission group name (e.g. 'token-transfer')
+ * @param options.siteOrigin - The site origin to filter by (e.g., 'https://example.com')
+ * @returns A list of permission group metadata with counts per chain, filtered by origin
+ * @example
+ * const permissionGroupMetaData = getPermissionGroupMetaDataByOrigin(state, {
+ *   permissionGroupName: 'token-transfer',
+ *   siteOrigin: 'https://example.com'
+ * });
+ *
+ * // [{
+ * //   chainId: '0x1',
+ * //   count: 2,
+ * // },
+ * // {
+ * //   chainId: '0x89',
+ * //   count: 1,
+ * // }]
+ */
+export const getPermissionGroupMetaDataByOrigin = createSelector(
+  [
+    getGatorPermissionsMap,
+    (
+      _state: AppState,
+      options: { permissionGroupName: string; siteOrigin: string },
+    ) => options,
+  ],
+  (
+    gatorPermissionsMap,
+    { permissionGroupName, siteOrigin },
+  ): PermissionsGroupMetaData[] => {
+    if (permissionGroupName !== 'token-transfer') {
+      return [];
+    }
+
+    // Get all token transfer permissions filtered by origin
+    const tokenTransferPermissions = [
+      ...filterPermissionsByOriginAndType(
+        gatorPermissionsMap,
+        siteOrigin,
+        'native-token-stream',
+      ),
+      ...filterPermissionsByOriginAndType(
+        gatorPermissionsMap,
+        siteOrigin,
+        'erc20-token-stream',
+      ),
+      ...filterPermissionsByOriginAndType(
+        gatorPermissionsMap,
+        siteOrigin,
+        'native-token-periodic',
+      ),
+      ...filterPermissionsByOriginAndType(
+        gatorPermissionsMap,
+        siteOrigin,
+        'erc20-token-periodic',
+      ),
+    ];
+
+    // Count permissions per chain
+    const countPerChain: Record<Hex, number> = {};
+    tokenTransferPermissions.forEach((permission) => {
+      const { chainId } = permission.permissionResponse;
+      countPerChain[chainId] = (countPerChain[chainId] || 0) + 1;
+    });
+
+    // Convert to PermissionsGroupMetaData format
+    return Object.entries(countPerChain).map(([chainId, count]) => ({
+      chainId: chainId as Hex,
+      count,
+    }));
+  },
+);
+
+/**
  * Get aggregated list of gator permissions for a specific chainId.
  *
  * @param _state - The current state
@@ -403,6 +481,69 @@ export const getAggregatedGatorPermissionByChainId = createSelector(
           ...nativeTokenPeriodicPermissions,
           ...erc20TokenPeriodicPermissions,
         ];
+      }
+      default: {
+        console.warn(
+          `Unknown aggregated permission type: ${aggregatedPermissionType}`,
+        );
+        return [];
+      }
+    }
+  },
+);
+
+/**
+ * Get aggregated list of gator permissions for a specific chainId and origin.
+ *
+ * @param _state - The current state
+ * @param options - The options to get permissions for
+ * @param options.aggregatedPermissionType - The aggregated permission type (e.g. 'token-transfer')
+ * @param options.chainId - The chainId to get permissions for (e.g. 0x1)
+ * @param options.siteOrigin - The site origin to filter by (e.g., 'https://example.com')
+ * @returns A aggregated list of gator permissions filtered by chainId and origin.
+ */
+export const getAggregatedGatorPermissionByChainIdAndOrigin = createSelector(
+  [
+    getGatorPermissionsMap,
+    (
+      _state: AppState,
+      options: {
+        aggregatedPermissionType: string;
+        chainId: Hex;
+        siteOrigin: string;
+      },
+    ) => options,
+  ],
+  (
+    gatorPermissionsMap,
+    { aggregatedPermissionType, chainId, siteOrigin },
+  ): StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>[] => {
+    switch (aggregatedPermissionType) {
+      case 'token-transfer': {
+        const nativeTokenStreams =
+          gatorPermissionsMap['native-token-stream'][chainId] || [];
+        const erc20TokenStreams =
+          gatorPermissionsMap['erc20-token-stream'][chainId] || [];
+        const nativeTokenPeriodicPermissions =
+          gatorPermissionsMap['native-token-periodic'][chainId] || [];
+        const erc20TokenPeriodicPermissions =
+          gatorPermissionsMap['erc20-token-periodic'][chainId] || [];
+
+        const allPermissions = [
+          ...nativeTokenStreams,
+          ...erc20TokenStreams,
+          ...nativeTokenPeriodicPermissions,
+          ...erc20TokenPeriodicPermissions,
+        ];
+
+        // Filter by origin
+        const decodedSiteOrigin = decodeURIComponent(siteOrigin);
+        return allPermissions.filter((permission) =>
+          isEqualCaseInsensitive(
+            decodeURIComponent(permission.siteOrigin),
+            decodedSiteOrigin,
+          ),
+        );
       }
       default: {
         console.warn(
