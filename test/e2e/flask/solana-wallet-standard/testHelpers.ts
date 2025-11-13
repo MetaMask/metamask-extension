@@ -183,10 +183,10 @@ export const switchToAccount = async (
  * @param connectionStatus
  * @param expectedAddress
  */
-export const assertConnected = async (
-  connectionStatus: 'Connected' | 'Disconnected' | string,
+export const assertConnected = (
+  connectionStatus: string,
   expectedAddress?: string,
-): Promise<void> => {
+): void => {
   assert.strictEqual(
     connectionStatus,
     expectedAddress ? `${expectedAddress}` : 'Connected',
@@ -201,13 +201,11 @@ export const assertConnected = async (
  *
  * @param connectionStatus
  */
-export const assertDisconnected = async (
-  connectionStatus: string,
-): Promise<void> => {
+export const assertDisconnected = (connectionStatus: string): void => {
   assert.strictEqual(
     connectionStatus,
-    'Disconnected',
-    'Connection status should be "Disconnected"',
+    'Not connected',
+    'Connection status should be "Not connected"',
   );
 };
 
