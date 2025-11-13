@@ -23,6 +23,16 @@
       right: 0;
     }
 
+    &__horizontal-logo {
+      margin-bottom: 60px;
+      width: 180px;
+      height: 180px;
+
+      @include design-system.screen-md-max {
+        margin-bottom: 48px;
+      }
+    }
+
     &__logo {
       margin-bottom: 100px;
 
