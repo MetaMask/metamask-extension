@@ -225,7 +225,17 @@ export default function CreationSuccessful() {
           width={BlockSize.Full}
           onClick={onDone}
         >
-          {isSidePanelEnabled ? t('openWallet') : t('done')}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+            // Side Panel - only if feature flag is enabled
+            isSidePanelEnabled ? t('openWallet') : t('done')
+            ///: END:ONLY_INCLUDE_IF
+          }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            t('done')
+            ///: END:ONLY_INCLUDE_IF
+          }
         </Button>
       </Box>
     );
