@@ -98,6 +98,9 @@ export function formatCaptureShieldPaymentMethodChangeEventProps(
 ) {
   const existingSubscriptionEventProps =
     formatExistingSubscriptionEventProps(params);
+  const newBillingInterval = getBillingIntervalForMetrics(
+    params.newBillingInterval,
+  );
 
   return {
     ...existingSubscriptionEventProps,
@@ -106,7 +109,7 @@ export function formatCaptureShieldPaymentMethodChangeEventProps(
     new_payment_type: params.newPaymentType,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    new_billing_interval: params.newBillingInterval,
+    new_billing_interval: newBillingInterval,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     new_crypto_payment_chain: params.newCryptoPaymentChain,

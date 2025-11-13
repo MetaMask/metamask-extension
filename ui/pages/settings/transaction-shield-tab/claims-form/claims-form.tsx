@@ -70,6 +70,7 @@ import {
   ShieldCtaActionClickedEnum,
   ShieldCtaSourceEnum,
 } from '../../../../../shared/constants/subscriptions';
+import { getLatestShieldSubscription } from '../../../../selectors/subscription';
 import {
   ERROR_MESSAGE_MAP,
   FIELD_ERROR_MESSAGE_KEY_MAP,
@@ -84,6 +85,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const navigate = useNavigate();
   const { refetchClaims, pendingClaims } = useClaims();
   const validSubmissionWindowDays = useSelector(getValidSubmissionWindowDays);
+  const latestShieldSubscription = useSelector(getLatestShieldSubscription);
   const { captureShieldCtaClickedEvent, captureShieldClaimSubmissionEvent } =
     useSubscriptionMetrics();
   const [isSubmittingClaim, setIsSubmittingClaim] = useState(false);
@@ -325,8 +327,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       submissionStatus: 'started' | 'completed' | 'failed',
       errorMessage?: string,
     ) => {
+      if (!latestShieldSubscription) {
+        return;
+      }
       captureShieldClaimSubmissionEvent({
-        subscriptionStatus: 'active',
+        subscriptionStatus: latestShieldSubscription.status,
         attachmentsCount: files?.length ?? 0,
         submissionStatus,
         errorMessage,

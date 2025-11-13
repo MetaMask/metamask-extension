@@ -145,7 +145,7 @@ export const useSubscriptionMetrics = () => {
           ...formattedParams,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          cancellation_status: params.cancellationStatus,
+          status: params.cancellationStatus,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_message: params.errorMessage,
@@ -177,7 +177,7 @@ export const useSubscriptionMetrics = () => {
           ...formattedParams,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          change_status: params.changeStatus,
+          status: params.changeStatus,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_message: params.errorMessage,

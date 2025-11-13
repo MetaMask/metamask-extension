@@ -180,7 +180,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
     mockGetSubscriptionControllerState.mockReturnValue({
       lastSelectedPaymentMethod: {
         shield: {
-          plan: PRODUCT_TYPES.SHIELD,
+          plan: RECURRING_INTERVALS.year,
           type: PAYMENT_TYPES.byCard,
         },
       },

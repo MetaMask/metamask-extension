@@ -756,7 +756,7 @@ export default class MetamaskController extends EventEmitter {
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
     this.accountTreeController = controllersByName.AccountTreeController;
     this.oauthService = controllersByName.OAuthService;
-    this.SubscriptionService = controllersByName.SubscriptionService;
+    this.subscriptionService = controllersByName.SubscriptionService;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
     this.subscriptionController = controllersByName.SubscriptionController;
@@ -2566,20 +2566,20 @@ export default class MetamaskController extends EventEmitter {
           this.subscriptionController,
         ),
       startSubscriptionWithCard:
-        this.SubscriptionService.startSubscriptionWithCard.bind(
-          this.SubscriptionService,
+        this.subscriptionService.startSubscriptionWithCard.bind(
+          this.subscriptionService,
         ),
       updateSubscriptionCardPaymentMethod:
-        this.SubscriptionService.updateSubscriptionCardPaymentMethod.bind(
-          this.SubscriptionService,
+        this.subscriptionService.updateSubscriptionCardPaymentMethod.bind(
+          this.subscriptionService,
         ),
       startSubscriptionWithCrypto:
         this.subscriptionController.startSubscriptionWithCrypto.bind(
           this.subscriptionController,
         ),
       updateSubscriptionCryptoPaymentMethod:
-        this.SubscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
-          this.SubscriptionService,
+        this.subscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
+          this.subscriptionService,
         ),
       submitSubscriptionUserEvents:
         this.subscriptionController.submitUserEvent.bind(
@@ -8538,13 +8538,11 @@ export default class MetamaskController extends EventEmitter {
    */
   async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
     const { isGasFeeSponsored, chainId } = transactionMeta;
-    const subscriptionControllerState = this.subscriptionController.state;
-    const { defaultSubscriptionPaymentOptions } = this.appStateController.state;
     const bundlerSupported = await isSendBundleSupported(chainId);
     const isSponsored = isGasFeeSponsored && bundlerSupported;
 
     try {
-      this.SubscriptionService.trackSubscriptionRequestEvent(
+      this.subscriptionService.trackSubscriptionRequestEvent(
         'started',
         transactionMeta,
         {
@@ -8572,7 +8570,7 @@ export default class MetamaskController extends EventEmitter {
           transactionMeta.type,
         );
       }
-      this.SubscriptionService.trackSubscriptionRequestEvent(
+      this.subscriptionService.trackSubscriptionRequestEvent(
         'completed',
         transactionMeta,
         {
@@ -8581,7 +8579,7 @@ export default class MetamaskController extends EventEmitter {
       );
     } catch (error) {
       log.error('Error on Shield subscription approval transaction', error);
-      this.SubscriptionService.trackSubscriptionRequestEvent(
+      this.subscriptionService.trackSubscriptionRequestEvent(
         'failed',
         transactionMeta,
         {
