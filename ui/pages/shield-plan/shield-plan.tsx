@@ -148,10 +148,14 @@ const ShieldPlan = () => {
   const hasAvailableToken = availableTokenBalances.length > 0;
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentType>(() => {
+      // always default to card if no token is available
+      if (!hasAvailableToken) {
+        return PAYMENT_TYPES.byCard;
+      }
       if (lastUsedPaymentDetails?.type) {
         return lastUsedPaymentDetails.type;
       }
-      return hasAvailableToken ? PAYMENT_TYPES.byCrypto : PAYMENT_TYPES.byCard;
+      return PAYMENT_TYPES.byCrypto;
     });
   // default options for the new subscription request
   const defaultOptions = useMemo(() => {
