@@ -9,16 +9,5 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-
-    &-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      min-height: 32px;
-    }
-  }
-
-  &__spinner {
-    width: 30px;
   }
 }
