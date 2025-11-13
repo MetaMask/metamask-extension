@@ -58,7 +58,7 @@ describe('State logs', function () {
     );
   });
 
-  it.only('state log file matches the expected state structure', async function () {
+  it('state log file matches the expected state structure', async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       // Chrome shows OS level download prompt which can't be dismissed by Selenium
       this.skip();
