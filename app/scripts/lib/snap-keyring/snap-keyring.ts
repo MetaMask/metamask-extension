@@ -21,6 +21,11 @@ import MetaMetricsController from '../../controllers/metametrics-controller';
 import { getUniqueAccountName } from '../../../../shared/lib/accounts';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { getSnapName } from '../../../../shared/lib/accounts/snaps';
+import {
+  FEATURE_VERSION_2,
+  isMultichainAccountsFeatureEnabled,
+  MultichainAccountsFeatureFlag,
+} from '../../../../shared/lib/multichain-accounts/remote-feature-flag';
 import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
@@ -299,14 +304,24 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     });
   }
 
+  #isMultichainAccountsFeatureState2Enabled() {
+    const state = this.#messenger.call('RemoteFeatureFlagController:getState');
+
+    const featureFlag = state?.remoteFeatureFlags
+      ?.enableMultichainAccountsState2 as
+      | MultichainAccountsFeatureFlag
+      | undefined;
+    return isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2);
+  }
+
   async #addAccountFinalize({
     address,
     snapId,
     skipConfirmationDialog,
     skipSetSelectedAccountStep,
     skipApprovalFlow,
-    accountName,
     onceSaved,
+    accountName,
     defaultAccountNameChosen,
   }: {
     address: string;
@@ -364,12 +379,18 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
           );
         }
 
-        if (accountName) {
-          this.#messenger.call(
-            'AccountsController:setAccountName',
-            accountId,
-            accountName,
-          );
+        // HACK: This account name we have might have conflicts (race-condition), and
+        // we still have unique names constraint on the `AccountsController`, so for
+        // now, we just omit renaming the account since those names are no longer in use
+        // with the multichain accounts new state 2 UI.
+        if (!this.#isMultichainAccountsFeatureState2Enabled()) {
+          if (accountName) {
+            this.#messenger.call(
+              'AccountsController:setAccountName',
+              accountId,
+              accountName,
+            );
+          }
         }
 
         if (!skipConfirmationDialog) {
