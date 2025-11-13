@@ -77,37 +77,27 @@ export function getDataFromSwap(
   data?: string,
   walletAddress?: string,
 ) {
-  try {
-    const { commands, commandBytes, inputs } = parseTransactionData(data);
+  const { commands, commandBytes, inputs } = parseTransactionData(data);
 
-    const { amountMin, quotesInput } = getCommandValues(
-      commandBytes,
-      inputs,
-      chainId,
-    );
+  const { amountMin, quotesInput } = getCommandValues(
+    commandBytes,
+    inputs,
+    chainId,
+  );
 
-    return {
-      amountMin,
-      commands,
-      quotesInput: {
-        ...quotesInput,
-        walletAddress,
-        fee: DEFAULT_QUOTEFEE,
-      } as GenericQuoteRequest,
-      tokenAddresses: [
-        quotesInput?.destTokenAddress,
-        quotesInput?.srcTokenAddress,
-      ],
-    };
-  } catch (error) {
-    captureException(error);
-    return {
-      amountMin: undefined,
-      commands: '',
-      quotesInput: undefined,
-      tokenAddresses: [],
-    };
-  }
+  return {
+    amountMin,
+    commands,
+    quotesInput: {
+      ...quotesInput,
+      walletAddress,
+      fee: DEFAULT_QUOTEFEE,
+    } as GenericQuoteRequest,
+    tokenAddresses: [
+      quotesInput?.destTokenAddress,
+      quotesInput?.srcTokenAddress,
+    ],
+  };
 }
 
 export function getBestQuote(
