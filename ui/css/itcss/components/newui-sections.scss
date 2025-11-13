@@ -44,7 +44,6 @@
 .main-container-wrapper {
   display: flex;
   justify-content: center;
-  flex: 1 0 auto;
   min-height: 0;
   width: 100%;
 }
@@ -75,16 +74,14 @@
   }
 }
 
-@include design-system.screen-sm-max {
-  .main-container {
-    width: 100%;
-    overflow-y: auto;
-    background-color: var(--color-background-default);
-  }
+.main-container {
+  width: 100%;
+  overflow-y: auto;
+  background-color: var(--color-background-default);
+}
 
-  .main-container-wrapper {
-    flex: 1;
-  }
+.main-container-wrapper {
+  flex: 1;
 }
 
 // first time
