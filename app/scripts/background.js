@@ -1816,7 +1816,8 @@ const initSidePanelBehavior = async () => {
     controller?.controllerMessenger?.subscribe(
       'RemoteFeatureFlagController:stateChange',
       (state) => {
-        const extensionUxSidepanel = state?.remoteFeatureFlags?.extensionUxSidepanel;
+        const extensionUxSidepanel =
+          state?.remoteFeatureFlags?.extensionUxSidepanel;
         if (extensionUxSidepanel === false) {
           controller?.preferencesController?.setUseSidePanelAsDefault(false);
         }
