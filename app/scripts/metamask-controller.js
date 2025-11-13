@@ -4821,7 +4821,7 @@ export default class MetamaskController extends EventEmitter {
 
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       // Init multichain accounts after creating internal accounts.
-      this.multichainAccountService.init();
+      await this.multichainAccountService.init();
       ///: END:ONLY_INCLUDE_IF
 
       // And we re-init the account tree controller too, to use the
@@ -5206,7 +5206,7 @@ export default class MetamaskController extends EventEmitter {
     await this.accountsController.updateAccounts();
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     // Init multichain accounts after creating internal accounts.
-    this.multichainAccountService.init();
+    await this.multichainAccountService.init();
     ///: END:ONLY_INCLUDE_IF
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
