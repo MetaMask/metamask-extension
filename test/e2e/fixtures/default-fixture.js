@@ -25,143 +25,34 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         metamaskNotificationsList: [],
         metamaskNotificationsReadList: [],
       },
-      AccountTreeController: {
-        accountTree: {
-          wallets: {
-            'entropy:01JNGTRZ3QCEEQ7GYYFXBSQSBK': {
-              type: 'entropy',
-              id: 'entropy:01JNGTRZ3QCEEQ7GYYFXBSQSBK',
-              metadata: {
-                name: 'Wallet 1',
-                entropy: {
-                  id: '01JNGTRZ3QCEEQ7GYYFXBSQSBK',
-                },
-              },
-              status: 'ready',
-              groups: {
-                'entropy:01JNGTRZ3QCEEQ7GYYFXBSQSBK/0': {
-                  type: 'multichain-account',
-                  id: 'entropy:01JNGTRZ3QCEEQ7GYYFXBSQSBK/0',
-                  metadata: {
-                    name: 'Account 1',
-                    pinned: false,
-                    hidden: false,
-                    entropy: {
-                      groupIndex: 0,
-                    },
-                  },
-                  accounts: [
-                    'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-                    'c9e610f0-5617-48e7-a79f-d8cfd37f70f4',
-                  ],
-                },
-              },
-            },
-          },
-          selectedAccountGroup: 'entropy:01JNGTRZ3QCEEQ7GYYFXBSQSBK/0',
-        },
-        isAccountTreeSyncingInProgress: false,
-        hasAccountTreeSyncingSyncedAtLeastOnce: false,
-        accountGroupsMetadata: {
-          'entropy:01JNGTRZ3QCEEQ7GYYFXBSQSBK/0': {
-            name: {
-              value: 'Account 1',
-              lastUpdatedAt: 0,
-            },
-            pinned: {
-              value: false,
-              lastUpdatedAt: 0,
-            },
-            hidden: {
-              value: false,
-              lastUpdatedAt: 0,
-            },
-          },
-        },
-        accountWalletsMetadata: {},
-      },
       AccountsController: {
         internalAccounts: {
+          selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
           accounts: {
             'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
               id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
               address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-              options: {
-                entropySource: '01JNGTRZ3QCEEQ7GYYFXBSQSBK',
-                derivationPath: "m/44'/60'/0'/0/0",
-                groupIndex: 0,
-                entropy: {
-                  type: 'mnemonic',
-                  id: '01JNGTRZ3QCEEQ7GYYFXBSQSBK',
-                  derivationPath: "m/44'/60'/0'/0/0",
-                  groupIndex: 0,
+              metadata: {
+                name: 'Account 1',
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
                 },
               },
+              options: {},
               methods: [
                 'personal_sign',
-                'eth_sign',
                 'eth_signTransaction',
                 'eth_signTypedData_v1',
                 'eth_signTypedData_v3',
                 'eth_signTypedData_v4',
               ],
-              scopes: ['eip155:0'],
               type: 'eip155:eoa',
-              metadata: {
-                name: 'Account 1',
-                importTime: 1761093330346,
-                lastSelected: 1761093448033,
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-            },
-            'c9e610f0-5617-48e7-a79f-d8cfd37f70f4': {
-              type: 'solana:data-account',
-              id: 'c9e610f0-5617-48e7-a79f-d8cfd37f70f4',
-              address: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
-              options: {
-                entropySource: '01JNGTRZ3QCEEQ7GYYFXBSQSBK',
-                derivationPath: "m/44'/501'/0'/0'",
-                index: 0,
-                entropy: {
-                  type: 'mnemonic',
-                  id: '01JNGTRZ3QCEEQ7GYYFXBSQSBK',
-                  groupIndex: 0,
-                  derivationPath: "m/44'/501'/0'/0'",
-                },
-              },
-              methods: [
-                'signAndSendTransaction',
-                'signTransaction',
-                'signMessage',
-                'signIn',
-              ],
-              scopes: [
-                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-                'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-                'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
-              ],
-              metadata: {
-                name: 'Solana Account 1',
-                importTime: 1761353236138,
-                keyring: {
-                  type: 'Snap Keyring',
-                },
-                snap: {
-                  id: 'npm:@metamask/solana-wallet-snap',
-                  name: 'Solana',
-                  enabled: true,
-                },
-                lastSelected: 0,
-                nameLastUpdatedAt: 1761353236170,
-              },
+              scopes: ['eip155:0'],
             },
           },
-          selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
         },
       },
-
       AlertController: {
         alertEnabledness: {
           unconnectedAccount: true,
