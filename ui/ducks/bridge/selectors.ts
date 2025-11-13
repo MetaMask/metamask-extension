@@ -645,53 +645,12 @@ export const getFromTokenConversionRate = createSelector(
           usd: nativeToUsdRate,
         };
       }
-      if (isSolanaChainId(fromChain.chainId) && nativeAssetId && tokenAssetId) {
-        // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
-        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          Number(
-            conversionRates?.[tokenAssetId]?.rate ??
-              fromTokenExchangeRate ??
-              null,
-          ),
-          Number(
-            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ??
-              rates?.sol?.conversionRate ??
-              null,
-          ),
-        );
-        return exchangeRatesFromNativeAndCurrencyRates(
-          tokenToNativeAssetRate,
-          Number(nativeToCurrencyRate),
-          Number(nativeToUsdRate),
-        );
-      }
-
+      // For non-EVM tokens (Solana, Bitcoin, Tron), we use the conversion rates provided by the multichain rates controller
       if (
-        isBitcoinChainId(fromChain.chainId) &&
+        isNonEvmChain(fromChain.chainId) &&
         nativeAssetId &&
         tokenAssetId
       ) {
-        // For Bitcoin tokens, we use the conversion rates provided by the multichain rates controller
-        const nativeAssetRate = Number(
-          conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
-        );
-        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          Number(
-            conversionRates?.[tokenAssetId]?.rate ??
-              fromTokenExchangeRate ??
-              null,
-          ),
-          nativeAssetRate,
-        );
-        return exchangeRatesFromNativeAndCurrencyRates(
-          tokenToNativeAssetRate,
-          Number(nativeToCurrencyRate),
-          Number(nativeToUsdRate),
-        );
-      }
-
-      if (isTronChainId(fromChain.chainId) && nativeAssetId && tokenAssetId) {
-        // For Tron tokens, we use the conversion rates provided by the multichain rates controller
         const nativeAssetRate = Number(
           conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
         );
@@ -772,43 +731,12 @@ export const getToTokenConversionRate = createDeepEqualSelector(
         formatChainIdToCaip(toChain.chainId),
       );
 
-      if (isSolanaChainId(toChain.chainId) && nativeAssetId && tokenAssetId) {
-        // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
-        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          Number(conversionRates?.[tokenAssetId]?.rate ?? null),
-          Number(
-            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
-          ),
-        );
-        return exchangeRatesFromNativeAndCurrencyRates(
-          tokenToNativeAssetRate,
-          rates?.[toChain.nativeCurrency?.toLowerCase()]?.conversionRate ??
-            null,
-          rates?.[toChain.nativeCurrency?.toLowerCase()]?.usdConversionRate ??
-            null,
-        );
-      }
-
-      if (isBitcoinChainId(toChain.chainId) && nativeAssetId && tokenAssetId) {
-        // For Bitcoin tokens, we use the conversion rates provided by the multichain rates controller
-        const nativeAssetRate = Number(
-          conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
-        );
-        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          Number(conversionRates?.[tokenAssetId]?.rate ?? null),
-          nativeAssetRate,
-        );
-        return exchangeRatesFromNativeAndCurrencyRates(
-          tokenToNativeAssetRate,
-          rates?.[toChain.nativeCurrency?.toLowerCase()]?.conversionRate ??
-            null,
-          rates?.[toChain.nativeCurrency?.toLowerCase()]?.usdConversionRate ??
-            null,
-        );
-      }
-
-      if (isTronChainId(toChain.chainId) && nativeAssetId && tokenAssetId) {
-        // For Tron tokens, we use the conversion rates provided by the multichain rates controller
+      // For non-EVM tokens (Solana, Bitcoin, Tron), we use the conversion rates provided by the multichain rates controller
+      if (
+        isNonEvmChain(toChain.chainId) &&
+        nativeAssetId &&
+        tokenAssetId
+      ) {
         const nativeAssetRate = Number(
           conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
         );
