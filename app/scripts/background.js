@@ -1800,10 +1800,17 @@ const initSidePanelBehavior = async () => {
     // Wait for controller to be initialized
     await isInitialized;
 
-    // Get user preference (default to true for side panel)
-    const useSidePanelAsDefault =
-      controller?.preferencesController?.state?.preferences
-        ?.useSidePanelAsDefault ?? true;
+    // Check LaunchDarkly flag and get user preference (defaults to false)
+    const { remoteFeatureFlags } =
+      controller?.controllerMessenger?.call(
+        'RemoteFeatureFlagController:getState',
+      ) ?? {};
+
+    const useSidePanelAsDefault = Boolean(
+      remoteFeatureFlags?.extensionUxSidepanel &&
+        controller?.preferencesController?.state?.preferences
+          ?.useSidePanelAsDefault,
+    );
 
     // Set panel behavior based on preference
     if (browser?.sidePanel?.setPanelBehavior) {
@@ -1833,8 +1840,17 @@ const setupPreferenceListener = async () => {
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
       (state) => {
-        const useSidePanelAsDefault =
-          state?.preferences?.useSidePanelAsDefault ?? true;
+        // Check LaunchDarkly flag and get user preference (defaults to false)
+        const { remoteFeatureFlags } =
+          controller?.controllerMessenger?.call(
+            'RemoteFeatureFlagController:getState',
+          ) ?? {};
+
+        const useSidePanelAsDefault = Boolean(
+          remoteFeatureFlags?.extensionUxSidepanel &&
+            state?.preferences?.useSidePanelAsDefault,
+        );
+
         if (browser?.sidePanel?.setPanelBehavior) {
           browser.sidePanel
             .setPanelBehavior({
