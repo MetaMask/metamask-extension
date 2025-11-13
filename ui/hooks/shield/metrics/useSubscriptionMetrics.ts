@@ -14,6 +14,7 @@ import {
 import {
   CaptureShieldBillingHistoryOpenedEventParams,
   CaptureShieldClaimSubmissionEventParams,
+  CaptureShieldCryptoConfirmationEventParams,
   CaptureShieldCtaClickedEventParams,
   CaptureShieldEntryModalEventParams,
   CaptureShieldMembershipCancelledEventParams,
@@ -230,6 +231,31 @@ export const useSubscriptionMetrics = () => {
     [trackEvent, selectedAccount, hdKeyingsMetadata],
   );
 
+  const captureShieldCryptoConfirmationEvent = useCallback(
+    (params: CaptureShieldCryptoConfirmationEventParams) => {
+      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+        selectedAccount,
+        hdKeyingsMetadata,
+      );
+
+      const formattedParams =
+        formatDefaultShieldSubscriptionRequestEventProps(params);
+
+      trackEvent({
+        event: MetaMetricsEventName.ShieldSubscriptionCryptoConfirmation,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...userAccountTypeAndCategory,
+          ...formattedParams,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          has_insufficient_gas: params.hasInsufficientGas,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata],
+  );
+
   const captureShieldCtaClickedEvent = useCallback(
     (params: CaptureShieldCtaClickedEventParams) => {
       const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
@@ -288,5 +314,6 @@ export const useSubscriptionMetrics = () => {
     captureShieldPaymentMethodUpdatedEvent,
     captureShieldCtaClickedEvent,
     captureShieldClaimSubmissionEvent,
+    captureShieldCryptoConfirmationEvent,
   };
 };

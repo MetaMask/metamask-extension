@@ -220,7 +220,6 @@ import {
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
-  captureShieldSubscriptionRequestEvent,
   getShieldGatewayConfig,
   updatePreferencesAndMetricsForShieldSubscription,
 } from '../../shared/modules/shield';
@@ -8539,23 +8538,18 @@ export default class MetamaskController extends EventEmitter {
    */
   async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
     const { isGasFeeSponsored, chainId } = transactionMeta;
-    const subscriptionControllerState = this.subscriptionController.state;
-    const { defaultSubscriptionPaymentOptions } = this.appStateController.state;
     const bundlerSupported = await isSendBundleSupported(chainId);
     const isSponsored = isGasFeeSponsored && bundlerSupported;
 
     try {
-      // TODO: Move this to the subscription service once `submitShieldSubscriptionCryptoApproval` action is exported from the subscription controller
-      captureShieldSubscriptionRequestEvent(
-        subscriptionControllerState,
-        transactionMeta,
-        defaultSubscriptionPaymentOptions,
-        this.metaMetricsController,
+      this.SubscriptionService.trackSubscriptionRequestEvent(
         'started',
+        transactionMeta,
         {
           has_sufficient_crypto_balance: true,
         },
       );
+
       await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
         transactionMeta,
         isSponsored,
@@ -8576,24 +8570,18 @@ export default class MetamaskController extends EventEmitter {
           transactionMeta.type,
         );
       }
-      captureShieldSubscriptionRequestEvent(
-        subscriptionControllerState,
-        transactionMeta,
-        defaultSubscriptionPaymentOptions,
-        this.metaMetricsController,
+      this.SubscriptionService.trackSubscriptionRequestEvent(
         'completed',
+        transactionMeta,
         {
           gas_sponsored: isSponsored,
         },
       );
     } catch (error) {
       log.error('Error on Shield subscription approval transaction', error);
-      captureShieldSubscriptionRequestEvent(
-        subscriptionControllerState,
-        transactionMeta,
-        defaultSubscriptionPaymentOptions,
-        this.metaMetricsController,
+      this.SubscriptionService.trackSubscriptionRequestEvent(
         'failed',
+        transactionMeta,
         {
           error_message: error.message,
         },

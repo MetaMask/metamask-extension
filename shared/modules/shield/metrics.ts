@@ -8,10 +8,7 @@ import {
   SubscriptionControllerState,
   SubscriptionStatus,
 } from '@metamask/subscription-controller';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { Json } from '@metamask/utils';
@@ -25,12 +22,7 @@ import {
 } from '../../lib/shield';
 import { KeyringType } from '../../constants/keyring';
 import { DefaultSubscriptionPaymentOptions } from '../../types';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../constants/metametrics';
 // eslint-disable-next-line import/no-restricted-paths
-import MetaMetricsController from '../../../app/scripts/controllers/metametrics-controller';
 import {
   getDefaultSubscriptionPaymentOptions,
   getIsTrialedSubscription,
@@ -253,60 +245,4 @@ export function getSubscriptionRestartRequestTrackingProps(
     // eslint-disable-next-line @typescript-eslint/naming-convention
     error_message: errorMessage || null,
   };
-}
-
-/**
- * Capture a Shield subscription request event with crypto payment.
- *
- * @param subscriptionControllerState - The subscription controller state.
- * @param transactionMeta - The transaction meta.
- * @param defaultSubscriptionPaymentOptions - The default subscription payment options.
- * @param metaMetricsController - The meta metrics controller.
- * @param requestStatus - The request status.
- * @param extrasProps - The extra properties.
- */
-export function captureShieldSubscriptionRequestEvent(
-  subscriptionControllerState: SubscriptionControllerState,
-  transactionMeta: TransactionMeta,
-  defaultSubscriptionPaymentOptions: DefaultSubscriptionPaymentOptions,
-  metaMetricsController: MetaMetricsController,
-  requestStatus: 'started' | 'completed' | 'failed',
-  extrasProps: Record<string, Json>,
-) {
-  if (transactionMeta.type !== TransactionType.shieldSubscriptionApprove) {
-    return;
-  }
-
-  const trackingProps = getSubscriptionRequestTrackingProps(
-    subscriptionControllerState,
-    defaultSubscriptionPaymentOptions,
-    transactionMeta,
-  );
-
-  const isRenewal = trackingProps.subscription_state !== 'none';
-  if (isRenewal) {
-    // if it's a renewal, we also need to capture the restart request event
-    const renewalTrackingProps = getSubscriptionRestartRequestTrackingProps(
-      subscriptionControllerState,
-      requestStatus,
-      extrasProps.error_message as string | undefined,
-    );
-    metaMetricsController.trackEvent({
-      event: MetaMetricsEventName.ShieldMembershipRestartRequest,
-      category: MetaMetricsEventCategory.Shield,
-      properties: renewalTrackingProps,
-    });
-  }
-
-  metaMetricsController.trackEvent({
-    event: MetaMetricsEventName.ShieldSubscriptionRequest,
-    category: MetaMetricsEventCategory.Shield,
-    properties: {
-      ...trackingProps,
-      ...extrasProps,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      status: requestStatus,
-    },
-  });
 }
