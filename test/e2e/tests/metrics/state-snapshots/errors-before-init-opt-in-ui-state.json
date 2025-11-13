@@ -10,15 +10,8 @@
       "accountWalletsMetadata": "object",
       "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean"
     },
-    "AccountTreeController": {
-      "accountTree": "object",
-      "isAccountTreeSyncingInProgress": "boolean",
-      "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
-      "accountGroupsMetadata": "object",
-      "accountWalletsMetadata": "object"
-    },
     "AccountsController": {
-      "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
+      "internalAccounts": { "selectedAccount": "string", "accounts": "object" }
     },
     "AddressBookController": { "addressBook": "object" },
     "AlertController": {
