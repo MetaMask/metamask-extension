@@ -504,8 +504,25 @@ export function formatComparisonResults(
       '\n📝 Or run this command to update the snapshot automatically (this is not guaranteed to work though, since all warnings/errors are not deterministic):',
     );
     if (testFilePath) {
+      // Normalize path to be relative to project root
+      let displayPath = testFilePath;
+      // Remove CI absolute path prefix if present
+      displayPath = displayPath.replace(/.*\/metamask-extension\//u, '');
+      // Remove local absolute path prefix if present
+      displayPath = displayPath.replace(
+        /^\/.*\/Repositories\/metamask-extension\//u,
+        '',
+      );
+      displayPath = displayPath.replace(
+        /^\/Users\/.*\/metamask-extension\//u,
+        '',
+      );
+      // Ensure it starts with ./ if it's a relative path
+      if (!displayPath.startsWith('./') && !displayPath.startsWith('/')) {
+        displayPath = `./${displayPath}`;
+      }
       lines.push(
-        `   yarn test:warnings:update:${snapshotType} ${testFilePath}\n`,
+        `   yarn test:warnings:update:${snapshotType} ${displayPath}\n`,
       );
     } else {
       lines.push(`   yarn test:warnings:update:${snapshotType}\n`);
