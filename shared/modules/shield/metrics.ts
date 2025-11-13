@@ -53,15 +53,15 @@ export function getLatestSubscriptionStatus(
 /**
  * Get the tracking props for the subscription request for the Shield metrics.
  *
- * @param defaultSubscriptionPaymentOptions - The default subscription payment options.
  * @param subscriptionControllerState - The subscription controller state.
+ * @param defaultSubscriptionPaymentOptions - The default subscription payment options.
  * @param transactionMeta
  * @returns The tracking props.
  */
 export function getSubscriptionRequestTrackingProps(
-  defaultSubscriptionPaymentOptions: DefaultSubscriptionPaymentOptions,
   subscriptionControllerState: SubscriptionControllerState,
-  transactionMeta: TransactionMeta,
+  defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions,
+  transactionMeta?: TransactionMeta,
 ): Record<string, Json> {
   const {
     lastSelectedPaymentMethod,
@@ -92,7 +92,7 @@ export function getSubscriptionRequestTrackingProps(
     trialedProducts,
     PRODUCT_TYPES.SHIELD,
   );
-  const paymentChain = transactionMeta.chainId;
+  const paymentChain = transactionMeta?.chainId;
 
   const latestSubscriptionStatus =
     getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
@@ -131,7 +131,7 @@ export function getSubscriptionRequestTrackingProps(
     billing_cycles: billingCycles,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    payment_chain: paymentChain,
+    payment_chain: paymentChain || null,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     is_trial: !isTrialed,
@@ -235,8 +235,8 @@ export function captureShieldSubscriptionRequestEvent(
   }
 
   const trackingProps = getSubscriptionRequestTrackingProps(
-    defaultSubscriptionPaymentOptions,
     subscriptionControllerState,
+    defaultSubscriptionPaymentOptions,
     transactionMeta,
   );
 

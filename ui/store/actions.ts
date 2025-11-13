@@ -438,7 +438,7 @@ export function getSubscriptionsEligibilities(params?: {
         params,
       ]);
     } catch (error) {
-      log.error('[getSubscriptionsEligibilities] error', error);
+      log.warn('[getSubscriptionsEligibilities] error', error);
       dispatch(displayWarning(error));
       throw error;
     }

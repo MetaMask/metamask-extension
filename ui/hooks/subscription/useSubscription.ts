@@ -368,39 +368,20 @@ export const useHandleSubscription = ({
       };
 
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
-        try {
-          // capture the event when the Shield subscription request is started
-          captureShieldSubscriptionRequestEvent({
-            ...subscriptionRequestTrackingParams,
-            paymentCurrency: 'USD',
-            requestStatus: 'started',
-          });
-          await dispatch(
-            startSubscriptionWithCard({
-              products: [PRODUCT_TYPES.SHIELD],
-              isTrialRequested: !isTrialed,
-              recurringInterval: selectedPlan,
-              useTestClock,
-            }),
-          );
-          // capture the event when the Shield subscription request is completed
-          captureShieldSubscriptionRequestEvent({
-            ...subscriptionRequestTrackingParams,
-            paymentCurrency: 'USD',
-            requestStatus: 'completed',
-          });
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error ? error.message : 'Unknown error';
-          // capture the event when the Shield subscription request fails
-          captureShieldSubscriptionRequestEvent({
-            ...subscriptionRequestTrackingParams,
-            paymentCurrency: 'USD',
-            errorMessage,
-            requestStatus: 'failed',
-          });
-          throw error;
-        }
+        // capture the event when the Shield subscription request is started
+        captureShieldSubscriptionRequestEvent({
+          ...subscriptionRequestTrackingParams,
+          paymentCurrency: 'USD',
+          requestStatus: 'started',
+        });
+        await dispatch(
+          startSubscriptionWithCard({
+            products: [PRODUCT_TYPES.SHIELD],
+            isTrialRequested: !isTrialed,
+            recurringInterval: selectedPlan,
+            useTestClock,
+          }),
+        );
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
         // We need to pass the default options to the background app state controller
         // so that the crypto subscription request can use it for the metrics capture

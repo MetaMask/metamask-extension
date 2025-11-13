@@ -8545,6 +8545,7 @@ export default class MetamaskController extends EventEmitter {
     const isSponsored = isGasFeeSponsored && bundlerSupported;
 
     try {
+      // TODO: Move this to the subscription service once `submitShieldSubscriptionCryptoApproval` action is exported from the subscription controller
       captureShieldSubscriptionRequestEvent(
         subscriptionControllerState,
         transactionMeta,
