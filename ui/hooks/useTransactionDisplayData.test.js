@@ -3,7 +3,7 @@ import * as reactRedux from 'react-redux';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom-v5-compat';
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 import transactions from '../../test/data/transaction-data.json';
