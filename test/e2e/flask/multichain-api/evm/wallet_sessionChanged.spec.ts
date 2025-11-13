@@ -63,7 +63,7 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
           driver,
         );
         await editConnectedAccountsModal.checkPageIsLoaded();
-        await editConnectedAccountsModal.addNewEthereumAccount();
+        await editConnectedAccountsModal.addNewAccount();
         await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
