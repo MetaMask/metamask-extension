@@ -39,6 +39,7 @@ export { isTronChainId } from '../../pages/confirmations/utils/network';
 
 /**
  * Checks if a token is a Tron Energy or Bandwidth resource (not tradeable assets)
+ *
  * @param chainId - The chain ID to check
  * @param symbol - The token symbol to check
  * @returns true if the token is a Tron Energy/Bandwidth resource
