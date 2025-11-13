@@ -53,8 +53,8 @@ function getInitRequestMock(
     initMessenger: getNetworkControllerInitMessenger(baseMessenger),
   };
 
-  // as any because i don't know wtf is going on.
-  (baseMessenger as any).registerActionHandler(
+  baseMessenger.registerActionHandler(
+    // @ts-expect-error: I don't know wtf is going on.
     'RemoteFeatureFlagController:getState',
     jest.fn().mockReturnValue({
       completedOnboarding: true,
