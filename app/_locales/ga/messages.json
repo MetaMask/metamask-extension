@@ -2451,9 +2451,6 @@
   "existingChainId": {
     "message": "Tá an fhaisnéis atá curtha isteach agat bainteach le haitheantas slabhra atá ann cheana féin."
   },
-  "expandView": {
-    "message": "Leathnaigh an radharc"
-  },
   "experimental": {
     "message": "Turgnamhach"
   },

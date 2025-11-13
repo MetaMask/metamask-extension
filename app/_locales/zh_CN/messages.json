@@ -2324,9 +2324,6 @@
   "existingChainId": {
     "message": "您输入的信息与现有的链 ID 相关联。"
   },
-  "expandView": {
-    "message": "展开视图"
-  },
   "experimental": {
     "message": "实验性"
   },

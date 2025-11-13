@@ -2324,9 +2324,6 @@
   "existingChainId": {
     "message": "आपके द्वारा दर्ज की गई जानकारी मौजूदा चेन ID से जुड़ी है।"
   },
-  "expandView": {
-    "message": "व्यू को बड़ा करें"
-  },
   "experimental": {
     "message": "एक्सपेरिमेंटल"
   },
