@@ -11,7 +11,6 @@ import {
   SimulationData,
   SimulationTokenBalanceChange,
 } from '@metamask/transaction-controller';
-import { captureException } from '@sentry/browser';
 import { getCommandValues } from './dapp-swap-command-utils';
 
 const DEFAULT_QUOTEFEE = 250;

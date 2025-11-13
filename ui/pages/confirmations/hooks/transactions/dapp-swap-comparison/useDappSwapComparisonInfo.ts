@@ -146,6 +146,7 @@ export function useDappSwapComparisonInfo() {
     } catch (error) {
       captureException(error);
       captureDappSwapComparisonFailed('error fetching quotes');
+      return undefined;
     }
   }, [
     commands,
