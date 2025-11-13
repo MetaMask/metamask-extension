@@ -87,7 +87,7 @@ export const MultichainReviewPermissions = ({
   const urlParamsHook = useParams<{ origin: string }>();
 
   // Use props if provided, otherwise fall back to hooks
-  const navigate: typeof navigateProp = navigateProp || navigateHook;
+  const navigate = (navigateProp || navigateHook) as NonNullable<typeof navigateProp>;
   const urlParams = params || urlParamsHook;
 
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters

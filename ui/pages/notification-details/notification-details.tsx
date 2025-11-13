@@ -74,7 +74,7 @@ export default function NotificationDetails({
   navigate: navigateProp,
 }: NotificationDetailsProps = {}) {
   const navigateHook = useNavigate();
-  const navigate: typeof navigateProp = navigateProp || navigateHook;
+  const navigate = (navigateProp || navigateHook) as NonNullable<typeof navigateProp>;
   const { notification } = useNotificationByPath(params);
   useEffectOnNotificationView(notification);
 
