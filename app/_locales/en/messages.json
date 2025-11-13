@@ -5125,6 +5125,18 @@
   "pushNotificationPositionLiquidatedTitle": {
     "message": "Position liquidated"
   },
+  "pushNotificationShieldClaimCreatedDescriptionShort": {
+    "message": "Your claim has been created"
+  },
+  "pushNotificationShieldClaimCreatedTitle": {
+    "message": "Claim created"
+  },
+  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
+    "message": "Your claim has been updated"
+  },
+  "pushNotificationShieldClaimStatusUpdatedTitle": {
+    "message": "Claim updated"
+  },
   "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
     "message": "Welcome to MetaMask Transaction Shield! Explore benefits"
   },

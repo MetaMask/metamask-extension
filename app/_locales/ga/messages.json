@@ -4863,6 +4863,18 @@
   "pushNotificationPositionLiquidatedTitle": {
     "message": "Post leachtaithe"
   },
+  "pushNotificationShieldClaimCreatedDescriptionShort": {
+    "message": "Tá d'éileamh cruthaithe"
+  },
+  "pushNotificationShieldClaimCreatedTitle": {
+    "message": "Éileamh cruthaithe"
+  },
+  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
+    "message": "Tá d'éileamh nuashonraithe"
+  },
+  "pushNotificationShieldClaimStatusUpdatedTitle": {
+    "message": "Éileamh nuashonraithe"
+  },
   "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
     "message": "Fáilte go Sciath Idirbhirt MetaMask! Féach ar na buntáistí"
   },
