@@ -223,7 +223,7 @@ export default function CreationSuccessful() {
           width={BlockSize.Full}
           onClick={onDone}
         >
-          {t('done')}
+          {isSidePanelEnabled ? t('openWallet') : t('done')}
         </Button>
       </Box>
     );
