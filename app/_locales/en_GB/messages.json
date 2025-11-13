@@ -5134,17 +5134,20 @@
   "pushNotificationShieldClaimStatusUpdatedTitle": {
     "message": "Claim updated"
   },
-  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
-    "message": "Welcome to MetaMask Transaction Shield! Explore benefits"
+  "pushNotificationShieldLearnMoreCta": {
+    "message": "Learn more"
   },
-  "pushNotificationShieldSubscriptionCreatedTitle": {
-    "message": "MetaMask Transaction Shield activated"
+  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
+    "message": "Your plan is now active."
   },
   "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "Membership is inactive due to payment issue. Update your payment to restore coverage"
+    "message": "Your membership has been paused due to payment failure."
   },
-  "pushNotificationShieldSubscriptionPaymentFailedTitle": {
-    "message": "MetaMask Transaction Shield paused"
+  "pushNotificationShieldSubscriptionTitle": {
+    "message": "MetaMask Transaction Shield"
+  },
+  "pushNotificationShieldUpdatePaymentCta": {
+    "message": "Update payment"
   },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Your $1 long closed at your stop loss.",
