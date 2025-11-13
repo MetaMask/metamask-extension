@@ -162,7 +162,7 @@ export const GlobalMenu = ({
 
   // Check if side panel is currently the default (vs popup)
   const preferences = useSelector(getPreferences);
-  const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? true;
+  const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? false;
 
   // Check if sidepanel feature is enabled (both build flag and LaunchDarkly flag)
   const isSidePanelEnabled = useSidePanelEnabled();
