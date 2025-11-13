@@ -6,6 +6,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import {
+  PAYMENT_TYPES,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
 } from '@metamask/subscription-controller';
@@ -60,6 +61,9 @@ const mockStartShieldSubscriptionWithCard = jest.fn();
 const mockGetSubscriptions = jest.fn();
 const mockGetSwapsControllerState = jest.fn();
 const mockGetNetworkControllerState = jest.fn();
+const mockGetAppStateControllerState = jest.fn();
+const mockGetMetaMetricsControllerState = jest.fn();
+const mockGetSubscriptionControllerState = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
   namespace: MOCK_ANY_NAMESPACE,
@@ -100,6 +104,18 @@ rootMessenger.registerActionHandler(
   'NetworkController:getState',
   mockGetNetworkControllerState,
 );
+rootMessenger.registerActionHandler(
+  'AppStateController:getState',
+  mockGetAppStateControllerState,
+);
+rootMessenger.registerActionHandler(
+  'MetaMetricsController:trackEvent',
+  mockGetMetaMetricsControllerState,
+);
+rootMessenger.registerActionHandler(
+  'SubscriptionController:getState',
+  mockGetSubscriptionControllerState,
+);
 
 const messenger: SubscriptionServiceMessenger = new Messenger({
   namespace: 'SubscriptionService',
@@ -117,6 +133,9 @@ rootMessenger.delegate({
     'SmartTransactionsController:getState',
     'SwapsController:getState',
     'NetworkController:getState',
+    'AppStateController:getState',
+    'MetaMetricsController:trackEvent',
+    'SubscriptionController:getState',
   ],
 });
 
@@ -145,6 +164,25 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
   it('should start the subscription with card', async () => {
     mockStartShieldSubscriptionWithCard.mockResolvedValue({
       checkoutSessionUrl: mockCheckoutSessionUrl,
+    });
+    mockGetAppStateControllerState.mockReturnValueOnce({
+      defaultSubscriptionPaymentOptions: {
+        defaultBillingInterval: RECURRING_INTERVALS.month,
+        defaultPaymentType: PAYMENT_TYPES.byCard,
+        defaultPaymentCurrency: 'usd',
+        defaultPaymentChain: '0x1',
+      },
+    });
+    mockGetSubscriptionControllerState.mockReturnValueOnce({
+      lastSelectedPaymentMethod: {
+        shield: {
+          plan: RECURRING_INTERVALS.year,
+          type: PAYMENT_TYPES.byCard,
+        },
+      },
+      trialedProducts: [],
+      subscriptions: [],
+      lastSubscription: undefined,
     });
     const mockOpenTab = jest.spyOn(mockPlatform, 'openTab');
     mockOpenTab.mockResolvedValue({

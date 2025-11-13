@@ -7,6 +7,7 @@ import {
   SubscriptionControllerStartShieldSubscriptionWithCardAction,
   SubscriptionControllerUpdatePaymentMethodAction,
   SubscriptionControllerSubmitSponsorshipIntentsAction,
+  SubscriptionControllerGetStateAction,
 } from '@metamask/subscription-controller';
 import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
 import {
@@ -20,6 +21,8 @@ import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { SwapsControllerGetStateAction } from '../../controllers/swaps/swaps.types';
+import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 
 export const SERVICE_NAME = 'SubscriptionService';
 
@@ -39,13 +42,16 @@ export type SubscriptionServiceAction =
   | SubscriptionControllerGetBillingPortalUrlAction
   | SubscriptionControllerSubmitSponsorshipIntentsAction
   | SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
+  | SubscriptionControllerGetStateAction
   | TransactionControllerGetTransactionsAction
   | PreferencesControllerGetStateAction
   | AccountsControllerGetStateAction
   | SmartTransactionsControllerGetStateAction
   | SwapsControllerGetStateAction
   | NetworkControllerGetStateAction
-  | AuthenticationControllerGetBearerToken;
+  | AuthenticationControllerGetBearerToken
+  | AppStateControllerGetStateAction
+  | MetaMetricsControllerTrackEventAction;
 
 export type SubscriptionServiceEvent = never;
 
