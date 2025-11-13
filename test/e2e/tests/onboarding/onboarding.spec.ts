@@ -264,7 +264,9 @@ describe('MetaMask onboarding', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('10', 'ETH');
+
+        // Fiat value should be displayed as we mock the price and that is not a 'test network'
+        await homePage.checkExpectedBalanceIsDisplayed('17,000.00', '$');
         await homePage.checkAddNetworkMessageIsDisplayed(networkName);
       },
     );
