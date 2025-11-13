@@ -3,14 +3,10 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import classnames from 'classnames';
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import browser from 'webextension-polyfill';
-///: END:ONLY_INCLUDE_IF
 import {
   setCompletedOnboarding,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   setCompletedOnboardingWithSidepanel,
-  ///: END:ONLY_INCLUDE_IF
   toggleExternalServices,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -48,9 +44,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
-///: END:ONLY_INCLUDE_IF
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
@@ -60,9 +54,7 @@ export default function OnboardingPinExtension() {
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const currentKeyring = useSelector(getCurrentKeyring);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   const isSidePanelEnabled = useSidePanelEnabled();
-  ///: END:ONLY_INCLUDE_IF
 
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
@@ -83,7 +75,6 @@ export default function OnboardingPinExtension() {
       },
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     // Side Panel - only if feature flag is enabled and not in test mode
     if (isSidePanelEnabled) {
       try {
@@ -106,11 +97,6 @@ export default function OnboardingPinExtension() {
     }
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    // Regular onboarding completion for non-experimental builds
-    await dispatch(setCompletedOnboarding());
-    ///: END:ONLY_INCLUDE_IF
   };
 
   useEffect(() => {
