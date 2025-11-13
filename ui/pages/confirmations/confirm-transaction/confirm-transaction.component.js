@@ -61,23 +61,16 @@ const ConfirmTransaction = ({
   location: routeLocation,
 } = {}) => {
   const dispatch = useDispatch();
-<<<<<<< HEAD
-  const navigate = useNavigate();
   const urlParams = useParams();
   const hookLocation = useLocation();
 
   // Use params from props (v5 route) if available, otherwise fall back to useParams (v6)
   const { id: paramsTransactionId } = routeParams || urlParams;
-
   // Use location from props (v5 route) if available, otherwise fall back to useLocation (v6)
   const location = routeLocation || hookLocation;
-=======
-  const history = useHistory();
-  const { id: paramsTransactionId } = useParams();
   const isSidePanelEnabled = useSidePanelEnabled();
   const hasPendingApprovals =
     useSelector(getUnapprovedConfirmations).length > 0;
->>>>>>> origin/main
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
