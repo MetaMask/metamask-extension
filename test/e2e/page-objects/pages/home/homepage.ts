@@ -453,26 +453,22 @@ class HomePage {
 
     while (retryCount < maxRetries) {
       await this.driver.delay(1000);
-      // Click the skip button
       await this.driver.clickElement(this.shieldEntryModalSkip);
 
-      // Wait for modal to be detached from DOM
       try {
-        await this.driver.waitForSelector(this.shieldEntryModal, {
+        await this.driver.assertElementNotPresent(this.shieldEntryModal, {
           timeout: 2000,
         });
-      } catch (e) {
         console.log('Modal successfully dismissed and stayed gone');
         return;
+      } catch (e) {
+        retryCount += 1;
+        console.log(
+          `Modal still present, retrying click (attempt ${retryCount}/${maxRetries})`,
+        );
       }
-
-      retryCount += 1;
-      console.log(
-        `Modal reappeared, retrying click (attempt ${retryCount}/${maxRetries})`,
-      );
     }
 
-    // If we've exhausted retries, throw an error
     throw new Error(
       `Failed to dismiss shield entry modal after ${maxRetries} attempts`,
     );

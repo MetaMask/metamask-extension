@@ -203,12 +203,10 @@ describe('Shield Plan Stripe Integration', function () {
         ],
       },
       async ({ driver }) => {
-        // Login and validate balance
         await loginWithBalanceValidation(driver);
 
         await new HeaderNavbar(driver).openSettingsPage();
 
-        // Navigate to Shield Detail page
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToTransactionShieldPage();
@@ -216,13 +214,11 @@ describe('Shield Plan Stripe Integration', function () {
         const shieldDetailPage = new ShieldDetailPage(driver);
         await shieldDetailPage.checkPageIsLoaded();
 
-        // Click Claim button to navigate to claim page
         await shieldDetailPage.clickSubmitCaseButton();
 
         const shieldClaimPage = new ShieldClaimPage(driver);
         await shieldClaimPage.checkPageIsLoaded();
 
-        // Fill the claim form with test data
         await shieldClaimPage.fillForm({
           email: testData.email,
           reimbursementWalletAddress: testData.reimbursementWalletAddress,
@@ -232,25 +228,19 @@ describe('Shield Plan Stripe Integration', function () {
           description: testData.description,
         });
 
-        // Submit the form
         await shieldClaimPage.clickSubmitButton();
 
-        // Check for success toast message
         await shieldClaimPage.checkSuccessMessageDisplayed();
 
-        // Verify navigation to Claims List page
         const shieldClaimsListPage = new ShieldClaimsListPage(driver);
         await shieldClaimsListPage.checkPageIsLoaded();
 
-        // Check that the claim is created with status "Created" (pending status)
         const { claimId } = SHIELD_CLAIMS_RESPONSE;
         await shieldClaimsListPage.checkClaimExists(claimId);
         await shieldClaimsListPage.checkClaimStatus(claimId, 'Created');
 
-        // Click on the claim item to view details
         await shieldClaimsListPage.clickClaimItem(claimId);
 
-        // Verify navigation to Claim detail page (view mode) and check data is displayed correctly
         await shieldClaimPage.checkPageIsLoadedInViewMode();
         await shieldClaimPage.verifyClaimData({
           email: testData.email,
@@ -275,7 +265,6 @@ describe('Shield Plan Stripe Integration', function () {
         ],
       },
       async ({ driver }) => {
-        // Login and validate balance
         await loginWithBalanceValidation(driver);
 
         await driver.delay(1000);
@@ -292,7 +281,6 @@ describe('Shield Plan Stripe Integration', function () {
         // Cancel the subscription
         await shieldDetailPage.cancelSubscription();
 
-        // Wait for cancellation confirmation and verify status
         await shieldDetailPage.checkNotificationShieldBanner(
           'Your membership will be cancelled on Nov 3, 2025.',
         );
@@ -300,7 +288,6 @@ describe('Shield Plan Stripe Integration', function () {
         // Renew the subscription
         await shieldDetailPage.clickRenewButton();
 
-        // Wait for renewal confirmation and verify status
         await shieldDetailPage.checkNotificationShieldBannerRemoved();
         await shieldDetailPage.checkMembershipStatus('Active membership');
       },
