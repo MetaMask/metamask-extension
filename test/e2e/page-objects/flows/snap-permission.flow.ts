@@ -65,27 +65,19 @@ export async function completeSnapInstallSwitchToTestSnap(driver: Driver) {
  */
 export async function approveAccount(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  const flaskBuild = process.env.TEST_SUITE_NAME?.includes('flask');
 
   await driver.waitForSelector({
     text: 'Connect with MetaMask',
   });
 
-  if (flaskBuild) {
-    await driver.clickElement({
-      text: 'Next',
-      tag: 'button',
-    });
-  } else {
-    await driver.clickElement({
-      text: 'Account 1',
-    });
+  await driver.clickElement({
+    text: 'Account 1',
+  });
 
-    await driver.clickElement({
-      text: 'Connect',
-      tag: 'button',
-    });
-  }
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
+  });
 
   await driver.waitForSelector({
     text: 'Review permissions',

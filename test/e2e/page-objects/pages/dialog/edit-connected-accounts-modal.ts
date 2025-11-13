@@ -6,7 +6,7 @@ class EditConnectedAccountsModal {
   private readonly accountCheckbox = 'input[type="checkbox"]';
 
   private readonly addNewAccountButton = {
-    testId: 'add-new-account-button',
+    testId: 'add-multichain-account-button',
   };
 
   private readonly disconnectButton = {
@@ -29,7 +29,7 @@ class EditConnectedAccountsModal {
     testId: 'submit-add-account-with-name',
   };
 
-  private readonly updateAccountsButton = {
+  private readonly connectAccountsButton = {
     testId: 'connect-more-accounts-button',
   };
 
@@ -41,7 +41,7 @@ class EditConnectedAccountsModal {
     try {
       await this.driver.waitForMultipleSelectors([
         this.editAccountsModalTitle,
-        this.updateAccountsButton,
+        this.connectAccountsButton,
       ]);
     } catch (e) {
       console.log(
@@ -53,16 +53,20 @@ class EditConnectedAccountsModal {
     console.log('Edit connected accounts modal is loaded');
   }
 
-  async addNewEthereumAccount(): Promise<void> {
-    console.log('Add new Ethereum account');
+  async addNewAccount(): Promise<void> {
+    console.log('Add  account');
     await this.driver.clickElement(this.addNewAccountButton);
-    await this.driver.clickElement(this.ethereumAccountButton);
-    await this.driver.clickElement(this.submitAddAccountButton);
+    const createdAccount = await this.driver.waitForSelector({
+      css: 'p',
+      text: 'Account 2',
+    });
+    await createdAccount.click();
+    await this.clickOnConnect();
   }
 
-  async disconnectAccount(): Promise<void> {
-    console.log('Disconnect account on edit connected accounts modal');
-    await this.driver.clickElementAndWaitToDisappear(this.disconnectButton);
+  async clickOnConnect(): Promise<void> {
+    console.log('Click on Connect');
+    await this.driver.clickElement(this.connectAccountsButton);
   }
 
   /**
@@ -75,7 +79,7 @@ class EditConnectedAccountsModal {
       `Select account number ${accountIndex} on edit connected accounts modal`,
     );
     const checkboxes = await this.driver.findElements(this.accountCheckbox);
-    const accountCheckbox = checkboxes[accountIndex];
+    const accountCheckbox = checkboxes[accountIndex - 1];
     await accountCheckbox.click();
   }
 
@@ -88,7 +92,7 @@ class EditConnectedAccountsModal {
   async checkIsAccountSelected(accountIndex: number): Promise<boolean> {
     console.log(`Checking if account number ${accountIndex} is selected`);
     const checkboxes = await this.driver.findElements(this.accountCheckbox);
-    const accountCheckbox = checkboxes[accountIndex];
+    const accountCheckbox = checkboxes[accountIndex - 1];
     return await accountCheckbox.isSelected();
   }
 }
