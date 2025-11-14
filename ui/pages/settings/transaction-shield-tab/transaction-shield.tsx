@@ -81,6 +81,9 @@ import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscri
 import {
   ShieldCtaActionClickedEnum,
   ShieldCtaSourceEnum,
+  ShieldErrorStateActionClickedEnum,
+  ShieldErrorStateLocationEnum,
+  ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { getTheme } from '../../../selectors';
@@ -91,7 +94,8 @@ const TransactionShield = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { search } = useLocation();
-  const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
+  const { captureShieldCtaClickedEvent, captureShieldErrorStateClickedEvent } =
+    useSubscriptionMetrics();
   const shouldWaitForSubscriptionCreation = useMemo(() => {
     const searchParams = new URLSearchParams(search);
     // param to wait for subscription creation happen in the background
@@ -417,6 +421,19 @@ const TransactionShield = () => {
     useSubscriptionCryptoApprovalTransaction(paymentToken);
 
   const handlePaymentError = useCallback(async () => {
+    if (currentShieldSubscription) {
+      // capture error state clicked event
+      captureShieldErrorStateClickedEvent({
+        subscriptionStatus: currentShieldSubscription.status,
+        paymentType: currentShieldSubscription.paymentMethod.type,
+        billingInterval: currentShieldSubscription.interval,
+        errorCause: 'payment_error',
+        actionClicked: ShieldErrorStateActionClickedEnum.Cta,
+        location: ShieldErrorStateLocationEnum.Settings,
+        view: ShieldErrorStateViewEnum.Banner,
+      });
+    }
+
     if (isCancelled) {
       // go to shield plan page to renew subscription for cancelled subscription
       navigate(SHIELD_PLAN_ROUTE);
@@ -449,6 +466,7 @@ const TransactionShield = () => {
     executeUpdateSubscriptionCardPaymentMethod,
     setIsAddFundsModalOpen,
     executeSubscriptionCryptoApprovalTransaction,
+    captureShieldErrorStateClickedEvent,
   ]);
 
   const membershipErrorBanner = useMemo(() => {

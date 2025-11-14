@@ -70,7 +70,14 @@ import { getShortDateFormatterV2 } from '../../../pages/asset/util';
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
+  getSubscriptionPaymentData,
 } from '../../../../shared/lib/shield';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import {
+  ShieldErrorStateActionClickedEnum,
+  ShieldErrorStateLocationEnum,
+  ShieldErrorStateViewEnum,
+} from '../../../../shared/constants/subscriptions';
 import {
   selectNftDetectionEnablementToast,
   selectShowConnectAccountToast,
@@ -612,7 +619,7 @@ function ShieldPausedToast() {
   const navigate = useNavigate();
 
   const showShieldPausedToast = useSelector(selectShowShieldPausedToast);
-
+  const { captureShieldErrorStateClickedEvent } = useSubscriptionMetrics();
   const { subscriptions } = useUserSubscriptions();
 
   const shieldSubscription = useUserSubscriptionByProduct(
@@ -622,6 +629,38 @@ function ShieldPausedToast() {
 
   const isPaused = getIsShieldSubscriptionPaused(shieldSubscription);
 
+  const trackShieldErrorStateClickedEvent = (actionClicked) => {
+    const { cryptoPaymentChain, cryptoPaymentCurrency } =
+      getSubscriptionPaymentData(shieldSubscription);
+    // capture error state clicked event
+    captureShieldErrorStateClickedEvent({
+      subscriptionStatus: shieldSubscription.status,
+      paymentType: shieldSubscription.paymentMethod.type,
+      billingInterval: shieldSubscription.interval,
+      cryptoPaymentChain,
+      cryptoPaymentCurrency,
+      errorCause: 'payment_error',
+      actionClicked,
+      location: ShieldErrorStateLocationEnum.Homepage,
+      view: ShieldErrorStateViewEnum.Toast,
+    });
+  };
+
+  const handleActionClick = async () => {
+    // capture error state clicked event
+    trackShieldErrorStateClickedEvent(ShieldErrorStateActionClickedEnum.Cta);
+    setShieldPausedToastLastClickedOrClosed(Date.now());
+    navigate(TRANSACTION_SHIELD_ROUTE);
+  };
+
+  const handleToastClose = () => {
+    // capture error state clicked event
+    trackShieldErrorStateClickedEvent(
+      ShieldErrorStateActionClickedEnum.Dismiss,
+    );
+    setShieldPausedToastLastClickedOrClosed(Date.now());
+  };
+
   return (
     Boolean(isPaused) &&
     showShieldPausedToast && (
@@ -630,10 +669,7 @@ function ShieldPausedToast() {
         text={t('shieldPaymentDeclined')}
         description={t('shieldPaymentDeclinedDescription')}
         actionText={t('shieldPaymentDeclinedAction')}
-        onActionClick={async () => {
-          setShieldPausedToastLastClickedOrClosed(Date.now());
-          navigate(TRANSACTION_SHIELD_ROUTE);
-        }}
+        onActionClick={handleActionClick}
         startAdornment={
           <Icon
             name={IconName.CircleX}
@@ -641,7 +677,7 @@ function ShieldPausedToast() {
             size={IconSize.Lg}
           />
         }
-        onClose={() => setShieldPausedToastLastClickedOrClosed(Date.now())}
+        onClose={handleToastClose}
       />
     )
   );
