@@ -44,6 +44,8 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
       if (isExternal) {
         setIsOpen(true);
       } else {
+        // `useSnapNavigate` is a callback, not a hook.
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         useSnapNavigate(href);
       }
     },

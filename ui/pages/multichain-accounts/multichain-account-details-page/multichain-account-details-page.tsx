@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
@@ -62,22 +62,10 @@ export const MultichainAccountDetailsPage = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const { id } = useParams();
 
-  // Validate URL parameter early
-  if (!id) {
-    history.push(DEFAULT_ROUTE);
-    return null;
-  }
-
-  const accountGroupId = decodeURIComponent(id) as AccountGroupId;
+  const accountGroupId = decodeURIComponent(id ?? '') as AccountGroupId;
   const multichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, accountGroupId),
   );
-
-  // Redirect if account doesn't exist
-  if (!multichainAccount) {
-    history.push(DEFAULT_ROUTE);
-    return null;
-  }
 
   const walletId = extractWalletIdFromGroupId(accountGroupId);
   const wallet = useSelector((state) => getWallet(state, walletId));
@@ -158,7 +146,14 @@ export const MultichainAccountDetailsPage = () => {
     history.push(walletRoute);
   };
 
-  return (
+  useEffect(() => {
+    // Redirect if account doesn't exist
+    if (!id || !multichainAccount) {
+      history.push(DEFAULT_ROUTE);
+    }
+  }, [id, multichainAccount, history]);
+
+  return id && multichainAccount ? (
     <Page className="multichain-account-details-page">
       <Header
         textProps={{
@@ -317,5 +312,5 @@ export const MultichainAccountDetailsPage = () => {
         )}
       </Content>
     </Page>
-  );
+  ) : null;
 };
