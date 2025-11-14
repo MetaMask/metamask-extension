@@ -112,21 +112,6 @@ export type CaptureShieldPaymentMethodChangeEventParams =
   };
 
 /**
- * Capture the event when the payment method is retried after unsuccessful deduction attempt.
- */
-export type CaptureShieldPaymentMethodRetriedEventParams =
-  ExistingSubscriptionEventParams;
-
-/**
- * Capture the event when payment failed due to insufficient allowance or users want to renew subscription that is ending soon.
- */
-export type CaptureShieldPaymentMethodUpdatedEventParams =
-  ExistingSubscriptionEventParams;
-
-export type CaptureShieldBillingHistoryOpenedEventParams =
-  ExistingSubscriptionEventParams;
-
-/**
  * Triggered when the user has opened the crypto confirmation screen for a subscription or rejected the approval transaction.
  */
 export type CaptureShieldCryptoConfirmationEventParams =
