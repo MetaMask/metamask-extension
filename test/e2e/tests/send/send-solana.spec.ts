@@ -5,7 +5,7 @@ import { DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS } from '../../flask/solana-wal
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { mockSendRedesignFeatureFlag } from './common';
 
-// BUG #37824 With BIP44 turned on balance on Solana is always zero even when it is mocked
+// BUG #37824 With BIP44 turned on mocking Solana network responses no longer works
 // eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('Send Solana', function () {
   it('it should be possible to send SOL', async function () {

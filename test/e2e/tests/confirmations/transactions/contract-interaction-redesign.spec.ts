@@ -93,9 +93,8 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         },
       );
     });
-    // Skipping this test with BIP44 it shows the incorrect balance
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip(`Sends a contract interaction type 0 transaction (Legacy) with a Trezor account`, async function () {
+
+    it(`Sends a contract interaction type 0 transaction (Legacy) with a Trezor account`, async function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
@@ -125,7 +124,12 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
 
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await loginWithBalanceValidation(
+            driver,
+            undefined,
+            undefined,
+            '1.21M',
+          );
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
@@ -147,9 +151,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       );
     });
 
-    // Skipping this test with BIP44 it fails or crashes in the pipeline (not locally)
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip(`Opens a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2`, async function () {
+    it(`Opens a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2`, async function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },

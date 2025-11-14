@@ -43,8 +43,6 @@ describe('Unlock wallet - ', function () {
     );
   });
 
-  // This test fails with BIP44
-  // eslint-disable-next-line mocha/no-skipped-tests
   it('should show connections removed modal when max key chain length is reached for social account', async function () {
     await withFixtures(
       {
@@ -100,6 +98,7 @@ describe('Unlock wallet - ', function () {
         await loginPage.loginToHomepage(WALLET_PASSWORD);
 
         // Wait syncing to finish
+        // BUG #37816 After password is changed and account is locked with BIP44, login takes take a long time
         await driver.delay(10_000);
         await homePage.checkPageIsLoaded();
         await homePage.checkConnectionsRemovedModalIsDisplayed();

@@ -4,7 +4,7 @@ import { Browser } from 'selenium-webdriver';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { DEFAULT_FIXTURE_ACCOUNT, MOCK_META_METRICS_ID } from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
@@ -67,8 +67,6 @@ async function mockPermissionApprovedEndpoint(mockServer: Mockttp) {
     });
 }
 
-// These tests fails with BIP44
-// eslint-disable-next-line mocha/no-skipped-tests
 describe('Dapp viewed Event', function () {
   before(function () {
     // currently we are not emitting dapp viewed events on Firefox
@@ -87,7 +85,7 @@ describe('Dapp viewed Event', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
+            metaMetricsId: null,
             participateInMetaMetrics: true,
           })
           .build(),
