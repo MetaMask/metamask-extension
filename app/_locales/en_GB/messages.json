@@ -6091,7 +6091,7 @@
     "description": "The $1 is the date"
   },
   "shieldCovered": {
-    "message": "This request is covered"
+    "message": "Covered"
   },
   "shieldEntryModalGetStarted": {
     "message": "Start 14-day free trial"
