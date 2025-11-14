@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import {
+  COHORT_NAMES,
   MODAL_TYPE,
   ModalType,
   SubscriptionUserEvent,
@@ -29,22 +30,29 @@ import {
   setShowShieldEntryModalOnce,
   submitSubscriptionUserEvents,
 } from '../../../store/actions';
-import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
+import {
+  SETTINGS_ROUTE,
+  SHIELD_PLAN_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   getShouldSubmitEventsForShieldEntryModal,
   getShieldEntryModalTriggeringCohort,
   getModalTypeForShieldEntryModal,
 } from '../../../selectors';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
-import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
+import {
+  EntryModalSourceEnum,
+  ShieldCtaActionClickedEnum,
+  ShieldCtaSourceEnum,
+} from '../../../../shared/constants/subscriptions';
 import {
   AlignItems,
+  BlockSize,
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import ShieldIllustrationAnimation from './shield-illustration-animation';
 
 const ShieldEntryModal = ({
   skipEventSubmission = false,
@@ -56,19 +64,60 @@ const ShieldEntryModal = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { captureShieldEntryModalEvent } = useSubscriptionMetrics();
+  const { pathname, search } = useLocation();
+  const { captureShieldEntryModalEvent, captureShieldCtaClickedEvent } =
+    useSubscriptionMetrics();
   const shouldSubmitEvent = useSelector(
     getShouldSubmitEventsForShieldEntryModal,
   );
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
   const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
-  const handleOnClose = (ctaActionClicked: string = 'dismiss') => {
+  const getMarketingUtmId = useCallback(() => {
+    const searchParams = new URLSearchParams(search);
+    const utmId = searchParams.get('utm_id');
+    if (utmId) {
+      return utmId;
+    }
+    return undefined;
+  }, [search]);
+
+  const determineEntryModalSource = useCallback((): EntryModalSourceEnum => {
+    const marketingUtmId = getMarketingUtmId();
+    if (marketingUtmId) {
+      return EntryModalSourceEnum.Marketing;
+    } else if (triggeringCohort === COHORT_NAMES.POST_TX) {
+      return EntryModalSourceEnum.PostTransaction;
+    } else if (triggeringCohort === COHORT_NAMES.WALLET_HOME) {
+      return EntryModalSourceEnum.Homepage;
+    } else if (pathname.startsWith(SETTINGS_ROUTE)) {
+      return EntryModalSourceEnum.Settings;
+    }
+
+    // TODO: Add logics for other entry modal sources, Carousel and Notification.
+
+    return EntryModalSourceEnum.Homepage;
+  }, [triggeringCohort, pathname, getMarketingUtmId]);
+
+  const handleOnClose = (
+    ctaActionClicked: ShieldCtaActionClickedEnum = ShieldCtaActionClickedEnum.Dismiss,
+  ) => {
+    const source = determineEntryModalSource();
+    const marketingUtmId = getMarketingUtmId();
     captureShieldEntryModalEvent({
-      source: EntryModalSourceEnum.Homepage,
+      source,
       type: modalType,
       modalCtaActionClicked: ctaActionClicked,
+      marketingUtmId,
     });
+
+    if (ctaActionClicked === ShieldCtaActionClickedEnum.Dismiss) {
+      captureShieldCtaClickedEvent({
+        source: ShieldCtaSourceEnum.Homepage, // FIXME: get the correct source
+        ctaActionClicked: ShieldCtaActionClickedEnum.Dismiss,
+        marketingUtmId,
+      });
+    }
 
     if (skipEventSubmission) {
       onClose?.();
@@ -86,8 +135,35 @@ const ShieldEntryModal = ({
   };
 
   const handleOnGetStarted = () => {
-    handleOnClose('get-started');
-    navigate(SHIELD_PLAN_ROUTE);
+    const source = determineEntryModalSource();
+    const marketingUtmId = getMarketingUtmId();
+
+    captureShieldCtaClickedEvent({
+      // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
+      source: source as unknown as ShieldCtaSourceEnum,
+      ctaActionClicked: ShieldCtaActionClickedEnum.Start14DayTrial,
+      redirectToPage: SHIELD_PLAN_ROUTE,
+      marketingUtmId,
+    });
+
+    handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
+
+    navigate({
+      pathname: SHIELD_PLAN_ROUTE,
+      search: marketingUtmId
+        ? `?utm_id=${marketingUtmId}`
+        : `?source=${source}`,
+    });
+  };
+
+  const handleOnLearnMoreClick = () => {
+    captureShieldCtaClickedEvent({
+      source: ShieldCtaSourceEnum.Homepage, // FIXME: get the correct source
+      ctaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
+      redirectToUrl: TRANSACTION_SHIELD_LINK,
+    });
+
+    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
   };
 
   return (
@@ -97,7 +173,7 @@ const ShieldEntryModal = ({
       autoFocus={false}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
-      onClose={() => handleOnClose('skip')}
+      onClose={handleOnClose}
       className="shield-entry-modal"
       data-theme={ThemeType.dark}
     >
@@ -121,6 +197,7 @@ const ShieldEntryModal = ({
           flexDirection={FlexDirection.Column}
           gap={3}
           paddingTop={4}
+          height={BlockSize.Full}
         >
           <Text
             fontFamily={FontFamily.Hero}
@@ -140,15 +217,11 @@ const ShieldEntryModal = ({
               ? t('shieldEntryModalSubtitleA', ['$10,000'])
               : t('shieldEntryModalSubtitleB', ['$10,000'])}
           </Text>
-          <Box className="grid place-items-center">
+          <Box className="shield-entry-modal-sheild-image flex-1 flex items-center justify-center">
             <img
-              src="/images/shield-entry-modal-bg.png"
+              src="/images/transaction-shield-modal.png"
               alt="Shield Entry Illustration"
-              className="col-start-1 row-start-1"
-            />
-            <ShieldIllustrationAnimation
-              containerClassName="shield-entry-modal-shield-illustration__container col-start-1 row-start-1"
-              canvasClassName="shield-entry-modal-shield-illustration__canvas"
+              className="mx-auto h-full w-full object-contain"
             />
           </Box>
         </ModalBody>
@@ -167,7 +240,7 @@ const ShieldEntryModal = ({
           </Button>
           <Button asChild variant={ButtonVariant.Secondary} className="w-full">
             <a
-              href={TRANSACTION_SHIELD_LINK}
+              onClick={handleOnLearnMoreClick}
               target="_blank"
               rel="noopener noreferrer"
             >

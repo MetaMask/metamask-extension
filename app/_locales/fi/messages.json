@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Tarkastele tiliä Etherscanissa"
   },
-  "expandView": {
-    "message": "Laajenna näkymää"
-  },
   "failed": {
     "message": "Epäonnistui"
   },

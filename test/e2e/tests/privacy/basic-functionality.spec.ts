@@ -11,6 +11,7 @@ import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.fl
 import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import { mockEmptyPrices } from '../tokens/utils/mocks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -129,6 +130,9 @@ describe('MetaMask onboarding', function () {
 
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

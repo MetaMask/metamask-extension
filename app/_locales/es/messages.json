@@ -2324,9 +2324,6 @@
   "existingChainId": {
     "message": "La información que ha ingresado está asociada con un ID de cadena existente."
   },
-  "expandView": {
-    "message": "Expandir vista"
-  },
   "experimental": {
     "message": "Experimental"
   },

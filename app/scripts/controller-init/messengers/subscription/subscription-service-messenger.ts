@@ -49,6 +49,7 @@ export function getSubscriptionServiceMessenger(
       'NetworkController:getState',
       'SwapsController:getState',
       'MetaMetricsController:trackEvent',
+      'KeyringController:getState',
     ],
   });
   return serviceMessenger;

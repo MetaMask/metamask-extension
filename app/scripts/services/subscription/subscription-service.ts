@@ -10,6 +10,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import log from 'loglevel';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { Json } from '@metamask/utils';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
@@ -18,7 +20,10 @@ import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
 import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
-import { getSubscriptionRequestTrackingProps } from '../../../../shared/modules/shield/metrics';
+import {
+  getSubscriptionRequestTrackingProps,
+  getUserAccountTypeAndCategory,
+} from '../../../../shared/modules/shield/metrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -149,12 +154,16 @@ export class SubscriptionService {
       const subscriptions = await this.#messenger.call(
         'SubscriptionController:getSubscriptions',
       );
-      this.#trackSubscriptionRequestEvent('completed');
+      this.trackSubscriptionRequestEvent('completed');
       return subscriptions;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
-      this.#trackSubscriptionRequestEvent('failed', errorMessage);
+      this.trackSubscriptionRequestEvent('failed', undefined, {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_message: errorMessage,
+      });
       throw error;
     }
   }
@@ -193,6 +202,57 @@ export class SubscriptionService {
     } catch (error) {
       log.error('Failed to submit sponsorship intent', error);
     }
+  }
+
+  /**
+   * Track the subscription request event.
+   *
+   * @param requestStatus - The request status.
+   * @param transactionMeta - The transaction meta (for crypto subscription requests).
+   * @param extrasProps - The extra properties.
+   */
+  trackSubscriptionRequestEvent(
+    requestStatus: 'started' | 'completed' | 'failed',
+    transactionMeta?: TransactionMeta,
+    extrasProps?: Record<string, Json>,
+  ) {
+    if (
+      transactionMeta &&
+      transactionMeta.type !== TransactionType.shieldSubscriptionApprove
+    ) {
+      return;
+    }
+
+    const subscriptionControllerState = this.#messenger.call(
+      'SubscriptionController:getState',
+    );
+    const appStateControllerState = this.#messenger.call(
+      'AppStateController:getState',
+    );
+    const {
+      defaultSubscriptionPaymentOptions,
+      shieldSubscriptionMetricsProps,
+    } = appStateControllerState;
+
+    const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
+
+    const trackingProps = getSubscriptionRequestTrackingProps(
+      subscriptionControllerState,
+      defaultSubscriptionPaymentOptions,
+      shieldSubscriptionMetricsProps,
+      transactionMeta,
+    );
+
+    this.#messenger.call('MetaMetricsController:trackEvent', {
+      event: MetaMetricsEventName.ShieldSubscriptionRequest,
+      category: MetaMetricsEventCategory.Shield,
+      properties: {
+        ...accountTypeAndCategory,
+        ...trackingProps,
+        ...extrasProps,
+        status: requestStatus,
+      },
+    });
   }
 
   async #openAndWaitForTabToClose(params: { url: string; successUrl: string }) {
@@ -285,31 +345,20 @@ export class SubscriptionService {
     return swapsControllerState;
   }
 
-  #trackSubscriptionRequestEvent(
-    requestStatus: 'completed' | 'failed',
-    errorMessage?: string,
-  ) {
-    const subscriptionControllerState = this.#messenger.call(
-      'SubscriptionController:getState',
+  #getAccountTypeAndCategoryForMetrics() {
+    const { internalAccounts } = this.#messenger.call(
+      'AccountsController:getState',
     );
-    const appStateControllerState = this.#messenger.call(
-      'AppStateController:getState',
+    const selectedInternalAccount =
+      internalAccounts.accounts[internalAccounts.selectedAccount];
+    const keyringsMetadata = this.#messenger.call('KeyringController:getState');
+    const hdKeyringsMetadata = keyringsMetadata.keyrings.filter(
+      (keyring) => keyring.type === KeyringTypes.hd,
     );
-    const { defaultSubscriptionPaymentOptions } = appStateControllerState;
-    const trackingProps = getSubscriptionRequestTrackingProps(
-      subscriptionControllerState,
-      defaultSubscriptionPaymentOptions,
+
+    return getUserAccountTypeAndCategory(
+      selectedInternalAccount,
+      hdKeyringsMetadata,
     );
-    this.#messenger.call('MetaMetricsController:trackEvent', {
-      event: MetaMetricsEventName.ShieldSubscriptionRequest,
-      category: MetaMetricsEventCategory.Shield,
-      properties: {
-        ...trackingProps,
-        status: requestStatus,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_message: errorMessage || null,
-      },
-    });
   }
 }

@@ -719,8 +719,7 @@ export enum MetaMetricsEventName {
   EncryptionPublicKeyRequested = 'Encryption Requested',
   ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
-  ImportSecretRecoveryPhraseClicked = 'Import Secret Recovery Phrase Clicked',
-  ImportSecretRecoveryPhraseCompleted = 'Import Secret Recovery Phrase Completed',
+  ImportSecretRecoveryPhrase = 'Import Secret Recovery Phrase',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
   KeyExportFailed = 'Key Export Failed',
@@ -942,13 +941,23 @@ export enum MetaMetricsEventName {
   ExtensionPinned = 'Extension Pinned',
   // Extension Port Stream
   PortStreamChunked = 'Port Stream Chunked',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ViewportSwitched = 'Viewport Switched',
-  ///: END:ONLY_INCLUDE_IF
   // Shield
   ShieldEntryModal = 'Shield Entry Modal',
   ShieldSubscriptionRequest = 'Shield Subscription Request',
-  ShieldSubscriptionRestartRequest = 'Shield Subscription Restart Request',
+  ShieldMembershipRestartRequest = 'Shield Membership Restart Request',
+  ShieldMembershipCancelled = 'Shield Membership Cancelled',
+  ShieldPaymentMethodChange = 'Shield Payment Method Change',
+  ShieldPaymentMethodRetried = 'Shield Payment Method Retried',
+  ShieldPaymentMethodUpdated = 'Shield Payment Method Updated',
+  ShieldBillingHistoryOpened = 'Shield Billing History Opened',
+  ShieldMembershipErrorStateClicked = 'Shield Membership Error State Clicked',
+  ShieldCtaClicked = 'Shield CTA Clicked',
+  ShieldClaimSubmission = 'Shield Claim Submission',
+  ShieldSubscriptionCryptoConfirmation = 'Shield Subscription Crypto Confirmation',
+  ShieldPrioritySupportClicked = 'Shield Priority Support Clicked',
+  ShieldEligibilityCohortAssigned = 'Shield Eligibility Cohort Assigned',
+  ShieldEligibilityCohortTimeout = 'Shield Eligibility Cohort Timeout',
 }
 
 export enum MetaMetricsEventAccountType {

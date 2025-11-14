@@ -17,6 +17,7 @@ import {
 import { AccountsControllerGetStateAction } from '@metamask/accounts-controller';
 import { SmartTransactionsControllerGetStateAction } from '@metamask/smart-transactions-controller';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
+import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
@@ -51,7 +52,8 @@ export type SubscriptionServiceAction =
   | NetworkControllerGetStateAction
   | AuthenticationControllerGetBearerToken
   | AppStateControllerGetStateAction
-  | MetaMetricsControllerTrackEventAction;
+  | MetaMetricsControllerTrackEventAction
+  | KeyringControllerGetStateAction; // For metrics, to get the HD Keyrings metadata
 
 export type SubscriptionServiceEvent = never;
 

@@ -2324,9 +2324,6 @@
   "existingChainId": {
     "message": "Thông tin bạn đã nhập được liên kết với một ID chuỗi hiện có."
   },
-  "expandView": {
-    "message": "Chế độ xem mở rộng"
-  },
   "experimental": {
     "message": "Thử nghiệm"
   },

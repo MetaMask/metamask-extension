@@ -64,6 +64,7 @@ const mockGetNetworkControllerState = jest.fn();
 const mockGetAppStateControllerState = jest.fn();
 const mockGetMetaMetricsControllerState = jest.fn();
 const mockGetSubscriptionControllerState = jest.fn();
+const mockGetKeyringControllerState = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
   namespace: MOCK_ANY_NAMESPACE,
@@ -116,6 +117,10 @@ rootMessenger.registerActionHandler(
   'SubscriptionController:getState',
   mockGetSubscriptionControllerState,
 );
+rootMessenger.registerActionHandler(
+  'KeyringController:getState',
+  mockGetKeyringControllerState,
+);
 
 const messenger: SubscriptionServiceMessenger = new Messenger({
   namespace: 'SubscriptionService',
@@ -136,6 +141,7 @@ rootMessenger.delegate({
     'AppStateController:getState',
     'MetaMetricsController:trackEvent',
     'SubscriptionController:getState',
+    'KeyringController:getState',
   ],
 });
 
@@ -153,19 +159,17 @@ const subscriptionService = new SubscriptionService({
 });
 
 describe('SubscriptionService - startSubscriptionWithCard', () => {
+  const MOCK_STATE = createSwapsMockStore().metamask;
+
   beforeAll(() => {
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('should start the subscription with card', async () => {
+  beforeEach(() => {
     mockStartShieldSubscriptionWithCard.mockResolvedValue({
       checkoutSessionUrl: mockCheckoutSessionUrl,
     });
-    mockGetAppStateControllerState.mockReturnValueOnce({
+    mockGetAppStateControllerState.mockReturnValue({
       defaultSubscriptionPaymentOptions: {
         defaultBillingInterval: RECURRING_INTERVALS.month,
         defaultPaymentType: PAYMENT_TYPES.byCard,
@@ -173,7 +177,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
         defaultPaymentChain: '0x1',
       },
     });
-    mockGetSubscriptionControllerState.mockReturnValueOnce({
+    mockGetSubscriptionControllerState.mockReturnValue({
       lastSelectedPaymentMethod: {
         shield: {
           plan: RECURRING_INTERVALS.year,
@@ -184,29 +188,37 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
       subscriptions: [],
       lastSubscription: undefined,
     });
-    const mockOpenTab = jest.spyOn(mockPlatform, 'openTab');
-    mockOpenTab.mockResolvedValue({
-      id: 1,
-    } as browser.Tabs.Tab);
-    const mockAddTabUpdatedListener = jest.spyOn(
-      mockPlatform,
-      'addTabUpdatedListener',
-    );
-    mockAddTabUpdatedListener.mockImplementation(async (fn) => {
-      await new Promise((r) => setTimeout(r, 200));
-      await fn(1, {
-        url: MOCK_REDIRECT_URI,
-      });
+    mockGetAccountsState.mockReturnValueOnce({
+      internalAccounts: MOCK_STATE.internalAccounts,
     });
-    const mockAddTabRemovedListener = jest.spyOn(
-      mockPlatform,
-      'addTabRemovedListener',
-    );
-    mockAddTabRemovedListener.mockImplementation(async (fn) => {
-      await new Promise((r) => setTimeout(r, 500));
-      await fn(1);
+    mockGetKeyringControllerState.mockReturnValueOnce({
+      keyrings: MOCK_STATE.keyrings,
     });
 
+    jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({
+      id: 1,
+    } as browser.Tabs.Tab);
+    jest
+      .spyOn(mockPlatform, 'addTabUpdatedListener')
+      .mockImplementation(async (fn) => {
+        await new Promise((r) => setTimeout(r, 200));
+        await fn(1, {
+          url: MOCK_REDIRECT_URI,
+        });
+      });
+    jest
+      .spyOn(mockPlatform, 'addTabRemovedListener')
+      .mockImplementation(async (fn) => {
+        await new Promise((r) => setTimeout(r, 500));
+        await fn(1);
+      });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should start the subscription with card', async () => {
     await subscriptionService.startSubscriptionWithCard({
       products: [PRODUCT_TYPES.SHIELD],
       isTrialRequested: false,

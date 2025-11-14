@@ -28,6 +28,15 @@ export enum EntryModalSourceEnum {
   PostTransaction = 'post_transaction', // after a transaction
 }
 
+export enum ShieldCtaSourceEnum {
+  Notification = 'notification',
+  Carousel = 'carousel',
+  Homepage = 'homepage',
+  Settings = 'settings',
+  Marketing = 'marketing', // from marketing campaign
+  PostTransaction = 'post_transaction', // after a transaction
+}
+
 export enum ShieldUserAccountCategoryEnum {
   PRIMARY = 'primary',
   ImportedAccount = 'imported_account',
@@ -37,4 +46,30 @@ export enum ShieldUserAccountCategoryEnum {
 export enum ShieldUserAccountTypeEnum {
   EOA = 'EOA',
   ERC4337 = 'SmartAccount',
+}
+
+export enum ShieldCtaActionClickedEnum {
+  Start14DayTrial = 'start_14_day_free_trial',
+  LearnMore = 'learn_more',
+  TermOfUse = 'term_of_use',
+  ViewFullBenefits = 'view_full_benefits',
+  ContactSupport = 'contact_support',
+  WhatsCovered = 'whats_covered',
+  FindingTxHash = 'finding_tx_hash',
+  Dismiss = 'dismiss',
+}
+
+export enum ShieldErrorStateActionClickedEnum {
+  Cta = 'cta',
+  Dismiss = 'dismiss',
+}
+
+export enum ShieldErrorStateLocationEnum {
+  Homepage = 'homepage',
+  Settings = 'settings',
+}
+
+export enum ShieldErrorStateViewEnum {
+  Banner = 'banner',
+  Toast = 'toast',
 }

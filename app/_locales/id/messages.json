@@ -2324,9 +2324,6 @@
   "existingChainId": {
     "message": "Informasi yang Anda masukkan terhubung dengan ID chain yang ada."
   },
-  "expandView": {
-    "message": "Perluas tampilan"
-  },
   "experimental": {
     "message": "Eksperimental"
   },
