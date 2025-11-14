@@ -149,6 +149,7 @@ export const MultichainAccountNetworkGroup: React.FC<
               borderRadius: '2px',
             },
             className: 'rounded bg-default border-default align-middle',
+            'data-testid': hexChainId,
           },
         };
       })
@@ -163,6 +164,7 @@ export const MultichainAccountNetworkGroup: React.FC<
       }}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
+      data-testid="avatar-group"
     >
       <AvatarGroup
         max={limit}

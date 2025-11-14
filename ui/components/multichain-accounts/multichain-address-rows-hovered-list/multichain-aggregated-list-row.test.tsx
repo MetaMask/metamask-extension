@@ -44,6 +44,7 @@ const TEST_CHAIN_IDS = {
 
 const TEST_IDS = {
   MULTICHAIN_ADDRESS_ROW: 'multichain-address-row',
+  AVATAR_GROUP: 'avatar-group',
 } as const;
 
 const CSS_CLASSES = {
