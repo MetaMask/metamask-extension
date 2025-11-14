@@ -10,10 +10,12 @@ import MockState from '../../../../test/data/mock-state.json';
 import ShieldEntryModal from './shield-entry-modal';
 
 const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
   };
 });
 
@@ -47,6 +49,10 @@ describe('Shield Entry Modal', () => {
     submitSubscriptionUserEventsSpy = jest
       .spyOn(actions, 'submitSubscriptionUserEvents')
       .mockReturnValueOnce(jest.fn().mockResolvedValueOnce(true));
+    mockUseLocation.mockReturnValue({
+      pathname: '/any-other-path',
+      search: '',
+    });
   });
 
   it('should render', () => {
@@ -74,7 +80,10 @@ describe('Shield Entry Modal', () => {
     fireEvent.click(getStartedButton);
     expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
     await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(SHIELD_PLAN_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: SHIELD_PLAN_ROUTE,
+        search: '?source=homepage',
+      });
     });
   });
 

@@ -198,6 +198,7 @@ async function setupMocking(
       };
     });
 
+  // Subscriptions Eligibility
   await server
     .forGet(
       'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
@@ -205,7 +206,18 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [],
+        json: [
+          {
+            canSubscribe: false,
+            canViewEntryModal: false,
+            minBalanceUSD: 1000,
+            product: 'shield',
+            modalType: 'A',
+            cohorts: [],
+            assignedCohort: null,
+            hasAssignedCohortExpired: null,
+          },
+        ],
       };
     });
 

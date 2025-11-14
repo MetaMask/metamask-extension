@@ -4,6 +4,8 @@ import {
   PRODUCT_TYPES,
   COHORT_NAMES,
   type Cohort,
+  CohortName,
+  ModalType,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useSubscriptionEligibility } from '../../hooks/subscription/useSubscription';
@@ -25,6 +27,8 @@ import {
 } from '../../selectors/subscription';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { getUserBalanceCategory } from '../../../shared/modules/shield';
+import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 
 export const ShieldSubscriptionContext = React.createContext<{
   evaluateCohortEligibility: (entrypointCohort: string) => Promise<void>;
@@ -64,13 +68,14 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     false,
     true, // use USD conversion rate instead of the current currency
   );
+  const { captureShieldEligibilityCohortEvent } = useSubscriptionMetrics();
 
   /**
    * Assigns a user to a cohort based on eligibility rate (80/20 split).
    * Returns the selected cohort or null.
    */
   const assignToCohort = useCallback(
-    async (cohorts: Cohort[]): Promise<Cohort | null> => {
+    async (cohorts: Cohort[], modalType: ModalType): Promise<Cohort | null> => {
       if (cohorts.length === 0) {
         return null;
       }
@@ -104,6 +109,14 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       if (selectedCohort) {
         try {
           await dispatch(assignUserToCohort({ cohort: selectedCohort.cohort }));
+          await captureShieldEligibilityCohortEvent(
+            {
+              cohort: selectedCohort.cohort as CohortName,
+              modalType,
+              numberOfEligibleCohorts: cohorts.length,
+            },
+            MetaMetricsEventName.ShieldEligibilityCohortAssigned,
+          );
           return selectedCohort;
         } catch (error) {
           log.error('[ShieldSubscription] Failed to assign cohort', error);
@@ -113,7 +126,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
 
       return null;
     },
-    [dispatch],
+    [dispatch, captureShieldEligibilityCohortEvent],
   );
 
   /**
@@ -182,6 +195,17 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
           if (entrypointCohort !== COHORT_NAMES.POST_TX && !hasExpired) {
             return;
           }
+
+          // User has an assigned cohort but it has expired
+          // track `shield_eligibility_cohort_timeout` event
+          await captureShieldEligibilityCohortEvent(
+            {
+              cohort: assignedCohortName as CohortName,
+              numberOfEligibleCohorts: eligibleCohorts.length,
+            },
+            MetaMetricsEventName.ShieldEligibilityCohortTimeout,
+          );
+
           const cohort = eligibleCohorts.find(
             (c) => c.cohort === entrypointCohort,
           );
@@ -204,11 +228,15 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
         // New user - only assign from wallet_home entrypoint
         if (
           entrypointCohort === COHORT_NAMES.WALLET_HOME &&
-          eligibleCohorts.length > 0
+          eligibleCohorts.length > 0 &&
+          modalType
         ) {
-          const selectedCohort = await assignToCohort(eligibleCohorts);
+          const selectedCohort = await assignToCohort(
+            eligibleCohorts,
+            modalType,
+          );
           if (selectedCohort?.cohort === COHORT_NAMES.WALLET_HOME) {
-            const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event
+            const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event to subscription backend
             dispatch(
               setShowShieldEntryModalOnce(
                 true,
@@ -235,6 +263,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       totalFiatBalance,
       getShieldSubscriptionEligibility,
       assignToCohort,
+      captureShieldEligibilityCohortEvent,
     ],
   );
 

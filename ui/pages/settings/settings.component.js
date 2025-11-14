@@ -169,9 +169,7 @@ class SettingsPage extends PureComponent {
     const isPopup =
       environmentType === ENVIRONMENT_TYPE_POPUP ||
       environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-    ///: END:ONLY_INCLUDE_IF
     const isSearchHidden =
       isRevealSrpListPage || isPasswordChangePage || isTransactionShieldPage;
 
@@ -181,9 +179,7 @@ class SettingsPage extends PureComponent {
           'main-container main-container--has-shadow settings-page',
           {
             'settings-page--selected': currentPath !== SETTINGS_ROUTE,
-            ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
             'settings-page--sidepanel': isSidepanel,
-            ///: END:ONLY_INCLUDE_IF
           },
         )}
       >

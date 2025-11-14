@@ -49,7 +49,10 @@ import {
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
 } from '../../../shared/lib/trust-signals';
-import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
+import {
+  DefaultSubscriptionPaymentOptions,
+  ShieldSubscriptionMetricsPropsFromUI,
+} from '../../../shared/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -127,6 +130,12 @@ export type AppStateControllerState = {
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
+
+  /**
+   * The properties for the Shield subscription metrics.
+   * Since we can't access some of these properties in the background, we need to get them from the UI.
+   */
+  shieldSubscriptionMetricsProps?: ShieldSubscriptionMetricsPropsFromUI;
 
   /**
    * Whether the wallet reset is in progress.
@@ -639,6 +648,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInStateLogs: true,
   },
   defaultSubscriptionPaymentOptions: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+  },
+  shieldSubscriptionMetricsProps: {
     includeInStateLogs: false,
     persist: true,
     includeInDebugSnapshot: false,
@@ -1583,6 +1598,19 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.defaultSubscriptionPaymentOptions =
         defaultSubscriptionPaymentOptions;
+    });
+  }
+
+  /**
+   * Update the Shield subscription metrics properties which are not accessible in the background directly.
+   *
+   * @param shieldSubscriptionMetricsProps - The Shield subscription metrics properties.
+   */
+  setShieldSubscriptionMetricsProps(
+    shieldSubscriptionMetricsProps: ShieldSubscriptionMetricsPropsFromUI,
+  ): void {
+    this.update((state) => {
+      state.shieldSubscriptionMetricsProps = shieldSubscriptionMetricsProps;
     });
   }
 }
