@@ -39,9 +39,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
-        testSpecificMock: async (mockServer) => {
-          return mockSnapSimpleKeyringAndSite(mockServer);
-        },
+        testSpecificMock: mockSnapSimpleKeyringAndSite,
         state: 2,
       },
       async (driver: Driver) => {
