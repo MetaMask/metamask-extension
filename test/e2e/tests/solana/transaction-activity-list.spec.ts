@@ -11,8 +11,7 @@ import {
 
 // With BIP44 turned on balance on Solana is always zero even when it is mocked
 // eslint-disable-next-line mocha/no-skipped-tests
-describe('Transaction activity list', function (this: Suite) {
-  // eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Transaction activity list', function (this: Suite) {
   it('user can see activity list and a confirmed transaction details', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
