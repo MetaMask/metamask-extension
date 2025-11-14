@@ -22,7 +22,8 @@ export const TokenRatesControllerInit: ControllerInitFunction<
   TokenRatesControllerMessenger,
   TokenRatesControllerInitMessenger
 > = (request) => {
-  const { controllerMessenger, initMessenger, persistedState } = request;
+  const { controllerMessenger, initMessenger, persistedState, getController } =
+    request;
   const preferencesState = initMessenger.call('PreferencesController:getState');
 
   const controller = new TokenRatesController({
@@ -30,6 +31,8 @@ export const TokenRatesControllerInit: ControllerInitFunction<
     state: persistedState.TokenRatesController,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
     disabled: !preferencesState.useCurrencyRateCheck,
+    getSelectedCurrency: () =>
+      getController('CurrencyRateController').state.currentCurrency,
   });
 
   initMessenger.subscribe(
