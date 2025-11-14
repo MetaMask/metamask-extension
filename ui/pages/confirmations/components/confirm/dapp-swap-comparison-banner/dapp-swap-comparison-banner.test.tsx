@@ -105,7 +105,7 @@ describe('<DappSwapComparisonBanner />', () => {
       destinationTokenSymbol: 'TEST',
     } as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
-    expect(getByText('Metamask rate')).toBeInTheDocument();
+    expect(getByText('Market rate')).toBeInTheDocument();
     expect(getByText('Metamask Swap')).toBeInTheDocument();
     expect(getByText('Save and earn with MetaMask Swaps')).toBeInTheDocument();
     expect(getByText('Save $0.02')).toBeInTheDocument();
@@ -141,7 +141,7 @@ describe('<DappSwapComparisonBanner />', () => {
     expect(mockDispatch).toHaveBeenCalledTimes(1);
   });
 
-  it('call function to update confirmation when user clicks on Metamask rate button', () => {
+  it('call function to update confirmation when user clicks on Market rate button', () => {
     jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
       isQuotedSwap: true,
     });
@@ -153,7 +153,7 @@ describe('<DappSwapComparisonBanner />', () => {
       destinationTokenSymbol: 'TEST',
     } as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
-    const quoteSwapButton = getByText('Metamask rate');
+    const quoteSwapButton = getByText('Market rate');
     fireEvent.click(quoteSwapButton);
     expect(mockDispatch).toHaveBeenCalledTimes(1);
   });
