@@ -97,7 +97,7 @@ const _NotificationDetailNetworkFee: FC<NotificationDetailNetworkFeeProps> = ({
   const [networkFeesError, setNetworkFeesError] = useState<boolean>(false);
 
   const getNativeCurrency = (n: OnChainRawNotificationsWithNetworkFields) => {
-    return getNetworkDetailsByChainId(n.chain_id);
+    return getNetworkDetailsByChainId(n.payload.chain_id);
   };
 
   const nativeCurrency = getNativeCurrency(notification);
@@ -140,7 +140,7 @@ const _NotificationDetailNetworkFee: FC<NotificationDetailNetworkFeeProps> = ({
           notification_type: notification.type,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: notification.chain_id,
+          chain_id: notification.payload.chain_id,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           clicked_item: 'fee_details',

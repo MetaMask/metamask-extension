@@ -4,7 +4,7 @@ import { getCoverageStatus, ShieldState } from './coverage';
 describe('shield coverage selectors', () => {
   const confirmationId = 'abc123';
 
-  it('returns undefineds when there are no coverage results', () => {
+  it('returns undefined when there are no coverage results', () => {
     const state = {
       metamask: {
         coverageResults: {},
@@ -15,7 +15,7 @@ describe('shield coverage selectors', () => {
     expect(result).toEqual({ status: undefined, reasonCode: undefined });
   });
 
-  it('returns undefineds when results array is empty', () => {
+  it('returns undefined when results array is empty', () => {
     const state = {
       metamask: {
         coverageResults: {

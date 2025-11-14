@@ -1,7 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
+import {
+  type INotification,
+  TRIGGER_TYPES,
+  NOTIFICATION_API_TRIGGER_TYPES_SET,
+} from '@metamask/notification-services-controller/notification-services';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   IconName,
@@ -33,11 +37,6 @@ import {
 import { deleteExpiredNotifications } from '../../store/actions';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
-
-export type Notification = NotificationServicesController.Types.INotification;
-
-const { TRIGGER_TYPES, TRIGGER_TYPES_WALLET_SET } =
-  NotificationServicesController.Constants;
 
 // NOTE - these 2 data sources are combined in our controller.
 // FUTURE - we could separate these data sources into separate methods.
@@ -112,7 +111,7 @@ const useCombinedNotifications = () => {
 
 export const filterNotifications = (
   activeTab: TAB_KEYS,
-  notifications: Notification[],
+  notifications: INotification[],
 ) => {
   if (activeTab === TAB_KEYS.ALL) {
     return notifications;
@@ -121,7 +120,7 @@ export const filterNotifications = (
   if (activeTab === TAB_KEYS.WALLET) {
     return notifications.filter(
       (notification) =>
-        TRIGGER_TYPES_WALLET_SET.has(notification.type) ||
+        NOTIFICATION_API_TRIGGER_TYPES_SET.has(notification.type) ||
         notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
     );
   }

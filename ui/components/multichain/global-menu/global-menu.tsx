@@ -162,7 +162,7 @@ export const GlobalMenu = ({
 
   // Check if side panel is currently the default (vs popup)
   const preferences = useSelector(getPreferences);
-  const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? true;
+  const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? false;
 
   // Check if sidepanel feature is enabled (both build flag and LaunchDarkly flag)
   const isSidePanelEnabled = useSidePanelEnabled();
@@ -430,16 +430,19 @@ export const GlobalMenu = ({
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   location: METRICS_LOCATION,
-                  to: isSidePanelDefault
-                    ? ENVIRONMENT_TYPE_POPUP
-                    : ENVIRONMENT_TYPE_SIDEPANEL,
+                  to:
+                    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+                      ? ENVIRONMENT_TYPE_POPUP
+                      : ENVIRONMENT_TYPE_SIDEPANEL,
                 },
               });
               closeMenu();
             }}
             data-testid="global-menu-toggle-view"
           >
-            {isSidePanelDefault ? t('switchToPopup') : t('switchToSidePanel')}
+            {getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+              ? t('switchToPopup')
+              : t('switchToSidePanel')}
           </MenuItem>
         )}
       <MenuItem

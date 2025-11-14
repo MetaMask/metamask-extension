@@ -223,7 +223,7 @@ export const getDefaultPreferencesControllerState =
       },
       useNativeCurrencyAsPrimaryCurrency: true,
       ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-      useSidePanelAsDefault: true,
+      useSidePanelAsDefault: false,
       ///: END:ONLY_INCLUDE_IF
     },
     securityAlertsEnabled: true,
@@ -1013,6 +1013,12 @@ export class PreferencesController extends BaseController<
   setServiceWorkerKeepAlivePreference(value: boolean): void {
     this.update((state) => {
       state.enableMV3TimestampSave = value;
+    });
+  }
+
+  setUseSidePanelAsDefault(value: boolean): void {
+    this.update((state) => {
+      state.preferences.useSidePanelAsDefault = value;
     });
   }
 

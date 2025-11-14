@@ -20,7 +20,7 @@ export const useConfirmActions = () => {
   const { id: currentConfirmationId } = currentConfirmation || {};
 
   const rejectApproval = useCallback(
-    async ({ location }: { location?: MetaMetricsEventLocation } = {}) => {
+    ({ location }: { location?: MetaMetricsEventLocation } = {}) => {
       if (!currentConfirmationId) {
         return;
       }
@@ -29,9 +29,7 @@ export const useConfirmActions = () => {
       error.data = { location };
 
       const serializedError = serializeError(error);
-      await dispatch(
-        rejectPendingApproval(currentConfirmationId, serializedError),
-      );
+      dispatch(rejectPendingApproval(currentConfirmationId, serializedError));
     },
     [currentConfirmationId, dispatch],
   );
@@ -43,7 +41,7 @@ export const useConfirmActions = () => {
   }, [dispatch]);
 
   const onCancel = useCallback(
-    async ({
+    ({
       location,
       navigateBackForSend = false,
     }: {
@@ -56,7 +54,7 @@ export const useConfirmActions = () => {
       if (navigateBackForSend) {
         navigateBackIfSend();
       }
-      await rejectApproval({ location });
+      rejectApproval({ location });
       resetTransactionState();
     },
     [

@@ -63,6 +63,18 @@ export function useDappSwapComparisonInfo() {
     [transactionId, updateTransactionEventFragment],
   );
 
+  const captureDappSwapComparisonFailed = useCallback(
+    (reason: string) => {
+      captureDappSwapComparisonMetricsProperties({
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_comparison: reason ?? 'failed',
+        },
+      });
+    },
+    [captureDappSwapComparisonMetricsProperties],
+  );
+
   const { commands, quotesInput, amountMin, tokenAddresses } = useMemo(() => {
     try {
       let transactionData = data;
@@ -80,6 +92,7 @@ export function useDappSwapComparisonInfo() {
       return result;
     } catch (error) {
       captureException(error);
+      captureDappSwapComparisonFailed('error parsing swap data');
       return {
         commands: '',
         quotesInput: undefined,
@@ -88,6 +101,7 @@ export function useDappSwapComparisonInfo() {
       };
     }
   }, [
+    captureDappSwapComparisonFailed,
     chainId,
     data,
     nestedTransactions,
@@ -110,44 +124,59 @@ export function useDappSwapComparisonInfo() {
   const { value: quotes } = useAsyncResult<
     QuoteResponse[] | undefined
   >(async () => {
-    if (!quotesInput) {
+    try {
+      if (!quotesInput) {
+        return undefined;
+      }
+
+      captureDappSwapComparisonMetricsProperties({
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_comparison: 'loading',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_commands: commands,
+        },
+      });
+
+      updateQuoteRequestLatency();
+      const startTime = new Date().getTime();
+      const quotesList = await fetchQuotes(quotesInput);
+      updateQuoteResponseLatency(startTime);
+      return quotesList;
+    } catch (error) {
+      captureException(error);
+      captureDappSwapComparisonFailed('error fetching quotes');
       return undefined;
     }
-
-    captureDappSwapComparisonMetricsProperties({
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        swap_dapp_comparison: 'loading',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        swap_dapp_commands: commands,
-      },
-    });
-
-    updateQuoteRequestLatency();
-    const startTime = new Date().getTime();
-    const quotesList = await fetchQuotes(quotesInput);
-    updateQuoteResponseLatency(startTime);
-    return quotesList;
   }, [
     commands,
+    captureDappSwapComparisonFailed,
     captureDappSwapComparisonMetricsProperties,
     quotesInput,
-    requestDetectionLatency,
+    updateQuoteResponseLatency,
+    updateQuoteRequestLatency,
   ]);
 
   const { bestQuote, bestFilteredQuote: selectedQuote } = useMemo(() => {
-    if (amountMin === undefined || !quotes?.length || tokenInfoPending) {
+    try {
+      if (amountMin === undefined || !quotes?.length || tokenInfoPending) {
+        return { bestQuote: undefined, bestFilteredQuote: undefined };
+      }
+
+      return getBestQuote(
+        quotes,
+        amountMin,
+        getDestinationTokenUSDValue,
+        getGasUSDValue,
+      );
+    } catch (error) {
+      captureException(error);
+      captureDappSwapComparisonFailed('error getting best quote');
       return { bestQuote: undefined, bestFilteredQuote: undefined };
     }
-
-    return getBestQuote(
-      quotes,
-      amountMin,
-      getDestinationTokenUSDValue,
-      getGasUSDValue,
-    );
   }, [
     amountMin,
+    captureDappSwapComparisonFailed,
     getGasUSDValue,
     getDestinationTokenUSDValue,
     quotes,
@@ -266,10 +295,12 @@ export function useDappSwapComparisonInfo() {
       });
     } catch (error) {
       captureException(error);
+      captureDappSwapComparisonFailed('error calculating metrics values');
     }
   }, [
     amountMin,
     bestQuote,
+    captureDappSwapComparisonFailed,
     captureDappSwapComparisonMetricsProperties,
     commands,
     gas,

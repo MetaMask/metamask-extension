@@ -875,6 +875,7 @@ const TransactionShield = () => {
                       chainId={
                         displayedShieldSubscription.paymentMethod.crypto.chainId
                       }
+                      showFullName
                     />
                   ) : (
                     ''

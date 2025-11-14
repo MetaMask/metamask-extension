@@ -61,11 +61,6 @@
     "ui/components/app/metamask-translation/metamask-translation.js"
   ],
   [
-    "ui/components/app/permission-page-container/index.js",
-    "ui/components/app/permission-page-container/permission-page-container.component.js",
-    "ui/components/app/permission-page-container/permission-page-container.container.js"
-  ],
-  [
     "ui/components/app/transaction-list-item/index.js",
     "ui/components/app/transaction-list-item/transaction-list-item.component.js",
     "ui/components/app/transaction-list/index.js",
