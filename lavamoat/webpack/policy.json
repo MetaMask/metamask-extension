@@ -731,7 +731,7 @@
         "prop-types": true,
         "react": true,
         "react-dom": true,
-        "react-redux>react-is": true,
+        "@material-ui/core>react-is": true,
         "react-transition-group": true
       }
     },
@@ -918,6 +918,7 @@
     "@metamask/bridge-controller": {
       "globals": {
         "AbortController": true,
+        "Buffer.from": true,
         "TextDecoder": true,
         "URLSearchParams": true,
         "console.error": true,
@@ -937,6 +938,7 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/bridge-controller>bignumber.js": true,
+        "buffer": true,
         "lodash": true,
         "reselect": true,
         "uuid": true
@@ -4974,7 +4976,7 @@
         "prop-types": true,
         "react-markdown>property-information": true,
         "react": true,
-        "react-redux>react-is": true,
+        "react-markdown>react-is": true,
         "react-markdown>remark-parse": true,
         "react-markdown>remark-rehype": true,
         "react-markdown>space-separated-tokens": true,
