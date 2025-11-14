@@ -21,9 +21,9 @@ import { useConfirmContext } from '../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../transactions/useEnableShieldCoverageChecks';
 import { IconName } from '../../../../components/component-library';
 import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
+import { isSignatureTransactionType } from '../../utils';
 import { useSignatureEventFragment } from '../useSignatureEventFragment';
 import { useTransactionEventFragment } from '../useTransactionEventFragment';
-import { isSignatureTransactionType } from '../../utils';
 import { ShieldCoverageAlertMessage } from './transactions/ShieldCoverageAlertMessage';
 
 const N_A = 'N/A';
@@ -264,16 +264,22 @@ export function useShieldCoverageAlert(): Alert[] {
 
     let severity = Severity.Disabled;
     let inlineAlertText = isPaused ? t('shieldPaused') : t('shieldNotCovered');
+    const isSignatureRequest = isSignatureTransactionType(currentConfirmation);
     let modalTitle = isPaused
       ? t('shieldCoverageAlertMessageTitlePaused')
       : t('shieldCoverageAlertMessageTitle');
+    if (isSignatureRequest && !isPaused) {
+      modalTitle = t('shieldCoverageAlertMessageTitleSignatureRequest');
+    }
     let inlineAlertTextBackgroundColor;
     if (!isPaused) {
       switch (status) {
         case 'covered':
           severity = Severity.Success;
           inlineAlertText = t('shieldCovered');
-          modalTitle = t('shieldCoverageAlertMessageTitleCovered');
+          modalTitle = isSignatureRequest
+            ? t('shieldCoverageAlertMessageTitleSignatureRequestCovered')
+            : t('shieldCoverageAlertMessageTitleCovered');
           break;
         case 'malicious':
           severity = Severity.Danger;
@@ -311,5 +317,13 @@ export function useShieldCoverageAlert(): Alert[] {
           : undefined,
       },
     ];
-  }, [status, modalBodyStr, showAlert, t, isPaused, onPausedAcknowledgeClick]);
+  }, [
+    showAlert,
+    isPaused,
+    t,
+    currentConfirmation,
+    modalBodyStr,
+    onPausedAcknowledgeClick,
+    status,
+  ]);
 }

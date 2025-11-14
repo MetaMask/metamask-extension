@@ -162,7 +162,7 @@ export const GlobalMenu = ({
 
   // Check if side panel is currently the default (vs popup)
   const preferences = useSelector(getPreferences);
-  const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? true;
+  const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? false;
 
   // Check if sidepanel feature is enabled (both build flag and LaunchDarkly flag)
   const isSidePanelEnabled = useSidePanelEnabled();
@@ -336,6 +336,11 @@ export const GlobalMenu = ({
               <NotificationsTagCounter />
             </Box>
           </MenuItem>
+          <Box
+            borderColor={BorderColor.borderMuted}
+            width={BlockSize.Full}
+            style={{ height: '1px', borderBottomWidth: 0 }}
+          ></Box>
         </>
       )}
       {rewardsEnabled && (
@@ -394,6 +399,32 @@ export const GlobalMenu = ({
         width={BlockSize.Full}
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
+      {/* Toggle between popup and sidepanel - only for Chrome when sidepanel is enabled */}
+      {getBrowserName() !== PLATFORM_FIREFOX &&
+        isSidePanelEnabled &&
+        (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
+          <MenuItem
+            iconName={isSidePanelDefault ? IconName.Popup : IconName.Sidepanel}
+            onClick={async () => {
+              await toggleDefaultView();
+              trackEvent({
+                event: MetaMetricsEventName.ViewportSwitched,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  location: METRICS_LOCATION,
+                  to: isSidePanelDefault
+                    ? ENVIRONMENT_TYPE_POPUP
+                    : ENVIRONMENT_TYPE_SIDEPANEL,
+                },
+              });
+              closeMenu();
+            }}
+            data-testid="global-menu-toggle-view"
+          >
+            {isSidePanelDefault ? t('switchToPopup') : t('switchToSidePanel')}
+          </MenuItem>
+        )}
       <MenuItem
         to={
           isGatorPermissionsRevocationFeatureEnabled()
@@ -416,32 +447,6 @@ export const GlobalMenu = ({
       >
         {t('allPermissions')}
       </MenuItem>
-      {/* Toggle between popup and sidepanel - only for Chrome when sidepanel is enabled */}
-      {getBrowserName() !== PLATFORM_FIREFOX &&
-        isSidePanelEnabled &&
-        (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
-          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
-          <MenuItem
-            iconName={IconName.Expand}
-            onClick={async () => {
-              await toggleDefaultView();
-              trackEvent({
-                event: MetaMetricsEventName.ViewportSwitched,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  location: METRICS_LOCATION,
-                  to: isSidePanelDefault
-                    ? ENVIRONMENT_TYPE_POPUP
-                    : ENVIRONMENT_TYPE_SIDEPANEL,
-                },
-              });
-              closeMenu();
-            }}
-            data-testid="global-menu-toggle-view"
-          >
-            {isSidePanelDefault ? t('switchToPopup') : t('switchToSidePanel')}
-          </MenuItem>
-        )}
       <MenuItem
         data-testid="global-menu-networks"
         iconName={IconName.Hierarchy}

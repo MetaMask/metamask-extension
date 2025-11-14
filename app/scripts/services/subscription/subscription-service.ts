@@ -230,13 +230,17 @@ export class SubscriptionService {
     const appStateControllerState = this.#messenger.call(
       'AppStateController:getState',
     );
-    const { defaultSubscriptionPaymentOptions } = appStateControllerState;
+    const {
+      defaultSubscriptionPaymentOptions,
+      shieldSubscriptionMetricsProps,
+    } = appStateControllerState;
 
     const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
 
     const trackingProps = getSubscriptionRequestTrackingProps(
       subscriptionControllerState,
       defaultSubscriptionPaymentOptions,
+      shieldSubscriptionMetricsProps,
       transactionMeta,
     );
 
@@ -246,13 +250,17 @@ export class SubscriptionService {
       const renewalTrackingProps = getSubscriptionRestartRequestTrackingProps(
         subscriptionControllerState,
         requestStatus,
+        shieldSubscriptionMetricsProps,
         extrasProps?.error_message as string | undefined,
       );
 
       this.#messenger.call('MetaMetricsController:trackEvent', {
         event: MetaMetricsEventName.ShieldMembershipRestartRequest,
         category: MetaMetricsEventCategory.Shield,
-        properties: renewalTrackingProps,
+        properties: {
+          ...accountTypeAndCategory,
+          ...renewalTrackingProps,
+        },
       });
     }
 
@@ -262,8 +270,8 @@ export class SubscriptionService {
       properties: {
         ...accountTypeAndCategory,
         ...trackingProps,
-        status: requestStatus,
         ...extrasProps,
+        status: requestStatus,
       },
     });
   }
