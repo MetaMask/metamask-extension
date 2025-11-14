@@ -1,0 +1,1225 @@
+---
+description: Guidelines for Redux State Management
+globs: *reducer.ts,*reducer.js,*slice.ts,*slice.js,*actions.ts,*actions.js,*selectors.ts,*selectors.js
+alwaysApply: false
+---
+
+Reference: [MetaMask Redux Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/redux.md)
+
+# MetaMask Extension - Redux Guidelines
+
+## Overview
+
+This guide provides optimization strategies and best practices for implementing and refactoring Redux code to improve application performance and maintainability.
+
+## Performance Optimization
+
+### Avoid Expensive Operations in Reducers
+
+- **Reducers should be pure functions with no side effects**
+- Move expensive calculations outside reducers
+- Use action creators or middleware for complex computations
+
+Example:
+```typescript
+❌ WRONG: Expensive calculation in reducer
+const initialState = { data: [], expensiveResult: 0 };
+
+function myReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'ADD_DATA':
+      const newData = action.payload;
+      // Expensive operation inside reducer!
+      const expensiveResult = newData.reduce(
+        (acc, item) => acc + item.value,
+        0,
+      );
+      return {
+        ...state,
+        data: [...state.data, newData],
+        expensiveResult,
+      };
+    default:
+      return state;
+  }
+}
+
+✅ CORRECT: Expensive calculation outside reducer
+const initialState = { data: [], expensiveResult: 0 };
+
+function myReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'ADD_DATA':
+      return {
+        ...state,
+        data: [...state.data, action.payload],
+      };
+    case 'SET_EXPENSIVE_RESULT':
+      return {
+        ...state,
+        expensiveResult: action.payload,
+      };
+    default:
+      return state;
+  }
+}
+
+// Perform calculation in action creator or middleware
+function addData(newData) {
+  return (dispatch, getState) => {
+    dispatch({ type: 'ADD_DATA', payload: newData });
+    const expensiveResult = newData.reduce(
+      (acc, item) => acc + item.value,
+      0,
+    );
+    dispatch({ type: 'SET_EXPENSIVE_RESULT', payload: expensiveResult });
+  };
+}
+```
+
+### Use Memoization with Reselect
+
+- **Use selectors and reselect to memoize derived state**
+- Prevents unnecessary recalculations
+- Improves component rendering performance
+
+Example:
+```typescript
+import { createSelector } from 'reselect';
+
+// State shape
+const state = {
+  items: [
+    { id: 1, value: 10 },
+    { id: 2, value: 20 },
+  ],
+};
+
+// Basic selector
+const selectItems = (state) => state.items;
+
+// Memoized selector using reselect
+const selectTotalValue = createSelector(
+  [selectItems],
+  (items) => items.reduce((total, item) => total + item.value, 0),
+);
+
+// Usage - will only recalculate when items change
+const totalValue = selectTotalValue(state); // 30
+```
+
+### Normalize State Shape
+
+- **Avoid deeply nested structures**
+- Use normalized state with `byId` and `allIds` patterns
+- Makes updates more efficient and prevents duplication
+
+Example:
+```typescript
+❌ WRONG: Deeply nested state
+const state = {
+  users: {
+    byId: {
+      user_1a2b: {
+        id: 'user_1a2b',
+        name: 'Alice',
+        posts: [{ id: 'post_1a2b', title: 'Post 1' }],
+      },
+      user_2b3c: {
+        id: 'user_2b3c',
+        name: 'Bob',
+        posts: [{ id: 'post_2b3c', title: 'Post 2' }],
+      },
+    },
+  },
+};
+
+✅ CORRECT: Normalized state
+const normalizedState = {
+  users: {
+    byId: {
+      user_1a2b: { id: 'user_1a2b', name: 'Alice', postIds: ['post_1a2b'] },
+      user_2b3c: { id: 'user_2b3c', name: 'Bob', postIds: ['post_2b3c'] },
+    },
+    allIds: ['user_1a2b', 'user_2b3c'],
+  },
+  posts: {
+    byId: {
+      post_1a2b: { id: 'post_1a2b', title: 'Post 1' },
+      post_2b3c: { id: 'post_2b3c', title: 'Post 2' },
+    },
+    allIds: ['post_1a2b', 'post_2b3c'],
+  },
+};
+```
+
+### Batch Actions
+
+- **Combine multiple actions into a single action when possible**
+- Reduces number of reducer calls and re-renders
+- Improves performance for related state updates
+
+Example:
+```typescript
+❌ WRONG: Dispatching multiple actions separately
+function updateUserAndPosts(user, posts) {
+  return (dispatch) => {
+    dispatch({ type: 'UPDATE_USER', payload: user });
+    dispatch({ type: 'UPDATE_POSTS', payload: posts });
+  };
+}
+
+✅ CORRECT: Combining into single action
+function updateUserAndPosts(user, posts) {
+  return {
+    type: 'UPDATE_USER_AND_POSTS',
+    payload: { user, posts },
+  };
+}
+
+// Reducer handling combined action
+function rootReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'UPDATE_USER_AND_POSTS':
+      return {
+        ...state,
+        user: action.payload.user,
+        posts: action.payload.posts,
+      };
+    default:
+      return state;
+  }
+}
+```
+
+### Use Immutable Data Structures
+
+- **Never mutate state directly**
+- Use spread operators or immutability helpers
+- Enables proper change detection and prevents bugs
+
+Example:
+```typescript
+❌ WRONG: Mutating state directly
+const initialState = { items: [] };
+
+function myReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'ADD_ITEM':
+      state.items.push(action.payload); // Direct mutation!
+      return state;
+    default:
+      return state;
+  }
+}
+
+✅ CORRECT: Immutable updates
+const initialState = { items: [] };
+
+function myReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'ADD_ITEM':
+      return {
+        ...state,
+        items: [...state.items, action.payload],
+      };
+    default:
+      return state;
+  }
+}
+```
+
+## Priority A Rules: Essential
+
+Reference: [Redux Style Guide](https://redux.js.org/style-guide/)
+
+### Do Not Mutate State
+
+- **State mutation is the most common cause of Redux bugs**
+- Always create new objects/arrays for state updates
+- Use spread syntax or Object.assign
+
+Example:
+```typescript
+❌ WRONG: Direct mutation
+function todosReducer(state = [], action) {
+  switch (action.type) {
+    case 'ADD_TODO':
+      state.push(action.payload); // Mutates state!
+      return state;
+    default:
+      return state;
+  }
+}
+
+✅ CORRECT: Immutable update
+function todosReducer(state = [], action) {
+  switch (action.type) {
+    case 'ADD_TODO':
+      return [...state, action.payload];
+    default:
+      return state;
+  }
+}
+```
+
+### Reducers Must Not Have Side Effects
+
+- **Reducers should only depend on state and action arguments**
+- No API calls, no random values, no date calculations
+- Move side effects to action creators or middleware
+
+Example:
+```typescript
+❌ WRONG: Side effects in reducer
+function myReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'FETCH_DATA':
+      // Side effect: API call in reducer!
+      fetch('/api/data')
+        .then((response) => response.json())
+        .then((data) => {
+          state.data = data; // Also mutates state!
+        });
+      return state;
+    default:
+      return state;
+  }
+}
+
+✅ CORRECT: Side effects in action creator
+function myReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'SET_DATA':
+      return {
+        ...state,
+        data: action.payload,
+      };
+    default:
+      return state;
+  }
+}
+
+// Side effect in action creator
+function fetchData() {
+  return (dispatch) => {
+    fetch('/api/data')
+      .then((response) => response.json())
+      .then((data) => {
+        dispatch({ type: 'SET_DATA', payload: data });
+      });
+  };
+}
+```
+
+### Do Not Put Non-Serializable Values in State
+
+- **Avoid Promises, Symbols, Maps/Sets, functions, or class instances**
+- State should be serializable for time-travel debugging and persistence
+- Store only plain objects, arrays, and primitives
+
+Example:
+```typescript
+❌ WRONG: Non-serializable values
+const initialState = {
+  data: new Map(), // Map is not serializable
+  callback: () => {}, // Function is not serializable
+  promise: fetch('/api'), // Promise is not serializable
+};
+
+function myReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'SET_DATA':
+      return {
+        ...state,
+        data: action.payload, // payload is a Map
+      };
+    default:
+      return state;
+  }
+}
+
+✅ CORRECT: Serializable values
+const initialState = {
+  data: {}, // Plain object
+  items: [], // Plain array
+  count: 0, // Primitive
+};
+
+function myReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'SET_DATA':
+      return {
+        ...state,
+        data: action.payload, // payload is plain object
+      };
+    default:
+      return state;
+  }
+}
+```
+
+### Only One Redux Store Per App
+
+- **Create and export a single store instance**
+- Do not create multiple stores in the same app
+- Use combineReducers for multiple slices
+
+## Priority B Rules: Strongly Recommended
+
+### Use Redux Toolkit for Writing Redux Logic
+
+- **Redux Toolkit (RTK) is the recommended approach**
+- Reduces boilerplate significantly
+- Includes best practices by default
+- Built-in Immer for immutable updates
+
+Example:
+```typescript
+// Traditional Redux (verbose)
+const ADD_TODO = 'ADD_TODO';
+
+function addTodo(text) {
+  return { type: ADD_TODO, payload: text };
+}
+
+function todosReducer(state = [], action) {
+  switch (action.type) {
+    case ADD_TODO:
+      return [...state, action.payload];
+    default:
+      return state;
+  }
+}
+
+// With Redux Toolkit (concise)
+import { createSlice } from '@reduxjs/toolkit';
+
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    addTodo: (state, action) => {
+      state.push(action.payload); // Immer makes this safe!
+    },
+  },
+});
+
+export const { addTodo } = todosSlice.actions;
+export default todosSlice.reducer;
+```
+
+### Use Immer for Writing Immutable Updates
+
+- **Redux Toolkit uses Immer internally**
+- Write "mutating" logic that's actually immutable
+- Simplifies complex state updates
+
+Example:
+```typescript
+import { createSlice } from '@reduxjs/toolkit';
+
+const usersSlice = createSlice({
+  name: 'users',
+  initialState: {
+    byId: {},
+    allIds: [],
+  },
+  reducers: {
+    addUser: (state, action) => {
+      // Looks like mutation, but Immer makes it immutable
+      const { id, name } = action.payload;
+      state.byId[id] = { id, name };
+      state.allIds.push(id);
+    },
+    updateUser: (state, action) => {
+      const { id, name } = action.payload;
+      // Direct "mutation" that's actually immutable
+      state.byId[id].name = name;
+    },
+  },
+});
+```
+
+### Structure Files as Feature Folders
+
+- **Organize files by feature, not by type**
+- Keep related logic together
+- Easier to find and maintain code
+
+Example:
+```
+❌ WRONG: Files organized by type
+redux/
+  actions/
+    userActions.js
+    postActions.js
+  reducers/
+    userReducer.js
+    postReducer.js
+  selectors/
+    userSelectors.js
+    postSelectors.js
+
+✅ CORRECT: Files organized by feature
+features/
+  users/
+    usersSlice.js
+    usersSelectors.js
+    usersThunks.js
+  posts/
+    postsSlice.js
+    postsSelectors.js
+    postsThunks.js
+```
+
+### Put as Much Logic as Possible in Reducers
+
+- **Reducers should contain the "business logic"**
+- Keep action creators simple
+- Makes logic easier to test and understand
+
+Example:
+```typescript
+❌ WRONG: Logic in action creator
+function addTodo(text) {
+  return {
+    type: 'ADD_TODO',
+    payload: {
+      id: Math.random(),
+      text,
+      completed: false,
+      timestamp: Date.now(),
+    },
+  };
+}
+
+function todosReducer(state = [], action) {
+  switch (action.type) {
+    case 'ADD_TODO':
+      return [...state, action.payload];
+    default:
+      return state;
+  }
+}
+
+✅ CORRECT: Logic in reducer
+function addTodo(text) {
+  return {
+    type: 'ADD_TODO',
+    payload: text,
+  };
+}
+
+function todosReducer(state = [], action) {
+  switch (action.type) {
+    case 'ADD_TODO':
+      // Business logic in reducer
+      return [
+        ...state,
+        {
+          id: Math.random(),
+          text: action.payload,
+          completed: false,
+          timestamp: Date.now(),
+        },
+      ];
+    default:
+      return state;
+  }
+}
+```
+
+### Reducers Should Own State Shape
+
+- **Reducers define and manage their own state structure**
+- Don't rely on external code to define state shape
+- Makes reducers more maintainable
+
+### Name State Slices Based On Domain Data
+
+- **Use domain names, not UI-related names**
+- State should represent data, not UI state
+
+Example:
+```typescript
+❌ WRONG: UI-based names
+const state = {
+  leftPanel: {},
+  rightPanel: {},
+  modal: {},
+};
+
+✅ CORRECT: Domain-based names
+const state = {
+  users: {},
+  posts: {},
+  comments: {},
+};
+```
+
+### Organize State Structure by Domain
+
+- **Group related data together**
+- Makes it easier to understand and update state
+
+Example:
+```typescript
+const state = {
+  // User domain
+  users: {
+    byId: {},
+    allIds: [],
+    currentUserId: null,
+  },
+  // Posts domain
+  posts: {
+    byId: {},
+    allIds: [],
+    loading: false,
+  },
+  // UI state (separate from domain data)
+  ui: {
+    sidebarOpen: false,
+    theme: 'light',
+  },
+};
+```
+
+### Treat Reducers as State Machines
+
+- **Think of reducers as state machines with valid transitions**
+- Validate state transitions
+- Prevent invalid states
+
+Example:
+```typescript
+const LOADING = 'loading';
+const SUCCESS = 'success';
+const ERROR = 'error';
+
+function dataReducer(state = { status: 'idle', data: null }, action) {
+  switch (action.type) {
+    case 'FETCH_START':
+      // Only start loading if idle or error
+      if (state.status === 'idle' || state.status === ERROR) {
+        return { ...state, status: LOADING };
+      }
+      return state;
+    case 'FETCH_SUCCESS':
+      // Only succeed if loading
+      if (state.status === LOADING) {
+        return { status: SUCCESS, data: action.payload };
+      }
+      return state;
+    case 'FETCH_ERROR':
+      // Only error if loading
+      if (state.status === LOADING) {
+        return { ...state, status: ERROR };
+      }
+      return state;
+    default:
+      return state;
+  }
+}
+```
+
+### Normalize Complex Nested/Relational State
+
+- **Use normalized state for relational data**
+- Store items in `byId` object and `allIds` array
+- Reference by ID, not by nesting
+
+Example:
+```typescript
+✅ CORRECT: Normalized state
+const state = {
+  users: {
+    byId: {
+      user1: { id: 'user1', name: 'Alice', postIds: ['post1', 'post2'] },
+      user2: { id: 'user2', name: 'Bob', postIds: ['post3'] },
+    },
+    allIds: ['user1', 'user2'],
+  },
+  posts: {
+    byId: {
+      post1: { id: 'post1', title: 'First Post', authorId: 'user1' },
+      post2: { id: 'post2', title: 'Second Post', authorId: 'user1' },
+      post3: { id: 'post3', title: 'Third Post', authorId: 'user2' },
+    },
+    allIds: ['post1', 'post2', 'post3'],
+  },
+};
+```
+
+### Keep State Minimal and Derive Values
+
+- **Don't store derived data in state**
+- Calculate derived values in selectors
+- Reduces redundancy and prevents sync issues
+
+Example:
+```typescript
+❌ WRONG: Storing derived values
+const state = {
+  todos: [
+    { id: 1, text: 'Todo 1', completed: false },
+    { id: 2, text: 'Todo 2', completed: true },
+  ],
+  completedCount: 1, // Derived from todos
+  totalCount: 2, // Derived from todos
+};
+
+✅ CORRECT: Derive values with selectors
+const state = {
+  todos: [
+    { id: 1, text: 'Todo 1', completed: false },
+    { id: 2, text: 'Todo 2', completed: true },
+  ],
+};
+
+// Derive values
+const selectCompletedCount = createSelector(
+  [(state) => state.todos],
+  (todos) => todos.filter((todo) => todo.completed).length,
+);
+
+const selectTotalCount = createSelector(
+  [(state) => state.todos],
+  (todos) => todos.length,
+);
+```
+
+### Model Actions as Events, Not Setters
+
+- **Actions should describe what happened**
+- Use past tense for action names
+- Don't just mirror state setters
+
+Example:
+```typescript
+❌ WRONG: Setter-style actions
+dispatch({ type: 'SET_LOADING', payload: true });
+dispatch({ type: 'SET_USER', payload: user });
+
+✅ CORRECT: Event-style actions
+dispatch({ type: 'LOGIN_STARTED' });
+dispatch({ type: 'LOGIN_SUCCEEDED', payload: user });
+dispatch({ type: 'LOGIN_FAILED', payload: error });
+```
+
+### Write Action Types as Domain/EventName
+
+- **Use colon notation for action types**
+- Groups related actions together
+- Makes action types more readable
+
+Example:
+```typescript
+✅ CORRECT: Domain-based action types
+const actions = {
+  'todos/todoAdded': todoAdded,
+  'todos/todoToggled': todoToggled,
+  'todos/todoDeleted': todoDeleted,
+  'users/userLoggedIn': userLoggedIn,
+  'users/userLoggedOut': userLoggedOut,
+};
+```
+
+### Allow Many Reducers to Respond to the Same Action
+
+- **Multiple reducers can handle the same action**
+- Useful for cross-cutting concerns
+- Don't limit actions to single reducers
+
+Example:
+```typescript
+// User logs out - multiple reducers respond
+function usersReducer(state = {}, action) {
+  switch (action.type) {
+    case 'USER_LOGGED_OUT':
+      return {}; // Clear user data
+    default:
+      return state;
+  }
+}
+
+function postsReducer(state = [], action) {
+  switch (action.type) {
+    case 'USER_LOGGED_OUT':
+      return []; // Clear posts
+    default:
+      return state;
+  }
+}
+
+function uiReducer(state = {}, action) {
+  switch (action.type) {
+    case 'USER_LOGGED_OUT':
+      return { ...state, showLoginModal: true };
+    default:
+      return state;
+  }
+}
+```
+
+## Priority C Rules: Recommended
+
+### Write Actions Using Flux Standard Action Convention
+
+- **Use consistent action structure**
+- Actions should have `type`, `payload`, and optionally `meta` and `error`
+
+Example:
+```typescript
+✅ CORRECT: Flux Standard Actions
+interface FluxStandardAction {
+  type: string;
+  payload?: any;
+  error?: boolean;
+  meta?: any;
+}
+
+// Success action
+dispatch({
+  type: 'FETCH_USER_SUCCESS',
+  payload: { id: 1, name: 'Alice' },
+});
+
+// Error action
+dispatch({
+  type: 'FETCH_USER_ERROR',
+  payload: new Error('Network error'),
+  error: true,
+});
+```
+
+### Use Action Creators
+
+- **Encapsulate action creation logic**
+- Makes dispatching actions easier
+- Centralizes action structure
+
+Example:
+```typescript
+// Action creators
+function addTodo(text: string) {
+  return {
+    type: 'todos/todoAdded',
+    payload: { text, completed: false },
+  };
+}
+
+// Usage
+dispatch(addTodo('Buy milk'));
+```
+
+### Use Thunks for Async Logic
+
+- **Use redux-thunk for async operations**
+- Or use RTK's `createAsyncThunk`
+- Keeps components clean
+
+Example:
+```typescript
+// With Redux Toolkit
+import { createAsyncThunk } from '@reduxjs/toolkit';
+
+export const fetchUser = createAsyncThunk(
+  'users/fetchById',
+  async (userId: string) => {
+    const response = await fetch(`/api/users/${userId}`);
+    return response.json();
+  },
+);
+
+// Usage
+dispatch(fetchUser('123'));
+```
+
+### Move Complex Logic Outside Components
+
+- **Keep components simple**
+- Move logic to thunks, action creators, or selectors
+- Makes components easier to test
+
+### Use Selector Functions to Read from State
+
+- **Create selector functions for reading state**
+- Encapsulates state shape
+- Enables memoization
+
+Example:
+```typescript
+// Selectors
+const selectTodos = (state) => state.todos;
+const selectUser = (state) => state.user;
+
+// Memoized selectors
+const selectCompletedTodos = createSelector(
+  [selectTodos],
+  (todos) => todos.filter((todo) => todo.completed),
+);
+
+// Usage in component
+const todos = useSelector(selectTodos);
+const completedTodos = useSelector(selectCompletedTodos);
+```
+
+### Name Selector Functions as selectThing
+
+- **Use `select` prefix for selector names**
+- Makes selectors easily identifiable
+- Consistent naming convention
+
+Example:
+```typescript
+✅ CORRECT: Selector naming
+const selectTodos = (state) => state.todos;
+const selectVisibleTodos = createSelector(...);
+const selectCompletedCount = createSelector(...);
+const selectUser = (state) => state.user;
+const selectUserById = (state, userId) => state.users.byId[userId];
+
+❌ WRONG: Inconsistent naming
+const getTodos = (state) => state.todos;
+const visibleTodos = createSelector(...);
+const completedTodosCount = createSelector(...);
+```
+
+### Avoid Putting Form State in Redux
+
+- **Most form state should be local component state**
+- Only put form data in Redux when needed across components
+- Use form libraries or local state
+
+Example:
+```tsx
+✅ CORRECT: Local form state
+function LoginForm() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Only dispatch final values to Redux
+    dispatch(loginUser({ username, password }));
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button type="submit">Login</button>
+    </form>
+  );
+}
+```
+
+## Redux Toolkit (RTK)
+
+### Why Use Redux Toolkit
+
+- **Simplified code with less boilerplate**
+- Built-in best practices
+- Better performance by default
+- Excellent TypeScript support
+
+### Installing Redux Toolkit
+
+```bash
+npm install @reduxjs/toolkit
+```
+
+### Using createSlice
+
+- **Simplifies reducers and actions**
+- Automatically generates action creators
+- Uses Immer for immutable updates
+
+Example:
+```typescript
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+interface CounterState {
+  value: number;
+}
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { value: 0 } as CounterState,
+  reducers: {
+    increment: (state) => {
+      state.value += 1; // Immer makes this safe
+    },
+    decrement: (state) => {
+      state.value -= 1;
+    },
+    incrementByAmount: (state, action: PayloadAction<number>) => {
+      state.value += action.payload;
+    },
+  },
+});
+
+export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+export default counterSlice.reducer;
+```
+
+### Using createAsyncThunk
+
+- **Handles async logic more effectively**
+- Automatically dispatches pending/fulfilled/rejected actions
+- Built-in error handling
+
+Example:
+```typescript
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
+interface User {
+  id: string;
+  name: string;
+}
+
+export const fetchUserById = createAsyncThunk<
+  User,
+  string,
+  { rejectValue: string }
+>(
+  'users/fetchById',
+  async (userId, thunkAPI) => {
+    try {
+      const response = await fetch(`/api/users/${userId}`);
+      return await response.json();
+    } catch (error) {
+      return thunkAPI.rejectWithValue('Failed to fetch user');
+    }
+  },
+);
+
+const usersSlice = createSlice({
+  name: 'users',
+  initialState: {
+    entities: {} as Record<string, User>,
+    loading: 'idle' as 'idle' | 'loading' | 'succeeded' | 'failed',
+    error: null as string | null,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUserById.pending, (state) => {
+        state.loading = 'loading';
+      })
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        state.loading = 'succeeded';
+        state.entities[action.payload.id] = action.payload;
+      })
+      .addCase(fetchUserById.rejected, (state, action) => {
+        state.loading = 'failed';
+        state.error = action.payload || 'Unknown error';
+      });
+  },
+});
+
+export default usersSlice.reducer;
+```
+
+### Using configureStore
+
+- **Set up store with good defaults**
+- Includes thunk middleware automatically
+- Redux DevTools enabled by default
+
+Example:
+```typescript
+import { configureStore } from '@reduxjs/toolkit';
+import counterReducer from './features/counter/counterSlice';
+import usersReducer from './features/users/usersSlice';
+
+const store = configureStore({
+  reducer: {
+    counter: counterReducer,
+    users: usersReducer,
+  },
+  // Middleware and DevTools are configured automatically
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
+export default store;
+```
+
+### Using createEntityAdapter
+
+- **Manage normalized state easily**
+- Provides CRUD operations
+- Generates selectors automatically
+
+Example:
+```typescript
+import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+
+interface Todo {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+
+const todosAdapter = createEntityAdapter<Todo>();
+
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: todosAdapter.getInitialState(),
+  reducers: {
+    addTodo: todosAdapter.addOne,
+    updateTodo: todosAdapter.updateOne,
+    removeTodo: todosAdapter.removeOne,
+    setAllTodos: todosAdapter.setAll,
+  },
+});
+
+export const { addTodo, updateTodo, removeTodo, setAllTodos } =
+  todosSlice.actions;
+
+// Export selectors
+export const {
+  selectAll: selectAllTodos,
+  selectById: selectTodoById,
+  selectIds: selectTodoIds,
+} = todosAdapter.getSelectors((state: RootState) => state.todos);
+
+export default todosSlice.reducer;
+```
+
+## Migration Example
+
+### Before: Traditional Redux
+
+```typescript
+// actions.ts
+export const INIT_BG_STATE = 'INIT_BG_STATE';
+export const UPDATE_BG_STATE = 'UPDATE_BG_STATE';
+
+export function initBackgroundState(state) {
+  return { type: INIT_BG_STATE, payload: state };
+}
+
+export function updateBackgroundState(key, state) {
+  return { type: UPDATE_BG_STATE, key, state };
+}
+
+// reducer.ts
+import { INIT_BG_STATE, UPDATE_BG_STATE } from './actions';
+
+const initialState = {
+  backgroundState: {},
+};
+
+const engineReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case INIT_BG_STATE:
+      return { backgroundState: action.payload };
+    case UPDATE_BG_STATE:
+      const newState = { ...state };
+      newState.backgroundState[action.key] = action.state;
+      return newState;
+    default:
+      return state;
+  }
+};
+
+export default engineReducer;
+```
+
+### After: Redux Toolkit
+
+```typescript
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+interface EngineState {
+  [key: string]: any;
+}
+
+interface UpdateEngineAction {
+  key: string;
+  engineState: EngineState;
+}
+
+const initialState = {
+  backgroundState: {} as EngineState,
+};
+
+// Redux Toolkit uses Immer internally for immutable updates
+const engineSlice = createSlice({
+  name: 'engine',
+  initialState,
+  reducers: {
+    initializeEngineState: (state, action: PayloadAction<EngineState>) => {
+      state.backgroundState = action.payload;
+    },
+    updateEngineState: (state, action: PayloadAction<UpdateEngineAction>) => {
+      const { key, engineState } = action.payload;
+      state.backgroundState[key] = engineState[key];
+    },
+  },
+});
+
+export const { initializeEngineState, updateEngineState } = engineSlice.actions;
+export default engineSlice.reducer;
+```
+
+## Best Practices Checklist
+
+### Reducers:
+- [ ] Reducers are pure functions
+- [ ] No side effects in reducers
+- [ ] No mutations of state
+- [ ] No expensive calculations in reducers
+- [ ] State shape is normalized for complex data
+- [ ] Initial state is properly defined
+
+### Actions:
+- [ ] Actions follow Flux Standard Action format
+- [ ] Action types use domain/eventName format
+- [ ] Actions describe events, not setters
+- [ ] Action creators encapsulate action creation
+
+### Selectors:
+- [ ] Selectors use `select` prefix
+- [ ] Complex derived state uses memoized selectors
+- [ ] Selectors encapsulate state shape
+
+### Performance:
+- [ ] Using reselect for memoization
+- [ ] Batching related actions
+- [ ] State is normalized
+- [ ] No derived values stored in state
+
+### Redux Toolkit:
+- [ ] Using createSlice for reducers
+- [ ] Using createAsyncThunk for async logic
+- [ ] Using configureStore for store setup
+- [ ] Using createEntityAdapter for normalized state
+
+### General:
+- [ ] No non-serializable values in state
+- [ ] Form state kept in component (not Redux)
+- [ ] Complex logic moved outside components
+- [ ] Files organized by feature
+- [ ] TypeScript types defined for all state
+
+## References
+
+- [MetaMask Redux Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/redux.md)
+- [Redux Style Guide](https://redux.js.org/style-guide/)
+- [Redux Toolkit Documentation](https://redux-toolkit.js.org/)
+- [Reselect Documentation](https://github.com/reduxjs/reselect)
+- [Redux Best Practices](https://redux.js.org/usage/structuring-reducers/prerequisite-concepts)
