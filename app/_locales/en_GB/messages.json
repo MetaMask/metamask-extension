@@ -6122,12 +6122,6 @@
   "shieldPaused": {
     "message": "Paused"
   },
-  "shieldPaymentDeclinedAction": {
-    "message": "Add funds"
-  },
-  "shieldPaymentDeclinedDescription": {
-    "message": "Insufficient token balance. Please try again to resume coverage."
-  },
   "shieldPaymentPaused": {
     "message": "Transaction Shield paused"
   },
@@ -6275,18 +6269,12 @@
     "message": "Your plan will be cancelled on $1.",
     "description": "The $1 is the date"
   },
-  "shieldTxMembershipErrorAddFunds": {
-    "message": "Add funds"
-  },
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Your plan ends on $1. Renew now to continue your benefits.",
     "description": "The $1 is the date subscription ends"
   },
   "shieldTxMembershipErrorInsufficientToken": {
     "message": "Retry payment"
-  },
-  "shieldTxMembershipErrorPaused": {
-    "message": "Plan paused due to insufficient funds. Coverage will resume after payment update."
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Your plan has been paused due to a failed card payment."
@@ -6315,9 +6303,6 @@
   },
   "shieldTxMembershipErrorUpdateCard": {
     "message": "Update card details"
-  },
-  "shieldTxMembershipErrorUpdatePayment": {
-    "message": "Update payment"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "Free trial"
