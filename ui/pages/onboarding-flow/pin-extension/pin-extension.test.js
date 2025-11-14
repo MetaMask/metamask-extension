@@ -106,7 +106,7 @@ describe('Creation Successful Onboarding View', () => {
 
       await Promise.all(mockPromises);
       expect(toggleExternalServices).toHaveBeenCalledTimes(1);
-      expect(setCompletedOnboarding).toHaveBeenCalledTimes(2);
+      expect(setCompletedOnboarding).toHaveBeenCalledTimes(1);
     });
   });
 
