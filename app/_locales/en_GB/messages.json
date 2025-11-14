@@ -6899,6 +6899,9 @@
   "srpDetailsTitle": {
     "message": "What’s a Secret Recovery Phrase?"
   },
+  "srpImportDuplicateAccountError": {
+    "message": "The account you are trying to import is a duplicate."
+  },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
