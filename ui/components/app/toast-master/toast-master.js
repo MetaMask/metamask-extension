@@ -72,6 +72,10 @@ import {
   getIsShieldSubscriptionPaused,
 } from '../../../../shared/lib/shield';
 import {
+  isCardPaymentMethod,
+  isCryptoPaymentMethod,
+} from '../../../pages/settings/transaction-shield-tab/types';
+import {
   selectNftDetectionEnablementToast,
   selectShowConnectAccountToast,
   selectShowPrivacyPolicyToast,
@@ -622,14 +626,34 @@ function ShieldPausedToast() {
 
   const isPaused = getIsShieldSubscriptionPaused(shieldSubscription);
 
+  const isCardPayment =
+    shieldSubscription &&
+    isCardPaymentMethod(shieldSubscription?.paymentMethod);
+  const isCryptoPaymentWithError =
+    shieldSubscription &&
+    isCryptoPaymentMethod(shieldSubscription.paymentMethod) &&
+    Boolean(shieldSubscription.paymentMethod.crypto.error);
+
+  // default text to unexpected error case
+  let descriptionText = 'shieldPaymentPausedDescriptionUnexpectedError';
+  let actionText = 'shieldPaymentPausedActionUnexpectedError';
+  if (isCardPayment) {
+    descriptionText = 'shieldPaymentPausedDescriptionCardPayment';
+    actionText = 'shieldPaymentPausedActionCardPayment';
+  }
+  if (isCryptoPaymentWithError) {
+    descriptionText = 'shieldPaymentPausedDescriptionCryptoPayment';
+    actionText = 'shieldPaymentPausedActionCryptoPayment';
+  }
+
   return (
     Boolean(isPaused) &&
     showShieldPausedToast && (
       <Toast
         key="shield-payment-declined-toast"
-        text={t('shieldPaymentDeclined')}
-        description={t('shieldPaymentDeclinedDescription')}
-        actionText={t('shieldPaymentDeclinedAction')}
+        text={t('shieldPaymentPaused')}
+        description={t(descriptionText)}
+        actionText={t(actionText)}
         onActionClick={async () => {
           setShieldPausedToastLastClickedOrClosed(Date.now());
           navigate(TRANSACTION_SHIELD_ROUTE);
