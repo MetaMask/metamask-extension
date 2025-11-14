@@ -435,7 +435,7 @@ describe('Multichain API', function () {
       });
     });
 
-    // Fails with BIP44
+    // #37821 - When running EIP-5792 methods with EIP7702 feautre flag turned ON the confirmation screen crashes
     // eslint-disable-next-line mocha/no-skipped-tests
     describe.skip('Calling `wallet_sendCalls`', function () {
       it('should return the transaction hash for the atomic call', async function () {
