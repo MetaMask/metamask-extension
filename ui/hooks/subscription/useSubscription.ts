@@ -363,7 +363,7 @@ export const useSubscriptionEligibility = (product: ProductType) => {
         }
         return undefined;
       } catch (error) {
-        log.error('[useSubscriptionEligibility] error', error);
+        log.warn('[useSubscriptionEligibility] error', error);
         return undefined;
       }
     },
