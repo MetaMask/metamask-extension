@@ -3,6 +3,7 @@ import {
   PaymentType,
   RecurringInterval,
   ModalType,
+  CohortName,
 } from '@metamask/subscription-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import {
@@ -172,4 +173,21 @@ export type CaptureShieldClaimSubmissionEventParams = {
   submissionStatus: 'started' | 'completed' | 'failed';
 
   errorMessage?: string;
+};
+
+/**
+ * Capture the event when the user is assigned to a cohort based on eligibility rate.
+ */
+export type CaptureShieldEligibilityCohortAssignedEventParams = {
+  cohort: CohortName;
+  modalType: ModalType;
+  numberOfEligibleCohorts: number;
+};
+
+/**
+ * Capture the event when the user is timed out from a cohort.
+ */
+export type CaptureShieldEligibilityCohortTimeoutEventParams = {
+  cohort: CohortName;
+  numberOfEligibleCohorts: number;
 };

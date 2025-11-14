@@ -19,6 +19,8 @@ import {
   CaptureShieldClaimSubmissionEventParams,
   CaptureShieldCryptoConfirmationEventParams,
   CaptureShieldCtaClickedEventParams,
+  CaptureShieldEligibilityCohortAssignedEventParams,
+  CaptureShieldEligibilityCohortTimeoutEventParams,
   CaptureShieldEntryModalEventParams,
   CaptureShieldMembershipCancelledEventParams,
   CaptureShieldPaymentMethodChangeEventParams,
@@ -28,6 +30,7 @@ import {
 } from './types';
 import {
   formatCaptureShieldCtaClickedEventProps,
+  formatCaptureShieldEligibilityCohortEventsProps,
   formatCaptureShieldPaymentMethodChangeEventProps,
   formatDefaultShieldSubscriptionRequestEventProps,
   formatExistingSubscriptionEventProps,
@@ -67,6 +70,33 @@ export const useSubscriptionMetrics = () => {
       );
     },
     [dispatch, totalFiatBalance],
+  );
+
+  const captureShieldEligibilityCohortEvent = useCallback(
+    async (
+      params:
+        | CaptureShieldEligibilityCohortAssignedEventParams
+        | CaptureShieldEligibilityCohortTimeoutEventParams,
+      event: MetaMetricsEventName,
+    ) => {
+      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+        selectedAccount,
+        hdKeyingsMetadata,
+      );
+      const formattedParams = formatCaptureShieldEligibilityCohortEventsProps(
+        params,
+        Number(totalFiatBalance),
+      );
+      trackEvent({
+        event,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...userAccountTypeAndCategory,
+          ...formattedParams,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
   /**
@@ -345,5 +375,6 @@ export const useSubscriptionMetrics = () => {
     captureShieldCtaClickedEvent,
     captureShieldClaimSubmissionEvent,
     captureShieldCryptoConfirmationEvent,
+    captureShieldEligibilityCohortEvent,
   };
 };
