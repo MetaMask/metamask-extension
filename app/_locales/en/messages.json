@@ -6145,7 +6145,7 @@
     "message": "Card"
   },
   "shieldPlanCryptoMonthlyNote": {
-    "message": "Total monthly fees pre-approved for a year for crypto payments, so your plan stays active"
+    "message": "Total monthly fees pre-approved for a year"
   },
   "shieldPlanDetails": {
     "message": "What you get"
@@ -6196,7 +6196,7 @@
     "message": "Change payment method"
   },
   "shieldPlanSave": {
-    "message": "Save 16%"
+    "message": "Save 17%"
   },
   "shieldPlanSelectToken": {
     "message": "Select a token"
