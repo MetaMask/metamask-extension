@@ -2016,6 +2016,425 @@ const Routes = () => {
 };
 ```
 
+## Antipatterns Caused by Nested/Denormalized State
+
+Our Redux state is deeply nested and denormalized, which leads to several performance and maintainability issues. This section documents common antipatterns and their solutions.
+
+### ❌ Anti-Pattern: Inefficient Use of `Object.values()` and `Object.keys()` in Selectors
+
+**Problem:** When state is stored as objects keyed by ID (e.g., `accounts: { [id]: Account }`), selectors frequently use `Object.values()` or `Object.keys()` to convert to arrays. This creates new array references on every selector evaluation, even when the underlying data hasn't changed, causing unnecessary re-renders and recomputations.
+
+**Why This Happens:**
+- State is stored as `{ [id]: item }` objects for O(1) lookups
+- UI components need arrays for iteration (`.map()`, `.filter()`, etc.)
+- Selectors convert objects to arrays on every call
+- Even with memoization, if the object reference changes (which happens frequently with Immer), a new array is created
+
+**Examples from Codebase:**
+
+```typescript
+// ui/selectors/accounts.ts
+❌ WRONG: Creates new array on every call
+export const getInternalAccounts = createSelector(
+  (state: AccountsState) =>
+    Object.values(state.metamask.internalAccounts.accounts), // New array every time!
+  (accounts) => accounts, // Identity function doesn't help
+);
+```
+
+```typescript
+// ui/selectors/selectors.js
+❌ WRONG: Object.values() in output selector creates new reference
+export const getMetaMaskAccounts = createDeepEqualSelector(
+  getInternalAccounts,
+  // ... other inputs
+  (internalAccounts) =>
+    Object.values(internalAccounts).reduce((accounts, internalAccount) => {
+      // Creates new array, then transforms it
+      // ...
+    }, {}),
+);
+```
+
+```typescript
+// ui/selectors/nft.ts
+❌ WRONG: Nested Object.values() calls
+export const selectAllNftsFlat = createSelector(
+  getNftsByChainByAccount,
+  (nftsByChainByAccount) => {
+    const nftsByChainArray = Object.values(nftsByChainByAccount); // First conversion
+    return nftsByChainArray.reduce<Nft[]>((acc, nftsByChain) => {
+      const nftsArrays = Object.values(nftsByChain); // Second conversion
+      return acc.concat(...nftsArrays);
+    }, []);
+  },
+);
+```
+
+```typescript
+// ui/selectors/multichain-accounts/account-tree.ts
+❌ WRONG: Multiple Object.values() in loops
+export const getNormalizedGroupsMetadata = createDeepEqualSelector(
+  getAccountTree,
+  getInternalAccountsObject,
+  (accountTree, internalAccountsObject) => {
+    const { wallets } = accountTree;
+    const result = {};
+    for (const wallet of Object.values(wallets)) { // New array each time
+      for (const group of Object.values(wallet.groups)) { // Another new array
+        // ...
+      }
+    }
+    return result;
+  },
+);
+```
+
+**Performance Impact:**
+- **Memory allocation:** New arrays created on every selector evaluation
+- **Garbage collection:** More frequent GC pauses from short-lived arrays
+- **Re-renders:** Components re-render because array reference changes even if contents are identical
+- **Cascading recomputations:** Downstream selectors that depend on these arrays recompute unnecessarily
+
+**Solutions:**
+
+**Solution 1: Store Arrays Alongside Objects (Best for Frequently Accessed Lists)**
+
+If you frequently need arrays, maintain both representations in state:
+
+```typescript
+✅ CORRECT: Store both object and array in state
+interface AccountsState {
+  accounts: {
+    byId: Record<string, Account>;
+    allIds: string[]; // Maintained alongside byId
+  };
+}
+
+// Reducer maintains both
+function accountsReducer(state, action) {
+  switch (action.type) {
+    case 'ADD_ACCOUNT':
+      return {
+        ...state,
+        accounts: {
+          byId: { ...state.accounts.byId, [id]: account },
+          allIds: [...state.accounts.allIds, id],
+        },
+      };
+  }
+}
+
+// Selector uses pre-computed array
+const selectAllAccounts = createSelector(
+  (state) => state.accounts.allIds,
+  (state) => state.accounts.byId,
+  (allIds, byId) => allIds.map((id) => byId[id]),
+);
+```
+
+**Solution 2: Memoize Object-to-Array Conversion Properly**
+
+If you can't change state structure, ensure the conversion is properly memoized:
+
+```typescript
+✅ CORRECT: Proper memoization with stable reference
+// Base selector returns the object
+const selectAccountsObject = (state: AccountsState) =>
+  state.metamask.internalAccounts.accounts;
+
+// Memoized conversion selector
+export const getInternalAccounts = createSelector(
+  selectAccountsObject,
+  (accountsObject) => {
+    // Only creates array when accountsObject reference changes
+    return Object.values(accountsObject);
+  },
+);
+
+// For deeply nested structures, use createDeepEqualSelector
+export const getNormalizedGroupsMetadata = createDeepEqualSelector(
+  getAccountTree,
+  getInternalAccountsObject,
+  (accountTree, internalAccountsObject) => {
+    // Deep equality check prevents recomputation when nested values unchanged
+    const { wallets } = accountTree;
+    const walletsArray = Object.values(wallets);
+    // ... rest of logic
+  },
+);
+```
+
+**Solution 3: Use Iterators Instead of Arrays When Possible**
+
+For operations that don't require arrays, iterate over object values directly:
+
+```typescript
+✅ CORRECT: Iterate without converting to array
+export const getAccountCount = createSelector(
+  (state) => state.metamask.internalAccounts.accounts,
+  (accountsObject) => {
+    // Count without creating array
+    return Object.keys(accountsObject).length;
+  },
+);
+
+// Or use Object.entries() if you need both key and value
+export const getAccountEntries = createSelector(
+  (state) => state.metamask.internalAccounts.accounts,
+  (accountsObject) => {
+    // Object.entries() is fine if you need both key and value
+    return Object.entries(accountsObject).map(([id, account]) => ({
+      id,
+      ...account,
+    }));
+  },
+);
+```
+
+**Solution 4: Normalize State Structure**
+
+The best long-term solution is to normalize state to avoid these conversions:
+
+```typescript
+✅ CORRECT: Normalized state eliminates need for Object.values()
+// Before: Nested objects
+{
+  metamask: {
+    allNfts: {
+      [account]: {
+        [chainId]: Nft[]
+      }
+    }
+  }
+}
+
+// After: Normalized with indexes
+{
+  metamask: {
+    nfts: {
+      byId: { [nftId]: Nft },
+      allIds: string[],
+      byAccountId: { [accountId]: string[] }, // NFT IDs for account
+      byChainId: { [chainId]: string[] }, // NFT IDs for chain
+    }
+  }
+}
+
+// Selector uses indexes instead of Object.values()
+const selectNftsByAccount = createSelector(
+  (state, accountId) => state.metamask.nfts.byAccountId[accountId] ?? [],
+  (state) => state.metamask.nfts.byId,
+  (nftIds, nftsById) => nftIds.map((id) => nftsById[id]),
+);
+```
+
+### ❌ Anti-Pattern: Deep Property Access in Selectors
+
+**Problem:** Selectors access deeply nested properties (e.g., `state.metamask.accountTree.wallets[walletId].groups[groupId].accounts`), making them fragile to state structure changes and preventing effective memoization.
+
+**Examples:**
+
+```typescript
+❌ WRONG: Deep property access
+const selectGroupAccounts = createSelector(
+  (state, walletId, groupId) =>
+    state.metamask.accountTree.wallets[walletId]?.groups[groupId]?.accounts ?? [],
+  (accounts) => accounts,
+);
+```
+
+**Solutions:**
+
+```typescript
+✅ CORRECT: Granular input selectors
+// Base selectors for each level
+const selectAccountTree = (state) => state.metamask.accountTree;
+const selectWallet = createSelector(
+  [selectAccountTree, (_, walletId) => walletId],
+  (accountTree, walletId) => accountTree.wallets[walletId],
+);
+const selectGroup = createSelector(
+  [selectWallet, (_, __, groupId) => groupId],
+  (wallet, groupId) => wallet?.groups[groupId],
+);
+
+// Composed selector
+const selectGroupAccounts = createSelector(
+  [selectGroup],
+  (group) => group?.accounts ?? [],
+);
+```
+
+### ❌ Anti-Pattern: Repeated Object Traversal in Selectors
+
+**Problem:** Multiple selectors traverse the same nested object structure independently, duplicating work and preventing shared memoization.
+
+**Example:**
+
+```typescript
+❌ WRONG: Multiple selectors traversing same structure
+const selectAllWallets = createSelector(
+  (state) => state.metamask.accountTree.wallets,
+  (wallets) => Object.values(wallets),
+);
+
+const selectAllGroups = createSelector(
+  (state) => state.metamask.accountTree.wallets,
+  (wallets) => {
+    return Object.values(wallets).flatMap((wallet) =>
+      Object.values(wallet.groups),
+    );
+  },
+);
+
+const selectAllAccounts = createSelector(
+  (state) => state.metamask.accountTree.wallets,
+  (wallets) => {
+    return Object.values(wallets).flatMap((wallet) =>
+      Object.values(wallet.groups).flatMap((group) => group.accounts),
+    );
+  },
+);
+```
+
+**Solution:**
+
+```typescript
+✅ CORRECT: Shared base selector and composition
+// Single traversal, multiple derived selectors
+const selectWalletsObject = (state) => state.metamask.accountTree.wallets;
+
+const selectAllWallets = createSelector([selectWalletsObject], (wallets) =>
+  Object.values(wallets),
+);
+
+const selectAllGroups = createSelector([selectAllWallets], (wallets) =>
+  wallets.flatMap((wallet) => Object.values(wallet.groups)),
+);
+
+const selectAllAccounts = createSelector([selectAllGroups], (groups) =>
+  groups.flatMap((group) => group.accounts),
+);
+```
+
+### ❌ Anti-Pattern: Selectors That Reorganize Nested State
+
+**Problem:** Selectors spend significant time reorganizing nested state structures (e.g., converting `{ [account]: { [chainId]: items } }` to `{ [chainId]: { [account]: items } }`), which is expensive and creates new object references.
+
+**Example:**
+
+```typescript
+❌ WRONG: Reorganizing nested structure on every call
+export const getNftContractsByAddressByChain = createSelector(
+  getNftContractsByChainByAccount,
+  (nftContractsByChainByAccount) => {
+    // Expensive reorganization
+    const userAccounts = Object.keys(nftContractsByChainByAccount);
+    const allNftContracts = userAccounts
+      .map((account) =>
+        Object.keys(nftContractsByChainByAccount[account]).map((chainId) =>
+          nftContractsByChainByAccount[account][chainId].map((contract) => ({
+            ...contract,
+            chainId,
+          })),
+        ),
+      )
+      .flat()
+      .flat();
+
+    return allNftContracts.reduce(
+      (acc, contract) => {
+        const { chainId, ...data } = contract;
+        const chainIdContracts = acc[chainId] ?? {};
+        acc[chainId] = chainIdContracts;
+        chainIdContracts[data.address.toLowerCase()] = data;
+        return acc;
+      },
+      {} as { [chainId: string]: { [address: string]: NftContract } },
+    );
+  },
+);
+```
+
+**Solution:**
+
+```typescript
+✅ CORRECT: Store in the needed format, or normalize state
+// Option 1: Store in both formats if both are needed frequently
+interface NftState {
+  byAccountByChain: { [account]: { [chainId]: NftContract[] } };
+  byChainByAddress: { [chainId]: { [address]: NftContract } }; // Pre-computed
+}
+
+// Option 2: Normalize to avoid reorganization
+interface NftState {
+  contracts: {
+    byId: { [contractId]: NftContract };
+    byAccountId: { [accountId]: string[] };
+    byChainId: { [chainId]: string[] };
+    byAddress: { [address]: string[] };
+  };
+}
+```
+
+### ❌ Anti-Pattern: Filtering/Searching Through Nested Objects
+
+**Problem:** Selectors use `Object.values().find()` or `Object.values().filter()` to search through nested objects, which is O(n) and creates temporary arrays.
+
+**Example:**
+
+```typescript
+❌ WRONG: Linear search through object values
+export const getInternalAccountByAddress = createSelector(
+  (state) => state.metamask.internalAccounts.accounts,
+  (_, address) => address,
+  (accounts, address) => {
+    return Object.values(accounts).find((account) =>
+      isEqualCaseInsensitive(account.address, address),
+    );
+  },
+);
+```
+
+**Solution:**
+
+```typescript
+✅ CORRECT: Maintain lookup index
+// State includes address-to-ID mapping
+interface AccountsState {
+  accounts: {
+    byId: Record<string, Account>;
+    byAddress: Record<string, string>; // address -> accountId
+  };
+}
+
+const selectAccountByAddress = createSelector(
+  (state, address) => state.metamask.internalAccounts.accounts.byAddress[address.toLowerCase()],
+  (state) => state.metamask.internalAccounts.accounts.byId,
+  (accountId, accountsById) => accountId ? accountsById[accountId] : undefined,
+);
+```
+
+### Summary: Best Practices for Nested State
+
+1. **Normalize state structure** - Use `byId` + `allIds` patterns with lookup indexes
+2. **Store arrays alongside objects** - If arrays are frequently needed, maintain both
+3. **Use granular input selectors** - Break deep property access into composable selectors
+4. **Compose selectors** - Build complex selectors from simple ones to share memoization
+5. **Avoid reorganization** - Store data in the format it's most frequently accessed
+6. **Maintain lookup indexes** - For O(1) lookups instead of O(n) searches
+7. **Use `createDeepEqualSelector` judiciously** - Only when shallow equality fails due to Immer reference churn
+
+**Migration Strategy:**
+
+When refactoring existing selectors:
+
+1. **Identify hot paths** - Profile to find selectors called frequently or with large data
+2. **Start with state normalization** - Add `allIds` arrays or lookup indexes incrementally
+3. **Refactor selectors gradually** - Update selectors to use new normalized structure
+4. **Measure impact** - Use React DevTools Profiler to verify performance improvements
+
 ---
 
 ## Complex Computations During Render
