@@ -402,9 +402,7 @@ describe('Multichain API', function () {
     });
   });
 
-  // Fails with BIP44
-  // eslint-disable-next-line mocha/no-skipped-tests
-  describe.skip('Dapp has existing session with 2 scopes and 1 account and then calls `wallet_createSession` with different scopes and accounts', function () {
+  describe('Dapp has existing session with 2 scopes and 1 account and then calls `wallet_createSession` with different scopes and accounts', function () {
     const OLD_SCOPES = ['eip155:1337', 'eip155:1'];
     const NEW_SCOPES = ['eip155:1338', 'eip155:1000'];
     const TREZOR_ACCOUNT = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
@@ -474,8 +472,8 @@ describe('Multichain API', function () {
           const expectedNewSessionScopes = [...OLD_SCOPES, ...NEW_SCOPES].map(
             (scope) => ({
               [scope]: getExpectedSessionScope(scope, [
-                ACCOUNT_1,
                 TREZOR_ACCOUNT,
+                ACCOUNT_1,
               ]),
             }),
           );
