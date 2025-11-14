@@ -541,7 +541,7 @@ export function formatComparisonResults(
     lines.push(`\nPlease fix the code or add to ${snapshotFileName}:\n`);
     results.newWarnings.forEach((warning, index) => {
       lines.push(
-        `${index + 1}. Copy-paste the following warning into "warnings" array:`,
+        `${index + 1}. Copy-paste the following warning into "warnings" array in ${snapshotFileName}:`,
       );
       // Escape quotes for JSON
       const escaped = warning.replace(/\\/gu, '\\\\').replace(/"/gu, '\\"');
@@ -556,7 +556,7 @@ export function formatComparisonResults(
     lines.push(`\nPlease fix the code or add to ${snapshotFileName}:\n`);
     results.newErrors.forEach((error, index) => {
       lines.push(
-        `${index + 1}. Copy-paste the following error into "errors" array:`,
+        `${index + 1}. Copy-paste the following error into "errors" array in ${snapshotFileName}:`,
       );
       // Escape quotes for JSON
       const escaped = error.replace(/\\/gu, '\\\\').replace(/"/gu, '\\"');
