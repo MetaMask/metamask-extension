@@ -22,7 +22,7 @@ const useSetConfirmationAlerts = () => {
     return () => {
       dispatch(clearAlerts(ownerId));
     };
-  }, []);
+  }, [ownerId]);
 };
 
 export default useSetConfirmationAlerts;
