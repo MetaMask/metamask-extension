@@ -5937,6 +5937,24 @@
   "shieldClaimInvalidRequired": {
     "message": "This field is required"
   },
+  "shieldClaimSignatureCoverageNotCovered": {
+    "message": "Signature coverage not found for the given transaction hash."
+  },
+  "shieldClaimWalletOwnershipValidationFailed": {
+    "message": "Wallet ownership validation failed."
+  },
+  "shieldClaimChainNotSupported": {
+    "message": "This chain is not supported."
+  },
+  "shieldClaimTransactionNotFound": {
+    "message": "Transaction not found on chain."
+  },
+  "shieldClaimTransactionNotFromWalletAddress": {
+    "message": "Transaction hash not from wallet address."
+  },
+  "shieldClaimTransactionNotSuccessful": {
+    "message": "Transaction not successful on chain."
+  },
   "shieldClaimInvalidTxHash": {
     "message": "Please enter a valid transaction hash"
   },
