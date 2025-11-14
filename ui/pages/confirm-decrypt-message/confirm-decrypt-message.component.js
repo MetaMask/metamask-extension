@@ -5,7 +5,7 @@ import copyToClipboard from 'copy-to-clipboard';
 import classnames from 'classnames';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { cloneDeep } from 'lodash';
 
 import AccountListItem from '../../components/app/account-list-item';
@@ -327,7 +327,7 @@ const Footer = ({
   messageData,
 }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -344,7 +344,7 @@ const Footer = ({
       },
     });
     dispatch(clearConfirmTransaction());
-    history.push(mostRecentOverviewPage);
+    navigate(mostRecentOverviewPage);
   };
 
   const onSubmitClick = async (event) => {
@@ -362,7 +362,7 @@ const Footer = ({
       },
     });
     dispatch(clearConfirmTransaction());
-    history.push(mostRecentOverviewPage);
+    navigate(mostRecentOverviewPage);
   };
 
   return (

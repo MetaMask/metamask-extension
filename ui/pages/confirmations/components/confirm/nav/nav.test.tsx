@@ -16,6 +16,14 @@ jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
 }));
 
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
 const render = () => {
   const store = configureStore(
     getMockConfirmState({
@@ -98,11 +106,13 @@ describe('ConfirmNav', () => {
   });
 
   it('invoke history replace method when next button is clicked', () => {
-    const { getByLabelText, history } = render();
-    const mockHistoryReplace = jest.spyOn(history, 'replace');
+    const { getByLabelText } = render();
     const nextButton = getByLabelText('Next Confirmation');
     fireEvent.click(nextButton);
-    expect(mockHistoryReplace).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/confirm-transaction/testApprovalId2/signature-request',
+      { replace: true },
+    );
   });
 
   it('invoke action rejectAllApprovals when "Reject all" button is clicked', () => {

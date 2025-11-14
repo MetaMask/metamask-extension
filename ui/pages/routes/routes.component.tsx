@@ -677,6 +677,8 @@ export default function Routes() {
         pendingApprovals,
         Boolean(approvalFlows?.length),
         history,
+        '', // queryString
+        location.pathname, // currentPathname for skip-navigation optimization
       );
     }
   }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
@@ -788,9 +790,15 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
-            component={ConfirmTransaction}
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{ id?: string }>(ConfirmTransaction, {
+              wrapper: AuthenticatedV5Compat,
+              includeLocation: true,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${SEND_ROUTE}/:page?`}
@@ -831,23 +839,38 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
-            component={ConfirmAddSuggestedTokenPage}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute(ConfirmAddSuggestedTokenPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
-            component={ConfirmAddSuggestedNftPage}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute(ConfirmAddSuggestedNftPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
-            component={ConfirmationPage}
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{ id?: string }>(ConfirmationPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={NEW_ACCOUNT_ROUTE}

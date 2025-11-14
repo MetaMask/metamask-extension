@@ -27,7 +27,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
     clearConfirmTransaction: PropTypes.func.isRequired,
     cancelEncryptionPublicKey: PropTypes.func.isRequired,
     encryptionPublicKey: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
+    navigate: PropTypes.func.isRequired,
     requesterAddress: PropTypes.string,
     txData: PropTypes.object,
     subjectMetadata: PropTypes.object,
@@ -165,7 +165,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
       cancelEncryptionPublicKey,
       clearConfirmTransaction,
       encryptionPublicKey,
-      history,
+      navigate,
       mostRecentOverviewPage,
       txData,
     } = this.props;
@@ -186,7 +186,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
             },
           });
           clearConfirmTransaction();
-          history.push(mostRecentOverviewPage);
+          navigate(mostRecentOverviewPage);
         }}
         onSubmit={async (event) => {
           await encryptionPublicKey(txData, event);
@@ -199,7 +199,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
             },
           });
           clearConfirmTransaction();
-          history.push(mostRecentOverviewPage);
+          navigate(mostRecentOverviewPage);
         }}
       />
     );
