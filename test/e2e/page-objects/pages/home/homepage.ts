@@ -32,9 +32,6 @@ class HomePage {
   protected readonly balance: string =
     '[data-testid="eth-overview__primary-currency"]';
 
-  protected readonly emptyBalance: string =
-    '[data-testid="coin-overview-balance-empty-state"]';
-
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
     css: '.mm-banner-base',
@@ -297,17 +294,6 @@ class HomePage {
     console.log(
       `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
     );
-  }
-
-  /**
-   * Checks if the balance empty state is displayed on homepage.
-   * This empty state is shown when the account group has a zero balance
-   * across all aggregated mainnet networks.
-   */
-  async checkBalanceEmptyStateIsDisplayed(): Promise<void> {
-    console.log('Checking if balance empty state is displayed');
-    await this.driver.waitForSelector(this.emptyBalance);
-    console.log('Balance empty state is displayed as expected');
   }
 
   /**
