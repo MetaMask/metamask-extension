@@ -23,52 +23,11 @@ Guidelines for optimizing React component performance in MetaMask Extension.
 
 - [Preventing Unnecessary Re-renders](#preventing-unnecessary-re-renders)
   - [Use useMemo for Expensive Calculations with External Dependencies](#use-usememo-for-expensive-calculations-with-external-dependencies)
-  - [Anti-Pattern: useMemo with JSON.stringify](#-anti-pattern-usememo-with-jsonstringify)
+  - Anti-Pattern: useMemo with JSON.stringify
   - [Use useCallback for Stable Function References with External Dependencies](#use-usecallback-for-stable-function-references-with-external-dependencies)
-  - [Avoiding Inline Objects and Functions](#avoiding-inline-objects-and-functions)
+  - Anti-Pattern: Memoizing Everything
 
-### Part 3: State Management
-
-- [State Management Optimization](#state-management-optimization)
-  - Split State to Minimize Re-renders
-  - Anti-Pattern: useState with Object/Array Initializers
-  - Use Context Sparingly
-  - Optimize Context with useMemo
-- [Optimizing Large, Deeply Nested State](#optimizing-large-deeply-nested-state)
-  - Problem: Frequent Updates to Large State Objects
-  - Strategy 1: Normalize State Shape
-  - Strategy 2: Use Immer for Immutable Updates
-  - Strategy 3: Select Only Needed Properties
-  - Strategy 4: Batch State Updates
-
-### Part 4: Effects and Hooks
-
-- [useEffect Optimization](#useeffect-optimization)
-  - Don't Overuse useEffect
-  - Minimize useEffect Dependencies
-  - Anti-Pattern: JSON.stringify in useEffect Dependencies
-  - Anti-Pattern: useEffect with Incomplete Dependencies (Stale Closures)
-  - Anti-Pattern: Wrong Dependencies in useMemo/useCallback
-  - Anti-Pattern: Including setState Functions in Dependencies
-  - Anti-Pattern: Cascading useEffect Chains
-  - Anti-Pattern: Conditional Early Return with All Dependencies
-- [Hook Selection and Usage](#hook-selection-and-usage)
-  - Anti-Pattern: useLayoutEffect for Non-Layout Operations
-  - Anti-Pattern: Regular Variables Instead of useRef
-  - Anti-Pattern: Equality Function in useEqualityCheck Dependencies
-- [Async Operations and Cleanup](#async-operations-and-cleanup)
-  - Anti-Pattern: State Updates After Component Unmount
-  - Anti-Pattern: Missing AbortController for Fetch Requests
-  - Anti-Pattern: Missing Cleanup for Intervals/Subscriptions
-  - Anti-Pattern: Large Object Retention in Closures
-- [Non-Deterministic Hook Execution](#non-deterministic-hook-execution)
-  - Anti-Pattern: Conditional Hook Calls
-  - Anti-Pattern: Dynamic Hook Creation
-- [Cascading Re-renders from Hook Dependencies](#cascading-re-renders-from-hook-dependencies)
-  - Anti-Pattern: Chain Reaction Re-renders
-  - Strategy: Isolate Hook Dependencies
-
-### Part 5: Render Optimization
+### Part 3: Render Optimization
 
 - [Optimizing Lists and Large Datasets](#optimizing-lists-and-large-datasets)
   - Use Proper Keys
@@ -81,7 +40,49 @@ Guidelines for optimizing React component performance in MetaMask Extension.
 - [Component Composition Patterns](#component-composition-patterns)
   - Use Component Composition to Prevent Re-renders
 
-### Part 6: Advanced Optimization Patterns
+### Part 4: Effects and Hooks (Basics)
+
+- [useEffect Optimization](#useeffect-optimization)
+  - Don't Overuse useEffect
+  - Minimize useEffect Dependencies
+  - Anti-Pattern: JSON.stringify in useEffect Dependencies
+  - Anti-Pattern: useEffect with Incomplete Dependencies (Stale Closures)
+  - Anti-Pattern: Wrong Dependencies in useMemo/useCallback
+  - Anti-Pattern: Including setState Functions in Dependencies
+  - Anti-Pattern: Cascading useEffect Chains
+  - Anti-Pattern: Conditional Early Return with All Dependencies
+- [Hook Selection and Usage](#hook-selection-and-usage)
+  - Anti-Pattern: Regular Variables Instead of useRef
+  - Anti-Pattern: Equality Function in useEqualityCheck Dependencies
+
+### Part 5: Profiling and Measurement
+
+- [Profiling and Measurement](#profiling-and-measurement)
+  - Use React DevTools Profiler
+  - Use Performance API
+  - Log Render Reasons in Development
+
+### Part 6: Async Operations and Cleanup
+
+- [Async Operations and Cleanup](#async-operations-and-cleanup)
+  - Anti-Pattern: State Updates After Component Unmount
+  - Anti-Pattern: Missing AbortController for Fetch Requests
+  - Anti-Pattern: Missing Cleanup for Intervals/Subscriptions
+  - Anti-Pattern: Large Object Retention in Closures
+
+### Part 7: Redux and External State
+
+- [Advanced Selector Patterns](#advanced-selector-patterns)
+  - Anti-Pattern: Identity Functions as Output Selectors
+  - Anti-Pattern: Selectors That Return Entire State Objects
+  - Anti-Pattern: Selectors Without Proper Input Selectors
+  - Best Practices for Reselect Selectors
+  - Use createDeepEqualSelector sparingly
+  - Combine related selectors into one memoized selector
+  - Anti-Pattern: Inline Selector Functions in useSelector
+  - Anti-Pattern: Multiple useSelector Calls Selecting Same State Slice
+
+### Part 8: Advanced Optimization Patterns
 
 - [Complex Computations During Render](#complex-computations-during-render)
   - Anti-Pattern: Creating Maps/Objects During Render
@@ -95,19 +96,7 @@ Guidelines for optimizing React component performance in MetaMask Extension.
   - Strategy 3: Lazy Image Loading
   - Strategy 4: Debounce Frequent Updates
 
-### Part 7: Redux and External State (Advanced)
-
-- [Advanced Selector Patterns](#advanced-selector-patterns)
-  - Anti-Pattern: Identity Functions as Output Selectors
-  - Anti-Pattern: Selectors That Return Entire State Objects
-  - Anti-Pattern: Selectors Without Proper Input Selectors
-  - Best Practices for Reselect Selectors
-  - Use createDeepEqualSelector sparingly
-  - Combine related selectors into one memoized selector
-  - Anti-Pattern: Inline Selector Functions in useSelector
-  - Anti-Pattern: Multiple useSelector Calls Selecting Same State Slice
-
-### Part 8: React Compiler Considerations
+### Part 9: React Compiler Considerations
 
 - [React Compiler Considerations](#react-compiler-considerations)
   - [What React Compiler Does](#what-react-compiler-does)
@@ -131,24 +120,18 @@ Guidelines for optimizing React component performance in MetaMask Extension.
   - [Decision Tree: Do You Need Manual Memoization?](#decision-tree-do-you-need-manual-memoization)
   - [Summary: React Compiler Capabilities and Limitations](#summary-react-compiler-capabilities-and-limitations)
 
-### Part 9: Tools and Reference
+### Part 10: Additional Hook Patterns
 
-- [Profiling and Measurement](#profiling-and-measurement)
-  - Use React DevTools Profiler
-  - Use Performance API
-  - Log Render Reasons in Development
+- [Non-Deterministic Hook Execution](#non-deterministic-hook-execution)
+  - Anti-Pattern: Conditional Hook Calls
+  - Anti-Pattern: Dynamic Hook Creation
+- [Cascading Re-renders from Hook Dependencies](#cascading-re-renders-from-hook-dependencies)
+  - Anti-Pattern: Chain Reaction Re-renders
+  - Strategy: Isolate Hook Dependencies
+
+### Part 11: Performance Checklist
+
 - [Performance Checklist (Expanded)](#performance-checklist-expanded)
-  - Measurement
-  - Component Structure
-  - Memoization
-  - Selectors (Redux)
-  - Async Operations
-  - State Management
-  - Lists and Data
-  - Effects
-  - Code Splitting
-- [Resources](#resources)
-- [Summary](#summary)
 
 ---
 
@@ -682,142 +665,6 @@ const SendToken = () => {
 
 ---
 
-## State Management Optimization
-
-### Split State to Minimize Re-renders
-
-```typescript
-❌ WRONG: Single state object causes re-renders
-const TokenSwap = () => {
-  const [formState, setFormState] = useState({
-    fromToken: null,
-    toToken: null,
-    amount: '',
-    slippage: 0.5,
-    isLoading: false,
-  });
-
-  // Any change to formState re-renders everything!
-  const updateAmount = (amount: string) => {
-    setFormState(prev => ({ ...prev, amount }));
-  };
-
-  return (
-    <>
-      <TokenSelector value={formState.fromToken} />
-      <AmountInput value={formState.amount} onChange={updateAmount} />
-      <SlippageSettings value={formState.slippage} />
-    </>
-  );
-};
-
-✅ CORRECT: Split state by update frequency
-const TokenSwap = () => {
-  const [fromToken, setFromToken] = useState(null);
-  const [toToken, setToToken] = useState(null);
-  const [amount, setAmount] = useState(''); // Updated frequently
-  const [slippage, setSlippage] = useState(0.5); // Updated rarely
-  const [isLoading, setIsLoading] = useState(false);
-
-  return (
-    <>
-      <TokenSelector value={fromToken} onChange={setFromToken} />
-      <AmountInput value={amount} onChange={setAmount} />
-      <SlippageSettings value={slippage} onChange={setSlippage} />
-    </>
-  );
-};
-```
-
-### ❌ Anti-Pattern: useState with Object/Array Initializers Creating New References
-
-While `useState` initializers only run once, using object/array literals can cause issues if these values are compared elsewhere.
-
-```typescript
-❌ WRONG: Object literal creates new reference (if used in comparisons)
-const NetworkForm = () => {
-  const [rpcUrls, setRpcUrls] = useState({
-    rpcEndpoints: [],
-    defaultRpcEndpointIndex: undefined,
-  });
-
-  const [prices, setPrices] = useState<Point[]>([]);
-
-  // If these are compared elsewhere, new references cause issues
-};
-```
-
-**Problems:**
-
-- If these values are compared in effects or passed to memoized components, new references cause unnecessary re-renders
-- Pattern suggests potential comparison issues elsewhere
-- Can cause bugs if values are used in dependency arrays
-
-```typescript
-✅ CORRECT: Extract constants or use lazy initialization
-// Option 1: Extract constants
-const EMPTY_RPC_URLS = {
-  rpcEndpoints: [],
-  defaultRpcEndpointIndex: undefined,
-} as const;
-
-const NetworkForm = () => {
-  const [rpcUrls, setRpcUrls] = useState(EMPTY_RPC_URLS);
-  const [prices, setPrices] = useState<Point[]>([]);
-};
-
-// Option 2: Lazy initialization (if initial value is expensive)
-const NetworkForm = () => {
-  const [rpcUrls, setRpcUrls] = useState(() => ({
-    rpcEndpoints: [],
-    defaultRpcEndpointIndex: undefined,
-  }));
-};
-```
-
-### Use Context Sparingly
-
-```typescript
-❌ WRONG: Single large context causes all consumers to re-render
-const AppContext = createContext({
-  user: null,
-  tokens: [],
-  transactions: [],
-  settings: {},
-  // ... many more properties
-});
-
-// Every component using this context re-renders when ANY value changes!
-
-✅ CORRECT: Split contexts by concern and update frequency
-const UserContext = createContext(null);
-const TokensContext = createContext([]);
-const SettingsContext = createContext({});
-
-// Only components using specific context re-render
-```
-
-### Optimize Context with useMemo
-
-```typescript
-✅ GOOD: Memoize context value
-const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState('light');
-
-  // Without useMemo, new object created on every render
-  const value = useMemo(() => ({
-    theme,
-    setTheme,
-  }), [theme]);
-
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
-  );
-};
-```
-
 ---
 
 ## Component Composition Patterns
@@ -1344,59 +1191,6 @@ const useHistoricalPrices = ({ isEvm, chainId, address }: Props) => {
 
 ## Hook Selection and Usage
 
-### ❌ Anti-Pattern: useLayoutEffect for Non-Layout Operations
-
-Using `useLayoutEffect` for operations that don't require synchronous DOM access blocks rendering.
-
-```typescript
-❌ WRONG: useLayoutEffect blocks rendering unnecessarily
-export function useEqualityCheck(value, equalityFn = isEqual) {
-  const [computedValue, setComputedValue] = useState(value);
-
-  useLayoutEffect(() => {
-    if (!equalityFn(value, computedValue)) {
-      setComputedValue(value);
-    }
-  }, [value, equalityFn, computedValue]);
-}
-```
-
-**Problems:**
-
-- `useLayoutEffect` runs synchronously before paint
-- Blocks browser rendering
-- Should only be used for DOM measurements/layout
-- Equality checks don't need synchronous execution
-
-```typescript
-✅ CORRECT: Use useEffect for non-layout operations
-export function useEqualityCheck(value, equalityFn = isEqual) {
-  const [computedValue, setComputedValue] = useState(value);
-  const equalityFnRef = useRef(equalityFn);
-
-  // Update ref without causing re-run
-  useEffect(() => {
-    equalityFnRef.current = equalityFn;
-  }, [equalityFn]);
-
-  useEffect(() => {
-    if (!equalityFnRef.current(value, computedValue)) {
-      setComputedValue(value);
-    }
-  }, [value, computedValue]); // equalityFn removed from deps
-}
-```
-
-**When to use useLayoutEffect:**
-
-- ✅ Measuring DOM elements
-- ✅ Synchronously updating DOM before paint
-- ✅ Preventing visual flicker
-- ❌ Data fetching
-- ❌ State updates
-- ❌ Equality checks
-- ❌ Most side effects
-
 ### ❌ Anti-Pattern: Regular Variables Instead of useRef
 
 Using regular variables instead of `useRef` for values that need to persist across renders.
@@ -1764,175 +1558,6 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
 ```
 
 ---
-
-## Optimizing Large, Deeply Nested State
-
-### Problem: Frequent Updates to Large State Objects
-
-When large, deeply nested state objects are frequently selected and updated, every update can trigger expensive re-renders across many components.
-
-### Strategy 1: Normalize State Shape
-
-```typescript
-❌ WRONG: Deeply nested state
-interface State {
-  accounts: {
-    [accountId: string]: {
-      tokens: {
-        [tokenId: string]: {
-          balance: string;
-          metadata: {
-            name: string;
-            symbol: string;
-            decimals: number;
-            // ... many more nested properties
-          };
-        };
-      };
-    };
-  };
-}
-
-// Updating one token balance requires deep cloning entire structure
-setState(prev => ({
-  ...prev,
-  accounts: {
-    ...prev.accounts,
-    [accountId]: {
-      ...prev.accounts[accountId],
-      tokens: {
-        ...prev.accounts[accountId].tokens,
-        [tokenId]: {
-          ...prev.accounts[accountId].tokens[tokenId],
-          balance: newBalance,
-        },
-      },
-    },
-  },
-}));
-```
-
-```typescript
-✅ CORRECT: Normalized state with references
-interface State {
-  accounts: {
-    byId: { [accountId: string]: Account };
-    allIds: string[];
-  };
-  tokens: {
-    byId: { [tokenId: string]: Token };
-    allIds: string[];
-  };
-  accountTokens: {
-    [accountId: string]: string[]; // Array of token IDs
-  };
-}
-
-// Updating token balance only touches token object
-setState(prev => ({
-  ...prev,
-  tokens: {
-    ...prev.tokens,
-    byId: {
-      ...prev.tokens.byId,
-      [tokenId]: {
-        ...prev.tokens.byId[tokenId],
-        balance: newBalance,
-      },
-    },
-  },
-}));
-```
-
-### Strategy 2: Use Immer for Immutable Updates
-
-For complex nested updates, use Immer to simplify code while maintaining performance.
-
-```typescript
-import { produce } from 'immer';
-
-✅ GOOD: Immer simplifies complex updates
-const updateTokenBalance = (accountId: string, tokenId: string, balance: string) => {
-  setState(produce(draft => {
-    draft.accounts[accountId].tokens[tokenId].balance = balance;
-    // Immer handles immutability efficiently under the hood
-  }));
-};
-```
-
-### Strategy 3: Select Only Needed Properties
-
-```typescript
-❌ WRONG: Selecting entire nested object
-const TokenBalance = ({ accountId, tokenId }: TokenBalanceProps) => {
-  // Selects entire account object with all tokens
-  const account = useSelector(state =>
-    state.accounts.byId[accountId]
-  );
-  const token = account?.tokens.byId[tokenId];
-
-  return <div>{token?.balance}</div>;
-};
-```
-
-```typescript
-✅ CORRECT: Granular selector for specific property
-// In selectors file:
-const selectTokenBalance = createSelector(
-  [
-    (state: AppState) => state.tokens.byId,
-    (_state: AppState, tokenId: string) => tokenId,
-  ],
-  (tokensById, tokenId) => tokensById[tokenId]?.balance ?? '0',
-);
-
-// In component:
-const TokenBalance = ({ tokenId }: TokenBalanceProps) => {
-  // Only subscribes to balance changes, not entire account/token objects
-  const balance = useSelector(state => selectTokenBalance(state, tokenId));
-
-  return <div>{balance}</div>;
-};
-```
-
-### Strategy 4: Batch State Updates
-
-```typescript
-❌ WRONG: Multiple separate updates
-const updateMultipleTokens = (updates: Array<{ tokenId: string; balance: string }>) => {
-  updates.forEach(({ tokenId, balance }) => {
-    setState(prev => ({
-      ...prev,
-      tokens: {
-        ...prev.tokens,
-        byId: {
-          ...prev.tokens.byId,
-          [tokenId]: { ...prev.tokens.byId[tokenId], balance },
-        },
-      },
-    }));
-  }); // Causes multiple re-renders!
-};
-```
-
-```typescript
-✅ CORRECT: Batch updates in single state change
-const updateMultipleTokens = (updates: Array<{ tokenId: string; balance: string }>) => {
-  setState(prev => ({
-    ...prev,
-    tokens: {
-      ...prev.tokens,
-      byId: {
-        ...prev.tokens.byId,
-        ...updates.reduce((acc, { tokenId, balance }) => {
-          acc[tokenId] = { ...prev.tokens.byId[tokenId], balance };
-          return acc;
-        }, {} as Record<string, Token>),
-      },
-    },
-  })); // Single re-render!
-};
-```
 
 ---
 
