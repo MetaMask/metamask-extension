@@ -144,9 +144,10 @@ export const MultichainAccountNetworkGroup: React.FC<
           src: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
             hexChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
           ],
+          className: 'bg-default',
           imageProps: {
             style: {
-              borderRadius: '2px',
+              borderRadius: '4px',
             },
             className: 'rounded bg-default border-default align-middle',
             'data-testid': hexChainId,
@@ -164,7 +165,6 @@ export const MultichainAccountNetworkGroup: React.FC<
       }}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
-      data-testid="avatar-group"
     >
       <AvatarGroup
         max={limit}
@@ -173,6 +173,7 @@ export const MultichainAccountNetworkGroup: React.FC<
         variant={AvatarGroupVariant.Network}
         className={className}
         overflowTextProps={{
+          fallbackText: '',
           style: {
             marginLeft: '4px',
           },
@@ -180,6 +181,7 @@ export const MultichainAccountNetworkGroup: React.FC<
           fallbackTextProps: {
             color: TextColor.TextAlternative,
           },
+          'data-testid': 'avatar-group',
         }}
       />
     </Box>
