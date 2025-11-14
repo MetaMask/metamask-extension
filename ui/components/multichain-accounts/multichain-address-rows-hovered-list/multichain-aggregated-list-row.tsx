@@ -166,7 +166,7 @@ export const MultichainAggregatedAddressListRow = ({
         gap={3}
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
-        padding={4}
+        padding={1}
       >
         <MultichainAccountNetworkGroup chainIds={chainIds} limit={4} />
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Bold}>
