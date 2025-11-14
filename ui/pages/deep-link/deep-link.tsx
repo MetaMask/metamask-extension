@@ -128,6 +128,7 @@ async function updateStateFromUrl(
         signed ? t('deepLink_RedirectingToMetaMask') : t('deepLink_Caution'),
       );
       setCta(t('deepLink_Continue', [t(title)]));
+      setPageNotFoundError(false);
     } else {
       setRoute(null);
       set404(setDescription, setTitle, t, setPageNotFoundError);
@@ -158,6 +159,7 @@ async function updateStateFromUrl(
     setRoute(null);
     setTitle(t('deepLink_ErrorOtherTitle'));
     setCta(t('deepLink_GoToTheHomePageButton'));
+    setPageNotFoundError(false);
   } finally {
     setIsLoading(false);
   }
