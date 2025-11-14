@@ -182,18 +182,48 @@ export const useCancelSubscription = (subscription?: Subscription) => {
   }, [dispatch, subscription, captureShieldMembershipCancelledEvent]);
 };
 
-export const useUnCancelSubscription = ({
-  subscriptionId,
-}: {
-  subscriptionId?: string;
-}) => {
+export const useUnCancelSubscription = (subscription?: Subscription) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const { captureShieldSubscriptionRestartRequestEvent } =
+    useSubscriptionMetrics();
+
+  const trackSubscriptionUncancelRequestEvent = useCallback(
+    (status: 'completed' | 'failed', errorMessage?: string) => {
+      if (!subscription) {
+        return;
+      }
+      const { cryptoPaymentChain, cryptoPaymentCurrency } =
+        getSubscriptionPaymentData(subscription);
+
+      // capture the event when the subscription restart request is triggered
+      captureShieldSubscriptionRestartRequestEvent({
+        subscriptionStatus: subscription.status,
+        paymentType: subscription.paymentMethod.type,
+        billingInterval: subscription.interval,
+        cryptoPaymentChain,
+        cryptoPaymentCurrency,
+        requestStatus: status,
+        errorMessage,
+      });
+    },
+    [captureShieldSubscriptionRestartRequestEvent, subscription],
+  );
+
   return useAsyncCallback(async () => {
-    if (!subscriptionId) {
-      return;
+    try {
+      const subscriptionId = subscription?.id;
+      if (!subscriptionId) {
+        return;
+      }
+      await dispatch(unCancelSubscription({ subscriptionId }));
+      trackSubscriptionUncancelRequestEvent('completed');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      trackSubscriptionUncancelRequestEvent('failed', errorMessage);
+      throw error;
     }
-    await dispatch(unCancelSubscription({ subscriptionId }));
-  }, [dispatch, subscriptionId]);
+  }, [dispatch, subscription, trackSubscriptionUncancelRequestEvent]);
 };
 
 export const useOpenGetSubscriptionBillingPortal = (

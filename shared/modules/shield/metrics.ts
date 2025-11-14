@@ -17,10 +17,7 @@ import {
   ShieldUserAccountCategoryEnum,
   ShieldUserAccountTypeEnum,
 } from '../../constants/subscriptions';
-import {
-  getShieldSubscription,
-  getSubscriptionPaymentData,
-} from '../../lib/shield';
+import { getShieldSubscription } from '../../lib/shield';
 import { KeyringType } from '../../constants/keyring';
 import {
   DefaultSubscriptionPaymentOptions,
@@ -124,6 +121,27 @@ export function getUserAccountTypeAndCategory(
 }
 
 /**
+ * Get the common tracking props for the Shield metrics.
+ *
+ * @param account - The account.
+ * @param keyringsMetadata - The keyrings metadata.
+ * @param balanceInUSD - The balance in USD.
+ * @returns The common tracking props.
+ */
+export function getShieldCommonTrackingProps(
+  account: InternalAccount,
+  keyringsMetadata: KeyringObject[],
+  balanceInUSD: number,
+) {
+  return {
+    ...getUserAccountTypeAndCategory(account, keyringsMetadata),
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    multi_chain_balance_category: getUserBalanceCategory(balanceInUSD),
+  };
+}
+
+/**
  * Get the tracking props for the subscription request for the Shield metrics.
  *
  * @param subscriptionControllerState - The subscription controller state.
@@ -221,60 +239,5 @@ export function getSubscriptionRequestTrackingProps(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     is_trial: !isTrialed,
-  };
-}
-
-/**
- * Get the tracking props for the subscription restart request for the Shield metrics.
- *
- * @param subscriptionControllerState - The subscription controller state.
- * @param requestStatus - The request status.
- * @param shieldSubscriptionMetricsProps - The Shield subscription metrics properties.
- * @param errorMessage - The error message.
- * @returns The tracking props.
- */
-export function getSubscriptionRestartRequestTrackingProps(
-  subscriptionControllerState: SubscriptionControllerState,
-  requestStatus: 'started' | 'completed' | 'failed',
-  shieldSubscriptionMetricsProps?: ShieldSubscriptionMetricsPropsFromUI,
-  errorMessage?: string,
-): Record<string, Json> {
-  const { subscriptions, lastSubscription } = subscriptionControllerState;
-  const latestSubscriptionStatus =
-    getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
-  const lastSubscriptionData = getSubscriptionPaymentData(lastSubscription);
-  const billingInterval = getBillingIntervalForMetrics(
-    lastSubscriptionData.billingInterval,
-  );
-  return {
-    source:
-      shieldSubscriptionMetricsProps?.source || EntryModalSourceEnum.Settings,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    marketing_utm_id: shieldSubscriptionMetricsProps?.marketingUtmId || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    multi_chain_balance_category: getUserBalanceCategory(
-      shieldSubscriptionMetricsProps?.userBalanceInUSD ?? 0,
-    ),
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    subscription_status: latestSubscriptionStatus,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    payment_type: lastSubscriptionData.paymentType,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    crypto_payment_chain: lastSubscriptionData.cryptoPaymentChain || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    crypto_payment_currency: lastSubscriptionData.cryptoPaymentCurrency || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    billing_interval: billingInterval,
-    status: requestStatus,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    error_message: errorMessage || null,
   };
 }
