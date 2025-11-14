@@ -76,6 +76,7 @@ function render(args: Record<string, string> = {}) {
           standard: 'ERC20',
         },
       }}
+      tokenAmountDifference={0.25}
     />,
     mockStore,
   );
@@ -89,5 +90,6 @@ describe('<QuoteSwapSimulationDetails />', () => {
     expect(getByText('You receive')).toBeInTheDocument();
     expect(getByText('- 0.1')).toBeInTheDocument();
     expect(getByText('+ 0.0991')).toBeInTheDocument();
+    expect(getByText('Get $0.25 more')).toBeInTheDocument();
   });
 });

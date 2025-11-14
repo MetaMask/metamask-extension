@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -27,7 +27,6 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransaction } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
-import { useSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { QuoteSwapSimulationDetails } from '../../transactions/quote-swap-simulation-details/quote-swap-simulation-details';
 
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
@@ -94,7 +93,6 @@ const DappSwapComparisonInner = () => {
     tokenDetails,
   } = useDappSwapComparisonInfo();
 
-  const { isQuotedSwap } = useSwapCheck();
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { dappSwapUi } = useSelector(getRemoteFeatureFlags) as {
@@ -107,12 +105,6 @@ const DappSwapComparisonInner = () => {
   );
   const [showDappSwapComparisonBanner, setShowDappSwapComparisonBanner] =
     useState<boolean>(true);
-
-  useEffect(() => {
-    if (isQuotedSwap && selectedSwapType !== SwapType.Metamask) {
-      setSelectedSwapType(SwapType.Metamask);
-    }
-  }, [isQuotedSwap, selectedSwapType]);
 
   const hideDappSwapComparisonBanner = useCallback(() => {
     setShowDappSwapComparisonBanner(false);
@@ -196,7 +188,7 @@ const DappSwapComparisonInner = () => {
               : SwapButtonType.Text
           }
           onClick={updateSwapToCurrent}
-          label={t('metamaskRate')}
+          label={t('marketRate')}
         />
         <SwapButton
           className="dapp-swap_mm-swap-button"
@@ -251,6 +243,7 @@ const DappSwapComparisonInner = () => {
           quote={selectedQuote as QuoteResponse}
           tokenDetails={tokenDetails}
           sourceTokenAmount={sourceTokenAmount}
+          tokenAmountDifference={tokenAmountDifference}
         />
       )}
     </Box>

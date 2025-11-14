@@ -630,9 +630,6 @@
   "attributions": {
     "message": "参与者"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Infura RPC（远程过程调用）URL 不再支持 Aurora。"
-  },
   "authorizedPermissions": {
     "message": "您已授权以下权限"
   },
@@ -1822,9 +1819,6 @@
   "depositCrypto": {
     "message": "使用钱包地址或二维码从另一账户存入加密货币。"
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "由于以太坊系统的升级，Goerli 测试网络将很快淘汰。"
-  },
   "deprecatedNetwork": {
     "message": "该网络被弃用"
   },
@@ -2329,9 +2323,6 @@
   },
   "existingChainId": {
     "message": "您输入的信息与现有的链 ID 相关联。"
-  },
-  "expandView": {
-    "message": "展开视图"
   },
   "experimental": {
     "message": "实验性"
@@ -6481,10 +6472,6 @@
   },
   "switchNetwork": {
     "message": "切换网络"
-  },
-  "switchToNetwork": {
-    "message": "切换至$1",
-    "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
     "message": "切换到该账户"

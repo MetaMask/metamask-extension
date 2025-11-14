@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Fiók megtekintése Etherscanen"
   },
-  "expandView": {
-    "message": "Nézet nagyítása"
-  },
   "failed": {
     "message": "Sikertelen"
   },

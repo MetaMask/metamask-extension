@@ -49,6 +49,10 @@ import {
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
 } from '../../../shared/lib/trust-signals';
+import {
+  DefaultSubscriptionPaymentOptions,
+  ShieldSubscriptionMetricsPropsFromUI,
+} from '../../../shared/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -125,6 +129,13 @@ export type AppStateControllerState = {
   showShieldEntryModalOnce: boolean | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
+  defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
+
+  /**
+   * The properties for the Shield subscription metrics.
+   * Since we can't access some of these properties in the background, we need to get them from the UI.
+   */
+  shieldSubscriptionMetricsProps?: ShieldSubscriptionMetricsPropsFromUI;
 
   /**
    * Whether the wallet reset is in progress.
@@ -635,6 +646,18 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
     includeInStateLogs: true,
+  },
+  defaultSubscriptionPaymentOptions: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+  },
+  shieldSubscriptionMetricsProps: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
   },
 };
 
@@ -1567,5 +1590,27 @@ export class AppStateController extends BaseController<
 
   getIsWalletResetInProgress(): boolean {
     return this.state.isWalletResetInProgress;
+  }
+
+  setDefaultSubscriptionPaymentOptions(
+    defaultSubscriptionPaymentOptions: DefaultSubscriptionPaymentOptions,
+  ): void {
+    this.update((state) => {
+      state.defaultSubscriptionPaymentOptions =
+        defaultSubscriptionPaymentOptions;
+    });
+  }
+
+  /**
+   * Update the Shield subscription metrics properties which are not accessible in the background directly.
+   *
+   * @param shieldSubscriptionMetricsProps - The Shield subscription metrics properties.
+   */
+  setShieldSubscriptionMetricsProps(
+    shieldSubscriptionMetricsProps: ShieldSubscriptionMetricsPropsFromUI,
+  ): void {
+    this.update((state) => {
+      state.shieldSubscriptionMetricsProps = shieldSubscriptionMetricsProps;
+    });
   }
 }

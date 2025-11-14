@@ -50,6 +50,7 @@ import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
 import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
 import { getHasSubscribedToShield } from '../../selectors/subscription/subscription';
+import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
@@ -77,7 +78,7 @@ const ROUTES_TO_I18N_KEYS = {
 
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps;
-  const { pathname } = location;
+  const { pathname, search } = location;
   const { ticker } = getProviderConfig(state);
   const {
     metamask: { currencyRates, socialLoginEmail },
@@ -85,6 +86,11 @@ const mapStateToProps = (state, ownProps) => {
   const settingsPageSnapsIds = getSettingsPageSnapsIds(state);
   const snapsMetadata = getSnapsMetadata(state);
   const conversionDate = currencyRates[ticker]?.conversionDate;
+
+  const searchParams = new URLSearchParams(search);
+  // param to check and show shield entry modal at start
+  const shouldShowShieldEntryModal =
+    searchParams.get(SHIELD_QUERY_PARAMS.showShieldEntryModal) === 'true';
 
   const pathNameTail = pathname.match(/[^/]+$/u)?.[0] || '';
   const isAddressEntryPage = pathNameTail.includes('0x');
@@ -188,6 +194,7 @@ const mapStateToProps = (state, ownProps) => {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
     settingsPageSnaps,
+    shouldShowShieldEntryModal,
     snapSettingsTitle,
     useExternalServices,
   };

@@ -1,6 +1,11 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { BtcMethod, EthMethod, SolMethod } from '@metamask/keyring-api';
+import {
+  BtcMethod,
+  EthMethod,
+  SolMethod,
+  TrxAccountType,
+} from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type CaipAssetType,
@@ -127,7 +132,8 @@ const AssetPage = ({
     selectedAccount.methods.includes(EthMethod.SignTransaction) ||
     selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
     selectedAccount.methods.includes(SolMethod.SignTransaction) ||
-    selectedAccount.methods.includes(BtcMethod.SignPsbt);
+    selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
+    selectedAccount.type === TrxAccountType.Eoa;
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);

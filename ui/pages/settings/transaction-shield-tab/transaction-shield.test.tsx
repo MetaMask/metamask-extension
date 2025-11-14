@@ -40,6 +40,7 @@ jest.mock('./shield-subscription-icon-animation', () => ({
 
 describe('Transaction Shield Page', () => {
   const STATE_MOCK = {
+    ...mockState,
     metamask: {
       ...mockState.metamask,
       customerId: '1',

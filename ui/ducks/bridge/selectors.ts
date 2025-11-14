@@ -19,7 +19,11 @@ import {
   isCrossChain,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import { SolAccountType, BtcAccountType } from '@metamask/keyring-api';
+import {
+  SolAccountType,
+  BtcAccountType,
+  TrxAccountType,
+} from '@metamask/keyring-api';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
@@ -92,6 +96,7 @@ import {
   getDefaultToToken,
   toBridgeToken,
   isNonEvmChain,
+  isTronChainId,
 } from './utils';
 import type { BridgeState, BridgeToken } from './types';
 
@@ -116,6 +121,12 @@ const getNonEvmNativeAssetType = (
   if (isBitcoinChainId(chainId)) {
     // Bitcoin bridge only supports mainnet
     return MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.BTC;
+  }
+  if (isTronChainId(chainId)) {
+    // Tron bridge only supports mainnet
+    return isNativeAddress(address)
+      ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.TRX
+      : (assetId ?? address);
   }
   return assetId ?? address;
 };
@@ -165,6 +176,18 @@ const hasBitcoinAccounts = (state: BridgeAppState) => {
   });
 };
 
+// checks if the user has any tron accounts created
+const hasTronAccounts = (state: BridgeAppState) => {
+  // Access accounts from the state
+  const accounts = state.metamask.internalAccounts?.accounts || {};
+
+  // Check if any account is a Tron account
+  return Object.values(accounts).some((account) => {
+    const { Eoa } = TrxAccountType;
+    return Boolean(account && account.type === Eoa);
+  });
+};
+
 // only includes networks user has added
 export const getAllBridgeableNetworks = createDeepEqualSelector(
   [getNetworkConfigurationsByChainId],
@@ -190,8 +213,9 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
           chainId: MultichainNetworks.SOLANA,
         } as unknown as NetworkConfiguration,
       ],
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
       // TODO: get this from network controller, use placeholder values for now
+      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
+
       [
         MultichainNetworks.BITCOIN,
         {
@@ -204,6 +228,22 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
           rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
           defaultRpcEndpointIndex: 0,
           chainId: MultichainNetworks.BITCOIN,
+        } as unknown as NetworkConfiguration,
+      ],
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
+      [
+        MultichainNetworks.TRON,
+        // TODO: get this from network controller, use placeholder values for now
+        {
+          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON],
+          blockExplorerUrls: [],
+          name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON].nickname,
+          nativeCurrency:
+            MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON].ticker,
+          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
+          defaultRpcEndpointIndex: 0,
+          chainId: MultichainNetworks.TRON,
         } as unknown as NetworkConfiguration,
       ],
       ///: END:ONLY_INCLUDE_IF
@@ -249,12 +289,14 @@ export const getFromChains = createDeepEqualSelector(
     getChainRanking,
     (state: BridgeAppState) => hasSolanaAccounts(state),
     (state: BridgeAppState) => hasBitcoinAccounts(state),
+    (state: BridgeAppState) => hasTronAccounts(state),
   ],
   (
     allBridgeableNetworks,
     chainRanking,
     hasSolanaAccount,
     hasBitcoinAccount,
+    hasTronAccount,
   ) => {
     return chainRanking
       .map((chainId: CaipChainId) => {
@@ -270,6 +312,10 @@ export const getFromChains = createDeepEqualSelector(
         }
         // if no bitcoin account, filter out bitcoin
         if (!hasBitcoinAccount && isBitcoinChainId(matchedChain.chainId)) {
+          return null;
+        }
+        // if no bitcoin account, filter out bitcoin
+        if (!hasTronAccount && isTronChainId(matchedChain.chainId)) {
           return null;
         }
         return matchedChain;
@@ -629,33 +675,8 @@ export const getFromTokenConversionRate = createSelector(
           usd: nativeToUsdRate,
         };
       }
-      if (isSolanaChainId(fromChain.chainId) && nativeAssetId && tokenAssetId) {
-        // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
-        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          Number(
-            conversionRates?.[tokenAssetId]?.rate ??
-              fromTokenExchangeRate ??
-              null,
-          ),
-          Number(
-            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ??
-              rates?.sol?.conversionRate ??
-              null,
-          ),
-        );
-        return exchangeRatesFromNativeAndCurrencyRates(
-          tokenToNativeAssetRate,
-          Number(nativeToCurrencyRate),
-          Number(nativeToUsdRate),
-        );
-      }
-
-      if (
-        isBitcoinChainId(fromChain.chainId) &&
-        nativeAssetId &&
-        tokenAssetId
-      ) {
-        // For Bitcoin tokens, we use the conversion rates provided by the multichain rates controller
+      // For non-EVM tokens (Solana, Bitcoin, Tron), we use the conversion rates provided by the multichain rates controller
+      if (isNonEvmChain(fromChain.chainId) && nativeAssetId && tokenAssetId) {
         const nativeAssetRate = Number(
           conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
         );
@@ -733,25 +754,8 @@ export const getToTokenConversionRate = createDeepEqualSelector(
       const nativeAssetId = getNativeAssetForChainId(toChain.chainId)?.assetId;
       const tokenAssetId = toToken.assetId;
 
-      if (isSolanaChainId(toChain.chainId) && nativeAssetId && tokenAssetId) {
-        // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
-        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          Number(conversionRates?.[tokenAssetId]?.rate ?? null),
-          Number(
-            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
-          ),
-        );
-        return exchangeRatesFromNativeAndCurrencyRates(
-          tokenToNativeAssetRate,
-          rates?.[toChain.nativeCurrency?.toLowerCase()]?.conversionRate ??
-            null,
-          rates?.[toChain.nativeCurrency?.toLowerCase()]?.usdConversionRate ??
-            null,
-        );
-      }
-
-      if (isBitcoinChainId(toChain.chainId) && nativeAssetId && tokenAssetId) {
-        // For Bitcoin tokens, we use the conversion rates provided by the multichain rates controller
+      // For non-EVM tokens (Solana, Bitcoin, Tron), we use the conversion rates provided by the multichain rates controller
+      if (isNonEvmChain(toChain.chainId) && nativeAssetId && tokenAssetId) {
         const nativeAssetRate = Number(
           conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
         );
@@ -1000,6 +1004,20 @@ export const needsBitcoinAccountForDestination = createDeepEqualSelector(
     const isBitcoinDestination = isBitcoinChainId(toChain.chainId);
 
     return isBitcoinDestination && !hasBitcoinAccount;
+  },
+);
+
+export const needsTronAccountForDestination = createDeepEqualSelector(
+  getToChain,
+  (state: BridgeAppState) => hasTronAccounts(state),
+  (toChain, hasTronAccount) => {
+    if (!toChain) {
+      return false;
+    }
+
+    const isTronDestination = isTronChainId(toChain.chainId);
+
+    return isTronDestination && !hasTronAccount;
   },
 );
 

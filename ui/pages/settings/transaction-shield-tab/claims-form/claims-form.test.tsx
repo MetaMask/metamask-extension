@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import { ClaimsProvider } from '../../../../contexts/claims/claims';
+import mockState from '../../../../../test/data/mock-state.json';
 import ClaimsForm from './claims-form';
 
 const mockUseNavigate = jest.fn();
@@ -67,7 +68,9 @@ describe('Submit Claim Form', () => {
 
   beforeEach(() => {
     store = configureStore({
+      ...mockState,
       metamask: {
+        ...mockState.metamask,
         claimsConfigurations: {
           validSubmissionWindowDays: 10,
           supportedNetworks: ['0x1', '0x5'],

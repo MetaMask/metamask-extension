@@ -20,7 +20,7 @@
   background: var(--color-background-default);
   display: flex;
   flex-direction: column;
-  height: auto;
+  height: 100%;
   width: 100%;
 
   @include design-system.screen-sm-min {

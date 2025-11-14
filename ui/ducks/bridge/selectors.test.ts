@@ -13,6 +13,7 @@ import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-sto
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import { ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP } from '../../../shared/constants/bridge';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
@@ -162,6 +163,50 @@ describe('Bridge selectors', () => {
   });
 
   describe('getAllBridgeableNetworks', () => {
+    it('returns list of ALLOWED_BRIDGE_CHAIN_IDS networks', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          ...mockNetworkState(...FEATURED_RPCS),
+        },
+      });
+      const result = getAllBridgeableNetworks(state as never);
+
+      expect(Object.keys(result).length).toBe(14);
+      expect(
+        result[formatChainIdToCaip(FEATURED_RPCS[0].chainId)],
+      ).toStrictEqual(
+        expect.objectContaining({ chainId: FEATURED_RPCS[0].chainId }),
+      );
+      expect(
+        result[formatChainIdToCaip(FEATURED_RPCS[1].chainId)],
+      ).toStrictEqual(
+        expect.objectContaining({ chainId: FEATURED_RPCS[1].chainId }),
+      );
+      FEATURED_RPCS.forEach((rpcDefinition) => {
+        expect(
+          result[formatChainIdToCaip(rpcDefinition.chainId)],
+        ).toStrictEqual(
+          expect.objectContaining({
+            ...rpcDefinition,
+            blockExplorerUrls: [
+              `https://localhost/blockExplorer/${rpcDefinition.chainId}`,
+            ],
+            name: expect.anything(),
+            rpcEndpoints: [
+              {
+                networkClientId: expect.anything(),
+                type: 'custom',
+                url: `https://localhost/rpc/${rpcDefinition.chainId}`,
+              },
+            ],
+          }),
+        );
+      });
+      Object.keys(result).forEach((chainId) => {
+        expect(ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP).toContain(chainId);
+      });
+    });
+
     it('returns network if included in ALLOWED_BRIDGE_CHAIN_IDS', () => {
       const state = {
         ...createBridgeMockStore(),
@@ -175,7 +220,7 @@ describe('Bridge selectors', () => {
       };
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(Object.keys(result).length).toBe(13);
+      expect(Object.keys(result).length).toBe(14);
       expect(result[formatChainIdToCaip(CHAIN_IDS.MAINNET)]).toStrictEqual(
         expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }),
       );
@@ -278,7 +323,7 @@ describe('Bridge selectors', () => {
       // Check that there are no duplicates
       expect(resultsInCaip.length).toBe(new Set(resultsInCaip).size);
       expect(Object.keys(getAllBridgeableNetworks(state as never)).length).toBe(
-        13,
+        14,
       );
       // Check that the results are in the correct order
       expect(resultsInCaip).toStrictEqual([

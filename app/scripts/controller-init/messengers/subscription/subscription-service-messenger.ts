@@ -39,6 +39,8 @@ export function getSubscriptionServiceMessenger(
       'SubscriptionController:getCryptoApproveTransactionParams',
       'SubscriptionController:getBillingPortalUrl',
       'SubscriptionController:submitSponsorshipIntents',
+      'SubscriptionController:getState',
+      'AppStateController:getState',
       'AuthenticationController:getBearerToken',
       'TransactionController:getTransactions',
       'AccountsController:getState',
@@ -46,6 +48,8 @@ export function getSubscriptionServiceMessenger(
       'SmartTransactionsController:getState',
       'NetworkController:getState',
       'SwapsController:getState',
+      'MetaMetricsController:trackEvent',
+      'KeyringController:getState',
     ],
   });
   return serviceMessenger;

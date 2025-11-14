@@ -1,10 +1,19 @@
 import React, { useMemo } from 'react';
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { isNativeAddress, QuoteResponse } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 
+import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { calculateTokenAmount } from '../../../utils/token';
@@ -12,7 +21,10 @@ import { getTokenValueFromRecord } from '../../../utils/dapp-swap-comparison-uti
 import { useConfirmContext } from '../../../context/confirm';
 import { SimulationDetailsLayout } from '../../simulation-details/simulation-details';
 import { BalanceChangeRow } from '../../simulation-details/balance-change-row';
-import { TokenAssetIdentifier } from '../../simulation-details/types';
+import {
+  AssetIdentifier,
+  TokenAssetIdentifier,
+} from '../../simulation-details/types';
 
 const getSrcAssetBalanceChange = (
   srcAsset: QuoteResponse['quote']['srcAsset'],
@@ -20,12 +32,19 @@ const getSrcAssetBalanceChange = (
   sourceTokenAmount: string | undefined,
   fiatRates: Record<Hex, number | undefined>,
 ) => {
-  return {
-    asset: {
-      ...tokenDetails[srcAsset.address.toLowerCase() as Hex],
+  let asset = {
+    ...tokenDetails[srcAsset.address.toLowerCase() as Hex],
+    chainId: toHex(srcAsset.chainId),
+    address: srcAsset.address as Hex,
+  } as AssetIdentifier;
+  if (isNativeAddress(srcAsset.address)) {
+    asset = {
       chainId: toHex(srcAsset.chainId),
-      address: srcAsset.address as Hex,
-    } as unknown as TokenAssetIdentifier,
+      standard: TokenStandard.none,
+    };
+  }
+  return {
+    asset,
     amount: calculateTokenAmount(
       sourceTokenAmount ?? '0x0',
       srcAsset.decimals,
@@ -70,11 +89,13 @@ export const QuoteSwapSimulationDetails = ({
   quote,
   sourceTokenAmount,
   tokenDetails,
+  tokenAmountDifference = 0,
 }: {
   fiatRates?: Record<Hex, number | undefined>;
   quote?: QuoteResponse;
   sourceTokenAmount?: string;
   tokenDetails?: Record<Hex, TokenStandAndDetails>;
+  tokenAmountDifference?: number;
 }) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -116,6 +137,7 @@ export const QuoteSwapSimulationDetails = ({
       isTransactionsRedesign
       transactionId={transactionId}
       title={t('bestQuote')}
+      titleTooltip={t('bestQuoteTooltip')}
     >
       <Box
         flexDirection={BoxFlexDirection.Column}
@@ -136,6 +158,22 @@ export const QuoteSwapSimulationDetails = ({
           label={t('simulationDetailsIncomingHeading')}
           showFiat
         />
+        {tokenAmountDifference > 0 && (
+          <Box justifyContent={BoxJustifyContent.End}>
+            <Box
+              className="quote-swap_highlighted-text"
+              backgroundColor={BoxBackgroundColor.SuccessMuted}
+              padding={2}
+            >
+              <Text
+                color={TextColor.SuccessDefault}
+                variant={TextVariant.BodyXs}
+              >
+                {t('getDollarMore', [tokenAmountDifference?.toFixed(2)])}
+              </Text>
+            </Box>
+          </Box>
+        )}
       </Box>
     </SimulationDetailsLayout>
   );

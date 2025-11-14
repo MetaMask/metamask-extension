@@ -4,11 +4,15 @@ import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockWasmSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 
 describe('Test Snap WASM', function () {
   it('can use webassembly inside a snap', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockWasmSnap,
         title: this.test?.fullTitle(),

@@ -203,7 +203,10 @@ async function withAccountSnap(
       usePaymaster: Boolean(paymaster),
       dappOptions: {
         numberOfTestDapps: 1,
-        customDappPaths: [DAPP_PATH.SNAP_ACCOUNT_ABSTRACTION_KEYRING],
+        customDappPaths: [
+          DAPP_PATH.SNAP_ACCOUNT_ABSTRACTION_KEYRING,
+          DAPP_PATH.TEST_SNAPS,
+        ],
       },
       localNodeOptions: localNodeOptions || {
         hardfork: 'london',
