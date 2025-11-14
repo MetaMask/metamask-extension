@@ -106,6 +106,13 @@ describe('MetaMask onboarding', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            sendRedesign: {
+              enabled: false,
+            },
+          }
+        },
         testSpecificMock: (server: Mockttp) =>
           mockApis(
             server,
