@@ -5928,9 +5928,6 @@
   "shieldClaimIncidentDetails": {
     "message": "Incident details"
   },
-  "shieldClaimIncidentDetailsDescription": {
-    "message": "Help us understand more about what happened."
-  },
   "shieldClaimInvalidChainId": {
     "message": "Please enter a valid chain ID"
   },
@@ -5954,9 +5951,6 @@
   },
   "shieldClaimPersonalDetails": {
     "message": "Personal details"
-  },
-  "shieldClaimPersonalDetailsDescription": {
-    "message": "We'll use this to communicate with you when investigating and resolving."
   },
   "shieldClaimReimbursementWalletAddress": {
     "message": "Wallet address for reimbursement"

@@ -433,13 +433,6 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         <Text variant={TextVariant.HeadingSm}>
           {t('shieldClaimPersonalDetails')}
         </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextAlternative}
-          className="mb-2"
-        >
-          {t('shieldClaimPersonalDetailsDescription')}
-        </Text>
         <Box
           borderColor={BoxBorderColor.BorderMuted}
           className="w-full h-[1px] border border-b-0"
@@ -497,13 +490,6 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       <Box className="mt-4">
         <Text variant={TextVariant.HeadingSm}>
           {t('shieldClaimIncidentDetails')}
-        </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextAlternative}
-          className="mb-2"
-        >
-          {t('shieldClaimIncidentDetailsDescription')}
         </Text>
 
         <Box
