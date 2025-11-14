@@ -39,9 +39,7 @@ describe('wallet_getCapabilities', function () {
     );
   });
 
-  // These tests will fail with BIP44
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should not include auxiliaryFunds for chains without bridge support', async function () {
+  it('should not include auxiliaryFunds for chains without bridge support', async function () {
     await withFixtures(
       {
         forceBip44Version: false,
