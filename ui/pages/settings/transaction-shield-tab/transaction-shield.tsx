@@ -347,7 +347,7 @@ const TransactionShield = () => {
     currentShieldSubscription &&
     isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
     currentShieldSubscription.paymentMethod.crypto.error ===
-      'insufficient_balance';
+      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE;
   const isAllowanceNeededCrypto =
     currentShieldSubscription &&
     isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&

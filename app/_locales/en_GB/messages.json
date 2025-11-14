@@ -6122,14 +6122,32 @@
   "shieldPaused": {
     "message": "Paused"
   },
-  "shieldPaymentDeclined": {
-    "message": "Shield payment declined"
-  },
   "shieldPaymentDeclinedAction": {
     "message": "Add funds"
   },
   "shieldPaymentDeclinedDescription": {
     "message": "Insufficient token balance. Please try again to resume coverage."
+  },
+  "shieldPaymentPaused": {
+    "message": "Transaction Shield paused"
+  },
+  "shieldPaymentPausedActionCardPayment": {
+    "message": "Update"
+  },
+  "shieldPaymentPausedActionCryptoPayment": {
+    "message": "Update"
+  },
+  "shieldPaymentPausedActionUnexpectedError": {
+    "message": "View"
+  },
+  "shieldPaymentPausedDescriptionCardPayment": {
+    "message": "Card payment failed."
+  },
+  "shieldPaymentPausedDescriptionCryptoPayment": {
+    "message": "Insufficient token balance."
+  },
+  "shieldPaymentPausedDescriptionUnexpectedError": {
+    "message": "An unexpected error occurred."
   },
   "shieldPlanAnnual": {
     "message": "Annual"
