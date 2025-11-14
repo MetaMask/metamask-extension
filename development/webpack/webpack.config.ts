@@ -44,15 +44,8 @@ if (args.dryRun) {
   exit(0);
 }
 
-// #region short circuit for unsupported build configurations
-if (args.manifest_version === 3) {
-  throw new Error(
-    "The webpack build doesn't support manifest_version version 3 yet. So sorry.",
-  );
-}
-// #endregion short circuit for unsupported build configurations
-
 const context = join(__dirname, '../../app');
+const nodeModules = join(__dirname, '../../node_modules');
 const isDevelopment = args.env === 'development';
 const MANIFEST_VERSION = args.manifest_version;
 const manifestPath = join(context, `manifest/v${MANIFEST_VERSION}/_base.json`);
@@ -105,10 +98,7 @@ const plugins: WebpackPluginInstance[] = [
     preprocessorOptions: { useWith: false },
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
-    data: {
-      isTest: args.test,
-      shouldIncludeSnow: args.snow,
-    },
+    data: { isTest: args.test },
     preload: [
       {
         attributes: { as: 'font', crossorigin: true },
@@ -172,9 +162,30 @@ const plugins: WebpackPluginInstance[] = [
       { from: join(context, 'images'), to: 'images' },
       // Copy rive.wasm for Rive animations
       {
-        from: join(context, '../node_modules/@rive-app/canvas/rive.wasm'),
+        from: join(nodeModules, '@rive-app/canvas/rive.wasm'),
         to: 'images/riv_animations/rive.wasm',
       },
+      // snaps MV3 needs the offscreen document
+      ...(MANIFEST_VERSION === 3
+        ? [
+            {
+              from: join(
+                nodeModules,
+                '@metamask/snaps-execution-environments',
+                'dist/webpack/iframe/index.html',
+              ),
+              to: 'snaps/index.html',
+            },
+            {
+              from: join(
+                nodeModules,
+                '@metamask/snaps-execution-environments',
+                'dist/webpack/iframe/bundle.js',
+              ),
+              to: 'snaps/bundle.js',
+            },
+          ]
+        : []),
     ],
   }),
 ];
@@ -182,6 +193,13 @@ const plugins: WebpackPluginInstance[] = [
 if (MANIFEST_VERSION === 2) {
   const { SelfInjectPlugin } = require('./utils/plugins/SelfInjectPlugin');
   plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
+}
+// MV3 requires service worker importScripts injection
+if (MANIFEST_VERSION === 3) {
+  const {
+    serviceWorkerPlugin,
+  } = require('./utils/plugins/ServiceWorkerPlugin');
+  plugins.push(serviceWorkerPlugin(manifest));
 }
 if (args.lavamoat) {
   const {
@@ -436,17 +454,6 @@ const config = {
     moduleIds: 'deterministic',
     chunkIds: 'deterministic',
     ...(args.minify ? { minimize: true, minimizer: getMinimizers() } : {}),
-    // Make most chunks share a single runtime file, which contains the
-    // webpack "runtime". The exception is @lavamoat/snow and all scripts
-    // found in the extension manifest; these scripts must be self-contained
-    // and cannot share code with other scripts - as the browser extension
-    // platform is responsible for loading them and splitting these files
-    // would require updating the manifest to include the other chunks.
-    runtimeChunk: {
-      // casting to string as webpack's types are wrong, `false` is allowed, and
-      // is actually the default value.
-      name: (chunk) => (canBeChunked(chunk) ? 'runtime' : false) as string,
-    },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations
       // https://github.com/mozilla/addons-linter/issues/4942

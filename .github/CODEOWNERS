@@ -19,7 +19,7 @@ lavamoat/                            @MetaMask/extension-devs @MetaMask/policy-r
 # file is responsible, at present, for loading the snaps execution environment
 # for MV3. Any changes to this file should require at least one member of the
 # snaps development team to review and approve the changes.
-offscreen/scripts/offscreen.ts       @MetaMask/core-platform
+app/offscreen/offscreen.ts       @MetaMask/core-platform
 
 
 # The privacy-snapshot.json file includes a list of all hosts that the

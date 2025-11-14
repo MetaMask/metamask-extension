@@ -2,10 +2,12 @@ import { readdirSync } from 'node:fs';
 import { parse, join, relative, sep } from 'node:path';
 import type { EntryObject, Stats } from 'webpack';
 import type TerserPluginType from 'terser-webpack-plugin';
+import { sources } from 'webpack';
 
 export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;
 export type ManifestV3 = chrome.runtime.ManifestV3;
+export type EntryDescription = Exclude<EntryObject[string], string | string[]>;
 
 // HMR (Hot Module Reloading) can't be used until all circular dependencies in
 // the codebase are removed
@@ -60,6 +62,13 @@ export const TREZOR_MODULE_RE = new RegExp(
 export const noop = () => undefined;
 
 /**
+ * @param filename
+ * @returns filename with .js extension (.ts | .tsx | .mjs -> .js)
+ */
+export const extensionToJs = (filename: string) =>
+  filename.replace(/\.(ts|tsx|mjs)$/u, '.js');
+
+/**
  * Collects all entry files for use with webpack.
  *
  * TODO: move this logic into the ManifestPlugin
@@ -83,45 +92,69 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     'bootstrap',
   ]);
 
-  function addManifestScript(filename?: string) {
-    if (filename) {
-      selfContainedScripts.add(filename);
-      entry[filename] = {
-        chunkLoading: false,
-        filename, // output filename
-        import: join(appRoot, filename), // the path to the file to use as an entry
-      };
-    }
+  function addManifestScript(filename: string) {
+    selfContainedScripts.add(filename);
+    entry[filename] = {
+      chunkLoading: false,
+      filename: extensionToJs(filename), // output filename with .js extension
+      import: join(appRoot, filename), // the path to the file to use as an entry
+    };
   }
 
-  function addHtml(filename?: string) {
-    if (filename) {
-      assertValidEntryFileName(filename, appRoot);
-      entry[parse(filename).name] = join(appRoot, filename);
-    }
+  function addHtml(filename: string) {
+    assertValidEntryFileName(filename, appRoot);
+    const parsedFileName = parse(filename).name;
+    entry[parsedFileName] = join(appRoot, filename);
   }
 
   // add content_scripts to entries
-  manifest.content_scripts?.forEach((s) => s.js?.forEach(addManifestScript));
+  for (const contentScript of manifest.content_scripts ?? []) {
+    for (const script of contentScript.js ?? []) {
+      addManifestScript(script);
+    }
+  }
 
-  if (manifest.manifest_version === 3) {
-    addManifestScript(manifest.background?.service_worker);
-    manifest.web_accessible_resources?.forEach(({ resources }) =>
-      resources.forEach((filename) => {
-        filename.endsWith('.js') && addManifestScript(filename);
-      }),
-    );
-  } else {
-    manifest.web_accessible_resources?.forEach((filename) => {
-      filename.endsWith('.js') && addManifestScript(filename);
-    });
-    manifest.background?.scripts?.forEach(addManifestScript);
-    addHtml(manifest.background?.page);
+  if (manifest.manifest_version === 2) {
+    if (manifest.background?.page) {
+      addHtml(manifest.background.page);
+    }
+    for (const resource of manifest.web_accessible_resources ?? []) {
+      if (resource.endsWith('.js')) {
+        addManifestScript(resource);
+      }
+    }
+    for (const script of manifest.background?.scripts ?? []) {
+      addManifestScript(script);
+    }
+  } else if (manifest.manifest_version === 3) {
+    if (manifest.background?.service_worker) {
+      addManifestScript(manifest.background.service_worker);
+    }
+    for (const resource of manifest.web_accessible_resources ?? []) {
+      for (const filename of resource.resources) {
+        if (filename.endsWith('.js')) {
+          addManifestScript(filename);
+        }
+      }
+    }
+    entry.background = {
+      chunkLoading: 'import-scripts',
+      filename: 'background.[contenthash].js',
+      import: join(appRoot, 'scripts/background.js'),
+    };
   }
 
   for (const filename of readdirSync(appRoot)) {
     // ignore non-htm/html files
     if (/\.html?$/iu.test(filename)) {
+      // ignore background.html, as that is already handled above
+      if (filename === 'background.html') {
+        continue;
+      }
+      // ignore offscreen.html for MV2 extensions
+      if (manifest.manifest_version === 2 && filename === 'offscreen.html') {
+        continue;
+      }
       addHtml(filename);
     }
   }
@@ -257,3 +290,34 @@ export function logStats(err?: Error | null, stats?: Stats) {
  * @returns a new array with duplicate values removed and sorted
  */
 export const uniqueSort = (array: string[]) => [...new Set(array)].sort();
+
+/**
+ * Creates a {@link sources.ReplaceSource | ReplaceSource} that replaces every non overlapping
+ * occurrence of a substring in the given webpack `Source`.
+ *
+ * @param source - The original webpack source to read from and wrap.
+ * @param assetName - A name used by `ReplaceSource` to identify the virtual asset being modified.
+ * @param searchValue - The substring to look for. Treated as a literal string.
+ * @param replaceValue - The text that will replace each occurrence of `searchValue`.
+ * @returns A {@link sources.ReplaceSource} that applies the requested replacements when rendered.
+ */
+export const replaceSource = (
+  source: sources.Source,
+  assetName: string,
+  searchValue: string,
+  replaceValue: string,
+) => {
+  const sourceString = source.source().toString();
+  const newSource = new sources.ReplaceSource(source, assetName);
+  let index: number = 0;
+  let from: number = 0;
+  while (index !== -1) {
+    index = sourceString.indexOf(searchValue, from);
+    if (index === -1) {
+      break;
+    }
+    newSource.replace(index, index + searchValue.length - 1, replaceValue);
+    from = index + searchValue.length;
+  }
+  return newSource;
+};

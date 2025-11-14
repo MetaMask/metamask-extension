@@ -61,7 +61,6 @@ const ENTRYPOINTS = [
   // 'development/', // Development scripts and utilities
   // 'test/', // Tests
   'app/', // Main application code
-  'offscreen/', // Offscreen page for MV3
   'shared/', // Shared utilities and components
   'ui/', // UI components and styles
 ];

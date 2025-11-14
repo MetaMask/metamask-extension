@@ -31,14 +31,5 @@
   ],
   // this should match our node version in .nvmrc
   "extends": "@tsconfig/node22/tsconfig.json",
-  "include": [
-    "app",
-    "development",
-    "offscreen",
-    "shared",
-    "test",
-    "types",
-    "ui",
-    "*.ts"
-  ]
+  "include": ["app", "development", "shared", "test", "types", "ui", "*.ts"]
 }
