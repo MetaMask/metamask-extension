@@ -9,8 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.10.0]
 
+### Uncategorized
+
+- Null (#37666)
+- Include client version and platform version in `snap_getClientStatus` response. (#37582)
+
 ### Added
 
+- N/A (#37728)
+- N/A (#37652)
 - Updated Shield settings banner ui, copywriting and text colors (#37791)
 - Updated texts and notes for shield plan page (#37800)
 - Supports tron in the swaps and bridge experience (#37683)
