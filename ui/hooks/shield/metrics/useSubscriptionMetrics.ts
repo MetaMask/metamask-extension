@@ -15,19 +15,21 @@ import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
 import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
 import {
-  CaptureShieldBillingHistoryOpenedEventParams,
   CaptureShieldClaimSubmissionEventParams,
   CaptureShieldCryptoConfirmationEventParams,
   CaptureShieldCtaClickedEventParams,
+  CaptureShieldEligibilityCohortAssignedEventParams,
+  CaptureShieldEligibilityCohortTimeoutEventParams,
   CaptureShieldEntryModalEventParams,
+  CaptureShieldErrorStateClickedEventParams,
   CaptureShieldMembershipCancelledEventParams,
   CaptureShieldPaymentMethodChangeEventParams,
-  CaptureShieldPaymentMethodRetriedEventParams,
-  CaptureShieldPaymentMethodUpdatedEventParams,
   CaptureShieldSubscriptionRequestParams,
+  ExistingSubscriptionEventParams,
 } from './types';
 import {
   formatCaptureShieldCtaClickedEventProps,
+  formatCaptureShieldEligibilityCohortEventsProps,
   formatCaptureShieldPaymentMethodChangeEventProps,
   formatDefaultShieldSubscriptionRequestEventProps,
   formatExistingSubscriptionEventProps,
@@ -67,6 +69,33 @@ export const useSubscriptionMetrics = () => {
       );
     },
     [dispatch, totalFiatBalance],
+  );
+
+  const captureShieldEligibilityCohortEvent = useCallback(
+    async (
+      params:
+        | CaptureShieldEligibilityCohortAssignedEventParams
+        | CaptureShieldEligibilityCohortTimeoutEventParams,
+      event: MetaMetricsEventName,
+    ) => {
+      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+        selectedAccount,
+        hdKeyingsMetadata,
+      );
+      const formattedParams = formatCaptureShieldEligibilityCohortEventsProps(
+        params,
+        Number(totalFiatBalance),
+      );
+      trackEvent({
+        event,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...userAccountTypeAndCategory,
+          ...formattedParams,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
   /**
@@ -137,28 +166,6 @@ export const useSubscriptionMetrics = () => {
     [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
-  /**
-   * Capture the event when the payment method is retried after unsuccessful deduction attempt.
-   */
-  const captureShieldPaymentMethodRetriedEvent = useCallback(
-    (params: CaptureShieldPaymentMethodRetriedEventParams) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
-        selectedAccount,
-        hdKeyingsMetadata,
-      );
-      const formattedParams = formatExistingSubscriptionEventProps(params);
-      trackEvent({
-        event: MetaMetricsEventName.ShieldPaymentMethodRetried,
-        category: MetaMetricsEventCategory.Shield,
-        properties: {
-          ...userAccountTypeAndCategory,
-          ...formattedParams,
-        },
-      });
-    },
-    [trackEvent, selectedAccount, hdKeyingsMetadata],
-  );
-
   const captureShieldMembershipCancelledEvent = useCallback(
     (params: CaptureShieldMembershipCancelledEventParams) => {
       const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
@@ -217,39 +224,20 @@ export const useSubscriptionMetrics = () => {
   );
 
   /**
-   * Capture the event when payment failed due to insufficient allowance or users want to renew subscription that is ending soon.
+   * Capture the various events when the shield membership is active.
+   *
+   * @param params - The parameters for the event.
+   * @param event - The name of the event to capture.
    */
-  const captureShieldPaymentMethodUpdatedEvent = useCallback(
-    (params: CaptureShieldPaymentMethodUpdatedEventParams) => {
+  const captureCommonExistingShieldSubscriptionEvents = useCallback(
+    (params: ExistingSubscriptionEventParams, event: MetaMetricsEventName) => {
       const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
         selectedAccount,
         hdKeyingsMetadata,
       );
       const formattedParams = formatExistingSubscriptionEventProps(params);
       trackEvent({
-        event: MetaMetricsEventName.ShieldPaymentMethodUpdated,
-        category: MetaMetricsEventCategory.Shield,
-        properties: {
-          ...userAccountTypeAndCategory,
-          ...formattedParams,
-        },
-      });
-    },
-    [trackEvent, selectedAccount, hdKeyingsMetadata],
-  );
-
-  /**
-   * Capture the event when the billing history is opened.
-   */
-  const captureShieldBillingHistoryOpenedEvent = useCallback(
-    (params: CaptureShieldBillingHistoryOpenedEventParams) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
-        selectedAccount,
-        hdKeyingsMetadata,
-      );
-      const formattedParams = formatExistingSubscriptionEventProps(params);
-      trackEvent({
-        event: MetaMetricsEventName.ShieldBillingHistoryOpened,
+        event,
         category: MetaMetricsEventCategory.Shield,
         properties: {
           ...userAccountTypeAndCategory,
@@ -333,17 +321,43 @@ export const useSubscriptionMetrics = () => {
     [trackEvent, selectedAccount, hdKeyingsMetadata],
   );
 
+  /**
+   * Capture the event when the user clicks on the error state.
+   */
+  const captureShieldErrorStateClickedEvent = useCallback(
+    (params: CaptureShieldErrorStateClickedEventParams) => {
+      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+        selectedAccount,
+        hdKeyingsMetadata,
+      );
+      const formattedParams = formatExistingSubscriptionEventProps(params);
+      trackEvent({
+        event: MetaMetricsEventName.ShieldErrorStateClicked,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...userAccountTypeAndCategory,
+          ...formattedParams,
+          type: params.errorCause,
+          action: params.actionClicked,
+          location: params.location,
+          view: params.view,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata],
+  );
+
   return {
     setShieldSubscriptionMetricsPropsToBackground,
     captureShieldEntryModalEvent,
     captureShieldSubscriptionRequestEvent,
-    captureShieldBillingHistoryOpenedEvent,
     captureShieldMembershipCancelledEvent,
     captureShieldPaymentMethodChangeEvent,
-    captureShieldPaymentMethodRetriedEvent,
-    captureShieldPaymentMethodUpdatedEvent,
     captureShieldCtaClickedEvent,
     captureShieldClaimSubmissionEvent,
     captureShieldCryptoConfirmationEvent,
+    captureShieldEligibilityCohortEvent,
+    captureCommonExistingShieldSubscriptionEvents,
+    captureShieldErrorStateClickedEvent,
   };
 };

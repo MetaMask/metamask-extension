@@ -58,3 +58,18 @@ export enum ShieldCtaActionClickedEnum {
   FindingTxHash = 'finding_tx_hash',
   Dismiss = 'dismiss',
 }
+
+export enum ShieldErrorStateActionClickedEnum {
+  Cta = 'cta',
+  Dismiss = 'dismiss',
+}
+
+export enum ShieldErrorStateLocationEnum {
+  Homepage = 'homepage',
+  Settings = 'settings',
+}
+
+export enum ShieldErrorStateViewEnum {
+  Banner = 'banner',
+  Toast = 'toast',
+}
