@@ -14,7 +14,6 @@ import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import TestDappSendEthWithPrivateKey from '../../page-objects/pages/test-dapp-send-eth-with-private-key';
 import { handleSidepanelPostOnboarding } from '../../page-objects/flows/onboarding.flow';
-import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
 
 async function mockSpotPrices(mockServer: Mockttp) {
   return await mockServer
