@@ -10,6 +10,9 @@ import {
   EntryModalSourceEnum,
   ShieldCtaActionClickedEnum,
   ShieldCtaSourceEnum,
+  ShieldErrorStateActionClickedEnum,
+  ShieldErrorStateLocationEnum,
+  ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../../shared/types';
 
@@ -176,3 +179,14 @@ export type CaptureShieldEligibilityCohortTimeoutEventParams = {
   cohort: CohortName;
   numberOfEligibleCohorts: number;
 };
+
+/**
+ * Capture the event when the user clicks on the error state.
+ */
+export type CaptureShieldErrorStateClickedEventParams =
+  ExistingSubscriptionEventParams & {
+    errorCause: string;
+    actionClicked: ShieldErrorStateActionClickedEnum;
+    location: ShieldErrorStateLocationEnum;
+    view: ShieldErrorStateViewEnum;
+  };

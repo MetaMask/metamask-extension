@@ -21,6 +21,7 @@ import {
   CaptureShieldEligibilityCohortAssignedEventParams,
   CaptureShieldEligibilityCohortTimeoutEventParams,
   CaptureShieldEntryModalEventParams,
+  CaptureShieldErrorStateClickedEventParams,
   CaptureShieldMembershipCancelledEventParams,
   CaptureShieldPaymentMethodChangeEventParams,
   CaptureShieldSubscriptionRequestParams,
@@ -320,6 +321,32 @@ export const useSubscriptionMetrics = () => {
     [trackEvent, selectedAccount, hdKeyingsMetadata],
   );
 
+  /**
+   * Capture the event when the user clicks on the error state.
+   */
+  const captureShieldErrorStateClickedEvent = useCallback(
+    (params: CaptureShieldErrorStateClickedEventParams) => {
+      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+        selectedAccount,
+        hdKeyingsMetadata,
+      );
+      const formattedParams = formatExistingSubscriptionEventProps(params);
+      trackEvent({
+        event: MetaMetricsEventName.ShieldErrorStateClicked,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...userAccountTypeAndCategory,
+          ...formattedParams,
+          type: params.errorCause,
+          action: params.actionClicked,
+          location: params.location,
+          view: params.view,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata],
+  );
+
   return {
     setShieldSubscriptionMetricsPropsToBackground,
     captureShieldEntryModalEvent,
@@ -331,5 +358,6 @@ export const useSubscriptionMetrics = () => {
     captureShieldCryptoConfirmationEvent,
     captureShieldEligibilityCohortEvent,
     captureCommonExistingShieldSubscriptionEvents,
+    captureShieldErrorStateClickedEvent,
   };
 };
