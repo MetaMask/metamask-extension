@@ -111,6 +111,7 @@ export function useDappSwapComparisonInfo(
       };
     }
   }, [
+    batchedDappSwapNestedTransactions,
     captureDappSwapComparisonFailed,
     chainId,
     data,
