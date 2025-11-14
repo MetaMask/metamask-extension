@@ -26,7 +26,7 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
         await accountListPage.checkAccountNameIsDisplayed('Account 1');
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 2');
         await accountListPage.checkAccountNameIsDisplayed('Account 2');
-        // BUG 37363
+        // BUG 37363 - Account details not showing a balance on BIP44 when running on localhost
         // await walletDetailsPage.checkBalanceIsDisplayed('$5,643.50');
       },
     );

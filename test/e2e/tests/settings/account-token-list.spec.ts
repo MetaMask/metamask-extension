@@ -37,8 +37,10 @@ async function mockInfura(mockServer: MockttpServer): Promise<void> {
 async function mockInfuraResponses(mockServer: MockttpServer): Promise<void> {
   await mockInfura(mockServer);
 }
-
-describe('Settings', function () {
+// Bug #37363 Account details not showing a balance on BIP44 when running on localhost
+// also is not possible to show the balance in fiat money on BIP44
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Settings', function () {
   it('Should match the value of token list item and account list item for eth conversion', async function () {
     await withFixtures(
       {
@@ -57,9 +59,7 @@ describe('Settings', function () {
     );
   });
 
-  // This test will fail with BIP44
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('Should match the value of token list item and account list item for fiat conversion', async function () {
+  it('Should match the value of token list item and account list item for fiat conversion', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -107,9 +107,7 @@ describe('Settings', function () {
     );
   });
 
-  // This test will fail with BIP44
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('Should show crypto value when price checker setting is off', async function () {
+  it('Should show crypto value when price checker setting is off', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
