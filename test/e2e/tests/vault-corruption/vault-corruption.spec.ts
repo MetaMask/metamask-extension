@@ -13,7 +13,8 @@ import LoginPage from '../../page-objects/pages/login-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
 
-// Skipping this test as not working with BIP44
+// Skipping these tests temporarily until BIP44 is turned on using FF
+// if mock the FF response to turn on BIP44 then when the extension is reset the mocks will be lost
 // eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
