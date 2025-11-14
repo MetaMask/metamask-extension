@@ -219,7 +219,7 @@ const ShieldEntryModal = ({
           </Text>
           <Box className="shield-entry-modal-sheild-image flex-1 flex items-center justify-center">
             <img
-              src="/images/transaction-sheild-modal.png"
+              src="/images/transaction-shield-modal.png"
               alt="Shield Entry Illustration"
               className="mx-auto h-full w-full object-contain"
             />
