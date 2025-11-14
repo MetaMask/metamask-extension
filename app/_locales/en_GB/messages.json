@@ -5141,7 +5141,7 @@
     "message": "Your plan is now active."
   },
   "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "Your membership has been paused due to payment failure."
+    "message": "Your plan has been paused due to payment failure."
   },
   "pushNotificationShieldSubscriptionTitle": {
     "message": "MetaMask Transaction Shield"
@@ -6030,7 +6030,7 @@
     "message": "PENDING CLAIMS"
   },
   "shieldConfirmMembership": {
-    "message": "Confirm membership"
+    "message": "Confirm plan"
   },
   "shieldCoverageAlertCovered": {
     "message": "You're protected up to $2 with Metamask Transaction Shield. $1."
@@ -6045,7 +6045,7 @@
     "message": "Learn how coverage works"
   },
   "shieldCoverageAlertMessagePaused": {
-    "message": "There was an issue with your Transaction Shield membership payment. Please update your payment method to resume coverage."
+    "message": "There was an issue with your Transaction Shield plan payment. Please update your payment method to resume coverage."
   },
   "shieldCoverageAlertMessagePausedAcknowledgeButton": {
     "message": "Update payment method"
@@ -6087,7 +6087,7 @@
     "message": "Renew"
   },
   "shieldCoverageEndingDescription": {
-    "message": "Membership ends on $1.",
+    "message": "Plan ends on $1.",
     "description": "The $1 is the date"
   },
   "shieldCovered": {
@@ -6248,7 +6248,7 @@
     "message": "Priority support"
   },
   "shieldTxMembershipActive": {
-    "message": "Active membership"
+    "message": "Active plan"
   },
   "shieldTxMembershipBillingDetails": {
     "message": "Billing details"
@@ -6269,31 +6269,49 @@
     "message": "View billing history"
   },
   "shieldTxMembershipCancel": {
-    "message": "Cancel membership"
+    "message": "Cancel plan"
   },
   "shieldTxMembershipCancelNotification": {
-    "message": "Your membership will be cancelled on $1.",
+    "message": "Your plan will be cancelled on $1.",
     "description": "The $1 is the date"
   },
   "shieldTxMembershipErrorAddFunds": {
     "message": "Add funds"
   },
   "shieldTxMembershipErrorInsufficientFunds": {
-    "message": "Insufficient funds for your $1 renewal. Keep access active by adding funds.",
-    "description": "The $1 is the date"
+    "message": "Your plan ends on $1. Renew now to continue your benefits.",
+    "description": "The $1 is the date subscription ends"
   },
   "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Insufficient $1",
-    "description": "The $1 is the token symbol"
+    "message": "Retry payment"
   },
   "shieldTxMembershipErrorPaused": {
-    "message": "Membership paused due to insufficient funds. Coverage will resume after payment update."
+    "message": "Plan paused due to insufficient funds. Coverage will resume after payment update."
+  },
+  "shieldTxMembershipErrorPausedCard": {
+    "message": "Your plan has been paused due to a failed card payment."
+  },
+  "shieldTxMembershipErrorPausedCardAction": {
+    "message": "Update card details"
   },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Your payment was declined. Please update your payment method to continue your coverage."
   },
+  "shieldTxMembershipErrorPausedCryptoInsufficientFunds": {
+    "message": "Plan paused due to insufficient funds. Payment updates may take up to $1hours.",
+    "description": "The $1 is the number of hours"
+  },
+  "shieldTxMembershipErrorPausedCryptoInsufficientFundsAction": {
+    "message": "Add funds"
+  },
   "shieldTxMembershipErrorPausedCryptoTooltip": {
-    "message": "Insufficient token balance in your wallet. Top up to resume coverage."
+    "message": "Insufficient token balance in your wallet. Click retry after funding your wallet."
+  },
+  "shieldTxMembershipErrorPausedUnexpected": {
+    "message": "Plan paused due to an unexpected error."
+  },
+  "shieldTxMembershipErrorPausedUnexpectedAction": {
+    "message": "Contact support"
   },
   "shieldTxMembershipErrorUpdateCard": {
     "message": "Update card details"
@@ -6308,16 +6326,16 @@
     "message": "Member ID"
   },
   "shieldTxMembershipInactive": {
-    "message": "Inactive membership"
+    "message": "Inactive plan"
   },
   "shieldTxMembershipPaused": {
     "message": "Paused"
   },
   "shieldTxMembershipRenew": {
-    "message": "Renew membership"
+    "message": "Renew plan"
   },
   "shieldTxMembershipResubscribe": {
-    "message": "Restart membership"
+    "message": "Restart plan"
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"
