@@ -21,6 +21,13 @@ export function formatDefaultShieldSubscriptionRequestEventProps(
   const billingCycles = getBillingCyclesForMetrics(params.billingInterval);
 
   return {
+    source: params.source,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    marketing_utm_id: params.marketingUtmId,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    post_transaction_type: params.postTransactionType,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     subscription_state: params.subscriptionState,

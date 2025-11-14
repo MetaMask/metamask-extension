@@ -196,6 +196,7 @@ const mapStateToProps = (state) => {
     showShieldEntryModal: getShowShieldEntryModal(state),
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     pendingShieldCohort: getPendingShieldCohort(state),
+    isSignedIn: state.metamask.isSignedIn,
   };
 };
 

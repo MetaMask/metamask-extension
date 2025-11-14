@@ -5659,9 +5659,6 @@
     "message": "Gan aon táille anois, bain triail as saor in aisce ar feadh $1 lá",
     "description": "The $1 is the number of days"
   },
-  "shieldPlanDetails2Card": {
-    "message": "Athnuaitear an plean go huathoibríoch ag deireadh na téarma"
-  },
   "shieldPlanDetails3": {
     "message": "Cosnaíonn sé do shócmhainní ó idirbhearta contúirteacha"
   },
