@@ -146,6 +146,7 @@ const ShieldPlan = () => {
       productType: PRODUCT_TYPES.SHIELD,
     });
   const hasAvailableToken = availableTokenBalances.length > 0;
+
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentType>(() => {
       // always default to card if no token is available
@@ -157,6 +158,7 @@ const ShieldPlan = () => {
       }
       return PAYMENT_TYPES.byCrypto;
     });
+
   // default options for the new subscription request
   const defaultOptions = useMemo(() => {
     const paymentType =
@@ -224,6 +226,8 @@ const ShieldPlan = () => {
     // if the last used payment method is not crypto, don't set default method
     if (selectedToken && lastUsedPaymentMethod !== PAYMENT_TYPES.byCard) {
       setSelectedPaymentMethod(PAYMENT_TYPES.byCrypto);
+    } else {
+      setSelectedPaymentMethod(PAYMENT_TYPES.byCard);
     }
   }, [selectedToken, setSelectedPaymentMethod, lastUsedPaymentDetails]);
 
