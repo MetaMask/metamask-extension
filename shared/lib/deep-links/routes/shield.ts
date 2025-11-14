@@ -13,7 +13,7 @@ export default new Route({
 
     if (shouldShowShieldEntryModal) {
       // link to settings page and show the shield entry modal
-      const query = new URLSearchParams();
+      const query = new URLSearchParams(params);
       query.set(SHIELD_QUERY_PARAMS.showShieldEntryModal, 'true');
       return {
         path: SETTINGS_ROUTE,
