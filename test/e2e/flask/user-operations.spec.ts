@@ -251,10 +251,10 @@ async function withAccountSnap(
   );
 }
 
-describe('User Operations', function () {
-  // Skipping this test because failing with BIPP44
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('from dApp transaction', async function () {
+// Bug #37823 When sending a transaction to dApp the confirmation dialog crashes
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('User Operations', function () {
+  it('from dApp transaction', async function () {
     await withAccountSnap({ title: this.test?.fullTitle() }, async (driver) => {
       const transaction = {
         from: ERC_4337_ACCOUNT,
@@ -304,9 +304,7 @@ describe('User Operations', function () {
   //   );
   // });
 
-  // Bug #37823 When sending a transaction to dApp with veryfing paymaster address the confirmation crash
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('with paymaster', async function () {
+  it('with paymaster', async function () {
     await withAccountSnap(
       {
         title: this.test?.fullTitle(),
