@@ -4,23 +4,28 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  Box,
+} from '../../../components/component-library';
+import {
   Text,
+  Box,
+  AvatarToken,
   Icon,
   IconName,
   IconSize,
-  AvatarToken,
   AvatarTokenSize,
-} from '../../../components/component-library';
+  TextVariant,
+  TextColor,
+  IconColor,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { AddressCopyButton } from '../../../components/multichain/address-copy-button';
 import {
   Display,
   FlexDirection,
   AlignItems,
   JustifyContent,
-  TextVariant,
-  TextColor,
-  IconColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -53,19 +58,11 @@ const MarketDataRow: React.FC<MarketDataRowProps> = ({
   value,
   'data-testid': dataTestId,
 }) => (
-  <Box
-    display={Display.Flex}
-    justifyContent={JustifyContent.spaceBetween}
-    alignItems={AlignItems.center}
-    marginBottom={3}
-    data-testid={dataTestId}
-  >
-    <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+  <Box marginBottom={3} data-testid={dataTestId}>
+    <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
       {label}
     </Text>
-    <Box display={Display.Flex} alignItems={AlignItems.center}>
-      {value}
-    </Box>
+    <Box alignItems={BoxAlignItems.Center}>{value}</Box>
   </Box>
 );
 
@@ -174,17 +171,17 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
             size={AvatarTokenSize.Lg}
             data-testid="token-insights-icon"
           />
-          <Text variant={TextVariant.headingSm}>
+          <Text variant={TextVariant.HeadingSm}>
             {token.symbol || token.name} {t('insights')}
           </Text>
         </ModalHeader>
         <Box paddingRight={4} paddingLeft={4}>
           {/* Market Data */}
-          <Box className="market-data">
+          <Box flexDirection={BoxFlexDirection.Column}>
             <MarketDataRow
               label={t('price')}
               value={
-                <Text variant={TextVariant.bodyMd}>
+                <Text variant={TextVariant.BodyMd}>
                   {marketDataFiat?.formattedPrice || '—'}
                 </Text>
               }
@@ -194,11 +191,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
             <MarketDataRow
               label={t('percentChange')}
               value={
-                <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  gap={1}
-                >
+                <Box alignItems={BoxAlignItems.Center} gap={1}>
                   {priceChange24h !== 0 && (
                     <Icon
                       name={
@@ -208,14 +201,14 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
                       }
                       color={
                         priceChange24h > 0
-                          ? IconColor.successDefault
-                          : IconColor.errorDefault
+                          ? IconColor.SuccessDefault
+                          : IconColor.ErrorDefault
                       }
                       size={IconSize.Sm}
                     />
                   )}
                   <Text
-                    variant={TextVariant.bodyMd}
+                    variant={TextVariant.BodyMd}
                     color={getPriceChangeColor(priceChange24h)}
                   >
                     {formatPercentage(priceChange24h)}
@@ -228,7 +221,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
             <MarketDataRow
               label={t('volume')}
               value={
-                <Text variant={TextVariant.bodyMd}>
+                <Text variant={TextVariant.BodyMd}>
                   {marketDataFiat?.formattedVolume || '—'}
                 </Text>
               }
@@ -238,7 +231,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
             <MarketDataRow
               label={t('marketCapFDV')}
               value={
-                <Text variant={TextVariant.bodyMd}>
+                <Text variant={TextVariant.BodyMd}>
                   {marketDataFiat?.formattedMarketCap || '—'}
                 </Text>
               }

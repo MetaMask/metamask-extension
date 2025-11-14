@@ -5,7 +5,7 @@ import {
 } from '@metamask/utils';
 import { isNativeAddress as isNativeAddressFromBridge } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { TextColor } from '../constants/design-system';
+import { TextColor } from '@metamask/design-system-react';
 
 /**
  * Checks if an address represents a native token
@@ -108,12 +108,12 @@ export const formatContractAddress = (address: string | null): string => {
  */
 export const getPriceChangeColor = (change: number): TextColor => {
   if (change > 0) {
-    return TextColor.successDefault;
+    return TextColor.SuccessDefault;
   }
   if (change < 0) {
-    return TextColor.errorDefault;
+    return TextColor.ErrorDefault;
   }
-  return TextColor.textDefault;
+  return TextColor.TextDefault;
 };
 
 /**
