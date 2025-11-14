@@ -15,6 +15,7 @@ import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
+import { initialState as rewardsInitialState } from '../../ducks/rewards';
 import Routes from '.';
 
 const middlewares = [thunk];
@@ -107,6 +108,7 @@ window.IntersectionObserver = mockIntersectionObserver;
 const render = (pathname, state) => {
   const store = configureMockStore(middlewares)({
     ...mockSendState,
+    rewards: rewardsInitialState,
     ...state,
   });
 

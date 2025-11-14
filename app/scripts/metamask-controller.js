@@ -2604,6 +2604,24 @@ export default class MetamaskController extends EventEmitter {
       estimateRewardsPoints: this.rewardsController.estimatePoints.bind(
         this.rewardsController,
       ),
+      validateRewardsReferralCode:
+        this.rewardsController.validateReferralCode.bind(
+          this.rewardsController,
+        ),
+      getRewardsGeoMetadata: this.rewardsController.getRewardsGeoMetadata.bind(
+        this.rewardsController,
+      ),
+      rewardsOptIn: this.rewardsController.optIn.bind(this.rewardsController),
+      rewardsIsOptInSupported: this.rewardsController.isOptInSupported.bind(
+        this.rewardsController,
+      ),
+      rewardsGetOptInStatus: this.rewardsController.getOptInStatus.bind(
+        this.rewardsController,
+      ),
+      rewardsLinkAccountsToSubscriptionCandidate:
+        this.rewardsController.linkAccountsToSubscriptionCandidate.bind(
+          this.rewardsController,
+        ),
 
       // claims
       getSubmitClaimConfig: this.claimsController.getSubmitClaimConfig.bind(
@@ -3299,6 +3317,11 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.addEventBeforeMetricsOptIn.bind(
           metaMetricsController,
         ),
+
+      // MetaMetrics traits update (UI → Background)
+      updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
+        metaMetricsController,
+      ),
 
       // Buffered Trace API that checks consent and handles buffering/immediate execution
       bufferedTrace: metaMetricsController.bufferedTrace.bind(
