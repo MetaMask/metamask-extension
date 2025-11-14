@@ -6065,6 +6065,12 @@
   "shieldCoverageAlertMessageTitlePaused": {
     "message": "Transaction Shield paused"
   },
+  "shieldCoverageAlertMessageTitleSignatureRequest": {
+    "message": "This signature request isn't covered"
+  },
+  "shieldCoverageAlertMessageTitleSignatureRequestCovered": {
+    "message": "This signature request is covered"
+  },
   "shieldCoverageAlertMessageTokenTrustSignalWarning": {
     "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds. $1."
   },
@@ -6138,24 +6144,28 @@
   "shieldPlanCard": {
     "message": "Card"
   },
+  "shieldPlanCryptoMonthlyNote": {
+    "message": "Total monthly fees pre-approved for a year for crypto payments, so your plan stays active"
+  },
   "shieldPlanDetails": {
-    "message": "Plan details"
+    "message": "What you get"
   },
   "shieldPlanDetails1": {
     "message": "Free $1-day trial",
     "description": "The $1 is the number of days"
   },
-  "shieldPlanDetails2Card": {
-    "message": "Plan auto-renews until canceled"
-  },
-  "shieldPlanDetails2CryptoMonth": {
-    "message": "Monthly fees are pre-approved for a year, so your coverage stays active"
-  },
-  "shieldPlanDetails2CryptoYear": {
-    "message": "Fees are paid upfront for a year, so your coverage stays active"
+  "shieldPlanDetails2": {
+    "message": "Up to $1 in transaction protection",
+    "description": "The $1 is the amount of transaction protection"
   },
   "shieldPlanDetails3": {
+    "message": "24/7 access to priority live chat support"
+  },
+  "shieldPlanFooterNoteMonthly": {
     "message": "Billed monthly, cancel anytime"
+  },
+  "shieldPlanFooterNoteYearly": {
+    "message": "Billed yearly, cancel anytime"
   },
   "shieldPlanMonthly": {
     "message": "Monthly"
@@ -6205,8 +6215,7 @@
     "description": "The $1 is the date subscription ends"
   },
   "shieldTxCancelWhenPausedDetails": {
-    "message": "Your coverage isn't active while paused. If you cancel, your membership will end on $1.",
-    "description": "The $1 is the date subscription ends"
+    "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."
   },
   "shieldTxDetails1Description": {
     "message": "Secures your assets from risky transactions"

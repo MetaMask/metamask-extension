@@ -13,6 +13,7 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { Json } from '@metamask/utils';
 import {
+  EntryModalSourceEnum,
   ShieldUserAccountCategoryEnum,
   ShieldUserAccountTypeEnum,
 } from '../../constants/subscriptions';
@@ -21,7 +22,10 @@ import {
   getSubscriptionPaymentData,
 } from '../../lib/shield';
 import { KeyringType } from '../../constants/keyring';
-import { DefaultSubscriptionPaymentOptions } from '../../types';
+import {
+  DefaultSubscriptionPaymentOptions,
+  ShieldSubscriptionMetricsPropsFromUI,
+} from '../../types';
 // eslint-disable-next-line import/no-restricted-paths
 import {
   getDefaultSubscriptionPaymentOptions,
@@ -124,12 +128,14 @@ export function getUserAccountTypeAndCategory(
  *
  * @param subscriptionControllerState - The subscription controller state.
  * @param defaultSubscriptionPaymentOptions - The default subscription payment options.
+ * @param shieldSubscriptionMetricsProps - The Shield subscription metrics properties.
  * @param transactionMeta
  * @returns The tracking props.
  */
 export function getSubscriptionRequestTrackingProps(
   subscriptionControllerState: SubscriptionControllerState,
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions,
+  shieldSubscriptionMetricsProps?: ShieldSubscriptionMetricsPropsFromUI,
   transactionMeta?: TransactionMeta,
 ): Record<string, Json> {
   const {
@@ -167,6 +173,17 @@ export function getSubscriptionRequestTrackingProps(
     getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
 
   return {
+    source:
+      shieldSubscriptionMetricsProps?.source || EntryModalSourceEnum.Settings,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    marketing_utm_id: shieldSubscriptionMetricsProps?.marketingUtmId || null,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    multi_chain_balance_category: getUserBalanceCategory(
+      shieldSubscriptionMetricsProps?.userBalanceInUSD ?? 0,
+    ),
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     subscription_state: latestSubscriptionStatus,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -212,12 +229,14 @@ export function getSubscriptionRequestTrackingProps(
  *
  * @param subscriptionControllerState - The subscription controller state.
  * @param requestStatus - The request status.
+ * @param shieldSubscriptionMetricsProps - The Shield subscription metrics properties.
  * @param errorMessage - The error message.
  * @returns The tracking props.
  */
 export function getSubscriptionRestartRequestTrackingProps(
   subscriptionControllerState: SubscriptionControllerState,
   requestStatus: 'started' | 'completed' | 'failed',
+  shieldSubscriptionMetricsProps?: ShieldSubscriptionMetricsPropsFromUI,
   errorMessage?: string,
 ): Record<string, Json> {
   const { subscriptions, lastSubscription } = subscriptionControllerState;
@@ -228,6 +247,16 @@ export function getSubscriptionRestartRequestTrackingProps(
     lastSubscriptionData.billingInterval,
   );
   return {
+    source:
+      shieldSubscriptionMetricsProps?.source || EntryModalSourceEnum.Settings,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    marketing_utm_id: shieldSubscriptionMetricsProps?.marketingUtmId || null,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    multi_chain_balance_category: getUserBalanceCategory(
+      shieldSubscriptionMetricsProps?.userBalanceInUSD ?? 0,
+    ),
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     subscription_status: latestSubscriptionStatus,
