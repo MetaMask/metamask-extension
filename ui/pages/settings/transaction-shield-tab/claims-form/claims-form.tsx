@@ -43,14 +43,8 @@ import { useClaimState } from '../../../../hooks/shield/useClaimState';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
-import {
-  DEFAULT_ROUTE,
-  TRANSACTION_SHIELD_CLAIM_ROUTES,
-} from '../../../../helpers/constants/routes';
-import {
-  submitShieldClaim,
-  setDefaultHomeActiveTabName,
-} from '../../../../store/actions';
+import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
+import { submitShieldClaim } from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
@@ -309,14 +303,14 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     [dispatch, setErrorMessage, t],
   );
 
-  const handleOpenActivityTab = useCallback(async () => {
+  const onClickFindTransactionHash = useCallback(async () => {
+    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
     captureShieldCtaClickedEvent({
       source: ShieldCtaSourceEnum.Settings,
       ctaActionClicked: ShieldCtaActionClickedEnum.FindingTxHash,
+      redirectToUrl: TRANSACTION_SHIELD_LINK,
     });
-    dispatch(setDefaultHomeActiveTabName('activity'));
-    navigate(DEFAULT_ROUTE);
-  }, [dispatch, navigate, captureShieldCtaClickedEvent]);
+  }, [captureShieldCtaClickedEvent]);
 
   const handleSubmitClaim = useCallback(async () => {
     if (isInvalidData) {
@@ -562,7 +556,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               <TextButton
                 size={TextButtonSize.BodySm}
                 className="min-w-0"
-                onClick={handleOpenActivityTab}
+                onClick={onClickFindTransactionHash}
               >
                 {t('shieldClaimImpactedTxHashHelpTextLink')}
               </TextButton>
@@ -576,7 +570,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               <TextButton
                 size={TextButtonSize.BodySm}
                 className="min-w-0"
-                onClick={handleOpenActivityTab}
+                onClick={onClickFindTransactionHash}
               >
                 {t('shieldClaimImpactedTxHashHelpTextLink')}
               </TextButton>
