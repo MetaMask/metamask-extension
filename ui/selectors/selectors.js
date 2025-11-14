@@ -524,11 +524,11 @@ export function getSelectedAddress(state) {
   return getSelectedInternalAccount(state)?.address;
 }
 
-export const getInternalAccountByAddress = createSelector(
-  (state) => state.metamask.internalAccounts.accounts,
+export const getInternalAccountByAddress = createDeepEqualSelector(
+  getInternalAccounts,
   (_, address) => address,
   (accounts, address) => {
-    return Object.values(accounts).find((account) =>
+    return accounts.find((account) =>
       isEqualCaseInsensitive(account.address, address),
     );
   },
