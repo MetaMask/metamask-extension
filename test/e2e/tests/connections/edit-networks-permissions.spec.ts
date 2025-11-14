@@ -41,8 +41,8 @@ describe('Edit Networks Permissions', function () {
         // Disconnect Mainnet
         await sitePermissionPage.editPermissionsForNetwork(['Ethereum']);
 
-        // Default Chains Connected: Ethereum, Linea, Base, Arbitrum, BSC, Optimism, Polygon
-        await sitePermissionPage.checkConnectedNetworksNumber(8);
+        // Default Chains Connected: Ethereum, Linea, Base, Arbitrum, BSC, Optimism, Polygon, Solana, BTC
+        await sitePermissionPage.checkConnectedNetworksNumber(12);
       },
     );
   });
