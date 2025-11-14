@@ -1572,7 +1572,8 @@
         "navigator": true,
         "performance.mark": true,
         "performance.measure": true,
-        "process": true
+        "process.env": true,
+        "process.stderr.fd": true
       },
       "packages": {
         "@babel/core>@babel/types": true

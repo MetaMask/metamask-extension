@@ -5744,5 +5744,38 @@
         "koa>is-generator-function>has-tostringtag": true
       }
     }
+  },
+  "babel-plugin-react-compiler": {
+    "builtin": {
+      "buffer": true,
+      "crypto": true,
+      "fs": true,
+      "os.homedir": true,
+      "os.release": true,
+      "path": true,
+      "tty": true,
+      "util": true
+    },
+    "globals": {
+      "Buffer": true,
+      "TextDecoder": true,
+      "URL": true,
+      "__DEV__": true,
+      "atob": true,
+      "compile": true,
+      "console": true,
+      "define": true,
+      "document": true,
+      "findDirectiveEnablingMemoization": true,
+      "localStorage": true,
+      "navigator": true,
+      "performance.mark": true,
+      "performance.measure": true,
+      "process.env": true,
+      "process.stderr.fd": true
+    },
+    "packages": {
+      "@babel/core>@babel/types": true
+    }
   }
 }

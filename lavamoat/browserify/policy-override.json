@@ -103,11 +103,6 @@
         "innerWidth": false,
         "matchMedia": false
       }
-    },
-    "babel-plugin-react-compiler": {
-      "globals": {
-        "process": true
-      }
     }
   }
 }
