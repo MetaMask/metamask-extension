@@ -121,6 +121,12 @@ export const Amount = ({
     updateValue,
   ]);
 
+  const balanceDisplayValue = useMemo(() => {
+    return fiatMode
+      ? `${getFiatDisplayValue(String(balance))} ${t('available')}`
+      : `${balance} ${asset?.symbol} ${t('available')}`;
+  }, [fiatMode, getFiatDisplayValue, balance, asset?.symbol, t]);
+
   if (asset?.standard === ERC721) {
     return null;
   }
@@ -173,7 +179,7 @@ export const Amount = ({
         </Text>
         <Box display={Display.Flex}>
           <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
-            {balance} {asset?.symbol} {t('available')}
+            {balanceDisplayValue}
           </Text>
           {!isNonEvmNativeSendType && (
             <ButtonLink
