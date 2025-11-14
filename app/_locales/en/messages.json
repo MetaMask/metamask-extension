@@ -6042,7 +6042,7 @@
     "message": "This chain is not supported, so it isn't protected by Transaction Shield. $1."
   },
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
-    "message": "Learn how coverage works"
+    "message": "See What's Covered"
   },
   "shieldCoverageAlertMessagePaused": {
     "message": "There was an issue with your Transaction Shield membership payment. Please update your payment method to resume coverage."
@@ -6091,7 +6091,7 @@
     "description": "The $1 is the date"
   },
   "shieldCovered": {
-    "message": "Covered"
+    "message": "This request is covered"
   },
   "shieldEntryModalGetStarted": {
     "message": "Start 14-day free trial"
