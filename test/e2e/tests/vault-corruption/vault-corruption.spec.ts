@@ -11,7 +11,10 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import LoginPage from '../../page-objects/pages/login-page';
 
-describe('Vault Corruption', function () {
+// Skipping these tests temporarily until BIP44 is turned on using FF
+// if mock the FF response to turn on BIP44 then when the extension is reset the mocks will be lost
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
   /**
    * Script template to simulate a broken database.
