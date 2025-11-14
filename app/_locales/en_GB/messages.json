@@ -6286,7 +6286,7 @@
     "message": "Your payment was declined. Please update your payment method to continue your coverage."
   },
   "shieldTxMembershipErrorPausedCryptoInsufficientFunds": {
-    "message": "Plan paused due to insufficient funds. Payment updates may take up to $1hours.",
+    "message": "Plan paused due to insufficient funds. Payment updates may take up to $1 hours.",
     "description": "The $1 is the number of hours"
   },
   "shieldTxMembershipErrorPausedCryptoInsufficientFundsAction": {
