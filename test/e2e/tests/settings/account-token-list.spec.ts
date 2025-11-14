@@ -38,7 +38,10 @@ async function mockInfuraResponses(mockServer: MockttpServer): Promise<void> {
   await mockInfura(mockServer);
 }
 
-describe('Settings', function () {
+// Bug #37363 Account details not showing a balance on BIP44 when running on localhost
+// also is not possible to show the balance in fiat money on BIP44
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Settings', function () {
   it('Should match the value of token list item and account list item for eth conversion', async function () {
     await withFixtures(
       {

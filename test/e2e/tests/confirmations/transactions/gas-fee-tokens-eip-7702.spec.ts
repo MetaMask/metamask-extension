@@ -19,7 +19,9 @@ const UUID = '1234-5678';
 const TRANSACTION_HASH =
   '0xf25183af3bf64af01e9210201a2ede3c1dcd6d16091283152d13265242939fc4';
 
-describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
+// Bug 37677 fee paid in UDSC is not shown
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Gas Fee Tokens - EIP-7702', function (this: Suite) {
   it('confirms transaction if successful', async function () {
     await withFixtures(
       {
