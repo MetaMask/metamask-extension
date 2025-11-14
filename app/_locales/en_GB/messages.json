@@ -832,6 +832,9 @@
   "bestQuote": {
     "message": "Best quote"
   },
+  "bestQuoteTooltip": {
+    "message": "The best quote we found from providers, including provider fees and a 0.25% MetaMask fee. The minimum you'll receive if price changes is $20.82."
+  },
   "beta": {
     "message": "Beta"
   },
@@ -2892,6 +2895,9 @@
   "genericExplorerView": {
     "message": "View account on $1"
   },
+  "getDollarMore": {
+    "message": "Get $$1 more"
+  },
   "getTheNewestFeatures": {
     "message": "Get the newest features"
   },
@@ -3613,6 +3619,9 @@
   "marketDetails": {
     "message": "Market details"
   },
+  "marketRate": {
+    "message": "Market rate"
+  },
   "maskicons": {
     "message": "Polycons"
   },
@@ -3665,9 +3674,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
-  },
-  "metamaskRate": {
-    "message": "Metamask rate"
   },
   "metamaskSwap": {
     "message": "Metamask Swap"
@@ -6212,6 +6218,9 @@
   },
   "shieldStartNowCTA": {
     "message": "Start now"
+  },
+  "shieldStartNowCTAWithTrial": {
+    "message": "Start free trial"
   },
   "shieldTx": {
     "message": "Transaction Shield"
