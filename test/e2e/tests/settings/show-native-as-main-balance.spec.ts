@@ -10,7 +10,10 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 
-describe('Settings: Show native token as main balance', function () {
+// It is not possible to show the balance in fiat money on BIP44
+// these test are also duplicate of existing tests
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Settings: Show native token as main balance', function () {
   it('Should show balance in crypto when toggle is off', async function () {
     await withFixtures(
       {
@@ -25,9 +28,7 @@ describe('Settings: Show native token as main balance', function () {
     );
   });
 
-  // This test will fail with BIP44
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('Should show balance in fiat when toggle is on', async function () {
+  it('Should show balance in fiat when toggle is on', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -58,9 +59,7 @@ describe('Settings: Show native token as main balance', function () {
     );
   });
 
-  // This test will fail with BIP44
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('Should not show popover twice', async function () {
+  it('Should not show popover twice', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
