@@ -316,8 +316,8 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('before initialization, after opting into metrics', function () {
-    it('should send error events in background', async function () {
+  describe.only('before initialization, after opting into metrics', function () {
+    it.only('should send error events in background', async function () {
       await withFixtures(
         {
           fixtures: {
@@ -347,14 +347,19 @@ describe('Sentry errors', function () {
           }, WAIT_FOR_SENTRY_MS);
 
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
+
+          console.log('mockedRequest============', mockedRequest);
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
+          console.log('mockJson Body ============', mockJsonBody);
+
           // Verify request
           const escapedMigrationError = migrationError.replace(
             /[.*+?^${}()|[\]\\]/gu,
             '\\$&',
           );
           const migrationErrorRegex = new RegExp(escapedMigrationError, 'u');
+          console.log('migrationErrorRegex============', migrationErrorRegex);
           assert.match(
             JSON.stringify(mockJsonBody.exception),
             migrationErrorRegex,
