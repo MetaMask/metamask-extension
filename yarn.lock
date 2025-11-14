@@ -18443,7 +18443,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-react-compiler@npm:^19.1.0-rc.2":
+"babel-plugin-react-compiler@npm:19.1.0-rc.3":
   version: 19.1.0-rc.3
   resolution: "babel-plugin-react-compiler@npm:19.1.0-rc.3"
   dependencies:
@@ -23937,7 +23937,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react-compiler@npm:^19.1.0-rc.2":
+"eslint-plugin-react-compiler@npm:19.1.0-rc.2":
   version: 19.1.0-rc.2
   resolution: "eslint-plugin-react-compiler@npm:19.1.0-rc.2"
   dependencies:
@@ -32862,7 +32862,7 @@ __metadata:
     autoprefixer: "npm:^10.4.19"
     await-semaphore: "npm:^0.1.3"
     axios: "npm:^1.12.0"
-    babel-plugin-react-compiler: "npm:^19.1.0-rc.2"
+    babel-plugin-react-compiler: "npm:19.1.0-rc.3"
     babelify: "npm:^10.0.0"
     base32-encode: "npm:^1.2.0"
     base64-js: "npm:^1.5.1"
@@ -32909,7 +32909,7 @@ __metadata:
     eslint-plugin-node: "npm:^11.1.0"
     eslint-plugin-prettier: "npm:^5.5.1"
     eslint-plugin-react: "npm:^7.37.5"
-    eslint-plugin-react-compiler: "npm:^19.1.0-rc.2"
+    eslint-plugin-react-compiler: "npm:19.1.0-rc.2"
     eslint-plugin-react-hooks: "npm:^5.2.0"
     eslint-plugin-storybook: "npm:^0.6.15"
     eslint-plugin-tailwindcss: "npm:^3.18.0"
@@ -33006,8 +33006,8 @@ __metadata:
     react: "npm:^17.0.2"
     react-beautiful-dnd: "npm:^13.1.1"
     react-chartjs-2: "npm:^5.2.0"
-    react-compiler-runtime: "npm:^19.1.0-rc.2"
-    react-compiler-webpack: "npm:^0.2.0"
+    react-compiler-runtime: "npm:19.1.0-rc.3"
+    react-compiler-webpack: "npm:0.2.1"
     react-devtools: "npm:^6.1.5"
     react-devtools-core: "npm:^6.1.5"
     react-dom: "npm:^17.0.2"
@@ -37123,7 +37123,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-compiler-runtime@npm:^19.1.0-rc.2":
+"react-compiler-runtime@npm:19.1.0-rc.3":
   version: 19.1.0-rc.3
   resolution: "react-compiler-runtime@npm:19.1.0-rc.3"
   peerDependencies:
@@ -37132,7 +37132,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-compiler-webpack@npm:^0.2.0":
+"react-compiler-webpack@npm:0.2.1":
   version: 0.2.1
   resolution: "react-compiler-webpack@npm:0.2.1"
   dependencies:
