@@ -253,9 +253,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  // Disabled this test as it's faling with BIP44
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('handles three confirmations on three confirmations concurrently', async function () {
+  it('handles three confirmations on three confirmations concurrently', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
@@ -378,7 +376,7 @@ describe('Request-queue UI changes', function () {
           await networkManager.selectTab('Custom');
 
           await networkManager.selectNetworkByNameWithWait('Localhost 7777');
-          await validateBalanceAndActivity(driver, '24.9998');
+          await validateBalanceAndActivity(driver, '25');
         }
 
         // Validate second network, where transaction was rejected
@@ -393,7 +391,7 @@ describe('Request-queue UI changes', function () {
         await networkManager.selectTab('Custom');
         await networkManager.selectNetworkByNameWithWait('Localhost 8545');
 
-        await validateBalanceAndActivity(driver, '24.9998');
+        await validateBalanceAndActivity(driver, '25');
       },
     );
   });
