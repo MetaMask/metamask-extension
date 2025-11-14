@@ -9,7 +9,6 @@ import { SolScope, BtcScope, TrxScope } from '@metamask/keyring-api';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
 import { AssetType } from '../../shared/constants/transaction';
-import type { TokenWithBalance } from '../components/app/assets/types';
 import {
   getAccountAssets,
   getAssetsMetadata,
@@ -24,23 +23,11 @@ import {
 } from '../selectors/multichain-accounts/account-tree';
 import { type MultichainAccountsState } from '../selectors/multichain-accounts/account-tree.types';
 import { useMultichainSelector } from './useMultichainSelector';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { toAssetId } from '../../shared/lib/asset-utils';
 
 const useNonEvmAssetsWithBalances = (
   accountId?: string,
   accountType?: InternalAccount['type'],
-): (Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
-  chainId: `${string}:${string}`;
-  decimals: number;
-  address: string;
-  assetId: `${string}:${string}`;
-  string: string;
-  balance: string;
-  tokenFiatAmount: number;
-  symbol: string;
-  accountType?: InternalAccount['type'];
-})[] => {
+) => {
   // non-evm tokens owned by non-evm account, includes native and non-native assets
   const assetsByAccountId = useSelector(getAccountAssets);
   const assetMetadataById = useSelector(getAssetsMetadata);
@@ -70,6 +57,7 @@ const useNonEvmAssetsWithBalances = (
           parseCaipAssetType(caipAssetId);
         return {
           chainId,
+          isNative: assetNamespace === 'slip44',
           symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
           assetId: caipAssetId,
           address: assetReference,
@@ -202,35 +190,5 @@ export const useMultichainBalances = (
     tronBalancesWithFiat,
   ]);
 
-  const balanceByAssetId = useMemo(() => {
-    return Object.fromEntries(
-      [
-        ...evmBalancesWithFiatByChainId,
-        ...solanaBalancesWithFiat,
-        ...bitcoinBalancesWithFiat,
-      ].map((token) => [
-        toAssetId(
-          token.address,
-          formatChainIdToCaip(token.chainId),
-        ).toLowerCase(),
-        {
-          symbol: token.symbol,
-          decimals: token.decimals,
-          image: token.image,
-          name: 'name' in token ? (token.name ?? token.symbol) : token.symbol,
-          chainId: formatChainIdToCaip(token.chainId),
-          balance: token.balance,
-          tokenFiatAmount: token.tokenFiatAmount,
-          accountType: token.accountType,
-          assetId: toAssetId(token.address, formatChainIdToCaip(token.chainId)),
-        },
-      ]),
-    );
-  }, [
-    evmBalancesWithFiatByChainId,
-    solanaBalancesWithFiat,
-    bitcoinBalancesWithFiat,
-  ]);
-
-  return { assetsWithBalance, balanceByChainId, balanceByAssetId };
+  return { assetsWithBalance, balanceByChainId };
 };
