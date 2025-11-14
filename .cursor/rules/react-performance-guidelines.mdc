@@ -1,6 +1,6 @@
 ---
 description: Project Guidelines for React Performance Optimization
-globs: *.tsx,*.jsx,ui/components/**/*,ui/pages/**/*,ui/hooks/**/*
+globs: *.tsx,*.jsx,ui/**/*
 alwaysApply: false
 ---
 
@@ -102,6 +102,8 @@ Guidelines for optimizing React component performance in MetaMask Extension.
   - Anti-Pattern: Selectors That Return Entire State Objects
   - Anti-Pattern: Selectors Without Proper Input Selectors
   - Best Practices for Reselect Selectors
+  - Use createDeepEqualSelector sparingly
+  - Combine related selectors into one memoized selector
   - Anti-Pattern: Inline Selector Functions in useSelector
   - Anti-Pattern: Multiple useSelector Calls Selecting Same State Slice
 
@@ -195,10 +197,6 @@ const PureComponent = ({ multiplier, count }: Props) => {
 - Focus on components that actually cause performance issues
 - Use React DevTools Profiler to identify bottlenecks
 - Measure before and after optimization
-
-**❌ Anti-Pattern: Premature Optimization**
-
-Don't optimize without profiling. React Compiler handles most cases automatically - only add manual memoization when profiling shows it's needed.
 
 ```typescript
 ❌ WRONG: Optimizing without measuring
@@ -2048,7 +2046,7 @@ const selectExpensiveComputation = createSelector(
 
 1. **Use granular input selectors** - Select smallest possible state slices
 2. **Avoid identity functions** - Always transform data in output selector
-3. **Use `createDeepEqualSelector`** - For objects/arrays when reference equality isn't sufficient
+3. **Reach for `createDeepEqualSelector` only when shallow checks fail** - Prefer `createSelector` by default; use deep equality when inputs keep the same reference but nested values change (see guidance below)
 4. **Compose selectors** - Build complex selectors from simple ones
 5. **Normalize state shape** - Use `byId` patterns to avoid deep nesting
 
@@ -2070,6 +2068,213 @@ const selectSelectedAccountAddress = createSelector(
   (account) => account?.address ?? null,
 );
 ```
+
+### Use `createDeepEqualSelector` sparingly
+
+`updateMetamaskState` applies background patches to Redux using Immer. Each call receives an array of Immer patches from the background controllers, runs them through `applyPatches`, then dispatches the resulting state:
+
+```2406:2423:ui/store/actions.ts
+export function updateMetamaskState(patches: Patch[]): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { metamask: currentState } = state;
+
+    if (!patches?.length) {
+      return currentState;
+    }
+
+    const newState = applyPatches(currentState, patches);
+    // ...
+    dispatch({
+      type: actionConstants.UPDATE_METAMASK_STATE,
+      value: newState,
+    });
+    // ...
+  };
+}
+```
+
+```7615:7622:ui/store/actions.ts
+function applyPatches(oldState: Record<string, unknown>, patches: Patch[]): Record<string, unknown> {
+  const immer = new Immer();
+  immer.setAutoFreeze(false);
+  return immer.applyPatches(oldState, patches);
+}
+```
+
+Immer guarantees structural sharing: only the objects along the mutated path receive new references, while untouched branches retain their identity. The implications for selector memoization are:
+
+- **`createSelector` (shallow equality on inputs)**
+  - Works best when input selectors point directly at the branch that changes. When Immer patches adjust a deep property, the parent objects along that path get new references, so selectors such as `state => state.metamask.internalAccounts.accounts` see the change and recompute.
+  - If a selector uses a very broad input (for example `state => state.metamask`), Immer still returns a brand-new `metamask` object on every patch, so the selector recomputes even when the actual slice it cares about did not change. Keep inputs tight to avoid unnecessary work.
+- **`createDeepEqualSelector` (deep equality on inputs)**
+  - Because it compares arguments with `lodash/isEqual`, a selector can ignore the fact that Immer provided a fresh reference when the underlying data is unchanged. This helps when patches touch other controllers but Redux still replaces the parent object you depend on.
+  - The trade-off is that `isEqual` runs on every evaluation, which is noticeable for large nested payloads. Only use the deep-equality variant when you have evidence that Immer’s structural sharing is still producing noisy reference changes for your selector’s inputs.
+
+In practice:
+
+- For selectors whose inputs come from a store that mutates nested properties without replacing the top-level reference (for example, background controllers that update metadata in place), `createSelector` is sufficient and cheaper.
+- For selectors rebuilding a complex aggregate (sorting, merging, normalizing) on every call even though the semantic contents often stay the same (for example `getWalletsWithAccounts`), `createDeepEqualSelector` avoids downstream re-renders by tolerating reference churn.
+- Regardless of memoization strategy, keep input selectors granular so Immer’s minimal reference changes flow only to the consumers that truly need to update.
+
+Most selectors can rely on reference changes produced by reducers, so `createSelector` is the correct choice:
+
+```typescript
+// ui/selectors/selectors.js
+export const getInternalAccountByAddress = createSelector(
+  (state) => state.metamask.internalAccounts.accounts,
+  (_state, address: string) => address,
+  (accounts, address) => {
+    return Object.values(accounts).find((account) =>
+      isEqualCaseInsensitive(account.address, address),
+    );
+  },
+);
+```
+
+When we aggregate multiple nested sources and return a brand-new object each time, deep equality prevents redundant re-renders even though the inputs keep the same references:
+
+```typescript
+// ui/selectors/multichain-accounts/account-tree.ts
+export const getWalletsWithAccounts = createDeepEqualSelector(
+  getMetaMaskAccountsOrdered,
+  getAccountTree,
+  getOrderedConnectedAccountsForActiveTab,
+  getSelectedInternalAccount,
+  getPinnedAccountsList,
+  getHiddenAccountsList,
+  (
+    internalAccounts,
+    accountTree,
+    connectedAccounts,
+    selectedAccount,
+    pinnedAccounts,
+    hiddenAccounts,
+  ) => {
+    return createConsolidatedWallets(
+      internalAccounts,
+      accountTree,
+      connectedAccounts,
+      selectedAccount,
+      pinnedAccounts,
+      hiddenAccounts,
+      (groupAccounts) => groupAccounts,
+    );
+  },
+);
+```
+
+This selector stitches together data from several controllers and always produces a fresh structure. Without deep equality the UI would receive a new reference on every state change, even when the contents are identical. In contrast, selectors that already get new references from reducers (such as arrays built with Immer) should stick to `createSelector`.
+
+**Guard rails:**
+
+- If a deep selector becomes hot, profile it with React DevTools before shipping.
+- Document why you chose `createDeepEqualSelector` so future contributors can revisit the trade-off.
+
+### Combine related selectors into one memoized selector
+
+Each `useSelector` subscription runs independently. When a component calls multiple selectors in sequence, Redux evaluates each one and triggers rerenders whenever their results change—even if they depend on the same underlying state. Consolidating those calls into a single memoized selector reduces redundant work and keeps derived data co-located.
+
+```75:97:ui/pages/bridge/quotes/multichain-bridge-quote-card.tsx
+const {
+  activeQuote,
+  isQuoteGoingToRefresh,
+  isLoading: isQuoteLoading,
+} = useSelector(getBridgeQuotes);
+const currency = useSelector(getCurrentCurrency);
+
+const { insufficientBal } = useSelector(getQuoteRequest);
+const fromChain = useSelector(getFromChain);
+const locale = useSelector(getIntlLocale);
+const isStxEnabled = useSelector(getIsStxEnabled);
+const fromToken = useSelector(getFromToken);
+const toToken = useSelector(getToToken);
+const slippage = useSelector(getSlippage);
+const isSolanaSwap = useSelector(getIsSolanaSwap);
+
+const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
+
+const priceImpactThresholds = useSelector(getPriceImpactThresholds);
+```
+
+This pattern subscribes the component 11 different times. If any selector emits a new reference, React schedules a rerender—even when the fields you care about stay the same.
+
+Prefer composing a single view selector:
+
+```typescript
+const selectBridgeQuoteCardView = createSelector(
+  [
+    getBridgeQuotes,
+    getCurrentCurrency,
+    getQuoteRequest,
+    getFromChain,
+    getIntlLocale,
+    getIsStxEnabled,
+    getFromToken,
+    getToToken,
+    getSlippage,
+    getIsSolanaSwap,
+    getIsToOrFromNonEvm,
+    getPriceImpactThresholds,
+  ],
+  (
+    bridgeQuotes,
+    currency,
+    quoteRequest,
+    fromChain,
+    locale,
+    isStxEnabled,
+    fromToken,
+    toToken,
+    slippage,
+    isSolanaSwap,
+    isToOrFromNonEvm,
+    priceImpactThresholds,
+  ) => ({
+    activeQuote: bridgeQuotes.activeQuote,
+    isQuoteGoingToRefresh: bridgeQuotes.isQuoteGoingToRefresh,
+    isQuoteLoading: bridgeQuotes.isLoading,
+    currency,
+    insufficientBal: quoteRequest.insufficientBal,
+    fromChain,
+    locale,
+    isStxEnabled,
+    fromToken,
+    toToken,
+    slippage,
+    isSolanaSwap,
+    isToOrFromNonEvm,
+    priceImpactThresholds,
+  }),
+);
+
+const MultichainBridgeQuoteCard = () => {
+  const {
+    activeQuote,
+    isQuoteGoingToRefresh,
+    isQuoteLoading,
+    currency,
+    insufficientBal,
+    fromChain,
+    locale,
+    isStxEnabled,
+    fromToken,
+    toToken,
+    slippage,
+    isSolanaSwap,
+    isToOrFromNonEvm,
+    priceImpactThresholds,
+  } = useSelector(selectBridgeQuoteCardView);
+  // ...
+};
+```
+
+**Benefits:**
+
+- Only one subscription; the component rerenders once per state change instead of once per selector.
+- Shared memoization ensures the combined output only changes when at least one dependency does.
+- Centralizes domain-specific shaping logic in the selector layer, simplifying reuse and testing.
+- Lets you switch to `createDeepEqualSelector` (when justified) in a single place if background patches mutate nested data without replacing references.
 
 ### ❌ Anti-Pattern: Inline Selector Functions in useSelector
 
@@ -3381,31 +3586,3 @@ Before considering a component optimized:
 - [ ] Suspense boundaries in appropriate places
 
 ---
-
-## Summary
-
-**Key Takeaways:**
-
-1. **Profile before optimizing** - Don't guess, measure
-2. **Keep components pure** - Same inputs = same outputs
-3. **Understand React Compiler boundaries** - Manual memoization required for Redux, external hooks, effects, third-party components, refs, and external state
-4. **Use memoization judiciously** - React.memo, useMemo, useCallback for expensive operations with external dependencies (React Compiler handles simple prop/state cases)
-5. **Avoid inline objects/functions** - Create stable references (React Compiler handles simple cases, manual needed for external dependencies)
-6. **Split state appropriately** - By update frequency and concern
-7. **Virtualize large lists** - Render only visible items
-8. **Lazy load heavy components** - Code split by route and feature
-9. **Optimize context usage** - Split contexts and memoize values (especially external context)
-10. **Use proper keys** - Unique, stable identifiers for lists
-11. **Don't overuse effects** - Calculate during render when possible
-12. **Clean up async operations** - AbortController, mounted checks, interval cleanup
-13. **Optimize selectors** - No identity functions, granular inputs, proper composition, no inline functions
-14. **Normalize large state** - Use byId patterns, batch updates
-15. **Handle non-deterministic hooks** - Always call hooks unconditionally
-16. **Break cascading re-renders** - Isolate dependencies, use selectors
-17. **Avoid JSON.stringify in dependencies** - Use deep equality or normalize data
-18. **Include all dependencies** - Prevent stale closures, but exclude stable setState functions
-19. **Avoid cascading effects** - Combine effects or compute derived state during render
-20. **Use correct hooks** - useEffect for async, useLayoutEffect only for DOM measurements
-21. **Memoize expensive object creation** - Maps, Sets, complex objects created during render (when dependencies are external)
-
-**Remember:** React Compiler optimizes simple prop/state computations automatically, but **any code that crosses boundaries** (Redux, external libraries, refs, effects, third-party components) **requires manual memoization**. Always profile first, then optimize what actually matters. See [React Compiler Considerations](#react-compiler-considerations) for detailed scenarios.
