@@ -28,6 +28,12 @@ const backgroundConnectionMocked = {
 
 describe('Permit Confirmation', () => {
   beforeEach(() => {
+    // Test warning to verify snapshot system
+    console.warn(
+      'REVIEWER_TEST: This warning should be detected by the snapshot system',
+    );
+  });
+  beforeEach(() => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({

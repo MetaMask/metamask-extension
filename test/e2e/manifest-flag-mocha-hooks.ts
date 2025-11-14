@@ -41,6 +41,15 @@ if (typeof afterEach === 'function' && process.env.SELENIUM_BROWSER) {
   });
 }
 
+// Global after hook to validate console warnings/errors
+// NOTE: Validation is now handled in withFixtures after each test
+// This avoids duplicate validation that would cause error messages to appear twice
+if (typeof after === 'function' && process.env.SELENIUM_BROWSER) {
+  after(async function () {
+    // Validation now happens in withFixtures - skip here to avoid duplication
+  });
+}
+
 function backupManifest(newExtension = 'backup') {
   fs.cpSync(
     `${folder}/manifest.json`,

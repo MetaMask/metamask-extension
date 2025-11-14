@@ -50,6 +50,12 @@ const setupPermissionBackgroundApiMethods = (overrides) => {
 };
 
 describe('permission background API methods', () => {
+  beforeEach(() => {
+    // Test warning to verify snapshot system
+    console.warn(
+      'REVIEWER_TEST: This warning should be detected by the snapshot system',
+    );
+  });
   afterEach(() => {
     jest.resetAllMocks();
     MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue(

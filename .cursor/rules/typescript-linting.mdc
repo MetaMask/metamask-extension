@@ -1,0 +1,85 @@
+# TypeScript and ESLint Best Practices
+
+## Imports in TypeScript Files
+
+- **Never use `require()`** in TypeScript files (`.ts`, `.tsx`)
+- Always use ES6 imports: `import ... from '...'`
+- If you need dynamic imports, use `import()` promises, not `require()`
+
+**Bad:**
+```typescript
+const path = require('path');
+const fs = require('fs');
+```
+
+**Good:**
+```typescript
+import path from 'path';
+import fs from 'fs';
+
+// Or for dynamic imports:
+import('path').then((pathModule) => { ... });
+```
+
+## Regular Expression Flags
+
+- **Always add the `u` flag** to regular expressions for proper Unicode handling
+- This is required by the ESLint rule `require-unicode-regexp`
+
+**Bad:**
+```typescript
+.replace(/\.(spec|test)\.(ts|js)$/i, '');
+.replace(/^-|-$/g, '');
+```
+
+**Good:**
+```typescript
+.replace(/\.(spec|test)\.(ts|js)$/iu, '');
+.replace(/^-|-$/gu, '');
+```
+
+## Type Assertions
+
+- **Avoid `as any`** - always specify a proper type
+- **Use object destructuring** when extracting properties from typed objects
+
+**Bad:**
+```typescript
+const testFilePath = (aggregated as any).testFilePath;
+```
+
+**Good:**
+```typescript
+const { testFilePath } = aggregated as { testFilePath?: string };
+```
+
+## Array Destructuring
+
+- **Use array destructuring** when accessing array elements, especially from regex matches
+- **Note:** For regex matches, use intermediate variable + optional chaining to avoid TypeScript errors
+
+**Bad:**
+```javascript
+const match = str.match(/pattern/);
+const value = match[1];  // ❌ prefer-destructuring
+```
+
+**Also Bad (TypeScript error):**
+```javascript
+const [, value] = str.match(/pattern/) || [];  // ❌ Type error in TS
+```
+
+**Good:**
+```javascript
+const matchResult = str.match(/pattern/);
+const value = matchResult?.[1];  // ✅ Clean + type-safe
+```
+
+## Summary
+
+When working in TypeScript files:
+1. ✅ Use ES6 imports, not `require()`
+2. ✅ Always add `u` flag to regexes
+3. ✅ Specify proper types instead of `any`
+4. ✅ Use object destructuring when extracting properties
+5. ✅ Use array destructuring when accessing array elements (especially regex matches)

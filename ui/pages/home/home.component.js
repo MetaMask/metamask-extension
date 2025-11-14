@@ -279,6 +279,11 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
+    // Test warning to verify snapshot system
+    console.warn(
+      'REVIEWER_TEST: This warning should be detected by the snapshot system',
+    );
+
     this.checkStatusAndNavigate();
 
     this.props.fetchBuyableChains();

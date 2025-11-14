@@ -1,6 +1,17 @@
 // This file is for Jest-specific setup only and runs before our Jest tests.
 import '../helpers/setup-after-helper';
 
+// Setup console warnings/errors snapshot validation
+// This must be imported after setup-after-helper to ensure all globals are available
+import { setupConsoleCapture } from './console-capture';
+
+// Unit tests use 'unit' snapshot type (default, but explicit for clarity)
+if (!process.env.WARNINGS_SNAPSHOT_TYPE) {
+  process.env.WARNINGS_SNAPSHOT_TYPE = 'unit';
+}
+
+setupConsoleCapture();
+
 jest.mock('webextension-polyfill', () => {
   return {
     runtime: {
