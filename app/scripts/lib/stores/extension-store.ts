@@ -29,7 +29,55 @@ export default class ExtensionStore implements BaseStore {
     const { local } = browser.storage;
     // don't fetch more than we need, incase extra stuff was put in the db
     // by testing or users playing with the db
-    return await local.get(['data', 'meta']);
+    const db = await local.get(['manifest']);
+    debugger;
+    // get all keys from the manifest, and load those keys
+    const keys = db.manifest ? Object.keys(db.manifest) : [];
+    const storedData = await local.get(keys);
+    this.manifest = db.manifest;
+    const data = keys.reduce(
+      (acc, key) => {
+        // @ts-expect-error TODO
+        acc[key] = storedData[key] ? JSON.parse(storedData[key]) : undefined;
+        return acc;
+      },
+      {} as MetaMaskStorageStructure['data'],
+    );
+    const meta = data.meta;
+    delete data.meta;
+    if (!meta) {
+      return null;
+    }
+    return {
+      meta,
+      data: keys.reduce(
+        (acc, key) => {
+          // @ts-expect-error TODO
+          acc[key] = storedData[key] ? JSON.parse(storedData[key]) : undefined;
+          return acc;
+        },
+        {} as MetaMaskStorageStructure['data'],
+      ),
+    };
+  }
+
+  async setKeyValues<Key extends keyof MetaMaskStorageStructure['data']>(
+    pairs: {
+      key: Key;
+      value: MetaMaskStorageStructure['data'][Key];
+    }[],
+  ): Promise<void> {
+    if (!this.isSupported) {
+      throw new Error(
+        'Metamask- cannot persist state to local store as this browser does not support this action',
+      );
+    }
+    const { local } = browser.storage;
+    const toSet: Record<string, string> = {};
+    for (const { key, value } of pairs) {
+      toSet[key] = JSON.stringify(value);
+    }
+    return await local.set(toSet);
   }
 
   /**

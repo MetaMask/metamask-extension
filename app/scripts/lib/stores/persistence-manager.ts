@@ -188,6 +188,11 @@ export class PersistenceManager {
 
   #pendingState: void | AbortController = undefined;
 
+  set<
+    Key extends keyof MetaMaskStateType,
+    Value extends MetaMaskStateType[Key],
+  >(key: Key, state: Value): Promise<void>;
+  set(state: MetaMaskStateType): Promise<void>;
   /**
    * Sets the state in the local store.
    *
@@ -198,10 +203,13 @@ export class PersistenceManager {
    * @throws Error if the local store is not open.
    * @throws Error if the data persistence fails during the write operation.
    */
-  async set(state: MetaMaskStateType) {
+  async set(
+    keyOrState: string | MetaMaskStateType,
+    valueOrState?: MetaMaskStateType,
+  ) {
     await this.open();
 
-    if (!state) {
+    if (!valueOrState) {
       throw new Error('MetaMask - updated state is missing');
     }
     const meta = this.#metadata;
@@ -229,22 +237,26 @@ export class PersistenceManager {
         this.#pendingState = undefined;
         try {
           // atomically set all the keys
-          await this.#localStore.set({
-            data: state,
-            meta,
-          });
-
-          const backup = makeBackup(state, meta);
-          // if we have a vault we can back it up
-          if (hasVault(backup)) {
-            const stringifiedBackup = JSON.stringify(backup);
-            // and the backup has changed
-            if (this.#backup !== stringifiedBackup) {
-              // save it to the backup DB
-              await this.#backupDb?.set(backup);
-              this.#backup = stringifiedBackup;
-            }
+          if (typeof keyOrState === 'string') {
+            await this.#localStore.setKeyValue(keyOrState, valueOrState);
+          } else {
+            await this.#localStore.set({
+              data: keyOrState,
+              meta,
+            });
           }
+
+          // const backup = makeBackup(state, meta);
+          // // if we have a vault we can back it up
+          // if (hasVault(backup)) {
+          //   const stringifiedBackup = JSON.stringify(backup);
+          //   // and the backup has changed
+          //   if (this.#backup !== stringifiedBackup) {
+          //     // save it to the backup DB
+          //     await this.#backupDb?.set(backup);
+          //     this.#backup = stringifiedBackup;
+          //   }
+          // }
 
           if (this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = false;
