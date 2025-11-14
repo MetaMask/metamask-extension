@@ -584,10 +584,9 @@ export function formatComparisonResults(
         /^\/Users\/.*\/metamask-extension\//u,
         '',
       );
-      // Ensure it starts with ./ if it's a relative path
-      if (!displayPath.startsWith('./') && !displayPath.startsWith('/')) {
-        displayPath = `./${displayPath}`;
-      }
+      // Remove leading ./ if present for cleaner output
+      displayPath = displayPath.replace(/^\.\//u, '');
+
       lines.push(
         `   yarn test:warnings:update:${snapshotType} ${displayPath}\n`,
       );

@@ -148,7 +148,10 @@ export function saveCapturedToTemp(testName?: string): void {
     // If test name provided, save to test-specific file
     // This allows re-running individual tests without losing other tests' data
     if (testName) {
-      saveTestSnapshot(capturedData, testName);
+      // Only save if there's actual data - don't overwrite with empty data
+      if (capturedData.warnings.length > 0 || capturedData.errors.length > 0) {
+        saveTestSnapshot(capturedData, testName);
+      }
     } else {
       // Fallback to worker-based file (for tests that don't provide name)
       saveWorkerSnapshot(capturedData);
