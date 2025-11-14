@@ -220,7 +220,6 @@ import {
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
-  captureShieldSubscriptionRequestEvent,
   getShieldGatewayConfig,
   updatePreferencesAndMetricsForShieldSubscription,
 } from '../../shared/modules/shield';
@@ -757,7 +756,7 @@ export default class MetamaskController extends EventEmitter {
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
     this.accountTreeController = controllersByName.AccountTreeController;
     this.oauthService = controllersByName.OAuthService;
-    this.SubscriptionService = controllersByName.SubscriptionService;
+    this.subscriptionService = controllersByName.SubscriptionService;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
     this.subscriptionController = controllersByName.SubscriptionController;
@@ -2567,20 +2566,20 @@ export default class MetamaskController extends EventEmitter {
           this.subscriptionController,
         ),
       startSubscriptionWithCard:
-        this.SubscriptionService.startSubscriptionWithCard.bind(
-          this.SubscriptionService,
+        this.subscriptionService.startSubscriptionWithCard.bind(
+          this.subscriptionService,
         ),
       updateSubscriptionCardPaymentMethod:
-        this.SubscriptionService.updateSubscriptionCardPaymentMethod.bind(
-          this.SubscriptionService,
+        this.subscriptionService.updateSubscriptionCardPaymentMethod.bind(
+          this.subscriptionService,
         ),
       startSubscriptionWithCrypto:
         this.subscriptionController.startSubscriptionWithCrypto.bind(
           this.subscriptionController,
         ),
       updateSubscriptionCryptoPaymentMethod:
-        this.SubscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
-          this.SubscriptionService,
+        this.subscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
+          this.subscriptionService,
         ),
       submitSubscriptionUserEvents:
         this.subscriptionController.submitUserEvent.bind(
@@ -2957,6 +2956,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setDefaultSubscriptionPaymentOptions.bind(
           appStateController,
         ),
+      setShieldSubscriptionMetricsProps:
+        appStateController.setShieldSubscriptionMetricsProps.bind(
+          appStateController,
+        ),
 
       // EnsController
       tryReverseResolveAddress:
@@ -3318,11 +3321,6 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.addEventBeforeMetricsOptIn.bind(
           metaMetricsController,
         ),
-
-      // MetaMetrics traits update (UI → Background)
-      updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
-        metaMetricsController,
-      ),
 
       // Buffered Trace API that checks consent and handles buffering/immediate execution
       bufferedTrace: metaMetricsController.bufferedTrace.bind(
@@ -4629,8 +4627,9 @@ export default class MetamaskController extends EventEmitter {
         const newHdEntropyIndex = this.getHDEntropyIndex();
 
         this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
+          event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
           properties: {
+            status: 'completed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: newHdEntropyIndex,
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -5239,6 +5238,15 @@ export default class MetamaskController extends EventEmitter {
       await this.getSnapKeyring(),
       this.accountTreeController.getSelectedAccountGroup(),
     );
+
+    if (this.isMultichainAccountsFeatureState2Enabled()) {
+      // This allows to create missing accounts if new account providers have been added.
+      // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
+      // for mobile, but for now, this easy fix should cover new provider accounts.
+      // NOTE: We run this asynchronously on purpose, see FIXME^.
+      // eslint-disable-next-line no-void
+      void this.multichainAccountService.alignWallets();
+    }
   }
 
   async _loginUser(password) {
@@ -8562,23 +8570,18 @@ export default class MetamaskController extends EventEmitter {
    */
   async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
     const { isGasFeeSponsored, chainId } = transactionMeta;
-    const subscriptionControllerState = this.subscriptionController.state;
-    const { defaultSubscriptionPaymentOptions } = this.appStateController.state;
     const bundlerSupported = await isSendBundleSupported(chainId);
     const isSponsored = isGasFeeSponsored && bundlerSupported;
 
     try {
-      // TODO: Move this to the subscription service once `submitShieldSubscriptionCryptoApproval` action is exported from the subscription controller
-      captureShieldSubscriptionRequestEvent(
-        subscriptionControllerState,
-        transactionMeta,
-        defaultSubscriptionPaymentOptions,
-        this.metaMetricsController,
+      this.subscriptionService.trackSubscriptionRequestEvent(
         'started',
+        transactionMeta,
         {
           has_sufficient_crypto_balance: true,
         },
       );
+
       await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
         transactionMeta,
         isSponsored,
@@ -8599,24 +8602,18 @@ export default class MetamaskController extends EventEmitter {
           transactionMeta.type,
         );
       }
-      captureShieldSubscriptionRequestEvent(
-        subscriptionControllerState,
-        transactionMeta,
-        defaultSubscriptionPaymentOptions,
-        this.metaMetricsController,
+      this.subscriptionService.trackSubscriptionRequestEvent(
         'completed',
+        transactionMeta,
         {
           gas_sponsored: isSponsored,
         },
       );
     } catch (error) {
       log.error('Error on Shield subscription approval transaction', error);
-      captureShieldSubscriptionRequestEvent(
-        subscriptionControllerState,
-        transactionMeta,
-        defaultSubscriptionPaymentOptions,
-        this.metaMetricsController,
+      this.subscriptionService.trackSubscriptionRequestEvent(
         'failed',
+        transactionMeta,
         {
           error_message: error.message,
         },
