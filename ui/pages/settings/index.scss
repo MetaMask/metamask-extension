@@ -414,7 +414,6 @@
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 // Sidepanel-specific styles: apply popup layout regardless of viewport width
 .settings-page--sidepanel {
   .settings-page__header__title-container {
@@ -552,4 +551,3 @@
     }
   }
 }
-///: END:ONLY_INCLUDE_IF

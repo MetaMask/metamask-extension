@@ -2938,6 +2938,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setDefaultSubscriptionPaymentOptions.bind(
           appStateController,
         ),
+      setShieldSubscriptionMetricsProps:
+        appStateController.setShieldSubscriptionMetricsProps.bind(
+          appStateController,
+        ),
 
       // EnsController
       tryReverseResolveAddress:
@@ -4605,8 +4609,9 @@ export default class MetamaskController extends EventEmitter {
         const newHdEntropyIndex = this.getHDEntropyIndex();
 
         this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
+          event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
           properties: {
+            status: 'completed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: newHdEntropyIndex,
             // eslint-disable-next-line @typescript-eslint/naming-convention
