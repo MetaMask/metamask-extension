@@ -10,6 +10,11 @@ import {
 import type { CapturedData } from '../helpers/console-snapshot';
 
 async function globalTeardown(): Promise<void> {
+  // Ensure snapshot type is set for integration tests
+  if (!process.env.WARNINGS_SNAPSHOT_TYPE) {
+    process.env.WARNINGS_SNAPSHOT_TYPE = 'integration';
+  }
+
   try {
     // Note: Worker data is saved via beforeExit handler in console-capture.ts
     // Global teardown runs in the main process, not in workers, so we can't access captured data here
@@ -32,7 +37,9 @@ async function globalTeardown(): Promise<void> {
         comparison.newWarnings.length > 0 || comparison.newErrors.length > 0;
 
       if (hasNewIssues) {
-        const errorMessage = formatComparisonResults(comparison);
+        // Try to extract test file path from aggregated data
+        const { testFilePath } = aggregated as { testFilePath?: string };
+        const errorMessage = formatComparisonResults(comparison, testFilePath);
         console.error(errorMessage);
         throw new Error(
           'New console warnings or errors detected in integration tests',
@@ -65,11 +72,13 @@ async function aggregateWorkerSnapshots() {
     return { warnings: [], errors: [] };
   }
 
+  // Only read test-specific temp files (not worker-based)
   const tempFiles = fs
     .readdirSync(TEMP_DIR)
     .filter(
       (file) =>
-        file.startsWith(`warnings-${snapshotType}-`) && file.endsWith('.json'),
+        file.startsWith(`warnings-${snapshotType}-test-`) &&
+        file.endsWith('.json'),
     )
     .map((file) => path.join(TEMP_DIR, file));
 
@@ -81,9 +90,17 @@ async function aggregateWorkerSnapshots() {
   for (const tempFile of tempFiles) {
     try {
       const content = fs.readFileSync(tempFile, 'utf8');
-      const workerData = JSON.parse(content) as CapturedData;
+      const workerData = JSON.parse(content) as CapturedData & {
+        testFilePath?: string;
+      };
       aggregated.warnings.push(...workerData.warnings);
       aggregated.errors.push(...workerData.errors);
+
+      // Preserve test file path for error messages (use the last one if multiple)
+      if (workerData.testFilePath) {
+        (aggregated as { testFilePath?: string }).testFilePath =
+          workerData.testFilePath;
+      }
     } catch (error) {
       console.warn(`Error reading worker snapshot ${tempFile}:`, error);
     }

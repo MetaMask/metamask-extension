@@ -177,6 +177,43 @@ async function withFixtures(options, testSuite) {
     forceBip44Version = 0,
   } = options;
 
+  // Clean up stale temp file for this test before starting
+  if (process.env.GENERATE_WARNINGS_SNAPSHOT === 'true') {
+    try {
+      const { stack } = new Error();
+      if (stack) {
+        const matchResult = stack.match(/\((.*\.spec\.(ts|js)):/u);
+        const testFilePath = matchResult?.[1];
+
+        if (testFilePath) {
+          const snapshotType = 'e2e';
+          const tempDir = path.join(
+            process.cwd(),
+            'test',
+            `.warnings-snapshot-temp-${snapshotType}`,
+          );
+
+          const basename = path.basename(testFilePath);
+          const testName = basename.replace(/\.(spec|test)\.(ts|js)$/iu, '');
+          const sanitizedName = testName
+            .replace(/[^a-z0-9]+/giu, '-')
+            .replace(/^-|-$/gu, '');
+
+          const testTempFile = path.join(
+            tempDir,
+            `warnings-${snapshotType}-test-${sanitizedName}.json`,
+          );
+
+          if (fs.existsSync(testTempFile)) {
+            fs.unlinkSync(testTempFile);
+          }
+        }
+      }
+    } catch {
+      // Ignore cleanup errors
+    }
+  }
+
   // Normalize localNodeOptions
   const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
 
@@ -482,15 +519,17 @@ async function withFixtures(options, testSuite) {
         // Try to extract test file path from call stack
         try {
           const { stack } = new Error();
-          // Look for .spec.ts or .spec.js files in the stack trace
-          const specFileMatch = stack.match(/\((.*\.spec\.(ts|js)):/u);
-          if (specFileMatch && specFileMatch[1]) {
-            testIdentifier = specFileMatch[1];
-          } else {
-            // Try alternative stack format (without parentheses)
-            const altMatch = stack.match(/at.*?(\/.*\.spec\.(ts|js)):/u);
-            if (altMatch && altMatch[1]) {
-              testIdentifier = altMatch[1];
+          if (stack) {
+            // Look for .spec.ts or .spec.js files in the stack trace
+            const specFileMatch = stack.match(/\((.*\.spec\.(ts|js)):/u);
+            if (specFileMatch?.[1]) {
+              testIdentifier = specFileMatch[1];
+            } else {
+              // Try alternative stack format (without parentheses)
+              const altMatch = stack.match(/at.*?(\/.*\.spec\.(ts|js)):/u);
+              if (altMatch?.[1]) {
+                testIdentifier = altMatch[1];
+              }
             }
           }
         } catch {

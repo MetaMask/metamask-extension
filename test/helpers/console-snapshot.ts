@@ -234,6 +234,49 @@ export function saveSnapshot(snapshot: SnapshotData): void {
 }
 
 /**
+ * Save captured data to a test-specific temp file
+ * This allows incremental snapshot generation - re-run only failed tests
+ *
+ * @param data - The captured warnings/errors
+ * @param data.warnings - Array of captured warnings
+ * @param data.errors - Array of captured errors
+ * @param testIdentifier - The test identifier (file path or test name)
+ */
+export function saveTestSnapshot(
+  data: { warnings: unknown[]; errors: unknown[] },
+  testIdentifier: string,
+): void {
+  const tempDir = getTempDir();
+  const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
+
+  // Ensure temp directory exists
+  if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir, { recursive: true });
+  }
+
+  // If testIdentifier looks like a file path, extract just the filename
+  let identifier = testIdentifier;
+  if (testIdentifier.includes('/') || testIdentifier.includes('\\')) {
+    // It's a file path - extract basename without extension
+    const basename = path.basename(testIdentifier);
+    identifier = basename.replace(/\.(spec|test)\.(ts|tsx|js|jsx)$/iu, '');
+  }
+
+  // Create sanitized filename from identifier
+  const sanitizedName = identifier
+    .replace(/[^a-z0-9]+/giu, '-') // Replace non-alphanumeric with dash
+    .replace(/^-|-$/gu, '') // Remove leading/trailing dashes
+    .substring(0, 100); // Limit length
+
+  const tempFile = path.join(
+    tempDir,
+    `warnings-${snapshotType}-test-${sanitizedName}.json`,
+  );
+
+  fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), 'utf8');
+}
+
+/**
  * Save captured data to a worker-specific temp file
  * This allows multiple Jest workers to write simultaneously without conflicts
  * Snapshot type is determined by WARNINGS_SNAPSHOT_TYPE env variable
@@ -295,7 +338,7 @@ export function aggregateAndSaveSnapshot(specificTestFile?: string): boolean {
     if (specificTestFile) {
       // Only aggregate the temp file for the specific test
       const basename = path.basename(specificTestFile);
-      const testName = basename.replace(/\.(spec|test)\.(ts|js)$/iu, '');
+      const testName = basename.replace(/\.(spec|test)\.(ts|tsx|js|jsx)$/iu, '');
       const sanitizedName = testName
         .replace(/[^a-z0-9]+/giu, '-')
         .replace(/^-|-$/gu, '');
@@ -313,13 +356,12 @@ export function aggregateAndSaveSnapshot(specificTestFile?: string): boolean {
         return false;
       }
     } else {
-      // Read all temp files for this snapshot type (both worker and test-specific)
+      // Read all test-specific temp files for this snapshot type
       tempFiles = fs
         .readdirSync(tempDir)
         .filter(
           (file) =>
-            (file.startsWith(`warnings-${snapshotType}-worker-`) ||
-              file.startsWith(`warnings-${snapshotType}-test-`)) &&
+            file.startsWith(`warnings-${snapshotType}-test-`) &&
             file.endsWith('.json'),
         )
         .map((file) => path.join(tempDir, file));
