@@ -58,6 +58,35 @@ describe('Permission List Item', () => {
     const mockStartTime = 1736271776; // January 7, 2025;
 
     describe('NATIVE token permissions', () => {
+      const mockExpiryTimestamp = 1767312000; // January 1, 2026
+      const expiryHex = mockExpiryTimestamp.toString(16).padStart(32, '0');
+      const termsHex = `0x${'0'.repeat(32)}${expiryHex}` as Hex;
+
+      beforeEach(() => {
+        // Configure mocks for delegation decoding
+        (decodeDelegations as jest.Mock).mockReturnValue([
+          {
+            delegate: '0x176059c27095647e995b5db678800f8ce7f581dd',
+            authority: '0x0000000000000000000000000000000000000000',
+            caveats: [
+              {
+                enforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
+                terms: termsHex,
+                args: '0x',
+              },
+            ],
+            salt: 0n,
+            signature: '0x',
+          },
+        ]);
+
+        (getDeleGatorEnvironment as jest.Mock).mockReturnValue({
+          caveatEnforcers: {
+            TimestampEnforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
+          },
+        });
+      });
+
       const mockNativeTokenStreamPermission: StoredGatorPermissionSanitized<
         Signer,
         NativeTokenStreamPermission
@@ -163,11 +192,12 @@ describe('Permission List Item', () => {
         expect(startDate).toBeInTheDocument();
         expect(startDate).toHaveTextContent('01/07/2025');
 
-        // Verify expiration date is rendered
+        // Verify expiration date is rendered with correct date (January 1, 2026)
         const expirationDate = getByTestId(
           'review-gator-permission-expiration-date',
         );
         expect(expirationDate).toBeInTheDocument();
+        expect(expirationDate).toHaveTextContent('01/01/2026');
 
         // Verify network name is rendered
         const networkName = getByTestId('review-gator-permission-network-name');
@@ -210,11 +240,12 @@ describe('Permission List Item', () => {
         expect(startDate).toBeInTheDocument();
         expect(startDate).toHaveTextContent('01/07/2025');
 
-        // Verify expiration date is rendered
+        // Verify expiration date is rendered with correct date (January 1, 2026)
         const expirationDate = getByTestId(
           'review-gator-permission-expiration-date',
         );
         expect(expirationDate).toBeInTheDocument();
+        expect(expirationDate).toHaveTextContent('01/01/2026');
 
         // Verify network name is rendered
         const networkName = getByTestId('review-gator-permission-network-name');
@@ -228,6 +259,35 @@ describe('Permission List Item', () => {
        */
       const mockTokenAddress: Hex =
         '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
+
+      const mockExpiryTimestamp = 1767312000; // January 1, 2026
+      const expiryHex = mockExpiryTimestamp.toString(16).padStart(32, '0');
+      const termsHex = `0x${'0'.repeat(32)}${expiryHex}` as Hex;
+
+      beforeEach(() => {
+        // Configure mocks for delegation decoding
+        (decodeDelegations as jest.Mock).mockReturnValue([
+          {
+            delegate: '0x176059c27095647e995b5db678800f8ce7f581dd',
+            authority: '0x0000000000000000000000000000000000000000',
+            caveats: [
+              {
+                enforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
+                terms: termsHex,
+                args: '0x',
+              },
+            ],
+            salt: 0n,
+            signature: '0x',
+          },
+        ]);
+
+        (getDeleGatorEnvironment as jest.Mock).mockReturnValue({
+          caveatEnforcers: {
+            TimestampEnforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
+          },
+        });
+      });
 
       const mockErc20TokenPeriodicPermission: StoredGatorPermissionSanitized<
         Signer,
@@ -336,11 +396,12 @@ describe('Permission List Item', () => {
         expect(startDate).toBeInTheDocument();
         expect(startDate).toHaveTextContent('01/07/2025');
 
-        // Verify expiration date is rendered
+        // Verify expiration date is rendered with correct date (January 1, 2026)
         const expirationDate = getByTestId(
           'review-gator-permission-expiration-date',
         );
         expect(expirationDate).toBeInTheDocument();
+        expect(expirationDate).toHaveTextContent('01/01/2026');
 
         // Verify network name is rendered
         const networkName = getByTestId('review-gator-permission-network-name');
@@ -382,6 +443,13 @@ describe('Permission List Item', () => {
         const startDate = getByTestId('review-gator-permission-start-date');
         expect(startDate).toBeInTheDocument();
         expect(startDate).toHaveTextContent('01/07/2025');
+
+        // Verify expiration date is rendered with correct date (January 1, 2026)
+        const expirationDate = getByTestId(
+          'review-gator-permission-expiration-date',
+        );
+        expect(expirationDate).toBeInTheDocument();
+        expect(expirationDate).toHaveTextContent('01/01/2026');
 
         // Verify network name is rendered
         const networkName = getByTestId('review-gator-permission-network-name');
@@ -528,11 +596,13 @@ describe('Permission List Item', () => {
       });
 
       it('renders correct expiration date when permission has expiry', () => {
-        const mockExpiryTimestamp = 1744588800; // April 14, 2025
+        const customExpiryTimestamp = 1744588800; // April 14, 2025
 
         // Convert timestamp to hex for the caveat terms (32 bytes total, expiry in last 16 bytes)
-        const expiryHex = mockExpiryTimestamp.toString(16).padStart(32, '0');
-        const termsHex = `0x${'0'.repeat(32)}${expiryHex}` as Hex;
+        const customExpiryHex = customExpiryTimestamp
+          .toString(16)
+          .padStart(32, '0');
+        const customTermsHex = `0x${'0'.repeat(32)}${customExpiryHex}` as Hex;
 
         // Mock decodeDelegations to return a delegation with TimestampEnforcer caveat
         (decodeDelegations as jest.Mock).mockReturnValue([
@@ -542,7 +612,7 @@ describe('Permission List Item', () => {
             caveats: [
               {
                 enforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-                terms: termsHex,
+                terms: customTermsHex,
                 args: '0x',
               },
             ],
@@ -810,7 +880,7 @@ describe('Permission List Item', () => {
 
       it('renders "No expiration" when timestamp is zero', () => {
         // All zeros in the terms = timestamp 0
-        const termsHex = `0x${'0'.repeat(64)}` as Hex;
+        const zeroTermsHex = `0x${'0'.repeat(64)}` as Hex;
 
         (decodeDelegations as jest.Mock).mockReturnValue([
           {
@@ -819,7 +889,7 @@ describe('Permission List Item', () => {
             caveats: [
               {
                 enforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-                terms: termsHex,
+                terms: zeroTermsHex,
                 args: '0x',
               },
             ],
