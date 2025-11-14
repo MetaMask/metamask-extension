@@ -253,6 +253,7 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
           setDescription(null);
           setExtraDescription(null);
           setTitle(t('deepLink_ErrorMissingUrl'));
+          setPageNotFoundError(false);
         }
         setCta(t('deepLink_GoToTheHomePageButton'));
         return;
@@ -276,7 +277,7 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
 
     // Cleanup function
     return () => abortController.abort();
-  }, [location.search, t]);
+  }, [location.search, t, setPageNotFoundError]);
 
   // Cleanup on unmount
   useEffect(() => () => abortControllerRef.current?.abort(), []);
