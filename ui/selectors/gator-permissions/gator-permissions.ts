@@ -31,7 +31,60 @@ export type MetDataByPermissionTypeGroup = Record<
   }
 >;
 
+export enum GatorSortOrder {
+  Ascending = 'asc',
+  Descending = 'desc',
+}
+
 const getMetamask = (state: AppState) => state.metamask;
+
+/**
+ * Sort gator permissions by startTime.
+ * Permissions without startTime are placed at the beginning for ascending order,
+ * or at the end for descending order.
+ *
+ * @param permissions - Array of gator permissions to sort
+ * @param order - Sort order: GatorSortOrder.Ascending for oldest first, GatorSortOrder.Descending for newest first. Defaults to GatorSortOrder.Ascending
+ * @returns Sorted array of gator permissions
+ */
+function sortGatorPermissionsByStartTime<
+  TPermission extends StoredGatorPermissionSanitized<
+    Signer,
+    PermissionTypesWithCustom
+  >,
+>(
+  permissions: TPermission[],
+  order: GatorSortOrder = GatorSortOrder.Ascending,
+): TPermission[] {
+  return [...permissions].sort((a, b) => {
+    const aStartTime = a.permissionResponse.permission.data.startTime as
+      | number
+      | undefined;
+    const bStartTime = b.permissionResponse.permission.data.startTime as
+      | number
+      | undefined;
+
+    // Both undefined - maintain original order
+    if (!aStartTime && !bStartTime) {
+      return 0;
+    }
+
+    // Only a is undefined
+    if (!aStartTime) {
+      return order === GatorSortOrder.Ascending ? -1 : 1;
+    }
+
+    // Only b is undefined
+    if (!bStartTime) {
+      return order === GatorSortOrder.Ascending ? 1 : -1;
+    }
+
+    // Both have values - sort based on order
+    return order === GatorSortOrder.Ascending
+      ? aStartTime - bStartTime
+      : bStartTime - aStartTime;
+  });
+}
 
 /**
  * Get gator permissions map from GatorPermissionsController.
@@ -397,12 +450,14 @@ export const getAggregatedGatorPermissionByChainId = createSelector(
         const erc20TokenPeriodicPermissions =
           gatorPermissionsMap['erc20-token-periodic'][chainId] || [];
 
-        return [
+        const allPermissions = [
           ...nativeTokenStreams,
           ...erc20TokenStreams,
           ...nativeTokenPeriodicPermissions,
           ...erc20TokenPeriodicPermissions,
         ];
+
+        return sortGatorPermissionsByStartTime(allPermissions);
       }
       default: {
         console.warn(
