@@ -405,7 +405,7 @@ const TransactionShield = () => {
   const isUnexpectedErrorCryptoPayment =
     currentShieldSubscription &&
     isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
-    Boolean(currentShieldSubscription.paymentMethod.crypto.error);
+    !currentShieldSubscription.paymentMethod.crypto.error;
   const isInsufficientFundsCrypto =
     currentShieldSubscription &&
     isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
