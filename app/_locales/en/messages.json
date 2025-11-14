@@ -6215,8 +6215,7 @@
     "description": "The $1 is the date subscription ends"
   },
   "shieldTxCancelWhenPausedDetails": {
-    "message": "Your coverage isn't active while paused. If you cancel, your membership will end on $1.",
-    "description": "The $1 is the date subscription ends"
+    "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."
   },
   "shieldTxDetails1Description": {
     "message": "Secures your assets from risky transactions"
