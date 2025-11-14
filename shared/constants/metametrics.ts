@@ -719,8 +719,7 @@ export enum MetaMetricsEventName {
   EncryptionPublicKeyRequested = 'Encryption Requested',
   ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
-  ImportSecretRecoveryPhraseClicked = 'Import Secret Recovery Phrase Clicked',
-  ImportSecretRecoveryPhraseCompleted = 'Import Secret Recovery Phrase Completed',
+  ImportSecretRecoveryPhrase = 'Import Secret Recovery Phrase',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
   KeyExportFailed = 'Key Export Failed',
@@ -942,9 +941,7 @@ export enum MetaMetricsEventName {
   ExtensionPinned = 'Extension Pinned',
   // Extension Port Stream
   PortStreamChunked = 'Port Stream Chunked',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ViewportSwitched = 'Viewport Switched',
-  ///: END:ONLY_INCLUDE_IF
   // Shield
   ShieldEntryModal = 'Shield Entry Modal',
   ShieldSubscriptionRequest = 'Shield Subscription Request',

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { isSolanaChainId, isBitcoinChainId } from '@metamask/bridge-controller';
+import { isNonEvmChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -74,10 +74,8 @@ export default function useSubmitBridgeTransaction() {
 
     // Execute transaction(s)
     try {
-      // Handle non-EVM source chains (Solana, Bitcoin)
-      const isNonEvmSource =
-        isSolanaChainId(quoteResponse.quote.srcChainId) ||
-        isBitcoinChainId(quoteResponse.quote.srcChainId);
+      // Handle non-EVM source chains (Solana, Bitcoin, Tron)
+      const isNonEvmSource = isNonEvmChainId(quoteResponse.quote.srcChainId);
 
       if (isNonEvmSource) {
         // Submit the transaction first, THEN navigate
