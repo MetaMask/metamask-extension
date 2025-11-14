@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isSolanaChainId, isBitcoinChainId } from '@metamask/bridge-controller';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
+import { isTronChainId } from '../../../../ducks/bridge/utils';
 import {
   TextField,
   Text,
@@ -49,10 +50,15 @@ export const DestinationAccountPickerModal = ({
     ? isBitcoinChainId(toChain.chainId)
     : false;
 
+  const isDestinationTron = toChain?.chainId
+    ? isTronChainId(toChain.chainId)
+    : false;
+
   const externalAccount = useExternalAccountResolution({
     searchQuery,
     isDestinationSolana,
     isDestinationBitcoin,
+    isDestinationTron,
   });
 
   const filteredAccounts = useMemo(

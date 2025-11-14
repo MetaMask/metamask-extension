@@ -92,9 +92,7 @@ import {
   getPendingApprovals,
   getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import { getApprovalFlows } from '../../selectors/approvals';
-///: END:ONLY_INCLUDE_IF
 
 import {
   hideImportNftsModal,
@@ -118,14 +116,10 @@ import {
 } from '../../ducks/metamask/metamask';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
-///: END:ONLY_INCLUDE_IF
 import {
   ENVIRONMENT_TYPE_POPUP,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -502,9 +496,7 @@ export default function Routes() {
   );
   const pendingApprovals = useAppSelector(getPendingApprovals);
   const transactionsMetadata = useAppSelector(getUnapprovedTransactions);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   const approvalFlows = useAppSelector(getApprovalFlows);
-  ///: END:ONLY_INCLUDE_IF
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
@@ -622,7 +614,11 @@ export default function Routes() {
 
   useEffect(() => {
     const windowType = getEnvironmentType();
-    if (showExtensionInFullSizeView && windowType === ENVIRONMENT_TYPE_POPUP) {
+    if (
+      showExtensionInFullSizeView &&
+      (windowType === ENVIRONMENT_TYPE_POPUP ||
+        windowType === ENVIRONMENT_TYPE_SIDEPANEL)
+    ) {
       global.platform?.openExtensionInBrowser?.();
     }
   }, [showExtensionInFullSizeView]);
@@ -1131,18 +1127,14 @@ export default function Routes() {
     />
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   const isSidepanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <div
       className={classnames('app', {
         [`os-${os}`]: Boolean(os),
         [`browser-${browser}`]: Boolean(browser),
-        ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
         'group app--sidepanel': isSidepanel,
-        ///: END:ONLY_INCLUDE_IF
       })}
       dir={textDirection}
     >

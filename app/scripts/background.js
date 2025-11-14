@@ -23,9 +23,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
-  ///: END:ONLY_INCLUDE_IF
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
@@ -158,9 +156,7 @@ const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 let sidePanelIsOpen = false;
-///: END:ONLY_INCLUDE_IF
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -1168,9 +1164,7 @@ export function setupController(
       openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
       notificationIsOpen ||
-      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
       sidePanelIsOpen ||
-      ///: END:ONLY_INCLUDE_IF
       false
     );
   };
@@ -1259,7 +1253,6 @@ export function setupController(
         });
       }
 
-      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
         sidePanelIsOpen = true;
         finished(portStream, () => {
@@ -1269,7 +1262,6 @@ export function setupController(
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
         });
       }
-      ///: END:ONLY_INCLUDE_IF
 
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
@@ -1599,9 +1591,7 @@ async function triggerUi() {
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
-    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     !sidePanelIsOpen &&
-    ///: END:ONLY_INCLUDE_IF
     true
   ) {
     uiIsTriggering = true;
@@ -1667,7 +1657,6 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 // Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
 // and when the feature flag is enabled
 if (
@@ -1689,7 +1678,6 @@ if (
     }
   });
 }
-///: END:ONLY_INCLUDE_IF
 
 /**
  * Trigger actions that should happen only when an update is available
@@ -1744,7 +1732,6 @@ function onNavigateToTab() {
   });
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 // Sidepanel-specific functionality
 // Set initial side panel behavior based on user preference
 const initSidePanelBehavior = async () => {
@@ -1932,7 +1919,6 @@ browser.tabs.onUpdated.addListener(async (tabId) => {
 
   return {};
 });
-///: END:ONLY_INCLUDE_IF
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {

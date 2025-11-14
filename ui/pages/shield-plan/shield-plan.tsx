@@ -261,7 +261,9 @@ const ShieldPlan = () => {
           const price = getProductPrice(plan);
           return {
             id: plan.interval,
-            label: t(isYearly ? 'shieldPlanAnnual' : 'shieldPlanMonthly'),
+            label: isYearly
+              ? t('shieldPlanAnnual')
+              : `${t('shieldPlanMonthly')}${selectedPaymentMethod === PAYMENT_TYPES.byCrypto ? '*' : ''}`,
             price: t(
               isYearly ? 'shieldPlanAnnualPrice' : 'shieldPlanMonthlyPrice',
               [`$${price}`],
@@ -272,7 +274,7 @@ const ShieldPlan = () => {
           // sort by year first
           a.id === RECURRING_INTERVALS.year ? -1 : 1,
         ) ?? [],
-    [pricingPlans, t],
+    [pricingPlans, selectedPaymentMethod, t],
   );
 
   const planDetails = useMemo(() => {
@@ -285,20 +287,10 @@ const ShieldPlan = () => {
         ]),
       );
     }
-
-    let planDetails2 = t('shieldPlanDetails2Card');
-    if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
-      planDetails2 =
-        selectedPlan === RECURRING_INTERVALS.year
-          ? t('shieldPlanDetails2CryptoYear')
-          : t('shieldPlanDetails2CryptoMonth');
-    }
-    details.push(planDetails2);
-    if (selectedPlan === RECURRING_INTERVALS.month) {
-      details.push(t('shieldPlanDetails3'));
-    }
+    details.push(t('shieldPlanDetails2', ['$10k']));
+    details.push(t('shieldPlanDetails3'));
     return details;
-  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice, selectedPlan]);
+  }, [t, isTrialed, selectedProductPrice]);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
@@ -350,9 +342,6 @@ const ShieldPlan = () => {
                   key={plan.id}
                   {...rowsStyleProps}
                   borderRadius={BorderRadius.LG}
-                  paddingTop={2}
-                  paddingBottom={2}
-                  gap={4}
                   className={classnames('shield-plan-page__plan', {
                     'shield-plan-page__plan--selected':
                       plan.id === selectedPlan,
@@ -366,7 +355,12 @@ const ShieldPlan = () => {
                     className="shield-plan-page__radio-label"
                   >
                     <Text variant={DSTextVariant.bodySm}>{plan.label}</Text>
-                    <Text variant={DSTextVariant.headingMd}>{plan.price}</Text>
+                    <Text
+                      variant={DSTextVariant.headingMd}
+                      className="shield-plan-page__plan-price"
+                    >
+                      {plan.price}
+                    </Text>
                   </Box>
                   {plan.id === RECURRING_INTERVALS.year && (
                     <Box
@@ -470,11 +464,21 @@ const ShieldPlan = () => {
                           color={IconColor.primaryDefault}
                         />
                       </Box>
-                      <Text variant={DSTextVariant.bodySm}>{detail}</Text>
+                      <Text variant={DSTextVariant.bodyMd}>{detail}</Text>
                     </Box>
                   ))}
                 </Box>
               </Box>
+              {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
+                selectedPlan === RECURRING_INTERVALS.month && (
+                  <Text
+                    variant={DSTextVariant.bodySm}
+                    color={TextColor.textAlternative}
+                    marginTop={4}
+                  >
+                    * {t('shieldPlanCryptoMonthlyNote')}
+                  </Text>
+                )}
             </Box>
             <ShieldPaymentModal
               isOpen={showPaymentModal}
@@ -491,6 +495,7 @@ const ShieldPlan = () => {
           <Footer
             className="shield-plan-page__footer"
             flexDirection={FlexDirection.Column}
+            gap={3}
             backgroundColor={BackgroundColor.backgroundMuted}
           >
             {showTestClocksCheckbox && (
@@ -515,6 +520,15 @@ const ShieldPlan = () => {
             >
               {t('continue')}
             </Button>
+            <Text
+              variant={DSTextVariant.bodySm}
+              color={TextColor.textAlternative}
+              textAlign={TextAlign.Center}
+            >
+              {selectedPlan === RECURRING_INTERVALS.year
+                ? t('shieldPlanFooterNoteYearly')
+                : t('shieldPlanFooterNoteMonthly')}
+            </Text>
           </Footer>
         </>
       )}

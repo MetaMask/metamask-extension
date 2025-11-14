@@ -14,27 +14,12 @@
     }
   }
 
-  &__details {
-    &--loading {
-      background-color: var(--color-border-muted);
-    }
-
-    &--inactive {
-      background-color: var(--color-background-subsection);
-    }
-
-    &--active {
-      background-color: var(--color-accent03-dark);
-    }
-  }
-
   &__membership {
     background-size: 85px;
     height: 85px;
     background-image: url('/images/shield-membership-shadow.png');
     background-repeat: no-repeat;
     background-position: right -10px center;
-    margin-bottom: 0;
 
     .transaction-shield-page__membership-text {
       color: var(--color-accent03-light);
@@ -50,6 +35,10 @@
 
     &--inactive {
       background-color: var(--color-background-subsection);
+
+      &-light {
+        background-color: var(--shield-membership-inactive-light);
+      }
 
       .transaction-shield-page__membership-text {
         color: var(--color-text-default);
