@@ -54,9 +54,7 @@ async function mockPrices(mockServer: Mockttp) {
   ];
 }
 
-// These tests fails with BIP44
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Check balance', function (this: Suite) {
+describe('Check balance', function (this: Suite) {
   this.timeout(300000);
   it('Just created Solana account shows 0 SOL when native token is enabled', async function () {
     await withSolanaAccountSnap(
@@ -75,13 +73,12 @@ describe.skip('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: false,
         mockZeroBalance: true,
         withCustomMocks: mockPrices,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.checkGetBalance('$0.00', 'SOL');
+        await homePage.checkGetBalance('0', 'SOL');
       },
     );
   });
@@ -91,7 +88,6 @@ describe.skip('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: false,
         mockZeroBalance: false,
         withCustomMocks: mockPrices,
       },
@@ -107,7 +103,6 @@ describe.skip('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
