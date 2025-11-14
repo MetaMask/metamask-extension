@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Ghi nhận đóng góp"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "URL Infura RPC không còn hỗ trợ Aurora nữa."
-  },
   "authorizedPermissions": {
     "message": "Bạn đã cấp các quyền sau đây"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Token tùy chỉnh"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Tính năng phát hiện token hiện chưa khả dụng trong mạng này. Vui lòng nhập token theo cách thủ công và đảm bảo bạn tin tưởng. Tìm hiểu về $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Bất kỳ ai cũng có thể tạo token, bao gồm cả việc tạo phiên bản giả mạo của token hiện có. Tìm hiểu về $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Đảm bảo bạn tin tưởng token trước khi nhập token đó. Tìm hiểu cách phòng tránh $1. Bạn cũng có thể bật tính năng phát hiện token $2."
   },
   "customerSupport": {
     "message": "hỗ trợ khách hàng"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Nạp tiền mã hóa từ tài khoản khác bằng địa chỉ ví hoặc mã QR."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Do các cập nhật của hệ thống Ethereum, mạng thử nghiệm Goerli sẽ sớm được loại bỏ dần."
   },
   "deprecatedNetwork": {
     "message": "Mạng này đã ngừng sử dụng"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "Thông tin bạn đã nhập được liên kết với một ID chuỗi hiện có."
   },
-  "expandView": {
-    "message": "Chế độ xem mở rộng"
-  },
   "experimental": {
     "message": "Thử nghiệm"
   },
@@ -2787,9 +2772,6 @@
   "imported": {
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "trong phần Cài đặt"
   },
   "included": {
     "message": "đã bao gồm"
@@ -5238,9 +5220,6 @@
   "shieldEntryModalGetStarted": {
     "message": "Bắt đầu"
   },
-  "shieldEntryModalSkip": {
-    "message": "Bỏ qua"
-  },
   "show": {
     "message": "Hiển thị"
   },
@@ -6494,10 +6473,6 @@
   "switchNetwork": {
     "message": "Chuyển mạng"
   },
-  "switchToNetwork": {
-    "message": "Chuyển sang $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Chuyển sang tài khoản này"
   },
@@ -6603,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Thị trường token"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "rủi ro về bảo mật và lừa đảo token"
   },
   "tokenStandard": {
     "message": "Tiêu chuẩn token"

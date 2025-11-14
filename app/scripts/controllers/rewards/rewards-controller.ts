@@ -37,6 +37,7 @@ import {
   AccountAlreadyRegisteredError,
   AuthorizationFailedError,
   InvalidTimestampError,
+  SeasonNotFoundError,
 } from './rewards-data-service';
 import { signSolanaRewardsMessage } from './utils/solana-snap';
 import { sortAccounts } from './utils/sortAccounts';
@@ -545,6 +546,15 @@ export class RewardsController extends BaseController<
       } else {
         const sortedAccounts = sortAccounts(accounts);
 
+        try {
+          // Prefer to get opt in status in bulk for sorted accounts.
+          await this.getOptInStatus({
+            addresses: sortedAccounts.map((account) => account.address),
+          });
+        } catch {
+          // Failed to get opt in status in bulk for sorted accounts, let silent auth do it individually
+        }
+
         // Try silent auth on each account until one succeeds
         let successAccount: InternalAccount | null = null;
         for (const account of sortedAccounts) {
@@ -609,7 +619,12 @@ export class RewardsController extends BaseController<
         );
       }
 
-      return true;
+      return (
+        Boolean(accountState.subscriptionId) &&
+        Boolean(
+          this.#getSubscriptionToken(accountState.subscriptionId as string),
+        )
+      );
     }
 
     return false;
@@ -1319,6 +1334,11 @@ export class RewardsController extends BaseController<
               this.invalidateAccountsAndSubscriptions();
               throw error;
             }
+          } else if (error instanceof SeasonNotFoundError) {
+            this.update((state: RewardsControllerState) => {
+              state.rewardsSeasons = {};
+            });
+            throw error;
           }
           log.error(
             'RewardsController: Failed to get season status:',

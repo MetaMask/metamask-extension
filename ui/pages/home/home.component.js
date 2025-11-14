@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
+import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
@@ -21,6 +22,7 @@ import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+import { ScrollContainer } from '../../contexts/scroll-container';
 
 import {
   FontWeight,
@@ -172,6 +174,10 @@ export default class Home extends PureComponent {
     isSocialLoginFlow: PropTypes.bool,
     lookupSelectedNetworks: PropTypes.func.isRequired,
     navState: PropTypes.object,
+    evaluateCohortEligibility: PropTypes.func,
+    pendingShieldCohort: PropTypes.string,
+    setPendingShieldCohort: PropTypes.func,
+    isSignedIn: PropTypes.bool,
   };
 
   state = {
@@ -282,6 +288,11 @@ export default class Home extends PureComponent {
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
     this.props.lookupSelectedNetworks();
+
+    // Set pending Shield cohort for wallet home evaluation if there's no existing pending cohort
+    if (this.props.setPendingShieldCohort && !this.props.pendingShieldCohort) {
+      this.props.setPendingShieldCohort(COHORT_NAMES.WALLET_HOME);
+    }
   }
 
   static getDerivedStateFromProps(props) {
@@ -300,6 +311,10 @@ export default class Home extends PureComponent {
       setActiveNetwork,
       clearNewNetworkAdded,
       isSidepanel,
+      pendingShieldCohort,
+      evaluateCohortEligibility,
+      setPendingShieldCohort,
+      isSignedIn,
     } = this.props;
 
     const {
@@ -323,6 +338,12 @@ export default class Home extends PureComponent {
       isSidepanel
     ) {
       this.checkStatusAndNavigate();
+    }
+
+    // Check for pending Shield cohort evaluation if user is signed in
+    if (pendingShieldCohort && evaluateCohortEligibility && isSignedIn) {
+      setPendingShieldCohort(null);
+      evaluateCohortEligibility(pendingShieldCohort);
     }
 
     // Check for redirect after default page on updates
@@ -887,7 +908,7 @@ export default class Home extends PureComponent {
       !isSocialLoginFlow;
 
     return (
-      <div className="main-container main-container--has-shadow">
+      <ScrollContainer className="main-container main-container--has-shadow">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Route
           path={CONNECTED_ACCOUNTS_ROUTE}
@@ -945,7 +966,7 @@ export default class Home extends PureComponent {
           </div>
           {this.renderNotifications()}
         </div>
-      </div>
+      </ScrollContainer>
     );
   }
 }

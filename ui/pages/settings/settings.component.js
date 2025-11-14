@@ -62,6 +62,7 @@ import {
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
+import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -97,6 +98,7 @@ class SettingsPage extends PureComponent {
     backRoute: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
+    hasSubscribedToShield: PropTypes.bool,
     isAddressEntryPage: PropTypes.bool,
     isMetaMaskShieldFeatureEnabled: PropTypes.bool,
     isPasswordChangePage: PropTypes.bool,
@@ -122,6 +124,7 @@ class SettingsPage extends PureComponent {
     lastFetchedConversionDate: null,
     searchResults: [],
     searchText: '',
+    showShieldEntryModal: false,
   };
 
   componentDidMount() {
@@ -166,9 +169,7 @@ class SettingsPage extends PureComponent {
     const isPopup =
       environmentType === ENVIRONMENT_TYPE_POPUP ||
       environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-    ///: END:ONLY_INCLUDE_IF
     const isSearchHidden =
       isRevealSrpListPage || isPasswordChangePage || isTransactionShieldPage;
 
@@ -178,18 +179,18 @@ class SettingsPage extends PureComponent {
           'main-container main-container--has-shadow settings-page',
           {
             'settings-page--selected': currentPath !== SETTINGS_ROUTE,
-            ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
             'settings-page--sidepanel': isSidepanel,
-            ///: END:ONLY_INCLUDE_IF
           },
         )}
       >
+        {this.state.showShieldEntryModal && (
+          <ShieldEntryModal
+            skipEventSubmission
+            onClose={() => this.setState({ showShieldEntryModal: false })}
+          />
+        )}
         {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
-        <Box
-          className="settings-page__header"
-          padding={4}
-          paddingBottom={[2, 4]}
-        >
+        <Box className="settings-page__header" padding={4} paddingBottom={2}>
           <div
             className={classnames('settings-page__header__title-container', {
               'settings-page__header__title-container--hide-search':
@@ -377,6 +378,7 @@ class SettingsPage extends PureComponent {
       useExternalServices,
       settingsPageSnaps,
       isMetaMaskShieldFeatureEnabled,
+      hasSubscribedToShield,
     } = this.props;
     const { t } = this.context;
 
@@ -472,11 +474,15 @@ class SettingsPage extends PureComponent {
           }
           return matchPath(key, currentPath);
         }}
-        onSelect={(key) =>
+        onSelect={(key) => {
+          if (key === TRANSACTION_SHIELD_ROUTE && !hasSubscribedToShield) {
+            this.setState({ showShieldEntryModal: true });
+            return;
+          }
           navigate(key, {
             state: { fromPage: currentPath },
-          })
-        }
+          });
+        }}
       />
     );
   }

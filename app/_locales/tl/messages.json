@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Mga Attribution"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Ang Infura RPC URL ay hindi na sinusuportahan ang Aurora."
-  },
   "authorizedPermissions": {
     "message": "Inawtorisahan mo ang mga sumusunod na pahintulot"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Custom na Token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Ang pagtuklas ng token ay hindi pa magagamit sa network na ito. Mangyaring manu-manong mag-import ng token at tiyaking pinagkakatiwalaan mo ito. Matuto tungkol sa $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Bago manu-manong mag-import ng token, tiyaking pinagkakatiwalaan mo ito. Matuto tungkol sa $1."
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Siguraduhing pinagkakatiwalaan mo ang isang token bago mo ito i-import. Alamin kung paano maiwasan ang $1. Maaari mo ring paganahin ang pagtuklas ng token $2."
   },
   "customerSupport": {
     "message": "suporta sa kostumer"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Magdeposito ng crypto mula sa ibang account gamit ang wallet address o QR code."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Dahil sa mga update sa sistema ng Ethereum, ang Goerli test network malapit nang itigil."
   },
   "deprecatedNetwork": {
     "message": "Ang network na ito ay hindi na suportado"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "Ang impormasyon na iyong inilagay ay nauugnay sa isang umiiral na ID ng chain."
   },
-  "expandView": {
-    "message": "I-expand ang view"
-  },
   "experimental": {
     "message": "Eksperimental"
   },
@@ -2787,9 +2772,6 @@
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "sa iyong Mga Setting"
   },
   "included": {
     "message": "kalakip"
@@ -5238,9 +5220,6 @@
   "shieldEntryModalGetStarted": {
     "message": "Magsimula"
   },
-  "shieldEntryModalSkip": {
-    "message": "Laktawan"
-  },
   "show": {
     "message": "Ipakita"
   },
@@ -6494,10 +6473,6 @@
   "switchNetwork": {
     "message": "Lumipat ng network"
   },
-  "switchToNetwork": {
-    "message": "Lumipat sa $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Lumipat sa account na ito"
   },
@@ -6603,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Marketplace ng token"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "mga panloloko sa token at panganib sa seguridad"
   },
   "tokenStandard": {
     "message": "Pamantayan ng token"
