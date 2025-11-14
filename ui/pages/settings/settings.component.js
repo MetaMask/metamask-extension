@@ -131,11 +131,18 @@ class SettingsPage extends PureComponent {
   componentDidMount() {
     this.handleConversionDate();
 
-    if (
-      this.props.shouldShowShieldEntryModal &&
-      !this.props.hasSubscribedToShield
-    ) {
-      this.setState({ showShieldEntryModal: true });
+    if (this.props.shouldShowShieldEntryModal) {
+      // if user has subscribed to shield, navigate to shield page
+      // otherwise, show shield entry modal
+      if (this.props.hasSubscribedToShield) {
+        // componentDidMount is rendered after useEffect() so we need setTimeout to ensure the navigation work
+        // TODO: use navigate normally when refactor ot use functional component
+        setTimeout(() => {
+          this.props.navigate(TRANSACTION_SHIELD_ROUTE);
+        });
+      } else {
+        this.setState({ showShieldEntryModal: true });
+      }
     }
   }
 
