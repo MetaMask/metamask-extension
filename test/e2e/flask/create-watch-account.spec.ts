@@ -17,7 +17,7 @@ const EOA_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 const SHORTENED_EOA_ADDRESS = '0xd8dA6...96045';
 const DEFAULT_WATCHED_ACCOUNT_NAME = 'Watched Account 1';
 
-// Skipping this test becasue creating a watch account is no longer possible with BIP44
+// BUG #37563 Creating a watch account with EOA address is no longer possible with BIP44
 // eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('Account-watcher snap', function (this: Suite) {
   describe('Adding watched accounts', function () {

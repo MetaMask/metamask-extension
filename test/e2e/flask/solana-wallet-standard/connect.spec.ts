@@ -327,7 +327,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
     });
   });
 
-  // Skipping this test because it's failing with BIP44
+  // BUG #37690 Sending a transaction on TestDapp with BIP44 on fails with exception
   // eslint-disable-next-line mocha/no-skipped-tests
   describe.skip('Given I have connected to Mainnet and Devnet', function () {
     it('Should use the Mainnet scope by default', async function () {

@@ -90,10 +90,7 @@ describe('Account syncing - Multiple SRPs', function () {
         await accountListPage.addMultichainAccount();
 
         // Wait for sync operation to complete
-<<<<<<< HEAD
         // Check event first to ensure sync was attempted, then verify state
-=======
->>>>>>> b55e79900c (Fix flask and address comments)
         await waitUntilEventsEmittedNumberEquals(1);
         await waitUntilSyncedAccountsNumberEquals(2);
 
