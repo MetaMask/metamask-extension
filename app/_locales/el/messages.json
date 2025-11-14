@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Αποδόσεις"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Η διεύθυνση URL του Infura RPC δεν υποστηρίζει πλέον την Aurora."
-  },
   "authorizedPermissions": {
     "message": "Έχετε εξουσιοδοτήσει τα ακόλουθα δικαιώματα"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Προσαρμοσμένο token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Ο εντοπισμός token δεν είναι ακόμη διαθέσιμος σε αυτό το δίκτυο. Εισαγάγετε το token με μη αυτόματο τρόπο και βεβαιωθείτε ότι το εμπιστεύεστε. Μάθετε σχετικά με $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Πριν εισαγάγετε το token με μη αυτόματο τρόπο, βεβαιωθείτε ότι το εμπιστεύεστε. Μάθετε σχετικά με $1."
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Σιγουρευτείτε ότι εμπιστεύεστε ένα token προτού το εισαγάγετε. Μάθετε πώς να αποφεύγετε $1. Μπορείτε επίσης να ενεργοποιήσετε τον εντοπισμό token $2."
   },
   "customerSupport": {
     "message": "υποστήριξη πελατών"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Κατάθεση κρυπτονομισμάτων από άλλο λογαριασμό με διεύθυνση πορτοφολιού ή κωδικό QR."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Εξαιτίας των ενημερώσεων στο σύστημα Ethereum, το δίκτυο δοκιμών Goerli θα καταργηθεί σύντομα."
   },
   "deprecatedNetwork": {
     "message": "Αυτό το δίκτυο έχει καταργηθεί"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "Οι πληροφορίες που έχετε εισάγει συνδέονται με ένα υπάρχον αναγνωριστικό αλυσίδας."
   },
-  "expandView": {
-    "message": "Ανάπτυξη προβολής"
-  },
   "experimental": {
     "message": "Πειραματικά"
   },
@@ -2787,9 +2772,6 @@
   "imported": {
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "στις Ρυθμίσεις σας"
   },
   "included": {
     "message": "περιλαμβάνεται"
@@ -4049,9 +4031,6 @@
     "message": "εικονίδιο $1",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Επιλέξτε μια επιλογή για να συνεχίσετε"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Ανοίξτε την επέκταση"
   },
@@ -5106,10 +5085,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Αυτή είναι η $1 σας. Γράψτε τη με τη σωστή σειρά και φυλάξτε την κάπου με ασφάλεια. Αν κάποιος διαθέτει τη Μυστική Φράση Ανάκτησής σας, μπορεί να έχει πρόσβαση στο πορτοφόλι σας. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Μην την κοινοποιήσετε ποτέ σε κανέναν."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Αποθηκεύστε τη Μυστική Φράση Ανάκτησης"
@@ -5243,9 +5219,6 @@
   },
   "shieldEntryModalGetStarted": {
     "message": "Ξεκινήστε"
-  },
-  "shieldEntryModalSkip": {
-    "message": "Παράλειψη"
   },
   "show": {
     "message": "Εμφάνιση"
@@ -6500,10 +6473,6 @@
   "switchNetwork": {
     "message": "Αλλαγή δικτύου"
   },
-  "switchToNetwork": {
-    "message": "Αλλαγή σε $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Αλλαγή σε αυτόν τον λογαριασμό"
   },
@@ -6609,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Αγορά tokens"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "απάτες με token και κίνδυνοι ασφάλειας"
   },
   "tokenStandard": {
     "message": "Πρότυπο Token"
@@ -7063,24 +7029,11 @@
     "message": "$1 να φυλάξετε σε ασφαλές μέρος τη μυστική φράση για να διασφαλίσετε την πρόσβαση στα χρήματά σας.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Μπορείτε να δημιουργήσετε αντίγραφα ασφαλείας των πορτοφολιών σας ή να δείτε τη Μυστική Φράση Ανάκτησης στις Ρυθμίσεις > Ασφάλεια & Κωδικοί Πρόσβασης."
-  },
   "walletReadyLoseSrp": {
     "message": "Αν χάσετε τη Μυστική Φράση Ανάκτησης, δεν θα μπορείτε να χρησιμοποιήσετε το πορτοφόλι σας."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Η Μυστική Φράση Ανάκτησης μπορεί να σας βοηθήσει να ανακτήσετε την πρόσβαση εάν ξεχάσετε τον κωδικό ή δεν μπορείτε να συνδεθείτε με τα στοιχεία σας."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Αν δεν δημιουργήσετε αντίγραφο ασφαλείας της Μυστικής Φράσης Ανάκτησης, δεν θα έχετε πρόσβαση στα κεφάλαιά σας αν δεν μπορείτε να εισέλθετε στην εφαρμογή ή αποκτήσετε νέα συσκευή."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Μπορείτε να συνδεθείτε στο πορτοφόλι σας οποιαδήποτε στιγμή με τον λογαριασμό $1 και τον κωδικό πρόσβασης.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Αν ξεχάσετε τον κωδικό πρόσβασης, δεν θα έχετε πρόσβαση στο πορτοφόλι σας."
   },
   "wantToAddThisNetwork": {
     "message": "Θέλετε να προσθέσετε αυτό το δίκτυο;"
@@ -7123,9 +7076,6 @@
   },
   "welcomeBack": {
     "message": "Καλώς ήρθατε και πάλι"
-  },
-  "welcomeToMetaMask": {
-    "message": "Ας ξεκινήσουμε"
   },
   "whatsThis": {
     "message": "Τι είναι αυτό;"
@@ -7189,8 +7139,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Φυλάξτε τη Μυστική Φράση Ανάκτησης σε ασφαλές μέρος!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Θα σας το υπενθυμίσουμε αργότερα"
   }
 }

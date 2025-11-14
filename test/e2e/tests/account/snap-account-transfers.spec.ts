@@ -17,11 +17,11 @@ describe('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
+        fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockSnapSimpleKeyringAndSite,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -49,7 +49,8 @@ describe('Snap Account Transfers', function (this: Suite) {
           recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
           amount: '1',
         });
-        await driver.waitForSelector('.transaction-status-label--confirmed');
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
 
         await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
@@ -99,7 +100,8 @@ describe('Snap Account Transfers', function (this: Suite) {
           amount: '1',
           isSyncFlow: false,
         });
-        await driver.waitForSelector('.transaction-status-label--confirmed');
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
 
         await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();

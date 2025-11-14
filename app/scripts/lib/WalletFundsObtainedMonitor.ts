@@ -93,7 +93,12 @@ export class WalletFundsObtainedMonitor {
     return (notifications: INotification[]) => {
       // Filter for erc20 or eth received notifications
       const filteredNotifications = notifications.filter(
-        (n) =>
+        (
+          n,
+        ): n is Extract<
+          INotification,
+          { type: TRIGGER_TYPES.ERC20_RECEIVED | TRIGGER_TYPES.ETH_RECEIVED }
+        > =>
           n.type === TRIGGER_TYPES.ERC20_RECEIVED ||
           n.type === TRIGGER_TYPES.ETH_RECEIVED,
       );
@@ -103,14 +108,19 @@ export class WalletFundsObtainedMonitor {
       }
 
       // Use the last (oldest) notification
-      const { chain_id: chainId, data } = filteredNotifications.at(-1) as {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: number;
-        data: { token?: { usd?: string }; amount?: { usd?: string } };
-      };
+      const lastNotification = filteredNotifications.at(-1);
+      if (!lastNotification) {
+        return;
+      }
+      const {
+        payload: { chain_id: chainId },
+      } = lastNotification;
 
       // ERC20 transfers have `token` object, native transfers have `amount` object
-      const amountUsd = data?.token?.usd || data?.amount?.usd;
+      const amountUsd =
+        lastNotification.type === TRIGGER_TYPES.ERC20_RECEIVED
+          ? lastNotification.payload.data.token.usd
+          : lastNotification.payload.data.amount.usd;
 
       if (chainId && amountUsd) {
         this.#messenger.call(

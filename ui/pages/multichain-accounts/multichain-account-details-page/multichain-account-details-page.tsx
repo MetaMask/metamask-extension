@@ -61,10 +61,12 @@ export const MultichainAccountDetailsPage = () => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const { id } = useParams();
-  const accountGroupId = decodeURIComponent(id as string) as AccountGroupId;
+
+  const accountGroupId = decodeURIComponent(id ?? '') as AccountGroupId;
   const multichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, accountGroupId),
   );
+
   const walletId = extractWalletIdFromGroupId(accountGroupId);
   const wallet = useSelector((state) => getWallet(state, walletId));
   const { keyringId, isSRPBackedUp } = useWalletInfo(walletId);
@@ -144,7 +146,12 @@ export const MultichainAccountDetailsPage = () => {
     history.push(walletRoute);
   };
 
-  return (
+  // Redirect if account doesn't exist
+  if (!id || !multichainAccount) {
+    history.push(DEFAULT_ROUTE);
+  }
+
+  return id && multichainAccount ? (
     <Page className="multichain-account-details-page">
       <Header
         textProps={{
@@ -303,5 +310,5 @@ export const MultichainAccountDetailsPage = () => {
         )}
       </Content>
     </Page>
-  );
+  ) : null;
 };

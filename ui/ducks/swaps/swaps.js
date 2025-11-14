@@ -525,12 +525,12 @@ export {
   slice as swapsSlice,
 };
 
-export const navigateBackToPrepareSwap = (history) => {
+export const navigateBackToPrepareSwap = (navigate) => {
   return async (dispatch) => {
     // TODO: Ensure any fetch in progress is cancelled
     await dispatch(setBackgroundSwapRouteState(''));
     dispatch(navigatedBackToBuildQuote());
-    history.push(PREPARE_SWAP_ROUTE);
+    navigate(PREPARE_SWAP_ROUTE);
   };
 };
 
@@ -632,7 +632,7 @@ const isTokenAlreadyAdded = (tokenAddress, tokens) => {
 };
 
 export const fetchQuotesAndSetQuoteState = (
-  history,
+  navigate,
   inputValue,
   maxSlippage,
   trackEvent,
@@ -658,7 +658,7 @@ export const fetchQuotesAndSetQuoteState = (
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
     if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
-      await history.push(SWAPS_MAINTENANCE_ROUTE);
+      await navigate(SWAPS_MAINTENANCE_ROUTE);
       return;
     }
 
@@ -691,7 +691,7 @@ export const fetchQuotesAndSetQuoteState = (
     // In that case we just want to silently prefetch quotes without redirecting to the quotes loading page.
     if (!pageRedirectionDisabled) {
       await dispatch(setBackgroundSwapRouteState('loading'));
-      history.push(LOADING_QUOTES_ROUTE);
+      navigate(LOADING_QUOTES_ROUTE);
     }
     dispatch(setFetchingQuotes(true));
 
@@ -938,7 +938,7 @@ export const fetchQuotesAndSetQuoteState = (
 export const signAndSendSwapsSmartTransaction = ({
   unsignedTransaction,
   trackEvent,
-  history,
+  navigate,
   additionalTrackingParams,
 }) => {
   return async (dispatch, getState) => {
@@ -1020,7 +1020,7 @@ export const signAndSendSwapsSmartTransaction = ({
         },
       });
       await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-      history.push(SWAPS_ERROR_ROUTE);
+      navigate(SWAPS_ERROR_ROUTE);
       return;
     }
 
@@ -1100,7 +1100,7 @@ export const signAndSendSwapsSmartTransaction = ({
           }),
         );
       }
-      history.push(SMART_TRANSACTION_STATUS_ROUTE);
+      navigate(SMART_TRANSACTION_STATUS_ROUTE);
       dispatch(setSwapsSTXSubmitLoading(false));
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);

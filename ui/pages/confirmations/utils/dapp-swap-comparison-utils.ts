@@ -7,12 +7,13 @@ import {
   QuoteResponse,
   TxData,
 } from '@metamask/bridge-controller';
-import { addHexPrefix } from 'ethereumjs-util';
 import {
   SimulationData,
   SimulationTokenBalanceChange,
 } from '@metamask/transaction-controller';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { getCommandValues } from './dapp-swap-command-utils';
+
+const DEFAULT_QUOTEFEE = 250;
 
 export const ABI = [
   {
@@ -51,29 +52,6 @@ export const ABI = [
   },
 ];
 
-const COMMAND_BYTE_SWEEP = '04';
-const COMMAND_BYTE_PERMIT2PERMIT = '10';
-const COMMAND_BYTE_UNWRAP_WETH = '0c';
-
-function getArgsFromInput(input: string) {
-  return input?.slice(2).match(/.{1,64}/gu) ?? [];
-}
-
-function argToAddress(arg?: string) {
-  if (!arg) {
-    return undefined;
-  }
-  return addHexPrefix(arg?.slice(24));
-}
-
-function argToAmount(arg?: string) {
-  if (!arg) {
-    return undefined;
-  }
-  const amount = arg?.replace(/^0+/u, '') || '0';
-  return addHexPrefix(amount);
-}
-
 function parseTransactionData(data?: string) {
   const contractInterface = new Interface(ABI);
 
@@ -87,142 +65,37 @@ function parseTransactionData(data?: string) {
     return { inputs: [], commandBytes: [] };
   }
 
-  const { commands } = parsedTransactionData.args;
-  const { inputs } = parsedTransactionData.args;
+  const { commands, inputs } = parsedTransactionData.args;
   const commandBytes = commands.slice(2).match(/.{1,2}/gu) ?? [];
 
-  return { inputs, commandBytes };
+  return { commands, commandBytes, inputs };
 }
 
-function getCommandArgs(
-  commandBytes: string[],
-  inputs: string[],
-  command: string,
-) {
-  const commandIndex = commandBytes.findIndex(
-    (commandByte: string) => commandByte === command,
-  );
-  if (commandIndex < 0) {
-    return undefined;
-  }
-  return getArgsFromInput(inputs[commandIndex]);
-}
-
-function addPermit2PermitCommandValues(
-  commandBytes: string[],
-  inputs: string[],
-  quotesInput: GenericQuoteRequest,
-) {
-  const permit2PermitArgs = getCommandArgs(
-    commandBytes,
-    inputs,
-    COMMAND_BYTE_PERMIT2PERMIT,
-  );
-  if (permit2PermitArgs === undefined) {
-    return undefined;
-  }
-
-  return {
-    amountMin: argToAmount(permit2PermitArgs[13]),
-    quotesInput: {
-      ...quotesInput,
-      destTokenAddress: argToAddress(permit2PermitArgs[16]),
-      srcTokenAddress: argToAddress(permit2PermitArgs[10]),
-      srcTokenAmount: argToAmount(permit2PermitArgs[12]),
-      walletAddress: argToAddress(permit2PermitArgs[28]),
-    } as GenericQuoteRequest,
-  };
-}
-
-function addSweepCommandValues(
-  commandBytes: string[],
-  inputs: string[],
-  quotesInput: GenericQuoteRequest,
-) {
-  const sweepArgs = getCommandArgs(commandBytes, inputs, COMMAND_BYTE_SWEEP);
-  if (sweepArgs === undefined) {
-    return undefined;
-  }
-
-  return {
-    amountMin: argToAmount(sweepArgs[2]),
-    quotesInput: {
-      ...quotesInput,
-      destTokenAddress: argToAddress(sweepArgs[0]),
-      walletAddress: argToAddress(sweepArgs[1]),
-    } as GenericQuoteRequest,
-  };
-}
-
-function addUnwrapWethCommandValues(
-  commandBytes: string[],
-  inputs: string[],
+export function getDataFromSwap(
   chainId: Hex,
-  quotesInput: GenericQuoteRequest,
+  data?: string,
+  walletAddress?: string,
 ) {
-  const unwrapWethArgs = getCommandArgs(
-    commandBytes,
-    inputs,
-    COMMAND_BYTE_UNWRAP_WETH,
-  );
-  if (unwrapWethArgs === undefined) {
-    return undefined;
-  }
+  const { commands, commandBytes, inputs } = parseTransactionData(data);
 
-  return {
-    amountMin: argToAmount(unwrapWethArgs[1]),
-    quotesInput: {
-      ...quotesInput,
-      destTokenAddress: getNativeTokenAddress(chainId),
-      walletAddress: argToAddress(unwrapWethArgs[0]),
-    } as GenericQuoteRequest,
-  };
-}
-
-export function getDataFromSwap(chainId: Hex, data?: string) {
-  const { commandBytes, inputs } = parseTransactionData(data);
-
-  let amountMin;
-  let quotesInput = {
-    srcChainId: chainId,
-    destChainId: chainId,
-    gasIncluded: false,
-    gasIncluded7702: false,
-  } as GenericQuoteRequest;
-
-  const permit2PermitResult = addPermit2PermitCommandValues(
-    commandBytes,
-    inputs,
-    quotesInput,
-  );
-  if (permit2PermitResult) {
-    amountMin = permit2PermitResult.amountMin;
-    quotesInput = permit2PermitResult.quotesInput;
-  } else {
-    return { quotesInput: undefined, amountMin: undefined, tokenAddresses: [] };
-  }
-
-  const sweepResult = addSweepCommandValues(commandBytes, inputs, quotesInput);
-  if (sweepResult) {
-    amountMin = sweepResult.amountMin;
-    quotesInput = sweepResult.quotesInput;
-  }
-
-  const unwrapWethResult = addUnwrapWethCommandValues(
+  const { amountMin, quotesInput } = getCommandValues(
     commandBytes,
     inputs,
     chainId,
-    quotesInput,
   );
-  if (unwrapWethResult) {
-    amountMin = unwrapWethResult.amountMin;
-    quotesInput = unwrapWethResult.quotesInput;
-  }
 
   return {
-    quotesInput,
     amountMin,
-    tokenAddresses: [quotesInput.destTokenAddress, quotesInput.srcTokenAddress],
+    commands,
+    quotesInput: {
+      ...quotesInput,
+      walletAddress,
+      fee: DEFAULT_QUOTEFEE,
+    } as GenericQuoteRequest,
+    tokenAddresses: [
+      quotesInput?.destTokenAddress,
+      quotesInput?.srcTokenAddress,
+    ],
   };
 }
 

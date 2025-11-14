@@ -1,3 +1,4 @@
+import { AccountWalletId } from '@metamask/account-api';
 import {
   PAYMENT_TYPES,
   SubscriptionCardPaymentMethod,
@@ -83,3 +84,25 @@ export type SubmitClaimErrorResponse = {
     errorCode: SubmitClaimErrorCode;
   }[];
 };
+
+export type AccountSelectorAccount = {
+  id: string;
+  name: string;
+  address: string;
+  type: string;
+  seedIcon?: string;
+};
+
+export type AccountSelectorWallet = {
+  id: AccountWalletId;
+  name: string;
+  accounts: AccountSelectorAccount[];
+};
+
+export const SHIELD_ICON_ARTBOARD_NAMES = {
+  PROTECTION: 'Protection',
+  PRIORITY: 'Priority',
+} as const;
+
+export type ShieldIconArtboardName =
+  (typeof SHIELD_ICON_ARTBOARD_NAMES)[keyof typeof SHIELD_ICON_ARTBOARD_NAMES];

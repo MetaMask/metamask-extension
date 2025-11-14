@@ -124,9 +124,9 @@ export const components: NotificationComponent<SnapNotification> = {
         );
       },
     },
-  },
-  footer: {
-    type: NotificationComponentType.SnapFooter,
-    Link: SnapFooterButton,
+    footer: {
+      type: NotificationComponentType.SnapFooter,
+      Link: SnapFooterButton,
+    },
   },
 };

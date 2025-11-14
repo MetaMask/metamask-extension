@@ -104,6 +104,16 @@ function getSeverityStyle(severity?: Severity) {
   }
 }
 
+function requiresAcknowledgement(alert: Alert) {
+  return (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    alert.severity === Severity.Danger &&
+    !alert.isBlocking &&
+    !alert.acknowledgeBypass
+  );
+}
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function AlertHeader({
@@ -114,7 +124,7 @@ function AlertHeader({
   customTitle?: string;
 }) {
   const t = useI18nContext();
-  const { severity, reason } = selectedAlert;
+  const { severity, reason, iconName, iconColor } = selectedAlert;
   const severityStyle = getSeverityStyle(severity);
   return (
     <Box
@@ -125,12 +135,13 @@ function AlertHeader({
     >
       <Icon
         name={
-          severity === Severity.Info || severity === Severity.Success
+          iconName ??
+          (severity === Severity.Info || severity === Severity.Success
             ? IconName.Info
-            : IconName.Danger
+            : IconName.Danger)
         }
         size={IconSize.Xl}
-        color={severityStyle.icon}
+        color={iconColor ?? severityStyle.icon}
       />
       <Text
         variant={TextVariant.headingSm}
@@ -250,9 +261,10 @@ export function AcknowledgeCheckboxBase({
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
 
-  if (selectedAlert.isBlocking || selectedAlert.severity !== Severity.Danger) {
+  if (!requiresAcknowledgement(selectedAlert)) {
     return null;
   }
+
   return (
     <Box
       display={Display.Flex}
@@ -281,11 +293,13 @@ function AcknowledgeButton({
   isConfirmed,
   hasActions,
   isBlocking,
+  label,
 }: {
   onAcknowledgeClick: () => void;
   isConfirmed: boolean;
   hasActions?: boolean;
   isBlocking?: boolean;
+  label?: string;
 }) {
   const t = useI18nContext();
 
@@ -298,7 +312,7 @@ function AcknowledgeButton({
       data-testid="alert-modal-button"
       disabled={!isBlocking && !isConfirmed}
     >
-      {t('gotIt')}
+      {label ?? t('gotIt')}
     </Button>
   );
 }
@@ -383,8 +397,8 @@ export function AlertModal({
   const isConfirmed = selectedAlert
     ? isAlertConfirmed(selectedAlert.key)
     : false;
-  const isAlertDanger = selectedAlert
-    ? selectedAlert.severity === Severity.Danger
+  const acknowledgementRequired = selectedAlert
+    ? requiresAcknowledgement(selectedAlert)
     : false;
 
   const handleCheckboxClick = useCallback(() => {
@@ -445,10 +459,14 @@ export function AlertModal({
             {customAcknowledgeButton ?? (
               <>
                 <AcknowledgeButton
-                  onAcknowledgeClick={onAcknowledgeClick}
-                  isConfirmed={!isAlertDanger || isConfirmed}
+                  onAcknowledgeClick={
+                    selectedAlert.customAcknowledgeButtonOnClick ??
+                    onAcknowledgeClick
+                  }
+                  isConfirmed={acknowledgementRequired ? isConfirmed : true}
                   hasActions={Boolean(selectedAlert.actions)}
                   isBlocking={selectedAlert.isBlocking}
+                  label={selectedAlert.customAcknowledgeButtonText}
                 />
                 {(selectedAlert.actions ?? []).map(
                   (action: { key: string; label: string }) => (
