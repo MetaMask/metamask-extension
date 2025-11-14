@@ -453,7 +453,7 @@ env:
   - APPLE_CLIENT_ID_UAT: ''
 
   # Metamask Shield
-  - METAMASK_SHIELD_ENABLED: 'false'
+  - METAMASK_SHIELD_ENABLED: 'true'
 
   # Snaps
   - AUTO_UPDATE_PREINSTALLED_SNAPS: 'true'
