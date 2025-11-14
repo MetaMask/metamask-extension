@@ -7,6 +7,7 @@ import {
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getShortDateFormatterV2 } from '../../../../../asset/util';
+import { TextColor } from '../../../../../../helpers/constants/design-system';
 
 const BillingDetails = ({
   productPrice,
@@ -32,7 +33,7 @@ const BillingDetails = ({
     <ConfirmInfoSection data-testid="shield-subscription-billing_details_section">
       <ConfirmInfoRow
         label={t('shieldPlanBillingDate')}
-        style={{ color: 'var(--color-text-alternative)' }}
+        color={TextColor.textAlternative}
         data-testid="shield-subscription-billing_date_label"
       >
         <ConfirmInfoRowText

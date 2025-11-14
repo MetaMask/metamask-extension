@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Se konto på Etherscan"
   },
-  "expandView": {
-    "message": "Udvis Visning"
-  },
   "failed": {
     "message": "Mislykkedes"
   },

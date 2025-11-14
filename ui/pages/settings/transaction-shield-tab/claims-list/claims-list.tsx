@@ -12,6 +12,7 @@ import {
   TextAlign,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import { Claim, ClaimStatusEnum } from '@metamask/claims-controller';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { Tag } from '../../../../components/component-library';
 import {
@@ -22,42 +23,46 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
-import { CLAIM_STATUS, ClaimStatus, ShieldClaim } from '../types';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 
 const CLAIM_STATUS_MAP: Record<
-  ClaimStatus,
+  ClaimStatusEnum,
   { label: string; backgroundColor: BackgroundColor; textColor: TextColor }
 > = {
-  [CLAIM_STATUS.CREATED]: {
+  [ClaimStatusEnum.CREATED]: {
     label: 'shieldClaimStatusCreated',
     backgroundColor: BackgroundColor.warningMuted,
     textColor: TextColor.warningDefault,
   },
-  [CLAIM_STATUS.SUBMITTED]: {
+  [ClaimStatusEnum.SUBMITTED]: {
     label: 'shieldClaimStatusSubmitted',
     backgroundColor: BackgroundColor.warningMuted,
     textColor: TextColor.warningDefault,
   },
-  [CLAIM_STATUS.IN_PROGRESS]: {
+  [ClaimStatusEnum.IN_PROGRESS]: {
     label: 'shieldClaimStatusInProgress',
     backgroundColor: BackgroundColor.warningMuted,
     textColor: TextColor.warningDefault,
   },
-  [CLAIM_STATUS.WAITING_FOR_CUSTOMER]: {
+  [ClaimStatusEnum.WAITING_FOR_CUSTOMER]: {
     label: 'shieldClaimStatusWaitingForCustomer',
     backgroundColor: BackgroundColor.warningMuted,
     textColor: TextColor.warningDefault,
   },
-  [CLAIM_STATUS.APPROVED]: {
+  [ClaimStatusEnum.APPROVED]: {
     label: 'shieldClaimStatusApproved',
     backgroundColor: BackgroundColor.successMuted,
     textColor: TextColor.successDefault,
   },
-  [CLAIM_STATUS.REJECTED]: {
+  [ClaimStatusEnum.REJECTED]: {
     label: 'shieldClaimStatusRejected',
     backgroundColor: BackgroundColor.errorMuted,
     textColor: TextColor.errorDefault,
+  },
+  [ClaimStatusEnum.UNKNOWN]: {
+    label: 'shieldClaimStatusUnknown',
+    backgroundColor: BackgroundColor.warningMuted,
+    textColor: TextColor.warningDefault,
   },
 };
 
@@ -67,9 +72,9 @@ const ClaimsList = () => {
   const { pendingClaims, historyClaims, isLoading } = useClaims();
 
   const claimItem = useCallback(
-    (claim: ShieldClaim) => {
+    (claim: Claim) => {
       // add leading zero to claim number if it is less than 1000
-      const claimNumber = claim.claimNumber.toString().padStart(3, '0');
+      const claimNumber = claim.shortId.toString().padStart(3, '0');
       return (
         <Box
           asChild

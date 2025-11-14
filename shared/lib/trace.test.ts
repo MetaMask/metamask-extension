@@ -13,7 +13,9 @@ const { setMeasurement, startSpan, startSpanManual, withIsolationScope } =
 
 const NAME_MOCK = TraceName.Transaction;
 const ID_MOCK = 'testId';
-const PARENT_CONTEXT_MOCK = {} as Sentry.Span;
+const PARENT_CONTEXT_MOCK = {
+  spanContext: jest.fn(),
+} as unknown as Sentry.Span;
 
 const TAGS_MOCK = {
   tag1: 'value1',
@@ -188,6 +190,75 @@ describe('Trace', () => {
       );
 
       expect(callbackExecuted).toBe(true);
+    });
+
+    it('resolves parent span from { _name, _id } object', () => {
+      const spanEndMock = jest.fn();
+      const parentSpanMock = {
+        end: spanEndMock,
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      startSpanManualMock.mockImplementationOnce((_, fn) =>
+        fn(parentSpanMock, () => {
+          // Intentionally empty
+        }),
+      );
+
+      trace({
+        name: TraceName.Transaction,
+        id: 'parent-id',
+      });
+
+      trace(
+        {
+          name: TraceName.Middleware,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          parentContext: { _name: TraceName.Transaction, _id: 'parent-id' },
+        },
+        () => true,
+      );
+
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: parentSpanMock,
+        }),
+        expect.any(Function),
+      );
+    });
+
+    it('resolves parent span from { _name } object with default ID', () => {
+      const spanEndMock = jest.fn();
+      const parentSpanMock = {
+        end: spanEndMock,
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      startSpanManualMock.mockImplementationOnce((_, fn) =>
+        fn(parentSpanMock, () => {
+          // Intentionally empty
+        }),
+      );
+
+      trace({
+        name: TraceName.Transaction,
+      });
+
+      trace(
+        {
+          name: TraceName.Middleware,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          parentContext: { _name: TraceName.Transaction },
+        },
+        () => true,
+      );
+
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: parentSpanMock,
+        }),
+        expect.any(Function),
+      );
     });
   });
 

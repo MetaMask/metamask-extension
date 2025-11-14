@@ -1,4 +1,12 @@
-import { PRODUCT_TYPES, Subscription } from '@metamask/subscription-controller';
+import {
+  PAYMENT_TYPES,
+  PaymentType,
+  PRODUCT_TYPES,
+  RECURRING_INTERVALS,
+  RecurringInterval,
+  Subscription,
+  SubscriptionCryptoPaymentMethod,
+} from '@metamask/subscription-controller';
 import {
   ActiveSubscriptionStatuses,
   PausedSubscriptionStatuses,
@@ -8,7 +16,7 @@ import { DAY } from '../constants/time';
 
 const SUBSCRIPTION_ENDING_SOON_DAYS = DAY;
 
-function getShieldSubscription(
+export function getShieldSubscription(
   subscriptions: Subscription | Subscription[],
 ): Subscription | undefined {
   let shieldSubscription: Subscription | undefined;
@@ -81,4 +89,56 @@ export function getIsShieldSubscriptionEndingSoon(
     new Date(shieldSubscription.endDate).getTime() - Date.now() <
     SUBSCRIPTION_ENDING_SOON_DAYS
   );
+}
+
+/**
+ * Get the subscription payment data.
+ *
+ * @param subscription - The subscription.
+ * @returns The subscription payment data. If subscription is not valid, return default payment data.
+ */
+export function getSubscriptionPaymentData(subscription?: Subscription): {
+  paymentType: PaymentType;
+  billingInterval: RecurringInterval;
+  cryptoPaymentChain?: string;
+  cryptoPaymentCurrency?: string;
+} {
+  const paymentType = subscription?.paymentMethod.type || PAYMENT_TYPES.byCard;
+  const billingInterval = subscription?.interval || RECURRING_INTERVALS.year;
+  let cryptoPaymentChain: string | undefined;
+  let cryptoPaymentCurrency: string | undefined;
+  if (paymentType === PAYMENT_TYPES.byCrypto) {
+    const cryptoPaymentMethod =
+      subscription?.paymentMethod as SubscriptionCryptoPaymentMethod;
+    cryptoPaymentChain = cryptoPaymentMethod.crypto.chainId;
+    cryptoPaymentCurrency = cryptoPaymentMethod.crypto.tokenSymbol;
+  }
+
+  return {
+    paymentType,
+    billingInterval,
+    cryptoPaymentChain,
+    cryptoPaymentCurrency,
+  };
+}
+
+/**
+ * Get the subscription duration in days.
+ *
+ * If the subscription is not active, return the number of days between the start date and the end date.
+ *
+ * @param subscription - The subscription.
+ * @returns The subscription duration in days.
+ */
+export function getSubscriptionDurationInDays(
+  subscription: Subscription,
+): number {
+  let subscriptionEndDate = new Date();
+  if (subscription.endDate) {
+    subscriptionEndDate = new Date(subscription.endDate);
+  }
+  const subscriptionStartData = new Date(subscription.currentPeriodStart);
+
+  const diff = subscriptionEndDate.getTime() - subscriptionStartData.getTime();
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }

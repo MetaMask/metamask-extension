@@ -1,7 +1,7 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BtcScope, EthScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
@@ -101,6 +101,14 @@ const DefaultNetworks = memo(() => {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   btcAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
+  );
+  ///: END:ONLY_INCLUDE_IF
+
+  let trxAccountGroup = null;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  trxAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
   );
   ///: END:ONLY_INCLUDE_IF
 
@@ -204,6 +212,9 @@ const DefaultNetworks = memo(() => {
           if (btcAccountGroup && network.chainId === BtcScope.Mainnet) {
             return true;
           }
+          if (trxAccountGroup && network.chainId === TrxScope.Mainnet) {
+            return true;
+          }
           return false;
         });
       }
@@ -216,6 +227,9 @@ const DefaultNetworks = memo(() => {
         }
         if (selectedAccount.scopes.includes(BtcScope.Mainnet)) {
           return network.chainId === BtcScope.Mainnet;
+        }
+        if (selectedAccount.scopes.includes(TrxScope.Mainnet)) {
+          return network.chainId === TrxScope.Mainnet;
         }
         return false;
       });
@@ -282,6 +296,7 @@ const DefaultNetworks = memo(() => {
     handleNetworkChangeCallback,
     btcAccountGroup,
     solAccountGroup,
+    trxAccountGroup,
     isMultichainAccountsState2Enabled,
     evmAccountGroup,
     dispatch,

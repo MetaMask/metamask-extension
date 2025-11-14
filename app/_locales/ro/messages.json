@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Vizualizare cont pe Etherscan"
   },
-  "expandView": {
-    "message": "Extindeți vizualizarea"
-  },
   "failed": {
     "message": "Eșuat"
   },

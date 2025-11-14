@@ -87,6 +87,8 @@ export const MultichainAccountList = ({
   showAccountCheckbox = false,
   showConnectionStatus = false,
 }: MultichainAccountListProps) => {
+  const showAccountMenu = !showAccountCheckbox;
+
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
@@ -293,13 +295,15 @@ export const MultichainAccountList = ({
               ) : undefined
             }
             endAccessory={
-              <MultichainAccountMenu
-                accountGroupId={groupId as AccountGroupId}
-                isRemovable={isRemovable}
-                handleAccountRenameAction={handleAccountRenameAction}
-                isOpen={openMenuAccountId === groupId}
-                onToggle={() => handleMenuToggle(groupId as AccountGroupId)}
-              />
+              showAccountMenu ? (
+                <MultichainAccountMenu
+                  accountGroupId={groupId as AccountGroupId}
+                  isRemovable={isRemovable}
+                  handleAccountRenameAction={handleAccountRenameAction}
+                  isOpen={openMenuAccountId === groupId}
+                  onToggle={() => handleMenuToggle(groupId as AccountGroupId)}
+                />
+              ) : undefined
             }
           />
         </Box>

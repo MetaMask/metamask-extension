@@ -79,6 +79,10 @@ describe('Account syncing - Multiple SRPs', function () {
           prepareEventsEmittedCounter,
           waitUntilSyncedAccountsNumberEquals,
         } = arrangeTestUtils(driver, userStorageMockttpController);
+
+        // Wait for initial account sync to complete before adding a new account
+        await waitUntilSyncedAccountsNumberEquals(1);
+
         const { waitUntilEventsEmittedNumberEquals } =
           prepareEventsEmittedCounter(
             UserStorageMockttpControllerEvents.PUT_SINGLE,
@@ -88,8 +92,9 @@ describe('Account syncing - Multiple SRPs', function () {
         await accountListPage.addMultichainAccount();
 
         // Wait for sync operation to complete
-        await waitUntilSyncedAccountsNumberEquals(2);
+        // Check event first to ensure sync was attempted, then verify state
         await waitUntilEventsEmittedNumberEquals(1);
+        await waitUntilSyncedAccountsNumberEquals(2);
 
         // Verify both accounts are visible
         await accountListPage.checkAccountDisplayedInAccountList(

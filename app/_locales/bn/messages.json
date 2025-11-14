@@ -232,9 +232,6 @@
   "etherscanView": {
     "message": "Etherscan এ অ্যাকাউন্ট দেখুন"
   },
-  "expandView": {
-    "message": "ভিউ সম্প্রসারিত করুন"
-  },
   "failed": {
     "message": "ব্যর্থ হয়েছে"
   },

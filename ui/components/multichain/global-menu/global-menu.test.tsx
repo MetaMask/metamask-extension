@@ -6,11 +6,9 @@ import {
   GATOR_PERMISSIONS,
   PERMISSIONS,
 } from '../../../helpers/constants/routes';
-import {
-  isGatorPermissionsRevocationFeatureEnabled,
-  getIsSidePanelFeatureEnabled,
-} from '../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import {
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_FIREFOX,
@@ -56,6 +54,10 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock('../../../../shared/modules/environment');
+
+jest.mock('../../../hooks/useSidePanelEnabled', () => ({
+  useSidePanelEnabled: jest.fn(() => false),
+}));
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
@@ -122,7 +124,7 @@ describe('Global Menu', () => {
     );
     jest.mocked(getBrowserName).mockReturnValue(PLATFORM_FIREFOX);
     jest.mocked(getEnvironmentType).mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-    jest.mocked(getIsSidePanelFeatureEnabled).mockReturnValue(true);
+    jest.mocked(useSidePanelEnabled).mockReturnValue(true);
 
     // @ts-expect-error mocking platform
     global.platform = {

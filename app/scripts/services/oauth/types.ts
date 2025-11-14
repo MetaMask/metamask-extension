@@ -4,6 +4,15 @@ import {
   SeedlessOnboardingControllerGetStateAction,
 } from '@metamask/seedless-onboarding-controller';
 import { Messenger } from '@metamask/messenger';
+import type {
+  MetaMetricsEventPayload,
+  MetaMetricsEventOptions,
+} from '../../../../shared/constants/metametrics';
+import type {
+  TraceRequest,
+  EndTraceRequest,
+} from '../../../../shared/lib/trace';
+import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
 
 export const SERVICE_NAME = 'OAuthService';
 
@@ -58,7 +67,8 @@ export type OAuthServiceAction =
   | OAuthServiceGetNewRefreshTokenAction
   | OAuthServiceRevokeRefreshTokenAction
   | OAuthServiceRenewRefreshTokenAction
-  | SeedlessOnboardingControllerGetStateAction;
+  | SeedlessOnboardingControllerGetStateAction
+  | OnboardingControllerGetStateAction;
 
 /**
  * All possible events that the OAuthService can emit.
@@ -176,10 +186,28 @@ export type OAuthServiceOptions = {
    * Buffered trace methods that handle consent checking
    */
   bufferedTrace: (
-    request: Record<string, unknown>,
+    request: TraceRequest,
     fn?: (context?: unknown) => unknown,
-  ) => unknown;
-  bufferedEndTrace: (request: Record<string, unknown>) => void;
+  ) => void;
+  bufferedEndTrace: (request: EndTraceRequest) => void;
+
+  /**
+   * Track a MetaMetrics event
+   */
+  trackEvent: (
+    payload: MetaMetricsEventPayload,
+    options?: MetaMetricsEventOptions,
+  ) => void;
+
+  /**
+   * Add an event before metrics opt-in (for buffering before user consent)
+   */
+  addEventBeforeMetricsOptIn: (event: MetaMetricsEventPayload) => void;
+
+  /**
+   * Get whether the user has opted into MetaMetrics
+   */
+  getParticipateInMetaMetrics: () => boolean | null;
 };
 
 /**

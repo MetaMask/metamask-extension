@@ -87,8 +87,8 @@ describe('Dapp interactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
+        await driver.navigate();
+
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
 

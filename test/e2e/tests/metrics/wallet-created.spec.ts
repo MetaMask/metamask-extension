@@ -6,6 +6,7 @@ import FixtureBuilder from '../../fixture-builder';
 import {
   completeCreateNewWalletOnboardingFlow,
   createNewWalletWithSocialLoginOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
@@ -259,6 +260,9 @@ describe('Wallet Created Events', function () {
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 3);

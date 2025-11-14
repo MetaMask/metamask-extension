@@ -74,9 +74,17 @@ import {
   Subscription,
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
-  CachedLastSelectedPaymentMethods,
+  SubscriptionEligibility,
+  BalanceCategory,
+  CachedLastSelectedPaymentMethod,
 } from '@metamask/subscription-controller';
 
+import {
+  Claim,
+  CreateClaimRequest,
+  SubmitClaimConfig,
+} from '@metamask/claims-controller';
+import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -102,6 +110,7 @@ import {
   getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
   getIsSocialLoginFlow,
+  getFirstTimeFlowType,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -118,7 +127,10 @@ import {
   SEND_STAGES,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
+import {
+  getUnconnectedAccountAlertEnabledness,
+  getCompletedOnboarding,
+} from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   HardwareDeviceNames,
@@ -135,6 +147,7 @@ import {
   MetaMetricsReferrerObject,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsEventAccountType,
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -182,7 +195,10 @@ import {
 } from '../../shared/types/rewards';
 import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
 import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
-import { loadShieldConfig } from '../../shared/modules/shield';
+import {
+  DefaultSubscriptionPaymentOptions,
+  ShieldSubscriptionMetricsPropsFromUI,
+} from '../../shared/types';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -217,15 +233,33 @@ export function goHome() {
  * @param authConnection - The authentication connection to use (google | apple).
  * @param bufferedTrace - The buffered trace function from MetaMetrics context.
  * @param bufferedEndTrace - The buffered end trace function from MetaMetrics context.
+ * @param trackEvent - The track event function from MetaMetrics context.
  * @returns The social login result.
  */
 export function startOAuthLogin(
   authConnection: AuthConnection,
   bufferedTrace?: (request: TraceRequest) => void,
   bufferedEndTrace?: (request: EndTraceRequest) => void,
+  trackEvent?: (
+    payload: MetaMetricsEventPayload,
+    options?: MetaMetricsEventOptions,
+  ) => Promise<void>,
 ): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
     dispatch(showLoadingIndication());
+
+    // Calculate isRehydration for seedless auth error tracking
+    let isRehydration: boolean | null = null;
+    try {
+      const state = getState();
+      const firstTimeFlowType = getFirstTimeFlowType(state);
+      const isOnboardingCompleted = getCompletedOnboarding(state);
+      isRehydration =
+        firstTimeFlowType === FirstTimeFlowType.socialImport &&
+        !isOnboardingCompleted;
+    } catch {
+      isRehydration = null;
+    }
 
     try {
       const oauth2LoginResult = await submitRequestToBackground(
@@ -255,6 +289,26 @@ export function startOAuthLogin(
         });
         bufferedEndTrace?.({
           name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
+        });
+
+        trackEvent?.({
+          event: MetaMetricsEventName.SocialLoginFailed,
+          category: MetaMetricsEventCategory.Onboarding,
+          properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_rehydration:
+              isRehydration === null ? 'unknown' : String(isRehydration),
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            failure_type: 'error',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            error_category: 'seedless_auth',
+          },
         });
 
         throw error;
@@ -369,9 +423,13 @@ export function subscriptionsStartPolling(): ThunkAction<
 /**
  * Fetches the subscription eligibilities.
  *
+ * @param params
+ * @param params.balanceCategory
  * @returns The subscription eligibilities.
  */
-export function getSubscriptionsEligibilities(): ThunkAction<
+export function getSubscriptionsEligibilities(params?: {
+  balanceCategory?: BalanceCategory;
+}): ThunkAction<
   SubscriptionEligibility[],
   MetaMaskReduxState,
   unknown,
@@ -379,9 +437,11 @@ export function getSubscriptionsEligibilities(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      return await submitRequestToBackground('getSubscriptionsEligibilities');
+      return await submitRequestToBackground('getSubscriptionsEligibilities', [
+        params,
+      ]);
     } catch (error) {
-      log.error('[getSubscriptionsEligibilities] error', error);
+      log.warn('[getSubscriptionsEligibilities] error', error);
       dispatch(displayWarning(error));
       throw error;
     }
@@ -392,6 +452,8 @@ export function getSubscriptionsEligibilities(): ThunkAction<
  * Submits a user event.
  *
  * @param eventRequest - The event request.
+ * @param eventRequest.event - The event type.
+ * @param eventRequest.cohort - Optional cohort ID.
  * @returns resolved promise.
  */
 export function submitSubscriptionUserEvents(
@@ -405,6 +467,27 @@ export function submitSubscriptionUserEvents(
     } catch (error) {
       log.error('[submitSubscriptionUserEvents] error', error);
       dispatch(displayWarning(error));
+    }
+  };
+}
+
+/**
+ * Assigns a user to a cohort.
+ *
+ * @param params - The cohort assignment parameters.
+ * @param params.cohort - The cohort to assign the user to.
+ * @returns resolved promise.
+ */
+export function assignUserToCohort(params: {
+  cohort: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('assignUserToCohort', [params]);
+    } catch (error) {
+      log.error('[assignUserToCohort] error', error);
+      dispatch(displayWarning(error));
+      throw error;
     }
   };
 }
@@ -467,12 +550,14 @@ export async function getSubscriptionCryptoApprovalAmount(
  * @param params.products - The list of products.
  * @param params.isTrialRequested - Is trial requested.
  * @param params.recurringInterval - The recurring interval.
+ * @param params.useTestClock - Whether to use test clocks.
  * @returns The subscription response.
  */
 export function startSubscriptionWithCard(params: {
   products: ProductType[];
   isTrialRequested: boolean;
   recurringInterval: RecurringInterval;
+  useTestClock: boolean;
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -568,6 +653,8 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
 export function setShowShieldEntryModalOnce(
   show: boolean | null,
   shouldSubmitEvents: boolean = false,
+  triggeringCohort?: string,
+  modalType?: ModalType,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -576,6 +663,8 @@ export function setShowShieldEntryModalOnce(
         setShowShieldEntryModalOnceAction({
           show: Boolean(show),
           shouldSubmitEvents,
+          triggeringCohort,
+          modalType,
         }),
       );
     } catch (error) {
@@ -589,6 +678,8 @@ export function setShowShieldEntryModalOnce(
 export function setShowShieldEntryModalOnceAction(payload: {
   show: boolean;
   shouldSubmitEvents: boolean;
+  triggeringCohort?: string;
+  modalType: ModalType;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
     type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
@@ -596,9 +687,27 @@ export function setShowShieldEntryModalOnceAction(payload: {
   };
 }
 
+export function setPendingShieldCohort(
+  cohort: string | null,
+  txType?: string | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setPendingShieldCohort', [
+        cohort,
+        txType,
+      ]);
+    } catch (error) {
+      log.error('[setPendingShieldCohort] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
 export function setLastUsedSubscriptionPaymentDetails(
   product: ProductType,
-  payload: CachedLastSelectedPaymentMethods,
+  payload: CachedLastSelectedPaymentMethod,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -608,6 +717,38 @@ export function setLastUsedSubscriptionPaymentDetails(
       ]);
     } catch (error) {
       log.error('[setLastUsedSubscriptionPaymentDetails] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+export function setDefaultSubscriptionPaymentOptions(
+  payload: DefaultSubscriptionPaymentOptions,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setDefaultSubscriptionPaymentOptions', [
+        payload,
+      ]);
+    } catch (error) {
+      log.error('[setDefaultSubscriptionPaymentOptions] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+export function setShieldSubscriptionMetricsProps(
+  payload: ShieldSubscriptionMetricsPropsFromUI,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setShieldSubscriptionMetricsProps', [
+        payload,
+      ]);
+    } catch (error) {
+      log.error('[setShieldSubscriptionMetricsProps] error', error);
       dispatch(displayWarning(error));
       throw error;
     }
@@ -3004,6 +3145,30 @@ export function addImportedTokens(
 }
 
 /**
+ * To add multichain assets (non-EVM tokens like Solana, Bitcoin)
+ *
+ * @param assetIds - The CAIP asset IDs (includes chain information)
+ * @param accountId - The account ID to add the asset to
+ */
+export function multichainAddAssets(
+  assetIds: string[],
+  accountId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('multichainAddAssets', [
+        assetIds,
+        accountId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+/**
  * To add ignored token addresses to state
  *
  * @param options
@@ -3034,6 +3199,32 @@ export function ignoreTokens({
       await submitRequestToBackground('ignoreTokens', [
         _tokensToIgnore,
         networkClientId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning(error));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * To ignore multichain assets (non-EVM tokens like Solana, Bitcoin)
+ *
+ * @param assetIds - The CAIP asset IDs (includes chain information)
+ * @param accountId - The account ID to add the asset to
+ */
+export function multichainIgnoreAssets(
+  assetIds: string[],
+  accountId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('multichainIgnoreAssets', [
+        assetIds,
+        accountId,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -7672,8 +7863,6 @@ export async function getLayer1GasFeeValue({
   ]);
 }
 
-const shieldConfig = loadShieldConfig();
-
 /**
  * Submits a shield claim.
  *
@@ -7685,35 +7874,29 @@ const shieldConfig = loadShieldConfig();
  * @param params.reimbursementWalletAddress - The reimbursement wallet address.
  * @param params.caseDescription - The description.
  * @param params.files - The files.
+ * @param params.signature - Claim signature.
  * @returns The subscription response.
  */
-export async function submitShieldClaim(params: {
-  chainId: string;
-  email: string;
-  impactedWalletAddress: string;
-  impactedTransactionHash: string;
-  reimbursementWalletAddress: string;
-  caseDescription: string;
-  files?: FileList;
-}) {
-  const baseUrl = shieldConfig.claimUrl;
+export async function submitShieldClaim(
+  params: CreateClaimRequest & { files?: FileList },
+) {
+  const submitClaimConfig = await submitRequestToBackground<SubmitClaimConfig>(
+    'getSubmitClaimConfig',
+    [params],
+  );
+  const { headers, method, url } = submitClaimConfig;
 
-  const claimsUrl = `${baseUrl}/claims`;
   const formData = new FormData();
   formData.append('chainId', params.chainId);
   formData.append('email', params.email);
   formData.append('impactedWalletAddress', params.impactedWalletAddress);
-  formData.append('impactedTxHash', params.impactedTransactionHash);
+  formData.append('impactedTxHash', params.impactedTxHash);
   formData.append(
     'reimbursementWalletAddress',
     params.reimbursementWalletAddress,
   );
-  formData.append('description', params.caseDescription);
-  // TODO: temporary value for signature, update to correct signature after implement signature verification
-  formData.append(
-    'signature',
-    '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
-  );
+  formData.append('description', params.description);
+  formData.append('signature', params.signature);
   formData.append('timestamp', Date.now().toString());
 
   // add files to form data
@@ -7723,15 +7906,13 @@ export async function submitShieldClaim(params: {
     });
   }
 
-  const accessToken = await submitRequestToBackground<string>('getBearerToken');
-
   try {
     // we do the request here instead of background controllers because files are not serializable
-    const response = await fetch(claimsUrl, {
-      method: 'POST',
+    const response = await fetch(url, {
+      method,
       body: formData,
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: headers.Authorization,
       },
     });
 
@@ -7745,32 +7926,39 @@ export async function submitShieldClaim(params: {
 
     return ClaimSubmitToastType.Success;
   } catch (error) {
-    console.error(error);
+    log.error('[submitShieldClaim] Failed to submit shield claim:', error);
     throw new SubmitClaimError(ClaimSubmitToastType.Errored);
   }
 }
 
+/**
+ * Fetches all shield claims, relates to the current user profile ID.
+ *
+ * @returns The shield claims.
+ */
 export async function getShieldClaims() {
-  const baseUrl = shieldConfig.claimUrl;
-
-  const claimsUrl = `${baseUrl}/claims`;
-  const accessToken = await submitRequestToBackground<string>('getBearerToken');
-
   try {
-    const response = await fetch(claimsUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorBody = await response.json();
-      throw new Error(errorBody.error || 'Failed to get shield claims');
-    }
-    return await response.json();
+    const claims = await submitRequestToBackground<Claim[]>('getClaims');
+    return claims;
   } catch (error) {
-    console.error('Failed to get shield claims:', error);
+    log.error('[getShieldClaims] Failed to get shield claims:', error);
     throw error;
   }
+}
+
+/**
+ * Generates a signature for a claim.
+ *
+ * @param chainId - The chain ID.
+ * @param walletAddress - The wallet address.
+ * @returns The signature.
+ */
+export async function generateClaimSignature(
+  chainId: string,
+  walletAddress: string,
+) {
+  return await submitRequestToBackground<string>('generateClaimSignature', [
+    chainId,
+    walletAddress,
+  ]);
 }
