@@ -58,7 +58,6 @@ import {
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { getProductPrice } from '../../shield-plan/utils';
 import Tooltip from '../../../components/ui/tooltip';
-import { ThemeType } from '../../../../shared/constants/preferences';
 import { useFormatters } from '../../../hooks/useFormatters';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
@@ -81,16 +80,20 @@ import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscri
 import {
   ShieldCtaActionClickedEnum,
   ShieldCtaSourceEnum,
+  ShieldErrorStateActionClickedEnum,
+  ShieldErrorStateLocationEnum,
+  ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
+import { ThemeType } from '../../../../shared/constants/preferences';
 import CancelMembershipModal from './cancel-membership-modal';
-import { isCryptoPaymentMethod, SHIELD_ICON_ARTBOARD_NAMES } from './types';
-import ShieldSubscriptionIconAnimation from './shield-subscription-icon-animation';
+import { isCryptoPaymentMethod } from './types';
 
 const TransactionShield = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { search } = useLocation();
-  const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
+  const { captureShieldCtaClickedEvent, captureShieldErrorStateClickedEvent } =
+    useSubscriptionMetrics();
   const shouldWaitForSubscriptionCreation = useMemo(() => {
     const searchParams = new URLSearchParams(search);
     // param to wait for subscription creation happen in the background
@@ -240,12 +243,12 @@ const TransactionShield = () => {
 
   const shieldDetails = [
     {
-      icon: SHIELD_ICON_ARTBOARD_NAMES.PROTECTION,
+      icon: IconName.ShieldLock,
       title: t('shieldTxDetails1Title'),
       description: t('shieldTxDetails1Description'),
     },
     {
-      icon: SHIELD_ICON_ARTBOARD_NAMES.PRIORITY,
+      icon: IconName.Flash,
       title: t('shieldTxDetails2Title'),
       description: t('shieldTxDetails2Description'),
     },
@@ -329,7 +332,12 @@ const TransactionShield = () => {
         {showSkeletonLoader ? (
           <Skeleton width="40%" height={24} />
         ) : (
-          <Text variant={TextVariant.bodyMdMedium}>{key}</Text>
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.textAlternative}
+          >
+            {key}
+          </Text>
         )}
         {showSkeletonLoader ? (
           <Skeleton width="30%" height={24} />
@@ -409,6 +417,19 @@ const TransactionShield = () => {
     useSubscriptionCryptoApprovalTransaction(paymentToken);
 
   const handlePaymentError = useCallback(async () => {
+    if (currentShieldSubscription) {
+      // capture error state clicked event
+      captureShieldErrorStateClickedEvent({
+        subscriptionStatus: currentShieldSubscription.status,
+        paymentType: currentShieldSubscription.paymentMethod.type,
+        billingInterval: currentShieldSubscription.interval,
+        errorCause: 'payment_error',
+        actionClicked: ShieldErrorStateActionClickedEnum.Cta,
+        location: ShieldErrorStateLocationEnum.Settings,
+        view: ShieldErrorStateViewEnum.Banner,
+      });
+    }
+
     if (isCancelled) {
       // go to shield plan page to renew subscription for cancelled subscription
       navigate(SHIELD_PLAN_ROUTE);
@@ -441,6 +462,7 @@ const TransactionShield = () => {
     executeUpdateSubscriptionCardPaymentMethod,
     setIsAddFundsModalOpen,
     executeSubscriptionCryptoApprovalTransaction,
+    captureShieldErrorStateClickedEvent,
   ]);
 
   const membershipErrorBanner = useMemo(() => {
@@ -669,11 +691,11 @@ const TransactionShield = () => {
                     label={t('shieldTxMembershipFreeTrial')}
                     labelProps={{
                       variant: TextVariant.bodySmMedium,
-                      color: TextColor.textAlternative,
+                      color: TextColor.successDefault,
                     }}
                     borderStyle={BorderStyle.none}
                     borderRadius={BorderRadius.SM}
-                    backgroundColor={BackgroundColor.backgroundMuted}
+                    backgroundColor={BackgroundColor.successMuted}
                     data-testid="shield-detail-trial-tag"
                   />
                 )}
@@ -704,7 +726,7 @@ const TransactionShield = () => {
               </Text>
             )}
           </Box>
-          {!showSkeletonLoader && !isMembershipInactive && (
+          {!showSkeletonLoader && (
             <ShieldIllustrationAnimation
               containerClassName="transaction-shield-page-shield-illustration__container"
               canvasClassName="transaction-shield-page-shield-illustration__canvas"
@@ -713,22 +735,7 @@ const TransactionShield = () => {
         </Box>
 
         <Box
-          data-theme={ThemeType.dark}
-          className={classnames(
-            'transaction-shield-page__row',
-            'transaction-shield-page__details',
-            {
-              'transaction-shield-page__details--loading': showSkeletonLoader,
-            },
-            {
-              'transaction-shield-page__details--inactive':
-                isMembershipInactive && !showSkeletonLoader,
-            },
-            {
-              'transaction-shield-page__details--active':
-                !isMembershipInactive && !showSkeletonLoader,
-            },
-          )}
+          className="transaction-shield-page__row"
           {...rowsStyleProps}
           flexDirection={FlexDirection.Column}
           paddingTop={2}
@@ -751,11 +758,7 @@ const TransactionShield = () => {
                   style={{ flexShrink: 0 }}
                 />
               ) : (
-                <ShieldSubscriptionIconAnimation
-                  artboardName={detail.icon}
-                  containerClassName="transaction-shield-page-shield-icon__container"
-                  canvasClassName="transaction-shield-page-shield-icon__canvas"
-                />
+                <Icon name={detail.icon} size={IconSize.Xl} />
               )}
               <Box
                 width={BlockSize.Full}
@@ -850,8 +853,8 @@ const TransactionShield = () => {
               )}
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsCharges'),
-                isCryptoPayment
-                  ? `${getProductPrice(productInfo as Product)} ${productInfo?.currency.toUpperCase()} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
+                isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
+                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase()} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
                   : `${formatCurrency(
                       getProductPrice(productInfo as Product),
                       productInfo?.currency.toUpperCase(),

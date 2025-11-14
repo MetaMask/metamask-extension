@@ -58,6 +58,7 @@ describe('useShieldCoverageAlert', () => {
     status?: string,
     reasonCode = 'E104',
     isTransaction: boolean = true,
+    latency: number | string = 'N/A',
   ): Record<string, unknown> => {
     const mockId = '123';
     const baseState = isTransaction
@@ -88,6 +89,9 @@ describe('useShieldCoverageAlert', () => {
               {
                 status,
                 reasonCode,
+                metrics: {
+                  latency,
+                },
               },
             ],
           },
@@ -161,7 +165,7 @@ describe('useShieldCoverageAlert', () => {
   });
 
   it('updates transaction event fragment with covered status', () => {
-    const state = getStateWithCoverage('covered', 'E104');
+    const state = getStateWithCoverage('covered', 'E104', true, 150);
     renderHookWithConfirmContextProvider(() => useShieldCoverageAlert(), state);
     expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -170,6 +174,8 @@ describe('useShieldCoverageAlert', () => {
           shield_result: 'covered',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_reason: 'shieldCoverageAlertCovered',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          shield_result_response_latency_ms: 150,
         },
       }),
       expect.anything(),
@@ -186,6 +192,8 @@ describe('useShieldCoverageAlert', () => {
           shield_result: 'not_covered_malicious',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_reason: 'shieldCoverageAlertMessagePotentialRisks',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          shield_result_response_latency_ms: 'N/A',
         },
       }),
       expect.anything(),
@@ -202,6 +210,8 @@ describe('useShieldCoverageAlert', () => {
           shield_result: 'not_covered',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_reason: 'shieldCoverageAlertMessagePotentialRisks',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          shield_result_response_latency_ms: 'N/A',
         },
       }),
       expect.anything(),
@@ -218,6 +228,8 @@ describe('useShieldCoverageAlert', () => {
           shield_result: 'loading',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_reason: 'shieldCoverageAlertMessagePotentialRisks',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          shield_result_response_latency_ms: 'N/A',
         },
       }),
       expect.anything(),
@@ -225,7 +237,7 @@ describe('useShieldCoverageAlert', () => {
   });
 
   it('updates signature event fragment with correct metrics', () => {
-    const state = getStateWithCoverage('covered', 'E104', false);
+    const state = getStateWithCoverage('covered', 'E104', false, 200);
     renderHookWithConfirmContextProvider(() => useShieldCoverageAlert(), state);
 
     expect(updateSignatureEventFragmentMock).toHaveBeenCalledWith(
@@ -235,6 +247,8 @@ describe('useShieldCoverageAlert', () => {
           shield_result: 'covered',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_reason: 'shieldCoverageAlertCovered',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          shield_result_response_latency_ms: 200,
         },
       }),
     );

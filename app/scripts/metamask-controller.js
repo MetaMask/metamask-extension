@@ -2938,6 +2938,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setDefaultSubscriptionPaymentOptions.bind(
           appStateController,
         ),
+      setShieldSubscriptionMetricsProps:
+        appStateController.setShieldSubscriptionMetricsProps.bind(
+          appStateController,
+        ),
 
       // EnsController
       tryReverseResolveAddress:

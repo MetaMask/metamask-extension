@@ -177,6 +177,7 @@ export default class Home extends PureComponent {
     evaluateCohortEligibility: PropTypes.func,
     pendingShieldCohort: PropTypes.string,
     setPendingShieldCohort: PropTypes.func,
+    isSignedIn: PropTypes.bool,
   };
 
   state = {
@@ -315,6 +316,7 @@ export default class Home extends PureComponent {
       pendingShieldCohort,
       evaluateCohortEligibility,
       setPendingShieldCohort,
+      isSignedIn,
     } = this.props;
 
     const {
@@ -340,8 +342,8 @@ export default class Home extends PureComponent {
       this.checkStatusAndNavigate();
     }
 
-    // Check for pending Shield cohort evaluation
-    if (pendingShieldCohort && evaluateCohortEligibility) {
+    // Check for pending Shield cohort evaluation if user is signed in
+    if (pendingShieldCohort && evaluateCohortEligibility && isSignedIn) {
       setPendingShieldCohort(null);
       evaluateCohortEligibility(pendingShieldCohort);
     }
