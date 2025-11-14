@@ -1,20 +1,19 @@
 import { useEffect, useState } from 'react';
-import { formatChainIdToHex } from '@metamask/bridge-controller';
+import {
+  formatChainIdToHex,
+  isNonEvmChainId,
+} from '@metamask/bridge-controller';
 import { isSendBundleSupported } from '../../../store/actions';
-import { isNonEvmChain } from '../../../ducks/bridge/utils';
-
-type Chain = {
-  chainId: string;
-};
+import type { BridgeToken } from '../../../ducks/bridge/types';
 
 /**
  * Custom hook to check if send bundle is supported for a chain
  *
- * @param fromChain - The source chain to check support for
+ * @param fromChainId - The source chain id to check support for
  * @returns Whether send bundle is supported for the chain
  */
 export function useIsSendBundleSupported(
-  fromChain: Chain | null | undefined,
+  fromChainId: BridgeToken['chainId'],
 ): boolean {
   const [isSendBundleSupportedForChain, setIsSendBundleSupportedForChain] =
     useState(false);
@@ -23,21 +22,21 @@ export function useIsSendBundleSupported(
     let isCancelled = false;
 
     const checkSendBundleSupport = async () => {
-      if (!fromChain?.chainId) {
+      if (!fromChainId) {
         if (!isCancelled) {
           setIsSendBundleSupportedForChain(false);
         }
         return;
       }
 
-      if (isNonEvmChain(fromChain.chainId)) {
+      if (isNonEvmChainId(fromChainId)) {
         setIsSendBundleSupportedForChain(false);
         return;
       }
 
       try {
         const isSupported = await isSendBundleSupported(
-          formatChainIdToHex(fromChain.chainId),
+          formatChainIdToHex(fromChainId),
         );
 
         if (!isCancelled) {
@@ -56,7 +55,7 @@ export function useIsSendBundleSupported(
     return () => {
       isCancelled = true;
     };
-  }, [fromChain?.chainId]);
+  }, [fromChainId]);
 
   return isSendBundleSupportedForChain;
 }

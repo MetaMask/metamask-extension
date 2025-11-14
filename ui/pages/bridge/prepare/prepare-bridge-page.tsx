@@ -21,18 +21,19 @@ import {
   UnifiedSwapBridgeEventName,
   type BridgeController,
   isCrossChain,
+  isNonEvmChainId,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
-import { Hex, parseCaipChainId } from '@metamask/utils';
+import { CaipChainId, Hex, parseCaipChainId } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
-  setToChainId,
   setToToken,
   updateQuoteRequestParams,
   resetBridgeState,
   trackUnifiedSwapBridgeEvent,
-  setFromChain,
+  switchTokens,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -85,7 +86,6 @@ import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
 } from '../utils/quote';
-import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
@@ -97,11 +97,6 @@ import {
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainNativeCurrency,
-  getMultichainProviderConfig,
-} from '../../../selectors/multichain';
 import { setEnabledAllPopularNetworks } from '../../../store/actions';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
@@ -136,17 +131,22 @@ export const useEnableMissingNetwork = () => {
   const dispatch = useDispatch();
 
   const enableMissingNetwork = useCallback(
-    (chainId: Hex) => {
+    (chainId: Hex | CaipChainId) => {
+      if (isNonEvmChainId(chainId)) {
+        return;
+      }
       const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
       const caipChainId = formatChainIdToCaip(chainId);
       const { namespace } = parseCaipChainId(caipChainId);
+      const hexChainId = formatChainIdToHex(chainId);
 
       if (namespace) {
-        const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
+        const isPopularNetwork =
+          FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
         if (isPopularNetwork) {
-          const isNetworkEnabled = enabledNetworkKeys.includes(chainId);
+          const isNetworkEnabled = enabledNetworkKeys.includes(hexChainId);
           if (!isNetworkEnabled) {
             // Bridging between popular networks indicates we want the 'select all' enabled
             // This way users can see their full bridging tx activity
@@ -175,7 +175,9 @@ const PrepareBridgePage = ({
 
   const isSwap = useSelector(getIsSwap);
 
-  const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
+  const isSendBundleSupportedForChain = useIsSendBundleSupported(
+    fromChain.chainId,
+  );
   const gasIncluded = useSelector((state) =>
     getIsGasIncluded(state, isSendBundleSupportedForChain),
   );
@@ -199,14 +201,13 @@ const PrepareBridgePage = ({
       return false;
     }
     return Object.keys(fromTokens).length === 0;
-  }, [fromTokens, fromChain]);
+  }, [fromTokens, fromChain.chainId]);
 
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
-  const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
@@ -228,8 +229,8 @@ const PrepareBridgePage = ({
   const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
     activeQuote: unvalidatedQuote,
     toToken,
-    toChain,
-    fromChain,
+    toChainId: toChain?.chainId,
+    fromChainId: fromChain?.chainId,
     isQuoteExpired,
     insufficientBal: quoteRequest.insufficientBal,
   });
@@ -242,7 +243,7 @@ const PrepareBridgePage = ({
     isSwap,
     isSendBundleSupportedForChain,
     selectedAccount,
-    fromChain,
+    fromChainId: fromChain.chainId,
   });
 
   const shouldShowMaxButton =
@@ -256,7 +257,9 @@ const PrepareBridgePage = ({
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
 
-  const ticker = useMultichainSelector(getMultichainNativeCurrency);
+  const ticker = fromChain
+    ? getNativeAssetForChainId(fromChain.chainId)?.symbol
+    : undefined;
   const {
     isEstimatedReturnLow,
     isNoQuotesAvailable,
@@ -388,14 +391,8 @@ const PrepareBridgePage = ({
                     // Length of decimal part cannot exceed token.decimals
                     .split('.')[0]
                 : undefined,
-            srcChainId: fromChain?.chainId,
-            destChainId: toChain?.chainId,
-            // This override allows quotes to be returned when the rpcUrl is a forked network
-            // Otherwise quotes get filtered out by the bridge-api when the wallet's real
-            // balance is less than the tenderly balance
-            insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
-              ? true
-              : undefined,
+            srcChainId: fromToken?.chainId,
+            destChainId: toToken?.chainId,
             slippage,
             walletAddress: selectedAccount.address,
             destWalletAddress: selectedDestinationAccount?.address,
@@ -405,15 +402,14 @@ const PrepareBridgePage = ({
         : undefined,
     [
       fromToken?.address,
+      fromToken?.chainId,
       fromToken?.decimals,
       toToken?.address,
+      toToken?.chainId,
       fromAmount,
-      fromChain?.chainId,
-      toChain?.chainId,
       slippage,
       selectedAccount?.address,
       selectedDestinationAccount?.address,
-      providerConfig?.rpcUrl,
       gasIncluded,
       gasIncluded7702,
     ],
@@ -459,11 +455,8 @@ const PrepareBridgePage = ({
 
   // Use smart slippage defaults
   useSmartSlippage({
-    fromChain,
-    toChain,
     fromToken,
     toToken,
-    isSwap,
   });
 
   // Trace swap/bridge view loaded
@@ -538,18 +531,12 @@ const PrepareBridgePage = ({
             }
           }}
           networkProps={{
-            network: fromChain,
+            network: fromChains.find(
+              (chain) => chain.chainId === fromChain.chainId,
+            ),
             networks: fromChains,
             onNetworkChange: (networkConfig) => {
-              if (isNetworkAdded(networkConfig)) {
-                enableMissingNetwork(networkConfig.chainId);
-              }
-              dispatch(
-                setFromChain({
-                  networkConfig,
-                  selectedAccount,
-                }),
-              );
+              enableMissingNetwork(networkConfig.chainId);
             },
             header: t('yourNetworks'),
           }}
@@ -630,7 +617,10 @@ const PrepareBridgePage = ({
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
-                (toChain && !isNetworkAdded(toChain))
+                // If no fromChains match the toChain, it means the toChain is not an enabled network
+                fromChains.every((chain) =>
+                  isCrossChain(chain.chainId, toChain.chainId),
+                )
               }
               onClick={() => {
                 dispatch(setSelectedQuote(null));
@@ -677,22 +667,8 @@ const PrepareBridgePage = ({
                       },
                     ),
                   );
-
                 setRotateSwitchTokens(!rotateSwitchTokens);
-
-                if (isSwap) {
-                  dispatch(setFromToken(toToken));
-                } else {
-                  // Handle account switching for Solana
-                  dispatch(
-                    setFromChain({
-                      networkConfig: toChain,
-                      token: toToken,
-                      selectedAccount,
-                    }),
-                  );
-                }
-                dispatch(setToToken(fromToken));
+                dispatch(switchTokens({ fromToken, toToken }));
               }}
             />
           </Box>
@@ -716,13 +692,15 @@ const PrepareBridgePage = ({
               dispatch(setToToken(bridgeToken));
             }}
             networkProps={{
-              network: toChain,
+              network: toChains.find(
+                (chain) => chain.chainId === toChain.chainId,
+              ),
               networks: toChains,
               onNetworkChange: (networkConfig) => {
-                if (isNetworkAdded(networkConfig)) {
-                  enableMissingNetwork(networkConfig.chainId);
-                }
-                dispatch(setToChainId(networkConfig.chainId));
+                enableMissingNetwork(networkConfig.chainId);
+                dispatch(
+                  setToToken(getNativeAssetForChainId(networkConfig.chainId)),
+                );
               },
               header: t('yourNetworks'),
               shouldDisableNetwork: ({ chainId }) =>

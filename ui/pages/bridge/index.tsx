@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom-v5-compat';
+import { type Hex } from '@metamask/utils';
 import {
   UnifiedSwapBridgeEventName,
-  // TODO: update this with all non-EVM chains when bitcoin added.
-  isSolanaChainId,
+  formatChainIdToHex,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
@@ -21,7 +22,6 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -42,6 +42,7 @@ import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
 import { useSafeNavigation } from '../../hooks/useSafeNavigation';
+import { getNetworkConfigurationIdByChainId } from '../../selectors';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -69,8 +70,6 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
     'isFromTransactionShield',
   );
 
-  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
-
   const resetControllerAndInputStates = async () => {
     await dispatch(resetBridgeState());
   };
@@ -79,10 +78,13 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
-  // Only fetch gas estimates if the source chain is EVM (not Solana)
-  const shouldFetchGasEstimates =
-    // TODO: update this with all non-EVM chains when bitcoin added.
-    fromChain?.chainId && !isSolanaChainId(fromChain.chainId);
+  const isEvmChain = !isNonEvmChainId(fromChain.chainId);
+  const networkClientIdsByHexChainId: Record<Hex, string> = useSelector(
+    getNetworkConfigurationIdByChainId,
+  );
+  const selectedNetworkClientId = isEvmChain
+    ? networkClientIdsByHexChainId[formatChainIdToHex(fromChain.chainId)]
+    : undefined;
 
   useEffect(() => {
     dispatch(
@@ -106,7 +108,7 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
   }, []);
 
   // Needed for refreshing gas estimates (only for EVM chains)
-  useGasFeeEstimates(selectedNetworkClientId, shouldFetchGasEstimates);
+  useGasFeeEstimates(selectedNetworkClientId, isEvmChain);
   // Needed for fetching exchange rates for tokens that have not been imported
   useBridgeExchangeRates();
   // Emits events related to quote-fetching

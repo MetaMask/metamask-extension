@@ -2,7 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   formatChainIdToCaip,
+  formatChainIdToHex,
   isNativeAddress,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
 import {
@@ -10,8 +12,6 @@ import {
   TextField,
   TextFieldType,
   ButtonLink,
-  Button,
-  ButtonSize,
 } from '../../../components/component-library';
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
@@ -36,13 +36,9 @@ import { shortenString } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import {
-  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
-  MultichainNetworks,
-} from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 const sanitizeAmountInput = (textToSanitize: string) => {
@@ -75,7 +71,7 @@ export const BridgeInputGroup = ({
 }: {
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
-  token: BridgeToken | null;
+  token: BridgeToken;
   buttonProps: { testId: string };
   amountFieldProps: Pick<
     React.ComponentProps<typeof TextField>,
@@ -102,9 +98,7 @@ export const BridgeInputGroup = ({
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
-  const currentChainId = useSelector(getMultichainCurrentChainId);
-  const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
-
+  const selectedChainId = token?.chainId;
   const [, handleCopy] = useCopyToClipboard(MINUTE);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -132,10 +126,9 @@ export const BridgeInputGroup = ({
   const handleAddressClick = () => {
     if (token && selectedChainId) {
       const caipChainId = formatChainIdToCaip(selectedChainId);
-      const isSolana = caipChainId === MultichainNetworks.SOLANA;
 
       let blockExplorerUrl = '';
-      if (isSolana) {
+      if (isNonEvmChainId(selectedChainId)) {
         const blockExplorerUrls =
           MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
         if (blockExplorerUrls) {
@@ -152,7 +145,7 @@ export const BridgeInputGroup = ({
         if (explorerUrl) {
           blockExplorerUrl = getAccountLink(
             token.address,
-            selectedChainId,
+            formatChainIdToHex(selectedChainId),
             {
               blockExplorerUrl: explorerUrl,
             },
@@ -242,29 +235,14 @@ export const BridgeInputGroup = ({
           isMultiselectEnabled={isMultiselectEnabled}
           isDestinationToken={isDestinationToken}
         >
-          {(onClickHandler, networkImageSrc) =>
-            isAmountReadOnly && !token ? (
-              <Button
-                data-testid={buttonProps.testId}
-                onClick={onClickHandler}
-                size={ButtonSize.Lg}
-                paddingLeft={6}
-                paddingRight={6}
-                fontWeight={FontWeight.Normal}
-                style={{ whiteSpace: 'nowrap' }}
-              >
-                {t('swapSwapTo')}
-              </Button>
-            ) : (
-              <BridgeAssetPickerButton
-                onClick={onClickHandler}
-                networkImageSrc={networkImageSrc}
-                asset={(token as never) ?? undefined}
-                networkProps={networkProps}
-                data-testid={buttonProps.testId}
-              />
-            )
-          }
+          {(onClickHandler) => (
+            <BridgeAssetPickerButton
+              onClick={onClickHandler}
+              asset={token}
+              networkProps={networkProps}
+              data-testid={buttonProps.testId}
+            />
+          )}
         </AssetPicker>
       </Row>
 

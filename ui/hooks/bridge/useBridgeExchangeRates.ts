@@ -4,7 +4,6 @@ import {
   getBridgeQuotes,
   getFromToken,
   getQuoteRequest,
-  getToChain,
   getToToken,
 } from '../../ducks/bridge/selectors';
 import { getMarketData, getParticipateInMetaMetrics } from '../../selectors';
@@ -15,15 +14,12 @@ import {
   setSrcTokenExchangeRates,
 } from '../../ducks/bridge/bridge';
 import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
-import { useMultichainSelector } from '../useMultichainSelector';
-import { getMultichainCurrentChainId } from '../../selectors/multichain';
 
 export const useBridgeExchangeRates = () => {
   const { srcTokenAddress, destTokenAddress } = useSelector(getQuoteRequest);
   const { activeQuote } = useSelector(getBridgeQuotes);
-  const fromChainId = useMultichainSelector(getMultichainCurrentChainId);
-  const toChain = useSelector(getToChain);
-  const toChainId = toChain?.chainId;
+  const fromChainId = useSelector(getFromToken).chainId;
+  const toChainId = useSelector(getToToken).chainId;
 
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
