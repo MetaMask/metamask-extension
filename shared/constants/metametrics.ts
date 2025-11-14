@@ -955,6 +955,10 @@ export enum MetaMetricsEventName {
   ShieldCtaClicked = 'Shield CTA Clicked',
   ShieldClaimSubmission = 'Shield Claim Submission',
   ShieldSubscriptionCryptoConfirmation = 'Shield Subscription Crypto Confirmation',
+  ShieldPrioritySupportClicked = 'Shield Priority Support Clicked',
+  ShieldEligibilityCohortAssigned = 'Shield Eligibility Cohort Assigned',
+  ShieldEligibilityCohortTimeout = 'Shield Eligibility Cohort Timeout',
+  ShieldErrorStateClicked = 'Shield Error State Clicked',
 }
 
 export enum MetaMetricsEventAccountType {
