@@ -36,6 +36,10 @@
     &--inactive {
       background-color: var(--color-background-subsection);
 
+      &-light {
+        background-color: var(--shield-membership-inactive-light);
+      }
+
       .transaction-shield-page__membership-text {
         color: var(--color-text-default);
       }
