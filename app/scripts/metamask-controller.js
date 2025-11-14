@@ -3297,6 +3297,9 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController,
       ),
       trackInsightSnapView: this.trackInsightSnapView.bind(this),
+      updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
+        metaMetricsController,
+      ),
 
       // MetaMetrics buffering for onboarding
       addEventBeforeMetricsOptIn:
