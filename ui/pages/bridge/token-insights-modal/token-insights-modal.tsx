@@ -18,7 +18,6 @@ import {
   IconColor,
   BoxFlexDirection,
   BoxAlignItems,
-  BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { AddressCopyButton } from '../../../components/multichain/address-copy-button';
 import {
