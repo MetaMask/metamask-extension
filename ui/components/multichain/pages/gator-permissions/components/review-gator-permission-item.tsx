@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -32,6 +38,12 @@ import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
+import {
+  getInternalAccountByAddress,
+  getNativeTokenInfo,
+  selectERC20TokensByChain,
+} from '../../../../../selectors/selectors';
 import {
   convertTimestampToReadableDate,
   getPeriodFrequencyValueTranslationKey,
@@ -42,10 +54,6 @@ import {
 } from '../../../../../../shared/lib/gator-permissions';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
-import {
-  getNativeTokenInfo,
-  selectERC20TokensByChain,
-} from '../../../../../selectors/selectors';
 import { getTokenMetadata } from '../../../../../helpers/utils/token-util';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 
@@ -122,6 +130,62 @@ export const ReviewGatorPermissionItem = ({
     getNativeTokenInfo(state, chainId),
   ) as TokenMetadata;
   const pendingRevocations = useSelector(getPendingRevocations);
+  const internalAccount = useSelector((state) =>
+    getInternalAccountByAddress(state, permissionAccount),
+  );
+
+  // Copy functionality with visual feedback
+  const [accountText, setAccountText] = useState(
+    shortenAddress(permissionAccount),
+  );
+  const [addressCopied, setAddressCopied] = useState(false);
+  const [copyIcon, setCopyIcon] = useState(IconName.Copy);
+  const [copyMessage, setCopyMessage] = useState(accountText);
+
+  const timeoutRef = useRef<number | null>(null);
+  const [, handleCopy] = useCopyToClipboard();
+
+  // Cleanup timeout when component unmounts
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (internalAccount?.metadata?.name) {
+      setAccountText(internalAccount?.metadata?.name);
+    }
+  }, [internalAccount]);
+
+  // Update copy message when account changes
+  useEffect(() => {
+    setCopyMessage(accountText);
+  }, [accountText]);
+
+  // Handle copy button click
+  const handleCopyClick = useCallback(() => {
+    // Clear existing timeout if clicking multiple times
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    setAddressCopied(true);
+    handleCopy(permissionAccount);
+    setCopyMessage(t('addressCopied'));
+    setCopyIcon(IconName.CopySuccess);
+
+    // Reset state after 1 second
+    timeoutRef.current = window.setTimeout(() => {
+      setCopyMessage(accountText);
+      setCopyIcon(IconName.Copy);
+      setAddressCopied(false);
+      timeoutRef.current = null;
+    }, 1000);
+  }, [permissionAccount, accountText, handleCopy, t]);
 
   const tokenMetadata: TokenMetadata = useMemo(() => {
     if (tokenAddress) {
@@ -483,10 +547,27 @@ export const ReviewGatorPermissionItem = ({
             <PreferredAvatar address={permissionAccount} />
             <Text
               variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
+              color={
+                addressCopied
+                  ? TextColor.SuccessDefault
+                  : TextColor.TextAlternative
+              }
+              data-testid="review-gator-permission-account-name"
             >
-              {shortenAddress(permissionAccount)}
+              {copyMessage}
             </Text>
+            <ButtonIcon
+              iconName={copyIcon}
+              color={
+                addressCopied ? IconColor.SuccessDefault : IconColor.IconMuted
+              }
+              size={ButtonIconSize.Sm}
+              onClick={handleCopyClick}
+              ariaLabel={
+                addressCopied ? t('copiedExclamation') : t('copyToClipboard')
+              }
+              data-testid="review-gator-permission-copy-address"
+            />
           </Box>
         </Box>
       </Box>

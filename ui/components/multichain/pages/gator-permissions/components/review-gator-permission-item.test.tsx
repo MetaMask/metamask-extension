@@ -15,10 +15,33 @@ import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { ReviewGatorPermissionItem } from './review-gator-permission-item';
 
+const mockAccountAddress = '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
+const mockAccountName = 'Test Gator Account';
+
 const store = configureStore({
   ...mockState,
   metamask: {
     ...mockState.metamask,
+    internalAccounts: {
+      ...mockState.metamask.internalAccounts,
+      accounts: {
+        ...mockState.metamask.internalAccounts.accounts,
+        'test-account-id': {
+          address: mockAccountAddress,
+          id: 'test-account-id',
+          metadata: {
+            name: mockAccountName,
+            importTime: 0,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [],
+          type: 'eip155:eoa',
+        },
+      },
+    },
   },
 });
 
@@ -43,8 +66,6 @@ describe('Permission List Item', () => {
   describe('render', () => {
     const mockOnClick = jest.fn();
     const mockNetworkName = 'Ethereum';
-    const mockSelectedAccountAddress =
-      '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
     const mockStartTime = 1736271776; // January 7, 2025;
 
     describe('NATIVE token permissions', () => {
@@ -54,7 +75,7 @@ describe('Permission List Item', () => {
       > = {
         permissionResponse: {
           chainId: '0x1',
-          address: mockSelectedAccountAddress,
+          address: mockAccountAddress,
           permission: {
             type: 'native-token-stream',
             isAdjustmentAllowed: false,
@@ -81,7 +102,7 @@ describe('Permission List Item', () => {
       > = {
         permissionResponse: {
           chainId: '0x1',
-          address: mockSelectedAccountAddress,
+          address: mockAccountAddress,
           permission: {
             type: 'native-token-periodic',
             isAdjustmentAllowed: false,
@@ -173,6 +194,32 @@ describe('Permission List Item', () => {
         );
       });
 
+      it('renders account name and copy button with visual feedback', () => {
+        const { getByTestId } = renderWithProvider(
+          <ReviewGatorPermissionItem
+            networkName={mockNetworkName}
+            gatorPermission={mockNativeTokenStreamPermission}
+            onRevokeClick={() => mockOnClick()}
+          />,
+          store,
+        );
+
+        // Verify account name is displayed initially
+        const accountText = getByTestId('review-gator-permission-account-name');
+        expect(accountText).toBeInTheDocument();
+        expect(accountText).toHaveTextContent(mockAccountName);
+
+        // Verify copy button is present
+        const copyButton = getByTestId('review-gator-permission-copy-address');
+        expect(copyButton).toBeInTheDocument();
+
+        // Click copy button to test functionality
+        fireEvent.click(copyButton);
+
+        // After clicking, the text should change to "Address copied!"
+        expect(accountText).toHaveTextContent('Address copied!');
+      });
+
       it('renders native token periodic permission correctly', () => {
         const { container, getByTestId } = renderWithProvider(
           <ReviewGatorPermissionItem
@@ -243,7 +290,7 @@ describe('Permission List Item', () => {
       > = {
         permissionResponse: {
           chainId: '0x5',
-          address: mockSelectedAccountAddress,
+          address: mockAccountAddress,
           permission: {
             type: 'erc20-token-periodic',
             isAdjustmentAllowed: false,
@@ -270,7 +317,7 @@ describe('Permission List Item', () => {
       > = {
         permissionResponse: {
           chainId: '0x5',
-          address: mockSelectedAccountAddress,
+          address: mockAccountAddress,
           permission: {
             type: 'erc20-token-stream',
             isAdjustmentAllowed: false,
@@ -408,7 +455,7 @@ describe('Permission List Item', () => {
         > = {
           permissionResponse: {
             chainId: '0x5',
-            address: mockSelectedAccountAddress,
+            address: mockAccountAddress,
             permission: {
               type: 'erc20-token-stream',
               isAdjustmentAllowed: false,
