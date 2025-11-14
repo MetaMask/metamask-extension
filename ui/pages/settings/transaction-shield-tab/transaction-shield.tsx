@@ -191,9 +191,7 @@ const TransactionShield = () => {
     useCancelSubscription(currentShieldSubscription);
 
   const [executeUnCancelSubscription, unCancelSubscriptionResult] =
-    useUnCancelSubscription({
-      subscriptionId: currentShieldSubscription?.id,
-    });
+    useUnCancelSubscription(currentShieldSubscription);
 
   const [
     executeOpenGetSubscriptionBillingPortal,
