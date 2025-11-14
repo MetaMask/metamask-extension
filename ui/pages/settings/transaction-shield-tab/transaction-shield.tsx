@@ -41,6 +41,7 @@ import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useCancelSubscription,
+  useHandleSubscriptionSupportAction,
   useOpenGetSubscriptionBillingPortal,
   useSubscriptionCryptoApprovalTransaction,
   useUnCancelSubscription,
@@ -86,7 +87,7 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import CancelMembershipModal from './cancel-membership-modal';
-import { isCryptoPaymentMethod } from './types';
+import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -345,22 +346,6 @@ const TransactionShield = () => {
       </Box>
     );
   };
-  const isInsufficientFundsCrypto =
-    currentShieldSubscription &&
-    isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
-    currentShieldSubscription.paymentMethod.crypto.error ===
-      'insufficient_balance';
-  const isAllowanceNeededCrypto =
-    currentShieldSubscription &&
-    isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
-    (currentShieldSubscription.paymentMethod.crypto.error ===
-      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_ALLOWANCE ||
-      currentShieldSubscription?.paymentMethod.crypto.error ===
-        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_TOO_OLD ||
-      currentShieldSubscription?.paymentMethod.crypto.error ===
-        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_REVERTED ||
-      currentShieldSubscription?.paymentMethod.crypto.error ===
-        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_MAX_VERIFICATION_ATTEMPTS_REACHED);
 
   const { value: subscriptionCryptoApprovalAmount } =
     useAsyncResult(async () => {
@@ -414,6 +399,32 @@ const TransactionShield = () => {
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(paymentToken);
 
+  const isCardPayment =
+    currentShieldSubscription &&
+    isCardPaymentMethod(currentShieldSubscription.paymentMethod);
+  const isUnexpectedErrorCryptoPayment =
+    currentShieldSubscription &&
+    isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
+    Boolean(currentShieldSubscription.paymentMethod.crypto.error);
+  const isInsufficientFundsCrypto =
+    currentShieldSubscription &&
+    isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
+    currentShieldSubscription.paymentMethod.crypto.error ===
+      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE;
+  const isAllowanceNeededCrypto =
+    currentShieldSubscription &&
+    isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
+    (currentShieldSubscription.paymentMethod.crypto.error ===
+      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_ALLOWANCE ||
+      currentShieldSubscription?.paymentMethod.crypto.error ===
+        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_TOO_OLD ||
+      currentShieldSubscription?.paymentMethod.crypto.error ===
+        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_REVERTED ||
+      currentShieldSubscription?.paymentMethod.crypto.error ===
+        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_MAX_VERIFICATION_ATTEMPTS_REACHED);
+
+  const { handleClickContactSupport } = useHandleSubscriptionSupportAction();
+
   const handlePaymentError = useCallback(async () => {
     if (currentShieldSubscription) {
       // capture error state clicked event
@@ -431,6 +442,9 @@ const TransactionShield = () => {
     if (isCancelled) {
       // go to shield plan page to renew subscription for cancelled subscription
       navigate(SHIELD_PLAN_ROUTE);
+    } else if (isUnexpectedErrorCryptoPayment) {
+      // handle support action
+      handleClickContactSupport();
     } else if (
       currentShieldSubscription &&
       isCryptoPaymentMethod(currentShieldSubscription.paymentMethod)
@@ -452,6 +466,8 @@ const TransactionShield = () => {
       await executeUpdateSubscriptionCardPaymentMethod();
     }
   }, [
+    handleClickContactSupport,
+    isUnexpectedErrorCryptoPayment,
     isCancelled,
     navigate,
     currentShieldSubscription,
@@ -464,22 +480,32 @@ const TransactionShield = () => {
   ]);
 
   const membershipErrorBanner = useMemo(() => {
+    // This is the number of hours it might takes for the payment to be updated
+    const PAYMENT_UPDATE_HOURS = 24;
     if (isPaused) {
+      // default text to unexpected error case
+      let descriptionText = 'shieldTxMembershipErrorPausedUnexpected';
+      let actionButtonLabel = 'shieldTxMembershipErrorPausedUnexpectedAction';
+      if (isCryptoPayment) {
+        descriptionText =
+          'shieldTxMembershipErrorPausedCryptoInsufficientFunds';
+        actionButtonLabel =
+          'shieldTxMembershipErrorPausedCryptoInsufficientFundsAction';
+      } else if (isCardPayment) {
+        descriptionText = 'shieldTxMembershipErrorPausedCard';
+        actionButtonLabel = 'shieldTxMembershipErrorPausedCardAction';
+      }
       return (
         <BannerAlert
-          description={t('shieldTxMembershipErrorPaused')}
+          description={t(descriptionText, [PAYMENT_UPDATE_HOURS])}
           severity={BannerAlertSeverity.Danger}
           marginBottom={4}
-          actionButtonLabel={t(
-            isCryptoPayment && isInsufficientFundsCrypto
-              ? 'shieldTxMembershipErrorAddFunds'
-              : 'shieldTxMembershipErrorUpdatePayment',
-          )}
+          actionButtonLabel={t(actionButtonLabel)}
           actionButtonOnClick={handlePaymentError}
         />
       );
     }
-    if (isSubscriptionEndingSoon && currentShieldSubscription) {
+    if (currentShieldSubscription && isSubscriptionEndingSoon) {
       return (
         <BannerAlert
           description={t('shieldTxMembershipErrorInsufficientFunds', [
@@ -489,11 +515,7 @@ const TransactionShield = () => {
           ])}
           severity={BannerAlertSeverity.Warning}
           marginBottom={4}
-          actionButtonLabel={
-            isAllowanceNeededCrypto
-              ? t('shieldTxMembershipRenew')
-              : t('shieldTxMembershipErrorAddFunds')
-          }
+          actionButtonLabel={t('shieldTxMembershipRenew')}
           actionButtonOnClick={handlePaymentError}
         />
       );
@@ -505,9 +527,8 @@ const TransactionShield = () => {
     isSubscriptionEndingSoon,
     currentShieldSubscription,
     t,
+    isCardPayment,
     isCryptoPayment,
-    isInsufficientFundsCrypto,
-    isAllowanceNeededCrypto,
     handlePaymentError,
   ]);
 
@@ -515,16 +536,20 @@ const TransactionShield = () => {
     if (!displayedShieldSubscription) {
       return '';
     }
-    if (isPaused) {
+    if (isPaused && !isUnexpectedErrorCryptoPayment) {
+      let tooltipText = '';
+      let buttonText = '';
+      if (isCryptoPayment) {
+        tooltipText = 'shieldTxMembershipErrorPausedCryptoTooltip';
+        buttonText = 'shieldTxMembershipErrorInsufficientToken';
+      } else {
+        // card payment error case
+        tooltipText = 'shieldTxMembershipErrorPausedCardTooltip';
+        buttonText = 'shieldTxMembershipErrorUpdateCard';
+      }
+
       return (
-        <Tooltip
-          position="top"
-          title={t(
-            isCryptoPayment
-              ? 'shieldTxMembershipErrorPausedCryptoTooltip'
-              : 'shieldTxMembershipErrorPausedCardTooltip',
-          )}
-        >
+        <Tooltip position="top" title={t(tooltipText)}>
           <ButtonLink
             startIconName={IconName.Danger}
             startIconProps={{
@@ -533,18 +558,11 @@ const TransactionShield = () => {
             onClick={handlePaymentError}
             danger
           >
-            {t(
-              isCryptoPayment
-                ? 'shieldTxMembershipErrorInsufficientToken'
-                : 'shieldTxMembershipErrorUpdateCard',
-              [
-                isCryptoPaymentMethod(
-                  displayedShieldSubscription?.paymentMethod,
-                )
-                  ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
-                  : '',
-              ],
-            )}
+            {t(buttonText, [
+              isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod)
+                ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
+                : '',
+            ])}
           </ButtonLink>
         </Tooltip>
       );
@@ -593,6 +611,7 @@ const TransactionShield = () => {
     return `${displayedShieldSubscription.paymentMethod.card.brand.charAt(0).toUpperCase() + displayedShieldSubscription.paymentMethod.card.brand.slice(1)} - ${displayedShieldSubscription.paymentMethod.card.last4}`; // display card info for card payment method;
   }, [
     isPaused,
+    isUnexpectedErrorCryptoPayment,
     displayedShieldSubscription,
     isCryptoPayment,
     isSubscriptionEndingSoon,

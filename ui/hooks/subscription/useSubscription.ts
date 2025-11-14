@@ -35,7 +35,10 @@ import {
 } from '../../store/actions';
 import { useAsyncCallback, useAsyncResult } from '../useAsync';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { selectIsSignedIn } from '../../selectors/identity/authentication';
+import {
+  selectIsSignedIn,
+  selectSessionData,
+} from '../../selectors/identity/authentication';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import {
   getIsShieldSubscriptionActive,
@@ -47,6 +50,7 @@ import { decimalToHex } from '../../../shared/modules/conversion.utils';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
+  getMetaMetricsId,
   getModalTypeForShieldEntryModal,
   selectNetworkConfigurationByChainId,
 } from '../../selectors';
@@ -55,6 +59,8 @@ import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types'
 import { EntryModalSourceEnum } from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import { getLatestSubscriptionStatus } from '../../../shared/modules/shield';
+import { openWindow } from '../../helpers/utils/window';
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   TokenWithApprovalAmount,
@@ -574,5 +580,39 @@ export const useHandleSubscription = ({
   return {
     handleSubscription,
     subscriptionResult,
+  };
+};
+
+export const useHandleSubscriptionSupportAction = () => {
+  const version = process.env.METAMASK_VERSION as string;
+  const sessionData = useSelector(selectSessionData);
+  const profileId = sessionData?.profile?.profileId;
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const { customerId: shieldCustomerId } = useUserSubscriptions();
+
+  const handleClickContactSupport = useCallback(() => {
+    let supportLinkWithUserId = SUPPORT_LINK as string;
+    const queryParams = new URLSearchParams();
+    queryParams.append('metamask_version', version);
+    if (profileId) {
+      queryParams.append('metamask_profile_id', profileId);
+    }
+    if (metaMetricsId) {
+      queryParams.append('metamask_metametrics_id', metaMetricsId);
+    }
+    if (shieldCustomerId) {
+      queryParams.append('shield_id', shieldCustomerId);
+    }
+
+    const queryString = queryParams.toString();
+    if (queryString) {
+      supportLinkWithUserId += `?${queryString}`;
+    }
+
+    openWindow(supportLinkWithUserId);
+  }, [version, profileId, metaMetricsId, shieldCustomerId]);
+
+  return {
+    handleClickContactSupport,
   };
 };
