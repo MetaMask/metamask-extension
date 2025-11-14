@@ -156,6 +156,8 @@ export const MultichainAggregatedAddressListRow = ({
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
       gap={3}
+      paddingTop={1}
+      paddingBottom={1}
       data-testid="multichain-address-row"
       backgroundColor={getBackgroundColor}
       onClick={handleCopyClick}
@@ -166,7 +168,6 @@ export const MultichainAggregatedAddressListRow = ({
         gap={3}
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
-        padding={1}
       >
         <MultichainAccountNetworkGroup chainIds={chainIds} limit={4} />
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Bold}>
