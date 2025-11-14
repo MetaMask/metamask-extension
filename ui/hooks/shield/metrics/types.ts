@@ -125,6 +125,12 @@ export type CaptureShieldPaymentMethodUpdatedEventParams =
 export type CaptureShieldBillingHistoryOpenedEventParams =
   ExistingSubscriptionEventParams;
 
+export type CaptureShieldSubscriptionRestartRequestEventParams =
+  ExistingSubscriptionEventParams & {
+    requestStatus: 'completed' | 'failed';
+    errorMessage?: string;
+  };
+
 /**
  * Triggered when the user has opened the crypto confirmation screen for a subscription or rejected the approval transaction.
  */

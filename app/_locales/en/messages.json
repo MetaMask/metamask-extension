@@ -6042,7 +6042,7 @@
     "message": "This chain is not supported, so it isn't protected by Transaction Shield. $1."
   },
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
-    "message": "Learn how coverage works"
+    "message": "See What's Covered"
   },
   "shieldCoverageAlertMessagePaused": {
     "message": "There was an issue with your Transaction Shield plan payment. Please update your payment method to resume coverage."
@@ -6111,7 +6111,7 @@
     "message": "Introducing Transaction Shield"
   },
   "shieldEstimatedChangesMonthlyTooltipText": {
-    "message": "Authorize up to $1 for the full year. You'll be billed $2 each month, not the full amount now."
+    "message": "Authorize $1/month for 12 months ($2 total). You'll be billed monthly, not the full amount now."
   },
   "shieldFooterAgreement": {
     "message": "By continuing, I agree to Transaction Shield $1."
@@ -6163,7 +6163,7 @@
     "message": "Card"
   },
   "shieldPlanCryptoMonthlyNote": {
-    "message": "Total monthly fees pre-approved for a year for crypto payments, so your plan stays active"
+    "message": "Total monthly fees pre-approved for a year"
   },
   "shieldPlanDetails": {
     "message": "What you get"
@@ -6214,7 +6214,7 @@
     "message": "Change payment method"
   },
   "shieldPlanSave": {
-    "message": "Save 16%"
+    "message": "Save 17%"
   },
   "shieldPlanSelectToken": {
     "message": "Select a token"
@@ -6323,7 +6323,7 @@
     "message": "Free trial"
   },
   "shieldTxMembershipId": {
-    "message": "Member ID"
+    "message": "Plan ID"
   },
   "shieldTxMembershipInactive": {
     "message": "Inactive plan"
