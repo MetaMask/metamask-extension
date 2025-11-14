@@ -163,7 +163,7 @@ export const MultichainAccountNetworkGroup: React.FC<
     >
       <AvatarGroup
         limit={limit}
-        size={AvatarTokenSize.Lg}
+        size={AvatarTokenSize.Sm}
         members={networkData}
         avatarType={AvatarType.NETWORK}
         className={className}
