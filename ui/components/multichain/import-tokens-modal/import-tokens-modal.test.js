@@ -2,7 +2,7 @@ import React from 'react';
 import { act, fireEvent, waitFor } from '@testing-library/react';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import * as bridgeControllerModule from '@metamask/bridge-controller';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import {
   clearPendingTokens,

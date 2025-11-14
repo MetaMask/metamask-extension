@@ -1,7 +1,6 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
@@ -46,11 +45,9 @@ export default {
   decorators: [
     (Story: StoryFn) => (
       <Provider store={mockStore(createMockState())}>
-        <MemoryRouter>
-          <div style={{ width: '360px', margin: '0 auto', padding: '20px' }}>
-            <Story />
-          </div>
-        </MemoryRouter>
+        <div style={{ width: '360px', margin: '0 auto', padding: '20px' }}>
+          <Story />
+        </div>
       </Provider>
     ),
   ],

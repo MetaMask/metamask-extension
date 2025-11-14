@@ -3,7 +3,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { BtcAccountType } from '@metamask/keyring-api';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { fireEvent } from '../../../../../../test/jest';
 import { SEND_STAGES } from '../../../../../ducks/send';
 import {
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,

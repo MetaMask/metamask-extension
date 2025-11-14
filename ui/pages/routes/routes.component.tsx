@@ -763,9 +763,16 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={`${NOTIFICATIONS_ROUTE}/:uuid`}
-            component={NotificationDetails}
             layout={RootLayout}
-          />
+            exact
+          >
+            {createV5CompatRoute<{ uuid: string }>(NotificationDetails, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={NOTIFICATIONS_ROUTE}
@@ -794,9 +801,16 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={`${SEND_ROUTE}/:page?`}
-            component={SendPage}
             layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute<{ page?: string }>(SendPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              includeLocation: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout path={SWAPS_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(Swaps, {
               wrapper: AuthenticatedV5Compat,
@@ -923,9 +937,16 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={`${CONNECTIONS}/:origin`}
-            component={Connections}
             layout={LegacyLayout}
-          />
+            exact
+          >
+            {createV5CompatRoute<{ origin: string }>(Connections, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={PERMISSIONS}
@@ -950,87 +971,162 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
-            component={ReviewGatorPermissionsPage}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{
+              chainId: string;
+              permissionGroupName: string;
+            }>(ReviewGatorPermissionsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
-            component={MemoizedReviewPermissionsWrapper}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{ origin: string }>(
+              MemoizedReviewPermissionsWrapper,
+              {
+                wrapper: AuthenticatedV5Compat,
+                includeParams: true,
+                includeNavigate: true,
+                paramsAsProps: false,
+              },
+            )}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={ACCOUNT_LIST_PAGE_ROUTE}
-            component={AccountList}
             exact
             layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute(AccountList, {
+              wrapper: AuthenticatedV5Compat,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
-            component={MultichainAccountAddressListPage}
             exact
             layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute<{ accountGroupId: string }>(
+              MultichainAccountAddressListPage,
+              {
+                wrapper: AuthenticatedV5Compat,
+                includeLocation: true,
+                includeParams: true,
+                paramsAsProps: false,
+              },
+            )}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
-            component={MultichainAccountPrivateKeyListPage}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{ accountGroupId: string }>(
+              MultichainAccountPrivateKeyListPage,
+              {
+                wrapper: AuthenticatedV5Compat,
+                includeParams: true,
+                paramsAsProps: false,
+              },
+            )}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={ADD_WALLET_PAGE_ROUTE}
-            component={AddWalletPage}
             exact
             layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute(AddWalletPage, {
+              wrapper: AuthenticatedV5Compat,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
-            component={MultichainAccountDetailsPage}
             exact
             layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute<{ id: string }>(MultichainAccountDetailsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
-            component={SmartAccountPage}
             exact
             layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute<{ address: string }>(SmartAccountPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
-            component={WalletDetailsPage}
             exact
             layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute<{ id: string }>(WalletDetailsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={WALLET_DETAILS_ROUTE}
-            component={WalletDetails}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{ id: string }>(WalletDetails, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
-            component={MultichainAccountDetails}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{ address: string }>(
+              MultichainAccountDetails,
+              {
+                wrapper: AuthenticatedV5Compat,
+                includeParams: true,
+                paramsAsProps: false,
+              },
+            )}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
             component={AddressQRCode}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{ address: string }>(AddressQRCode, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={NONEVM_BALANCE_CHECK_ROUTE}
