@@ -10,7 +10,7 @@ import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
 async function mockSwapQuotes(mockServer: MockttpServer) {
   return [
     await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .thenCallback(() => ({
         statusCode: 200,
         json: {},
