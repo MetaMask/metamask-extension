@@ -659,7 +659,7 @@ const TransactionShield = () => {
               'transaction-shield-page__membership--active':
                 !isMembershipInactive && !showSkeletonLoader,
               'transaction-shield-page__membership--inactive-light':
-                isLightTheme && !showSkeletonLoader,
+                isLightTheme && isMembershipInactive && !showSkeletonLoader,
             },
           )}
           {...rowsStyleProps}
