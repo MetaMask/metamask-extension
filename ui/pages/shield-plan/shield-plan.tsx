@@ -496,7 +496,7 @@ const ShieldPlan = () => {
             gap={3}
             backgroundColor={BackgroundColor.backgroundMuted}
           >
-            {!showTestClocksCheckbox && (
+            {showTestClocksCheckbox && (
               <Checkbox
                 label="Enable Stripe Test clocks (for development and testing only)"
                 labelProps={{
