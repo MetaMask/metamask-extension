@@ -12,6 +12,7 @@ import {
   IconColor,
   BoxFlexDirection,
   BoxAlignItems,
+  BoxJustifyContent,
 } from '@metamask/design-system-react';
 import {
   Modal,
@@ -56,7 +57,13 @@ const MarketDataRow: React.FC<MarketDataRowProps> = ({
   value,
   'data-testid': dataTestId,
 }) => (
-  <Box marginBottom={3} data-testid={dataTestId}>
+  <Box
+    marginBottom={3}
+    data-testid={dataTestId}
+    flexDirection={BoxFlexDirection.Row}
+    alignItems={BoxAlignItems.Center}
+    justifyContent={BoxJustifyContent.Between}
+  >
     <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
       {label}
     </Text>
@@ -189,7 +196,11 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
             <MarketDataRow
               label={t('percentChange')}
               value={
-                <Box alignItems={BoxAlignItems.Center} gap={1}>
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  gap={1}
+                >
                   {priceChange24h !== 0 && (
                     <Icon
                       name={
