@@ -79,11 +79,13 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
   const t = useI18nContext();
   const trackEvent = React.useContext(MetaMetricsContext);
   const dialogRef = React.useRef<HTMLElement | null>(null);
+  const hasTrackedOpen = React.useRef(false);
 
   const { marketData, marketDataFiat } = useTokenInsightsData(token);
 
   useEffect(() => {
-    if (isOpen && token) {
+    if (isOpen && token && !hasTrackedOpen.current) {
+      hasTrackedOpen.current = true;
       trackEvent({
         event: 'Token Insights Modal Opened',
         category: MetaMetricsEventCategory.Swaps,
@@ -96,6 +98,10 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
           chain_id: token.chainId,
         },
       });
+    }
+
+    if (!isOpen) {
+      hasTrackedOpen.current = false;
     }
   }, [isOpen, token, trackEvent]);
 
