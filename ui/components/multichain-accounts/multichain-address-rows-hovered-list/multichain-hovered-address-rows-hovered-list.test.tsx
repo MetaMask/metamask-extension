@@ -463,9 +463,9 @@ describe('MultichainHoveredAddressRowsList', () => {
       .closest(`[data-testid="${TEST_IDS.MULTICHAIN_ADDRESS_ROW}"]`);
     expect(evmRow).toBeInTheDocument();
 
-    // Verify that network avatars are rendered for the EVM row
-    const networkAvatars = evmRow?.querySelectorAll('img[data-testid^="0x"]');
-    expect(networkAvatars?.length).toBeGreaterThan(0);
+    // Verify that avatar group is rendered for the EVM row
+    const avatarGroup = evmRow?.querySelector('[data-testid="avatar-group"]');
+    expect(avatarGroup).toBeInTheDocument();
   });
 
   it('displays separate rows for non-eip155 accounts', async () => {
@@ -578,9 +578,9 @@ describe('MultichainHoveredAddressRowsList', () => {
       .closest(`[data-testid="${TEST_IDS.MULTICHAIN_ADDRESS_ROW}"]`);
     expect(evmRow).toBeInTheDocument();
 
-    // Verify that network avatars are rendered for the EVM row
-    const networkAvatars = evmRow?.querySelectorAll('img[data-testid^="0x"]');
-    expect(networkAvatars?.length).toBeGreaterThan(0);
+    // Verify that avatar group is rendered for the EVM row
+    const avatarGroup = evmRow?.querySelector('[data-testid="avatar-group"]');
+    expect(avatarGroup).toBeInTheDocument();
 
     expect(screen.getByText(TEST_STRINGS.BITCOIN_NETWORK)).toBeInTheDocument();
     expect(screen.getByText(TEST_STRINGS.SOLANA_NETWORK)).toBeInTheDocument();

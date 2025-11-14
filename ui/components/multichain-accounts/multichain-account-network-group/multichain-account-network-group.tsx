@@ -2,17 +2,17 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
-  AvatarBaseSize,
-  AvatarGroup,
-  AvatarGroupVariant,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
-  TextColor,
 } from '@metamask/design-system-react';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
+import { AvatarGroup } from '../../multichain/avatar-group';
+import { AvatarTokenSize } from '../../component-library';
+import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
+import './index.scss';
 
 export type MultichainAccountNetworkGroupProps = {
   /**
@@ -141,24 +141,19 @@ export const MultichainAccountNetworkGroup: React.FC<
           }
         }
         return {
-          src: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-            hexChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-          ],
-          className: 'bg-default',
-          imageProps: {
-            style: {
-              borderRadius: '4px',
-            },
-            className: 'rounded bg-default border-default align-middle',
-            'data-testid': hexChainId,
-          },
+          avatarValue:
+            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+              hexChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+            ],
         };
       })
-      .filter((network) => network.src); // Only include networks with valid avatar images
-  }, [filteredChainIds, excludeTestNetworks]);
+      .filter((network) => network.avatarValue)
+      .slice(0, limit);
+  }, [filteredChainIds, excludeTestNetworks, limit]);
 
   return (
     <Box
+      className="multichain-account-network-group"
       style={{
         flexShrink: 1,
         width: 'fit-content',
@@ -167,22 +162,11 @@ export const MultichainAccountNetworkGroup: React.FC<
       alignItems={BoxAlignItems.Center}
     >
       <AvatarGroup
-        max={limit}
-        size={AvatarBaseSize.Xs}
-        avatarPropsArr={networkData}
-        variant={AvatarGroupVariant.Network}
+        limit={limit}
+        size={AvatarTokenSize.Lg}
+        members={networkData}
+        avatarType={AvatarType.NETWORK}
         className={className}
-        overflowTextProps={{
-          fallbackText: '',
-          style: {
-            marginLeft: '4px',
-          },
-          className: 'bg-transparent text-alternative',
-          fallbackTextProps: {
-            color: TextColor.TextAlternative,
-          },
-          'data-testid': 'avatar-group',
-        }}
       />
     </Box>
   );
