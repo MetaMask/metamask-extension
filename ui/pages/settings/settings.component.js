@@ -110,6 +110,7 @@ class SettingsPage extends PureComponent {
     navigate: PropTypes.func.isRequired,
     pathnameI18nKey: PropTypes.string,
     settingsPageSnaps: PropTypes.array,
+    shouldShowShieldEntryModal: PropTypes.bool,
     snapSettingsTitle: PropTypes.string,
     toggleNetworkMenu: PropTypes.func.isRequired,
     useExternalServices: PropTypes.bool,
@@ -129,6 +130,13 @@ class SettingsPage extends PureComponent {
 
   componentDidMount() {
     this.handleConversionDate();
+
+    if (
+      this.props.shouldShowShieldEntryModal &&
+      !this.props.hasSubscribedToShield
+    ) {
+      this.setState({ showShieldEntryModal: true });
+    }
   }
 
   componentDidUpdate() {
