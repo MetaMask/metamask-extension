@@ -12,7 +12,6 @@ import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selector
 import { AvatarGroup } from '../../multichain/avatar-group';
 import { AvatarTokenSize } from '../../component-library';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
-import './index.scss';
 
 export type MultichainAccountNetworkGroupProps = {
   /**

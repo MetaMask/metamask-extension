@@ -1,13 +1,10 @@
 .multichain-account-network-group {
-
   .mm-box--rounded-full {
     border-radius: 4px !important;
-    border: 2px !important;
+    border-width: 2px !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 16px !important;
-    height: 16px !important;
     overflow: hidden;
   }
 
@@ -15,11 +12,13 @@
     border-radius: 4px !important;
   }
 
-  .mm-box--border-width-1{
+  .mm-box--border-width-1 {
     border-width: 0px !important;
   }
 
   .mm-avatar-base {
+    padding-top: 1px !important;
+    padding-bottom: 1px;
     background-color: var(--color-background-default) !important;
   }
 
@@ -31,4 +30,3 @@
     height: 16px !important;
   }
 }
-
