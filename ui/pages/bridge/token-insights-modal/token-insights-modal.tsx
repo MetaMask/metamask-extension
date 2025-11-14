@@ -1,11 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-} from '../../../components/component-library';
-import {
   Text,
   Box,
   AvatarToken,
@@ -19,6 +13,12 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
 } from '@metamask/design-system-react';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+} from '../../../components/component-library';
 import { AddressCopyButton } from '../../../components/multichain/address-copy-button';
 import {
   Display,

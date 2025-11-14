@@ -4,8 +4,8 @@ import {
   isStrictHexString,
 } from '@metamask/utils';
 import { isNativeAddress as isNativeAddressFromBridge } from '@metamask/bridge-controller';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { TextColor } from '@metamask/design-system-react';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
 /**
  * Checks if an address represents a native token
