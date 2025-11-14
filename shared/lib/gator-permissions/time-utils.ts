@@ -100,7 +100,14 @@ export const convertTimestampToReadableDate = (timestamp: number): string => {
     throw new Error('Invalid date format');
   }
 
-  return dateTime.toFormat('MM/dd/yyyy');
+  const msUntilTimestamp = Math.abs(dateTime.diffNow().toMillis());
+
+  // only show the time part if the timestamp is within the next day
+  const showTimePart = msUntilTimestamp < DAY;
+
+  return showTimePart
+    ? dateTime.toFormat('MM/dd/yyyy HH:mm')
+    : dateTime.toFormat('MM/dd/yyyy');
 };
 
 /**

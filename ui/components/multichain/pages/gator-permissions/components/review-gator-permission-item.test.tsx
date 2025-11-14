@@ -56,11 +56,15 @@ describe('Permission List Item', () => {
   beforeAll(() => {
     // Set Luxon to use UTC as the default timezone for consistent test results
     Settings.defaultZone = 'utc';
+    // Mock the current time to be far from the test timestamp (more than a day away)
+    // This ensures dates are shown without time (MM/dd/yyyy format only)
+    Settings.now = () => new Date('2025-01-01T00:00:00Z').getTime();
   });
 
   afterAll(() => {
     // Reset to system default
     Settings.defaultZone = 'system';
+    Settings.now = () => Date.now();
   });
 
   describe('render', () => {
@@ -274,6 +278,38 @@ describe('Permission List Item', () => {
         expect(justification).toHaveTextContent(
           'This is a very important request for periodic allowance',
         );
+      });
+
+      it('renders start date with time when timestamp is within a day', () => {
+        // Mock current time to be within a day of the start time
+        // mockStartTime is 1736271776 (January 7, 2025 ~22:09 UTC)
+        // Set current time to January 7, 2025 12:00 UTC (within 24 hours)
+        const originalNow = Settings.now;
+        Settings.now = () => new Date('2025-01-07T12:00:00Z').getTime();
+
+        const { container, getByTestId } = renderWithProvider(
+          <ReviewGatorPermissionItem
+            networkName={mockNetworkName}
+            gatorPermission={mockNativeTokenStreamPermission}
+            onRevokeClick={() => mockOnClick()}
+          />,
+          store,
+        );
+
+        // Expand to see more details
+        const expandButton = container.querySelector('[aria-label="expand"]');
+        if (expandButton) {
+          fireEvent.click(expandButton);
+        }
+
+        // Verify start date is rendered with time
+        const startDate = getByTestId('review-gator-permission-start-date');
+        expect(startDate).toBeInTheDocument();
+        // Should show time since it's within a day: MM/dd/yyyy HH:mm
+        expect(startDate.textContent).toMatch(/01\/07\/2025 \d{2}:\d{2}/);
+
+        // Restore original now function
+        Settings.now = originalNow;
       });
     });
 
