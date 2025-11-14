@@ -6,7 +6,10 @@ import {
 import { isEvmAccountType, EthAccountType } from '@metamask/keyring-api';
 import { AccountId } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
-import { AccountGroupObject } from '@metamask/account-tree-controller';
+import {
+  AccountGroupObject,
+  AccountWalletObject,
+} from '@metamask/account-tree-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type Hex,
@@ -108,6 +111,7 @@ const createConsolidatedWallets = (
         id: walletId as AccountWalletId,
         type: wallet.type,
         metadata: wallet.metadata,
+        status: wallet.status,
         groups: {},
       };
 
@@ -906,3 +910,26 @@ export const getIconSeedAddressesByAccountGroups = (
 
   return seedAddresses;
 };
+
+/**
+ * Get the seed addresses for multiple account groups at once.
+ * This is more efficient than calling getIconSeedAddressByAccountGroupId multiple times.
+ *
+ * @param state - Redux state.
+ * @param accountGroups - Array of account groups to get seed addresses for.
+ * @returns Object mapping account group IDs to their seed addresses.
+ */
+export const getWalletStatus = createDeepEqualSelector(
+  getWalletsWithAccounts,
+  (_, walletId: AccountWalletId) => walletId,
+  (
+    wallets: ConsolidatedWallets,
+    walletId: AccountWalletId,
+  ): AccountWalletObject['status'] | null => {
+    if (!wallets) {
+      return null;
+    }
+
+    return wallets[walletId]?.status ?? null;
+  },
+);

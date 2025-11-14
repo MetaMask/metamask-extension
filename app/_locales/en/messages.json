@@ -7612,6 +7612,9 @@
   "syncing": {
     "message": "Syncing..."
   },
+  "discoveringMultichainAccountButtonLoading": {
+    "message": "Discovering accounts..."
+  },
   "tapToReveal": {
     "message": "Tap to reveal"
   },
