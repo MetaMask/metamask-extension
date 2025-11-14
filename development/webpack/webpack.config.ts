@@ -18,6 +18,10 @@ import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
+import {
+  defineReactCompilerLoaderOption,
+  reactCompilerLoader,
+} from 'react-compiler-webpack';
 import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
@@ -33,7 +37,7 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getVariables } from './utils/config';
+import { getVariables, reactCompilerOptions } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 
@@ -319,6 +323,16 @@ const config = {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
         use: [jsxLoader, codeFenceLoader],
+      },
+      {
+        test: /\.(?:ts|mts|tsx|js|mjs|jsx)$/u,
+        include: join(context, '../ui'),
+        use: [
+          {
+            loader: reactCompilerLoader,
+            options: defineReactCompilerLoaderOption(reactCompilerOptions),
+          },
+        ],
       },
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.

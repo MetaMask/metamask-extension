@@ -410,7 +410,9 @@ export function hasNetworkFeeFields(
   return 'network_fee' in notification.payload.data;
 }
 
-export const getNetworkFees = async (notification: OnChainRawNotification) => {
+export const getNetworkFees = async (
+  notification: OnChainRawNotificationsWithNetworkFields,
+) => {
   if (!hasNetworkFeeFields(notification)) {
     throw new Error('Invalid notification type');
   }

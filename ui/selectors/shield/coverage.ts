@@ -16,10 +16,20 @@ export type CoverageMetrics = {
   latency?: number;
 };
 
-function getFirstCoverageResult(state: ShieldState, confirmationId: string) {
-  const coverageResults = state.metamask.coverageResults?.[confirmationId];
+function getFirstCoverageResult(
+  state: ShieldState,
+  confirmationId: string | undefined,
+) {
+  const coverageResults =
+    typeof confirmationId === 'string'
+      ? state.metamask.coverageResults?.[confirmationId]
+      : undefined;
 
-  if (!coverageResults?.results?.length) {
+  if (
+    !coverageResults ||
+    !('results' in coverageResults) ||
+    (coverageResults.results ?? []).length === 0
+  ) {
     return undefined;
   }
 

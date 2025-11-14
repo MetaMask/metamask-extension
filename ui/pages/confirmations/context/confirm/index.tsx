@@ -64,9 +64,7 @@ export const ConfirmContextProvider: React.FC<{
   );
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const useConfirmContext = <T = Confirmation,>() => {
+export const useConfirmContext = <CurrentConfirmation = Confirmation,>() => {
   const context = useContext(ConfirmContext);
   if (!context) {
     throw new Error(
@@ -74,7 +72,7 @@ export const useConfirmContext = <T = Confirmation,>() => {
     );
   }
   return context as {
-    currentConfirmation: T;
+    currentConfirmation: CurrentConfirmation;
     isScrollToBottomCompleted: boolean;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
   };
