@@ -63,7 +63,10 @@ describe('Test Snap getEntropy', function (this: Suite) {
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.selectEntropySource('getEntropyDropDown', '01K90MKV5XAH4Q3F75MFHKBX75');
+        await testSnaps.selectEntropySource(
+          'getEntropyDropDown',
+          '01K90MKV5XAH4Q3F75MFHKBX75',
+        );
 
         await testSnaps.scrollAndClickButton('signEntropyMessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
