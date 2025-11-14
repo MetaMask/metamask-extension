@@ -47,12 +47,12 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import {
   AlignItems,
+  BlockSize,
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import ShieldIllustrationAnimation from './shield-illustration-animation';
 
 const ShieldEntryModal = ({
   skipEventSubmission = false,
@@ -197,6 +197,7 @@ const ShieldEntryModal = ({
           flexDirection={FlexDirection.Column}
           gap={3}
           paddingTop={4}
+          height={BlockSize.Full}
         >
           <Text
             fontFamily={FontFamily.Hero}
@@ -216,15 +217,11 @@ const ShieldEntryModal = ({
               ? t('shieldEntryModalSubtitleA', ['$10,000'])
               : t('shieldEntryModalSubtitleB', ['$10,000'])}
           </Text>
-          <Box className="grid place-items-center">
+          <Box className="shield-entry-modal-sheild-image flex-1 flex items-center justify-center">
             <img
-              src="/images/shield-entry-modal-bg.png"
+              src="/images/transaction-shield-modal.png"
               alt="Shield Entry Illustration"
-              className="col-start-1 row-start-1"
-            />
-            <ShieldIllustrationAnimation
-              containerClassName="shield-entry-modal-shield-illustration__container col-start-1 row-start-1"
-              canvasClassName="shield-entry-modal-shield-illustration__canvas"
+              className="mx-auto h-full w-full object-contain"
             />
           </Box>
         </ModalBody>
