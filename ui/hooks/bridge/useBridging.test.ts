@@ -1,5 +1,8 @@
 import { toChecksumAddress } from 'ethereumjs-util';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import {
+  formatChainIdToCaip,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -131,17 +134,14 @@ describe('useBridging', () => {
                 refreshRate: 5000,
                 minimumVersion: '0.0.0',
                 maxRefreshCount: 5,
-                chains: {
-                  '1': {
-                    isActiveSrc: true,
-                    isActiveDest: false,
-                  },
-                },
+                chainRanking: [
+                  { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+                ],
               },
             },
             enabledNetworkMap: {
               eip155: {
-                '1': true,
+                '0x1': true,
               },
             },
             internalAccounts: {
@@ -203,6 +203,11 @@ describe('useBridging', () => {
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         jest
+          .spyOn(bridgeSelectors, 'getLastSelectedChain')
+          .mockReturnValueOnce({
+            chainId: CHAIN_IDS.MAINNET,
+          } as unknown as NetworkConfiguration);
+        jest
           .spyOn(bridgeSelectors, 'getFromChains')
           .mockReturnValueOnce([
             { chainId: CHAIN_IDS.MAINNET } as unknown as NetworkConfiguration,
@@ -226,21 +231,16 @@ describe('useBridging', () => {
                 refreshRate: 5000,
                 minimumVersion: '0.0.0',
                 maxRefreshCount: 5,
-                chains: {
-                  '1': {
-                    isActiveSrc: true,
-                    isActiveDest: true,
-                  },
-                  '10': {
-                    isActiveSrc: true,
-                    isActiveDest: true,
-                  },
-                },
+                chainRanking: [
+                  { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+                  { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+                ],
               },
             },
             enabledNetworkMap: {
               eip155: {
-                '10': true,
+                '0x1': true,
+                '0xa': true,
               },
             },
             internalAccounts: {

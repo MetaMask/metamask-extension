@@ -23,7 +23,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          (0:31)
+          (0:06)
         </p>
         <div
           class="mm-box"

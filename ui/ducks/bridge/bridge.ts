@@ -13,7 +13,6 @@ import {
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
-import { endTrace, TraceName } from '../../../shared/lib/trace';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
@@ -106,13 +105,13 @@ const bridgeSlice = createSlice({
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = toBridgeToken(payload);
       state.fromTokenBalance = null;
+      state.fromTokenInputValue = null;
       // Unset toToken if it's the same as the fromToken
       if (
         state.fromToken?.assetId &&
         state.toToken?.assetId &&
-        // TODO: determine if this is necessary.
-        state.fromToken.assetId?.toLowerCase() ===
-          state.toToken.assetId?.toLowerCase()
+        state.fromToken.assetId.toLowerCase() ===
+          state.toToken.assetId.toLowerCase()
       ) {
         state.toToken = null;
       }
@@ -218,27 +217,15 @@ const bridgeSlice = createSlice({
       ) {
         state.fromTokenBalance = action.payload?.toString() ?? null;
       }
-      endTrace({
-        name: TraceName.BridgeBalancesUpdated,
-      });
     });
     builder.addCase(setEVMSrcTokenBalance.rejected, (state) => {
       state.fromTokenBalance = null;
-      endTrace({
-        name: TraceName.BridgeBalancesUpdated,
-      });
     });
     builder.addCase(setEVMSrcNativeBalance.fulfilled, (state, action) => {
       state.fromNativeBalance = action.payload?.toString() ?? null;
-      endTrace({
-        name: TraceName.BridgeBalancesUpdated,
-      });
     });
     builder.addCase(setEVMSrcNativeBalance.rejected, (state) => {
       state.fromNativeBalance = null;
-      endTrace({
-        name: TraceName.BridgeBalancesUpdated,
-      });
     });
   },
 });

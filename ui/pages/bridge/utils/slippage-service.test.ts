@@ -1,3 +1,4 @@
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
@@ -12,6 +13,7 @@ describe('Slippage Service', () => {
   const mockUSDC: BridgeToken = {
     chainId: '0x1',
     address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     symbol: 'USDC',
     decimals: 6,
     image: '',
@@ -22,6 +24,7 @@ describe('Slippage Service', () => {
   const mockUSDT: BridgeToken = {
     chainId: '0x1',
     address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    assetId: 'eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7',
     symbol: 'USDT',
     decimals: 6,
     image: '',
@@ -32,6 +35,7 @@ describe('Slippage Service', () => {
   const mockWETH: BridgeToken = {
     chainId: '0x1',
     address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    assetId: 'eip155:1/erc20:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     symbol: 'WETH',
     decimals: 18,
     image: '',
@@ -42,6 +46,7 @@ describe('Slippage Service', () => {
   const mockSolanaToken: BridgeToken = {
     chainId: MultichainNetworks.SOLANA,
     address: 'So11111111111111111111111111111111111111112',
+    assetId: getNativeAssetForChainId(MultichainNetworks.SOLANA).assetId,
     symbol: 'SOL',
     decimals: 9,
     image: '',

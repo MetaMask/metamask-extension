@@ -323,7 +323,10 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.SEPOLIA },
+            { chainId: CHAIN_IDS.MAINNET },
+          ),
         },
       }),
     );
@@ -379,7 +382,10 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.SEPOLIA },
+            { chainId: CHAIN_IDS.MAINNET },
+          ),
         },
       }),
     );

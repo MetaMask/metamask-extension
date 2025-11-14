@@ -24,14 +24,14 @@ describe('MultichainBridgeQuoteCard', () => {
   it('should render the recommended quote (no MM fee)', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           maxRefreshCount: 5,
           refreshRate: 30000,
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
-            [CHAIN_IDS.POLYGON]: { isActiveSrc: true, isActiveDest: true },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+          ],
         },
       },
       bridgeSliceOverrides: {
