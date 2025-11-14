@@ -304,9 +304,7 @@ describe.skip('User Operations', function () {
   //   );
   // });
 
-  // Bug #37823 When sending a transaction to dApp with veryfing paymaster address the confirmation crash
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('with paymaster', async function () {
+  it('with paymaster', async function () {
     await withAccountSnap(
       {
         title: this.test?.fullTitle(),
