@@ -24,7 +24,6 @@ import {
   Display,
   FlexDirection,
   AlignItems,
-  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
