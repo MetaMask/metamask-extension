@@ -17,6 +17,7 @@ import {
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -35,6 +36,7 @@ import {
   checkDelegationDisabled,
 } from '../../store/controller-actions/gator-permissions-controller';
 import { useRevokeGatorPermissions } from './useRevokeGatorPermissions';
+import { findInternalAccountByAddress } from './utils';
 
 // Mock the dependencies
 jest.mock('../../store/actions', () => ({
@@ -670,19 +672,24 @@ describe('useRevokeGatorPermissions', () => {
     });
 
     it('should find delegator from internal accounts', () => {
-      const { result } = renderHook(
-        () =>
-          useRevokeGatorPermissions({
-            chainId: mockChainId,
-          }),
+      const internalAccounts: InternalAccount[] = [
         {
-          wrapper: ({ children }) => (
-            <Provider store={store}>{children}</Provider>
-          ),
+          id: 'mock-account-id',
+          address: mockSelectedAccountAddress,
+          type: 'eip155:eoa',
+          options: {},
+          metadata: {
+            name: 'Account 1',
+            importTime: Date.now(),
+            keyring: { type: 'HD Key Tree' },
+          },
+          scopes: [],
+          methods: [],
         },
-      );
+      ];
 
-      const foundAccount = result.current.findInternalAccountByAddress(
+      const foundAccount = findInternalAccountByAddress(
+        internalAccounts,
         mockSelectedAccountAddress as Hex,
       );
 
@@ -692,19 +699,24 @@ describe('useRevokeGatorPermissions', () => {
     });
 
     it('should return undefined when delegator is not found in internal accounts', () => {
-      const { result } = renderHook(
-        () =>
-          useRevokeGatorPermissions({
-            chainId: mockChainId,
-          }),
+      const internalAccounts: InternalAccount[] = [
         {
-          wrapper: ({ children }) => (
-            <Provider store={store}>{children}</Provider>
-          ),
+          id: 'mock-account-id',
+          address: mockSelectedAccountAddress,
+          type: 'eip155:eoa',
+          options: {},
+          metadata: {
+            name: 'Account 1',
+            importTime: Date.now(),
+            keyring: { type: 'HD Key Tree' },
+          },
+          scopes: [],
+          methods: [],
         },
-      );
+      ];
 
-      const foundAccount = result.current.findInternalAccountByAddress(
+      const foundAccount = findInternalAccountByAddress(
+        internalAccounts,
         '0x1234567890123456789012345678901234567890' as Hex,
       );
 
@@ -712,20 +724,25 @@ describe('useRevokeGatorPermissions', () => {
     });
 
     it('should find account with case insensitive address matching', () => {
-      const { result } = renderHook(
-        () =>
-          useRevokeGatorPermissions({
-            chainId: mockChainId,
-          }),
+      const internalAccounts: InternalAccount[] = [
         {
-          wrapper: ({ children }) => (
-            <Provider store={store}>{children}</Provider>
-          ),
+          id: 'mock-account-id',
+          address: mockSelectedAccountAddress,
+          type: 'eip155:eoa',
+          options: {},
+          metadata: {
+            name: 'Account 1',
+            importTime: Date.now(),
+            keyring: { type: 'HD Key Tree' },
+          },
+          scopes: [],
+          methods: [],
         },
-      );
+      ];
 
       // Test with uppercase address
-      const foundAccount = result.current.findInternalAccountByAddress(
+      const foundAccount = findInternalAccountByAddress(
+        internalAccounts,
         mockSelectedAccountAddress.toUpperCase() as Hex,
       );
 
