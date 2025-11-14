@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   PAYMENT_TYPES,
   PaymentType,
@@ -52,6 +52,7 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors
 import {
   getMetaMetricsId,
   getModalTypeForShieldEntryModal,
+  getUnapprovedConfirmations,
   selectNetworkConfigurationByChainId,
 } from '../../selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
@@ -330,6 +331,19 @@ export const useSubscriptionCryptoApprovalTransaction = (
       networkConfiguration.defaultRpcEndpointIndex ?? 0
     ]?.networkClientId;
 
+  const hasPendingApprovals =
+    useSelector(getUnapprovedConfirmations).length > 0;
+  const [shieldTransactionDispatched, setShieldTransactionDispatched] =
+    useState(false);
+
+  useEffect(() => {
+    // navigate to confirmation page if there are pending approvals and shield transaction is dispatched
+    // need to handle here instead of right after `await addTransaction` because approval is not created right after `addTransaction` completed
+    if (hasPendingApprovals && shieldTransactionDispatched) {
+      navigate(CONFIRM_TRANSACTION_ROUTE);
+    }
+  }, [hasPendingApprovals, shieldTransactionDispatched, navigate]);
+
   const handler = useCallback(async () => {
     if (!subscriptionPricing) {
       throw new Error('Subscription pricing not found');
@@ -360,9 +374,9 @@ export const useSubscriptionCryptoApprovalTransaction = (
       networkClientId: networkClientId as string,
     };
     await addTransaction(transactionParams, transactionOptions);
-    navigate(CONFIRM_TRANSACTION_ROUTE);
+    setShieldTransactionDispatched(true);
   }, [
-    navigate,
+    setShieldTransactionDispatched,
     subscriptionPricing,
     evmInternalAccount,
     selectedToken,
