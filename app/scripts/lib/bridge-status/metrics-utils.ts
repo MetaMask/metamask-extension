@@ -35,35 +35,3 @@ export const getHexGasTotalUsd = ({
   );
   return calcTokenAmount(hexGasTotalWei, 18).toNumber() * nativeToUsdRate;
 };
-export const getTokenUsdValue = async ({
-  chainId,
-  tokenAmount,
-  tokenAddress,
-  state,
-}: {
-  chainId: Hex;
-  tokenAmount: number;
-  tokenAddress: string;
-  state: { metamask: MetricsBackgroundState };
-}) => {
-  const marketData = getMarketData(state);
-  const tokenToNativeAssetRate = exchangeRateFromMarketData(
-    chainId,
-    tokenAddress,
-    marketData,
-  );
-  if (tokenToNativeAssetRate) {
-    const nativeToUsdRate = getUSDConversionRateByChainId(chainId)(state);
-    return tokenAmount * tokenToNativeAssetRate * nativeToUsdRate;
-  }
-
-  const tokenToUsdRate = await getTokenExchangeRate({
-    chainId,
-    tokenAddress,
-    currency: 'usd',
-  });
-  if (!tokenToUsdRate) {
-    return null;
-  }
-  return tokenAmount * tokenToUsdRate;
-};
