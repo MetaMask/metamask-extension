@@ -4447,7 +4447,9 @@ export default class MetamaskController extends EventEmitter {
 
     const solanaAccountTypes = Object.values(SolAccountType);
     const bitcoinAccountTypes = Object.values(BtcAccountType);
+    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     const tronAccountTypes = Object.values(TrxAccountType);
+    ///: END:ONLY_INCLUDE_IF(tron)
 
     for (const account of accounts) {
       // Newly supported account types should be added here
@@ -4458,9 +4460,11 @@ export default class MetamaskController extends EventEmitter {
       if (bitcoinAccountTypes.includes(account.type)) {
         counts.Bitcoin += 1;
       }
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
       if (tronAccountTypes.includes(account.type)) {
         counts.Tron += 1;
       }
+      ///: END:ONLY_INCLUDE_IF(tron)
     }
 
     return counts;
