@@ -386,9 +386,8 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
 
   return (
     <Box
-      className="submit-claim-page flex flex-col"
+      className="submit-claim-page flex flex-col pt-4 px-4 pb-4"
       data-testid="submit-claim-page"
-      padding={4}
       gap={4}
     >
       {!isView && pendingClaims.length > 0 && (
@@ -430,15 +429,8 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       </Text>
       {/* Personal details */}
       <Box>
-        <Text variant={TextVariant.HeadingSm}>
+        <Text variant={TextVariant.HeadingSm} className="mb-2">
           {t('shieldClaimPersonalDetails')}
-        </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextAlternative}
-          className="mb-2"
-        >
-          {t('shieldClaimPersonalDetailsDescription')}
         </Text>
         <Box
           borderColor={BoxBorderColor.BorderMuted}
@@ -495,17 +487,9 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       />
       {/* Incident details */}
       <Box className="mt-4">
-        <Text variant={TextVariant.HeadingSm}>
+        <Text variant={TextVariant.HeadingSm} className="mb-2">
           {t('shieldClaimIncidentDetails')}
         </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextAlternative}
-          className="mb-2"
-        >
-          {t('shieldClaimIncidentDetailsDescription')}
-        </Text>
-
         <Box
           borderColor={BoxBorderColor.BorderMuted}
           className="w-full h-[1px] border border-b-0"

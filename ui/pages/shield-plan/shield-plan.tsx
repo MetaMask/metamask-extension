@@ -342,9 +342,6 @@ const ShieldPlan = () => {
                   key={plan.id}
                   {...rowsStyleProps}
                   borderRadius={BorderRadius.LG}
-                  paddingTop={2}
-                  paddingBottom={2}
-                  gap={4}
                   className={classnames('shield-plan-page__plan', {
                     'shield-plan-page__plan--selected':
                       plan.id === selectedPlan,
@@ -358,7 +355,12 @@ const ShieldPlan = () => {
                     className="shield-plan-page__radio-label"
                   >
                     <Text variant={DSTextVariant.bodySm}>{plan.label}</Text>
-                    <Text variant={DSTextVariant.headingMd}>{plan.price}</Text>
+                    <Text
+                      variant={DSTextVariant.headingMd}
+                      className="shield-plan-page__plan-price"
+                    >
+                      {plan.price}
+                    </Text>
                   </Box>
                   {plan.id === RECURRING_INTERVALS.year && (
                     <Box
