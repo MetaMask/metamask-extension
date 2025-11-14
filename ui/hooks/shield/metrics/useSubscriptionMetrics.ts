@@ -12,20 +12,22 @@ import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
 import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
 import {
-  CaptureShieldBillingHistoryOpenedEventParams,
   CaptureShieldClaimSubmissionEventParams,
   CaptureShieldCryptoConfirmationEventParams,
   CaptureShieldCtaClickedEventParams,
+  CaptureShieldEligibilityCohortAssignedEventParams,
+  CaptureShieldEligibilityCohortTimeoutEventParams,
   CaptureShieldEntryModalEventParams,
+  CaptureShieldErrorStateClickedEventParams,
   CaptureShieldMembershipCancelledEventParams,
   CaptureShieldPaymentMethodChangeEventParams,
-  CaptureShieldPaymentMethodRetriedEventParams,
-  CaptureShieldPaymentMethodUpdatedEventParams,
   CaptureShieldSubscriptionRequestParams,
   CaptureShieldSubscriptionRestartRequestEventParams,
+  ExistingSubscriptionEventParams,
 } from './types';
 import {
   formatCaptureShieldCtaClickedEventProps,
+  formatCaptureShieldEligibilityCohortEventsProps,
   formatCaptureShieldPaymentMethodChangeEventProps,
   formatDefaultShieldSubscriptionRequestEventProps,
   formatExistingSubscriptionEventProps,
@@ -65,6 +67,34 @@ export const useSubscriptionMetrics = () => {
       );
     },
     [dispatch, totalFiatBalance],
+  );
+
+  const captureShieldEligibilityCohortEvent = useCallback(
+    async (
+      params:
+        | CaptureShieldEligibilityCohortAssignedEventParams
+        | CaptureShieldEligibilityCohortTimeoutEventParams,
+      event: MetaMetricsEventName,
+    ) => {
+      const commonTrackingProps = getShieldCommonTrackingProps(
+        selectedAccount,
+        hdKeyingsMetadata,
+        Number(totalFiatBalance),
+      );
+      const formattedParams = formatCaptureShieldEligibilityCohortEventsProps(
+        params,
+        Number(totalFiatBalance),
+      );
+      trackEvent({
+        event,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...commonTrackingProps,
+          ...formattedParams,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
   /**
@@ -128,10 +158,10 @@ export const useSubscriptionMetrics = () => {
   );
 
   /**
-   * Capture the event when the payment method is retried after unsuccessful deduction attempt.
+   * Capture the event when the subscription restart request is triggered.
    */
-  const captureShieldPaymentMethodRetriedEvent = useCallback(
-    (params: CaptureShieldPaymentMethodRetriedEventParams) => {
+  const captureShieldSubscriptionRestartRequestEvent = useCallback(
+    (params: CaptureShieldSubscriptionRestartRequestEventParams) => {
       const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,
@@ -139,15 +169,21 @@ export const useSubscriptionMetrics = () => {
       );
       const formattedParams = formatExistingSubscriptionEventProps(params);
       trackEvent({
-        event: MetaMetricsEventName.ShieldPaymentMethodRetried,
+        event: MetaMetricsEventName.ShieldMembershipRestartRequest,
         category: MetaMetricsEventCategory.Shield,
         properties: {
           ...commonTrackingProps,
           ...formattedParams,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          status: params.requestStatus,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_message: params.errorMessage,
         },
       });
     },
-    [selectedAccount, hdKeyingsMetadata, totalFiatBalance, trackEvent],
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
   /**
@@ -213,10 +249,13 @@ export const useSubscriptionMetrics = () => {
   );
 
   /**
-   * Capture the event when payment failed due to insufficient allowance or users want to renew subscription that is ending soon.
+   * Capture the various events when the shield membership is active.
+   *
+   * @param params - The parameters for the event.
+   * @param event - The name of the event to capture.
    */
-  const captureShieldPaymentMethodUpdatedEvent = useCallback(
-    (params: CaptureShieldPaymentMethodUpdatedEventParams) => {
+  const captureCommonExistingShieldSubscriptionEvents = useCallback(
+    (params: ExistingSubscriptionEventParams, event: MetaMetricsEventName) => {
       const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,
@@ -224,59 +263,7 @@ export const useSubscriptionMetrics = () => {
       );
       const formattedParams = formatExistingSubscriptionEventProps(params);
       trackEvent({
-        event: MetaMetricsEventName.ShieldPaymentMethodUpdated,
-        category: MetaMetricsEventCategory.Shield,
-        properties: {
-          ...commonTrackingProps,
-          ...formattedParams,
-        },
-      });
-    },
-    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
-  );
-
-  /**
-   * Capture the event when the subscription restart request is triggered.
-   */
-  const captureShieldSubscriptionRestartRequestEvent = useCallback(
-    (params: CaptureShieldSubscriptionRestartRequestEventParams) => {
-      const commonTrackingProps = getShieldCommonTrackingProps(
-        selectedAccount,
-        hdKeyingsMetadata,
-        Number(totalFiatBalance),
-      );
-      const formattedParams = formatExistingSubscriptionEventProps(params);
-      trackEvent({
-        event: MetaMetricsEventName.ShieldMembershipRestartRequest,
-        category: MetaMetricsEventCategory.Shield,
-        properties: {
-          ...commonTrackingProps,
-          ...formattedParams,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          status: params.requestStatus,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: params.errorMessage,
-        },
-      });
-    },
-    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
-  );
-
-  /**
-   * Capture the event when the billing history is opened.
-   */
-  const captureShieldBillingHistoryOpenedEvent = useCallback(
-    (params: CaptureShieldBillingHistoryOpenedEventParams) => {
-      const commonTrackingProps = getShieldCommonTrackingProps(
-        selectedAccount,
-        hdKeyingsMetadata,
-        Number(totalFiatBalance),
-      );
-      const formattedParams = formatExistingSubscriptionEventProps(params);
-      trackEvent({
-        event: MetaMetricsEventName.ShieldBillingHistoryOpened,
+        event,
         category: MetaMetricsEventCategory.Shield,
         properties: {
           ...commonTrackingProps,
@@ -363,18 +350,45 @@ export const useSubscriptionMetrics = () => {
     [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
+  /**
+   * Capture the event when the user clicks on the error state.
+   */
+  const captureShieldErrorStateClickedEvent = useCallback(
+    (params: CaptureShieldErrorStateClickedEventParams) => {
+      const commonTrackingProps = getShieldCommonTrackingProps(
+        selectedAccount,
+        hdKeyingsMetadata,
+        Number(totalFiatBalance),
+      );
+      const formattedParams = formatExistingSubscriptionEventProps(params);
+      trackEvent({
+        event: MetaMetricsEventName.ShieldMembershipErrorStateClicked,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...commonTrackingProps,
+          ...formattedParams,
+          type: params.errorCause,
+          action: params.actionClicked,
+          location: params.location,
+          view: params.view,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
+  );
+
   return {
     setShieldSubscriptionMetricsPropsToBackground,
     captureShieldEntryModalEvent,
     captureShieldSubscriptionRequestEvent,
-    captureShieldBillingHistoryOpenedEvent,
     captureShieldMembershipCancelledEvent,
     captureShieldPaymentMethodChangeEvent,
-    captureShieldPaymentMethodRetriedEvent,
-    captureShieldPaymentMethodUpdatedEvent,
     captureShieldCtaClickedEvent,
     captureShieldClaimSubmissionEvent,
     captureShieldCryptoConfirmationEvent,
+    captureShieldEligibilityCohortEvent,
+    captureCommonExistingShieldSubscriptionEvents,
+    captureShieldErrorStateClickedEvent,
     captureShieldSubscriptionRestartRequestEvent,
   };
 };

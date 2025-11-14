@@ -55,6 +55,7 @@ import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types'
 import { EntryModalSourceEnum } from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import { getLatestSubscriptionStatus } from '../../../shared/modules/shield';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -230,7 +231,8 @@ export const useOpenGetSubscriptionBillingPortal = (
   subscription?: Subscription,
 ) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const { captureShieldBillingHistoryOpenedEvent } = useSubscriptionMetrics();
+  const { captureCommonExistingShieldSubscriptionEvents } =
+    useSubscriptionMetrics();
 
   const trackBillingHistoryOpenedEvent = useCallback(() => {
     if (!subscription) {
@@ -240,14 +242,17 @@ export const useOpenGetSubscriptionBillingPortal = (
       getSubscriptionPaymentData(subscription);
 
     // capture the event when the billing history is opened
-    captureShieldBillingHistoryOpenedEvent({
-      subscriptionStatus: subscription.status,
-      paymentType: subscription.paymentMethod.type,
-      billingInterval: subscription.interval,
-      cryptoPaymentChain,
-      cryptoPaymentCurrency,
-    });
-  }, [captureShieldBillingHistoryOpenedEvent, subscription]);
+    captureCommonExistingShieldSubscriptionEvents(
+      {
+        subscriptionStatus: subscription.status,
+        paymentType: subscription.paymentMethod.type,
+        billingInterval: subscription.interval,
+        cryptoPaymentChain,
+        cryptoPaymentCurrency,
+      },
+      MetaMetricsEventName.ShieldBillingHistoryOpened,
+    );
+  }, [captureCommonExistingShieldSubscriptionEvents, subscription]);
 
   return useAsyncCallback(async () => {
     const { url } = await dispatch(getSubscriptionBillingPortalUrl());
@@ -264,7 +269,8 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
   newRecurringInterval?: RecurringInterval;
 }) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const { captureShieldPaymentMethodUpdatedEvent } = useSubscriptionMetrics();
+  const { captureCommonExistingShieldSubscriptionEvents } =
+    useSubscriptionMetrics();
 
   return useAsyncCallback(async () => {
     if (!subscription || !newRecurringInterval) {
@@ -282,12 +288,20 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
     );
 
     // capture the event when the payment method is updated
-    captureShieldPaymentMethodUpdatedEvent({
-      subscriptionStatus: subscription.status,
-      paymentType: subscription.paymentMethod.type,
-      billingInterval: newRecurringInterval,
-    });
-  }, [dispatch, subscription, newRecurringInterval]);
+    captureCommonExistingShieldSubscriptionEvents(
+      {
+        subscriptionStatus: subscription.status,
+        paymentType: subscription.paymentMethod.type,
+        billingInterval: newRecurringInterval,
+      },
+      MetaMetricsEventName.ShieldPaymentMethodUpdated,
+    );
+  }, [
+    dispatch,
+    subscription,
+    newRecurringInterval,
+    captureCommonExistingShieldSubscriptionEvents,
+  ]);
 };
 
 export const useSubscriptionCryptoApprovalTransaction = (

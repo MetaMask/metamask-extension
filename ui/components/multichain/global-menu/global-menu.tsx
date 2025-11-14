@@ -94,8 +94,11 @@ import { useUserSubscriptions } from '../../../hooks/subscription/useSubscriptio
 import {
   getIsShieldSubscriptionActive,
   getIsShieldSubscriptionPaused,
+  getShieldSubscription,
+  getSubscriptionPaymentData,
 } from '../../../../shared/lib/shield';
 import { useRewardsContext } from '../../../contexts/rewards';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -113,6 +116,8 @@ export const GlobalMenu = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const { captureCommonExistingShieldSubscriptionEvents } =
+    useSubscriptionMetrics();
   const basicFunctionality = useSelector(getUseExternalServices);
   const { rewardsEnabled } = useRewardsContext();
 
@@ -302,6 +307,42 @@ export const GlobalMenu = ({
     closeMenu();
   };
 
+  const handleSupportMenuClick = () => {
+    dispatch(setShowSupportDataConsentModal(true));
+    trackEvent(
+      {
+        category: MetaMetricsEventCategory.Home,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
+          url: supportLink,
+          location: METRICS_LOCATION,
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
+    );
+    if (showPriorityTag) {
+      // track priority support clicked event
+      const shieldSubscription = getShieldSubscription(subscriptions);
+      const { cryptoPaymentChain, cryptoPaymentCurrency } =
+        getSubscriptionPaymentData(shieldSubscription);
+      if (shieldSubscription) {
+        captureCommonExistingShieldSubscriptionEvents(
+          {
+            subscriptionStatus: shieldSubscription.status,
+            paymentType: shieldSubscription.paymentMethod.type,
+            billingInterval: shieldSubscription.interval,
+            cryptoPaymentChain,
+            cryptoPaymentCurrency,
+          },
+          MetaMetricsEventName.ShieldPrioritySupportClicked,
+        );
+      }
+    }
+    closeMenu();
+  };
+
   return (
     <Popover
       data-testid="global-menu"
@@ -336,6 +377,11 @@ export const GlobalMenu = ({
               <NotificationsTagCounter />
             </Box>
           </MenuItem>
+          <Box
+            borderColor={BorderColor.borderMuted}
+            width={BlockSize.Full}
+            style={{ height: '1px', borderBottomWidth: 0 }}
+          ></Box>
         </>
       )}
       {rewardsEnabled && (
@@ -394,6 +440,32 @@ export const GlobalMenu = ({
         width={BlockSize.Full}
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
+      {/* Toggle between popup and sidepanel - only for Chrome when sidepanel is enabled */}
+      {getBrowserName() !== PLATFORM_FIREFOX &&
+        isSidePanelEnabled &&
+        (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
+          <MenuItem
+            iconName={isSidePanelDefault ? IconName.Popup : IconName.Sidepanel}
+            onClick={async () => {
+              await toggleDefaultView();
+              trackEvent({
+                event: MetaMetricsEventName.ViewportSwitched,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  location: METRICS_LOCATION,
+                  to: isSidePanelDefault
+                    ? ENVIRONMENT_TYPE_POPUP
+                    : ENVIRONMENT_TYPE_SIDEPANEL,
+                },
+              });
+              closeMenu();
+            }}
+            data-testid="global-menu-toggle-view"
+          >
+            {isSidePanelDefault ? t('switchToPopup') : t('switchToSidePanel')}
+          </MenuItem>
+        )}
       <MenuItem
         to={
           isGatorPermissionsRevocationFeatureEnabled()
@@ -416,35 +488,6 @@ export const GlobalMenu = ({
       >
         {t('allPermissions')}
       </MenuItem>
-      {/* Toggle between popup and sidepanel - only for Chrome when sidepanel is enabled */}
-      {getBrowserName() !== PLATFORM_FIREFOX &&
-        isSidePanelEnabled &&
-        (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
-          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
-          <MenuItem
-            iconName={IconName.Expand}
-            onClick={async () => {
-              await toggleDefaultView();
-              trackEvent({
-                event: MetaMetricsEventName.ViewportSwitched,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  location: METRICS_LOCATION,
-                  to:
-                    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
-                      ? ENVIRONMENT_TYPE_POPUP
-                      : ENVIRONMENT_TYPE_SIDEPANEL,
-                },
-              });
-              closeMenu();
-            }}
-            data-testid="global-menu-toggle-view"
-          >
-            {getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
-              ? t('switchToPopup')
-              : t('switchToSidePanel')}
-          </MenuItem>
-        )}
       <MenuItem
         data-testid="global-menu-networks"
         iconName={IconName.Hierarchy}
@@ -465,25 +508,7 @@ export const GlobalMenu = ({
       </MenuItem>
       <MenuItem
         iconName={IconName.MessageQuestion}
-        onClick={() => {
-          dispatch(setShowSupportDataConsentModal(true));
-          trackEvent(
-            {
-              category: MetaMetricsEventCategory.Home,
-              event: MetaMetricsEventName.SupportLinkClicked,
-              properties: {
-                url: supportLink,
-                location: METRICS_LOCATION,
-              },
-            },
-            {
-              contextPropsIntoEventProperties: [
-                MetaMetricsContextProp.PageTitle,
-              ],
-            },
-          );
-          closeMenu();
-        }}
+        onClick={handleSupportMenuClick}
         data-testid="global-menu-support"
       >
         <Box

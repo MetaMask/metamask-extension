@@ -63,6 +63,7 @@ async function mockSubscriptionApiCalls(
           canViewEntryModal: true,
           minBalanceUSD: 1000,
           product: 'shield',
+          modalType: 'A',
           cohorts: [
             {
               cohort: 'wallet_home',
