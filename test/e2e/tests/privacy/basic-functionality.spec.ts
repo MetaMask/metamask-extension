@@ -111,7 +111,7 @@ describe('MetaMask onboarding', function () {
             sendRedesign: {
               enabled: false,
             },
-          }
+          },
         },
         testSpecificMock: (server: Mockttp) =>
           mockApis(
