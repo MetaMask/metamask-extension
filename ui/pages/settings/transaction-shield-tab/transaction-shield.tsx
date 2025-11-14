@@ -12,6 +12,7 @@ import {
 } from '@metamask/subscription-controller';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { NameType } from '@metamask/name-controller';
+import { useSelector } from 'react-redux';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -85,6 +86,7 @@ import {
   ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import { getTheme } from '../../../selectors';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
 
@@ -104,6 +106,8 @@ const TransactionShield = () => {
   }, [search]);
 
   const { formatCurrency } = useFormatters();
+  const theme = useSelector(getTheme);
+  const isLightTheme = theme === ThemeType.light;
 
   const {
     customerId,
@@ -645,7 +649,6 @@ const TransactionShield = () => {
       {membershipErrorBanner}
       <Box className="transaction-shield-page__container" marginBottom={4}>
         <Box
-          data-theme={ThemeType.dark}
           className={classnames(
             'transaction-shield-page__row transaction-shield-page__membership',
             {
@@ -655,6 +658,8 @@ const TransactionShield = () => {
                 isMembershipInactive && !showSkeletonLoader,
               'transaction-shield-page__membership--active':
                 !isMembershipInactive && !showSkeletonLoader,
+              'transaction-shield-page__membership--inactive-light':
+                isLightTheme && isMembershipInactive && !showSkeletonLoader,
             },
           )}
           {...rowsStyleProps}
