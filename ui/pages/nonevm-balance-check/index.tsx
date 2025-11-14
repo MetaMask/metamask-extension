@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import type { Location } from 'history';
+import type { Location as HistoryLocation } from 'history';
 import {
   Box,
   Modal,
@@ -66,7 +66,7 @@ const getBuyUrl = (
 };
 
 type NonEvmBalanceCheckProps = {
-  location: Location;
+  location: HistoryLocation;
 };
 
 export const NonEvmBalanceCheck = ({ location }: NonEvmBalanceCheckProps) => {

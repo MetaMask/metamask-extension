@@ -692,10 +692,7 @@ export default function Routes() {
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
         <Switch>
-          <RouteWithLayout
-            path={ONBOARDING_ROUTE}
-            layout={LegacyLayout}
-          >
+          <RouteWithLayout path={ONBOARDING_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(OnboardingFlow, {
               includeNavigate: true,
               includeLocation: true,
