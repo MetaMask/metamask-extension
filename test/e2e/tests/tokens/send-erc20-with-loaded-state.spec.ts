@@ -8,29 +8,12 @@ import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-// Skipping this test because test fails with BIP44
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Send ERC20', function () {
+describe('Send ERC20', function () {
   it('should send DAI', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
-          .withTokensController({
-            allTokens: {
-              '0x1': {
-                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-                  {
-                    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-                    symbol: 'DAI',
-                    decimals: 18,
-                    isERC721: false,
-                    aggregators: [],
-                  },
-                ],
-              },
-            },
-          })
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -54,7 +37,8 @@ describe.skip('Send ERC20', function () {
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.clickOnAsset('DAI');
+        await assetListPage.importTokenBySearch('DAI');
+        await assetListPage.clickOnAsset('Dai Stablecoin');
 
         // Send DAI
         const tokenOverviewPage = new TokenOverviewPage(driver);

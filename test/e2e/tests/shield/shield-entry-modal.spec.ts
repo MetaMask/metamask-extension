@@ -167,9 +167,7 @@ describe('Shield Entry Modal', function () {
     );
   });
 
-  // This test will fail with BIP44
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should not show the shield entry modal if external services are disabled', async function () {
+  it('should not show the shield entry modal if external services are disabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
