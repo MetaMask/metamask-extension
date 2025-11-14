@@ -1,6 +1,6 @@
 ---
 description: Project Guidelines for React Performance Optimization
-globs: *.tsx,*.jsx,ui/components/**/*,ui/pages/**/*,ui/hooks/**/*
+globs: *.tsx,*.jsx,ui/**/*
 alwaysApply: false
 ---
 
@@ -10,9 +10,135 @@ Guidelines for optimizing React component performance in MetaMask Extension.
 
 ---
 
+## Table of Contents
+
+### Part 1: Fundamentals
+
+- [Understanding React's Render Cycle](#understanding-reacts-render-cycle)
+- [Core Principles](#core-principles)
+  - Keep Components Pure
+  - Don't Optimize Prematurely
+
+### Part 2: General Performance Techniques
+
+- [Preventing Unnecessary Re-renders](#preventing-unnecessary-re-renders)
+  - [Use useMemo for Expensive Calculations with External Dependencies](#use-usememo-for-expensive-calculations-with-external-dependencies)
+  - Anti-Pattern: useMemo with JSON.stringify
+  - [Use useCallback for Stable Function References with External Dependencies](#use-usecallback-for-stable-function-references-with-external-dependencies)
+  - Anti-Pattern: Memoizing Everything
+
+### Part 3: Render Optimization
+
+- [Optimizing Lists and Large Datasets](#optimizing-lists-and-large-datasets)
+  - Use Proper Keys
+  - Anti-Pattern: Using Index as Key for Dynamic Lists
+  - Virtualize Long Lists
+  - Pagination and Infinite Scroll
+- [Code Splitting and Lazy Loading](#code-splitting-and-lazy-loading)
+  - Use React.lazy for Route-Based Splitting
+  - Lazy Load Heavy Components
+- [Component Composition Patterns](#component-composition-patterns)
+  - Use Component Composition to Prevent Re-renders
+
+### Part 4: Effects and Hooks (Basics)
+
+- [useEffect Optimization](#useeffect-optimization)
+  - Don't Overuse useEffect
+  - Minimize useEffect Dependencies
+  - Anti-Pattern: JSON.stringify in useEffect Dependencies
+  - Anti-Pattern: useEffect with Incomplete Dependencies (Stale Closures)
+  - Anti-Pattern: Wrong Dependencies in useMemo/useCallback
+  - Anti-Pattern: Including setState Functions in Dependencies
+  - Anti-Pattern: Cascading useEffect Chains
+  - Anti-Pattern: Conditional Early Return with All Dependencies
+- [Hook Selection and Usage](#hook-selection-and-usage)
+  - Anti-Pattern: Regular Variables Instead of useRef
+  - Anti-Pattern: Equality Function in useEqualityCheck Dependencies
+
+### Part 5: Profiling and Measurement
+
+- [Profiling and Measurement](#profiling-and-measurement)
+  - Use React DevTools Profiler
+  - Use Performance API
+  - Log Render Reasons in Development
+
+### Part 6: Async Operations and Cleanup
+
+- [Async Operations and Cleanup](#async-operations-and-cleanup)
+  - Anti-Pattern: State Updates After Component Unmount
+  - Anti-Pattern: Missing AbortController for Fetch Requests
+  - Anti-Pattern: Missing Cleanup for Intervals/Subscriptions
+  - Anti-Pattern: Large Object Retention in Closures
+
+### Part 7: Redux and External State
+
+- [Advanced Selector Patterns](#advanced-selector-patterns)
+  - Anti-Pattern: Identity Functions as Output Selectors
+  - Anti-Pattern: Selectors That Return Entire State Objects
+  - Anti-Pattern: Selectors Without Proper Input Selectors
+  - Best Practices for Reselect Selectors
+  - Use createDeepEqualSelector sparingly
+  - Combine related selectors into one memoized selector
+  - Anti-Pattern: Inline Selector Functions in useSelector
+  - Anti-Pattern: Multiple useSelector Calls Selecting Same State Slice
+
+### Part 8: Advanced Optimization Patterns
+
+- [Complex Computations During Render](#complex-computations-during-render)
+  - Anti-Pattern: Creating Maps/Objects During Render
+  - Anti-Pattern: Expensive Operations Without Memoization
+  - Strategy: Move Complex Computations to Selectors
+  - Strategy: Use Web Workers for Heavy Computations
+- [Optimizing Asset Loading](#optimizing-asset-loading)
+  - Problem: Large Number of Assets Loaded Frequently
+  - Strategy 1: Progressive Loading with Pagination
+  - Strategy 2: Virtual Scrolling for Large Lists
+  - Strategy 3: Lazy Image Loading
+  - Strategy 4: Debounce Frequent Updates
+
+### Part 9: React Compiler Considerations
+
+- [React Compiler Considerations](#react-compiler-considerations)
+  - [What React Compiler Does](#what-react-compiler-does)
+    - Example: Automatic Fine-Grained Reactivity
+    - Example: Automatic Memoization of Expensive Calculations
+  - [React Compiler Assumptions](#react-compiler-assumptions)
+  - [React Compiler Limitations](#react-compiler-limitations)
+    - Single-File Compilation
+    - Effects and Dependency Memoization (Open Research Area)
+  - [When Manual Memoization is Still Required](#when-manual-memoization-is-still-required)
+    - Cross-File Dependencies
+    - Redux Selectors and External State Management
+    - Values from External Hooks or Libraries
+    - Conditional Logic with External State
+    - Functions Passed to Third-Party Components
+    - Computations Dependent on Refs or DOM Values
+    - Reselect Selectors and Complex Compositions
+    - Effect Dependencies (Keep Existing Memoization)
+    - Context Values from External Providers
+    - Computations with Multiple Cross-File Dependencies
+  - [Decision Tree: Do You Need Manual Memoization?](#decision-tree-do-you-need-manual-memoization)
+  - [Summary: React Compiler Capabilities and Limitations](#summary-react-compiler-capabilities-and-limitations)
+
+### Part 10: Additional Hook Patterns
+
+- [Non-Deterministic Hook Execution](#non-deterministic-hook-execution)
+  - Anti-Pattern: Conditional Hook Calls
+  - Anti-Pattern: Dynamic Hook Creation
+- [Cascading Re-renders from Hook Dependencies](#cascading-re-renders-from-hook-dependencies)
+  - Anti-Pattern: Chain Reaction Re-renders
+  - Strategy: Isolate Hook Dependencies
+
+### Part 11: Performance Checklist
+
+- [Performance Checklist (Expanded)](#performance-checklist-expanded)
+
+---
+
 ## Understanding React's Render Cycle
 
 React's rendering process has three steps:
+
 1. **Trigger** - Initial render or state update
 2. **Render** - React calls components to determine what to display
 3. **Commit** - React updates the DOM with minimal necessary changes
@@ -28,6 +154,7 @@ Reference: [React: Render and Commit](https://react.dev/learn/render-and-commit)
 ### 1. Keep Components Pure
 
 **Rendering must always be a pure calculation:**
+
 - Same inputs → same output (deterministic)
 - No side effects during render
 - No mutation of external state
@@ -54,65 +181,35 @@ const PureComponent = ({ multiplier, count }: Props) => {
 - Use React DevTools Profiler to identify bottlenecks
 - Measure before and after optimization
 
+```typescript
+❌ WRONG: Optimizing without measuring
+// Don't do this unless you have measured a performance problem!
+const TinyComponent = React.memo(({ value }: { value: string }) => {
+  return <span>{value}</span>; // Too simple to benefit from memo
+});
+```
+
+**Solution:** Profile first, optimize what matters. React Compiler handles simple optimizations automatically.
+
 ---
 
 ## Preventing Unnecessary Re-renders
 
-### Use React.memo for Expensive Components
+**Note:** React Compiler automatically provides fine-grained reactivity, preventing most unnecessary re-renders. The sections below focus on cases where manual optimization is still required (external dependencies, third-party components, etc.).
 
-Wrap components in `React.memo` to skip re-renders when props haven't changed.
+### Use useMemo for Expensive Calculations with External Dependencies
 
-```typescript
-❌ WRONG: Component re-renders even when props are the same
-const TokenListItem = ({ token, onSelect }: TokenListItemProps) => {
-  return (
-    <div onClick={() => onSelect(token)}>
-      {token.symbol} - {token.balance}
-    </div>
-  );
-};
-
-✅ CORRECT: Memoized component
-const TokenListItem = React.memo(({ token, onSelect }: TokenListItemProps) => {
-  return (
-    <div onClick={() => onSelect(token)}>
-      {token.symbol} - {token.balance}
-    </div>
-  );
-});
-
-// Or with custom comparison
-const TokenListItem = React.memo(
-  ({ token, onSelect }: TokenListItemProps) => {
-    return (
-      <div onClick={() => onSelect(token)}>
-        {token.symbol} - {token.balance}
-      </div>
-    );
-  },
-  (prevProps, nextProps) => {
-    // Return true if props are equal (skip re-render)
-    return prevProps.token.address === nextProps.token.address &&
-           prevProps.token.balance === nextProps.token.balance;
-  }
-);
-```
-
-**When to use React.memo:**
-- ✅ Component renders often with same props
-- ✅ Component is expensive to render (complex calculations, large lists)
-- ✅ Component is in the middle of a frequently updating tree
-- ❌ Props change frequently
-- ❌ Component is already fast to render
-
-### Use useMemo for Expensive Calculations
-
-Memoize expensive computations so they only run when dependencies change.
+**Note:** React Compiler automatically memoizes expensive calculations when dependencies are props/state within the same file. Manual `useMemo` is only needed for external dependencies.
 
 ```typescript
-❌ WRONG: Expensive calculation runs on every render
-const TokenList = ({ tokens }: TokenListProps) => {
-  // This sorts on EVERY render, even if tokens haven't changed
+❌ WRONG: Expensive calculation with external dependencies runs on every render
+import { useSelector } from 'react-redux';
+import { getTokens } from './selectors'; // External selector
+
+const TokenList = () => {
+  const tokens = useSelector(getTokens); // External state
+
+  // This sorts on EVERY render - React Compiler can't optimize Redux values
   const sortedTokens = tokens
     .slice()
     .sort((a, b) => parseFloat(b.balance) - parseFloat(a.balance));
@@ -126,8 +223,11 @@ const TokenList = ({ tokens }: TokenListProps) => {
   );
 };
 
-✅ CORRECT: Memoized calculation
-const TokenList = ({ tokens }: TokenListProps) => {
+✅ CORRECT: Manual memoization required for external dependencies
+const TokenList = () => {
+  const tokens = useSelector(getTokens); // External state
+
+  // Manual memoization required - React Compiler can't optimize Redux values
   const sortedTokens = useMemo(() => {
     return tokens
       .slice()
@@ -142,26 +242,141 @@ const TokenList = ({ tokens }: TokenListProps) => {
     </div>
   );
 };
+
+✅ CORRECT: React Compiler handles simple prop/state cases automatically
+// No manual memoization needed - React Compiler optimizes this
+const TokenList = ({ tokens }: TokenListProps) => {
+  // React Compiler automatically memoizes this calculation
+  const sortedTokens = tokens
+    .slice()
+    .sort((a, b) => parseFloat(b.balance) - parseFloat(a.balance));
+
+  return (
+    <div>
+      {sortedTokens.map(token => (
+        <TokenItem key={token.address} token={token} />
+      ))}
+    </div>
+  );
+};
 ```
 
 **When to use useMemo:**
-- ✅ Expensive calculations (sorting, filtering large arrays)
-- ✅ Creating objects/arrays passed as props to memoized children
-- ✅ Dependencies change infrequently
-- ❌ Simple calculations (accessing properties, basic math)
-- ❌ Dependencies change on every render
 
-### Use useCallback for Stable Function References
+Manual `useMemo` is required when:
 
-Memoize callback functions to prevent child components from re-rendering.
+- ✅ Dependencies come from Redux selectors or external state
+- ✅ Dependencies come from external hooks or libraries (from other files)
+- ✅ Expensive calculations with external dependencies
+- ✅ Creating objects/arrays passed to third-party components
+- ✅ Used as `useEffect` dependency (keep existing memoization)
+
+React Compiler handles automatically:
+
+- ❌ Simple calculations with only props/state within the same file
+- ❌ Inline objects/functions with React-controlled dependencies
+
+See [React Compiler Considerations](#react-compiler-considerations) for detailed scenarios.
+
+### ❌ Anti-Pattern: useMemo with JSON.stringify
+
+Memoizing `JSON.stringify` defeats the purpose of memoization.
 
 ```typescript
-❌ WRONG: New function created on every render
+❌ WRONG: Memoizing JSON.stringify is pointless
+const useAccountSettings = (accounts: string[]) => {
+  const jsonAccounts = useMemo(() => JSON.stringify(accounts), [accounts]);
+
+  useEffect(() => {
+    const memoAccounts = JSON.parse(jsonAccounts);
+    updateSettings(memoAccounts);
+  }, [jsonAccounts]);
+};
+```
+
+**Problems:**
+
+- `JSON.stringify` already runs on every render when `accounts` changes
+- String comparison is slower than array reference comparison
+- Doesn't prevent re-renders if accounts array reference changes
+- Adds unnecessary computation overhead
+
+```typescript
+✅ CORRECT: Use deep equality or normalize data
+import { isEqual } from 'lodash';
+
+// Option 1: Use deep equality check
+const useAccountSettings = (accounts: string[]) => {
+  const accountsRef = useRef(accounts);
+
+  useEffect(() => {
+    if (!isEqual(accounts, accountsRef.current)) {
+      accountsRef.current = accounts;
+      updateSettings(accounts);
+    }
+  }, [accounts]);
+};
+
+// Option 2: Use stable reference (if accounts are normalized)
+const useAccountSettings = (accounts: string[]) => {
+  const accountIds = useMemo(() => accounts.map(a => a.id), [accounts]);
+
+  useEffect(() => {
+    updateSettings(accounts);
+  }, [accountIds]); // Only depends on IDs
+};
+```
+
+### Use useCallback for Stable Function References with External Dependencies
+
+**Note:** React Compiler automatically memoizes callbacks when dependencies are props/state within the same file. Manual `useCallback` is only needed for external dependencies.
+
+```typescript
+❌ WRONG: Callback with external dependencies creates new reference on every render
+import { useDispatch } from 'react-redux';
+import { ThirdPartyList } from 'some-library'; // External component
+
+const TokenList = ({ tokens }: TokenListProps) => {
+  const dispatch = useDispatch(); // External hook
+
+  // New function reference on every render - React Compiler can't optimize external dependencies
+  const handleSelect = (tokenAddress: string) => {
+    dispatch(selectToken(tokenAddress));
+    trackEvent('token_selected');
+  };
+
+  return (
+    <ThirdPartyList
+      items={tokens}
+      onItemClick={handleSelect} // Different reference each time!
+    />
+  );
+};
+
+✅ CORRECT: Manual useCallback required for external dependencies
+const TokenList = ({ tokens }: TokenListProps) => {
+  const dispatch = useDispatch(); // External hook
+
+  // Manual useCallback required - external hook + third-party component
+  const handleSelect = useCallback((tokenAddress: string) => {
+    dispatch(selectToken(tokenAddress));
+    trackEvent('token_selected');
+  }, [dispatch]); // Only recreate if dispatch changes
+
+  return (
+    <ThirdPartyList
+      items={tokens}
+      onItemClick={handleSelect} // Stable reference!
+    />
+  );
+};
+
+✅ CORRECT: React Compiler handles simple prop handlers automatically
+// No manual useCallback needed - React Compiler optimizes this
 const TokenList = ({ tokens, onTokenSelect }: TokenListProps) => {
-  // New function reference on every render → children always re-render
+  // React Compiler automatically memoizes this callback
   const handleSelect = (tokenAddress: string) => {
     onTokenSelect(tokenAddress);
-    trackEvent('token_selected');
   };
 
   return (
@@ -170,27 +385,7 @@ const TokenList = ({ tokens, onTokenSelect }: TokenListProps) => {
         <TokenItem
           key={token.address}
           token={token}
-          onSelect={handleSelect} // Different reference each time!
-        />
-      ))}
-    </div>
-  );
-};
-
-✅ CORRECT: Memoized callback
-const TokenList = ({ tokens, onTokenSelect }: TokenListProps) => {
-  const handleSelect = useCallback((tokenAddress: string) => {
-    onTokenSelect(tokenAddress);
-    trackEvent('token_selected');
-  }, [onTokenSelect]); // Only recreate if onTokenSelect changes
-
-  return (
-    <div>
-      {tokens.map(token => (
-        <TokenItem
-          key={token.address}
-          token={token}
-          onSelect={handleSelect} // Same reference!
+          onSelect={handleSelect} // React Compiler ensures stable reference
         />
       ))}
     </div>
@@ -199,93 +394,56 @@ const TokenList = ({ tokens, onTokenSelect }: TokenListProps) => {
 ```
 
 **When to use useCallback:**
-- ✅ Function passed to memoized child components
-- ✅ Function used as useEffect dependency
-- ✅ Function passed to many children
-- ❌ Function not passed as prop
-- ❌ Function dependencies change frequently
+
+Manual `useCallback` is required when:
+
+- ✅ Function used as `useEffect` dependency (keep existing memoization)
+- ✅ Function passed to third-party/external components (from node_modules or other files)
+- ✅ Function depends on Redux selectors or external hooks
+- ✅ Function combines multiple external dependencies
+
+React Compiler handles automatically:
+
+- ❌ Simple prop handlers within the same file
+- ❌ Callbacks with only props/state dependencies
+
+See [React Compiler Considerations](#react-compiler-considerations) for detailed scenarios.
+
+### ❌ Anti-Pattern: Memoizing Everything
+
+React Compiler handles simple prop/state memoization automatically. Only manually memoize expensive operations with external dependencies (Redux, third-party components, effects).
+
+```typescript
+❌ WRONG: Over-memoizing simple operations
+const SimpleComponent = ({ prop1, prop2, prop3 }: Props) => {
+  // React Compiler handles these automatically - manual memoization is unnecessary
+  const value1 = useMemo(() => prop1 + prop2, [prop1, prop2]);
+  const value2 = useMemo(() => prop3 * 2, [prop3]);
+  const handler = useCallback(() => {}, []);
+
+  return <div onClick={handler}>{value1} {value2}</div>;
+};
+
+✅ CORRECT: Let React Compiler handle simple cases
+const SimpleComponent = ({ prop1, prop2, prop3 }: Props) => {
+  // React Compiler automatically optimizes these
+  const value1 = prop1 + prop2;
+  const value2 = prop3 * 2;
+  const handler = () => {};
+
+  return <div onClick={handler}>{value1} {value2}</div>;
+};
+```
+
+**Solution:** Only manually memoize when:
+
+- Dependencies are external (Redux, imported functions, third-party components)
+- Operations are expensive (sorting large arrays, complex calculations)
+- Used as `useEffect` dependencies (keep existing memoization)
 
 ---
 
-## Avoiding Inline Objects and Functions
-
-### Don't Create Objects/Arrays in JSX
-
-```typescript
-❌ WRONG: New object created on every render
-const TokenDisplay = ({ token }: TokenDisplayProps) => {
-  return (
-    <TokenCard
-      token={token}
-      style={{ padding: 16, margin: 8 }} // New object each render!
-      options={{ showBalance: true, showIcon: true }} // New object each render!
-    />
-  );
-};
-
-✅ CORRECT: Define outside component or use useMemo
-const TOKEN_CARD_STYLE = { padding: 16, margin: 8 };
-const DEFAULT_OPTIONS = { showBalance: true, showIcon: true };
-
-const TokenDisplay = ({ token }: TokenDisplayProps) => {
-  return (
-    <TokenCard
-      token={token}
-      style={TOKEN_CARD_STYLE}
-      options={DEFAULT_OPTIONS}
-    />
-  );
-};
-
-// Or if dynamic:
-const TokenDisplay = ({ token, showIcon }: TokenDisplayProps) => {
-  const options = useMemo(() => ({
-    showBalance: true,
-    showIcon
-  }), [showIcon]);
-
-  return <TokenCard token={token} options={options} />;
-};
-```
-
-### Don't Define Functions in JSX
-
-```typescript
-❌ WRONG: New function on every render
-const TokenList = ({ tokens }: TokenListProps) => {
-  return (
-    <div>
-      {tokens.map(token => (
-        <TokenItem
-          key={token.address}
-          token={token}
-          onClick={() => handleClick(token.address)} // New function!
-        />
-      ))}
-    </div>
-  );
-};
-
-✅ CORRECT: Define handler outside JSX
-const TokenList = ({ tokens }: TokenListProps) => {
-  const handleClick = useCallback((address: string) => {
-    // Handle click
-  }, []);
-
-  return (
-    <div>
-      {tokens.map(token => (
-        <TokenItem
-          key={token.address}
-          token={token}
-          onClick={handleClick}
-          address={token.address} // Pass address as prop
-        />
-      ))}
-    </div>
-  );
-};
-```
+**Note:** For inline objects/functions in JSX, see [useMemo](#use-usememo-for-expensive-calculations-with-external-dependencies) and [useCallback](#use-usecallback-for-stable-function-references-with-external-dependencies) sections above. React Compiler handles simple cases automatically; manual memoization is only needed for external dependencies.
 
 ---
 
@@ -318,10 +476,49 @@ const TokenList = ({ tokens }: TokenListProps) => {
 ```
 
 **Key rules:**
+
 - ✅ Use unique IDs from data (address, id, uuid)
 - ✅ Keys must be stable across re-renders
 - ⚠️ Only use index if list never reorders and items don't have IDs
 - ❌ Never use random values or `Math.random()`
+
+### ❌ Anti-Pattern: Using Index as Key for Dynamic Lists
+
+Using array index as key breaks React's reconciliation when lists can be reordered, filtered, or items added/removed.
+
+```typescript
+❌ WRONG: Index keys break reconciliation
+const TokenList = ({ tokens }: TokenListProps) => {
+  // If tokens can be reordered/filtered, this breaks React's reconciliation
+  return (
+    <div>
+      {tokens.map((token, index) => (
+        <TokenItem key={index} token={token} /> // Bad!
+      ))}
+    </div>
+  );
+};
+
+✅ CORRECT: Use unique, stable identifiers
+const TokenList = ({ tokens }: TokenListProps) => {
+  return (
+    <div>
+      {tokens.map(token => (
+        <TokenItem key={token.address} token={token} /> // Good!
+      ))}
+    </div>
+  );
+};
+```
+
+**Problems with index keys:**
+
+- React can't track items when list reorders
+- State gets mixed up between items
+- Causes bugs with form inputs, focus, animations
+- Performance issues from unnecessary re-renders
+
+**Solution:** Always use unique, stable identifiers from your data (address, id, uuid). Only use index if the list is static and never reorders.
 
 ### Virtualize Long Lists
 
@@ -363,6 +560,7 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
 ```
 
 **Recommended libraries:**
+
 - `react-window` - Lightweight, recommended for most use cases
 - `react-virtualized` - More features, larger bundle size
 
@@ -467,99 +665,11 @@ const SendToken = () => {
 
 ---
 
-## State Management Optimization
-
-### Split State to Minimize Re-renders
-
-```typescript
-❌ WRONG: Single state object causes re-renders
-const TokenSwap = () => {
-  const [formState, setFormState] = useState({
-    fromToken: null,
-    toToken: null,
-    amount: '',
-    slippage: 0.5,
-    isLoading: false,
-  });
-
-  // Any change to formState re-renders everything!
-  const updateAmount = (amount: string) => {
-    setFormState(prev => ({ ...prev, amount }));
-  };
-
-  return (
-    <>
-      <TokenSelector value={formState.fromToken} />
-      <AmountInput value={formState.amount} onChange={updateAmount} />
-      <SlippageSettings value={formState.slippage} />
-    </>
-  );
-};
-
-✅ CORRECT: Split state by update frequency
-const TokenSwap = () => {
-  const [fromToken, setFromToken] = useState(null);
-  const [toToken, setToToken] = useState(null);
-  const [amount, setAmount] = useState(''); // Updated frequently
-  const [slippage, setSlippage] = useState(0.5); // Updated rarely
-  const [isLoading, setIsLoading] = useState(false);
-
-  return (
-    <>
-      <TokenSelector value={fromToken} onChange={setFromToken} />
-      <AmountInput value={amount} onChange={setAmount} />
-      <SlippageSettings value={slippage} onChange={setSlippage} />
-    </>
-  );
-};
-```
-
-### Use Context Sparingly
-
-```typescript
-❌ WRONG: Single large context causes all consumers to re-render
-const AppContext = createContext({
-  user: null,
-  tokens: [],
-  transactions: [],
-  settings: {},
-  // ... many more properties
-});
-
-// Every component using this context re-renders when ANY value changes!
-
-✅ CORRECT: Split contexts by concern and update frequency
-const UserContext = createContext(null);
-const TokensContext = createContext([]);
-const SettingsContext = createContext({});
-
-// Only components using specific context re-render
-```
-
-### Optimize Context with useMemo
-
-```typescript
-✅ GOOD: Memoize context value
-const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState('light');
-
-  // Without useMemo, new object created on every render
-  const value = useMemo(() => ({
-    theme,
-    setTheme,
-  }), [theme]);
-
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
-  );
-};
-```
-
 ---
 
 ## Component Composition Patterns
+
+**Note:** React Compiler automatically provides fine-grained reactivity, so children won't re-render unnecessarily when parent state changes (within the same file). However, component composition patterns are still valuable for code organization and clarity.
 
 ### Use Component Composition to Prevent Re-renders
 
@@ -687,6 +797,486 @@ const TokenBalance = ({ address, network, refreshInterval = 10000 }: Props) => {
 };
 ```
 
+### ❌ Anti-Pattern: JSON.stringify in useEffect Dependencies
+
+Using `JSON.stringify` in dependencies is expensive and defeats memoization. However, there are valid use cases where you need to trigger effects when nested object properties change (deep equality) but not when only the object reference changes.
+
+**The Problem:**
+
+- `JSON.stringify` executes on every render, even if object hasn't changed
+- String comparison is slower than reference comparison
+- Creates new string objects, defeating memoization benefits
+- Can cause infinite loops if stringified value changes reference
+- Doesn't handle circular references or functions
+
+```typescript
+❌ WRONG: JSON.stringify runs on every render
+const usePolling = (input: PollingInput) => {
+  useEffect(() => {
+    startPolling(input);
+  }, [input && JSON.stringify(input)]); // Expensive! Runs every render
+};
+
+// ❌ WRONG: useMemo with JSON.stringify defeats purpose
+const jsonAccounts = useMemo(() => JSON.stringify(accounts), [accounts]);
+```
+
+**When You Need Deep Equality:**
+
+You want to trigger effects when:
+
+- ✅ Nested properties of an object change (deep equality)
+- ✅ Array elements change (deep equality)
+- ❌ Object reference changes but values are the same (should NOT trigger)
+
+**Best Practices for Deep Equality Dependencies:**
+
+```typescript
+✅ CORRECT: Option 1 - Use useEqualityCheck hook (Recommended)
+import { useEqualityCheck } from './hooks/useEqualityCheck';
+import { isEqual } from 'lodash';
+
+// useEqualityCheck returns a stable reference that only changes on deep equality
+const usePolling = (input: PollingInput) => {
+  // Returns same reference if deep values are equal, new reference if different
+  const stableInput = useEqualityCheck(input, isEqual);
+
+  useEffect(() => {
+    startPolling(stableInput);
+  }, [stableInput]); // Only triggers when deep values actually change
+};
+
+// Example: Network configuration object
+const TokenBalance = ({ networkConfig }: TokenBalanceProps) => {
+  // networkConfig may get new reference on every render, but values rarely change
+  const stableConfig = useEqualityCheck(networkConfig, isEqual);
+
+  useEffect(() => {
+    fetchBalance(stableConfig);
+  }, [stableConfig]); // Only re-fetches when config values actually change
+};
+```
+
+```typescript
+✅ CORRECT: Option 2 - useRef with deep equality check in effect
+import { isEqual } from 'lodash';
+
+const usePolling = (input: PollingInput) => {
+  const inputRef = useRef(input);
+
+  useEffect(() => {
+    // Only execute if deep values changed
+    if (!isEqual(input, inputRef.current)) {
+      inputRef.current = input;
+      startPolling(input);
+    }
+  }, [input]); // Effect runs on every input change, but logic only executes on deep equality
+};
+```
+
+```typescript
+✅ CORRECT: Option 3 - Custom hook for deep equality dependencies
+import { useEffect, useRef } from 'react';
+import { isEqual } from 'lodash';
+
+/**
+ * Returns a stable reference that only changes when deep equality check fails.
+ * Useful for useEffect dependencies that should trigger on nested changes.
+ */
+function useDeepEqualMemo<T>(value: T, equalityFn: (a: T, b: T) => boolean = isEqual): T {
+  const ref = useRef<{ value: T; stable: T }>({ value, stable: value });
+
+  if (!equalityFn(value, ref.current.value)) {
+    ref.current = { value, stable: value };
+  }
+
+  return ref.current.stable;
+}
+
+// Usage:
+const usePolling = (input: PollingInput) => {
+  const stableInput = useDeepEqualMemo(input);
+
+  useEffect(() => {
+    startPolling(stableInput);
+  }, [stableInput]); // Stable reference, only changes on deep equality
+};
+```
+
+```typescript
+✅ CORRECT: Option 4 - Normalize to stable primitives (Best for Redux)
+// If possible, extract stable primitive values instead of objects
+const usePolling = (input: PollingInput) => {
+  // Extract only the values that actually matter
+  const inputId = useMemo(() => input.id, [input.id]);
+  const inputChainId = useMemo(() => input.chainId, [input.chainId]);
+  const inputRpcUrl = useMemo(() => input.rpcUrl, [input.rpcUrl]);
+
+  useEffect(() => {
+    startPolling(input);
+  }, [inputId, inputChainId, inputRpcUrl]); // Only depends on primitives
+};
+
+// For Redux: Use selectors that return stable references
+const selectNetworkConfig = createDeepEqualSelector(
+  [(state) => state.network],
+  (network) => ({
+    chainId: network.chainId,
+    rpcUrl: network.rpcUrl,
+  })
+);
+
+const TokenBalance = () => {
+  const networkConfig = useSelector(selectNetworkConfig); // Stable reference
+  useEffect(() => {
+    fetchBalance(networkConfig);
+  }, [networkConfig]); // Only triggers when config values change
+};
+```
+
+**When to Use Each Approach:**
+
+| Approach                    | Use When                                    | Pros                                 | Cons                  |
+| --------------------------- | ------------------------------------------- | ------------------------------------ | --------------------- |
+| **useEqualityCheck**        | Objects/arrays from props or external state | Simple, reusable, handles edge cases | Requires hook import  |
+| **useRef + isEqual**        | One-off cases, custom logic needed          | Full control, no extra hook          | More boilerplate      |
+| **Custom useDeepEqualMemo** | Need memoization behavior                   | Works like useMemo but deep equality | Custom implementation |
+| **Normalize to primitives** | Can extract stable IDs/values               | Most performant, clear dependencies  | Not always possible   |
+
+**Key Principles:**
+
+1. ✅ **Use deep equality when object references change frequently but values don't** - Common with Redux selectors, props from parent components, or API responses
+2. ✅ **Prefer `useEqualityCheck` hook** - Already implemented in codebase, handles edge cases
+3. ✅ **Normalize when possible** - Extract stable primitives (IDs, strings, numbers) instead of objects
+4. ❌ **Never use `JSON.stringify`** - Expensive, unreliable, breaks with functions/circular refs
+5. ❌ **Don't skip dependencies** - Always include dependencies, use deep equality to stabilize them
+
+### ❌ Anti-Pattern: useEffect with Incomplete Dependencies (Stale Closures)
+
+Empty dependency arrays that use values from closure create stale closures.
+
+```typescript
+❌ WRONG: Empty deps but uses values from closure
+const Name = ({ type, name }: NameProps) => {
+  useEffect(() => {
+    trackEvent({
+      properties: {
+        petname_category: type,  // Uses 'type' from closure
+        has_petname: Boolean(name?.length),  // Uses 'name' from closure
+      },
+    });
+  }, []); // Empty deps - 'type' and 'name' are stale!
+};
+```
+
+**Problems:**
+
+- Values captured in closure may be stale (initial values, not current)
+- Effect runs once but uses outdated values
+- Can lead to incorrect analytics/metrics
+- Hard to debug because values appear correct in code
+
+```typescript
+✅ CORRECT: Include all dependencies
+const Name = ({ type, name }: NameProps) => {
+  useEffect(() => {
+    trackEvent({
+      properties: {
+        petname_category: type,
+        has_petname: Boolean(name?.length),
+      },
+    });
+  }, [type, name]); // Include all dependencies
+
+  // OR if you truly only want to track once:
+  const hasTrackedRef = useRef(false);
+  useEffect(() => {
+    if (!hasTrackedRef.current) {
+      trackEvent({
+        properties: {
+          petname_category: type,
+          has_petname: Boolean(name?.length),
+        },
+      });
+      hasTrackedRef.current = true;
+    }
+  }, [type, name]);
+};
+```
+
+### ❌ Anti-Pattern: Wrong Dependencies in useMemo/useCallback
+
+Missing dependencies in `useMemo`/`useCallback` cause stale closures and bugs.
+
+```typescript
+❌ WRONG: Missing dependencies
+const TokenList = ({ tokens, filter }: TokenListProps) => {
+  // Dependencies are wrong - should include filter!
+  const filteredTokens = useMemo(() => {
+    return tokens.filter(token => token.symbol.includes(filter));
+  }, [tokens]); // Missing filter dependency!
+
+  return <div>...</div>;
+};
+```
+
+**Problems:**
+
+- Stale closures capture old values
+- Effects/calculations use outdated data
+- Hard to debug because code looks correct
+- Can cause incorrect behavior or infinite loops
+
+**Solution:** Always include all dependencies. Use ESLint rule `react-hooks/exhaustive-deps` to catch missing dependencies automatically.
+
+```typescript
+✅ CORRECT: Include all dependencies
+const TokenList = ({ tokens, filter }: TokenListProps) => {
+  const filteredTokens = useMemo(() => {
+    return tokens.filter(token => token.symbol.includes(filter));
+  }, [tokens, filter]); // All dependencies included
+
+  return <div>...</div>;
+};
+```
+
+### ❌ Anti-Pattern: Including setState Functions in Dependencies
+
+`setState` functions from `useState` are stable and don't need to be in dependencies.
+
+```typescript
+❌ WRONG: setState functions in dependencies
+const NameDetails = ({ savedPetname, savedSourceId }: Props) => {
+  const [name, setName] = useState('');
+  const [selectedSourceId, setSelectedSourceId] = useState<string>();
+
+  useEffect(() => {
+    setName(savedPetname ?? '');
+    setSelectedSourceId(savedSourceId ?? undefined);
+  }, [savedPetname, savedSourceId, setName, setSelectedSourceId]); // Unnecessary!
+};
+```
+
+**Problems:**
+
+- `setState` functions from `useState` are stable (never change)
+- Including them clutters dependency arrays
+- Can confuse other developers
+- ESLint may warn unnecessarily
+
+```typescript
+✅ CORRECT: Remove setState functions from dependencies
+const NameDetails = ({ savedPetname, savedSourceId }: Props) => {
+  const [name, setName] = useState('');
+  const [selectedSourceId, setSelectedSourceId] = useState<string>();
+
+  useEffect(() => {
+    setName(savedPetname ?? '');
+    setSelectedSourceId(savedSourceId ?? undefined);
+  }, [savedPetname, savedSourceId]); // setState functions are stable
+};
+```
+
+### ❌ Anti-Pattern: Cascading useEffect Chains
+
+Multiple effects where one sets state that triggers another cause unnecessary re-renders.
+
+```typescript
+❌ WRONG: Effect chain - first effect sets state, second responds to it
+const useHistoricalPrices = () => {
+  const [prices, setPrices] = useState([]);
+  const [metadata, setMetadata] = useState(null);
+
+  // First effect fetches and updates Redux
+  useEffect(() => {
+    fetchPrices();
+    const intervalId = setInterval(fetchPrices, 60000);
+    return () => clearInterval(intervalId);
+  }, [chainId, address]);
+
+  // Second effect responds to Redux state change
+  useEffect(() => {
+    const pricesToSet = historicalPricesNonEvm?.[address]?.intervals ?? [];
+    setPrices(pricesToSet); // Triggers third effect
+  }, [historicalPricesNonEvm, address]);
+
+  // Third effect depends on state from second effect
+  useEffect(() => {
+    const metadataToSet = deriveMetadata(prices);
+    setMetadata(metadataToSet);
+  }, [prices]);
+};
+```
+
+**Problems:**
+
+- Multiple re-renders from cascading effects
+- Hard to reason about execution order
+- Can cause race conditions
+- Performance overhead from multiple effect runs
+
+```typescript
+✅ CORRECT: Combine effects or compute during render
+const useHistoricalPrices = () => {
+  // Compute prices during render from Redux state
+  const prices = useMemo(() => {
+    return historicalPricesNonEvm?.[address]?.intervals ?? [];
+  }, [historicalPricesNonEvm, address]);
+
+  // Compute metadata during render from prices
+  const metadata = useMemo(() => {
+    return deriveMetadata(prices);
+  }, [prices]);
+
+  // Single effect for async operations
+  useEffect(() => {
+    fetchPrices();
+    const intervalId = setInterval(fetchPrices, 60000);
+    return () => clearInterval(intervalId);
+  }, [chainId, address]);
+
+  return { prices, metadata };
+};
+```
+
+### ❌ Anti-Pattern: Conditional Early Return with All Dependencies
+
+Effects with conditional early returns that still include all dependencies in the array.
+
+```typescript
+❌ WRONG: Early return but dependencies include unused values
+const useHistoricalPrices = ({ isEvm, chainId, address }: Props) => {
+  useEffect(() => {
+    if (isEvm) {
+      return; // Early return
+    }
+    // Only uses chainId and address when not EVM
+    fetchPrices(chainId, address);
+  }, [isEvm, chainId, address]); // Includes all deps even when unused
+};
+```
+
+**Problems:**
+
+- Effect dependencies include values not used when condition is true
+- Can cause unnecessary effect re-runs
+- Unclear intent
+- ESLint may warn about missing dependencies
+
+```typescript
+✅ CORRECT: Split into separate effects or use proper conditional logic
+// Option 1: Split effects
+const useHistoricalPrices = ({ isEvm, chainId, address }: Props) => {
+  useEffect(() => {
+    if (!isEvm) {
+      fetchPrices(chainId, address);
+    }
+  }, [isEvm, chainId, address]); // All deps are used
+
+  // OR Option 2: Separate effects
+  useEffect(() => {
+    if (isEvm) return;
+    fetchPrices(chainId, address);
+  }, [isEvm]); // Only depends on condition
+
+  useEffect(() => {
+    if (!isEvm) {
+      fetchPrices(chainId, address);
+    }
+  }, [chainId, address]); // Only when not EVM
+};
+```
+
+---
+
+## Hook Selection and Usage
+
+### ❌ Anti-Pattern: Regular Variables Instead of useRef
+
+Using regular variables instead of `useRef` for values that need to persist across renders.
+
+```typescript
+❌ WRONG: Regular variable gets reset on every render
+const usePolling = (input: PollingInput) => {
+  let isMounted = false; // Gets reset every render!
+
+  useEffect(() => {
+    isMounted = true;
+    startPolling(input);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [input]);
+};
+```
+
+**Problems:**
+
+- Regular variable gets reset on every render
+- Doesn't persist across renders
+- Closure captures stale value
+- Can cause bugs with async operations
+
+```typescript
+✅ CORRECT: Use useRef for persistent values
+const usePolling = (input: PollingInput) => {
+  const isMountedRef = useRef(false);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    startPolling(input);
+
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, [input]);
+};
+```
+
+### ❌ Anti-Pattern: Equality Function in useEqualityCheck Dependencies
+
+Including the equality function in dependencies causes unnecessary re-runs.
+
+```typescript
+❌ WRONG: equalityFn in dependencies causes unnecessary re-runs
+export function useEqualityCheck(value, equalityFn = isEqual) {
+  const [computedValue, setComputedValue] = useState(value);
+
+  useLayoutEffect(() => {
+    if (!equalityFn(value, computedValue)) {
+      setComputedValue(value);
+    }
+  }, [value, equalityFn, computedValue]); // equalityFn changes reference!
+}
+```
+
+**Problems:**
+
+- `equalityFn` is typically passed as default parameter (`isEqual` from lodash)
+- If a new function is passed, it changes reference on every render
+- Causes effect to run unnecessarily
+- Defeats the purpose of equality checking
+
+```typescript
+✅ CORRECT: Use useRef to store equality function
+export function useEqualityCheck(value, equalityFn = isEqual) {
+  const [computedValue, setComputedValue] = useState(value);
+  const equalityFnRef = useRef(equalityFn);
+
+  // Update ref without causing re-run
+  useEffect(() => {
+    equalityFnRef.current = equalityFn;
+  }, [equalityFn]);
+
+  useEffect(() => {
+    if (!equalityFnRef.current(value, computedValue)) {
+      setComputedValue(value);
+    }
+  }, [value, computedValue]); // equalityFn removed from deps
+}
+```
+
 ---
 
 ## Profiling and Measurement
@@ -748,130 +1338,2295 @@ const TokenListItem = ({ token, onSelect }: TokenListItemProps) => {
 
 ---
 
-## Performance Checklist
+## Async Operations and Cleanup
 
-Before considering a component optimized:
+### ❌ Anti-Pattern: State Updates After Component Unmount
 
-### Measurement
-- [ ] Profiled with React DevTools Profiler
-- [ ] Identified actual bottleneck (not premature optimization)
-- [ ] Measured before and after optimization
-- [ ] Verified improvement in real-world usage
-
-### Component Structure
-- [ ] Component is pure (no side effects during render)
-- [ ] State is split appropriately (by update frequency)
-- [ ] Large components broken into smaller sub-components
-- [ ] Heavy components lazy loaded when possible
-
-### Memoization
-- [ ] Expensive components wrapped in React.memo
-- [ ] Expensive calculations use useMemo
-- [ ] Callbacks passed to children use useCallback
-- [ ] No inline objects/functions in JSX
-- [ ] Context values are memoized
-
-### Lists
-- [ ] Lists use stable, unique keys (not array index unless static)
-- [ ] Large lists (100+ items) use virtualization
-- [ ] Very large datasets use pagination/infinite scroll
-
-### Effects
-- [ ] No unnecessary useEffect (prefer calculation during render)
-- [ ] Effect dependencies minimized
-- [ ] Effects properly cleaned up
-
-### Code Splitting
-- [ ] Routes are lazy loaded
-- [ ] Heavy components are lazy loaded
-- [ ] Suspense boundaries in appropriate places
-
----
-
-## Common Performance Anti-Patterns
-
-### ❌ Anti-Pattern: Premature Optimization
+Updating state after unmount causes memory leaks and React warnings.
 
 ```typescript
-// Don't do this unless you have measured a performance problem!
-const TinyComponent = React.memo(({ value }: { value: string }) => {
-  return <span>{value}</span>; // Too simple to benefit from memo
-});
-```
+❌ WRONG: No mounted check
+const TokenBalance = ({ address }: TokenBalanceProps) => {
+  const [balance, setBalance] = useState('0');
 
-**Solution:** Profile first, optimize what matters.
+  useEffect(() => {
+    fetchBalance(address).then(result => {
+      setBalance(result); // ⚠️ May update after unmount!
+    });
+  }, [address]);
 
-### ❌ Anti-Pattern: Memoizing Everything
-
-```typescript
-// This is overkill and adds unnecessary complexity
-const SimpleComponent = React.memo(() => {
-  const value1 = useMemo(() => prop1 + prop2, [prop1, prop2]);
-  const value2 = useMemo(() => prop3 * 2, [prop3]);
-  const handler = useCallback(() => {}, []);
-
-  return <div onClick={handler}>{value1} {value2}</div>;
-});
-```
-
-**Solution:** Only memoize expensive operations or when passing to memoized children.
-
-### ❌ Anti-Pattern: Wrong Dependencies in useMemo/useCallback
-
-```typescript
-const TokenList = ({ tokens, filter }: TokenListProps) => {
-  // Dependencies are wrong - should include filter!
-  const filteredTokens = useMemo(() => {
-    return tokens.filter(token => token.symbol.includes(filter));
-  }, [tokens]); // Missing filter dependency!
-
-  return <div>...</div>;
+  return <div>{balance}</div>;
 };
 ```
 
-**Solution:** Always include all dependencies. Use ESLint rule `react-hooks/exhaustive-deps`.
+```typescript
+✅ CORRECT: Check mounted state before updating
+const TokenBalance = ({ address }: TokenBalanceProps) => {
+  const [balance, setBalance] = useState('0');
 
-### ❌ Anti-Pattern: Using Index as Key for Dynamic Lists
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetch = async () => {
+      const result = await fetchBalance(address);
+      if (!cancelled) {
+        setBalance(result);
+      }
+    };
+
+    fetch();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [address]);
+
+  return <div>{balance}</div>;
+};
+```
+
+### ❌ Anti-Pattern: Missing AbortController for Fetch Requests
+
+Fetch requests without abort signals continue running after unmount, wasting resources.
 
 ```typescript
-const TokenList = ({ tokens }: TokenListProps) => {
-  // If tokens can be reordered/filtered, this breaks React's reconciliation
+❌ WRONG: No abort signal
+const AssetList = ({ chainId }: AssetListProps) => {
+  const [assets, setAssets] = useState([]);
+
+  useEffect(() => {
+    fetch(`/api/assets/${chainId}`)
+      .then(res => res.json())
+      .then(data => setAssets(data)); // Request continues after unmount!
+  }, [chainId]);
+
+  return <div>{assets.map(a => <Asset key={a.id} asset={a} />)}</div>;
+};
+```
+
+```typescript
+✅ CORRECT: AbortController for cleanup
+const AssetList = ({ chainId }: AssetListProps) => {
+  const [assets, setAssets] = useState([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetch(`/api/assets/${chainId}`, { signal: controller.signal })
+      .then(res => res.json())
+      .then(data => {
+        if (!controller.signal.aborted) {
+          setAssets(data);
+        }
+      })
+      .catch(error => {
+        if (error.name !== 'AbortError') {
+          console.error('Failed to fetch assets:', error);
+        }
+      });
+
+    return () => {
+      controller.abort(); // Cancels request on unmount
+    };
+  }, [chainId]);
+
+  return <div>{assets.map(a => <Asset key={a.id} asset={a} />)}</div>;
+};
+```
+
+### ❌ Anti-Pattern: Missing Cleanup for Intervals/Subscriptions
+
+Timers and subscriptions must be cleaned up to prevent memory leaks.
+
+```typescript
+❌ WRONG: Interval never cleared
+const PriceTicker = ({ tokenAddress }: PriceTickerProps) => {
+  const [price, setPrice] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const newPrice = await fetchPrice(tokenAddress);
+      setPrice(newPrice);
+    }, 1000); // ⚠️ Interval continues after unmount!
+
+    // Missing cleanup!
+  }, [tokenAddress]);
+
+  return <div>${price}</div>;
+};
+```
+
+```typescript
+✅ CORRECT: Cleanup interval
+const PriceTicker = ({ tokenAddress }: PriceTickerProps) => {
+  const [price, setPrice] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchPrice = async () => {
+      const newPrice = await fetchPriceData(tokenAddress);
+      if (!cancelled) {
+        setPrice(newPrice);
+      }
+    };
+
+    fetchPrice(); // Initial fetch
+    const interval = setInterval(fetchPrice, 1000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval); // Cleanup on unmount
+    };
+  }, [tokenAddress]);
+
+  return <div>${price}</div>;
+};
+```
+
+### ❌ Anti-Pattern: Large Object Retention in Closures
+
+Closures capturing large objects prevent garbage collection.
+
+```typescript
+❌ WRONG: Large object retained in closure
+const TransactionList = ({ transactions }: TransactionListProps) => {
+  const [filtered, setFiltered] = useState([]);
+
+  useEffect(() => {
+    // Large transactions array captured in closure
+    const expensiveFilter = () => {
+      return transactions
+        .filter(tx => tx.status === 'pending')
+        .map(tx => expensiveTransform(tx)); // Large object retained!
+    };
+
+    const interval = setInterval(() => {
+      setFiltered(expensiveFilter());
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [transactions]); // transactions array reference changes frequently
+
+  return <div>{filtered.map(tx => <Transaction key={tx.id} tx={tx} />)}</div>;
+};
+```
+
+```typescript
+✅ CORRECT: Extract only needed data, use refs for stable references
+const TransactionList = ({ transactions }: TransactionListProps) => {
+  const [filtered, setFiltered] = useState([]);
+  const transactionsRef = useRef(transactions);
+
+  // Update ref without causing effect to re-run
+  useEffect(() => {
+    transactionsRef.current = transactions;
+  }, [transactions]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const expensiveFilter = () => {
+      // Use ref to avoid capturing transactions in closure
+      const currentTransactions = transactionsRef.current;
+      return currentTransactions
+        .filter(tx => tx.status === 'pending')
+        .map(tx => ({
+          id: tx.id,
+          amount: tx.amount,
+          // Only extract needed properties, not entire object
+        }));
+    };
+
+    const updateFiltered = () => {
+      if (!cancelled) {
+        setFiltered(expensiveFilter());
+      }
+    };
+
+    updateFiltered();
+    const interval = setInterval(updateFiltered, 5000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, []); // Empty deps - uses ref instead
+
+  return <div>{filtered.map(tx => <Transaction key={tx.id} tx={tx} />)}</div>;
+};
+```
+
+---
+
+---
+
+## Advanced Selector Patterns
+
+### ❌ Anti-Pattern: Identity Functions as Output Selectors
+
+Identity functions in `createSelector` provide no memoization benefit and waste memory.
+
+```typescript
+❌ WRONG: Identity function provides no memoization
+export const getInternalAccounts = createSelector(
+  (state: AccountsState) =>
+    Object.values(state.metamask.internalAccounts.accounts),
+  (accounts) => accounts, // Identity function - no transformation!
+);
+
+// This selector always returns a new array reference even if accounts haven't changed
+// because Object.values() creates a new array every time
+```
+
+**Problems:**
+
+- `Object.values()` creates a new array reference on every call
+- Identity function doesn't prevent recalculation
+- Downstream selectors re-run unnecessarily
+- Memory waste from unnecessary array creation
+
+```typescript
+✅ CORRECT: Proper memoization with stable reference
+export const getInternalAccounts = createSelector(
+  (state: AccountsState) => state.metamask.internalAccounts.accounts,
+  (accountsObject) => {
+    // Only create array when accountsObject actually changes
+    const accounts = Object.values(accountsObject);
+    return accounts;
+  },
+);
+
+// OR: Use createDeepEqualSelector if you need deep equality
+export const getInternalAccounts = createDeepEqualSelector(
+  (state: AccountsState) => state.metamask.internalAccounts.accounts,
+  (accountsObject) => Object.values(accountsObject),
+);
+```
+
+### ❌ Anti-Pattern: Selectors That Return Entire State Objects
+
+Selectors that return large state objects cause unnecessary re-renders.
+
+```typescript
+❌ WRONG: Returns entire state slice
+const selectAccountTreeStateForBalances = createSelector(
+  (state: BalanceCalculationState) => state.metamask,
+  (metamaskState) => metamaskState, // Returns entire metamask state!
+);
+
+// Every component using this selector re-renders on ANY metamask state change
+```
+
+```typescript
+✅ CORRECT: Select only needed properties
+const selectAccountTreeStateForBalances = createSelector(
+  [
+    (state: BalanceCalculationState) => state.metamask.accountTree,
+    (state: BalanceCalculationState) => state.metamask.accountGroupsMetadata,
+    (state: BalanceCalculationState) => state.metamask.accountWalletsMetadata,
+  ],
+  (accountTree, accountGroupsMetadata, accountWalletsMetadata) => ({
+    accountTree: accountTree ?? EMPTY_ACCOUNT_TREE,
+    accountGroupsMetadata: accountGroupsMetadata ?? EMPTY_OBJECT,
+    accountWalletsMetadata: accountWalletsMetadata ?? EMPTY_OBJECT,
+  }),
+);
+```
+
+### ❌ Anti-Pattern: Selectors Without Proper Input Selectors
+
+Selectors that access state directly instead of using input selectors can't be composed efficiently.
+
+```typescript
+❌ WRONG: Direct state access, can't be composed
+const selectExpensiveComputation = createSelector(
+  (state) => state.metamask, // Too broad
+  (metamask) => {
+    // Expensive computation using many properties
+    return metamask.tokens
+      .filter(t => t.balance > 0)
+      .map(t => ({ ...t, computed: expensiveTransform(t) }))
+      .sort((a, b) => b.balance - a.balance);
+  },
+);
+
+✅ CORRECT: Granular input selectors for composition
+const selectTokens = (state) => state.metamask.tokens;
+const selectTokenBalances = (state) => state.metamask.tokenBalances;
+
+const selectExpensiveComputation = createSelector(
+  [selectTokens, selectTokenBalances],
+  (tokens, balances) => {
+    // Only recomputes when tokens or balances change
+    return tokens
+      .filter(t => balances[t.address] > 0)
+      .map(t => ({ ...t, computed: expensiveTransform(t) }))
+      .sort((a, b) => balances[b.address] - balances[a.address]);
+  },
+);
+```
+
+### Best Practices for Reselect Selectors
+
+1. **Use granular input selectors** - Select smallest possible state slices
+2. **Avoid identity functions** - Always transform data in output selector
+3. **Reach for `createDeepEqualSelector` only when shallow checks fail** - Prefer `createSelector` by default; use deep equality when inputs keep the same reference but nested values change (see guidance below)
+4. **Compose selectors** - Build complex selectors from simple ones
+5. **Normalize state shape** - Use `byId` patterns to avoid deep nesting
+
+```typescript
+✅ GOOD: Well-structured selector composition
+// Base selectors (granular)
+const selectAccountsObject = (state) => state.metamask.internalAccounts.accounts;
+const selectSelectedAccountId = (state) => state.metamask.internalAccounts.selectedAccount;
+
+// Composed selector
+const selectSelectedAccount = createSelector(
+  [selectAccountsObject, selectSelectedAccountId],
+  (accounts, selectedId) => accounts[selectedId] ?? null,
+);
+
+// Derived selector (reuses base selectors)
+const selectSelectedAccountAddress = createSelector(
+  [selectSelectedAccount],
+  (account) => account?.address ?? null,
+);
+```
+
+### Use `createDeepEqualSelector` sparingly
+
+`updateMetamaskState` applies background patches to Redux using Immer. Each call receives an array of Immer patches from the background controllers, runs them through `applyPatches`, then dispatches the resulting state:
+
+```2406:2423:ui/store/actions.ts
+export function updateMetamaskState(patches: Patch[]): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { metamask: currentState } = state;
+
+    if (!patches?.length) {
+      return currentState;
+    }
+
+    const newState = applyPatches(currentState, patches);
+    // ...
+    dispatch({
+      type: actionConstants.UPDATE_METAMASK_STATE,
+      value: newState,
+    });
+    // ...
+  };
+}
+```
+
+```7615:7622:ui/store/actions.ts
+function applyPatches(oldState: Record<string, unknown>, patches: Patch[]): Record<string, unknown> {
+  const immer = new Immer();
+  immer.setAutoFreeze(false);
+  return immer.applyPatches(oldState, patches);
+}
+```
+
+Immer guarantees structural sharing: only the objects along the mutated path receive new references, while untouched branches retain their identity. The implications for selector memoization are:
+
+- **`createSelector` (shallow equality on inputs)**
+  - Works best when input selectors point directly at the branch that changes. When Immer patches adjust a deep property, the parent objects along that path get new references, so selectors such as `state => state.metamask.internalAccounts.accounts` see the change and recompute.
+  - If a selector uses a very broad input (for example `state => state.metamask`), Immer still returns a brand-new `metamask` object on every patch, so the selector recomputes even when the actual slice it cares about did not change. Keep inputs tight to avoid unnecessary work.
+- **`createDeepEqualSelector` (deep equality on inputs)**
+  - Because it compares arguments with `lodash/isEqual`, a selector can ignore the fact that Immer provided a fresh reference when the underlying data is unchanged. This helps when patches touch other controllers but Redux still replaces the parent object you depend on.
+  - The trade-off is that `isEqual` runs on every evaluation, which is noticeable for large nested payloads. Only use the deep-equality variant when you have evidence that Immer’s structural sharing is still producing noisy reference changes for your selector’s inputs.
+
+In practice:
+
+- For selectors whose inputs come from a store that mutates nested properties without replacing the top-level reference (for example, background controllers that update metadata in place), `createSelector` is sufficient and cheaper.
+- For selectors rebuilding a complex aggregate (sorting, merging, normalizing) on every call even though the semantic contents often stay the same (for example `getWalletsWithAccounts`), `createDeepEqualSelector` avoids downstream re-renders by tolerating reference churn.
+- Regardless of memoization strategy, keep input selectors granular so Immer’s minimal reference changes flow only to the consumers that truly need to update.
+
+Most selectors can rely on reference changes produced by reducers, so `createSelector` is the correct choice:
+
+```typescript
+// ui/selectors/selectors.js
+export const getInternalAccountByAddress = createSelector(
+  (state) => state.metamask.internalAccounts.accounts,
+  (_state, address: string) => address,
+  (accounts, address) => {
+    return Object.values(accounts).find((account) =>
+      isEqualCaseInsensitive(account.address, address),
+    );
+  },
+);
+```
+
+When we aggregate multiple nested sources and return a brand-new object each time, deep equality prevents redundant re-renders even though the inputs keep the same references:
+
+```typescript
+// ui/selectors/multichain-accounts/account-tree.ts
+export const getWalletsWithAccounts = createDeepEqualSelector(
+  getMetaMaskAccountsOrdered,
+  getAccountTree,
+  getOrderedConnectedAccountsForActiveTab,
+  getSelectedInternalAccount,
+  getPinnedAccountsList,
+  getHiddenAccountsList,
+  (
+    internalAccounts,
+    accountTree,
+    connectedAccounts,
+    selectedAccount,
+    pinnedAccounts,
+    hiddenAccounts,
+  ) => {
+    return createConsolidatedWallets(
+      internalAccounts,
+      accountTree,
+      connectedAccounts,
+      selectedAccount,
+      pinnedAccounts,
+      hiddenAccounts,
+      (groupAccounts) => groupAccounts,
+    );
+  },
+);
+```
+
+This selector stitches together data from several controllers and always produces a fresh structure. Without deep equality the UI would receive a new reference on every state change, even when the contents are identical. In contrast, selectors that already get new references from reducers (such as arrays built with Immer) should stick to `createSelector`.
+
+**Guard rails:**
+
+- If a deep selector becomes hot, profile it with React DevTools before shipping.
+- Document why you chose `createDeepEqualSelector` so future contributors can revisit the trade-off.
+
+### Combine related selectors into one memoized selector
+
+Each `useSelector` subscription runs independently. When a component calls multiple selectors in sequence, Redux evaluates each one and triggers rerenders whenever their results change—even if they depend on the same underlying state. Consolidating those calls into a single memoized selector reduces redundant work and keeps derived data co-located.
+
+```75:97:ui/pages/bridge/quotes/multichain-bridge-quote-card.tsx
+const {
+  activeQuote,
+  isQuoteGoingToRefresh,
+  isLoading: isQuoteLoading,
+} = useSelector(getBridgeQuotes);
+const currency = useSelector(getCurrentCurrency);
+
+const { insufficientBal } = useSelector(getQuoteRequest);
+const fromChain = useSelector(getFromChain);
+const locale = useSelector(getIntlLocale);
+const isStxEnabled = useSelector(getIsStxEnabled);
+const fromToken = useSelector(getFromToken);
+const toToken = useSelector(getToToken);
+const slippage = useSelector(getSlippage);
+const isSolanaSwap = useSelector(getIsSolanaSwap);
+
+const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
+
+const priceImpactThresholds = useSelector(getPriceImpactThresholds);
+```
+
+This pattern subscribes the component 11 different times. If any selector emits a new reference, React schedules a rerender—even when the fields you care about stay the same.
+
+Prefer composing a single view selector:
+
+```typescript
+const selectBridgeQuoteCardView = createSelector(
+  [
+    getBridgeQuotes,
+    getCurrentCurrency,
+    getQuoteRequest,
+    getFromChain,
+    getIntlLocale,
+    getIsStxEnabled,
+    getFromToken,
+    getToToken,
+    getSlippage,
+    getIsSolanaSwap,
+    getIsToOrFromNonEvm,
+    getPriceImpactThresholds,
+  ],
+  (
+    bridgeQuotes,
+    currency,
+    quoteRequest,
+    fromChain,
+    locale,
+    isStxEnabled,
+    fromToken,
+    toToken,
+    slippage,
+    isSolanaSwap,
+    isToOrFromNonEvm,
+    priceImpactThresholds,
+  ) => ({
+    activeQuote: bridgeQuotes.activeQuote,
+    isQuoteGoingToRefresh: bridgeQuotes.isQuoteGoingToRefresh,
+    isQuoteLoading: bridgeQuotes.isLoading,
+    currency,
+    insufficientBal: quoteRequest.insufficientBal,
+    fromChain,
+    locale,
+    isStxEnabled,
+    fromToken,
+    toToken,
+    slippage,
+    isSolanaSwap,
+    isToOrFromNonEvm,
+    priceImpactThresholds,
+  }),
+);
+
+const MultichainBridgeQuoteCard = () => {
+  const {
+    activeQuote,
+    isQuoteGoingToRefresh,
+    isQuoteLoading,
+    currency,
+    insufficientBal,
+    fromChain,
+    locale,
+    isStxEnabled,
+    fromToken,
+    toToken,
+    slippage,
+    isSolanaSwap,
+    isToOrFromNonEvm,
+    priceImpactThresholds,
+  } = useSelector(selectBridgeQuoteCardView);
+  // ...
+};
+```
+
+**Benefits:**
+
+- Only one subscription; the component rerenders once per state change instead of once per selector.
+- Shared memoization ensures the combined output only changes when at least one dependency does.
+- Centralizes domain-specific shaping logic in the selector layer, simplifying reuse and testing.
+- Lets you switch to `createDeepEqualSelector` (when justified) in a single place if background patches mutate nested data without replacing references.
+
+### ❌ Anti-Pattern: Inline Selector Functions in useSelector
+
+Creating selector functions inline in `useSelector` breaks memoization and creates new references.
+
+```typescript
+❌ WRONG: Inline function creates new reference every render
+const Connections = () => {
+  const subjectMetadata = useSelector((state) => {
+    return getConnectedSitesList(state);
+  });
+
+  const connectedAccountGroups = useSelector((state) => {
+    if (!showConnectionStatus || permittedAddresses.length === 0) {
+      return [];
+    }
+    return getAccountGroupsByAddress(state, permittedAddresses);
+  });
+};
+```
+
+**Problems:**
+
+- New function reference on every render
+- Redux can't optimize selector calls
+- Breaks selector memoization
+- Causes unnecessary subscriptions and re-renders
+
+```typescript
+✅ CORRECT: Extract to memoized selector or use useCallback
+// Option 1: Extract to memoized selector (preferred)
+const selectConnectedAccountGroups = createSelector(
+  [
+    (state) => state,
+    (_state, showConnectionStatus: boolean) => showConnectionStatus,
+    (_state, _showConnectionStatus, permittedAddresses: string[]) => permittedAddresses,
+  ],
+  (state, showConnectionStatus, permittedAddresses) => {
+    if (!showConnectionStatus || permittedAddresses.length === 0) {
+      return [];
+    }
+    return getAccountGroupsByAddress(state, permittedAddresses);
+  },
+);
+
+const Connections = () => {
+  const subjectMetadata = useSelector(getConnectedSitesList);
+  const connectedAccountGroups = useSelector((state) =>
+    selectConnectedAccountGroups(state, showConnectionStatus, permittedAddresses)
+  );
+};
+
+// Option 2: Use useCallback for selector function
+const Connections = () => {
+  const selectConnectedGroups = useCallback(
+    (state) => {
+      if (!showConnectionStatus || permittedAddresses.length === 0) {
+        return [];
+      }
+      return getAccountGroupsByAddress(state, permittedAddresses);
+    },
+    [showConnectionStatus, permittedAddresses]
+  );
+
+  const connectedAccountGroups = useSelector(selectConnectedGroups);
+};
+```
+
+### ❌ Anti-Pattern: Multiple useSelector Calls Selecting Same State Slice
+
+Multiple `useSelector` calls for the same state slice create unnecessary subscriptions.
+
+```typescript
+❌ WRONG: Multiple selectors for same state slice
+const Routes = () => {
+  const alertOpen = useAppSelector((state) => state.appState.alertOpen);
+  const alertMessage = useAppSelector((state) => state.appState.alertMessage);
+  const isLoading = useAppSelector((state) => state.appState.isLoading);
+  const loadingMessage = useAppSelector((state) => state.appState.loadingMessage);
+  // ... 20+ more selectors from same slice
+};
+```
+
+**Problems:**
+
+- Each `useSelector` creates a separate subscription
+- Multiple subscriptions to the same state slice
+- More overhead than selecting the whole slice once
+- Can cause unnecessary re-renders
+
+```typescript
+✅ CORRECT: Select entire slice once or create single selector
+// Option 1: Select entire slice once
+const Routes = () => {
+  const appState = useAppSelector((state) => state.appState);
+  const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
+};
+
+// Option 2: Create single memoized selector
+const selectAppState = (state) => state.appState;
+const selectAppStateSlice = createSelector(
+  [selectAppState],
+  (appState) => ({
+    alertOpen: appState.alertOpen,
+    alertMessage: appState.alertMessage,
+    isLoading: appState.isLoading,
+    loadingMessage: appState.loadingMessage,
+    // ... other properties
+  })
+);
+
+const Routes = () => {
+  const appStateSlice = useAppSelector(selectAppStateSlice);
+};
+```
+
+## Antipatterns Caused by Nested/Denormalized State
+
+Our Redux state is deeply nested and denormalized, which leads to several performance and maintainability issues. This section documents common antipatterns and their solutions.
+
+### ❌ Anti-Pattern: Inefficient Use of `Object.values()` and `Object.keys()` in Selectors
+
+**Problem:** When state is stored as objects keyed by ID (e.g., `accounts: { [id]: Account }`), selectors frequently use `Object.values()` or `Object.keys()` to convert to arrays. This creates new array references on every selector evaluation, even when the underlying data hasn't changed, causing unnecessary re-renders and recomputations.
+
+**Why This Happens:**
+- State is stored as `{ [id]: item }` objects for O(1) lookups
+- UI components need arrays for iteration (`.map()`, `.filter()`, etc.)
+- Selectors convert objects to arrays on every call
+- Even with memoization, if the object reference changes (which happens frequently with Immer), a new array is created
+
+**Examples from Codebase:**
+
+```typescript
+// ui/selectors/accounts.ts
+❌ WRONG: Creates new array on every call
+export const getInternalAccounts = createSelector(
+  (state: AccountsState) =>
+    Object.values(state.metamask.internalAccounts.accounts), // New array every time!
+  (accounts) => accounts, // Identity function doesn't help
+);
+```
+
+```typescript
+// ui/selectors/selectors.js
+❌ WRONG: Object.values() in output selector creates new reference
+export const getMetaMaskAccounts = createDeepEqualSelector(
+  getInternalAccounts,
+  // ... other inputs
+  (internalAccounts) =>
+    Object.values(internalAccounts).reduce((accounts, internalAccount) => {
+      // Creates new array, then transforms it
+      // ...
+    }, {}),
+);
+```
+
+```typescript
+// ui/selectors/nft.ts
+❌ WRONG: Nested Object.values() calls
+export const selectAllNftsFlat = createSelector(
+  getNftsByChainByAccount,
+  (nftsByChainByAccount) => {
+    const nftsByChainArray = Object.values(nftsByChainByAccount); // First conversion
+    return nftsByChainArray.reduce<Nft[]>((acc, nftsByChain) => {
+      const nftsArrays = Object.values(nftsByChain); // Second conversion
+      return acc.concat(...nftsArrays);
+    }, []);
+  },
+);
+```
+
+```typescript
+// ui/selectors/multichain-accounts/account-tree.ts
+❌ WRONG: Multiple Object.values() in loops
+export const getNormalizedGroupsMetadata = createDeepEqualSelector(
+  getAccountTree,
+  getInternalAccountsObject,
+  (accountTree, internalAccountsObject) => {
+    const { wallets } = accountTree;
+    const result = {};
+    for (const wallet of Object.values(wallets)) { // New array each time
+      for (const group of Object.values(wallet.groups)) { // Another new array
+        // ...
+      }
+    }
+    return result;
+  },
+);
+```
+
+**Performance Impact:**
+- **Memory allocation:** New arrays created on every selector evaluation
+- **Garbage collection:** More frequent GC pauses from short-lived arrays
+- **Re-renders:** Components re-render because array reference changes even if contents are identical
+- **Cascading recomputations:** Downstream selectors that depend on these arrays recompute unnecessarily
+
+**Solutions:**
+
+**Solution 1: Store Arrays Alongside Objects (Best for Frequently Accessed Lists)**
+
+If you frequently need arrays, maintain both representations in state:
+
+```typescript
+✅ CORRECT: Store both object and array in state
+interface AccountsState {
+  accounts: {
+    byId: Record<string, Account>;
+    allIds: string[]; // Maintained alongside byId
+  };
+}
+
+// Reducer maintains both
+function accountsReducer(state, action) {
+  switch (action.type) {
+    case 'ADD_ACCOUNT':
+      return {
+        ...state,
+        accounts: {
+          byId: { ...state.accounts.byId, [id]: account },
+          allIds: [...state.accounts.allIds, id],
+        },
+      };
+  }
+}
+
+// Selector uses pre-computed array
+const selectAllAccounts = createSelector(
+  (state) => state.accounts.allIds,
+  (state) => state.accounts.byId,
+  (allIds, byId) => allIds.map((id) => byId[id]),
+);
+```
+
+**Solution 2: Memoize Object-to-Array Conversion Properly**
+
+If you can't change state structure, ensure the conversion is properly memoized:
+
+```typescript
+✅ CORRECT: Proper memoization with stable reference
+// Base selector returns the object
+const selectAccountsObject = (state: AccountsState) =>
+  state.metamask.internalAccounts.accounts;
+
+// Memoized conversion selector
+export const getInternalAccounts = createSelector(
+  selectAccountsObject,
+  (accountsObject) => {
+    // Only creates array when accountsObject reference changes
+    return Object.values(accountsObject);
+  },
+);
+
+// For deeply nested structures, use createDeepEqualSelector
+export const getNormalizedGroupsMetadata = createDeepEqualSelector(
+  getAccountTree,
+  getInternalAccountsObject,
+  (accountTree, internalAccountsObject) => {
+    // Deep equality check prevents recomputation when nested values unchanged
+    const { wallets } = accountTree;
+    const walletsArray = Object.values(wallets);
+    // ... rest of logic
+  },
+);
+```
+
+**Solution 3: Use Iterators Instead of Arrays When Possible**
+
+For operations that don't require arrays, iterate over object values directly:
+
+```typescript
+✅ CORRECT: Iterate without converting to array
+export const getAccountCount = createSelector(
+  (state) => state.metamask.internalAccounts.accounts,
+  (accountsObject) => {
+    // Count without creating array
+    return Object.keys(accountsObject).length;
+  },
+);
+
+// Or use Object.entries() if you need both key and value
+export const getAccountEntries = createSelector(
+  (state) => state.metamask.internalAccounts.accounts,
+  (accountsObject) => {
+    // Object.entries() is fine if you need both key and value
+    return Object.entries(accountsObject).map(([id, account]) => ({
+      id,
+      ...account,
+    }));
+  },
+);
+```
+
+**Solution 4: Normalize State Structure**
+
+The best long-term solution is to normalize state to avoid these conversions:
+
+```typescript
+✅ CORRECT: Normalized state eliminates need for Object.values()
+// Before: Nested objects
+{
+  metamask: {
+    allNfts: {
+      [account]: {
+        [chainId]: Nft[]
+      }
+    }
+  }
+}
+
+// After: Normalized with indexes
+{
+  metamask: {
+    nfts: {
+      byId: { [nftId]: Nft },
+      allIds: string[],
+      byAccountId: { [accountId]: string[] }, // NFT IDs for account
+      byChainId: { [chainId]: string[] }, // NFT IDs for chain
+    }
+  }
+}
+
+// Selector uses indexes instead of Object.values()
+const selectNftsByAccount = createSelector(
+  (state, accountId) => state.metamask.nfts.byAccountId[accountId] ?? [],
+  (state) => state.metamask.nfts.byId,
+  (nftIds, nftsById) => nftIds.map((id) => nftsById[id]),
+);
+```
+
+### ❌ Anti-Pattern: Deep Property Access in Selectors
+
+**Problem:** Selectors access deeply nested properties (e.g., `state.metamask.accountTree.wallets[walletId].groups[groupId].accounts`), making them fragile to state structure changes and preventing effective memoization.
+
+**Examples:**
+
+```typescript
+❌ WRONG: Deep property access
+const selectGroupAccounts = createSelector(
+  (state, walletId, groupId) =>
+    state.metamask.accountTree.wallets[walletId]?.groups[groupId]?.accounts ?? [],
+  (accounts) => accounts,
+);
+```
+
+**Solutions:**
+
+```typescript
+✅ CORRECT: Granular input selectors
+// Base selectors for each level
+const selectAccountTree = (state) => state.metamask.accountTree;
+const selectWallet = createSelector(
+  [selectAccountTree, (_, walletId) => walletId],
+  (accountTree, walletId) => accountTree.wallets[walletId],
+);
+const selectGroup = createSelector(
+  [selectWallet, (_, __, groupId) => groupId],
+  (wallet, groupId) => wallet?.groups[groupId],
+);
+
+// Composed selector
+const selectGroupAccounts = createSelector(
+  [selectGroup],
+  (group) => group?.accounts ?? [],
+);
+```
+
+### ❌ Anti-Pattern: Repeated Object Traversal in Selectors
+
+**Problem:** Multiple selectors traverse the same nested object structure independently, duplicating work and preventing shared memoization.
+
+**Example:**
+
+```typescript
+❌ WRONG: Multiple selectors traversing same structure
+const selectAllWallets = createSelector(
+  (state) => state.metamask.accountTree.wallets,
+  (wallets) => Object.values(wallets),
+);
+
+const selectAllGroups = createSelector(
+  (state) => state.metamask.accountTree.wallets,
+  (wallets) => {
+    return Object.values(wallets).flatMap((wallet) =>
+      Object.values(wallet.groups),
+    );
+  },
+);
+
+const selectAllAccounts = createSelector(
+  (state) => state.metamask.accountTree.wallets,
+  (wallets) => {
+    return Object.values(wallets).flatMap((wallet) =>
+      Object.values(wallet.groups).flatMap((group) => group.accounts),
+    );
+  },
+);
+```
+
+**Solution:**
+
+```typescript
+✅ CORRECT: Shared base selector and composition
+// Single traversal, multiple derived selectors
+const selectWalletsObject = (state) => state.metamask.accountTree.wallets;
+
+const selectAllWallets = createSelector([selectWalletsObject], (wallets) =>
+  Object.values(wallets),
+);
+
+const selectAllGroups = createSelector([selectAllWallets], (wallets) =>
+  wallets.flatMap((wallet) => Object.values(wallet.groups)),
+);
+
+const selectAllAccounts = createSelector([selectAllGroups], (groups) =>
+  groups.flatMap((group) => group.accounts),
+);
+```
+
+### ❌ Anti-Pattern: Selectors That Reorganize Nested State
+
+**Problem:** Selectors spend significant time reorganizing nested state structures (e.g., converting `{ [account]: { [chainId]: items } }` to `{ [chainId]: { [account]: items } }`), which is expensive and creates new object references.
+
+**Example:**
+
+```typescript
+❌ WRONG: Reorganizing nested structure on every call
+export const getNftContractsByAddressByChain = createSelector(
+  getNftContractsByChainByAccount,
+  (nftContractsByChainByAccount) => {
+    // Expensive reorganization
+    const userAccounts = Object.keys(nftContractsByChainByAccount);
+    const allNftContracts = userAccounts
+      .map((account) =>
+        Object.keys(nftContractsByChainByAccount[account]).map((chainId) =>
+          nftContractsByChainByAccount[account][chainId].map((contract) => ({
+            ...contract,
+            chainId,
+          })),
+        ),
+      )
+      .flat()
+      .flat();
+
+    return allNftContracts.reduce(
+      (acc, contract) => {
+        const { chainId, ...data } = contract;
+        const chainIdContracts = acc[chainId] ?? {};
+        acc[chainId] = chainIdContracts;
+        chainIdContracts[data.address.toLowerCase()] = data;
+        return acc;
+      },
+      {} as { [chainId: string]: { [address: string]: NftContract } },
+    );
+  },
+);
+```
+
+**Solution:**
+
+```typescript
+✅ CORRECT: Store in the needed format, or normalize state
+// Option 1: Store in both formats if both are needed frequently
+interface NftState {
+  byAccountByChain: { [account]: { [chainId]: NftContract[] } };
+  byChainByAddress: { [chainId]: { [address]: NftContract } }; // Pre-computed
+}
+
+// Option 2: Normalize to avoid reorganization
+interface NftState {
+  contracts: {
+    byId: { [contractId]: NftContract };
+    byAccountId: { [accountId]: string[] };
+    byChainId: { [chainId]: string[] };
+    byAddress: { [address]: string[] };
+  };
+}
+```
+
+### ❌ Anti-Pattern: Filtering/Searching Through Nested Objects
+
+**Problem:** Selectors use `Object.values().find()` or `Object.values().filter()` to search through nested objects, which is O(n) and creates temporary arrays.
+
+**Example:**
+
+```typescript
+❌ WRONG: Linear search through object values
+export const getInternalAccountByAddress = createSelector(
+  (state) => state.metamask.internalAccounts.accounts,
+  (_, address) => address,
+  (accounts, address) => {
+    return Object.values(accounts).find((account) =>
+      isEqualCaseInsensitive(account.address, address),
+    );
+  },
+);
+```
+
+**Solution:**
+
+```typescript
+✅ CORRECT: Maintain lookup index
+// State includes address-to-ID mapping
+interface AccountsState {
+  accounts: {
+    byId: Record<string, Account>;
+    byAddress: Record<string, string>; // address -> accountId
+  };
+}
+
+const selectAccountByAddress = createSelector(
+  (state, address) => state.metamask.internalAccounts.accounts.byAddress[address.toLowerCase()],
+  (state) => state.metamask.internalAccounts.accounts.byId,
+  (accountId, accountsById) => accountId ? accountsById[accountId] : undefined,
+);
+```
+
+### Summary: Best Practices for Nested State
+
+1. **Normalize state structure** - Use `byId` + `allIds` patterns with lookup indexes
+2. **Store arrays alongside objects** - If arrays are frequently needed, maintain both
+3. **Use granular input selectors** - Break deep property access into composable selectors
+4. **Compose selectors** - Build complex selectors from simple ones to share memoization
+5. **Avoid reorganization** - Store data in the format it's most frequently accessed
+6. **Maintain lookup indexes** - For O(1) lookups instead of O(n) searches
+7. **Use `createDeepEqualSelector` judiciously** - Only when shallow equality fails due to Immer reference churn
+
+**Migration Strategy:**
+
+When refactoring existing selectors:
+
+1. **Identify hot paths** - Profile to find selectors called frequently or with large data
+2. **Start with state normalization** - Add `allIds` arrays or lookup indexes incrementally
+3. **Refactor selectors gradually** - Update selectors to use new normalized structure
+4. **Measure impact** - Use React DevTools Profiler to verify performance improvements
+
+---
+
+## Complex Computations During Render
+
+### ❌ Anti-Pattern: Creating Maps/Objects During Render
+
+Creating Maps, Sets, or complex objects during render blocks the main thread.
+
+```typescript
+❌ WRONG: Creating Map and mapping arrays on every render
+const UnconnectedAccountAlert = () => {
+  const internalAccounts = useSelector(getInternalAccounts);
+  const connectedAccounts = useSelector(getOrderedConnectedAccountsForActiveTab);
+
+  // Map creation runs on every render
+  const internalAccountsMap = new Map(
+    internalAccounts.map((acc) => [acc.address, acc]),
+  );
+
+  // Array mapping runs on every render
+  const connectedAccountsWithName = connectedAccounts.map((account) => ({
+    ...account,
+    name: internalAccountsMap.get(account.address)?.metadata.name,
+  }));
+
+  return <div>{connectedAccountsWithName.map(...)}</div>;
+};
+```
+
+**Problems:**
+
+- Map creation runs on every render
+- Array mapping runs on every render
+- Object spreading creates new objects
+- Expensive operations blocking render
+
+```typescript
+✅ CORRECT: Memoize expensive computations
+const UnconnectedAccountAlert = () => {
+  const internalAccounts = useSelector(getInternalAccounts);
+  const connectedAccounts = useSelector(getOrderedConnectedAccountsForActiveTab);
+
+  // Memoize Map creation
+  const internalAccountsMap = useMemo(
+    () => new Map(internalAccounts.map((acc) => [acc.address, acc])),
+    [internalAccounts]
+  );
+
+  // Memoize array transformation
+  const connectedAccountsWithName = useMemo(
+    () =>
+      connectedAccounts.map((account) => ({
+        ...account,
+        name: internalAccountsMap.get(account.address)?.metadata.name,
+      })),
+    [connectedAccounts, internalAccountsMap]
+  );
+
+  return <div>{connectedAccountsWithName.map(...)}</div>;
+};
+```
+
+### ❌ Anti-Pattern: Expensive Operations Without Memoization
+
+Complex map/filter/reduce operations during render block the main thread.
+
+```typescript
+❌ WRONG: Expensive computation on every render
+const AssetDashboard = ({ assets, filters }: AssetDashboardProps) => {
+  // These run on EVERY render, even if assets/filters haven't changed
+  const filtered = assets
+    .filter(asset => matchesFilters(asset, filters))
+    .map(asset => enrichAssetData(asset)) // Expensive transformation
+    .sort((a, b) => compareAssets(a, b)); // Expensive comparison
+
+  const aggregated = filtered.reduce((acc, asset) => {
+    acc.totalValue += parseFloat(asset.balance) * asset.price;
+    acc.byChain[asset.chainId] = (acc.byChain[asset.chainId] || 0) + asset.value;
+    return acc;
+  }, { totalValue: 0, byChain: {} });
+
   return (
     <div>
-      {tokens.map((token, index) => (
-        <TokenItem key={index} token={token} />
+      <TotalValue value={aggregated.totalValue} />
+      {filtered.map(asset => <AssetCard key={asset.id} asset={asset} />)}
+    </div>
+  );
+};
+```
+
+```typescript
+✅ CORRECT: Memoize expensive computations
+const AssetDashboard = ({ assets, filters }: AssetDashboardProps) => {
+  // Memoize filtered and enriched assets
+  const filtered = useMemo(() => {
+    return assets
+      .filter(asset => matchesFilters(asset, filters))
+      .map(asset => enrichAssetData(asset))
+      .sort((a, b) => compareAssets(a, b));
+  }, [assets, filters]); // Only recompute when dependencies change
+
+  // Memoize aggregated data
+  const aggregated = useMemo(() => {
+    return filtered.reduce((acc, asset) => {
+      acc.totalValue += parseFloat(asset.balance) * asset.price;
+      acc.byChain[asset.chainId] = (acc.byChain[asset.chainId] || 0) + asset.value;
+      return acc;
+    }, { totalValue: 0, byChain: {} });
+  }, [filtered]); // Depends on filtered, which is already memoized
+
+  return (
+    <div>
+      <TotalValue value={aggregated.totalValue} />
+      {filtered.map(asset => <AssetCard key={asset.id} asset={asset} />)}
+    </div>
+  );
+};
+```
+
+### Strategy: Move Complex Computations to Selectors
+
+For Redux state, move expensive computations to selectors instead of components.
+
+```typescript
+❌ WRONG: Computation in component
+const AssetList = () => {
+  const assets = useSelector(state => state.assets);
+  const filters = useSelector(state => state.filters);
+
+  // Expensive computation runs in component render
+  const filtered = assets
+    .filter(asset => matchesFilters(asset, filters))
+    .map(asset => expensiveTransform(asset));
+
+  return <div>{filtered.map(a => <Asset key={a.id} asset={a} />)}</div>;
+};
+```
+
+```typescript
+✅ CORRECT: Computation in selector
+// In selectors file:
+const selectAssets = (state) => state.assets;
+const selectFilters = (state) => state.filters;
+
+const selectFilteredAssets = createSelector(
+  [selectAssets, selectFilters],
+  (assets, filters) => {
+    // Only recomputes when assets or filters change
+    return assets
+      .filter(asset => matchesFilters(asset, filters))
+      .map(asset => expensiveTransform(asset));
+  },
+);
+
+// In component:
+const AssetList = () => {
+  // Selector handles memoization automatically
+  const filteredAssets = useSelector(selectFilteredAssets);
+
+  return <div>{filteredAssets.map(a => <Asset key={a.id} asset={a} />)}</div>;
+};
+```
+
+### Strategy: Use Web Workers for Heavy Computations
+
+For very expensive computations (crypto operations, large data transformations), use Web Workers.
+
+```typescript
+✅ GOOD: Offload heavy computation to Web Worker
+// worker.ts
+self.onmessage = (e) => {
+  const { assets, filters } = e.data;
+
+  // Heavy computation in worker thread
+  const result = assets
+    .filter(asset => matchesFilters(asset, filters))
+    .map(asset => expensiveCryptoOperation(asset))
+    .sort((a, b) => compareAssets(a, b));
+
+  self.postMessage(result);
+};
+
+// Component
+const AssetList = ({ assets, filters }: AssetListProps) => {
+  const [processed, setProcessed] = useState([]);
+  const workerRef = useRef<Worker | null>(null);
+
+  useEffect(() => {
+    workerRef.current = new Worker(new URL('./worker.ts', import.meta.url));
+
+    workerRef.current.onmessage = (e) => {
+      setProcessed(e.data);
+    };
+
+    return () => {
+      workerRef.current?.terminate();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (workerRef.current) {
+      workerRef.current.postMessage({ assets, filters });
+    }
+  }, [assets, filters]);
+
+  return <div>{processed.map(a => <Asset key={a.id} asset={a} />)}</div>;
+};
+```
+
+---
+
+## Optimizing Asset Loading
+
+### Problem: Large Number of Assets Loaded Frequently
+
+When loading many assets (tokens, NFTs, etc.), avoid blocking renders and manage loading states efficiently.
+
+### Strategy 1: Progressive Loading with Pagination
+
+```typescript
+❌ WRONG: Load all assets at once
+const AssetList = ({ accountId }: AssetListProps) => {
+  const [assets, setAssets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Loads ALL assets at once - blocks UI
+    fetchAllAssets(accountId).then(allAssets => {
+      setAssets(allAssets); // 1000+ assets loaded at once!
+      setLoading(false);
+    });
+  }, [accountId]);
+
+  return loading ? <Spinner /> : <div>{assets.map(a => <Asset key={a.id} asset={a} />}</div>;
+};
+```
+
+```typescript
+✅ CORRECT: Progressive pagination
+const AssetList = ({ accountId }: AssetListProps) => {
+  const [assets, setAssets] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const pageRef = useRef(0);
+  const PAGE_SIZE = 50;
+
+  const loadPage = useCallback(async () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+    try {
+      const result = await fetchAssetsPage(accountId, pageRef.current, PAGE_SIZE);
+      setAssets(prev => [...prev, ...result.items]);
+      setHasMore(result.hasMore);
+      pageRef.current += 1;
+    } finally {
+      setLoading(false);
+    }
+  }, [accountId, loading, hasMore]);
+
+  useEffect(() => {
+    // Load first page on mount
+    loadPage();
+  }, [accountId]); // Reset on account change
+
+  return (
+    <div>
+      {assets.map(a => <Asset key={a.id} asset={a} />)}
+      {hasMore && (
+        <button onClick={loadPage} disabled={loading}>
+          {loading ? 'Loading...' : 'Load More'}
+        </button>
+      )}
+    </div>
+  );
+};
+```
+
+### Strategy 2: Virtual Scrolling for Large Lists
+
+```typescript
+✅ GOOD: Virtual scrolling for 1000+ assets
+import { FixedSizeList } from 'react-window';
+
+const AssetList = ({ assets }: AssetListProps) => {
+  const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => (
+    <div style={style}>
+      <Asset asset={assets[index]} />
+    </div>
+  );
+
+  return (
+    <FixedSizeList
+      height={600}
+      itemCount={assets.length}
+      itemSize={80}
+      width="100%"
+    >
+      {Row}
+    </FixedSizeList>
+  );
+};
+```
+
+### Strategy 3: Lazy Image Loading
+
+```typescript
+✅ GOOD: Lazy load asset images
+const AssetCard = ({ asset }: AssetCardProps) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (!imgRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setImageLoaded(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '50px' } // Start loading 50px before visible
+    );
+
+    observer.observe(imgRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div>
+      <div>{asset.name}</div>
+      {imageLoaded ? (
+        <img src={asset.imageUrl} alt={asset.name} />
+      ) : (
+        <div className="placeholder">Loading image...</div>
+      )}
+    </div>
+  );
+};
+```
+
+### Strategy 4: Debounce Frequent Updates
+
+```typescript
+✅ GOOD: Debounce rapid balance updates
+import { useDebouncedValue } from './hooks/useDebouncedValue';
+
+const AssetBalance = ({ assetId }: AssetBalanceProps) => {
+  const balance = useSelector(state => selectAssetBalance(state, assetId));
+
+  // Debounce rapid updates to avoid jitter
+  const debouncedBalance = useDebouncedValue(balance, 300);
+
+  return <div>{debouncedBalance}</div>;
+};
+
+// Hook implementation
+function useDebouncedValue<T>(value: T, delay: number): T {
+  const [debounced, setDebounced] = useState(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+
+  return debounced;
+}
+```
+
+---
+
+## React Compiler Considerations
+
+**Note:** This codebase uses React Compiler, a build-time tool that automatically optimizes React applications by memoizing components and hooks. React Compiler understands the [Rules of React](https://react.dev/reference/rules) and works with existing JavaScript/TypeScript code without requiring rewrites.
+
+Reference: [React Compiler Introduction](https://github.com/reactwg/react-compiler/discussions/5)
+
+### What React Compiler Does
+
+React Compiler automatically applies memoization to improve update performance (re-renders). It focuses on two main use cases:
+
+1. **Skipping cascading re-rendering of components** - Fine-grained reactivity where only changed parts re-render
+2. **Skipping expensive calculations** - Memoizing expensive computations within components and hooks
+
+#### Example: Automatic Fine-Grained Reactivity
+
+```typescript
+// React Compiler automatically prevents unnecessary re-renders
+function FriendList({ friends }) {
+  const onlineCount = useFriendOnlineCount();
+
+  if (friends.length === 0) {
+    return <NoFriends />;
+  }
+
+  return (
+    <div>
+      <span>{onlineCount} online</span>
+      {friends.map((friend) => (
+        <FriendListCard key={friend.id} friend={friend} />
+      ))}
+      <MessageButton /> {/* Won't re-render when onlineCount changes! */}
+    </div>
+  );
+}
+```
+
+React Compiler determines that `<FriendListCard />` and `<MessageButton />` can be reused even as `friends` or `onlineCount` change, avoiding unnecessary re-renders.
+
+#### Example: Automatic Memoization of Expensive Calculations
+
+```typescript
+// React Compiler automatically memoizes expensive computations
+function TableContainer({ items }) {
+  // This expensive calculation is automatically memoized
+  const data = expensivelyProcessAReallyLargeArrayOfObjects(items);
+  return <Table data={data} />;
+}
+```
+
+**Note:** For truly expensive functions used across multiple components, consider implementing memoization outside React, as React Compiler only memoizes within components/hooks and doesn't share memoization across components.
+
+### React Compiler Assumptions
+
+React Compiler assumes your code:
+
+- ✅ Is valid, semantic JavaScript
+- ✅ Tests nullable/optional values before accessing (e.g., enable `strictNullChecks` in TypeScript)
+- ✅ Follows the [Rules of React](https://react.dev/reference/rules)
+
+React Compiler can verify many Rules of React statically and will **skip compilation** when it detects errors. Install [eslint-plugin-react-compiler](https://www.npmjs.com/package/eslint-plugin-react-compiler) to see compilation errors.
+
+### React Compiler Limitations
+
+#### Single-File Compilation
+
+**React Compiler operates on a single file at a time** - it only uses information within that file to perform optimizations. This means:
+
+- ✅ Works well for most React code (React's programming model uses plain JavaScript values)
+- ❌ Cannot see across file boundaries
+- ❌ Cannot use TypeScript/Flow type information (has its own internal type system)
+- ❌ Cannot optimize based on information from other files
+
+**Impact:** Code that depends on values from other files may not be optimized as effectively.
+
+#### Effects and Dependency Memoization (Open Research Area)
+
+**Effects memoization is still an open area of research.** React Compiler can sometimes memoize differently from manual memoization, which can cause issues with effects that rely on dependencies not changing to prevent infinite loops.
+
+**Recommendation:**
+
+- ✅ **Keep existing `useMemo()` and `useCallback()` calls** - Especially for effect dependencies to ensure behavior doesn't change
+- ✅ **Write new code without `useMemo`/`useCallback`** - Let React Compiler handle it automatically
+- ⚠️ React Compiler will statically validate that auto-memoization matches existing manual memoization
+- ⚠️ If it can't prove they're the same, the component/hook is safely skipped over
+
+```typescript
+✅ CORRECT: Keep existing useMemo for effect dependencies
+const TokenBalance = ({ address }: Props) => {
+  const network = useSelector(getNetwork);
+
+  // Keep useMemo to ensure effect behavior is preserved
+  const networkConfig = useMemo(() => ({
+    chainId: network.chainId,
+    rpcUrl: network.rpcUrl,
+  }), [network.chainId, network.rpcUrl]);
+
+  useEffect(() => {
+    fetchBalance(address, networkConfig);
+  }, [address, networkConfig]); // Stable reference prevents infinite loops
+};
+
+✅ CORRECT: New code - no manual memoization needed
+const TokenList = ({ tokens }: TokenListProps) => {
+  // React Compiler handles this automatically
+  const sortedTokens = tokens
+    .slice()
+    .sort((a, b) => parseFloat(b.balance) - parseFloat(a.balance));
+
+  return (
+    <div>
+      {sortedTokens.map(token => (
+        <TokenItem key={token.address} token={token} />
       ))}
     </div>
   );
 };
 ```
 
-**Solution:** Use unique, stable identifiers from data.
+### When Manual Memoization is Still Required
+
+Due to React Compiler's **single-file compilation** limitation and inability to see across file boundaries, manual memoization is required for:
+
+#### 1. Cross-File Dependencies
+
+React Compiler operates on single files, so it cannot optimize computations that depend on values from other files.
+
+```typescript
+❌ WRONG: React Compiler can't see across files
+// file1.ts
+export const getProcessedTokens = (tokens: Token[]) => {
+  return tokens.map(/* expensive processing */);
+};
+
+// file2.tsx
+import { getProcessedTokens } from './file1';
+
+const AssetList = () => {
+  const tokens = useSelector(getTokens);
+
+  // React Compiler can't see into getProcessedTokens from another file
+  const processed = getProcessedTokens(tokens); // Runs on every render!
+};
+
+✅ CORRECT: Manual memoization for cross-file dependencies
+const AssetList = () => {
+  const tokens = useSelector(getTokens);
+
+  // Manual memoization required - function from another file
+  const processed = useMemo(
+    () => getProcessedTokens(tokens),
+    [tokens]
+  );
+};
+```
+
+**Why:** React Compiler only sees code within the current file. Functions imported from other files are opaque.
+
+#### 2. Redux Selectors and External State Management
+
+React Compiler cannot optimize values from Redux selectors or other external state management libraries.
+
+```typescript
+❌ WRONG: React Compiler can't optimize Redux selectors
+const AssetList = () => {
+  const tokens = useSelector(getTokens); // External state
+  const balances = useSelector(getBalances); // External state
+
+  // React Compiler can't see into Redux - manual memoization needed
+  const tokensWithBalances = tokens.map(token => ({
+    ...token,
+    balance: balances[token.address],
+  }));
+};
+
+✅ CORRECT: Manual memoization required for Redux-derived values
+const AssetList = () => {
+  const tokens = useSelector(getTokens);
+  const balances = useSelector(getBalances);
+
+  // Manual memoization required - React Compiler can't optimize Redux values
+  const tokensWithBalances = useMemo(
+    () => tokens.map(token => ({
+      ...token,
+      balance: balances[token.address],
+    })),
+    [tokens, balances] // Dependencies from external state
+  );
+};
+```
+
+**Why:** Redux selectors return values from outside React's compilation scope. React Compiler operates on single files and can't track changes to external state.
+
+#### 3. Values from External Hooks or Libraries
+
+React Compiler cannot optimize values returned from hooks in external libraries or custom hooks defined in other files.
+
+```typescript
+❌ WRONG: React Compiler can't optimize external hook values
+// hooks.ts (different file)
+export function useTokenTracker({ tokens }) {
+  // Complex logic using Redux, context, etc.
+  return { tokensWithBalances: /* ... */ };
+}
+
+// component.tsx
+import { useTokenTracker } from './hooks';
+
+const TokenTracker = ({ tokens }: Props) => {
+  const { tokensWithBalances } = useTokenTracker({ tokens }); // External hook
+
+  // React Compiler can't see into useTokenTracker from another file
+  const formattedTokens = tokensWithBalances.map(token => ({
+    ...token,
+    formattedBalance: formatCurrency(token.balance),
+  }));
+};
+
+✅ CORRECT: Manual memoization for external hook values
+const TokenTracker = ({ tokens }: Props) => {
+  const { tokensWithBalances } = useTokenTracker({ tokens });
+
+  // Manual memoization required - hook from another file
+  const formattedTokens = useMemo(
+    () => tokensWithBalances.map(token => ({
+      ...token,
+      formattedBalance: formatCurrency(token.balance),
+    })),
+    [tokensWithBalances, formatCurrency]
+  );
+};
+```
+
+**Why:** React Compiler operates on single files. Hooks defined in other files are opaque, especially if they use Redux, context, or other external state.
+
+#### 4. Conditional Logic with External State
+
+When conditional logic combines props/state with external state (Redux, context from other files), React Compiler may not optimize effectively.
+
+```typescript
+❌ WRONG: Conditional logic with external state may not be optimized
+const AssetPicker = ({ hideZeroBalance }: Props) => {
+  const tokens = useSelector(getTokens); // External state
+  const balances = useSelector(getBalances); // External state
+
+  // Conditional filtering - React Compiler may not optimize this
+  const filteredTokens = hideZeroBalance
+    ? tokens.filter(t => balances[t.address] > 0)
+    : tokens;
+};
+
+✅ CORRECT: Manual memoization for conditional logic with external dependencies
+const AssetPicker = ({ hideZeroBalance }: Props) => {
+  const tokens = useSelector(getTokens);
+  const balances = useSelector(getBalances);
+
+  // Manual memoization required - conditional + external state
+  const filteredTokens = useMemo(
+    () => hideZeroBalance
+      ? tokens.filter(t => balances[t.address] > 0)
+      : tokens,
+    [hideZeroBalance, tokens, balances]
+  );
+};
+```
+
+**Why:** React Compiler can optimize simple conditionals based on props/state within the same file, but struggles when combined with external state from other files.
+
+#### 5. Functions Passed to Third-Party Components
+
+When passing functions to components from external libraries (node_modules) or components in other files, React Compiler cannot optimize.
+
+```typescript
+❌ WRONG: React Compiler can't optimize callbacks for external components
+import { ThirdPartyList } from 'some-library'; // External library
+
+const TokenList = ({ tokens, onSelect }: Props) => {
+  const dispatch = useDispatch();
+
+  // React Compiler can't see into third-party component from node_modules
+  return (
+    <ThirdPartyList
+      items={tokens}
+      onItemClick={(token) => {
+        dispatch(selectToken(token));
+        onSelect(token);
+      }}
+    />
+  );
+};
+
+✅ CORRECT: Manual useCallback for external component callbacks
+const TokenList = ({ tokens, onSelect }: Props) => {
+  const dispatch = useDispatch();
+
+  // Manual useCallback required - external component from another file/library
+  const handleItemClick = useCallback(
+    (token: Token) => {
+      dispatch(selectToken(token));
+      onSelect(token);
+    },
+    [dispatch, onSelect]
+  );
+
+  return (
+    <ThirdPartyList items={tokens} onItemClick={handleItemClick} />
+  );
+};
+```
+
+**Why:** React Compiler operates on single files. Components from `node_modules` or other files are opaque and cannot be analyzed.
+
+#### 6. Computations Dependent on Refs or DOM Values
+
+When computations depend on `useRef` values, DOM queries, or other mutable values, React Compiler cannot track changes statically.
+
+```typescript
+❌ WRONG: React Compiler can't optimize ref-based computations
+const TokenInput = ({ tokens }: Props) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [filter, setFilter] = useState('');
+
+  // React Compiler can't track ref.current changes statically
+  const filteredTokens = tokens.filter(token => {
+    const inputValue = inputRef.current?.value || filter;
+    return token.symbol.includes(inputValue);
+  });
+};
+
+✅ CORRECT: Manual memoization for ref-dependent computations
+const TokenInput = ({ tokens }: Props) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [filter, setFilter] = useState('');
+
+  // Manual memoization required - refs are mutable
+  const filteredTokens = useMemo(() => {
+    const inputValue = inputRef.current?.value || filter;
+    return tokens.filter(token => token.symbol.includes(inputValue));
+  }, [tokens, filter]); // Note: ref.current not in deps (intentional)
+};
+```
+
+**Why:** Refs are mutable values that React Compiler cannot track statically. DOM queries and other runtime values also cannot be analyzed at compile time.
+
+#### 7. Reselect Selectors and Complex Compositions
+
+When using Reselect selectors defined in other files, React Compiler cannot optimize the selector itself.
+
+```typescript
+❌ WRONG: React Compiler can't optimize Reselect selectors from other files
+// selectors.ts (different file)
+export const selectTotalBalance = createSelector(
+  [getAccounts, getBalances],
+  (accounts, balances) => accounts.reduce((sum, acc) =>
+    sum + balances[acc.address], 0
+  )
+);
+
+// component.tsx
+import { selectTotalBalance } from './selectors';
+
+const Dashboard = () => {
+  const accounts = useSelector(getAccounts);
+  const balances = useSelector(getBalances);
+
+  // React Compiler can't see into selectTotalBalance from another file
+  const totalBalance = accounts.reduce((sum, acc) =>
+    sum + balances[acc.address], 0
+  );
+};
+
+✅ CORRECT: Use Reselect selector (already memoized) or manual memoization
+// Option 1: Use Reselect selector (preferred - already memoized)
+const Dashboard = () => {
+  const totalBalance = useSelector(selectTotalBalance); // Reselect handles memoization
+};
+
+// Option 2: Manual memoization if selector not available
+const Dashboard = () => {
+  const accounts = useSelector(getAccounts);
+  const balances = useSelector(getBalances);
+
+  const totalBalance = useMemo(
+    () => accounts.reduce((sum, acc) => sum + balances[acc.address], 0),
+    [accounts, balances]
+  );
+};
+```
+
+**Why:** Reselect selectors defined in other files are opaque to React Compiler. However, Reselect already provides memoization, so this is often not an issue.
+
+#### 8. Effect Dependencies (Keep Existing Memoization)
+
+**Effects memoization is still an open area of research.** React Compiler may memoize differently than manual memoization, which can break effects that rely on stable dependencies.
+
+```typescript
+⚠️ IMPORTANT: Keep existing useMemo/useCallback for effect dependencies
+const TokenBalance = ({ address }: Props) => {
+  const [balance, setBalance] = useState('0');
+  const network = useSelector(getNetwork);
+
+  // Keep useMemo to ensure effect behavior is preserved
+  const networkConfig = useMemo(() => ({
+    chainId: network.chainId,
+    rpcUrl: network.rpcUrl,
+  }), [network.chainId, network.rpcUrl]);
+
+  useEffect(() => {
+    // Stable networkConfig reference prevents infinite loops
+    fetchBalance(address, networkConfig);
+  }, [address, networkConfig]);
+};
+```
+
+**Why:** React Compiler will statically validate that auto-memoization matches existing manual memoization. If it can't prove they're the same, it safely skips compilation. To ensure effect behavior doesn't change, **keep existing `useMemo`/`useCallback` calls for effect dependencies**.
+
+**Recommendation:**
+
+- ✅ Keep existing `useMemo`/`useCallback` for effects
+- ✅ Write new code without manual memoization (let React Compiler handle it)
+- ⚠️ If you notice unexpected effect behavior, [file an issue](https://github.com/facebook/react/issues)
+
+#### 9. Context Values from External Providers
+
+When consuming context from providers defined in other files, React Compiler may not optimize effectively.
+
+```typescript
+❌ WRONG: React Compiler may not optimize context from other files
+// context.tsx (different file)
+export const ExternalI18nContext = createContext(/* ... */);
+
+// component.tsx
+import { ExternalI18nContext } from './context';
+
+const TokenDisplay = ({ token }: Props) => {
+  const { formatCurrency, locale } = useContext(ExternalI18nContext);
+
+  // React Compiler may not optimize context values from another file
+  const formattedBalance = formatCurrency(token.balance, locale);
+};
+
+✅ CORRECT: Manual memoization if needed
+const TokenDisplay = ({ token }: Props) => {
+  const { formatCurrency, locale } = useContext(ExternalI18nContext);
+
+  // Manual memoization if this computation is expensive
+  const formattedBalance = useMemo(
+    () => formatCurrency(token.balance, locale),
+    [formatCurrency, token.balance, locale]
+  );
+};
+```
+
+**Why:** Context providers defined in other files may not be fully analyzed by React Compiler. However, simple context consumption often works fine without manual memoization.
+
+#### 10. Computations with Multiple Cross-File Dependencies
+
+When computations combine multiple external sources from different files (Redux + Context + imported functions), React Compiler may not optimize effectively.
+
+```typescript
+❌ WRONG: Multiple cross-file dependencies - React Compiler may not optimize
+import { formatCurrency } from './utils'; // External function
+import { CurrencyContext } from './context'; // External context
+
+const AssetCard = ({ assetId }: Props) => {
+  const asset = useSelector(state => selectAsset(state, assetId)); // Redux
+  const { locale } = useContext(CurrencyContext); // Context from another file
+
+  // Multiple external dependencies from different files
+  const displayData = {
+    name: asset.name,
+    balance: formatCurrency(asset.balance, locale), // Function from another file
+  };
+};
+
+✅ CORRECT: Manual memoization for multiple cross-file dependencies
+const AssetCard = ({ assetId }: Props) => {
+  const asset = useSelector(state => selectAsset(state, assetId));
+  const { locale } = useContext(CurrencyContext);
+
+  // Manual memoization required - multiple external sources from different files
+  const displayData = useMemo(
+    () => ({
+      name: asset.name,
+      balance: formatCurrency(asset.balance, locale),
+    }),
+    [asset, locale] // formatCurrency is stable if from another file
+  );
+};
+```
+
+**Why:** React Compiler can optimize simple prop/state combinations within a single file, but struggles with complex dependency chains spanning multiple files.
+
+### Decision Tree: Do You Need Manual Memoization?
+
+```text
+Is the computation/value:
+├─ From another file (imported function/hook)? → ✅ Manual memoization required
+├─ From Redux selectors? → ✅ Manual memoization required
+├─ From external library (node_modules)? → ✅ Manual memoization required
+├─ Used as useEffect dependency? → ✅ Keep existing useMemo/useCallback
+├─ Depends on refs or DOM values? → ✅ Manual memoization required
+├─ Combines multiple cross-file dependencies? → ✅ Manual memoization required
+└─ Simple props/state within same file? → ❌ React Compiler handles it
+
+Is the callback:
+├─ Used as useEffect dependency? → ✅ Keep existing useCallback
+├─ Passed to external component/library? → ✅ Manual useCallback required
+├─ Depends on imported functions/hooks? → ✅ Manual useCallback required
+└─ Simple prop handler within file? → ❌ React Compiler handles it
+```
+
+### Summary: React Compiler Capabilities and Limitations
+
+**React Compiler CAN optimize:**
+
+1. ✅ Components and hooks within the same file
+2. ✅ Expensive calculations within components/hooks
+3. ✅ Fine-grained reactivity (preventing cascading re-renders)
+4. ✅ Inline objects/functions with React-controlled dependencies
+5. ✅ Derived state from props/state within the file
+6. ✅ Simple conditional memoization based on props/state
+
+**React Compiler CANNOT optimize:**
+
+1. ❌ Code across file boundaries (single-file compilation)
+2. ❌ Functions/hooks imported from other files
+3. ❌ Redux selectors and external state management
+4. ❌ Components from external libraries (node_modules)
+5. ❌ Computations dependent on refs or DOM values
+6. ❌ TypeScript/Flow type information (uses own type system)
+7. ⚠️ Effect dependencies (keep existing useMemo/useCallback - open research area)
+
+**Key Limitations:**
+
+- **Single-file compilation** - Cannot see across files
+- **No type information** - Doesn't use TypeScript/Flow types
+- **Effects memoization** - Still an open research area
+
+**Best Practices:**
+
+- ✅ Write new code without `useMemo`/`useCallback` - let React Compiler handle it
+- ✅ Keep existing `useMemo`/`useCallback` for effect dependencies
+- ✅ Use manual memoization for cross-file dependencies
+- ✅ Install [eslint-plugin-react-compiler](https://www.npmjs.com/package/eslint-plugin-react-compiler) to catch compilation errors
+
+**Rule of thumb:** If it's within the same file and uses props/state, React Compiler handles it. If it crosses file boundaries (imports, Redux, external libraries), use manual memoization.
 
 ---
 
-## Resources
+## Non-Deterministic Hook Execution
 
-- [React: Render and Commit](https://react.dev/learn/render-and-commit)
-- [React: You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect)
-- [React DevTools Profiler](https://react.dev/learn/react-developer-tools)
-- [react-window](https://github.com/bvaughn/react-window)
-- [Web Vitals](https://web.dev/vitals/)
+### ❌ Anti-Pattern: Conditional Hook Calls
+
+Hooks must be called in the same order on every render. Conditional hooks cause bugs and performance issues.
+
+```typescript
+❌ WRONG: Conditional hook execution
+const TokenDisplay = ({ token, showDetails }: TokenDisplayProps) => {
+  const [balance, setBalance] = useState('0');
+
+  if (showDetails) {
+    // ⚠️ Hook called conditionally - breaks Rules of Hooks!
+    const [metadata, setMetadata] = useState(null);
+    useEffect(() => {
+      fetchMetadata(token.id).then(setMetadata);
+    }, [token.id]);
+  }
+
+  return <div>{balance}</div>;
+};
+```
+
+```typescript
+✅ CORRECT: Always call hooks unconditionally
+const TokenDisplay = ({ token, showDetails }: TokenDisplayProps) => {
+  const [balance, setBalance] = useState('0');
+  const [metadata, setMetadata] = useState(null);
+
+  useEffect(() => {
+    if (showDetails) {
+      fetchMetadata(token.id).then(setMetadata);
+    }
+  }, [token.id, showDetails]);
+
+  return (
+    <div>
+      <div>Balance: {balance}</div>
+      {showDetails && metadata && <div>Metadata: {metadata.name}</div>}
+    </div>
+  );
+};
+```
+
+### ❌ Anti-Pattern: Dynamic Hook Creation
+
+Creating hooks dynamically or in loops breaks React's hook order tracking.
+
+```typescript
+❌ WRONG: Dynamic hook creation
+const AssetList = ({ assets }: AssetListProps) => {
+  // ⚠️ Number of hooks changes based on assets.length!
+  const balances = assets.map(asset => {
+    const [balance, setBalance] = useState('0'); // Wrong!
+    useEffect(() => {
+      fetchBalance(asset.id).then(setBalance);
+    }, [asset.id]);
+    return balance;
+  });
+
+  return <div>{balances.map((b, i) => <div key={i}>{b}</div>)}</div>;
+};
+```
+
+```typescript
+✅ CORRECT: Use custom hook or component
+// Option 1: Custom hook for single asset
+const useAssetBalance = (assetId: string) => {
+  const [balance, setBalance] = useState('0');
+
+  useEffect(() => {
+    fetchBalance(assetId).then(setBalance);
+  }, [assetId]);
+
+  return balance;
+};
+
+const AssetList = ({ assets }: AssetListProps) => {
+  return (
+    <div>
+      {assets.map(asset => (
+        <AssetItem key={asset.id} asset={asset} />
+      ))}
+    </div>
+  );
+};
+
+// Option 2: Component with its own hooks
+const AssetItem = ({ asset }: { asset: Asset }) => {
+  const balance = useAssetBalance(asset.id);
+  return <div>{asset.name}: {balance}</div>;
+};
+```
 
 ---
 
-## Summary
+## Cascading Re-renders from Hook Dependencies
 
-**Key Takeaways:**
-1. **Profile before optimizing** - Don't guess, measure
-2. **Keep components pure** - Same inputs = same outputs
-3. **Use memoization judiciously** - React.memo, useMemo, useCallback for expensive operations
-4. **Avoid inline objects/functions** - Create stable references
-5. **Split state appropriately** - By update frequency and concern
-6. **Virtualize large lists** - Render only visible items
-7. **Lazy load heavy components** - Code split by route and feature
-8. **Optimize context usage** - Split contexts and memoize values
-9. **Use proper keys** - Unique, stable identifiers for lists
-10. **Don't overuse effects** - Calculate during render when possible
+### ❌ Anti-Pattern: Chain Reaction Re-renders
 
-**Remember:** React is fast by default. Only optimize components that cause measurable performance issues in production usage.
+When hooks depend on values that change frequently, they can cause cascading re-renders.
+
+```typescript
+❌ WRONG: Cascading re-renders
+const Dashboard = () => {
+  const accounts = useSelector(state => state.accounts); // Large array
+  const [filteredAccounts, setFilteredAccounts] = useState([]);
+
+  // Effect runs whenever accounts array reference changes
+  useEffect(() => {
+    const filtered = accounts.filter(a => a.isActive);
+    setFilteredAccounts(filtered); // Triggers re-render
+  }, [accounts]); // accounts reference changes frequently
+
+  // Another effect depends on filteredAccounts
+  useEffect(() => {
+    updateAnalytics(filteredAccounts); // Triggers another update
+  }, [filteredAccounts]);
+
+  return <div>{filteredAccounts.map(a => <Account key={a.id} account={a} />)}</div>;
+};
+```
+
+```typescript
+✅ CORRECT: Use selectors and memoization to break chain
+// In selectors file:
+const selectAccounts = (state) => state.accounts;
+const selectActiveAccounts = createSelector(
+  [selectAccounts],
+  (accounts) => accounts.filter(a => a.isActive),
+);
+
+// In component:
+const Dashboard = () => {
+  // Selector handles memoization - only changes when accounts actually change
+  const activeAccounts = useSelector(selectActiveAccounts);
+
+  // Memoize analytics update to prevent unnecessary calls
+  const analyticsRef = useRef(activeAccounts);
+  useEffect(() => {
+    if (analyticsRef.current !== activeAccounts) {
+      updateAnalytics(activeAccounts);
+      analyticsRef.current = activeAccounts;
+    }
+  }, [activeAccounts]);
+
+  return <div>{activeAccounts.map(a => <Account key={a.id} account={a} />)}</div>;
+};
+```
+
+### Strategy: Isolate Hook Dependencies
+
+```typescript
+❌ WRONG: Hook depends on frequently changing object
+const TokenCard = ({ token }: TokenCardProps) => {
+  const [formattedBalance, setFormattedBalance] = useState('');
+
+  useEffect(() => {
+    // token object reference changes frequently
+    setFormattedBalance(formatBalance(token.balance, token.decimals));
+  }, [token]); // Re-runs too often
+
+  return <div>{formattedBalance}</div>;
+};
+```
+
+```typescript
+✅ CORRECT: Extract stable values, use refs for callbacks
+const TokenCard = ({ token }: TokenCardProps) => {
+  // Extract primitive values that change less frequently
+  const balance = token.balance;
+  const decimals = token.decimals;
+
+  // Calculate during render instead of effect
+  const formattedBalance = useMemo(
+    () => formatBalance(balance, decimals),
+    [balance, decimals]
+  );
+
+  return <div>{formattedBalance}</div>;
+};
+```
+
+---
+
+## Performance Checklist (Expanded)
+
+Before considering a component optimized:
+
+### Measurement
+
+- [ ] Profiled with React DevTools Profiler
+- [ ] Identified actual bottleneck (not premature optimization)
+- [ ] Measured before and after optimization
+- [ ] Verified improvement in real-world usage
+- [ ] Checked for memory leaks (heap snapshots)
+- [ ] Verified no console warnings (unmounted updates, etc.)
+
+### Component Structure
+
+- [ ] Component is pure (no side effects during render)
+- [ ] State is split appropriately (by update frequency)
+- [ ] Large components broken into smaller sub-components
+- [ ] Heavy components lazy loaded when possible
+- [ ] Hooks called unconditionally (no conditional hooks)
+- [ ] useState initializers use constants when appropriate
+- [ ] useRef used for persistent values (not regular variables)
+- [ ] Correct hook selected (useEffect vs useLayoutEffect)
+
+### Memoization
+
+- [ ] Expensive components wrapped in React.memo (if needed despite React Compiler)
+- [ ] Expensive calculations use useMemo (when dependencies are external - see React Compiler section)
+- [ ] Callbacks passed to children use useCallback (when dependencies are external - see React Compiler section)
+- [ ] No inline objects/functions in JSX (React Compiler handles simple cases)
+- [ ] Context values are memoized (especially external context)
+- [ ] Selectors properly memoized (no identity functions)
+- [ ] No JSON.stringify in useMemo (use deep equality instead)
+- [ ] Maps/Objects created during render are memoized (when dependencies are external)
+- [ ] Manual memoization used for Redux/external state dependencies
+
+### Selectors (Redux)
+
+- [ ] Selectors use granular input selectors
+- [ ] No identity functions as output selectors
+- [ ] Selectors compose properly
+- [ ] Deep equality selectors used when needed
+- [ ] Selectors select minimal state slices
+- [ ] No inline selector functions in useSelector
+- [ ] Multiple selectors from same slice combined when possible
+
+### Async Operations
+
+- [ ] State updates check mounted state
+- [ ] Fetch requests use AbortController
+- [ ] Intervals/subscriptions cleaned up
+- [ ] No large objects retained in closures
+- [ ] Error handling for aborted requests
+
+### State Management
+
+- [ ] Large state normalized (byId/allIds pattern)
+- [ ] State updates batched when possible
+- [ ] Only needed properties selected from state
+- [ ] Deep updates use Immer or similar
+
+### Lists and Data
+
+- [ ] Lists use stable, unique keys (not array index unless static)
+- [ ] Large lists (100+ items) use virtualization
+- [ ] Very large datasets use pagination/infinite scroll
+- [ ] Images lazy loaded
+- [ ] Rapid updates debounced
+
+### Effects
+
+- [ ] No unnecessary useEffect (prefer calculation during render)
+- [ ] Effect dependencies minimized
+- [ ] Effects properly cleaned up
+- [ ] No cascading re-renders from hook dependencies
+- [ ] No JSON.stringify in dependencies (use deep equality instead)
+- [ ] All dependencies included (no stale closures)
+- [ ] setState functions not in dependencies (they're stable)
+- [ ] No cascading effect chains (combine or compute during render)
+- [ ] Conditional effects properly structured
+
+### Code Splitting
+
+- [ ] Routes are lazy loaded
+- [ ] Heavy components are lazy loaded
+- [ ] Suspense boundaries in appropriate places
+
+---
