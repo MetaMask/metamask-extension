@@ -1115,7 +1115,25 @@ describe('RewardsController', () => {
   describe('optIn', () => {
     it('should return null when rewards are disabled', async () => {
       await withController({ isDisabled: true }, async ({ controller }) => {
-        const result = await controller.optIn();
+        const result = await controller.optIn([MOCK_INTERNAL_ACCOUNT]);
+
+        expect(result).toBeNull();
+      });
+    });
+
+    it('should return null when accounts is null', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const result = await controller.optIn(
+          null as unknown as InternalAccount[],
+        );
+
+        expect(result).toBeNull();
+      });
+    });
+
+    it('should return null when accounts is empty array', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const result = await controller.optIn([]);
 
         expect(result).toBeNull();
       });
@@ -1126,12 +1144,6 @@ describe('RewardsController', () => {
         { isDisabled: false },
         async ({ controller, mockMessengerCall }) => {
           mockMessengerCall.mockImplementation((actionType) => {
-            if (
-              actionType ===
-              'AccountTreeController:getAccountsFromSelectedAccountGroup'
-            ) {
-              return [MOCK_INTERNAL_ACCOUNT];
-            }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.resolve('0xmocksignature');
             }
@@ -1141,7 +1153,10 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.optIn('REF123');
+          const result = await controller.optIn(
+            [MOCK_INTERNAL_ACCOUNT],
+            'REF123',
+          );
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
           expect(
@@ -1169,12 +1184,6 @@ describe('RewardsController', () => {
         },
         async ({ controller, mockMessengerCall }) => {
           mockMessengerCall.mockImplementation((actionType) => {
-            if (
-              actionType ===
-              'AccountTreeController:getAccountsFromSelectedAccountGroup'
-            ) {
-              return [MOCK_INTERNAL_ACCOUNT];
-            }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.resolve('0xmocksignature');
             }
@@ -1195,9 +1204,122 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.optIn();
+          const result = await controller.optIn([MOCK_INTERNAL_ACCOUNT]);
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+        },
+      );
+    });
+
+    it('should throw error when all accounts fail to opt in', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              return Promise.reject(new Error('Opt-in failed'));
+            }
+            return undefined;
+          });
+
+          await expect(
+            controller.optIn([MOCK_INTERNAL_ACCOUNT]),
+          ).rejects.toThrow(
+            'Failed to opt in any account from the account group',
+          );
+        },
+      );
+    });
+
+    it('should link remaining accounts when one account succeeds', async () => {
+      const account2: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'account-2',
+        address: MOCK_ACCOUNT_ADDRESS_ALT,
+      };
+
+      await withController(
+        {
+          isDisabled: false,
+          state: {
+            rewardsSubscriptions: {
+              [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+            },
+            rewardsSubscriptionTokens: {
+              [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+            },
+          },
+        },
+        async ({ controller, mockMessengerCall }) => {
+          let optInCallCount = 0;
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              optInCallCount += 1;
+              if (optInCallCount === 1) {
+                // First account fails
+                return Promise.reject(new Error('First account failed'));
+              }
+              // Second account succeeds
+              return Promise.resolve(MOCK_LOGIN_RESPONSE);
+            }
+            if (actionType === 'RewardsDataService:mobileJoin') {
+              return Promise.resolve(MOCK_SUBSCRIPTION);
+            }
+            return undefined;
+          });
+
+          const result = await controller.optIn([
+            MOCK_INTERNAL_ACCOUNT,
+            account2,
+          ]);
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(optInCallCount).toBe(2);
+        },
+      );
+    });
+
+    it('should opt in with multiple accounts and link remaining ones', async () => {
+      const account2: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'account-2',
+        address: MOCK_ACCOUNT_ADDRESS_ALT,
+      };
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              return Promise.resolve(MOCK_LOGIN_RESPONSE);
+            }
+            if (actionType === 'RewardsDataService:mobileJoin') {
+              return Promise.resolve(MOCK_SUBSCRIPTION);
+            }
+            return undefined;
+          });
+
+          const result = await controller.optIn(
+            [MOCK_INTERNAL_ACCOUNT, account2],
+            'REF123',
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(
+            controller.state.rewardsAccounts[MOCK_CAIP_ACCOUNT],
+          ).toMatchObject({
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+          });
         },
       );
     });
@@ -1206,7 +1328,7 @@ describe('RewardsController', () => {
   describe('getGeoRewardsMetadata', () => {
     it('should return unknown location when rewards are disabled', async () => {
       await withController({ isDisabled: true }, async ({ controller }) => {
-        const result = await controller.getGeoRewardsMetadata();
+        const result = await controller.getRewardsGeoMetadata();
 
         expect(result).toEqual({
           geoLocation: 'UNKNOWN',
@@ -1226,7 +1348,7 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.getGeoRewardsMetadata();
+          const result = await controller.getRewardsGeoMetadata();
 
           expect(result).toEqual({
             geoLocation: 'US',
@@ -1234,7 +1356,7 @@ describe('RewardsController', () => {
           });
 
           // Verify caching - second call should not fetch again
-          const cachedResult = await controller.getGeoRewardsMetadata();
+          const cachedResult = await controller.getRewardsGeoMetadata();
           expect(cachedResult).toEqual(result);
         },
       );
@@ -1251,7 +1373,7 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.getGeoRewardsMetadata();
+          const result = await controller.getRewardsGeoMetadata();
 
           expect(result).toEqual({
             geoLocation: 'UK',
@@ -2562,24 +2684,11 @@ describe('Additional RewardsController edge cases', () => {
 
   describe('optIn - edge cases', () => {
     it('should return null when no accounts in account group', async () => {
-      await withController(
-        { isDisabled: false },
-        async ({ controller, mockMessengerCall }) => {
-          mockMessengerCall.mockImplementation((actionType) => {
-            if (
-              actionType ===
-              'AccountTreeController:getAccountsFromSelectedAccountGroup'
-            ) {
-              return null;
-            }
-            return undefined;
-          });
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const result = await controller.optIn([]);
 
-          const result = await controller.optIn();
-
-          expect(result).toBeNull();
-        },
-      );
+        expect(result).toBeNull();
+      });
     });
 
     it('should throw error when all accounts fail to opt in', async () => {
@@ -2587,19 +2696,15 @@ describe('Additional RewardsController edge cases', () => {
         { isDisabled: false },
         async ({ controller, mockMessengerCall }) => {
           mockMessengerCall.mockImplementation((actionType) => {
-            if (
-              actionType ===
-              'AccountTreeController:getAccountsFromSelectedAccountGroup'
-            ) {
-              return [MOCK_INTERNAL_ACCOUNT];
-            }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.reject(new Error('Signature failed'));
             }
             return undefined;
           });
 
-          await expect(controller.optIn()).rejects.toThrow(
+          await expect(
+            controller.optIn([MOCK_INTERNAL_ACCOUNT]),
+          ).rejects.toThrow(
             'Failed to opt in any account from the account group',
           );
         },
@@ -2617,12 +2722,6 @@ describe('Additional RewardsController edge cases', () => {
         { isDisabled: false },
         async ({ controller, mockMessengerCall }) => {
           mockMessengerCall.mockImplementation((actionType) => {
-            if (
-              actionType ===
-              'AccountTreeController:getAccountsFromSelectedAccountGroup'
-            ) {
-              return [MOCK_INTERNAL_ACCOUNT, account2];
-            }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.resolve('0xmocksignature');
             }
@@ -2635,7 +2734,10 @@ describe('Additional RewardsController edge cases', () => {
             return undefined;
           });
 
-          const result = await controller.optIn('REF123');
+          const result = await controller.optIn(
+            [MOCK_INTERNAL_ACCOUNT, account2],
+            'REF123',
+          );
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
         },
@@ -3050,7 +3152,7 @@ describe('Additional RewardsController edge cases', () => {
             return undefined;
           });
 
-          const result = await controller.getGeoRewardsMetadata();
+          const result = await controller.getRewardsGeoMetadata();
 
           expect(result).toEqual({
             geoLocation: 'UNKNOWN',
