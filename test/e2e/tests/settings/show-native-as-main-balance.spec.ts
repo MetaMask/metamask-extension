@@ -1,3 +1,4 @@
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixtures/fixture-builder';
@@ -5,15 +6,13 @@ import AdvancedSettings from '../../page-objects/pages/settings/advanced-setting
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import { mockEtherumSpotPrices } from '../tokens/utils/mocks';
 import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 
-// It is not possible to show the balance in fiat money on BIP44
-// these test are also duplicate of existing tests
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Settings: Show native token as main balance', function () {
+describe('Settings: Show native token as main balance', function () {
   it('Should show balance in crypto when toggle is off', async function () {
     await withFixtures(
       {
@@ -33,9 +32,13 @@ describe.skip('Settings: Show native token as main balance', function () {
       {
         fixtures: new FixtureBuilder()
           .withConversionRateEnabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return mockEtherumSpotPrices(mockServer);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
@@ -63,10 +66,14 @@ describe.skip('Settings: Show native token as main balance', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .withConversionRateEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return mockEtherumSpotPrices(mockServer);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
