@@ -5,7 +5,7 @@ import {
   ChainId,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { CaipAssetType } from '@metamask/utils';
+import { CaipAssetType, Hex } from '@metamask/utils';
 import { toAssetId } from '../lib/asset-utils';
 import { MultichainNetworks } from './multichain/networks';
 import {
@@ -24,7 +24,7 @@ const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   ///: END:ONLY_INCLUDE_IF
 ];
 
-const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
+export const ALLOWED_EVM_BRIDGE_CHAIN_IDS: Hex[] = [
   CHAIN_IDS.MAINNET,
   CHAIN_IDS.BSC,
   CHAIN_IDS.POLYGON,
@@ -276,6 +276,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDT',
     decimals: 6,
     name: 'Tether USD',
+    assetId: toAssetId(
+      'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      MultichainNetworks.TRON,
+    ),
   },
   ///: END:ONLY_INCLUDE_IF
 } as const;

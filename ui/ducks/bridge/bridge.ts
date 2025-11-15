@@ -1,16 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   SortOrder,
-  formatChainIdToCaip,
   calcLatestSrcBalance,
   isNonEvmChainId,
-  isCrossChain,
   formatChainIdToHex,
-  type GenericQuoteRequest,
   type QuoteResponse,
   isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
+import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
@@ -23,8 +21,8 @@ const initialState: BridgeState = {
   fromTokenExchangeRate: null,
   toTokenExchangeRate: null,
   toTokenUsdExchangeRate: null,
-  fromTokenBalance: null,
-  fromNativeBalance: null,
+  fromTokenBalance: '0',
+  fromNativeBalance: '0',
   sortOrder: SortOrder.COST_ASC,
   selectedQuote: null,
   wasTxDeclined: false,
@@ -59,12 +57,12 @@ const getBalanceAmount = async ({
 }: {
   selectedAddress?: string;
   tokenAddress: string;
-  chainId: GenericQuoteRequest['srcChainId'];
+  chainId: CaipChainId;
 }) => {
   if (isNonEvmChainId(chainId) || !selectedAddress) {
     return null;
   }
-  return (
+  const balance = (
     await calcLatestSrcBalance(
       global.ethereumProvider,
       selectedAddress,
@@ -72,6 +70,7 @@ const getBalanceAmount = async ({
       formatChainIdToHex(chainId),
     )
   )?.toString();
+  return balance;
 };
 
 export const setEVMSrcNativeBalance = createAsyncThunk(
@@ -89,7 +88,13 @@ export const setEVMSrcNativeBalance = createAsyncThunk(
 
 export const setEVMSrcTokenBalance = createAsyncThunk(
   'bridge/setEVMSrcTokenBalance',
-  getBalanceAmount,
+  async ({
+    assetId,
+    ...rest
+  }: Parameters<typeof getBalanceAmount>[0] & { assetId: CaipAssetType }) =>
+    await getBalanceAmount({
+      ...rest,
+    }),
 );
 
 const bridgeSlice = createSlice({
@@ -97,8 +102,9 @@ const bridgeSlice = createSlice({
   initialState: { ...initialState },
   reducers: {
     setFromToken: (state, { payload }: TokenPayload) => {
-      state.fromToken = toBridgeToken(payload);
-      state.fromTokenBalance = null;
+      state.fromToken = payload ? toBridgeToken(payload) : null;
+      state.fromTokenBalance = '0';
+      state.fromNativeBalance = '0';
       state.fromTokenInputValue = null;
       // Unset toToken if it's the same as the fromToken
       if (
@@ -121,6 +127,9 @@ const bridgeSlice = createSlice({
     },
     setToToken: (state, { payload }: TokenPayload) => {
       state.toToken = payload ? toBridgeToken(payload) : null;
+      if (state.toToken?.assetId === state.fromToken?.assetId) {
+        state.fromToken = null;
+      }
     },
     setFromTokenInputValue: (
       state,
@@ -180,27 +189,28 @@ const bridgeSlice = createSlice({
       state.txAlert = null;
     });
     builder.addCase(setEVMSrcTokenBalance.fulfilled, (state, action) => {
-      const isTokenInChain = !isCrossChain(
-        action.meta.arg.chainId,
-        state.fromToken?.chainId,
-      );
       if (
-        isTokenInChain && state.fromToken?.assetId
-          ? action.meta.arg.tokenAddress?.toLowerCase() ===
-            state.fromToken.assetId?.toLowerCase()
+        state.fromToken
+          ? action.meta.arg.assetId.toLowerCase() ===
+            state.fromToken.assetId.toLowerCase()
           : true
       ) {
-        state.fromTokenBalance = action.payload?.toString() ?? null;
+        state.fromTokenBalance = action.payload?.toString() ?? '0';
       }
     });
     builder.addCase(setEVMSrcTokenBalance.rejected, (state) => {
-      state.fromTokenBalance = null;
+      state.fromTokenBalance = '0';
     });
     builder.addCase(setEVMSrcNativeBalance.fulfilled, (state, action) => {
-      state.fromNativeBalance = action.payload?.toString() ?? null;
+      if (
+        state.fromToken?.chainId &&
+        state.fromToken.chainId === action.meta.arg.chainId
+      ) {
+        state.fromNativeBalance = action.payload?.toString() ?? '0';
+      }
     });
     builder.addCase(setEVMSrcNativeBalance.rejected, (state) => {
-      state.fromNativeBalance = null;
+      state.fromNativeBalance = '0';
     });
   },
 });

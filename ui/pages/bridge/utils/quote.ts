@@ -5,10 +5,6 @@ import {
   isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import type {
-  NetworkConfiguration,
-  AddNetworkFields,
-} from '@metamask/network-controller';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
@@ -109,15 +105,13 @@ export const formatProviderLabel = (args?: {
 export const isQuoteExpiredOrInvalid = ({
   activeQuote,
   toToken,
-  toChain,
-  fromChain,
+  fromToken,
   isQuoteExpired,
   insufficientBal,
 }: {
   activeQuote: QuoteResponse | null;
   toToken: BridgeToken | null;
-  toChain?: NetworkConfiguration | AddNetworkFields;
-  fromChain?: NetworkConfiguration;
+  fromToken: BridgeToken | null;
   isQuoteExpired: boolean;
   insufficientBal?: boolean;
 }): boolean => {
@@ -126,7 +120,7 @@ export const isQuoteExpiredOrInvalid = ({
     isQuoteExpired &&
     (!insufficientBal ||
       // `insufficientBal` is always true for non-EVM chains (Solana, Bitcoin)
-      (fromChain && isNonEvmChainId(fromChain.chainId)))
+      (fromToken && isNonEvmChainId(fromToken.chainId)))
   ) {
     return true;
   }
@@ -134,14 +128,14 @@ export const isQuoteExpiredOrInvalid = ({
   // 2. Ensure the quote still matches the currently selected destination asset / chain
   if (activeQuote && toToken) {
     const quoteDestAddress =
-      activeQuote.quote?.destAsset?.address?.toLowerCase() || '';
-    const selectedDestAddress = toToken.address?.toLowerCase() || '';
+      activeQuote.quote?.destAsset?.assetId?.toLowerCase() || '';
+    const selectedDestAddress = toToken.assetId?.toLowerCase() || '';
 
     const quoteDestChainIdCaip = activeQuote.quote?.destChainId
       ? formatChainIdToCaip(activeQuote.quote.destChainId)
       : '';
-    const selectedDestChainIdCaip = toChain?.chainId
-      ? formatChainIdToCaip(toChain.chainId)
+    const selectedDestChainIdCaip = toToken.chainId
+      ? formatChainIdToCaip(toToken.chainId)
       : '';
 
     return !(

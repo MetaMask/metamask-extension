@@ -3,8 +3,10 @@ import {
   isStrictHexString,
   type CaipChainId,
   type Hex,
+  parseCaipAssetType,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
+import { zeroAddress } from 'ethereumjs-util';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
   ChainId,
@@ -13,8 +15,6 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
   isNativeAddress,
-  isNonEvmChainId,
-  formatChainIdToHex,
   isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
@@ -23,8 +23,6 @@ import { Numeric } from '../../../shared/modules/Numeric';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { TokenPayload, BridgeToken } from './types';
 
 // Re-export isNonEvmChainId from bridge-controller for backward compatibility
@@ -254,62 +252,38 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
   };
 };
 
-const getTokenImage = (
-  payload: null | Pick<
-    NonNullable<TokenPayload['payload']>,
-    'chainId' | 'address' | 'assetId'
-  >,
-) => {
-  if (!payload) {
-    return '';
-  }
-  const { chainId, address, assetId } = payload;
-  const caipChainId = formatChainIdToCaip(chainId);
-  // If the token is native, return the SVG image asset
-  if (isNativeAddress(address)) {
-    // Non-EVM chains (Solana, Bitcoin) use MULTICHAIN_TOKEN_IMAGE_MAP
-    if (isNonEvmChainId(chainId)) {
-      return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
-    }
-    // EVM chains use CHAIN_ID_TOKEN_IMAGE_MAP
-    return CHAIN_ID_TOKEN_IMAGE_MAP[
-      formatChainIdToHex(chainId) as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-    ];
-  }
-  // If there's no image from the payload, build the asset image URL and return it
-  return getAssetImageUrl(assetId, caipChainId) ?? '';
-};
-
 export const toBridgeToken = (
-  payload: TokenPayload['payload'],
-): BridgeToken | null => {
-  if (!payload) {
-    return null;
-  }
-  const caipChainId = formatChainIdToCaip(payload.chainId);
+  payload: NonNullable<TokenPayload['payload']>,
+): BridgeToken => {
+  const { assetReference, chainId } = parseCaipAssetType(payload.assetId);
   return {
-    ...payload,
+    decimals: payload.decimals,
+    symbol: payload.symbol,
+    name: payload.name,
     balance: payload.balance ?? '0',
-    chainId: formatChainIdToCaip(payload.chainId),
-    image: getTokenImage(payload),
-    assetId: payload.assetId ?? toAssetId(payload.address ?? '', caipChainId),
+    tokenFiatAmount: payload.tokenFiatAmount,
+    accountType: payload.accountType,
+    chainId,
+    image: payload.image ?? getAssetImageUrl(payload.assetId, chainId) ?? '',
+    assetId: payload.assetId,
+    address: isNativeAddress(assetReference) ? zeroAddress() : assetReference,
   };
 };
 
 export const getDefaultToToken = (
-  chainId: CaipChainId,
-  fromToken: Pick<NonNullable<TokenPayload['payload']>, 'address' | 'chainId'>,
-) => {
-  const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[chainId];
+  fromToken: Pick<BridgeToken, 'address' | 'chainId'>,
+): BridgeToken => {
+  const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[fromToken.chainId];
+  const { chainId } = fromToken;
 
   if (commonPair) {
     // If bridging from Bitcoin, default to native mainnet token (ETH) instead of common pair token
     if (fromToken.chainId && isBitcoinChainId(fromToken.chainId)) {
-      const nativeAsset = getNativeAssetForChainId(chainId);
+      const nativeAsset = getNativeAssetForChainId(fromToken.chainId);
       if (nativeAsset) {
         return toBridgeToken({
           ...nativeAsset,
-          chainId,
+          chainId: fromToken.chainId,
         });
       }
     }
@@ -342,13 +316,9 @@ export const getDefaultToToken = (
 
   // Last resort: native token
   const nativeAsset = getNativeAssetForChainId(chainId);
-  if (nativeAsset) {
-    // return nativeAsset
-    return toBridgeToken({
-      ...nativeAsset,
-      chainId,
-    });
-  }
-
-  return null;
+  // return nativeAsset
+  return toBridgeToken({
+    ...nativeAsset,
+    chainId,
+  });
 };
