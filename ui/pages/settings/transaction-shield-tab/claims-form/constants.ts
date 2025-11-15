@@ -48,6 +48,28 @@ export const ERROR_MESSAGE_MAP: Partial<
   [SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]: {
     messageKey: 'shieldClaimInvalidRequired',
   },
+  [SUBMIT_CLAIM_ERROR_CODES.SIGNATURE_COVERAGE_NOT_COVERED]: {
+    messageKey: 'shieldClaimSignatureCoverageNotCovered',
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.SIGNATURE_VERIFICATION_FAILED]: {
+    messageKey: 'shieldClaimWalletOwnershipValidationFailed',
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.CHAIN_NOT_SUPPORTED]: {
+    messageKey: 'shieldClaimChainNotSupported',
+    field: SUBMIT_CLAIM_FIELDS.CHAIN_ID,
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.TRANSACTION_NOT_FOUND]: {
+    messageKey: 'shieldClaimTransactionNotFound',
+    field: SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.TRANSACTION_NOT_FROM_WALLET_ADDRESS]: {
+    messageKey: 'shieldClaimTransactionNotFromWalletAddress',
+    field: SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.TRANSACTION_NOT_SUCCESSFUL]: {
+    messageKey: 'shieldClaimTransactionNotSuccessful',
+    field: SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
+  },
 };
 
 // Error codes for fields in the error response
