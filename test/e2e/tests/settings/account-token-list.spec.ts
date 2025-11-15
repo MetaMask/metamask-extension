@@ -1,24 +1,25 @@
-import { MockttpServer } from 'mockttp';
+import { MockttpServer, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import FixtureBuilder from '../../fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { mockEtherumSpotPrices, mockSpotPrices } from '../tokens/utils/mocks';
 import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { mockSpotPrices } from '../tokens/utils/mocks';
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
 
-async function mockInfura(mockServer: MockttpServer): Promise<void> {
-  await mockServerJsonRpc(mockServer, [
+async function mockInfura(mockServer: Mockttp): Promise<void> {
+  await mockServerJsonRpc(mockServer as MockttpServer, [
     ['eth_blockNumber'],
     ['eth_getBlockByNumber'],
   ]);
@@ -35,7 +36,7 @@ async function mockInfura(mockServer: MockttpServer): Promise<void> {
     }));
 }
 
-async function mockInfuraResponses(mockServer: MockttpServer): Promise<void> {
+async function mockInfuraResponses(mockServer: Mockttp): Promise<void> {
   await mockInfura(mockServer);
   // Mock spot-prices for mainnet (for aggregated balance calculation)
   await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
@@ -62,14 +63,14 @@ async function mockInfuraResponses(mockServer: MockttpServer): Promise<void> {
     },
   });
 }
-// Bug #37363 Account details not showing a balance on BIP44 when running on localhost
-// also is not possible to show the balance in fiat money on BIP44
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Settings', function () {
+describe('Settings', function () {
   it('Should match the value of token list item and account list item for eth conversion', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
             '0x0000000000000000000000000000000000000000': {
@@ -79,16 +80,20 @@ describe.skip('Settings', function () {
             },
           });
         },
+
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await new AssetListPage(driver).checkTokenAmountIsDisplayed('25 ETH');
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '$42,500.00',
+        );
         await new HeaderNavbar(driver).openAccountMenu();
-        // BUGBUG 37363
-        // await new AccountListPage(driver).checkMultichainAccountBalanceDisplayed(
-        //  '25 ETH',
-        // );
+        await new AccountListPage(
+          driver,
+        ).checkMultichainAccountBalanceDisplayed('$42,500.00');
       },
     );
   });
@@ -97,20 +102,18 @@ describe.skip('Settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withConversionRateEnabled()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .withShowFiatTestnetEnabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
-          .withEnabledNetworks({
-            eip155: {
-              [CHAIN_IDS.LOCALHOST]: true,
-            },
-          })
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockInfuraResponses,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockInfuraResponses(mockServer);
+          return [await mockEtherumSpotPrices(mockServer)];
+        },
       },
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
@@ -133,10 +136,12 @@ describe.skip('Settings', function () {
         // I think we can slightly modify this test to switch to Sepolia network before checking the account List item value
         await switchToNetworkFromSendFlow(driver, 'Sepolia');
 
-        await new HeaderNavbar(driver).openAccountMenu();
-        await new AccountListPage(driver).checkAccountValueAndSuffixDisplayed(
-          '$42,500.00',
-        );
+        await homePage.headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.toggleBalanceSetting();
+        await settingsPage.closeSettingsPage();
+        await homePage.checkExpectedBalanceIsDisplayed('25', 'SepoliaETH');
       },
     );
   });
@@ -144,21 +149,14 @@ describe.skip('Settings', function () {
   it('Should show crypto value when price checker setting is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withConversionRateEnabled()
-          .withShowFiatTestnetEnabled()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
-          .withConversionRateDisabled()
-          .build(),
+        fixtures: new FixtureBuilder().withShowFiatTestnetEnabled().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfuraResponses,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await new HeaderNavbar(driver).openAccountMenu();
-        await new AccountListPage(driver).checkAccountBalanceDisplayed(
-          '25 ETH',
-        );
+        const homePage = new HomePage(driver);
+        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
       },
     );
   });
