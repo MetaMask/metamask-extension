@@ -391,6 +391,14 @@ class ActivityListPage {
     await this.driver.clickElement(this.completedTransactions);
   }
 
+  async clickConfirmedTransaction(): Promise<void> {
+    console.log('Clicking on confirmed transaction in activity list');
+    await this.driver.clickElement({
+      css: this.completedTransactions,
+      text: 'Confirmed',
+    });
+  }
+
   async clickCancelTransaction() {
     await this.driver.clickElement(this.cancelTransactionButton);
   }
