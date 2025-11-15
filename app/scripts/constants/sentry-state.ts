@@ -1,4 +1,4 @@
-import { AllProperties } from '../../../shared/modules/object.utils';
+import { AllProperties } from '../../../shared/modules/mask-object';
 
 // This describes the subset of background controller state attached to errors
 // sent to Sentry These properties have some potential to be useful for
@@ -32,14 +32,20 @@ export const SENTRY_BACKGROUND_STATE = {
     srpSessionData: false,
   },
   NetworkOrderController: {
-    orderedNetworkList: [],
+    orderedNetworkList: {
+      [AllProperties]: false,
+    },
   },
   NetworkEnablementController: {
     enabledNetworkMap: {},
   },
   AccountOrderController: {
-    pinnedAccountList: [],
-    hiddenAccountList: [],
+    pinnedAccountList: {
+      [AllProperties]: false,
+    },
+    hiddenAccountList: {
+      [AllProperties]: false,
+    },
   },
   AppMetadataController: {
     currentAppVersion: true,
@@ -117,7 +123,9 @@ export const SENTRY_BACKGROUND_STATE = {
       destTokenAddress: true,
       srcTokenAmount: true,
     },
-    quotes: [],
+    quotes: {
+      [AllProperties]: false,
+    },
     quotesInitialLoadTime: true,
     quotesLastFetched: true,
     quotesLoadingStatus: true,
@@ -211,8 +219,12 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   PPOMController: {
     securityAlertsEnabled: false,
-    storageMetadata: [],
-    versionInfo: [],
+    storageMetadata: {
+      [AllProperties]: false,
+    },
+    versionInfo: {
+      [AllProperties]: false,
+    },
   },
   PermissionController: {
     subjects: false,
@@ -402,6 +414,8 @@ const flattenedBackgroundStateMask: Record<string, unknown> = {};
 for (const controllerState of Object.values(SENTRY_BACKGROUND_STATE)) {
   Object.assign(flattenedBackgroundStateMask, controllerState);
 }
+
+console.log('flattenedBackgroundStateMask', flattenedBackgroundStateMask);
 
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
