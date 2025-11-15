@@ -23,8 +23,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 2');
         await accountListPage.checkAddWalletButttonIsDisplayed();
 
-        // BUGBUG 37363
-        // await accountListPage.checkMultichainAccountBalanceDisplayed('$42,500.00');
+        await accountListPage.checkMultichainAccountBalanceDisplayed(
+          '$42,500.00',
+        );
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList('Account 2');
@@ -48,8 +49,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
         await accountListPage.checkAddWalletButttonIsDisplayed();
 
-        // BUGBUG
-        // await accountListPage.checkMultichainAccountBalanceDisplayed('$42,500.00');
+        await accountListPage.checkMultichainAccountBalanceDisplayed(
+          '$42,500.00',
+        );
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList('Ledger 1');
@@ -90,8 +92,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         );
 
         // Ensure that an SSK account within the wallet is displayed
-        // BugBug
-        // await accountListPage.checkMultichainAccountBalanceDisplayed('$42,500.00');
+        await accountListPage.checkMultichainAccountBalanceDisplayed(
+          '$42,500.00',
+        );
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList(
