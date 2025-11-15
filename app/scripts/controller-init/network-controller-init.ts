@@ -29,7 +29,6 @@ import {
 
 export const ADDITIONAL_DEFAULT_NETWORKS = [
   ChainId['megaeth-testnet'],
-  ChainId['monad-testnet'],
 ];
 
 function getInitialState(initialState?: Partial<NetworkController['state']>) {

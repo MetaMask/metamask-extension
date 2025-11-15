@@ -157,7 +157,7 @@ describe('NetworkControllerInit', () => {
                 "failoverUrls": [],
                 "networkClientId": "monad-testnet",
                 "type": "custom",
-                "url": "https://testnet-rpc.monad.xyz",
+                "url": "https://monad-testnet.infura.io/v3/{infuraProjectId}",
               },
             ],
           },
