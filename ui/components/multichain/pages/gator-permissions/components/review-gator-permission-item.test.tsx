@@ -15,10 +15,33 @@ import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { ReviewGatorPermissionItem } from './review-gator-permission-item';
 
+const mockAccountAddress = '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
+const mockAccountName = 'Test Gator Account';
+
 const store = configureStore({
   ...mockState,
   metamask: {
     ...mockState.metamask,
+    internalAccounts: {
+      ...mockState.metamask.internalAccounts,
+      accounts: {
+        ...mockState.metamask.internalAccounts.accounts,
+        'test-account-id': {
+          address: mockAccountAddress,
+          id: 'test-account-id',
+          metadata: {
+            name: mockAccountName,
+            importTime: 0,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [],
+          type: 'eip155:eoa',
+        },
+      },
+    },
   },
 });
 
@@ -33,18 +56,20 @@ describe('Permission List Item', () => {
   beforeAll(() => {
     // Set Luxon to use UTC as the default timezone for consistent test results
     Settings.defaultZone = 'utc';
+    // Mock the current time to be far from the test timestamp (more than a day away)
+    // This ensures dates are shown without time (MM/dd/yyyy format only)
+    Settings.now = () => new Date('2025-01-01T00:00:00Z').getTime();
   });
 
   afterAll(() => {
     // Reset to system default
     Settings.defaultZone = 'system';
+    Settings.now = () => Date.now();
   });
 
   describe('render', () => {
     const mockOnClick = jest.fn();
     const mockNetworkName = 'Ethereum';
-    const mockSelectedAccountAddress =
-      '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
     const mockStartTime = 1736271776; // January 7, 2025;
 
     describe('NATIVE token permissions', () => {
@@ -54,7 +79,7 @@ describe('Permission List Item', () => {
       > = {
         permissionResponse: {
           chainId: '0x1',
-          address: mockSelectedAccountAddress,
+          address: mockAccountAddress,
           permission: {
             type: 'native-token-stream',
             isAdjustmentAllowed: false,
@@ -81,7 +106,7 @@ describe('Permission List Item', () => {
       > = {
         permissionResponse: {
           chainId: '0x1',
-          address: mockSelectedAccountAddress,
+          address: mockAccountAddress,
           permission: {
             type: 'native-token-periodic',
             isAdjustmentAllowed: false,
@@ -162,6 +187,41 @@ describe('Permission List Item', () => {
         // Verify network name is rendered
         const networkName = getByTestId('review-gator-permission-network-name');
         expect(networkName).toHaveTextContent(mockNetworkName);
+
+        // Verify justification is rendered
+        const justification = getByTestId(
+          'review-gator-permission-justification',
+        );
+        expect(justification).toBeInTheDocument();
+        expect(justification).toHaveTextContent(
+          'This is a very important request for streaming allowance for some very important thing',
+        );
+      });
+
+      it('renders account name and copy button with visual feedback', () => {
+        const { getByTestId } = renderWithProvider(
+          <ReviewGatorPermissionItem
+            networkName={mockNetworkName}
+            gatorPermission={mockNativeTokenStreamPermission}
+            onRevokeClick={() => mockOnClick()}
+          />,
+          store,
+        );
+
+        // Verify account name is displayed initially
+        const accountText = getByTestId('review-gator-permission-account-name');
+        expect(accountText).toBeInTheDocument();
+        expect(accountText).toHaveTextContent(mockAccountName);
+
+        // Verify copy button is present
+        const copyButton = getByTestId('review-gator-permission-copy-address');
+        expect(copyButton).toBeInTheDocument();
+
+        // Click copy button to test functionality
+        fireEvent.click(copyButton);
+
+        // After clicking, the text should change to "Address copied!"
+        expect(accountText).toHaveTextContent('Address copied!');
       });
 
       it('renders native token periodic permission correctly', () => {
@@ -209,6 +269,47 @@ describe('Permission List Item', () => {
         // Verify network name is rendered
         const networkName = getByTestId('review-gator-permission-network-name');
         expect(networkName).toHaveTextContent(mockNetworkName);
+
+        // Verify justification is rendered
+        const justification = getByTestId(
+          'review-gator-permission-justification',
+        );
+        expect(justification).toBeInTheDocument();
+        expect(justification).toHaveTextContent(
+          'This is a very important request for periodic allowance',
+        );
+      });
+
+      it('renders start date with time when timestamp is within a day', () => {
+        // Mock current time to be within a day of the start time
+        // mockStartTime is 1736271776 (January 7, 2025 ~22:09 UTC)
+        // Set current time to January 7, 2025 12:00 UTC (within 24 hours)
+        const originalNow = Settings.now;
+        Settings.now = () => new Date('2025-01-07T12:00:00Z').getTime();
+
+        const { container, getByTestId } = renderWithProvider(
+          <ReviewGatorPermissionItem
+            networkName={mockNetworkName}
+            gatorPermission={mockNativeTokenStreamPermission}
+            onRevokeClick={() => mockOnClick()}
+          />,
+          store,
+        );
+
+        // Expand to see more details
+        const expandButton = container.querySelector('[aria-label="expand"]');
+        if (expandButton) {
+          fireEvent.click(expandButton);
+        }
+
+        // Verify start date is rendered with time
+        const startDate = getByTestId('review-gator-permission-start-date');
+        expect(startDate).toBeInTheDocument();
+        // Should show time since it's within a day: MM/dd/yyyy HH:mm
+        expect(startDate.textContent).toMatch(/01\/07\/2025 \d{2}:\d{2}/);
+
+        // Restore original now function
+        Settings.now = originalNow;
       });
     });
 
@@ -225,7 +326,7 @@ describe('Permission List Item', () => {
       > = {
         permissionResponse: {
           chainId: '0x5',
-          address: mockSelectedAccountAddress,
+          address: mockAccountAddress,
           permission: {
             type: 'erc20-token-periodic',
             isAdjustmentAllowed: false,
@@ -252,7 +353,7 @@ describe('Permission List Item', () => {
       > = {
         permissionResponse: {
           chainId: '0x5',
-          address: mockSelectedAccountAddress,
+          address: mockAccountAddress,
           permission: {
             type: 'erc20-token-stream',
             isAdjustmentAllowed: false,
@@ -390,7 +491,7 @@ describe('Permission List Item', () => {
         > = {
           permissionResponse: {
             chainId: '0x5',
-            address: mockSelectedAccountAddress,
+            address: mockAccountAddress,
             permission: {
               type: 'erc20-token-stream',
               isAdjustmentAllowed: false,
