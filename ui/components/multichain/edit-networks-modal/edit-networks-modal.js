@@ -29,6 +29,7 @@ import {
 } from '../../component-library';
 import { NetworkListItem } from '..';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multichain/networks';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -88,6 +89,21 @@ export const EditNetworksModal = ({
   const defaultChainIdsSet = new Set(defaultSelectedChainIds);
   const selectedChainIdsSet = new Set(selectedChainIds);
 
+  const getNetworkImageUrl = (chainId) => {
+    if (CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]) {
+      return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
+    }
+    if (MULTICHAIN_TOKEN_IMAGE_MAP[chainId]) {
+      return MULTICHAIN_TOKEN_IMAGE_MAP[chainId];
+    }
+    if (chainId?.includes(':')) {
+      const [, chainIdDecimal] = chainId.split(':');
+      const hexChainId = `0x${parseInt(chainIdDecimal, 10).toString(16)}`;
+      return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[hexChainId];
+    }
+    return undefined;
+  };
+
   return (
     <Modal
       isOpen
@@ -122,7 +138,7 @@ export const EditNetworksModal = ({
           {nonTestNetworks.map((network) => (
             <NetworkListItem
               name={network.name}
-              iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+              iconSrc={getNetworkImageUrl(network.caipChainId)}
               key={network.caipChainId}
               onClick={() => {
                 handleNetworkClick(network.caipChainId);
@@ -140,7 +156,7 @@ export const EditNetworksModal = ({
           {testNetworks.map((network) => (
             <NetworkListItem
               name={network.name}
-              iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.caipChainId]}
+              iconSrc={getNetworkImageUrl(network.caipChainId)}
               key={network.caipChainId}
               onClick={() => {
                 handleNetworkClick(network.caipChainId);
