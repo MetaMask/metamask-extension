@@ -22,7 +22,7 @@ export const BASE_SHIELD_SUBSCRIPTION = {
 };
 
 export const MOCK_CHECKOUT_SESSION_URL =
-  'https://checkout.stripe.com/pay/cs_test_123456789';
+  'https://subscription.dev-api.cx.metamask.io/pay/cs_test_123456789';
 
 export const SHIELD_PRICING_DATA = {
   products: [
