@@ -221,6 +221,25 @@ class AccountListPage {
     this.driver = driver;
   }
 
+  async checkListIsCompletelyLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(
+        {
+          css: 'p',
+          text: 'Add account',
+        },
+        { timeout: 30000 },
+      );
+    } catch (e) {
+      console.log('Timeout while waiting for account list to be loaded', e);
+      throw e;
+    }
+    await this.driver.assertElementNotPresent({
+      css: 'p',
+      text: 'Syncing...',
+    });
+  }
+
   async checkPageIsLoaded(options?: {
     isMultichainAccountsState2Enabled?: boolean;
   }): Promise<void> {
