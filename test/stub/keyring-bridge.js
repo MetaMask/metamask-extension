@@ -18,6 +18,10 @@ import {
 import { rlp } from 'ethereumjs-util';
 import { utils as EthersUtils } from 'ethers';
 import { Common } from './keyring-utils';
+import {
+  OffscreenCommunicationEvents,
+  OffscreenCommunicationTarget,
+} from '../../shared/constants/offscreen-communication';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
 // BIP32 Private Key: xprvA1MLMFQnqSCfwD5C9sXAYo1NFG5oh4x6MD5mRhbV7JcVnFwtkka5ivtAYDYJsr9GS242p3QZMbsMZC1GZ2uskNeTj9VhYxrCqRG6U5UPXp5
@@ -94,8 +98,84 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
     };
   }
 
+  async injectContentScript(tabId) {
+    try {
+      // eslint-disable-next-line no-undef
+      await chrome.scripting.executeScript({
+        target: { tabId },
+        func: () => {
+          // eslint-disable-next-line no-undef
+          chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
+            if (message === 'get-user-data') {
+              sendResponse('test');
+            }
+          });
+        },
+      });
+      console.log('Trezor Bridge: content script injected');
+    } catch (error) {
+      console.error('Trezor Bridge: content script injection error', error);
+    }
+  }
+
+  // Trezor connect tab opening
+  async openPopup() {
+    // eslint-disable-next-line no-undef
+    // const url = 'https://connect.trezor.io/9/popup.html';
+    const url = 'http://127.0.0.1:8080';
+    window.addEventListener('e2e-tab-ready', () => {
+      console.log('e2e-tab-ready!');
+      window.postMessage('test');
+    });
+    // eslint-disable-next-line no-undef
+    chrome.tabs.query(
+      {
+        currentWindow: true,
+        active: true,
+      },
+      (tabs) => {
+        this.extensionTabId = tabs[0].id;
+        // window.open(url);
+        // window.addEventListener('e2e-tab-ready', () => {
+        //   console.log('e2e-tab-ready!');
+        //   window.postMessage('test');
+        // });
+        // eslint-disable-next-line no-undef
+        window.addEventListener('e2e-tab-ready', () => {
+          console.log('e2e-tab-ready!');
+          window.postMessage('test');
+        });
+        chrome.tabs.create(
+          {
+            url,
+            index: tabs[0].index + 1,
+          },
+          async (tab) => {
+            console.log('----------------> tab', tab);
+            // await this.injectContentScript(tab.id);
+            // eslint-disable-next-line no-undef
+            // await chrome.tabs.sendMessage(tab.id, 'test');
+            // eslint-disable-next-line no-undef
+            // chrome.runtime.onMessage.addListener('e2e-tab-ready', () =>
+            //   console.log('e2e-tab-ready from runtime!'),
+            // );
+            // chrome.runtime.sendMessage({
+            //   target: OffscreenCommunicationTarget.extension,
+            //   event: OffscreenCommunicationEvents.trezorDeviceConnect,
+            //   payload: {
+            //     model: 'T',
+            //     minorVersion: 9,
+            //   },
+            // });
+          },
+        );
+      },
+    );
+  }
+
   // Added specific getPublicKey for Trezor
   async getPublicKey() {
+    await this.openPopup();
     return this.#trezorPublicKeyPayload;
   }
 
