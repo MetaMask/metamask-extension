@@ -11,6 +11,7 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import * as SwapCheckHook from '../../transactions/dapp-swap-comparison/useSwapCheck';
 import { useResimulationAlert } from './useResimulationAlert';
 
 const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -108,6 +109,24 @@ describe('useResimulationAlert', () => {
     expect(
       runHook({ currentConfirmation: walletInitiatedConfirmation }),
     ).toEqual([]);
+  });
+
+  it('returns no alerts if transaction is a quoted swap', () => {
+    jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
+      isQuotedSwap: true,
+    });
+
+    const resimulatedConfirmation = {
+      ...CONFIRMATION_MOCK,
+      simulationData: {
+        isUpdatedAfterSecurityCheck: true,
+        tokenBalanceChanges: [],
+      },
+    };
+    const alerts = runHook({
+      currentConfirmation: resimulatedConfirmation,
+    });
+    expect(alerts).toEqual([]);
   });
 
   it('returns alert if isUpdatedAfterSecurityCheck is true', () => {

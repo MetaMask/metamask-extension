@@ -1,7 +1,10 @@
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { QuoteResponse, TxData } from '@metamask/bridge-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  BatchTransaction,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
 import { useCallback, useEffect, useMemo } from 'react';
 
@@ -21,7 +24,9 @@ import { useDappSwapUSDValues } from './useDappSwapUSDValues';
 
 const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
 
-export function useDappSwapComparisonInfo() {
+export function useDappSwapComparisonInfo(
+  batchedDappSwapNestedTransactions: BatchTransaction[] | undefined,
+) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const {
     chainId,
@@ -78,8 +83,13 @@ export function useDappSwapComparisonInfo() {
   const { commands, quotesInput, amountMin, tokenAddresses } = useMemo(() => {
     try {
       let transactionData = data;
-      if (nestedTransactions?.length) {
-        transactionData = nestedTransactions?.find(({ data: trxnData }) =>
+      if (
+        nestedTransactions?.length ||
+        batchedDappSwapNestedTransactions?.length
+      ) {
+        transactionData = (
+          nestedTransactions ?? batchedDappSwapNestedTransactions
+        )?.find(({ data: trxnData }) =>
           trxnData?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
         )?.data;
       }
@@ -101,6 +111,7 @@ export function useDappSwapComparisonInfo() {
       };
     }
   }, [
+    batchedDappSwapNestedTransactions,
     captureDappSwapComparisonFailed,
     chainId,
     data,
