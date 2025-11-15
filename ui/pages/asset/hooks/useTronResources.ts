@@ -28,8 +28,8 @@ export const useTronResources = (
   account: InternalAccount | undefined,
   chainId: string,
 ): {
-  energy: TronResource | null;
-  bandwidth: TronResource | null;
+  energy: TronResource;
+  bandwidth: TronResource;
   isLoading: boolean;
 } => {
   const accountGroupAssets = useSelector(getAssetsBySelectedAccountGroup);
@@ -39,8 +39,13 @@ export const useTronResources = (
   return useMemo(() => {
     if (!account || !chainId) {
       return {
-        energy: null,
-        bandwidth: null,
+        energy: { type: 'energy' as const, current: 0, max: 1, percentage: 0 },
+        bandwidth: {
+          type: 'bandwidth' as const,
+          current: 0,
+          max: 1,
+          percentage: 0,
+        },
         isLoading: false,
       };
     }
@@ -51,11 +56,11 @@ export const useTronResources = (
 
     // Build resource data from assets
     const resourceData: {
-      energy: { current: number; max: number };
-      bandwidth: { current: number; max: number };
+      energy: { current: number; max: number; staked: number };
+      bandwidth: { current: number; max: number; staked: number };
     } = {
-      energy: { current: 0, max: 0 },
-      bandwidth: { current: 0, max: 0 },
+      energy: { current: 0, max: 0, staked: 0 },
+      bandwidth: { current: 0, max: 0, staked: 0 },
     };
 
     tronResources.forEach((resource) => {
@@ -65,26 +70,39 @@ export const useTronResources = (
 
       const symbol = resource.symbol?.toLowerCase() || '';
       const value = parseFloat(balance.amount || '0');
-      const isMax = symbol.includes('max');
 
-      if (symbol.includes(TRON_RESOURCE.ENERGY)) {
-        resourceData.energy[isMax ? 'max' : 'current'] = value;
-      } else if (symbol.includes(TRON_RESOURCE.BANDWIDTH)) {
-        resourceData.bandwidth[isMax ? 'max' : 'current'] = value;
-      }
+      // Determine resource type and property
+      const resourceType = symbol.includes(TRON_RESOURCE.ENERGY)
+        ? 'energy'
+        : symbol.includes(TRON_RESOURCE.BANDWIDTH)
+          ? 'bandwidth'
+          : null;
+
+      if (!resourceType) return;
+
+      const property = symbol.includes('strx')
+        ? 'staked'
+        : symbol.includes('max')
+          ? 'max'
+          : 'current';
+
+      resourceData[resourceType][property] = value;
     });
 
     // Create resource objects with calculated percentages
+    // Note: Total max includes both base max and staked resources (like mobile)
+    // Always create resources even if values are 0 (accounts get free bandwidth)
     const createResource = (
       type: 'energy' | 'bandwidth',
-      data: { current: number; max: number },
-    ): TronResource | null => {
-      if (data.current === 0 && data.max === 0) return null;
+      data: { current: number; max: number; staked: number },
+    ): TronResource => {
+      const totalMax = Math.max(1, data.max + data.staked);
+
       return {
         type,
         current: data.current,
-        max: data.max,
-        percentage: data.max > 0 ? (data.current / data.max) * 100 : 0,
+        max: totalMax,
+        percentage: (data.current / totalMax) * 100,
       };
     };
 

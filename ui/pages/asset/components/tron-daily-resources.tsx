@@ -5,6 +5,7 @@ import {
   Text,
   Icon,
   IconName,
+  IconSize,
 } from '../../../components/component-library';
 import {
   AlignItems,
@@ -93,7 +94,11 @@ const ResourceCircle = ({ resource, iconName }: ResourceCircleProps) => {
           borderRadius: '50%',
         }}
       >
-        <Icon name={iconName} color={IconColor.iconDefault} size={16} />
+        <Icon
+          name={iconName}
+          color={IconColor.iconDefault}
+          size={IconSize.Sm}
+        />
       </Box>
     </Box>
   );
@@ -163,8 +168,8 @@ export const TronDailyResources = ({
   const t = useI18nContext();
   const { energy, bandwidth, isLoading } = useTronResources(account, chainId);
 
-  // Don't render if no resources are available
-  if (isLoading || (!energy && !bandwidth)) {
+  // Don't render if still loading
+  if (isLoading) {
     return null;
   }
 
@@ -173,12 +178,12 @@ export const TronDailyResources = ({
   const BANDWIDTH_PER_TRX_TRANSFER_BASELINE = 280;
 
   // Calculate how many transfers can be covered
-  const usdtTransfersCovered = energy
-    ? Math.floor(energy.current / ENERGY_PER_TRC20_TRANSFER_BASELINE)
-    : 0;
-  const trxTransfersCovered = bandwidth
-    ? Math.floor(bandwidth.current / BANDWIDTH_PER_TRX_TRANSFER_BASELINE)
-    : 0;
+  const usdtTransfersCovered = Math.floor(
+    energy.current / ENERGY_PER_TRC20_TRANSFER_BASELINE,
+  );
+  const trxTransfersCovered = Math.floor(
+    bandwidth.current / BANDWIDTH_PER_TRX_TRANSFER_BASELINE,
+  );
 
   // Format values for display
   const formatValue = (num: number): string => {
@@ -208,29 +213,25 @@ export const TronDailyResources = ({
         </Text>
       </Box>
 
-      {energy && (
-        <ResourceRow
-          resource={energy}
-          iconName={IconName.Flash}
-          label={t('tronEnergy')}
-          description={t('tronEnergyCoverageDescription', [
-            usdtTransfersCovered.toString(),
-          ])}
-          currentValue={formatValue(energy.current)}
-        />
-      )}
+      <ResourceRow
+        resource={energy}
+        iconName={IconName.Flash}
+        label={t('tronEnergy')}
+        description={t('tronEnergyCoverageDescription', [
+          usdtTransfersCovered.toString(),
+        ])}
+        currentValue={formatValue(energy.current)}
+      />
 
-      {bandwidth && (
-        <ResourceRow
-          resource={bandwidth}
-          iconName={IconName.Connect}
-          label={t('tronBandwidth')}
-          description={t('tronBandwidthCoverageDescription', [
-            trxTransfersCovered.toString(),
-          ])}
-          currentValue={formatValue(bandwidth.current)}
-        />
-      )}
+      <ResourceRow
+        resource={bandwidth}
+        iconName={IconName.Connect}
+        label={t('tronBandwidth')}
+        description={t('tronBandwidthCoverageDescription', [
+          trxTransfersCovered.toString(),
+        ])}
+        currentValue={formatValue(bandwidth.current)}
+      />
     </Box>
   );
 };
