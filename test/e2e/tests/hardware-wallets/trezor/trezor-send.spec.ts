@@ -41,7 +41,7 @@ describe('Trezor Hardware', function (this: Suite) {
             driver,
             localNodes?.[0],
             undefined,
-            '1208925.8196',
+            '1.21M',
           );
           const homePage = new HomePage(driver);
           await sendRedesignedTransactionToAddress({
