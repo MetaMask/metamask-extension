@@ -114,7 +114,12 @@ export const useNetworkManagerInitialTab = () => {
     getAllEnabledNetworksForAllNamespaces,
   );
 
-  const initialTab = useMemo(() => {
+  const initialTab: 'networks' | 'custom-networks' = useMemo(() => {
+    // Default - if more than 1 network selected, this must be a popular network button pressed
+    if (allEnabledNetworksForAllNamespaces.length > 1) {
+      return 'networks';
+    }
+
     const isSubset = (subset: string[], superset: string[]) => {
       const supersetSet = new Set(superset);
       return subset.every((x) => supersetSet.has(x));
