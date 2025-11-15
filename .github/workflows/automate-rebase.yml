@@ -1,0 +1,17 @@
+name: Automate Rebase
+
+on:
+  workflow_dispatch:
+
+jobs:
+  automate-rebase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Automate Rebase
+        run: ./.circleci/scripts/automate-rebase.sh

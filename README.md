@@ -257,4 +257,110 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - [Prompt your users to add and switch to a new network.](https://docs.metamask.io/wallet/how-to/add-network/)
 - [Change the logo that appears when your dapp connects to MetaMask.](https://docs.metamask.io/wallet/how-to/display/icon/)
 
-[1]: http://www.nomnoml.com/#view/%5B%3Cactor%3Euser%5D%0A%0A%5Bmetamask-ui%7C%0A%20%20%20%5Btools%7C%0A%20%20%20%20%20react%0A%20%20%20%20%20redux%0A%20%20%20%20%20thunk%0A%20%20%20%20%20ethUtils%0A%20%20%20%20%20jazzicon%0A%20%20%20%5D%0A%20%20%20%5Bcomponents%7C%0A%20%20%20%20%20app%0A%20%20%20%20%20account-detail%0A%20%20%20%20%20accounts%0A%20%20%20%20%20locked-screen%0A%20%20%20%20%20restore-vault%0A%20%20%20%20%20identicon%0A%20%20%20%20%20config%0A%20%20%20%20%20info%0A%20%20%20%5D%0A%20%20%20%5Breducers%7C%0A%20%20%20%20%20app%0A%20%20%20%20%20metamask%0A%20%20%20%20%20identities%0A%20%20%20%5D%0A%20%20%20%5Bactions%7C%0A%20%20%20%20%20%5BbackgroundConnection%5D%0A%20%20%20%5D%0A%20%20%20%5Bcomponents%5D%3A-%3E%5Bactions%5D%0A%20%20%20%5Bactions%5D%3A-%3E%5Breducers%5D%0A%20%20%20%5Breducers%5D%3A-%3E%5Bcomponents%5D%0A%5D%0A%0A%5Bweb%20dapp%7C%0A%20%20%5Bui%20code%5D%0A%20%20%5Bweb3%5D%0A%20%20%5Bmetamask-inpage%5D%0A%20%20%0A%20%20%5B%3Cactor%3Eui%20developer%5D%0A%20%20%5Bui%20developer%5D-%3E%5Bui%20code%5D%0A%20%20%5Bui%20code%5D%3C-%3E%5Bweb3%5D%0A%20%20%5Bweb3%5D%3C-%3E%5Bmetamask-inpage%5D%0A%5D%0A%0A%5Bmetamask-background%7C%0A%20%20%5Bprovider-engine%5D%0A%20%20%5Bhooked%20wallet%20subprovider%5D%0A%20%20%5Bid%20store%5D%0A%20%20%0A%20%20%5Bprovider-engine%5D%3C-%3E%5Bhooked%20wallet%20subprovider%5D%0A%20%20%5Bhooked%20wallet%20subprovider%5D%3C-%3E%5Bid%20store%5D%0A%20%20%5Bconfig%20manager%7C%0A%20%20%20%20%5Brpc%20configuration%5D%0A%20%20%20%20%5Bencrypted%20keys%5D%0A%20%20%20%20%5Bwallet%20nicknames%5D%0A%20%20%5D%0A%20%20%0A%20%20%5Bprovider-engine%5D%3C-%5Bconfig%20manager%5D%0A%20%20%5Bid%20store%5D%3C-%3E%5Bconfig%20manager%5D%0A%5D%0A%0A%5Buser%5D%3C-%3E%5Bmetamask-ui%5D%0A%0A%5Buser%5D%3C%3A--%3A%3E%5Bweb%20dapp%5D%0A%0A%5Bmetamask-contentscript%7C%0A%20%20%5Bplugin%20restart%20detector%5D%0A%20%20%5Brpc%20passthrough%5D%0A%5D%0A%0A%5Brpc%20%7C%0A%20%20%5Bethereum%20blockchain%20%7C%0A%20%20%20%20%5Bcontracts%5D%0A%20%20%20%20%5Baccounts%5D%0A%20%20%5D%0A%5D%0A%0A%5Bweb%20dapp%5D%3C%3A--%3A%3E%5Bmetamask-contentscript%5D%0A%5Bmetamask-contentscript%5D%3C-%3E%5Bmetamask-background%5D%0A%5Bmetamask-background%5D%3C-%3E%5Bmetamask-ui%5D%0A%5Bmetamask-background%5D%3C-%3E%5Brpc%5D%0A
+## Handling Rebase Conflicts in `package-lock.json`
+
+To handle rebase conflicts in `package-lock.json`, follow these steps:
+
+1. Fetch the latest changes from the remote repository:
+   ```sh
+   git fetch origin
+   ```
+2. Rebase your current branch onto the latest `main` branch:
+   ```sh
+   git rebase origin/main
+   ```
+3. If a conflict occurs in `package-lock.json`, resolve it by accepting the changes from the remote branch:
+   ```sh
+   git checkout --theirs package-lock.json
+   git add package-lock.json
+   git rebase --continue
+   ```
+
+## Handling Other Merge Conflicts
+
+To handle other merge conflicts, follow these steps:
+
+1. Identify the conflicting files by running `git status` and looking for files marked as "both modified":
+   ```sh
+   git status
+   ```
+2. Open each conflicting file and look for conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`) to see the conflicting changes.
+3. Manually resolve the conflicts by editing the file to include the desired changes and removing the conflict markers.
+4. After resolving the conflicts, add the resolved files to the staging area using `git add <file>`:
+   ```sh
+   git add <file>
+   ```
+5. Continue the rebase process with `git rebase --continue`:
+   ```sh
+   git rebase --continue
+   ```
+6. If you encounter further conflicts, repeat the process until the rebase is complete.
+
+## Advanced Git Rebase Techniques
+
+To learn advanced Git rebase techniques, follow these steps:
+
+1. Fetch the latest changes from the remote repository:
+   ```sh
+   git fetch origin
+   ```
+2. Rebase your current branch onto the latest `main` branch:
+   ```sh
+   git rebase origin/main
+   ```
+3. If a conflict occurs in `package-lock.json`, resolve it by accepting the changes from the remote branch:
+   ```sh
+   git checkout --theirs package-lock.json
+   git add package-lock.json
+   git rebase --continue
+   ```
+
+To handle other merge conflicts:
+
+1. Identify the conflicting files by running `git status` and looking for files marked as "both modified":
+   ```sh
+   git status
+   ```
+2. Open each conflicting file and look for conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`) to see the conflicting changes.
+3. Manually resolve the conflicts by editing the file to include the desired changes and removing the conflict markers.
+4. After resolving the conflicts, add the resolved files to the staging area using `git add <file>`:
+   ```sh
+   git add <file>
+   ```
+5. Continue the rebase process with `git rebase --continue`:
+   ```sh
+   git rebase --continue
+   ```
+6. If you encounter further conflicts, repeat the process until the rebase is complete.
+
+## Benefits of Using `git rebase` Over `git merge`
+
+Using `git rebase` over `git merge` has several benefits:
+
+1. **Cleaner commit history**: `git rebase` creates a linear commit history by applying your changes on top of the latest changes from the target branch, making it easier to understand and follow the project history.
+2. **Avoids unnecessary merge commits**: `git rebase` eliminates the need for merge commits, which can clutter the commit history with unnecessary information, making it more concise and readable.
+3. **Easier to bisect**: A linear commit history created by `git rebase` makes it easier to use `git bisect` to find the commit that introduced a bug, as there are no merge commits to complicate the process.
+4. **Improves collaboration**: When working in a team, using `git rebase` ensures that your changes are always applied on top of the latest changes from the target branch, reducing the chances of conflicts and making it easier to integrate everyone's work smoothly.
+5. **Better for feature branches**: `git rebase` is particularly useful for feature branches, as it allows you to keep your feature branch up-to-date with the latest changes from the main branch without creating unnecessary merge commits.
+
+## Using Git's `rerere` Feature
+
+Git's `rerere` (reuse recorded resolution) feature helps with recurring conflicts by remembering how you resolved them previously. Here are some steps to enable and use `rerere`:
+
+1. **Enable `rerere`**: Run `git config --global rerere.enabled true` to enable the feature. This will allow Git to start recording conflict resolutions.
+   ```sh
+   git config --global rerere.enabled true
+   ```
+2. **Resolve conflicts**: When you encounter a conflict, resolve it as usual. Git will remember the resolution for future conflicts.
+3. **Automatic resolution**: If the same conflict occurs again, Git will automatically apply the recorded resolution, saving you time and effort.
+4. **Check recorded resolutions**: You can view the recorded resolutions by running `git rerere status`.
+   ```sh
+   git rerere status
+   ```
+5. **Clear recorded resolutions**: If you want to clear the recorded resolutions, run `git rerere forget <path>` for a specific file or `git rerere forget` to clear all.
+   ```sh
+   git rerere forget <path>
+   git rerere forget
+   ```
+
+For more advanced usage, you can refer to the official Git documentation on `rerere`.
