@@ -1,10 +1,18 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { AccountGroupId } from '@metamask/account-api';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MultichainAccountAddressListPage } from './multichain-account-address-list-page';
+
+jest.mock('../../../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../../../shared/lib/trace');
+  return {
+    ...actual,
+    endTrace: jest.fn(),
+  };
+});
 
 const mockHistoryGoBack = jest.fn();
 const mockUseParams = jest.fn();
@@ -243,5 +251,18 @@ describe('MultichainAccountAddressListPage', () => {
 
     // Should show fallback text
     expect(screen.getByText('Account / Addresses')).toBeInTheDocument();
+  });
+
+  describe('tracing', () => {
+    it('ends ShowAccountAddressList trace on mount', () => {
+      const store = configureStore(mockState);
+      renderWithProvider(<MultichainAccountAddressListPage />, store);
+      const traceLib = jest.requireMock('../../../../shared/lib/trace');
+      expect(traceLib.endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: traceLib.TraceName.ShowAccountAddressList,
+        }),
+      );
+    });
   });
 });

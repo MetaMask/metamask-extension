@@ -79,6 +79,7 @@ import {
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroup } from '../../multichain-accounts/multichain-account-network-group';
 
 type AppHeaderUnlockedContentProps = {
@@ -226,6 +227,10 @@ export const AppHeaderUnlockedContent = ({
             name={accountName}
             showAvatarAccount={false}
             onClick={() => {
+              trace({
+                name: TraceName.ShowAccountList,
+                op: TraceOperation.AccountUi,
+              });
               history.push(ACCOUNT_LIST_PAGE_ROUTE);
               trackEvent({
                 event: MetaMetricsEventName.NavAccountMenuOpened,
@@ -248,6 +253,12 @@ export const AppHeaderUnlockedContent = ({
             paddingBottom={1}
             style={{ width: 'fit-content' }}
             data-testid="networks-subtitle-test-id"
+            onClick={() => {
+              trace({
+                name: TraceName.ShowAccountAddressList,
+                op: TraceOperation.AccountUi,
+              });
+            }}
           >
             <MultichainHoveredAddressRowsList
               groupId={selectedMultichainAccountId}
@@ -276,6 +287,10 @@ export const AppHeaderUnlockedContent = ({
   const AppContent = useMemo(() => {
     const handleAccountMenuClick = () => {
       if (isMultichainAccountsState2Enabled) {
+        trace({
+          name: TraceName.ShowAccountList,
+          op: TraceOperation.AccountUi,
+        });
         history.push(ACCOUNT_LIST_PAGE_ROUTE);
       } else {
         dispatch(toggleAccountMenu());
