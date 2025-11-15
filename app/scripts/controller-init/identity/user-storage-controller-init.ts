@@ -3,6 +3,7 @@ import {
   UserStorageControllerState,
   Controller as UserStorageController,
 } from '@metamask/profile-sync-controller/user-storage';
+import { Env } from '@metamask/profile-sync-controller/sdk';
 import { ControllerInitFunction } from '../types';
 import {
   MetaMetricsEventCategory,
@@ -11,6 +12,7 @@ import {
 import { trace } from '../../../../shared/lib/trace';
 import { captureException } from '../../../../shared/lib/sentry';
 import { UserStorageControllerInitMessenger } from '../messengers/identity/user-storage-controller-messenger';
+import { isProduction } from '../../../../shared/modules/environment';
 
 /**
  * Initialize the UserStorage controller.
@@ -32,6 +34,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     config: {
+      env: isProduction() ? Env.PRD : Env.DEV,
       contactSyncing: {
         onContactUpdated: (profileId) => {
           initMessenger.call('MetaMetricsController:trackEvent', {
