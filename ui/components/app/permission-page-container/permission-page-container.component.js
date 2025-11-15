@@ -49,6 +49,7 @@ export default class PermissionPageContainer extends Component {
     }),
     navigate: PropTypes.func.isRequired,
     connectPath: PropTypes.string.isRequired,
+    isSubmitting: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -57,6 +58,7 @@ export default class PermissionPageContainer extends Component {
     selectedAccounts: [],
     allAccountsSelected: false,
     currentPermissions: {},
+    isSubmitting: false,
   };
 
   static contextTypes = {
@@ -144,7 +146,13 @@ export default class PermissionPageContainer extends Component {
       rejectPermissionsRequest,
       selectedAccounts,
       requestedChainIds,
+      isSubmitting,
     } = this.props;
+
+    // Prevent double submission (guard is also in parent, but keep for safety)
+    if (isSubmitting) {
+      return;
+    }
 
     const approvedAccounts = selectedAccounts.map(
       (selectedAccount) => selectedAccount.address,
@@ -243,10 +251,13 @@ export default class PermissionPageContainer extends Component {
             onCancel={() => this.onLeftFooterClick()}
             cancelText={footerLeftActionText}
             onSubmit={() => this.onSubmit()}
-            disabled={containsEthPermissionsAndNonEvmAccount(
-              selectedAccounts,
-              requestedPermissions,
-            )}
+            disabled={
+              this.props.isSubmitting ||
+              containsEthPermissionsAndNonEvmAccount(
+                selectedAccounts,
+                requestedPermissions,
+              )
+            }
           />
         </Box>
       </TemplateAlertContextProvider>
