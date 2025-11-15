@@ -2598,9 +2598,6 @@
   "function": {
     "message": "Feidhm: $1"
   },
-  "fundingMethod": {
-    "message": "Modh maoinithe"
-  },
   "gas": {
     "message": "Gás"
   },
@@ -7108,12 +7105,6 @@
   },
   "time": {
     "message": "Am"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Leideanna maidir le sparán a úsáid"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Trí chomharthaí a chur leis, díghlasáiltear níos mó bealaí chun web3 a úsáid."
   },
   "to": {
     "message": "Chuig"
