@@ -33,7 +33,7 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        // BUGBUG With BIP44 the account mame is not retained.
+        // BUG #37591 - With BIP44 the account mame is not retained.
         // await new HeaderNavbar(driver).checkAccountLabel(newCustomAccountLabel);
         await new HeaderNavbar(driver).checkAccountLabel('Snap Account 1');
       },

@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { zeroAddress } from 'ethereumjs-util';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 
 const getPriceUrl = (version: string, chainId: string, endpoint: string) =>
@@ -42,6 +43,12 @@ export const mockSpotPrices = async (
       statusCode: 200,
       json: prices,
     }));
+};
+
+export const mockEtherumSpotPrices = async (mockServer: Mockttp) => {
+  return await mockSpotPrices(mockServer, '0x1', {
+    [zeroAddress()]: { price: 1, marketCap: 0 },
+  });
 };
 
 type HistoricalPricesOptions = {

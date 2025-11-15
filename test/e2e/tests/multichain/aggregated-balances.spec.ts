@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
@@ -13,6 +14,7 @@ import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockEtherumSpotPrices } from '../tokens/utils/mocks';
 
 const EXPECTED_BALANCE_USD = '$85,025.00';
 const EXPECTED_SEPOLIA_BALANCE_NATIVE = '25';
@@ -20,16 +22,14 @@ const NETWORK_NAME_MAINNET = 'Ethereum';
 const NETWORK_NAME_SEPOLIA = 'Sepolia';
 const SEPOLIA_NATIVE_TOKEN = 'SepoliaETH';
 
-// This is skipped because we cannot display amount in fiat on BIP44
-// and because of BUG 37363 - Account details not showing a balance
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Multichain Aggregated Balances', function (this: Suite) {
+describe('Multichain Aggregated Balances', function (this: Suite) {
   it('shows correct aggregated balance when "Current Network" is selected', async function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             preferences: { showTestNetworks: true },
@@ -46,6 +46,9 @@ describe.skip('Multichain Aggregated Balances', function (this: Suite) {
         smartContract,
         ethConversionInUsd: 3401, // 25 ETH × $3401 = $85,025.00
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return mockEtherumSpotPrices(mockServer);
+        },
       },
       async ({
         driver,
@@ -77,10 +80,10 @@ describe.skip('Multichain Aggregated Balances', function (this: Suite) {
           'usd',
         );
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkAccountValueAndSuffixDisplayed(
+        await accountListPage.checkMultichainAccountBalanceDisplayed(
           EXPECTED_BALANCE_USD,
         );
-        await accountListPage.closeAccountModal();
+        await accountListPage.closeMultichainAccountsPage();
 
         console.log('Step 5: Verify balance in send flow');
         await homepage.startSendFlow();
@@ -88,10 +91,10 @@ describe.skip('Multichain Aggregated Balances', function (this: Suite) {
         await sendTokenPage.clickCancelButton();
 
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkAccountValueAndSuffixDisplayed(
+        await accountListPage.checkMultichainAccountBalanceDisplayed(
           EXPECTED_BALANCE_USD,
         );
-        await accountListPage.closeAccountModal();
+        await accountListPage.closeMultichainAccountsPage();
 
         console.log(
           'Step 6: Verify balance in send flow after selecting "Current Network"',

@@ -10,6 +10,8 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
+import NetworkManager from '../../page-objects/pages/network-manager';
+import { mockEtherumSpotPrices } from '../tokens/utils/mocks';
 
 import {
   mockMultichainAccountsFeatureFlagDisabled,
@@ -42,23 +44,31 @@ export async function withMultichainAccountsDesignEnabled(
   let fixture;
 
   switch (accountType) {
-    case AccountType.MultiSRP:
-      fixture = new FixtureBuilder().withKeyringControllerMultiSRP().build();
-      break;
-    case AccountType.SSK:
-      fixture = new FixtureBuilder().withKeyringControllerMultiSRP().build();
-      break;
     case AccountType.HardwareWallet:
-      fixture = new FixtureBuilder().withLedgerAccount().build();
+      fixture = new FixtureBuilder()
+        .withLedgerAccount()
+        .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        .withEnabledNetworks({ eip155: { '0x1': true } })
+        .build();
       break;
     default:
-      fixture = new FixtureBuilder().withKeyringControllerMultiSRP().build();
+      fixture = new FixtureBuilder()
+        .withKeyringControllerMultiSRP()
+        .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        .withEnabledNetworks({ eip155: { '0x1': true } })
+        .build();
+      break;
   }
 
   await withFixtures(
     {
       fixtures: fixture,
-      testSpecificMock,
+      testSpecificMock: async (mockServer: Mockttp) => {
+        const additionalMocks = testSpecificMock
+          ? await testSpecificMock(mockServer)
+          : [];
+        return [await mockEtherumSpotPrices(mockServer), [additionalMocks]];
+      },
       title,
       dappOptions,
     },
@@ -67,12 +77,19 @@ export async function withMultichainAccountsDesignEnabled(
       if (accountType === AccountType.HardwareWallet) {
         await loginWithoutBalanceValidation(driver);
       } else {
-        await loginWithBalanceValidation(driver);
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '$42,500.00',
+        );
       }
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();
       const headerNavbar = new HeaderNavbar(driver);
-
+      const networkManager = new NetworkManager(driver);
+      await networkManager.openNetworkManager();
+      await networkManager.selectNetworkByNameWithWait('Ethereum');
       await headerNavbar.openAccountMenu();
 
       await test(driver);
