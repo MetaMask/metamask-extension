@@ -184,8 +184,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     getMultichainNetworkConfigurationsByChainId,
   );
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
-  const { chainId: editingChainId, editCompleted } =
-    useSelector(getEditedNetwork) ?? {};
+  const {
+    chainId: editingChainId,
+    editCompleted,
+    trackRpcUpdateFromBanner,
+  } = useSelector(getEditedNetwork) ?? {};
   const permittedChainIds = useSelector((state) =>
     getPermittedEVMChainsForSelectedTab(state, selectedTabOrigin),
   );
@@ -735,6 +738,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         <NetworksForm
           networkFormState={networkFormState}
           existingNetwork={editedNetwork}
+          trackRpcUpdateFromBanner={trackRpcUpdateFromBanner}
           onRpcAdd={() => setActionMode(ACTION_MODE.ADD_RPC)}
           onBlockExplorerAdd={() => setActionMode(ACTION_MODE.ADD_EXPLORER_URL)}
         />

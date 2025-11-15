@@ -221,7 +221,7 @@ export function getNewNetworkAdded(state) {
 
 /**
  * @param state
- * @returns {{ chainId: import('@metamask/utils').Hex; nickname: string; editCompleted: boolean} | undefined}
+ * @returns {{ chainId: import('@metamask/utils').Hex; nickname?: string; editCompleted?: boolean; newNetwork?: boolean; trackRpcUpdateFromBanner?: boolean} | undefined}
  */
 export function getEditedNetwork(state) {
   return state.appState.editedNetwork;

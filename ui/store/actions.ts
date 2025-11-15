@@ -5729,6 +5729,7 @@ export function setEditedNetwork(
         nickname?: string;
         editCompleted?: boolean;
         newNetwork?: boolean;
+        trackRpcUpdateFromBanner?: boolean;
       }
     | undefined = undefined,
 ): PayloadAction<object> {
