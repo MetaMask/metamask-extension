@@ -726,6 +726,76 @@ describe('MetaMaskController', () => {
         // + 1 in `submitPassword`
         expect(accountsControllerSpy).toHaveBeenCalledTimes(2);
       });
+
+      it('runs discovery and alignments after an unlock', async () => {
+        const localMetaMaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
+        });
+
+        // We only run this behavior for state 2.
+        jest
+          .spyOn(
+            localMetaMaskController,
+            'isMultichainAccountsFeatureState2Enabled',
+          )
+          .mockReturnValue(true);
+
+        const discoverAndCreateAccountsSpy = jest.spyOn(
+          localMetaMaskController,
+          'discoverAndCreateAccounts',
+        );
+
+        const password = 'password';
+        // Primary HD keyring.
+        await localMetaMaskController.createNewVaultAndKeychain(password);
+        // Second HD keyring.
+        await localMetaMaskController.importMnemonicToVault(TEST_SEED_ALT);
+
+        await localMetaMaskController.submitPassword(password);
+
+        // Wait for the fire-and-forget sync and discover operation to complete
+        await new Promise((resolve) => setImmediate(resolve));
+
+        // We should have run discovery + alignment on every HD keyrings.
+        const keyrings =
+          localMetaMaskController.keyringController.state.keyrings.filter(
+            (keyring) => keyring.type === KeyringTypes.hd,
+          );
+        expect(keyrings).toHaveLength(2);
+        expect(discoverAndCreateAccountsSpy).toHaveBeenCalledTimes(3);
+        // 1: During importMnemonicToVault (hence, `keyrings[1]` here).
+        expect(discoverAndCreateAccountsSpy).toHaveBeenNthCalledWith(
+          1,
+          keyrings[1].metadata.id,
+        );
+        // 1: After unlock, with the primary HD keyring.
+        expect(discoverAndCreateAccountsSpy).toHaveBeenNthCalledWith(
+          2,
+          keyrings[0].metadata.id,
+        );
+        // 1: After unlock, with the second HD keyring.
+        expect(discoverAndCreateAccountsSpy).toHaveBeenNthCalledWith(
+          3,
+          keyrings[1].metadata.id,
+        );
+      });
     });
 
     describe('setLocked', () => {
