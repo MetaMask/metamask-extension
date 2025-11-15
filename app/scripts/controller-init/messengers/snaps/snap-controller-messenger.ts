@@ -182,8 +182,13 @@ export function getSnapControllerInitMessenger(
       'PreferencesController:getState',
       'MetaMetricsController:trackEvent',
       'SnapController:setClientActive',
+      'OnboardingController:getState',
     ],
-    events: ['KeyringController:lock', 'KeyringController:unlock'],
+    events: [
+      'KeyringController:lock',
+      'KeyringController:unlock',
+      'OnboardingController:stateChange',
+    ],
   });
   return controllerInitMessenger;
 }
