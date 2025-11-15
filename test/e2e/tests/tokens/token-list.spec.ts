@@ -1,7 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
 import { zeroAddress } from 'ethereumjs-util';
-import { Browser } from 'selenium-webdriver';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
@@ -15,8 +14,6 @@ import {
   mockHistoricalPrices,
   mockSpotPrices,
 } from './utils/mocks';
-
-const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 describe('Token List', function () {
   const chainId = CHAIN_IDS.MAINNET;
@@ -64,9 +61,7 @@ describe('Token List', function () {
       },
     );
   });
-  // Skipping this test as failing BIP44
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('shows percentage increase for an ERC20 token with prices available', async function () {
+  it('shows percentage increase for an ERC20 token with prices available', async function () {
     const ethConversionInUsd = 10000;
     const marketData = {
       price: 0.123,
@@ -121,14 +116,6 @@ describe('Token List', function () {
           tokenAddress,
           '+0.05%',
         );
-
-        // We made this due to a change on Firefox v125
-        // The 2 decimals are not displayed with values which are "rounded",
-        if (isFirefox) {
-          await assetListPage.checkTokenGeneralChangeValue('+$50');
-        } else {
-          await assetListPage.checkTokenGeneralChangeValue('+$50.00');
-        }
       },
     );
   });
