@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import {
   CaipAssetType,
   CaipAssetTypeStruct,
+  CaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
 import {
@@ -12,7 +13,6 @@ import {
   isCrossChain,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import { type NetworkConfiguration } from '@metamask/network-controller';
 import {
   type AssetMetadata,
   fetchAssetMetadataForAssetIds,
@@ -21,7 +21,6 @@ import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
   setEvmBalances,
-  setFromChain,
   setFromToken,
   setFromTokenInputValue,
   setToToken,
@@ -163,7 +162,7 @@ export const useBridgeQueryParams = () => {
     (
       fromTokenMetadata: AssetMetadata,
       fromAsset: NonNullable<ReturnType<typeof parseAsset>>,
-      network?: NetworkConfiguration,
+      network?: { chainId: CaipChainId },
     ) => {
       const { chainId: assetChainId } = fromAsset;
 
@@ -184,10 +183,10 @@ export const useBridgeQueryParams = () => {
         };
         // If asset's chain is the same as fromChain, only set the fromToken
         if (network && assetChainId === formatChainIdToCaip(network.chainId)) {
-          dispatch(setFromToken(token));
+          dispatch(setFromToken({ chainId: token.chainId, token }));
         } else {
           dispatch(
-            setFromChain({
+            setFromToken({
               chainId: assetChainId,
               token,
             }),
@@ -278,10 +277,11 @@ export const useBridgeQueryParams = () => {
       !parsedFromAssetId &&
       !searchParams.get(BridgeQueryParams.FROM) &&
       fromToken?.chainId &&
+      // TODO remove this when GNS references are removed
       // Wait for network to be changed if needed
       !isCrossChain(fromToken.chainId, fromChain?.chainId)
     ) {
-      dispatch(setEvmBalances(fromToken.chainId, fromToken.address));
+      dispatch(setEvmBalances(fromToken));
     }
   }, [
     parsedFromAssetId,

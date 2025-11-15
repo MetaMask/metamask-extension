@@ -113,6 +113,7 @@ type FilterPredicate = (
  * - popularity
  * - all other tokens
  *
+ * @deprecated Use useTokenList or other token list hooks instead
  * @param chainId - the selected src/dest chainId
  * @param tokenToExclude - a token to exclude from the token list, usually the token being swapped from
  * @param tokenToExclude.symbol

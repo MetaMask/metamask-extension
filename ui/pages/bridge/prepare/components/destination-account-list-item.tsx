@@ -44,7 +44,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { getToChain } from '../../../../ducks/bridge/selectors';
 import { type DestinationAccount } from '../types';
-import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { useBalances } from '../../hooks/useBalances';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 
@@ -72,7 +72,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   const isEvmNetwork = isEvmAccountType(account.type);
 
   const toChain = useSelector(getToChain);
-  const { balanceByChainId } = useMultichainBalances(account.address);
+  const { balanceByChainId } = useBalances(account.address);
 
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,

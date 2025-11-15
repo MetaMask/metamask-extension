@@ -250,6 +250,96 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
   },
 );
 
+// This is a copy of getTokenBalancesEvm, except it ignores the selected global network
+export const getTokenBalancesEvmMainnet = createDeepEqualSelector(
+  getTokensAcrossChainsByAccountAddressSelector,
+  getNativeTokenCachedBalanceByChainIdSelector,
+  getTokenBalances,
+  (_state, accountAddress) => accountAddress,
+  getMarketData,
+  getCurrencyRates,
+  getPreferences,
+  (
+    selectedAccountTokensChains,
+    nativeBalances,
+    tokenBalances,
+    selectedAccountAddress,
+    marketData,
+    currencyRates,
+    preferences,
+  ) => {
+    const { hideZeroBalanceTokens } = preferences;
+    const selectedAccountTokenBalancesAcrossChains =
+      tokenBalances[selectedAccountAddress];
+
+    // we need to filter Testnets
+    const filteredAccountTokensChains = Object.fromEntries(
+      Object.entries(selectedAccountTokensChains).filter(
+        ([chainId]) =>
+          !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
+      ),
+    );
+    const tokensWithBalance: TokenWithFiatAmount[] = [];
+    Object.entries(filteredAccountTokensChains).forEach(
+      ([stringChainKey, tokens]) => {
+        const chainId = stringChainKey as Hex;
+        const tokenList = tokens as Token[];
+        tokenList.forEach((token: Token) => {
+          const { isNative, address, decimals } = token;
+
+          const balance =
+            calculateTokenBalance({
+              isNative,
+              chainId,
+              address: address as Hex,
+              decimals,
+              nativeBalances,
+              selectedAccountTokenBalancesAcrossChains,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            }) || '0';
+
+          const tokenFiatAmount = calculateTokenFiatAmount({
+            token,
+            chainId,
+            balance,
+            marketData,
+            currencyRates,
+          });
+
+          if (
+            !hideZeroBalanceTokens ||
+            balance !== '0'
+            // ||(token.isNative && isOnCurrentNetwork)
+          ) {
+            // title is used for sorting. We override native ETH to Ethereum
+            let title;
+            if (token.isNative) {
+              title = token.symbol === 'ETH' ? 'Ethereum' : token.symbol;
+            } else {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              title = token.name || token.symbol;
+            }
+
+            tokensWithBalance.push({
+              ...token,
+              address: token.address as CaipAssetType,
+              balance,
+              tokenFiatAmount,
+              chainId: chainId as CaipChainId,
+              string: String(balance),
+              secondary: 0,
+              title,
+            });
+          }
+        });
+      },
+    );
+    return tokensWithBalance;
+  },
+);
+
 export const getMultiChainAssets = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
