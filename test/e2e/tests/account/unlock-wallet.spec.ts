@@ -64,6 +64,7 @@ describe('Unlock wallet - ', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
+        await driver.delay(5_000);
         await importWalletWithSocialLoginOnboardingFlow({
           driver,
         });
