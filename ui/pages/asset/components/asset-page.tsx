@@ -87,6 +87,8 @@ import { Asset } from '../types/asset';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
+import { TronDailyResources } from './tron-daily-resources';
+import { getMultichainIsTron } from '../../../selectors/multichain';
 
 // TODO BIP44 Refactor: This page needs a significant refactor after BIP44 is enabled to remove confusing branching logic
 // A page representing a native or token asset
@@ -314,6 +316,10 @@ const AssetPage = ({
   );
   const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
 
+  // Check if we should show Tron resources
+  const isTron = useMultichainSelector(getMultichainIsTron, selectedAccount);
+  const showTronResources = isTron && type === AssetType.native;
+
   return (
     <Box
       marginLeft="auto"
@@ -382,6 +388,18 @@ const AssetPage = ({
         flexDirection={FlexDirection.Column}
         paddingTop={3}
       >
+        {showTronResources && (
+          <Box>
+            <TronDailyResources account={selectedAccount} chainId={chainId} />
+            <Box
+              marginTop={2}
+              marginBottom={2}
+              borderColor={BorderColor.borderMuted}
+              marginInline={4}
+              style={{ height: '1px', borderBottomWidth: 0 }}
+            />
+          </Box>
+        )}
         <Text
           variant={TextVariant.headingSm}
           paddingBottom={1}
