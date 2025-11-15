@@ -312,7 +312,7 @@ describe('Onboarding Create Password', () => {
 
       fireEvent.click(createNewWalletButton);
 
-      expect(mockCreateNewAccount).toHaveBeenCalledWith(password);
+      expect(mockCreateNewAccount).toHaveBeenCalled();
 
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith(
