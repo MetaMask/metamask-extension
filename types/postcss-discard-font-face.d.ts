@@ -1,68 +1,62 @@
 declare module 'postcss-discard-font-face' {
-  import { type Plugin as PostCssPlugin } from 'postcss';
+  import type { Plugin as PostCSSPlugin } from 'postcss';
 
   /**
-   * For each font, return `false` to remove, or a new string if you would like
-   * to transform the *URL*.
+   * A filter function that determines whether to keep, remove, or transform
+   * a font-face URL.
+   *
+   * Return:
+   * - `false` → removes the font
+   * - `true`  → keeps the font
+   * - `string` → transforms the URL
    *
    * @example
-   * ```typescript
-   * (url: string, format: string) => {
-   *   return !url.includes('.exe'); // remove if url ends with `.exe`
-   * }
+   * ```ts
+   * (url, format) => !url.endsWith('.exe')
    * ```
    */
-  type FilterFunction = (url: string, format: string) => boolean | string;
+  export type FilterFunction = (url: string, format: string) => boolean | string;
 
   /**
-   * Allowlist is an array of formats to *keep*.
+   * An array of font formats to keep.
    *
    * @example
-   * ```javascript
-   * ['ttf', 'svg'] // keep ttf and svg formats
+   * ```ts
+   * ['ttf', 'svg']
    * ```
    */
-  type Allowlist = string[];
+  export type Allowlist = string[];
 
   /**
+   * Font-face property configuration.
+   *
    * @example
-   * ```javascript
+   * ```ts
    * {
    *   weight: [400],
    *   style: ['normal']
    * }
    * ```
    */
-  type Properties = Record<string, unknown[]>;
+  export interface Properties {
+    [property: string]: (string | number)[];
+  }
 
   /**
+   * Plugin configuration options.
+   *
    * @example
-   * ```typescript
+   * ```ts
    * const options = {
    *   font: {
-   *     // keep `Arial` with `weight: 400` and `style: normal`
    *     Arial: {
    *       weight: [400],
-   *       style: ["normal"]
+   *       style: ['normal']
    *     }
    *   }
    * }
    * ```
    */
-  type Options = {
-    font: {
-      [fontName: string]: Properties;
-    };
-  };
-
-  /**
-   * Discard font faces with PostCSS.
-   *
-   * @param filter - A filter function, allowlist, or options object
-   */
-  function discardFontFace(
-    filter: Allowlist | FilterFunction | Options,
-  ): PostCssPlugin;
-
-  export = discardFontFace;
-}
+  export interface Options {
+    font: Record<string, Properties>;
+  }
