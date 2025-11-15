@@ -1,4 +1,5 @@
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
+import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 
 export const SSE_RESPONSE_HEADER = { 'Content-Type': 'text/event-stream' };
 
@@ -41,6 +42,7 @@ export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {
     enabled: true,
     minimumVersion: '13.2.0',
   },
+  ...BIP44_STAGE_TWO,
 };
 
 export const LOCATOR = {

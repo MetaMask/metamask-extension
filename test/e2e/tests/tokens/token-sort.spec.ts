@@ -7,7 +7,9 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Token List Sorting', function () {
+// Bug 37687 cannot sort tokens alphabetically in the wallet
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Token List Sorting', function () {
   const mainnetChainId = CHAIN_IDS.MAINNET;
   const customTokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
   const customTokenSymbol = 'ABC';

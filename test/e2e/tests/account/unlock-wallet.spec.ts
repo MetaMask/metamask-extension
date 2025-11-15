@@ -97,6 +97,9 @@ describe('Unlock wallet - ', function () {
         const loginPage = new LoginPage(driver);
         await loginPage.loginToHomepage(WALLET_PASSWORD);
 
+        // Wait syncing to finish
+        // BUG #37816 After password is changed and account is locked with BIP44, login takes take a long time
+        await driver.delay(10_000);
         await homePage.checkPageIsLoaded();
         await homePage.checkConnectionsRemovedModalIsDisplayed();
       },

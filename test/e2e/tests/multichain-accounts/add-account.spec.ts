@@ -34,9 +34,7 @@ describe('Add account', function () {
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
@@ -70,10 +68,8 @@ describe('Add account', function () {
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         // BUG 37030 With BIP44 enabled wallet is not showing balance
         // await homePage.checkLocalNodeBalanceIsDisplayed();
-        await headerNavbar.openAccountsPage();
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
@@ -93,9 +89,7 @@ describe('Add account', function () {
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.openMultichainAccountMenu({
           accountLabel: importedAccount.name,
         });
@@ -125,9 +119,7 @@ describe('Add account', function () {
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
@@ -167,10 +159,8 @@ describe('Add account', function () {
         await accountDetailsPage.removeAccount();
 
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountsPage();
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountNotDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );
@@ -185,9 +175,7 @@ describe('Add account', function () {
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 2',
@@ -209,11 +197,9 @@ describe('Add account', function () {
 
         // Verify both account labels persist after unlock
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);
-        await headerNavbar.openAccountsPage();
+        await headerNavbar.openAccountMenu();
 
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           CUSTOM_ACCOUNT_NAME,
         );

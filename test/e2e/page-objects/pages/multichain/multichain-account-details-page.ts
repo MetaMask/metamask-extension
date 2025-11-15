@@ -44,8 +44,7 @@ class MultichainAccountDetailsPage {
   private readonly showPrivateKeyButton =
     '[data-testid="account-show-private-key-button"]';
 
-  private readonly exportSrpButton =
-    '[data-testid="account-export-srp-button"]';
+  private readonly exportSrpButton = '[data-testid="multichain-srp-backup"]';
 
   private readonly exportPrivateKeyButton =
     '[data-testid="account-export-private-key-button"]';
@@ -163,6 +162,15 @@ class MultichainAccountDetailsPage {
     const privateKeyRow = await this.driver.findElement(this.privateKeyRow);
     await privateKeyRow.click();
     await this.driver.delay(largeDelayMs);
+  }
+
+  /**
+   * Click on reveal SRP button
+   */
+  async clicRevealRow(): Promise<void> {
+    console.log('Click on the private key row');
+    const revealSrpRow = await this.driver.findElement(this.exportSrpButton);
+    await revealSrpRow.click();
   }
 
   /**

@@ -1,3 +1,4 @@
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
@@ -5,6 +6,7 @@ import AdvancedSettings from '../../page-objects/pages/settings/advanced-setting
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import { mockEtherumSpotPrices } from '../tokens/utils/mocks';
 import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
@@ -30,9 +32,13 @@ describe('Settings: Show native token as main balance', function () {
       {
         fixtures: new FixtureBuilder()
           .withConversionRateEnabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return mockEtherumSpotPrices(mockServer);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
@@ -60,10 +66,14 @@ describe('Settings: Show native token as main balance', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .withConversionRateEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return mockEtherumSpotPrices(mockServer);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
