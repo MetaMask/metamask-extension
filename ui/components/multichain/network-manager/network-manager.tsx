@@ -28,6 +28,7 @@ import {
 import AddBlockExplorerModal from '../network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from '../network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { AddNetwork } from './components/add-network';
 import { NetworkTabs } from './network-tabs';
 import { useNetworkManagerInitialTab } from './hooks/useNetworkManagerState';
@@ -123,11 +124,11 @@ export const NetworkManager = () => {
   const handleClose = () => {
     dispatch(hideModal());
     dispatch(setEditedNetwork());
-    navigate('/');
+    navigate(DEFAULT_ROUTE);
   };
 
   const handleGoHome = () => {
-    navigate('/');
+    navigate(DEFAULT_ROUTE);
   };
 
   const handleEditOnComplete = useCallback(() => {

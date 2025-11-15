@@ -688,11 +688,12 @@ export default function Routes() {
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
         <Switch>
-          <RouteWithLayout
-            path={ONBOARDING_ROUTE}
-            component={OnboardingFlow}
-            layout={LegacyLayout}
-          />
+          <RouteWithLayout path={ONBOARDING_ROUTE} layout={LegacyLayout}>
+            {createV5CompatRoute(OnboardingFlow, {
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             path={LOCK_ROUTE}
             component={Lock}
@@ -1034,10 +1035,13 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={NONEVM_BALANCE_CHECK_ROUTE}
-            component={NonEvmBalanceCheck}
             layout={LegacyLayout}
-          />
-
+          >
+            {createV5CompatRoute(NonEvmBalanceCheck, {
+              wrapper: AuthenticatedV5Compat,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={SHIELD_PLAN_ROUTE}
@@ -1047,9 +1051,14 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={DEFAULT_ROUTE}
-            component={Home}
             layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute(Home, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
         </Switch>
       </Suspense>
     );

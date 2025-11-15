@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import {
@@ -48,11 +48,12 @@ import {
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 import { getAllPermittedAccountsForCurrentTab } from '../../../selectors';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { filterWalletsByGroupNameOrAddress } from './utils';
 
 export const AccountList = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
@@ -126,7 +127,7 @@ export const AccountList = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
           />
         }
       >

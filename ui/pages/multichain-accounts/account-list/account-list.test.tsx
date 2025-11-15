@@ -3,20 +3,18 @@ import { fireEvent, screen, within } from '@testing-library/react';
 
 import configureStore from '../../../store/store';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { AccountList } from './account-list';
 
-const mockHistoryGoBack = jest.fn();
-const mockHistoryPush = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    goBack: mockHistoryGoBack,
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('../../../hooks/accounts/useAccountsOperationsLoadingStates', () => ({
   useAccountsOperationsLoadingStates: jest.fn(),
@@ -73,7 +71,7 @@ describe('AccountList', () => {
     const backButton = screen.getByLabelText('Back');
     fireEvent.click(backButton);
 
-    expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('opens the add wallet modal when the add wallet button is clicked', () => {
