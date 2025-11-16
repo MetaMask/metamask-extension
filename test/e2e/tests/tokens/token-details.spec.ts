@@ -33,7 +33,7 @@ describe('Token Details', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
-          await mockEmptyPrices(mockServer, chainId),
+          await mockEmptyPrices(mockServer),
           await mockEmptyHistoricalPrices(mockServer, tokenAddress, chainId),
         ],
       },
@@ -80,7 +80,7 @@ describe('Token Details', function () {
         title: (this as Context).test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
-          await mockSpotPrices(mockServer, chainId, {
+          await mockSpotPrices(mockServer, {
             [tokenAddress.toLowerCase()]: marketData,
           }),
           await mockHistoricalPrices(mockServer, {

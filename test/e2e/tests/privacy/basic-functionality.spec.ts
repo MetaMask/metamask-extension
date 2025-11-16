@@ -83,7 +83,7 @@ async function mockApis(
           },
         };
       }),
-    await mockEmptyPrices(mockServer, CHAIN_IDS.MAINNET),
+    await mockEmptyPrices(mockServer),
   ];
 }
 
