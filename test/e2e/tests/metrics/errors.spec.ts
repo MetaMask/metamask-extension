@@ -234,7 +234,8 @@ describe('Sentry errors', function () {
   }
 
   async function mockSpotPrices(mockServer: Mockttp) {
-    return await mockServer
+    // Mock spot-prices for native token
+    await mockServer
       .forGet(
         /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
       )
@@ -250,6 +251,20 @@ describe('Sentry errors', function () {
           },
         };
       });
+
+    // Mock exchange-rates for USD conversion
+    return await mockServer
+      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+      .withQuery({ baseCurrency: 'usd' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          conversionDate: 1665507609.0,
+          rates: {
+            usd: 1,
+          },
+        },
+      }));
   }
 
   async function mockSentryTestError(mockServer: Mockttp) {
