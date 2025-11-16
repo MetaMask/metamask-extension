@@ -920,7 +920,7 @@ describe('Sentry errors', function () {
       );
     });
 
-    it.only('should NOT send error events in the UI', async function () {
+    it('should NOT send error events in the UI', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -1133,7 +1133,7 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await loginWithBalanceValidation(driver);
 
-          await driver.delay(300000);
+          await driver.delay(3000);
           // Trigger error
           await driver.executeScript(
             'window.stateHooks.throwTestBackgroundError()',
