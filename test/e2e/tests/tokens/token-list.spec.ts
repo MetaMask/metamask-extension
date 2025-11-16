@@ -68,12 +68,12 @@ describe('Token List', function () {
   it('shows percentage increase for an ERC20 token with prices available', async function () {
     const ethConversionInUsd = 10000;
     const marketData = {
-      price: 0.123,
+      price: 1700,
       marketCap: 12,
       pricePercentChange1d: 0.05,
     };
     const marketDataNative = {
-      price: 0.123,
+      price: 1700,
       marketCap: 12,
       pricePercentChange1d: 0.02,
     };
@@ -121,13 +121,7 @@ describe('Token List', function () {
           '+0.05%',
         );
 
-        // We made this due to a change on Firefox v125
-        // The 2 decimals are not displayed with values which are "rounded",
-        if (isFirefox) {
-          await assetListPage.checkTokenGeneralChangeValue('+$50');
-        } else {
-          await assetListPage.checkTokenGeneralChangeValue('+$50.00');
-        }
+        await assetListPage.checkTokenGeneralChangeValue('+$8.50');
       },
     );
   });

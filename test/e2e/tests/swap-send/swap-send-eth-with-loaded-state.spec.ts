@@ -13,7 +13,14 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
       .thenCallback(() => ({
         statusCode: 200,
-        json: {},
+        json: {
+          '0x0000000000000000000000000000000000000000': {
+            id: 'ethereum',
+            price: 1700, // Default ETH price for swap tests
+            marketCap: 382623505141,
+            pricePercentChange1d: 0,
+          },
+        },
       })),
 
     await mockServer
@@ -269,6 +276,8 @@ describe('Swap-Send ETH', function () {
 
           await swapSendPage.fillAmountInput('10');
 
+          await driver.delay(10000);
+
           const ETH_WETH_TOKEN_INPUTS = [
             [NATIVE_TOKEN_SYMBOL, 'WETH'],
             ['10', '10'],
@@ -279,6 +288,7 @@ describe('Swap-Send ETH', function () {
           ];
 
           await swapSendPage.clickOnAsset('WETH', 'dest');
+
           await swapSendPage.verifyAssetSymbolsAndAmounts(
             ETH_WETH_TOKEN_INPUTS[0],
             ETH_WETH_TOKEN_INPUTS[1],

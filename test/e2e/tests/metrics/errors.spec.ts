@@ -245,6 +245,48 @@ describe('Sentry errors', function () {
       });
   }
 
+  async function mockSentryTestErrorWithSpotPrices(mockServer: Mockttp) {
+    return [
+      await mockSentryTestError(mockServer),
+      await mockServer
+        .forGet(
+          /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+        )
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            '0x0000000000000000000000000000000000000000': {
+              id: 'ethereum',
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          },
+        })),
+    ];
+  }
+
+  async function mockSentryMigratorErrorWithSpotPrices(mockServer: Mockttp) {
+    return [
+      await mockSentryMigratorError(mockServer),
+      await mockServer
+        .forGet(
+          /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+        )
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            '0x0000000000000000000000000000000000000000': {
+              id: 'ethereum',
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          },
+        })),
+    ];
+  }
+
   describe('before initialization, after opting out of metrics', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
@@ -378,7 +420,7 @@ describe('Sentry errors', function () {
             meta: undefined,
           },
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryMigratorError,
+          testSpecificMock: mockSentryMigratorErrorWithSpotPrices,
           manifestFlags: {
             sentry: { forceEnable: false },
           },
@@ -717,7 +759,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryTestError,
+          testSpecificMock: mockSentryTestErrorWithSpotPrices,
           manifestFlags: {
             sentry: { forceEnable: false },
           },
@@ -823,7 +865,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryTestError,
+          testSpecificMock: mockSentryTestErrorWithSpotPrices,
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
             sentry: { forceEnable: false },

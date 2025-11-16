@@ -5,20 +5,95 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 async function mockPhpConversion(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-    .withQuery({ fsyms: 'ETH', tsyms: 'php,USD' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          ETH: {
-            PHP: '100000',
-            USD: '2500',
+  return [
+    // Mock v1/exchange-rates for PHP
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+      .withQuery({ baseCurrency: 'php' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            php: {
+              name: 'Philippine Peso',
+              ticker: 'php',
+              value: 1,
+              currencyType: 'fiat',
+            },
+            usd: {
+              name: 'US Dollar',
+              ticker: 'usd',
+              value: 0.025, // 1 PHP = 0.025 USD (or 1 USD = 40 PHP)
+              currencyType: 'fiat',
+            },
           },
-        },
-      };
-    });
+        };
+      }),
+    // Mock v1/exchange-rates for USD
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+      .withQuery({ baseCurrency: 'usd' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            usd: {
+              name: 'US Dollar',
+              ticker: 'usd',
+              value: 1,
+              currencyType: 'fiat',
+            },
+          },
+        };
+      }),
+    // Mock v2 spot-prices for chain 1 (mainnet)
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const vsCurrency = url.searchParams.get('vsCurrency');
+
+        // Return PHP price if requesting PHP
+        if (vsCurrency === 'php') {
+          return {
+            statusCode: 200,
+            json: {
+              '0x0000000000000000000000000000000000000000': {
+                id: 'ethereum',
+                price: 100000, // 1 ETH = 100,000 PHP
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            },
+          };
+        }
+
+        // Return USD price for any other currency
+        return {
+          statusCode: 200,
+          json: {
+            '0x0000000000000000000000000000000000000000': {
+              id: 'ethereum',
+              price: 2500, // 1 ETH = 2,500 USD
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          },
+        };
+      }),
+    // Mock cryptocompare for BTC/SOL prices
+    await mockServer
+      .forGet('https://min-api.cryptocompare.com/data/pricemulti')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            btc: { php: 3000000, USD: 75000 },
+            sol: { php: 10000, USD: 250 },
+          },
+        };
+      }),
+  ];
 }
 
 describe('Localization', function () {
