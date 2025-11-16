@@ -397,7 +397,9 @@
 
         &__modules {
           @include design-system.screen-sm-max {
-            display: block;
+            display: flex;
+            flex-flow: column;
+            overflow-y: auto;
           }
         }
       }
@@ -547,7 +549,8 @@
     }
 
     .settings-page__content__modules {
-      display: block;
+      display: flex;
+      flex-flow: column;
     }
   }
 }
