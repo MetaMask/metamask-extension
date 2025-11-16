@@ -81,7 +81,7 @@ describe('Token Details', function () {
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, {
-            [tokenAddress.toLowerCase()]: marketData,
+            [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: marketData,
           }),
           await mockHistoricalPrices(mockServer, {
             address: tokenAddress,
