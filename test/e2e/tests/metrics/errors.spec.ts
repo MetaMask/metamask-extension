@@ -234,32 +234,53 @@ describe('Sentry errors', function () {
   }
 
   async function mockSpotPrices(mockServer: Mockttp) {
-    // Mock spot-prices for native token
+    // Mock spot-prices for native token - handle different chains
     await mockServer
       .forGet(
         /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
       )
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const chainId = url.pathname.split('/')[3]; // Extract chain ID from path
+
+        // Default response for ETH (chain 1) and other EVM chains
+        // Matches default-fixture.js ETH values: conversionRate: 1700.0
+        let response = {
+          '0x0000000000000000000000000000000000000000': {
+            id: 'ethereum',
+            price: 1700.0,
+            marketCap: 382623505141,
+            pricePercentChange1d: 0,
+          },
+        };
+
+        // MON (Monad - chain 143) specific response
+        // Matches default-fixture.js MON values: conversionRate: 0.2
+        if (chainId === '143') {
+          response = {
             '0x0000000000000000000000000000000000000000': {
-              price: 1700,
-              marketCap: 382623505141,
+              id: 'monad',
+              price: 0.2,
+              marketCap: 1000000,
               pricePercentChange1d: 0,
             },
-          },
+          };
+        }
+
+        return {
+          statusCode: 200,
+          json: response,
         };
       });
 
     // Mock exchange-rates for USD conversion
-    return await mockServer
-      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-      .withQuery({ baseCurrency: 'usd' })
+    // Matches default-fixture.js conversionDate: 1665507600.0
+    await mockServer
+      .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v1\/exchange-rates/u)
       .thenCallback(() => ({
         statusCode: 200,
         json: {
-          conversionDate: 1665507609.0,
+          conversionDate: 1665507600.0,
           rates: {
             usd: 1,
           },
