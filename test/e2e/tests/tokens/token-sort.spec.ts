@@ -1,4 +1,5 @@
 import { Context } from 'mocha';
+import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures, largeDelayMs } from '../../helpers';
@@ -6,6 +7,7 @@ import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockSpotPrices } from './utils/mocks';
 
 describe('Token List Sorting', function () {
   const mainnetChainId = CHAIN_IDS.MAINNET;
@@ -24,6 +26,15 @@ describe('Token List Sorting', function () {
       {
         ...testFixtures,
         title: (this as Context).test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);

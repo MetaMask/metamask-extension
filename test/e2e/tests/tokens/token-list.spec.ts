@@ -1,7 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
 import { zeroAddress } from 'ethereumjs-util';
-import { Browser } from 'selenium-webdriver';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
@@ -15,8 +14,6 @@ import {
   mockHistoricalPrices,
   mockSpotPrices,
 } from './utils/mocks';
-
-const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 describe('Token List', function () {
   const chainId = CHAIN_IDS.MAINNET;
