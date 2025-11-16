@@ -148,6 +148,9 @@ const metamaskDecorator = (story, context) => {
   const initialEntries = context.parameters?.initialEntries || ['/'];
   const path = context.parameters?.path || '*';
 
+  // Wrap story in a component to defer execution until route matches
+  const StoryComponent = () => story();
+
   return (
     <Provider store={store}>
       <MemoryRouter initialEntries={initialEntries}>
@@ -166,7 +169,7 @@ const metamaskDecorator = (story, context) => {
             >
               <LegacyI18nProvider>
                 <Routes>
-                  <Route path={path} element={story()} />
+                  <Route path={path} element={<StoryComponent />} />
                 </Routes>
               </LegacyI18nProvider>
             </I18nProvider>
