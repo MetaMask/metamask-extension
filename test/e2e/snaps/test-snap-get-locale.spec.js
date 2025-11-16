@@ -1,15 +1,17 @@
+const { DAPP_PATH, DAPP_URL } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
   mockLocalizationSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
 
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
-
 describe('Test Snap Get Locale', function () {
   it('test snap_getLocale functionality', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockLocalizationSnap,
         title: this.test.fullTitle(),
@@ -18,7 +20,7 @@ describe('Test Snap Get Locale', function () {
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect to get-locale snap
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.openNewPage(DAPP_URL);
 
         // wait for page to load
         await driver.waitForSelector({
