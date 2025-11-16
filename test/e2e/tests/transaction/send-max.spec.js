@@ -34,6 +34,15 @@ describe('Sending with max amount', function () {
         localNodeOptions: { hardfork: 'london' },
         driverOptions: { timeOut: 15000 },
         title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -59,6 +68,15 @@ describe('Sending with max amount', function () {
             .build(),
           localNodeOptions: { hardfork: 'london' },
           title: this.test.fullTitle(),
+          testSpecificMock: async (mockServer) => {
+            await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -122,6 +140,15 @@ describe('Sending with max amount', function () {
             .build(),
           localNodeOptions: { hardfork: 'london' },
           title: this.test.fullTitle(),
+          testSpecificMock: async (mockServer) => {
+            await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -253,6 +280,15 @@ describe('Sending with max amount', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);

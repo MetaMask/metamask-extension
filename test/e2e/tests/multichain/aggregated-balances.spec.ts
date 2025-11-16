@@ -48,7 +48,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
             '0x0000000000000000000000000000000000000000': {
-              price: 1700,
+              price: 3401,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },

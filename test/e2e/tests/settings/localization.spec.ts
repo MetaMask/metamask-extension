@@ -81,18 +81,6 @@ async function mockPhpConversion(mockServer: Mockttp) {
           },
         };
       }),
-    // Mock cryptocompare for BTC/SOL prices
-    await mockServer
-      .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            btc: { php: 3000000, USD: 75000 },
-            sol: { php: 10000, USD: 250 },
-          },
-        };
-      }),
   ];
 }
 
