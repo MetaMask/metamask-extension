@@ -35,6 +35,7 @@ export function useConfirmationNavigation() {
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const history = useHistory();
   const { search: queryString } = useLocation();
+  const count = confirmations.length;
 
   const getIndex = useCallback(
     (confirmationId?: string) => {
@@ -68,9 +69,27 @@ export function useConfirmationNavigation() {
     [confirmations, navigateToId],
   );
 
-  const count = confirmations.length;
+  const navigateNext = useCallback(
+    (confirmationId: string) => {
+      const pendingConfirmations = confirmations.filter(
+        (confirmation) => confirmation.id !== confirmationId,
+      );
+      if (pendingConfirmations.length >= 1) {
+        const index = getIndex(pendingConfirmations[0].id);
+        navigateToIndex(index);
+      }
+    },
+    [confirmations, getIndex, navigateToIndex],
+  );
 
-  return { confirmations, count, getIndex, navigateToId, navigateToIndex };
+  return {
+    confirmations,
+    count,
+    getIndex,
+    navigateToId,
+    navigateToIndex,
+    navigateNext,
+  };
 }
 
 export function navigateToConfirmation(
@@ -119,6 +138,11 @@ export function navigateToConfirmation(
       url = `${url}${queryString}`;
     }
     history.replace(url);
+    return;
+  }
+
+  if (type === ApprovalType.AddEthereumChain) {
+    history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
     return;
   }
 

@@ -16,6 +16,7 @@ describe('Trezor Hardware', function (this: Suite) {
   it('can create an ERC20 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -23,7 +24,6 @@ describe('Trezor Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
       },
       async ({ driver, localNodes }) => {
         const symbol = 'TST';
@@ -68,6 +68,7 @@ describe('Trezor Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -76,7 +77,6 @@ describe('Trezor Hardware', function (this: Suite) {
 
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: erc20,
@@ -137,6 +137,7 @@ describe('Trezor Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -144,7 +145,6 @@ describe('Trezor Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: erc20,
@@ -196,6 +196,7 @@ describe('Trezor Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -203,7 +204,6 @@ describe('Trezor Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: erc20,

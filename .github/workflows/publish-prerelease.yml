@@ -5,11 +5,21 @@ on:
     secrets:
       PR_COMMENT_TOKEN:
         required: true
+    inputs:
+      lavamoat-policy-changed:
+        description: 'Whether the Lavamoat policy files have changed'
+        required: true
+        type: boolean
+      post-new-builds:
+        description: 'Whether to post new builds from CloudFront to the comment'
+        required: true
+        type: boolean
 
 jobs:
   publish-prerelease:
     name: Publish prerelease
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
@@ -24,6 +34,8 @@ jobs:
       MERGE_BASE_COMMIT_HASH: '' # placeholder so that we have autocomplete and logs
       CLOUDFRONT_REPO_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
+      LAVAMOAT_POLICY_CHANGED: ${{ inputs.lavamoat-policy-changed }}
+      POST_NEW_BUILDS: ${{ inputs.post-new-builds }}
     steps:
       - name: Checkout and setup high risk environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -34,7 +46,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Find the associated PR
-        if: ${{ (startsWith(env.BRANCH, 'Version-v') || startsWith(env.BRANCH, 'release/')) && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
+        if: ${{ startsWith(env.BRANCH, 'release/') && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
         uses: actions/github-script@v7
         with:
           script: |
@@ -60,12 +72,12 @@ jobs:
           echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
           echo "The merge base commit hash is '${merge_base_commit_hash}'"
 
-      - name: Page load benchmark comment
+      - name: Download page load benchmark results
         if: ${{ github.event_name == 'pull_request' }}
-        uses: ./.github/actions/page-load-benchmark-comment
+        uses: actions/download-artifact@v4
         with:
-          head-commit-hash: ${{ env.HEAD_COMMIT_HASH }}
-          pr-comment-token: ${{ secrets.PR_COMMENT_TOKEN }}
+          name: page-load-benchmark-results
+          path: test-artifacts/benchmarks
 
       - name: Publish prerelease
         if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}

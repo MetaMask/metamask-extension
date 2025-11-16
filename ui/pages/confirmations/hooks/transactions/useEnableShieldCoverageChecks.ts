@@ -1,28 +1,23 @@
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { useMemo } from 'react';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
+import {
+  getIsShieldSubscriptionActive,
+  getIsShieldSubscriptionPaused,
+} from '../../../../../shared/lib/shield';
 
 export const useEnableShieldCoverageChecks = () => {
-  const {
-    subscriptions,
-    loading: subscriptionsLoading,
-    error: subscriptionsError,
-  } = useUserSubscriptions();
+  const { subscriptions } = useUserSubscriptions();
 
-  const hasUserSubscribedToShield =
-    !subscriptionsLoading &&
-    !subscriptionsError &&
-    subscriptions.some((subscription) =>
-      subscription.products.some(
-        (product) => product.name === PRODUCT_TYPES.SHIELD,
-      ),
-    );
+  const isShieldSubscriptionActive = useMemo(() => {
+    return getIsShieldSubscriptionActive(subscriptions);
+  }, [subscriptions]);
 
-  return (
-    hasUserSubscribedToShield ||
-    // TODO: Delete this condition before releasing to prod. When we release the
-    // feature to users, this environment variable will be set to 'true' on
-    // `builds.yml`. We should remove this condition before that happens, so
-    // that coverage is only shown to users that have subscribed to shield.
-    String(process.env.METAMASK_SHIELD_ENABLED) === 'true'
-  );
+  const isShieldSubscriptionPaused = useMemo(() => {
+    return getIsShieldSubscriptionPaused(subscriptions);
+  }, [subscriptions]);
+
+  return {
+    isEnabled: isShieldSubscriptionActive,
+    isPaused: isShieldSubscriptionPaused,
+  };
 };

@@ -56,7 +56,13 @@ export const NotificationsListTurnOnNotifications = () => {
     await enableNotifications();
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.EnablingNotifications,
+      event: MetaMetricsEventName.NotificationsActivated,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        action_type: 'completed',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        is_profile_syncing_enabled: true,
+      },
     });
     if (!error && !isUpdatingMetamaskNotifications) {
       listNotifications();

@@ -13,6 +13,7 @@ import {
   AlignItems,
   Display,
   FlexDirection,
+  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -108,7 +109,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
     <PreferredAvatar
       address={address}
       size={AvatarAccountSize.Lg}
-      style={{ margin: '0 auto' }}
+      className="mx-auto"
     />
   );
 
@@ -132,6 +133,10 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
               } else if (attemptingExport === AttemptExportState.None) {
                 onClose();
               }
+            }}
+            childrenWrapperProps={{
+              display: Display.Flex,
+              justifyContent: JustifyContent.center,
             }}
           >
             {attemptingExport === AttemptExportState.PrivateKey

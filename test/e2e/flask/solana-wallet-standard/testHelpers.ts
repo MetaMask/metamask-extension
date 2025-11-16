@@ -1,14 +1,11 @@
-import * as path from 'path';
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import nacl from 'tweetnacl';
 import { largeDelayMs, regularDelayMs, WINDOW_TITLES } from '../../helpers';
+import { DAPP_PATH } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import {
-  SOLANA_DEVNET_URL,
-  withSolanaAccountSnap,
-} from '../../tests/solana/common-solana';
+import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
@@ -25,17 +22,10 @@ export const account2Short = 'ExTE...GNtt';
  * Default options for setting up Solana E2E test environment
  */
 export const DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS = {
-  dappPaths: [
-    path.join(
-      '..',
-      '..',
-      'node_modules',
-      '@metamask',
-      'test-dapp-solana',
-      'dist',
-    ),
-  ],
-} satisfies Parameters<typeof withSolanaAccountSnap>[0];
+  dappOptions: {
+    customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+  },
+};
 
 const onboardSolanaAccount = async (driver: Driver): Promise<void> => {
   console.log('onboarding a new solana account');

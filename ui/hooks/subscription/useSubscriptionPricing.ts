@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
@@ -25,6 +25,7 @@ import {
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { AssetType } from '../../../shared/constants/transaction';
+import { useAsyncResult } from '../useAsync';
 
 export type TokenWithApprovalAmount = (
   | AssetWithDisplayData<ERC20Asset>
@@ -42,7 +43,11 @@ export const useAvailableTokenBalances = (params: {
   paymentChains?: ChainPaymentInfo[];
   price?: ProductPrice;
   productType: ProductType;
-}): TokenWithApprovalAmount[] => {
+}): {
+  availableTokenBalances: TokenWithApprovalAmount[];
+  pending: boolean;
+  error: Error | undefined;
+} => {
   const { paymentChains, price, productType } = params;
 
   const paymentChainIds = useMemo(
@@ -69,10 +74,6 @@ export const useAvailableTokenBalances = (params: {
   // Poll and update evm balances for payment chains
   pollAndUpdateEvmBalances({ chainIds: paymentChainIds });
 
-  const [availableTokenBalances, setAvailableTokenBalances] = useState<
-    TokenWithApprovalAmount[]
-  >([]);
-
   const validTokenBalances = useMemo(() => {
     return evmBalances.filter((token) => {
       const supportedTokensForChain =
@@ -95,95 +96,97 @@ export const useAvailableTokenBalances = (params: {
     });
   }, [evmBalances, paymentChainTokenMap]);
 
-  useEffect(() => {
+  const {
+    value: availableTokenBalances,
+    pending,
+    error,
+  } = useAsyncResult(async (): Promise<TokenWithApprovalAmount[]> => {
     if (!price || !paymentChainTokenMap) {
-      return;
+      return [];
     }
 
-    const getAvailableTokenBalances = async () => {
-      const availableTokens: TokenWithApprovalAmount[] = [];
+    const availableTokens: TokenWithApprovalAmount[] = [];
 
-      const cryptoApprovalAmounts = await Promise.all(
-        validTokenBalances.map((token) => {
-          const tokenPaymentInfo = paymentChainTokenMap?.[
-            token.chainId as Hex
-          ]?.find(
-            (t) => t.address.toLowerCase() === token.address.toLowerCase(),
+    const cryptoApprovalAmounts = await Promise.all(
+      validTokenBalances.map((token) => {
+        const tokenPaymentInfo = paymentChainTokenMap?.[
+          token.chainId as Hex
+        ]?.find((t) => t.address.toLowerCase() === token.address.toLowerCase());
+        if (!tokenPaymentInfo) {
+          log.error(
+            '[useAvailableTokenBalances] tokenPaymentInfo not found',
+            token,
           );
-          if (!tokenPaymentInfo) {
-            log.error(
-              '[useAvailableTokenBalances] tokenPaymentInfo not found',
-              token,
-            );
-            return null;
-          }
-          return getSubscriptionCryptoApprovalAmount({
+          return null;
+        }
+        return getSubscriptionCryptoApprovalAmount({
+          chainId: token.chainId as Hex,
+          paymentTokenAddress: token.address as Hex,
+          productType,
+          interval: price.interval,
+        });
+      }),
+    );
+
+    cryptoApprovalAmounts.forEach((amount, index) => {
+      const token = validTokenBalances[index];
+      if (!token.balance) {
+        return;
+      }
+      // NOTE: we are using stable coin for subscription atm, so we need to scale the balance by the decimals
+      const scaledFactor = 10n ** 6n;
+      const scaledBalance =
+        BigInt(Math.round(Number(token.balance) * Number(scaledFactor))) /
+        scaledFactor;
+      const tokenHasEnoughBalance =
+        amount &&
+        scaledBalance * BigInt(10 ** token.decimals) >=
+          BigInt(amount.approveAmount);
+      if (tokenHasEnoughBalance) {
+        availableTokens.push({
+          ...token,
+          approvalAmount: {
+            approveAmount: amount.approveAmount,
             chainId: token.chainId as Hex,
-            paymentTokenAddress: token.address as Hex,
-            productType,
-            interval: price.interval,
-          });
-        }),
-      );
+            paymentAddress: amount.paymentAddress,
+            paymentTokenAddress: amount.paymentTokenAddress,
+          },
+          type: token.isNative ? AssetType.native : AssetType.token,
+        } as TokenWithApprovalAmount);
+      }
+    });
 
-      cryptoApprovalAmounts.forEach((amount, index) => {
-        const token = validTokenBalances[index];
-        if (!token.balance) {
-          return;
-        }
-        // NOTE: we are using stable coin for subscription atm, so we need to scale the balance by the decimals
-        const scaledFactor = 10n ** 6n;
-        const scaledBalance =
-          BigInt(Math.round(Number(token.balance) * Number(scaledFactor))) /
-          scaledFactor;
-        const tokenHasEnoughBalance =
-          amount &&
-          scaledBalance * BigInt(10 ** token.decimals) >=
-            BigInt(amount.approveAmount);
-        if (tokenHasEnoughBalance) {
-          availableTokens.push({
-            ...token,
-            approvalAmount: {
-              approveAmount: amount.approveAmount,
-              chainId: token.chainId as Hex,
-              paymentAddress: amount.paymentAddress,
-              paymentTokenAddress: amount.paymentTokenAddress,
-            },
-            type: token.isNative ? AssetType.native : AssetType.token,
-          } as TokenWithApprovalAmount);
-        }
-      });
-
-      setAvailableTokenBalances(availableTokens);
-    };
-
-    getAvailableTokenBalances();
+    return availableTokens;
   }, [price, productType, paymentChainTokenMap, validTokenBalances]);
 
-  return availableTokenBalances;
+  return {
+    availableTokenBalances: availableTokenBalances ?? [],
+    pending,
+    error,
+  };
 };
 
-export const useSubscriptionPricing = () => {
+/**
+ * Use this hook to get the subscription pricing.
+ *
+ * @param options - The options for the hook.
+ * @param options.refetch - Whether to refetch the subscription pricing from api.
+ * @returns The subscription pricing.
+ */
+export const useSubscriptionPricing = (
+  { refetch }: { refetch?: boolean } = { refetch: false },
+) => {
   const dispatch = useDispatch();
   const subscriptionPricing = useSelector(getSubscriptionPricing);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        await dispatch(getSubscriptionPricingAction());
-      } catch (err) {
-        log.error('[useSubscriptionPricing] error', err);
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [dispatch]);
+  const { pending, error } = useAsyncResult(async () => {
+    if (!refetch) {
+      return undefined;
+    }
+    return await dispatch(getSubscriptionPricingAction());
+  }, [dispatch, refetch]);
 
-  return { subscriptionPricing, loading, error };
+  return { subscriptionPricing, loading: pending, error };
 };
 
 export const useSubscriptionProductPlans = (

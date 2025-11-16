@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Atribuições"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "A URL de RPC (Chamadas de Procedimento Remoto) da Infura não suporta mais Aurora."
-  },
   "authorizedPermissions": {
     "message": "Você concedeu as seguintes permissões"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Token personalizado"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "A detecção de tokens ainda não está disponível nesta rede. Por favor, importe o token manualmente e certifique-se de que ele é confiável. Saiba mais sobre $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Qualquer pessoa pode criar um token, inclusive versões falsas de tokens existentes. Saiba mais sobre $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Certifique-se de que confia no token antes de importá-lo. Saiba como evitar $1. Você também pode ativar a detecção de tokens $2."
   },
   "customerSupport": {
     "message": "suporte ao cliente"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Deposite criptomoedas de outra conta com um endereço de carteira ou código QR."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Devido a atualizações no sistema Ethereum, a rede de teste Goerli será descontinuada em breve."
   },
   "deprecatedNetwork": {
     "message": "Essa rede foi descontinuada"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "As informações que você inseriu estão associadas a um ID de cadeia existente."
   },
-  "expandView": {
-    "message": "Expandir exibição"
-  },
   "experimental": {
     "message": "Experimental"
   },
@@ -2462,10 +2447,6 @@
   },
   "from": {
     "message": "De"
-  },
-  "fromAddress": {
-    "message": "De: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "fromTokenLists": {
     "message": "Das listas de tokens: $1"
@@ -2757,32 +2738,11 @@
   "importNFTTokenIdToolTip": {
     "message": "O ID de um NFT é um identificador único, pois não há dois NFTs iguais. Novamente, na OpenSea, esse número se encontra em \"Detalhes\". Anote-o ou copie-o para sua área de transferência."
   },
-  "importNWordSRP": {
-    "message": "Tenho uma Frase de Recuperação de $1 palavra(s)",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Chave privada"
   },
-  "importSRPDescription": {
-    "message": "Importe uma carteira existente com sua Frase de Recuperação Secreta de 12 ou 24 palavras."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Frases de Recuperação Secretas contêm 12 ou 24 palavras"
-  },
-  "importSRPWordError": {
-    "message": "A palavra $1 está incorreta ou contém erros de ortografia.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Palavras $1 e $2 estão incorretas ou contêm erros de ortografia.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Importar Frase de Recuperação Secreta"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Ocorreu um erro desconhecido."
   },
   "importSelectedTokens": {
     "message": "Importar tokens selecionados?"
@@ -2802,9 +2762,6 @@
   "importTokensError": {
     "message": "Não foi possível importar os tokens. Volte a tentar mais tarde."
   },
-  "importWallet": {
-    "message": "Importar carteira"
-  },
   "importWalletOrAccountHeader": {
     "message": "Importe uma carteira ou conta"
   },
@@ -2815,9 +2772,6 @@
   "imported": {
     "message": "Importada",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "em suas Configurações"
   },
   "included": {
     "message": "incluída"
@@ -4077,9 +4031,6 @@
     "message": "Ícone $1",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Escolha uma opção para continuar"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Iniciar extensão"
   },
@@ -5134,10 +5085,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Esta é a sua $1. Anote-a na ordem correta e guarde-a em um lugar seguro. Se alguém tiver sua Frase de Recuperação Secreta, poderá acessar sua carteira. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Não a compartilhe com ninguém, nunca."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Salve sua Frase de Recuperação Secreta"
@@ -5271,9 +5219,6 @@
   },
   "shieldEntryModalGetStarted": {
     "message": "Começar"
-  },
-  "shieldEntryModalSkip": {
-    "message": "Ignorar"
   },
   "show": {
     "message": "Exibir"
@@ -6528,10 +6473,6 @@
   "switchNetwork": {
     "message": "Alternar rede"
   },
-  "switchToNetwork": {
-    "message": "Alternar para $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Alternar para esta conta"
   },
@@ -6599,10 +6540,6 @@
   "to": {
     "message": "Para"
   },
-  "toAddress": {
-    "message": "Para: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
   "toggleDecodeDescription": {
     "message": "Usamos os serviços do 4byte.directory e do Sourcify para decodificar e exibir dados de transações de forma mais legível. Isso ajuda você a entender o resultado de transações pendentes e passadas, mas pode resultar em compartilhamento do seu endereço IP."
   },
@@ -6641,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Marketplace de tokens"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "golpes e riscos de segurança envolvendo tokens"
   },
   "tokenStandard": {
     "message": "Padrão de token"
@@ -7095,24 +7029,11 @@
     "message": "$1 você pode guardar esta frase em segurança para nunca perder o acesso ao seu dinheiro.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Você pode fazer backup de suas carteiras ou ver sua Frase de Recuperação Secreta em Configurações > Segurança e Senha."
-  },
   "walletReadyLoseSrp": {
     "message": "Se perder sua Frase de Recuperação Secreta, você não poderá usar sua carteira."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Esta Frase de Recuperação Secreta pode te ajudar a recuperar o acesso se você esquecer sua senha ou perder o acesso ao seu login."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Se não fizer backup da sua Frase de Recuperação Secreta, você perderá o acesso aos seus valores se não conseguir entrar no app ou se passar a usar um novo dispositivo."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Você pode fazer login em sua carteira quando quiser com sua conta $1 e a respectiva senha.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Se você esquecer sua senha, não será possível acessar sua carteira."
   },
   "wantToAddThisNetwork": {
     "message": "Desejar adicionar esta rede?"
@@ -7155,9 +7076,6 @@
   },
   "welcomeBack": {
     "message": "Boas-vindas de volta"
-  },
-  "welcomeToMetaMask": {
-    "message": "Vamos começar"
   },
   "whatsThis": {
     "message": "O que é isso?"
@@ -7221,8 +7139,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Mantenha sua Frase de Recuperação Secreta segura!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Lembraremos você mais tarde"
   }
 }

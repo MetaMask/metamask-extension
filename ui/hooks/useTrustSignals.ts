@@ -1,13 +1,17 @@
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
-// eslint-disable-next-line import/no-restricted-paths
-import { ResultType } from '../../app/scripts/lib/trust-signals/types';
+import {
+  ResultType,
+  createCacheKey,
+  mapChainIdToSupportedEVMChain,
+} from '../../shared/lib/trust-signals';
 import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
 
 export type UseTrustSignalRequest = {
   value: string;
   type: NameType;
+  chainId?: string;
 };
 
 export enum TrustSignalDisplayState {
@@ -25,18 +29,33 @@ export type TrustSignalResult = {
   label: string | null;
 };
 
+/**
+ * Hook to retrieve trust signal information for a single address.
+ *
+ * This hook fetches security alert data for a given Ethereum address and chain,
+ * and returns the trust state (e.g., malicious, verified, unknown) along with
+ * any associated label.
+ *
+ * @param value - The address or value to check for trust signals.
+ * @param type - The type of the value (e.g., NameType.ETHEREUM_ADDRESS).
+ * @param chainId - The chain ID where the address is being used. While technically
+ * optional for compatibility, omitting this parameter will result in an unknown
+ * trust signal being returned.
+ * @returns An object containing the trust signal display state and label.
+ */
 export function useTrustSignal(
   value: string,
   type: NameType,
+  chainId: string | undefined,
 ): TrustSignalResult {
-  return useTrustSignals([{ value, type }])[0];
+  return useTrustSignals([{ value, type, chainId }])[0];
 }
 
 export function useTrustSignals(
   requests: UseTrustSignalRequest[],
 ): TrustSignalResult[] {
   return useSelector((state) =>
-    requests.map(({ value, type }) => {
+    requests.map(({ value, type, chainId }) => {
       if (type !== NameType.ETHEREUM_ADDRESS) {
         return {
           state: TrustSignalDisplayState.Unknown,
@@ -44,9 +63,26 @@ export function useTrustSignals(
         };
       }
 
+      if (!chainId) {
+        return {
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        };
+      }
+
+      const supportedEVMChain = mapChainIdToSupportedEVMChain(chainId);
+      if (!supportedEVMChain) {
+        return {
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        };
+      }
+
+      const cacheKey = createCacheKey(supportedEVMChain, value);
+
       const securityAlertResponse = getAddressSecurityAlertResponse(
         state,
-        value,
+        cacheKey,
       );
 
       if (!securityAlertResponse) {

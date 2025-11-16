@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
+import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
+import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
@@ -14,19 +16,17 @@ import WhatsNewModal from '../../components/app/whats-new-modal';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
-import Typography from '../../components/ui/typography/typography';
 import Button from '../../components/ui/button';
 import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+import { ScrollContainer } from '../../contexts/scroll-container';
 
 import {
   FontWeight,
   Display,
-  TextColor,
-  TextVariant,
   FlexDirection,
   BlockSize,
   AlignItems,
@@ -38,7 +38,6 @@ import {
   ButtonIconSize,
   IconName,
   Box,
-  Text,
   Icon,
   Modal,
   ModalBody,
@@ -118,6 +117,7 @@ export default class Home extends PureComponent {
     showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
+    isSidepanel: PropTypes.bool.isRequired,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
@@ -173,6 +173,11 @@ export default class Home extends PureComponent {
     showShieldEntryModal: PropTypes.bool,
     isSocialLoginFlow: PropTypes.bool,
     lookupSelectedNetworks: PropTypes.func.isRequired,
+    navState: PropTypes.object,
+    evaluateCohortEligibility: PropTypes.func,
+    pendingShieldCohort: PropTypes.string,
+    setPendingShieldCohort: PropTypes.func,
+    isSignedIn: PropTypes.bool,
   };
 
   state = {
@@ -193,8 +198,12 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
+      navState,
     } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
+    // Read stayOnHomePage from both v5 location.state and v5-compat navState
+    const stayOnHomePage =
+      Boolean(location?.state?.stayOnHomePage) ||
+      Boolean(navState?.stayOnHomePage);
 
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
@@ -223,8 +232,12 @@ export default class Home extends PureComponent {
       location,
       pendingApprovals,
       hasApprovalFlows,
+      navState,
     } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
+    // Read stayOnHomePage from both v5 location.state and v5-compat navState
+    const stayOnHomePage =
+      Boolean(location?.state?.stayOnHomePage) ||
+      Boolean(navState?.stayOnHomePage);
 
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
@@ -275,6 +288,11 @@ export default class Home extends PureComponent {
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
     this.props.lookupSelectedNetworks();
+
+    // Set pending Shield cohort for wallet home evaluation if there's no existing pending cohort
+    if (this.props.setPendingShieldCohort && !this.props.pendingShieldCohort) {
+      this.props.setPendingShieldCohort(COHORT_NAMES.WALLET_HOME);
+    }
   }
 
   static getDerivedStateFromProps(props) {
@@ -292,6 +310,11 @@ export default class Home extends PureComponent {
       newNetworkAddedConfigurationId,
       setActiveNetwork,
       clearNewNetworkAdded,
+      isSidepanel,
+      pendingShieldCohort,
+      evaluateCohortEligibility,
+      setPendingShieldCohort,
+      isSignedIn,
     } = this.props;
 
     const {
@@ -309,8 +332,18 @@ export default class Home extends PureComponent {
 
     if (notificationClosing && !prevState.notificationClosing) {
       attemptCloseNotificationPopup();
-    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
+    } else if (
+      isNotification ||
+      hasAllowedPopupRedirectApprovals ||
+      isSidepanel
+    ) {
       this.checkStatusAndNavigate();
+    }
+
+    // Check for pending Shield cohort evaluation if user is signed in
+    if (pendingShieldCohort && evaluateCohortEligibility && isSignedIn) {
+      setPendingShieldCohort(null);
+      evaluateCohortEligibility(pendingShieldCohort);
     }
 
     // Check for redirect after default page on updates
@@ -403,7 +436,7 @@ export default class Home extends PureComponent {
         <div>
           <Text>{t('outdatedBrowserNotification')}</Text>
           <br />
-          <Text fontWeight={FontWeight.Bold} color={TextColor.warningDefault}>
+          <Text fontWeight={FontWeight.Bold} color={TextColor.WarningDefault}>
             {t('noHardwareWalletOrSnapsSupport')}
           </Text>
         </div>
@@ -422,8 +455,8 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('newNftAddedMessage')}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('newNftAddedMessage')}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -445,8 +478,8 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('removeNftMessage')}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('removeNftMessage')}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -468,8 +501,8 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('removeNftErrorMessage')}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('removeNftErrorMessage')}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -489,8 +522,8 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-network-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('newNetworkAdded', [newNetworkAddedName])}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('newNetworkAdded', [newNetworkAddedName])}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -513,10 +546,12 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-network-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {editedNetwork.newNetwork
-                  ? t('newNetworkAdded', [editedNetwork.nickname])
-                  : t('newNetworkEdited', [editedNetwork.nickname])}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>
+                  {editedNetwork.newNetwork
+                    ? t('newNetworkAdded', [editedNetwork.nickname])
+                    : t('newNetworkEdited', [editedNetwork.nickname])}
+                </h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -542,17 +577,17 @@ export default class Home extends PureComponent {
               <Box>
                 <Text
                   className="home__new-tokens-imported-notification-title"
-                  variant={TextVariant.bodySmBold}
-                  as="h6"
+                  variant={TextVariant.BodySm}
+                  asChild
                 >
-                  {t('newTokensImportedTitle')}
+                  <h6>{t('newTokensImportedTitle')}</h6>
                 </Text>
                 <Text
                   className="home__new-tokens-imported-notification-message"
-                  variant={TextVariant.bodySm}
-                  as="h6"
+                  variant={TextVariant.BodySm}
+                  asChild
                 >
-                  {t('newTokensImportedMessage', [newTokensImported])}
+                  <h6>{t('newTokensImportedMessage', [newTokensImported])}</h6>
                 </Text>
               </Box>
 
@@ -576,9 +611,9 @@ export default class Home extends PureComponent {
           onAutoHide={onAutoHide}
           message={
             <Box display={Display.InlineFlex}>
-              <Icon name={IconName.Danger} />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('importTokensError')}
+              <Icon name={IconName.Danger} marginRight={1} />
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('importTokensError')}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -720,7 +755,7 @@ export default class Home extends PureComponent {
               gap={2}
               margin={4}
             >
-              <Typography>
+              <Text>
                 {t('onboardedMetametricsParagraph1', [
                   <a
                     href={METAMETRICS_SETTINGS_LINK}
@@ -731,14 +766,14 @@ export default class Home extends PureComponent {
                     {t('onboardedMetametricsLink')}
                   </a>,
                 ])}
-              </Typography>
-              <Typography>{t('onboardedMetametricsParagraph2')}</Typography>
+              </Text>
+              <Text>{t('onboardedMetametricsParagraph2')}</Text>
               <ul className="home__onboarding_list">
                 <li>{t('onboardedMetametricsKey1')}</li>
                 <li>{t('onboardedMetametricsKey2')}</li>
                 <li>{t('onboardedMetametricsKey3')}</li>
               </ul>
-              <Typography>{t('onboardedMetametricsParagraph3')}</Typography>
+              <Text>{t('onboardedMetametricsParagraph3')}</Text>
             </Box>
           </ModalBody>
           <ModalFooter>
@@ -873,7 +908,7 @@ export default class Home extends PureComponent {
       !isSocialLoginFlow;
 
     return (
-      <div className="main-container main-container--has-shadow">
+      <ScrollContainer className="main-container main-container--has-shadow">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Route
           path={CONNECTED_ACCOUNTS_ROUTE}
@@ -900,16 +935,7 @@ export default class Home extends PureComponent {
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
           {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
-          {showShieldEntryModal && (
-            <ShieldEntryModal
-              onClose={() => {
-                // TODO: implement
-              }}
-              onGetStarted={() => {
-                // TODO: implement
-              }}
-            />
-          )}
+          {showShieldEntryModal && <ShieldEntryModal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
@@ -940,7 +966,7 @@ export default class Home extends PureComponent {
           </div>
           {this.renderNotifications()}
         </div>
-      </div>
+      </ScrollContainer>
     );
   }
 }

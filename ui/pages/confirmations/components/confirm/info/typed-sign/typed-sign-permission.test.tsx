@@ -71,11 +71,13 @@ describe('TypedSignPermissionInfo', () => {
         permission as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      const { container } = renderWithConfirmContextProvider(
+      const { getByTestId } = renderWithConfirmContextProvider(
         <TypedSignPermissionInfo />,
         mockStore,
       );
-      expect(container).toMatchSnapshot();
+      expect(
+        getByTestId('native-token-periodic-details-section'),
+      ).toBeInTheDocument();
     });
 
     it('throws an error when start time is missing', () => {
@@ -110,11 +112,15 @@ describe('TypedSignPermissionInfo', () => {
         permissionWithoutExpiry as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      const { container } = renderWithConfirmContextProvider(
+      const { getByTestId } = renderWithConfirmContextProvider(
         <TypedSignPermissionInfo />,
         mockStore,
       );
-      expect(container).toMatchSnapshot();
+      const detailsSection = getByTestId(
+        'native-token-periodic-details-section',
+      );
+      expect(detailsSection).toBeInTheDocument();
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
     });
   });
 
@@ -144,11 +150,16 @@ describe('TypedSignPermissionInfo', () => {
         permission as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      const { container } = renderWithConfirmContextProvider(
+      const { getByTestId } = renderWithConfirmContextProvider(
         <TypedSignPermissionInfo />,
         mockStore,
       );
-      expect(container).toMatchSnapshot();
+      expect(
+        getByTestId('native-token-stream-details-section'),
+      ).toBeInTheDocument();
+      expect(
+        getByTestId('native-token-stream-stream-rate-section'),
+      ).toBeInTheDocument();
     });
 
     it('throws an error when start time is missing', () => {
@@ -189,11 +200,13 @@ describe('TypedSignPermissionInfo', () => {
         permissionWithoutInitialAmount as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      const { container } = renderWithConfirmContextProvider(
+      const { getByTestId } = renderWithConfirmContextProvider(
         <TypedSignPermissionInfo />,
         mockStore,
       );
-      expect(container).toMatchSnapshot();
+      expect(
+        getByTestId('native-token-stream-details-section'),
+      ).toBeInTheDocument();
     });
 
     it('renders native token stream permission without max amount', () => {
@@ -211,11 +224,13 @@ describe('TypedSignPermissionInfo', () => {
         permissionWithoutMaxAmount as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      const { container } = renderWithConfirmContextProvider(
+      const { getByTestId } = renderWithConfirmContextProvider(
         <TypedSignPermissionInfo />,
         mockStore,
       );
-      expect(container).toMatchSnapshot();
+      expect(
+        getByTestId('native-token-stream-details-section'),
+      ).toBeInTheDocument();
     });
 
     it('renders native token stream permission without expiry', () => {
@@ -227,11 +242,13 @@ describe('TypedSignPermissionInfo', () => {
         permissionWithoutExpiry as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      const { container } = renderWithConfirmContextProvider(
+      const { getByTestId } = renderWithConfirmContextProvider(
         <TypedSignPermissionInfo />,
         mockStore,
       );
-      expect(container).toMatchSnapshot();
+      const detailsSection = getByTestId('native-token-stream-details-section');
+      expect(detailsSection).toBeInTheDocument();
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
     });
   });
 
@@ -261,11 +278,13 @@ describe('TypedSignPermissionInfo', () => {
         permission as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      const { container } = renderWithConfirmContextProvider(
+      const { getByTestId } = renderWithConfirmContextProvider(
         <TypedSignPermissionInfo />,
         mockStore,
       );
-      expect(container).toMatchSnapshot();
+      expect(
+        getByTestId('erc20-token-periodic-details-section'),
+      ).toBeInTheDocument();
     });
 
     it('throws an error when start time is missing', () => {
@@ -300,11 +319,15 @@ describe('TypedSignPermissionInfo', () => {
         permissionWithoutExpiry as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      const { container } = renderWithConfirmContextProvider(
+      const { getByTestId } = renderWithConfirmContextProvider(
         <TypedSignPermissionInfo />,
         mockStore,
       );
-      expect(container).toMatchSnapshot();
+      const detailsSection = getByTestId(
+        'erc20-token-periodic-details-section',
+      );
+      expect(detailsSection).toBeInTheDocument();
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
     });
   });
 
@@ -335,11 +358,13 @@ describe('TypedSignPermissionInfo', () => {
         permission as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      const { container } = renderWithConfirmContextProvider(
+      const { getByTestId } = renderWithConfirmContextProvider(
         <TypedSignPermissionInfo />,
         mockStore,
       );
-      expect(container).toMatchSnapshot();
+      expect(
+        getByTestId('erc20-token-stream-details-section'),
+      ).toBeInTheDocument();
     });
 
     it('throws an error when start time is missing', () => {
@@ -380,11 +405,13 @@ describe('TypedSignPermissionInfo', () => {
         permissionWithoutInitialAmount as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      const { container } = renderWithConfirmContextProvider(
+      const { getByTestId } = renderWithConfirmContextProvider(
         <TypedSignPermissionInfo />,
         mockStore,
       );
-      expect(container).toMatchSnapshot();
+      expect(
+        getByTestId('erc20-token-stream-details-section'),
+      ).toBeInTheDocument();
     });
 
     it('renders ERC20 token stream permission without max amount', () => {
@@ -402,11 +429,13 @@ describe('TypedSignPermissionInfo', () => {
         permissionWithoutMaxAmount as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      const { container } = renderWithConfirmContextProvider(
+      const { getByTestId } = renderWithConfirmContextProvider(
         <TypedSignPermissionInfo />,
         mockStore,
       );
-      expect(container).toMatchSnapshot();
+      expect(
+        getByTestId('erc20-token-stream-details-section'),
+      ).toBeInTheDocument();
     });
 
     it('renders ERC20 token stream permission without expiry', () => {
@@ -418,11 +447,13 @@ describe('TypedSignPermissionInfo', () => {
         permissionWithoutExpiry as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      const { container } = renderWithConfirmContextProvider(
+      const { getByTestId } = renderWithConfirmContextProvider(
         <TypedSignPermissionInfo />,
         mockStore,
       );
-      expect(container).toMatchSnapshot();
+      const detailsSection = getByTestId('erc20-token-stream-details-section');
+      expect(detailsSection).toBeInTheDocument();
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
     });
   });
 });

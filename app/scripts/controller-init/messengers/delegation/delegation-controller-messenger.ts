@@ -1,8 +1,9 @@
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { type DelegationControllerMessenger } from '@metamask/delegation-controller';
 import { type KeyringControllerSignTypedMessageAction } from '@metamask/keyring-controller';
 import { TransactionControllerTransactionStatusUpdatedEvent } from '@metamask/transaction-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 export { type DelegationControllerMessenger } from '@metamask/delegation-controller';
 
@@ -17,24 +18,43 @@ type AllowedActions =
 type AllowedEvents = TransactionControllerTransactionStatusUpdatedEvent;
 
 export function getDelegationControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ): DelegationControllerMessenger {
-  return messenger.getRestricted({
-    name: 'DelegationController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'DelegationController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'DelegationController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'AccountsController:getSelectedAccount',
       'KeyringController:signTypedMessage',
     ],
-    allowedEvents: ['TransactionController:transactionStatusUpdated'],
+    events: ['TransactionController:transactionStatusUpdated'],
   });
+  return controllerMessenger;
 }
 
 export function getDelegationControllerInitMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'DelegationControllerInit',
-    allowedEvents: ['TransactionController:transactionStatusUpdated'],
-    allowedActions: [],
+  const controllerInitMessenger = new Messenger<
+    'DelegationControllerInit',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'DelegationControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    events: ['TransactionController:transactionStatusUpdated'],
+  });
+  return controllerInitMessenger;
 }

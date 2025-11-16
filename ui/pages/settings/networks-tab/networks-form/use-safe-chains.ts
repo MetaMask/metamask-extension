@@ -26,6 +26,7 @@ export const useSafeChains = () => {
   }>({ safeChains: [] });
 
   useEffect(() => {
+    let isMounted = true;
     if (useSafeChainsListValidation) {
       fetchWithCache({
         url: CHAIN_SPEC_URL,
@@ -34,12 +35,20 @@ export const useSafeChains = () => {
         cacheOptions: { cacheRefreshTime: DAY },
       })
         .then((response) => {
-          setSafeChains({ safeChains: response });
+          if (isMounted) {
+            setSafeChains({ safeChains: response });
+          }
         })
         .catch((error) => {
-          setSafeChains({ error });
+          if (isMounted) {
+            setSafeChains({ error });
+          }
         });
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [useSafeChainsListValidation]);
 
   return safeChains;

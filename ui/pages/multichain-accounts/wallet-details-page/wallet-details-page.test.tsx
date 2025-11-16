@@ -91,6 +91,6 @@ describe('WalletDetailsPage', () => {
   it('renders AddMultichainAccount component for entropy wallets', () => {
     renderComponent();
 
-    expect(screen.getByText('Create account')).toBeInTheDocument();
+    expect(screen.getByText('Add account')).toBeInTheDocument();
   });
 });

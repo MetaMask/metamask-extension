@@ -19,7 +19,7 @@ describe('Change assets', function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         smartContract,
         title: this.test?.fullTitle(),
@@ -68,7 +68,7 @@ describe('Change assets', function () {
     const tokenContract = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTokensControllerERC20()
           .withNftControllerERC721()
@@ -120,7 +120,7 @@ describe('Change assets', function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         smartContract,
         title: this.test?.fullTitle(),
@@ -172,7 +172,7 @@ describe('Change assets', function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNftControllerERC721()
           .withPreferencesController({

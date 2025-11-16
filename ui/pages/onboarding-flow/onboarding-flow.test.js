@@ -1,11 +1,10 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ONBOARDING_EXPERIMENTAL_AREA,
-  ///: END:ONLY_INCLUDE_IF
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_CONFIRM_SRP_ROUTE,
@@ -38,12 +37,46 @@ jest.mock('react-router-dom-v5-compat', () => ({
   useLocation: () => mockUseLocation(),
 }));
 
+// Mock Rive animation components
+jest.mock('./welcome/fox-appear-animation', () => ({
+  __esModule: true,
+  default: () => <div data-testid="fox-appear-animation" />,
+}));
+
+jest.mock('./welcome/metamask-wordmark-animation', () => ({
+  __esModule: true,
+  default: ({ setIsAnimationComplete }) => {
+    // Simulate animation completion immediately using setTimeout
+    setTimeout(() => setIsAnimationComplete(true), 0);
+    return <div data-testid="metamask-wordmark-animation" />;
+  },
+}));
+
+jest.mock('./creation-successful/wallet-ready-animation', () => ({
+  __esModule: true,
+  default: () => <div data-testid="wallet-ready-animation" />,
+}));
+
+// Mock the useBackupAndSync hook to avoid thunk dispatch issues
+jest.mock('../../hooks/identity/useBackupAndSync', () => ({
+  useBackupAndSync: () => ({
+    error: null,
+    setIsBackupAndSyncFeatureEnabled: jest.fn(() => Promise.resolve()),
+  }),
+}));
+
 jest.mock('../../store/actions', () => ({
   createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   createNewVaultAndRestore: jest.fn(),
   setOnboardingDate: jest.fn(() => ({ type: 'TEST_DISPATCH' })),
-  hideLoadingIndication: jest.fn(() => ({ type: 'HIDE_LOADING_INDICATION' })),
+  hideLoadingIndication: jest.fn(() => async () => ({
+    type: 'HIDE_LOADING_INDICATION',
+  })),
+  setIsBackupAndSyncFeatureEnabled: jest.fn(
+    () => async () => Promise.resolve(),
+  ),
+  checkIsSeedlessPasswordOutdated: jest.fn(() => Promise.resolve()),
 }));
 
 describe('Onboarding Flow', () => {
@@ -85,7 +118,7 @@ describe('Onboarding Flow', () => {
 
   process.env.METAMASK_BUILD_TYPE = 'main';
 
-  const store = configureMockStore()(mockState);
+  const store = configureMockStore([thunk])(mockState);
 
   beforeEach(() => {
     mockUseLocation.mockReturnValue({
@@ -129,7 +162,7 @@ describe('Onboarding Flow', () => {
       },
     };
 
-    const completedOnboardingStore = configureMockStore()(
+    const completedOnboardingStore = configureMockStore([thunk])(
       completedOnboardingState,
     );
 
@@ -153,7 +186,7 @@ describe('Onboarding Flow', () => {
     it('should call createNewVaultAndGetSeedPhrase when creating a new wallet password', async () => {
       const { queryByTestId, queryByText } = renderWithProvider(
         <OnboardingFlow />,
-        configureMockStore()({
+        configureMockStore([thunk])({
           ...mockState,
           metamask: {
             ...mockState.metamask,
@@ -230,7 +263,7 @@ describe('Onboarding Flow', () => {
     it('should call unlockAndGetSeedPhrase when unlocking with a password', async () => {
       const { getByLabelText, getByText } = renderWithProvider(
         <OnboardingFlow />,
-        configureMockStore()({
+        configureMockStore([thunk])({
           ...mockState,
           metamask: {
             ...mockState.metamask,
@@ -261,18 +294,20 @@ describe('Onboarding Flow', () => {
     expect(privacySettings).toBeInTheDocument();
   });
 
-  it('should render onboarding creation/completion successful', () => {
+  it('should render onboarding creation/completion successful', async () => {
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlow />,
       store,
       ONBOARDING_COMPLETION_ROUTE,
     );
 
-    const creationSuccessful = queryByTestId('wallet-ready');
-    expect(creationSuccessful).toBeInTheDocument();
+    await waitFor(() => {
+      const creationSuccessful = queryByTestId('wallet-ready');
+      expect(creationSuccessful).toBeInTheDocument();
+    });
   });
 
-  it('should render onboarding Login page screen', () => {
+  it('should render onboarding Login page screen', async () => {
     mockUseLocation.mockReturnValue({
       key: 'test-key',
       pathname: ONBOARDING_WELCOME_ROUTE,
@@ -286,8 +321,10 @@ describe('Onboarding Flow', () => {
       ONBOARDING_WELCOME_ROUTE,
     );
 
-    const onboardingLogin = queryByTestId('get-started');
-    expect(onboardingLogin).toBeInTheDocument();
+    await waitFor(() => {
+      expect(queryByTestId('get-started')).toBeInTheDocument();
+    });
+
     jest.clearAllMocks();
   });
 
@@ -313,7 +350,7 @@ describe('Onboarding Flow', () => {
       },
     };
 
-    const mockStoreWithCurrentKeyring = configureMockStore()(
+    const mockStoreWithCurrentKeyring = configureMockStore([thunk])(
       mockStateWithCurrentKeyring,
     );
 

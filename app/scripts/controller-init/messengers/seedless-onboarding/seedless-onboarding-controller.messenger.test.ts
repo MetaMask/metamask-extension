@@ -1,15 +1,14 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 
+import { getRootMessenger } from '../../../lib/messenger';
 import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding-controller-messenger';
 
 describe('getSeedlessOnboardingControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const seedlessOnboardingControllerMessenger =
       getSeedlessOnboardingControllerMessenger(messenger);
 
-    expect(seedlessOnboardingControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(seedlessOnboardingControllerMessenger).toBeInstanceOf(Messenger);
   });
 });

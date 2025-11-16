@@ -54,6 +54,10 @@ const useCurrentConfirmation = () => {
     useRedesignedForSignatures || useRedesignedForTransaction;
 
   return useMemo(() => {
+    if (pendingApproval?.type === ApprovalType.AddEthereumChain) {
+      return { currentConfirmation: pendingApproval };
+    }
+
     if (!shouldUseRedesign) {
       return { currentConfirmation: undefined };
     }
@@ -62,7 +66,12 @@ const useCurrentConfirmation = () => {
       transactionMetadata ?? signatureMessage ?? undefined;
 
     return { currentConfirmation };
-  }, [transactionMetadata, signatureMessage, shouldUseRedesign]);
+  }, [
+    transactionMetadata,
+    signatureMessage,
+    shouldUseRedesign,
+    pendingApproval,
+  ]);
 };
 
 export default useCurrentConfirmation;

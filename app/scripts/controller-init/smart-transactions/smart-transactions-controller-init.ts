@@ -1,7 +1,8 @@
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
+import {
+  SmartTransactionsController,
+  ClientId,
+} from '@metamask/smart-transactions-controller';
 import type { Hex } from '@metamask/utils';
-import { TransactionController } from '@metamask/transaction-controller';
 import type { TraceCallback } from '@metamask/controller-utils';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
 import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
@@ -37,30 +38,17 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
   const {
     controllerMessenger,
     initMessenger,
-    getController,
     persistedState,
     getUIState,
-    getGlobalNetworkClientId,
     getAccountType,
     getDeviceModel,
     getHardwareTypeForMetric,
     trace,
   } = request as SmartTransactionsControllerInitRequest;
 
-  const transactionController = getController(
-    'TransactionController',
-  ) as TransactionController;
-
   const smartTransactionsController = new SmartTransactionsController({
     supportedChainIds: getAllowedSmartTransactionsChainIds() as Hex[],
     clientId: ClientId.Extension,
-    getNonceLock: (address: string, networkClientId?: string) =>
-      transactionController.getNonceLock(
-        address,
-        networkClientId || getGlobalNetworkClientId(),
-      ),
-    confirmExternalTransaction: (...args) =>
-      transactionController.confirmExternalTransaction(...args),
     trackMetaMetricsEvent: initMessenger.call.bind(
       initMessenger,
       'MetaMetricsController:trackEvent',
@@ -68,13 +56,7 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
       typeof SmartTransactionsController
     >[0]['trackMetaMetricsEvent'],
     state: persistedState.SmartTransactionsController,
-    // Type mismatch due to different BaseController versions, need to update this in the STX controller first.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    messenger: controllerMessenger as any,
-    getTransactions: (...args) =>
-      transactionController.getTransactions(...args),
-    updateTransaction: (...args) =>
-      transactionController.updateTransaction(...args),
+    messenger: controllerMessenger,
     getFeatureFlags: () => {
       const state = { metamask: getUIState() };
       return getFeatureFlagsByChainId(

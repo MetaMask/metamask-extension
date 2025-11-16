@@ -1,7 +1,6 @@
 import { SubjectType } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import {
@@ -106,11 +105,12 @@ const mapStateToProps = (state, ownProps) => {
   });
 
   const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`;
-  const confirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
-  const snapsConnectPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAPS_CONNECT_ROUTE}`;
-  const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
-  const snapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
-  const snapResultPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_RESULT_ROUTE}`;
+  const confirmPermissionPath = `${connectPath}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
+  const snapsConnectPath = `${connectPath}${CONNECT_SNAPS_CONNECT_ROUTE}`;
+  const snapInstallPath = `${connectPath}${CONNECT_SNAP_INSTALL_ROUTE}`;
+  const snapUpdatePath = `${connectPath}${CONNECT_SNAP_UPDATE_ROUTE}`;
+  const snapResultPath = `${connectPath}${CONNECT_SNAP_RESULT_ROUTE}`;
+
   const isSnapInstallOrUpdateOrResult =
     pathname === snapInstallPath ||
     pathname === snapUpdatePath ||
@@ -140,6 +140,7 @@ const mapStateToProps = (state, ownProps) => {
     snapInstallPath,
     snapUpdatePath,
     snapResultPath,
+    confirmPermissionPath,
     requestState,
     hideTopBar: isSnapInstallOrUpdateOrResult,
     snapsInstallPrivacyWarningShown: getSnapsInstallPrivacyWarningShown(state),
@@ -154,7 +155,6 @@ const mapStateToProps = (state, ownProps) => {
     addressLastConnectedMap,
     lastConnectedInfo,
     connectPath,
-    confirmPermissionPath,
     totalPages,
     page,
     targetSubjectMetadata,
@@ -191,14 +191,5 @@ const PermissionApprovalContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(PermissionApproval);
-
-PermissionApprovalContainer.propTypes = {
-  history: PropTypes.object.isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string,
-    }).isRequired,
-  }).isRequired,
-};
 
 export default PermissionApprovalContainer;

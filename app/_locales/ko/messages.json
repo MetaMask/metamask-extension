@@ -630,9 +630,6 @@
   "attributions": {
     "message": "속성"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Infura RPC URL은 더 이상 Aurora를 지원하지 않습니다."
-  },
   "authorizedPermissions": {
     "message": "다음 권한을 승인했습니다."
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "맞춤 토큰"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "이 네트워크에서는 아직 토큰 감지 기능을 사용할 수 없습니다. 토큰을 직접 가져오고 해당 토큰을 신뢰할 수 있는지 반드시 확인하세요. $1에 대해 알아보기"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "토큰을 생성하기 전에 해당 토큰을 신뢰할 수 있는지 반드시 확인하세요. $1에 대해 알아보기."
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "불러오기 전에 토큰의 신뢰성을 확인하세요. $1 상황을 피하는 방법을 알아보세요. 또한 $2 토큰 감지 기능을 활성화할 수 있습니다."
   },
   "customerSupport": {
     "message": "고객 지원"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "지갑 주소 또는 QR 코드를 사용하여 다른 계정에서 암호화폐를 입금합니다."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "이더리움 시스템 업데이트로 인해 Goerli 테스트 네트워크는 곧 단계적으로 지원 중단될 예정입니다."
   },
   "deprecatedNetwork": {
     "message": "이 네트워크는 더 이상 지원되지 않습니다"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "입력한 정보는 기존 체인 ID와 연결되어 있습니다."
   },
-  "expandView": {
-    "message": "보기 확장"
-  },
   "experimental": {
     "message": "실험적"
   },
@@ -2462,10 +2447,6 @@
   },
   "from": {
     "message": "발신"
-  },
-  "fromAddress": {
-    "message": "발신: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "fromTokenLists": {
     "message": "가져올 토큰 목록: $1"
@@ -2757,32 +2738,11 @@
   "importNFTTokenIdToolTip": {
     "message": "NFT의 ID는 고유한 식별자이므로 동일한 NFT는 존재하지 않습니다. 다시 말하지만, OpenSea에서 이 번호는 '세부 정보'에서 찾아볼 수 있습니다. 이를 기록하거나 클립보드에 복사해 두세요."
   },
-  "importNWordSRP": {
-    "message": "$1단어 복구 구문이 있습니다",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "개인 키"
   },
-  "importSRPDescription": {
-    "message": "12개 또는 24개의 단어로 된 비밀복구구문으로 기존 지갑을 가져오세요."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "비밀복구구문은 12개 또는 24개의 단어로 구성되어 있습니다"
-  },
-  "importSRPWordError": {
-    "message": "$1 단어가 잘못되었거나 철자가 틀렸습니다.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "$1 및 $2 단어가 잘못되었거나 철자가 틀렸습니다.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "비밀복구구문 가져오기"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "알 수 없는 오류가 발생했습니다."
   },
   "importSelectedTokens": {
     "message": "선택한 토큰을 불러올까요?"
@@ -2802,9 +2762,6 @@
   "importTokensError": {
     "message": "토큰을 가져올 수 없습니다. 나중에 다시 시도하세요."
   },
-  "importWallet": {
-    "message": "지갑 가져오기"
-  },
   "importWalletOrAccountHeader": {
     "message": "지갑 또는 계정 가져오기"
   },
@@ -2815,9 +2772,6 @@
   "imported": {
     "message": "가져옴",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "설정에서"
   },
   "included": {
     "message": "포함됨"
@@ -4077,9 +4031,6 @@
     "message": "$1 아이콘",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "계속하려면 옵션을 선택하세요"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "확장 프로그램 실행"
   },
@@ -5134,10 +5085,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "이것이 회원님의 $1입니다. 올바른 순서로 적어두고 안전하게 보관하세요. 누군가 비밀복구구문을 알게 되면 지갑에 접근할 수 있습니다. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "절대 누구와도 공유하지 마세요."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "비밀복구구문을 저장하세요"
@@ -5271,9 +5219,6 @@
   },
   "shieldEntryModalGetStarted": {
     "message": "시작하기"
-  },
-  "shieldEntryModalSkip": {
-    "message": "건너뛰기"
   },
   "show": {
     "message": "보기"
@@ -6528,10 +6473,6 @@
   "switchNetwork": {
     "message": "네트워크 전환"
   },
-  "switchToNetwork": {
-    "message": "$1 네트워크로 전환",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "이 계정으로 전환"
   },
@@ -6599,10 +6540,6 @@
   "to": {
     "message": "수신"
   },
-  "toAddress": {
-    "message": "수신: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
   "toggleDecodeDescription": {
     "message": "트랜잭션 데이터는 4byte.directory와 Sourcify 서비스를 사용하여 디코딩하고 읽기 쉬운 형식으로 표시합니다. 이는 대기 중이거나 과거 트랜잭션의 결과를 이해하는 데 도움이 되지만, IP 주소를 공유하는 결과가 초래될 수 있습니다."
   },
@@ -6641,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "토큰 마켓플레이스"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "토큰 사기 및 보안 위험"
   },
   "tokenStandard": {
     "message": "토큰 표준"
@@ -7095,24 +7029,11 @@
     "message": "$1 이 구문을 안전하게 보관하면 자산 접근 권한을 잃지 않을 수 있습니다.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "설정 > 보안 및 비밀번호에서 지갑을 백업하거나 비밀복구구문을 확인할 수 있습니다."
-  },
   "walletReadyLoseSrp": {
     "message": "비밀복구구문을 분실하면 지갑을 사용할 수 없습니다."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "이 비밀복구구문은 비밀번호를 잊거나 로그인 접근 권한을 잃었을 때 지갑을 복구하는 데 도움이 됩니다."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "비밀복구구문을 백업하지 않으면 앱이 잠기거나 새 기기를 사용할 때 자산 접근 권한을 잃게 됩니다."
-  },
-  "walletReadySocialDetails1": {
-    "message": "$1 계정과 비밀번호로 언제든 지갑에 로그인할 수 있습니다.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "비밀번호를 잊어버리면 지갑에 접근할 수 없습니다."
   },
   "wantToAddThisNetwork": {
     "message": "이 네트워크를 추가하시겠습니까?"
@@ -7155,9 +7076,6 @@
   },
   "welcomeBack": {
     "message": "재방문을 환영합니다!"
-  },
-  "welcomeToMetaMask": {
-    "message": "시작하기"
   },
   "whatsThis": {
     "message": "이것은 무엇인가요?"
@@ -7221,8 +7139,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "비밀복구구문을 안전하게 보관하세요!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "나중에 알려드리겠습니다"
   }
 }

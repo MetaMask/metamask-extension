@@ -7,20 +7,41 @@ export type ShieldState = {
   metamask: ShieldControllerState;
 };
 
+export type CoverageStatusResult = {
+  status: CoverageStatus | undefined;
+  reasonCode: string | undefined;
+};
+
+export type CoverageMetrics = {
+  latency?: number;
+};
+
+function getFirstCoverageResult(state: ShieldState, confirmationId: string) {
+  const coverageResults = state.metamask.coverageResults?.[confirmationId];
+
+  if (!coverageResults?.results?.length) {
+    return undefined;
+  }
+
+  return coverageResults.results[0];
+}
+
 export function getCoverageStatus(
   state: ShieldState,
   confirmationId: string,
-): { status: CoverageStatus | undefined; reasonCode: string | undefined } {
-  const coverageResults = state.metamask.coverageResults[confirmationId];
-  if (!coverageResults || coverageResults.results.length === 0) {
-    return { status: undefined, reasonCode: undefined };
-  }
-
-  const result = coverageResults.results[0];
+): CoverageStatusResult {
+  const result = getFirstCoverageResult(state, confirmationId);
 
   return {
-    status: result.status,
-    // @ts-expect-error TODO: upgrade types on shield-controller
-    reasonCode: result.reasonCode,
+    status: result?.status,
+    reasonCode: result?.reasonCode,
   };
+}
+
+export function getCoverageMetrics(
+  state: ShieldState,
+  confirmationId: string,
+): CoverageMetrics | undefined {
+  const result = getFirstCoverageResult(state, confirmationId);
+  return result?.metrics;
 }

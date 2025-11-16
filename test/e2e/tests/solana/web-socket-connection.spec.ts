@@ -17,7 +17,7 @@ describe('Solana Web Socket', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            addSolanaAccount: true,
+            solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
           },
         },
       },
@@ -51,7 +51,7 @@ describe('Solana Web Socket', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            addSolanaAccount: true,
+            solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
           },
         },
       },
@@ -95,7 +95,7 @@ describe('Solana Web Socket', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            addSolanaAccount: true,
+            solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
           },
         },
       },

@@ -171,6 +171,8 @@ export const unrestrictedMethods = Object.freeze([
   'wallet_sendCalls',
   'wallet_switchEthereumChain',
   'wallet_watchAsset',
+  'wallet_upgradeAccount',
+  'wallet_getAccountUpgradeStatus',
   'web3_clientVersion',
   'web3_sha3',
   'wallet_getAllSnaps',

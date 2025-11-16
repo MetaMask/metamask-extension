@@ -12,8 +12,7 @@ import { type TokenListMap } from '@metamask/assets-controllers';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
-  isSolanaChainId,
-  isBitcoinChainId,
+  isNonEvmChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
@@ -21,6 +20,7 @@ import {
   UnifiedSwapBridgeEventName,
   type BridgeController,
   isCrossChain,
+  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
@@ -112,7 +112,12 @@ import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  FEATURED_NETWORK_CHAIN_IDS,
+  TOKEN_OCCURRENCES_MAP,
+  MINIMUM_TOKEN_OCCURRENCES,
+  type ChainId,
+} from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
@@ -185,12 +190,8 @@ const PrepareBridgePage = ({
   const toChain = useSelector(getToChain);
 
   const isFromTokensLoading = useMemo(() => {
-    // Non-EVM chains (Solana, Bitcoin) don't use the EVM token list
-    if (
-      fromChain &&
-      (isSolanaChainId(fromChain.chainId) ||
-        isBitcoinChainId(fromChain.chainId))
-    ) {
+    // Non-EVM chains (Solana, Bitcoin, Tron) don't use the EVM token list
+    if (fromChain && isNonEvmChainId(fromChain.chainId)) {
       return false;
     }
     return Object.keys(fromTokens).length === 0;
@@ -281,10 +282,7 @@ const PrepareBridgePage = ({
           let address = '';
           if (isNativeAddress(fromToken.address)) {
             address = '';
-          } else if (
-            isSolanaChainId(fromChain.chainId) ||
-            isBitcoinChainId(fromChain.chainId)
-          ) {
+          } else if (isNonEvmChainId(fromChain.chainId)) {
             address = fromToken.address || '';
           } else {
             address = fromToken.address?.toLowerCase() || '';
@@ -335,6 +333,10 @@ const PrepareBridgePage = ({
   // Scroll to bottom of the page when banners are shown
   const alertBannersRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    // If quotes are still loading, don't scroll to the warning area
+    if (isLoading) {
+      return;
+    }
     if (
       isEstimatedReturnLow ||
       isInsufficientGasForQuote ||
@@ -355,6 +357,7 @@ const PrepareBridgePage = ({
     tokenAlert,
     txAlert,
     isUsingHardwareWallet,
+    isLoading,
   ]);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
@@ -486,6 +489,15 @@ const PrepareBridgePage = ({
 
   const getToInputHeader = () => {
     return t('swapSelectToken');
+  };
+
+  const getTokenOccurrences = (chainId: Hex | undefined): number => {
+    if (!chainId) {
+      return MINIMUM_TOKEN_OCCURRENCES;
+    }
+    return (
+      TOKEN_OCCURRENCES_MAP[chainId as ChainId] ?? MINIMUM_TOKEN_OCCURRENCES
+    );
   };
 
   return (
@@ -661,7 +673,9 @@ const PrepareBridgePage = ({
 
                 setRotateSwitchTokens(!rotateSwitchTokens);
 
-                if (!isSwap) {
+                if (isSwap) {
+                  dispatch(setFromToken(toToken));
+                } else {
                   // Handle account switching for Solana
                   dispatch(
                     setFromChain({
@@ -704,14 +718,11 @@ const PrepareBridgePage = ({
                 dispatch(setToChainId(networkConfig.chainId));
               },
               header: t('yourNetworks'),
+              shouldDisableNetwork: ({ chainId }) =>
+                isBitcoinChainId(chainId) &&
+                !isCrossChain(chainId, fromChain?.chainId),
             }}
-            customTokenListGenerator={
-              toChain &&
-              fromChain &&
-              isCrossChain(fromChain.chainId, toChain.chainId)
-                ? toTokenListGenerator
-                : undefined
-            }
+            customTokenListGenerator={toTokenListGenerator}
             amountInFiat={
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
               // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -849,7 +860,7 @@ const PrepareBridgePage = ({
           toToken &&
           toTokenIsNotNative &&
           Boolean(occurrences) &&
-          Number(occurrences) < 2 && (
+          Number(occurrences) < getTokenOccurrences(toChain?.chainId) && (
             <BannerAlert
               severity={BannerAlertSeverity.Warning}
               title={t('bridgeTokenCannotVerifyTitle')}

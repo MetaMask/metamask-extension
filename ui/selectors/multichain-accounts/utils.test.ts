@@ -52,5 +52,25 @@ describe('Account tree selectors utils', () => {
         expect(result).toBe('keyring:Ledger Hardware');
       });
     });
+
+    describe('invalid input handling', () => {
+      it('throws an error when accountGroupId is null', () => {
+        expect(() =>
+          extractWalletIdFromGroupId(null as unknown as AccountGroupId),
+        ).toThrow('Account group ID is required');
+      });
+
+      it('throws an error when accountGroupId is undefined', () => {
+        expect(() =>
+          extractWalletIdFromGroupId(undefined as unknown as AccountGroupId),
+        ).toThrow('Account group ID is required');
+      });
+
+      it('throws an error when accountGroupId is an empty string', () => {
+        expect(() => extractWalletIdFromGroupId('' as AccountGroupId)).toThrow(
+          'Account group ID is required',
+        );
+      });
+    });
   });
 });

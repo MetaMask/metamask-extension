@@ -8,7 +8,7 @@ describe('eth_gasPrice', function () {
   it('executes gas price json rpc call', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

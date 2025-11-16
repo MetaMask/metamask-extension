@@ -12,6 +12,7 @@ import type {
   MultichainAssetsRatesControllerState,
   MultichainAssetsControllerState,
   DeFiPositionsControllerState,
+  AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
@@ -57,7 +58,7 @@ import type {
 } from '@metamask/notification-services-controller';
 import type { SmartTransactionsControllerState } from '@metamask/smart-transactions-controller';
 
-import type { AccountTrackerControllerState } from '../../app/scripts/controllers/account-tracker-controller';
+import type { ClaimsControllerState } from '@metamask/claims-controller';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
 import type { AccountOrderControllerState } from '../../app/scripts/controllers/account-order';
 import type { PreferencesControllerState } from '../../app/scripts/controllers/preferences-controller';
@@ -70,13 +71,11 @@ import type { OnboardingControllerState } from '../../app/scripts/controllers/on
 import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
+import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
 
 export type ControllerStatePropertiesEnumerated = {
   internalAccounts: AccountsControllerState['internalAccounts'];
-  accounts: AccountTrackerControllerState['accounts'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
-  currentBlockGasLimit: AccountTrackerControllerState['currentBlockGasLimit'];
-  currentBlockGasLimitByChainId: AccountTrackerControllerState['currentBlockGasLimitByChainId'];
   addressBook: AddressBookControllerState['addressBook'];
   alertEnabledness: AlertControllerState['alertEnabledness'];
   unconnectedAccountAlertShownOrigins: AlertControllerState['unconnectedAccountAlertShownOrigins'];
@@ -121,9 +120,12 @@ export type ControllerStatePropertiesEnumerated = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
+  canTrackWalletFundsObtained: AppStateControllerState['canTrackWalletFundsObtained'];
   activeQrCodeScanRequest: AppStateControllerState['activeQrCodeScanRequest'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
   surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
+  shieldEndingToastLastClickedOrClosed: AppStateControllerState['shieldEndingToastLastClickedOrClosed'];
+  shieldPausedToastLastClickedOrClosed: AppStateControllerState['shieldPausedToastLastClickedOrClosed'];
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
   addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
@@ -135,12 +137,17 @@ export type ControllerStatePropertiesEnumerated = {
   isUpdateAvailable: AppStateControllerState['isUpdateAvailable'];
   updateModalLastDismissedAt: AppStateControllerState['updateModalLastDismissedAt'];
   lastUpdatedAt: AppStateControllerState['lastUpdatedAt'];
+  lastUpdatedFromVersion: AppStateControllerState['lastUpdatedFromVersion'];
+  showShieldEntryModalOnce: AppStateControllerState['showShieldEntryModalOnce'];
+  pendingShieldCohort: AppStateControllerState['pendingShieldCohort'];
+  pendingShieldCohortTxType: AppStateControllerState['pendingShieldCohortTxType'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
   enableEnforcedSimulations: AppStateControllerState['enableEnforcedSimulations'];
   enableEnforcedSimulationsForTransactions: AppStateControllerState['enableEnforcedSimulationsForTransactions'];
   enforcedSimulationsSlippage: AppStateControllerState['enforcedSimulationsSlippage'];
   enforcedSimulationsSlippageForTransactions: AppStateControllerState['enforcedSimulationsSlippageForTransactions'];
   networkConnectionBanner: AppStateControllerState['networkConnectionBanner'];
+  isWalletResetInProgress: AppStateControllerState['isWalletResetInProgress'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
@@ -192,6 +199,7 @@ export type ControllerStatePropertiesEnumerated = {
   historicalPrices: MultichainAssetsRatesControllerState['historicalPrices'];
   assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
   accountsAssets: MultichainAssetsControllerState['accountsAssets'];
+  allIgnoredAssets: MultichainAssetsControllerState['allIgnoredAssets'];
   multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
   selectedMultichainNetworkChainId: MultichainNetworkControllerState['selectedMultichainNetworkChainId'];
   isEvmSelected: MultichainNetworkControllerState['isEvmSelected'];
@@ -237,7 +245,6 @@ export type ControllerStatePropertiesEnumerated = {
   openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
   securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
   selectedAddress: PreferencesControllerState['selectedAddress'];
-  showIncomingTransactions: PreferencesControllerState['showIncomingTransactions'];
   useNftDetection: PreferencesControllerState['useNftDetection'];
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   useTransactionSimulations: PreferencesControllerState['useTransactionSimulations'];
@@ -249,7 +256,7 @@ export type ControllerStatePropertiesEnumerated = {
   useMultiAccountBalanceChecker: PreferencesControllerState['useMultiAccountBalanceChecker'];
   use4ByteResolution: PreferencesControllerState['use4ByteResolution'];
   useCurrencyRateCheck: PreferencesControllerState['useCurrencyRateCheck'];
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   watchEthereumAccountEnabled: PreferencesControllerState['watchEthereumAccountEnabled'];
   ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: PreferencesControllerState['addSnapAccountEnabled'];
@@ -309,6 +316,14 @@ export type ControllerStatePropertiesEnumerated = {
   isAccountSyncingEnabled: UserStorageController.UserStorageControllerState['isAccountSyncingEnabled'];
   isContactSyncingEnabled: UserStorageController.UserStorageControllerState['isContactSyncingEnabled'];
   isContactSyncingInProgress: UserStorageController.UserStorageControllerState['isContactSyncingInProgress'];
+  rewardsActiveAccount: RewardsControllerState['rewardsActiveAccount'];
+  rewardsAccounts: RewardsControllerState['rewardsAccounts'];
+  rewardsSubscriptions: RewardsControllerState['rewardsSubscriptions'];
+  rewardsSeasons: RewardsControllerState['rewardsSeasons'];
+  rewardsSeasonStatuses: RewardsControllerState['rewardsSeasonStatuses'];
+  rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
+  claims: ClaimsControllerState['claims'];
+  claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &
@@ -323,6 +338,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   AppStateControllerState &
   BridgeControllerState &
   BridgeStatusControllerState &
+  ClaimsControllerState &
   CronjobControllerState &
   CurrencyRateState &
   DecryptMessageControllerState &
@@ -369,7 +385,8 @@ type ControllerStateTypesMerged = AccountsControllerState &
   TokenRatesControllerState &
   TransactionControllerState &
   UserOperationControllerState &
-  UserStorageController.UserStorageControllerState;
+  UserStorageController.UserStorageControllerState &
+  RewardsControllerState;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

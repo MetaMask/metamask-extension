@@ -1,25 +1,16 @@
 import React from 'react';
-import {
-  createEvent,
-  fireEvent,
-  RenderResult,
-  waitFor,
-} from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+// eslint-disable-next-line import/no-restricted-paths
+import messages from '../../../../app/_locales/en/messages.json';
 import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { importMnemonicToVault } from '../../../store/actions';
 import { ImportSrp } from './import-srp';
-
-const mockClearClipboard = jest.fn();
-
-jest.mock('../../../helpers/utils/util', () => ({
-  clearClipboard: () => mockClearClipboard(),
-}));
-
-const VALID_SECRET_RECOVERY_PHRASE =
-  'input turtle oil scorpion exile useless dry foster vessel knee area label';
 
 jest.mock('../../../store/actions', () => ({
   importMnemonicToVault: jest.fn().mockReturnValue(
@@ -40,321 +31,131 @@ jest.mock('../../../components/app/toast-master/utils', () => ({
   })),
 }));
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
 }));
 
-const pasteSrpIntoFirstInput = (render: RenderResult, srp: string) => {
-  const [firstWord] = srp.split(' ');
-
-  const firstSrpWordDiv = render.getByTestId(
-    'import-srp__multi-srp__srp-word-0',
-  );
-  // This is safe because the input is always present in the word div.
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const firstSrpWordInput = firstSrpWordDiv.querySelector('input')!;
-
-  const pasteEvent = createEvent.paste(firstSrpWordInput, {
-    clipboardData: {
-      getData: () => srp,
-    },
-  });
-
-  fireEvent(firstSrpWordInput, pasteEvent);
-
-  return {
-    word: firstWord,
-    input: firstSrpWordInput,
-  };
-};
+const TEST_SEED =
+  'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
 describe('ImportSrp', () => {
   const store = configureMockStore([thunk])(mockState);
 
   beforeEach(() => {
-    jest.restoreAllMocks();
+    jest.clearAllMocks();
   });
 
-  it('should not show error messages until all words are provided', async () => {
-    const render = renderWithProvider(<ImportSrp />, store);
-    const { queryByText } = render;
+  it('render matches snapshot', () => {
+    const { asFragment } = renderWithProvider(<ImportSrp />, store);
+    expect(asFragment()).toMatchSnapshot();
+  });
 
-    // Initially, no error message should be shown
-    expect(
-      queryByText('Word 1 is incorrect or misspelled.'),
-    ).not.toBeInTheDocument();
-    expect(
-      queryByText('Secret Recovery Phrases contain 12, or 24 words'),
-    ).not.toBeInTheDocument();
+  it('render header with correct title', () => {
+    const { getByText } = renderWithProvider(<ImportSrp />, store);
+    expect(getByText('Import Secret Recovery Phrase')).toBeInTheDocument();
+  });
 
-    // Paste a partial SRP (first 6 words)
-    const partialSrp = VALID_SECRET_RECOVERY_PHRASE.split(' ')
-      .slice(0, 6)
-      .join(' ');
-    pasteSrpIntoFirstInput(render, partialSrp);
+  it('should render import srp and disable confirm srp button', () => {
+    const mockStore = configureMockStore()(mockState);
+    const { queryByTestId } = renderWithProvider(<ImportSrp />, mockStore);
 
-    // Still no error message should be shown
-    expect(
-      queryByText('Word 1 is incorrect or misspelled.'),
-    ).not.toBeInTheDocument();
-    expect(
-      queryByText('Secret Recovery Phrases contain 12, or 24 words'),
-    ).not.toBeInTheDocument();
+    const confirmSrpButton = queryByTestId('import-srp-confirm');
 
-    // Paste the complete SRP
-    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
+    expect(confirmSrpButton).toBeInTheDocument();
+    expect(confirmSrpButton).toBeDisabled();
+  });
 
-    // Now error messages should be shown if there are any issues
+  it('on correct srp is entered, import srp and navigate to default route', async () => {
+    const mockStore = configureMockStore([thunk])(mockState);
+    const { queryByTestId } = renderWithProvider(<ImportSrp />, mockStore);
+
+    const srpNote = queryByTestId('srp-input-import__srp-note');
+    expect(srpNote).toBeInTheDocument();
+
+    srpNote?.focus();
+
+    if (srpNote) {
+      await userEvent.type(srpNote, TEST_SEED);
+    }
+
+    const confirmSrpButton = queryByTestId('import-srp-confirm');
+
+    expect(confirmSrpButton).not.toBeDisabled();
+
+    if (confirmSrpButton) {
+      fireEvent.click(confirmSrpButton);
+    }
+
+    // Wait for async operations to complete
     await waitFor(() => {
-      expect(
-        queryByText('Word 1 is incorrect or misspelled.'),
-      ).not.toBeInTheDocument();
-      expect(
-        queryByText('Secret Recovery Phrases contain 12, or 24 words'),
-      ).not.toBeInTheDocument();
+      // Verify that importMnemonicToVault was called with the correct SRP
+      expect(importMnemonicToVault).toHaveBeenCalledWith(TEST_SEED);
+      // Verify that navigation happened after import
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(setShowNewSrpAddedToast).toHaveBeenCalledWith(true);
     });
   });
 
-  it('enables the "Import wallet" button when a valid secret recovery phrase is entered', async () => {
-    const render = renderWithProvider(<ImportSrp />, store);
-    const { getByText } = render;
+  describe('error handling', () => {
+    const testImportError = async (
+      errorMessage: string,
+      expectedErrorMessage: string,
+    ) => {
+      const mockStore = configureMockStore([thunk])(mockState);
 
-    const importButton = getByText('Import wallet');
-
-    expect(importButton).not.toBeEnabled();
-    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
-    await waitFor(() => {
-      expect(importButton).toBeEnabled();
-    });
-  });
-
-  it('does not enable the "Import wallet" button when the secret recovery phrase is empty', async () => {
-    const render = renderWithProvider(<ImportSrp />, store);
-    const { getByText } = render;
-
-    const importButton = getByText('Import wallet');
-
-    expect(importButton).not.toBeEnabled();
-    pasteSrpIntoFirstInput(render, '');
-    expect(importButton).not.toBeEnabled();
-  });
-
-  it('shows 12 word seed phrase option', async () => {
-    const render = renderWithProvider(<ImportSrp />, store);
-    const { getByText, getByTestId } = render;
-
-    const twentyFourSeedWordOption = getByTestId(
-      'import-srp__multi-srp__switch-word-count-button',
-    );
-
-    fireEvent.click(twentyFourSeedWordOption);
-
-    await waitFor(async () => {
-      expect(getByText('I have a 12 word recovery phrase'));
-    });
-  });
-
-  it('calls importMnemonicToVault on successful import', async () => {
-    const render = renderWithProvider(<ImportSrp />, store);
-    const { getByText } = render;
-    const importButton = getByText('Import wallet');
-
-    expect(importButton).not.toBeEnabled();
-    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
-
-    fireEvent.click(importButton);
-
-    await waitFor(() => {
-      expect(importMnemonicToVault).toHaveBeenCalledWith(
-        VALID_SECRET_RECOVERY_PHRASE,
+      // Mock importMnemonicToVault to reject with the specified error
+      (importMnemonicToVault as jest.Mock).mockReturnValueOnce(
+        jest.fn().mockRejectedValue(new Error(errorMessage)),
       );
-      const dispatchedActions = store.getActions();
-      expect(dispatchedActions).toContainEqual({
-        type: 'HIDE_WARNING',
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <ImportSrp />,
+        mockStore,
+      );
+
+      const srpNote = queryByTestId('srp-input-import__srp-note');
+      expect(srpNote).toBeInTheDocument();
+
+      srpNote?.focus();
+
+      if (srpNote) {
+        await userEvent.type(srpNote, TEST_SEED);
+      }
+
+      const confirmSrpButton = queryByTestId('import-srp-confirm');
+      expect(confirmSrpButton).not.toBeDisabled();
+
+      if (confirmSrpButton) {
+        fireEvent.click(confirmSrpButton);
+      }
+
+      // Wait for error to be displayed
+      await waitFor(() => {
+        expect(getByText(expectedErrorMessage)).toBeInTheDocument();
       });
-    });
-  });
 
-  it('locks and unlocks account syncing during import', async () => {
-    const render = renderWithProvider(<ImportSrp />, store);
-    const { getByText } = render;
-    const importButton = getByText('Import wallet');
-    expect(importButton).not.toBeEnabled();
-    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
-    fireEvent.click(importButton);
-    await waitFor(() => {
-      expect(importMnemonicToVault).toHaveBeenCalledWith(
-        VALID_SECRET_RECOVERY_PHRASE,
-      );
-    });
-  });
+      // Verify the button is now disabled due to error
+      expect(confirmSrpButton).toBeDisabled();
 
-  it('displays an error if one of the words in the srp is incorrect', async () => {
-    const render = renderWithProvider(<ImportSrp />, store);
-    const { getByText } = render;
-    const importButton = getByText('Import wallet');
+      // Verify navigation did not happen
+      expect(mockNavigate).not.toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(setShowNewSrpAddedToast).not.toHaveBeenCalled();
+    };
 
-    const invalidSRP = VALID_SECRET_RECOVERY_PHRASE.replace('input', 'inptu');
-    expect(importButton).not.toBeEnabled();
-
-    const { input } = pasteSrpIntoFirstInput(render, invalidSRP);
-
-    expect(input).toBeInvalid();
-    expect(importButton).not.toBeEnabled();
-  });
-
-  it('clears the secret recovery phrase from clipboard after importing', async () => {
-    const render = renderWithProvider(<ImportSrp />, store);
-    const { getByText } = render;
-    const importButton = getByText('Import wallet');
-
-    expect(importButton).not.toBeEnabled();
-    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
-
-    fireEvent.click(importButton);
-
-    await waitFor(() => {
-      expect(importMnemonicToVault).toHaveBeenCalledWith(
-        VALID_SECRET_RECOVERY_PHRASE,
+    it('should display duplicate account error when trying to import a duplicate account', async () => {
+      await testImportError(
+        'KeyringController - The account you are trying to import is a duplicate',
+        messages.srpImportDuplicateAccountError.message,
       );
     });
 
-    expect(mockClearClipboard).toHaveBeenCalled();
-  });
-
-  it('clears the SRP input fields and error message when Clear button is clicked', async () => {
-    const render = renderWithProvider(<ImportSrp />, store);
-    const { getByText, queryByTestId, getByTestId } = render;
-
-    // Input an invalid SRP to trigger error
-    const invalidSRP = VALID_SECRET_RECOVERY_PHRASE.replace('input', 'inptu');
-    pasteSrpIntoFirstInput(render, invalidSRP);
-
-    // Verify error message is shown
-    const bannerAlert = await waitFor(() => getByTestId('bannerAlert'));
-    expect(bannerAlert).toBeInTheDocument();
-
-    // Click Clear button
-    const clearButton = getByText('Clear');
-    fireEvent.click(clearButton);
-
-    // Verify error message is cleared
-    expect(queryByTestId('bannerAlert')).not.toBeInTheDocument();
-
-    // Verify all input fields are cleared
-    for (let i = 0; i < 12; i++) {
-      const input = getByTestId(
-        `import-srp__multi-srp__srp-word-${i}`,
-      ).querySelector('input');
-      expect(input).toHaveValue('');
-    }
-
-    // Verify Import wallet button is disabled
-    expect(getByText('Import wallet')).not.toBeEnabled();
-  });
-
-  it('logs an error and not call onActionComplete on import failure', async () => {
-    (importMnemonicToVault as jest.Mock).mockImplementation(() =>
-      jest.fn().mockRejectedValue(new Error('error')),
-    );
-
-    const onActionComplete = jest.fn();
-    const render = renderWithProvider(<ImportSrp />, store);
-    const { getByText } = render;
-    const importButton = getByText('Import wallet');
-
-    expect(importButton).not.toBeEnabled();
-    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
-
-    fireEvent.click(importButton);
-
-    await waitFor(() => {
-      expect(importMnemonicToVault).toHaveBeenCalledWith(
-        VALID_SECRET_RECOVERY_PHRASE,
+    it('should display already imported error for any other import error', async () => {
+      await testImportError(
+        'Some other error',
+        messages.srpAlreadyImportedError.message,
       );
-      expect(onActionComplete).not.toHaveBeenCalled();
-    });
-  });
-
-  it('clears validation errors when switching to 24-word seed phrase mode', async () => {
-    const render = renderWithProvider(<ImportSrp />, store);
-    const { getByText, getByTestId } = render;
-
-    // First paste an invalid SRP to trigger validation errors
-    const invalidSRP = VALID_SECRET_RECOVERY_PHRASE.replace('input', 'inptu');
-    pasteSrpIntoFirstInput(render, invalidSRP);
-
-    // Verify that validation errors are present
-    const firstInput = getByTestId(
-      'import-srp__multi-srp__srp-word-0',
-    ).querySelector('input');
-    expect(firstInput).toBeInvalid();
-
-    // Click the "I have a 24 word seed phrase" button
-    const switchTo24WordsButton = getByText('I have a 24 word recovery phrase');
-    fireEvent.click(switchTo24WordsButton);
-
-    // Verify that validation errors are cleared
-    expect(firstInput).not.toBeInvalid();
-  });
-
-  it('does not enable submit if 24 word seed was selected and 12 word seed was entered', async () => {
-    const render = renderWithProvider(<ImportSrp />, store);
-    const { getByText, getByTestId } = render;
-
-    const twentyFourSeedWordOption = getByTestId(
-      'import-srp__multi-srp__switch-word-count-button',
-    );
-
-    fireEvent.click(twentyFourSeedWordOption);
-
-    await waitFor(() => {
-      expect(
-        getByTestId('import-srp__multi-srp__srp-word-23').querySelector(
-          'input',
-        ),
-      ).toBeInTheDocument();
-    });
-
-    for (const [index, word] of VALID_SECRET_RECOVERY_PHRASE.split(
-      ' ',
-    ).entries()) {
-      // This is safe because the input is always present in the word div.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const input = getByTestId(
-        `import-srp__multi-srp__srp-word-${index}`,
-      ).querySelector('input')!;
-      fireEvent.change(input, { target: { value: word } });
-    }
-
-    expect(getByText('Import wallet')).not.toBeEnabled();
-  });
-
-  it('shows successful toast message after successful import', async () => {
-    const render = renderWithProvider(<ImportSrp />, store);
-    const { getByText } = render;
-    const importButton = getByText('Import wallet');
-
-    expect(importButton).not.toBeEnabled();
-    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
-
-    fireEvent.click(importButton);
-
-    await waitFor(() => {
-      expect(importMnemonicToVault).toHaveBeenCalledWith(
-        VALID_SECRET_RECOVERY_PHRASE,
-      );
-    });
-
-    // Verify that the toast action was dispatched
-    const dispatchedActions = store.getActions();
-    expect(dispatchedActions).toContainEqual({
-      type: 'SET_SHOW_NEW_SRP_ADDED_TOAST',
-      payload: true,
     });
   });
 });

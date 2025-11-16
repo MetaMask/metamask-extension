@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Ghi nhận đóng góp"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "URL Infura RPC không còn hỗ trợ Aurora nữa."
-  },
   "authorizedPermissions": {
     "message": "Bạn đã cấp các quyền sau đây"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Token tùy chỉnh"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Tính năng phát hiện token hiện chưa khả dụng trong mạng này. Vui lòng nhập token theo cách thủ công và đảm bảo bạn tin tưởng. Tìm hiểu về $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Bất kỳ ai cũng có thể tạo token, bao gồm cả việc tạo phiên bản giả mạo của token hiện có. Tìm hiểu về $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Đảm bảo bạn tin tưởng token trước khi nhập token đó. Tìm hiểu cách phòng tránh $1. Bạn cũng có thể bật tính năng phát hiện token $2."
   },
   "customerSupport": {
     "message": "hỗ trợ khách hàng"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Nạp tiền mã hóa từ tài khoản khác bằng địa chỉ ví hoặc mã QR."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Do các cập nhật của hệ thống Ethereum, mạng thử nghiệm Goerli sẽ sớm được loại bỏ dần."
   },
   "deprecatedNetwork": {
     "message": "Mạng này đã ngừng sử dụng"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "Thông tin bạn đã nhập được liên kết với một ID chuỗi hiện có."
   },
-  "expandView": {
-    "message": "Chế độ xem mở rộng"
-  },
   "experimental": {
     "message": "Thử nghiệm"
   },
@@ -2462,10 +2447,6 @@
   },
   "from": {
     "message": "Từ"
-  },
-  "fromAddress": {
-    "message": "Từ: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "fromTokenLists": {
     "message": "Từ danh sách token: $1"
@@ -2757,32 +2738,11 @@
   "importNFTTokenIdToolTip": {
     "message": "ID của NFT là một mã nhận dạng duy nhất vì không có hai NFT nào giống hệt nhau. Một lần nữa, trên OpenSea, mã số này nằm bên dưới mục \"Chi tiết\". Hãy ghi chú lại hoặc sao chép vào bộ nhớ đệm."
   },
-  "importNWordSRP": {
-    "message": "Tôi có cụm từ khôi phục gồm $1 từ",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Khóa riêng tư"
   },
-  "importSRPDescription": {
-    "message": "Nhập ví hiện có bằng cụm từ khôi phục gồm 12 hoặc 24 từ của bạn."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Cụm từ khôi phục bí mật gồm 12 hoặc 24 từ"
-  },
-  "importSRPWordError": {
-    "message": "Từ $1 không đúng hoặc sai chính tả.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Từ $1 và $2 không đúng hoặc sai chính tả.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Nhập Cụm từ khôi phục bí mật"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Đã xảy ra lỗi không xác định."
   },
   "importSelectedTokens": {
     "message": "Nhập các token đã chọn?"
@@ -2802,9 +2762,6 @@
   "importTokensError": {
     "message": "Chúng tôi không thể nhập token. Vui lòng thử lại sau."
   },
-  "importWallet": {
-    "message": "Nhập ví"
-  },
   "importWalletOrAccountHeader": {
     "message": "Nhập ví hoặc tài khoản"
   },
@@ -2815,9 +2772,6 @@
   "imported": {
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "trong phần Cài đặt"
   },
   "included": {
     "message": "đã bao gồm"
@@ -4077,9 +4031,6 @@
     "message": "Biểu tượng $1",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Chọn một tùy chọn để tiếp tục"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Khởi chạy tiện ích mở rộng"
   },
@@ -5134,10 +5085,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Đây là $1 của bạn. Hãy ghi lại theo đúng thứ tự và cất giữ ở nơi an toàn. Nếu ai đó có Cụm từ khôi phục bí mật của bạn, họ có thể truy cập vào ví của bạn. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Không bao giờ chia sẻ với bất kỳ ai."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Lưu Cụm từ khôi phục bí mật của bạn"
@@ -5271,9 +5219,6 @@
   },
   "shieldEntryModalGetStarted": {
     "message": "Bắt đầu"
-  },
-  "shieldEntryModalSkip": {
-    "message": "Bỏ qua"
   },
   "show": {
     "message": "Hiển thị"
@@ -6528,10 +6473,6 @@
   "switchNetwork": {
     "message": "Chuyển mạng"
   },
-  "switchToNetwork": {
-    "message": "Chuyển sang $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Chuyển sang tài khoản này"
   },
@@ -6599,10 +6540,6 @@
   "to": {
     "message": "Đến"
   },
-  "toAddress": {
-    "message": "Đến: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
   "toggleDecodeDescription": {
     "message": "Chúng tôi sử dụng các dịch vụ 4byte.directory và Sourcify để giải mã và hiển thị dữ liệu giao dịch dễ đọc hơn. Điều này giúp bạn hiểu rõ kết quả của các giao dịch đang chờ xử lý và đã thực hiện, nhưng có thể dẫn đến việc địa chỉ IP của bạn được chia sẻ."
   },
@@ -6641,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Thị trường token"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "rủi ro về bảo mật và lừa đảo token"
   },
   "tokenStandard": {
     "message": "Tiêu chuẩn token"
@@ -7095,24 +7029,11 @@
     "message": "$1 bạn có thể lưu giữ cụm từ này ở nơi an toàn để không bao giờ mất quyền truy cập vào tiền của mình.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Bạn có thể sao lưu ví hoặc xem Cụm từ khôi phục bí mật trong phần Cài đặt > Bảo mật & Mật khẩu."
-  },
   "walletReadyLoseSrp": {
     "message": "Nếu làm mất Cụm từ khôi phục bí mật, bạn sẽ không thể sử dụng ví của mình."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Cụm từ khôi phục bí mật này có thể giúp bạn lấy lại quyền truy cập nếu bạn quên mật khẩu hoặc mất quyền đăng nhập."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Nếu bạn không sao lưu Cụm từ khôi phục bí mật, bạn sẽ mất quyền truy cập vào tiền của mình nếu bị khóa ứng dụng hoặc đổi thiết bị mới."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Bạn có thể đăng nhập vào ví bất cứ lúc nào bằng tài khoản và mật khẩu $1 của mình.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Nếu bạn quên mật khẩu, bạn sẽ không thể truy cập vào ví."
   },
   "wantToAddThisNetwork": {
     "message": "Bạn muốn thêm mạng này?"
@@ -7155,9 +7076,6 @@
   },
   "welcomeBack": {
     "message": "Chào mừng bạn trở lại"
-  },
-  "welcomeToMetaMask": {
-    "message": "Bắt đầu nào"
   },
   "whatsThis": {
     "message": "Đây là gì?"
@@ -7221,8 +7139,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Lưu giữ Cụm từ khôi phục bí mật của bạn ở nơi an toàn!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Chúng tôi sẽ nhắc bạn sau"
   }
 }

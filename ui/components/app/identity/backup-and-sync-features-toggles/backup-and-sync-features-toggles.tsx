@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -149,6 +149,40 @@ export const BackupAndSyncFeaturesToggles = () => {
   const isBackupAndSyncUpdateLoading = useSelector(
     selectIsBackupAndSyncUpdateLoading,
   );
+  const isAccountSyncingEnabled = useSelector(selectIsAccountSyncingEnabled);
+  const isContactSyncingEnabled = useSelector(selectIsContactSyncingEnabled);
+
+  const { setIsBackupAndSyncFeatureEnabled } = useBackupAndSync();
+
+  // Reverse cascading: if all sub-features are manually turned off, turn off main toggle
+  // Guard against race conditions by not running while updates are in progress
+  useEffect(() => {
+    const allSubFeaturesDisabled =
+      !isAccountSyncingEnabled && !isContactSyncingEnabled;
+
+    if (
+      isBackupAndSyncEnabled &&
+      allSubFeaturesDisabled &&
+      !isBackupAndSyncUpdateLoading
+    ) {
+      (async () => {
+        try {
+          await setIsBackupAndSyncFeatureEnabled(
+            BACKUPANDSYNC_FEATURES.main,
+            false,
+          );
+        } catch (err) {
+          console.error('Failed to disable main backup and sync toggle:', err);
+        }
+      })();
+    }
+  }, [
+    isBackupAndSyncEnabled,
+    isAccountSyncingEnabled,
+    isContactSyncingEnabled,
+    isBackupAndSyncUpdateLoading,
+    setIsBackupAndSyncFeatureEnabled,
+  ]);
 
   return (
     <Box

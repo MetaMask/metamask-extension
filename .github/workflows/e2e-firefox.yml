@@ -5,6 +5,11 @@ name: E2E Firefox
 
 on:
   workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+        description: The run ID to get builds from
     secrets:
       INFURA_PROJECT_ID:
         required: false
@@ -24,6 +29,7 @@ jobs:
       build-artifact: build-test-mv2-browserify
       build-command: yarn build:test:mv2
       test-command: yarn test:e2e:firefox
+      builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
@@ -42,6 +48,7 @@ jobs:
       build-artifact: build-test-webpack
       build-command: yarn build:test:webpack
       test-command: yarn test:e2e:firefox
+      builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
@@ -56,6 +63,7 @@ jobs:
       build-artifact: build-test-flask-mv2-browserify
       build-command: yarn build:test:flask:mv2
       test-command: yarn test:e2e:firefox:flask
+      builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
@@ -65,6 +73,7 @@ jobs:
       - test-e2e-firefox-webpack
       - test-e2e-firefox-flask
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     if: ${{ !cancelled() }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

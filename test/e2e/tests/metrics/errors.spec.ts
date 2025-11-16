@@ -39,6 +39,8 @@ const maskedBackgroundFields = [
   'AppStateController.surveyLinkLastClickedOrClosed',
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
+  'AppStateController.shieldEndingToastLastClickedOrClosed',
+  'AppStateController.shieldPausedToastLastClickedOrClosed',
   // The value in these properties may change each run
   'AppStateController.fullScreenGasPollTokens',
   'AppStateController.notificationGasPollTokens',
@@ -52,13 +54,11 @@ const maskedBackgroundFields = [
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
 const removedBackgroundFields = [
-  // This property is timing-dependent
-  'AccountTracker.currentBlockGasLimit',
-  'AccountTracker.currentBlockGasLimitByChainId',
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
   'AppStateController.lastInteractedConfirmationInfo',
+  'AppStateController.lastUpdatedFromVersion',
   'BridgeController.quoteRequest.walletAddress',
   'BridgeController.quoteRequest.slippage',
   'PPOMController.chainStatus.0x539.lastVisited',
@@ -71,6 +71,7 @@ const removedBackgroundFields = [
   'PhishingController.phishingLists',
   'PhishingController.stalelistLastFetched',
   'PhishingController.whitelist',
+  'PhishingController.whitelistPaths',
   // User preference that can vary between test runs
   'PreferencesController.preferences.avatarType',
 ];
@@ -210,6 +211,7 @@ describe('Sentry errors', function () {
   async function mockSentryMigratorError(mockServer: Mockttp) {
     return await mockServer
       .forPost(sentryRegEx)
+      .withBodyIncluding('{"type":"event"')
       .withBodyIncluding(migrationError)
       .thenCallback(() => {
         return {
@@ -395,6 +397,7 @@ describe('Sentry errors', function () {
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
+
           const appState = mockJsonBody?.extra?.appState;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
@@ -722,7 +725,7 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await loginWithBalanceValidation(driver);
 
-          await driver.delay(2000);
+          await driver.delay(3000);
           // Trigger error
           await driver.executeScript(
             'window.stateHooks.throwTestBackgroundError()',
@@ -737,6 +740,7 @@ describe('Sentry errors', function () {
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
+          console.log('mockJsonBody', mockJsonBody);
           const { extensionId, installType } = mockJsonBody.extra;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
@@ -828,7 +832,7 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await loginWithBalanceValidation(driver);
 
-          await driver.delay(2000);
+          await driver.delay(3000);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -901,6 +905,7 @@ describe('Sentry errors', function () {
       balances: false,
       accountsAssets: false,
       assetsMetadata: false,
+      allIgnoredAssets: false,
       assetsRates: false,
       smartTransactionsState: {
         fees: {

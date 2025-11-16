@@ -14,16 +14,20 @@ import {
   ConfirmInfoRowProps,
   ConfirmInfoRowVariant,
 } from '../row';
+import { Skeleton } from '../../../../../component-library/skeleton';
 
 export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
   ownerId: string;
   /** Determines whether to display the row only when an alert is present. */
   isShownWithAlertsOnly?: boolean;
+  /** Show skeleton loader if alert is not yet loaded. */
+  showAlertLoader?: boolean;
 };
 
 export function getAlertTextColors(
   variant?: ConfirmInfoRowVariant | Severity,
+  defaultColor?: TextColor,
 ): TextColor {
   switch (variant) {
     case ConfirmInfoRowVariant.Critical:
@@ -34,7 +38,7 @@ export function getAlertTextColors(
       return TextColor.warningDefault;
     case ConfirmInfoRowVariant.Default:
     default:
-      return TextColor.textDefault;
+      return defaultColor ?? TextColor.textDefault;
   }
 }
 
@@ -43,18 +47,22 @@ export const ConfirmInfoAlertRow = ({
   ownerId,
   variant,
   isShownWithAlertsOnly = false,
+  showAlertLoader = false,
   ...rowProperties
 }: ConfirmInfoAlertRowProps) => {
   const { trackInlineAlertClicked } = useAlertMetrics();
   const { getFieldAlerts } = useAlerts(ownerId);
   const fieldAlerts = getFieldAlerts(alertKey);
   const hasFieldAlert = fieldAlerts.length > 0;
-  const selectedAlertSeverity = fieldAlerts[0]?.severity;
-  const selectedAlertKey = fieldAlerts[0]?.key;
-  const selectedAlertShowArrow = fieldAlerts[0]?.showArrow;
-  const selectedAlertInlineAlertText = fieldAlerts[0]?.inlineAlertText;
+  const selectedAlert = fieldAlerts[0];
+  const selectedAlertSeverity = selectedAlert?.severity;
+  const selectedAlertKey = selectedAlert?.key;
+  const selectedAlertShowArrow = selectedAlert?.showArrow;
+  const selectedAlertInlineAlertText = selectedAlert?.inlineAlertText;
   const selectedAlertIsOpenModalOnClick =
-    fieldAlerts[0]?.isOpenModalOnClick ?? true;
+    selectedAlert?.isOpenModalOnClick ?? true;
+  const selectedAlertHideFromAlertNavigation =
+    selectedAlert?.hideFromAlertNavigation ?? false;
 
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
 
@@ -74,7 +82,10 @@ export const ConfirmInfoAlertRow = ({
   const confirmInfoRowProps = {
     ...rowProperties,
     style: { background: 'transparent', ...rowProperties.style },
-    color: getAlertTextColors(variant ?? selectedAlertSeverity),
+    color: getAlertTextColors(
+      variant ?? selectedAlertSeverity,
+      rowProperties?.color,
+    ),
     variant,
     onClick: onClickHandler,
     labelChildrenStyleOverride: rowProperties.labelChildren
@@ -86,16 +97,32 @@ export const ConfirmInfoAlertRow = ({
     return null;
   }
 
+  const inlineAlertLoader = showAlertLoader ? (
+    <Box marginLeft={1} className="flex-grow justify-items-end">
+      <Skeleton width="50%" height={26} />
+    </Box>
+  ) : null;
+
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
       <InlineAlert
+        alertKey={alertKey}
         severity={selectedAlertSeverity}
-        showArrow={selectedAlertShowArrow}
-        textOverride={selectedAlertInlineAlertText}
+        showArrow={Boolean(
+          selectedAlertShowArrow && selectedAlertInlineAlertText,
+        )}
+        textOverride={selectedAlertInlineAlertText || ''}
         onClick={onClickHandler}
+        iconName={selectedAlert?.iconName}
+        iconColor={selectedAlert?.iconColor}
+        iconRight={selectedAlert?.inlineAlertIconRight}
+        pill={selectedAlert?.inlineAlertTextPill}
+        backgroundColor={selectedAlert?.inlineAlertTextBackgroundColor}
       />
     </Box>
-  ) : null;
+  ) : (
+    inlineAlertLoader
+  );
 
   let confirmInfoRow: React.ReactNode;
   if (confirmInfoRowProps.labelChildren) {
@@ -122,7 +149,7 @@ export const ConfirmInfoAlertRow = ({
           onFinalAcknowledgeClick={handleModalClose}
           onClose={handleModalClose}
           showCloseIcon={false}
-          skipAlertNavigation={true}
+          skipAlertNavigation={selectedAlertHideFromAlertNavigation}
         />
       )}
       {confirmInfoRow}

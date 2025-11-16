@@ -9,6 +9,7 @@ import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/o
 import {
   importSRPOnboardingFlow,
   completeImportSRPOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
@@ -76,6 +77,9 @@ describe('MetaMask onboarding ', function () {
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
         // Refresh tokens before asserting to mitigate flakiness
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -116,7 +120,7 @@ describe('MetaMask onboarding ', function () {
         // Refresh tokens before asserting to mitigate flakiness
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', '$');
         await homePage.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openAccountMenu();

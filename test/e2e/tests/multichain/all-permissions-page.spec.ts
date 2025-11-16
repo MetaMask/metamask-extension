@@ -13,7 +13,7 @@ describe('Permissions Page', function () {
   it('should show connected site permissions when a single dapp is connected', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
@@ -44,7 +44,7 @@ describe('Permissions Page', function () {
   it('should show all permissions listed when experimental settings toggle is off', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

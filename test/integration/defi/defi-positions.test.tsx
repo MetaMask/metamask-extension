@@ -34,7 +34,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -378,7 +378,6 @@ describe('Defi positions list', () => {
               MetaMetricsEventName.DeFiDetailsOpened,
         );
 
-      console.log(JSON.stringify(metricsEvents));
       expect(metricsEvents).toHaveLength(2);
     });
 

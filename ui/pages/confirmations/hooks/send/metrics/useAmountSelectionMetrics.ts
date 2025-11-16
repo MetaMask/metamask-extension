@@ -46,22 +46,27 @@ export const useAmountSelectionMetrics = () => {
   }, [setAmountInputType]);
 
   const captureAmountSelected = useCallback(() => {
-    trackEvent({
-      event: MetaMetricsEventName.SendAmountSelected,
-      category: MetaMetricsEventCategory.Send,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        input_method: amountInputMethod,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        input_type: amountInputType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: isEvmSendType ? chainId : undefined,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id_caip: isEvmSendType ? undefined : chainId,
+    trackEvent(
+      {
+        event: MetaMetricsEventName.SendAmountSelected,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          input_method: amountInputMethod,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          input_type: amountInputType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: isEvmSendType ? chainId : undefined,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id_caip: isEvmSendType ? undefined : chainId,
+        },
       },
-    });
+      {
+        excludeMetaMetricsId: false,
+      },
+    );
   }, [
     accountType,
     amountInputMethod,

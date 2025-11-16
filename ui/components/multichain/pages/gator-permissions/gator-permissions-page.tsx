@@ -53,6 +53,8 @@ export const GatorPermissionsPage = () => {
   ).length;
   const totalPermissions = totalGatorPermissions + totalSitesConnections;
 
+  // Hook uses cache-first strategy: returns cached data immediately if available,
+  // then refreshes in background. Loading is only true on initial load with no cache.
   const { loading: gatorPermissionsLoading } = useGatorPermissions();
 
   const handlePermissionGroupNameClick = async (

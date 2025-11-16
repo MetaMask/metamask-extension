@@ -5,7 +5,11 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
   applyTransactionContainers,
@@ -33,10 +37,13 @@ describe('Container Utils', () => {
     jest.resetAllMocks();
 
     const baseMessenger = new Messenger<
+      MockAnyNamespace,
       | TransactionControllerEstimateGasAction
       | TransactionControllerGetStateAction,
       never
-    >();
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
 
     baseMessenger.registerActionHandler(
       'TransactionController:estimateGas',
@@ -48,13 +55,22 @@ describe('Container Utils', () => {
       getTransactionControllerStateMock,
     );
 
-    messenger = baseMessenger.getRestricted({
-      name: 'TransactionControllerInitMessenger',
-      allowedActions: [
+    messenger = new Messenger<
+      'TransactionControllerInitMessenger',
+      | TransactionControllerEstimateGasAction
+      | TransactionControllerGetStateAction,
+      never,
+      typeof baseMessenger
+    >({
+      namespace: 'TransactionControllerInitMessenger',
+      parent: baseMessenger,
+    });
+    baseMessenger.delegate({
+      messenger,
+      actions: [
         'TransactionController:estimateGas',
         'TransactionController:getState',
       ],
-      allowedEvents: [],
     });
 
     enforceSimulationsMock.mockResolvedValue({

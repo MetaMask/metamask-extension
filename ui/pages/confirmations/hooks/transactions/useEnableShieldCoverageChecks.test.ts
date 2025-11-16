@@ -1,4 +1,7 @@
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import {
+  PRODUCT_TYPES,
+  SUBSCRIPTION_STATUSES,
+} from '@metamask/subscription-controller';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import { useEnableShieldCoverageChecks } from './useEnableShieldCoverageChecks';
 
@@ -15,10 +18,9 @@ describe('useEnableShieldCoverageChecks', () => {
     '../../../../hooks/subscription/useSubscription',
   ) as { useUserSubscriptions: jest.Mock };
 
-  const originalEnv = process.env;
   beforeEach(() => {
     jest.resetModules();
-    process.env = { ...originalEnv };
+    process.env.METAMASK_SHIELD_ENABLED = 'true';
     useUserSubscriptions.mockReturnValue({
       subscriptions: [],
       loading: false,
@@ -27,7 +29,7 @@ describe('useEnableShieldCoverageChecks', () => {
   });
 
   afterAll(() => {
-    process.env = originalEnv;
+    process.env.METAMASK_SHIELD_ENABLED = 'false';
   });
 
   it('returns true when user has a SHIELD subscription', () => {
@@ -35,6 +37,7 @@ describe('useEnableShieldCoverageChecks', () => {
       subscriptions: [
         {
           products: [{ name: PRODUCT_TYPES.SHIELD }],
+          status: SUBSCRIPTION_STATUSES.active,
         },
       ],
       loading: false,
@@ -45,7 +48,8 @@ describe('useEnableShieldCoverageChecks', () => {
       useEnableShieldCoverageChecks(),
     );
 
-    expect(result.current).toBe(true);
+    expect(result.current.isEnabled).toBe(true);
+    expect(result.current.isPaused).toBe(false);
   });
 
   it('returns false when user has no SHIELD subscription and env flag is not true', () => {
@@ -60,13 +64,19 @@ describe('useEnableShieldCoverageChecks', () => {
       useEnableShieldCoverageChecks(),
     );
 
-    expect(result.current).toBe(false);
+    expect(result.current.isEnabled).toBe(false);
+    expect(result.current.isPaused).toBe(false);
   });
 
-  it('returns true when env flag is true (even without subscription)', () => {
-    process.env.METAMASK_SHIELD_ENABLED = 'true';
+  it('returns false when env flag is false (even with active subscription)', () => {
+    process.env.METAMASK_SHIELD_ENABLED = 'false';
     useUserSubscriptions.mockReturnValue({
-      subscriptions: [],
+      subscriptions: [
+        {
+          products: [{ name: PRODUCT_TYPES.SHIELD }],
+          status: SUBSCRIPTION_STATUSES.active,
+        },
+      ],
       loading: false,
       error: null,
     });
@@ -75,6 +85,7 @@ describe('useEnableShieldCoverageChecks', () => {
       useEnableShieldCoverageChecks(),
     );
 
-    expect(result.current).toBe(true);
+    expect(result.current.isEnabled).toBe(false);
+    expect(result.current.isPaused).toBe(false);
   });
 });

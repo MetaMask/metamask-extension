@@ -1,9 +1,16 @@
 import React from 'react';
+import { BtcAccountType } from '@metamask/keyring-api';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import mockDefaultState from '../../../../../../test/data/mock-state.json';
 import { Recipient } from './recipient';
+
+jest.mock('../../../hooks/send/useAccountAddressSeedIconMap', () => ({
+  useAccountAddressSeedIconMap: jest.fn().mockReturnValue({
+    accountAddressSeedIconMap: new Map(),
+  }),
+}));
 
 const mockContactRecipient = {
   address: '0x1234567890abcdef1234567890abcdef12345678',
@@ -137,5 +144,20 @@ describe('Recipient', () => {
     );
 
     expect(getByText('0x12345...45678')).toBeInTheDocument();
+  });
+
+  it('renders account type label when account type is provided', () => {
+    const { getByText } = render(
+      <Recipient
+        isAccount={true}
+        recipient={{
+          ...mockAccountRecipient,
+          accountType: BtcAccountType.P2wpkh,
+        }}
+        onClick={jest.fn()}
+      />,
+    );
+
+    expect(getByText('Native SegWit')).toBeInTheDocument();
   });
 });

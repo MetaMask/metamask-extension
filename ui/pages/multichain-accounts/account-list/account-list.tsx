@@ -27,7 +27,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
-import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  getAccountTree,
+  getNormalizedGroupsMetadata,
+} from '../../../selectors/multichain-accounts/account-tree';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
@@ -44,7 +47,8 @@ import {
 } from '../../../components/multichain/pages/page';
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
-import { filterWalletsByGroupName } from './utils';
+import { getAllPermittedAccountsForCurrentTab } from '../../../selectors';
+import { filterWalletsByGroupNameOrAddress } from './utils';
 
 export const AccountList = () => {
   const t = useI18nContext();
@@ -53,6 +57,8 @@ export const AccountList = () => {
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
   const [searchPattern, setSearchPattern] = useState<string>('');
+  const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
+  const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
 
   const {
     isAccountTreeSyncingInProgress,
@@ -87,8 +93,12 @@ export const AccountList = () => {
   );
 
   const filteredWallets = useMemo(() => {
-    return filterWalletsByGroupName(wallets, searchPattern);
-  }, [wallets, searchPattern]);
+    return filterWalletsByGroupNameOrAddress(
+      wallets,
+      searchPattern,
+      groupsMetadata,
+    );
+  }, [wallets, searchPattern, groupsMetadata]);
 
   const hasFilteredWallets = useMemo(
     () => Object.keys(filteredWallets).length > 0,
@@ -155,6 +165,7 @@ export const AccountList = () => {
               selectedAccountGroups={[selectedAccountGroup]}
               isInSearchMode={Boolean(searchPattern)}
               displayWalletHeader={hasMultipleWallets}
+              showConnectionStatus={permittedAccounts.length > 0}
             />
           ) : (
             <Box

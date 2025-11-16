@@ -1,8 +1,9 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   AllowedActions,
   AllowedEvents,
 } from '../../controllers/metametrics-data-deletion/metametrics-data-deletion';
+import { RootMessenger } from '../../lib/messenger';
 
 export type MetaMetricsDataDeletionControllerMessenger = ReturnType<
   typeof getMetaMetricsDataDeletionControllerMessenger
@@ -16,11 +17,20 @@ export type MetaMetricsDataDeletionControllerMessenger = ReturnType<
  * messenger.
  */
 export function getMetaMetricsDataDeletionControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'MetaMetricsDataDeletionController',
-    allowedActions: ['MetaMetricsController:getState'],
-    allowedEvents: [],
+  const metaMetricsDataDeletionControllerMessenger = new Messenger<
+    'MetaMetricsDataDeletionController',
+    AllowedActions,
+    AllowedEvents,
+    RootMessenger<AllowedActions, AllowedEvents>
+  >({
+    namespace: 'MetaMetricsDataDeletionController',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: metaMetricsDataDeletionControllerMessenger,
+    actions: ['MetaMetricsController:getState'],
+  });
+  return metaMetricsDataDeletionControllerMessenger;
 }

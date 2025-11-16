@@ -1,3 +1,8 @@
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
+import {
+  MULTICHAIN_NETWORK_TO_NICKNAME,
+  MultichainNetworks,
+} from '../../../shared/constants/multichain/networks';
 import {
   ARBITRUM_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
@@ -13,6 +18,20 @@ import {
 import { AggregatorNetwork } from './types';
 
 export const defaultBuyableChains: AggregatorNetwork[] = [
+  {
+    active: true,
+    chainId: MultichainNetworks.BITCOIN,
+    chainName: MULTICHAIN_NETWORK_TO_NICKNAME[MultichainNetworks.BITCOIN],
+    shortName: NETWORK_TO_SHORT_NETWORK_NAME_MAP[MultichainNetworks.BITCOIN],
+    nativeTokenSupported: true,
+  },
+  {
+    active: true,
+    chainId: MultichainNetworks.SOLANA,
+    chainName: MULTICHAIN_NETWORK_TO_NICKNAME[MultichainNetworks.SOLANA],
+    shortName: NETWORK_TO_SHORT_NETWORK_NAME_MAP[MultichainNetworks.SOLANA],
+    nativeTokenSupported: true,
+  },
   {
     active: true,
     chainId: 1,

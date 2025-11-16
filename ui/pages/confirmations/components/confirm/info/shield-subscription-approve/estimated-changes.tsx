@@ -2,6 +2,10 @@ import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
 import React from 'react';
+import {
+  ProductPrice,
+  RECURRING_INTERVALS,
+} from '@metamask/subscription-controller';
 import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import Name from '../../../../../../components/app/name';
@@ -12,14 +16,19 @@ export const EstimatedChanges = ({
   approvalAmount,
   tokenAddress,
   chainId,
+  productPrice,
+  tokenSymbol,
 }: {
   approvalAmount: string;
   tokenAddress: Hex;
   chainId: Hex;
+  productPrice?: ProductPrice;
+  tokenSymbol?: string;
 }) => {
   const t = useI18nContext();
 
-  const isMonthlySubscription = approvalAmount === '96';
+  const isYearlySubscription =
+    productPrice?.interval === RECURRING_INTERVALS.year;
 
   return (
     <ConfirmInfoSection data-testid="shield-subscription-approve__estimated_changes_section">
@@ -27,12 +36,12 @@ export const EstimatedChanges = ({
         label={t('estimatedChanges')}
         color={TextColor.textAlternative}
         tooltip={
-          isMonthlySubscription
-            ? t('shieldEstimatedChangesMonthlyTooltip', [
-                approvalAmount,
-                Number(approvalAmount) / 12,
+          isYearlySubscription
+            ? null
+            : t('shieldEstimatedChangesMonthlyTooltipText', [
+                `$${Number(approvalAmount) / 12}`,
+                `$${approvalAmount}`,
               ])
-            : null
         }
       />
       <ConfirmInfoRow label={t('youApprove')} color={TextColor.textAlternative}>
@@ -43,6 +52,7 @@ export const EstimatedChanges = ({
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
             variation={chainId}
+            fallbackName={tokenSymbol}
           />
         </Box>
       </ConfirmInfoRow>

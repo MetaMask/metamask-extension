@@ -12,6 +12,7 @@ jobs:
     # For the `pull_request` event, the branch is `github.head_ref``.
     if: ${{ github.head_ref == 'l10n_crowdin_action' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:

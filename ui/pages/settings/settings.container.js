@@ -7,7 +7,10 @@ import {
   getSnapsMetadata,
   getUseExternalServices,
 } from '../../selectors';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -38,7 +41,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
-  TRANSACTION_SHIELD_CLAIM_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
@@ -46,6 +49,8 @@ import { getSnapName } from '../../helpers/utils/util';
 import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
 import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
+import { getHasSubscribedToShield } from '../../selectors/subscription/subscription';
+import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
@@ -66,13 +71,14 @@ const ROUTES_TO_I18N_KEYS = {
   [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityChangePassword',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
-  [TRANSACTION_SHIELD_CLAIM_ROUTE]: 'shieldClaim',
+  [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: 'shieldClaim',
+  [TRANSACTION_SHIELD_CLAIM_ROUTES.BASE]: 'shieldClaimsListTitle',
   [TRANSACTION_SHIELD_ROUTE]: 'shieldTx',
 };
 
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps;
-  const { pathname } = location;
+  const { pathname, search } = location;
   const { ticker } = getProviderConfig(state);
   const {
     metamask: { currencyRates, socialLoginEmail },
@@ -80,6 +86,11 @@ const mapStateToProps = (state, ownProps) => {
   const settingsPageSnapsIds = getSettingsPageSnapsIds(state);
   const snapsMetadata = getSnapsMetadata(state);
   const conversionDate = currencyRates[ticker]?.conversionDate;
+
+  const searchParams = new URLSearchParams(search);
+  // param to check and show shield entry modal at start
+  const shouldShowShieldEntryModal =
+    searchParams.get(SHIELD_QUERY_PARAMS.showShieldEntryModal) === 'true';
 
   const pathNameTail = pathname.match(/[^/]+$/u)?.[0] || '';
   const isAddressEntryPage = pathNameTail.includes('0x');
@@ -100,8 +111,20 @@ const mapStateToProps = (state, ownProps) => {
     pathname.match(ADD_POPULAR_CUSTOM_NETWORK),
   );
   const isSnapSettingsRoute = Boolean(pathname.match(SNAP_SETTINGS_ROUTE));
+  const isShieldClaimNewPage = Boolean(
+    pathname.match(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL),
+  );
+  const isShieldClaimViewPage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL),
+  );
+  const isShieldClaimBasePage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE),
+  );
 
-  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+  const environmentType = getEnvironmentType();
+  const isPopup =
+    environmentType === ENVIRONMENT_TYPE_POPUP ||
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const socialLoginEnabled = Boolean(socialLoginEmail);
 
   let pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname];
@@ -109,6 +132,11 @@ const mapStateToProps = (state, ownProps) => {
   // if pathname is `REVEAL_SRP_LIST_ROUTE` and socialLoginEnabled rename the tab title to "Manage recovery methods"
   if (isRevealSrpListPage && socialLoginEnabled) {
     pathnameI18nKey = 'securitySrpWalletRecovery';
+  }
+
+  // If pathname is `TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE` rename the tab title to "Claim details"
+  if (pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL)) {
+    pathnameI18nKey = 'shieldClaimsListTitle';
   }
 
   let backRoute = SETTINGS_ROUTE;
@@ -122,10 +150,13 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = NETWORKS_ROUTE;
   } else if (isRevealSrpListPage || isPasswordChangePage) {
     backRoute = SECURITY_ROUTE;
+  } else if (isShieldClaimNewPage) {
+    backRoute = TRANSACTION_SHIELD_ROUTE;
+  } else if (isShieldClaimViewPage) {
+    backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.BASE;
+  } else if (isShieldClaimBasePage) {
+    backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL;
   }
-
-  let initialBreadCrumbRoute;
-  let initialBreadCrumbKey;
 
   const addressName = getAddressBookEntryOrAccountName(
     state,
@@ -152,8 +183,7 @@ const mapStateToProps = (state, ownProps) => {
     backRoute,
     conversionDate,
     currentPath: pathname,
-    initialBreadCrumbKey,
-    initialBreadCrumbRoute,
+    hasSubscribedToShield: getHasSubscribedToShield(state),
     isAddressEntryPage,
     isMetaMaskShieldFeatureEnabled: getIsMetaMaskShieldFeatureEnabled(),
     isPasswordChangePage,
@@ -164,6 +194,7 @@ const mapStateToProps = (state, ownProps) => {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
     settingsPageSnaps,
+    shouldShowShieldEntryModal,
     snapSettingsTitle,
     useExternalServices,
   };

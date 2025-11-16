@@ -27,6 +27,7 @@ const PAGES = {
   NOTIFICATION: 'notification',
   OFFSCREEN: 'offscreen',
   POPUP: 'popup',
+  SIDEPANEL: 'sidepanel',
 };
 
 /**
@@ -283,17 +284,46 @@ class Driver {
    * This method is particularly useful for automating interactions with text fields,
    * such as username or password inputs, search boxes, or any editable text areas.
    *
-   * @param {string | object} rawLocator - element locator
-   * @param {string} input - The value to fill the element with.
+   * @param {string | object} rawLocator - Element locator
+   * @param {string} input - The value to fill the element with
+   * @param {object} [options] - Optional configuration
+   * @param {number} [options.retries] - Number of attempts, Defaults to 0
    * @returns {Promise<WebElement>} Promise resolving to the filled element
    * @example <caption>Example to fill address in the send transaction screen</caption>
    *          await driver.fill(
    *                'input[data-testid="ens-input"]',
    *                '0xc427D562164062a23a5cFf596A4a3208e72Acd28');
    */
-  async fill(rawLocator, input) {
+  async fill(rawLocator, input, { retries = 0 } = {}) {
     const element = await this.findElement(rawLocator);
-    await element.fill(input);
+
+    // No verification/retry path (default behavior)
+    if (retries === 0) {
+      await element.fill(input);
+      return element;
+    }
+
+    // Verify + retry path
+    for (let attempt = 0; attempt < retries; attempt++) {
+      await element.fill(input);
+      try {
+        await this.waitUntil(
+          async () => (await element.getAttribute('value')) === input,
+          { interval: 50, timeout: 1000 },
+        );
+        return element;
+      } catch (_) {
+        // retry if attempts remain
+      }
+    }
+
+    const current = await element.getAttribute('value');
+    if (current !== input) {
+      throw new Error(
+        `Failed to set exact value after ${retries}. Expected '${input}', got '${current}'.`,
+      );
+    }
+
     return element;
   }
 
@@ -776,7 +806,7 @@ class Driver {
    * @param rawLocator - The locator used to identify the element to be clicked
    * @param timeout - The maximum time in ms to wait for the element to disappear after clicking.
    */
-  async clickElementAndWaitToDisappear(rawLocator, timeout = 2000) {
+  async clickElementAndWaitToDisappear(rawLocator, timeout = 3000) {
     const element = await this.findClickableElement(rawLocator);
     await element.click();
     await element.waitForElementState('hidden', timeout);
@@ -944,6 +974,9 @@ class Driver {
   /**
    * Checks if an element that matches the given locator is present on the page.
    *
+   * @deprecated This method should not be used because it can lead to race conditions
+   * when the element takes some ms to disappear. Instead use assertElementNotPresent
+   * which is a more robust method with customizable guard to avoid this problem.
    * @param {string | object} rawLocator - Element locator
    * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element is present.
    */
@@ -1001,7 +1034,6 @@ class Driver {
    * Navigates to the specified page within a browser session.
    *
    * @param {string} [page] - its optional parameter to specify the page you want to navigate.
-   * Defaults to home if no other page is specified.
    * @param {object} [options] - optional parameter to specify additional options.
    * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait for the controllers to be loaded.
    * Defaults to true.

@@ -61,11 +61,6 @@
     "ui/components/app/metamask-translation/metamask-translation.js"
   ],
   [
-    "ui/components/app/permission-page-container/index.js",
-    "ui/components/app/permission-page-container/permission-page-container.component.js",
-    "ui/components/app/permission-page-container/permission-page-container.container.js"
-  ],
-  [
     "ui/components/app/transaction-list-item/index.js",
     "ui/components/app/transaction-list-item/transaction-list-item.component.js",
     "ui/components/app/transaction-list/index.js",
@@ -188,23 +183,11 @@
     "ui/selectors/selectors.js"
   ],
   [
-    "ui/components/multichain/account-overview/account-overview-eth.tsx",
-    "ui/components/multichain/account-overview/account-overview-layout.tsx",
-    "ui/components/multichain/account-overview/account-overview.tsx",
-    "ui/components/multichain/account-overview/index.js",
-    "ui/components/multichain/index.js"
-  ],
-  [
     "ui/components/multichain/asset-picker-amount/asset-picker-amount.tsx",
     "ui/components/multichain/asset-picker-amount/asset-picker-modal/AssetList.tsx",
     "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx",
     "ui/components/multichain/asset-picker-amount/asset-picker/asset-picker.tsx",
     "ui/components/multichain/asset-picker-amount/index.ts",
-    "ui/components/multichain/index.js"
-  ],
-  [
-    "ui/components/multichain/edit-accounts-modal/edit-accounts-modal.tsx",
-    "ui/components/multichain/edit-accounts-modal/index.ts",
     "ui/components/multichain/index.js"
   ],
   [

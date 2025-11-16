@@ -72,6 +72,8 @@ import {
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { Numeric } from '../../../../../shared/modules/Numeric';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+
 import { useAssetMetadata } from './hooks/useAssetMetadata';
 import type {
   ERC20Asset,
@@ -120,6 +122,7 @@ type AssetPickerModalProps = {
   isTokenListLoading?: boolean;
   autoFocus: boolean;
   isDestinationToken?: boolean;
+  hideSearch?: boolean;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
@@ -151,6 +154,7 @@ export function AssetPickerModal({
   selectedChainIds,
   autoFocus,
   isDestinationToken = false,
+  hideSearch = false,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -379,7 +383,7 @@ export function AssetPickerModal({
 
       // Return early when SOLANA is selected since blocked and top tokens are not available
       // All available solana tokens are in the multichainTokensWithBalance results
-      if (selectedNetwork?.chainId === MultichainNetworks.SOLANA) {
+      if (!isEvmChainId(selectedNetwork?.chainId)) {
         return;
       }
 
@@ -682,15 +686,17 @@ export function AssetPickerModal({
           ) : (
             <AssetPickerModalTabs {...tabProps}>
               <React.Fragment key={TabName.TOKENS}>
-                <Search
-                  searchQuery={searchQuery}
-                  onChange={(value) => {
-                    // Cancel previous asset metadata fetch
-                    abortControllerRef.current?.abort();
-                    setSearchQuery(() => value);
-                  }}
-                  autoFocus={autoFocus}
-                />
+                {!hideSearch && (
+                  <Search
+                    searchQuery={searchQuery}
+                    onChange={(value) => {
+                      // Cancel previous asset metadata fetch
+                      abortControllerRef.current?.abort();
+                      setSearchQuery(() => value);
+                    }}
+                    autoFocus={autoFocus}
+                  />
+                )}
                 <AssetList
                   network={network}
                   handleAssetChange={handleAssetChange}

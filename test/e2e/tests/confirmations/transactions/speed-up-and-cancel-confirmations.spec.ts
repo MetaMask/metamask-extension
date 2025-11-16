@@ -19,7 +19,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
     it('Successfully speeds up a pending transaction', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -75,7 +75,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
     it('Successfully cancels a pending transaction', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),

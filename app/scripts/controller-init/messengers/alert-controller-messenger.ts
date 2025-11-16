@@ -1,8 +1,9 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   AllowedActions,
   AllowedEvents,
 } from '../../controllers/alert-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 export type AlertControllerMessenger = ReturnType<
   typeof getAlertControllerMessenger
@@ -15,12 +16,20 @@ export type AlertControllerMessenger = ReturnType<
  * @param messenger - The base messenger used to create the restricted
  * messenger.
  */
-export function getAlertControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
-) {
-  return messenger.getRestricted({
-    name: 'AlertController',
-    allowedActions: ['AccountsController:getSelectedAccount'],
-    allowedEvents: ['AccountsController:selectedAccountChange'],
+export function getAlertControllerMessenger(messenger: RootMessenger) {
+  const alertControlerMessenger = new Messenger<
+    'AlertController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'AlertController',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: alertControlerMessenger,
+    actions: ['AccountsController:getSelectedAccount'],
+    events: ['AccountsController:selectedAccountChange'],
+  });
+  return alertControlerMessenger;
 }

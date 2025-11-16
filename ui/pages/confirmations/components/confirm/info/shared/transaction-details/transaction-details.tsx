@@ -20,6 +20,7 @@ import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
+import { useSwapCheck } from '../../../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { SmartContractWithLogo } from '../../../../smart-contract-with-logo';
 import {
   useIsDowngradeTransaction,
@@ -30,6 +31,7 @@ import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch 
 import { NetworkRow } from '../network-row/network-row';
 import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
 import { isBatchTransaction } from '../../../../../../../../shared/lib/transactions.utils';
+import { useIsBIP44 } from '../../../../../hooks/useIsBIP44';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -168,6 +170,7 @@ const PaymasterRow = () => {
 };
 
 export const TransactionDetails = () => {
+  const isBIP44 = useIsBIP44();
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
@@ -178,6 +181,7 @@ export const TransactionDetails = () => {
   );
   const { isUpgradeOnly } = useIsUpgradeTransaction();
   const isDowngrade = useIsDowngradeTransaction();
+  const { isQuotedSwap } = useSwapCheck();
 
   if (isUpgradeOnly || isDowngrade) {
     return null;
@@ -192,9 +196,9 @@ export const TransactionDetails = () => {
   return (
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
-        <NetworkRow isShownWithAlertsOnly />
-        <OriginRow />
-        {!isBatch && <RecipientRow />}
+        <NetworkRow isShownWithAlertsOnly={!isBIP44} />
+        {!isQuotedSwap && <OriginRow />}
+        {!isBatch && !isQuotedSwap && <RecipientRow />}
         {showAdvancedDetails && <MethodDataRow />}
         <SigningInWithRow />
       </ConfirmInfoSection>

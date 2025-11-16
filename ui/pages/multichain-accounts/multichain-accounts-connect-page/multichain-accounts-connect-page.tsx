@@ -11,6 +11,7 @@ import {
   getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
+  KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
@@ -21,10 +22,8 @@ import {
 
 import { isEqual } from 'lodash';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
-import {
-  BoxBackgroundColor,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
+
+import { Tooltip } from 'react-tippy';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissions } from '../../../selectors';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
@@ -89,6 +88,8 @@ import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getMultichainNetwork } from '../../../selectors/multichain';
+import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
+import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
 
 export type MultichainAccountsConnectPageRequest = {
   permissions?: PermissionsRequest;
@@ -158,6 +159,20 @@ export const MultichainAccountsConnectPage: React.FC<
     () => getCaip25CaveatValueFromPermissions(request.permissions),
     [request.permissions],
   );
+
+  const requestedScopes = getAllScopesFromCaip25CaveatValue(
+    requestedCaip25CaveatValue,
+  );
+
+  const SOLANA_MAINNET_CAIP_CHAIN_ID =
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+
+  const isSolanaWalletStandardRequest =
+    requestedScopes.length === 1 &&
+    requestedScopes[0] === SOLANA_MAINNET_CAIP_CHAIN_ID &&
+    requestedCaip25CaveatValue.sessionProperties[
+      KnownSessionProperties.SolanaAccountChangedNotifications
+    ];
 
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
     () =>
@@ -239,6 +254,27 @@ export const MultichainAccountsConnectPage: React.FC<
       ...testNetworkConfigurations,
     ].map(({ caipChainId }) => caipChainId);
 
+    // If globally selected network is a test network, include that in the default selected networks for connection request
+    const currentlySelectedNetworkChainId = currentlySelectedNetwork.chainId;
+    const selectedNetworkIsTestNetwork = testNetworkConfigurations.find(
+      (network: { caipChainId: CaipChainId }) =>
+        network.caipChainId === currentlySelectedNetworkChainId,
+    );
+
+    const defaultSelectedNetworkList = selectedNetworkIsTestNetwork
+      ? [...nonTestNetworkConfigurations, selectedNetworkIsTestNetwork].map(
+          ({ caipChainId }) => caipChainId,
+        )
+      : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
+
+    // If the request is an EIP-1193 request (with no specific chains requested) or a Solana wallet standard request , return the default selected network list
+    if (
+      (requestedCaipChainIds.length === 0 && isEip1193Request) ||
+      isSolanaWalletStandardRequest
+    ) {
+      return defaultSelectedNetworkList;
+    }
+
     const walletRequest =
       requestedCaipChainIds.filter(
         (caipChainId) =>
@@ -265,19 +301,7 @@ export const MultichainAccountsConnectPage: React.FC<
       ]),
     );
 
-    // If globally selected network is a test network, include that in the default selected networks for connection request
-    const currentlySelectedNetworkChainId = currentlySelectedNetwork.chainId;
-    const selectedNetworkIsTestNetwork = testNetworkConfigurations.find(
-      (network: { caipChainId: CaipChainId }) =>
-        network.caipChainId === currentlySelectedNetworkChainId,
-    );
-
-    const defaultSelectedNetworkList = selectedNetworkIsTestNetwork
-      ? [...nonTestNetworkConfigurations, selectedNetworkIsTestNetwork].map(
-          ({ caipChainId }) => caipChainId,
-        )
-      : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
-
+    // if we have specifically requested chains, return the supported requested chains plus the already connected chains
     if (supportedRequestedCaipChainIds.length > 0) {
       return Array.from(
         new Set([
@@ -484,6 +508,9 @@ export const MultichainAccountsConnectPage: React.FC<
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
+  const originTrustSignals = useOriginTrustSignals(
+    targetSubjectMetadata.origin,
+  );
 
   const renderAccountCell = useCallback(
     (accountGroupId: AccountGroupObject['id']) => {
@@ -516,7 +543,7 @@ export const MultichainAccountsConnectPage: React.FC<
       className="main-container multichain-connect-page"
       backgroundColor={BackgroundColor.backgroundDefault}
     >
-      <Header paddingTop={8} paddingBottom={0}>
+      <Header paddingTop={8} paddingBottom={4}>
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
@@ -559,9 +586,36 @@ export const MultichainAccountsConnectPage: React.FC<
             </AvatarBase>
           )}
         </Box>
-        <Text variant={TextVariant.headingLg} marginBottom={1}>
-          {title}
-        </Text>
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          gap={2}
+          marginBottom={1}
+        >
+          <Text
+            variant={TextVariant.headingLg}
+            style={{
+              wordBreak: 'break-word',
+              whiteSpace: 'normal',
+            }}
+          >
+            {title}
+          </Text>
+          {originTrustSignals.state === TrustSignalDisplayState.Verified && (
+            <Tooltip
+              title={t('alertReasonOriginTrustSignalVerified')}
+              position="bottom"
+              style={{ display: 'flex' }}
+            >
+              <Icon
+                name={IconName.VerifiedFilled}
+                color={IconColor.infoDefault}
+                size={IconSize.Sm}
+              />
+            </Tooltip>
+          )}
+        </Box>
         <Box display={Display.Flex} justifyContent={JustifyContent.center}>
           <Text color={TextColor.textAlternative}>
             {t('connectionDescription')}
@@ -573,17 +627,9 @@ export const MultichainAccountsConnectPage: React.FC<
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs
-          onTabClick={() => null}
-          backgroundColor={BoxBackgroundColor.Transparent}
-          defaultActiveTabKey="accounts"
-          tabListProps={{
-            backgroundColor: BoxBackgroundColor.Transparent,
-            justifyContent: BoxJustifyContent.Center,
-          }}
-        >
+        <Tabs onTabClick={() => null} defaultActiveTabKey="accounts">
           <Tab
-            className="multichain-connect-page__tab"
+            className="multichain-connect-page__tab flex-1"
             name={t('accounts')}
             tabKey="accounts"
             data-testid="accounts-tab"
@@ -647,7 +693,7 @@ export const MultichainAccountsConnectPage: React.FC<
           </Tab>
           <Tab
             name={t('permissions')}
-            className="multichain-connect-page__tab"
+            className="multichain-connect-page__tab flex-1"
             tabKey="permissions"
             data-testid="permissions-tab"
             disabled={selectedAccountGroupIds.length === 0}

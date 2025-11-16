@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetNetworkConfigurationByNetworkClientId,
@@ -7,6 +7,7 @@ import {
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
 import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | NetworkControllerGetNetworkClientByIdAction
@@ -30,21 +31,31 @@ export type AssetsContractControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getAssetsContractControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'AssetsContractController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'AssetsContractController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'AssetsContractController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByNetworkClientId',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:getState',
     ],
-    allowedEvents: [
+    events: [
       'PreferencesController:stateChange',
       'NetworkController:networkDidChange',
     ],
   });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions =
@@ -63,14 +74,24 @@ export type AssetsContractControllerInitMessenger = ReturnType<
  * @returns The restricted controller messenger for initialization.
  */
 export function getAssetsContractControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'AssetsContractControllerInit',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'AssetsContractControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'AssetsContractControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
     ],
-    allowedEvents: [],
+    events: [],
   });
+  return controllerInitMessenger;
 }

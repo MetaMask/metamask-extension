@@ -1,28 +1,41 @@
 on:
   workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+        description: The run ID to get builds from
+    secrets:
+      INFURA_PROJECT_ID:
+        required: true
 
 env:
   COMMANDS: |
     {
-      pageload: 'yarn tsx test/e2e/benchmark.mjs --out test-artifacts/benchmarks/benchmark-{0}-{1}-pageload.json --retries 2',
-      userActions: 'yarn tsx test/e2e/user-actions-benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
+      standardHome: 'yarn tsx test/e2e/benchmarks/benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-standardHome.json --retries 2',
+      powerUserHome: 'yarn tsx test/e2e/benchmarks/benchmark.ts --persona powerUser --browserLoads 4 --pageLoads 4 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2',
+      userActions: 'yarn tsx test/e2e/benchmarks/user-actions-benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
     }
 
 jobs:
   benchmarks:
+    if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
-        testType: [pageload, userActions]
-    name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}
+        pageType: [standardHome, powerUserHome, userActions]
+    name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
       HEADLESS: true
       ARTIFACT_NAME: build-test-${{ matrix.buildType }}
-      OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}.json
+      OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    continue-on-error: true
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -47,11 +60,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ inputs.builds-from-run }} # Download from whatever run the identify-builds job said.
 
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS
         # Then replace the {0} placeholder with the browser, and the {1} placeholder with the buildType
-        run: ${{ format(fromJson(env.COMMANDS)[matrix.testType], matrix.browser, matrix.buildType) }}
+        run: ${{ format(fromJson(env.COMMANDS)[matrix.pageType], matrix.browser, matrix.buildType) }}
 
       - name: Upload '${{ env.OUTPUT_NAME }}' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}

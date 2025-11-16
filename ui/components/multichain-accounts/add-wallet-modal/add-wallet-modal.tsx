@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Box,
@@ -32,12 +32,34 @@ import {
   IMPORT_SRP_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { getManageInstitutionalWallets } from '../../../selectors';
+import {
+  getIsAddSnapAccountEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
+  getIsWatchEthereumAccountEnabled,
+  ///: END:ONLY_INCLUDE_IF
+  getManageInstitutionalWallets,
+} from '../../../selectors';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
+import {
+  ACCOUNT_WATCHER_NAME,
+  ACCOUNT_WATCHER_SNAP_ID,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
+///: END:ONLY_INCLUDE_IF
 
 export type AddWalletModalProps = Omit<
   ModalProps,
@@ -64,6 +86,13 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   const institutionalWalletsEnabled = useSelector(
     getManageInstitutionalWallets,
   );
+  const trackEvent = useContext(MetaMetricsContext);
+  const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
+  const isAddWatchEthereumAccountEnabled = useSelector(
+    getIsWatchEthereumAccountEnabled,
+  );
+  ///: END:ONLY_INCLUDE_IF
 
   const walletOptions: WalletOption[] = [
     {
@@ -101,9 +130,24 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   const handleOptionClick = (option: WalletOption) => {
     onClose?.();
 
+    if (option.id === 'import-wallet') {
+      // Track the event for the selected option.
+      trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
+        properties: {
+          status: 'started',
+          location: 'Add Wallet Modal',
+        },
+      });
+    }
+
     // Hardware wallet connections require expanded view
     if (option.id === 'hardware-wallet') {
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+      if (
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+      ) {
         global.platform.openExtensionInBrowser?.(option.route);
       } else {
         history.push(option.route);
@@ -112,6 +156,51 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       history.push(option.route);
     }
   };
+
+  const handleSnapAccountLinkClick = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.AccountAddSelected,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: MetaMetricsEventAccountType.Snap,
+        location: 'Main Menu',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: null,
+      },
+    });
+    global.platform.openTab({
+      url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL as string,
+    });
+  }, [trackEvent]);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
+  const handleAddWatchAccount = useCallback(async () => {
+    await trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.AccountAddSelected,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: MetaMetricsEventAccountType.Snap,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        snap_id: ACCOUNT_WATCHER_SNAP_ID,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        snap_name: ACCOUNT_WATCHER_NAME,
+        location: 'Main Menu',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: null,
+      },
+    });
+    onClose();
+    history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
+  }, [trackEvent, onClose, history]);
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} {...props}>
@@ -160,6 +249,82 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
               <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
             </Box>
           ))}
+          {addSnapAccountEnabled && (
+            <Box
+              key="snap-account"
+              onClick={() => handleSnapAccountLinkClick()}
+              onKeyDown={(e: React.KeyboardEvent) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleSnapAccountLinkClick();
+                }
+              }}
+              alignItems={BoxAlignItems.Center}
+              padding={4}
+              gap={3}
+              backgroundColor={BoxBackgroundColor.BackgroundDefault}
+              flexDirection={BoxFlexDirection.Row}
+              borderColor={BoxBorderColor.BorderMuted}
+              className="hover:bg-background-default-hover cursor-pointer transition-all duration-200 w-full text-left outline-none focus:outline-none focus:shadow-none focus-visible:shadow-[inset_0_0_0_2px_var(--color-primary-default)]"
+              tabIndex={0}
+              data-testid={`add-wallet-modal-snap-account`}
+            >
+              <Icon
+                name={IconName.Snaps}
+                size={IconSize.Md}
+                color={IconColor.IconAlternative}
+              />
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextDefault}
+                className="flex-1"
+              >
+                {t('settingAddSnapAccount')}
+              </Text>
+              <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
+            </Box>
+          )}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
+            isAddWatchEthereumAccountEnabled && (
+              <Box
+                key="watch-ethereum-account"
+                onClick={() => handleAddWatchAccount()}
+                onKeyDown={(e: React.KeyboardEvent) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleAddWatchAccount();
+                  }
+                }}
+                alignItems={BoxAlignItems.Center}
+                padding={4}
+                gap={3}
+                backgroundColor={BoxBackgroundColor.BackgroundDefault}
+                flexDirection={BoxFlexDirection.Row}
+                borderColor={BoxBorderColor.BorderMuted}
+                className="hover:bg-background-default-hover cursor-pointer transition-all duration-200 w-full text-left outline-none focus:outline-none focus:shadow-none focus-visible:shadow-[inset_0_0_0_2px_var(--color-primary-default)]"
+                tabIndex={0}
+                data-testid={`add-wallet-modal-watch-ethereum-account`}
+              >
+                <Icon
+                  name={IconName.Eye}
+                  size={IconSize.Md}
+                  color={IconColor.IconAlternative}
+                />
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextDefault}
+                  className="flex-1"
+                >
+                  {t('addEthereumWatchOnlyAccount')}
+                </Text>
+                <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
+              </Box>
+            )
+            ///: END:ONLY_INCLUDE_IF
+          }
         </ModalBody>
       </ModalContent>
     </Modal>
