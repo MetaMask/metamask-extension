@@ -10,7 +10,6 @@ import {
   AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
 import {
-  GetCurrencyRateState,
   TokensControllerGetStateAction,
   TokensControllerStateChangeEvent,
 } from '@metamask/assets-controllers';
@@ -25,8 +24,7 @@ type Actions =
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetStateAction
   | AccountsControllerGetAccountAction
-  | AccountsControllerGetSelectedAccountAction
-  | GetCurrencyRateState;
+  | AccountsControllerGetSelectedAccountAction;
 
 type Events =
   | NetworkControllerStateChangeEvent
@@ -65,7 +63,6 @@ export function getTokenRatesControllerMessenger(
       'NetworkController:getState',
       'AccountsController:getAccount',
       'AccountsController:getSelectedAccount',
-      'CurrencyRateController:getState',
     ],
     events: [
       'NetworkController:stateChange',
