@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import log from 'loglevel';
 import * as actions from '../../../../../store/actions';
+import type { TokenStandAndDetails } from '../../../../../store/actions';
 import { useTokenMetadata } from './useTokenMetadata';
 
 jest.mock('../../../../../store/actions', () => ({
@@ -108,11 +109,10 @@ describe('useTokenMetadata', () => {
 
     mockGetTokenStandardAndDetails.mockResolvedValue({
       symbol: 'cUSDC',
-      decimals: 6,
+      decimals: '6',
       name: 'Compound USD Coin',
       standard: 'ERC20',
-      address: '0xNewTokenAddress',
-    } as any);
+    } as TokenStandAndDetails);
 
     const { result } = renderHook(() =>
       useTokenMetadata(
@@ -243,11 +243,10 @@ describe('useTokenMetadata', () => {
     // Fetch for new token not in state
     mockGetTokenStandardAndDetails.mockResolvedValue({
       symbol: 'TKN2',
-      decimals: 6,
+      decimals: '6',
       name: 'Token 2',
       standard: 'ERC20',
-      address: '0xToken2',
-    } as any);
+    } as TokenStandAndDetails);
 
     rerender({ tokenAddress: '0xToken2' });
 
@@ -268,8 +267,7 @@ describe('useTokenMetadata', () => {
       decimals: undefined,
       name: 'Weird Token',
       standard: 'ERC20',
-      address: '0xWeirdToken',
-    } as any);
+    } as TokenStandAndDetails);
 
     const { result } = renderHook(() =>
       useTokenMetadata(
@@ -302,8 +300,7 @@ describe('useTokenMetadata', () => {
       decimals: '0',
       name: 'NFT Token',
       standard: 'ERC20',
-      address: '0xNFTToken',
-    } as any);
+    } as TokenStandAndDetails);
 
     const { result } = renderHook(() =>
       useTokenMetadata(
@@ -375,7 +372,7 @@ describe('useTokenMetadata', () => {
           },
         },
       },
-    };
+    } as typeof mockTokensByChain;
 
     rerender({ chainId: '0x89', tokensByChain: mockTokensByChain });
 
@@ -395,10 +392,10 @@ describe('useTokenMetadata', () => {
 
     const consoleWarnSpy = jest
       .spyOn(console, 'warn')
-      .mockImplementation(() => {});
+      .mockImplementation(jest.fn());
     const consoleErrorSpy = jest
       .spyOn(console, 'error')
-      .mockImplementation(() => {});
+      .mockImplementation(jest.fn());
 
     mockGetTokenStandardAndDetails.mockImplementation(
       () =>
@@ -410,7 +407,6 @@ describe('useTokenMetadata', () => {
                 decimals: '18',
                 name: 'Slow Token',
                 standard: 'ERC20',
-                address: '0xSlowToken',
               }),
             100,
           ),
@@ -450,7 +446,9 @@ describe('useTokenMetadata', () => {
       },
     };
 
-    mockGetTokenStandardAndDetails.mockResolvedValue(null as any);
+    mockGetTokenStandardAndDetails.mockResolvedValue(
+      null as unknown as TokenStandAndDetails,
+    );
 
     const { result } = renderHook(() =>
       useTokenMetadata(
