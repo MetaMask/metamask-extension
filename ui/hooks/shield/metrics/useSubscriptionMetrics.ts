@@ -7,10 +7,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getMetaMaskHdKeyrings, getSelectedAccount } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../useAccountTotalFiatBalance';
-import {
-  getUserAccountTypeAndCategory,
-  getUserBalanceCategory,
-} from '../../../../shared/modules/shield';
+import { getShieldCommonTrackingProps } from '../../../../shared/modules/shield';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
 import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
@@ -25,6 +22,7 @@ import {
   CaptureShieldMembershipCancelledEventParams,
   CaptureShieldPaymentMethodChangeEventParams,
   CaptureShieldSubscriptionRequestParams,
+  CaptureShieldSubscriptionRestartRequestEventParams,
   ExistingSubscriptionEventParams,
 } from './types';
 import {
@@ -78,9 +76,10 @@ export const useSubscriptionMetrics = () => {
         | CaptureShieldEligibilityCohortTimeoutEventParams,
       event: MetaMetricsEventName,
     ) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+      const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,
+        Number(totalFiatBalance),
       );
       const formattedParams = formatCaptureShieldEligibilityCohortEventsProps(
         params,
@@ -90,7 +89,7 @@ export const useSubscriptionMetrics = () => {
         event,
         category: MetaMetricsEventCategory.Shield,
         properties: {
-          ...userAccountTypeAndCategory,
+          ...commonTrackingProps,
           ...formattedParams,
         },
       });
@@ -103,21 +102,17 @@ export const useSubscriptionMetrics = () => {
    */
   const captureShieldEntryModalEvent = useCallback(
     (params: CaptureShieldEntryModalEventParams) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+      const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,
+        Number(totalFiatBalance),
       );
 
       trackEvent({
         event: MetaMetricsEventName.ShieldEntryModal,
         category: MetaMetricsEventCategory.Shield,
         properties: {
-          ...userAccountTypeAndCategory,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          multi_chain_balance_category: getUserBalanceCategory(
-            Number(totalFiatBalance),
-          ),
+          ...commonTrackingProps,
           source: params.source,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -142,9 +137,10 @@ export const useSubscriptionMetrics = () => {
    */
   const captureShieldSubscriptionRequestEvent = useCallback(
     (params: CaptureShieldSubscriptionRequestParams) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+      const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,
+        Number(totalFiatBalance),
       );
       const formattedParams =
         formatDefaultShieldSubscriptionRequestEventProps(params);
@@ -153,12 +149,7 @@ export const useSubscriptionMetrics = () => {
         event: MetaMetricsEventName.ShieldSubscriptionRequest,
         category: MetaMetricsEventCategory.Shield,
         properties: {
-          ...userAccountTypeAndCategory,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          multi_chain_balance_category: getUserBalanceCategory(
-            Number(totalFiatBalance),
-          ),
+          ...commonTrackingProps,
           ...formattedParams,
         },
       });
@@ -166,18 +157,51 @@ export const useSubscriptionMetrics = () => {
     [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
-  const captureShieldMembershipCancelledEvent = useCallback(
-    (params: CaptureShieldMembershipCancelledEventParams) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+  /**
+   * Capture the event when the subscription restart request is triggered.
+   */
+  const captureShieldSubscriptionRestartRequestEvent = useCallback(
+    (params: CaptureShieldSubscriptionRestartRequestEventParams) => {
+      const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,
+        Number(totalFiatBalance),
+      );
+      const formattedParams = formatExistingSubscriptionEventProps(params);
+      trackEvent({
+        event: MetaMetricsEventName.ShieldMembershipRestartRequest,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...commonTrackingProps,
+          ...formattedParams,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          status: params.requestStatus,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_message: params.errorMessage,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
+  );
+
+  /**
+   * Capture the event when the Shield membership is cancelled.
+   */
+  const captureShieldMembershipCancelledEvent = useCallback(
+    (params: CaptureShieldMembershipCancelledEventParams) => {
+      const commonTrackingProps = getShieldCommonTrackingProps(
+        selectedAccount,
+        hdKeyingsMetadata,
+        Number(totalFiatBalance),
       );
       const formattedParams = formatExistingSubscriptionEventProps(params);
       trackEvent({
         event: MetaMetricsEventName.ShieldMembershipCancelled,
         category: MetaMetricsEventCategory.Shield,
         properties: {
-          ...userAccountTypeAndCategory,
+          ...commonTrackingProps,
           ...formattedParams,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -191,7 +215,7 @@ export const useSubscriptionMetrics = () => {
         },
       });
     },
-    [trackEvent, selectedAccount, hdKeyingsMetadata],
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
   /**
@@ -199,9 +223,10 @@ export const useSubscriptionMetrics = () => {
    */
   const captureShieldPaymentMethodChangeEvent = useCallback(
     (params: CaptureShieldPaymentMethodChangeEventParams) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+      const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,
+        Number(totalFiatBalance),
       );
       const formattedParams =
         formatCaptureShieldPaymentMethodChangeEventProps(params);
@@ -209,7 +234,7 @@ export const useSubscriptionMetrics = () => {
         event: MetaMetricsEventName.ShieldPaymentMethodChange,
         category: MetaMetricsEventCategory.Shield,
         properties: {
-          ...userAccountTypeAndCategory,
+          ...commonTrackingProps,
           ...formattedParams,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -220,7 +245,7 @@ export const useSubscriptionMetrics = () => {
         },
       });
     },
-    [trackEvent, selectedAccount, hdKeyingsMetadata],
+    [selectedAccount, hdKeyingsMetadata, totalFiatBalance, trackEvent],
   );
 
   /**
@@ -231,28 +256,30 @@ export const useSubscriptionMetrics = () => {
    */
   const captureCommonExistingShieldSubscriptionEvents = useCallback(
     (params: ExistingSubscriptionEventParams, event: MetaMetricsEventName) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+      const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,
+        Number(totalFiatBalance),
       );
       const formattedParams = formatExistingSubscriptionEventProps(params);
       trackEvent({
         event,
         category: MetaMetricsEventCategory.Shield,
         properties: {
-          ...userAccountTypeAndCategory,
+          ...commonTrackingProps,
           ...formattedParams,
         },
       });
     },
-    [trackEvent, selectedAccount, hdKeyingsMetadata],
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
   const captureShieldCryptoConfirmationEvent = useCallback(
     (params: CaptureShieldCryptoConfirmationEventParams) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+      const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,
+        Number(totalFiatBalance),
       );
 
       const formattedParams =
@@ -262,7 +289,7 @@ export const useSubscriptionMetrics = () => {
         event: MetaMetricsEventName.ShieldSubscriptionCryptoConfirmation,
         category: MetaMetricsEventCategory.Shield,
         properties: {
-          ...userAccountTypeAndCategory,
+          ...commonTrackingProps,
           ...formattedParams,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -270,39 +297,41 @@ export const useSubscriptionMetrics = () => {
         },
       });
     },
-    [trackEvent, selectedAccount, hdKeyingsMetadata],
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
   const captureShieldCtaClickedEvent = useCallback(
     (params: CaptureShieldCtaClickedEventParams) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+      const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,
+        Number(totalFiatBalance),
       );
       const formattedParams = formatCaptureShieldCtaClickedEventProps(params);
       trackEvent({
         event: MetaMetricsEventName.ShieldCtaClicked,
         category: MetaMetricsEventCategory.Shield,
         properties: {
-          ...userAccountTypeAndCategory,
+          ...commonTrackingProps,
           ...formattedParams,
         },
       });
     },
-    [trackEvent, selectedAccount, hdKeyingsMetadata],
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
   const captureShieldClaimSubmissionEvent = useCallback(
     (params: CaptureShieldClaimSubmissionEventParams) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+      const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,
+        Number(totalFiatBalance),
       );
       trackEvent({
         event: MetaMetricsEventName.ShieldClaimSubmission,
         category: MetaMetricsEventCategory.Shield,
         properties: {
-          ...userAccountTypeAndCategory,
+          ...commonTrackingProps,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           subscription_status: params.subscriptionStatus,
@@ -318,7 +347,7 @@ export const useSubscriptionMetrics = () => {
         },
       });
     },
-    [trackEvent, selectedAccount, hdKeyingsMetadata],
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
   /**
@@ -326,16 +355,17 @@ export const useSubscriptionMetrics = () => {
    */
   const captureShieldErrorStateClickedEvent = useCallback(
     (params: CaptureShieldErrorStateClickedEventParams) => {
-      const userAccountTypeAndCategory = getUserAccountTypeAndCategory(
+      const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,
+        Number(totalFiatBalance),
       );
       const formattedParams = formatExistingSubscriptionEventProps(params);
       trackEvent({
-        event: MetaMetricsEventName.ShieldErrorStateClicked,
+        event: MetaMetricsEventName.ShieldMembershipErrorStateClicked,
         category: MetaMetricsEventCategory.Shield,
         properties: {
-          ...userAccountTypeAndCategory,
+          ...commonTrackingProps,
           ...formattedParams,
           type: params.errorCause,
           action: params.actionClicked,
@@ -344,7 +374,7 @@ export const useSubscriptionMetrics = () => {
         },
       });
     },
-    [trackEvent, selectedAccount, hdKeyingsMetadata],
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
   return {
@@ -359,5 +389,6 @@ export const useSubscriptionMetrics = () => {
     captureShieldEligibilityCohortEvent,
     captureCommonExistingShieldSubscriptionEvents,
     captureShieldErrorStateClickedEvent,
+    captureShieldSubscriptionRestartRequestEvent,
   };
 };

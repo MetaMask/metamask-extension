@@ -32,6 +32,7 @@ import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported'
 import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
+import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import Footer from './footer';
 
 jest.mock('../../../hooks/gas/useIsGaslessLoading');
@@ -59,6 +60,7 @@ jest.mock(
 );
 
 jest.mock('../../../hooks/useOriginThrottling');
+jest.mock('../../../../../hooks/subscription/useSubscription');
 
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
@@ -92,6 +94,7 @@ describe('ConfirmFooter', () => {
   );
   const useIsGaslessLoadingMock = jest.mocked(useIsGaslessLoading);
   const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
+  const useUserSubscriptionsMock = jest.mocked(useUserSubscriptions);
 
   beforeEach(() => {
     mockUseOriginThrottling.mockReturnValue({
@@ -112,6 +115,13 @@ describe('ConfirmFooter', () => {
       search: '',
       hash: '',
       state: null,
+    });
+
+    useUserSubscriptionsMock.mockReturnValue({
+      trialedProducts: [],
+      loading: false,
+      subscriptions: [],
+      error: undefined,
     });
   });
 

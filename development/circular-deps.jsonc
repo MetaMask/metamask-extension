@@ -191,11 +191,6 @@
     "ui/components/multichain/index.js"
   ],
   [
-    "ui/components/multichain/edit-accounts-modal/edit-accounts-modal.tsx",
-    "ui/components/multichain/edit-accounts-modal/index.ts",
-    "ui/components/multichain/index.js"
-  ],
-  [
     "ui/components/multichain/edit-networks-modal/edit-networks-modal.js",
     "ui/components/multichain/edit-networks-modal/index.js",
     "ui/components/multichain/index.js"
