@@ -235,7 +235,9 @@ describe('Sentry errors', function () {
 
   async function mockSpotPrices(mockServer: Mockttp) {
     return await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/1337/spot-prices')
+      .forGet(
+        /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+      )
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -278,8 +280,8 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSentryMigratorError(mockServer);
             await mockSpotPrices(mockServer);
+            return await mockSentryMigratorError(mockServer);
           },
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -312,8 +314,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSentryTestError(mockServer);
             await mockSpotPrices(mockServer);
+            return await mockSentryTestError(mockServer);
           },
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -356,8 +358,8 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSentryMigratorError(mockServer);
             await mockSpotPrices(mockServer);
+            return await mockSentryMigratorError(mockServer);
           },
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -405,8 +407,8 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSentryMigratorError(mockServer);
             await mockSpotPrices(mockServer);
+            return await mockSentryMigratorError(mockServer);
           },
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -470,8 +472,8 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSentryInvariantMigrationError(mockServer);
             await mockSpotPrices(mockServer);
+            return await mockSentryInvariantMigrationError(mockServer);
           },
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -522,8 +524,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSentryTestError(mockServer);
             await mockSpotPrices(mockServer);
+            return await mockSentryTestError(mockServer);
           },
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
@@ -570,8 +572,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSentryTestError(mockServer);
             await mockSpotPrices(mockServer);
+            return await mockSentryTestError(mockServer);
           },
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
@@ -637,8 +639,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSentryTestError(mockServer);
             await mockSpotPrices(mockServer);
+            return await mockSentryTestError(mockServer);
           },
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -675,8 +677,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSentryTestError(mockServer);
             await mockSpotPrices(mockServer);
+            return await mockSentryTestError(mockServer);
           },
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
@@ -713,8 +715,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSentryTestError(mockServer);
             await mockSpotPrices(mockServer);
+            return await mockSentryTestError(mockServer);
           },
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -765,8 +767,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSentryTestError(mockServer);
             await mockSpotPrices(mockServer);
+            return await mockSentryTestError(mockServer);
           },
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -831,8 +833,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSentryTestError(mockServer);
             await mockSpotPrices(mockServer);
+            return await mockSentryTestError(mockServer);
           },
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
@@ -877,8 +879,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSentryTestError(mockServer);
             await mockSpotPrices(mockServer);
+            return await mockSentryTestError(mockServer);
           },
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
