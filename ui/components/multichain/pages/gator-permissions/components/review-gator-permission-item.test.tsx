@@ -306,7 +306,7 @@ describe('Permission List Item', () => {
         const startDate = getByTestId('review-gator-permission-start-date');
         expect(startDate).toBeInTheDocument();
         // Should show time since it's within a day: MM/dd/yyyy HH:mm
-        expect(startDate.textContent).toMatch(/01\/07\/2025 \d{2}:\d{2}/);
+        expect(startDate.textContent).toMatch(/01\/07\/2025 \d{2}:\d{2}/u);
 
         // Restore original now function
         Settings.now = originalNow;

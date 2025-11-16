@@ -54,14 +54,8 @@ import {
 } from '../../../../../../shared/lib/gator-permissions';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
-import { getTokenMetadata } from '../../../../../helpers/utils/token-util';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
-
-type TokenMetadata = {
-  symbol: string;
-  decimals: number | null;
-  name: string;
-};
+import { useTokenMetadata, type TokenMetadata } from '../hooks';
 
 type ReviewGatorPermissionItemProps = {
   /**
@@ -187,35 +181,12 @@ export const ReviewGatorPermissionItem = ({
     }, 1000);
   }, [permissionAccount, accountText, handleCopy, t]);
 
-  const tokenMetadata: TokenMetadata = useMemo(() => {
-    if (tokenAddress) {
-      const tokenListForChain = tokensByChain?.[chainId]?.data || {};
-      const foundTokenMetadata = getTokenMetadata(
-        tokenAddress,
-        tokenListForChain,
-      );
-      if (foundTokenMetadata) {
-        return {
-          symbol: foundTokenMetadata.symbol || 'Unknown Token',
-          decimals: foundTokenMetadata.decimals || 18,
-          name: foundTokenMetadata.name || 'Unknown Token',
-        };
-      }
-      console.warn(
-        `Token metadata not found for address: ${tokenAddress} for chain: ${chainId}`,
-      );
-      return {
-        symbol: 'Unknown Token',
-        decimals: null,
-        name: 'Unknown Token',
-      };
-    }
-    return {
-      symbol: nativeTokenMetadata.symbol,
-      decimals: nativeTokenMetadata.decimals,
-      name: nativeTokenMetadata.name,
-    };
-  }, [tokensByChain, chainId, tokenAddress, nativeTokenMetadata]);
+  const tokenMetadata = useTokenMetadata(
+    tokenAddress,
+    chainId,
+    tokensByChain,
+    nativeTokenMetadata,
+  );
 
   const isPendingRevocation = useMemo(() => {
     return pendingRevocations.some(
