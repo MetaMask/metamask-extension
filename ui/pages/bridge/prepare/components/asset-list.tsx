@@ -21,30 +21,21 @@ export const AssetPickerTokenList = ({
   ReturnType<typeof useTokenList>) => {
   return (
     <Column gap={0} style={{ overflowY: 'scroll', maxWidth: '100%' }}>
-      {tokenList
-        // .filter((token) => {
-        //   return excludedAssetId
-        //     ? excludedAssetId.toLowerCase() !== token.assetId.toLowerCase()
-        //     : true;
-        // })
-        // if token list length is 1 and it only contains the excluded asset, show no matching assets
-        // if no excluded asset and length is 0, show no matching assets
-        // tokenList.length === (excludedAssetId ? 1 : 0) && (excludedAsset ? tokenList[0].assetId === excludedAssetId : true): true)
-        .map((token) => {
-          if (token.assetId.toLowerCase() === excludedAssetId?.toLowerCase()) {
-            return null;
-          }
-          return (
-            <BridgeAsset
-              key={token.assetId}
-              asset={token}
-              onClick={() => {
-                onAssetChange(token);
-              }}
-              selected={selectedAsset?.assetId === token.assetId}
-            />
-          );
-        })}
+      {tokenList.map((token) => {
+        if (token.assetId.toLowerCase() === excludedAssetId?.toLowerCase()) {
+          return null;
+        }
+        return (
+          <BridgeAsset
+            key={token.assetId}
+            asset={token}
+            onClick={() => {
+              onAssetChange(token);
+            }}
+            selected={selectedAsset?.assetId === token.assetId}
+          />
+        );
+      })}
       <Skeleton
         isLoading={isLoading}
         style={{ minHeight: '80px', maxHeight: '80px', width: '100%' }}

@@ -13,11 +13,8 @@ import { useAsyncResult } from '../useAsync';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { BridgeToken } from '../../ducks/bridge/types';
 import { toBridgeToken } from '../../ducks/bridge/utils';
-import {
-  BridgeAppState,
-  getBridgeAssetsWithBalance,
-  getFromChains,
-} from '../../ducks/bridge/selectors';
+import { BridgeAppState, getFromChains } from '../../ducks/bridge/selectors';
+import { getBridgeAssetsWithBalance } from '../../ducks/bridge/asset-selectors';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 
 /**
@@ -91,9 +88,9 @@ export const useTokenList = ({
           decimals: token.decimals,
           name: token.name,
         })),
-      'assetId',
+      (a) => a.assetId.toLowerCase(),
     );
-  }, [memoizedBalances, selectedAsset.assetId, chainId, searchQuery]);
+  }, [assetsWithBalance, selectedAsset.assetId, chainId, searchQuery]);
 
   useEffect(() => {
     return () => {
@@ -140,7 +137,7 @@ export const useTokenList = ({
         };
       }) ?? []
     );
-  }, [isTokenListLoading, assetsToInclude]);
+  }, [isTokenListLoading, assetsToInclude, tokenList]);
 
   useEffect(() => {
     if (searchQuery && searchQuery.length > 0) {

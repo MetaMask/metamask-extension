@@ -14,17 +14,12 @@ import {
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   isCrossChain,
-  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import {
   SolAccountType,
   BtcAccountType,
   TrxAccountType,
-  BtcScope,
-  SolScope,
-  TrxScope,
-  EthScope,
 } from '@metamask/keyring-api';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
@@ -32,8 +27,6 @@ import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 import {
-  isStrictHexString,
-  KnownCaipNamespace,
   parseCaipAssetType,
   parseCaipChainId,
   type CaipAssetType,
@@ -53,19 +46,14 @@ import type {
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
-import {
-  toEvmCaipChainId,
-  type MultichainNetworkControllerState,
-} from '@metamask/multichain-network-controller';
+import { type MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
-  getCurrencyRates,
   getHardwareWalletType,
-  getMarketData,
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
 } from '../../selectors/selectors';
@@ -81,11 +69,7 @@ import {
   getMultichainCoinRates,
   getMultichainProviderConfig,
 } from '../../selectors/multichain';
-import {
-  getAccountAssets,
-  getAssetsMetadata,
-  getAssetsRates,
-} from '../../selectors/assets';
+import { getAssetsRates } from '../../selectors/assets';
 import {
   HardwareKeyringNames,
   HardwareKeyringType,
@@ -94,20 +78,17 @@ import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getIsSmartTransaction } from '../../../shared/modules/selectors';
 import {
-  AccountsState,
   getInternalAccountsByScope,
   getSelectedInternalAccount,
 } from '../../selectors/accounts';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import {
-  getAccountGroupsByAddress,
   getAllAccountGroups,
-  getInternalAccountByGroupAndCaip,
   getInternalAccountBySelectedAccountGroupAndCaip,
   getWalletsWithAccounts,
 } from '../../selectors/multichain-accounts/account-tree';
 import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
-import type { BridgeState, BridgeToken } from './types';
+import type { BridgeState } from './types';
 import {
   exchangeRateFromMarketData,
   exchangeRatesFromNativeAndCurrencyRates,
@@ -118,16 +99,6 @@ import {
   isTronChainId,
 } from './utils';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
-import { AccountGroup, AccountGroupId } from '@metamask/account-api';
-import { AccountId } from '@metamask/keyring-utils';
-import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
-import identiconContainer from '../../components/ui/identicon/identicon.container';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { getAddress } from 'ethers/lib/utils';
-import { toHex } from '@metamask/controller-utils';
-import { formatCurrencyAmount } from '../../pages/bridge/utils/quote';
-import { calculateTokenFiatAmount } from '../../components/app/assets/util/calculateTokenFiatAmount';
-import { zeroAddress } from 'ethereumjs-util';
 
 /**
  * Helper function to determine the CAIP asset type for non-EVM native assets
@@ -1109,240 +1080,5 @@ export const getIsGasIncluded = createSelector(
   [getIsStxEnabled, getIsGasIncludedSwapSupported],
   (isStxEnabled, isGasIncludedSwapSupported) => {
     return isStxEnabled && isGasIncludedSwapSupported;
-  },
-);
-
-const getEvmAssetsWithBalance = createDeepEqualSelector(
-  [
-    (state: BridgeAppState, accountAddress: Hex) => {
-      const { allTokens, tokenBalances } = state.metamask;
-      return Object.fromEntries(
-        Object.entries(allTokens)
-          .filter(([chainId]) =>
-            ALLOWED_EVM_BRIDGE_CHAIN_IDS.includes(chainId as Hex),
-          )
-          .map(([chainId, tokensByAccountAddress]) => {
-            // TODO add zero address to tokens list bc balance is available
-            const tokens = tokensByAccountAddress[accountAddress.toLowerCase()];
-            if (!tokens) {
-              return [];
-            }
-            tokens.push({
-              ...getNativeAssetForChainId(chainId),
-              address: zeroAddress(),
-            });
-            return tokens.map((token) => {
-              const caipChainId = formatChainIdToCaip(chainId);
-              const { address, symbol, decimals, name } = token;
-              const assetId = toAssetId(address, caipChainId);
-              const balanceHex =
-                tokenBalances[accountAddress.toLowerCase() as Hex]?.[chainId]?.[
-                  toChecksumHexAddress(address)
-                ];
-              const balance = new BigNumber(balanceHex, 16).div(
-                new BigNumber(10).pow(decimals),
-              );
-              if (balance.isZero()) {
-                return [assetId, undefined];
-              }
-              const balanceInDecString = balance.toString(10);
-
-              return [
-                assetId,
-                {
-                  symbol: symbol,
-                  assetId,
-                  decimals: decimals,
-                  name: name,
-                  chainId: caipChainId,
-                  balance: balanceInDecString,
-                },
-              ];
-            });
-          })
-          .flat()
-          .filter(([_, asset]) => asset !== undefined),
-      );
-    },
-  ],
-  (tokenBalancesByAssetId) => {
-    return {
-      ...tokenBalancesByAssetId,
-    };
-  },
-);
-
-const getNonEvmAssetsWithBalance = createSelector(
-  [
-    (state: BridgeAppState, accountIds: AccountId[]) =>
-      accountIds.flatMap((id) => getAccountAssets(state)[id]),
-    (state: BridgeAppState, accountIds: AccountId[]) =>
-      accountIds
-        .map((id) => getMultichainBalances(state)[id])
-        .filter(Boolean)
-        .reduce((acc, curr) => ({ ...acc, ...curr }), {}),
-    getAssetsMetadata,
-  ],
-  (accountAssetIds, balancesByAssetId, assetsMetadataByAssetId) => {
-    return Object.fromEntries(
-      accountAssetIds
-        .map((assetId) => {
-          const assetMetadata = assetsMetadataByAssetId[assetId];
-          if (!assetMetadata) {
-            return [assetId, undefined];
-          }
-          const { units, symbol } = assetMetadata;
-          const { chainId, assetReference } = parseCaipAssetType(assetId);
-          const balance = balancesByAssetId[assetId]?.amount ?? '0';
-          const balanceInDecBN = new BigNumber(balance);
-          if (balanceInDecBN.isZero()) {
-            return [assetId, undefined];
-          }
-          const balanceInDecString = balanceInDecBN.toString();
-          return [
-            assetId,
-            {
-              chainId,
-              symbol: symbol ?? '',
-              assetId,
-              address: assetReference, // TODO remove address
-              balance: balanceInDecString,
-              decimals: units[0]?.decimals,
-              image: getAssetImageUrl(assetId, chainId),
-              name: assetMetadata.name ?? assetMetadata.symbol ?? '',
-            },
-          ];
-        })
-        .filter(([_, asset]) => asset !== undefined),
-    );
-  },
-);
-
-const getNonEvmAccountIds = (
-  state: BridgeAppState,
-  accountGroupId: AccountGroupId,
-) =>
-  [BtcScope.Mainnet, SolScope.Mainnet, TrxScope.Mainnet]
-    .map(
-      (scope) =>
-        getInternalAccountByGroupAndCaip(state, accountGroupId, scope)?.id,
-    )
-    .filter((id) => id !== undefined);
-
-const getBridgeAssetsForAccountGroupId = createDeepEqualSelector(
-  [
-    (state: BridgeAppState, accountGroupId: AccountGroupId) => {
-      const accountAddress = getInternalAccountByGroupAndCaip(
-        state,
-        accountGroupId,
-        EthScope.Mainnet,
-      )?.address;
-      if (!accountAddress || !isStrictHexString(accountAddress)) {
-        return [];
-      }
-      return getEvmAssetsWithBalance(state, accountAddress);
-    },
-    (state) => state.metamask.marketData,
-    (state) => state.metamask.currencyRates,
-    (state: BridgeAppState, accountGroupId: AccountGroupId) => {
-      const accountIds = getNonEvmAccountIds(state, accountGroupId);
-      return getNonEvmAssetsWithBalance(state, accountIds);
-    },
-    getAssetsRates,
-  ],
-  (
-    evmAssetsWithBalanceByAssetId,
-    evmMarketData,
-    evmCurrencyRates,
-    nonEvmAssetsWithBalanceByAssetId,
-    nonEvmExchangeRatesByAssetId,
-  ) => {
-    const evmFiatByAssetId = Object.fromEntries(
-      Object.entries(evmAssetsWithBalanceByAssetId).map(([assetId, asset]) => {
-        const { chainId, assetReference } = parseCaipAssetType(asset.assetId);
-        const tokenToNativeAssetRate =
-          exchangeRateFromMarketData(
-            formatChainIdToHex(chainId),
-            isNativeAddress(assetReference)
-              ? zeroAddress()
-              : toChecksumHexAddress(assetReference),
-            evmMarketData,
-          ) ?? 1;
-        const nativeToCurrencyRate = new BigNumber(
-          evmCurrencyRates[
-            getNativeAssetForChainId(chainId)?.symbol
-          ]?.usdConversionRate,
-        );
-
-        const tokenAmountInNativeAsset = nativeToCurrencyRate
-          ?.times(asset.balance)
-          .toNumber();
-        return [
-          assetId,
-          {
-            ...asset,
-            tokenFiatAmount: tokenAmountInNativeAsset * tokenToNativeAssetRate,
-          },
-        ];
-      }),
-    );
-
-    const nonEvmFiatByAssetId = Object.fromEntries(
-      Object.entries(nonEvmAssetsWithBalanceByAssetId).map(
-        ([assetId, asset]) => {
-          return [
-            assetId,
-            {
-              ...asset,
-              tokenFiatAmount: new BigNumber(asset.balance)
-                .times(nonEvmExchangeRatesByAssetId[assetId]?.rate ?? 0)
-                .toNumber(),
-            },
-          ];
-        },
-      ),
-    );
-    return {
-      evmAssetsWithBalanceByAssetId: evmFiatByAssetId,
-      nonEvmAssetsWithBalanceByAssetId: nonEvmFiatByAssetId,
-    };
-  },
-);
-
-export const getBridgeAssetsWithBalance = createDeepEqualSelector(
-  [
-    (state: BridgeAppState, accountGroupId: AccountGroupId) =>
-      getBridgeAssetsForAccountGroupId(state, accountGroupId),
-  ],
-  ({ evmAssetsWithBalanceByAssetId, nonEvmAssetsWithBalanceByAssetId }) => {
-    // TODO accountType
-    return {
-      balanceByAssetId: Object.fromEntries(
-        [
-          Object.entries(evmAssetsWithBalanceByAssetId).map(
-            ([assetId, asset]) => [
-              assetId,
-              {
-                balance: asset?.balance,
-                tokenFiatAmount: asset?.tokenFiatAmount,
-              },
-            ],
-          ),
-          Object.entries(nonEvmAssetsWithBalanceByAssetId).map(
-            ([assetId, asset]) => [
-              assetId,
-              {
-                balance: asset?.balance,
-                tokenFiatAmount: asset?.tokenFiatAmount,
-              },
-            ],
-          ),
-        ].flat(),
-      ),
-      assetsWithBalance: [
-        ...Object.values(evmAssetsWithBalanceByAssetId),
-        ...Object.values(nonEvmAssetsWithBalanceByAssetId),
-      ].sort((a, b) => (b?.tokenFiatAmount ?? 0) - (a?.tokenFiatAmount ?? 0)),
-    };
   },
 );
