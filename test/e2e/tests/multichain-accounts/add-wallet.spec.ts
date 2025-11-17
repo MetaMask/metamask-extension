@@ -15,7 +15,10 @@ import {
   getAccountsSyncMockResponse,
 } from '../identity/account-syncing/mock-data';
 import { mockIdentityServices } from '../identity/mocks';
+import { mockEtherumSpotPrices } from '../tokens/utils/mocks';
 import { withMultichainAccountsDesignEnabled } from './common';
+
+const DEFAULT_LOCAL_NODE_USD_BALANCE = '42,500.00';
 
 describe('Add wallet', function () {
   const arrange = async () => {
@@ -34,8 +37,11 @@ describe('Add wallet', function () {
       await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        testSpecificMock: (server: Mockttp) => {
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
+        testSpecificMock: async (server: Mockttp) => {
           userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
@@ -43,6 +49,7 @@ describe('Add wallet', function () {
               getResponse: mockedAccountSyncResponse,
             },
           );
+          await mockEtherumSpotPrices(server);
           return mockIdentityServices(server, userStorageMockttpController);
         },
         title: this.test?.fullTitle(),
@@ -52,16 +59,14 @@ describe('Add wallet', function () {
           driver,
           fillSrpWordByWord: true,
         });
-        // Allow syncing to finish
-        await driver.delay(3000);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        // BUG 37030 With BIP44 enabled wallet is not showing balance
-        // await homePage.checkExpectedBalanceIsDisplayed(
-        //  DEFAULT_LOCAL_NODE_USD_BALANCE,
-        //  '$',
-        // );
+
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          '$',
+        );
 
         // Open account details modal and check displayed account address
         const headerNavbar = new HeaderNavbar(driver);
@@ -72,6 +77,9 @@ describe('Add wallet', function () {
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 1',
         });
+        await accountListPage.checkMultichainAccountBalanceDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+        );
       },
     );
   });
