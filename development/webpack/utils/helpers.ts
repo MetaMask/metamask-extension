@@ -93,13 +93,14 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
 
   function addManifestScript(
     filename: string,
-    chunkLoading: string | false | undefined = false,
+    opts?: Partial<EntryDescription>,
   ) {
     selfContainedScripts.add(filename);
     entry[filename] = {
-      chunkLoading,
+      chunkLoading: false,
       filename: extensionToJs(filename), // output filename with .js extension
       import: join(appRoot, filename), // the path to the file to use as an entry
+      ...opts,
     };
   }
 
@@ -130,7 +131,9 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     }
   } else if (manifest.manifest_version === 3) {
     if (manifest.background?.service_worker) {
-      addManifestScript(manifest.background.service_worker, 'import-scripts');
+      addManifestScript(manifest.background.service_worker, {
+        chunkLoading: 'import-scripts',
+      });
     }
     for (const resource of manifest.web_accessible_resources ?? []) {
       for (const filename of resource.resources) {
