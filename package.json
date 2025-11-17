@@ -132,7 +132,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/assets-controllers@^88.0.0": "npm:@metamask-previews/assets-controllers@88.0.0-preview-c039a3f",
+    "@metamask/assets-controllers@^88.0.0": "npm:@metamask-previews/assets-controllers@88.0.0-preview-b0cb618e",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",
