@@ -5733,10 +5733,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:1.5.0"
-  checksum: 10/39a1b26132ceaf676a069295b1b2307d80ec6e80db41bde0cf600593a4fcbe880fd29b8740ddea3205ba69b7beb73c0cd845a4916281a240afae9aa24e9a2ae9
+"@metamask/bitcoin-wallet-snap@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:1.6.0"
+  checksum: 10/e5d391ecc88c52fa56b888e0a341331da8c8fec18a228ae3238f9ace9c0216012ef2af06134cab25fe251e6e829a14db706aa8d01ed70976fe47fd40017a6c8d
   languageName: node
   linkType: hard
 
@@ -7837,9 +7837,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/shield-controller@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@metamask/shield-controller@npm:1.2.0"
+"@metamask/shield-controller@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/shield-controller@npm:2.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.15.0"
@@ -7847,9 +7847,9 @@ __metadata:
     "@metamask/utils": "npm:^11.8.1"
     cockatiel: "npm:^3.1.2"
   peerDependencies:
-    "@metamask/signature-controller": ^35.0.0
+    "@metamask/signature-controller": ^36.0.0
     "@metamask/transaction-controller": ^61.0.0
-  checksum: 10/ed58b67ddcfa51a1d375bdc43503d0da6e4445625aa0742972f06da151616469aae3eedde83f8af063da56f6181991d0da956536f1c736c22c38d629c6bd4d1e
+  checksum: 10/175a9eda1ed873e85fdf9e05383604854d137a6278497158b2b6862a60593bb49f8aecb84c767d9f901687f67827ccc65507031c9bf8cf7d233d9a9eccf42868
   languageName: node
   linkType: hard
 
@@ -8372,10 +8372,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^1.7.1":
-  version: 1.7.1
-  resolution: "@metamask/tron-wallet-snap@npm:1.7.1"
-  checksum: 10/ea1fcb43faef9028ec67b32123bfd2c3aab800694649072fd2510b291814d54df2a9b471d44bd5e37ef679b6bb517fa5d7895388893fbbadf79f423e8f42cd61
+"@metamask/tron-wallet-snap@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "@metamask/tron-wallet-snap@npm:1.8.0"
+  checksum: 10/26f00b353d3b443f9cdf76bcfa2e1e601042dc0ab6eb39d32666049c405b31bb6c1f5c10093091f5a7fad7e18902dda5631d1ba7b95a88acd6bfe6426c926177
   languageName: node
   linkType: hard
 
@@ -32510,7 +32510,7 @@ __metadata:
     "@metamask/assets-controllers": "npm:^88.0.0"
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^1.5.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^1.6.0"
     "@metamask/bridge-controller": "npm:^60.1.0"
     "@metamask/bridge-status-controller": "npm:^60.1.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
@@ -32602,7 +32602,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^5.0.0"
     "@metamask/selected-network-controller": "npm:^25.0.0"
-    "@metamask/shield-controller": "npm:^1.2.0"
+    "@metamask/shield-controller": "npm:^2.1.0"
     "@metamask/signature-controller": "npm:^35.0.0"
     "@metamask/smart-transactions-controller": "npm:^20.0.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
@@ -32623,7 +32623,7 @@ __metadata:
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.0.0"
     "@metamask/transaction-controller": "npm:^61.0.0"
-    "@metamask/tron-wallet-snap": "npm:^1.7.1"
+    "@metamask/tron-wallet-snap": "npm:^1.8.0"
     "@metamask/user-operation-controller": "npm:^40.0.0"
     "@metamask/utils": "npm:^11.4.2"
     "@ngraveio/bc-ur": "npm:^1.1.13"

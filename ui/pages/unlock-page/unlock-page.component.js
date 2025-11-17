@@ -45,6 +45,7 @@ import { withMetaMetrics } from '../../contexts/metametrics';
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import MetaFoxHorizontalLogo from '../../components/ui/metafox-logo/horizontal-logo';
+import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
@@ -129,6 +130,7 @@ class UnlockPage extends Component {
     isSubmitting: false,
     unlockDelayPeriod: 0,
     showLoginErrorModal: false,
+    showConnectionsRemovedModal: false,
   };
 
   failed_attempts = 0;
@@ -269,6 +271,7 @@ class UnlockPage extends Component {
     let finalUnlockDelayPeriod = 0;
     let errorReason;
     let shouldShowLoginErrorModal = false;
+    let shouldShowConnectionsRemovedModal = false;
 
     // Check if we are in the onboarding flow
     if (!isOnboardingCompleted) {
@@ -308,6 +311,10 @@ class UnlockPage extends Component {
           shouldShowLoginErrorModal = true;
         }
         break;
+      case SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded:
+        finalErrorMessage = message;
+        shouldShowConnectionsRemovedModal = true;
+        break;
       default:
         finalErrorMessage = message;
         break;
@@ -340,6 +347,7 @@ class UnlockPage extends Component {
       error: finalErrorMessage,
       unlockDelayPeriod: finalUnlockDelayPeriod,
       showLoginErrorModal: shouldShowLoginErrorModal,
+      showConnectionsRemovedModal: shouldShowConnectionsRemovedModal,
     });
   };
 
@@ -461,7 +469,11 @@ class UnlockPage extends Component {
   };
 
   onResetWallet = async () => {
-    this.setState({ showLoginErrorModal: false });
+    this.setState({
+      showLoginErrorModal: false,
+      showConnectionsRemovedModal: false,
+      showResetPasswordModal: false,
+    });
     await this.props.resetWallet();
     await this.props.forceUpdateMetamaskState();
     this.props.navigate(DEFAULT_ROUTE, { replace: true });
@@ -474,6 +486,7 @@ class UnlockPage extends Component {
       isLocked,
       showResetPasswordModal,
       showLoginErrorModal,
+      showConnectionsRemovedModal,
     } = this.state;
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     const { t } = this.context;
@@ -503,6 +516,9 @@ class UnlockPage extends Component {
             onDone={this.onResetWallet}
             loginError={LOGIN_ERROR.RESET_WALLET}
           />
+        )}
+        {showConnectionsRemovedModal && (
+          <ConnectionsRemovedModal onConfirm={this.onResetWallet} />
         )}
         <Box
           as="form"
