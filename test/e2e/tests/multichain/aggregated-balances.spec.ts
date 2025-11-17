@@ -20,10 +20,7 @@ const NETWORK_NAME_MAINNET = 'Ethereum';
 const NETWORK_NAME_SEPOLIA = 'Sepolia';
 const SEPOLIA_NATIVE_TOKEN = 'SepoliaETH';
 
-// This is skipped because we cannot display amount in fiat on BIP44
-// and because of BUG 37363 - Account details not showing a balance
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Multichain Aggregated Balances', function (this: Suite) {
+describe('Multichain Aggregated Balances', function (this: Suite) {
   it('shows correct aggregated balance when "Current Network" is selected', async function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(

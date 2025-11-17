@@ -94,7 +94,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       );
     });
 
-   it(`Sends a contract interaction type 0 transaction (Legacy) with a Trezor account`, async function () {
+    it(`Sends a contract interaction type 0 transaction (Legacy) with a Trezor account`, async function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
