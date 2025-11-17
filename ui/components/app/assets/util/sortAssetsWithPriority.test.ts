@@ -50,6 +50,26 @@ describe('sortAssetsWithPriority', () => {
     ]);
   });
 
+  it('sorts by name when key is "title"', () => {
+    const assets = [
+      createMockAsset({ name: 'Asset B', fiatBalance: 400 }),
+      createMockAsset({ name: 'Asset A', fiatBalance: 600 }),
+      createMockAsset({ name: 'Asset Z', fiatBalance: 500 }),
+    ];
+
+    const sortedAssets = sortAssetsWithPriority(assets, {
+      key: 'title',
+      order: 'asc',
+      sortCallback: 'alphaNumeric',
+    });
+
+    expect(extractAssetNames(sortedAssets)).toStrictEqual([
+      'Asset A',
+      'Asset B',
+      'Asset Z',
+    ]);
+  });
+
   it('sorts by fiat balance when key is "tokenFiatAmount"', () => {
     const assets = [
       createMockAsset({ name: 'Asset B', fiatBalance: 400 }),

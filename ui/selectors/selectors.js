@@ -289,10 +289,6 @@ export function getKeyringSnapRemovalResult(state) {
 
 export const getPendingTokens = (state) => state.appState.pendingTokens;
 
-export function getShowConnectionsRemovedModal(state) {
-  return state.appState.showConnectionsRemovedModal;
-}
-
 export function getShowShieldEntryModal(state) {
   return state.appState.shieldEntryModal?.show;
 }

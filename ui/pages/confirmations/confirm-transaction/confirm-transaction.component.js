@@ -37,8 +37,6 @@ import {
 } from '../../../store/actions';
 import ConfirmDecryptMessage from '../../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../../confirm-encryption-public-key';
-import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
-import { getUnapprovedConfirmations } from '../../../selectors/selectors';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import Confirm from '../confirm/confirm';
 import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
@@ -53,9 +51,6 @@ const ConfirmTransaction = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id: paramsTransactionId } = useParams();
-  const isSidePanelEnabled = useSidePanelEnabled();
-  const hasPendingApprovals =
-    useSelector(getUnapprovedConfirmations).length > 0;
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
@@ -170,8 +165,6 @@ const ConfirmTransaction = () => {
       paramsTransactionId !== transactionId
     ) {
       history.replace(mostRecentOverviewPage);
-    } else if (isSidePanelEnabled && !hasPendingApprovals) {
-      history.replace(DEFAULT_ROUTE);
     }
   }, [
     dispatch,
@@ -181,9 +174,6 @@ const ConfirmTransaction = () => {
     prevParamsTransactionId,
     prevTransactionId,
     totalUnapproved,
-    hasPendingApprovals,
-    isSidePanelEnabled,
-    isValidTransactionId,
     transaction,
     transactionId,
     use4ByteResolution,
