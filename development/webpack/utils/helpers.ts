@@ -92,10 +92,13 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     'bootstrap',
   ]);
 
-  function addManifestScript(filename: string) {
+  function addManifestScript(
+    filename: string,
+    chunkLoading: string | false | undefined = false,
+  ) {
     selfContainedScripts.add(filename);
     entry[filename] = {
-      chunkLoading: false,
+      chunkLoading,
       filename: extensionToJs(filename), // output filename with .js extension
       import: join(appRoot, filename), // the path to the file to use as an entry
     };
@@ -128,7 +131,7 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     }
   } else if (manifest.manifest_version === 3) {
     if (manifest.background?.service_worker) {
-      addManifestScript(manifest.background.service_worker);
+      addManifestScript(manifest.background.service_worker, 'import-scripts');
     }
     for (const resource of manifest.web_accessible_resources ?? []) {
       for (const filename of resource.resources) {
@@ -137,11 +140,6 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
         }
       }
     }
-    entry.background = {
-      chunkLoading: 'import-scripts',
-      filename: 'background.[contenthash].js',
-      import: join(appRoot, 'scripts/background.js'),
-    };
   }
 
   for (const filename of readdirSync(appRoot)) {

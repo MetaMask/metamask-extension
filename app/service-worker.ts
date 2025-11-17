@@ -17,7 +17,7 @@ globalThis.stateHooks.lazyListener = lazyListener;
 
 let runImportScriptsInitiated = false;
 
-function runImportScripts() {
+async function runImportScripts() {
   // Bail if we've already run importScripts
   if (runImportScriptsInitiated) {
     return;
@@ -26,9 +26,8 @@ function runImportScripts() {
 
   const startImportScriptsTime = performance.now();
 
-  const files = process.env.FILE_NAMES as unknown as string[];
-
-  importScripts(...files);
+  // eslint-disable-next-line import/extensions
+  await import('./scripts/background.js');
 
   const endImportScriptsTime = performance.now();
 
