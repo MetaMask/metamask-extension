@@ -587,8 +587,7 @@
         "util": true
       },
       "globals": {
-        "process.env": true,
-        "process.stderr.fd": true,
+        "process": true,
         "console": true
       },
       "packages": {
