@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { getSelectedAccount } from '../../../../../selectors';
-import { getTokenStandardAndDetails } from '../../../../../store/actions';
+import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
 
 export type TokenMetadata = {
   symbol: string;
@@ -118,9 +118,11 @@ export const useTokenMetadata = (
     // If not in state, fetch from backend (which checks token list API then blockchain)
     const fetchTokenMetadata = async () => {
       try {
-        const details = await getTokenStandardAndDetails(
+        const details = await getTokenStandardAndDetailsByChain(
           tokenAddress,
           selectedAccount?.address,
+          undefined,
+          chainId,
         );
 
         if (isMounted && details) {

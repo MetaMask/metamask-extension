@@ -6,7 +6,7 @@ import type { TokenStandAndDetails } from '../../../../../store/actions';
 import { useTokenMetadata } from './useTokenMetadata';
 
 jest.mock('../../../../../store/actions', () => ({
-  getTokenStandardAndDetails: jest.fn(),
+  getTokenStandardAndDetailsByChain: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -18,9 +18,9 @@ jest.mock('loglevel', () => ({
 }));
 
 describe('useTokenMetadata', () => {
-  const mockGetTokenStandardAndDetails =
-    actions.getTokenStandardAndDetails as jest.MockedFunction<
-      typeof actions.getTokenStandardAndDetails
+  const mockGetTokenStandardAndDetailsByChain =
+    actions.getTokenStandardAndDetailsByChain as jest.MockedFunction<
+      typeof actions.getTokenStandardAndDetailsByChain
     >;
 
   const mockNativeTokenMetadata = {
@@ -68,7 +68,7 @@ describe('useTokenMetadata', () => {
       decimals: 18,
       name: 'Dai Stablecoin',
     });
-    expect(mockGetTokenStandardAndDetails).not.toHaveBeenCalled();
+    expect(mockGetTokenStandardAndDetailsByChain).not.toHaveBeenCalled();
   });
 
   it('should handle lowercase token addresses', () => {
@@ -107,7 +107,7 @@ describe('useTokenMetadata', () => {
       },
     };
 
-    mockGetTokenStandardAndDetails.mockResolvedValue({
+    mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
       symbol: 'cUSDC',
       decimals: '6',
       name: 'Compound USD Coin',
@@ -139,9 +139,11 @@ describe('useTokenMetadata', () => {
       });
     });
 
-    expect(mockGetTokenStandardAndDetails).toHaveBeenCalledWith(
+    expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
       '0xNewTokenAddress',
       '0xUserAddress',
+      undefined,
+      '0x1',
     );
   });
 
@@ -152,7 +154,7 @@ describe('useTokenMetadata', () => {
       },
     };
 
-    mockGetTokenStandardAndDetails.mockRejectedValue(
+    mockGetTokenStandardAndDetailsByChain.mockRejectedValue(
       new Error('Network error'),
     );
 
@@ -167,7 +169,7 @@ describe('useTokenMetadata', () => {
 
     // Should stay in unknown state after error
     await waitFor(() => {
-      expect(mockGetTokenStandardAndDetails).toHaveBeenCalled();
+      expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalled();
     });
 
     expect(result.current).toEqual({
@@ -241,7 +243,7 @@ describe('useTokenMetadata', () => {
     expect(result.current.symbol).toBe('TKN1');
 
     // Fetch for new token not in state
-    mockGetTokenStandardAndDetails.mockResolvedValue({
+    mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
       symbol: 'TKN2',
       decimals: '6',
       name: 'Token 2',
@@ -262,7 +264,7 @@ describe('useTokenMetadata', () => {
       },
     };
 
-    mockGetTokenStandardAndDetails.mockResolvedValue({
+    mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
       symbol: 'WEIRD',
       decimals: undefined,
       name: 'Weird Token',
@@ -295,7 +297,7 @@ describe('useTokenMetadata', () => {
       },
     };
 
-    mockGetTokenStandardAndDetails.mockResolvedValue({
+    mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
       symbol: 'NFT',
       decimals: '0',
       name: 'NFT Token',
@@ -397,7 +399,7 @@ describe('useTokenMetadata', () => {
       .spyOn(console, 'error')
       .mockImplementation(jest.fn());
 
-    mockGetTokenStandardAndDetails.mockImplementation(
+    mockGetTokenStandardAndDetailsByChain.mockImplementation(
       () =>
         new Promise((resolve) =>
           setTimeout(
@@ -446,7 +448,7 @@ describe('useTokenMetadata', () => {
       },
     };
 
-    mockGetTokenStandardAndDetails.mockResolvedValue(
+    mockGetTokenStandardAndDetailsByChain.mockResolvedValue(
       null as unknown as TokenStandAndDetails,
     );
 
@@ -460,7 +462,7 @@ describe('useTokenMetadata', () => {
     );
 
     await waitFor(() => {
-      expect(mockGetTokenStandardAndDetails).toHaveBeenCalled();
+      expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalled();
     });
 
     expect(result.current).toEqual({
