@@ -557,9 +557,6 @@
     },
     "@metamask/bridge-controller": {
       "globals": {
-        "AbortController": true,
-        "Buffer.from": true,
-        "TextDecoder": true,
         "URLSearchParams": true,
         "console.warn": true
       },
@@ -575,7 +572,6 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/bridge-controller>bignumber.js": true,
-        "buffer": true,
         "lodash": true,
         "reselect": true
       }
