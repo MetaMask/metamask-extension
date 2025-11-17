@@ -78,7 +78,6 @@
     "shouldClose": "boolean",
     "showBasicFunctionalityModal": "boolean",
     "showClaimSubmitToast": "null",
-    "showConnectionsRemovedModal": "boolean",
     "showCopyAddressToast": "boolean",
     "showDataDeletionErrorModal": "boolean",
     "showDeleteMetaMetricsDataModal": "boolean",
