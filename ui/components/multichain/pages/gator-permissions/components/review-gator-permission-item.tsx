@@ -128,16 +128,21 @@ export const ReviewGatorPermissionItem = ({
     getInternalAccountByAddress(state, permissionAccount),
   );
 
+  const truncatedAddress = shortenAddress(permissionAccount);
   // Copy functionality with visual feedback
-  const [accountText, setAccountText] = useState(
-    shortenAddress(permissionAccount),
-  );
+  const [accountText, setAccountText] = useState(truncatedAddress);
   const [addressCopied, setAddressCopied] = useState(false);
   const [copyIcon, setCopyIcon] = useState(IconName.Copy);
   const [copyMessage, setCopyMessage] = useState(accountText);
 
   const timeoutRef = useRef<number | null>(null);
+  const accountTextRef = useRef(accountText);
   const [, handleCopy] = useCopyToClipboard();
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    accountTextRef.current = accountText;
+  }, [accountText]);
 
   // Cleanup timeout when component unmounts
   useEffect(() => {
@@ -151,9 +156,11 @@ export const ReviewGatorPermissionItem = ({
 
   useEffect(() => {
     if (internalAccount?.metadata?.name) {
-      setAccountText(internalAccount?.metadata?.name);
+      setAccountText(internalAccount.metadata.name);
+    } else {
+      setAccountText(truncatedAddress);
     }
-  }, [internalAccount]);
+  }, [internalAccount, truncatedAddress]);
 
   // Update copy message when account changes
   useEffect(() => {
@@ -173,13 +180,14 @@ export const ReviewGatorPermissionItem = ({
     setCopyIcon(IconName.CopySuccess);
 
     // Reset state after 1 second
+    // Use ref to get the latest accountText value, avoiding stale closure
     timeoutRef.current = window.setTimeout(() => {
-      setCopyMessage(accountText);
+      setCopyMessage(accountTextRef.current);
       setCopyIcon(IconName.Copy);
       setAddressCopied(false);
       timeoutRef.current = null;
     }, 1000);
-  }, [permissionAccount, accountText, handleCopy, t]);
+  }, [permissionAccount, handleCopy, t]);
 
   const tokenMetadata = useTokenMetadata(
     tokenAddress,
