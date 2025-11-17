@@ -1146,7 +1146,7 @@ const getEvmAssetsWithBalance = createDeepEqualSelector(
                 return [assetId, undefined];
               }
               const balanceInDecString = balance.toString(10);
-              const tokenFiatAmount = balance.toNumber(); //TODO
+
               return [
                 assetId,
                 {
@@ -1156,7 +1156,6 @@ const getEvmAssetsWithBalance = createDeepEqualSelector(
                   name: name,
                   chainId: caipChainId,
                   balance: balanceInDecString,
-                  tokenFiatAmount: tokenFiatAmount,
                 },
               ];
             });
@@ -1195,13 +1194,11 @@ const getNonEvmAssetsWithBalance = createSelector(
           const { units, symbol } = assetMetadata;
           const { chainId, assetReference } = parseCaipAssetType(assetId);
           const balance = balancesByAssetId[assetId]?.amount ?? '0';
-          const balanceInDecBN = new BigNumber(balance).div(
-            new BigNumber(10).pow(units[0]?.decimals ?? 0),
-          );
+          const balanceInDecBN = new BigNumber(balance);
           if (balanceInDecBN.isZero()) {
             return [assetId, undefined];
           }
-          const balanceInDecString = balanceInDecBN.toString(10);
+          const balanceInDecString = balanceInDecBN.toString();
           return [
             assetId,
             {
@@ -1245,8 +1242,8 @@ const getBridgeAssetsForAccountGroupId = createDeepEqualSelector(
       }
       return getEvmAssetsWithBalance(state, accountAddress);
     },
-    // getMarketData,
-    // (state) => state.metamask.currencyRates,
+    (state) => state.metamask.marketData,
+    (state) => state.metamask.currencyRates,
     (state: BridgeAppState, accountGroupId: AccountGroupId) => {
       const accountIds = getNonEvmAccountIds(state, accountGroupId);
       return getNonEvmAssetsWithBalance(state, accountIds);
@@ -1255,12 +1252,38 @@ const getBridgeAssetsForAccountGroupId = createDeepEqualSelector(
   ],
   (
     evmAssetsWithBalanceByAssetId,
+    evmMarketData,
+    evmCurrencyRates,
     nonEvmAssetsWithBalanceByAssetId,
     nonEvmExchangeRatesByAssetId,
   ) => {
     const evmFiatByAssetId = Object.fromEntries(
       Object.entries(evmAssetsWithBalanceByAssetId).map(([assetId, asset]) => {
-        return [assetId, asset];
+        const { chainId, assetReference } = parseCaipAssetType(asset.assetId);
+        const tokenToNativeAssetRate =
+          exchangeRateFromMarketData(
+            formatChainIdToHex(chainId),
+            isNativeAddress(assetReference)
+              ? zeroAddress()
+              : toChecksumHexAddress(assetReference),
+            evmMarketData,
+          ) ?? 1;
+        const nativeToCurrencyRate = new BigNumber(
+          evmCurrencyRates[
+            getNativeAssetForChainId(chainId)?.symbol
+          ]?.usdConversionRate,
+        );
+
+        const tokenAmountInNativeAsset = nativeToCurrencyRate
+          ?.times(asset.balance)
+          .toNumber();
+        return [
+          assetId,
+          {
+            ...asset,
+            tokenFiatAmount: tokenAmountInNativeAsset * tokenToNativeAssetRate,
+          },
+        ];
       }),
     );
 
@@ -1293,7 +1316,6 @@ export const getBridgeAssetsWithBalance = createDeepEqualSelector(
   ],
   ({ evmAssetsWithBalanceByAssetId, nonEvmAssetsWithBalanceByAssetId }) => {
     // TODO accountType
-    // TODO sort by fiat amount
     return {
       balanceByAssetId: Object.fromEntries(
         [

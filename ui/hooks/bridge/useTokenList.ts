@@ -56,8 +56,6 @@ export const useTokenList = ({
       getBridgeAssetsWithBalance(state, accountGroup.id),
   );
 
-  // TODO useEffect for both, set isTokenListLoading?
-  // TODO debounce?
   const fromChains = useSelector(getFromChains);
   const [isSearchResultsLoading, setIsSearchResultsLoading] = useState(false);
   const [searchResultsWithBalance, setSearchResultsWithBalance] = useState<
@@ -69,7 +67,6 @@ export const useTokenList = ({
     .toString();
 
   const assetsToInclude = useMemo(() => {
-    console.error('====assetsToInclude', memoizedBalances, searchQuery);
     return uniqBy(
       [selectedAsset, ...assetsWithBalance]
         .filter((token) => {
@@ -100,8 +97,6 @@ export const useTokenList = ({
 
   useEffect(() => {
     return () => {
-      // debouncedFetchPopularTokens.cancel();
-      // debouncedFetchTokensBySearchQuery.cancel();
       setIsSearchResultsLoading(false);
       abortControllerRef.current?.abort('=====closing token list');
     };
@@ -134,7 +129,9 @@ export const useTokenList = ({
     }
     return (
       tokenList?.map(toBridgeToken).map((token) => {
-        const balanceData = balanceByAssetId?.[token.assetId.toLowerCase()];
+        const balanceData =
+          balanceByAssetId?.[token.assetId] ?? // non-EVM assetIds are not lowercased
+          balanceByAssetId?.[token.assetId.toLowerCase()];
         return {
           ...token,
           accountType: balanceData?.accountType,

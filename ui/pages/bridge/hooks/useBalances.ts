@@ -16,7 +16,7 @@ import {
   getAccountAssets,
   getAssetsMetadata,
   getAssetsRates,
-  getTokenBalancesEvmMainnet,
+  getTokenBalancesEvm,
 } from '../../../selectors/assets';
 import { getMultichainBalances } from '../../../selectors/multichain';
 import {
@@ -128,7 +128,7 @@ export const useBalances = (accountAddress?: InternalAccount['address']) => {
 
   // EVM balances
   const allEvmBalancesWithFiatByChainId = useSelector((state) =>
-    getTokenBalancesEvmMainnet(state, evmAccount?.address),
+    getTokenBalancesEvm(state, evmAccount?.address),
   );
   // Solana balances
   const solanaBalancesWithFiat = useNonEvmAssetsWithBalances(solanaAccount?.id);
