@@ -169,10 +169,10 @@ class UnlockPage extends Component {
   }
 
   async componentDidMount() {
-    const { isOnboardingCompleted } = this.props;
+    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     if (isOnboardingCompleted) {
       await this.props.checkIsSeedlessPasswordOutdated();
-    } else {
+    } else if (isSocialLoginFlow) {
       // if the onboarding is not completed, check if the seedless onboarding user is authenticated to do the rehydration
       // we have to consider the case where required tokens for rehydration are removed when user closed the browser app after social login is completed.
       const isAuthenticated =

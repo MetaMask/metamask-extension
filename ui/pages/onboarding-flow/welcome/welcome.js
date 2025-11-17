@@ -23,7 +23,7 @@ import {
   getCurrentKeyring,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
-  getIsSocialLoginUserAuthenticated,
+  getIsSocialLoginFlow,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -31,6 +31,7 @@ import {
   setFirstTimeFlowType,
   startOAuthLogin,
   setParticipateInMetaMetrics,
+  getIsSeedlessOnboardingUserAuthenticated,
 } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
@@ -72,9 +73,7 @@ export default function OnboardingWelcome() {
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
-  const isUserAuthenticatedWithSocialLogin = useSelector(
-    getIsSocialLoginUserAuthenticated,
-  );
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
@@ -119,12 +118,6 @@ export default function OnboardingWelcome() {
       } else {
         navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
       }
-    } else if (isUserAuthenticatedWithSocialLogin) {
-      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
-      } else {
-        navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
-      }
     }
   }, [
     currentKeyring,
@@ -132,10 +125,30 @@ export default function OnboardingWelcome() {
     firstTimeFlowType,
     newAccountCreationInProgress,
     isParticipateInMetaMetricsSet,
-    isUserAuthenticatedWithSocialLogin,
     isFireFox,
     isWalletResetInProgress,
   ]);
+
+  useEffect(() => {
+    if (!isSocialLoginFlow) {
+      return;
+    }
+    // validate social login authenticated state on mount
+    // if user has completed the social login and has valid authentication state values
+    // redirect to the appropriate page
+    (async () => {
+      const isSeedlessOnboardingUserAuthenticated = await dispatch(
+        getIsSeedlessOnboardingUserAuthenticated(),
+      );
+      if (isSeedlessOnboardingUserAuthenticated) {
+        if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+          navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
+        } else {
+          navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
+        }
+      }
+    })();
+  }, [firstTimeFlowType, navigate, dispatch, isSocialLoginFlow]);
 
   const trackEvent = useContext(MetaMetricsContext);
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
