@@ -1812,6 +1812,7 @@ export async function withSolanaAccountSnap(
       // Change to Solana
       const networkManager = new NetworkManager(driver);
       await networkManager.openNetworkManager();
+      await networkManager.selectTab('Popular');
       await networkManager.selectNetworkByNameWithWait('Solana');
 
       await test(driver, mockServer, extensionId);
