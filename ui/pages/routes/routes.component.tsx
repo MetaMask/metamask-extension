@@ -948,18 +948,21 @@ export default function Routes() {
             layout={LegacyLayout}
           />
           <RouteWithLayout
+            authenticated
             path={`${TOKEN_TRANSFER_ROUTE}/:origin`}
             component={TokenTransferPage}
             exact
             layout={LegacyLayout}
           />
           <RouteWithLayout
+            authenticated
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
             component={ReviewGatorPermissionsPage}
             exact
             layout={LegacyLayout}
           />
           <RouteWithLayout
+            authenticated
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin`}
             component={ReviewGatorPermissionsPage}
             exact
