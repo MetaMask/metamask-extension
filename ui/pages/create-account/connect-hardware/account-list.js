@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
+import { KeyringType } from '../../../../shared/constants/keyring';
 
 import {
   Button,
@@ -94,6 +96,27 @@ class AccountList extends Component {
     ].includes(device);
   }
 
+  /**
+   * Ideally we're able to record all connected devices since we can get
+   * multiple devices using the same keyring. This is a workaround that
+   * should be improved if this metric proves to be important.
+   *
+   * @returns {Array} Array of hardware wallet keyrings
+   */
+  getHardwareWalletKeyrings() {
+    const { keyrings } = this.props;
+    return keyrings.filter(
+      (keyring) =>
+        [
+          KeyringType.ledger,
+          KeyringType.trezor,
+          KeyringType.lattice,
+          KeyringType.qr,
+          KeyringType.oneKey,
+        ].includes(keyring.type) && keyring.accounts.length > 0,
+    );
+  }
+
   onUnlock() {
     const { device, selectedPath, onUnlockAccounts } = this.props;
     const { trackEvent } = this.context;
@@ -114,9 +137,14 @@ class AccountList extends Component {
       return;
     }
 
+    const deviceCount = this.getHardwareWalletKeyrings().length;
+
     trackEvent({
       event: MetaMetricsEventName.HardwareWalletAccountConnected,
-      properties,
+      properties: {
+        ...properties,
+        connected_device_count: deviceCount + 1,
+      },
     });
   }
 
@@ -327,6 +355,7 @@ AccountList.propTypes = {
   onCancel: PropTypes.func,
   onAccountRestriction: PropTypes.func,
   hdPaths: PropTypes.object.isRequired,
+  keyrings: PropTypes.array.isRequired,
 };
 
 AccountList.contextTypes = {
@@ -334,4 +363,10 @@ AccountList.contextTypes = {
   trackEvent: PropTypes.func,
 };
 
-export default AccountList;
+function mapStateToProps(state) {
+  return {
+    keyrings: state.metamask.keyrings,
+  };
+}
+
+export default connect(mapStateToProps)(AccountList);
