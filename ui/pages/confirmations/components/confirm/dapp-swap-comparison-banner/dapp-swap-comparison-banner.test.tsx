@@ -105,14 +105,12 @@ describe('<DappSwapComparisonBanner />', () => {
       destinationTokenSymbol: 'TEST',
     } as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
-    expect(getByText('Current')).toBeInTheDocument();
-    expect(getByText('Save + Earn')).toBeInTheDocument();
-    expect(getByText('Save + Earn using MetaMask Swap:')).toBeInTheDocument();
-    expect(getByText('Save about $0.02')).toBeInTheDocument();
+    expect(getByText('Market rate')).toBeInTheDocument();
+    expect(getByText('Metamask Swap')).toBeInTheDocument();
+    expect(getByText('Save and earn with MetaMask Swaps')).toBeInTheDocument();
+    expect(getByText('Save $0.02')).toBeInTheDocument();
     expect(
-      getByText(
-        'No additional cost • Priority support • Network fees refunded on failed swaps',
-      ),
+      getByText('Network fees refunded on failed swaps'),
     ).toBeInTheDocument();
   });
 
@@ -129,7 +127,7 @@ describe('<DappSwapComparisonBanner />', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('call function to update confirmation when user clicks on Save + Earn button', () => {
+  it('call function to update confirmation when user clicks on Metamask Swap button', () => {
     mockUseDappSwapComparisonInfo.mockReturnValue({
       selectedQuote: quote as unknown as QuoteResponse,
       selectedQuoteValueDifference: 0.1,
@@ -138,12 +136,12 @@ describe('<DappSwapComparisonBanner />', () => {
       destinationTokenSymbol: 'TEST',
     } as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
-    const quoteSwapButton = getByText('Save + Earn');
+    const quoteSwapButton = getByText('Metamask Swap');
     fireEvent.click(quoteSwapButton);
     expect(mockDispatch).toHaveBeenCalledTimes(1);
   });
 
-  it('call function to update confirmation when user clicks on Current button', () => {
+  it('call function to update confirmation when user clicks on Market rate button', () => {
     jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
       isQuotedSwap: true,
     });
@@ -155,7 +153,7 @@ describe('<DappSwapComparisonBanner />', () => {
       destinationTokenSymbol: 'TEST',
     } as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
-    const quoteSwapButton = getByText('Current');
+    const quoteSwapButton = getByText('Market rate');
     fireEvent.click(quoteSwapButton);
     expect(mockDispatch).toHaveBeenCalledTimes(1);
   });

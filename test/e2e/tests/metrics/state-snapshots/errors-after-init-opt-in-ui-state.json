@@ -111,6 +111,7 @@
       "tokenNetworkFilter": { "0x539": "boolean" },
       "tokenSortConfig": "object",
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
+      "useSidePanelAsDefault": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "firstTimeFlowType": "import",
@@ -406,6 +407,7 @@
     "pendingApprovals": "object",
     "pendingRevocations": "object",
     "pendingShieldCohort": null,
+    "pendingShieldCohortTxType": null,
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
     "storageMetadata": {},

@@ -44,7 +44,6 @@
 .main-container-wrapper {
   display: flex;
   justify-content: center;
-  flex: 1 0 auto;
   min-height: 0;
   width: 100%;
 }
@@ -53,9 +52,6 @@
 
 @include design-system.screen-sm-min {
   .main-container {
-    width: 85vw;
-    min-height: 90vh;
-
     &--has-shadow {
       box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     }
@@ -64,9 +60,6 @@
 
 @include design-system.screen-md-min {
   .main-container {
-    width: 80vw;
-    min-height: 82vh;
-
     &--has-shadow {
       box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     }
@@ -75,97 +68,20 @@
 
 @include design-system.screen-lg-min {
   .main-container {
-    width: 62vw;
-    min-height: 82vh;
-
     &--has-shadow {
       box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     }
   }
 }
 
-@include design-system.screen-sm-max {
-  .main-container {
-    width: 100%;
-    overflow-y: auto;
-    background-color: var(--color-background-default);
-  }
-
-  .main-container-wrapper {
-    flex: 1;
-  }
+.main-container {
+  width: 100%;
+  overflow-y: auto;
+  background-color: var(--color-background-default);
 }
 
-// Side panel specific styles - all width constraints in one place
-.app--sidepanel {
-  // Main containers
-  .main-container {
-    max-width: 490px;
-    min-width: 360px;
-    width: 100%;
-  }
-
-  // Header components
-  .multichain-app-header {
-    &__contents,
-    &__lock-contents {
-      max-width: 490px;
-      min-width: 360px;
-      width: 100%;
-    }
-  }
-
-  // Page containers and modals
-  .page-container {
-    max-width: 490px;
-    min-width: 360px;
-    width: 100%;
-  }
-
-  // Multichain pages
-  .multichain-page {
-    max-width: 490px;
-    min-width: 360px;
-
-    &__inner-container {
-      max-width: 490px;
-      min-width: 360px;
-    }
-  }
-
-  // Send page
-  .multichain-send-page {
-    max-width: 490px;
-    min-width: 360px;
-    width: 100%;
-  }
-
-  // Snaps pages
-  .snaps {
-    max-width: 490px;
-    min-width: 360px;
-    width: 100%;
-  }
-
-  // Permissions and connect pages
-  .permissions-connect {
-    max-width: 490px;
-    min-width: 360px;
-    width: 100%;
-  }
-
-  // Redesigned send flow
-  .redesigned__send__container {
-    max-width: 490px;
-    min-width: 360px;
-    width: 100%;
-  }
-
-  .redesigned__send__wrapper {
-    max-width: 490px;
-    min-width: 360px;
-    width: 100%;
-  }
+.main-container-wrapper {
+  flex: 1;
 }
 
 // first time
@@ -213,4 +129,14 @@
   .redesigned__send__wrapper {
     min-width: 320px;
   }
+}
+
+// Remove once LegacyLayout is removed
+.main-container {
+  flex: 1;
+}
+
+.redesigned__send__wrapper {
+  width: 100%;
+  background: var(--color-background-default);
 }

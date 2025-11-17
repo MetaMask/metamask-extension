@@ -8,6 +8,7 @@ import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+import { DAPP_ONE_URL, DAPP_PATH } from '../../constants';
 
 describe('Petnames - Signatures', function (this: Suite) {
   it('can save names for addresses in type 3 signatures', async function () {
@@ -90,7 +91,10 @@ describe('Petnames - Signatures', function (this: Suite) {
   it('can propose names using installed snaps', async function () {
     await withFixtures(
       {
-        dappOptions: { numberOfTestDapps: 1 },
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+          numberOfTestDapps: 1,
+        },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
@@ -107,6 +111,7 @@ describe('Petnames - Signatures', function (this: Suite) {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectNameLookUpButton',
+          { url: DAPP_ONE_URL },
         );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav4();

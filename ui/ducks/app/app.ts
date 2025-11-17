@@ -4,6 +4,7 @@ import type {
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { Action, AnyAction } from 'redux';
+import { ModalType } from '@metamask/subscription-controller';
 import {
   HardwareTransportStates,
   WebHIDConnectedStatuses,
@@ -137,6 +138,7 @@ type AppState = {
   shieldEntryModal?: {
     show: boolean;
     shouldSubmitEvents: boolean;
+    modalType?: ModalType;
     triggeringCohort?: string;
   };
 };

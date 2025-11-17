@@ -98,3 +98,11 @@ export type AccountSelectorWallet = {
   name: string;
   accounts: AccountSelectorAccount[];
 };
+
+export const SHIELD_ICON_ARTBOARD_NAMES = {
+  PROTECTION: 'Protection',
+  PRIORITY: 'Priority',
+} as const;
+
+export type ShieldIconArtboardName =
+  (typeof SHIELD_ICON_ARTBOARD_NAMES)[keyof typeof SHIELD_ICON_ARTBOARD_NAMES];
