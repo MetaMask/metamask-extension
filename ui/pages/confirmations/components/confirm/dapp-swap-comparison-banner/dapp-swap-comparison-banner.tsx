@@ -86,6 +86,7 @@ const DappSwapComparisonInner = () => {
   const {
     fiatRates,
     gasDifference,
+    minDestTokenAmountInUSD,
     selectedQuote,
     selectedQuoteValueDifference,
     sourceTokenAmount,
@@ -244,6 +245,7 @@ const DappSwapComparisonInner = () => {
           tokenDetails={tokenDetails}
           sourceTokenAmount={sourceTokenAmount}
           tokenAmountDifference={tokenAmountDifference}
+          minDestTokenAmountInUSD={minDestTokenAmountInUSD}
         />
       )}
     </Box>

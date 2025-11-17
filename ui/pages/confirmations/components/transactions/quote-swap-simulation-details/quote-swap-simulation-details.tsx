@@ -84,18 +84,21 @@ const getDestAssetBalanceChange = (
     usdAmount: 0,
   };
 };
+
 export const QuoteSwapSimulationDetails = ({
   fiatRates,
   quote,
   sourceTokenAmount,
   tokenDetails,
   tokenAmountDifference = 0,
+  minDestTokenAmountInUSD,
 }: {
   fiatRates?: Record<Hex, number | undefined>;
   quote?: QuoteResponse;
   sourceTokenAmount?: string;
   tokenDetails?: Record<Hex, TokenStandAndDetails>;
   tokenAmountDifference?: number;
+  minDestTokenAmountInUSD?: string;
 }) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -137,7 +140,7 @@ export const QuoteSwapSimulationDetails = ({
       isTransactionsRedesign
       transactionId={transactionId}
       title={t('bestQuote')}
-      titleTooltip={t('bestQuoteTooltip')}
+      titleTooltip={t('bestQuoteTooltip', [`$${minDestTokenAmountInUSD}`])}
     >
       <Box
         flexDirection={BoxFlexDirection.Column}
