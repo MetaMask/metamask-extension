@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
+import type { Hex } from '@metamask/utils';
 import { getSelectedAccount } from '../../../../../selectors';
 import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
+import { fetchAssetMetadata } from '../../../../../../shared/lib/asset-utils';
 
 export type TokenMetadata = {
   symbol: string;
@@ -10,15 +12,109 @@ export type TokenMetadata = {
   name: string;
 };
 
+const UNKNOWN_TOKEN: TokenMetadata = {
+  symbol: 'Unknown Token',
+  decimals: null,
+  name: 'Unknown Token',
+};
+
+/**
+ * Helper to get token metadata from tokensByChain cache
+ *
+ * @param tokenAddress - The token contract address
+ * @param chainId - The chain ID
+ * @param tokensByChain - Token metadata organized by chain from Redux state
+ * @returns TokenMetadata if found in cache, null otherwise
+ */
+const getCachedTokenMetadata = (
+  tokenAddress: string,
+  chainId: string,
+  tokensByChain: Record<
+    string,
+    {
+      data: Record<
+        string,
+        { symbol?: string; decimals?: number; name?: string }
+      >;
+    }
+  >,
+): TokenMetadata | null => {
+  const tokenListForChain = tokensByChain?.[chainId]?.data || {};
+  const foundTokenMetadata =
+    tokenListForChain[tokenAddress.toLowerCase()] ??
+    tokenListForChain[tokenAddress];
+
+  if (foundTokenMetadata?.decimals !== undefined) {
+    return {
+      symbol: foundTokenMetadata.symbol || UNKNOWN_TOKEN.symbol,
+      decimals: foundTokenMetadata.decimals,
+      name: foundTokenMetadata.name || UNKNOWN_TOKEN.name,
+    };
+  }
+
+  return null;
+};
+
+/**
+ * Helper to create TokenMetadata from various sources
+ *
+ * @param symbol - Token symbol
+ * @param decimals - Token decimals (can be string, number, or null)
+ * @param name - Token name
+ * @returns TokenMetadata object
+ */
+const createTokenMetadata = (
+  symbol?: string,
+  decimals?: number | string | null,
+  name?: string,
+): TokenMetadata => {
+  let parsedDecimals: number | null = null;
+  if (typeof decimals === 'string') {
+    parsedDecimals = decimals ? parseInt(decimals, 10) : null;
+  } else {
+    parsedDecimals = decimals ?? null;
+  }
+
+  return {
+    symbol: symbol || UNKNOWN_TOKEN.symbol,
+    decimals:
+      parsedDecimals !== null && !Number.isNaN(parsedDecimals)
+        ? parsedDecimals
+        : null,
+    name: name || symbol || UNKNOWN_TOKEN.name,
+  };
+};
+
+/**
+ * Helper to update state only if values changed
+ *
+ * @param setTokenMetadata - State setter function
+ * @param newMetadata - New metadata to set
+ */
+const updateMetadataIfChanged = (
+  setTokenMetadata: React.Dispatch<React.SetStateAction<TokenMetadata>>,
+  newMetadata: TokenMetadata,
+) => {
+  setTokenMetadata((prev) => {
+    if (
+      prev.symbol !== newMetadata.symbol ||
+      prev.decimals !== newMetadata.decimals ||
+      prev.name !== newMetadata.name
+    ) {
+      return newMetadata;
+    }
+    return prev;
+  });
+};
+
 /**
  * Custom hook to fetch token metadata for tokens.
  *
  * This hook attempts to fetch token information using the following strategy:
- * 1. First checks if token metadata exists in the provided tokensByChain state
- * (which includes both imported tokens and token service data)
- * 2. If not found or incomplete, calls getTokenStandardAndDetails which:
- * - Checks static token lists, token service cache, and user-imported tokens
- * - Falls back to on-chain contract calls (ERC721/ERC1155/ERC20) if needed
+ * 1. First checks cache + user imported tokens from tokensByChain state
+ * (no external service calls needed)
+ * 2. If not found, calls the token API (fetchAssetMetadata)
+ * 3. If API fails, falls back to on-chain data (getTokenStandardAndDetailsByChain)
  *
  * @param tokenAddress - The token contract address (undefined for native token)
  * @param chainId - The chain ID
@@ -43,37 +139,17 @@ export const useTokenMetadata = (
   const selectedAccount = useSelector(getSelectedAccount);
 
   const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata>(() => {
-    // If no token address, return native token metadata
     if (!tokenAddress) {
       return nativeTokenMetadata;
     }
 
-    // Try to get from state first (imported tokens or token list)
-    const tokenListForChain = tokensByChain?.[chainId]?.data || {};
-    const foundTokenMetadata =
-      tokenListForChain[tokenAddress.toLowerCase()] ??
-      tokenListForChain[tokenAddress];
-
-    if (foundTokenMetadata) {
-      return {
-        symbol: foundTokenMetadata.symbol || 'Unknown Token',
-        decimals: foundTokenMetadata.decimals ?? 18,
-        name: foundTokenMetadata.name || 'Unknown Token',
-      };
-    }
-
-    // If not found in state, return pending state
-    return {
-      symbol: 'Unknown Token',
-      decimals: null,
-      name: 'Unknown Token',
-    };
+    const cached = getCachedTokenMetadata(tokenAddress, chainId, tokensByChain);
+    return cached ?? UNKNOWN_TOKEN;
   });
 
   useEffect(() => {
     let isMounted = true;
 
-    // If no token address, use native token metadata
     if (!tokenAddress) {
       if (isMounted) {
         setTokenMetadata(nativeTokenMetadata);
@@ -83,81 +159,76 @@ export const useTokenMetadata = (
       };
     }
 
-    // Check if we already have metadata from state
-    const tokenListForChain = tokensByChain?.[chainId]?.data || {};
-    const foundTokenMetadata =
-      tokenListForChain[tokenAddress.toLowerCase()] ??
-      tokenListForChain[tokenAddress];
-
-    if (foundTokenMetadata?.decimals !== undefined) {
-      // We have complete metadata from state
-      const newMetadata = {
-        symbol: foundTokenMetadata.symbol || 'Unknown Token',
-        decimals: foundTokenMetadata.decimals,
-        name: foundTokenMetadata.name || 'Unknown Token',
-      };
-
+    // Step 1: Check cache + user imported tokens (no external calls)
+    const cached = getCachedTokenMetadata(tokenAddress, chainId, tokensByChain);
+    if (cached) {
       if (isMounted) {
-        setTokenMetadata((prev) => {
-          // Only update if values have actually changed
-          if (
-            prev.symbol !== newMetadata.symbol ||
-            prev.decimals !== newMetadata.decimals ||
-            prev.name !== newMetadata.name
-          ) {
-            return newMetadata;
-          }
-          return prev;
-        });
+        updateMetadataIfChanged(setTokenMetadata, cached);
       }
       return () => {
         isMounted = false;
       };
     }
 
-    // If not in state, fetch from backend (which checks token list API then blockchain)
+    // Step 2 & 3: Fetch from API, then fall back to on-chain
     const fetchTokenMetadata = async () => {
+      log.log('fetchTokenMetadata', { tokenAddress, chainId });
+      let newMetadata: TokenMetadata | null = null;
+
+      // Step 2: Try API first
       try {
-        const details = await getTokenStandardAndDetailsByChain(
+        const apiMetadata = await fetchAssetMetadata(
           tokenAddress,
-          selectedAccount?.address,
+          chainId as Hex,
           undefined,
-          chainId,
         );
 
-        if (isMounted && details) {
-          const parsedDecimals = details.decimals
-            ? parseInt(details.decimals, 10)
-            : null;
-          const newMetadata = {
-            symbol: details.symbol || 'Unknown Token',
-            decimals:
-              parsedDecimals !== null && !Number.isNaN(parsedDecimals)
-                ? parsedDecimals
-                : null,
-            name: details.name || details.symbol || 'Unknown Token',
-          };
-
-          setTokenMetadata((prev) => {
-            // Only update if values have actually changed
-            if (
-              prev.symbol !== newMetadata.symbol ||
-              prev.decimals !== newMetadata.decimals ||
-              prev.name !== newMetadata.name
-            ) {
-              return newMetadata;
-            }
-            return prev;
-          });
+        if (apiMetadata && isMounted) {
+          // API doesn't return name, use symbol as fallback
+          newMetadata = createTokenMetadata(
+            apiMetadata.symbol,
+            apiMetadata.decimals,
+            apiMetadata.symbol,
+          );
         }
       } catch (error) {
-        log.error('Failed to fetch token metadata', {
+        log.debug('Token API fetch failed, falling back to on-chain', {
           tokenAddress,
           chainId,
-          selectedAccountAddress: selectedAccount?.address,
           error: error instanceof Error ? error.message : String(error),
         });
-        // Keep the unknown state if fetch fails
+      }
+
+      // Step 3: Fall back to on-chain if API didn't return metadata
+      if (!newMetadata && isMounted) {
+        try {
+          const details = await getTokenStandardAndDetailsByChain(
+            tokenAddress,
+            selectedAccount?.address,
+            undefined,
+            chainId,
+          );
+
+          if (details) {
+            newMetadata = createTokenMetadata(
+              details.symbol,
+              details.decimals,
+              details.name,
+            );
+          }
+        } catch (error) {
+          log.error('Failed to fetch token metadata from on-chain', {
+            tokenAddress,
+            chainId,
+            selectedAccountAddress: selectedAccount?.address,
+            error: error instanceof Error ? error.message : String(error),
+          });
+        }
+      }
+
+      // Update state if we got metadata
+      if (isMounted && newMetadata) {
+        updateMetadataIfChanged(setTokenMetadata, newMetadata);
       }
     };
 

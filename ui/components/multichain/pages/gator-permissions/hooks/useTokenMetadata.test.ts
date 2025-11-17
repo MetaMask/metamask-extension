@@ -5,8 +5,14 @@ import * as actions from '../../../../../store/actions';
 import type { TokenStandAndDetails } from '../../../../../store/actions';
 import { useTokenMetadata } from './useTokenMetadata';
 
+const mockFetchAssetMetadata = jest.fn();
+
 jest.mock('../../../../../store/actions', () => ({
   getTokenStandardAndDetailsByChain: jest.fn(),
+}));
+
+jest.mock('../../../../../../shared/lib/asset-utils', () => ({
+  fetchAssetMetadata: (...args: unknown[]) => mockFetchAssetMetadata(...args),
 }));
 
 jest.mock('react-redux', () => ({
@@ -15,6 +21,7 @@ jest.mock('react-redux', () => ({
 
 jest.mock('loglevel', () => ({
   error: jest.fn(),
+  debug: jest.fn(),
 }));
 
 describe('useTokenMetadata', () => {
@@ -29,36 +36,70 @@ describe('useTokenMetadata', () => {
     name: 'Ethereum',
   };
 
-  beforeEach(() => {
-    jest.clearAllMocks();
+  const UNKNOWN_TOKEN = {
+    symbol: 'Unknown Token',
+    decimals: null,
+    name: 'Unknown Token',
+  };
+
+  const CHAIN_ID = '0x1';
+  const EMPTY_TOKENS_BY_CHAIN = { [CHAIN_ID]: { data: {} } };
+
+  // Helper to create tokensByChain with token data
+  const createTokensByChain = (
+    chainId: string,
+    tokens: Record<
+      string,
+      { symbol?: string; decimals?: number; name?: string }
+    >,
+  ) => ({
+    [chainId]: { data: tokens },
   });
 
-  it('should return native token metadata when tokenAddress is undefined', () => {
-    const { result } = renderHook(() =>
-      useTokenMetadata(undefined, '0x1', {}, mockNativeTokenMetadata),
-    );
+  // Helper to create on-chain token details
+  const createOnChainDetails = (
+    symbol: string,
+    decimals: string | number,
+    name: string,
+  ): TokenStandAndDetails =>
+    ({
+      symbol,
+      decimals: typeof decimals === 'number' ? decimals.toString() : decimals,
+      name,
+      standard: 'ERC20',
+    }) as TokenStandAndDetails;
 
-    expect(result.current).toEqual(mockNativeTokenMetadata);
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockFetchAssetMetadata.mockResolvedValue(undefined);
+  });
+
+  it('should return native token metadata when tokenAddress is undefined or empty', () => {
+    const { result: result1 } = renderHook(() =>
+      useTokenMetadata(undefined, CHAIN_ID, {}, mockNativeTokenMetadata),
+    );
+    expect(result1.current).toEqual(mockNativeTokenMetadata);
+
+    const { result: result2 } = renderHook(() =>
+      useTokenMetadata('', CHAIN_ID, {}, mockNativeTokenMetadata),
+    );
+    expect(result2.current).toEqual(mockNativeTokenMetadata);
   });
 
   it('should return token metadata from state when available', () => {
-    const mockTokensByChain = {
-      '0x1': {
-        data: {
-          '0xTokenAddress': {
-            symbol: 'DAI',
-            decimals: 18,
-            name: 'Dai Stablecoin',
-          },
-        },
+    const tokensByChain = createTokensByChain(CHAIN_ID, {
+      '0xTokenAddress': {
+        symbol: 'DAI',
+        decimals: 18,
+        name: 'Dai Stablecoin',
       },
-    };
+    });
 
     const { result } = renderHook(() =>
       useTokenMetadata(
         '0xTokenAddress',
-        '0x1',
-        mockTokensByChain,
+        CHAIN_ID,
+        tokensByChain,
         mockNativeTokenMetadata,
       ),
     );
@@ -68,69 +109,106 @@ describe('useTokenMetadata', () => {
       decimals: 18,
       name: 'Dai Stablecoin',
     });
+    expect(mockFetchAssetMetadata).not.toHaveBeenCalled();
     expect(mockGetTokenStandardAndDetailsByChain).not.toHaveBeenCalled();
   });
 
-  it('should handle lowercase token addresses', () => {
-    const mockTokensByChain = {
-      '0x1': {
-        data: {
-          '0xtokenaddress': {
-            symbol: 'USDC',
-            decimals: 6,
-            name: 'USD Coin',
-          },
-        },
+  it('should handle lowercase token addresses and missing fields', () => {
+    const tokensByChain1 = createTokensByChain(CHAIN_ID, {
+      '0xtokenaddress': {
+        symbol: 'USDC',
+        decimals: 6,
+        name: 'USD Coin',
       },
-    };
+    });
 
-    const { result } = renderHook(() =>
+    const { result: result1 } = renderHook(() =>
       useTokenMetadata(
         '0xTokenAddress',
-        '0x1',
-        mockTokensByChain,
+        CHAIN_ID,
+        tokensByChain1,
         mockNativeTokenMetadata,
       ),
     );
-
-    expect(result.current).toEqual({
+    expect(result1.current).toEqual({
       symbol: 'USDC',
       decimals: 6,
       name: 'USD Coin',
     });
+
+    // Test missing symbol and name
+    const tokensByChain2 = createTokensByChain(CHAIN_ID, {
+      '0xTokenAddress': { decimals: 18 },
+    });
+
+    const { result: result2 } = renderHook(() =>
+      useTokenMetadata(
+        '0xTokenAddress',
+        CHAIN_ID,
+        tokensByChain2,
+        mockNativeTokenMetadata,
+      ),
+    );
+    expect(result2.current).toEqual({
+      symbol: 'Unknown Token',
+      decimals: 18,
+      name: 'Unknown Token',
+    });
   });
 
-  it('should fetch token metadata from backend when not in state', async () => {
-    const mockTokensByChain = {
-      '0x1': {
-        data: {},
-      },
-    };
-
-    mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
-      symbol: 'cUSDC',
-      decimals: '6',
-      name: 'Compound USD Coin',
-      standard: 'ERC20',
-    } as TokenStandAndDetails);
+  it('should use API metadata when available', async () => {
+    const tokenAddress = '0xApiToken';
+    mockFetchAssetMetadata.mockResolvedValue({
+      symbol: 'API_TOKEN',
+      decimals: 18,
+      address: tokenAddress,
+      chainId: CHAIN_ID,
+      assetId: 'eip155:1/erc20:0xapitoken',
+    });
 
     const { result } = renderHook(() =>
       useTokenMetadata(
-        '0xNewTokenAddress',
-        '0x1',
-        mockTokensByChain,
+        tokenAddress,
+        CHAIN_ID,
+        EMPTY_TOKENS_BY_CHAIN,
         mockNativeTokenMetadata,
       ),
     );
 
-    // Initial state should be "Unknown Token"
-    expect(result.current).toEqual({
-      symbol: 'Unknown Token',
-      decimals: null,
-      name: 'Unknown Token',
+    await waitFor(() => {
+      expect(result.current).toEqual({
+        symbol: 'API_TOKEN',
+        decimals: 18,
+        name: 'API_TOKEN',
+      });
     });
 
-    // Wait for the async fetch to complete
+    expect(mockFetchAssetMetadata).toHaveBeenCalledWith(
+      tokenAddress,
+      CHAIN_ID,
+      undefined,
+    );
+    expect(mockGetTokenStandardAndDetailsByChain).not.toHaveBeenCalled();
+  });
+
+  it('should fall back to on-chain when API returns undefined', async () => {
+    const tokenAddress = '0xNewTokenAddress';
+    mockFetchAssetMetadata.mockResolvedValue(undefined);
+    mockGetTokenStandardAndDetailsByChain.mockResolvedValue(
+      createOnChainDetails('cUSDC', '6', 'Compound USD Coin'),
+    );
+
+    const { result } = renderHook(() =>
+      useTokenMetadata(
+        tokenAddress,
+        CHAIN_ID,
+        EMPTY_TOKENS_BY_CHAIN,
+        mockNativeTokenMetadata,
+      ),
+    );
+
+    expect(result.current).toEqual(UNKNOWN_TOKEN);
+
     await waitFor(() => {
       expect(result.current).toEqual({
         symbol: 'cUSDC',
@@ -139,116 +217,109 @@ describe('useTokenMetadata', () => {
       });
     });
 
+    expect(mockFetchAssetMetadata).toHaveBeenCalledWith(
+      tokenAddress,
+      CHAIN_ID,
+      undefined,
+    );
     expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
-      '0xNewTokenAddress',
+      tokenAddress,
       '0xUserAddress',
       undefined,
-      '0x1',
+      CHAIN_ID,
     );
   });
 
-  it('should handle fetch errors gracefully', async () => {
-    const mockTokensByChain = {
-      '0x1': {
-        data: {},
-      },
-    };
-
-    mockGetTokenStandardAndDetailsByChain.mockRejectedValue(
-      new Error('Network error'),
+  it('should handle API errors and fall back to on-chain', async () => {
+    const tokenAddress = '0xFailingTokenAddress';
+    mockFetchAssetMetadata.mockRejectedValue(new Error('API error'));
+    mockGetTokenStandardAndDetailsByChain.mockResolvedValue(
+      createOnChainDetails('FALLBACK', '18', 'Fallback Token'),
     );
 
     const { result } = renderHook(() =>
       useTokenMetadata(
-        '0xFailingTokenAddress',
-        '0x1',
-        mockTokensByChain,
+        tokenAddress,
+        CHAIN_ID,
+        EMPTY_TOKENS_BY_CHAIN,
         mockNativeTokenMetadata,
       ),
     );
 
-    // Should stay in unknown state after error
+    await waitFor(() => {
+      expect(result.current).toEqual({
+        symbol: 'FALLBACK',
+        decimals: 18,
+        name: 'Fallback Token',
+      });
+    });
+
+    expect(mockFetchAssetMetadata).toHaveBeenCalled();
+    expect(log.debug).toHaveBeenCalledWith(
+      'Token API fetch failed, falling back to on-chain',
+      expect.objectContaining({ tokenAddress, chainId: CHAIN_ID }),
+    );
+    expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalled();
+  });
+
+  it('should handle both API and on-chain errors gracefully', async () => {
+    const tokenAddress = '0xFailingTokenAddress';
+    mockFetchAssetMetadata.mockRejectedValue(new Error('API error'));
+    mockGetTokenStandardAndDetailsByChain.mockRejectedValue(
+      new Error('On-chain error'),
+    );
+
+    const { result } = renderHook(() =>
+      useTokenMetadata(
+        tokenAddress,
+        CHAIN_ID,
+        EMPTY_TOKENS_BY_CHAIN,
+        mockNativeTokenMetadata,
+      ),
+    );
+
     await waitFor(() => {
       expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalled();
     });
 
-    expect(result.current).toEqual({
-      symbol: 'Unknown Token',
-      decimals: null,
-      name: 'Unknown Token',
-    });
-
-    expect(log.error).toHaveBeenCalledWith('Failed to fetch token metadata', {
-      tokenAddress: '0xFailingTokenAddress',
-      chainId: '0x1',
-      selectedAccountAddress: '0xUserAddress',
-      error: 'Network error',
-    });
-  });
-
-  it('should use default values for missing metadata fields', () => {
-    const mockTokensByChain = {
-      '0x1': {
-        data: {
-          '0xTokenAddress': {
-            // Missing symbol and name
-            decimals: 18,
-          },
-        },
-      },
-    };
-
-    const { result } = renderHook(() =>
-      useTokenMetadata(
-        '0xTokenAddress',
-        '0x1',
-        mockTokensByChain,
-        mockNativeTokenMetadata,
-      ),
+    expect(result.current).toEqual(UNKNOWN_TOKEN);
+    expect(log.debug).toHaveBeenCalledWith(
+      'Token API fetch failed, falling back to on-chain',
+      expect.objectContaining({ tokenAddress, chainId: CHAIN_ID }),
     );
-
-    expect(result.current).toEqual({
-      symbol: 'Unknown Token',
-      decimals: 18,
-      name: 'Unknown Token',
-    });
+    expect(log.error).toHaveBeenCalledWith(
+      'Failed to fetch token metadata from on-chain',
+      {
+        tokenAddress,
+        chainId: CHAIN_ID,
+        selectedAccountAddress: '0xUserAddress',
+        error: 'On-chain error',
+      },
+    );
   });
 
   it('should update when tokenAddress changes', async () => {
-    const mockTokensByChain = {
-      '0x1': {
-        data: {
-          '0xToken1': {
-            symbol: 'TKN1',
-            decimals: 18,
-            name: 'Token 1',
-          },
-        },
-      },
-    };
+    const tokensByChain = createTokensByChain(CHAIN_ID, {
+      '0xToken1': { symbol: 'TKN1', decimals: 18, name: 'Token 1' },
+    });
 
     const { result, rerender } = renderHook(
       ({ tokenAddress }) =>
         useTokenMetadata(
           tokenAddress,
-          '0x1',
-          mockTokensByChain,
+          CHAIN_ID,
+          tokensByChain,
           mockNativeTokenMetadata,
         ),
-      {
-        initialProps: { tokenAddress: '0xToken1' },
-      },
+      { initialProps: { tokenAddress: '0xToken1' } },
     );
 
     expect(result.current.symbol).toBe('TKN1');
 
-    // Fetch for new token not in state
-    mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
-      symbol: 'TKN2',
-      decimals: '6',
-      name: 'Token 2',
-      standard: 'ERC20',
-    } as TokenStandAndDetails);
+    mockFetchAssetMetadata.mockResolvedValue(undefined);
+    mockGetTokenStandardAndDetailsByChain.mockResolvedValue(
+      createOnChainDetails('TKN2', '6', 'Token 2'),
+    );
 
     rerender({ tokenAddress: '0xToken2' });
 
@@ -257,197 +328,88 @@ describe('useTokenMetadata', () => {
     });
   });
 
-  it('should handle null decimals from backend', async () => {
-    const mockTokensByChain = {
-      '0x1': {
-        data: {},
-      },
-    };
-
-    mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
-      symbol: 'WEIRD',
-      decimals: undefined,
-      name: 'Weird Token',
-      standard: 'ERC20',
-    } as TokenStandAndDetails);
-
-    const { result } = renderHook(() =>
-      useTokenMetadata(
-        '0xWeirdToken',
-        '0x1',
-        mockTokensByChain,
-        mockNativeTokenMetadata,
-      ),
-    );
-
-    await waitFor(() => {
-      expect(result.current).toEqual({
+  it('should handle edge cases for decimals (null, 0, undefined)', async () => {
+    const testCases = [
+      {
+        decimals: undefined,
+        expected: null,
         symbol: 'WEIRD',
-        decimals: null,
         name: 'Weird Token',
-      });
-    });
-  });
-
-  // Test #6: Missing Edge Case - decimals: 0
-  it('should handle tokens with 0 decimals correctly', async () => {
-    const mockTokensByChain = {
-      '0x1': {
-        data: {},
       },
-    };
+      { decimals: '0', expected: 0, symbol: 'NFT', name: 'NFT Token' },
+    ];
 
-    mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
-      symbol: 'NFT',
-      decimals: '0',
-      name: 'NFT Token',
-      standard: 'ERC20',
-    } as TokenStandAndDetails);
+    for (const { decimals, expected, symbol, name } of testCases) {
+      mockFetchAssetMetadata.mockResolvedValue(undefined);
+      mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
+        symbol,
+        decimals,
+        name,
+        standard: 'ERC20',
+      } as TokenStandAndDetails);
 
-    const { result } = renderHook(() =>
-      useTokenMetadata(
-        '0xNFTToken',
-        '0x1',
-        mockTokensByChain,
-        mockNativeTokenMetadata,
-      ),
-    );
-
-    await waitFor(() => {
-      expect(result.current).toEqual({
-        symbol: 'NFT',
-        decimals: 0,
-        name: 'NFT Token',
-      });
-    });
-  });
-
-  // Test #7: Missing Test - Empty String Address
-  it('should return native token metadata when tokenAddress is empty string', () => {
-    const { result } = renderHook(() =>
-      useTokenMetadata('', '0x1', {}, mockNativeTokenMetadata),
-    );
-
-    expect(result.current).toEqual(mockNativeTokenMetadata);
-  });
-
-  // Test #8: Missing Test - Chain ID Changes
-  it('should update when chainId changes', async () => {
-    // Start with token data on chain 0x1 only
-    let mockTokensByChain = {
-      '0x1': {
-        data: {
-          '0xusdc': {
-            symbol: 'USDC-ETH',
-            decimals: 6,
-            name: 'USD Coin on Ethereum',
-          },
-        },
-      },
-    };
-
-    const { result, rerender } = renderHook(
-      ({ chainId, tokensByChain }) =>
+      const { result } = renderHook(() =>
         useTokenMetadata(
-          '0xUSDC',
-          chainId,
-          tokensByChain,
+          `0x${symbol}Token`,
+          CHAIN_ID,
+          EMPTY_TOKENS_BY_CHAIN,
           mockNativeTokenMetadata,
         ),
-      {
-        initialProps: { chainId: '0x1', tokensByChain: mockTokensByChain },
+      );
+
+      await waitFor(() => {
+        expect(result.current).toEqual({
+          symbol,
+          decimals: expected,
+          name,
+        });
+      });
+    }
+  });
+
+  it('should update when chainId changes', async () => {
+    const tokenAddress = '0xUSDC';
+    let tokensByChain = createTokensByChain(CHAIN_ID, {
+      '0xusdc': {
+        symbol: 'USDC-ETH',
+        decimals: 6,
+        name: 'USD Coin on Ethereum',
       },
+    });
+
+    const { result, rerender } = renderHook(
+      ({ chainId, tokensByChain: tokens }) =>
+        useTokenMetadata(
+          tokenAddress,
+          chainId,
+          tokens,
+          mockNativeTokenMetadata,
+        ),
+      { initialProps: { chainId: CHAIN_ID, tokensByChain } },
     );
 
     expect(result.current.symbol).toBe('USDC-ETH');
-    expect(result.current.name).toBe('USD Coin on Ethereum');
 
-    // Now add chain 0x89 data and switch to it
-    mockTokensByChain = {
-      ...mockTokensByChain,
-      '0x89': {
-        data: {
-          '0xusdc': {
-            symbol: 'USDC-POLY',
-            decimals: 6,
-            name: 'USD Coin on Polygon',
-          },
+    tokensByChain = {
+      ...tokensByChain,
+      ...createTokensByChain('0x89', {
+        '0xusdc': {
+          symbol: 'USDC-POLY',
+          decimals: 6,
+          name: 'USD Coin on Polygon',
         },
-      },
-    } as typeof mockTokensByChain;
+      }),
+    };
 
-    rerender({ chainId: '0x89', tokensByChain: mockTokensByChain });
+    rerender({ chainId: '0x89', tokensByChain });
 
     await waitFor(() => {
       expect(result.current.symbol).toBe('USDC-POLY');
-      expect(result.current.name).toBe('USD Coin on Polygon');
     });
   });
 
-  // Test #9: Missing Test - Cleanup on Unmount
-  it('should not update state if unmounted during fetch', async () => {
-    const mockTokensByChain = {
-      '0x1': {
-        data: {},
-      },
-    };
-
-    const consoleWarnSpy = jest
-      .spyOn(console, 'warn')
-      .mockImplementation(jest.fn());
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(jest.fn());
-
-    mockGetTokenStandardAndDetailsByChain.mockImplementation(
-      () =>
-        new Promise((resolve) =>
-          setTimeout(
-            () =>
-              resolve({
-                symbol: 'SLOW',
-                decimals: '18',
-                name: 'Slow Token',
-                standard: 'ERC20',
-              }),
-            100,
-          ),
-        ),
-    );
-
-    const { unmount } = renderHook(() =>
-      useTokenMetadata(
-        '0xSlowToken',
-        '0x1',
-        mockTokensByChain,
-        mockNativeTokenMetadata,
-      ),
-    );
-
-    // Unmount before fetch completes
-    unmount();
-
-    // Wait for fetch to complete
-    await new Promise((resolve) => setTimeout(resolve, 150));
-
-    // Should not have any warnings about state updates
-    expect(consoleWarnSpy).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).not.toHaveBeenCalledWith(
-      expect.stringContaining('unmounted component'),
-    );
-
-    consoleWarnSpy.mockRestore();
-    consoleErrorSpy.mockRestore();
-  });
-
-  // Test #10: Missing Test - Null API Response
-  it('should handle null response from backend gracefully', async () => {
-    const mockTokensByChain = {
-      '0x1': {
-        data: {},
-      },
-    };
-
+  it('should handle null response from on-chain gracefully', async () => {
+    mockFetchAssetMetadata.mockResolvedValue(undefined);
     mockGetTokenStandardAndDetailsByChain.mockResolvedValue(
       null as unknown as TokenStandAndDetails,
     );
@@ -455,8 +417,8 @@ describe('useTokenMetadata', () => {
     const { result } = renderHook(() =>
       useTokenMetadata(
         '0xNonExistentToken',
-        '0x1',
-        mockTokensByChain,
+        CHAIN_ID,
+        EMPTY_TOKENS_BY_CHAIN,
         mockNativeTokenMetadata,
       ),
     );
@@ -465,10 +427,48 @@ describe('useTokenMetadata', () => {
       expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalled();
     });
 
-    expect(result.current).toEqual({
-      symbol: 'Unknown Token',
-      decimals: null,
-      name: 'Unknown Token',
-    });
+    expect(result.current).toEqual(UNKNOWN_TOKEN);
+  });
+
+  it('should not update state if unmounted during fetch', async () => {
+    const consoleWarnSpy = jest
+      .spyOn(console, 'warn')
+      .mockImplementation(jest.fn());
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(jest.fn());
+
+    mockFetchAssetMetadata.mockImplementation(
+      () => new Promise((resolve) => setTimeout(() => resolve(undefined), 50)),
+    );
+    mockGetTokenStandardAndDetailsByChain.mockImplementation(
+      () =>
+        new Promise((resolve) =>
+          setTimeout(
+            () => resolve(createOnChainDetails('SLOW', '18', 'Slow Token')),
+            100,
+          ),
+        ),
+    );
+
+    const { unmount } = renderHook(() =>
+      useTokenMetadata(
+        '0xSlowToken',
+        CHAIN_ID,
+        EMPTY_TOKENS_BY_CHAIN,
+        mockNativeTokenMetadata,
+      ),
+    );
+
+    unmount();
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    expect(consoleWarnSpy).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+      expect.stringContaining('unmounted component'),
+    );
+
+    consoleWarnSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
   });
 });
