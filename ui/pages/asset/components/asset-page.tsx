@@ -79,6 +79,7 @@ import {
   getMultichainIsTestnet,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,
+  getMultichainIsTron,
 } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
@@ -88,7 +89,6 @@ import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 import { TronDailyResources } from './tron-daily-resources';
-import { getMultichainIsTron } from '../../../selectors/multichain';
 
 // TODO BIP44 Refactor: This page needs a significant refactor after BIP44 is enabled to remove confusing branching logic
 // A page representing a native or token asset

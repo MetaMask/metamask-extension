@@ -160,6 +160,10 @@ const ResourceRow = ({
 /**
  * Component to display Tron daily resources (energy and bandwidth)
  * with circular progress indicators
+ *
+ * @param options0
+ * @param options0.account
+ * @param options0.chainId
  */
 export const TronDailyResources = ({
   account,
