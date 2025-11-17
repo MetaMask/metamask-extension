@@ -5367,10 +5367,10 @@ describe('MetaMaskController', () => {
       expect(endTraceCalls[0][0].name).toBe(TraceName.EvmDiscoverAccounts);
       expect(endTraceCalls[1][0].name).toBe(TraceName.DiscoverAccounts);
 
-      // Verify the result
       expect(result).toStrictEqual({
         Bitcoin: 0,
         Solana: 0,
+        Tron: 0,
       });
     });
 
@@ -5401,6 +5401,7 @@ describe('MetaMaskController', () => {
       expect(result).toStrictEqual({
         Bitcoin: 0,
         Solana: 0,
+        Tron: 0,
       });
     });
 
