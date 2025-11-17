@@ -66,6 +66,7 @@ import {
 } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { fetchBuyableChains } from '../../ducks/ramps';
+import { selectRewardsEnabled } from '../../ducks/rewards/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -195,6 +196,7 @@ const mapStateToProps = (state) => {
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     pendingShieldCohort: getPendingShieldCohort(state),
     isSignedIn: state.metamask.isSignedIn,
+    rewardsEnabled: selectRewardsEnabled(state),
   };
 };
 

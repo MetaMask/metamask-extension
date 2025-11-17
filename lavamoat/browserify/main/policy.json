@@ -668,6 +668,7 @@
     },
     "@material-ui/core": {
       "globals": {
+        "Image": true,
         "_formatMuiErrorMessage": true,
         "addEventListener": true,
         "clearInterval": true,
@@ -677,8 +678,13 @@
         "document": true,
         "getComputedStyle": true,
         "getSelection": true,
+        "innerHeight": true,
+        "innerWidth": true,
+        "matchMedia": true,
+        "navigator": true,
         "performance.now": true,
         "removeEventListener": true,
+        "requestAnimationFrame": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -688,6 +694,7 @@
         "@material-ui/core>@material-ui/system": true,
         "@material-ui/core>@material-ui/utils": true,
         "@material-ui/core>clsx": true,
+        "react-redux>hoist-non-react-statics": true,
         "@material-ui/core>popper.js": true,
         "prop-types": true,
         "react": true,
