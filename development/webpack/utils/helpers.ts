@@ -53,6 +53,13 @@ export const TREZOR_MODULE_RE = new RegExp(
 );
 
 /**
+ * Regular expression to match files in any `ui` directory
+ * Uses a platform-specific path separator: `/` on Unix-like systems and `\` on
+ * Windows.
+ */
+export const UI_RE = new RegExp(`^${slash}ui${slash}.*$`, 'u');
+
+/**
  * No Operation. A function that does nothing and returns nothing.
  *
  * @returns `undefined`

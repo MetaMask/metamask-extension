@@ -32,6 +32,7 @@ import {
   __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
+  UI_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -326,7 +327,7 @@ const config = {
       },
       {
         test: /\.(?:ts|mts|tsx|js|mjs|jsx)$/u,
-        include: join(context, '../ui'),
+        include: UI_RE,
         use: [
           {
             loader: reactCompilerLoader,
