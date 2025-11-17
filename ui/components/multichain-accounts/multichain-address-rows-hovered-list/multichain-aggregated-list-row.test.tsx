@@ -233,27 +233,25 @@ describe('MultichainAggregatedAddressListRow', () => {
       // Note: Only networks with valid images will be rendered
       const networkAvatars = screen.queryAllByAltText(ALT_TEXTS.NETWORK_LOGO);
 
-      if (networkAvatars.length > 0) {
-        expect(networkAvatars.length).toBeGreaterThanOrEqual(1);
-        expect(networkAvatars.length).toBeLessThanOrEqual(chainIds.length);
+      expect(networkAvatars.length).toBeGreaterThanOrEqual(1);
+      expect(networkAvatars.length).toBeLessThanOrEqual(chainIds.length);
 
-        // Verify at least one expected image is present
-        const avatarSources = networkAvatars.map((avatar) =>
-          avatar.getAttribute('src'),
-        );
-        const expectedSources = [
-          IMAGE_SOURCES.ETH_LOGO,
-          IMAGE_SOURCES.POL_TOKEN,
-          IMAGE_SOURCES.ARBITRUM,
-        ];
-        expect(
-          avatarSources.some(
-            (src) =>
-              src &&
-              expectedSources.includes(src as (typeof expectedSources)[number]),
-          ),
-        ).toBe(true);
-      }
+      // Verify at least one expected image is present
+      const avatarSources = networkAvatars.map((avatar) =>
+        avatar.getAttribute('src'),
+      );
+      const expectedSources = [
+        IMAGE_SOURCES.ETH_LOGO,
+        IMAGE_SOURCES.POL_TOKEN,
+        IMAGE_SOURCES.ARBITRUM,
+      ];
+      expect(
+        avatarSources.some(
+          (src) =>
+            src &&
+            expectedSources.includes(src as (typeof expectedSources)[number]),
+        ),
+      ).toBe(true);
     });
 
     it('truncates address correctly', () => {
