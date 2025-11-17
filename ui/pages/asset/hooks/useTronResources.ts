@@ -27,7 +27,6 @@ export const useTronResources = (
 ): {
   energy: TronResource;
   bandwidth: TronResource;
-  isLoading: boolean;
 } => {
   const accountGroupAssets = useSelector(getAssetsBySelectedAccountGroup);
   const multichainBalances = useSelector(getMultichainBalances);
@@ -42,7 +41,6 @@ export const useTronResources = (
           max: 1,
           percentage: 0,
         },
-        isLoading: false,
       };
     }
 
@@ -103,7 +101,6 @@ export const useTronResources = (
         TRON_RESOURCE.BANDWIDTH,
         resourceData.bandwidth,
       ),
-      isLoading: false,
     };
   }, [account, chainId, accountGroupAssets, multichainBalances]);
 };

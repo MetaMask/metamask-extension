@@ -105,8 +105,6 @@ describe('useTronResources', () => {
         max: 600,
         percentage: 50,
       });
-
-      expect(result.current.isLoading).toBe(false);
     });
 
     it('returns zero values with default max of 1 when no balances exist', () => {
@@ -143,8 +141,6 @@ describe('useTronResources', () => {
         max: 1,
         percentage: 0,
       });
-
-      expect(result.current.isLoading).toBe(false);
     });
 
     it('handles only current values without max values', () => {
@@ -306,8 +302,6 @@ describe('useTronResources', () => {
         max: 1,
         percentage: 0,
       });
-
-      expect(result.current.isLoading).toBe(false);
     });
 
     it('handles chainId with no assets', () => {
@@ -336,8 +330,6 @@ describe('useTronResources', () => {
         max: 1,
         percentage: 0,
       });
-
-      expect(result.current.isLoading).toBe(false);
     });
 
     it('calculates percentage correctly with full resources', () => {
@@ -404,8 +396,6 @@ describe('useTronResources', () => {
         max: 1,
         percentage: 0,
       });
-
-      expect(result.current.isLoading).toBe(false);
     });
   });
 
@@ -434,8 +424,6 @@ describe('useTronResources', () => {
         max: 1,
         percentage: 0,
       });
-
-      expect(result.current.isLoading).toBe(false);
     });
   });
 
@@ -474,8 +462,6 @@ describe('useTronResources', () => {
         max: 1,
         percentage: 0,
       });
-
-      expect(result.current.isLoading).toBe(false);
     });
   });
 

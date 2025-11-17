@@ -170,12 +170,7 @@ export const TronDailyResources = ({
   chainId,
 }: TronDailyResourcesProps) => {
   const t = useI18nContext();
-  const { energy, bandwidth, isLoading } = useTronResources(account, chainId);
-
-  // Don't render if still loading
-  if (isLoading) {
-    return null;
-  }
+  const { energy, bandwidth } = useTronResources(account, chainId);
 
   // Constants for resource calculations
   const ENERGY_PER_TRC20_TRANSFER_BASELINE = 65000;

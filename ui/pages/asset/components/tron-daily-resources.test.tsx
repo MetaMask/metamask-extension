@@ -39,33 +39,7 @@ describe('TronDailyResources', () => {
     jest.clearAllMocks();
   });
 
-  describe('when loading', () => {
-    it('returns null and does not render anything', () => {
-      mockUseTronResources.mockReturnValue({
-        energy: {
-          type: 'energy',
-          current: 0,
-          max: 1,
-          percentage: 0,
-        },
-        bandwidth: {
-          type: 'bandwidth',
-          current: 0,
-          max: 1,
-          percentage: 0,
-        },
-        isLoading: true,
-      });
-
-      const { container } = render(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
-      );
-
-      expect(container.firstChild).toBeNull();
-    });
-  });
-
-  describe('when not loading', () => {
+  describe('rendering', () => {
     it('renders the component with energy and bandwidth resources', () => {
       mockUseTronResources.mockReturnValue({
         energy: {
@@ -80,7 +54,6 @@ describe('TronDailyResources', () => {
           max: 5000,
           percentage: 20,
         },
-        isLoading: false,
       });
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
@@ -107,7 +80,6 @@ describe('TronDailyResources', () => {
           max: 5000,
           percentage: 20,
         },
-        isLoading: false,
       });
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
@@ -131,7 +103,6 @@ describe('TronDailyResources', () => {
           max: 5000,
           percentage: 20,
         },
-        isLoading: false,
       });
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
@@ -156,7 +127,6 @@ describe('TronDailyResources', () => {
           max: 5000,
           percentage: 20,
         },
-        isLoading: false,
       });
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
@@ -181,7 +151,6 @@ describe('TronDailyResources', () => {
           max: 5000,
           percentage: 20,
         },
-        isLoading: false,
       });
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
@@ -206,7 +175,6 @@ describe('TronDailyResources', () => {
           max: 5000,
           percentage: 5.6,
         },
-        isLoading: false,
       });
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
@@ -231,7 +199,6 @@ describe('TronDailyResources', () => {
           max: 5000,
           percentage: 22.4,
         },
-        isLoading: false,
       });
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
@@ -256,7 +223,6 @@ describe('TronDailyResources', () => {
           max: 5000,
           percentage: 2,
         },
-        isLoading: false,
       });
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
@@ -281,7 +247,6 @@ describe('TronDailyResources', () => {
           max: 5000,
           percentage: 0,
         },
-        isLoading: false,
       });
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
@@ -311,7 +276,6 @@ describe('TronDailyResources', () => {
           max: 100000,
           percentage: 50,
         },
-        isLoading: false,
       });
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
@@ -345,7 +309,6 @@ describe('TronDailyResources', () => {
           max: 5000,
           percentage: 150, // Over 100%
         },
-        isLoading: false,
       });
 
       const { container } = render(
@@ -372,7 +335,6 @@ describe('TronDailyResources', () => {
           max: 5000,
           percentage: 50,
         },
-        isLoading: false,
       });
 
       const { container } = render(
@@ -402,7 +364,6 @@ describe('TronDailyResources', () => {
           max: 5000,
           percentage: 20,
         },
-        isLoading: false,
       });
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
@@ -425,7 +386,6 @@ describe('TronDailyResources', () => {
           max: 1000,
           percentage: 50,
         },
-        isLoading: false,
       });
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
@@ -455,7 +415,6 @@ describe('TronDailyResources', () => {
           max: 1,
           percentage: 0,
         },
-        isLoading: false,
       });
 
       const { container } = render(
@@ -483,7 +442,6 @@ describe('TronDailyResources', () => {
           max: 1,
           percentage: 0,
         },
-        isLoading: false,
       });
 
       const { container } = render(
@@ -495,4 +453,3 @@ describe('TronDailyResources', () => {
     });
   });
 });
-
