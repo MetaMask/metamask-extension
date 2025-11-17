@@ -7917,6 +7917,26 @@
   "transferRequest": {
     "message": "Transfer request"
   },
+  "tronBandwidth": {
+    "message": "Bandwidth"
+  },
+  "tronBandwidthCoverageDescription": {
+    "message": "Sufficient to cover ~$1 TRX transfers",
+    "description": "$1 is the number of TRX transfers"
+  },
+  "tronDailyResources": {
+    "message": "Daily resource"
+  },
+  "tronDailyResourcesDescription": {
+    "message": "This is your daily allowance based on your staked TRX. You get 600 bandwidth for free daily."
+  },
+  "tronEnergy": {
+    "message": "Energy"
+  },
+  "tronEnergyCoverageDescription": {
+    "message": "Sufficient to cover ~$1 USDT",
+    "description": "$1 is the number of USDT transfers"
+  },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",
     "description": "$1 is a link to the wallet connection guide;"
