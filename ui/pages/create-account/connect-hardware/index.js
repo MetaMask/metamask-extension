@@ -11,11 +11,6 @@ import {
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import {
-  MetaMetricsEventAccountType,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import {
   HardwareDeviceNames,
@@ -283,12 +278,8 @@ class ConnectHardwareForm extends Component {
   };
 
   onUnlockAccounts = async (deviceName, path) => {
-    const {
-      navigate,
-      mostRecentOverviewPage,
-      unlockHardwareWalletAccounts,
-      hdEntropyIndex,
-    } = this.props;
+    const { navigate, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
+      this.props;
     const { selectedAccounts } = this.state;
 
     if (selectedAccounts.length === 0) {
@@ -307,31 +298,9 @@ class ConnectHardwareForm extends Component {
       description,
     )
       .then((_) => {
-        this.context.trackEvent({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.AccountAdded,
-          properties: {
-            account_type: MetaMetricsEventAccountType.Hardware,
-            // For now we keep using the device name to avoid any discrepancies with our current metrics.
-            // TODO: This will be addressed later, see: https://github.com/MetaMask/metamask-extension/issues/29777
-            account_hardware_type: deviceName,
-            is_suggested_name: true,
-          },
-        });
         navigate(mostRecentOverviewPage);
       })
       .catch((e) => {
-        this.context.trackEvent({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.AccountAddFailed,
-          properties: {
-            account_type: MetaMetricsEventAccountType.Hardware,
-            // See comment above about `account_hardware_type`.
-            account_hardware_type: deviceName,
-            error: e.message,
-            hd_entropy_index: hdEntropyIndex,
-          },
-        });
         this.setState({ error: e.message });
       });
   };
@@ -467,7 +436,6 @@ ConnectHardwareForm.propTypes = {
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
   ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
-  hdEntropyIndex: PropTypes.number,
 };
 
 const mapStateToProps = (state) => ({
