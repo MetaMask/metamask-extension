@@ -1066,7 +1066,7 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],
-    "pendingShieldCohort": "string",
+    "pendingShieldCohort": "null",
     "pendingShieldCohortTxType": "null",
     "permissionActivityLog": [
       {
