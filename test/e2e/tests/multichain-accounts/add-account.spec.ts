@@ -52,6 +52,7 @@ describe('Add account', function () {
         await homePage.checkPageIsLoaded();
         const activityList = new ActivityListPage(driver);
         await activityList.checkTxAmountInActivity('-2.8 ETH');
+        await activityList.waitPendingTxToNotBeVisible();
 
         // Lock wallet and recover via SRP in "forget password" option
         const headerNavbar = new HeaderNavbar(driver);
