@@ -49,6 +49,7 @@ import {
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
 } from '../../../shared/lib/trust-signals';
+import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -125,6 +126,7 @@ export type AppStateControllerState = {
   showShieldEntryModalOnce: boolean | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
+  defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
 
   /**
    * Whether the wallet reset is in progress.
@@ -635,6 +637,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
     includeInStateLogs: true,
+  },
+  defaultSubscriptionPaymentOptions: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
   },
 };
 
@@ -1567,5 +1575,14 @@ export class AppStateController extends BaseController<
 
   getIsWalletResetInProgress(): boolean {
     return this.state.isWalletResetInProgress;
+  }
+
+  setDefaultSubscriptionPaymentOptions(
+    defaultSubscriptionPaymentOptions: DefaultSubscriptionPaymentOptions,
+  ): void {
+    this.update((state) => {
+      state.defaultSubscriptionPaymentOptions =
+        defaultSubscriptionPaymentOptions;
+    });
   }
 }

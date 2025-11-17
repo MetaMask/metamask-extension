@@ -53,11 +53,12 @@ import {
   setCompletedOnboarding,
   ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   setCompletedOnboardingWithSidepanel,
+  setUseSidePanelAsDefault,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-import { getIsSidePanelFeatureEnabled } from '../../../../shared/modules/environment';
+import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 ///: END:ONLY_INCLUDE_IF
 import WalletReadyAnimation from './wallet-ready-animation';
 
@@ -73,6 +74,9 @@ export default function CreationSuccessful() {
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isTestEnvironment = Boolean(process.env.IN_TEST);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  const isSidePanelEnabled = useSidePanelEnabled();
+  ///: END:ONLY_INCLUDE_IF
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -163,7 +167,7 @@ export default function CreationSuccessful() {
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     // Side Panel - only if feature flag is enabled
-    if (getIsSidePanelFeatureEnabled()) {
+    if (isSidePanelEnabled) {
       try {
         if (browser?.sidePanel?.open) {
           const tabs = await browser.tabs.query({
@@ -172,6 +176,7 @@ export default function CreationSuccessful() {
           });
           if (tabs && tabs.length > 0) {
             await browser.sidePanel.open({ windowId: tabs[0].windowId });
+            await dispatch(setUseSidePanelAsDefault(true));
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
             return;
@@ -200,6 +205,9 @@ export default function CreationSuccessful() {
     trackEvent,
     firstTimeFlowType,
     isFromSettingsSecurity,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+    isSidePanelEnabled,
+    ///: END:ONLY_INCLUDE_IF
   ]);
 
   const renderDoneButton = () => {
@@ -217,7 +225,7 @@ export default function CreationSuccessful() {
           width={BlockSize.Full}
           onClick={onDone}
         >
-          {t('done')}
+          {isSidePanelEnabled ? t('openWallet') : t('done')}
         </Button>
       </Box>
     );

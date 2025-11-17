@@ -35,6 +35,12 @@ import {
   getShieldEntryModalTriggeringCohort,
   getModalTypeForShieldEntryModal,
 } from '../../../selectors';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import {
+  EntryModalSourceEnum,
+  ShieldCtaActionClickedEnum,
+  ShieldCtaSourceEnum,
+} from '../../../../shared/constants/subscriptions';
 import {
   AlignItems,
   Display,
@@ -54,18 +60,34 @@ const ShieldEntryModal = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { captureShieldEntryModalEvent, captureShieldCtaClickedEvent } =
+    useSubscriptionMetrics();
   const shouldSubmitEvent = useSelector(
     getShouldSubmitEventsForShieldEntryModal,
   );
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
   const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
-  const handleOnClose = () => {
+  const handleOnClose = (
+    ctaActionClicked: ShieldCtaActionClickedEnum = ShieldCtaActionClickedEnum.Dismiss,
+  ) => {
+    captureShieldEntryModalEvent({
+      source: EntryModalSourceEnum.Homepage,
+      type: modalType,
+      modalCtaActionClicked: ctaActionClicked,
+    });
+
+    if (ctaActionClicked === ShieldCtaActionClickedEnum.Dismiss) {
+      captureShieldCtaClickedEvent({
+        source: ShieldCtaSourceEnum.Homepage, // FIXME: get the correct source
+        ctaActionClicked: ShieldCtaActionClickedEnum.Dismiss,
+      });
+    }
+
     if (skipEventSubmission) {
       onClose?.();
       return;
-    }
-    if (shouldSubmitEvent) {
+    } else if (shouldSubmitEvent) {
       dispatch(
         submitSubscriptionUserEvents({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
@@ -73,12 +95,30 @@ const ShieldEntryModal = ({
         }),
       );
     }
+
     dispatch(setShowShieldEntryModalOnce(false));
   };
 
   const handleOnGetStarted = () => {
-    handleOnClose();
+    handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
+
+    captureShieldCtaClickedEvent({
+      source: ShieldCtaSourceEnum.Homepage, // FIXME: get the correct source
+      ctaActionClicked: ShieldCtaActionClickedEnum.Start14DayTrial,
+      redirectToPage: SHIELD_PLAN_ROUTE,
+    });
+
     navigate(SHIELD_PLAN_ROUTE);
+  };
+
+  const handleOnLearnMoreClick = () => {
+    captureShieldCtaClickedEvent({
+      source: ShieldCtaSourceEnum.Homepage, // FIXME: get the correct source
+      ctaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
+      redirectToUrl: TRANSACTION_SHIELD_LINK,
+    });
+
+    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
   };
 
   return (
@@ -158,7 +198,7 @@ const ShieldEntryModal = ({
           </Button>
           <Button asChild variant={ButtonVariant.Secondary} className="w-full">
             <a
-              href={TRANSACTION_SHIELD_LINK}
+              onClick={handleOnLearnMoreClick}
               target="_blank"
               rel="noopener noreferrer"
             >

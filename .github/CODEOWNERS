@@ -152,7 +152,6 @@ ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.test.ts 
 ui/components/app/detected-token                   @MetaMask/metamask-assets
 ui/components/app/import-token                        @MetaMask/metamask-assets
 ui/components/app/assets                              @MetaMask/metamask-assets
-ui/components/ui/deprecated-networks                  @MetaMask/metamask-assets
 ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 
 # Extension Platform

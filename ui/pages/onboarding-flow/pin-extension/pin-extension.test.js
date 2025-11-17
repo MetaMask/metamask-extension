@@ -39,10 +39,9 @@ jest.mock('react-router-dom-v5-compat', () => {
   };
 });
 
-// Mock the environment module to control sidepanel feature flag
-jest.mock('../../../../shared/modules/environment', () => ({
-  ...jest.requireActual('../../../../shared/modules/environment'),
-  getIsSidePanelFeatureEnabled: jest.fn(() => false),
+// Mock the useSidePanelEnabled hook to control sidepanel feature flag
+jest.mock('../../../hooks/useSidePanelEnabled', () => ({
+  useSidePanelEnabled: jest.fn(() => false),
 }));
 
 describe('Creation Successful Onboarding View', () => {

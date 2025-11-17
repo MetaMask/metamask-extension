@@ -7,8 +7,7 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
 } from '@metamask/subscription-controller';
-import { Hex } from '@metamask/utils';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { Checkbox, TextVariant } from '@metamask/design-system-react';
 import {
@@ -65,24 +64,18 @@ import {
   useSubscriptionProductPlans,
 } from '../../hooks/subscription/useSubscriptionPricing';
 import {
-  setLastUsedSubscriptionPaymentDetails,
-  startSubscriptionWithCard,
-} from '../../store/actions';
-import {
-  useSubscriptionCryptoApprovalTransaction,
+  useHandleSubscription,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
-import { useAsyncCallback } from '../../hooks/useAsync';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { selectNetworkConfigurationByChainId } from '../../selectors';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constants/subscriptions';
 import {
   isDevOrTestEnvironment,
   isDevOrUatBuild,
-} from '../../../shared/modules/shield/config';
+  getIsTrialedSubscription,
+} from '../../../shared/modules/shield';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -90,7 +83,6 @@ import { getProductPrice } from './utils';
 const ShieldPlan = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const dispatch = useDispatch();
 
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
@@ -102,10 +94,6 @@ const ShieldPlan = () => {
   );
   const showTestClocksCheckbox = isDevOrUatBuild() || isDevOrTestEnvironment();
 
-  const evmInternalAccount = useSelector((state) =>
-    // Account address will be the same for all EVM accounts
-    getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
-  );
   const {
     subscriptions,
     trialedProducts,
@@ -117,7 +105,10 @@ const ShieldPlan = () => {
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
-  const isTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
+  const isTrialed = getIsTrialedSubscription(
+    trialedProducts,
+    PRODUCT_TYPES.SHIELD,
+  );
 
   useEffect(() => {
     if (shieldSubscription) {
@@ -155,27 +146,36 @@ const ShieldPlan = () => {
       productType: PRODUCT_TYPES.SHIELD,
     });
   const hasAvailableToken = availableTokenBalances.length > 0;
-
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentType>(() => {
+      // always default to card if no token is available
+      if (!hasAvailableToken) {
+        return PAYMENT_TYPES.byCard;
+      }
       if (lastUsedPaymentDetails?.type) {
         return lastUsedPaymentDetails.type;
       }
-      return hasAvailableToken ? PAYMENT_TYPES.byCrypto : PAYMENT_TYPES.byCard;
+      return PAYMENT_TYPES.byCrypto;
     });
+  // default options for the new subscription request
+  const defaultOptions = useMemo(() => {
+    const paymentType =
+      availableTokenBalances.length > 0
+        ? PAYMENT_TYPES.byCrypto
+        : PAYMENT_TYPES.byCard;
+    const paymentCurrency = availableTokenBalances[0]?.symbol || 'USD';
+    return {
+      defaultPaymentType: paymentType,
+      defaultPaymentCurrency: paymentCurrency,
+      defaultBillingInterval: RECURRING_INTERVALS.year,
+    };
+  }, [availableTokenBalances]);
 
   const [selectedToken, setSelectedToken] = useState<
     TokenWithApprovalAmount | undefined
   >(() => {
     return availableTokenBalances[0];
   });
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, selectedToken?.chainId as Hex),
-  );
-  const networkClientId =
-    networkConfiguration?.rpcEndpoints[
-      networkConfiguration.defaultRpcEndpointIndex ?? 0
-    ]?.networkClientId;
 
   // set selected token to the first available token if no token is selected
   useEffect(() => {
@@ -220,50 +220,12 @@ const ShieldPlan = () => {
 
   // set default selected payment method to crypto if selected token available
   useEffect(() => {
-    if (selectedToken) {
+    const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
+    // if the last used payment method is not crypto, don't set default method
+    if (selectedToken && lastUsedPaymentMethod !== PAYMENT_TYPES.byCard) {
       setSelectedPaymentMethod(PAYMENT_TYPES.byCrypto);
     }
-  }, [selectedToken, setSelectedPaymentMethod]);
-
-  const { execute: executeSubscriptionCryptoApprovalTransaction } =
-    useSubscriptionCryptoApprovalTransaction(selectedToken);
-
-  const [handleSubscription, subscriptionResult] =
-    useAsyncCallback(async () => {
-      // save the last used subscription payment method and plan to Redux store
-      await dispatch(
-        setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
-          type: selectedPaymentMethod,
-          paymentTokenAddress: selectedToken?.address as Hex,
-          paymentTokenSymbol: selectedToken?.symbol,
-          plan: selectedPlan,
-          useTestClock: enableStripeTestClock,
-        }),
-      );
-      if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
-        await dispatch(
-          startSubscriptionWithCard({
-            products: [PRODUCT_TYPES.SHIELD],
-            isTrialRequested: !isTrialed,
-            recurringInterval: selectedPlan,
-            useTestClock: enableStripeTestClock,
-          }),
-        );
-      } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
-        await executeSubscriptionCryptoApprovalTransaction();
-      }
-    }, [
-      dispatch,
-      evmInternalAccount?.address,
-      isTrialed,
-      navigate,
-      networkClientId,
-      selectedPaymentMethod,
-      selectedPlan,
-      selectedToken,
-      subscriptionPricing,
-      enableStripeTestClock,
-    ]);
+  }, [selectedToken, setSelectedPaymentMethod, lastUsedPaymentDetails]);
 
   const tokensSupported = useMemo(() => {
     const chainsAndTokensSupported = cryptoPaymentMethod?.chains ?? [];
@@ -276,6 +238,15 @@ const ShieldPlan = () => {
       ),
     ];
   }, [cryptoPaymentMethod?.chains]);
+
+  const { handleSubscription, subscriptionResult } = useHandleSubscription({
+    selectedPaymentMethod,
+    selectedToken,
+    selectedPlan,
+    defaultOptions,
+    isTrialed,
+    useTestClock: enableStripeTestClock,
+  });
 
   const loading =
     subscriptionsLoading ||

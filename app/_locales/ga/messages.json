@@ -675,9 +675,6 @@
   "attributions": {
     "message": "Admhálacha"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Níl URL RPC Infura ag tacú le Aurora a thuilleadh."
-  },
   "authorizedPermissions": {
     "message": "Tá na ceadanna seo a leanas údaraithe agat"
   },
@@ -1931,9 +1928,6 @@
   "depositCrypto": {
     "message": "Taisce cripte ó chuntas eile le seoladh sparán nó cód QR."
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Mar gheall ar nuashonruithe ar chóras Ethereum, cuirfear deireadh de réir a chéile le líonra tástála Goerli go luath."
-  },
   "deprecatedNetwork": {
     "message": "Tá an líonra seo imithe i léig"
   },
@@ -2456,9 +2450,6 @@
   },
   "existingChainId": {
     "message": "Tá an fhaisnéis atá curtha isteach agat bainteach le haitheantas slabhra atá ann cheana féin."
-  },
-  "expandView": {
-    "message": "Leathnaigh an radharc"
   },
   "experimental": {
     "message": "Turgnamhach"
@@ -3701,13 +3692,6 @@
   "network": {
     "message": "Líonra"
   },
-  "networkAddress": {
-    "message": "1 seoladh líonra"
-  },
-  "networkAddresses": {
-    "message": "Seoltaí líonra $1",
-    "description": "$1 is the number of accounts"
-  },
   "networkChanged": {
     "message": "Athraíodh an líonra"
   },
@@ -4869,18 +4853,6 @@
   },
   "pushNotificationPositionLiquidatedTitle": {
     "message": "Post leachtaithe"
-  },
-  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
-    "message": "Fáilte go Sciath Idirbhirt MetaMask! Féach ar na buntáistí"
-  },
-  "pushNotificationShieldSubscriptionCreatedTitle": {
-    "message": "Sciath Idirbhirt MetaMask gníomhachaithe"
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "Tá an bhallraíocht neamhghníomhach mar gheall ar fhadhb íocaíochta. Nuashonraigh d'íocaíocht chun clúdach a atosú"
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedTitle": {
-    "message": "Sciath Idirbhirt MetaMask curtha ar sos"
   },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Dhún do $1 fada ag do stad-chaillteanas.",
@@ -7091,10 +7063,6 @@
   },
   "switchNetwork": {
     "message": "Athraigh líonra"
-  },
-  "switchToNetwork": {
-    "message": "Lasc go $1",
-    "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
     "message": "Lasc chuig an gcuntas seo"

@@ -49,7 +49,7 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-import { getIsSidePanelFeatureEnabled } from '../../../../shared/modules/environment';
+import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 ///: END:ONLY_INCLUDE_IF
 
 export default function OnboardingPinExtension() {
@@ -60,6 +60,9 @@ export default function OnboardingPinExtension() {
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const currentKeyring = useSelector(getCurrentKeyring);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  const isSidePanelEnabled = useSidePanelEnabled();
+  ///: END:ONLY_INCLUDE_IF
 
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
@@ -82,7 +85,7 @@ export default function OnboardingPinExtension() {
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     // Side Panel - only if feature flag is enabled and not in test mode
-    if (getIsSidePanelFeatureEnabled()) {
+    if (isSidePanelEnabled) {
       try {
         if (browser?.sidePanel?.open) {
           const tabs = await browser.tabs.query({
