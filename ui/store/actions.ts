@@ -892,18 +892,7 @@ export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (
-    dispatch: MetaMaskReduxDispatch,
-    getState: () => MetaMaskReduxState,
-  ) => {
-    const state = getState();
-    const isSocialLoginFlow = getIsSocialLoginFlow(state);
-
-    if (!isSocialLoginFlow) {
-      // if not social login flow, return true
-      return true;
-    }
-
+  return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       dispatch(showLoadingIndication());
       const isAuthenticated = await submitRequestToBackground<boolean>(

@@ -23,6 +23,7 @@ import {
   getCurrentKeyring,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
+  getIsSocialLoginFlow,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -81,6 +82,7 @@ export default function OnboardingWelcome() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
   const isTestEnvironment = Boolean(process.env.IN_TEST);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const { animationCompleted } = useRiveWasmContext();
   const shouldSkipAnimation = Boolean(
@@ -132,7 +134,7 @@ export default function OnboardingWelcome() {
       } else {
         navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
       }
-    } else {
+    } else if (isSocialLoginFlow) {
       validateSocialLoginAuthenticatedState();
     }
   }, [
@@ -144,6 +146,7 @@ export default function OnboardingWelcome() {
     isFireFox,
     isWalletResetInProgress,
     validateSocialLoginAuthenticatedState,
+    isSocialLoginFlow,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);
