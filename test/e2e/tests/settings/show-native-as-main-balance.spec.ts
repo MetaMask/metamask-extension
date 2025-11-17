@@ -10,10 +10,7 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 
-// It is not possible to show the balance in fiat money on BIP44
-// these test are also duplicate of existing tests
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Settings: Show native token as main balance', function () {
+describe('Settings: Show native token as main balance', function () {
   it('Should show balance in crypto when toggle is off', async function () {
     await withFixtures(
       {
