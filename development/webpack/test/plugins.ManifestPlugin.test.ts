@@ -224,6 +224,8 @@ describe('ManifestPlugin', () => {
     const keep = ['scripts/contentscript.js', 'scripts/inpage.js'];
     const argsMatrix = {
       test: [true, false],
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      manifest_version: [2, 3] as const,
     };
     const manifestMatrix = {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -243,9 +245,24 @@ describe('ManifestPlugin', () => {
 
       function runTest(baseManifest: Combination<typeof manifestMatrix>) {
         const manifest = baseManifest as unknown as chrome.runtime.Manifest;
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        const hasTabsPermission = (manifest.permissions || []).includes('tabs');
         const transform = transformManifest(args, false);
 
-        if (args.test) {
+        if (args.test && args.manifest_version === 2 && hasTabsPermission) {
+          it("throws in test mode when manifest already contains 'tabs' permission", () => {
+            assert(transform, 'transform should be truthy');
+            const p = () => {
+              transform(manifest, 'chrome');
+            };
+            assert.throws(
+              p,
+              /manifest contains 'tabs' already; this transform should be removed./u,
+              'should throw when manifest contains tabs already',
+            );
+          });
+        } else if (args.test && args.manifest_version === 2) {
           it(`works for args.test of ${args.test}. Manifest: ${JSON.stringify(manifest)}`, () => {
             assert(transform, 'transform should be truthy');
             const transformed = transform(manifest, 'chrome');
@@ -253,7 +270,10 @@ describe('ManifestPlugin', () => {
             if (args.test) {
               assert.deepStrictEqual(
                 transformed.permissions,
-                manifest.permissions,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                [...(manifest.permissions || []), 'tabs'],
+                "manifest should have 'tabs' permission",
               );
             }
           });

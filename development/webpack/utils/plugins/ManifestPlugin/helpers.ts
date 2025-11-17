@@ -1,14 +1,14 @@
 import merge from 'lodash/merge';
 import { MANIFEST_DEV_KEY } from '../../../../build/constants';
+import type { Args } from '../../cli';
 /**
  * Returns a function that will transform a manifest JSON object based on the
  * given build args.
  *
  * Applies the following transformations:
- * - If `test` is `true`, adds the "tabs" permission to the manifest
+ * - If `test` is `true`, adds the "tabs" permission to the manifest in MV2
  *
  * @param args
- * @param args.test
  * @param isDevelopment
  * @param manifestOverridesPath
  * @returns a function that will transform the manifest JSON object
@@ -16,7 +16,7 @@ import { MANIFEST_DEV_KEY } from '../../../../build/constants';
  * `test` is `true`
  */
 export function transformManifest(
-  args: { test: boolean },
+  args: Partial<Args>,
   isDevelopment: boolean,
   manifestOverridesPath?: string | undefined,
 ) {
@@ -65,6 +65,24 @@ export function transformManifest(
   if (isDevelopment) {
     // Add manifest flags only for development builds
     transforms.push(addManifestFlags);
+  }
+
+  function addTabsPermission(browserManifest: chrome.runtime.Manifest) {
+    if (browserManifest.permissions) {
+      if (browserManifest.permissions.includes('tabs')) {
+        throw new Error(
+          "manifest contains 'tabs' already; this transform should be removed.",
+        );
+      }
+      browserManifest.permissions.push('tabs');
+    } else {
+      browserManifest.permissions = ['tabs'];
+    }
+  }
+
+  if (args.test && args.manifest_version === 2) {
+    // test builds need "tabs" permission for switchToWindowWithTitle in MV2
+    transforms.push(addTabsPermission);
   }
 
   function addManifestKey(browserManifest: chrome.runtime.Manifest) {
