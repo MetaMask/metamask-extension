@@ -10,8 +10,12 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
+import { mockEtherumSpotPrices } from '../tokens/utils/mocks';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 async function mockSnapSimpleKeyringAndSiteWithSpotPrices(
@@ -46,12 +50,21 @@ describe('Snap Account Transfers', function (this: Suite) {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSiteWithSpotPrices,
+        fixtures: new FixtureBuilder()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withShowFiatTestnetEnabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockSnapSimpleKeyringAndSite(mockServer);
+          return [await mockSnapSimpleKeyringAndSiteWithSpotPrices(mockServer)];
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
+        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', 'USD');
         await homePage.checkPageIsLoaded();
 
         await installSnapSimpleKeyring(driver);
@@ -76,17 +89,16 @@ describe('Snap Account Transfers', function (this: Suite) {
           amount: '1',
         });
         const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkTxAmountInActivity('-1 ETH');
+        await activityList.waitPendingTxToNotBeVisible();
 
         await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
-        // check the balance of the 2 accounts are updated
-        // BUGBUG 37363
-        // await accountList.checkMultichainAccountBalanceDisplayed('$44,200');
-        // /await accountList.checkMultichainAccountBalanceDisplayed('$40,799');
+        await accountList.checkMultichainAccountBalanceDisplayed('$44,200');
+        await accountList.checkMultichainAccountBalanceDisplayed('$40,799');
       },
     );
   });
@@ -94,16 +106,24 @@ describe('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (async flow approve)', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSiteWithSpotPrices,
+        fixtures: new FixtureBuilder()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withShowFiatTestnetEnabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockSnapSimpleKeyringAndSiteWithSpotPrices(mockServer);
+          return [await mockEtherumSpotPrices(mockServer)];
+        },
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
+        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', 'USD');
         await homePage.checkPageIsLoaded();
 
         await installSnapSimpleKeyring(driver, false);
@@ -128,18 +148,18 @@ describe('Snap Account Transfers', function (this: Suite) {
           amount: '1',
           isSyncFlow: false,
         });
+        await driver.delay(1000);
         const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkTxAmountInActivity('-1 ETH');
+        await activityList.waitPendingTxToNotBeVisible();
 
         await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
-        // check the balance of the 2 accounts are updated
-        // BUGBUG 37363
-        // await accountList.checkMultichainAccountBalanceDisplayed('$44,200');
-        // await accountList.checkMultichainAccountBalanceDisplayed('$40,799');
+        await accountList.checkMultichainAccountBalanceDisplayed('$44,200');
+        await accountList.checkMultichainAccountBalanceDisplayed('$40,799');
       },
     );
   });
