@@ -18,8 +18,6 @@ import {
   getBridgeAssetsWithBalance,
   getFromChains,
 } from '../../ducks/bridge/selectors';
-import { useBalances } from '../../pages/bridge/hooks/useBalances';
-import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 
 /**
@@ -57,13 +55,6 @@ export const useTokenList = ({
     (state: BridgeAppState) =>
       getBridgeAssetsWithBalance(state, accountGroup.id),
   );
-
-  useEffect(() => {
-    console.error('====assetsWithBalance', assetsWithBalance);
-    console.error('====balanceByAssetId', balanceByAssetId);
-  }, [assetsWithBalance, balanceByAssetId]);
-  // console.log('====bridgeAssetsWithBalance', bridgeAssetsWithBalance);
-  // console.log('====bridgeBalanceByAssetId', bridgeBalanceByAssetId);
 
   // TODO useEffect for both, set isTokenListLoading?
   // TODO debounce?
@@ -121,7 +112,8 @@ export const useTokenList = ({
       if (searchQuery && searchQuery.length > 0) {
         return [];
       }
-      console.error('====fetching popular list', assetsToInclude);
+      abortControllerRef.current?.abort('fetching popular list');
+      setSearchResultsWithBalance([]);
       abortControllerRef.current = new AbortController();
       const response = await fetchPopularTokens({
         chainIds: chainId
@@ -151,18 +143,15 @@ export const useTokenList = ({
         };
       }) ?? []
     );
-  }, [isTokenListLoading]);
-
-  useEffect(() => {
-    setSearchResultsWithBalance([]);
-    abortControllerRef.current?.abort(
-      '=====search query changed to ' + searchQuery,
-    );
-  }, [assetsToInclude]);
+  }, [isTokenListLoading, assetsToInclude]);
 
   useEffect(() => {
     if (searchQuery && searchQuery.length > 0) {
       setIsSearchResultsLoading(true);
+      abortControllerRef.current?.abort(
+        'search query changed to ' + searchQuery,
+      );
+      setSearchResultsWithBalance([]);
       abortControllerRef.current = new AbortController();
       setSearchResultsWithBalance(assetsToInclude.map(toBridgeToken));
 
