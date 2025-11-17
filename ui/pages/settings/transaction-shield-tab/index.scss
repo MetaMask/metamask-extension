@@ -14,31 +14,18 @@
     }
   }
 
-  &__details {
-    &--loading {
-      background-color: var(--color-border-muted);
-    }
-
-    &--inactive {
-      background-color: var(--color-background-subsection);
-    }
-
-    &--active {
-      background-color: var(--color-accent03-dark);
-    }
-  }
-
   &__membership {
     background-size: 85px;
     height: 85px;
-    margin-bottom: 0;
+    background-image: url('/images/shield-membership-shadow.png');
+    background-repeat: no-repeat;
+    background-position: right -10px center;
 
     .transaction-shield-page__membership-text {
       color: var(--color-accent03-light);
     }
 
     &--active {
-      background: url('/images/shield-membership-active.png') no-repeat right -10px center;
       background-color: var(--color-accent03-dark);
     }
 
@@ -47,8 +34,11 @@
     }
 
     &--inactive {
-      background: url('/images/shield-membership-inactive.png') no-repeat right -10px center;
       background-color: var(--color-background-subsection);
+
+      &-light {
+        background-color: var(--shield-membership-inactive-light);
+      }
 
       .transaction-shield-page__membership-text {
         color: var(--color-text-default);
@@ -65,6 +55,18 @@
 
     @include design-system.screen-sm-max {
       margin-inline: -16px;
+    }
+  }
+
+  &-shield-illustration {
+    &__container {
+      height: 85px;
+      width: 85px;
+    }
+
+    &__canvas {
+      height: 100%;
+      width: 100%;
     }
   }
 

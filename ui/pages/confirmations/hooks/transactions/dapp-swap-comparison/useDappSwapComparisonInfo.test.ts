@@ -330,7 +330,7 @@ describe('useDappSwapComparisonInfo', () => {
     expect(gasDifference).toBe(0.005686377458187605);
     expect(tokenAmountDifference).toBe(0.006807665436);
     expect(destinationTokenSymbol).toBe('USDC');
-    expect(sourceTokenAmount).toBe('0xde0b6b3a7640000');
+    expect(sourceTokenAmount).toBe('0x0de0b6b3a7640000');
     expect(tokenDetails).toEqual({
       '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': {
         symbol: 'USDC',

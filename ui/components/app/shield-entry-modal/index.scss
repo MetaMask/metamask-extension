@@ -4,6 +4,11 @@
   .shield-entry-modal__title {
     line-height: 1em;
     font-size: 2.25rem;
+
+    @include design-system.screen-sm-max {
+      font-size: 2rem;
+      margin-top: 16px;
+    }
   }
 
   .shield-entry-modal__content {
@@ -29,6 +34,27 @@
       .shield-entry-modal__footer {
         margin-top: auto;
       }
+    }
+  }
+
+  &-shield-illustration {
+    &__container {
+      height: 200px;
+      width: 247px;
+    }
+
+    &__canvas {
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  &-sheild-image {
+    width: 346px;
+    height: 252px;
+
+    @include design-system.screen-sm-max {
+      width: 322px;
     }
   }
 }

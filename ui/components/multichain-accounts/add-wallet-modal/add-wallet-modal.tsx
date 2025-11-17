@@ -32,7 +32,10 @@ import {
   IMPORT_SRP_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -137,9 +140,24 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       trackEvent(option.metricsEvent);
     }
 
+    if (option.id === 'import-wallet') {
+      // Track the event for the selected option.
+      trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
+        properties: {
+          status: 'started',
+          location: 'Add Wallet Modal',
+        },
+      });
+    }
+
     // Hardware wallet connections require expanded view
     if (option.id === 'hardware-wallet') {
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+      if (
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+      ) {
         global.platform.openExtensionInBrowser?.(option.route);
       } else {
         history.push(option.route);
