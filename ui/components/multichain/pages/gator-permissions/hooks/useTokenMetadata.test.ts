@@ -471,4 +471,66 @@ describe('useTokenMetadata', () => {
     consoleWarnSpy.mockRestore();
     consoleErrorSpy.mockRestore();
   });
+
+  it('should prevent infinite loops when nativeTokenMetadata is a new object reference each render', () => {
+    // This test verifies the memoization fix prevents infinite re-renders
+    // when nativeTokenMetadata is a new object reference on each render
+    let renderCount = 0;
+    const { result, rerender } = renderHook(
+      ({ nativeTokenMetadata }) => {
+        renderCount += 1;
+        return useTokenMetadata(undefined, CHAIN_ID, {}, nativeTokenMetadata);
+      },
+      {
+        initialProps: {
+          nativeTokenMetadata: {
+            symbol: 'ETH',
+            decimals: 18,
+            name: 'Ethereum',
+          },
+        },
+      },
+    );
+
+    const initialRenderCount = renderCount;
+    expect(result.current).toEqual({
+      symbol: 'ETH',
+      decimals: 18,
+      name: 'Ethereum',
+    });
+
+    // Rerender with a new object reference but same values
+    // This should not cause infinite re-renders
+    rerender({
+      nativeTokenMetadata: {
+        symbol: 'ETH',
+        decimals: 18,
+        name: 'Ethereum',
+      },
+    });
+
+    // Should have rendered at most a few times (initial + rerender)
+    // If memoization wasn't working, this would be much higher
+    expect(renderCount).toBeLessThanOrEqual(initialRenderCount + 2);
+    expect(result.current).toEqual({
+      symbol: 'ETH',
+      decimals: 18,
+      name: 'Ethereum',
+    });
+
+    // Rerender with different values - should update
+    rerender({
+      nativeTokenMetadata: {
+        symbol: 'MATIC',
+        decimals: 18,
+        name: 'Polygon',
+      },
+    });
+
+    expect(result.current).toEqual({
+      symbol: 'MATIC',
+      decimals: 18,
+      name: 'Polygon',
+    });
+  });
 });

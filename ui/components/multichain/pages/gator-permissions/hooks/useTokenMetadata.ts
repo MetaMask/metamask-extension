@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import type { Hex } from '@metamask/utils';
@@ -138,9 +138,24 @@ export const useTokenMetadata = (
 ): TokenMetadata => {
   const selectedAccount = useSelector(getSelectedAccount);
 
+  // Memoize nativeTokenMetadata to prevent infinite loops when it's a new object reference
+  // Create a new object only when the actual values change
+  const stableNativeTokenMetadata = useMemo(
+    () => ({
+      symbol: nativeTokenMetadata.symbol,
+      decimals: nativeTokenMetadata.decimals,
+      name: nativeTokenMetadata.name,
+    }),
+    [
+      nativeTokenMetadata.symbol,
+      nativeTokenMetadata.decimals,
+      nativeTokenMetadata.name,
+    ],
+  );
+
   const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata>(() => {
     if (!tokenAddress) {
-      return nativeTokenMetadata;
+      return stableNativeTokenMetadata;
     }
 
     const cached = getCachedTokenMetadata(tokenAddress, chainId, tokensByChain);
@@ -152,7 +167,7 @@ export const useTokenMetadata = (
 
     if (!tokenAddress) {
       if (isMounted) {
-        setTokenMetadata(nativeTokenMetadata);
+        updateMetadataIfChanged(setTokenMetadata, stableNativeTokenMetadata);
       }
       return () => {
         isMounted = false;
@@ -172,7 +187,6 @@ export const useTokenMetadata = (
 
     // Step 2 & 3: Fetch from API, then fall back to on-chain
     const fetchTokenMetadata = async () => {
-
       let newMetadata: TokenMetadata | null = null;
 
       // Step 2: Try API first
@@ -182,7 +196,6 @@ export const useTokenMetadata = (
           chainId as Hex,
           undefined,
         );
-
         if (apiMetadata && isMounted) {
           // API doesn't return name, use symbol as fallback
           newMetadata = createTokenMetadata(
@@ -241,7 +254,7 @@ export const useTokenMetadata = (
     tokenAddress,
     chainId,
     tokensByChain,
-    nativeTokenMetadata,
+    stableNativeTokenMetadata,
     selectedAccount,
   ]);
 
