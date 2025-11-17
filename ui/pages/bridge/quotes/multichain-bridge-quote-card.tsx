@@ -27,7 +27,11 @@ import {
   getIsStxEnabled,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
+import {
+  formatCurrencyAmount,
+  formatNetworkFee,
+  formatTokenAmount,
+} from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   IconColor,
@@ -264,15 +268,13 @@ export const MultichainBridgeQuoteCard = ({
                   style={{ textDecoration: 'line-through' }}
                 >
                   {activeQuote.includedTxFees?.valueInCurrency
-                    ? formatCurrencyAmount(
+                    ? formatNetworkFee(
                         activeQuote.includedTxFees.valueInCurrency,
                         currency,
-                        2,
                       )
-                    : formatCurrencyAmount(
+                    : formatNetworkFee(
                         activeQuote.totalNetworkFee?.valueInCurrency,
                         currency,
-                        2,
                       )}
                 </Text>
                 <Text
@@ -289,10 +291,9 @@ export const MultichainBridgeQuoteCard = ({
                 color={TextColor.textAlternative}
                 data-testid="network-fees"
               >
-                {formatCurrencyAmount(
+                {formatNetworkFee(
                   activeQuote.totalNetworkFee?.valueInCurrency,
                   currency,
-                  2,
                 )}
               </Text>
             )}
@@ -486,6 +487,7 @@ export const MultichainBridgeQuoteCard = ({
                     withPointsSuffix={false}
                     boxClassName="gap-1 bg-background-transparent"
                     textClassName="text-alternative"
+                    useAlternativeIconColor={!estimatedPoints}
                   />
                 )}
             </Row>

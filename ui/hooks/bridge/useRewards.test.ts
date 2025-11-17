@@ -1,5 +1,5 @@
-import { act } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
+import { act } from '@testing-library/react-hooks';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import { selectBridgeQuotes } from '@metamask/bridge-controller';
@@ -17,11 +17,7 @@ import {
   getToToken,
   getQuoteRequest,
 } from '../../ducks/bridge/selectors';
-import {
-  getInternalAccountBySelectedAccountGroupAndCaip,
-  getSelectedAccountGroup,
-  getInternalAccountsFromGroupById,
-} from '../../selectors/multichain-accounts/account-tree';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { useRewards, getUsdPricePerToken } from './useRewards';
 
 // Mock dependencies
@@ -50,10 +46,8 @@ jest.mock('../../ducks/bridge/selectors', () => ({
 
 jest.mock('../../selectors/multichain-accounts/account-tree', () => ({
   getInternalAccountBySelectedAccountGroupAndCaip: jest.fn(),
-  getSelectedAccountGroup: jest.fn((_state: unknown) => 'account-group-1'),
-  getInternalAccountsFromGroupById: jest.fn(
-    (_state: unknown, _groupId: string) => [],
-  ),
+  getSelectedAccountGroup: jest.fn(() => 'account-group-1'),
+  getInternalAccountsFromGroupById: jest.fn(() => []),
 }));
 
 jest.mock('loglevel', () => ({
@@ -93,14 +87,6 @@ const mockGetQuoteRequest = getQuoteRequest as jest.MockedFunction<
 const mockGetInternalAccountBySelectedAccountGroupAndCaip =
   getInternalAccountBySelectedAccountGroupAndCaip as jest.MockedFunction<
     typeof getInternalAccountBySelectedAccountGroupAndCaip
-  >;
-const mockGetSelectedAccountGroup =
-  getSelectedAccountGroup as jest.MockedFunction<
-    typeof getSelectedAccountGroup
-  >;
-const mockGetInternalAccountsFromGroupById =
-  getInternalAccountsFromGroupById as jest.MockedFunction<
-    typeof getInternalAccountsFromGroupById
   >;
 
 describe('useRewards', () => {
@@ -161,6 +147,8 @@ describe('useRewards', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
+
     mockUseRewardsContext.mockReturnValue({
       rewardsEnabled: true,
       candidateSubscriptionId: 'sub-123',
@@ -178,10 +166,6 @@ describe('useRewards', () => {
     mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
       mockSelectedAccount,
     );
-    // Mock getSelectedAccountGroup to return a default value
-    mockGetSelectedAccountGroup.mockReturnValue('account-group-1' as never);
-    // Mock getInternalAccountsFromGroupById to return an empty array by default
-    mockGetInternalAccountsFromGroupById.mockReturnValue([]);
 
     mockUseSelector.mockImplementation(((selector: unknown) => {
       if (selector === mockGetFromToken) {
@@ -193,12 +177,9 @@ describe('useRewards', () => {
       if (selector === mockGetQuoteRequest) {
         return mockGetQuoteRequest({} as never);
       }
-      // Handle the account selector: selector(state) => getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId)
+      // Handle the account selector
       if (typeof selector === 'function') {
         try {
-          // Call the selector function with mock state
-          // The selector will internally call getInternalAccountBySelectedAccountGroupAndCaip
-          // which is mocked to return mockSelectedAccount
           const result = selector({} as never);
           return result;
         } catch {
@@ -207,6 +188,10 @@ describe('useRewards', () => {
       }
       return null;
     }) as never);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   describe('getUsdPricePerToken', () => {
@@ -232,7 +217,6 @@ describe('useRewards', () => {
 
     it('should return undefined on error', () => {
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-      // Force an error by passing invalid values
       const result = getUsdPricePerToken('invalid', 'invalid', 18);
       expect(result).toBeUndefined();
       consoleSpy.mockRestore();
@@ -273,7 +257,7 @@ describe('useRewards', () => {
       mockGetFromToken.mockReturnValue(null);
       mockUseSelector.mockImplementation(((selector: unknown) => {
         if (selector === mockGetFromToken) {
-          return mockGetFromToken({} as never);
+          return null;
         }
         if (selector === mockGetToToken) {
           return mockGetToToken({} as never);
@@ -281,13 +265,11 @@ describe('useRewards', () => {
         if (selector === mockGetQuoteRequest) {
           return mockGetQuoteRequest({} as never);
         }
-        // Handle the account selector
         if (typeof selector === 'function') {
           try {
-            const result = selector({} as never);
-            return result;
+            return selector({} as never);
           } catch {
-            // Not the account selector or error occurred
+            // Not the account selector
           }
         }
         return null;
@@ -317,7 +299,6 @@ describe('useRewards', () => {
         if (selector === mockGetQuoteRequest) {
           return mockGetQuoteRequest({} as never);
         }
-
         return null;
       }) as never);
 
@@ -378,13 +359,11 @@ describe('useRewards', () => {
         if (selector === mockGetQuoteRequest) {
           return mockGetQuoteRequest({} as never);
         }
-        // Handle the account selector
         if (typeof selector === 'function') {
           try {
-            const result = selector({} as never);
-            return result;
+            return selector({} as never);
           } catch {
-            // Not the account selector or error occurred
+            // Not the account selector
           }
         }
         return null;
@@ -462,6 +441,28 @@ describe('useRewards', () => {
       );
       expect(mockEstimateRewardsPoints).not.toHaveBeenCalled();
     });
+
+    it('should handle errors during opt-in check gracefully', async () => {
+      const error = new Error('Opt-in check failed');
+
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockRejectedValue(error),
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.hasError).toBe(false);
+      expect(result.current.shouldShowRewardsRow).toBe(false);
+      expect(result.current.estimatedPoints).toBeNull();
+      expect(mockEstimateRewardsPoints).not.toHaveBeenCalled();
+    });
   });
 
   describe('Successful Point Estimation', () => {
@@ -480,13 +481,20 @@ describe('useRewards', () => {
         {},
       );
 
+      // Wait for opt-in check
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      // Advance timers to trigger debounced function
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
       });
 
-      expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalledWith(
-        mockCaipAccount,
-      );
       expect(mockEstimateRewardsPoints).toHaveBeenCalled();
       expect(result.current.estimatedPoints).toBe(100);
       expect(result.current.shouldShowRewardsRow).toBe(true);
@@ -507,6 +515,14 @@ describe('useRewards', () => {
         () => useRewards({ activeQuote: mockActiveQuote }),
         {},
       );
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -542,6 +558,14 @@ describe('useRewards', () => {
       );
 
       await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
+      await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
       });
 
@@ -569,6 +593,14 @@ describe('useRewards', () => {
       );
 
       await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
+      await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
       });
 
@@ -594,6 +626,154 @@ describe('useRewards', () => {
     });
   });
 
+  describe('Debounced Behavior', () => {
+    it('should debounce estimateRewardsPoints calls and only make one call when multiple rapid quote changes occur', async () => {
+      const mockEstimatedPoints = { pointsEstimate: 100, bonusBips: 0 };
+
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+      mockEstimateRewardsPoints.mockReturnValue(
+        jest.fn().mockResolvedValue(mockEstimatedPoints),
+      );
+
+      const { result, rerender } = renderHookWithProvider(
+        (props?: { activeQuote: typeof mockActiveQuote | null }) =>
+          useRewards({ activeQuote: props?.activeQuote ?? null }),
+        {},
+      );
+
+      // Initial render with first quote
+      (
+        rerender as unknown as (props: {
+          activeQuote: typeof mockActiveQuote | null;
+        }) => void
+      )({ activeQuote: mockActiveQuote });
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      // Rapidly change quote multiple times before debounce completes
+      const quote2 = {
+        ...mockActiveQuote,
+        requestId: 'quote-456',
+      };
+      const quote3 = {
+        ...mockActiveQuote,
+        requestId: 'quote-789',
+      };
+
+      mockUsePrevious.mockReturnValue(mockQuoteRequestId);
+      (
+        rerender as unknown as (props: {
+          activeQuote: typeof mockActiveQuote | null;
+        }) => void
+      )({ activeQuote: quote2 });
+
+      // Advance time but not enough to trigger debounce
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
+      mockUsePrevious.mockReturnValue('quote-456');
+      (
+        rerender as unknown as (props: {
+          activeQuote: typeof mockActiveQuote | null;
+        }) => void
+      )({ activeQuote: quote3 });
+
+      // Advance time but still not enough
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
+      // Now advance past debounce delay (750ms total)
+      act(() => {
+        jest.advanceTimersByTime(200);
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      // Should only have been called once due to debouncing
+      expect(mockEstimateRewardsPoints).toHaveBeenCalledTimes(1);
+    });
+
+    it('should make separate calls when quote changes after debounce completes', async () => {
+      const mockEstimatedPoints = { pointsEstimate: 100, bonusBips: 0 };
+
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+      mockEstimateRewardsPoints.mockReturnValue(
+        jest.fn().mockResolvedValue(mockEstimatedPoints),
+      );
+
+      const { result, rerender } = renderHookWithProvider(
+        (props?: { activeQuote: typeof mockActiveQuote | null }) =>
+          useRewards({ activeQuote: props?.activeQuote ?? null }),
+        {},
+      );
+
+      // Initial render with first quote
+      (
+        rerender as unknown as (props: {
+          activeQuote: typeof mockActiveQuote | null;
+        }) => void
+      )({ activeQuote: mockActiveQuote });
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      // Wait for debounce to complete
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(mockEstimateRewardsPoints).toHaveBeenCalledTimes(1);
+
+      // Change quote after debounce completed
+      const quote2 = {
+        ...mockActiveQuote,
+        requestId: 'quote-456',
+      };
+
+      mockUsePrevious.mockReturnValue(mockQuoteRequestId);
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+
+      (
+        rerender as unknown as (props: {
+          activeQuote: typeof mockActiveQuote | null;
+        }) => void
+      )({ activeQuote: quote2 });
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalledTimes(2);
+      });
+
+      // Wait for second debounce to complete
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      // Should have been called twice - once for each quote after debounce
+      expect(mockEstimateRewardsPoints).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe('Error Handling', () => {
     it('should handle errors during point estimation', async () => {
       const error = new Error('Estimation failed');
@@ -611,6 +791,14 @@ describe('useRewards', () => {
       );
 
       await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
+      await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
       });
 
@@ -620,26 +808,6 @@ describe('useRewards', () => {
         '[useRewards] Error estimating points:',
         error,
       );
-    });
-
-    it('should handle errors during opt-in check', async () => {
-      const error = new Error('Opt-in check failed');
-
-      mockGetRewardsHasAccountOptedIn.mockReturnValue(
-        jest.fn().mockRejectedValue(error),
-      );
-
-      const { result } = renderHookWithProvider(
-        () => useRewards({ activeQuote: mockActiveQuote }),
-        {},
-      );
-
-      await waitFor(() => {
-        expect(result.current.isLoading).toBe(false);
-      });
-
-      expect(result.current.hasError).toBe(true);
-      expect(mockEstimateRewardsPoints).not.toHaveBeenCalled();
     });
   });
 
@@ -654,33 +822,60 @@ describe('useRewards', () => {
         jest.fn().mockResolvedValue(mockEstimatedPoints),
       );
 
-      // First render with initial quote
-      const { result: result1 } = renderHookWithProvider(
-        () => useRewards({ activeQuote: mockActiveQuote }),
+      const { result, rerender } = renderHookWithProvider(
+        (props?: { activeQuote: typeof mockActiveQuote | null }) =>
+          useRewards({ activeQuote: props?.activeQuote ?? null }),
         {},
       );
 
+      // First render with initial quote
+      (
+        rerender as unknown as (props: {
+          activeQuote: typeof mockActiveQuote | null;
+        }) => void
+      )({ activeQuote: mockActiveQuote });
+
       await waitFor(() => {
-        expect(result1.current.isLoading).toBe(false);
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
       });
 
       expect(mockEstimateRewardsPoints).toHaveBeenCalledTimes(1);
 
       // Second render with different quote ID
       mockUsePrevious.mockReturnValue(mockQuoteRequestId);
-
       const newQuote = {
         ...mockActiveQuote,
         requestId: 'quote-456',
       };
 
-      const { result: result2 } = renderHookWithProvider(
-        () => useRewards({ activeQuote: newQuote }),
-        {},
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
       );
 
+      (
+        rerender as unknown as (props: {
+          activeQuote: typeof mockActiveQuote | null;
+        }) => void
+      )({ activeQuote: newQuote });
+
       await waitFor(() => {
-        expect(result2.current.isLoading).toBe(false);
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalledTimes(2);
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
       });
 
       // Should have been called again for the new quote
@@ -697,10 +892,25 @@ describe('useRewards', () => {
         jest.fn().mockResolvedValue(mockEstimatedPoints),
       );
 
-      const { result } = renderHookWithProvider(
-        () => useRewards({ activeQuote: mockActiveQuote }),
+      const { result, rerender } = renderHookWithProvider(
+        (props?: { activeQuote: typeof mockActiveQuote | null }) =>
+          useRewards({ activeQuote: props?.activeQuote ?? null }),
         {},
       );
+
+      (
+        rerender as unknown as (props: {
+          activeQuote: typeof mockActiveQuote | null;
+        }) => void
+      )({ activeQuote: mockActiveQuote });
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -709,10 +919,19 @@ describe('useRewards', () => {
       const initialCallCount = mockEstimateRewardsPoints.mock.calls.length;
 
       // Re-render with same quote
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+      mockUsePrevious.mockReturnValue(mockQuoteRequestId);
+      (
+        rerender as unknown as (props: {
+          activeQuote: typeof mockActiveQuote | null;
+        }) => void
+      )({ activeQuote: mockActiveQuote });
+
+      // Wait a bit
+      act(() => {
+        jest.advanceTimersByTime(100);
       });
 
+      // Should not have been called again
       expect(mockEstimateRewardsPoints).toHaveBeenCalledTimes(initialCallCount);
     });
   });
@@ -743,12 +962,21 @@ describe('useRewards', () => {
       );
 
       await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
+      await waitFor(() => {
         expect(result.current.isLoading).toBe(true);
         expect(result.current.shouldShowRewardsRow).toBe(true);
       });
 
       await act(async () => {
         resolveEstimation({ pointsEstimate: 100, bonusBips: 0 });
+        await Promise.resolve();
       });
 
       await waitFor(() => {
@@ -777,13 +1005,11 @@ describe('useRewards', () => {
         if (selector === mockGetQuoteRequest) {
           return mockGetQuoteRequest({} as never);
         }
-        // Handle the account selector
         if (typeof selector === 'function') {
           try {
-            const result = selector({} as never);
-            return result;
+            return selector({} as never);
           } catch {
-            // Not the account selector or error occurred
+            // Not the account selector
           }
         }
         return null;
@@ -802,6 +1028,14 @@ describe('useRewards', () => {
         () => useRewards({ activeQuote: mockActiveQuote }),
         {},
       );
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);

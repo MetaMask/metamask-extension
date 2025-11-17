@@ -53,6 +53,7 @@ import {
   InvalidTimestampError,
   AccountAlreadyRegisteredError,
   AuthorizationFailedError,
+  SeasonNotFoundError,
 } from './rewards-data-service';
 import {
   RewardsDataServiceEstimatePointsAction,
@@ -2154,6 +2155,9 @@ describe('Additional RewardsController edge cases', () => {
             lastPerpsDiscountRateFetched: null,
           },
         },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
       };
 
       await withController(
@@ -2166,6 +2170,57 @@ describe('Additional RewardsController edge cases', () => {
           );
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+        },
+      );
+    });
+
+    it('should perform silent auth when account is opted-in but no subscription token available', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve(MOCK_LOGIN_RESPONSE);
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            MOCK_INTERNAL_ACCOUNT,
+            true,
+            true,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(controller.state.rewardsActiveAccount).toMatchObject({
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+          });
+          expect(
+            controller.state.rewardsSubscriptionTokens[MOCK_SUBSCRIPTION_ID],
+          ).toBe(MOCK_SESSION_TOKEN);
         },
       );
     });
@@ -2402,6 +2457,104 @@ describe('Additional RewardsController edge cases', () => {
           );
 
           expect(result).toBeDefined();
+        },
+      );
+    });
+
+    it('should handle SeasonNotFoundError and clear seasons', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+        rewardsActiveAccount: {
+          account: MOCK_CAIP_ACCOUNT,
+          hasOptedIn: true,
+          subscriptionId: MOCK_SUBSCRIPTION_ID,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+        rewardsSubscriptions: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+        },
+        rewardsSeasonStatuses: {
+          [`${MOCK_SEASON_ID}:${MOCK_SUBSCRIPTION_ID}`]: {
+            season: {
+              id: MOCK_SEASON_ID,
+              name: 'Season 1',
+              startDate: new Date('2024-01-01').getTime(),
+              endDate: new Date('2024-12-31').getTime(),
+              tiers: MOCK_SEASON_TIERS,
+            },
+            balance: { total: 100 },
+            tier: {
+              currentTier: MOCK_SEASON_TIERS[0],
+              nextTier: MOCK_SEASON_TIERS[1],
+              nextTierPointsNeeded: 50,
+            },
+            // Set lastFetched to an old timestamp to make cache stale
+            // Cache TTL is 1 minute, so use 2 minutes ago to ensure cache miss
+            lastFetched: Date.now() - 2 * 60 * 1000,
+          },
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:getSeasonStatus') {
+              throw new SeasonNotFoundError('Season not found');
+            }
+            return undefined;
+          });
+
+          await expect(
+            controller.getSeasonStatus(MOCK_SUBSCRIPTION_ID, MOCK_SEASON_ID),
+          ).rejects.toThrow(SeasonNotFoundError);
+
+          // Verify that rewardsSeasons was cleared
+          expect(controller.state.rewardsSeasons).toEqual({});
+
+          // Verify that accounts and subscriptions were NOT invalidated
+          expect(controller.state.rewardsAccounts).toEqual({
+            [MOCK_CAIP_ACCOUNT]: {
+              account: MOCK_CAIP_ACCOUNT,
+              hasOptedIn: true,
+              subscriptionId: MOCK_SUBSCRIPTION_ID,
+              perpsFeeDiscount: null,
+              lastPerpsDiscountRateFetched: null,
+            },
+          });
+          expect(controller.state.rewardsSubscriptions).toEqual({
+            [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+          });
+          expect(controller.state.rewardsSubscriptionTokens).toEqual({
+            [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+          });
+
+          // Verify that rewardsActiveAccount was NOT invalidated
+          expect(controller.state.rewardsActiveAccount?.hasOptedIn).toBe(true);
+          expect(controller.state.rewardsActiveAccount?.subscriptionId).toBe(
+            MOCK_SUBSCRIPTION_ID,
+          );
         },
       );
     });
@@ -2955,8 +3108,8 @@ describe('Additional RewardsController edge cases', () => {
         rewardsAccounts: {
           [MOCK_CAIP_ACCOUNT]: {
             account: MOCK_CAIP_ACCOUNT,
-            hasOptedIn: true,
-            subscriptionId: MOCK_SUBSCRIPTION_ID,
+            hasOptedIn: false,
+            subscriptionId: null,
             perpsFeeDiscount: null,
             lastPerpsDiscountRateFetched: null,
           },
@@ -2976,6 +3129,12 @@ describe('Additional RewardsController edge cases', () => {
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.reject(new Error('All accounts failed'));
             }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [false, false],
+                sids: [null, null],
+              });
+            }
             return undefined;
           });
 
@@ -2984,8 +3143,8 @@ describe('Additional RewardsController edge cases', () => {
           // Should set active account to first account since it has account state
           expect(controller.state.rewardsActiveAccount).toMatchObject({
             account: MOCK_CAIP_ACCOUNT,
-            hasOptedIn: true,
-            subscriptionId: MOCK_SUBSCRIPTION_ID,
+            hasOptedIn: undefined, // as we had an error when trying to signPersonalMessage
+            subscriptionId: null,
           });
         },
       );

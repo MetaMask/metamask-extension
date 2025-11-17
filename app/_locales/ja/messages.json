@@ -630,9 +630,6 @@
   "attributions": {
     "message": "属性"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Infura RPC URLでAuroraがサポートされなくなりました。"
-  },
   "authorizedPermissions": {
     "message": "以下の権限を承認しました"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "カスタムトークン"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "このネットワークではまだトークンの検出を利用できません。トークンを手動でインポートし、信頼できることを確認してください。$1の詳細をご覧ください"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "手動でトークンをインポートする前に、信頼できることを確認してください。$1の詳細をご覧ください。"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "インポートする前にトークンが信頼できることを確認してください。$1を避ける方法の詳細をご覧ください。また、$2トークンの検出を有効にすることもできます。"
   },
   "customerSupport": {
     "message": "カスタマーサポート"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "ウォレットアドレスまたはQRコードを使った別のアカウントからの仮想通貨のデポジット"
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "イーサリアムシステムのアップデートに伴い、Goerliテストネットワークはまもなく段階的に廃止される予定です。"
   },
   "deprecatedNetwork": {
     "message": "このネットワークはサポートされなくなりました"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "入力された情報は、既存のチェーンIDと関連付けられています。"
   },
-  "expandView": {
-    "message": "ビューを展開"
-  },
   "experimental": {
     "message": "試験運用"
   },
@@ -2787,9 +2772,6 @@
   "imported": {
     "message": "インポート済み",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "設定で"
   },
   "included": {
     "message": "含む"
@@ -5238,9 +5220,6 @@
   "shieldEntryModalGetStarted": {
     "message": "利用を開始する"
   },
-  "shieldEntryModalSkip": {
-    "message": "スキップ"
-  },
   "show": {
     "message": "表示"
   },
@@ -6494,10 +6473,6 @@
   "switchNetwork": {
     "message": "ネットワークを切り替える"
   },
-  "switchToNetwork": {
-    "message": "$1に切り替える",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "このアカウントに切り替える"
   },
@@ -6603,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "トークンマーケットプレイス"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "トークン関連の詐欺やセキュリティのリスク"
   },
   "tokenStandard": {
     "message": "トークン規格"

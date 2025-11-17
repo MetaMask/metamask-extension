@@ -13,6 +13,7 @@ import {
   Hex,
 } from '@metamask/utils';
 import log from 'loglevel';
+import { debounce } from 'lodash';
 import {
   getFromToken,
   getToToken,
@@ -127,6 +128,94 @@ export const useRewards = ({
       : null,
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedEstimatePoints = useCallback(
+    debounce(
+      async (
+        estimationQuoteArg:
+          | NonNullable<
+              ReturnType<typeof selectBridgeQuotes>['activeQuote']
+            >['quote']
+          | null,
+        caipAccountArg: CaipAccountId | null,
+      ) => {
+        // Skip if no active quote or missing required data
+        if (!estimationQuoteArg || !caipAccountArg) {
+          setEstimatedPoints(null);
+          setShouldShowRewardsRow(false);
+          setIsLoading(false);
+          setHasError(false);
+          return;
+        }
+
+        try {
+          // Convert source amount to atomic unit
+          const atomicSourceAmount = estimationQuoteArg.srcTokenAmount;
+
+          // Get destination amount from quote
+          const atomicDestAmount = estimationQuoteArg.destTokenAmount;
+
+          // Prepare source asset
+          const srcAsset: EstimateAssetDto = {
+            id: estimationQuoteArg.srcAsset.assetId,
+            amount: atomicSourceAmount,
+          };
+
+          // Prepare destination asset
+          const destAsset: EstimateAssetDto = {
+            id: estimationQuoteArg.destAsset.assetId,
+            amount: atomicDestAmount,
+          };
+
+          // Prepare fee asset (using MetaMask fee from quote data)
+          const feeAsset: EstimateAssetDto = {
+            id: estimationQuoteArg.feeData.metabridge.asset.assetId,
+            amount: estimationQuoteArg.feeData.metabridge.amount || '0',
+          };
+
+          const usdPricePerToken = getUsdPricePerToken(
+            estimationQuoteArg.priceData?.totalFeeAmountUsd || '0',
+            feeAsset.amount,
+            estimationQuoteArg.feeData.metabridge.asset.decimals,
+          );
+
+          const feeAssetWithUsdPrice: EstimateAssetDto = {
+            ...feeAsset,
+            ...(usdPricePerToken ? { usdPrice: usdPricePerToken } : {}),
+          };
+
+          // Create estimate request
+          const estimateRequest: EstimatePointsDto = {
+            activityType: 'SWAP',
+            account: caipAccountArg,
+            activityContext: {
+              swapContext: {
+                srcAsset,
+                destAsset,
+                feeAsset: feeAssetWithUsdPrice,
+              },
+            },
+          };
+
+          // Call rewards controller to estimate points
+          const result = (await dispatch(
+            estimateRewardsPoints(estimateRequest),
+          )) as unknown as EstimatedPointsDto;
+
+          setEstimatedPoints(result.pointsEstimate);
+        } catch (error) {
+          log.error('[useRewards] Error estimating points:', error);
+          setEstimatedPoints(null);
+          setHasError(true);
+        } finally {
+          setIsLoading(false);
+        }
+      },
+      750,
+    ),
+    [dispatch],
+  );
+
   const estimatePoints = useCallback(
     async (
       estimationQuoteArg:
@@ -141,7 +230,7 @@ export const useRewards = ({
         !fromToken ||
         !toToken ||
         !selectedAccount?.address ||
-        !quoteRequest.srcTokenAmount ||
+        !quoteRequest?.srcTokenAmount ||
         !currentChainId ||
         !rewardsEnabled
       ) {
@@ -152,14 +241,11 @@ export const useRewards = ({
         return;
       }
 
-      setIsLoading(false);
-      setShouldShowRewardsRow(false);
-      setHasError(false);
-      setEstimatedPoints(null);
+      let caipAccount: CaipAccountId | null = null;
 
       try {
         // Format account to CAIP-10
-        const caipAccount = formatAccountToCaipAccountId(
+        caipAccount = formatAccountToCaipAccountId(
           selectedAccount.address,
           currentChainId.toString(),
         );
@@ -174,82 +260,35 @@ export const useRewards = ({
         );
 
         if (!hasOptedIn) {
+          setIsLoading(false);
+          setShouldShowRewardsRow(false);
+          setEstimatedPoints(null);
+          setHasError(false);
           return;
         }
 
         setIsLoading(true);
         setShouldShowRewardsRow(true);
+        setEstimatedPoints(null);
         setHasError(false);
 
-        // Convert source amount to atomic unit
-        const atomicSourceAmount = estimationQuoteArg.srcTokenAmount;
-
-        // Get destination amount from quote
-        const atomicDestAmount = estimationQuoteArg.destTokenAmount;
-
-        // Prepare source asset
-        const srcAsset: EstimateAssetDto = {
-          id: estimationQuoteArg.srcAsset.assetId,
-          amount: atomicSourceAmount,
-        };
-
-        // Prepare destination asset
-        const destAsset: EstimateAssetDto = {
-          id: estimationQuoteArg.destAsset.assetId,
-          amount: atomicDestAmount,
-        };
-
-        // Prepare fee asset (using MetaMask fee from quote data)
-        const feeAsset: EstimateAssetDto = {
-          id: estimationQuoteArg.feeData.metabridge.asset.assetId,
-          amount: estimationQuoteArg.feeData.metabridge.amount || '0',
-        };
-
-        const usdPricePerToken = getUsdPricePerToken(
-          estimationQuoteArg.priceData?.totalFeeAmountUsd || '0',
-          feeAsset.amount,
-          estimationQuoteArg.feeData.metabridge.asset.decimals,
-        );
-
-        const feeAssetWithUsdPrice: EstimateAssetDto = {
-          ...feeAsset,
-          ...(usdPricePerToken ? { usdPrice: usdPricePerToken } : {}),
-        };
-
-        // Create estimate request
-        const estimateRequest: EstimatePointsDto = {
-          activityType: 'SWAP',
-          account: caipAccount,
-          activityContext: {
-            swapContext: {
-              srcAsset,
-              destAsset,
-              feeAsset: feeAssetWithUsdPrice,
-            },
-          },
-        };
-
-        // Call rewards controller to estimate points
-        const result = (await dispatch(
-          estimateRewardsPoints(estimateRequest),
-        )) as unknown as EstimatedPointsDto;
-
-        setEstimatedPoints(result.pointsEstimate);
-      } catch (error) {
-        log.error('[useRewards] Error estimating points:', error);
-        setEstimatedPoints(null);
-        setHasError(true);
-      } finally {
+        await debouncedEstimatePoints(estimationQuoteArg, caipAccount);
+      } catch {
+        // Failed to detect opt in
         setIsLoading(false);
+        setShouldShowRewardsRow(false);
+        setEstimatedPoints(null);
+        setHasError(false);
       }
     },
     [
       fromToken,
       toToken,
-      quoteRequest?.srcTokenAmount,
-      selectedAccount?.address,
+      selectedAccount,
+      quoteRequest,
       currentChainId,
       rewardsEnabled,
+      debouncedEstimatePoints,
       dispatch,
     ],
   );

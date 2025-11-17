@@ -932,6 +932,7 @@ export enum Severity {
   Warning = 'warning',
   Info = 'info',
   Success = 'success',
+  Disabled = 'disabled',
 }
 
 /**

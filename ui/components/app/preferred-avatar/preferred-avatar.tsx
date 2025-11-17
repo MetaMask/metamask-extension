@@ -24,7 +24,9 @@ const avatarTypeMap = {
   blockies: AvatarAccountVariant.Blockies,
 };
 
-function getAvatarType({ metamask: { preferences } }: MetaMaskReduxState) {
+export function getAvatarType({
+  metamask: { preferences },
+}: MetaMaskReduxState) {
   const avatarType = preferences?.avatarType;
   return avatarType ? avatarTypeMap[avatarType] : undefined;
 }

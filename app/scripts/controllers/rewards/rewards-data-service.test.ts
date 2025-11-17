@@ -17,6 +17,7 @@ import {
   InvalidTimestampError,
   AuthorizationFailedError,
   AccountAlreadyRegisteredError,
+  SeasonNotFoundError,
 } from './rewards-data-service';
 import type {
   LoginResponseDto,
@@ -859,6 +860,46 @@ describe('RewardsDataService', () => {
       await expect(
         service.getSeasonStatus(mockSeasonId, mockSubscriptionId),
       ).rejects.toBeInstanceOf(AuthorizationFailedError);
+    });
+
+    it('should throw SeasonNotFoundError when season is not found', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 404,
+        json: jest.fn().mockResolvedValue({
+          message: 'Season not found',
+        }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      let caughtError: unknown;
+      try {
+        await service.getSeasonStatus(mockSeasonId, mockSubscriptionId);
+      } catch (error) {
+        caughtError = error;
+      }
+
+      expect(caughtError).toBeInstanceOf(SeasonNotFoundError);
+      const seasonNotFoundError = caughtError as SeasonNotFoundError;
+      expect(seasonNotFoundError.name).toBe('SeasonNotFoundError');
+      expect(seasonNotFoundError.message).toBe(
+        'Season not found. Please try again with a different season.',
+      );
+    });
+
+    it('should detect season not found when message contains the phrase', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 404,
+        json: jest.fn().mockResolvedValue({
+          message: 'The requested Season not found in the system',
+        }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(
+        service.getSeasonStatus(mockSeasonId, mockSubscriptionId),
+      ).rejects.toBeInstanceOf(SeasonNotFoundError);
     });
 
     it('should throw error when fetch fails', async () => {

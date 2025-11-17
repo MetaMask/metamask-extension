@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Αποδόσεις"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Η διεύθυνση URL του Infura RPC δεν υποστηρίζει πλέον την Aurora."
-  },
   "authorizedPermissions": {
     "message": "Έχετε εξουσιοδοτήσει τα ακόλουθα δικαιώματα"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Προσαρμοσμένο token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Ο εντοπισμός token δεν είναι ακόμη διαθέσιμος σε αυτό το δίκτυο. Εισαγάγετε το token με μη αυτόματο τρόπο και βεβαιωθείτε ότι το εμπιστεύεστε. Μάθετε σχετικά με $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Πριν εισαγάγετε το token με μη αυτόματο τρόπο, βεβαιωθείτε ότι το εμπιστεύεστε. Μάθετε σχετικά με $1."
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Σιγουρευτείτε ότι εμπιστεύεστε ένα token προτού το εισαγάγετε. Μάθετε πώς να αποφεύγετε $1. Μπορείτε επίσης να ενεργοποιήσετε τον εντοπισμό token $2."
   },
   "customerSupport": {
     "message": "υποστήριξη πελατών"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Κατάθεση κρυπτονομισμάτων από άλλο λογαριασμό με διεύθυνση πορτοφολιού ή κωδικό QR."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Εξαιτίας των ενημερώσεων στο σύστημα Ethereum, το δίκτυο δοκιμών Goerli θα καταργηθεί σύντομα."
   },
   "deprecatedNetwork": {
     "message": "Αυτό το δίκτυο έχει καταργηθεί"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "Οι πληροφορίες που έχετε εισάγει συνδέονται με ένα υπάρχον αναγνωριστικό αλυσίδας."
   },
-  "expandView": {
-    "message": "Ανάπτυξη προβολής"
-  },
   "experimental": {
     "message": "Πειραματικά"
   },
@@ -2787,9 +2772,6 @@
   "imported": {
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "στις Ρυθμίσεις σας"
   },
   "included": {
     "message": "περιλαμβάνεται"
@@ -5238,9 +5220,6 @@
   "shieldEntryModalGetStarted": {
     "message": "Ξεκινήστε"
   },
-  "shieldEntryModalSkip": {
-    "message": "Παράλειψη"
-  },
   "show": {
     "message": "Εμφάνιση"
   },
@@ -6494,10 +6473,6 @@
   "switchNetwork": {
     "message": "Αλλαγή δικτύου"
   },
-  "switchToNetwork": {
-    "message": "Αλλαγή σε $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Αλλαγή σε αυτόν τον λογαριασμό"
   },
@@ -6603,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Αγορά tokens"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "απάτες με token και κίνδυνοι ασφάλειας"
   },
   "tokenStandard": {
     "message": "Πρότυπο Token"

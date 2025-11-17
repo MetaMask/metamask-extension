@@ -20,6 +20,9 @@ jest.mock('../../../hooks/useI18nContext', () => ({
     if (key === 'rewardsPointsIcon') {
       return 'Rewards Points Icon';
     }
+    if (key === 'rewardsPointsBalance_couldntLoad') {
+      return "Couldn't load";
+    }
     return key;
   }),
 }));
@@ -367,5 +370,57 @@ describe('RewardsPointsBalance', () => {
       'bg-background-muted',
       'rounded',
     );
+  });
+
+  it('should render error state when seasonStatusError exists and no balance', () => {
+    mockUseRewardsContext.mockReturnValue({
+      ...mockRewardsContextValue,
+      seasonStatus: null,
+      seasonStatusError: 'Failed to fetch season status',
+      seasonStatusLoading: false,
+    });
+
+    render(<RewardsPointsBalance />);
+
+    const container = screen.getByTestId('rewards-points-balance');
+    expect(container).toBeInTheDocument();
+    expect(container).toHaveClass('gap-1', 'bg-background-transparent');
+    expect(
+      screen.getByTestId('rewards-points-balance-value'),
+    ).toHaveTextContent("Couldn't load");
+  });
+
+  it('should render error state with correct props when seasonStatusError exists', () => {
+    mockUseRewardsContext.mockReturnValue({
+      ...mockRewardsContextValue,
+      seasonStatus: null,
+      seasonStatusError: 'Network error',
+      seasonStatusLoading: false,
+    });
+
+    render(<RewardsPointsBalance />);
+
+    const container = screen.getByTestId('rewards-points-balance');
+    const textElement = screen.getByTestId('rewards-points-balance-value');
+
+    expect(container).toHaveClass('gap-1', 'bg-background-transparent');
+    expect(textElement).toHaveClass('text-alternative');
+    expect(textElement).toHaveTextContent("Couldn't load");
+  });
+
+  it('should not render error state when loading', () => {
+    mockUseRewardsContext.mockReturnValue({
+      ...mockRewardsContextValue,
+      seasonStatus: null,
+      seasonStatusError: 'Error occurred',
+      seasonStatusLoading: true,
+    });
+
+    render(<RewardsPointsBalance />);
+
+    expect(screen.getByTestId('skeleton')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('rewards-points-balance'),
+    ).not.toBeInTheDocument();
   });
 });
