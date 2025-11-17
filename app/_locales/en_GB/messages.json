@@ -3186,6 +3186,9 @@
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
+  "insights": {
+    "message": "Insights"
+  },
   "insightsFromSnap": {
     "message": "Insights from $1",
     "description": "$1 represents the name of the snap"
@@ -3615,6 +3618,9 @@
   },
   "marketCap": {
     "message": "Market cap"
+  },
+  "marketCapFDV": {
+    "message": "Market cap (FDV)"
   },
   "marketDetails": {
     "message": "Market details"
@@ -4706,6 +4712,9 @@
   "pendingTransactionAlertMessageHyperlink": {
     "message": "Learn how to cancel or speed up a transaction.",
     "description": "The text for the hyperlink in the pending transaction alert message"
+  },
+  "percentChange": {
+    "message": "Percent change"
   },
   "permissionDetails": {
     "message": "Permission details"
@@ -5874,6 +5883,9 @@
   "shieldClaim": {
     "message": "Submit a claim"
   },
+  "shieldClaimChainNotSupported": {
+    "message": "This chain is not supported."
+  },
   "shieldClaimDescription": {
     "message": "Description of case"
   },
@@ -5907,7 +5919,7 @@
     "message": "Total file size exceeds the maximum allowed size."
   },
   "shieldClaimFileUploader": {
-    "message": "Image Upload"
+    "message": "Image upload"
   },
   "shieldClaimFileUploaderAcceptText": {
     "message": "PDF, PNG, JPG (Max $1MB)",
@@ -5973,6 +5985,9 @@
   "shieldClaimSelectNetwork": {
     "message": "Select a network"
   },
+  "shieldClaimSignatureCoverageNotCovered": {
+    "message": "Signature coverage not found for the given transaction hash."
+  },
   "shieldClaimStatusApproved": {
     "message": "Approved"
   },
@@ -6007,6 +6022,18 @@
   "shieldClaimSubmitSuccessDescription": {
     "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
   },
+  "shieldClaimTransactionNotFound": {
+    "message": "Transaction not found on chain."
+  },
+  "shieldClaimTransactionNotFromWalletAddress": {
+    "message": "Transaction hash not from wallet address."
+  },
+  "shieldClaimTransactionNotSuccessful": {
+    "message": "Transaction not successful on chain."
+  },
+  "shieldClaimWalletOwnershipValidationFailed": {
+    "message": "Wallet ownership validation failed."
+  },
   "shieldClaimsHistoryTitle": {
     "message": "CLAIM HISTORY"
   },
@@ -6036,25 +6063,25 @@
     "message": "You're protected up to $2 with Metamask Transaction Shield. $1."
   },
   "shieldCoverageAlertHighRiskTransaction": {
-    "message": "This is a high risk transaction, so it isn't protected by Transaction Shield. $1."
+    "message": "This is a high risk transaction, so it isn't protected by MetaMask Transaction Shield. $1."
   },
   "shieldCoverageAlertMessageChainNotSupported": {
-    "message": "This chain is not supported, so it isn't protected by Transaction Shield. $1."
+    "message": "This chain is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
     "message": "See What's Covered"
   },
   "shieldCoverageAlertMessagePaused": {
-    "message": "There was an issue with your Transaction Shield plan payment. Please update your payment method to resume coverage."
+    "message": "There was an issue with your MetaMask Transaction Shield plan payment. Please update your payment method to resume coverage."
   },
   "shieldCoverageAlertMessagePausedAcknowledgeButton": {
     "message": "Update payment method"
   },
   "shieldCoverageAlertMessagePotentialRisks": {
-    "message": "This transaction has potential risks, so it isn't protected by Transaction Shield. $1."
+    "message": "This transaction has potential risks, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageSignatureNotSupported": {
-    "message": "This signature isn't supported, so it isn't protected by Transaction Shield. $1."
+    "message": "This signature isn't supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageTitle": {
     "message": "This transaction isn't covered"
@@ -6075,10 +6102,10 @@
     "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds. $1."
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
-    "message": "This transaction type is not supported, so it isn't protected by Transaction Shield. $1."
+    "message": "This transaction type is not supported, so it isn't protected by MetaMask Transaction Shield. $1."
   },
   "shieldCoverageAlertMessageUnknown": {
-    "message": "This request can't be verified, so it isn't protected by Transaction Shield. $1."
+    "message": "This request can't be verified, so it isn't protected by MetaMask Transaction Shield. $1."
   },
   "shieldCoverageEnding": {
     "message": "Shield coverage ends soon"
@@ -6233,7 +6260,7 @@
     "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."
   },
   "shieldTxDetails1Description": {
-    "message": "Secures your assets from risky transactions"
+    "message": "Secures assets on covered transactions"
   },
   "shieldTxDetails1Title": {
     "message": "Up to $10,000 transaction protection"
@@ -8179,6 +8206,9 @@
   "viewOnOpensea": {
     "message": "View on Opensea"
   },
+  "viewTokenDetails": {
+    "message": "View token details"
+  },
   "viewTransaction": {
     "message": "View transaction"
   },
@@ -8203,6 +8233,9 @@
   },
   "visitWebSite": {
     "message": "Visit our website"
+  },
+  "volume": {
+    "message": "Volume"
   },
   "wallet": {
     "message": "Wallet"
