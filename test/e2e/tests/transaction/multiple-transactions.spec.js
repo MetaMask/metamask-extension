@@ -53,13 +53,11 @@ describe('Multiple transactions', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        await driver.waitForSelector('.transaction-status-label--confirmed');
-
-        const confirmedTxes = await driver.findElements(
+        const confirmedTxes = await driver.elementCountBecomesN(
           '.transaction-status-label--confirmed',
+          2,
         );
-
-        assert.equal(confirmedTxes.length, 2);
+        assert.equal(confirmedTxes, true);
       },
     );
   });
