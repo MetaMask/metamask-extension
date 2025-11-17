@@ -82,7 +82,7 @@ export function useConfirmationNavigation() {
         history.replace(DEFAULT_ROUTE);
       }
     },
-    [confirmations, getIndex, navigateToIndex],
+    [confirmations, history, getIndex, navigateToIndex],
   );
 
   return {
