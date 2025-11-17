@@ -37,7 +37,6 @@ import {
   Popover,
   PopoverPosition,
   Tag,
-  Text,
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
@@ -409,12 +408,6 @@ export const GlobalMenu = ({
           data-testid="global-menu-expand-view"
         >
           {t('openFullScreen')}
-          <Text
-            variant={TextVariant.bodySmMedium}
-            color={TextColor.textAlternative}
-          >
-            {t('metamaskExtension')}
-          </Text>
         </MenuItem>
       )}
       {account &&
