@@ -1644,6 +1644,7 @@ class Driver {
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
       // Sentry error that is not actually a problem
       'Event fragment with id transaction-added-',
+      'TransactionsController: Can only call updateEdit',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');
