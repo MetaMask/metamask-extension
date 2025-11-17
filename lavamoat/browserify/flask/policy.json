@@ -870,6 +870,20 @@
         "eslint>json-stable-stringify-without-jsonify": true
       }
     },
+    "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@metamask/auth-network-utils": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@noble/curves": true,
+        "@noble/hashes": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "@toruslabs/eccrypto>elliptic": true,
+        "eslint>json-stable-stringify-without-jsonify": true
+      }
+    },
     "@metamask/base-controller": {
       "globals": {
         "console.error": true
@@ -2012,11 +2026,11 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": true,
+        "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@metamask/auth-network-utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
         "@noble/hashes": true,
-        "@toruslabs/eccrypto": true,
+        "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@toruslabs/eccrypto": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@toruslabs/fetch-node-details": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@toruslabs/http-helpers": true,
         "bn.js": true,
@@ -2624,7 +2638,7 @@
         "requestAnimationFrame": true
       }
     },
-    "@toruslabs/eccrypto": {
+    "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@toruslabs/eccrypto": {
       "globals": {
         "crypto": true,
         "msCrypto": true
