@@ -2105,7 +2105,7 @@
         "@noble/ciphers": true,
         "@noble/curves": true,
         "@noble/hashes": true,
-        "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@toruslabs/eccrypto": true,
+        "@toruslabs/eccrypto": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@toruslabs/fetch-node-details": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@toruslabs/http-helpers": true,
         "bn.js": true,
@@ -2724,7 +2724,7 @@
         "requestAnimationFrame": true
       }
     },
-    "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@toruslabs/eccrypto": {
+    "@toruslabs/eccrypto": {
       "globals": {
         "Buffer.alloc": true,
         "Buffer.concat": true,
