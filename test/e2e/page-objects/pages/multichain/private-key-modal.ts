@@ -8,7 +8,7 @@ class PrivateKeyModal {
 
   private readonly confirmButton = '[data-testid="confirm-button"]';
 
-  private readonly backButton = '[aria-label="Close"]';
+  private readonly wrontPasswordMsg = '[data-testid="wrong-password-msg"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -44,6 +44,13 @@ class PrivateKeyModal {
    */
   async clickConfirm(): Promise<void> {
     await this.driver.clickElement(this.confirmButton);
+  }
+
+  /**
+   * Check wrong password message
+   */
+  async checkWrongPasswordMsgIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.wrontPasswordMsg);
   }
 }
 

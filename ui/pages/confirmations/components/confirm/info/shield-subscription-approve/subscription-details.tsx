@@ -17,6 +17,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getProductPrice } from '../../../../../shield-plan/utils';
+import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../../../../../shared/constants/subscriptions';
 
 export const SubscriptionDetails = ({
   showTrial,
@@ -73,7 +74,10 @@ export const SubscriptionDetails = ({
             }}
           >
             <Text variant={TextVariant.bodySm} color={TextColor.inherit}>
-              {t('freeSevenDayTrial')}
+              {t('freeTrialDays', [
+                productPrice?.trialPeriodDays ??
+                  SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
+              ])}
             </Text>
           </Box>
         )}

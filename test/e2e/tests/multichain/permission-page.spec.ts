@@ -11,7 +11,7 @@ describe('Permissions Page', function () {
   it('should redirect users to connections page when users click on connected permission', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -35,7 +35,7 @@ describe('Permissions Page', function () {
   it('should navigate to home route when Gator Permissions Revocation feature is disabled', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

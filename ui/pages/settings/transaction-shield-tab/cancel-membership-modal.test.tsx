@@ -23,6 +23,7 @@ const mockSubscription: Subscription = {
       displayBrand: 'Visa',
     },
   },
+  isEligibleForSupport: true,
 };
 
 describe('Cancel Membership Modal', () => {

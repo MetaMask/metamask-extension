@@ -182,7 +182,7 @@ export const SnapUIInput: FunctionComponent<
      * @param multiplier - Multiplier for the step (e.g., 10 when Shift is held).
      */
     const handleIncrement = (direction: 1 | -1, multiplier = 1) => {
-      const base = Number(value) ?? 0;
+      const base = Number(value);
       const delta = step * multiplier * direction;
       const next = clamp(Number(base + delta), min, max).toString();
 

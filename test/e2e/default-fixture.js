@@ -123,6 +123,17 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         snapsInstallPrivacyWarningShown: true,
         hasShownMultichainAccountsIntroModal: true,
         showShieldEntryModalOnce: false,
+        pendingShieldCohort: null,
+        pendingShieldCohortTxType: null,
+        appActiveTab: {
+          id: 1,
+          title: 'E2E Test Dapp',
+          origin: 'http://127.0.0.1:8080',
+          protocol: 'http:',
+          url: 'http://127.0.0.1:8080',
+          host: '127.0.0.1:8080',
+          href: 'http://127.0.0.1:8080',
+        },
       },
       BridgeController: {},
       CurrencyController: {

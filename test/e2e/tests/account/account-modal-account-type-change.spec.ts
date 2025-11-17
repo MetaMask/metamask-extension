@@ -18,7 +18,7 @@ describe.skip('Switch Modal - Switch Account', function (this: Suite) {
   it('Account modal should have options to upgrade / downgrade the account', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         localNodeOptions: [
           {

@@ -1,6 +1,6 @@
 import { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   type BridgeAsset,
   formatChainIdToCaip,
@@ -32,12 +32,15 @@ import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
-import { getLastSelectedChainId } from '../../ducks/bridge/selectors';
+import {
+  getFromChains,
+  getLastSelectedChainId,
+} from '../../ducks/bridge/selectors';
 import { getMultichainProviderConfig } from '../../selectors/multichain';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 
 const useBridging = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -47,6 +50,17 @@ const useBridging = () => {
 
   const lastSelectedChainId = useSelector(getLastSelectedChainId);
   const providerConfig = useSelector(getMultichainProviderConfig);
+  const fromChains = useSelector(getFromChains);
+
+  const isChainIdEnabledForBridging = useCallback(
+    (chainId: string | number) =>
+      ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId) &&
+      fromChains.some(
+        (chain) =>
+          formatChainIdToCaip(chain.chainId) === formatChainIdToCaip(chainId),
+      ),
+    [fromChains],
+  );
 
   const openBridgeExperience = useCallback(
     (
@@ -57,8 +71,7 @@ const useBridging = () => {
     ) => {
       // If srcToken is a bridge token, use its assetId
       let srcAssetIdToUse =
-        srcToken?.chainId &&
-        ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(srcToken.chainId)
+        srcToken?.chainId && isChainIdEnabledForBridging(srcToken.chainId)
           ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
           : undefined;
 
@@ -70,9 +83,7 @@ const useBridging = () => {
        *
        * default fromChain: srctoken.chainId > lastSelectedId > MAINNET
        */
-      const targetChainId = ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(
-        lastSelectedChainId,
-      )
+      const targetChainId = isChainIdEnabledForBridging(lastSelectedChainId)
         ? lastSelectedChainId
         : CHAIN_IDS.MAINNET;
       if (!srcAssetIdToUse && targetChainId !== providerConfig?.chainId) {
@@ -120,16 +131,17 @@ const useBridging = () => {
         url += `${srcAssetIdToUse ? '&' : ''}isFromTransactionShield=true`;
       }
 
-      history.push(url);
+      navigate(url);
     },
     [
-      history,
+      navigate,
       metaMetricsId,
       trackEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
       lastSelectedChainId,
       providerConfig?.chainId,
+      isChainIdEnabledForBridging,
     ],
   );
 

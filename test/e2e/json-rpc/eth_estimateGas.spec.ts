@@ -8,7 +8,7 @@ describe('eth_estimateGas', function () {
   it('executes a estimate gas json rpc call', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

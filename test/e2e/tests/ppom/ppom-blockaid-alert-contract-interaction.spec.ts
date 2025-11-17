@@ -226,7 +226,7 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this:
   it('should show banner alert', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkController({
             selectedNetworkClientId: 'networkConfigurationId',

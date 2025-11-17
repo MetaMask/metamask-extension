@@ -20,7 +20,9 @@ import {
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
+import { useSwapCheck } from '../../../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
@@ -47,12 +49,17 @@ export const EditGasFeesRow = ({
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
-  const { chainId, isGasFeeSponsored, simulationData } = transactionMeta;
+  const {
+    chainId,
+    isGasFeeSponsored: doesSentinelAllowSponsorship,
+    simulationData,
+  } = transactionMeta;
   const gasFeeToken = useSelectedGasFeeToken();
   const showFiat = useShowFiat(chainId);
   const fiatValue = gasFeeToken ? gasFeeToken.amountFiat : fiatFee;
   const tokenValue = gasFeeToken ? gasFeeToken.amountFormatted : nativeFee;
   const metamaskFeeFiat = gasFeeToken?.metamaskFeeFiat;
+  const { isQuotedSwap } = useSwapCheck();
 
   const tooltip =
     gasFeeToken?.metaMaskFee && gasFeeToken.metaMaskFee !== '0x0'
@@ -61,6 +68,11 @@ export const EditGasFeesRow = ({
 
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const isLoadingGasUsed = !simulationData || balanceChangesResult.pending;
+
+  // This prevents the gas fee row from showing as sponsored if stx is disabled
+  // by the user and 7702 is not supported in the chain.
+  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
+  const isGasFeeSponsored = isGaslessSupported && doesSentinelAllowSponsorship;
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
@@ -91,7 +103,7 @@ export const EditGasFeesRow = ({
                 {t('paidByMetaMask')}
               </Text>
             )}
-            {!gasFeeToken && !isGasFeeSponsored && (
+            {!isQuotedSwap && !gasFeeToken && !isGasFeeSponsored && (
               <EditGasIconButton
                 supportsEIP1559={supportsEIP1559}
                 setShowCustomizeGasPopover={setShowCustomizeGasPopover}

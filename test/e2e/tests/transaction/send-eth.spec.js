@@ -222,7 +222,7 @@ describe('Send ETH', function () {
       it('should display the correct gas price on the legacy transaction', async function () {
         await withFixtures(
           {
-            dapp: true,
+            dappOptions: { numberOfTestDapps: 1 },
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .withPreferencesController(PREFERENCES_STATE_MOCK)
@@ -305,7 +305,7 @@ describe('Send ETH', function () {
       it('should display correct gas values for EIP-1559 transaction', async function () {
         await withFixtures(
           {
-            dapp: true,
+            dappOptions: { numberOfTestDapps: 1 },
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .withPreferencesController(PREFERENCES_STATE_MOCK)

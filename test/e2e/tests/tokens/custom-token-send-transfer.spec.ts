@@ -24,7 +24,7 @@ describe('Transfer custom tokens', function () {
     it('send custom tokens from extension customizing gas values', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
           localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
@@ -77,7 +77,7 @@ describe('Transfer custom tokens', function () {
     it('transfer custom tokens from dapp customizing gas values', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withTokensControllerERC20()
@@ -145,7 +145,7 @@ describe('Transfer custom tokens', function () {
     it('transfer custom tokens from dapp without specifying gas', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withTokensControllerERC20()

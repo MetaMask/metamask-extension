@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger } from '../../lib/messenger';
 
 export type AppMetadataControllerMessenger = ReturnType<
   typeof getAppMetadataControllerMessenger
@@ -11,14 +12,9 @@ export type AppMetadataControllerMessenger = ReturnType<
  * @param messenger - The base messenger used to create the restricted
  * messenger.
  */
-export function getAppMetadataControllerMessenger(
-  messenger: Messenger<never, never>,
-) {
-  return messenger.getRestricted({
-    name: 'AppMetadataController',
-
-    // This controller does not call any actions or subscribe to any events.
-    allowedActions: [],
-    allowedEvents: [],
+export function getAppMetadataControllerMessenger(messenger: RootMessenger) {
+  return new Messenger({
+    namespace: 'AppMetadataController',
+    parent: messenger,
   });
 }

@@ -1,6 +1,11 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { BtcMethod, EthMethod, SolMethod } from '@metamask/keyring-api';
+import {
+  BtcMethod,
+  EthMethod,
+  SolMethod,
+  TrxAccountType,
+} from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type CaipAssetType,
@@ -10,7 +15,7 @@ import {
 } from '@metamask/utils';
 import React, { ReactNode, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -65,6 +70,7 @@ import {
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
+  getAsset,
   getAssetsBySelectedAccountGroup,
   getMultichainNativeAssetType,
 } from '../../../selectors/assets';
@@ -92,7 +98,7 @@ const AssetPage = ({
   optionsButton: React.ReactNode;
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const currency = useSelector(getCurrentCurrency);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = isEvmChainId(asset.chainId);
@@ -126,7 +132,8 @@ const AssetPage = ({
     selectedAccount.methods.includes(EthMethod.SignTransaction) ||
     selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
     selectedAccount.methods.includes(SolMethod.SignTransaction) ||
-    selectedAccount.methods.includes(BtcMethod.SignPsbt);
+    selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
+    selectedAccount.type === TrxAccountType.Eoa;
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
@@ -273,6 +280,8 @@ const AssetPage = ({
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
 
+  const bip44Asset = useSelector((state) => getAsset(state, address, chainId));
+
   const tokenWithFiatAmount =
     isEvm || isMultichainAccountsState2Enabled
       ? {
@@ -291,8 +300,12 @@ const AssetPage = ({
           isNative: type === AssetType.native,
           balance,
           secondary: balance ? Number(balance) : 0,
+          accountType: bip44Asset?.accountType,
         }
-      : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
+      : {
+          ...mutichainTokenWithFiatAmount,
+          accountType: bip44Asset?.accountType,
+        };
 
   const { safeChains } = useSafeChains();
 
@@ -324,7 +337,7 @@ const AssetPage = ({
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={() => navigate(DEFAULT_ROUTE)}
           />
         </Box>
         {optionsButton}
@@ -391,7 +404,7 @@ const AssetPage = ({
           borderColor={BorderColor.borderMuted}
           marginInline={4}
           style={{ height: '1px', borderBottomWidth: 0 }}
-        ></Box>
+        />
         <Box
           marginTop={2}
           display={Display.Flex}

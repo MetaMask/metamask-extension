@@ -28,16 +28,6 @@ async function mockSegment(mockServer: Mockttp) {
           statusCode: 200,
         };
       }),
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'nft_autodetection_enabled' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
   ];
 }
 

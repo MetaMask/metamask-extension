@@ -264,8 +264,19 @@ export const filterNonEvmTxByToken = (
     return nonEvmTransactions;
   }
 
+  const isBitcoinNetwork = tokenAddress.startsWith('bip122');
+
   const transactionForToken = (nonEvmTransactions.transactions || []).filter(
     (transaction) => {
+      const isRedeposit =
+        isBitcoinNetwork &&
+        transaction.to.length === 0 &&
+        transaction.type === KeyringTransactionType.Send;
+
+      if (isRedeposit) {
+        return true;
+      }
+
       return [...transaction.to, ...transaction.from].some(
         (item) => item.asset.type === tokenAddress,
       );
@@ -366,35 +377,35 @@ export const groupAnyTransactionsByDate = (items) =>
   );
 
 function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
-  const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
-  const filteredUniqueNonEvmChainIds =
-    [
-      ...new Set(
-        Object.keys(enabledNetworks)
-          .filter((namespace) => namespace !== 'eip155')
-          .reduce((acc, namespace) => {
-            return [...acc, ...Object.keys(enabledNetworks[namespace])];
-          }, []),
-      ),
-    ] ?? [];
+  if (tokenChainIdOverride) {
+    const isNonEvm =
+      tokenChainIdOverride.startsWith('solana') ||
+      tokenChainIdOverride.startsWith('bip122') ||
+      tokenChainIdOverride.startsWith('tron');
 
-  if (tokenChainIdOverride && !tokenChainIdOverride.startsWith('solana')) {
     return {
-      evmChainIds: [tokenChainIdOverride],
-      nonEvmChainIds: [],
+      evmChainIds: isNonEvm ? [] : [tokenChainIdOverride],
+      nonEvmChainIds: isNonEvm ? [tokenChainIdOverride] : [],
     };
   }
-  if (tokenChainIdOverride && tokenChainIdOverride.startsWith('solana')) {
-    return {
-      evmChainIds: [],
-      nonEvmChainIds: [tokenChainIdOverride],
-    };
-  }
+
+  const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
+  const filteredUniqueNonEvmChainIds = [
+    ...new Set(
+      Object.keys(enabledNetworks)
+        .filter((namespace) => namespace !== 'eip155')
+        .reduce((acc, namespace) => {
+          return [...acc, ...Object.keys(enabledNetworks[namespace])];
+        }, []),
+    ),
+  ];
+
   return {
     evmChainIds: filteredUniqueEVMChainIds,
     nonEvmChainIds: filteredUniqueNonEvmChainIds,
   };
 }
+
 export default function UnifiedTransactionList({
   hideTokenTransactions,
   tokenAddress,

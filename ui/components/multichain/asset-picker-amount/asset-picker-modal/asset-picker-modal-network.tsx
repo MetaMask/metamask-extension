@@ -124,32 +124,35 @@ export const AssetPickerModalNetwork = ({
   // Initialized with the selectedChainIds if provided
   const [checkedChainIds, setCheckedChainIds] = useState<
     Record<string, boolean>
-  >(
-    networksList?.reduce(
-      (acc, { chainId }) => ({
-        ...acc,
-        [chainId]: selectedChainIds
-          ? selectedChainIds.includes(chainId)
-          : false,
-      }),
-      {},
-    ) ?? {},
-  );
+  >(() => {
+    if (!networksList) {
+      return {};
+    }
+
+    const initialState: Record<string, boolean> = {};
+
+    for (const { chainId } of networksList) {
+      initialState[chainId] = selectedChainIds
+        ? selectedChainIds.includes(chainId)
+        : false;
+    }
+
+    return initialState;
+  });
 
   // Reset checkedChainIds if selectedChainIds change in parent component
   useEffect(() => {
-    networksList &&
-      setCheckedChainIds(
-        networksList.reduce(
-          (acc, { chainId }) => ({
-            ...acc,
-            [chainId]: selectedChainIds
-              ? selectedChainIds.includes(chainId)
-              : false,
-          }),
-          {},
-        ),
-      );
+    if (networksList) {
+      const updatedState: Record<string, boolean> = {};
+
+      for (const { chainId } of networksList) {
+        updatedState[chainId] = selectedChainIds
+          ? selectedChainIds.includes(chainId)
+          : false;
+      }
+
+      setCheckedChainIds(updatedState);
+    }
   }, [networksList, selectedChainIds]);
 
   const handleToggleNetwork = useCallback((chainId: string) => {
@@ -161,15 +164,14 @@ export const AssetPickerModalNetwork = ({
 
   // Toggles all networks to be checked or unchecked
   const handleToggleAllNetworks = useCallback(() => {
-    setCheckedChainIds(
-      Object.keys(checkedChainIds)?.reduce(
-        (agg, chainId) => ({
-          ...agg,
-          [chainId]: !Object.values(checkedChainIds).every((v) => v),
-        }),
-        {},
-      ),
-    );
+    const toggledState: Record<string, boolean> = {};
+    const allChecked = Object.values(checkedChainIds).every((v) => v);
+
+    for (const chainId of Object.keys(checkedChainIds)) {
+      toggledState[chainId] = !allChecked;
+    }
+
+    setCheckedChainIds(toggledState);
   }, [checkedChainIds]);
 
   return (

@@ -40,6 +40,7 @@ import launchMetaMaskUi, {
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
@@ -280,9 +281,12 @@ async function queryCurrentActiveTab(windowType) {
     }
   }
 
-  // At the time of writing we only have the `activeTab` permission which means
-  // that this query will only succeed in the popup context (i.e. after a "browserAction")
-  if (windowType !== ENVIRONMENT_TYPE_POPUP) {
+  // Only popup queries the active tab
+  // Sidepanel uses appActiveTab from tab listeners instead
+  if (
+    windowType !== ENVIRONMENT_TYPE_POPUP &&
+    windowType !== ENVIRONMENT_TYPE_SIDEPANEL
+  ) {
     return {};
   }
 

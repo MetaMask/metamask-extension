@@ -23,7 +23,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          (0:30)
+          (0:31)
         </p>
         <div
           class="mm-box"
@@ -176,7 +176,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          (0:30)
+          (0:31)
         </p>
         <div
           class="mm-box"
@@ -327,9 +327,9 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           Rate
         </p>
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-warning-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          (0:05)
+          (0:06)
         </p>
         <div
           class="mm-box"

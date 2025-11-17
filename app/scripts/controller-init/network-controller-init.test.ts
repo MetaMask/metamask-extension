@@ -1,9 +1,12 @@
+import { ControllerStateChangeEvent } from '@metamask/base-controller';
 import {
-  ControllerStateChangeEvent,
+  MOCK_ANY_NAMESPACE,
   Messenger,
-} from '@metamask/base-controller';
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { NetworkController } from '@metamask/network-controller';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -34,7 +37,7 @@ jest.mock('@metamask/network-controller', () => {
 });
 
 function getInitRequestMock(
-  baseMessenger = new Messenger<never, never>(),
+  baseMessenger = getRootMessenger<never, never>(),
 ): jest.Mocked<
   ControllerInitRequest<
     NetworkControllerMessenger,
@@ -158,6 +161,42 @@ describe('NetworkControllerInit', () => {
               },
             ],
           },
+          "0x38": {
+            "blockExplorerUrls": [
+              "https://bscscan.com",
+            ],
+            "chainId": "0x38",
+            "defaultBlockExplorerUrlIndex": 0,
+            "defaultRpcEndpointIndex": 0,
+            "name": "BNB Chain",
+            "nativeCurrency": "BNB",
+            "rpcEndpoints": [
+              {
+                "failoverUrls": [],
+                "networkClientId": "bsc-mainnet",
+                "type": "infura",
+                "url": "https://bsc-mainnet.infura.io/v3/{infuraProjectId}",
+              },
+            ],
+          },
+          "0x531": {
+            "blockExplorerUrls": [
+              "https://seitrace.com",
+            ],
+            "chainId": "0x531",
+            "defaultBlockExplorerUrlIndex": 0,
+            "defaultRpcEndpointIndex": 0,
+            "name": "Sei",
+            "nativeCurrency": "SEI",
+            "rpcEndpoints": [
+              {
+                "failoverUrls": [],
+                "networkClientId": "sei-mainnet",
+                "type": "infura",
+                "url": "https://sei-mainnet.infura.io/v3/{infuraProjectId}",
+              },
+            ],
+          },
           "0x539": {
             "blockExplorerUrls": [],
             "chainId": "0x539",
@@ -170,6 +209,60 @@ describe('NetworkControllerInit', () => {
                 "networkClientId": "networkConfigurationId",
                 "type": "custom",
                 "url": "http://localhost:8545",
+              },
+            ],
+          },
+          "0x89": {
+            "blockExplorerUrls": [
+              "https://polygonscan.com",
+            ],
+            "chainId": "0x89",
+            "defaultBlockExplorerUrlIndex": 0,
+            "defaultRpcEndpointIndex": 0,
+            "name": "Polygon",
+            "nativeCurrency": "POL",
+            "rpcEndpoints": [
+              {
+                "failoverUrls": [],
+                "networkClientId": "polygon-mainnet",
+                "type": "infura",
+                "url": "https://polygon-mainnet.infura.io/v3/{infuraProjectId}",
+              },
+            ],
+          },
+          "0xa": {
+            "blockExplorerUrls": [
+              "https://optimistic.etherscan.io",
+            ],
+            "chainId": "0xa",
+            "defaultBlockExplorerUrlIndex": 0,
+            "defaultRpcEndpointIndex": 0,
+            "name": "OP",
+            "nativeCurrency": "ETH",
+            "rpcEndpoints": [
+              {
+                "failoverUrls": [],
+                "networkClientId": "optimism-mainnet",
+                "type": "infura",
+                "url": "https://optimism-mainnet.infura.io/v3/{infuraProjectId}",
+              },
+            ],
+          },
+          "0xa4b1": {
+            "blockExplorerUrls": [
+              "https://arbiscan.io",
+            ],
+            "chainId": "0xa4b1",
+            "defaultBlockExplorerUrlIndex": 0,
+            "defaultRpcEndpointIndex": 0,
+            "name": "Arbitrum",
+            "nativeCurrency": "ETH",
+            "rpcEndpoints": [
+              {
+                "failoverUrls": [],
+                "networkClientId": "arbitrum-mainnet",
+                "type": "infura",
+                "url": "https://arbitrum-mainnet.infura.io/v3/{infuraProjectId}",
               },
             ],
           },
@@ -236,12 +329,13 @@ describe('NetworkControllerInit', () => {
 
   it('enables RPC failover when the `walletFrameworkRpcFailoverEnabled` feature flag is enabled', () => {
     const messenger = new Messenger<
+      MockAnyNamespace,
       never,
       ControllerStateChangeEvent<
         'RemoteFeatureFlagController',
         RemoteFeatureFlagControllerState
       >
-    >();
+    >({ namespace: MOCK_ANY_NAMESPACE });
 
     const request = getInitRequestMock(messenger);
 
@@ -264,12 +358,13 @@ describe('NetworkControllerInit', () => {
 
   it('disables RPC failover when the `walletFrameworkRpcFailoverEnabled` feature flag is disabled', () => {
     const messenger = new Messenger<
+      MockAnyNamespace,
       never,
       ControllerStateChangeEvent<
         'RemoteFeatureFlagController',
         RemoteFeatureFlagControllerState
       >
-    >();
+    >({ namespace: MOCK_ANY_NAMESPACE });
 
     const request = getInitRequestMock(messenger);
 

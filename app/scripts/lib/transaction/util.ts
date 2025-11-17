@@ -31,11 +31,12 @@ import {
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
-import { mapChainIdToSupportedEVMChain } from '../trust-signals/trust-signals-util';
 import {
-  GetAddressSecurityAlertResponse,
+  mapChainIdToSupportedEVMChain,
   AddAddressSecurityAlertResponse,
-} from '../trust-signals/types';
+  GetAddressSecurityAlertResponse,
+  ScanAddressResponse,
+} from '../../../../shared/lib/trust-signals';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -260,10 +261,21 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     return;
   }
 
+  const getAddressSecurityAlertResponseWithChain = (cacheKey: string) => {
+    return getSecurityAlertResponse(cacheKey);
+  };
+
+  const addAddressSecurityAlertResponseWithChain = (
+    cacheKey: string,
+    response: ScanAddressResponse,
+  ) => {
+    return addSecurityAlertResponse(cacheKey, response);
+  };
+
   scanAddressAndAddToCache(
     to,
-    getSecurityAlertResponse,
-    addSecurityAlertResponse,
+    getAddressSecurityAlertResponseWithChain,
+    addAddressSecurityAlertResponseWithChain,
     supportedEVMChain,
   ).catch((error) => {
     console.error(
@@ -347,4 +359,11 @@ async function validateSecurity(request: AddTransactionRequest) {
   } catch (error) {
     handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
   }
+}
+
+export function stripSingleLeadingZero(hex: string): string {
+  if (!hex.startsWith('0x0') || hex.length <= 3) {
+    return hex;
+  }
+  return `0x${hex.slice(3)}`;
 }

@@ -1,4 +1,8 @@
-import { Messenger } from '@metamask/base-controller';
+import {
+  Messenger,
+  MOCK_ANY_NAMESPACE,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { NetworkEnablementController } from '@metamask/network-enablement-controller';
 import { BtcScope, SolAccountType, SolScope } from '@metamask/keyring-api';
 import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
@@ -16,12 +20,13 @@ import {
   NetworkEnablementControllerInitMessenger,
   NetworkEnablementControllerMessenger,
 } from '../messengers/assets';
+import { getRootMessenger } from '../../lib/messenger';
 import { NetworkEnablementControllerInit } from './network-enablement-controller-init';
 
 jest.mock('@metamask/network-enablement-controller');
 
 function getInitRequestMock(
-  baseMessenger = new Messenger<never, never>(),
+  baseMessenger = getRootMessenger<never, never>(),
 ): jest.Mocked<
   ControllerInitRequest<
     NetworkEnablementControllerMessenger,
@@ -75,9 +80,12 @@ describe('NetworkEnablementControllerInit', () => {
 
   it('enables the Solana network when `AccountsController:selectedAccountChange` is emitted', () => {
     const messenger = new Messenger<
+      MockAnyNamespace,
       never,
       AccountsControllerSelectedAccountChangeEvent
-    >();
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
     const request = getInitRequestMock(messenger);
     const { controller } = NetworkEnablementControllerInit(request);
 
@@ -96,9 +104,12 @@ describe('NetworkEnablementControllerInit', () => {
 
   it('enables the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted, the current chain ID is Solana mainnet, and there are no Solana accounts', () => {
     const messenger = new Messenger<
+      MockAnyNamespace,
       AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
       AccountTreeControllerSelectedAccountGroupChangeEvent
-    >();
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
 
     messenger.registerActionHandler(
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
@@ -127,9 +138,12 @@ describe('NetworkEnablementControllerInit', () => {
 
   it('enables the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted, the current chain ID is Bitcoin mainnet, and there are no Bitcoin accounts', () => {
     const messenger = new Messenger<
+      MockAnyNamespace,
       AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
       AccountTreeControllerSelectedAccountGroupChangeEvent
-    >();
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
 
     messenger.registerActionHandler(
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
@@ -158,9 +172,10 @@ describe('NetworkEnablementControllerInit', () => {
 
   it('does not enable the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted and there are accounts', () => {
     const messenger = new Messenger<
+      MockAnyNamespace,
       AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
       AccountTreeControllerSelectedAccountGroupChangeEvent
-    >();
+    >({ namespace: MOCK_ANY_NAMESPACE });
 
     messenger.registerActionHandler(
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
@@ -190,9 +205,10 @@ describe('NetworkEnablementControllerInit', () => {
 
   it('does not enable the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted and multiple networks are enabled', () => {
     const messenger = new Messenger<
+      MockAnyNamespace,
       AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
       AccountTreeControllerSelectedAccountGroupChangeEvent
-    >();
+    >({ namespace: MOCK_ANY_NAMESPACE });
 
     messenger.registerActionHandler(
       'AccountTreeController:getAccountsFromSelectedAccountGroup',

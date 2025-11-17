@@ -70,6 +70,7 @@ const snapsExecutionEnvJs = fs.readFileSync(snapsExecutionEnvJsPath, 'utf-8');
 
 const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
+  'avalanche-mainnet.infura.io',
   'bsc-dataseed.binance.org',
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
@@ -150,6 +151,7 @@ async function setupMocking(
   testSpecificMock,
   { chainId, ethConversionInUsd = 1700 },
 ) {
+  let numNetworkReqs = 0;
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: ({ headers: { host }, url }) => {
@@ -164,13 +166,21 @@ async function setupMocking(
       }
       console.log('Request redirected to the catch all mock ============', url);
       return {
-        // If the URL or the host is not in the allowlsit nor blocklisted, we return a 200.
+        // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.
         response: {
           statusCode: 200,
         },
       };
     },
   });
+
+  function getNetworkReport() {
+    return { numNetworkReqs };
+  }
+
+  function clearNetworkReport() {
+    numNetworkReqs = 0;
+  }
 
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
@@ -188,6 +198,7 @@ async function setupMocking(
       };
     });
 
+  // Subscriptions Eligibility
   await server
     .forGet(
       'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
@@ -195,7 +206,18 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [],
+        json: [
+          {
+            canSubscribe: false,
+            canViewEntryModal: false,
+            minBalanceUSD: 1000,
+            product: 'shield',
+            modalType: 'A',
+            cohorts: [],
+            assignedCohort: null,
+            hasAssignedCohortExpired: null,
+          },
+        ],
       };
     });
 
@@ -562,7 +584,7 @@ async function setupMocking(
   // Bridge API mocks - must be after AGGREGATOR_METADATA is defined
   // Network 1 (Mainnet)
   await server
-    .forGet('https://bridge.api.cx.metamask.io/networks/1/topAssets')
+    .forGet(`https://bridge.api.cx.metamask.io/networks/1/topAssets`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -865,6 +887,30 @@ async function setupMocking(
       statusCode: 200,
     };
   });
+
+  // Mock Rive animation files to prevent loading errors in e2e tests
+  // These animations are loaded during onboarding flow
+  await server
+    .forGet(/.*\/images\/riv_animations\/rive\.wasm/u)
+    .thenCallback(() => {
+      // Return empty ArrayBuffer for WASM file
+      return {
+        statusCode: 200,
+        headers: { 'content-type': 'application/wasm' },
+        body: Buffer.alloc(0),
+      };
+    });
+
+  await server
+    .forGet(/.*\/images\/riv_animations\/.*\.riv/u)
+    .thenCallback(() => {
+      // Return empty binary for .riv animation files
+      return {
+        statusCode: 200,
+        headers: { 'content-type': 'application/octet-stream' },
+        body: Buffer.alloc(0),
+      };
+    });
 
   await server
     .forGet('https://min-api.cryptocompare.com/data/pricemulti')
@@ -1254,6 +1300,8 @@ async function setupMocking(
    * operation. See the browserAPIRequestDomains regex above.
    */
   server.on('request-initiated', (request) => {
+    numNetworkReqs += 1;
+
     const privateHosts = matchPrivateHosts(request);
     if (privateHosts.size) {
       for (const privateHost of privateHosts) {
@@ -1272,7 +1320,12 @@ async function setupMocking(
     }
   });
 
-  return { mockedEndpoint, getPrivacyReport };
+  return {
+    mockedEndpoint,
+    getPrivacyReport,
+    getNetworkReport,
+    clearNetworkReport,
+  };
 }
 
 async function mockLensNameProvider(server) {

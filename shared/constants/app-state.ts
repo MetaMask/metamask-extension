@@ -13,7 +13,6 @@ export enum AccountOverviewTabKey {
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: MetaMetricsEventName.TokenScreenOpened,
   [AccountOverviewTabKey.DeFi]: MetaMetricsEventName.DeFiScreenOpened,
-  [AccountOverviewTabKey.Nfts]: MetaMetricsEventName.NftScreenOpened,
   [AccountOverviewTabKey.Activity]: MetaMetricsEventName.ActivityScreenOpened,
 } as const;
 

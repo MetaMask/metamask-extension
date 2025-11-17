@@ -95,7 +95,6 @@ export const PermissionsCellTooltip = ({
       duration={0}
       size="small"
       trigger="mouseenter"
-      theme="dark"
     >
       <AvatarGroup
         members={avatarNetworksData}

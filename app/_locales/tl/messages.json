@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Mga Attribution"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Ang Infura RPC URL ay hindi na sinusuportahan ang Aurora."
-  },
   "authorizedPermissions": {
     "message": "Inawtorisahan mo ang mga sumusunod na pahintulot"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Custom na Token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Ang pagtuklas ng token ay hindi pa magagamit sa network na ito. Mangyaring manu-manong mag-import ng token at tiyaking pinagkakatiwalaan mo ito. Matuto tungkol sa $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Bago manu-manong mag-import ng token, tiyaking pinagkakatiwalaan mo ito. Matuto tungkol sa $1."
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Siguraduhing pinagkakatiwalaan mo ang isang token bago mo ito i-import. Alamin kung paano maiwasan ang $1. Maaari mo ring paganahin ang pagtuklas ng token $2."
   },
   "customerSupport": {
     "message": "suporta sa kostumer"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Magdeposito ng crypto mula sa ibang account gamit ang wallet address o QR code."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Dahil sa mga update sa sistema ng Ethereum, ang Goerli test network malapit nang itigil."
   },
   "deprecatedNetwork": {
     "message": "Ang network na ito ay hindi na suportado"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "Ang impormasyon na iyong inilagay ay nauugnay sa isang umiiral na ID ng chain."
   },
-  "expandView": {
-    "message": "I-expand ang view"
-  },
   "experimental": {
     "message": "Eksperimental"
   },
@@ -2753,32 +2738,11 @@
   "importNFTTokenIdToolTip": {
     "message": "Ang ID ng NFT ay isang natatanging pagkakakilanlan dahil walang dalawang NFT ang magkatulad. Muli, sa OpenSea ang numerong ito ay nasa ilalim ng 'Mga Detalye'. Itala ito, o kopyahin ito sa iyong clipboard."
   },
-  "importNWordSRP": {
-    "message": "Mayroon akong $1 (na) word recovery phrase",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Pribadong Key"
   },
-  "importSRPDescription": {
-    "message": "Mag-import ng dati nang wallet gamit ang iyong 12 o 24 word secret recovery phrase."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Naglalaman ang Secret Recovery Phrase ng 12 o 24 na salita"
-  },
-  "importSRPWordError": {
-    "message": "Mali ang salitang $1 o mali ang baybay nito.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Mali ang salitang $1 at $2 o mali ang baybay ng mga ito.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Mag-import ng Secret Recovery Phrase"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Nagkaroon ng hindi matukoy na error."
   },
   "importSelectedTokens": {
     "message": "I-import ang mga napiling token?"
@@ -2798,9 +2762,6 @@
   "importTokensError": {
     "message": "Hindi namin ma-import ang mga token. Pakisubukan ulit mamaya."
   },
-  "importWallet": {
-    "message": "Mag-import ng wallet"
-  },
   "importWalletOrAccountHeader": {
     "message": "Mag-import ng wallet o account"
   },
@@ -2811,9 +2772,6 @@
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "sa iyong Mga Setting"
   },
   "included": {
     "message": "kalakip"
@@ -4073,9 +4031,6 @@
     "message": "$1 icon",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Pumili ng opsyon para magpatuloy"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Ilunsad ang extension"
   },
@@ -5130,10 +5085,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Ito ang iyong $1. Isulat ito sa tamang pagkakasunod-sunod at panatilihing ligtas. Kung may nakakaalam ng iyong Lihim na Parirala sa Pagbawi, maaari nilang i-access ang iyong wallet. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Huwag itong ibahagi sa sinuman, kailanman."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "I-save ang iyong Lihim na Parirala sa Pagbawi"
@@ -5267,9 +5219,6 @@
   },
   "shieldEntryModalGetStarted": {
     "message": "Magsimula"
-  },
-  "shieldEntryModalSkip": {
-    "message": "Laktawan"
   },
   "show": {
     "message": "Ipakita"
@@ -6524,10 +6473,6 @@
   "switchNetwork": {
     "message": "Lumipat ng network"
   },
-  "switchToNetwork": {
-    "message": "Lumipat sa $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Lumipat sa account na ito"
   },
@@ -6633,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Marketplace ng token"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "mga panloloko sa token at panganib sa seguridad"
   },
   "tokenStandard": {
     "message": "Pamantayan ng token"
@@ -7087,24 +7029,11 @@
     "message": "$1 maaari mong panatiling ligtas ang pariralang ito nang sa gayon hindi mawawala ang access mo sa iyong pera.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Maaari mong i-back up ang iyong mga wallet o tingnan ang iyong Lihim na Parirala sa Pagbawi sa Mga Setting > Seguridad at Password."
-  },
   "walletReadyLoseSrp": {
     "message": "Kapag nawala ang iyong Lihim na Parirala sa Pagbawi, hindi mo na magagamit ang iyong wallet."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Matutulungan ka ng Lihim na Parirala sa Pagbawi na ito na magkaroon muli ng access kung sakaling makalimutan mo ang iyong password o mawalan ng access sa iyong login."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Kapag hindi mo na-back up ang iyong Lihim na Parirala sa Pagbawi, mawawalan ka ng access sa iyong mga pondo kapag na-lock out ka sa app o nagkaroon ng bagong device."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Maaari kang mag-log in sa iyong wallet anumang oras gamit ang iyong $1 account at password.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Kapag nakalimutan mo ang iyong password, hindi mo maa-access ang iyong wallet."
   },
   "wantToAddThisNetwork": {
     "message": "Gusto mo bang idagdag ang network na ito?"
@@ -7147,9 +7076,6 @@
   },
   "welcomeBack": {
     "message": "Maligayang pagbabalik"
-  },
-  "welcomeToMetaMask": {
-    "message": "Magsimula na tayo"
   },
   "whatsThis": {
     "message": "Ano ito?"
@@ -7213,8 +7139,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Panatilihing ligtas ang iyong Lihim na Parirala sa Pagbawi!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Ipapaalala namin sa iyo mamaya"
   }
 }

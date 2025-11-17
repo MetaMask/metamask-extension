@@ -12,15 +12,17 @@ import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboardi
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import TestDappSendEthWithPrivateKey from '../../page-objects/pages/test-dapp-send-eth-with-private-key';
+import { handleSidepanelPostOnboarding } from '../../page-objects/flows/onboarding.flow';
 
 describe('Incremental Security', function (this: Suite) {
   it('Back up Secret Recovery Phrase from backup reminder', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: {
+          customDappPaths: ['./send-eth-with-private-key-test'],
+        },
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
-        dappPath: 'send-eth-with-private-key-test',
       },
       async ({
         driver,
@@ -67,6 +69,9 @@ describe('Incremental Security', function (this: Suite) {
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
 
         // copy the wallet address
         const homePage = new HomePage(driver);

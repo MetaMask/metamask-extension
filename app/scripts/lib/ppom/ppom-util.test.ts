@@ -16,8 +16,12 @@ import {
 } from '@metamask/signature-controller';
 import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { PPOM } from '@blockaid/ppom_release';
-import { Messenger } from '@metamask/base-controller';
 import { isSnapId } from '@metamask/snaps-utils';
+import {
+  MOCK_ANY_NAMESPACE,
+  MockAnyNamespace,
+  Messenger,
+} from '@metamask/messenger';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -27,9 +31,9 @@ import {
 import { AppStateController } from '../../controllers/app-state-controller';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
+import { RootMessenger } from '../messenger';
 import {
   generateSecurityAlertId,
-  PPOMMessenger,
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './ppom-util';
@@ -94,7 +98,7 @@ const TRANSACTION_PARAMS_MOCK_2: TransactionParams = {
 
 const MESSENGER_MOCK = {
   subscribe: jest.fn(),
-} as unknown as PPOMMessenger;
+} as unknown as RootMessenger;
 
 function createPPOMMock() {
   return {
@@ -142,9 +146,12 @@ function createTransactionControllerMock(
 
 function createMessengerMock() {
   return new Messenger<
+    MockAnyNamespace,
     never,
     SignatureStateChange | TransactionControllerUnapprovedTransactionAddedEvent
-  >();
+  >({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 }
 
 describe('PPOM Utils', () => {

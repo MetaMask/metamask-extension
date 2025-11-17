@@ -1,4 +1,5 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getKeyringControllerInitMessenger,
   getKeyringControllerMessenger,
@@ -6,19 +7,19 @@ import {
 
 describe('getKeyringControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const keyringControllerMessenger = getKeyringControllerMessenger(messenger);
 
-    expect(keyringControllerMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(keyringControllerMessenger).toBeInstanceOf(Messenger);
   });
 });
 
 describe('getKeyringControllerInitMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const keyringControllerInitMessenger =
       getKeyringControllerInitMessenger(messenger);
 
-    expect(keyringControllerInitMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(keyringControllerInitMessenger).toBeInstanceOf(Messenger);
   });
 });

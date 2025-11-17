@@ -15,7 +15,7 @@ describe('Remove Network:', function (this: Suite) {
   it('should remove the chainId from existing permissions when a network configuration is removed entirely', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDappWithChains([
             '0x539',
@@ -91,7 +91,7 @@ describe('Remove Network:', function (this: Suite) {
   it('should not remove the chainId from existing permissions when a network client is removed but other network clients still exist for the chainId', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDappWithChains([
             '0x539',

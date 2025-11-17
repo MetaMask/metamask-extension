@@ -7,6 +7,252 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.9.0]
+
+### Added
+
+- Added feature flag support to temporarily hide Monad (and other networks) from the “Add Popular Network” list. (#37532)
+- Update bitcoin snap to 1.4.4 (#37537)
+- Added claims list and view page (#35800)
+- Added `Reset Wallet` feature for social-login unlock to reset the wallet if user encounters unrecoverable errors. (#36223)
+- Enabled revocation flow of advance permissions (#37209)
+- Updated the unlock wallet flow with animation changes. (#37412)
+- Introduce burn/null recipient address blocker alert (#37531)
+- Points estimate for swaps/bridges (#37529)
+- Updates wallet ready page (#36839)
+- Adds MONAD network with bridge & swap support (#37283)
+- Changed how DeFi positions are fetch in the client to reduce amount of calls (#37215)
+- Implemented the Rive animation setup using the `@rive-app/react-canvas` package and updated the welcome page by (#36113)
+  integrating the Rive animation and enhancing the UI
+- Fix subscription crypto approval screen loading flicker (#37409)
+- Added network and account selector to claims form (#37434)
+- Add back button to Settings inner pages (#37486)
+- Show rewards balance (#37361)
+- Added support for trust signals on spender addresses within Confirmations. (#36431)
+- Changed order of assets when their fiat balances are the same (#37457)
+- Register subscription and redirect to shield settings after shield crypto approval confirmation (#36748)
+- Handle shield deep link link.metamask.io/shield (#37446)
+- Handle claims submit backend errors (#37391)
+- UI and functionality improvement for file uploader (#37353)
+- Enables the bitcoin swaps features (#37587)
+- Move "Discover" button to global menu (#37551)
+- Upgrade @metamask-permissions-snap from `0.4.1` to `0.5.0` an @metamask/permissions-kernel-snap from `0.4.0` to `0.5.0` (#37534)
+
+### Fixed
+
+- Fixes a bug that makes users see duplicate tokens in search tokens modal when on popular networks. (#37568)
+- Fix incorrect shield crypto approval calculation (#37572)
+- Fixes styles for the fox icon when selecting future ETH as a gas token (#37577)
+- Fixes a bug where when a user no longer owns an NFT it still shows up in the list when clicking Send button from home page. (#37558)
+- Verify that network is bridge-enabled before navigating to the Bridge page (#37556)
+- Fixed the padding in the transaction simulation details (#37511)
+- Sets a default network order for the receiving addresses. (#37467)
+- Fix the broken link of Ledger connection toturial. (#37216)
+- Updated the error handling for invalid SRP (#37470)
+- Fix intermittent stripe checkout succeed subscription not shown (#37453)
+- Updated default pair for BTC (#37512)
+- Fixed the smart transaction link (#37461)
+- Fixed a crash that could occur during wallet initialization when connecting to dapps (#37234)
+- Fixed string sanitize for bidirectional Unicode control characters to hide in signature requests (#37056)
+- Simulation Details - Displayed "No changes" in a single line (#37464)
+- Fix showing ENS recipient if it's typed in the send flow (#37047)
+- Use correct href for phishing page proceed anyway button (#36871)
+- Token name truncation (#37429)
+- Re-add connection indicator to bip44 account cell (#36423)
+- Fixed issue where approval changes were sometimes missing in transaction simulations for batch transactions. (#37347)
+- Defer UI actions until swap SSE quotes are fully loaded (#37336)
+- @metamask/message-signing-snap to version 1.1.4 (#37579)
+- Decrease time before activating QuickNode when Infura is degraded or unavailable; decrease time before allowing users to (#37002)
+  interact with a custom network following connection issues
+- Update default bridge slippage to 2% (#37367)
+- Stops reloading of animation once completed (#37581)
+- Fixes error saying alIgnoredTokens is undefined (#37660)
+- Fixes unexpected error modal shown after user has cancelled the social login in firefox (#37658)
+- Fixes infinite spinner shown on send flow when sending very low BTC (#37657)
+- Fixed a bug causing advanced permissions requests on mainnet to fail before showing the permission picker (#37675)
+- Fixes BTC redeposits not shown in individual asset activity (#37732)
+- Automatically creates new account types on wallet unlock (#37762)
+
+## [13.8.0]
+
+### Added
+
+- Bump bitcoin snap version to v1.4.3 (#37023)
+- Subscription & shield controller updates (#37371)
+- Added account type labels to asset details (#37332)
+- Show Need help link together with error on Claims form Transaction hash field (#37297)
+- Update payment-method component in shield-subscription page (#37340)
+- Added optional prop, `fallbackName` to `name-details` component. (#37299)
+  Provide token symbol from shield pricing as a
+  `fallbackName` prop in Shield-subscription-approval page.
+- Claims form back button redirect to Transaction shield page (#37333)
+- Set autofocus false on confirmation alert modals (#37294)
+- Added account type tags for bitcoin (#36927)
+- Use ArrowDown instead of ArrowRight on shield list buttons (#37292)
+- Updated two-tab components to use full-width layout for better visual balance (#37142)
+- Sidebar experimental PR (#36564)
+- Hide search field on asset picker inside Shield plan (#37193)
+- Updated add custom RPC flow (#36640)
+- Added support for buying Bitcoin and other non-EVM cryptocurrencies through the MetaMask buy crypto flow (#37146)
+- Added chain ID and display backend errors properly (#37174)
+- Added copy icon to network addresses in the account header (#37112)
+- Updated UI and copywriting on Shield Plan Confirm page (#37159)
+- Updated pay with crypto copywriting (#37110)
+
+### Fixed
+
+- Updates add account button text to `Add account` (#37288)
+- Fixes `Background connection unresponsive` issues caused by the UI attempting to load before the background process has (#36729)
+  begun initializing.
+- Updated smart account terminology in the UI from "Enable smart contract account" to "Use smart account" (#37235)
+- Transaction shield covered button show modal (#37225)
+- Update broken onekey tutorial link. (#37217)
+- Added popular networks (Arbitrum, BSC, Optimism, Polygon, Sei, and Base) by default for all users, filtered to only (#37172)
+  include networks supported by accounts API v4
+- Fixed a bug causing the setting showNativeTokenAsMainBalance to not display native user balance when ON. (#37233)
+- Enables storing EIP-7715 permissions granted by the user (#37158)
+- Reduce excess re-renders (#37293)
+- Aligned the Import Wallet UI in the 'Add Wallet' flow with the existing 'Import SRP' onboarding design for consistency (#37207)
+- Fixed shield subscription trial days value inconsistency (#37295)
+- Removed scroll state for MetaMetric UI when opening it on small-screen devices. (#37220)
+- Fixed address security alerts to be properly cached per network, preventing incorrect security warnings when switching between (#36708)
+  chains
+- Fix wrong link on BTC asset details (#37180)
+- Added modal overlay for onboarding modal (#37206)
+- Fixed delay checking if token is already imported inside import tokens modal. (#37116)
+- Fix BTC activity is not shown on asset details (#37170)
+- Fixed Solana and Bitcoin icons not showing in the details page (#37065)
+- Fixed pre-emptive phishing page redirect on Google search results. (#37029)
+- Normalize basePath trailing slash in getRelativeLocationForNestedRoutes (#37161)
+- Fixed an issue where some avatars would be out of sync (#37173)
+- Fix the manual refresh and token detection (#37130)
+- Fixes subscription-polling when shield feature is disabled (#37476)
+- Fixes network nicknames for popular networks (#37477)
+- Fixes historical prices chart ranges for non-evm assets (#37505)
+- Fixes issue where we're failing to log swap comparisons in some scenarios (#37496)
+- Fixes token image and symbol in confirmation for EVM transactions when nonEVM network is selected at wallet view (#37491)
+- Fixes a bug where tokenId for NFT was not being sent correctly in send flow (#37555)
+
+## [13.7.0]
+
+### Added
+
+- Fix Transaction Shield membership banner on light mode (#37162)
+- Cached last used subscription payment method (& token), so that user won't need to re-select on navigations. (#37144)
+- Return tx hashes asap from the submitBatch hook (#37113)
+- Show wallet name in bridge quote recipient field (#37083)
+- Adds Billing Start Date in shield-subscription confirmation screen. (#37103)
+- Handle crypto approval in shield settings update payment method (#37057)
+- Update shield-controller to `v0.4.0`. (#37071)
+- Use SSE to stream swap quotes (#36481)
+- Adds network and native token logos for Injective network. (#36923)
+- Add `auxiliaryFunds` + `requiredAssets` support defined under [ERC-7682](https://eips.ethereum.org/EIPS/eip-7682) (#36061)
+- Add bitcoin ff to main build (#36940)
+- Improves user experience in permission confirmation dialogs. (#36490)
+- Adapted the payload of request `signRewardsMessage` for improved performance (#36921)
+  (https://github.com/MetaMask/snap-solana-wallet/pull/554)
+  Improved speed when looking up the state for accounts
+  by id (https://github.com/MetaMask/snap-solana-wallet/pull/550)
+  Fixed a serialization issue causing the snap to try
+  rendering bigints
+  (https://github.com/MetaMask/snap-solana-wallet/pull/551)
+  Fixed incorrect token icon URL building
+  (https://github.com/MetaMask/snap-solana-wallet/pull/548)
+  Fixed the send flow to support token account recipients
+  (https://github.com/MetaMask/snap-solana-wallet/pull/547)
+- Enables watch only accounts on experimental builds (#37051)
+
+### Fixed
+
+- Toast avatar icon (#37124)
+- Shield subscription default payment method crypto if available (#37101)
+- Fix a bug when multiple confirmation exist but navigation fails to when approving (#36990)
+- Fix coverage status not showing (#37097)
+- Fix recipient icon when recipient is ENS domain (#37043)
+- Fixed a bug where the wallet would not prompt the user for unlock and would silently drop `personal_sign` requests when the (#36963)
+  wallet was locked and the user was opted into MetaMetrics
+- Prevent unresponsive UI in the case where the user has more than 64MB of state; the trade off is that we now allow state (#35308)
+  size to increase until the memory the browser has allotted for the
+  extension process runs out (and crashes).
+- Fixed missing `Bearer` in the shield-gateway proxy Authorization Header. (#36985)
+- Remove unneccesary callback and dependencies (#36974)
+- Fixed a bug that was causing the token list to show "No conversion rate available" once the user connects to testnet from a (#36685)
+  dapp.
+- Improves gator permissions page loading performance with cache-first strategy. (#36833)
+- Removes extra transactions call to improve performance (#36968)
+- Prevents quick reconnection when websocket connection is misbehaving (#37118)
+- Fixes the incorrect USDC address for SEI (#37221)
+- Only triggers onActive and onInactive Snap lifecycle hooks when client is unlocked (#37222)
+- Fixes a bug where the Authentication API was called infinitely in useCarouselManagement (#37334)
+
+## [13.6.0]
+
+### Added
+
+- Integrated Backend WebSocket Service and Account Activity Service for real-time balance updates (feature-flagged) (#36819)
+- Added Bitcoin provider feature flag support for runtime control via addBitcoinAccount flag (#36676)
+- Adds network logo and native token logo for Plasma Mainnet network (#36456)
+- Show skeleton loader when loading status for Shield Coverage (#36888)
+- Added support for the Irish (Gaeilge) language (#36088)
+- Added user's eligibility check for shield subscription Added an option to submit user subscription event from (#36835)
+  the shield entry modal
+- Added support for Hourly, Bi-Weekly (14 days), Monthly (30 days), and Yearly (365 days) duration periods. (#36706)
+- Added shield subscription error toasts (#36718)
+- Create add funds modal (#36592)
+- Added new toast component (#36408)
+- Add file upload component (#35779)
+- Auto turn on some settings when shield is active (#36343)
+- Bitcoin v1.3.0 release. (#36753)
+- Integrated Shield Entry Modal with SubscriptionController (#36588)
+  Upgraded SubscriptionController to `v1.0.0`.
+  Added `ShieldSubscriptionContext` to watch subscription
+  status
+- Added snap accounts link and account watcher option to multichain account list (#36717)
+- Added new label to BTC assets in the Tokens tab (#36574)
+- Added Bitcoin network support for Bridge functionality (#35597)
+- Enable BIP44 Bitcoin accounts (#36510)
+- Make token detail chart % change when changing time frames and hovering (#36664)
+- Add claims submission form (#35790)
+- Show user account instead of payer address in transaction shield (#36610)
+  fix translation date for crypto insufficient funding
+- Adds hide and pin options to account item menu (#37012)
+
+### Fixed
+
+- Fixed a bug that was causing the same token to be added twice from search (#36727)
+- Improve perceived performance after importing a new SRP (#36882)
+- Empty select rpc modal (#36876)
+- Replace eye icon with a hover interaction to hide balances (#36543)
+- Fixed a bug causing users to still see tokens with zero balance when the setting "hideTokensWithZeroBalance" is enabled. (#36821)
+- Add changes to enable Snap accounts link to stable (#36770)
+- Fixed a bug that caused ENS content hashes not to resolve properly (#36812)
+- Correct transaction shield coverage text style (#36810)
+- Fixed `ShieldController.init` in `SubscriptionController:stateChange` event listener (#36779)
+  fixed `SubscriptionController` polling
+  refactor `useUserSubscription` hook usage.
+- Use template for dollar amount on locale (#36741)
+- Update notifications enabled by default feature flag to control rollout (#36724)
+- Increase our security posture by locking down `cross_origin_opener_policy` to `same-origin-allow-popups` openers only. (#36500)
+- Show correct available token amount in shield subscription plan (#36494)
+- Design team’s review have been implemented (#36523)
+- Helps with ongoing performance regressions when using Solana (#36613)
+- Fixes a bug where first permitting accounts via the EVM provider would cause all requests to the Solana Wallet Standard provider (#36434)
+  to fail with an `The requested account and/or method has not been
+authorized by the user.` error until the user fully revoked dapp
+  permissions and then permitted accounts using the Solana Wallet Standard
+  provider first.
+- Patched ShieldController to `v0.3.2`. (#36809)
+- Fixes positioning issues for dropdowns, tooltips, and popovers (#36967)
+- Fixes a bug where the wallet would not prompt the user (#36963)
+  for unlock and would silently drop personal_sign requests when the
+  wallet was locked and the user was opted into MetaMetrics
+- Renders missing network row in transaction confirmations (#37048)
+- Adds address pattern matching to accounts list search (#37005)
+- Migrates user's existing pinned and hidden state to multichain account designs (#37017)
+- Tweaks messaging for degraded and unavailable networks (#37082)
+- When adding a network the selectedNetworkClientId was not being updated and many of our components still depend on it (#37062)
+- Ensures same toast avatar icon is displayed for the same account when switching to a different account that isn't connected (#37124)
+
 ## [13.5.0]
 
 ### Added
@@ -67,7 +313,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Removed `secure-your-wallet` page and updated `backup-seed-phrase` pages (#36152)
-
 - Remove blockie-identicon and the 'blo' dependency (#36429)
 - Remove extra add network modal (#36309)
 - Changed account selector copy to read x network address(es) (#36293)
@@ -890,7 +1135,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.9.0...HEAD
+[13.9.0]: https://github.com/MetaMask/metamask-extension/compare/v13.8.0...v13.9.0
+[13.8.0]: https://github.com/MetaMask/metamask-extension/compare/v13.7.0...v13.8.0
+[13.7.0]: https://github.com/MetaMask/metamask-extension/compare/v13.6.0...v13.7.0
+[13.6.0]: https://github.com/MetaMask/metamask-extension/compare/v13.5.0...v13.6.0
 [13.5.0]: https://github.com/MetaMask/metamask-extension/compare/v13.4.3...v13.5.0
 [13.4.3]: https://github.com/MetaMask/metamask-extension/compare/v13.4.2...v13.4.3
 [13.4.2]: https://github.com/MetaMask/metamask-extension/compare/v13.4.1...v13.4.2

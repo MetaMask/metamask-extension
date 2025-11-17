@@ -255,7 +255,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
   it.skip('should capture metrics when security alerts is shown', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()

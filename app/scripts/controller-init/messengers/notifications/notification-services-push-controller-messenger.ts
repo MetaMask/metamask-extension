@@ -1,15 +1,19 @@
-import { Messenger } from '@metamask/base-controller';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import type {
-  AllowedActions,
-  AllowedEvents,
   NotificationServicesPushControllerOnNewNotificationEvent,
   NotificationServicesPushControllerPushNotificationClickedEvent,
+  NotificationServicesPushControllerMessenger,
 } from '@metamask/notification-services-controller/push-services';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
-export type NotificationServicesPushControllerMessenger = ReturnType<
-  typeof getNotificationServicesPushControllerMessenger
->;
+type Actions = MessengerActions<NotificationServicesPushControllerMessenger>;
+
+type Events = MessengerEvents<NotificationServicesPushControllerMessenger>;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -20,13 +24,22 @@ export type NotificationServicesPushControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getNotificationServicesPushControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'NotificationServicesPushController',
-    allowedActions: ['AuthenticationController:getBearerToken'],
-    allowedEvents: [],
+  const controllerMessenger = new Messenger<
+    'NotificationServicesPushController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'NotificationServicesPushController',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: ['AuthenticationController:getBearerToken'],
+  });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions = MetaMetricsControllerTrackEventAction;
@@ -48,17 +61,27 @@ export type NotificationServicesPushControllerInitMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getNotificationServicesPushControllerInitMessenger(
-  messenger: Messenger<
+  messenger: RootMessenger<
     AllowedInitializationActions,
     AllowedInitializationEvents
   >,
 ) {
-  return messenger.getRestricted({
-    name: 'NotificationServicesPushControllerInit',
-    allowedActions: ['MetaMetricsController:trackEvent'],
-    allowedEvents: [
+  const controllerInitMessenger = new Messenger<
+    'NotificationServicesPushControllerInit',
+    AllowedInitializationActions,
+    AllowedInitializationEvents,
+    typeof messenger
+  >({
+    namespace: 'NotificationServicesPushControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['MetaMetricsController:trackEvent'],
+    events: [
       'NotificationServicesPushController:onNewNotifications',
       'NotificationServicesPushController:pushNotificationClicked',
     ],
   });
+  return controllerInitMessenger;
 }

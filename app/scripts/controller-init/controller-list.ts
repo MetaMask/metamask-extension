@@ -13,6 +13,7 @@ import { SmartTransactionsController } from '@metamask/smart-transactions-contro
 import { TransactionController } from '@metamask/transaction-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
+  AccountTrackerController,
   AssetsContractController,
   CurrencyRateController,
   DeFiPositionsController,
@@ -80,6 +81,7 @@ import {
   AccountActivityService,
   BackendWebSocketService,
 } from '@metamask/core-backend';
+import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -88,7 +90,6 @@ import { NetworkOrderController } from '../controllers/network-order';
 import OAuthService from '../services/oauth/oauth-service';
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
-import AccountTrackerController from '../controllers/account-tracker-controller';
 import { AppStateController } from '../controllers/app-state-controller';
 import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
 import { SubscriptionService } from '../services/subscription/subscription-service';
@@ -98,6 +99,8 @@ import { MetaMetricsDataDeletionController } from '../controllers/metametrics-da
 import AppMetadataController from '../controllers/app-metadata';
 import DecryptMessageController from '../controllers/decrypt-message';
 import EncryptionPublicKeyController from '../controllers/encryption-public-key';
+import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
+import { RewardsController } from '../controllers/rewards/rewards-controller';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -115,6 +118,7 @@ export type Controller =
   | AuthenticationController
   | BridgeController
   | BridgeStatusController
+  | ClaimsController
   | CronjobController
   | CurrencyRateController
   | DecryptMessageController
@@ -157,6 +161,8 @@ export type Controller =
   | RateLimitController<RateLimitedApiMap>
   | RatesController
   | RemoteFeatureFlagController
+  | RewardsController
+  | RewardsDataService
   | SeedlessOnboardingController<EncryptionKey>
   | SelectedNetworkController
   | ShieldController
@@ -188,7 +194,8 @@ export type Controller =
   | BackendWebSocketService
   | AccountActivityService
   | MultichainAccountService
-  | NetworkEnablementController;
+  | NetworkEnablementController
+  | ClaimsService;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
@@ -206,6 +213,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   AuthenticationController['state'] &
   BridgeController['state'] &
   BridgeStatusController['state'] &
+  ClaimsController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
@@ -237,6 +245,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   PreferencesController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &
+  RewardsController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   SelectedNetworkController['state'] &
   ShieldController['state'] &
@@ -257,4 +266,5 @@ export type ControllerFlatState = AccountOrderController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
-  NetworkEnablementController['state'];
+  NetworkEnablementController['state'] &
+  AccountTrackerController['state'];

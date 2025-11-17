@@ -15,7 +15,6 @@ import {
   SignatureRequest,
   SignatureStateChange,
 } from '@metamask/signature-controller';
-import { Messenger } from '@metamask/base-controller';
 import { cloneDeep } from 'lodash';
 import { isSnapId } from '@metamask/snaps-utils';
 import { SnapId } from '@metamask/snaps-sdk';
@@ -31,6 +30,7 @@ import { AppStateController } from '../../controllers/app-state-controller';
 import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-signature';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { RootMessenger } from '../messenger';
 import {
   SecurityAlertResponse,
   GetSecurityAlertsConfig,
@@ -57,11 +57,6 @@ type PPOMRequest = JsonRpcRequest & {
   delegationMock?: Hex;
   origin?: string;
 };
-
-export type PPOMMessenger = Messenger<
-  never,
-  SignatureStateChange | TransactionControllerUnapprovedTransactionAddedEvent
->;
 
 export async function validateRequestWithPPOM({
   ppomController,
@@ -128,7 +123,7 @@ export async function updateSecurityAlertResponse({
   transactionController,
 }: {
   appStateController: AppStateController;
-  messenger: PPOMMessenger;
+  messenger: RootMessenger;
   method: string;
   securityAlertId: string;
   securityAlertResponse: SecurityAlertResponse;
@@ -368,7 +363,10 @@ async function validateWithAPI(
 async function waitForTransactionMetadata(
   transactionController: TransactionController,
   securityAlertId: string,
-  messenger: PPOMMessenger,
+  messenger: RootMessenger<
+    never,
+    TransactionControllerUnapprovedTransactionAddedEvent
+  >,
 ): Promise<TransactionMeta> {
   const transactionFilter = (meta: TransactionMeta) =>
     meta.securityAlertResponse?.securityAlertId === securityAlertId;
@@ -409,7 +407,7 @@ async function waitForTransactionMetadata(
 async function waitForSignatureRequest(
   signatureController: SignatureController,
   securityAlertId: string,
-  messenger: PPOMMessenger,
+  messenger: RootMessenger<never, SignatureStateChange>,
 ): Promise<SignatureRequest> {
   const signatureFilter = (state: SignatureControllerState) =>
     Object.values(state.signatureRequests).find(

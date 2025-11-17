@@ -239,10 +239,10 @@ exports[`AssetPage should render a native asset 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="flex flex-row"
+                class="flex flex-row min-w-0"
               >
                 <div
-                  class="flex flex-row gap-2"
+                  class="flex flex-row gap-2 min-w-0"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
@@ -671,10 +671,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="flex flex-row"
+                class="flex flex-row min-w-0"
               >
                 <div
-                  class="flex flex-row gap-2"
+                  class="flex flex-row gap-2 min-w-0"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
@@ -1148,10 +1148,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="flex flex-row"
+                class="flex flex-row min-w-0"
               >
                 <div
-                  class="flex flex-row gap-2"
+                  class="flex flex-row gap-2 min-w-0"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"

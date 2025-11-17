@@ -1,7 +1,9 @@
 import { screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { useParams } from 'react-router-dom';
 import {
+  getMockAddEthereumChainConfirmState,
   getMockApproveConfirmState,
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
@@ -16,6 +18,10 @@ import Info from './info';
 
 jest.mock('../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
+}));
+
+jest.mock('./hooks/useBatchApproveBalanceChanges', () => ({
+  useBatchApproveBalanceChanges: jest.fn(),
 }));
 
 jest.mock(
@@ -51,8 +57,14 @@ jest.mock('../../../../../../shared/modules/environment', () => ({
   isGatorPermissionsFeatureEnabled: jest.fn().mockReturnValue(true),
 }));
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: jest.fn(),
+}));
+
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
+  const mockedUseParams = jest.mocked(useParams);
 
   beforeEach(() => {
     mockedAssetDetails.mockImplementation(() => ({
@@ -60,6 +72,7 @@ describe('Info', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
+    mockedUseParams.mockReturnValue({});
   });
 
   it('renders info section for personal sign request', () => {
@@ -122,5 +135,18 @@ describe('Info', () => {
     });
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('renders info section for addEthereumChain request', () => {
+    mockedUseParams.mockReturnValue({ id: '1' });
+
+    const state = getMockAddEthereumChainConfirmState();
+    const mockStore = configureMockStore([])(state);
+    renderWithConfirmContextProvider(<Info />, mockStore);
+
+    expect(screen.getByText('Test Network')).toBeInTheDocument();
+    expect(screen.getByText('example.com')).toBeInTheDocument();
+    expect(screen.getByText('rpc.example.com')).toBeInTheDocument();
+    expect(screen.getByText('RPC')).toBeInTheDocument();
   });
 });

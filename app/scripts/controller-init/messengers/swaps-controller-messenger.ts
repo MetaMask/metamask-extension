@@ -1,7 +1,8 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import { AllowedActions } from '../../controllers/swaps/swaps.types';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 export type SwapsControllerMessenger = ReturnType<
   typeof getSwapsControllerMessenger
@@ -15,17 +16,26 @@ export type SwapsControllerMessenger = ReturnType<
  * messenger.
  */
 export function getSwapsControllerMessenger(
-  messenger: Messenger<AllowedActions, never>,
+  messenger: RootMessenger<AllowedActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'SwapsController',
-    allowedActions: [
+  const swapsControllerMessenger = new Messenger<
+    'SwapsController',
+    AllowedActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'SwapsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: swapsControllerMessenger,
+    actions: [
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
       'TokenRatesController:getState',
     ],
-    allowedEvents: [],
   });
+  return swapsControllerMessenger;
 }
 
 type AllowedInitializationActions =
@@ -44,14 +54,20 @@ export type SwapsControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getSwapsControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'SwapsControllerInit',
-    allowedActions: [
-      'MetaMetricsController:trackEvent',
-      'NetworkController:getState',
-    ],
-    allowedEvents: [],
+  const swapsControllerInitMessenger = new Messenger<
+    'SwapsControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'SwapsControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: swapsControllerInitMessenger,
+    actions: ['MetaMetricsController:trackEvent', 'NetworkController:getState'],
+  });
+  return swapsControllerInitMessenger;
 }

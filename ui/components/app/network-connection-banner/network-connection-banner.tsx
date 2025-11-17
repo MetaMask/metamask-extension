@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BannerBase,
-  Box,
   ButtonLink,
   ButtonLinkSize,
   Icon,
@@ -13,7 +12,6 @@ import {
 } from '../../component-library';
 import {
   BackgroundColor,
-  BlockSize,
   BorderRadius,
   IconColor,
   TextVariant,
@@ -205,31 +203,24 @@ export const NetworkConnectionBanner = () => {
       getBannerContent(networkConnectionBanner, t, updateRpc);
 
     return (
-      <Box
-        width={BlockSize.Full}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingTop={4}
+      <BannerBase
+        className="network-connection-banner"
+        backgroundColor={backgroundColor}
+        startAccessory={
+          <Icon
+            name={icon.name}
+            size={IconSize.Sm}
+            color={icon.color}
+            className={icon.className}
+            style={{ marginTop: icon.verticalAdjustment }}
+            data-testid="icon"
+          />
+        }
+        borderRadius={BorderRadius.MD}
       >
-        <BannerBase
-          className="network-connection-banner"
-          backgroundColor={backgroundColor}
-          startAccessory={
-            <Icon
-              name={icon.name}
-              size={IconSize.Sm}
-              color={icon.color}
-              className={icon.className}
-              style={{ marginTop: icon.verticalAdjustment }}
-              data-testid="icon"
-            />
-          }
-          borderRadius={BorderRadius.MD}
-        >
-          {primaryMessage}
-          {secondaryMessage}
-        </BannerBase>
-      </Box>
+        {primaryMessage}
+        {secondaryMessage}
+      </BannerBase>
     );
   }
 

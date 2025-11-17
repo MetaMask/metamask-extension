@@ -83,7 +83,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             <button
               aria-disabled="false"
               aria-selected="true"
-              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab flex-1"
               data-testid="accounts-tab"
               role="tab"
               tabindex="0"
@@ -93,7 +93,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             <button
               aria-disabled="false"
               aria-selected="false"
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab flex-1"
               data-testid="permissions-tab"
               role="tab"
               tabindex="-1"
@@ -123,49 +123,61 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     <div
                       class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                     >
-                      <div
-                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                      <button
+                        class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+                        data-testid="multichain-badge-status"
                       >
                         <div
-                          class="flex [&>div]:!rounded-none"
+                          class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                         >
                           <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 94, 89);"
+                            class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                           >
-                            <svg
-                              height="32"
-                              width="32"
-                              x="0"
-                              y="0"
+                            <div
+                              class="flex [&>div]:!rounded-none"
                             >
-                              <rect
-                                fill="#FB188D"
-                                height="32"
-                                transform="translate(-1.10425413395151 -2.28627085338780) rotate(359.4 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#018E77"
-                                height="32"
-                                transform="translate(-14.91284386081665 10.85511085677637) rotate(246.0 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#C81471"
-                                height="32"
-                                transform="translate(-30.37340441878390 -6.94681861231760) rotate(324.3 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                            </svg>
+                              <div
+                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 94, 89);"
+                              >
+                                <svg
+                                  height="32"
+                                  width="32"
+                                  x="0"
+                                  y="0"
+                                >
+                                  <rect
+                                    fill="#FB188D"
+                                    height="32"
+                                    transform="translate(-1.10425413395151 -2.28627085338780) rotate(359.4 16.00000000000000 16.00000000000000)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#018E77"
+                                    height="32"
+                                    transform="translate(-14.91284386081665 10.85511085677637) rotate(246.0 16.00000000000000 16.00000000000000)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#C81471"
+                                    height="32"
+                                    transform="translate(-30.37340441878390 -6.94681861231760) rotate(324.3 16.00000000000000 16.00000000000000)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
                           </div>
+                          <div
+                            class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+                          />
                         </div>
-                      </div>
+                      </button>
                     </div>
                     <div
                       class="mm-box"
@@ -330,7 +342,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             <button
               aria-disabled="false"
               aria-selected="true"
-              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab flex-1"
               data-testid="accounts-tab"
               role="tab"
               tabindex="0"
@@ -340,7 +352,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             <button
               aria-disabled="false"
               aria-selected="false"
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab flex-1"
               data-testid="permissions-tab"
               role="tab"
               tabindex="-1"
@@ -370,49 +382,61 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     <div
                       class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                     >
-                      <div
-                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                      <button
+                        class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+                        data-testid="multichain-badge-status"
                       >
                         <div
-                          class="flex [&>div]:!rounded-none"
+                          class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                         >
                           <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 94, 89);"
+                            class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                           >
-                            <svg
-                              height="32"
-                              width="32"
-                              x="0"
-                              y="0"
+                            <div
+                              class="flex [&>div]:!rounded-none"
                             >
-                              <rect
-                                fill="#FB188D"
-                                height="32"
-                                transform="translate(-1.10425413395151 -2.28627085338780) rotate(359.4 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#018E77"
-                                height="32"
-                                transform="translate(-14.91284386081665 10.85511085677637) rotate(246.0 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#C81471"
-                                height="32"
-                                transform="translate(-30.37340441878390 -6.94681861231760) rotate(324.3 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                            </svg>
+                              <div
+                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 94, 89);"
+                              >
+                                <svg
+                                  height="32"
+                                  width="32"
+                                  x="0"
+                                  y="0"
+                                >
+                                  <rect
+                                    fill="#FB188D"
+                                    height="32"
+                                    transform="translate(-1.10425413395151 -2.28627085338780) rotate(359.4 16.00000000000000 16.00000000000000)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#018E77"
+                                    height="32"
+                                    transform="translate(-14.91284386081665 10.85511085677637) rotate(246.0 16.00000000000000 16.00000000000000)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#C81471"
+                                    height="32"
+                                    transform="translate(-30.37340441878390 -6.94681861231760) rotate(324.3 16.00000000000000 16.00000000000000)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
                           </div>
+                          <div
+                            class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+                          />
                         </div>
-                      </div>
+                      </button>
                     </div>
                     <div
                       class="mm-box"
@@ -577,7 +601,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             <button
               aria-disabled="false"
               aria-selected="true"
-              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab flex-1"
               data-testid="accounts-tab"
               role="tab"
               tabindex="0"
@@ -587,7 +611,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             <button
               aria-disabled="false"
               aria-selected="false"
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab flex-1"
               data-testid="permissions-tab"
               role="tab"
               tabindex="-1"
@@ -617,49 +641,61 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     <div
                       class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                     >
-                      <div
-                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                      <button
+                        class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+                        data-testid="multichain-badge-status"
                       >
                         <div
-                          class="flex [&>div]:!rounded-none"
+                          class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                         >
                           <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 94, 89);"
+                            class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                           >
-                            <svg
-                              height="32"
-                              width="32"
-                              x="0"
-                              y="0"
+                            <div
+                              class="flex [&>div]:!rounded-none"
                             >
-                              <rect
-                                fill="#FB188D"
-                                height="32"
-                                transform="translate(-1.10425413395151 -2.28627085338780) rotate(359.4 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#018E77"
-                                height="32"
-                                transform="translate(-14.91284386081665 10.85511085677637) rotate(246.0 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#C81471"
-                                height="32"
-                                transform="translate(-30.37340441878390 -6.94681861231760) rotate(324.3 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                            </svg>
+                              <div
+                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 94, 89);"
+                              >
+                                <svg
+                                  height="32"
+                                  width="32"
+                                  x="0"
+                                  y="0"
+                                >
+                                  <rect
+                                    fill="#FB188D"
+                                    height="32"
+                                    transform="translate(-1.10425413395151 -2.28627085338780) rotate(359.4 16.00000000000000 16.00000000000000)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#018E77"
+                                    height="32"
+                                    transform="translate(-14.91284386081665 10.85511085677637) rotate(246.0 16.00000000000000 16.00000000000000)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#C81471"
+                                    height="32"
+                                    transform="translate(-30.37340441878390 -6.94681861231760) rotate(324.3 16.00000000000000 16.00000000000000)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
                           </div>
+                          <div
+                            class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+                          />
                         </div>
-                      </div>
+                      </button>
                     </div>
                     <div
                       class="mm-box"
