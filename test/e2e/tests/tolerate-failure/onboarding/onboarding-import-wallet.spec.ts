@@ -64,15 +64,18 @@ describe('MetaMask onboarding', function () {
         await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
-        await startOnboardingPage.importWallet();
+        await startOnboardingPage.importWallet(false);
         timer1.startTimer();
+        await startOnboardingPage.checkUserSrpButtonIsVisible();
+        timer1.stopTimer();
+        await startOnboardingPage.clickImportWithSrpButton();
+        timer2.startTimer();
         const onboardingSrpPage = new OnboardingSrpPage(driver);
         await onboardingSrpPage.checkPageIsLoaded();
-        timer1.stopTimer();
-
+        timer2.stopTimer();
         await onboardingSrpPage.fillSrp(srp);
         await onboardingSrpPage.clickConfirmButton();
-        timer2.startTimer();
+
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.checkPageIsLoaded();
         timer2.stopTimer();

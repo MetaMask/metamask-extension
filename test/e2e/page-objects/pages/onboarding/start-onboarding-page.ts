@@ -102,9 +102,19 @@ class StartOnboardingPage {
     await this.driver.clickElement(this.onboardingCreateWithSrpButton);
   }
 
-  async importWallet(): Promise<void> {
-    await this.driver.clickElement(this.importWalletButton);
+  async clickImportWithSrpButton(): Promise<void> {
     await this.driver.clickElement(this.onboardingImportWithSrpButton);
+  }
+
+  async checkUserSrpButtonIsVisible(): Promise<void> {
+    await this.driver.waitForSelector(this.onboardingImportWithSrpButton);
+  }
+
+  async importWallet(withSrpButton = true): Promise<void> {
+    await this.driver.clickElement(this.importWalletButton);
+    if (withSrpButton) {
+      await this.driver.clickElement(this.onboardingImportWithSrpButton);
+    }
   }
 
   async createWalletWithSocialLogin(
