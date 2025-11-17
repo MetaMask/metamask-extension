@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Αποδόσεις"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Η διεύθυνση URL του Infura RPC δεν υποστηρίζει πλέον την Aurora."
-  },
   "authorizedPermissions": {
     "message": "Έχετε εξουσιοδοτήσει τα ακόλουθα δικαιώματα"
   },
@@ -1822,9 +1819,6 @@
   "depositCrypto": {
     "message": "Κατάθεση κρυπτονομισμάτων από άλλο λογαριασμό με διεύθυνση πορτοφολιού ή κωδικό QR."
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Εξαιτίας των ενημερώσεων στο σύστημα Ethereum, το δίκτυο δοκιμών Goerli θα καταργηθεί σύντομα."
-  },
   "deprecatedNetwork": {
     "message": "Αυτό το δίκτυο έχει καταργηθεί"
   },
@@ -2329,9 +2323,6 @@
   },
   "existingChainId": {
     "message": "Οι πληροφορίες που έχετε εισάγει συνδέονται με ένα υπάρχον αναγνωριστικό αλυσίδας."
-  },
-  "expandView": {
-    "message": "Ανάπτυξη προβολής"
   },
   "experimental": {
     "message": "Πειραματικά"
@@ -5229,9 +5220,6 @@
   "shieldEntryModalGetStarted": {
     "message": "Ξεκινήστε"
   },
-  "shieldEntryModalSkip": {
-    "message": "Παράλειψη"
-  },
   "show": {
     "message": "Εμφάνιση"
   },
@@ -6484,10 +6472,6 @@
   },
   "switchNetwork": {
     "message": "Αλλαγή δικτύου"
-  },
-  "switchToNetwork": {
-    "message": "Αλλαγή σε $1",
-    "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
     "message": "Αλλαγή σε αυτόν τον λογαριασμό"

@@ -1,12 +1,18 @@
 import { ReactNode } from 'react';
 import { SecurityProvider } from '../../../shared/constants/security-provider';
-import { Severity } from '../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  IconColor,
+  Severity,
+} from '../../helpers/constants/design-system';
+import { IconName } from '../../components/component-library';
 
 export type AlertSeverity =
   | Severity.Danger
   | Severity.Info
   | Severity.Success
-  | Severity.Warning;
+  | Severity.Warning
+  | Severity.Disabled;
 
 /**
  * A confirmable alert to be displayed in the UI.
@@ -31,6 +37,31 @@ export type Alert = {
    * Optional text to override the default on the inline alert.
    */
   inlineAlertText?: string;
+
+  /**
+   * The background color of the inline alert.
+   */
+  inlineAlertTextBackgroundColor?: BackgroundColor;
+
+  /**
+   * Whether to show the inline alert as a pill style.
+   */
+  inlineAlertTextPill?: boolean;
+
+  /**
+   * Whether to show the icon on the right side of the inline alert.
+   */
+  inlineAlertIconRight?: boolean;
+
+  /**
+   * The name of the icon to show.
+   */
+  iconName?: IconName;
+
+  /**
+   * The color of the icon to show.
+   */
+  iconColor?: IconColor;
 
   /**
    * Whether the alert is a blocker and un-acknowledgeable, preventing the user
@@ -83,6 +114,16 @@ export type Alert = {
    * Whether to show the arrow icon on the inline alert.
    */
   showArrow?: boolean;
+
+  /**
+   * The custom button text for acknowledging the alert in modal.
+   */
+  customAcknowledgeButtonText?: string;
+
+  /**
+   * The custom button onClick handler for acknowledging the alert in modal.
+   */
+  customAcknowledgeButtonOnClick?: () => void;
 } & MessageOrContent;
 
 type MessageOrContent =

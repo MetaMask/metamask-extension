@@ -124,7 +124,7 @@ function AlertHeader({
   customTitle?: string;
 }) {
   const t = useI18nContext();
-  const { severity, reason } = selectedAlert;
+  const { severity, reason, iconName, iconColor } = selectedAlert;
   const severityStyle = getSeverityStyle(severity);
   return (
     <Box
@@ -135,12 +135,13 @@ function AlertHeader({
     >
       <Icon
         name={
-          severity === Severity.Info || severity === Severity.Success
+          iconName ??
+          (severity === Severity.Info || severity === Severity.Success
             ? IconName.Info
-            : IconName.Danger
+            : IconName.Danger)
         }
         size={IconSize.Xl}
-        color={severityStyle.icon}
+        color={iconColor ?? severityStyle.icon}
       />
       <Text
         variant={TextVariant.headingSm}
@@ -292,11 +293,13 @@ function AcknowledgeButton({
   isConfirmed,
   hasActions,
   isBlocking,
+  label,
 }: {
   onAcknowledgeClick: () => void;
   isConfirmed: boolean;
   hasActions?: boolean;
   isBlocking?: boolean;
+  label?: string;
 }) {
   const t = useI18nContext();
 
@@ -309,7 +312,7 @@ function AcknowledgeButton({
       data-testid="alert-modal-button"
       disabled={!isBlocking && !isConfirmed}
     >
-      {t('gotIt')}
+      {label ?? t('gotIt')}
     </Button>
   );
 }
@@ -456,10 +459,14 @@ export function AlertModal({
             {customAcknowledgeButton ?? (
               <>
                 <AcknowledgeButton
-                  onAcknowledgeClick={onAcknowledgeClick}
+                  onAcknowledgeClick={
+                    selectedAlert.customAcknowledgeButtonOnClick ??
+                    onAcknowledgeClick
+                  }
                   isConfirmed={acknowledgementRequired ? isConfirmed : true}
                   hasActions={Boolean(selectedAlert.actions)}
                   isBlocking={selectedAlert.isBlocking}
+                  label={selectedAlert.customAcknowledgeButtonText}
                 />
                 {(selectedAlert.actions ?? []).map(
                   (action: { key: string; label: string }) => (

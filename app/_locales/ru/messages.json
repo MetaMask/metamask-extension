@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Атрибуции"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "URL-адрес Infura RPC больше не поддерживает Aurora."
-  },
   "authorizedPermissions": {
     "message": "Вы предоставили следующие разрешения"
   },
@@ -1822,9 +1819,6 @@
   "depositCrypto": {
     "message": "Внесите криптовалюту с другого счета, используя адрес кошелька или QR-код."
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Из-за обновлений системы Ethereum тестовая сеть Goerli скоро будет закрыта."
-  },
   "deprecatedNetwork": {
     "message": "Эта сеть устарела"
   },
@@ -2329,9 +2323,6 @@
   },
   "existingChainId": {
     "message": "Введенная вами информация связана с существующим ID блокчейна."
-  },
-  "expandView": {
-    "message": "Открыть в новой вкладке"
   },
   "experimental": {
     "message": "Экспериментальные"
@@ -5229,9 +5220,6 @@
   "shieldEntryModalGetStarted": {
     "message": "С чего начать"
   },
-  "shieldEntryModalSkip": {
-    "message": "Пропустить"
-  },
   "show": {
     "message": "Показать"
   },
@@ -6484,10 +6472,6 @@
   },
   "switchNetwork": {
     "message": "Сменить сеть"
-  },
-  "switchToNetwork": {
-    "message": "Сменить на $1",
-    "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
     "message": "Переключиться на этот счет"

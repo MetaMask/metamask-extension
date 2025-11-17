@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Ghi nhận đóng góp"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "URL Infura RPC không còn hỗ trợ Aurora nữa."
-  },
   "authorizedPermissions": {
     "message": "Bạn đã cấp các quyền sau đây"
   },
@@ -1822,9 +1819,6 @@
   "depositCrypto": {
     "message": "Nạp tiền mã hóa từ tài khoản khác bằng địa chỉ ví hoặc mã QR."
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Do các cập nhật của hệ thống Ethereum, mạng thử nghiệm Goerli sẽ sớm được loại bỏ dần."
-  },
   "deprecatedNetwork": {
     "message": "Mạng này đã ngừng sử dụng"
   },
@@ -2329,9 +2323,6 @@
   },
   "existingChainId": {
     "message": "Thông tin bạn đã nhập được liên kết với một ID chuỗi hiện có."
-  },
-  "expandView": {
-    "message": "Chế độ xem mở rộng"
   },
   "experimental": {
     "message": "Thử nghiệm"
@@ -5229,9 +5220,6 @@
   "shieldEntryModalGetStarted": {
     "message": "Bắt đầu"
   },
-  "shieldEntryModalSkip": {
-    "message": "Bỏ qua"
-  },
   "show": {
     "message": "Hiển thị"
   },
@@ -6484,10 +6472,6 @@
   },
   "switchNetwork": {
     "message": "Chuyển mạng"
-  },
-  "switchToNetwork": {
-    "message": "Chuyển sang $1",
-    "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
     "message": "Chuyển sang tài khoản này"

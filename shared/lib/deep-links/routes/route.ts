@@ -10,6 +10,7 @@ export {
   DEEP_LINK_ROUTE,
   NOTIFICATIONS_ROUTE,
   SHIELD_PLAN_ROUTE,
+  SETTINGS_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
 
 /**
