@@ -107,13 +107,17 @@ const DappSwapComparisonInner = () => {
   const [showDappSwapComparisonBanner, setShowDappSwapComparisonBanner] =
     useState<boolean>(true);
 
-  const hideDappSwapComparisonBanner = useCallback(() => {
-    setShowDappSwapComparisonBanner(false);
-  }, [setShowDappSwapComparisonBanner]);
+  const hideDappSwapComparisonBanner = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setShowDappSwapComparisonBanner(false);
+    },
+    [setShowDappSwapComparisonBanner],
+  );
 
   const updateSwapToCurrent = useCallback(() => {
     setSelectedSwapType(SwapType.Current);
-    setShowDappSwapComparisonBanner(true);
     if (currentConfirmation.txParamsOriginal) {
       dispatch(
         updateTransaction(
@@ -126,16 +130,11 @@ const DappSwapComparisonInner = () => {
         ),
       );
     }
-  }, [
-    currentConfirmation,
-    dispatch,
-    setSelectedSwapType,
-    setShowDappSwapComparisonBanner,
-  ]);
+  }, [currentConfirmation, dispatch, setSelectedSwapType]);
 
   const updateSwapToSelectedQuote = useCallback(() => {
     setSelectedSwapType(SwapType.Metamask);
-    setShowDappSwapComparisonBanner(true);
+    setShowDappSwapComparisonBanner(false);
     const { value, gasLimit, data } = selectedQuote?.trade as TxData;
     dispatch(
       updateTransaction(
@@ -208,6 +207,8 @@ const DappSwapComparisonInner = () => {
           backgroundColor={BoxBackgroundColor.BackgroundAlternative}
           marginBottom={4}
           padding={4}
+          role="button"
+          onClick={updateSwapToSelectedQuote}
         >
           <ButtonIcon
             className="dapp-swap_close-button"
