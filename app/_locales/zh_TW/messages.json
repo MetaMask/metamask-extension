@@ -444,9 +444,6 @@
   "etherscanView": {
     "message": "在 Etherscan 上查看帳戶"
   },
-  "expandView": {
-    "message": "展開畫面"
-  },
   "externalExtension": {
     "message": "外部擴充功能"
   },

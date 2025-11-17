@@ -42,10 +42,10 @@ import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { withMetaMetrics } from '../../contexts/metametrics';
-import { ThemeType } from '../../../shared/constants/preferences';
-import { getThemeFromRawTheme } from '../routes/utils';
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
+import MetaFoxHorizontalLogo from '../../components/ui/metafox-logo/horizontal-logo';
+import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
@@ -117,10 +117,6 @@ class UnlockPage extends Component {
      */
     firstTimeFlowType: PropTypes.string,
     /**
-     * The theme of the app
-     */
-    theme: PropTypes.string,
-    /**
      * Reset Wallet
      */
     resetWallet: PropTypes.func,
@@ -134,6 +130,7 @@ class UnlockPage extends Component {
     isSubmitting: false,
     unlockDelayPeriod: 0,
     showLoginErrorModal: false,
+    showConnectionsRemovedModal: false,
   };
 
   failed_attempts = 0;
@@ -274,6 +271,7 @@ class UnlockPage extends Component {
     let finalUnlockDelayPeriod = 0;
     let errorReason;
     let shouldShowLoginErrorModal = false;
+    let shouldShowConnectionsRemovedModal = false;
 
     // Check if we are in the onboarding flow
     if (!isOnboardingCompleted) {
@@ -313,6 +311,10 @@ class UnlockPage extends Component {
           shouldShowLoginErrorModal = true;
         }
         break;
+      case SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded:
+        finalErrorMessage = message;
+        shouldShowConnectionsRemovedModal = true;
+        break;
       default:
         finalErrorMessage = message;
         break;
@@ -345,6 +347,7 @@ class UnlockPage extends Component {
       error: finalErrorMessage,
       unlockDelayPeriod: finalUnlockDelayPeriod,
       showLoginErrorModal: shouldShowLoginErrorModal,
+      showConnectionsRemovedModal: shouldShowConnectionsRemovedModal,
     });
   };
 
@@ -466,7 +469,11 @@ class UnlockPage extends Component {
   };
 
   onResetWallet = async () => {
-    this.setState({ showLoginErrorModal: false });
+    this.setState({
+      showLoginErrorModal: false,
+      showConnectionsRemovedModal: false,
+      showResetPasswordModal: false,
+    });
     await this.props.resetWallet();
     await this.props.forceUpdateMetamaskState();
     this.props.navigate(DEFAULT_ROUTE, { replace: true });
@@ -479,15 +486,14 @@ class UnlockPage extends Component {
       isLocked,
       showResetPasswordModal,
       showLoginErrorModal,
+      showConnectionsRemovedModal,
     } = this.state;
-    const { isOnboardingCompleted, isSocialLoginFlow, theme } = this.props;
+    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
     const isTestEnvironment = Boolean(process.env.IN_TEST);
-    const themeType = getThemeFromRawTheme(theme);
-    const isDarkTheme = themeType === ThemeType.dark;
 
     return (
       <Box
@@ -495,12 +501,9 @@ class UnlockPage extends Component {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        backgroundColor={
-          isRehydrationFlow ? BackgroundColor.backgroundDefault : ''
-        }
+        backgroundColor={BackgroundColor.backgroundDefault}
         width={BlockSize.Full}
         paddingBottom={12} // offset header to center content
-        className={isRehydrationFlow ? '' : 'unlock-page__container'}
       >
         {showResetPasswordModal && (
           <ResetPasswordModal
@@ -513,6 +516,9 @@ class UnlockPage extends Component {
             onDone={this.onResetWallet}
             loginError={LOGIN_ERROR.RESET_WALLET}
           />
+        )}
+        {showConnectionsRemovedModal && (
+          <ConnectionsRemovedModal onConfirm={this.onResetWallet} />
         )}
         <Box
           as="form"
@@ -539,17 +545,7 @@ class UnlockPage extends Component {
               {isRehydrationFlow ? (
                 this.renderMascot()
               ) : (
-                <Box className="unlock-page__mascot-container__logo">
-                  <img
-                    src={
-                      isDarkTheme
-                        ? './images/logo/dark-logo.png'
-                        : './images/logo/light-logo.png'
-                    }
-                    width="180"
-                    height="180"
-                  />
-                </Box>
+                <MetaFoxHorizontalLogo className="unlock-page__mascot-container__horizontal-logo" />
               )}
               {isBeta() ? (
                 <Text
@@ -585,7 +581,6 @@ class UnlockPage extends Component {
                   ? t('enterYourPasswordSocialLoginFlow')
                   : t('enterYourPassword')
               }
-              className="unlock-page__password-input-container"
               size={FormTextFieldSize.Lg}
               placeholderColor={TextColor.textDefault}
               inputProps={{
@@ -594,7 +589,6 @@ class UnlockPage extends Component {
               }}
               textFieldProps={{
                 disabled: isLocked,
-                className: 'unlock-page__password-input',
               }}
               onChange={(event) => this.handleInputChange(event)}
               type={TextFieldType.Password}
@@ -625,43 +619,49 @@ class UnlockPage extends Component {
               type="button"
               onClick={this.onForgotPasswordOrLoginWithDiffMethods}
               marginBottom={6}
-              color={TextColor.textDefault}
+              color={
+                isRehydrationFlow
+                  ? TextColor.textDefault
+                  : TextColor.primaryDefault
+              }
             >
               {isRehydrationFlow
                 ? t('useDifferentLoginMethod')
                 : t('forgotPassword')}
             </Button>
 
-            <Text>
-              {t('needHelp', [
-                <Button
-                  variant={ButtonVariant.Link}
-                  href={SUPPORT_LINK}
-                  type="button"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key="need-help-link"
-                  onClick={() => {
-                    this.context.trackEvent(
-                      {
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.SupportLinkClicked,
-                        properties: {
-                          url: SUPPORT_LINK,
+            {isRehydrationFlow && (
+              <Text>
+                {t('needHelp', [
+                  <Button
+                    variant={ButtonVariant.Link}
+                    href={SUPPORT_LINK}
+                    type="button"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    key="need-help-link"
+                    onClick={() => {
+                      this.context.trackEvent(
+                        {
+                          category: MetaMetricsEventCategory.Navigation,
+                          event: MetaMetricsEventName.SupportLinkClicked,
+                          properties: {
+                            url: SUPPORT_LINK,
+                          },
                         },
-                      },
-                      {
-                        contextPropsIntoEventProperties: [
-                          MetaMetricsContextProp.PageTitle,
-                        ],
-                      },
-                    );
-                  }}
-                >
-                  {needHelpText}
-                </Button>,
-              ])}
-            </Text>
+                        {
+                          contextPropsIntoEventProperties: [
+                            MetaMetricsContextProp.PageTitle,
+                          ],
+                        },
+                      );
+                    }}
+                  >
+                    {needHelpText}
+                  </Button>,
+                ])}
+              </Text>
+            )}
           </Box>
         </Box>
         {!isTestEnvironment && !isRehydrationFlow && (

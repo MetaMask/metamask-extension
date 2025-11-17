@@ -285,8 +285,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
-// `DEPRECATED_NETWORKS` and optionally add network specific logic to
-// `ui/components/ui/deprecated-networks/deprecated-networks.js`.
+// `DEPRECATED_NETWORKS`
 export const DEPRECATED_NETWORKS = [
   CHAIN_IDS.GOERLI,
   CHAIN_IDS.ARBITRUM_GOERLI,
@@ -633,9 +632,9 @@ export const SOLANA_DEVNET_IMAGE_URL = './images/solana-devnet-logo.svg';
 export const BITCOIN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_IMAGE_URL = './images/bitcoin-testnet-logo.svg';
 export const BITCOIN_SIGNET_IMAGE_URL = './images/bitcoin-signet-logo.png';
-export const TRON_IMAGE_URL = './images/tron-logo.svg';
-export const TRON_NILE_IMAGE_URL = './images/tron-logo.svg';
-export const TRON_SHASTA_IMAGE_URL = './images/tron-logo.svg';
+export const TRON_IMAGE_URL = './images/tron-logo.png';
+export const TRON_NILE_IMAGE_URL = './images/tron-logo.png';
+export const TRON_SHASTA_IMAGE_URL = './images/tron-logo.png';
 export const XRPLEVM_TESTNET_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL =
   './images/xrplevm-native.svg';
@@ -1257,6 +1256,9 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [MultichainNetworks.BITCOIN]: BITCOIN_IMAGE_URL,
   [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_IMAGE_URL,
   [MultichainNetworks.BITCOIN_SIGNET]: BITCOIN_SIGNET_IMAGE_URL,
+  [MultichainNetworks.TRON]: TRON_IMAGE_URL,
+  [MultichainNetworks.TRON_NILE]: TRON_NILE_IMAGE_URL,
+  [MultichainNetworks.TRON_SHASTA]: TRON_SHASTA_IMAGE_URL,
 } as const;
 
 /**
