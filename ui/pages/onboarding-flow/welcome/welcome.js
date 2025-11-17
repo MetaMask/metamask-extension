@@ -23,7 +23,7 @@ import {
   getCurrentKeyring,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
-  getIsSocialLoginFlow,
+  getIsSocialLoginUserAuthenticated,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -31,7 +31,6 @@ import {
   setFirstTimeFlowType,
   startOAuthLogin,
   setParticipateInMetaMetrics,
-  getIsSeedlessOnboardingUserAuthenticated,
 } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
@@ -73,6 +72,9 @@ export default function OnboardingWelcome() {
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
+  const isUserAuthenticatedWithSocialLogin = useSelector(
+    getIsSocialLoginUserAuthenticated,
+  );
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
@@ -82,7 +84,6 @@ export default function OnboardingWelcome() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
   const isTestEnvironment = Boolean(process.env.IN_TEST);
-  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const { animationCompleted } = useRiveWasmContext();
   const shouldSkipAnimation = Boolean(
@@ -93,22 +94,6 @@ export default function OnboardingWelcome() {
   const [isAnimationComplete, setIsAnimationComplete] = useState(
     isTestEnvironment || shouldSkipAnimation,
   );
-
-  const validateSocialLoginAuthenticatedState = useCallback(async () => {
-    // validate social login authenticated state on mount
-    // if user has completed the social login and has valid authentication state values
-    // redirect to the appropriate page
-    const isSeedlessOnboardingUserAuthenticated = await dispatch(
-      getIsSeedlessOnboardingUserAuthenticated(),
-    );
-    if (isSeedlessOnboardingUserAuthenticated) {
-      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
-      } else {
-        navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
-      }
-    }
-  }, [dispatch, navigate, firstTimeFlowType]);
 
   const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
   // Don't allow users to come back to this screen after they
@@ -134,8 +119,12 @@ export default function OnboardingWelcome() {
       } else {
         navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
       }
-    } else if (isSocialLoginFlow) {
-      validateSocialLoginAuthenticatedState();
+    } else if (isUserAuthenticatedWithSocialLogin) {
+      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
+      } else {
+        navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
+      }
     }
   }, [
     currentKeyring,
@@ -143,10 +132,9 @@ export default function OnboardingWelcome() {
     firstTimeFlowType,
     newAccountCreationInProgress,
     isParticipateInMetaMetricsSet,
+    isUserAuthenticatedWithSocialLogin,
     isFireFox,
     isWalletResetInProgress,
-    validateSocialLoginAuthenticatedState,
-    isSocialLoginFlow,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);
