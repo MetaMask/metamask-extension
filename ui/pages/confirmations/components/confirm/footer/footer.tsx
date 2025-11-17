@@ -5,6 +5,7 @@ import {
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { useHistory } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
@@ -22,6 +23,7 @@ import {
   FlexDirection,
   Severity,
 } from '../../../../../helpers/constants/design-system';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
@@ -201,6 +203,7 @@ const CancelButton = ({
 
 const Footer = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const { onTransactionConfirm } = useTransactionConfirm();
   const { navigateNext } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
@@ -235,41 +238,56 @@ const Footer = () => {
     hardwareWalletRequiresConnection ||
     isGaslessLoading;
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {
       return;
     }
 
     if (isAddEthereumChain) {
-      onAddEthereumChain();
+      await onAddEthereumChain();
+      history.push(DEFAULT_ROUTE);
     } else if (isTransactionConfirmation) {
-      onTransactionConfirm();
+      await onTransactionConfirm();
+      navigateNext(currentConfirmation.id);
     } else {
-      dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+      await dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+      navigateNext(currentConfirmation.id);
     }
 
-    navigateNext(currentConfirmation.id);
     resetTransactionState();
   }, [
     currentConfirmation,
     dispatch,
+    history,
     isTransactionConfirmation,
+    isAddEthereumChain,
     navigateNext,
     onTransactionConfirm,
     resetTransactionState,
-    isAddEthereumChain,
     onAddEthereumChain,
   ]);
 
-  const handleFooterCancel = useCallback(() => {
+  const handleFooterCancel = useCallback(async () => {
     if (shouldThrottleOrigin) {
       setShowOriginThrottleModal(true);
       return;
     }
-    onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
-    navigateNext(currentConfirmation.id);
-  }, [navigateNext, onCancel, shouldThrottleOrigin, currentConfirmation]);
+    await onCancel({ location: MetaMetricsEventLocation.Confirmation });
+
+    if (isAddEthereumChain) {
+      history.push(DEFAULT_ROUTE);
+    } else {
+      navigateNext(currentConfirmation.id);
+    }
+  }, [
+    navigateNext,
+    onCancel,
+    shouldThrottleOrigin,
+    currentConfirmation,
+    isAddEthereumChain,
+    history,
+  ]);
 
   const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
   const isShowShieldFooterCoverageIndicator = isEnabled || isPaused;
