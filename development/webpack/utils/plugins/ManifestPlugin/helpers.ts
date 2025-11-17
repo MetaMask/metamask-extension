@@ -67,24 +67,6 @@ export function transformManifest(
     transforms.push(addManifestFlags);
   }
 
-  function addTabsPermission(browserManifest: chrome.runtime.Manifest) {
-    if (browserManifest.permissions) {
-      if (browserManifest.permissions.includes('tabs')) {
-        throw new Error(
-          "manifest contains 'tabs' already; this transform should be removed.",
-        );
-      }
-      browserManifest.permissions.push('tabs');
-    } else {
-      browserManifest.permissions = ['tabs'];
-    }
-  }
-
-  if (args.test) {
-    // test builds need "tabs" permission for switchToWindowWithTitle
-    transforms.push(addTabsPermission);
-  }
-
   function addManifestKey(browserManifest: chrome.runtime.Manifest) {
     if (!browserManifest.key) {
       browserManifest.key = MANIFEST_DEV_KEY;
