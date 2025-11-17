@@ -235,13 +235,13 @@ const Footer = () => {
     hardwareWalletRequiresConnection ||
     isGaslessLoading;
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {
       return;
     }
 
     if (isAddEthereumChain) {
-      onAddEthereumChain();
+      await onAddEthereumChain();
     } else if (isTransactionConfirmation) {
       onTransactionConfirm();
     } else {
@@ -261,12 +261,12 @@ const Footer = () => {
     onAddEthereumChain,
   ]);
 
-  const handleFooterCancel = useCallback(() => {
+  const handleFooterCancel = useCallback(async () => {
     if (shouldThrottleOrigin) {
       setShowOriginThrottleModal(true);
       return;
     }
-    onCancel({ location: MetaMetricsEventLocation.Confirmation });
+    await onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
     navigateNext(currentConfirmation.id);
   }, [navigateNext, onCancel, shouldThrottleOrigin, currentConfirmation]);

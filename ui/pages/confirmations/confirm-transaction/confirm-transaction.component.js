@@ -37,7 +37,6 @@ import {
 } from '../../../store/actions';
 import ConfirmDecryptMessage from '../../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../../confirm-encryption-public-key';
-import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import { getUnapprovedConfirmations } from '../../../selectors/selectors';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import Confirm from '../confirm/confirm';
@@ -53,7 +52,6 @@ const ConfirmTransaction = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id: paramsTransactionId } = useParams();
-  const isSidePanelEnabled = useSidePanelEnabled();
   const hasPendingApprovals =
     useSelector(getUnapprovedConfirmations).length > 0;
 
@@ -170,8 +168,6 @@ const ConfirmTransaction = () => {
       paramsTransactionId !== transactionId
     ) {
       history.replace(mostRecentOverviewPage);
-    } else if (isSidePanelEnabled && !hasPendingApprovals) {
-      history.replace(DEFAULT_ROUTE);
     }
   }, [
     dispatch,
@@ -182,7 +178,6 @@ const ConfirmTransaction = () => {
     prevTransactionId,
     totalUnapproved,
     hasPendingApprovals,
-    isSidePanelEnabled,
     isValidTransactionId,
     transaction,
     transactionId,

@@ -1,4 +1,5 @@
 import React from 'react';
+import * as ReactRedux from 'react-redux';
 import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
@@ -61,6 +62,12 @@ jest.mock(
 
 jest.mock('../../../hooks/useOriginThrottling');
 jest.mock('../../../../../hooks/subscription/useSubscription');
+jest.mock('../../../hooks/useAddEthereumChain', () => ({
+  useAddEthereumChain: jest.fn(() => ({
+    onSubmit: jest.fn().mockResolvedValue(() => undefined),
+  })),
+  ...jest.requireActual('../../../hooks/useAddEthereumChain'),
+}));
 
 jest.mock('react-router-dom-v5-compat', () => ({
   useNavigate: jest.fn(),
@@ -244,7 +251,10 @@ describe('ConfirmFooter', () => {
     });
   });
 
-  it('invoke required actions when cancel button is clicked', () => {
+  it('invoke required actions when cancel button is clicked', async () => {
+    const dispatchMock = jest.fn((action) => action);
+    jest.spyOn(ReactRedux, 'useDispatch').mockReturnValue(dispatchMock);
+
     const { getAllByRole } = render();
     const cancelButton = getAllByRole('button')[0];
     const rejectSpy = jest
@@ -263,6 +273,7 @@ describe('ConfirmFooter', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({}) as any);
     fireEvent.click(cancelButton);
+    await new Promise(process.nextTick);
     expect(rejectSpy).toHaveBeenCalled();
     expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
     expect(setNextNonceSpy).toHaveBeenCalledWith('');
@@ -488,7 +499,7 @@ describe('ConfirmFooter', () => {
       // @ts-expect-error This is missing from the Mocha type definitions
       it.each(['Confirm', 'Cancel'])(
         'on %s button click',
-        (buttonText: string) => {
+        async (buttonText: string) => {
           const navigateNextMock = jest.fn();
           useConfirmationNavigationMock.mockReturnValue({
             navigateNext: navigateNextMock,
@@ -519,6 +530,7 @@ describe('ConfirmFooter', () => {
           const button = getByText(buttonText);
           fireEvent.click(button);
 
+          await new Promise(process.nextTick);
           // It will navigate to transaction confirmation
           expect(navigateNextMock).toHaveBeenCalledTimes(1);
           expect(navigateNextMock).toHaveBeenCalledWith(
