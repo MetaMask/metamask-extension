@@ -57,10 +57,6 @@ export const MultichainAggregatedAddressListRow = ({
   const [copyIcon, setCopyIcon] = useState(IconName.Copy); // Default copy icon state
   const [addressCopied, setAddressCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [displayTextAlignment, setDisplayTextAlignment] = useState(
-    TextAlign.Left,
-  );
-
   // Track timeout ID for managing `setTimeout`
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -136,14 +132,12 @@ export const MultichainAggregatedAddressListRow = ({
     // Trigger copy callback and update UI state
     copyActionParams.callback();
     setDisplayText(copyActionParams.message);
-    setDisplayTextAlignment(TextAlign.Right);
     setCopyIcon(IconName.CopySuccess);
 
     // Reset state after 1 second and track the new timeout
     timeoutRef.current = setTimeout(() => {
       setDisplayText(truncatedAddress);
       setCopyIcon(IconName.Copy);
-      setDisplayTextAlignment(TextAlign.Left);
       timeoutRef.current = null; // Clear the reference after timeout resolves
       setAddressCopied(false);
     }, 1000);
@@ -183,7 +177,7 @@ export const MultichainAggregatedAddressListRow = ({
         <Text
           variant={TextVariant.BodyXs}
           fontWeight={FontWeight.Medium}
-          textAlign={displayTextAlignment}
+          textAlign={TextAlign.Right}
           color={getTextColor()}
           style={{
             width: '100px',
