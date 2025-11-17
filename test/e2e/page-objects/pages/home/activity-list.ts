@@ -424,6 +424,19 @@ class ActivityListPage {
       css: this.activityListAction,
     });
   }
+
+  /**
+   * Waiting for the pending tx to clear from acitivity.
+   *
+   */
+  async waitPendingTxToNotBeVisible(): Promise<void> {
+    console.log(`Wait pending transaction activity to clear from acitivity `);
+    await this.driver.waitForSelector(this.activityListAction);
+    await this.driver.waitForSelector(this.activityListAction, {
+      state: 'detached',
+      timeout: 30000,
+    });
+  }
 }
 
 export default ActivityListPage;
