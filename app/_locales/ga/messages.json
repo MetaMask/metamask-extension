@@ -5659,9 +5659,6 @@
     "message": "Gan aon táille anois, bain triail as saor in aisce ar feadh $1 lá",
     "description": "The $1 is the number of days"
   },
-  "shieldPlanDetails2Card": {
-    "message": "Athnuaitear an plean go huathoibríoch ag deireadh na téarma"
-  },
   "shieldPlanDetails3": {
     "message": "Cosnaíonn sé do shócmhainní ó idirbhearta contúirteacha"
   },
@@ -5745,19 +5742,9 @@
     "message": "Cuirfear do bhallra�ocht ar ceal ar $1.",
     "description": "The $1 is the date"
   },
-  "shieldTxMembershipErrorAddFunds": {
-    "message": "Cuir cistí leis"
-  },
-  "shieldTxMembershipErrorInsufficientFunds": {
-    "message": "Gan dóthain airgid le haghaidh d'athnuachana an 18 Aibreán. Coinnigh rochtain gníomhach trí airgead a chur leis.",
-    "description": "The $1 is the date"
-  },
   "shieldTxMembershipErrorInsufficientToken": {
     "message": "$1 neamhleor",
     "description": "The $1 is the token symbol"
-  },
-  "shieldTxMembershipErrorPaused": {
-    "message": "Ballraíocht curtha ar sos mar gheall ar easpa cistí. Atosófar an clúdach tar éis nuashonrú íocaíochta."
   },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Diúltaíodh do d’íocaíocht. Nuashonraigh do mhodh íocaíochta le go leanfaidh do chlúdach ar aghaidh."
@@ -5767,9 +5754,6 @@
   },
   "shieldTxMembershipErrorUpdateCard": {
     "message": "Nuashonraigh sonraí cárta"
-  },
-  "shieldTxMembershipErrorUpdatePayment": {
-    "message": "Nuashonraigh an íocaíocht"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "Triail saor in aisce"

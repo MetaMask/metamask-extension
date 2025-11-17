@@ -541,6 +541,24 @@ export type MetaMetricsUserTraits = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   profile_id?: string;
+  /**
+   * Whether the user has opted into Rewards.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  has_rewards_opted_in?: string;
+  /**
+   * Whether the user was referred when opting into Rewards.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  rewards_referred?: boolean;
+  /**
+   * The referral code used when opting into Rewards.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  rewards_referral_code_used?: string;
 };
 
 export enum MetaMetricsUserTrait {
@@ -647,6 +665,12 @@ export enum MetaMetricsUserTrait {
    * Identified when the user adds or removes configured chains (evm or non-evm)
    */
   ChainIdList = 'chain_id_list',
+  /**
+   * Rewards-specific traits
+   */
+  HasRewardsOptedIn = 'has_rewards_opted_in',
+  RewardsReferred = 'rewards_referred',
+  RewardsReferralCodeUsed = 'rewards_referral_code_used',
 }
 
 /**
@@ -941,9 +965,14 @@ export enum MetaMetricsEventName {
   ExtensionPinned = 'Extension Pinned',
   // Extension Port Stream
   PortStreamChunked = 'Port Stream Chunked',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ViewportSwitched = 'Viewport Switched',
-  ///: END:ONLY_INCLUDE_IF
+  // Rewards
+  RewardsOptInStarted = 'REWARDS_OPT_IN_STARTED',
+  RewardsOptInFailed = 'REWARDS_OPT_IN_FAILED',
+  RewardsOptInCompleted = 'REWARDS_OPT_IN_COMPLETED',
+  RewardsAccountLinkingStarted = 'REWARDS_ACCOUNT_LINKING_STARTED',
+  RewardsAccountLinkingCompleted = 'REWARDS_ACCOUNT_LINKING_COMPLETED',
+  RewardsAccountLinkingFailed = 'REWARDS_ACCOUNT_LINKING_FAILED',
   // Shield
   ShieldEntryModal = 'Shield Entry Modal',
   ShieldSubscriptionRequest = 'Shield Subscription Request',
@@ -957,6 +986,9 @@ export enum MetaMetricsEventName {
   ShieldCtaClicked = 'Shield CTA Clicked',
   ShieldClaimSubmission = 'Shield Claim Submission',
   ShieldSubscriptionCryptoConfirmation = 'Shield Subscription Crypto Confirmation',
+  ShieldPrioritySupportClicked = 'Shield Priority Support Clicked',
+  ShieldEligibilityCohortAssigned = 'Shield Eligibility Cohort Assigned',
+  ShieldEligibilityCohortTimeout = 'Shield Eligibility Cohort Timeout',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1021,6 +1053,7 @@ export enum MetaMetricsEventCategory {
   Confirmations = 'Confirmations',
   CrossChainSwaps = 'Cross Chain Swaps',
   PortStream = 'Port Stream',
+  Rewards = 'Rewards',
   Shield = 'Shield',
 }
 

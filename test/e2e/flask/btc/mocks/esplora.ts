@@ -7,8 +7,8 @@ import {
 } from '../../../constants';
 
 const ESPLORA_URL = 'https://esplora.rivet.link/esplora/api';
-const INFURA_BTC_MAINNET_URL =
-  'https://bitcoin-mainnet.infura.io/v3/5b98a22672004ef1bf40a80123c5c48d';
+const INFURA_BTC_MAINNET_URL_PATTERN =
+  /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}$/u;
 
 const FUNDING_SCRIPT_HASH =
   '538c172f4f5ff9c24693359c4cdc8ee4666565326a789d5e4b2df1db7acb4721';
@@ -20,74 +20,77 @@ const GENESIS_BLOCK_HASH =
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
-const mockBlocks = (
-  mockServer: Mockttp,
-  network: string = INFURA_BTC_MAINNET_URL,
-) => {
-  if (network === INFURA_BTC_MAINNET_URL) {
-    return mockServer.forGet(`${network}/esplora/blocks`).thenJson(200, [
-      {
-        id: '000000000000000000005645962b8ea026323dd3eb24a7ee39c60f285a259bc2',
-        height: 918176,
-        version: 566566912,
-        timestamp: 1759922068,
-        tx_count: 3575,
-        size: 1681759,
-        weight: 3993790,
-        merkle_root:
-          '7672f7b0d4a6d322ddbdb5b6aa1802352329862af3d116c3aedef2efc167c9e5',
-        previousblockhash:
-          '000000000000000000012dca96f7e4803c607e2f34d41a2a7ae8f4afb00ae1a7',
-        mediantime: 1759919229,
-        nonce: 3365112101,
-        bits: 385998260,
-        difficulty: 150839487445890.5,
-      },
-      {
-        id: '000000000000000000012dca96f7e4803c607e2f34d41a2a7ae8f4afb00ae1a7',
-        height: 918175,
-        version: 1040187392,
-        timestamp: 1759921295,
-        tx_count: 3801,
-        size: 1642907,
-        weight: 3993518,
-        merkle_root:
-          'd4e542752e01040b575db060cbb3efc40800fefc234b102e196e90a11fe7b99d',
-        previousblockhash:
-          '00000000000000000000197762f3b38879ed3c4ed0e96d66d203879c51f9f27c',
-        mediantime: 1759917935,
-        nonce: 2255807358,
-        bits: 385998260,
-        difficulty: 150839487445890.5,
-      },
-      {
-        id: '00000000000000000000197762f3b38879ed3c4ed0e96d66d203879c51f9f27c',
-        height: 918174,
-        version: 579330048,
-        timestamp: 1759920849,
-        tx_count: 3250,
-        size: 1756669,
-        weight: 3993331,
-        merkle_root:
-          'bfa30d00c8fd4c2537029f2880a63aad0dda5a0102f7017f73531d08704a23e6',
-        previousblockhash:
-          '00000000000000000000bfe2dfa7db0249854da123686810fc678b2e6e596576',
-        mediantime: 1759917929,
-        nonce: 1749894252,
-        bits: 385998260,
-        difficulty: 150839487445890.5,
-      },
-    ]);
+const mockBlocks = (mockServer: Mockttp, network?: string) => {
+  if (!network || INFURA_BTC_MAINNET_URL_PATTERN.test(network)) {
+    return mockServer
+      .forGet(
+        /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/blocks$/u,
+      )
+      .thenJson(200, [
+        {
+          id: '000000000000000000005645962b8ea026323dd3eb24a7ee39c60f285a259bc2',
+          height: 918176,
+          version: 566566912,
+          timestamp: 1759922068,
+          tx_count: 3575,
+          size: 1681759,
+          weight: 3993790,
+          merkle_root:
+            '7672f7b0d4a6d322ddbdb5b6aa1802352329862af3d116c3aedef2efc167c9e5',
+          previousblockhash:
+            '000000000000000000012dca96f7e4803c607e2f34d41a2a7ae8f4afb00ae1a7',
+          mediantime: 1759919229,
+          nonce: 3365112101,
+          bits: 385998260,
+          difficulty: 150839487445890.5,
+        },
+        {
+          id: '000000000000000000012dca96f7e4803c607e2f34d41a2a7ae8f4afb00ae1a7',
+          height: 918175,
+          version: 1040187392,
+          timestamp: 1759921295,
+          tx_count: 3801,
+          size: 1642907,
+          weight: 3993518,
+          merkle_root:
+            'd4e542752e01040b575db060cbb3efc40800fefc234b102e196e90a11fe7b99d',
+          previousblockhash:
+            '00000000000000000000197762f3b38879ed3c4ed0e96d66d203879c51f9f27c',
+          mediantime: 1759917935,
+          nonce: 2255807358,
+          bits: 385998260,
+          difficulty: 150839487445890.5,
+        },
+        {
+          id: '00000000000000000000197762f3b38879ed3c4ed0e96d66d203879c51f9f27c',
+          height: 918174,
+          version: 579330048,
+          timestamp: 1759920849,
+          tx_count: 3250,
+          size: 1756669,
+          weight: 3993331,
+          merkle_root:
+            'bfa30d00c8fd4c2537029f2880a63aad0dda5a0102f7017f73531d08704a23e6',
+          previousblockhash:
+            '00000000000000000000bfe2dfa7db0249854da123686810fc678b2e6e596576',
+          mediantime: 1759917929,
+          nonce: 1749894252,
+          bits: 385998260,
+          difficulty: 150839487445890.5,
+        },
+      ]);
   }
   return mockServer.forGet(`${network}/esplora/blocks`).thenJson(200, []);
 };
 
-const mockFundingTx = (
-  mockServer: Mockttp,
-  network: string = INFURA_BTC_MAINNET_URL,
-) =>
+const mockFundingTx = (mockServer: Mockttp) =>
   mockServer
-    .forGet(`${network}/scripthash/${FUNDING_SCRIPT_HASH}/txs`)
+    .forGet(
+      new RegExp(
+        `^https:\\/\\/bitcoin-mainnet\\.infura\\.io\\/v3\\/[a-f0-9]{32}\\/scripthash\\/${FUNDING_SCRIPT_HASH}\\/txs$`,
+        'u',
+      ),
+    )
     .thenJson(200, [
       {
         txid: '6e7ebcc607a83f7cf5659fb6fb70433c775017092302630f027ca728b4d06aba',
@@ -178,7 +181,7 @@ const mockFundingTx = (
 const mockAnyTxs = (mockServer: Mockttp) =>
   mockServer
     .forGet(
-      /^https:\/\/bitcoin-mainnet.infura.io\/v3\/5b98a22672004ef1bf40a80123c5c48d\/esplora\/scripthash\/[0-9a-f]{64}\/txs$/u,
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/scripthash\/[0-9a-f]{64}\/txs$/u,
     )
     .thenJson(200, []);
 
@@ -186,10 +189,14 @@ const mockBlockHeight = (
   mockServer: Mockttp,
   blockHeight: number,
   blockHash: string,
-  network: string = INFURA_BTC_MAINNET_URL,
 ) =>
   mockServer
-    .forGet(`${network}/esplora/block-height/${blockHeight}`)
+    .forGet(
+      new RegExp(
+        `^https:\\/\\/bitcoin-mainnet\\.infura\\.io\\/v3\\/[a-f0-9]{32}\\/esplora\\/block-height\\/${blockHeight}$`,
+        'u',
+      ),
+    )
     .thenReply(200, blockHash);
 
 const mockFeeEstimates = (mockServer: Mockttp, network: string = ESPLORA_URL) =>
@@ -232,13 +239,13 @@ const mockFeeEstimates = (mockServer: Mockttp, network: string = ESPLORA_URL) =>
  */
 export async function mockInitialFullScan(mockServer: Mockttp) {
   // Mock latest blocks
-  await mockBlocks(mockServer, INFURA_BTC_MAINNET_URL);
+  await mockBlocks(mockServer);
   // await mockBlocks(mockServer, ESPLORA_TESTNET_URL);
   // Mock the funding transaction setting the balance to default
-  await mockFundingTx(mockServer, INFURA_BTC_MAINNET_URL);
+  await mockFundingTx(mockServer);
   // await mockFundingTx(mockServer, ESPLORA_TESTNET_URL);
   // Mock funding tx block hash
-  // await mockBlockHeight(mockServer, FUNDING_BLOCK_HEIGHT, FUNDING_BLOCK_HASH, INFURA_BTC_MAINNET_URL);
+  // await mockBlockHeight(mockServer, FUNDING_BLOCK_HEIGHT, FUNDING_BLOCK_HASH);
   /* await mockBlockHeight(
     mockServer,
     FUNDING_BLOCK_HEIGHT,
@@ -248,12 +255,7 @@ export async function mockInitialFullScan(mockServer: Mockttp) {
   // Mock other calls to fetch txs given the stop gap (returns empty)
   await mockAnyTxs(mockServer);
   // Mock genesis block hash
-  await mockBlockHeight(
-    mockServer,
-    0,
-    GENESIS_BLOCK_HASH,
-    INFURA_BTC_MAINNET_URL,
-  );
+  await mockBlockHeight(mockServer, 0, GENESIS_BLOCK_HASH);
 
   // Mock fee estimates
   await mockFeeEstimates(mockServer);

@@ -25,8 +25,6 @@ body {
 }
 
 html {
-  min-height: 500px;
-
   @include design-system.screen-sm-max {
     &:not([data-theme]) {
       background-color: var(--color-background-default);

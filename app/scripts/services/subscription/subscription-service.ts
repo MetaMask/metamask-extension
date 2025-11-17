@@ -22,7 +22,6 @@ import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
 import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
 import {
   getSubscriptionRequestTrackingProps,
-  getSubscriptionRestartRequestTrackingProps,
   getUserAccountTypeAndCategory,
 } from '../../../../shared/modules/shield/metrics';
 import {
@@ -230,31 +229,19 @@ export class SubscriptionService {
     const appStateControllerState = this.#messenger.call(
       'AppStateController:getState',
     );
-    const { defaultSubscriptionPaymentOptions } = appStateControllerState;
+    const {
+      defaultSubscriptionPaymentOptions,
+      shieldSubscriptionMetricsProps,
+    } = appStateControllerState;
 
     const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
 
     const trackingProps = getSubscriptionRequestTrackingProps(
       subscriptionControllerState,
       defaultSubscriptionPaymentOptions,
+      shieldSubscriptionMetricsProps,
       transactionMeta,
     );
-
-    const isRenewal = trackingProps.subscription_state !== 'none';
-
-    if (isRenewal) {
-      const renewalTrackingProps = getSubscriptionRestartRequestTrackingProps(
-        subscriptionControllerState,
-        requestStatus,
-        extrasProps?.error_message as string | undefined,
-      );
-
-      this.#messenger.call('MetaMetricsController:trackEvent', {
-        event: MetaMetricsEventName.ShieldMembershipRestartRequest,
-        category: MetaMetricsEventCategory.Shield,
-        properties: renewalTrackingProps,
-      });
-    }
 
     this.#messenger.call('MetaMetricsController:trackEvent', {
       event: MetaMetricsEventName.ShieldSubscriptionRequest,
@@ -262,8 +249,8 @@ export class SubscriptionService {
       properties: {
         ...accountTypeAndCategory,
         ...trackingProps,
-        status: requestStatus,
         ...extrasProps,
+        status: requestStatus,
       },
     });
   }

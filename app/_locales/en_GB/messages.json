@@ -832,6 +832,9 @@
   "bestQuote": {
     "message": "Best quote"
   },
+  "bestQuoteTooltip": {
+    "message": "The best quote we found from providers, including provider fees and a 0.25% MetaMask fee. The minimum you'll receive if price changes is $20.82."
+  },
   "beta": {
     "message": "Beta"
   },
@@ -2892,6 +2895,9 @@
   "genericExplorerView": {
     "message": "View account on $1"
   },
+  "getDollarMore": {
+    "message": "Get $$1 more"
+  },
   "getTheNewestFeatures": {
     "message": "Get the newest features"
   },
@@ -3179,6 +3185,9 @@
   },
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
+  },
+  "insights": {
+    "message": "Insights"
   },
   "insightsFromSnap": {
     "message": "Insights from $1",
@@ -3610,8 +3619,14 @@
   "marketCap": {
     "message": "Market cap"
   },
+  "marketCapFDV": {
+    "message": "Market cap (FDV)"
+  },
   "marketDetails": {
     "message": "Market details"
+  },
+  "marketRate": {
+    "message": "Market rate"
   },
   "maskicons": {
     "message": "Polycons"
@@ -3665,9 +3680,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
-  },
-  "metamaskRate": {
-    "message": "Metamask rate"
   },
   "metamaskSwap": {
     "message": "Metamask Swap"
@@ -4701,6 +4713,9 @@
     "message": "Learn how to cancel or speed up a transaction.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
+  "percentChange": {
+    "message": "Percent change"
+  },
   "permissionDetails": {
     "message": "Permission details"
   },
@@ -5141,7 +5156,7 @@
     "message": "Your plan is now active."
   },
   "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "Your membership has been paused due to payment failure."
+    "message": "Your plan has been paused due to payment failure."
   },
   "pushNotificationShieldSubscriptionTitle": {
     "message": "MetaMask Transaction Shield"
@@ -5868,6 +5883,9 @@
   "shieldClaim": {
     "message": "Submit a claim"
   },
+  "shieldClaimChainNotSupported": {
+    "message": "This chain is not supported."
+  },
   "shieldClaimDescription": {
     "message": "Description of case"
   },
@@ -5901,7 +5919,7 @@
     "message": "Total file size exceeds the maximum allowed size."
   },
   "shieldClaimFileUploader": {
-    "message": "Image Upload"
+    "message": "Image upload"
   },
   "shieldClaimFileUploaderAcceptText": {
     "message": "PDF, PNG, JPG (Max $1MB)",
@@ -5928,9 +5946,6 @@
   "shieldClaimIncidentDetails": {
     "message": "Incident details"
   },
-  "shieldClaimIncidentDetailsDescription": {
-    "message": "Help us understand more about what happened."
-  },
   "shieldClaimInvalidChainId": {
     "message": "Please enter a valid chain ID"
   },
@@ -5955,9 +5970,6 @@
   "shieldClaimPersonalDetails": {
     "message": "Personal details"
   },
-  "shieldClaimPersonalDetailsDescription": {
-    "message": "We'll use this to communicate with you when investigating and resolving."
-  },
   "shieldClaimReimbursementWalletAddress": {
     "message": "Wallet address for reimbursement"
   },
@@ -5972,6 +5984,9 @@
   },
   "shieldClaimSelectNetwork": {
     "message": "Select a network"
+  },
+  "shieldClaimSignatureCoverageNotCovered": {
+    "message": "Signature coverage not found for the given transaction hash."
   },
   "shieldClaimStatusApproved": {
     "message": "Approved"
@@ -6007,6 +6022,18 @@
   "shieldClaimSubmitSuccessDescription": {
     "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
   },
+  "shieldClaimTransactionNotFound": {
+    "message": "Transaction not found on chain."
+  },
+  "shieldClaimTransactionNotFromWalletAddress": {
+    "message": "Transaction hash not from wallet address."
+  },
+  "shieldClaimTransactionNotSuccessful": {
+    "message": "Transaction not successful on chain."
+  },
+  "shieldClaimWalletOwnershipValidationFailed": {
+    "message": "Wallet ownership validation failed."
+  },
   "shieldClaimsHistoryTitle": {
     "message": "CLAIM HISTORY"
   },
@@ -6030,31 +6057,31 @@
     "message": "PENDING CLAIMS"
   },
   "shieldConfirmMembership": {
-    "message": "Confirm membership"
+    "message": "Confirm plan"
   },
   "shieldCoverageAlertCovered": {
     "message": "You're protected up to $2 with Metamask Transaction Shield. $1."
   },
   "shieldCoverageAlertHighRiskTransaction": {
-    "message": "This is a high risk transaction, so it isn't protected by Transaction Shield. $1."
+    "message": "This is a high risk transaction, so it isn't protected by MetaMask Transaction Shield. $1."
   },
   "shieldCoverageAlertMessageChainNotSupported": {
-    "message": "This chain is not supported, so it isn't protected by Transaction Shield. $1."
+    "message": "This chain is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
-    "message": "Learn how coverage works"
+    "message": "See What's Covered"
   },
   "shieldCoverageAlertMessagePaused": {
-    "message": "There was an issue with your Transaction Shield membership payment. Please update your payment method to resume coverage."
+    "message": "There was an issue with your MetaMask Transaction Shield plan payment. Please update your payment method to resume coverage."
   },
   "shieldCoverageAlertMessagePausedAcknowledgeButton": {
     "message": "Update payment method"
   },
   "shieldCoverageAlertMessagePotentialRisks": {
-    "message": "This transaction has potential risks, so it isn't protected by Transaction Shield. $1."
+    "message": "This transaction has potential risks, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageSignatureNotSupported": {
-    "message": "This signature isn't supported, so it isn't protected by Transaction Shield. $1."
+    "message": "This signature isn't supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageTitle": {
     "message": "This transaction isn't covered"
@@ -6065,14 +6092,20 @@
   "shieldCoverageAlertMessageTitlePaused": {
     "message": "Transaction Shield paused"
   },
+  "shieldCoverageAlertMessageTitleSignatureRequest": {
+    "message": "This signature request isn't covered"
+  },
+  "shieldCoverageAlertMessageTitleSignatureRequestCovered": {
+    "message": "This signature request is covered"
+  },
   "shieldCoverageAlertMessageTokenTrustSignalWarning": {
     "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds. $1."
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
-    "message": "This transaction type is not supported, so it isn't protected by Transaction Shield. $1."
+    "message": "This transaction type is not supported, so it isn't protected by MetaMask Transaction Shield. $1."
   },
   "shieldCoverageAlertMessageUnknown": {
-    "message": "This request can't be verified, so it isn't protected by Transaction Shield. $1."
+    "message": "This request can't be verified, so it isn't protected by MetaMask Transaction Shield. $1."
   },
   "shieldCoverageEnding": {
     "message": "Shield coverage ends soon"
@@ -6081,7 +6114,7 @@
     "message": "Renew"
   },
   "shieldCoverageEndingDescription": {
-    "message": "Membership ends on $1.",
+    "message": "Plan ends on $1.",
     "description": "The $1 is the date"
   },
   "shieldCovered": {
@@ -6105,7 +6138,7 @@
     "message": "Introducing Transaction Shield"
   },
   "shieldEstimatedChangesMonthlyTooltipText": {
-    "message": "Authorize up to $1 for the full year. You'll be billed $2 each month, not the full amount now."
+    "message": "Authorize $1/month for 12 months ($2 total). You'll be billed monthly, not the full amount now."
   },
   "shieldFooterAgreement": {
     "message": "By continuing, I agree to Transaction Shield $1."
@@ -6116,14 +6149,26 @@
   "shieldPaused": {
     "message": "Paused"
   },
-  "shieldPaymentDeclined": {
-    "message": "Shield payment declined"
+  "shieldPaymentPaused": {
+    "message": "Transaction Shield paused"
   },
-  "shieldPaymentDeclinedAction": {
-    "message": "Add funds"
+  "shieldPaymentPausedActionCardPayment": {
+    "message": "Update"
   },
-  "shieldPaymentDeclinedDescription": {
-    "message": "Insufficient token balance. Please try again to resume coverage."
+  "shieldPaymentPausedActionCryptoPayment": {
+    "message": "Update"
+  },
+  "shieldPaymentPausedActionUnexpectedError": {
+    "message": "View"
+  },
+  "shieldPaymentPausedDescriptionCardPayment": {
+    "message": "Card payment failed."
+  },
+  "shieldPaymentPausedDescriptionCryptoPayment": {
+    "message": "Insufficient token balance."
+  },
+  "shieldPaymentPausedDescriptionUnexpectedError": {
+    "message": "An unexpected error occurred."
   },
   "shieldPlanAnnual": {
     "message": "Annual"
@@ -6138,24 +6183,28 @@
   "shieldPlanCard": {
     "message": "Card"
   },
+  "shieldPlanCryptoMonthlyNote": {
+    "message": "Total monthly fees pre-approved for a year"
+  },
   "shieldPlanDetails": {
-    "message": "Plan details"
+    "message": "What you get"
   },
   "shieldPlanDetails1": {
     "message": "Free $1-day trial",
     "description": "The $1 is the number of days"
   },
-  "shieldPlanDetails2Card": {
-    "message": "Plan auto-renews until canceled"
-  },
-  "shieldPlanDetails2CryptoMonth": {
-    "message": "Monthly fees are pre-approved for a year, so your coverage stays active"
-  },
-  "shieldPlanDetails2CryptoYear": {
-    "message": "Fees are paid upfront for a year, so your coverage stays active"
+  "shieldPlanDetails2": {
+    "message": "Up to $1 in transaction protection",
+    "description": "The $1 is the amount of transaction protection"
   },
   "shieldPlanDetails3": {
+    "message": "24/7 access to priority live chat support"
+  },
+  "shieldPlanFooterNoteMonthly": {
     "message": "Billed monthly, cancel anytime"
+  },
+  "shieldPlanFooterNoteYearly": {
+    "message": "Billed yearly, cancel anytime"
   },
   "shieldPlanMonthly": {
     "message": "Monthly"
@@ -6186,7 +6235,7 @@
     "message": "Change payment method"
   },
   "shieldPlanSave": {
-    "message": "Save 16%"
+    "message": "Save 17%"
   },
   "shieldPlanSelectToken": {
     "message": "Select a token"
@@ -6197,6 +6246,9 @@
   "shieldStartNowCTA": {
     "message": "Start now"
   },
+  "shieldStartNowCTAWithTrial": {
+    "message": "Start free trial"
+  },
   "shieldTx": {
     "message": "Transaction Shield"
   },
@@ -6205,14 +6257,13 @@
     "description": "The $1 is the date subscription ends"
   },
   "shieldTxCancelWhenPausedDetails": {
-    "message": "Your coverage isn't active while paused. If you cancel, your membership will end on $1.",
-    "description": "The $1 is the date subscription ends"
+    "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."
   },
   "shieldTxDetails1Description": {
-    "message": "Secures your assets from risky transactions"
+    "message": "Secures assets on covered transactions"
   },
   "shieldTxDetails1Title": {
-    "message": "Covers $10,000 in transaction protection"
+    "message": "Up to $10,000 transaction protection"
   },
   "shieldTxDetails2Description": {
     "message": "Get faster, dedicated support anytime"
@@ -6221,7 +6272,7 @@
     "message": "Priority support"
   },
   "shieldTxMembershipActive": {
-    "message": "Active membership"
+    "message": "Active plan"
   },
   "shieldTxMembershipBillingDetails": {
     "message": "Billing details"
@@ -6239,58 +6290,67 @@
     "message": "Payment method"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
-    "message": "View billing history"
+    "message": "Manage billing"
   },
   "shieldTxMembershipCancel": {
-    "message": "Cancel membership"
+    "message": "Cancel plan"
   },
   "shieldTxMembershipCancelNotification": {
-    "message": "Your membership will be cancelled on $1.",
+    "message": "Your plan will be cancelled on $1.",
     "description": "The $1 is the date"
-  },
-  "shieldTxMembershipErrorAddFunds": {
-    "message": "Add funds"
   },
   "shieldTxMembershipErrorInsufficientFunds": {
-    "message": "Insufficient funds for your $1 renewal. Keep access active by adding funds.",
-    "description": "The $1 is the date"
+    "message": "Your plan ends on $1. Renew now to continue your benefits.",
+    "description": "The $1 is the date subscription ends"
   },
   "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Insufficient $1",
-    "description": "The $1 is the token symbol"
+    "message": "Retry payment"
   },
-  "shieldTxMembershipErrorPaused": {
-    "message": "Membership paused due to insufficient funds. Coverage will resume after payment update."
+  "shieldTxMembershipErrorPausedCard": {
+    "message": "Your plan has been paused due to a failed card payment."
+  },
+  "shieldTxMembershipErrorPausedCardAction": {
+    "message": "Update card details"
   },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Your payment was declined. Please update your payment method to continue your coverage."
   },
+  "shieldTxMembershipErrorPausedCryptoInsufficientFunds": {
+    "message": "Plan paused due to insufficient funds. Payment updates may take up to $1 hours.",
+    "description": "The $1 is the number of hours"
+  },
+  "shieldTxMembershipErrorPausedCryptoInsufficientFundsAction": {
+    "message": "Add funds"
+  },
   "shieldTxMembershipErrorPausedCryptoTooltip": {
-    "message": "Insufficient token balance in your wallet. Top up to resume coverage."
+    "message": "Insufficient token balance in your wallet. Click retry after funding your wallet."
+  },
+  "shieldTxMembershipErrorPausedUnexpected": {
+    "message": "Plan paused due to an unexpected error."
+  },
+  "shieldTxMembershipErrorPausedUnexpectedAction": {
+    "message": "Contact support"
   },
   "shieldTxMembershipErrorUpdateCard": {
     "message": "Update card details"
-  },
-  "shieldTxMembershipErrorUpdatePayment": {
-    "message": "Update payment"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "Free trial"
   },
   "shieldTxMembershipId": {
-    "message": "Member ID"
+    "message": "Plan ID"
   },
   "shieldTxMembershipInactive": {
-    "message": "Inactive membership"
+    "message": "Inactive plan"
   },
   "shieldTxMembershipPaused": {
     "message": "Paused"
   },
   "shieldTxMembershipRenew": {
-    "message": "Renew membership"
+    "message": "Renew plan"
   },
   "shieldTxMembershipResubscribe": {
-    "message": "Restart membership"
+    "message": "Restart plan"
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"
@@ -6874,6 +6934,9 @@
   },
   "srpDetailsTitle": {
     "message": "What’s a Secret Recovery Phrase?"
+  },
+  "srpImportDuplicateAccountError": {
+    "message": "The account you are trying to import is a duplicate."
   },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
@@ -7854,6 +7917,26 @@
   "transferRequest": {
     "message": "Transfer request"
   },
+  "tronBandwidth": {
+    "message": "Bandwidth"
+  },
+  "tronBandwidthCoverageDescription": {
+    "message": "Sufficient to cover ~$1 TRX transfers",
+    "description": "$1 is the number of TRX transfers"
+  },
+  "tronDailyResources": {
+    "message": "Daily resource"
+  },
+  "tronDailyResourcesDescription": {
+    "message": "This is your daily allowance based on your staked TRX. You get 600 bandwidth for free daily."
+  },
+  "tronEnergy": {
+    "message": "Energy"
+  },
+  "tronEnergyCoverageDescription": {
+    "message": "Sufficient to cover ~$1 USDT",
+    "description": "$1 is the number of USDT transfers"
+  },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",
     "description": "$1 is a link to the wallet connection guide;"
@@ -8143,6 +8226,9 @@
   "viewOnOpensea": {
     "message": "View on Opensea"
   },
+  "viewTokenDetails": {
+    "message": "View token details"
+  },
   "viewTransaction": {
     "message": "View transaction"
   },
@@ -8167,6 +8253,9 @@
   },
   "visitWebSite": {
     "message": "Visit our website"
+  },
+  "volume": {
+    "message": "Volume"
   },
   "wallet": {
     "message": "Wallet"
