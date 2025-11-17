@@ -357,8 +357,10 @@ const mockInternalAccountsState = {
 };
 
 const mockNetworkConfigurations = {
-  networkConfigurationsByChainId: {},
-  multichainNetworkConfigurationsByChainId: {},
+  networkConfigurationsByChainId:
+    mockState.metamask.networkConfigurationsByChainId,
+  multichainNetworkConfigurationsByChainId:
+    mockState.metamask.multichainNetworkConfigurationsByChainId,
 };
 
 const render = (
