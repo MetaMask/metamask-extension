@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
@@ -146,10 +146,12 @@ export const MultichainAccountDetailsPage = () => {
     history.push(walletRoute);
   };
 
-  // Redirect if account doesn't exist
-  if (!id || !multichainAccount) {
-    history.push(DEFAULT_ROUTE);
-  }
+  useEffect(() => {
+    // Redirect if account doesn't exist
+    if (!id || !multichainAccount) {
+      history.push(DEFAULT_ROUTE);
+    }
+  }, [id, multichainAccount, history]);
 
   return id && multichainAccount ? (
     <Page className="multichain-account-details-page">

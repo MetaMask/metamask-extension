@@ -69,10 +69,16 @@ export const ConfusableRecipientName = ({
               html={
                 <Text>
                   {t('confusableCharacterTooltip', [
-                    <Box key={index * 10} className="confusable-character">
+                    <Box
+                      key={`${split.str}-${split.confusable.point}`}
+                      className="confusable-character"
+                    >
                       {` ‘${split.confusable.point}’ `}
                     </Box>,
-                    <Box key={index * 100} className="confusable-character">
+                    <Box
+                      key={`${split.str}-${split.confusable.similarTo}`}
+                      className="confusable-character"
+                    >
                       {` ‘${split.confusable.similarTo}’`}.
                     </Box>,
                   ])}
