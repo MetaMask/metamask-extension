@@ -83,7 +83,7 @@ describe('State logs', function () {
         const advancedSettingsPage = new AdvancedSettings(driver);
         await advancedSettingsPage.checkPageIsLoaded();
         // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
-        await driver.delay(20000);
+        await driver.delay(15000);
         await advancedSettingsPage.downloadStateLogs();
 
         // Verify download and get state logs
