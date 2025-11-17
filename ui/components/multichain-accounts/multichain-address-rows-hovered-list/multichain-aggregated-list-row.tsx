@@ -145,7 +145,7 @@ export const MultichainAggregatedAddressListRow = ({
 
   return (
     <Box
-      className={`multichain-address-row ${className}`}
+      className={`multichain-aggregated-address-row ${className}`}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}

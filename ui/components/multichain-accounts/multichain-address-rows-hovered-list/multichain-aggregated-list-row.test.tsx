@@ -48,7 +48,7 @@ const TEST_IDS = {
 } as const;
 
 const CSS_CLASSES = {
-  MULTICHAIN_ADDRESS_ROW: 'multichain-address-row',
+  MULTICHAIN_ADDRESS_ROW: 'multichain-aggregated-address-row',
   CUSTOM_CLASS: 'custom-class',
 } as const;
 
