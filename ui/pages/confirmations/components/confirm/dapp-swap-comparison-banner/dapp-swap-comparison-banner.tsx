@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+/* eslint-disable @typescript-eslint/naming-convention */
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -27,10 +28,10 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransaction } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
+import { useDappSwapComparisonMetrics } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonMetrics';
+import { useSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { QuoteSwapSimulationDetails } from '../../transactions/quote-swap-simulation-details/quote-swap-simulation-details';
 
-const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
-const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
 const DAPP_SWAP_THRESHOLD = 0.01;
 
 type DappSwapUiFlag = {
@@ -96,6 +97,8 @@ const DappSwapComparisonInner = () => {
     tokenAmountDifference,
     tokenDetails,
   } = useDappSwapComparisonInfo(batchedDappSwapNestedTransactions);
+  const { captureDappSwapComparisonDisplayProperties } =
+    useDappSwapComparisonMetrics();
 
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -139,6 +142,9 @@ const DappSwapComparisonInner = () => {
   ]);
 
   const updateSwapToSelectedQuote = useCallback(() => {
+    captureDappSwapComparisonDisplayProperties({
+      swap_mm_opened: 'true',
+    });
     setSelectedSwapType(SwapType.Metamask);
     setShowDappSwapComparisonBanner(true);
     const { value, gasLimit, data } = selectedQuote?.trade as TxData;
@@ -163,6 +169,7 @@ const DappSwapComparisonInner = () => {
       ),
     );
   }, [
+    captureDappSwapComparisonDisplayProperties,
     currentConfirmation,
     dispatch,
     setBatchedDappSwapNestedTransactions,
@@ -171,11 +178,22 @@ const DappSwapComparisonInner = () => {
     selectedQuote,
   ]);
 
-  if (
-    !dappSwapUi?.enabled ||
-    selectedQuoteValueDifference <
-      (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD)
-  ) {
+  const swapComparisonDisplayed =
+    dappSwapUi?.enabled &&
+    selectedQuoteValueDifference >=
+      (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD);
+
+  useEffect(() => {
+    let dappSwapComparisonDisplayed = false;
+    if (swapComparisonDisplayed) {
+      dappSwapComparisonDisplayed = true;
+    }
+    captureDappSwapComparisonDisplayProperties({
+      swap_mm_cta_displayed: dappSwapComparisonDisplayed.toString(),
+    });
+  }, [captureDappSwapComparisonDisplayProperties, swapComparisonDisplayed]);
+
+  if (!swapComparisonDisplayed) {
     return null;
   }
 
@@ -262,14 +280,12 @@ const DappSwapComparisonInner = () => {
 };
 
 export const DappSwapComparisonBanner = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
   const { dappSwapMetrics } = useSelector(getRemoteFeatureFlags);
+  const { isSwapToBeCompared } = useSwapCheck();
 
   const dappSwapMetricsEnabled =
     (dappSwapMetrics as { enabled: boolean })?.enabled === true &&
-    (transactionMeta.origin === DAPP_SWAP_COMPARISON_ORIGIN ||
-      transactionMeta.origin === TEST_DAPP_ORIGIN);
+    isSwapToBeCompared;
 
   if (!dappSwapMetricsEnabled) {
     return null;

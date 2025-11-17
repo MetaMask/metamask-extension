@@ -1,16 +1,31 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { useMemo } from 'react';
 
 import { useConfirmContext } from '../../../context/confirm';
 
+const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
+const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
+
 export function useSwapCheck() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { txParamsOriginal, txParams } = currentConfirmation ?? {
+  const { txParamsOriginal, txParams, origin, type } = currentConfirmation ?? {
     txParams: { data: '' },
   };
   const { data: txParamsOriginalData } = txParamsOriginal ?? { data: '' };
   const { data: txParamsData } = txParams ?? {};
 
+  const isSwapToBeCompared = useMemo(() => {
+    return (
+      (origin === DAPP_SWAP_COMPARISON_ORIGIN || origin === TEST_DAPP_ORIGIN) &&
+      type === TransactionType.contractInteraction
+    );
+  }, [origin, type]);
+
   return {
+    isSwapToBeCompared,
     isQuotedSwap:
       (txParamsOriginal && txParamsOriginalData !== txParamsData) ?? false,
   };
