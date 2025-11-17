@@ -1,5 +1,30 @@
 import { Driver } from '../../webdriver/driver';
 
+export type StateLogsPrimitiveType =
+  | 'array'
+  | 'boolean'
+  | 'bigint'
+  | 'null'
+  | 'number'
+  | 'object'
+  | 'string'
+  | 'undefined';
+
+export type StateLogsTypeMap = Record<string, StateLogsPrimitiveType>;
+
+export type StateLogsTypeDescriptor =
+  | StateLogsPrimitiveType
+  | StateLogsTypeDescriptorObject
+  | StateLogsTypeDescriptorArray;
+
+export type StateLogsTypeDescriptorObject = {
+  [key: string]: StateLogsTypeDescriptor;
+};
+
+export type StateLogsTypeDescriptorArray = StateLogsTypeDescriptor[];
+
+export type StateLogsTypeDefinition = Record<string, StateLogsTypeDescriptor>;
+
 type Differences = {
   differences: string[];
 };
@@ -42,7 +67,7 @@ type MinimalStateLogsJson = {
   [key: string]: unknown;
 };
 
-const getValueType = (value: unknown): string => {
+const getValueType = (value: unknown): StateLogsPrimitiveType => {
   if (value === null) {
     return 'null';
   }
@@ -52,15 +77,26 @@ const getValueType = (value: unknown): string => {
   if (typeof value === 'object') {
     return 'object';
   }
-  return typeof value;
+  const valueType = typeof value;
+  switch (valueType) {
+    case 'boolean':
+    case 'number':
+    case 'string':
+    case 'undefined':
+      return valueType;
+    case 'bigint':
+      return 'bigint';
+    default:
+      return 'object';
+  }
 };
 
 // Function to create a type-only version of an object (keys with their types)
 export const createTypeMap = (
   obj: Record<string, unknown>,
   path = '',
-): Record<string, string> => {
-  const typeMap: Record<string, string> = {};
+): StateLogsTypeMap => {
+  const typeMap: StateLogsTypeMap = {};
 
   for (const key in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
@@ -101,11 +137,50 @@ export const createTypeMap = (
   return typeMap;
 };
 
+const flattenTypeDescriptor = (
+  descriptor: StateLogsTypeDescriptor,
+  path: string,
+  typeMap: StateLogsTypeMap,
+): void => {
+  if (typeof descriptor === 'string') {
+    typeMap[path] = descriptor;
+    return;
+  }
+
+  if (Array.isArray(descriptor)) {
+    typeMap[path] = 'array';
+    if (descriptor.length > 0) {
+      flattenTypeDescriptor(descriptor[0], `${path}[0]`, typeMap);
+    }
+    return;
+  }
+
+  typeMap[path] = 'object';
+  for (const [key, value] of Object.entries(descriptor)) {
+    const nextPath = path ? `${path}.${key}` : key;
+    flattenTypeDescriptor(value, nextPath, typeMap);
+  }
+};
+
+export const createTypeMapFromDefinition = (
+  definition: StateLogsTypeDefinition,
+): StateLogsTypeMap => {
+  const typeMap: StateLogsTypeMap = {};
+  for (const [key, value] of Object.entries(definition)) {
+    flattenTypeDescriptor(value, key, typeMap);
+  }
+  return typeMap;
+};
+
 // We can ignore keys for 2 reasons:
 // 1. To avoid failing for frequent state changes, which are low risk
 // 2. To mitigate flakiness for properties which appear intermittently on state, right after login in
 const getIgnoredKeys = (): string[] => [
   'localeMessages',
+  'metamask.snaps',
+  'metamask.database.verifiedSnaps',
+  'metamask.subjects',
+  'metamask.verifiedSnaps',
   'metamask.currentBlockGasLimitByChainId',
   'metamask.domains',
   'metamask.networkConfigurationsByChainId',
@@ -147,8 +222,8 @@ const shouldIgnoreKey = (key: string, ignoredKeys: string[]): boolean => {
 };
 
 const findMissingKeys = (
-  current: Record<string, string>,
-  expected: Record<string, string>,
+  current: StateLogsTypeMap,
+  expected: StateLogsTypeMap,
   shouldIgnore: (key: string) => boolean,
 ): Differences => {
   const differences: string[] = [];
@@ -170,8 +245,8 @@ const findMissingKeys = (
 };
 
 const findNewKeys = (
-  current: Record<string, string>,
-  expected: Record<string, string>,
+  current: StateLogsTypeMap,
+  expected: StateLogsTypeMap,
   shouldIgnore: (key: string) => boolean,
 ): Differences => {
   const differences: string[] = [];
@@ -193,8 +268,8 @@ const findNewKeys = (
 };
 
 const findTypeMismatches = (
-  current: Record<string, string>,
-  expected: Record<string, string>,
+  current: StateLogsTypeMap,
+  expected: StateLogsTypeMap,
   shouldIgnore: (key: string) => boolean,
 ): Differences => {
   const differences: string[] = [];
@@ -219,8 +294,8 @@ const findTypeMismatches = (
 
 // Special validation for srpSessionData because session IDs are dynamic
 const validateSrpSessionData = (
-  current: Record<string, string>,
-  expected: Record<string, string>,
+  current: StateLogsTypeMap,
+  expected: StateLogsTypeMap,
 ): Differences => {
   const differences: string[] = [];
 
@@ -329,8 +404,8 @@ const combineResults = (results: Differences[]): Differences => {
 
 // Main comparison function - orchestrates all comparison types
 export const compareTypeMaps = (
-  current: Record<string, string>,
-  expected: Record<string, string>,
+  current: StateLogsTypeMap,
+  expected: StateLogsTypeMap,
 ): { differences: string[] } => {
   console.log('🔍 Comparing state log structures...');
 

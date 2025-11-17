@@ -6,11 +6,14 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import referenceStateLogs from './state-logs.json';
+import referenceStateLogsDefinition from './state-logs.json';
 import {
   compareTypeMaps,
   createTypeMap,
+  createTypeMapFromDefinition,
   getDownloadedStateLogs,
+  StateLogsTypeDefinition,
+  StateLogsTypeMap,
 } from './state-logs-helpers';
 
 const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
@@ -88,7 +91,9 @@ describe('State logs', function () {
 
         // Create type maps for comparison
         const currentTypeMap = createTypeMap(stateLogs);
-        const expectedTypeMap = createTypeMap(referenceStateLogs);
+        const expectedTypeMap: StateLogsTypeMap = createTypeMapFromDefinition(
+          referenceStateLogsDefinition as StateLogsTypeDefinition,
+        );
 
         console.log('📋 Created type maps for comparison');
 
@@ -110,11 +115,11 @@ describe('State logs', function () {
 
           console.log('='.repeat(60));
           console.log(
-            `📝 Please update the state-logs.json file. You can copy it from ${downloadedStateLogsPath}`,
+            `📝 Please update the type map in state-logs.json using the downloaded logs at ${downloadedStateLogsPath}`,
           );
 
           assert.fail(
-            `State logs structure has changed. Found ${differences.length} differences:\n${differences.join('\n')}\n\nPlease update the state-logs.json file with the new structure from: ${downloadedStateLogsPath}`,
+            `State logs structure has changed. Found ${differences.length} differences:\n${differences.join('\n')}\n\nPlease update the type map in state-logs.json using the downloaded logs at: ${downloadedStateLogsPath}`,
           );
         }
 
