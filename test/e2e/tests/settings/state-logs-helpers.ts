@@ -180,6 +180,7 @@ const getIgnoredKeys = (): string[] => [
   'metamask.currentBlockGasLimitByChainId',
   'metamask.database.verifiedSnaps',
   'metamask.domains',
+  'metamask.networkConfigurationsByChainId',
   'metamask.slides',
   'metamask.snaps',
   'metamask.subjects',
