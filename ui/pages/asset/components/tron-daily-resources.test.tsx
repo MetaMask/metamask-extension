@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { TronDailyResources } from './tron-daily-resources';
 import * as useTronResourcesHook from '../hooks/useTronResources';
+import { TronDailyResources } from './tron-daily-resources';
 
 // Mock the hooks
 jest.mock('../hooks/useTronResources');
