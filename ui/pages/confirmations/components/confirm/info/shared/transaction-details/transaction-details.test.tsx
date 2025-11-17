@@ -230,7 +230,7 @@ describe('Transaction Details', () => {
       it('does not render for quote swap', () => {
         jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
           isQuotedSwap: true,
-        });
+        } as ReturnType<typeof SwapCheckHook.useSwapCheck>);
         const state = getMockConfirmStateForTransaction(
           genUnapprovedContractInteractionConfirmation(),
           {
