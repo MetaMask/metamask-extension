@@ -172,7 +172,7 @@ export const useTokenMetadata = (
 
     // Step 2 & 3: Fetch from API, then fall back to on-chain
     const fetchTokenMetadata = async () => {
-      log.log('fetchTokenMetadata', { tokenAddress, chainId });
+
       let newMetadata: TokenMetadata | null = null;
 
       // Step 2: Try API first
