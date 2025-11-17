@@ -131,6 +131,8 @@ const TransactionShield = () => {
     currentShieldSubscription ?? lastShieldSubscription;
 
   const [timeoutCancelled, setTimeoutCancelled] = useState(false);
+  // track cancellation/restart subscription state locally since relying on hook state has some side effects
+  const [cancellationActive, setCancellationActive] = useState(false);
   useEffect(() => {
     // cancel timeout when component unmounts
     return () => {
@@ -634,6 +636,29 @@ const TransactionShield = () => {
     });
   }, [captureShieldCtaClickedEvent]);
 
+  const handleRestartSubscription = useCallback(async () => {
+    try {
+      setCancellationActive(false);
+      await executeUnCancelSubscription();
+    } catch (error) {
+      // if restart fails, set cancellation active to true to show error banner
+      setCancellationActive(true);
+      throw error;
+    }
+  }, [executeUnCancelSubscription]);
+
+  const handleCancelMembership = useCallback(async () => {
+    try {
+      setIsCancelMembershipModalOpen(false);
+      await executeCancelSubscription();
+      setCancellationActive(true);
+    } catch (error) {
+      // if cancel fails, revert cancellation active state to false
+      setCancellationActive(false);
+      throw error;
+    }
+  }, [executeCancelSubscription]);
+
   return (
     <Box
       className="transaction-shield-page"
@@ -642,7 +667,7 @@ const TransactionShield = () => {
       flexDirection={FlexDirection.Column}
       padding={4}
     >
-      {currentShieldSubscription?.cancelAtPeriodEnd && (
+      {cancellationActive && currentShieldSubscription?.cancelAtPeriodEnd && (
         <Box
           className="transaction-shield-page__notification-banner"
           backgroundColor={BackgroundColor.warningMuted}
@@ -825,9 +850,7 @@ const TransactionShield = () => {
           currentShieldSubscription?.cancelAtPeriodEnd &&
           buttonRow(
             t('shieldTxMembershipResubscribe'),
-            () => {
-              executeUnCancelSubscription();
-            },
+            handleRestartSubscription,
             'shield-tx-membership-uncancel-button',
           )}
         {canCancel &&
@@ -930,10 +953,7 @@ const TransactionShield = () => {
       {currentShieldSubscription && isCancelMembershipModalOpen && (
         <CancelMembershipModal
           onClose={() => setIsCancelMembershipModalOpen(false)}
-          onConfirm={async () => {
-            setIsCancelMembershipModalOpen(false);
-            await executeCancelSubscription();
-          }}
+          onConfirm={handleCancelMembership}
           subscription={currentShieldSubscription}
         />
       )}
