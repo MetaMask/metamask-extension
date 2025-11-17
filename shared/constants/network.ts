@@ -676,9 +676,7 @@ export const PLASMA_NATIVE_TOKEN_IMAGE_URL = './images/plasma-native.svg';
 export const LUKSO_IMAGE_URL = './images/lukso.svg';
 export const LUKSO_NATIVE_TOKEN_IMAGE_URL = './images/lukso-native.svg';
 export const INJECTIVE_IMAGE_URL = './images/injective.svg';
-export const INJECTIVE_NATIVE_TOKEN_IMAGE_URL = './images/injective-native.svg';
 export const HYPEREVM_IMAGE_URL = './images/hyperevm.svg';
-export const HYPEREVM_NATIVE_TOKEN_IMAGE_URL = './images/hyperevm-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -1257,8 +1255,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.HEMI]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.PLASMA]: PLASMA_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LUKSO]: LUKSO_NATIVE_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.INJECTIVE]: INJECTIVE_NATIVE_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.HYPE]: HYPEREVM_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.INJECTIVE]: INJECTIVE_IMAGE_URL,
+  [CHAIN_IDS.HYPE]: HYPEREVM_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
