@@ -152,7 +152,6 @@ export const MultichainAccountNetworkGroup: React.FC<
 
   return (
     <Box
-      className="multichain-account-network-group"
       style={{
         flexShrink: 1,
         width: 'fit-content',
@@ -162,7 +161,7 @@ export const MultichainAccountNetworkGroup: React.FC<
     >
       <AvatarGroup
         limit={limit}
-        size={AvatarTokenSize.Sm}
+        size={AvatarTokenSize.Xs}
         members={networkData}
         avatarType={AvatarType.NETWORK}
         className={className}
