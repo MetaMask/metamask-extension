@@ -177,20 +177,30 @@ export const createTypeMapFromDefinition = (
 // 2. To mitigate flakiness for properties which appear intermittently on state, right after login in
 const getIgnoredKeys = (): string[] => [
   'localeMessages',
-  'metamask.snaps',
-  'metamask.database.verifiedSnaps',
-  'metamask.subjects',
-  'metamask.verifiedSnaps',
   'metamask.currentBlockGasLimitByChainId',
+  'metamask.database.verifiedSnaps',
+  'metamask.domains',
   'metamask.networkConfigurationsByChainId',
   'metamask.orderedNetworkList',
   'metamask.slides',
+  'metamask.snaps',
+  'metamask.subjects',
   'metamask.tokenBalances',
   'metamask.tokensChainsCache',
+  'metamask.verifiedSnaps',
 ];
 
 const shouldIgnoreKey = (key: string, ignoredKeys: string[]): boolean => {
-  if (key.split('.').some((part) => /\[\d+\]/u.test(part))) {
+  const hasNonZeroArrayIndex = key.split('.').some((part) => {
+    const matches = part.match(/\[(\d+)\]/gu);
+    return (
+      matches?.some((match) => {
+        const index = Number(match.slice(1, -1));
+        return Number.isNaN(index) === false && index !== 0;
+      }) ?? false
+    );
+  });
+  if (hasNonZeroArrayIndex) {
     return true;
   }
 
