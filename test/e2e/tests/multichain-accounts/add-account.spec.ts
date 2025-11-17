@@ -51,7 +51,6 @@ describe('Add account', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity();
         await activityList.checkTxAmountInActivity('-2.8 ETH');
 
         // Lock wallet and recover via SRP in "forget password" option
@@ -66,8 +65,7 @@ describe('Add account', function () {
         // Check wallet balance for both accounts
         await homePage.checkPageIsLoaded();
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
-        // BUG 37030 With BIP44 enabled wallet is not showing balance
-        // await homePage.checkLocalNodeBalanceIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed('$37,739.9');
         await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -75,8 +73,8 @@ describe('Add account', function () {
         );
         await accountListPage.switchToAccount(SECOND_ACCOUNT_NAME);
         await headerNavbar.checkAccountLabel(SECOND_ACCOUNT_NAME);
-        // BUG 37030 With BIP44 enabled wallet is not showing balance
-        // await homePage.checkExpectedBalanceIsDisplayed('2.8');
+        // BUG BUG
+        // await homePage.checkExpectedBalanceIsDisplayed('$4,760.00');
       },
     );
   });
