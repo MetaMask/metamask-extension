@@ -2,7 +2,6 @@ import { readdirSync } from 'node:fs';
 import { parse, join, relative, sep } from 'node:path';
 import type { EntryObject, Stats } from 'webpack';
 import type TerserPluginType from 'terser-webpack-plugin';
-import { sources } from 'webpack';
 
 export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;
@@ -288,34 +287,3 @@ export function logStats(err?: Error | null, stats?: Stats) {
  * @returns a new array with duplicate values removed and sorted
  */
 export const uniqueSort = (array: string[]) => [...new Set(array)].sort();
-
-/**
- * Creates a {@link sources.ReplaceSource | ReplaceSource} that replaces every non overlapping
- * occurrence of a substring in the given webpack `Source`.
- *
- * @param source - The original webpack source to read from and wrap.
- * @param assetName - A name used by `ReplaceSource` to identify the virtual asset being modified.
- * @param searchValue - The substring to look for. Treated as a literal string.
- * @param replaceValue - The text that will replace each occurrence of `searchValue`.
- * @returns A {@link sources.ReplaceSource} that applies the requested replacements when rendered.
- */
-export const replaceSource = (
-  source: sources.Source,
-  assetName: string,
-  searchValue: string,
-  replaceValue: string,
-) => {
-  const sourceString = source.source().toString();
-  const newSource = new sources.ReplaceSource(source, assetName);
-  let index: number = 0;
-  let from: number = 0;
-  while (index !== -1) {
-    index = sourceString.indexOf(searchValue, from);
-    if (index === -1) {
-      break;
-    }
-    newSource.replace(index, index + searchValue.length - 1, replaceValue);
-    from = index + searchValue.length;
-  }
-  return newSource;
-};
