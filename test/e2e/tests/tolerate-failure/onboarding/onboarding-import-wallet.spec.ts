@@ -16,8 +16,8 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { getCommonMocks } from '../utils/commonMocks.js';
 import { setupTimerReporting } from '../utils/testSetup.js';
 import Timers from '../../timers/Timers.js';
+import { E2E_SRP } from '../../../default-fixture.js';
 
-const E2E_SRP = process.env.E2E_POWER_USER_SRP || 'srp test phrase'; // default SRP for testing
 describe('MetaMask onboarding', function () {
   // Setup timer reporting for all tests in this describe block
   setupTimerReporting();
@@ -42,6 +42,7 @@ describe('MetaMask onboarding', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
+        const srp = process.env.E2E_POWER_USER_SRP || E2E_SRP;
         const timer1 = Timers.createTimer(
           'Time since the user clicks on "Import wallet" button until "Social" screen is visible',
         );
@@ -69,7 +70,7 @@ describe('MetaMask onboarding', function () {
         await onboardingSrpPage.checkPageIsLoaded();
         timer1.stopTimer();
 
-        await onboardingSrpPage.fillSrp(E2E_SRP);
+        await onboardingSrpPage.fillSrp(srp);
         await onboardingSrpPage.clickConfirmButton();
         timer2.startTimer();
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);

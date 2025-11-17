@@ -8,7 +8,7 @@ const { FirstTimeFlowType } = require('../../shared/constants/onboarding');
 // We could bump this to latest, but it breaks too many other things to handle right now.
 const FIXTURE_STATE_METADATA_VERSION = 74;
 
-const E2E_SRP =
+export const E2E_SRP =
   'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
 
 function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
