@@ -2166,6 +2166,9 @@
     "message": "Discover Snaps",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
   },
+  "discoveringMultichainAccountButtonLoading": {
+    "message": "Discovering accounts..."
+  },
   "dismiss": {
     "message": "Dismiss"
   },
@@ -7647,9 +7650,6 @@
   },
   "syncing": {
     "message": "Syncing..."
-  },
-  "discoveringMultichainAccountButtonLoading": {
-    "message": "Discovering accounts..."
   },
   "tapToReveal": {
     "message": "Tap to reveal"
