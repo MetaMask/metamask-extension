@@ -3,6 +3,7 @@ import { act } from '@testing-library/react-hooks';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import { selectBridgeQuotes } from '@metamask/bridge-controller';
+import { type CaipChainId } from '@metamask/utils';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import {
@@ -11,7 +12,6 @@ import {
 } from '../../store/actions';
 import { useRewardsContext } from '../rewards';
 import { usePrevious } from '../usePrevious';
-import { useMultichainSelector } from '../useMultichainSelector';
 import {
   getFromToken,
   getToToken,
@@ -32,10 +32,6 @@ jest.mock('../rewards', () => ({
 
 jest.mock('../usePrevious', () => ({
   usePrevious: jest.fn(),
-}));
-
-jest.mock('../useMultichainSelector', () => ({
-  useMultichainSelector: jest.fn(),
 }));
 
 jest.mock('../../ducks/bridge/selectors', () => ({
@@ -71,9 +67,6 @@ const mockUseRewardsContext = useRewardsContext as jest.MockedFunction<
   typeof useRewardsContext
 >;
 const mockUsePrevious = usePrevious as jest.MockedFunction<typeof usePrevious>;
-const mockUseMultichainSelector = useMultichainSelector as jest.MockedFunction<
-  typeof useMultichainSelector
->;
 const mockLogError = log.error as jest.MockedFunction<typeof log.error>;
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
 
@@ -100,6 +93,7 @@ describe('useRewards', () => {
     address: '0x0000000000000000000000000000000000000000',
     symbol: 'ETH',
     decimals: 18,
+    chainId: mockChainId,
   } as unknown as ReturnType<typeof getFromToken>;
 
   const mockToToken = {
@@ -159,7 +153,6 @@ describe('useRewards', () => {
       refetchSeasonStatus: jest.fn(),
     });
     mockUsePrevious.mockReturnValue(undefined);
-    mockUseMultichainSelector.mockReturnValue(mockChainId);
     mockGetFromToken.mockReturnValue(mockFromToken);
     mockGetToToken.mockReturnValue(mockToToken);
     mockGetQuoteRequest.mockReturnValue(mockQuoteRequest);
@@ -177,10 +170,18 @@ describe('useRewards', () => {
       if (selector === mockGetQuoteRequest) {
         return mockGetQuoteRequest({} as never);
       }
-      // Handle the account selector
+      // Handle the account selector - it returns a function that takes a CAIP chain ID
       if (typeof selector === 'function') {
         try {
           const result = selector({} as never);
+          // If the result is a function, it's the getSelectedAccountByScope function
+          if (typeof result === 'function') {
+            return (scope: string) =>
+              mockGetInternalAccountBySelectedAccountGroupAndCaip(
+                {} as never,
+                scope as CaipChainId,
+              );
+          }
           return result;
         } catch {
           // Not the account selector or error occurred
@@ -267,7 +268,15 @@ describe('useRewards', () => {
         }
         if (typeof selector === 'function') {
           try {
-            return selector({} as never);
+            const result = selector({} as never);
+            if (typeof result === 'function') {
+              return (scope: string) =>
+                mockGetInternalAccountBySelectedAccountGroupAndCaip(
+                  {} as never,
+                  scope as CaipChainId,
+                );
+            }
+            return result;
           } catch {
             // Not the account selector
           }
@@ -298,6 +307,21 @@ describe('useRewards', () => {
         }
         if (selector === mockGetQuoteRequest) {
           return mockGetQuoteRequest({} as never);
+        }
+        if (typeof selector === 'function') {
+          try {
+            const result = selector({} as never);
+            if (typeof result === 'function') {
+              return (scope: string) =>
+                mockGetInternalAccountBySelectedAccountGroupAndCaip(
+                  {} as never,
+                  scope as CaipChainId,
+                );
+            }
+            return result;
+          } catch {
+            // Not the account selector
+          }
         }
         return null;
       }) as never);
@@ -330,6 +354,21 @@ describe('useRewards', () => {
             srcTokenAmount: undefined,
           } as ReturnType<typeof getQuoteRequest>;
         }
+        if (typeof selector === 'function') {
+          try {
+            const result = selector({} as never);
+            if (typeof result === 'function') {
+              return (scope: string) =>
+                mockGetInternalAccountBySelectedAccountGroupAndCaip(
+                  {} as never,
+                  scope as CaipChainId,
+                );
+            }
+            return result;
+          } catch {
+            // Not the account selector
+          }
+        }
         return null;
       }) as never);
 
@@ -361,7 +400,15 @@ describe('useRewards', () => {
         }
         if (typeof selector === 'function') {
           try {
-            return selector({} as never);
+            const result = selector({} as never);
+            if (typeof result === 'function') {
+              return (scope: CaipChainId) =>
+                mockGetInternalAccountBySelectedAccountGroupAndCaip(
+                  {} as never,
+                  scope,
+                );
+            }
+            return result;
           } catch {
             // Not the account selector
           }
@@ -381,8 +428,41 @@ describe('useRewards', () => {
       expect(mockGetRewardsHasAccountOptedIn).not.toHaveBeenCalled();
     });
 
-    it('should not estimate points when currentChainId is missing', async () => {
-      mockUseMultichainSelector.mockReturnValue(null as never);
+    it('should not estimate points when sourceChainId is missing', async () => {
+      mockGetFromToken.mockReturnValue({
+        ...mockFromToken,
+        chainId: undefined,
+      } as unknown as ReturnType<typeof getFromToken>);
+      mockUseSelector.mockImplementation(((selector: unknown) => {
+        if (selector === mockGetFromToken) {
+          return {
+            ...mockFromToken,
+            chainId: undefined,
+          } as unknown as ReturnType<typeof getFromToken>;
+        }
+        if (selector === mockGetToToken) {
+          return mockGetToToken({} as never);
+        }
+        if (selector === mockGetQuoteRequest) {
+          return mockGetQuoteRequest({} as never);
+        }
+        if (typeof selector === 'function') {
+          try {
+            const result = selector({} as never);
+            if (typeof result === 'function') {
+              return (scope: CaipChainId) =>
+                mockGetInternalAccountBySelectedAccountGroupAndCaip(
+                  {} as never,
+                  scope,
+                );
+            }
+            return result;
+          } catch {
+            // Not the account selector
+          }
+        }
+        return null;
+      }) as never);
 
       const { result } = renderHookWithProvider(
         () => useRewards({ activeQuote: mockActiveQuote }),
@@ -1007,7 +1087,15 @@ describe('useRewards', () => {
         }
         if (typeof selector === 'function') {
           try {
-            return selector({} as never);
+            const result = selector({} as never);
+            if (typeof result === 'function') {
+              return (scope: CaipChainId) =>
+                mockGetInternalAccountBySelectedAccountGroupAndCaip(
+                  {} as never,
+                  scope,
+                );
+            }
+            return result;
           } catch {
             // Not the account selector
           }

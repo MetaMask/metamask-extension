@@ -9,6 +9,7 @@ import {
   toCaipAccountId,
   parseCaipChainId,
   type CaipAccountId,
+  type CaipChainId,
   isValidHexAddress,
   Hex,
 } from '@metamask/utils';
@@ -19,9 +20,7 @@ import {
   getToToken,
   getQuoteRequest,
 } from '../../ducks/bridge/selectors';
-import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import { usePrevious } from '../usePrevious';
-import { useMultichainSelector } from '../useMultichainSelector';
 import {
   getRewardsHasAccountOptedIn,
   estimateRewardsPoints,
@@ -118,15 +117,16 @@ export const useRewards = ({
   const toToken = useSelector(getToToken);
   const quoteRequest = useSelector(getQuoteRequest);
   const { rewardsEnabled } = useRewardsContext();
-  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
-  const caipChainId = currentChainId
-    ? formatChainIdToCaip(currentChainId.toString())
-    : null;
-  const selectedAccount = useSelector((state) =>
-    caipChainId
-      ? getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId)
-      : null,
+  const getSelectedAccountByScope = useSelector(
+    (state) => (scope: CaipChainId) =>
+      getInternalAccountBySelectedAccountGroupAndCaip(state, scope),
   );
+  const sourceChainId = fromToken?.chainId
+    ? formatChainIdToCaip(fromToken.chainId)
+    : undefined;
+  const selectedAccount = sourceChainId
+    ? getSelectedAccountByScope(sourceChainId)
+    : undefined;
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedEstimatePoints = useCallback(
@@ -231,7 +231,7 @@ export const useRewards = ({
         !toToken ||
         !selectedAccount?.address ||
         !quoteRequest?.srcTokenAmount ||
-        !currentChainId ||
+        !sourceChainId ||
         !rewardsEnabled
       ) {
         setEstimatedPoints(null);
@@ -247,7 +247,7 @@ export const useRewards = ({
         // Format account to CAIP-10
         caipAccount = formatAccountToCaipAccountId(
           selectedAccount.address,
-          currentChainId.toString(),
+          sourceChainId,
         );
 
         if (!caipAccount) {
@@ -286,7 +286,7 @@ export const useRewards = ({
       toToken,
       selectedAccount,
       quoteRequest,
-      currentChainId,
+      sourceChainId,
       rewardsEnabled,
       debouncedEstimatePoints,
       dispatch,
