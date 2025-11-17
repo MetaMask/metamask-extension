@@ -18,11 +18,7 @@ import {
   resetOnboarding,
   resetWallet,
 } from '../../store/actions';
-import {
-  getIsSocialLoginFlow,
-  getFirstTimeFlowType,
-  getTheme,
-} from '../../selectors';
+import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { useNavState } from '../../contexts/navigation-state';
@@ -37,7 +33,6 @@ const mapStateToProps = (state) => {
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     isOnboardingCompleted: getCompletedOnboarding(state),
     firstTimeFlowType: getFirstTimeFlowType(state),
-    theme: getTheme(state),
   };
 };
 

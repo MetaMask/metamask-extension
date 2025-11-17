@@ -23,9 +23,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
-  ///: END:ONLY_INCLUDE_IF
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
@@ -153,9 +151,7 @@ const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 let sidePanelIsOpen = false;
-///: END:ONLY_INCLUDE_IF
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -1169,9 +1165,7 @@ export function setupController(
       openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
       notificationIsOpen ||
-      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
       sidePanelIsOpen ||
-      ///: END:ONLY_INCLUDE_IF
       false
     );
   };
@@ -1259,7 +1253,6 @@ export function setupController(
         });
       }
 
-      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
         sidePanelIsOpen = true;
         finished(portStream, () => {
@@ -1269,7 +1262,6 @@ export function setupController(
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
         });
       }
-      ///: END:ONLY_INCLUDE_IF
 
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
@@ -1615,9 +1607,7 @@ async function triggerUi() {
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
-    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     !sidePanelIsOpen &&
-    ///: END:ONLY_INCLUDE_IF
     true
   ) {
     uiIsTriggering = true;
@@ -1682,7 +1672,6 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 // Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
 // and when the feature flag is enabled
 if (
@@ -1704,7 +1693,6 @@ if (
     }
   });
 }
-///: END:ONLY_INCLUDE_IF
 
 // // On first install, open a new tab with MetaMask
 // async function onInstall() {
@@ -1786,12 +1774,12 @@ function onNavigateToTab() {
   });
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 // Sidepanel-specific functionality
 // Set initial side panel behavior based on user preference
 const initSidePanelBehavior = async () => {
   // Only initialize sidepanel behavior if the feature flag is enabled
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+  // and the browser supports the sidePanel API (not Firefox)
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
     return;
   }
 
@@ -1799,10 +1787,10 @@ const initSidePanelBehavior = async () => {
     // Wait for controller to be initialized
     await isInitialized;
 
-    // Get user preference (default to true for side panel)
+    // Get user preference (default to false for side panel)
     const useSidePanelAsDefault =
       controller?.preferencesController?.state?.preferences
-        ?.useSidePanelAsDefault ?? true;
+        ?.useSidePanelAsDefault ?? false;
 
     // Set panel behavior based on preference
     if (browser?.sidePanel?.setPanelBehavior) {
@@ -1810,6 +1798,18 @@ const initSidePanelBehavior = async () => {
         openPanelOnActionClick: useSidePanelAsDefault,
       });
     }
+
+    // Setup remote feature flag listener to update sidepanel preferences
+    controller?.controllerMessenger?.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (state) => {
+        const extensionUxSidepanel =
+          state?.remoteFeatureFlags?.extensionUxSidepanel;
+        if (extensionUxSidepanel === false) {
+          controller?.preferencesController?.setUseSidePanelAsDefault(false);
+        }
+      },
+    );
   } catch (error) {
     console.error('Error setting side panel behavior:', error);
   }
@@ -1820,7 +1820,8 @@ initSidePanelBehavior();
 // Listen for preference changes to update side panel behavior dynamically
 const setupPreferenceListener = async () => {
   // Only setup preference listener if the feature flag is enabled
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+  // and the browser supports the sidePanel API (not Firefox)
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
     return;
   }
 
@@ -1832,7 +1833,8 @@ const setupPreferenceListener = async () => {
       'PreferencesController:stateChange',
       (state) => {
         const useSidePanelAsDefault =
-          state?.preferences?.useSidePanelAsDefault ?? true;
+          state?.preferences?.useSidePanelAsDefault ?? false;
+
         if (browser?.sidePanel?.setPanelBehavior) {
           browser.sidePanel
             .setPanelBehavior({
@@ -1959,7 +1961,6 @@ browser.tabs.onUpdated.addListener(async (tabId) => {
 
   return {};
 });
-///: END:ONLY_INCLUDE_IF
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {
