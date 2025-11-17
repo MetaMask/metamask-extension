@@ -13,6 +13,7 @@ import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-moc
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import Homepage from '../../page-objects/pages/home/homepage';
 import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
+import NetworkManager from '../../page-objects/pages/network-manager';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -1807,13 +1808,11 @@ export async function withSolanaAccountSnap(
         await accountListPage.addMultichainAccount();
         await accountListPage.selectAccount('Account 1');
       }
+
       // Change to Solana
-      await driver.clickElement('[data-testid="sort-by-networks"]');
-      await driver.clickElement({
-        text: 'Popular',
-        tag: 'button',
-      });
-      await driver.clickElement('[data-testid="Solana"]');
+      const networkManager = new NetworkManager(driver);
+      await networkManager.openNetworkManager();
+      await networkManager.selectNetworkByNameWithWait('Solana');
 
       await test(driver, mockServer, extensionId);
     },
