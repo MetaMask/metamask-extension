@@ -135,7 +135,7 @@ const DappSwapComparisonInner = () => {
   const updateSwapToSelectedQuote = useCallback(() => {
     setSelectedSwapType(SwapType.Metamask);
     setShowDappSwapComparisonBanner(false);
-    const { value, gasLimit, data } = selectedQuote?.trade as TxData;
+    const { value, gasLimit, data, to } = selectedQuote?.trade as TxData;
     dispatch(
       updateTransaction(
         {
@@ -143,6 +143,7 @@ const DappSwapComparisonInner = () => {
           txParams: {
             ...currentConfirmation.txParams,
             value,
+            to,
             gas: toHex(gasLimit ?? 0),
             data,
           },
