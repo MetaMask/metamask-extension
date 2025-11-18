@@ -16,6 +16,7 @@ import {
 } from '../../store/actions';
 import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
 import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
+import { addPendingRevocation } from '../../store/controller-actions/gator-permissions-controller';
 import { extractDelegationFromGatorPermissionContext } from './utils';
 import { useGatorPermissionRedirect } from './useGatorPermissionRedirect';
 
@@ -130,10 +131,20 @@ export function useRevokeGatorPermissionsMultiChain({
               },
             );
 
-            if (transactionMeta?.id) {
-              results[currentChainId as Hex].revoked.push(transactionMeta);
-              allTransactionIds.push(transactionMeta.id);
+            if (!transactionMeta) {
+              throw new Error('No transaction meta found');
             }
+
+            if (!transactionMeta.id) {
+              throw new Error('No transaction id found');
+            }
+
+            results[currentChainId as Hex].revoked.push(transactionMeta);
+            allTransactionIds.push(transactionMeta.id);
+            await addPendingRevocation({
+              txId: transactionMeta.id,
+              permissionContext: permissionResponse.context,
+            });
           } catch (error) {
             results[currentChainId as Hex].errors.push(error as Error);
           }
