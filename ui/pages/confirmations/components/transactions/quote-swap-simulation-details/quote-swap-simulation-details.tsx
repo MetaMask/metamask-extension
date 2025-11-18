@@ -19,12 +19,9 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { calculateTokenAmount } from '../../../utils/token';
 import { getTokenValueFromRecord } from '../../../utils/dapp-swap-comparison-utils';
 import { useConfirmContext } from '../../../context/confirm';
-import { SimulationDetailsLayout } from '../../simulation-details/simulation-details';
+import { AssetIdentifier } from '../../simulation-details/types';
 import { BalanceChangeRow } from '../../simulation-details/balance-change-row';
-import {
-  AssetIdentifier,
-  TokenAssetIdentifier,
-} from '../../simulation-details/types';
+import { SimulationDetailsLayout } from '../../simulation-details/simulation-details';
 
 const getSrcAssetBalanceChange = (
   srcAsset: QuoteResponse['quote']['srcAsset'],
@@ -68,12 +65,19 @@ const getDestAssetBalanceChange = (
   destTokenAmount: string,
   fiatRates: Record<Hex, number | undefined>,
 ) => {
-  return {
-    asset: {
-      ...tokenDetails[destAsset.address.toLowerCase() as Hex],
+  let asset = {
+    ...tokenDetails[destAsset.address.toLowerCase() as Hex],
+    chainId: toHex(destAsset.chainId),
+    address: destAsset.address as Hex,
+  } as AssetIdentifier;
+  if (isNativeAddress(destAsset.address)) {
+    asset = {
       chainId: toHex(destAsset.chainId),
-      address: destAsset.address as Hex,
-    } as unknown as TokenAssetIdentifier,
+      standard: TokenStandard.none,
+    };
+  }
+  return {
+    asset,
     amount: calculateTokenAmount(destTokenAmount, destAsset.decimals),
     fiatAmount: calculateTokenAmount(
       destTokenAmount,
@@ -84,18 +88,21 @@ const getDestAssetBalanceChange = (
     usdAmount: 0,
   };
 };
+
 export const QuoteSwapSimulationDetails = ({
   fiatRates,
   quote,
   sourceTokenAmount,
   tokenDetails,
   tokenAmountDifference = 0,
+  minDestTokenAmountInUSD,
 }: {
   fiatRates?: Record<Hex, number | undefined>;
   quote?: QuoteResponse;
   sourceTokenAmount?: string;
   tokenDetails?: Record<Hex, TokenStandAndDetails>;
   tokenAmountDifference?: number;
+  minDestTokenAmountInUSD?: string;
 }) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -137,7 +144,7 @@ export const QuoteSwapSimulationDetails = ({
       isTransactionsRedesign
       transactionId={transactionId}
       title={t('bestQuote')}
-      titleTooltip={t('bestQuoteTooltip')}
+      titleTooltip={t('bestQuoteTooltip', [`$${minDestTokenAmountInUSD}`])}
     >
       <Box
         flexDirection={BoxFlexDirection.Column}
