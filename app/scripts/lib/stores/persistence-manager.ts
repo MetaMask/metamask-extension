@@ -188,30 +188,28 @@ export class PersistenceManager {
 
   #pendingState: void | AbortController = undefined;
 
+  pendingPairs: { key: string; value: unknown }[] = [];
   set<
     Key extends keyof MetaMaskStateType,
-    Value extends MetaMaskStateType[Key],
-  >(key: Key, state: Value): Promise<void>;
-  set(state: MetaMaskStateType): Promise<void>;
-  /**
-   * Sets the state in the local store.
-   *
-   * @param state - The state to set in the local store. This should be an object
-   * containing the state data to be stored.
-   * @throws Error if the state is missing or if the metadata is not set before
-   * calling this method.
-   * @throws Error if the local store is not open.
-   * @throws Error if the data persistence fails during the write operation.
-   */
-  async set(
-    keyOrState: string | MetaMaskStateType,
-    valueOrState?: MetaMaskStateType,
+    Value extends MetaMaskStateType,
+  >(
+    key: Key,
+    value: Value,
   ) {
+    // update pair if it already exists
+    const existingIndex = this.pendingPairs.findIndex(
+      (pair) => pair.key === key,
+    );
+    if (existingIndex !== -1) {
+      this.pendingPairs[existingIndex].value = value;
+    } else {
+      this.pendingPairs.push({ key, value });
+    }
+  }
+
+  async persist() {
     await this.open();
 
-    if (!valueOrState) {
-      throw new Error('MetaMask - updated state is missing');
-    }
     const meta = this.#metadata;
     if (!meta) {
       throw new Error('MetaMask - metadata must be set before calling "set"');
@@ -236,27 +234,29 @@ export class PersistenceManager {
       async () => {
         this.#pendingState = undefined;
         try {
-          // atomically set all the keys
-          if (typeof keyOrState === 'string') {
-            await this.#localStore.setKeyValue(keyOrState, valueOrState);
-          } else {
-            await this.#localStore.set({
-              data: keyOrState,
-              meta,
-            });
-          }
+          const clone = structuredClone(this.pendingPairs);
+          // reset the keys
+          this.pendingPairs.length = 0;
+          // save them all!
+          await this.#localStore.setKeyValues(clone, meta);
 
-          // const backup = makeBackup(state, meta);
-          // // if we have a vault we can back it up
-          // if (hasVault(backup)) {
-          //   const stringifiedBackup = JSON.stringify(backup);
-          //   // and the backup has changed
-          //   if (this.#backup !== stringifiedBackup) {
-          //     // save it to the backup DB
-          //     await this.#backupDb?.set(backup);
-          //     this.#backup = stringifiedBackup;
-          //   }
-          // }
+
+          const backup = makeBackup(clone.reduce((acc, pair) => {
+            acc[pair.key] = pair.value;
+            return acc;
+          }, {} as MetaMaskStateType), meta);
+          // if we just updated any part of the vault we should back it up
+          // TODO: `makeBackup` uses multiple controllers, but hasVault only checks
+          // one :-/ figure this out.
+          if (hasVault(backup)) {
+            const stringifiedBackup = JSON.stringify(backup);
+            // and the backup has changed
+            if (this.#backup !== stringifiedBackup) {
+              // save it to the backup DB
+              await this.#backupDb?.set(backup);
+              this.#backup = stringifiedBackup;
+            }
+          }
 
           if (this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = false;

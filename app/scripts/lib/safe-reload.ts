@@ -12,11 +12,11 @@ const { sentry } = global;
  * @param persistenceManager - The PersistenceManager instance to be used for
  * updates.
  */
-export function getRequestSafeReload(persistenceManager: PersistenceManager) {
+export function getRequestSafeReload<T extends PersistenceManager>(persistenceManager: T) {
   const operationSafener = new OperationSafener({
-    op: async (state: MetaMaskStateType) => {
+    op: async () => {
       try {
-        await persistenceManager.set(state);
+        await persistenceManager.persist();
       } catch (error) {
         // unlikely to have an error here, as `persistenceManager.set` handles
         // nearly all error cases internally already.
@@ -35,8 +35,8 @@ export function getRequestSafeReload(persistenceManager: PersistenceManager) {
      * `set` method.
      * @returns true if the update was queued, false if writes are not allowed.
      */
-    update: async (...params: Parameters<PersistenceManager['set']>) => {
-      return operationSafener.execute(...params);
+    update: async () => {
+      return operationSafener.execute();
     },
     /**
      * Requests a safe reload of the browser. It prevents any new updates from

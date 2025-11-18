@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import type { MetaMaskStorageStructure, BaseStore } from './base-store';
+import { AnyCnameRecord } from 'node:dns';
 
 /**
  * An implementation of the MetaMask Extension BaseStore system that uses the
@@ -15,6 +16,7 @@ export default class ExtensionStore implements BaseStore {
       log.error('Storage local API not available.');
     }
   }
+  manifest: any;
 
   /**
    * Return all data in `local` extension storage area.
@@ -26,11 +28,12 @@ export default class ExtensionStore implements BaseStore {
       log.error('Storage local API not available.');
       return null;
     }
+    debugger;
     const { local } = browser.storage;
     // don't fetch more than we need, incase extra stuff was put in the db
     // by testing or users playing with the db
     const db = await local.get(['manifest']);
-    debugger;
+
     // get all keys from the manifest, and load those keys
     const keys = db.manifest ? Object.keys(db.manifest) : [];
     const storedData = await local.get(keys);
@@ -38,11 +41,11 @@ export default class ExtensionStore implements BaseStore {
     const data = keys.reduce(
       (acc, key) => {
         // @ts-expect-error TODO
-        acc[key] = storedData[key] ? JSON.parse(storedData[key]) : undefined;
+        acc[key] = storedData[key];
         return acc;
       },
       {} as MetaMaskStorageStructure['data'],
-    );
+    ) as any;
     const meta = data.meta;
     delete data.meta;
     if (!meta) {
@@ -50,14 +53,7 @@ export default class ExtensionStore implements BaseStore {
     }
     return {
       meta,
-      data: keys.reduce(
-        (acc, key) => {
-          // @ts-expect-error TODO
-          acc[key] = storedData[key] ? JSON.parse(storedData[key]) : undefined;
-          return acc;
-        },
-        {} as MetaMaskStorageStructure['data'],
-      ),
+      data,
     };
   }
 
@@ -66,6 +62,7 @@ export default class ExtensionStore implements BaseStore {
       key: Key;
       value: MetaMaskStorageStructure['data'][Key];
     }[],
+    meta: AnyCnameRecord
   ): Promise<void> {
     if (!this.isSupported) {
       throw new Error(
@@ -73,10 +70,31 @@ export default class ExtensionStore implements BaseStore {
       );
     }
     const { local } = browser.storage;
-    const toSet: Record<string, string> = {};
+    const toSet: Record<string, string> = {
+      meta
+    };
+
     for (const { key, value } of pairs) {
-      toSet[key] = JSON.stringify(value);
+      toSet[key] = value;
     }
+
+    // update the manifest
+    if (this.manifest) {
+      for (const { key } of pairs) {
+        this.manifest[key] = true;
+      }
+      toSet['manifest'] = this.manifest;
+    } else {
+      const manifest: Record<string, boolean> = {};
+      for (const { key } of pairs) {
+        manifest[key] = true;
+      }
+      toSet['manifest'] = manifest;
+      this.manifest = manifest;
+    }
+    this.manifest.meta = true;
+
+    console.log(`Writing ${pairs.length} keys to local store`);
     return await local.set(toSet);
   }
 
