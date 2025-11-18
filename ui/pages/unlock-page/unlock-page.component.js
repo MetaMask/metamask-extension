@@ -2,7 +2,6 @@ import { EventEmitter } from 'events';
 import React, { Component, lazy, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
-import log from 'loglevel';
 import {
   Text,
   FormTextField,
@@ -97,6 +96,10 @@ class UnlockPage extends Component {
      */
     checkIsSeedlessPasswordOutdated: PropTypes.func,
     /**
+     * check if the seedless onboarding user is authenticated for social login flow to do the rehydration
+     */
+    getIsSeedlessOnboardingUserAuthenticated: PropTypes.func,
+    /**
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
@@ -166,12 +169,17 @@ class UnlockPage extends Component {
   }
 
   async componentDidMount() {
-    const { isOnboardingCompleted } = this.props;
+    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     if (isOnboardingCompleted) {
-      try {
-        await this.props.checkIsSeedlessPasswordOutdated();
-      } catch (error) {
-        log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
+      await this.props.checkIsSeedlessPasswordOutdated();
+    } else if (isSocialLoginFlow) {
+      // if the onboarding is not completed, check if the seedless onboarding user is authenticated to do the rehydration
+      // we have to consider the case where required tokens for rehydration are removed when user closed the browser app after social login is completed.
+      const isAuthenticated =
+        await this.props.getIsSeedlessOnboardingUserAuthenticated();
+      if (!isAuthenticated) {
+        // if the seedless onboarding user is not authenticated, redirect to the onboarding welcome page
+        this.props.navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
       }
     }
   }
