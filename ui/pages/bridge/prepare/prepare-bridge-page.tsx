@@ -209,7 +209,6 @@ const PrepareBridgePage = ({
     isLoading,
     // This quote may be older than the refresh rate, but we keep it for display purposes
     activeQuote: unvalidatedQuote,
-    quotesRefreshCount,
   } = useSelector(getBridgeQuotes);
 
   const isQuoteExpired = useSelector((state) =>
@@ -253,7 +252,6 @@ const PrepareBridgePage = ({
 
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
   const {
-    isEstimatedReturnLow,
     isNoQuotesAvailable,
     isInsufficientGasForQuote,
     isInsufficientBalance,
@@ -299,10 +297,6 @@ const PrepareBridgePage = ({
   );
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
-
-  // Resets the banner visibility when the estimated return is low
-  const [isLowReturnBannerOpen, setIsLowReturnBannerOpen] = useState(true);
-  useEffect(() => setIsLowReturnBannerOpen(true), [quotesRefreshCount]);
 
   // Resets the banner visibility when new alerts found
   const [isTokenAlertBannerOpen, setIsTokenAlertBannerOpen] = useState(true);
