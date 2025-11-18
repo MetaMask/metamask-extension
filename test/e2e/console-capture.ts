@@ -5,11 +5,14 @@
  * and integrates with the snapshot system for validation.
  */
 
+import * as fs from 'fs';
+import * as path from 'path';
 import {
   normalizeMessage,
   loadSnapshot,
   compareWithSnapshot,
   formatComparisonResults,
+  getTempDir,
 } from '../helpers/console-snapshot';
 
 // E2E tests use 'e2e' snapshot type
@@ -168,13 +171,6 @@ function saveTestSnapshot(
   data: { warnings: unknown[]; errors: unknown[] },
   testIdentifier: string,
 ): void {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-  const fs = require('fs');
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-  const path = require('path');
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-  const { getTempDir } = require('../helpers/console-snapshot');
-
   const tempDir = getTempDir();
   const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'e2e';
 

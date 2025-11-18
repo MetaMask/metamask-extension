@@ -19,7 +19,7 @@ Each contains:
 
 ```json
 {
-  "_metadata": { ... },
+  "metadata": { ... },
   "errors": ["Error message 1"],
   "warnings": ["Warning message 1", "Warning message 2"]
 }

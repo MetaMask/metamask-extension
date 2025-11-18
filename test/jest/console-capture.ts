@@ -5,9 +5,12 @@
  * and errors, then compares them against a snapshot at the end of all tests.
  */
 
+import * as path from 'path';
+import * as fs from 'fs';
 import {
   normalizeMessage,
   saveTestSnapshot,
+  getTempDir,
 } from '../helpers/console-snapshot';
 
 type CapturedEntry = {
@@ -69,51 +72,42 @@ function argToString(arg: unknown, maxLength: number = 500): string {
  */
 export function setupConsoleCapture(): void {
   // Clean up any stale temp file for this test before starting
-  if (typeof beforeAll !== 'undefined') {
-    beforeAll(() => {
-      // Try to get the test file path
-      const globalWithJasmine = global as {
-        jasmine?: { testPath?: string };
-      };
-      const expectWithState = expect as {
-        getState?: () => { testPath?: string };
-      };
-      const testPath =
-        globalWithJasmine.jasmine?.testPath ||
-        expectWithState.getState?.()?.testPath ||
-        undefined;
+  beforeAll(() => {
+    // Try to get the test file path
+    const globalWithJasmine = global as {
+      jasmine?: { testPath?: string };
+    };
+    const expectWithState = expect as {
+      getState?: () => { testPath?: string };
+    };
+    const testPath =
+      globalWithJasmine.jasmine?.testPath ||
+      expectWithState.getState?.()?.testPath ||
+      undefined;
 
-      if (testPath) {
-        // Delete stale test-specific temp file before starting
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-        const path = require('path');
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-        const fs = require('fs');
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-        const { getTempDir } = require('../helpers/console-snapshot');
+    if (testPath) {
+      // Delete stale test-specific temp file before starting
+      const tempDir = getTempDir();
+      const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
+      const basename = path.basename(testPath);
+      const testName = basename.replace(
+        /\.(spec|test)\.(ts|tsx|js|jsx)$/iu,
+        '',
+      );
+      const sanitizedName = testName
+        .replace(/[^a-z0-9]+/giu, '-')
+        .replace(/^-|-$/gu, '');
 
-        const tempDir = getTempDir();
-        const snapshotType = process.env.WARNINGS_SNAPSHOT_TYPE || 'unit';
-        const basename = path.basename(testPath);
-        const testName = basename.replace(
-          /\.(spec|test)\.(ts|tsx|js|jsx)$/iu,
-          '',
-        );
-        const sanitizedName = testName
-          .replace(/[^a-z0-9]+/giu, '-')
-          .replace(/^-|-$/gu, '');
+      const testTempFile = path.join(
+        tempDir,
+        `warnings-${snapshotType}-test-${sanitizedName}.json`,
+      );
 
-        const testTempFile = path.join(
-          tempDir,
-          `warnings-${snapshotType}-test-${sanitizedName}.json`,
-        );
-
-        if (fs.existsSync(testTempFile)) {
-          fs.unlinkSync(testTempFile);
-        }
+      if (fs.existsSync(testTempFile)) {
+        fs.unlinkSync(testTempFile);
       }
-    });
-  }
+    }
+  });
 
   // Only setup if not already done
   if (console.warn === originalConsole.warn) {
@@ -180,67 +174,65 @@ export function setupConsoleCapture(): void {
   }
 
   // Register afterAll hook to handle snapshot saving
-  if (typeof afterAll !== 'undefined') {
-    afterAll(() => {
-      // Save captured data to temp files (both generation and validation modes)
-      // In generation mode: used by generate script to build final snapshot
-      // In validation mode: used by global teardown to validate against snapshot
-      if (captured.warnings.length > 0 || captured.errors.length > 0) {
-        // Try to get the test file path from Jest's global context
-        const globalWithJasmine = global as {
-          jasmine?: { testPath?: string };
-        };
-        const expectWithState = expect as {
-          getState?: () => { testPath?: string };
-        };
-        let testPath =
-          globalWithJasmine.jasmine?.testPath ||
-          expectWithState.getState?.()?.testPath ||
-          undefined;
+  afterAll(() => {
+    // Save captured data to temp files (both generation and validation modes)
+    // In generation mode: used by generate script to build final snapshot
+    // In validation mode: used by global teardown to validate against snapshot
+    if (captured.warnings.length > 0 || captured.errors.length > 0) {
+      // Try to get the test file path from Jest's global context
+      const globalWithJasmine = global as {
+        jasmine?: { testPath?: string };
+      };
+      const expectWithState = expect as {
+        getState?: () => { testPath?: string };
+      };
+      let testPath =
+        globalWithJasmine.jasmine?.testPath ||
+        expectWithState.getState?.()?.testPath ||
+        undefined;
 
-        // Try to extract from stack trace as fallback
-        if (!testPath) {
-          try {
-            const { stack } = new Error();
-            if (stack) {
-              const matchResult = stack.match(
-                /\((.*\.(test|spec)\.(ts|tsx|js|jsx)):/u,
-              );
-              if (matchResult) {
-                testPath = matchResult[1];
-              }
+      // Try to extract from stack trace as fallback
+      if (!testPath) {
+        try {
+          const { stack } = new Error();
+          if (stack) {
+            const matchResult = stack.match(
+              /\((.*\.(test|spec)\.(ts|tsx|js|jsx)):/u,
+            );
+            if (matchResult) {
+              testPath = matchResult[1];
             }
-          } catch {
-            // Ignore
           }
+        } catch {
+          // Ignore
         }
-
-        // Convert to the format expected by saveTestSnapshot
-        const capturedData = {
-          warnings: captured.warnings.map((e) => ({
-            message: e.message,
-            stackTrace: e.stackTrace || '',
-          })),
-          errors: captured.errors.map((e) => ({
-            message: e.message,
-            stackTrace: e.stackTrace || '',
-          })),
-        };
-
-        // Always use test-specific files (both generation and validation modes)
-        if (testPath) {
-          // Add testFilePath to the data for better error messages
-          const dataWithPath = {
-            ...capturedData,
-            testFilePath: testPath,
-          };
-          saveTestSnapshot(dataWithPath, testPath);
-        }
-        // If no testPath, we can't save (shouldn't happen in practice)
-        // Jest always provides test file path in modern versions
       }
-    });
-  }
+
+      // Convert to the format expected by saveTestSnapshot
+      const capturedData = {
+        warnings: captured.warnings.map((e) => ({
+          message: e.message,
+          stackTrace: e.stackTrace || '',
+        })),
+        errors: captured.errors.map((e) => ({
+          message: e.message,
+          stackTrace: e.stackTrace || '',
+        })),
+      };
+
+      // Always use test-specific files (both generation and validation modes)
+      if (testPath) {
+        // Add testFilePath to the data for better error messages
+        const dataWithPath = {
+          ...capturedData,
+          testFilePath: testPath,
+        };
+        saveTestSnapshot(dataWithPath, testPath);
+      }
+      // If no testPath, we can't save (shouldn't happen in practice)
+      // Jest always provides test file path in modern versions
+    }
+  });
 }
 
 /**

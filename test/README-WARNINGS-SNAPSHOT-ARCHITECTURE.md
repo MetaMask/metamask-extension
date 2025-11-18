@@ -365,13 +365,13 @@ Structure:
 
 ```json
 {
-  "_metadata": {
+  "metadata": {
     "generatedAt": "2025-11-17T...",
     "description": "...",
     "note": "ADDITIVE - warnings added, never auto-removed"
   },
-  "warnings": ["Warning 1", "Warning 2", ...],
-  "errors": ["Error 1", "Error 2", ...]
+  "errors": ["Error 1", "Error 2", ...],
+  "warnings": ["Warning 1", "Warning 2", ...]
 }
 ```
 

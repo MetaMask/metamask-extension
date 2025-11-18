@@ -52,7 +52,7 @@ export type CapturedData = {
 };
 
 type SnapshotData = {
-  _metadata?: {
+  metadata?: {
     generatedAt: string;
     lastUpdatedAt?: string;
     description: string;
@@ -443,8 +443,7 @@ export function generateSnapshot(
   const existingSnapshot = loadSnapshot();
 
   const snapshot: SnapshotData = {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    _metadata: {
+    metadata: {
       generatedAt: new Date().toISOString(),
       lastUpdatedAt: new Date().toISOString(),
       description:

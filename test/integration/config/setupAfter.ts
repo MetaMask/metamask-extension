@@ -1,6 +1,5 @@
 // This file is for Jest-specific setup only and runs before our Jest tests.
 import { jestPreviewConfigure } from 'jest-preview';
-// eslint-disable-next-line import/extensions
 import '../config/assets/index.css';
 import '../../helpers/setup-after-helper';
 // Setup console warnings/errors snapshot validation
