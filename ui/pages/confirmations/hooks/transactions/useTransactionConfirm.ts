@@ -93,9 +93,11 @@ export function useTransactionConfirm() {
       gas: toHex(gasLimit ?? 0),
       data,
     };
-    newTransactionMeta.batchTransactions = [
-      quoteSelectedForMMSwap?.approval as BatchTransaction,
-    ];
+    if (quoteSelectedForMMSwap?.approval) {
+      newTransactionMeta.batchTransactions = [
+        quoteSelectedForMMSwap?.approval as BatchTransaction,
+      ];
+    }
     newTransactionMeta.nestedTransactions = undefined;
   }, [newTransactionMeta, quoteSelectedForMMSwap]);
 
@@ -138,9 +140,11 @@ export function useTransactionConfirm() {
     handleSmartTransaction,
     handleGasless7702,
     selectedGasFeeToken,
+    isQuotedSwapDisplayedInInfo,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
     captureSwapSubmit,
+    updateSwapWithQuoteDetails,
   ]);
 
   return {

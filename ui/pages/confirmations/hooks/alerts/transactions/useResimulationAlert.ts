@@ -10,7 +10,8 @@ import { useConfirmContext } from '../../../context/confirm';
 
 export function useResimulationAlert(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation, quoteSelectedForMMSwap } = useConfirmContext();
+  const { currentConfirmation, isQuotedSwapDisplayedInInfo } =
+    useConfirmContext();
 
   const transactionMeta = currentConfirmation as TransactionMeta;
 
@@ -22,7 +23,7 @@ export function useResimulationAlert(): Alert[] {
     if (
       !isUpdatedAfterSecurityCheck ||
       isWalletInitiated ||
-      quoteSelectedForMMSwap
+      isQuotedSwapDisplayedInInfo
     ) {
       return [];
     }
@@ -41,7 +42,7 @@ export function useResimulationAlert(): Alert[] {
   }, [
     isUpdatedAfterSecurityCheck,
     isWalletInitiated,
-    quoteSelectedForMMSwap,
+    isQuotedSwapDisplayedInInfo,
     t,
   ]);
 }

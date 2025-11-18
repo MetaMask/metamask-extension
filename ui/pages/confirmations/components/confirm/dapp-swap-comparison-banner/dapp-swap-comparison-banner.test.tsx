@@ -10,20 +10,19 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { Confirmation } from '../../../types/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
-import * as SwapCheckHook from '../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
+import * as ConfirmContext from '../../../context/confirm';
 import { DappSwapComparisonBanner } from './dapp-swap-comparison-banner';
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: () => mockDispatch,
-}));
-
-const mockUpdateTransaction = jest.fn();
-jest.mock('../../../../../store/actions', () => ({
-  ...jest.requireActual('../../../../../store/actions'),
-  updateTransaction: () => mockUpdateTransaction,
-}));
+jest.mock(
+  '../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackInlineAlertClicked: jest.fn(),
+      trackAlertRender: jest.fn(),
+      trackAlertActionClicked: jest.fn(),
+    })),
+  }),
+);
 
 jest.mock(
   '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo',
@@ -141,7 +140,13 @@ describe('<DappSwapComparisonBanner />', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('call function to update confirmation when user clicks on Metamask Swap button', () => {
+  it('call function to update quote swap when user clicks on Metamask Swap button', () => {
+    const mockSetQuoteSelectedForMMSwap = jest.fn();
+    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: mockSwapConfirmation,
+      setQuoteSelectedForMMSwap: mockSetQuoteSelectedForMMSwap,
+    } as unknown as ReturnType<typeof ConfirmContext.useConfirmContext>);
+
     mockUseDappSwapComparisonInfo.mockReturnValue({
       selectedQuote: quote as unknown as QuoteResponse,
       selectedQuoteValueDifference: 0.1,
@@ -152,7 +157,7 @@ describe('<DappSwapComparisonBanner />', () => {
     const { getByText } = render();
     const quoteSwapButton = getByText('Metamask Swap');
     fireEvent.click(quoteSwapButton);
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(mockSetQuoteSelectedForMMSwap).toHaveBeenCalledTimes(1);
     expect(
       mockCaptureDappSwapComparisonDisplayProperties,
     ).toHaveBeenCalledTimes(2);
@@ -169,10 +174,12 @@ describe('<DappSwapComparisonBanner />', () => {
   });
 
   it('call function to update confirmation when user clicks on Market rate button', () => {
-    jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
-      isSwapToBeCompared: true,
-      isQuotedSwap: true,
-    } as ReturnType<typeof SwapCheckHook.useSwapCheck>);
+    const mockSetQuoteSelectedForMMSwap = jest.fn();
+    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: mockSwapConfirmation,
+      setQuoteSelectedForMMSwap: mockSetQuoteSelectedForMMSwap,
+    } as unknown as ReturnType<typeof ConfirmContext.useConfirmContext>);
+
     mockUseDappSwapComparisonInfo.mockReturnValue({
       selectedQuote: quote as unknown as QuoteResponse,
       selectedQuoteValueDifference: 0.1,
@@ -183,7 +190,7 @@ describe('<DappSwapComparisonBanner />', () => {
     const { getByText } = render();
     const quoteSwapButton = getByText('Market rate');
     fireEvent.click(quoteSwapButton);
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(mockSetQuoteSelectedForMMSwap).toHaveBeenCalledTimes(1);
     expect(
       mockCaptureDappSwapComparisonDisplayProperties,
     ).toHaveBeenCalledTimes(1);

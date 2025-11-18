@@ -95,8 +95,7 @@ const DappSwapComparisonInner = () => {
   const { dappSwapUi } = useSelector(getRemoteFeatureFlags) as {
     dappSwapUi: DappSwapUiFlag;
   };
-  const { currentConfirmation, setQuoteSelectedForMMSwap } =
-    useConfirmContext();
+  const { setQuoteSelectedForMMSwap } = useConfirmContext();
   const [selectedSwapType, setSelectedSwapType] = useState<SwapType>(
     SwapType.Current,
   );

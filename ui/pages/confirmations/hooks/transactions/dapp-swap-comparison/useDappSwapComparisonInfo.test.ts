@@ -45,7 +45,7 @@ jest.mock('./useDappSwapComparisonLatencyMetrics', () => ({
 
 async function runHook() {
   const response = renderHookWithConfirmContextProvider(
-    () => useDappSwapComparisonInfo(undefined),
+    () => useDappSwapComparisonInfo(),
     getMockConfirmStateForTransaction(mockSwapConfirmation as Confirmation),
   );
 
