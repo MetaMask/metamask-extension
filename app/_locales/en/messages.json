@@ -5883,6 +5883,9 @@
   "shieldClaim": {
     "message": "Submit a claim"
   },
+  "shieldClaimChainNotSupported": {
+    "message": "This chain is not supported."
+  },
   "shieldClaimDescription": {
     "message": "Description of case"
   },
@@ -5982,6 +5985,9 @@
   "shieldClaimSelectNetwork": {
     "message": "Select a network"
   },
+  "shieldClaimSignatureCoverageNotCovered": {
+    "message": "Signature coverage not found for the given transaction hash."
+  },
   "shieldClaimStatusApproved": {
     "message": "Approved"
   },
@@ -6015,6 +6021,18 @@
   },
   "shieldClaimSubmitSuccessDescription": {
     "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
+  },
+  "shieldClaimTransactionNotFound": {
+    "message": "Transaction not found on chain."
+  },
+  "shieldClaimTransactionNotFromWalletAddress": {
+    "message": "Transaction hash not from wallet address."
+  },
+  "shieldClaimTransactionNotSuccessful": {
+    "message": "Transaction not successful on chain."
+  },
+  "shieldClaimWalletOwnershipValidationFailed": {
+    "message": "Wallet ownership validation failed."
   },
   "shieldClaimsHistoryTitle": {
     "message": "CLAIM HISTORY"
@@ -7898,6 +7916,26 @@
   },
   "transferRequest": {
     "message": "Transfer request"
+  },
+  "tronBandwidth": {
+    "message": "Bandwidth"
+  },
+  "tronBandwidthCoverageDescription": {
+    "message": "Sufficient to cover ~$1 TRX transfers",
+    "description": "$1 is the number of TRX transfers"
+  },
+  "tronDailyResources": {
+    "message": "Daily resource"
+  },
+  "tronDailyResourcesDescription": {
+    "message": "This is your daily allowance based on your staked TRX. You get 600 bandwidth for free daily."
+  },
+  "tronEnergy": {
+    "message": "Energy"
+  },
+  "tronEnergyCoverageDescription": {
+    "message": "Sufficient to cover ~$1 USDT",
+    "description": "$1 is the number of USDT transfers"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",
