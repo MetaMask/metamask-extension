@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useStore } from 'react-redux';
 import {
   TransactionMeta,
   TransactionType,
@@ -14,12 +14,9 @@ import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../store/actions';
-import { getInternalAccounts } from '../../selectors';
+import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
 import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
-import {
-  extractDelegationFromGatorPermissionContext,
-  findInternalAccountByAddress as findAccountByAddress,
-} from './utils';
+import { extractDelegationFromGatorPermissionContext } from './utils';
 import { useGatorPermissionRedirect } from './useGatorPermissionRedirect';
 
 export type RevokeGatorPermissionsMultiChainResults = Record<
@@ -49,7 +46,7 @@ export function useRevokeGatorPermissionsMultiChain({
   onRedirect?: () => void;
 } = {}) {
   const { setTransactionId } = useGatorPermissionRedirect({ onRedirect });
-  const internalAccounts = useSelector(getInternalAccounts);
+  const store = useStore();
 
   /**
    * Revokes gator permissions across multiple chains.
@@ -101,8 +98,8 @@ export function useRevokeGatorPermissionsMultiChain({
         for (const permission of permissions) {
           try {
             const { permissionResponse } = permission;
-            const internalAccount = findAccountByAddress(
-              internalAccounts,
+            const internalAccount = getMemoizedInternalAccountByAddress(
+              store.getState(),
               permissionResponse.address as Hex,
             );
 
@@ -150,7 +147,7 @@ export function useRevokeGatorPermissionsMultiChain({
 
       return results;
     },
-    [internalAccounts, setTransactionId],
+    [store, setTransactionId],
   );
 
   return {

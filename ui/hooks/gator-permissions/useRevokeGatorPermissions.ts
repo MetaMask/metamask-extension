@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useStore } from 'react-redux';
 import {
   TransactionMeta,
   TransactionType,
@@ -10,7 +10,7 @@ import {
   Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
-import { getInternalAccounts } from '../../selectors';
+import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -25,10 +25,7 @@ import {
   checkDelegationDisabled,
 } from '../../store/controller-actions/gator-permissions-controller';
 import { useGatorPermissionRedirect } from './useGatorPermissionRedirect';
-import {
-  extractDelegationFromGatorPermissionContext,
-  findInternalAccountByAddress as findAccountByAddress,
-} from './utils';
+import { extractDelegationFromGatorPermissionContext } from './utils';
 
 export type RevokeGatorPermissionArgs = {
   accountAddress: Hex;
@@ -52,7 +49,7 @@ export function useRevokeGatorPermissions({
   onRedirect?: () => void;
 }) {
   const { setTransactionId } = useGatorPermissionRedirect({ onRedirect });
-  const internalAccounts = useSelector(getInternalAccounts);
+  const store = useStore();
 
   /**
    * Asserts that the gator permission(s) is not empty.
@@ -118,8 +115,8 @@ export function useRevokeGatorPermissions({
       >,
     ): RevokeGatorPermissionArgs => {
       const { permissionResponse } = gatorPermission;
-      const internalAccount = findAccountByAddress(
-        internalAccounts,
+      const internalAccount = getMemoizedInternalAccountByAddress(
+        store.getState(),
         permissionResponse.address as Hex,
       );
       if (!internalAccount) {
@@ -134,7 +131,7 @@ export function useRevokeGatorPermissions({
         accountAddress: internalAccount.address as Hex,
       };
     },
-    [internalAccounts],
+    [store],
   );
 
   /**
@@ -213,10 +210,7 @@ export function useRevokeGatorPermissions({
 
       return transactionMeta;
     },
-    [
-      buildRevokeGatorPermissionArgs,
-      extractDelegationFromGatorPermissionContext,
-    ],
+    [buildRevokeGatorPermissionArgs],
   );
 
   /**
@@ -247,6 +241,7 @@ export function useRevokeGatorPermissions({
       addRevokeGatorPermissionTransaction,
       assertCorrectChainId,
       assertNotEmptyGatorPermission,
+      setTransactionId,
     ],
   );
 
@@ -295,6 +290,7 @@ export function useRevokeGatorPermissions({
       addRevokeGatorPermissionTransaction,
       assertCorrectChainId,
       assertNotEmptyGatorPermission,
+      setTransactionId,
     ],
   );
 

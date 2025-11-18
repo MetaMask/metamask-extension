@@ -17,7 +17,6 @@ import {
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -36,7 +35,6 @@ import {
   checkDelegationDisabled,
 } from '../../store/controller-actions/gator-permissions-controller';
 import { useRevokeGatorPermissions } from './useRevokeGatorPermissions';
-import { findInternalAccountByAddress } from './utils';
 
 // Mock the dependencies
 jest.mock('../../store/actions', () => ({
@@ -669,86 +667,6 @@ describe('useRevokeGatorPermissions', () => {
       });
 
       expect(mockNavigateToId).toHaveBeenCalledWith('test-transaction-id');
-    });
-
-    it('should find delegator from internal accounts', () => {
-      const internalAccounts: InternalAccount[] = [
-        {
-          id: 'mock-account-id',
-          address: mockSelectedAccountAddress,
-          type: 'eip155:eoa',
-          options: {},
-          metadata: {
-            name: 'Account 1',
-            importTime: Date.now(),
-            keyring: { type: 'HD Key Tree' },
-          },
-          scopes: [],
-          methods: [],
-        },
-      ];
-
-      const foundAccount = findInternalAccountByAddress(
-        internalAccounts,
-        mockSelectedAccountAddress as Hex,
-      );
-
-      expect(foundAccount).toBeDefined();
-      expect(foundAccount?.address).toBe(mockSelectedAccountAddress);
-      expect(foundAccount?.id).toBe('mock-account-id');
-    });
-
-    it('should return undefined when delegator is not found in internal accounts', () => {
-      const internalAccounts: InternalAccount[] = [
-        {
-          id: 'mock-account-id',
-          address: mockSelectedAccountAddress,
-          type: 'eip155:eoa',
-          options: {},
-          metadata: {
-            name: 'Account 1',
-            importTime: Date.now(),
-            keyring: { type: 'HD Key Tree' },
-          },
-          scopes: [],
-          methods: [],
-        },
-      ];
-
-      const foundAccount = findInternalAccountByAddress(
-        internalAccounts,
-        '0x1234567890123456789012345678901234567890' as Hex,
-      );
-
-      expect(foundAccount).toBeUndefined();
-    });
-
-    it('should find account with case insensitive address matching', () => {
-      const internalAccounts: InternalAccount[] = [
-        {
-          id: 'mock-account-id',
-          address: mockSelectedAccountAddress,
-          type: 'eip155:eoa',
-          options: {},
-          metadata: {
-            name: 'Account 1',
-            importTime: Date.now(),
-            keyring: { type: 'HD Key Tree' },
-          },
-          scopes: [],
-          methods: [],
-        },
-      ];
-
-      // Test with uppercase address
-      const foundAccount = findInternalAccountByAddress(
-        internalAccounts,
-        mockSelectedAccountAddress.toUpperCase() as Hex,
-      );
-
-      expect(foundAccount).toBeDefined();
-      expect(foundAccount?.address).toBe(mockSelectedAccountAddress);
-      expect(foundAccount?.id).toBe('mock-account-id');
     });
   });
 

@@ -1,8 +1,6 @@
 import { Hex } from '@metamask/utils';
 import { decodeDelegations } from '@metamask/delegation-core';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Delegation } from '../../../shared/lib/delegation/delegation';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 /**
  * Extracts the delegation from the gator permission encoded context.
@@ -29,20 +27,4 @@ export function extractDelegationFromGatorPermissionContext(
     ...firstDelegation,
     salt: `0x${firstDelegation.salt.toString(16)}`,
   };
-}
-
-/**
- * Finds an internal account by its address.
- *
- * @param internalAccounts - The list of internal accounts to search through.
- * @param address - The address to find.
- * @returns The internal account if found, otherwise undefined.
- */
-export function findInternalAccountByAddress(
-  internalAccounts: InternalAccount[],
-  address: Hex,
-): InternalAccount | undefined {
-  return internalAccounts.find((account) =>
-    isEqualCaseInsensitive(account.address, address),
-  );
 }
