@@ -216,7 +216,7 @@ const DappSwapComparisonInner = () => {
             {t('dappSwapQuoteDifference', [
               `$${(gasDifference + tokenAmountDifference).toFixed(2)}`,
             ])}
-            {rewardsText ? <span>{rewardsText}</span> : null}
+            {rewardsText && <span>{rewardsText}</span>}
           </Text>
           <Text color={TextColor.TextAlternative} variant={TextVariant.BodyXs}>
             {t('dappSwapBenefits')}
