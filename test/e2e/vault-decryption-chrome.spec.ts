@@ -75,9 +75,9 @@ function getExtensionLogFile(extensionStoragePath: string): string {
     .readdirSync(extensionStoragePath)
     .filter((filename: string) => filename.endsWith('.log'));
 
+  console.log('Log Files =========================:', logFiles.length);
   // Use the first of the `.log` files found
   return path.resolve(extensionStoragePath, logFiles[0]);
-
 }
 
 /**
@@ -105,17 +105,17 @@ async function getFileSize(filePath: string): Promise<number> {
  */
 async function waitUntilFileIsWritten({
   driver,
-  filePath,
   maxRetries = 8,
   minFileSize = 1000000,
 }: {
   driver: Driver;
-  filePath: string;
   maxRetries?: number;
   minFileSize?: number;
 }): Promise<void> {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
-    const fileSize = await getFileSize(filePath);
+    const extensionPath = await getExtensionStorageFilePath(driver);
+    const extensionLogFile = getExtensionLogFile(extensionPath);
+    const fileSize = await getFileSize(extensionLogFile);
     if (fileSize > minFileSize) {
       console.log(`File is ready with size ${fileSize} bytes.`);
       return;
@@ -208,14 +208,16 @@ describe('Vault Decryptor Page', function () {
         const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
 
         // Retry-logic to ensure the file is ready before uploading itto mitigate flakiness when Chrome hasn't finished writing
-        const extensionPath = await getExtensionStorageFilePath(driver);
-        const extensionLogFile = getExtensionLogFile(extensionPath);
-        await waitUntilFileIsWritten({ driver, filePath: extensionLogFile });
+        // const extensionPath = await getExtensionStorageFilePath(driver);
+        // const extensionLogFile = getExtensionLogFile(extensionPath);
+        await waitUntilFileIsWritten({ driver });
 
         // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
         await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
         const vaultDecryptorPage = new VaultDecryptorPage(driver);
         await vaultDecryptorPage.checkPageIsLoaded();
+        const extensionPath = await getExtensionStorageFilePath(driver);
+        const extensionLogFile = getExtensionLogFile(extensionPath);
         await vaultDecryptorPage.uploadLogFile(extensionLogFile);
 
         // fill the password and decrypt
