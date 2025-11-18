@@ -136,7 +136,11 @@ const AmountRow = () => {
         data-testid="transaction-details-amount-row"
         label={t('amount')}
       >
-        <ConfirmInfoRowCurrency value={value} currency={currency} />
+        <ConfirmInfoRowCurrency
+          value={value}
+          currency={currency}
+          chainId={currentConfirmation?.chainId}
+        />
       </ConfirmInfoRow>
     </ConfirmInfoSection>
   );
