@@ -482,6 +482,18 @@ describe('NetworkForm Component', () => {
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <NetworksForm
           {...propNetworkDisplay}
+          networkFormState={{
+            ...propNetworkDisplay.networkFormState,
+            rpcUrls: {
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://monad-mainnet.infura.io/v3/',
+                  type: 'custom',
+                },
+              ],
+            },
+          }}
           existingNetwork={{
             chainId: '0x64',
             name: 'Ethereum',
@@ -509,7 +521,8 @@ describe('NetworkForm Component', () => {
         event: 'Network Connection Banner RPC Updated',
         properties: {
           chain_id_caip: 'eip155:100',
-          rpc_endpoint_url: 'mainnet.infura.io',
+          from_rpc_domain: 'mainnet.infura.io',
+          to_rpc_domain: 'monad-mainnet.infura.io',
         },
       });
     });
@@ -627,7 +640,8 @@ describe('NetworkForm Component', () => {
         event: 'Network Connection Banner RPC Updated',
         properties: {
           chain_id_caip: 'eip155:100',
-          rpc_endpoint_url: 'custom',
+          from_rpc_domain: 'custom',
+          to_rpc_domain: 'custom',
         },
       });
     });

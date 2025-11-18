@@ -315,17 +315,21 @@ export const NetworksForm = ({
 
           // Track RPC update from network connection banner
           if (trackRpcUpdateFromBanner) {
-            const selectedRpcEndpoint =
+            const newRpcEndpoint =
               networkPayload.rpcEndpoints[
                 networkPayload.defaultRpcEndpointIndex
               ];
+            const oldRpcEndpoint =
+              existingNetwork.rpcEndpoints[
+                existingNetwork.defaultRpcEndpointIndex ?? 0
+              ];
+
             const chainIdAsDecimal = hexToNumber(chainIdHex);
-            const sanitizedRpcUrl = isPublicEndpointUrl(
-              selectedRpcEndpoint.url,
-              infuraProjectId ?? '',
-            )
-              ? onlyKeepHost(selectedRpcEndpoint.url)
-              : 'custom';
+
+            const sanitizeRpcUrl = (url: string) =>
+              isPublicEndpointUrl(url, infuraProjectId ?? '')
+                ? onlyKeepHost(url)
+                : 'custom';
 
             trackEvent({
               category: MetaMetricsEventCategory.Network,
@@ -334,7 +338,8 @@ export const NetworksForm = ({
               /* eslint-disable @typescript-eslint/naming-convention */
               properties: {
                 chain_id_caip: `eip155:${chainIdAsDecimal}`,
-                rpc_endpoint_url: sanitizedRpcUrl,
+                from_rpc_domain: sanitizeRpcUrl(oldRpcEndpoint.url),
+                to_rpc_domain: sanitizeRpcUrl(newRpcEndpoint.url),
               },
               /* eslint-enable @typescript-eslint/naming-convention */
             });
