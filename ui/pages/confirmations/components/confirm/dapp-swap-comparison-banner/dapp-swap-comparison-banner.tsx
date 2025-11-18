@@ -91,6 +91,7 @@ const DappSwapComparisonInner = () => {
   const {
     fiatRates,
     gasDifference,
+    minDestTokenAmountInUSD,
     selectedQuote,
     selectedQuoteValueDifference,
     sourceTokenAmount,
@@ -113,13 +114,17 @@ const DappSwapComparisonInner = () => {
   const [showDappSwapComparisonBanner, setShowDappSwapComparisonBanner] =
     useState<boolean>(true);
 
-  const hideDappSwapComparisonBanner = useCallback(() => {
-    setShowDappSwapComparisonBanner(false);
-  }, [setShowDappSwapComparisonBanner]);
+  const hideDappSwapComparisonBanner = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setShowDappSwapComparisonBanner(false);
+    },
+    [setShowDappSwapComparisonBanner],
+  );
 
   const updateSwapToCurrent = useCallback(() => {
     setSelectedSwapType(SwapType.Current);
-    setShowDappSwapComparisonBanner(true);
     if (currentConfirmation.txParamsOriginal) {
       dispatch(
         updateTransaction(
@@ -133,24 +138,15 @@ const DappSwapComparisonInner = () => {
         ),
       );
     }
-  }, [
-    batchedDappSwapNestedTransactions,
-    currentConfirmation,
-    dispatch,
-    setSelectedSwapType,
-    setShowDappSwapComparisonBanner,
-  ]);
+  }, [currentConfirmation, dispatch, setSelectedSwapType]);
 
   const updateSwapToSelectedQuote = useCallback(() => {
     captureDappSwapComparisonDisplayProperties({
       swap_mm_opened: 'true',
     });
     setSelectedSwapType(SwapType.Metamask);
-    setShowDappSwapComparisonBanner(true);
-    const { value, gasLimit, data } = selectedQuote?.trade as TxData;
-    setBatchedDappSwapNestedTransactions(
-      currentConfirmation.nestedTransactions,
-    );
+    setShowDappSwapComparisonBanner(false);
+    const { value, gasLimit, data, to } = selectedQuote?.trade as TxData;
     dispatch(
       updateTransaction(
         {
@@ -158,6 +154,7 @@ const DappSwapComparisonInner = () => {
           txParams: {
             ...currentConfirmation.txParams,
             value,
+            to,
             gas: toHex(gasLimit ?? 0),
             data,
           },
@@ -236,6 +233,8 @@ const DappSwapComparisonInner = () => {
           backgroundColor={BoxBackgroundColor.BackgroundAlternative}
           marginBottom={4}
           padding={4}
+          role="button"
+          onClick={updateSwapToSelectedQuote}
         >
           <ButtonIcon
             className="dapp-swap_close-button"
@@ -273,6 +272,7 @@ const DappSwapComparisonInner = () => {
           tokenDetails={tokenDetails}
           sourceTokenAmount={sourceTokenAmount}
           tokenAmountDifference={tokenAmountDifference}
+          minDestTokenAmountInUSD={minDestTokenAmountInUSD}
         />
       )}
     </Box>
