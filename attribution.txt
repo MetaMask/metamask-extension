@@ -20097,7 +20097,7 @@ freely, subject to the following restrictions:
 ******************************
 
 glob
-10.4.5 <https://github.com/isaacs/node-glob>
+10.5.0 <https://github.com/isaacs/node-glob>
 The ISC License
 
 Copyright (c) 2009-2023 Isaac Z. Schlueter and Contributors
