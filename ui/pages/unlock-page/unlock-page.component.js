@@ -595,7 +595,7 @@ class UnlockPage extends Component {
               value={password}
               error={Boolean(error)}
               helpText={this.renderHelpText()}
-              autoComplete
+              autoComplete={false}
               autoFocus
               width={BlockSize.Full}
               marginBottom={4}
