@@ -428,6 +428,7 @@
     "srpSessionData": "object"
   },
   "ramps": "object",
+  "rewards": "object",
   "send": "object",
   "smartAccounts": "object",
   "swaps": "object",
