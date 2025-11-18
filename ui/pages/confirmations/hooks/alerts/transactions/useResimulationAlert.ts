@@ -7,7 +7,6 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../context/confirm';
-import { useSwapCheck } from '../../transactions/dapp-swap-comparison/useSwapCheck';
 
 export function useResimulationAlert(): Alert[] {
   const t = useI18nContext();

@@ -5,6 +5,7 @@ import { hexStripZeros } from '@ethersproject/bytes';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
 import { Hex } from '@metamask/utils';
+import { TxData } from '@metamask/bridge-controller';
 
 import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
@@ -36,7 +37,6 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
 import { BatchedApprovalFunction } from '../batched-approval-function/batched-approval-function';
-import { TxData } from '@metamask/bridge-controller';
 
 export const TransactionData = ({
   data,

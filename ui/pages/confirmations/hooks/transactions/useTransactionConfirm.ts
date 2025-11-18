@@ -3,8 +3,11 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { TxData } from '@metamask/bridge-controller';
 import { cloneDeep } from 'lodash';
+import { toHex } from '@metamask/controller-utils';
 import { useCallback, useMemo } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
@@ -14,8 +17,6 @@ import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useDappSwapComparisonMetrics } from './dapp-swap-comparison/useDappSwapComparisonMetrics';
 import { useShieldConfirm } from './useShieldConfirm';
-import { TxData } from '@metamask/bridge-controller';
-import { toHex } from '@metamask/controller-utils';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();

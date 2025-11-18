@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useCallback, useEffect, useState } from 'react';
-import { Hex } from '@metamask/utils';
 import {
   Box,
   BoxBackgroundColor,
@@ -16,17 +15,11 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  BatchTransaction,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
-import { QuoteResponse, TxData } from '@metamask/bridge-controller';
-import { toHex } from '@metamask/controller-utils';
-import { useDispatch, useSelector } from 'react-redux';
+import { QuoteResponse } from '@metamask/bridge-controller';
+import { useSelector } from 'react-redux';
 
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { updateTransaction } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 import { useDappSwapComparisonMetrics } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonMetrics';
