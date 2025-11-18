@@ -87,14 +87,14 @@ export function convertAmountPerSecondToAmountPerPeriod(
  * Converts a unix timestamp(in seconds) to a human-readable date format.
  *
  * @param timestamp - The unix timestamp in seconds.
- * @returns The formatted date string in mm/dd/yyyy format in local timezone.
+ * @returns The formatted date string in mm/dd/yyyy format in UTC timezone.
  */
 export const convertTimestampToReadableDate = (timestamp: number): string => {
   if (timestamp === 0) {
     return '';
   }
 
-  const dateTime = DateTime.fromSeconds(timestamp);
+  const dateTime = DateTime.fromSeconds(timestamp, { zone: 'utc' });
 
   if (!dateTime.isValid) {
     throw new Error('Invalid date format');

@@ -58,7 +58,7 @@ describe('Permission List Item', () => {
     const mockStartTime = 1736271776; // January 7, 2025;
 
     describe('NATIVE token permissions', () => {
-      const mockExpiryTimestamp = 1767312000; // January 1, 2026
+      const mockExpiryTimestamp = 1767225600; // January 1, 2026
       const expiryHex = mockExpiryTimestamp.toString(16).padStart(32, '0');
       const termsHex = `0x${'0'.repeat(32)}${expiryHex}` as Hex;
 
@@ -260,7 +260,7 @@ describe('Permission List Item', () => {
       const mockTokenAddress: Hex =
         '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
 
-      const mockExpiryTimestamp = 1767312000; // January 1, 2026
+      const mockExpiryTimestamp = 1767225600; // January 1, 2026
       const expiryHex = mockExpiryTimestamp.toString(16).padStart(32, '0');
       const termsHex = `0x${'0'.repeat(32)}${expiryHex}` as Hex;
 
