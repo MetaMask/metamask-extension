@@ -565,7 +565,7 @@ describe('ConfirmFooter', () => {
             currentConfirmation: contractInteractionConfirmation,
             isScrollToBottomCompleted: true,
             setIsScrollToBottomCompleted: () => undefined,
-          });
+          } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
           const { getByText } = render(
             mockStateWithContractInteractionConfirmation,
           );
