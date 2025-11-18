@@ -36,6 +36,8 @@ import {
 import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
+// eslint-disable-next-line import/no-restricted-paths
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
 
 // Priority networks that should appear first (using CAIP chain IDs)
@@ -241,7 +243,7 @@ export const MultichainHoveredAddressRowsList = ({
       index: number,
     ): React.JSX.Element => {
       const handleCopyClick = () => {
-        handleCopy(item.account.address);
+        handleCopy(normalizeSafeAddress(item.account.address));
       };
 
       return (
