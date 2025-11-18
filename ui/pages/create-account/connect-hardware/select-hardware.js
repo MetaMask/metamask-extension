@@ -721,7 +721,7 @@ export default class SelectHardware extends Component {
               onClick={() => {
                 this.trackMarketingEvent(
                   MarketingActionNames.Tutorial,
-                  QrHardwareDeviceNames.airgap,
+                  QrHardwareDeviceNames.AirGap,
                 );
                 openWindow(HardwareAffiliateTutorialLinks.airgap);
               }}
