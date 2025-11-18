@@ -10,21 +10,27 @@ import { TransactionAccountDetails } from '../batch/transaction-account-details'
 import { BatchSimulationDetails } from '../batch/batch-simulation-details/batch-simulation-details';
 
 const BaseTransactionInfo = () => {
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, quoteSelectedForMMSwap } =
     useConfirmContext<TransactionMeta>();
 
   if (!transactionMeta?.txParams) {
     return null;
   }
 
+  const isQuotedSwapDisplayedInInfo = Boolean(quoteSelectedForMMSwap);
+
   return (
     <>
       <DappSwapComparisonBanner />
-      <TransactionAccountDetails />
-      <BatchSimulationDetails />
-      <TransactionDetails />
-      <GasFeesSection />
-      <AdvancedDetails />
+      {!isQuotedSwapDisplayedInInfo && (
+        <>
+          <TransactionAccountDetails />
+          <BatchSimulationDetails />
+          <TransactionDetails />
+          <GasFeesSection />
+          <AdvancedDetails />
+        </>
+      )}
     </>
   );
 };

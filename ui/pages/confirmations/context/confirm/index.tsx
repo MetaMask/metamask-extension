@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
+import { QuoteResponse } from '@metamask/bridge-controller';
 import { useDispatch } from 'react-redux';
 
 import { setAccountDetailsAddress } from '../../../../store/actions';
@@ -17,7 +18,9 @@ import { Confirmation } from '../../types/confirm';
 export type ConfirmContextType = {
   currentConfirmation: Confirmation;
   isScrollToBottomCompleted: boolean;
+  quoteSelectedForMMSwap: QuoteResponse | undefined;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
+  setQuoteSelectedForMMSwap: (selectedQuote: QuoteResponse | undefined) => void;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -29,6 +32,9 @@ export const ConfirmContextProvider: React.FC<{
 }> = ({ children }) => {
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
+  const [quoteSelectedForMMSwap, setQuoteSelectedForMMSwap] = useState<
+    QuoteResponse | undefined
+  >(undefined);
   const { currentConfirmation } = useCurrentConfirmation();
   syncConfirmPath(currentConfirmation);
   const dispatch = useDispatch();
@@ -37,12 +43,16 @@ export const ConfirmContextProvider: React.FC<{
     () => ({
       currentConfirmation,
       isScrollToBottomCompleted,
+      quoteSelectedForMMSwap,
+      setQuoteSelectedForMMSwap,
       setIsScrollToBottomCompleted,
     }),
     [
       currentConfirmation,
       isScrollToBottomCompleted,
+      quoteSelectedForMMSwap,
       setIsScrollToBottomCompleted,
+      setQuoteSelectedForMMSwap,
     ],
   );
 
@@ -76,6 +86,10 @@ export const useConfirmContext = <T = Confirmation,>() => {
   return context as {
     currentConfirmation: T;
     isScrollToBottomCompleted: boolean;
+    quoteSelectedForMMSwap: QuoteResponse | undefined;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
+    setQuoteSelectedForMMSwap: (
+      selectedQuote: QuoteResponse | undefined,
+    ) => void;
   };
 };

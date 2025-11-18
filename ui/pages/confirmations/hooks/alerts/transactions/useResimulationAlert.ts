@@ -11,8 +11,7 @@ import { useSwapCheck } from '../../transactions/dapp-swap-comparison/useSwapChe
 
 export function useResimulationAlert(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
-  const { isQuotedSwap } = useSwapCheck();
+  const { currentConfirmation, quoteSelectedForMMSwap } = useConfirmContext();
 
   const transactionMeta = currentConfirmation as TransactionMeta;
 
@@ -21,7 +20,11 @@ export function useResimulationAlert(): Alert[] {
   const isWalletInitiated = transactionMeta?.origin === ORIGIN_METAMASK;
 
   return useMemo(() => {
-    if (!isUpdatedAfterSecurityCheck || isWalletInitiated || isQuotedSwap) {
+    if (
+      !isUpdatedAfterSecurityCheck ||
+      isWalletInitiated ||
+      quoteSelectedForMMSwap
+    ) {
       return [];
     }
 
@@ -36,5 +39,10 @@ export function useResimulationAlert(): Alert[] {
         severity: Severity.Danger,
       },
     ];
-  }, [isUpdatedAfterSecurityCheck, isWalletInitiated, isQuotedSwap, t]);
+  }, [
+    isUpdatedAfterSecurityCheck,
+    isWalletInitiated,
+    quoteSelectedForMMSwap,
+    t,
+  ]);
 }

@@ -84,10 +84,6 @@ const SwapButton = ({
 
 const DappSwapComparisonInner = () => {
   const t = useI18nContext();
-  const [
-    batchedDappSwapNestedTransactions,
-    setBatchedDappSwapNestedTransactions,
-  ] = useState<BatchTransaction[] | undefined>();
   const {
     fiatRates,
     gasDifference,
@@ -97,16 +93,13 @@ const DappSwapComparisonInner = () => {
     sourceTokenAmount,
     tokenAmountDifference,
     tokenDetails,
-  } = useDappSwapComparisonInfo(batchedDappSwapNestedTransactions);
+  } = useDappSwapComparisonInfo();
   const { captureDappSwapComparisonDisplayProperties } =
     useDappSwapComparisonMetrics();
-
-  const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { dappSwapUi } = useSelector(getRemoteFeatureFlags) as {
     dappSwapUi: DappSwapUiFlag;
   };
-
+  const { setQuoteSelectedForMMSwap } = useConfirmContext();
   // update selectedSwapType depending on data
   const [selectedSwapType, setSelectedSwapType] = useState<SwapType>(
     SwapType.Current,
@@ -124,68 +117,29 @@ const DappSwapComparisonInner = () => {
   );
 
   const updateSwapToCurrent = useCallback(() => {
+    setQuoteSelectedForMMSwap(undefined);
     setSelectedSwapType(SwapType.Current);
-    if (currentConfirmation.txParamsOriginal) {
-      dispatch(
-        updateTransaction(
-          {
-            ...currentConfirmation,
-            txParams: currentConfirmation.txParamsOriginal,
-            batchTransactions: undefined,
-            nestedTransactions: batchedDappSwapNestedTransactions,
-          },
-          false,
-        ),
-      );
-    }
-  }, [
-    batchedDappSwapNestedTransactions,
-    currentConfirmation,
-    dispatch,
-    setSelectedSwapType,
-  ]);
+  }, [setQuoteSelectedForMMSwap, setSelectedSwapType]);
 
   const updateSwapToSelectedQuote = useCallback(() => {
+    setQuoteSelectedForMMSwap(selectedQuote);
     captureDappSwapComparisonDisplayProperties({
       swap_mm_opened: 'true',
     });
     setSelectedSwapType(SwapType.Metamask);
     setShowDappSwapComparisonBanner(false);
-    const { value, gasLimit, data } = selectedQuote?.trade as TxData;
-    setBatchedDappSwapNestedTransactions(
-      currentConfirmation.nestedTransactions,
-    );
-    dispatch(
-      updateTransaction(
-        {
-          ...currentConfirmation,
-          txParams: {
-            ...currentConfirmation.txParams,
-            value,
-            gas: toHex(gasLimit ?? 0),
-            data,
-          },
-          txParamsOriginal: currentConfirmation.txParams,
-          batchTransactions: [selectedQuote?.approval as BatchTransaction],
-          nestedTransactions: undefined,
-        },
-        false,
-      ),
-    );
   }, [
     captureDappSwapComparisonDisplayProperties,
-    currentConfirmation,
-    dispatch,
-    setBatchedDappSwapNestedTransactions,
+    setQuoteSelectedForMMSwap,
     setSelectedSwapType,
     setShowDappSwapComparisonBanner,
     selectedQuote,
   ]);
 
-  const swapComparisonDisplayed =
-    dappSwapUi?.enabled &&
-    selectedQuoteValueDifference >=
-      (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD);
+  const swapComparisonDisplayed = dappSwapUi?.enabled && selectedQuote;
+  // &&
+  // selectedQuoteValueDifference >=
+  //   (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD);
 
   useEffect(() => {
     let dappSwapComparisonDisplayed = false;

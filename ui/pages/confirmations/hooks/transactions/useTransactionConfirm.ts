@@ -1,4 +1,5 @@
 import {
+  BatchTransaction,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -13,12 +14,14 @@ import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useDappSwapComparisonMetrics } from './dapp-swap-comparison/useDappSwapComparisonMetrics';
 import { useShieldConfirm } from './useShieldConfirm';
+import { TxData } from '@metamask/bridge-controller';
+import { toHex } from '@metamask/controller-utils';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, quoteSelectedForMMSwap } =
     useConfirmContext<TransactionMeta>();
 
   const { isSupported: isGaslessSupportedSTX } =
@@ -76,6 +79,22 @@ export function useTransactionConfirm() {
     transactionMeta?.isGasFeeSponsored,
   ]);
 
+  const updateSwapWithQuoteDetails = useCallback(() => {
+    const { value, gasLimit, data, to } =
+      quoteSelectedForMMSwap?.trade as TxData;
+    newTransactionMeta.txParams = {
+      ...newTransactionMeta.txParams,
+      value,
+      to,
+      gas: toHex(gasLimit ?? 0),
+      data,
+    };
+    newTransactionMeta.batchTransactions = [
+      quoteSelectedForMMSwap?.approval as BatchTransaction,
+    ];
+    newTransactionMeta.nestedTransactions = undefined;
+  }, [newTransactionMeta, quoteSelectedForMMSwap]);
+
   const {
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
@@ -83,6 +102,10 @@ export function useTransactionConfirm() {
 
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
+
+    if (quoteSelectedForMMSwap) {
+      updateSwapWithQuoteDetails();
+    }
 
     if (isGaslessSupportedSTX) {
       handleSmartTransaction();

@@ -26,7 +26,5 @@ export function useSwapCheck() {
 
   return {
     isSwapToBeCompared,
-    isQuotedSwap:
-      (txParamsOriginal && txParamsOriginalData !== txParamsData) ?? false,
   };
 }
