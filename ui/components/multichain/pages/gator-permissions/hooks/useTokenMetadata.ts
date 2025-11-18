@@ -68,43 +68,18 @@ const createTokenMetadata = (
   decimals?: number | string | null,
   name?: string,
 ): TokenMetadata => {
-  let parsedDecimals: number | null = null;
+  let parsed: number | null = null;
   if (typeof decimals === 'string') {
-    parsedDecimals = decimals ? parseInt(decimals, 10) : null;
+    parsed = decimals ? parseInt(decimals, 10) : null;
   } else {
-    parsedDecimals = decimals ?? null;
+    parsed = decimals ?? null;
   }
 
   return {
     symbol: symbol || UNKNOWN_TOKEN.symbol,
-    decimals:
-      parsedDecimals !== null && !Number.isNaN(parsedDecimals)
-        ? parsedDecimals
-        : null,
+    decimals: parsed !== null && !Number.isNaN(parsed) ? parsed : null,
     name: name || symbol || UNKNOWN_TOKEN.name,
   };
-};
-
-/**
- * Helper to update state only if values changed
- *
- * @param setTokenMetadata - State setter function
- * @param newMetadata - New metadata to set
- */
-const updateMetadataIfChanged = (
-  setTokenMetadata: React.Dispatch<React.SetStateAction<TokenMetadata>>,
-  newMetadata: TokenMetadata,
-) => {
-  setTokenMetadata((prev) => {
-    if (
-      prev.symbol !== newMetadata.symbol ||
-      prev.decimals !== newMetadata.decimals ||
-      prev.name !== newMetadata.name
-    ) {
-      return newMetadata;
-    }
-    return prev;
-  });
 };
 
 /**
@@ -163,58 +138,64 @@ export const useTokenMetadata = (
   });
 
   useEffect(() => {
-    // Use AbortController to cancel stale requests when dependencies change
     const abortController = new AbortController();
     let isMounted = true;
 
-    if (!tokenAddress) {
-      if (isMounted) {
-        updateMetadataIfChanged(setTokenMetadata, stableNativeTokenMetadata);
+    const updateIfChanged = (newMetadata: TokenMetadata) => {
+      if (!isMounted) {
+        return;
       }
+      setTokenMetadata((prev) =>
+        prev.symbol !== newMetadata.symbol ||
+        prev.decimals !== newMetadata.decimals ||
+        prev.name !== newMetadata.name
+          ? newMetadata
+          : prev,
+      );
+    };
+
+    // Handle native token case
+    if (!tokenAddress) {
+      updateIfChanged(stableNativeTokenMetadata);
       return () => {
         isMounted = false;
         abortController.abort();
       };
     }
 
-    // Step 1: Check cache + user imported tokens (no external calls)
+    // Check cache first
     const cached = getCachedTokenMetadata(tokenAddress, chainId, tokensByChain);
     if (cached) {
-      if (isMounted) {
-        updateMetadataIfChanged(setTokenMetadata, cached);
-      }
+      updateIfChanged(cached);
       return () => {
         isMounted = false;
         abortController.abort();
       };
     }
 
-    // Step 2 & 3: Fetch from API, then fall back to on-chain
-    const fetchTokenMetadata = async () => {
-      let newMetadata: TokenMetadata | null = null;
+    // Fetch from API, then fall back to on-chain
+    (async () => {
+      if (abortController.signal.aborted) {
+        return;
+      }
 
-      // Step 2: Try API first
+      let metadata: TokenMetadata | null = null;
+
+      // Try API first
       try {
         const apiMetadata = await fetchAssetMetadata(
           tokenAddress,
           chainId as Hex,
           undefined,
         );
-        // Check if request was aborted before updating state
-        if (abortController.signal.aborted) {
-          return;
-        }
-        if (apiMetadata && isMounted) {
-          // The asset metadata API only returns symbol and decimals (no name field)
-          // Use symbol as the name value per our TokenMetadata contract
-          newMetadata = createTokenMetadata(
+        if (!abortController.signal.aborted && apiMetadata) {
+          metadata = createTokenMetadata(
             apiMetadata.symbol,
             apiMetadata.decimals,
             apiMetadata.symbol,
           );
         }
       } catch (error) {
-        // Check if error is due to abort
         if (abortController.signal.aborted) {
           return;
         }
@@ -225,8 +206,8 @@ export const useTokenMetadata = (
         });
       }
 
-      // Step 3: Fall back to on-chain if API didn't return metadata
-      if (!newMetadata && isMounted && !abortController.signal.aborted) {
+      // Fall back to on-chain if needed
+      if (!metadata && !abortController.signal.aborted) {
         try {
           const details = await getTokenStandardAndDetailsByChain(
             tokenAddress,
@@ -234,21 +215,14 @@ export const useTokenMetadata = (
             undefined,
             chainId,
           );
-
-          // Check if request was aborted before updating state
-          if (abortController.signal.aborted) {
-            return;
-          }
-
-          if (details) {
-            newMetadata = createTokenMetadata(
+          if (!abortController.signal.aborted && details) {
+            metadata = createTokenMetadata(
               details.symbol,
               details.decimals,
               details.name,
             );
           }
         } catch (error) {
-          // Check if error is due to abort
           if (abortController.signal.aborted) {
             return;
           }
@@ -261,13 +235,10 @@ export const useTokenMetadata = (
         }
       }
 
-      // Update state if we got metadata and request wasn't aborted
-      if (isMounted && !abortController.signal.aborted && newMetadata) {
-        updateMetadataIfChanged(setTokenMetadata, newMetadata);
+      if (metadata && !abortController.signal.aborted) {
+        updateIfChanged(metadata);
       }
-    };
-
-    fetchTokenMetadata();
+    })();
 
     return () => {
       isMounted = false;
