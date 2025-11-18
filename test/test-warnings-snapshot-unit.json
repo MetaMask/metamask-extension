@@ -1,10 +1,4 @@
 {
-  "metadata": {
-    "generatedAt": "2025-11-17T20:53:30.449Z",
-    "lastUpdatedAt": "2025-11-17T20:53:30.449Z",
-    "description": "Snapshot of console warnings and errors captured during test execution",
-    "note": "This snapshot is ADDITIVE - new warnings/errors are added but never automatically removed. To remove entries, manually edit this file or delete it and regenerate."
-  },
   "errors": [
     "Actions must be plain objects. Use custom middleware for async actions.",
     "Error occurred while creating snap account: save error",
@@ -269,6 +263,12 @@
     "{\"type\":\"not implemented\"}",
     "{}"
   ],
+  "metadata": {
+    "generatedAt": "2025-11-17T20:53:30.449Z",
+    "lastUpdatedAt": "2025-11-17T20:53:30.449Z",
+    "description": "Snapshot of console warnings and errors captured during test execution",
+    "note": "This snapshot is ADDITIVE - new warnings/errors are added but never automatically removed. To remove entries, manually edit this file or delete it and regenerate."
+  },
   "warnings": [
     "An input selector returned a different result when passed same arguments. This means your output selector will likely run more frequently than intended. Avoid returning a new reference inside your input selector, e.g. `createSelector([state => state.todos.map(todo => todo.id)], todoIds => todoIds.length)` [Object: {\"arguments\":{\"<NUMBER>\":{\"DNS\":{\"resolution\":\"\"},\"activeTab\":{\"id\": <NUMBER>,\"title\":\"E2E Test Dapp\",\"origin\":\"h...]",
     "An input selector returned a different result when passed same arguments. This means your output selector will likely run more frequently than intended. Avoid returning a new reference inside your input selector, e.g. `createSelector([state => state.todos.map(todo => todo.id)], todoIds => todoIds.length)` [Object: {\"arguments\":{\"<NUMBER>\":{\"DNS\":{\"resolution\":null},\"activeTab\":{\"id\": <NUMBER>,\"title\":\"E2E Test Dapp\",\"origin\":...]",
