@@ -275,6 +275,10 @@ const Footer = () => {
 
     await onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
+    if (!currentConfirmation) {
+      return;
+    }
+
     if (isAddEthereumChain) {
       history.push(DEFAULT_ROUTE);
     } else {

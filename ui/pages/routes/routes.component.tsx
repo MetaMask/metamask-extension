@@ -477,6 +477,7 @@ export default function Routes() {
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
+  const { pathname } = location;
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
@@ -645,30 +646,29 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
-  // Navigate to confirmations when there are pending approvals and user is on asset details page
-  // This behavior is only enabled in sidepanel to avoid interfering with popup/extension flows
+  // Navigate to confirmations when there are pending approvals
+  // Exclude routes that shouldn't navigate: confirmations, onboarding, lock/unlock, send, swaps
   useEffect(() => {
-    const windowType = getEnvironmentType();
+    // Don't navigate if already on a confirmation route
+    const isOnConfirmationRoute =
+      pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
+      pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
+      pathname.startsWith(CONNECT_ROUTE);
 
-    // Only run this navigation logic in sidepanel
-    if (windowType !== ENVIRONMENT_TYPE_SIDEPANEL) {
-      return;
-    }
+    // Don't navigate if on onboarding, lock, or unlock routes
+    const isOnRestrictedRoute =
+      pathname.startsWith(ONBOARDING_ROUTE) ||
+      pathname === LOCK_ROUTE ||
+      pathname === UNLOCK_ROUTE;
 
-    // Only navigate to confirmations when user is on an asset details page
-    const isOnAssetDetailsPage = location.pathname.startsWith(ASSET_ROUTE);
-
-    // Network operations (addEthereumChain, switchEthereumChain) have their own UI
-    // and shouldn't trigger auto-navigation
-    const hasNonNavigableApprovals = pendingApprovals.some(
-      (approval) =>
-        approval.type === 'wallet_addEthereumChain' ||
-        approval.type === 'wallet_switchEthereumChain',
-    );
+    // Don't navigate if on send or swaps flow
+    const isOnActiveFlow =
+      pathname.startsWith(SEND_ROUTE) || pathname.startsWith(SWAPS_ROUTE);
 
     if (
-      isOnAssetDetailsPage &&
-      !hasNonNavigableApprovals &&
+      !isOnConfirmationRoute &&
+      !isOnRestrictedRoute &&
+      !isOnActiveFlow &&
       isUnlocked &&
       (pendingApprovals.length > 0 || approvalFlows?.length > 0)
     ) {
@@ -679,7 +679,7 @@ export default function Routes() {
         history,
       );
     }
-  }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
+  }, [isUnlocked, pendingApprovals, approvalFlows, history, pathname]);
 
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
