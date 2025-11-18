@@ -182,7 +182,7 @@ describe('Bridge selectors', () => {
 
       // Only FEATURED_RPCS that are explicitly allowed for bridging
       const allowedFeaturedRpcs = FEATURED_RPCS.filter(({ chainId }) =>
-        ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+        (ALLOWED_BRIDGE_CHAIN_IDS as readonly string[]).includes(chainId),
       );
 
       // Ensure all allowed FEATURED_RPCS networks are present and correctly shaped
