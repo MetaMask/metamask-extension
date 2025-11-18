@@ -320,7 +320,7 @@ export const NetworksForm = ({
                 networkPayload.defaultRpcEndpointIndex
               ];
             const oldRpcEndpoint =
-              existingNetwork.rpcEndpoints[
+              existingNetwork.rpcEndpoints?.[
                 existingNetwork.defaultRpcEndpointIndex ?? 0
               ];
 
@@ -338,7 +338,9 @@ export const NetworksForm = ({
               /* eslint-disable @typescript-eslint/naming-convention */
               properties: {
                 chain_id_caip: `eip155:${chainIdAsDecimal}`,
-                from_rpc_domain: sanitizeRpcUrl(oldRpcEndpoint.url),
+                from_rpc_domain: oldRpcEndpoint?.url
+                  ? sanitizeRpcUrl(oldRpcEndpoint.url)
+                  : 'unknown',
                 to_rpc_domain: sanitizeRpcUrl(newRpcEndpoint.url),
               },
               /* eslint-enable @typescript-eslint/naming-convention */

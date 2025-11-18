@@ -646,4 +646,66 @@ describe('NetworkForm Component', () => {
       });
     });
   });
+
+  it('should handle corrupted state with missing rpcEndpoints gracefully', async () => {
+    const mockTrackEvent = jest.fn();
+    const store = configureMockStore([thunk])({
+      metamask: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        useSafeChainsListValidation: true,
+        orderedNetworkList: {
+          networkId: '0x1',
+          networkRpcUrl: 'https://mainnet.infura.io/v3/',
+        },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
+      },
+    });
+
+    const { getByText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <NetworksForm
+          {...propNetworkDisplay}
+          networkFormState={{
+            ...propNetworkDisplay.networkFormState,
+            rpcUrls: {
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://monad-mainnet.infura.io/v3/',
+                  type: 'custom',
+                },
+              ],
+            },
+          }}
+          existingNetwork={{
+            chainId: '0x64',
+            name: 'Ethereum',
+            nativeCurrency: 'ETH',
+            // rpcEndpoints is undefined (corrupted state)
+          }}
+          trackRpcUpdateFromBanner
+        />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+
+    const saveButton = getByText('Save');
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(updateNetwork).toHaveBeenCalled();
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: 'Network',
+        event: 'Network Connection Banner RPC Updated',
+        properties: {
+          chain_id_caip: 'eip155:100',
+          from_rpc_domain: 'unknown', // Corrupted state handled gracefully
+          to_rpc_domain: 'monad-mainnet.infura.io',
+        },
+      });
+    });
+  });
 });
