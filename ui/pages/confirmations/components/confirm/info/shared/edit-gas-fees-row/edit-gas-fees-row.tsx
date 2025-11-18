@@ -42,10 +42,8 @@ export const EditGasFeesRow = ({
 }) => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta, quoteSelectedForMMSwap } =
+  const { currentConfirmation: transactionMeta, isQuotedSwapDisplayedInInfo } =
     useConfirmContext<TransactionMeta>();
-
-  const isQuotedSwapDisplayedInInfo = Boolean(quoteSelectedForMMSwap);
 
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,

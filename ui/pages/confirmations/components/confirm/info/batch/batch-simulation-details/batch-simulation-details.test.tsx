@@ -292,14 +292,6 @@ describe('BatchSimulationDetails', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('return null for MetaMask Swap transaction', () => {
-    jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
-      isQuotedSwap: true,
-    } as ReturnType<typeof SwapCheckHook.useSwapCheck>);
-    const { container } = render();
-    expect(container.firstChild).toBeNull();
-  });
-
   it('return null for upgrade transaction if there are no nested transactions', () => {
     const { container } = render(upgradeAccountConfirmationOnly);
     expect(container.firstChild).toBeNull();

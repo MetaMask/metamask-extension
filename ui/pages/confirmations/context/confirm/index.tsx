@@ -18,6 +18,7 @@ import { Confirmation } from '../../types/confirm';
 export type ConfirmContextType = {
   currentConfirmation: Confirmation;
   isScrollToBottomCompleted: boolean;
+  isQuotedSwapDisplayedInInfo: boolean;
   quoteSelectedForMMSwap: QuoteResponse | undefined;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
   setQuoteSelectedForMMSwap: (selectedQuote: QuoteResponse | undefined) => void;
@@ -43,6 +44,7 @@ export const ConfirmContextProvider: React.FC<{
     () => ({
       currentConfirmation,
       isScrollToBottomCompleted,
+      isQuotedSwapDisplayedInInfo: Boolean(quoteSelectedForMMSwap),
       quoteSelectedForMMSwap,
       setQuoteSelectedForMMSwap,
       setIsScrollToBottomCompleted,
@@ -86,6 +88,7 @@ export const useConfirmContext = <T = Confirmation,>() => {
   return context as {
     currentConfirmation: T;
     isScrollToBottomCompleted: boolean;
+    isQuotedSwapDisplayedInInfo: boolean;
     quoteSelectedForMMSwap: QuoteResponse | undefined;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
     setQuoteSelectedForMMSwap: (

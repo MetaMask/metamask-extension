@@ -10,14 +10,12 @@ import { TransactionAccountDetails } from '../batch/transaction-account-details'
 import { BatchSimulationDetails } from '../batch/batch-simulation-details/batch-simulation-details';
 
 const BaseTransactionInfo = () => {
-  const { currentConfirmation: transactionMeta, quoteSelectedForMMSwap } =
+  const { currentConfirmation: transactionMeta, isQuotedSwapDisplayedInInfo } =
     useConfirmContext<TransactionMeta>();
 
   if (!transactionMeta?.txParams) {
     return null;
   }
-
-  const isQuotedSwapDisplayedInInfo = Boolean(quoteSelectedForMMSwap);
 
   return (
     <>

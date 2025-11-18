@@ -22,8 +22,11 @@ export function useTransactionConfirm() {
   const dispatch = useDispatch();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const { currentConfirmation: transactionMeta, quoteSelectedForMMSwap } =
-    useConfirmContext<TransactionMeta>();
+  const {
+    currentConfirmation: transactionMeta,
+    isQuotedSwapDisplayedInInfo,
+    quoteSelectedForMMSwap,
+  } = useConfirmContext<TransactionMeta>();
 
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
@@ -104,7 +107,7 @@ export function useTransactionConfirm() {
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
 
-    if (quoteSelectedForMMSwap) {
+    if (isQuotedSwapDisplayedInInfo) {
       updateSwapWithQuoteDetails();
     }
 
