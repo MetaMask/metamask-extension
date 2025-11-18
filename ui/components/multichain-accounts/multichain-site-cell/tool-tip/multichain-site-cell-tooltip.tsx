@@ -49,6 +49,7 @@ type TooltipContentProps = {
   moreAccountsText?: string;
   moreNetworksText?: string;
   avatarAccountVariant?: AvatarAccountVariant;
+  seedAddresses?: Record<string, string>;
 };
 
 const TooltipContent = React.memo<TooltipContentProps>(
@@ -58,6 +59,7 @@ const TooltipContent = React.memo<TooltipContentProps>(
     moreAccountsText,
     moreNetworksText,
     avatarAccountVariant,
+    seedAddresses,
   }) => {
     const displayAccountGroups = accountGroups?.slice(0, TOOLTIP_LIMIT) ?? [];
     const displayNetworks = networks?.slice(0, TOOLTIP_LIMIT) ?? [];
@@ -85,7 +87,7 @@ const TooltipContent = React.memo<TooltipContentProps>(
             >
               <AvatarAccount
                 size={AvatarAccountSize.Xs}
-                address={acc.id}
+                address={seedAddresses?.[acc.id] ?? ''}
                 variant={avatarAccountVariant}
               />
               <Text
@@ -235,6 +237,7 @@ export const MultichainSiteCellTooltip =
             moreAccountsText={moreAccountsText}
             moreNetworksText={moreNetworksText}
             avatarAccountVariant={avatarAccountVariant}
+            seedAddresses={seedAddresses}
           />
         }
         arrow
