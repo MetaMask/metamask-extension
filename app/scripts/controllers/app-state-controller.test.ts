@@ -1070,6 +1070,7 @@ describe('AppStateController', () => {
               "surveyLinkLastClickedOrClosed": null,
               "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
+              "dappSwapComparisonData": {},
               "updateModalLastDismissedAt": null,
             }
           `);

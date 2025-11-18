@@ -23,7 +23,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 import { useDappSwapComparisonMetrics } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonMetrics';
-import { useSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
+import { useDappSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapCheck';
 import { QuoteSwapSimulationDetails } from '../../transactions/quote-swap-simulation-details/quote-swap-simulation-details';
 import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
 import { NetworkRow } from '../info/shared/network-row/network-row';
@@ -241,7 +241,7 @@ const DappSwapComparisonInner = () => {
 
 export const DappSwapComparisonBanner = () => {
   const { dappSwapMetrics } = useSelector(getRemoteFeatureFlags);
-  const { isSwapToBeCompared } = useSwapCheck();
+  const { isSwapToBeCompared } = useDappSwapCheck();
 
   const dappSwapMetricsEnabled =
     (dappSwapMetrics as { enabled: boolean })?.enabled === true &&

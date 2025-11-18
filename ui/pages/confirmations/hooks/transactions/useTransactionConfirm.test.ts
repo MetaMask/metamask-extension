@@ -18,6 +18,7 @@ import * as ConfirmContext from '../../context/confirm';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useTransactionConfirm } from './useTransactionConfirm';
+import * as DappSwapActions from './dapp-swap-comparison/useDappSwapActions';
 
 jest.mock('../../../../../shared/modules/selectors');
 
@@ -33,13 +34,6 @@ jest.mock('react-router-dom-v5-compat', () => ({
 jest.mock('../gas/useIsGaslessSupported');
 
 jest.mock('../gas/useGaslessSupportedSmartTransactions');
-
-const mockCaptureSwapSubmit = jest.fn();
-jest.mock('./dapp-swap-comparison/useDappSwapComparisonMetrics', () => ({
-  useDappSwapComparisonMetrics: () => ({
-    captureSwapSubmit: mockCaptureSwapSubmit,
-  }),
-}));
 
 const CUSTOM_NONCE_VALUE = '1234';
 
@@ -322,11 +316,16 @@ describe('useTransactionConfirm', () => {
   });
 
   it('call function to capture swap submit', async () => {
-    const { onTransactionConfirm } = runHook({ customNonceValue: '1234' });
+    const mockOnDappSwapCompleted = jest.fn();
+    jest.spyOn(DappSwapActions, 'useDappSwapActions').mockReturnValue({
+      onDappSwapCompleted: mockOnDappSwapCompleted,
+      updateSwapWithQuoteDetails: jest.fn(),
+    } as unknown as ReturnType<typeof DappSwapActions.useDappSwapActions>);
 
+    const { onTransactionConfirm } = runHook({ customNonceValue: '1234' });
     await onTransactionConfirm();
 
-    expect(mockCaptureSwapSubmit).toHaveBeenCalledTimes(1);
+    expect(mockOnDappSwapCompleted).toHaveBeenCalledTimes(1);
   });
 
   it('updates batch transaction if smart transaction and selected gas fee token', async () => {
