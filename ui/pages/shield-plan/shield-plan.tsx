@@ -146,6 +146,7 @@ const ShieldPlan = () => {
       productType: PRODUCT_TYPES.SHIELD,
     });
   const hasAvailableToken = availableTokenBalances.length > 0;
+
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentType>(() => {
       // always default to card if no token is available
@@ -157,6 +158,7 @@ const ShieldPlan = () => {
       }
       return PAYMENT_TYPES.byCrypto;
     });
+
   // default options for the new subscription request
   const defaultOptions = useMemo(() => {
     const paymentType =
@@ -218,14 +220,19 @@ const ShieldPlan = () => {
     setSelectedToken(undefined);
   }, [selectedPlan, setSelectedToken]);
 
+  const selectedTokenAddress = selectedToken?.address;
   // set default selected payment method to crypto if selected token available
+  // should only trigger if selectedTokenAddress change (shouldn't trigger again if selected token object updated but still same token)
   useEffect(() => {
     const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
     // if the last used payment method is not crypto, don't set default method
-    if (selectedToken && lastUsedPaymentMethod !== PAYMENT_TYPES.byCard) {
+    if (
+      selectedTokenAddress &&
+      lastUsedPaymentMethod !== PAYMENT_TYPES.byCard
+    ) {
       setSelectedPaymentMethod(PAYMENT_TYPES.byCrypto);
     }
-  }, [selectedToken, setSelectedPaymentMethod, lastUsedPaymentDetails]);
+  }, [selectedTokenAddress, setSelectedPaymentMethod, lastUsedPaymentDetails]);
 
   const tokensSupported = useMemo(() => {
     const chainsAndTokensSupported = cryptoPaymentMethod?.chains ?? [];
@@ -342,9 +349,6 @@ const ShieldPlan = () => {
                   key={plan.id}
                   {...rowsStyleProps}
                   borderRadius={BorderRadius.LG}
-                  paddingTop={2}
-                  paddingBottom={2}
-                  gap={4}
                   className={classnames('shield-plan-page__plan', {
                     'shield-plan-page__plan--selected':
                       plan.id === selectedPlan,
@@ -358,7 +362,12 @@ const ShieldPlan = () => {
                     className="shield-plan-page__radio-label"
                   >
                     <Text variant={DSTextVariant.bodySm}>{plan.label}</Text>
-                    <Text variant={DSTextVariant.headingMd}>{plan.price}</Text>
+                    <Text
+                      variant={DSTextVariant.headingMd}
+                      className="shield-plan-page__plan-price"
+                    >
+                      {plan.price}
+                    </Text>
                   </Box>
                   {plan.id === RECURRING_INTERVALS.year && (
                     <Box

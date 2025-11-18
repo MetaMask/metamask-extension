@@ -20,6 +20,7 @@ import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
+import { useSwapCheck } from '../../../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { SmartContractWithLogo } from '../../../../smart-contract-with-logo';
 import {
   useIsDowngradeTransaction,
@@ -180,6 +181,7 @@ export const TransactionDetails = () => {
   );
   const { isUpgradeOnly } = useIsUpgradeTransaction();
   const isDowngrade = useIsDowngradeTransaction();
+  const { isQuotedSwap } = useSwapCheck();
 
   if (isUpgradeOnly || isDowngrade) {
     return null;
@@ -195,14 +197,15 @@ export const TransactionDetails = () => {
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
         <NetworkRow isShownWithAlertsOnly={!isBIP44} />
-        <OriginRow />
-        {!isBatch && <RecipientRow />}
+        {!isQuotedSwap && <OriginRow />}
+        {!isBatch && !isQuotedSwap && <RecipientRow />}
         {showAdvancedDetails && <MethodDataRow />}
         <SigningInWithRow />
       </ConfirmInfoSection>
-      {(showAdvancedDetails || hasValueAndNativeBalanceMismatch) && (
-        <AmountRow />
-      )}
+      {!isQuotedSwap &&
+        (showAdvancedDetails || hasValueAndNativeBalanceMismatch) && (
+          <AmountRow />
+        )}
       <PaymasterRow />
     </>
   );

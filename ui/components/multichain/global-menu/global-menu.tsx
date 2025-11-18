@@ -94,8 +94,11 @@ import { useUserSubscriptions } from '../../../hooks/subscription/useSubscriptio
 import {
   getIsShieldSubscriptionActive,
   getIsShieldSubscriptionPaused,
+  getShieldSubscription,
+  getSubscriptionPaymentData,
 } from '../../../../shared/lib/shield';
-import { useRewardsContext } from '../../../contexts/rewards';
+import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -113,8 +116,10 @@ export const GlobalMenu = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const { captureCommonExistingShieldSubscriptionEvents } =
+    useSubscriptionMetrics();
   const basicFunctionality = useSelector(getUseExternalServices);
-  const { rewardsEnabled } = useRewardsContext();
+  const rewardsEnabled = useSelector(selectRewardsEnabled);
 
   const history = useHistory();
 
@@ -302,6 +307,42 @@ export const GlobalMenu = ({
     closeMenu();
   };
 
+  const handleSupportMenuClick = () => {
+    dispatch(setShowSupportDataConsentModal(true));
+    trackEvent(
+      {
+        category: MetaMetricsEventCategory.Home,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
+          url: supportLink,
+          location: METRICS_LOCATION,
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
+    );
+    if (showPriorityTag) {
+      // track priority support clicked event
+      const shieldSubscription = getShieldSubscription(subscriptions);
+      const { cryptoPaymentChain, cryptoPaymentCurrency } =
+        getSubscriptionPaymentData(shieldSubscription);
+      if (shieldSubscription) {
+        captureCommonExistingShieldSubscriptionEvents(
+          {
+            subscriptionStatus: shieldSubscription.status,
+            paymentType: shieldSubscription.paymentMethod.type,
+            billingInterval: shieldSubscription.interval,
+            cryptoPaymentChain,
+            cryptoPaymentCurrency,
+          },
+          MetaMetricsEventName.ShieldPrioritySupportClicked,
+        );
+      }
+    }
+    closeMenu();
+  };
+
   return (
     <Popover
       data-testid="global-menu"
@@ -311,11 +352,12 @@ export const GlobalMenu = ({
       onClickOutside={closeMenu}
       onPressEscKey={closeMenu}
       style={{
-        overflow: 'hidden',
         minWidth: 225,
+        maxHeight: 'calc(100vh - var(--header-height))',
       }}
       offset={[0, 8]}
       position={PopoverPosition.BottomEnd}
+      className="overflow-y-auto"
     >
       {basicFunctionality && (
         <>
@@ -467,25 +509,7 @@ export const GlobalMenu = ({
       </MenuItem>
       <MenuItem
         iconName={IconName.MessageQuestion}
-        onClick={() => {
-          dispatch(setShowSupportDataConsentModal(true));
-          trackEvent(
-            {
-              category: MetaMetricsEventCategory.Home,
-              event: MetaMetricsEventName.SupportLinkClicked,
-              properties: {
-                url: supportLink,
-                location: METRICS_LOCATION,
-              },
-            },
-            {
-              contextPropsIntoEventProperties: [
-                MetaMetricsContextProp.PageTitle,
-              ],
-            },
-          );
-          closeMenu();
-        }}
+        onClick={handleSupportMenuClick}
         data-testid="global-menu-support"
       >
         <Box

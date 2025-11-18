@@ -397,7 +397,9 @@
 
         &__modules {
           @include design-system.screen-sm-max {
-            display: block;
+            display: flex;
+            flex-flow: column;
+            overflow-y: auto;
           }
         }
       }
@@ -434,7 +436,6 @@
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
-      max-width: 250px;
     }
 
     &__close-button {
@@ -547,7 +548,8 @@
     }
 
     .settings-page__content__modules {
-      display: block;
+      display: flex;
+      flex-flow: column;
     }
   }
 }
