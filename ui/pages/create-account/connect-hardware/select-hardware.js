@@ -673,7 +673,7 @@ export default class SelectHardware extends Component {
               onClick={() => {
                 this.trackMarketingEvent(
                   MarketingActionNames.LearnMore,
-                  QrHardwareDeviceNames.keystone,
+                  QrHardwareDeviceNames.Keystone,
                 );
                 openWindow(HardwareAffiliateLinks.keystone);
               }}
@@ -686,7 +686,7 @@ export default class SelectHardware extends Component {
               onClick={() => {
                 this.trackMarketingEvent(
                   MarketingActionNames.Tutorial,
-                  QrHardwareDeviceNames.keystone,
+                  QrHardwareDeviceNames.Keystone,
                 );
                 openWindow(HardwareAffiliateTutorialLinks.keystone);
               }}
@@ -708,7 +708,7 @@ export default class SelectHardware extends Component {
               onClick={() => {
                 this.trackMarketingEvent(
                   MarketingActionNames.BuyNow,
-                  QrHardwareDeviceNames.airgap,
+                  QrHardwareDeviceNames.AirGap,
                 );
                 openWindow(HardwareAffiliateLinks.airgap);
               }}
