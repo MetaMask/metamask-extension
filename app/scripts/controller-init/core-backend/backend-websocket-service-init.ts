@@ -32,11 +32,6 @@ export const BackendWebSocketServiceInit: ControllerInitFunction<
     url:
       process.env.MM_BACKEND_WEBSOCKET_URL ||
       'wss://gateway.api.cx.metamask.io/v1',
-    // Backend Platform optimized configuration
-    timeout: 15000, // Longer timeout for backend operations
-    reconnectDelay: 1000, // Conservative reconnect strategy
-    maxReconnectDelay: 30000, // Allow longer delays for backend stability
-    requestTimeout: 20000, // Reasonable timeout for backend requests
     // Inject the Sentry-backed trace function from extension platform
     // @ts-expect-error: Types of `TraceRequest` are not the same.
     traceFn: trace,
