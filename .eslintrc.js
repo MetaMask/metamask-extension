@@ -376,7 +376,7 @@ module.exports = {
         'react/prop-types': 'off',
         'react/no-children-prop': 'off',
         'react/jsx-key': 'warn', // TODO - increase this into 'error' level
-        'react-hooks/rules-of-hooks': 'warn', // TODO - increase this into 'error' level
+        'react-hooks/rules-of-hooks': 'error',
       },
       settings: {
         react: {
