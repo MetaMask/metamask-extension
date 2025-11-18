@@ -137,6 +137,7 @@ export const ReviewGatorPermissionItem = ({
 
   const timeoutRef = useRef<number | null>(null);
   const accountTextRef = useRef(accountText);
+  const mountedRef = useRef(true);
   const [, handleCopy] = useCopyToClipboard();
 
   // Keep ref in sync with state
@@ -146,10 +147,7 @@ export const ReviewGatorPermissionItem = ({
 
   // Cleanup timeout when component unmounts and track mounted state
   useEffect(() => {
-    const mountedRef = { current: true };
-
-    // Store mounted ref for timeout callback
-    timeoutRef.current = timeoutRef.current || null;
+    mountedRef.current = true;
 
     return () => {
       mountedRef.current = false;
@@ -189,8 +187,7 @@ export const ReviewGatorPermissionItem = ({
     // Use ref to get the latest accountText value, avoiding stale closure
     timeoutRef.current = window.setTimeout(() => {
       // Only update state if component is still mounted
-      // Check if timeoutRef still exists as indicator component is mounted
-      if (timeoutRef.current !== null) {
+      if (mountedRef.current) {
         setCopyMessage(accountTextRef.current);
         setCopyIcon(IconName.Copy);
         setAddressCopied(false);
