@@ -920,12 +920,14 @@ export const getIconSeedAddressesByAccountGroups = (
  * @returns Object mapping account group IDs to their seed addresses.
  */
 export const getWalletStatus = createDeepEqualSelector(
-  getWalletsWithAccounts,
+  getAccountTree,
   (_, walletId: AccountWalletId) => walletId,
   (
-    wallets: ConsolidatedWallets,
+    accountTree: AccountTreeState,
     walletId: AccountWalletId,
   ): AccountWalletObject['status'] | null => {
+    const { wallets } = accountTree;
+
     if (!wallets) {
       return null;
     }

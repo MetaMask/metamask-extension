@@ -356,13 +356,6 @@ const mockInternalAccountsState = {
   selectedAccount: 'test-account-1',
 };
 
-const mockNetworkConfigurations = {
-  networkConfigurationsByChainId:
-    mockState.metamask.networkConfigurationsByChainId,
-  multichainNetworkConfigurationsByChainId:
-    mockState.metamask.multichainNetworkConfigurationsByChainId,
-};
-
 const render = (
   options: {
     props?: Partial<MultichainConnectPageProps>;
@@ -407,7 +400,6 @@ const render = (
   const mockMultichainState = createMockMultichainAccountsState(
     mockAccountTreeState,
     mockInternalAccountsState,
-    mockNetworkConfigurations,
   );
 
   const store = configureStore({
