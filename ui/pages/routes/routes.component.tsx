@@ -32,8 +32,8 @@ import Alerts from '../../components/app/alerts';
 
 import {
   ASSET_ROUTE,
-  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
@@ -660,7 +660,9 @@ export default function Routes() {
     const isOnConfirmationRoute =
       pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
       pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
-      pathname.startsWith(CONNECT_ROUTE);
+      pathname.startsWith(CONNECT_ROUTE) ||
+      pathname === CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE ||
+      pathname === CONFIRM_ADD_SUGGESTED_NFT_ROUTE;
 
     // Don't navigate if on onboarding, lock, or unlock routes
     const isOnRestrictedRoute =
