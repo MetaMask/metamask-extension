@@ -1026,6 +1026,26 @@
     ],
     "isFetched": "boolean"
   },
+  "rewards": {
+    "onboardingModalOpen": "boolean",
+    "onboardingActiveStep": "string",
+    "onboardingModalRendered": "boolean",
+    "geoLocation": "null",
+    "optinAllowedForGeo": "null",
+    "optinAllowedForGeoLoading": "boolean",
+    "optinAllowedForGeoError": "boolean",
+    "candidateSubscriptionId": "string",
+    "seasonStatus": "null",
+    "seasonStatusError": "null",
+    "seasonStatusLoading": "boolean",
+    "rewardsEnabled": "boolean",
+    "errorToast": {
+      "actionText": "string",
+      "description": "string",
+      "isOpen": "boolean",
+      "title": "string"
+    }
+  },
   "send": {
     "amountMode": "string",
     "currentTransactionUUID": "null",
