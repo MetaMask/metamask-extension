@@ -364,7 +364,7 @@ export function useDappSwapComparisonInfo() {
     fiatRates,
     destinationTokenSymbol,
     gasDifference,
-    selectedQuote: bestQuote,
+    selectedQuote,
     selectedQuoteValueDifference,
     sourceTokenAmount: quotesInput?.srcTokenAmount,
     minDestTokenAmountInUSD: getDestinationTokenUSDValue(

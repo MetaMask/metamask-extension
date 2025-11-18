@@ -139,10 +139,10 @@ const DappSwapComparisonInner = () => {
     selectedQuote,
   ]);
 
-  const swapComparisonDisplayed = dappSwapUi?.enabled && selectedQuote;
-  // &&
-  // selectedQuoteValueDifference >=
-  //   (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD);
+  const swapComparisonDisplayed =
+    dappSwapUi?.enabled &&
+    selectedQuoteValueDifference >=
+      (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD);
 
   useEffect(() => {
     let dappSwapComparisonDisplayed = false;
@@ -160,7 +160,6 @@ const DappSwapComparisonInner = () => {
 
   const dappTypeSelected = selectedSwapType === SwapType.Current;
 
-  console.log('--------------------------------selectedQuote', selectedQuote);
   return (
     <Box>
       <Box
