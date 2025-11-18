@@ -10,8 +10,6 @@ import {
 } from '@metamask/gator-permissions-controller';
 import { fireEvent } from '@testing-library/react';
 import { Settings } from 'luxon';
-import { decodeDelegations } from '@metamask/delegation-core';
-import { getDeleGatorEnvironment } from '../../../../../../shared/lib/delegation/environment';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
@@ -31,12 +29,9 @@ jest.mock(
   }),
 );
 
-jest.mock('@metamask/delegation-core', () => ({
-  decodeDelegations: jest.fn(),
-}));
-
-jest.mock('../../../../../../shared/lib/delegation/environment', () => ({
-  getDeleGatorEnvironment: jest.fn(),
+jest.mock('../../../../../../shared/lib/gator-permissions', () => ({
+  ...jest.requireActual('../../../../../../shared/lib/gator-permissions'),
+  extractExpiryTimestampFromDelegation: jest.fn(),
 }));
 
 describe('Permission List Item', () => {
@@ -59,32 +54,14 @@ describe('Permission List Item', () => {
 
     describe('NATIVE token permissions', () => {
       const mockExpiryTimestamp = 1767225600; // January 1, 2026
-      const expiryHex = mockExpiryTimestamp.toString(16).padStart(32, '0');
-      const termsHex = `0x${'0'.repeat(32)}${expiryHex}` as Hex;
 
       beforeEach(() => {
-        // Configure mocks for delegation decoding
-        (decodeDelegations as jest.Mock).mockReturnValue([
-          {
-            delegate: '0x176059c27095647e995b5db678800f8ce7f581dd',
-            authority: '0x0000000000000000000000000000000000000000',
-            caveats: [
-              {
-                enforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-                terms: termsHex,
-                args: '0x',
-              },
-            ],
-            salt: 0n,
-            signature: '0x',
-          },
-        ]);
-
-        (getDeleGatorEnvironment as jest.Mock).mockReturnValue({
-          caveatEnforcers: {
-            TimestampEnforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-          },
-        });
+        const { extractExpiryTimestampFromDelegation } = jest.requireMock(
+          '../../../../../../shared/lib/gator-permissions',
+        );
+        (extractExpiryTimestampFromDelegation as jest.Mock).mockReturnValue(
+          mockExpiryTimestamp,
+        );
       });
 
       const mockNativeTokenStreamPermission: StoredGatorPermissionSanitized<
@@ -261,32 +238,14 @@ describe('Permission List Item', () => {
         '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
 
       const mockExpiryTimestamp = 1767225600; // January 1, 2026
-      const expiryHex = mockExpiryTimestamp.toString(16).padStart(32, '0');
-      const termsHex = `0x${'0'.repeat(32)}${expiryHex}` as Hex;
 
       beforeEach(() => {
-        // Configure mocks for delegation decoding
-        (decodeDelegations as jest.Mock).mockReturnValue([
-          {
-            delegate: '0x176059c27095647e995b5db678800f8ce7f581dd',
-            authority: '0x0000000000000000000000000000000000000000',
-            caveats: [
-              {
-                enforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-                terms: termsHex,
-                args: '0x',
-              },
-            ],
-            salt: 0n,
-            signature: '0x',
-          },
-        ]);
-
-        (getDeleGatorEnvironment as jest.Mock).mockReturnValue({
-          caveatEnforcers: {
-            TimestampEnforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-          },
-        });
+        const { extractExpiryTimestampFromDelegation } = jest.requireMock(
+          '../../../../../../shared/lib/gator-permissions',
+        );
+        (extractExpiryTimestampFromDelegation as jest.Mock).mockReturnValue(
+          mockExpiryTimestamp,
+        );
       });
 
       const mockErc20TokenPeriodicPermission: StoredGatorPermissionSanitized<
@@ -530,22 +489,10 @@ describe('Permission List Item', () => {
       });
 
       it('renders "No expiration" when permission has no expiry', () => {
-        // Mock decodeDelegations to return a delegation without TimestampEnforcer
-        (decodeDelegations as jest.Mock).mockReturnValue([
-          {
-            delegate: '0x176059c27095647e995b5db678800f8ce7f581dd',
-            authority: '0x0000000000000000000000000000000000000000',
-            caveats: [], // No TimestampEnforcer caveat
-            salt: 0n,
-            signature: '0x',
-          },
-        ]);
-
-        (getDeleGatorEnvironment as jest.Mock).mockReturnValue({
-          caveatEnforcers: {
-            TimestampEnforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-          },
-        });
+        const { extractExpiryTimestampFromDelegation } = jest.requireMock(
+          '../../../../../../shared/lib/gator-permissions',
+        );
+        (extractExpiryTimestampFromDelegation as jest.Mock).mockReturnValue(0);
 
         const mockPermissionWithoutExpiry: StoredGatorPermissionSanitized<
           Signer,
@@ -598,34 +545,12 @@ describe('Permission List Item', () => {
       it('renders correct expiration date when permission has expiry', () => {
         const customExpiryTimestamp = 1744588800; // April 14, 2025
 
-        // Convert timestamp to hex for the caveat terms (32 bytes total, expiry in last 16 bytes)
-        const customExpiryHex = customExpiryTimestamp
-          .toString(16)
-          .padStart(32, '0');
-        const customTermsHex = `0x${'0'.repeat(32)}${customExpiryHex}` as Hex;
-
-        // Mock decodeDelegations to return a delegation with TimestampEnforcer caveat
-        (decodeDelegations as jest.Mock).mockReturnValue([
-          {
-            delegate: '0x176059c27095647e995b5db678800f8ce7f581dd',
-            authority: '0x0000000000000000000000000000000000000000',
-            caveats: [
-              {
-                enforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-                terms: customTermsHex,
-                args: '0x',
-              },
-            ],
-            salt: 0n,
-            signature: '0x',
-          },
-        ]);
-
-        (getDeleGatorEnvironment as jest.Mock).mockReturnValue({
-          caveatEnforcers: {
-            TimestampEnforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-          },
-        });
+        const { extractExpiryTimestampFromDelegation } = jest.requireMock(
+          '../../../../../../shared/lib/gator-permissions',
+        );
+        (extractExpiryTimestampFromDelegation as jest.Mock).mockReturnValue(
+          customExpiryTimestamp,
+        );
 
         const mockPermissionWithExpiry: StoredGatorPermissionSanitized<
           Signer,
@@ -673,343 +598,6 @@ describe('Permission List Item', () => {
         );
         expect(expirationDate).toBeInTheDocument();
         expect(expirationDate).toHaveTextContent('04/14/2025');
-      });
-
-      it('renders "No expiration" when delegation count is zero', () => {
-        // Mock decodeDelegations to return empty array
-        (decodeDelegations as jest.Mock).mockReturnValue([]);
-
-        (getDeleGatorEnvironment as jest.Mock).mockReturnValue({
-          caveatEnforcers: {
-            TimestampEnforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-          },
-        });
-
-        const mockPermission: StoredGatorPermissionSanitized<
-          Signer,
-          NativeTokenPeriodicPermission
-        > = {
-          permissionResponse: {
-            chainId: '0x1',
-            address: mockSelectedAccountAddress,
-            permission: {
-              type: 'native-token-periodic',
-              isAdjustmentAllowed: false,
-              data: {
-                periodAmount: '0x6f05b59d3b20000',
-                periodDuration: 604800,
-                startTime: mockStartTime,
-                justification: 'Test permission',
-              },
-            },
-            context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
-          },
-          siteOrigin: 'http://localhost:8000',
-        };
-
-        const { container, getByTestId } = renderWithProvider(
-          <ReviewGatorPermissionItem
-            networkName={mockNetworkName}
-            gatorPermission={mockPermission}
-            onRevokeClick={() => mockOnClick()}
-          />,
-          store,
-        );
-
-        // Expand to see expiration date
-        const expandButton = container.querySelector('[aria-label="expand"]');
-        if (expandButton) {
-          fireEvent.click(expandButton);
-        }
-
-        // Verify expiration date shows "No expiration"
-        const expirationDate = getByTestId(
-          'review-gator-permission-expiration-date',
-        );
-        expect(expirationDate).toBeInTheDocument();
-        expect(expirationDate).toHaveTextContent('No expiration');
-      });
-
-      it('renders "No expiration" when delegation count is greater than one', () => {
-        // Mock decodeDelegations to return multiple delegations
-        (decodeDelegations as jest.Mock).mockReturnValue([
-          {
-            delegate: '0x176059c27095647e995b5db678800f8ce7f581dd',
-            authority: '0x0000000000000000000000000000000000000000',
-            caveats: [],
-            salt: 0n,
-            signature: '0x',
-          },
-          {
-            delegate: '0x276059c27095647e995b5db678800f8ce7f581dd',
-            authority: '0x0000000000000000000000000000000000000000',
-            caveats: [],
-            salt: 0n,
-            signature: '0x',
-          },
-        ]);
-
-        (getDeleGatorEnvironment as jest.Mock).mockReturnValue({
-          caveatEnforcers: {
-            TimestampEnforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-          },
-        });
-
-        const mockPermission: StoredGatorPermissionSanitized<
-          Signer,
-          NativeTokenPeriodicPermission
-        > = {
-          permissionResponse: {
-            chainId: '0x1',
-            address: mockSelectedAccountAddress,
-            permission: {
-              type: 'native-token-periodic',
-              isAdjustmentAllowed: false,
-              data: {
-                periodAmount: '0x6f05b59d3b20000',
-                periodDuration: 604800,
-                startTime: mockStartTime,
-                justification: 'Test permission',
-              },
-            },
-            context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
-          },
-          siteOrigin: 'http://localhost:8000',
-        };
-
-        const { container, getByTestId } = renderWithProvider(
-          <ReviewGatorPermissionItem
-            networkName={mockNetworkName}
-            gatorPermission={mockPermission}
-            onRevokeClick={() => mockOnClick()}
-          />,
-          store,
-        );
-
-        // Expand to see expiration date
-        const expandButton = container.querySelector('[aria-label="expand"]');
-        if (expandButton) {
-          fireEvent.click(expandButton);
-        }
-
-        // Verify expiration date shows "No expiration"
-        const expirationDate = getByTestId(
-          'review-gator-permission-expiration-date',
-        );
-        expect(expirationDate).toBeInTheDocument();
-        expect(expirationDate).toHaveTextContent('No expiration');
-      });
-
-      it('renders "No expiration" when terms have invalid length', () => {
-        // Mock decodeDelegations with invalid terms length
-        (decodeDelegations as jest.Mock).mockReturnValue([
-          {
-            delegate: '0x176059c27095647e995b5db678800f8ce7f581dd',
-            authority: '0x0000000000000000000000000000000000000000',
-            caveats: [
-              {
-                enforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-                terms: '0x1234' as Hex, // Invalid length (not 64 hex chars)
-                args: '0x',
-              },
-            ],
-            salt: 0n,
-            signature: '0x',
-          },
-        ]);
-
-        (getDeleGatorEnvironment as jest.Mock).mockReturnValue({
-          caveatEnforcers: {
-            TimestampEnforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-          },
-        });
-
-        const mockPermission: StoredGatorPermissionSanitized<
-          Signer,
-          NativeTokenPeriodicPermission
-        > = {
-          permissionResponse: {
-            chainId: '0x1',
-            address: mockSelectedAccountAddress,
-            permission: {
-              type: 'native-token-periodic',
-              isAdjustmentAllowed: false,
-              data: {
-                periodAmount: '0x6f05b59d3b20000',
-                periodDuration: 604800,
-                startTime: mockStartTime,
-                justification: 'Test permission',
-              },
-            },
-            context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
-          },
-          siteOrigin: 'http://localhost:8000',
-        };
-
-        const { container, getByTestId } = renderWithProvider(
-          <ReviewGatorPermissionItem
-            networkName={mockNetworkName}
-            gatorPermission={mockPermission}
-            onRevokeClick={() => mockOnClick()}
-          />,
-          store,
-        );
-
-        // Expand to see expiration date
-        const expandButton = container.querySelector('[aria-label="expand"]');
-        if (expandButton) {
-          fireEvent.click(expandButton);
-        }
-
-        // Verify expiration date shows "No expiration"
-        const expirationDate = getByTestId(
-          'review-gator-permission-expiration-date',
-        );
-        expect(expirationDate).toBeInTheDocument();
-        expect(expirationDate).toHaveTextContent('No expiration');
-      });
-
-      it('renders "No expiration" when timestamp is zero', () => {
-        // All zeros in the terms = timestamp 0
-        const zeroTermsHex = `0x${'0'.repeat(64)}` as Hex;
-
-        (decodeDelegations as jest.Mock).mockReturnValue([
-          {
-            delegate: '0x176059c27095647e995b5db678800f8ce7f581dd',
-            authority: '0x0000000000000000000000000000000000000000',
-            caveats: [
-              {
-                enforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-                terms: zeroTermsHex,
-                args: '0x',
-              },
-            ],
-            salt: 0n,
-            signature: '0x',
-          },
-        ]);
-
-        (getDeleGatorEnvironment as jest.Mock).mockReturnValue({
-          caveatEnforcers: {
-            TimestampEnforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-          },
-        });
-
-        const mockPermission: StoredGatorPermissionSanitized<
-          Signer,
-          NativeTokenPeriodicPermission
-        > = {
-          permissionResponse: {
-            chainId: '0x1',
-            address: mockSelectedAccountAddress,
-            permission: {
-              type: 'native-token-periodic',
-              isAdjustmentAllowed: false,
-              data: {
-                periodAmount: '0x6f05b59d3b20000',
-                periodDuration: 604800,
-                startTime: mockStartTime,
-                justification: 'Test permission',
-              },
-            },
-            context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
-          },
-          siteOrigin: 'http://localhost:8000',
-        };
-
-        const { container, getByTestId } = renderWithProvider(
-          <ReviewGatorPermissionItem
-            networkName={mockNetworkName}
-            gatorPermission={mockPermission}
-            onRevokeClick={() => mockOnClick()}
-          />,
-          store,
-        );
-
-        // Expand to see expiration date
-        const expandButton = container.querySelector('[aria-label="expand"]');
-        if (expandButton) {
-          fireEvent.click(expandButton);
-        }
-
-        // Verify expiration date shows "No expiration"
-        const expirationDate = getByTestId(
-          'review-gator-permission-expiration-date',
-        );
-        expect(expirationDate).toBeInTheDocument();
-        expect(expirationDate).toHaveTextContent('No expiration');
-      });
-
-      it('renders "No expiration" when decodeDelegations throws error', () => {
-        // Mock decodeDelegations to throw an error
-        (decodeDelegations as jest.Mock).mockImplementation(() => {
-          throw new Error('Decoding failed');
-        });
-
-        (getDeleGatorEnvironment as jest.Mock).mockReturnValue({
-          caveatEnforcers: {
-            TimestampEnforcer: '0x1046bb45c8d673d4ea75321280db34899413c069',
-          },
-        });
-
-        const mockPermission: StoredGatorPermissionSanitized<
-          Signer,
-          NativeTokenPeriodicPermission
-        > = {
-          permissionResponse: {
-            chainId: '0x1',
-            address: mockSelectedAccountAddress,
-            permission: {
-              type: 'native-token-periodic',
-              isAdjustmentAllowed: false,
-              data: {
-                periodAmount: '0x6f05b59d3b20000',
-                periodDuration: 604800,
-                startTime: mockStartTime,
-                justification: 'Test permission',
-              },
-            },
-            context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
-          },
-          siteOrigin: 'http://localhost:8000',
-        };
-
-        const { container, getByTestId } = renderWithProvider(
-          <ReviewGatorPermissionItem
-            networkName={mockNetworkName}
-            gatorPermission={mockPermission}
-            onRevokeClick={() => mockOnClick()}
-          />,
-          store,
-        );
-
-        // Expand to see expiration date
-        const expandButton = container.querySelector('[aria-label="expand"]');
-        if (expandButton) {
-          fireEvent.click(expandButton);
-        }
-
-        // Verify expiration date shows "No expiration"
-        const expirationDate = getByTestId(
-          'review-gator-permission-expiration-date',
-        );
-        expect(expirationDate).toBeInTheDocument();
-        expect(expirationDate).toHaveTextContent('No expiration');
       });
     });
   });

@@ -28,7 +28,6 @@ import {
   Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
-import { decodeDelegations } from '@metamask/delegation-core';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
@@ -38,8 +37,8 @@ import {
   getPeriodFrequencyValueTranslationKey,
   convertAmountPerSecondToAmountPerPeriod,
   getDecimalizedHexValue,
+  extractExpiryTimestampFromDelegation,
 } from '../../../../../../shared/lib/gator-permissions';
-import { getDeleGatorEnvironment } from '../../../../../../shared/lib/delegation/environment';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import {
@@ -163,69 +162,20 @@ export const ReviewGatorPermissionItem = ({
 
   /**
    * Returns the expiration date from the delegation context
-   * Extracts the expiry timestamp from a permissionContext.
-   * Based on the TimestampEnforcer contract encoding:
-   * - Terms are 32 bytes total
-   * - First 16 bytes: timestampAfterThreshold (uint128)
-   * - Last 16 bytes: timestampBeforeThreshold (uint128) - this is the expiry
    *
    * @returns The expiration date
    */
   const getExpirationDate = useCallback((): string => {
-    try {
-      const delegations = decodeDelegations(permissionContext);
+    const expiryTimestamp = extractExpiryTimestampFromDelegation(
+      permissionContext,
+      chainId,
+    );
 
-      if (delegations.length !== 1) {
-        throw new Error('Invalid permission context');
-      }
-
-      const delegation = delegations[0];
-      if (!delegation) {
-        throw new Error('Invalid permission context');
-      }
-
-      const chainIdNumber = parseInt(chainId, 16);
-      const environment = getDeleGatorEnvironment(chainIdNumber);
-      const timestampEnforcerAddress =
-        environment.caveatEnforcers.TimestampEnforcer.toLowerCase();
-
-      const timestampCaveat = delegation.caveats.find(
-        (caveat) => caveat.enforcer.toLowerCase() === timestampEnforcerAddress,
-      );
-
-      if (!timestampCaveat) {
-        return t('gatorPermissionNoExpiration');
-      }
-
-      // Extract the expiry from the terms
-      // Terms are 32 bytes (64 hex characters)
-      // Last 16 bytes (32 hex chars) = timestampBeforeThreshold (uint128)
-      const terms = timestampCaveat.terms as Hex;
-
-      // Remove '0x' prefix if present
-      const termsHex = terms.startsWith('0x') ? terms.slice(2) : terms;
-
-      // Validate length: should be 64 hex characters (32 bytes)
-      if (termsHex.length !== 64) {
-        return t('gatorPermissionNoExpiration');
-      }
-
-      // Extract last 32 hex characters (16 bytes) = timestampBeforeThreshold (expiry)
-      const expiryHex = `0x${termsHex.slice(32)}`;
-
-      // Convert to number (uint128 fits in JavaScript's safe integer range)
-      const expiry = Number(BigInt(expiryHex));
-
-      if (!expiry || expiry === 0) {
-        return t('gatorPermissionNoExpiration');
-      }
-
-      const expiryDate = convertTimestampToReadableDate(expiry);
-
-      return expiryDate || t('gatorPermissionNoExpiration');
-    } catch (error) {
+    if (expiryTimestamp === 0) {
       return t('gatorPermissionNoExpiration');
     }
+
+    return convertTimestampToReadableDate(expiryTimestamp);
   }, [permissionContext, chainId, t]);
 
   /**
