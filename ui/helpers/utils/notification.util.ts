@@ -407,7 +407,7 @@ export function getRpcUrlByChainId(chainId: HexChainId): string {
 export function hasNetworkFeeFields(
   notification: OnChainRawNotification,
 ): notification is OnChainRawNotificationsWithNetworkFields {
-  return 'network_fee' in notification.payload.data;
+  return 'network_fee' in notification.data;
 }
 
 export const getNetworkFees = async (notification: OnChainRawNotification) => {
@@ -415,7 +415,7 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
     throw new Error('Invalid notification type');
   }
 
-  const chainId = decimalToHex(notification.payload.chain_id);
+  const chainId = decimalToHex(notification.chain_id);
   const rpcUrl = getRpcUrlByChainId(`0x${chainId}` as HexChainId);
   const connection = {
     url: rpcUrl,
@@ -433,19 +433,19 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
 
   try {
     const [receipt, transaction, block] = await Promise.all([
-      provider.getTransactionReceipt(notification.payload.tx_hash),
-      provider.getTransaction(notification.payload.tx_hash),
-      provider.getBlock(notification.payload.block_number),
+      provider.getTransactionReceipt(notification.tx_hash),
+      provider.getTransaction(notification.tx_hash),
+      provider.getBlock(notification.block_number),
     ]);
 
     const calculateUsdAmount = (value: string, decimalPlaces?: number) =>
       formatAmount(
         parseFloat(value) *
-          parseFloat(
-            notification.payload.data.network_fee.native_token_price_in_usd,
-          ),
+          parseFloat(notification.data.network_fee.native_token_price_in_usd),
         {
-          decimalPlaces: decimalPlaces ?? 4,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          decimalPlaces: decimalPlaces || 4,
         },
       );
 

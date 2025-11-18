@@ -1,9 +1,8 @@
 import { SignatureRequest } from '@metamask/signature-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { CoverageStatus } from '@metamask/shield-controller';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
@@ -13,7 +12,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  getCoverageMetrics,
   getCoverageStatus,
   ShieldState,
 } from '../../../../selectors/shield/coverage';
@@ -21,12 +19,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../transactions/useEnableShieldCoverageChecks';
 import { IconName } from '../../../../components/component-library';
 import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
-import { isSignatureTransactionType } from '../../utils';
-import { useSignatureEventFragment } from '../useSignatureEventFragment';
-import { useTransactionEventFragment } from '../useTransactionEventFragment';
 import { ShieldCoverageAlertMessage } from './transactions/ShieldCoverageAlertMessage';
-
-const N_A = 'N/A';
 
 const getModalBodyStr = (reasonCode: string | undefined) => {
   // grouping codes with a fallthrough pattern is not allowed by the linter
@@ -159,26 +152,8 @@ const getModalBodyStr = (reasonCode: string | undefined) => {
     default:
       modalBodyStr = 'shieldCoverageAlertMessageUnknown';
   }
-  return modalBodyStr;
-};
 
-const getShieldResult = (
-  status?: CoverageStatus | 'not_shown',
-): 'covered' | 'not_covered' | 'not_covered_malicious' | 'loading' => {
-  switch (status) {
-    case 'covered':
-      return 'covered';
-    case 'malicious':
-      return 'not_covered_malicious';
-    case 'unknown':
-      return 'not_covered';
-    default:
-      // Returns 'loading' for:
-      // - undefined: coverage check not yet initiated or in progress
-      // - 'not_shown': coverage didn't load before user confirmed
-      // - any unexpected values: fail safe to loading state
-      return 'loading';
-  }
+  return modalBodyStr;
 };
 
 export function useShieldCoverageAlert(): Alert[] {
@@ -188,14 +163,8 @@ export function useShieldCoverageAlert(): Alert[] {
     TransactionMeta | SignatureRequest
   >();
 
-  const { updateSignatureEventFragment } = useSignatureEventFragment();
-  const { updateTransactionEventFragment } = useTransactionEventFragment();
-  const { id } = currentConfirmation ?? {};
   const { reasonCode, status } = useSelector((state) =>
-    getCoverageStatus(state as ShieldState, id),
-  );
-  const metrics = useSelector((state) =>
-    getCoverageMetrics(state as ShieldState, id),
+    getCoverageStatus(state as ShieldState, currentConfirmation?.id),
   );
 
   const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
@@ -204,7 +173,6 @@ export function useShieldCoverageAlert(): Alert[] {
   let modalBodyStr = isCovered
     ? 'shieldCoverageAlertCovered'
     : getModalBodyStr(reasonCode);
-
   if (isPaused) {
     modalBodyStr = 'shieldCoverageAlertMessagePaused';
   }
@@ -219,44 +187,6 @@ export function useShieldCoverageAlert(): Alert[] {
     navigate(TRANSACTION_SHIELD_ROUTE);
   }, [navigate]);
 
-  // Update metrics only when relevant values change
-  useEffect(() => {
-    // Only update fragments if shield coverage checks are enabled or paused
-    if (isEnabled || isPaused) {
-      const properties = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        shield_result: getShieldResult(status),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        shield_reason: modalBodyStr,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        shield_result_response_latency_ms: metrics?.latency ?? N_A,
-      };
-
-      if (isSignatureTransactionType(currentConfirmation)) {
-        updateSignatureEventFragment({
-          properties,
-        });
-      } else {
-        updateTransactionEventFragment(
-          {
-            properties,
-          },
-          id,
-        );
-      }
-    }
-  }, [
-    currentConfirmation,
-    id,
-    isEnabled,
-    isPaused,
-    metrics?.latency,
-    modalBodyStr,
-    status,
-    updateSignatureEventFragment,
-    updateTransactionEventFragment,
-  ]);
-
   return useMemo<Alert[]>((): Alert[] => {
     if (!showAlert) {
       return [];
@@ -264,22 +194,16 @@ export function useShieldCoverageAlert(): Alert[] {
 
     let severity = Severity.Disabled;
     let inlineAlertText = isPaused ? t('shieldPaused') : t('shieldNotCovered');
-    const isSignatureRequest = isSignatureTransactionType(currentConfirmation);
     let modalTitle = isPaused
       ? t('shieldCoverageAlertMessageTitlePaused')
       : t('shieldCoverageAlertMessageTitle');
-    if (isSignatureRequest && !isPaused) {
-      modalTitle = t('shieldCoverageAlertMessageTitleSignatureRequest');
-    }
     let inlineAlertTextBackgroundColor;
     if (!isPaused) {
       switch (status) {
         case 'covered':
           severity = Severity.Success;
           inlineAlertText = t('shieldCovered');
-          modalTitle = isSignatureRequest
-            ? t('shieldCoverageAlertMessageTitleSignatureRequestCovered')
-            : t('shieldCoverageAlertMessageTitleCovered');
+          modalTitle = t('shieldCoverageAlertMessageTitleCovered');
           break;
         case 'malicious':
           severity = Severity.Danger;
@@ -317,13 +241,5 @@ export function useShieldCoverageAlert(): Alert[] {
           : undefined,
       },
     ];
-  }, [
-    showAlert,
-    isPaused,
-    t,
-    currentConfirmation,
-    modalBodyStr,
-    onPausedAcknowledgeClick,
-    status,
-  ]);
+  }, [status, modalBodyStr, showAlert, t, isPaused, onPausedAcknowledgeClick]);
 }

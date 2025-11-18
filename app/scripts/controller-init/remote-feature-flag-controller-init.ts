@@ -58,35 +58,20 @@ export function getConfigForRemoteFeatureFlagRequest() {
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.initMessenger - The messenger to use for initialization.
- * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
 export const RemoteFeatureFlagControllerInit: ControllerInitFunction<
   RemoteFeatureFlagController,
   RemoteFeatureFlagControllerMessenger,
   RemoteFeatureFlagControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, persistedState }) => {
-  const onboardingState = initMessenger.call('OnboardingController:getState');
+> = ({ controllerMessenger, initMessenger }) => {
   const preferencesState = initMessenger.call('PreferencesController:getState');
   const { distribution, environment } = getConfigForRemoteFeatureFlagRequest();
 
-  let canUseExternalServices = preferencesState.useExternalServices === true;
-  let hasCompletedOnboarding = onboardingState.completedOnboarding === true;
-
-  /**
-   * Uses state from multiple controllers to determine if the remote feature flag
-   * controller should be disabled or not.
-   *
-   * @returns `true` if it should be disabled, `false` otherwise.
-   */
-  const getIsDisabled = () =>
-    !hasCompletedOnboarding || !canUseExternalServices;
-
   const controller = new RemoteFeatureFlagController({
-    state: persistedState.RemoteFeatureFlagController,
     messenger: controllerMessenger,
     fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
-    disabled: getIsDisabled(),
+    disabled: !preferencesState.useExternalServices,
     getMetaMetricsId: () =>
       initMessenger.call('MetaMetricsController:getMetaMetricsId'),
     clientConfigApiService: new ClientConfigApiService({
@@ -99,60 +84,22 @@ export const RemoteFeatureFlagControllerInit: ControllerInitFunction<
     }),
   });
 
-  /**
-   * Enables or disables the controller based on the current state of other
-   * controllers.
-   */
-  function toggle() {
-    const shouldBeDisabled = getIsDisabled();
-    if (shouldBeDisabled) {
-      controller.disable();
-    } else {
-      controller.enable();
-      controller.updateRemoteFeatureFlags().catch((error) => {
-        console.error('Failed to update remote feature flags:', error);
-      });
-    }
-  }
-
-  /**
-   * Subscribe to relevant state changes in the Onboarding Controller
-   * to collect information that helps determine if we can fetch remote
-   * feature flags.
-   */
   initMessenger.subscribe(
     'PreferencesController:stateChange',
     previousValueComparator((prevState, currState) => {
       const { useExternalServices: prevUseExternalServices } = prevState;
       const { useExternalServices: currUseExternalServices } = currState;
-      const hasChanged = currUseExternalServices !== prevUseExternalServices;
-      if (hasChanged) {
-        canUseExternalServices = currUseExternalServices === true;
-        toggle();
+      if (currUseExternalServices && !prevUseExternalServices) {
+        controller.enable();
+        controller.updateRemoteFeatureFlags().catch((error) => {
+          console.error('Failed to update remote feature flags:', error);
+        });
+      } else if (!currUseExternalServices && prevUseExternalServices) {
+        controller.disable();
       }
+
       return true;
     }, preferencesState),
-  );
-
-  /**
-   * Subscribe to relevant state changes in the Onboarding Controller
-   * to collect information that helps determine if we can fetch remote
-   * feature flags.
-   */
-  initMessenger.subscribe(
-    'OnboardingController:stateChange',
-    previousValueComparator((prevState, currState) => {
-      const { completedOnboarding: prevCompletedOnboarding } = prevState;
-      const { completedOnboarding: currCompletedOnboarding } = currState;
-      // yes, it is possible for completedOnboarding to change back to `false`
-      // after it has been `true`
-      const hasChanged = currCompletedOnboarding !== prevCompletedOnboarding;
-      if (hasChanged) {
-        hasCompletedOnboarding = currCompletedOnboarding === true;
-        toggle();
-      }
-      return true;
-    }, onboardingState),
   );
 
   return {

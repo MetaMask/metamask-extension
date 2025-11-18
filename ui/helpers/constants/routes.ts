@@ -7,7 +7,6 @@ type AppRoute = {
 };
 
 export const DEFAULT_ROUTE = '/';
-export const PREVIOUS_ROUTE = -1;
 export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';

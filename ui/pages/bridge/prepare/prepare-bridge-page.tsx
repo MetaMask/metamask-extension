@@ -12,7 +12,8 @@ import { type TokenListMap } from '@metamask/assets-controllers';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
-  isNonEvmChainId,
+  isSolanaChainId,
+  isBitcoinChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
@@ -20,7 +21,6 @@ import {
   UnifiedSwapBridgeEventName,
   type BridgeController,
   isCrossChain,
-  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
@@ -190,8 +190,12 @@ const PrepareBridgePage = ({
   const toChain = useSelector(getToChain);
 
   const isFromTokensLoading = useMemo(() => {
-    // Non-EVM chains (Solana, Bitcoin, Tron) don't use the EVM token list
-    if (fromChain && isNonEvmChainId(fromChain.chainId)) {
+    // Non-EVM chains (Solana, Bitcoin) don't use the EVM token list
+    if (
+      fromChain &&
+      (isSolanaChainId(fromChain.chainId) ||
+        isBitcoinChainId(fromChain.chainId))
+    ) {
       return false;
     }
     return Object.keys(fromTokens).length === 0;
@@ -282,7 +286,10 @@ const PrepareBridgePage = ({
           let address = '';
           if (isNativeAddress(fromToken.address)) {
             address = '';
-          } else if (isNonEvmChainId(fromChain.chainId)) {
+          } else if (
+            isSolanaChainId(fromChain.chainId) ||
+            isBitcoinChainId(fromChain.chainId)
+          ) {
             address = fromToken.address || '';
           } else {
             address = fromToken.address?.toLowerCase() || '';

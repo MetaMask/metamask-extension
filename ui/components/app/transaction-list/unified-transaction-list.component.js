@@ -380,8 +380,7 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
   if (tokenChainIdOverride) {
     const isNonEvm =
       tokenChainIdOverride.startsWith('solana') ||
-      tokenChainIdOverride.startsWith('bip122') ||
-      tokenChainIdOverride.startsWith('tron');
+      tokenChainIdOverride.startsWith('bip122');
 
     return {
       evmChainIds: isNonEvm ? [] : [tokenChainIdOverride],

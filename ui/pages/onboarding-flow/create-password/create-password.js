@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
@@ -56,7 +56,6 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import {
   forceUpdateMetamaskState,
-  getIsSeedlessOnboardingUserAuthenticated,
   resetOnboarding,
   setDataCollectionForMarketing,
   setMarketingConsent,
@@ -106,15 +105,6 @@ export default function CreatePassword({
     analyticsIframeQuery,
   )}`;
 
-  const validateSocialLoginAuthenticatedState = useCallback(async () => {
-    const isSeedlessOnboardingUserAuthenticated = await dispatch(
-      getIsSeedlessOnboardingUserAuthenticated(),
-    );
-    if (!isSeedlessOnboardingUserAuthenticated) {
-      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
-    }
-  }, [dispatch, navigate]);
-
   useEffect(() => {
     if (
       currentKeyring &&
@@ -159,16 +149,6 @@ export default function CreatePassword({
     isParticipateInMetaMetricsSet,
     isWalletResetInProgress,
   ]);
-
-  useEffect(() => {
-    // validate social login authenticated state on mount
-    // before user attempts to create a new wallet
-    (async () => {
-      if (isSocialLoginFlow) {
-        await validateSocialLoginAuthenticatedState();
-      }
-    })();
-  }, [isSocialLoginFlow, validateSocialLoginAuthenticatedState]);
 
   const handleLearnMoreClick = (event) => {
     event.stopPropagation();

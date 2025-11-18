@@ -12,7 +12,6 @@ import {
   isSolanaAddress,
   isBtcMainnetAddress,
   isBtcTestnetAddress,
-  isTronAddress,
 } from '../../../../shared/lib/multichain/accounts';
 import { getInternalAccountByAddress } from '../../../selectors/selectors';
 import { shortenString } from '../../../helpers/utils/util';
@@ -21,14 +20,12 @@ type UseExternalAccountResolutionProps = {
   searchQuery: string;
   isDestinationSolana: boolean;
   isDestinationBitcoin?: boolean;
-  isDestinationTron?: boolean;
 };
 
 export const useExternalAccountResolution = ({
   searchQuery,
   isDestinationSolana,
   isDestinationBitcoin = false,
-  isDestinationTron = false,
 }: UseExternalAccountResolutionProps): ExternalDestinationAccount | null => {
   const dispatch = useDispatch();
 
@@ -58,31 +55,17 @@ export const useExternalAccountResolution = ({
       return null;
     }
 
-    // Check for Tron addresses
-    if (isDestinationTron) {
-      if (isTronAddress(trimmedQuery)) {
-        return trimmedQuery;
-      }
-      return null;
-    }
-
     // Default to checking for Ethereum addresses
     if (isEthAddress(trimmedQuery)) {
       return trimmedQuery;
     }
 
     return null;
-  }, [
-    trimmedQuery,
-    isDestinationSolana,
-    isDestinationBitcoin,
-    isDestinationTron,
-  ]);
+  }, [trimmedQuery, isDestinationSolana, isDestinationBitcoin]);
 
   const validEnsName =
     !isDestinationSolana &&
     !isDestinationBitcoin &&
-    !isDestinationTron &&
     trimmedQuery.endsWith('.eth')
       ? trimmedQuery
       : null;

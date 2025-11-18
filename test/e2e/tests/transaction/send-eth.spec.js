@@ -437,6 +437,8 @@ describe('Send ETH', function () {
             });
             await driver.clickElement({ text: 'Continue', tag: 'button' });
 
+            await driver.clickElement('[data-testid="recipient-address"]');
+
             const recipientAddress = await driver.findElements({
               text: '0xc427D...Acd28',
             });

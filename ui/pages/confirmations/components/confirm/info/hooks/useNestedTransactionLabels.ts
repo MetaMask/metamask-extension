@@ -15,7 +15,6 @@ export function useNestedTransactionLabels({
     const { data, to } = nestedTransaction;
     // It's safe to call useFourByte here because the length of nestedTransactions
     // remains stable throughout the component's lifecycle.
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const methodData = useFourByte({ data, to });
     const functionName = methodData?.name;
 

@@ -1,21 +1,17 @@
 import type { FC } from 'react';
-import type { INotification } from '@metamask/notification-services-controller/notification-services';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 
-/**
- * Computes and combines intersection types for a more "prettier" type (more human readable)
- */
-type Compute<Item> = Item extends Item ? { [K in keyof Item]: Item[K] } : never;
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-type EmptyObj = {};
+export type Notification = NotificationServicesController.Types.INotification;
 
 /**
  * NotificationFC is the shared component interface for all notification components
  */
-type NotificationFC<
-  Notif = INotification,
-  AdditionalProps extends Record<string, unknown> = EmptyObj,
-> = FC<Compute<{ notification: Notif } & AdditionalProps>>;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+type NotificationFC<N = Notification> = FC<{
+  notification: N;
+  onClick?: () => void;
+}>;
 
 export enum NotificationComponentType {
   AnnouncementBody = 'body_feature_announcement',
@@ -26,101 +22,114 @@ export enum NotificationComponentType {
   SnapFooter = 'footer_snap_notification',
 }
 
-type BodyOnChainNotification<Notif = INotification> = {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+type BodyOnChainNotification<N = Notification> = {
   type: NotificationComponentType.OnChainBody;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Image?: NotificationFC<Notif>;
+  Image?: NotificationFC<N>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  From?: NotificationFC<Notif>;
+  From?: NotificationFC<N>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  To?: NotificationFC<Notif>;
+  To?: NotificationFC<N>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Account?: NotificationFC<Notif>;
+  Account?: NotificationFC<N>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Status: NotificationFC<Notif>;
+  Status: NotificationFC<N>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Asset?: NotificationFC<Notif>;
+  Asset?: NotificationFC<N>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  AssetReceived?: NotificationFC<Notif>;
+  AssetReceived?: NotificationFC<N>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Network?: NotificationFC<Notif>;
+  Network?: NotificationFC<N>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Provider?: NotificationFC<Notif>;
+  Provider?: NotificationFC<N>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Rate?: NotificationFC<Notif>;
+  Rate?: NotificationFC<N>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  NetworkFee?: NotificationFC<Notif>;
+  NetworkFee?: NotificationFC<N>;
 };
 
-type BodyFeatureAnnouncement<Notif = INotification> = {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+type BodyFeatureAnnouncement<N = Notification> = {
   type: NotificationComponentType.AnnouncementBody;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Image: NotificationFC<Notif>;
+  Image: NotificationFC<N>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Description: NotificationFC<Notif>;
+  Description: NotificationFC<N>;
 };
 
-type BodySnapNotification<Notif = INotification> = {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+type BodySnapNotification<N = Notification> = {
   type: NotificationComponentType.SnapBody;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Content: NotificationFC<Notif>;
+  Content: NotificationFC<N>;
 };
 
-type FooterOnChainNotification<Notif = INotification> = {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+type FooterOnChainNotification<N = Notification> = {
   type: NotificationComponentType.OnChainFooter;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  ScanLink: NotificationFC<Notif>;
+  ScanLink: NotificationFC<N>;
 };
 
-type FooterFeatureAnnouncement<Notif = INotification> = {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+type FooterFeatureAnnouncement<N = Notification> = {
   type: NotificationComponentType.AnnouncementFooter;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  ExtensionLink: NotificationFC<Notif>;
+  ExtensionLink: NotificationFC<N>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  ExternalLink: NotificationFC<Notif>;
+  ExternalLink: NotificationFC<N>;
 };
 
-type FooterSnapNotification<Notif = INotification> = {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+type FooterSnapNotification<N = Notification> = {
   type: NotificationComponentType.SnapFooter;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Link: NotificationFC<Notif>;
+  Link: NotificationFC<N>;
 };
 
 /**
  * This is the object shape that contains all the components of the particular notification.
  * the `guardFn` can be used to narrow a wide notification into the specific notification required.
  */
-export type NotificationComponent<Notif extends INotification = INotification> =
-  {
-    guardFn: (n: INotification) => n is Notif;
-    item: NotificationFC<Notif, { onClick: () => void }>;
-    details?: {
-      title: NotificationFC<Notif>;
-      body:
-        | BodyFeatureAnnouncement<Notif>
-        | BodyOnChainNotification<Notif>
-        | BodySnapNotification<Notif>;
-      footer:
-        | FooterFeatureAnnouncement<Notif>
-        | FooterOnChainNotification<Notif>
-        | FooterSnapNotification<Notif>;
-    };
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export type NotificationComponent<N extends Notification = Notification> = {
+  guardFn: (n: Notification) => n is N;
+  item: NotificationFC<N>;
+  details: {
+    title: NotificationFC<N>;
+    body:
+      | BodyFeatureAnnouncement<N>
+      | BodyOnChainNotification<N>
+      | BodySnapNotification<N>;
   };
+  footer:
+    | FooterFeatureAnnouncement<N>
+    | FooterOnChainNotification<N>
+    | FooterSnapNotification<N>;
+};

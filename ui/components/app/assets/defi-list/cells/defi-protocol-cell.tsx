@@ -52,6 +52,7 @@ export default function DefiProtocolCell({
     <GenericAssetCellLayout
       key={`${position.chainId}-${position.protocolId}`}
       onClick={handleTokenClick(position)}
+      disableHover={false}
       badge={
         <AssetCellBadge
           chainId={position.chainId}

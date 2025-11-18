@@ -228,11 +228,10 @@ export const isTronResource = (asset: Asset): boolean => {
   }
   const { chain } = parseCaipAssetType(asset.assetId);
 
-  if (chain.namespace !== KnownCaipNamespace.Tron) {
-    return false;
-  }
-
-  return TRON_RESOURCE_SYMBOLS_SET.has(
-    asset.symbol?.toLowerCase() as TronResourceSymbol,
+  return (
+    chain.namespace === KnownCaipNamespace.Tron &&
+    TRON_RESOURCE_SYMBOLS_SET.has(
+      asset.symbol?.toLowerCase() as TronResourceSymbol,
+    )
   );
 };

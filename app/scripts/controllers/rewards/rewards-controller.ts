@@ -18,9 +18,6 @@ import {
   SeasonDtoState,
   SeasonStatusState,
   SeasonTierState,
-  RewardsGeoMetadata,
-  OptInStatusInputDto,
-  OptInStatusDto,
 } from '../../../../shared/types/rewards';
 import {
   type RewardsControllerState,
@@ -29,6 +26,9 @@ import {
   type SeasonTierDto,
   type SeasonStatusDto,
   type SubscriptionDto,
+  type OptInStatusInputDto,
+  type OptInStatusDto,
+  GeoRewardsMetadata,
   SeasonStateDto,
   SeasonMetadataDto,
   DiscoverSeasonsDto,
@@ -209,7 +209,7 @@ export class RewardsController extends BaseController<
   RewardsControllerState,
   RewardsControllerMessenger
 > {
-  #geoLocation: RewardsGeoMetadata | null = null;
+  #geoLocation: GeoRewardsMetadata | null = null;
 
   #isDisabled: () => boolean;
 
@@ -368,7 +368,7 @@ export class RewardsController extends BaseController<
     );
     this.messenger.registerActionHandler(
       'RewardsController:getGeoRewardsMetadata',
-      this.getRewardsGeoMetadata.bind(this),
+      this.getGeoRewardsMetadata.bind(this),
     );
     this.messenger.registerActionHandler(
       'RewardsController:validateReferralCode',
@@ -1378,17 +1378,17 @@ export class RewardsController extends BaseController<
   /**
    * Perform the complete opt-in process for rewards
    *
-   * @param accounts - The accounts to opt in
    * @param referralCode - Optional referral code
    */
-  async optIn(
-    accounts: InternalAccount[],
-    referralCode?: string,
-  ): Promise<string | null> {
+  async optIn(referralCode?: string): Promise<string | null> {
     const rewardsEnabled = this.isRewardsFeatureEnabled();
     if (!rewardsEnabled) {
       return null;
     }
+
+    const accounts = await this.messenger.call(
+      'AccountTreeController:getAccountsFromSelectedAccountGroup',
+    );
 
     if (!accounts || accounts.length === 0) {
       return null;
@@ -1408,7 +1408,7 @@ export class RewardsController extends BaseController<
       try {
         optinResult = await this.#optIn(accountToTry, referralCode);
       } catch {
-        // Allow one failure to pass through
+        // Silent auth failed for this account
       }
 
       if (optinResult) {
@@ -1506,44 +1506,47 @@ export class RewardsController extends BaseController<
         throw error;
       }
     };
-
-    const optinResponse = await executeMobileOptin(timestamp, signature);
-    // Store the subscription token for authenticated requests
-    if (optinResponse.subscription?.id && optinResponse.sessionId) {
-      this.#storeSubscriptionToken(
-        optinResponse.subscription.id,
-        optinResponse.sessionId,
-      );
-    }
-    // Update state with opt-in response data
-    this.update((state) => {
-      const caipAccount: CaipAccountId | null =
-        this.convertInternalAccountToCaipAccountId(account);
-      if (!caipAccount) {
-        return;
+    try {
+      const optinResponse = await executeMobileOptin(timestamp, signature);
+      // Store the subscription token for authenticated requests
+      if (optinResponse.subscription?.id && optinResponse.sessionId) {
+        this.#storeSubscriptionToken(
+          optinResponse.subscription.id,
+          optinResponse.sessionId,
+        );
       }
-      const accountState: RewardsAccountState = {
-        account: caipAccount,
-        hasOptedIn: true,
-        subscriptionId: optinResponse.subscription.id,
-        perpsFeeDiscount: null,
-        lastPerpsDiscountRateFetched: null,
+      // Update state with opt-in response data
+      this.update((state) => {
+        const caipAccount: CaipAccountId | null =
+          this.convertInternalAccountToCaipAccountId(account);
+        if (!caipAccount) {
+          return;
+        }
+        const accountState: RewardsAccountState = {
+          account: caipAccount,
+          hasOptedIn: true,
+          subscriptionId: optinResponse.subscription.id,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        };
+        if (
+          state.rewardsActiveAccount &&
+          state.rewardsActiveAccount.account === caipAccount
+        ) {
+          state.rewardsActiveAccount = accountState;
+        }
+
+        state.rewardsAccounts[caipAccount] = accountState;
+        state.rewardsSubscriptions[optinResponse.subscription.id] =
+          optinResponse.subscription;
+      });
+      return {
+        subscription: optinResponse.subscription,
+        sessionId: optinResponse.sessionId,
       };
-      if (
-        state.rewardsActiveAccount &&
-        state.rewardsActiveAccount.account === caipAccount
-      ) {
-        state.rewardsActiveAccount = accountState;
-      }
-
-      state.rewardsAccounts[caipAccount] = accountState;
-      state.rewardsSubscriptions[optinResponse.subscription.id] =
-        optinResponse.subscription;
-    });
-    return {
-      subscription: optinResponse.subscription,
-      sessionId: optinResponse.sessionId,
-    };
+    } catch (error) {
+      return null;
+    }
   }
 
   /**
@@ -1551,7 +1554,7 @@ export class RewardsController extends BaseController<
    *
    * @returns Promise<GeoRewardsMetadata> - The geo rewards metadata
    */
-  async getRewardsGeoMetadata(): Promise<RewardsGeoMetadata> {
+  async getGeoRewardsMetadata(): Promise<GeoRewardsMetadata> {
     const rewardsEnabled = this.isRewardsFeatureEnabled();
     if (!rewardsEnabled) {
       return {
@@ -1575,7 +1578,7 @@ export class RewardsController extends BaseController<
         (blockedRegion) => geoLocation.startsWith(blockedRegion),
       );
 
-      const result: RewardsGeoMetadata = {
+      const result: GeoRewardsMetadata = {
         geoLocation,
         optinAllowedForGeo,
       };

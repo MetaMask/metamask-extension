@@ -1,10 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
-import {
-  TRIGGER_TYPES,
-  type INotification,
-} from '@metamask/notification-services-controller/notification-services';
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -21,6 +18,7 @@ import {
   NotificationComponents,
   hasNotificationComponents,
 } from '../notifications/notification-components';
+import { type Notification } from '../notifications/notification-components/types/notifications/notifications';
 import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
 import { getExtractIdentifier } from './utils/utils';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
@@ -37,7 +35,7 @@ function useNotificationByPath() {
   };
 }
 
-function useEffectOnNotificationView(notificationData?: INotification) {
+function useEffectOnNotificationView(notificationData?: Notification) {
   const { markNotificationAsRead } = useMarkNotificationAsRead();
   const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
@@ -80,9 +78,6 @@ export default function NotificationDetails() {
   }
 
   const ncs = NotificationComponents[notification.type];
-  if (!ncs.details) {
-    return null;
-  }
 
   return (
     <NotificationsPage>
@@ -105,7 +100,7 @@ export default function NotificationDetails() {
             notification={notification}
           />
           <NotificationDetailsFooter
-            footer={ncs.details.footer}
+            footer={ncs.footer}
             notification={notification}
           />
         </Box>

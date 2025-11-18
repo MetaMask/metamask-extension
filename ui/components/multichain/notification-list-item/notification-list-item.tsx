@@ -1,15 +1,6 @@
 import React from 'react';
 
-import {
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  Icon,
-  IconName,
-  IconColor,
-  IconSize,
-} from '@metamask/design-system-react';
-import { Box, Text } from '../../component-library';
+import { Box, Icon, IconName, Text } from '../../component-library';
 import {
   AlignItems,
   BlockSize,
@@ -18,6 +9,7 @@ import {
   FlexDirection,
   FontWeight,
   JustifyContent,
+  IconColor,
   TextColor,
   TextVariant,
   TextAlign,
@@ -28,45 +20,16 @@ import { NotificationListItemIcon } from '../notification-list-item-icon';
 import { NotificationListItemText } from '../notification-list-item-text';
 import { formatMenuItemDate } from '../../../helpers/utils/notification.util';
 
-type BaseProps = {
+export type NotificationListItemProps = {
   id: string;
   isRead: boolean;
   icon: NotificationListItemIconProps;
   title: NotificationListItemTextProps;
   description: NotificationListItemTextProps;
   createdAt: Date;
-  onClick: () => void;
+  amount?: string;
+  onClick?: () => void;
 };
-
-type BaseNotification = BaseProps;
-type NotificationToken = BaseProps & { amount: string };
-type NotificationPlatform = BaseProps & {
-  cta?: { content: string; link: string };
-};
-
-export type NotificationListItemProps =
-  | BaseNotification
-  | NotificationToken
-  | NotificationPlatform;
-
-const CTAButton = (props: {
-  content: string;
-  link: string;
-  onClick: () => void;
-}) => (
-  <Button
-    variant={ButtonVariant.Secondary}
-    size={ButtonSize.Md}
-    onClick={() => {
-      props.onClick();
-      global.platform.openTab({ url: props.link });
-    }}
-    isFullWidth
-    endIconName={IconName.Arrow2UpRight}
-  >
-    {props.content}
-  </Button>
-);
 
 /**
  * `NotificationListItem` is a component that displays a single notification item.
@@ -89,11 +52,11 @@ export const NotificationListItem = ({
   title,
   description,
   createdAt,
+  amount,
   onClick,
-  ...restProps
 }: NotificationListItemProps) => {
   const handleClick = () => {
-    onClick();
+    onClick?.();
   };
 
   return (
@@ -110,7 +73,6 @@ export const NotificationListItem = ({
       paddingRight={5}
       paddingLeft={5}
       paddingTop={3}
-      gap={2}
       key={id}
     >
       <Box
@@ -130,8 +92,7 @@ export const NotificationListItem = ({
           >
             <Icon
               name={IconName.FullCircle}
-              color={IconColor.InfoDefault}
-              size={IconSize.Xs}
+              color={IconColor.primaryDefault}
               className="notification-list-item__unread-dot__dot"
               data-testid="unread-dot"
             />
@@ -182,27 +143,18 @@ export const NotificationListItem = ({
             {formatMenuItemDate(createdAt)}
           </Text>
           {/* Amount */}
-          {'amount' in restProps && (
+          {amount && (
             <Text
               color={TextColor.textDefault}
               variant={TextVariant.bodyMd}
               fontWeight={FontWeight.Normal}
               as="p"
             >
-              {restProps.amount}
+              {amount}
             </Text>
           )}
         </Box>
       </Box>
-
-      {/* CTA Button */}
-      {'cta' in restProps && restProps.cta && (
-        <CTAButton
-          content={restProps.cta.content}
-          link={restProps.cta.link}
-          onClick={handleClick}
-        />
-      )}
     </Box>
   );
 };

@@ -80,8 +80,7 @@ export function BatchSimulationDetails() {
   if (
     transactionMeta?.type === TransactionType.revokeDelegation ||
     isUpgradeOnly ||
-    isQuotedSwap ||
-    !transactionMeta?.txParams
+    isQuotedSwap
   ) {
     return null;
   }

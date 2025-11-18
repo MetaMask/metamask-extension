@@ -44,7 +44,6 @@ export const TransactionFlowSection = () => {
           label={t('from')}
           ownerId={transactionMeta.id}
           style={{
-            flex: 1,
             flexDirection: FlexDirection.Column,
           }}
         >
@@ -61,24 +60,23 @@ export const TransactionFlowSection = () => {
           size={IconSize.Md}
           color={IconColor.iconAlternative}
         />
-
-        <ConfirmInfoAlertRow
-          alertKey={RowAlertKey.InteractingWith}
-          label={t('to')}
-          ownerId={transactionMeta.id}
-          style={{
-            flex: 1,
-            flexDirection: FlexDirection.Column,
-            overflow: 'hidden',
-          }}
-        >
-          <Box marginTop={2} data-testid="recipient-address" className="w-full">
-            <ConfirmInfoRowAddress
-              address={recipientAddress ?? ''}
-              chainId={chainId}
-            />
-          </Box>
-        </ConfirmInfoAlertRow>
+        {recipientAddress && (
+          <ConfirmInfoAlertRow
+            alertKey={RowAlertKey.InteractingWith}
+            label={t('to')}
+            ownerId={transactionMeta.id}
+            style={{
+              flexDirection: FlexDirection.Column,
+            }}
+          >
+            <Box marginTop={2} data-testid="recipient-address">
+              <ConfirmInfoRowAddress
+                address={recipientAddress}
+                chainId={chainId}
+              />
+            </Box>
+          </ConfirmInfoAlertRow>
+        )}
       </Box>
     </ConfirmInfoSection>
   );

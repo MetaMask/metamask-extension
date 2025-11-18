@@ -17,6 +17,7 @@ buildTypes:
     id: 10
     features:
       - build-main
+      - build-experimental
       - keyring-snaps
       - multi-srp
       - multichain
@@ -50,6 +51,7 @@ buildTypes:
     id: 11
     features:
       - build-beta
+      - build-experimental
       - keyring-snaps
       - multichain
       - bitcoin
@@ -99,6 +101,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_EXPERIMENTAL_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - IS_SIDEPANEL: true
+      - METAMASK_SHIELD_ENABLED: true
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
@@ -118,6 +121,7 @@ buildTypes:
     # will not be removed
     features:
       - build-flask
+      - build-experimental
       - keyring-snaps
       - bitcoin
       - tron
@@ -452,7 +456,7 @@ env:
   - APPLE_CLIENT_ID_UAT: ''
 
   # Metamask Shield
-  - METAMASK_SHIELD_ENABLED: 'true'
+  - METAMASK_SHIELD_ENABLED: 'false'
 
   # Snaps
   - AUTO_UPDATE_PREINSTALLED_SNAPS: 'true'

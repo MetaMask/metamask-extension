@@ -1,15 +1,12 @@
 import { ControllerStateChangeEvent } from '@metamask/base-controller';
 import {
-  ActionConstraint,
   MOCK_ANY_NAMESPACE,
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { NetworkController } from '@metamask/network-controller';
-import {
-  RemoteFeatureFlagControllerGetStateAction,
-  RemoteFeatureFlagControllerState,
-} from '@metamask/remote-feature-flag-controller';
+import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -40,33 +37,17 @@ jest.mock('@metamask/network-controller', () => {
 });
 
 function getInitRequestMock(
-  messenger = new Messenger<
-    MockAnyNamespace,
-    RemoteFeatureFlagControllerGetStateAction | ActionConstraint,
-    ControllerStateChangeEvent<
-      'RemoteFeatureFlagController',
-      RemoteFeatureFlagControllerState
-    >
-  >({ namespace: MOCK_ANY_NAMESPACE }),
+  baseMessenger = getRootMessenger<never, never>(),
 ): jest.Mocked<
   ControllerInitRequest<
     NetworkControllerMessenger,
     NetworkControllerInitMessenger
   >
 > {
-  messenger.registerActionHandler(
-    'RemoteFeatureFlagController:getState',
-    jest.fn().mockReturnValue({
-      remoteFeatureFlags: {
-        walletFrameworkRpcFailoverEnabled: true,
-      },
-    }),
-  );
-
   const requestMock = {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getNetworkControllerMessenger(messenger),
-    initMessenger: getNetworkControllerInitMessenger(messenger),
+    controllerMessenger: getNetworkControllerMessenger(baseMessenger),
+    initMessenger: getNetworkControllerInitMessenger(baseMessenger),
   };
 
   return requestMock;
@@ -97,7 +78,6 @@ describe('NetworkControllerInit', () => {
       getBlockTrackerOptions: expect.any(Function),
       getRpcServiceOptions: expect.any(Function),
       infuraProjectId: undefined,
-      isRpcFailoverEnabled: true,
     });
   });
 
@@ -350,7 +330,7 @@ describe('NetworkControllerInit', () => {
   it('enables RPC failover when the `walletFrameworkRpcFailoverEnabled` feature flag is enabled', () => {
     const messenger = new Messenger<
       MockAnyNamespace,
-      RemoteFeatureFlagControllerGetStateAction,
+      never,
       ControllerStateChangeEvent<
         'RemoteFeatureFlagController',
         RemoteFeatureFlagControllerState
@@ -379,7 +359,7 @@ describe('NetworkControllerInit', () => {
   it('disables RPC failover when the `walletFrameworkRpcFailoverEnabled` feature flag is disabled', () => {
     const messenger = new Messenger<
       MockAnyNamespace,
-      RemoteFeatureFlagControllerGetStateAction,
+      never,
       ControllerStateChangeEvent<
         'RemoteFeatureFlagController',
         RemoteFeatureFlagControllerState

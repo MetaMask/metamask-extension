@@ -2,13 +2,7 @@
 import {
   INotification,
   TRIGGER_TYPES,
-  processNotification,
 } from '@metamask/notification-services-controller/notification-services';
-import {
-  createMockFeatureAnnouncementRaw,
-  createMockNotificationERC20Received,
-  createMockNotificationEthReceived,
-} from '@metamask/notification-services-controller/notification-services/mocks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
   WalletFundsObtainedMonitor,
@@ -158,42 +152,6 @@ describe('WalletFundsObtainedMonitor', () => {
   });
 
   describe('createWalletFundingNotificationHandler', () => {
-    const arrangeEthReceievedNotification = (overrides?: {
-      chainId?: number;
-      amountUsd?: string;
-    }) => {
-      const notification = processNotification(
-        createMockNotificationEthReceived(),
-      );
-      if (notification.type === TRIGGER_TYPES.ETH_RECEIVED) {
-        notification.payload.chain_id =
-          overrides?.chainId ?? notification.payload.chain_id;
-        notification.payload.data.amount.usd =
-          overrides?.amountUsd ?? notification.payload.data.amount.usd;
-      }
-
-      return notification;
-    };
-
-    const arrangeERC20ReceivedNotification = (overrides?: {
-      chainId: number;
-      amountUsd?: string;
-    }) => {
-      const notification = processNotification(
-        createMockNotificationERC20Received(),
-      );
-      if (notification.type === TRIGGER_TYPES.ERC20_RECEIVED) {
-        notification.payload.chain_id =
-          overrides?.chainId ?? notification.payload.chain_id;
-        notification.payload.data.token.usd =
-          overrides?.amountUsd ?? notification.payload.data.token.usd;
-      }
-
-      return notification;
-    };
-
-    let triggerMockNotifications: (notifications: INotification[]) => void;
-
     beforeEach(() => {
       // Setup monitoring first
       walletFundsObtainedMonitor.setupMonitoring();
@@ -206,8 +164,12 @@ describe('WalletFundsObtainedMonitor', () => {
       const handler = subscribeCall?.[1];
 
       // Setup a helper to trigger notifications
-      triggerMockNotifications = (notifications: INotification[]) => {
-        handler?.(notifications, []);
+      (messenger as any).triggerMockNotifications = (
+        notifications: INotification[],
+      ) => {
+        if (handler) {
+          handler(notifications, []);
+        }
       };
 
       // Clear previous calls to have clean test assertions
@@ -216,9 +178,11 @@ describe('WalletFundsObtainedMonitor', () => {
     });
 
     it('should return early if no relevant notifications', () => {
-      triggerMockNotifications([
-        processNotification(createMockFeatureAnnouncementRaw()),
-      ]);
+      const notifications = [
+        { type: TRIGGER_TYPES.FEATURES_ANNOUNCEMENT, data: {} },
+      ];
+
+      (messenger as any).triggerMockNotifications(notifications);
 
       expect(messenger.call).not.toHaveBeenCalledWith(
         'MetaMetricsController:trackEvent',
@@ -231,7 +195,9 @@ describe('WalletFundsObtainedMonitor', () => {
     });
 
     it('should return early if notifications array is empty', () => {
-      triggerMockNotifications([]);
+      const notifications: INotification[] = [];
+
+      (messenger as any).triggerMockNotifications(notifications);
 
       expect(messenger.call).not.toHaveBeenCalledWith(
         'MetaMetricsController:trackEvent',
@@ -244,9 +210,14 @@ describe('WalletFundsObtainedMonitor', () => {
     });
 
     it('should return early if notification has no chain_id', () => {
-      triggerMockNotifications([
-        arrangeEthReceievedNotification({ chainId: 0 }),
-      ]);
+      const notifications = [
+        {
+          type: TRIGGER_TYPES.ETH_RECEIVED,
+          data: { amount: { usd: '100' } },
+        },
+      ];
+
+      (messenger as any).triggerMockNotifications(notifications);
 
       expect(messenger.call).not.toHaveBeenCalledWith(
         'MetaMetricsController:trackEvent',
@@ -259,9 +230,16 @@ describe('WalletFundsObtainedMonitor', () => {
     });
 
     it('should return early if notification has no token or amount data', () => {
-      triggerMockNotifications([
-        arrangeEthReceievedNotification({ amountUsd: '' }),
-      ]);
+      const notifications = [
+        {
+          type: TRIGGER_TYPES.ETH_RECEIVED,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: 1,
+          data: {},
+        },
+      ];
+
+      (messenger as any).triggerMockNotifications(notifications);
 
       expect(messenger.call).not.toHaveBeenCalledWith(
         'MetaMetricsController:trackEvent',
@@ -274,9 +252,18 @@ describe('WalletFundsObtainedMonitor', () => {
     });
 
     it('should handle ETH received notification', () => {
-      triggerMockNotifications([
-        arrangeEthReceievedNotification({ chainId: 1, amountUsd: '150' }),
-      ]);
+      const notifications = [
+        {
+          type: TRIGGER_TYPES.ETH_RECEIVED,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: 1,
+          data: {
+            amount: { usd: '100' },
+          },
+        },
+      ];
+
+      (messenger as any).triggerMockNotifications(notifications);
 
       expect(messenger.call).toHaveBeenCalledWith(
         'MetaMetricsController:trackEvent',
@@ -301,9 +288,21 @@ describe('WalletFundsObtainedMonitor', () => {
     });
 
     it('should handle ERC20 received notification', () => {
-      triggerMockNotifications([
-        arrangeERC20ReceivedNotification({ chainId: 1, amountUsd: '50' }),
-      ]);
+      const notifications = [
+        {
+          type: TRIGGER_TYPES.ERC20_RECEIVED,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: 1,
+          data: {
+            token: {
+              address: '0x123',
+              usd: '50',
+            },
+          },
+        },
+      ];
+
+      (messenger as any).triggerMockNotifications(notifications);
 
       expect(messenger.call).toHaveBeenCalledWith(
         'MetaMetricsController:trackEvent',
@@ -329,11 +328,21 @@ describe('WalletFundsObtainedMonitor', () => {
 
     it('should use the last (oldest) notification when multiple are present', () => {
       const notifications = [
-        arrangeEthReceievedNotification({ chainId: 1, amountUsd: '100' }),
-        arrangeERC20ReceivedNotification({ chainId: 137, amountUsd: '200' }),
+        {
+          type: TRIGGER_TYPES.ETH_RECEIVED,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: 1,
+          data: { amount: { usd: '100' } },
+        },
+        {
+          type: TRIGGER_TYPES.ERC20_RECEIVED,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: 137,
+          data: { token: { address: '0x456', usd: '200' } },
+        },
       ];
 
-      triggerMockNotifications(notifications);
+      (messenger as any).triggerMockNotifications(notifications);
 
       expect(messenger.call).toHaveBeenCalledWith(
         'MetaMetricsController:trackEvent',
@@ -354,11 +363,16 @@ describe('WalletFundsObtainedMonitor', () => {
 
     it('should filter out non-funding notifications', () => {
       const notifications = [
-        arrangeEthReceievedNotification({ chainId: 1, amountUsd: '100' }),
-        processNotification(createMockFeatureAnnouncementRaw()),
+        {
+          type: TRIGGER_TYPES.ETH_RECEIVED,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: 1,
+          data: { amount: { usd: '100' } },
+        },
+        { type: TRIGGER_TYPES.FEATURES_ANNOUNCEMENT, data: {} },
       ];
 
-      triggerMockNotifications(notifications);
+      (messenger as any).triggerMockNotifications(notifications);
 
       expect(messenger.call).toHaveBeenCalledWith(
         'MetaMetricsController:trackEvent',

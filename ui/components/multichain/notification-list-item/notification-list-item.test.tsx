@@ -25,7 +25,6 @@ describe('NotificationListItem', () => {
     },
     createdAt: new Date(),
     amount: '1.23 ETH',
-    onClick: jest.fn(),
   };
 
   it('should render the correct title and description', () => {

@@ -563,11 +563,8 @@ export const AccountMenu = ({
                   onClick={() => {
                     trackEvent({
                       category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
-                      properties: {
-                        status: 'started',
-                        location: 'Account Menu',
-                      },
+                      event:
+                        MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
                     });
                     history.push(IMPORT_SRP_ROUTE);
                     onClose();

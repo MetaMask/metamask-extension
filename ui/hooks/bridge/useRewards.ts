@@ -32,8 +32,8 @@ import {
   EstimatedPointsDto,
 } from '../../../shared/types/rewards';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { useRewardsContext } from '../rewards';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
-import { selectRewardsEnabled } from '../../ducks/rewards/selectors';
 
 /**
  *
@@ -117,6 +117,7 @@ export const useRewards = ({
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const quoteRequest = useSelector(getQuoteRequest);
+  const { rewardsEnabled } = useRewardsContext();
   const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
   const caipChainId = currentChainId
     ? formatChainIdToCaip(currentChainId.toString())
@@ -126,7 +127,6 @@ export const useRewards = ({
       ? getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId)
       : null,
   );
-  const rewardsEnabled = useSelector(selectRewardsEnabled);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedEstimatePoints = useCallback(

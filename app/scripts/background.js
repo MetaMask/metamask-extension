@@ -23,7 +23,9 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
+  ///: END:ONLY_INCLUDE_IF
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
@@ -63,7 +65,6 @@ import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
-import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
@@ -79,7 +80,6 @@ import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
-import { onUpdate } from './on-update';
 
 /* eslint-enable import/first */
 
@@ -120,9 +120,6 @@ const localStore = useReadOnlyNetworkStore
   ? new ReadOnlyNetworkStore()
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
-
-const { update, requestSafeReload } = getRequestSafeReload(persistenceManager);
-
 // Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
@@ -156,7 +153,9 @@ const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 let sidePanelIsOpen = false;
+///: END:ONLY_INCLUDE_IF
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -726,6 +725,9 @@ async function initialize(backup) {
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
 
+  const { update, requestSafeReload } =
+    getRequestSafeReload(persistenceManager);
+
   setupController(
     initState,
     initLangCode,
@@ -734,6 +736,7 @@ async function initialize(backup) {
     initData.meta,
     offscreenPromise,
     preinstalledSnaps,
+    requestSafeReload,
     cronjobControllerStorageManager,
   );
 
@@ -1103,6 +1106,7 @@ function trackAppOpened(environment) {
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
+ * @param {() => Promise<void>)} requestSafeReload - A function that requests a safe reload of the extension.
  * @param {CronjobControllerStorageManager} cronjobControllerStorageManager - A storage manager for the CronjobController.
  */
 export function setupController(
@@ -1113,6 +1117,7 @@ export function setupController(
   stateMetadata,
   offscreenPromise,
   preinstalledSnaps,
+  requestSafeReload,
   cronjobControllerStorageManager,
 ) {
   //
@@ -1164,7 +1169,9 @@ export function setupController(
       openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
       notificationIsOpen ||
+      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
       sidePanelIsOpen ||
+      ///: END:ONLY_INCLUDE_IF
       false
     );
   };
@@ -1240,8 +1247,7 @@ export function setupController(
       controller.setupTrustedCommunication(portStream, remotePort.sender);
       trackAppOpened(processName);
 
-      // lazily update the remote feature flags every time the UI is opened.
-      updateRemoteFeatureFlags(controller);
+      initializeRemoteFeatureFlags();
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
@@ -1253,6 +1259,7 @@ export function setupController(
         });
       }
 
+      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
         sidePanelIsOpen = true;
         finished(portStream, () => {
@@ -1262,6 +1269,7 @@ export function setupController(
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
         });
       }
+      ///: END:ONLY_INCLUDE_IF
 
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
@@ -1480,6 +1488,22 @@ export function setupController(
     }
   }
 
+  /**
+   * Initializes remote feature flags by making a request to fetch them from the clientConfigApi.
+   * This function is called when MM is during internal process.
+   * If the request fails, the error will be logged but won't interrupt extension initialization.
+   *
+   * @returns {Promise<void>} A promise that resolves when the remote feature flags have been updated.
+   */
+  async function initializeRemoteFeatureFlags() {
+    try {
+      // initialize the request to fetch remote feature flags
+      await controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
+    } catch (error) {
+      log.error('Error initializing remote feature flags:', error);
+    }
+  }
+
   function getPendingApprovalCount() {
     try {
       const pendingApprovalCount =
@@ -1591,7 +1615,9 @@ async function triggerUi() {
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     !sidePanelIsOpen &&
+    ///: END:ONLY_INCLUDE_IF
     true
   ) {
     uiIsTriggering = true;
@@ -1634,16 +1660,15 @@ const addAppInstalledEvent = () => {
  *
  * @param {[chrome.runtime.InstalledDetails]} params - Array containing a single installation details object.
  */
-async function handleOnInstalled([details]) {
+function handleOnInstalled([details]) {
   if (details.reason === 'install') {
     onInstall();
-  } else if (details.reason === 'update') {
-    const { previousVersion } = details;
-    if (!previousVersion || previousVersion === platform.getVersion()) {
-      return;
-    }
-    await isInitialized;
-    onUpdate(controller, platform, previousVersion, requestSafeReload);
+  } else if (
+    details.reason === 'update' &&
+    details.previousVersion &&
+    details.previousVersion !== platform.getVersion()
+  ) {
+    onUpdate(details.previousVersion);
   }
 }
 
@@ -1657,6 +1682,7 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 // Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
 // and when the feature flag is enabled
 if (
@@ -1677,6 +1703,34 @@ if (
       browser.sidePanel.open({ windowId: tab.windowId });
     }
   });
+}
+///: END:ONLY_INCLUDE_IF
+
+// // On first install, open a new tab with MetaMask
+// async function onInstall() {
+//   const storeAlreadyExisted = Boolean(await localStore.get());
+//   // If the store doesn't exist, then this is the first time running this script,
+//   // and is therefore an install
+//   if (process.env.IN_TEST) {
+//     addAppInstalledEvent();
+//   } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
+//     addAppInstalledEvent();
+//     platform.openExtensionInBrowser();
+//   }
+// }
+
+/**
+ * Trigger actions that should happen only upon update installation
+ *
+ * @param previousVersion
+ */
+async function onUpdate(previousVersion) {
+  await isInitialized;
+  log.debug('Update installation detected');
+  controller.appStateController.setLastUpdatedAt(Date.now());
+  if (previousVersion) {
+    controller.appStateController.setLastUpdatedFromVersion(previousVersion);
+  }
 }
 
 /**
@@ -1732,6 +1786,7 @@ function onNavigateToTab() {
   });
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 // Sidepanel-specific functionality
 // Set initial side panel behavior based on user preference
 const initSidePanelBehavior = async () => {
@@ -1745,10 +1800,10 @@ const initSidePanelBehavior = async () => {
     // Wait for controller to be initialized
     await isInitialized;
 
-    // Get user preference (default to false for side panel)
+    // Get user preference (default to true for side panel)
     const useSidePanelAsDefault =
       controller?.preferencesController?.state?.preferences
-        ?.useSidePanelAsDefault ?? false;
+        ?.useSidePanelAsDefault ?? true;
 
     // Set panel behavior based on preference
     if (browser?.sidePanel?.setPanelBehavior) {
@@ -1756,18 +1811,6 @@ const initSidePanelBehavior = async () => {
         openPanelOnActionClick: useSidePanelAsDefault,
       });
     }
-
-    // Setup remote feature flag listener to update sidepanel preferences
-    controller?.controllerMessenger?.subscribe(
-      'RemoteFeatureFlagController:stateChange',
-      (state) => {
-        const extensionUxSidepanel =
-          state?.remoteFeatureFlags?.extensionUxSidepanel;
-        if (extensionUxSidepanel === false) {
-          controller?.preferencesController?.setUseSidePanelAsDefault(false);
-        }
-      },
-    );
   } catch (error) {
     console.error('Error setting side panel behavior:', error);
   }
@@ -1791,8 +1834,7 @@ const setupPreferenceListener = async () => {
       'PreferencesController:stateChange',
       (state) => {
         const useSidePanelAsDefault =
-          state?.preferences?.useSidePanelAsDefault ?? false;
-
+          state?.preferences?.useSidePanelAsDefault ?? true;
         if (browser?.sidePanel?.setPanelBehavior) {
           browser.sidePanel
             .setPanelBehavior({
@@ -1919,6 +1961,7 @@ browser.tabs.onUpdated.addListener(async (tabId) => {
 
   return {};
 });
+///: END:ONLY_INCLUDE_IF
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {

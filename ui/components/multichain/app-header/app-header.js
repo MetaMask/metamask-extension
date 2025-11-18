@@ -29,7 +29,9 @@ import { toggleNetworkMenu } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
@@ -56,7 +58,9 @@ export const AppHeader = ({ location }) => {
 
   const environmentType = getEnvironmentType();
   const popupStatus = environmentType === ENVIRONMENT_TYPE_POPUP;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+  ///: END:ONLY_INCLUDE_IF
 
   // Disable the network and account pickers if the user is in
   // a critical flow
@@ -124,7 +128,12 @@ export const AppHeader = ({ location }) => {
 
   return (
     <>
-      {isUnlocked && !popupStatus && !isSidepanel && true ? (
+      {isUnlocked &&
+      !popupStatus &&
+      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+      !isSidepanel &&
+      ///: END:ONLY_INCLUDE_IF
+      true ? (
         <MultichainMetaFoxLogo />
       ) : null}
       <AppHeaderContainer isUnlocked={isUnlocked} popupStatus={popupStatus}>

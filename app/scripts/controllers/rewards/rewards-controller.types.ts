@@ -3,9 +3,6 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   EstimatedPointsDto,
   EstimatePointsDto,
-  OptInStatusDto,
-  OptInStatusInputDto,
-  RewardsGeoMetadata,
   SeasonDtoState,
   SeasonRewardType,
   SeasonStatusState,
@@ -519,10 +516,7 @@ export type Patch = {
  */
 export type RewardsControllerOptInAction = {
   type: 'RewardsController:optIn';
-  handler: (
-    accounts: InternalAccount[],
-    referralCode?: string,
-  ) => Promise<string | null>;
+  handler: (referralCode?: string) => Promise<string | null>;
 };
 
 /**
@@ -551,6 +545,20 @@ export type PerpsDiscountData = {
    * @example 550
    */
   discountBips: number;
+};
+
+/**
+ * Geo rewards metadata containing location and support info
+ */
+export type GeoRewardsMetadata = {
+  /**
+   * The geographic location string (e.g., 'US', 'CA-ON', 'FR')
+   */
+  geoLocation: string;
+  /**
+   * Whether the location is allowed for opt-in
+   */
+  optinAllowedForGeo: boolean;
 };
 
 /**
@@ -616,7 +624,7 @@ export type RewardsControllerLinkAccountsToSubscriptionCandidateAction = {
  */
 export type RewardsControllerGetGeoRewardsMetadataAction = {
   type: 'RewardsController:getGeoRewardsMetadata';
-  handler: () => Promise<RewardsGeoMetadata>;
+  handler: () => Promise<GeoRewardsMetadata>;
 };
 
 /**
@@ -668,4 +676,51 @@ export type RewardsControllerGetSeasonStatusAction = {
     subscriptionId: string,
     seasonId: string,
   ) => Promise<SeasonStatusState | null>;
+};
+
+/**
+ * Input DTO for getting opt-in status of multiple addresses
+ */
+export type OptInStatusInputDto = {
+  /**
+   * The addresses to check opt-in status for
+   *
+   * @example [
+   *   '0xDE37C32E8dbD1CD325B8023a00550a5beA97eF13',
+   *   '0xDE37C32E8dbD1CD325B8023a00550a5beA97eF14',
+   *   '0xDE37C32E8dbD1CD325B8023a00550a5beA97eF15'
+   * ]
+   */
+  addresses: string[];
+};
+
+/**
+ * Response DTO for opt-in status of multiple addresses
+ */
+export type OptInStatusDto = {
+  /**
+   * The opt-in status of the addresses in the same order as the input
+   *
+   * @example [true, true, false]
+   */
+  ois: boolean[];
+
+  /**
+   * The subscription IDs of the addresses in the same order as the input
+   *
+   * @example ['sub_123', 'sub_456', null]
+   */
+  sids: (string | null)[];
+};
+
+/**
+ * Response DTO for opt-out operation
+ */
+export type OptOutDto = {
+  /**
+   * Whether the opt-out operation was successful
+   *
+   * @example true
+   */
+  success: boolean;
 };

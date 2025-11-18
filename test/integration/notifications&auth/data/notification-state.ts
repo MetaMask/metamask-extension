@@ -20,8 +20,8 @@ export const ethSentNotification = processNotification(
 ) as Extract<INotification, { type: TRIGGER_TYPES.ETH_SENT }>;
 
 if (ethSentNotification.type === TRIGGER_TYPES.ETH_SENT) {
-  ethSentNotification.payload.address = notificationsAccountAddress;
-  ethSentNotification.payload.data.from = notificationsAccountAddress;
+  ethSentNotification.address = notificationsAccountAddress;
+  ethSentNotification.data.from = notificationsAccountAddress;
   ethSentNotification.isRead = true;
 }
 

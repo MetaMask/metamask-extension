@@ -45,25 +45,26 @@ const isLidoWithdrawalRequestedNotification = isOfTypeNodeGuard([
 
 const getTitle = () => {
   const items = createTextItems(
-    [t('notificationItemUnStakingRequested') ?? ''],
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    [t('notificationItemUnStakingRequested') || ''],
     TextVariant.bodySm,
   );
   return items;
 };
 
 const getDescription = (n: LidoWithdrawalRequestedNotification) => {
-  const amount = getAmount(
-    n.payload.data.stake_in.amount,
-    n.payload.data.stake_in.decimals,
-    {
-      shouldEllipse: true,
-    },
-  );
+  const amount = getAmount(n.data.stake_in.amount, n.data.stake_in.decimals, {
+    shouldEllipse: true,
+  });
   const description =
-    t(
-      'notificationItemLidoWithdrawalRequestedMessage',
-      `${amount} ${n.payload.data.stake_in.symbol}`,
-    ) ?? '';
+    // @ts-expect-error: Expected 0-1 arguments, but got an array
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    t('notificationItemLidoWithdrawalRequestedMessage', [
+      `${amount} ${n.data.stake_in.symbol}`,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    ]) || '';
   const items = createTextItems([description], TextVariant.bodyMd);
   return items;
 };
@@ -78,7 +79,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           isRead={notification.isRead}
           icon={{
             type: NotificationListItemIconType.Token,
-            value: notification.payload.data.stake_in.image,
+            value: notification.data.stake_in.image,
             badge: {
               icon: IconName.Stake,
               position: BadgeWrapperPosition.bottomRight,
@@ -88,10 +89,10 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           description={getDescription(notification)}
           createdAt={new Date(notification.createdAt)}
           amount={`${getAmount(
-            notification.payload.data.stake_in.amount,
-            notification.payload.data.stake_in.decimals,
+            notification.data.stake_in.amount,
+            notification.data.stake_in.decimals,
             { shouldEllipse: true },
-          )} ${notification.payload.data.stake_in.symbol}`}
+          )} ${notification.data.stake_in.symbol}`}
           onClick={onClick}
         />
       );
@@ -100,7 +101,9 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
       title: ({ notification }) => {
         return (
           <NotificationDetailTitle
-            title={t('notificationItemUnStakingRequested') ?? ''}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            title={t('notificationItemUnStakingRequested') || ''}
             date={formatIsoDateString(notification.createdAt)}
           />
         );
@@ -108,13 +111,15 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
       body: {
         type: NotificationComponentType.OnChainBody,
         Account: ({ notification }) => {
-          if (!notification.payload.address) {
+          if (!notification.address) {
             return null;
           }
           return (
             <NotificationDetailAddress
-              side={t('account') ?? ''}
-              address={notification.payload.address}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              side={t('account') || ''}
+              address={notification.address}
             />
           );
         },
@@ -125,75 +130,85 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
               color: TextColor.successDefault,
               backgroundColor: BackgroundColor.successMuted,
             }}
-            label={t('notificationItemStatus') ?? ''}
-            detail={t('notificationItemConfirmed') ?? ''}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            label={t('notificationItemStatus') || ''}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            detail={t('notificationItemConfirmed') || ''}
             action={
               <NotificationDetailCopyButton
                 notification={notification}
-                text={notification.payload.tx_hash}
-                displayText={t('notificationItemTransactionId') ?? ''}
+                text={notification.tx_hash}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                displayText={t('notificationItemTransactionId') || ''}
               />
             }
           />
         ),
         Asset: ({ notification }) => {
           const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-            notification.payload.chain_id,
+            notification.chain_id,
           );
           return (
             <NotificationDetailAsset
               icon={{
-                src: notification.payload.data.stake_in.image,
+                src: notification.data.stake_in.image,
                 badge: {
                   src: nativeCurrencyLogo,
                   position: BadgeWrapperPosition.topRight,
                 },
               }}
-              label={t('notificationItemUnStakingRequested') ?? ''}
-              detail={notification.payload.data.stake_in.symbol}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              label={t('notificationItemUnStakingRequested') || ''}
+              detail={notification.data.stake_in.symbol}
               fiatValue={`$${getUsdAmount(
-                notification.payload.data.stake_in.amount,
-                notification.payload.data.stake_in.decimals,
-                notification.payload.data.stake_in.usd,
+                notification.data.stake_in.amount,
+                notification.data.stake_in.decimals,
+                notification.data.stake_in.usd,
               )}`}
               value={`${getAmount(
-                notification.payload.data.stake_in.amount,
-                notification.payload.data.stake_in.decimals,
+                notification.data.stake_in.amount,
+                notification.data.stake_in.decimals,
                 { shouldEllipse: true },
-              )} ${notification.payload.data.stake_in.symbol}`}
+              )} ${notification.data.stake_in.symbol}`}
             />
           );
         },
         AssetReceived: ({ notification }) => {
           const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-            notification.payload.chain_id,
+            notification.chain_id,
           );
           return (
             <NotificationDetailAsset
               icon={{
-                src: notification.payload.data.stake_in.image,
+                src: notification.data.stake_in.image,
                 badge: {
                   src: nativeCurrencyLogo,
                   position: BadgeWrapperPosition.topRight,
                 },
               }}
-              label={t('notificationItemStakingProvider') ?? ''}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              label={t('notificationItemStakingProvider') || ''}
               detail="Lido-staked ETH"
             />
           );
         },
       },
-      footer: {
-        type: NotificationComponentType.OnChainFooter,
-        ScanLink: ({ notification }) => {
-          return (
-            <NotificationDetailBlockExplorerButton
-              notification={notification}
-              chainId={notification.payload.chain_id}
-              txHash={notification.payload.tx_hash}
-            />
-          );
-        },
+    },
+    footer: {
+      type: NotificationComponentType.OnChainFooter,
+      ScanLink: ({ notification }) => {
+        return (
+          <NotificationDetailBlockExplorerButton
+            notification={notification}
+            chainId={notification.chain_id}
+            txHash={notification.tx_hash}
+          />
+        );
       },
     },
   };

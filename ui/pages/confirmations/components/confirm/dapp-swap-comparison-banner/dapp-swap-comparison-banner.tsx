@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -27,6 +27,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransaction } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
+import { useSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { QuoteSwapSimulationDetails } from '../../transactions/quote-swap-simulation-details/quote-swap-simulation-details';
 
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
@@ -83,21 +84,17 @@ const SwapButton = ({
 
 const DappSwapComparisonInner = () => {
   const t = useI18nContext();
-  const [
-    batchedDappSwapNestedTransactions,
-    setBatchedDappSwapNestedTransactions,
-  ] = useState<BatchTransaction[] | undefined>();
   const {
     fiatRates,
     gasDifference,
-    minDestTokenAmountInUSD,
     selectedQuote,
     selectedQuoteValueDifference,
     sourceTokenAmount,
     tokenAmountDifference,
     tokenDetails,
-  } = useDappSwapComparisonInfo(batchedDappSwapNestedTransactions);
+  } = useDappSwapComparisonInfo();
 
+  const { isQuotedSwap } = useSwapCheck();
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { dappSwapUi } = useSelector(getRemoteFeatureFlags) as {
@@ -111,17 +108,19 @@ const DappSwapComparisonInner = () => {
   const [showDappSwapComparisonBanner, setShowDappSwapComparisonBanner] =
     useState<boolean>(true);
 
-  const hideDappSwapComparisonBanner = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
-      setShowDappSwapComparisonBanner(false);
-    },
-    [setShowDappSwapComparisonBanner],
-  );
+  useEffect(() => {
+    if (isQuotedSwap && selectedSwapType !== SwapType.Metamask) {
+      setSelectedSwapType(SwapType.Metamask);
+    }
+  }, [isQuotedSwap, selectedSwapType]);
+
+  const hideDappSwapComparisonBanner = useCallback(() => {
+    setShowDappSwapComparisonBanner(false);
+  }, [setShowDappSwapComparisonBanner]);
 
   const updateSwapToCurrent = useCallback(() => {
     setSelectedSwapType(SwapType.Current);
+    setShowDappSwapComparisonBanner(true);
     if (currentConfirmation.txParamsOriginal) {
       dispatch(
         updateTransaction(
@@ -129,18 +128,22 @@ const DappSwapComparisonInner = () => {
             ...currentConfirmation,
             txParams: currentConfirmation.txParamsOriginal,
             batchTransactions: undefined,
-            nestedTransactions: batchedDappSwapNestedTransactions,
           },
           false,
         ),
       );
     }
-  }, [currentConfirmation, dispatch, setSelectedSwapType]);
+  }, [
+    currentConfirmation,
+    dispatch,
+    setSelectedSwapType,
+    setShowDappSwapComparisonBanner,
+  ]);
 
   const updateSwapToSelectedQuote = useCallback(() => {
     setSelectedSwapType(SwapType.Metamask);
-    setShowDappSwapComparisonBanner(false);
-    const { value, gasLimit, data, to } = selectedQuote?.trade as TxData;
+    setShowDappSwapComparisonBanner(true);
+    const { value, gasLimit, data } = selectedQuote?.trade as TxData;
     dispatch(
       updateTransaction(
         {
@@ -148,13 +151,11 @@ const DappSwapComparisonInner = () => {
           txParams: {
             ...currentConfirmation.txParams,
             value,
-            to,
             gas: toHex(gasLimit ?? 0),
             data,
           },
           txParamsOriginal: currentConfirmation.txParams,
           batchTransactions: [selectedQuote?.approval as BatchTransaction],
-          nestedTransactions: undefined,
         },
         false,
       ),
@@ -162,7 +163,6 @@ const DappSwapComparisonInner = () => {
   }, [
     currentConfirmation,
     dispatch,
-    setBatchedDappSwapNestedTransactions,
     setSelectedSwapType,
     setShowDappSwapComparisonBanner,
     selectedQuote,
@@ -196,7 +196,7 @@ const DappSwapComparisonInner = () => {
               : SwapButtonType.Text
           }
           onClick={updateSwapToCurrent}
-          label={t('marketRate')}
+          label={t('metamaskRate')}
         />
         <SwapButton
           className="dapp-swap_mm-swap-button"
@@ -215,8 +215,6 @@ const DappSwapComparisonInner = () => {
           backgroundColor={BoxBackgroundColor.BackgroundAlternative}
           marginBottom={4}
           padding={4}
-          role="button"
-          onClick={updateSwapToSelectedQuote}
         >
           <ButtonIcon
             className="dapp-swap_close-button"
@@ -253,8 +251,6 @@ const DappSwapComparisonInner = () => {
           quote={selectedQuote as QuoteResponse}
           tokenDetails={tokenDetails}
           sourceTokenAmount={sourceTokenAmount}
-          tokenAmountDifference={tokenAmountDifference}
-          minDestTokenAmountInUSD={minDestTokenAmountInUSD}
         />
       )}
     </Box>

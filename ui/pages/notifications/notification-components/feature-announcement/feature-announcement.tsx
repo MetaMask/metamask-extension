@@ -109,10 +109,10 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
           </Box>
         ),
       },
-      footer: {
-        type: NotificationComponentType.AnnouncementFooter,
-        ExtensionLink: ExtensionLinkButton,
-        ExternalLink: ExternalLinkButton,
-      },
+    },
+    footer: {
+      type: NotificationComponentType.AnnouncementFooter,
+      ExtensionLink: ExtensionLinkButton,
+      ExternalLink: ExternalLinkButton,
     },
   };

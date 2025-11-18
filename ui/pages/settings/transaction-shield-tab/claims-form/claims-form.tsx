@@ -43,8 +43,14 @@ import { useClaimState } from '../../../../hooks/shield/useClaimState';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
-import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
-import { submitShieldClaim } from '../../../../store/actions';
+import {
+  DEFAULT_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
+} from '../../../../helpers/constants/routes';
+import {
+  submitShieldClaim,
+  setDefaultHomeActiveTabName,
+} from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
@@ -303,14 +309,14 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     [dispatch, setErrorMessage, t],
   );
 
-  const onClickFindTransactionHash = useCallback(async () => {
-    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
+  const handleOpenActivityTab = useCallback(async () => {
     captureShieldCtaClickedEvent({
       source: ShieldCtaSourceEnum.Settings,
       ctaActionClicked: ShieldCtaActionClickedEnum.FindingTxHash,
-      redirectToUrl: TRANSACTION_SHIELD_LINK,
     });
-  }, [captureShieldCtaClickedEvent]);
+    dispatch(setDefaultHomeActiveTabName('activity'));
+    navigate(DEFAULT_ROUTE);
+  }, [dispatch, navigate, captureShieldCtaClickedEvent]);
 
   const handleSubmitClaim = useCallback(async () => {
     if (isInvalidData) {
@@ -386,8 +392,9 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
 
   return (
     <Box
-      className="submit-claim-page flex flex-col pt-4 px-4 pb-4"
+      className="submit-claim-page flex flex-col"
       data-testid="submit-claim-page"
+      padding={4}
       gap={4}
     >
       {!isView && pendingClaims.length > 0 && (
@@ -429,8 +436,15 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       </Text>
       {/* Personal details */}
       <Box>
-        <Text variant={TextVariant.HeadingSm} className="mb-2">
+        <Text variant={TextVariant.HeadingSm}>
           {t('shieldClaimPersonalDetails')}
+        </Text>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="mb-2"
+        >
+          {t('shieldClaimPersonalDetailsDescription')}
         </Text>
         <Box
           borderColor={BoxBorderColor.BorderMuted}
@@ -487,9 +501,17 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       />
       {/* Incident details */}
       <Box className="mt-4">
-        <Text variant={TextVariant.HeadingSm} className="mb-2">
+        <Text variant={TextVariant.HeadingSm}>
           {t('shieldClaimIncidentDetails')}
         </Text>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="mb-2"
+        >
+          {t('shieldClaimIncidentDetailsDescription')}
+        </Text>
+
         <Box
           borderColor={BoxBorderColor.BorderMuted}
           className="w-full h-[1px] border border-b-0"
@@ -540,7 +562,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               <TextButton
                 size={TextButtonSize.BodySm}
                 className="min-w-0"
-                onClick={onClickFindTransactionHash}
+                onClick={handleOpenActivityTab}
               >
                 {t('shieldClaimImpactedTxHashHelpTextLink')}
               </TextButton>
@@ -554,7 +576,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               <TextButton
                 size={TextButtonSize.BodySm}
                 className="min-w-0"
-                onClick={onClickFindTransactionHash}
+                onClick={handleOpenActivityTab}
               >
                 {t('shieldClaimImpactedTxHashHelpTextLink')}
               </TextButton>

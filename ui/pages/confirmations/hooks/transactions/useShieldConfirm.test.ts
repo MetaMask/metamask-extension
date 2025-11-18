@@ -32,7 +32,7 @@ describe('useShieldConfirm', () => {
       );
 
       expect(mockNavigate).toHaveBeenCalledWith(
-        '/settings/transaction-shield?waitForSubscriptionCreation=true',
+        '/settings/transaction-shield/?waitForSubscriptionCreation=true',
       );
     });
 

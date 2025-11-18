@@ -11,7 +11,7 @@ export function sortAssetsWithPriority(
   array: Asset[],
   criteria: SortCriteria,
 ): Asset[] {
-  if (criteria.key === 'name' || criteria.key === 'title') {
+  if (criteria.key === 'name') {
     return sortAssets(array, {
       key: 'name',
       order: 'asc',

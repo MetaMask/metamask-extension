@@ -1,12 +1,9 @@
 import {
   getBillingCyclesForMetrics,
   getBillingIntervalForMetrics,
-  getUserBalanceCategory,
 } from '../../../../shared/modules/shield';
 import {
   CaptureShieldCtaClickedEventParams,
-  CaptureShieldEligibilityCohortAssignedEventParams,
-  CaptureShieldEligibilityCohortTimeoutEventParams,
   CaptureShieldPaymentMethodChangeEventParams,
   CaptureShieldSubscriptionRequestParams,
   ExistingSubscriptionEventParams,
@@ -24,13 +21,6 @@ export function formatDefaultShieldSubscriptionRequestEventProps(
   const billingCycles = getBillingCyclesForMetrics(params.billingInterval);
 
   return {
-    source: params.source,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    marketing_utm_id: params.marketingUtmId,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    post_transaction_type: params.postTransactionType,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     subscription_state: params.subscriptionState,
@@ -143,40 +133,4 @@ export function formatCaptureShieldCtaClickedEventProps(
     // eslint-disable-next-line @typescript-eslint/naming-convention
     marketing_utm_id: params.marketingUtmId,
   };
-}
-
-/**
- * Format the properties for the Shield eligibility cohort assigned and timeout events.
- *
- * @param params - The parameters for the Shield eligibility cohort assigned and timeout events.
- * @param totalFiatBalance - The total fiat balance of the user.
- * @returns The formatted properties.
- */
-export function formatCaptureShieldEligibilityCohortEventsProps(
-  params:
-    | CaptureShieldEligibilityCohortAssignedEventParams
-    | CaptureShieldEligibilityCohortTimeoutEventParams,
-  totalFiatBalance: number,
-) {
-  const props: Record<string, string | number> = {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    multi_chain_balance_category: getUserBalanceCategory(
-      Number(totalFiatBalance),
-    ),
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    number_of_eligible_cohorts: params.numberOfEligibleCohorts,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    assigned_cohort: params.cohort,
-  };
-
-  if ('modalType' in params) {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    props.modal_type = params.modalType;
-  }
-
-  return props;
 }

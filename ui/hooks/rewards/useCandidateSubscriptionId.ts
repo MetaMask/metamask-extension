@@ -1,15 +1,14 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import log from 'loglevel';
 import { useSelector, useDispatch } from 'react-redux';
 import { getRewardsCandidateSubscriptionId } from '../../store/actions';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
-import {
-  selectCandidateSubscriptionId,
-  selectRewardsEnabled,
-} from '../../ducks/rewards/selectors';
-import { setCandidateSubscriptionId } from '../../ducks/rewards';
+import { useAppSelector } from '../../store/store';
+import { useRewardsEnabled } from './useRewardsEnabled';
 
 type UseCandidateSubscriptionIdReturn = {
+  candidateSubscriptionId: string | null;
+  candidateSubscriptionIdError: boolean;
   fetchCandidateSubscriptionId: () => Promise<void>;
 };
 
@@ -19,52 +18,64 @@ type UseCandidateSubscriptionIdReturn = {
 export const useCandidateSubscriptionId =
   (): UseCandidateSubscriptionIdReturn => {
     const dispatch = useDispatch();
-
+    const [candidateSubscriptionId, setCandidateSubscriptionId] = useState<
+      string | null
+    >(null);
+    const [candidateSubscriptionIdError, setCandidateSubscriptionIdError] =
+      useState(false);
     const isUnlocked = useSelector(getIsUnlocked);
-    const isRewardsEnabled = useSelector(selectRewardsEnabled);
-    const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
-
-    const isLoading = useRef(false);
+    const isRewardsEnabled = useRewardsEnabled();
+    const rewardsActiveAccountSubscriptionId = useAppSelector(
+      (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
+    );
+    const rewardsActiveAccountCaipAccountId = useAppSelector(
+      (state) => state.metamask.rewardsActiveAccount?.account,
+    );
+    const rewardsSubscriptions = useAppSelector(
+      (state) => state.metamask.rewardsSubscriptions,
+    );
 
     const fetchCandidateSubscriptionId = useCallback(async () => {
       try {
         if (!isRewardsEnabled) {
-          dispatch(setCandidateSubscriptionId(null));
+          setCandidateSubscriptionId(null);
+          setCandidateSubscriptionIdError(false);
           return;
         }
-        if (isLoading.current) {
-          return;
-        }
-        isLoading.current = true;
-
         const candidateId = (await dispatch(
           getRewardsCandidateSubscriptionId(),
         )) as unknown as string | null;
-        dispatch(setCandidateSubscriptionId(candidateId));
+        setCandidateSubscriptionId(candidateId);
+        setCandidateSubscriptionIdError(false);
       } catch (error) {
         log.error(
           '[useCandidateSubscriptionId] Error fetching candidate subscription ID:',
           error,
         );
-        dispatch(setCandidateSubscriptionId('error'));
-      } finally {
-        isLoading.current = false;
+        setCandidateSubscriptionIdError(true);
       }
     }, [isRewardsEnabled, dispatch]);
 
     useEffect(() => {
-      if (candidateSubscriptionId === 'retry') {
+      if (
+        isUnlocked &&
+        rewardsActiveAccountCaipAccountId &&
+        (!candidateSubscriptionId ||
+          rewardsActiveAccountSubscriptionId !== candidateSubscriptionId)
+      ) {
         fetchCandidateSubscriptionId();
       }
-    }, [candidateSubscriptionId, fetchCandidateSubscriptionId]);
-
-    useEffect(() => {
-      if (isUnlocked) {
-        fetchCandidateSubscriptionId();
-      }
-    }, [fetchCandidateSubscriptionId, isUnlocked]);
-
+    }, [
+      isUnlocked,
+      fetchCandidateSubscriptionId,
+      rewardsActiveAccountCaipAccountId,
+      rewardsActiveAccountSubscriptionId,
+      candidateSubscriptionId,
+      rewardsSubscriptions,
+    ]);
     return {
+      candidateSubscriptionId,
+      candidateSubscriptionIdError,
       fetchCandidateSubscriptionId,
     };
   };

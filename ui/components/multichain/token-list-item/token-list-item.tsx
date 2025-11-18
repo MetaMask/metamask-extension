@@ -18,7 +18,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -125,7 +124,6 @@ export const TokenListItemComponent = ({
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
-  const [showTokenInsights, setShowTokenInsights] = useState(false);
   const history = useHistory();
 
   const getTokenTitle = () => {
@@ -378,21 +376,6 @@ export const TokenListItemComponent = ({
             )}
           </Box>
         </Box>
-
-        {isDestinationToken && (
-          <ButtonIcon
-            iconName={IconName.Info}
-            size={ButtonIconSize.Sm}
-            onClick={(e: React.MouseEvent) => {
-              e.stopPropagation();
-              e.preventDefault();
-              setShowTokenInsights(true);
-            }}
-            className="multichain-token-list-item__info-icon"
-            color={IconColor.iconAlternative}
-            ariaLabel={t('viewTokenDetails')}
-          />
-        )}
       </Box>
       {isEvm && showScamWarningModal ? (
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
@@ -424,20 +407,6 @@ export const TokenListItemComponent = ({
           </ModalContent>
         </Modal>
       ) : null}
-
-      {showTokenInsights && (
-        <TokenInsightsModal
-          isOpen={showTokenInsights}
-          onClose={() => setShowTokenInsights(false)}
-          token={{
-            address,
-            symbol: tokenSymbol || title,
-            name: title,
-            chainId,
-            iconUrl: tokenImage,
-          }}
-        />
-      )}
     </Box>
   );
 };

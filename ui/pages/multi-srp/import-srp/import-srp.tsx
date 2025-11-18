@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -32,8 +32,6 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
 export const ImportSrp = () => {
   const t = useI18nContext();
@@ -43,7 +41,6 @@ export const ImportSrp = () => {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
-  const trackEvent = useContext(MetaMetricsContext);
 
   // Providing duplicate SRP throws an error in metamask-controller, which results in a warning in the UI
   // We want to hide the warning when the component unmounts
@@ -67,28 +64,11 @@ export const ImportSrp = () => {
           return;
         }
       }
-
-      trackEvent({
-        event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
-        properties: {
-          status: 'continue_button_clicked',
-          location: 'Multi SRP Import',
-        },
-      });
-
       await dispatch(importMnemonicToVault(secretRecoveryPhrase));
-
       navigate(DEFAULT_ROUTE);
       dispatch(setShowNewSrpAddedToast(true));
     } catch (error) {
-      switch ((error as Error)?.message) {
-        case 'KeyringController - The account you are trying to import is a duplicate':
-          setSrpError(t('srpImportDuplicateAccountError'));
-          break;
-        default:
-          setSrpError(t('srpAlreadyImportedError'));
-          break;
-      }
+      setSrpError(t('srpAlreadyImportedError'));
     }
   }
 

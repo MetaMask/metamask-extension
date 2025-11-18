@@ -211,7 +211,6 @@ describe('Sentry errors', function () {
   async function mockSentryMigratorError(mockServer: Mockttp) {
     return await mockServer
       .forPost(sentryRegEx)
-      .withBodyIncluding('{"type":"event"')
       .withBodyIncluding(migrationError)
       .thenCallback(() => {
         return {

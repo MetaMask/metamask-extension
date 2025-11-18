@@ -15,6 +15,7 @@ import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
 import { useAppSelector } from '../../store/store';
+import Authenticated from '../../helpers/higher-order-components/authenticated';
 import AuthenticatedV5Compat from '../../helpers/higher-order-components/authenticated/authenticated-v5-compat';
 import Initialized from '../../helpers/higher-order-components/initialized';
 import InitializedV5Compat from '../../helpers/higher-order-components/initialized/initialized-v5-compat';
@@ -22,6 +23,7 @@ import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
+  AppHeader,
   AccountListMenu,
   NetworkListMenu,
   AccountDetails,
@@ -92,7 +94,9 @@ import {
   getPendingApprovals,
   getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import { getApprovalFlows } from '../../selectors/approvals';
+///: END:ONLY_INCLUDE_IF
 
 import {
   hideImportNftsModal,
@@ -116,10 +120,14 @@ import {
 } from '../../ducks/metamask/metamask';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
+///: END:ONLY_INCLUDE_IF
 import {
   ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -128,6 +136,7 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
+import { Box } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -158,13 +167,12 @@ import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
-import { RootLayout } from '../../layouts/root-layout';
-import { LegacyLayout } from '../../layouts/legacy-layout';
-import { RouteWithLayout } from '../../layouts/route-with-layout';
 import {
   getConnectingLabel,
+  hideAppHeader,
   isConfirmTransactionRoute,
   setTheme,
+  showAppHeader,
 } from './utils';
 
 // V5-compat navigate function type for bridging v5 routes with v5-compat components
@@ -496,7 +504,9 @@ export default function Routes() {
   );
   const pendingApprovals = useAppSelector(getPendingApprovals);
   const transactionsMetadata = useAppSelector(getUnapprovedTransactions);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   const approvalFlows = useAppSelector(getApprovalFlows);
+  ///: END:ONLY_INCLUDE_IF
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
@@ -614,11 +624,7 @@ export default function Routes() {
 
   useEffect(() => {
     const windowType = getEnvironmentType();
-    if (
-      showExtensionInFullSizeView &&
-      (windowType === ENVIRONMENT_TYPE_POPUP ||
-        windowType === ENVIRONMENT_TYPE_SIDEPANEL)
-    ) {
+    if (showExtensionInFullSizeView && windowType === ENVIRONMENT_TYPE_POPUP) {
       global.platform?.openExtensionInBrowser?.();
     }
   }, [showExtensionInFullSizeView]);
@@ -672,8 +678,9 @@ export default function Routes() {
       isUnlocked &&
       (pendingApprovals.length > 0 || approvalFlows?.length > 0)
     ) {
+      const firstApprovalId = pendingApprovals[0]?.id;
       navigateToConfirmation(
-        pendingApprovals[0]?.id,
+        firstApprovalId,
         pendingApprovals,
         Boolean(approvalFlows?.length),
         history,
@@ -682,7 +689,7 @@ export default function Routes() {
       );
     }
   }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
-
+  
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
 
@@ -690,20 +697,12 @@ export default function Routes() {
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
         <Switch>
-          <RouteWithLayout
-            path={ONBOARDING_ROUTE}
-            component={OnboardingFlow}
-            layout={LegacyLayout}
-          />
-          <RouteWithLayout
-            path={LOCK_ROUTE}
-            component={Lock}
-            exact
-            layout={LegacyLayout}
-          />
-          <RouteWithLayout
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
+          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
+          <Route path={LOCK_ROUTE} component={Lock} exact />
+          <Route
             path={UNLOCK_ROUTE}
-            layout={LegacyLayout}
             // v5 Route supports exact with render props, but TS types don't recognize it
             // Using spread operator with type assertion to bypass incorrect type definitions
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -714,27 +713,22 @@ export default function Routes() {
               includeNavigate: true,
               includeLocation: true,
             })}
-          </RouteWithLayout>
-          <RouteWithLayout path={DEEP_LINK_ROUTE} layout={LegacyLayout}>
+          </Route>
+          <Route path={DEEP_LINK_ROUTE}>
             {createV5CompatRoute(DeepLink, {
               includeLocation: true,
             })}
-          </RouteWithLayout>
+          </Route>
           <RestoreVaultComponent
             path={RESTORE_VAULT_ROUTE}
             component={RestoreVaultPage}
             exact
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={SMART_ACCOUNT_UPDATE}
             component={SmartAccountUpdate}
-            layout={LegacyLayout}
           />
-          <RouteWithLayout
-            path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
-            layout={RootLayout}
-          >
+          <Route path={`${REVEAL_SEED_ROUTE}/:keyringId?`}>
             {createV5CompatRoute<{ keyringId?: string }>(
               RevealSeedConfirmation,
               {
@@ -743,77 +737,37 @@ export default function Routes() {
                 includeParams: true,
               },
             )}
-          </RouteWithLayout>
-          <RouteWithLayout
-            authenticated
-            path={IMPORT_SRP_ROUTE}
-            component={ImportSrpPage}
-            layout={LegacyLayout}
-          />
-          <RouteWithLayout
-            authenticated
-            path={SETTINGS_ROUTE}
-            component={Settings}
-            layout={RootLayout}
-          />
-          <RouteWithLayout
-            authenticated
+          </Route>
+          <Authenticated path={IMPORT_SRP_ROUTE} component={ImportSrpPage} />
+          <Authenticated path={SETTINGS_ROUTE} component={Settings} />
+          <Authenticated
             path={NOTIFICATIONS_SETTINGS_ROUTE}
             component={NotificationsSettings}
-            layout={RootLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={`${NOTIFICATIONS_ROUTE}/:uuid`}
             component={NotificationDetails}
-            layout={RootLayout}
           />
-          <RouteWithLayout
-            authenticated
-            path={NOTIFICATIONS_ROUTE}
-            component={Notifications}
-            layout={RootLayout}
-          />
-          <RouteWithLayout
-            authenticated
-            path={SNAPS_ROUTE}
-            component={SnapList}
-            exact
-            layout={LegacyLayout}
-          />
-          <RouteWithLayout
-            authenticated
-            path={SNAPS_VIEW_ROUTE}
-            component={SnapView}
-            layout={LegacyLayout}
-          />
-          <RouteWithLayout
-            authenticated
-            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
-            layout={LegacyLayout}
-          >
+          <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
+          <Authenticated path={SNAPS_ROUTE} component={SnapList} exact />
+          <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
+          <Route path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}>
             {createV5CompatRoute<{ id?: string }>(ConfirmTransaction, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </RouteWithLayout>
-          <RouteWithLayout
-            authenticated
-            path={`${SEND_ROUTE}/:page?`}
-            component={SendPage}
-            layout={RootLayout}
-          />
-          <RouteWithLayout path={SWAPS_ROUTE} layout={LegacyLayout}>
+          </Route>
+          <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
+          <Route path={SWAPS_ROUTE}>
             {createV5CompatRoute(Swaps, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
             })}
-          </RouteWithLayout>
-          <RouteWithLayout
+          </Route>
+          <Route
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
-            layout={LegacyLayout}
             // v5 Route supports exact with render props, but TS types don't recognize it
             // Using spread operator with type assertion to bypass incorrect type definitions
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -829,76 +783,54 @@ export default function Routes() {
                 paramsAsProps: false, // Pass as params object
               },
             )}
-          </RouteWithLayout>
-          <RouteWithLayout path={CROSS_CHAIN_SWAP_ROUTE} layout={LegacyLayout}>
+          </Route>
+          <Route path={CROSS_CHAIN_SWAP_ROUTE}>
             {createV5CompatRoute(CrossChainSwap, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
             })}
-          </RouteWithLayout>
-          <RouteWithLayout
-            authenticated
-            path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
-            exact
-            layout={LegacyLayout}
-          >
+          </Route>
+          <Route path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}>
             {createV5CompatRoute(ConfirmAddSuggestedTokenPage, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
             })}
-          </RouteWithLayout>
-          <RouteWithLayout
-            authenticated
-            path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
-            exact
-            layout={LegacyLayout}
-          >
+          </Route>
+          <Route path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}>
             {createV5CompatRoute(ConfirmAddSuggestedNftPage, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
             })}
-          </RouteWithLayout>
-          <RouteWithLayout
-            authenticated
-            path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
-            layout={LegacyLayout}
-          >
+          </Route>
+          <Route path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}>
             {createV5CompatRoute<{ id?: string }>(ConfirmationPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </RouteWithLayout>
-          <RouteWithLayout
-            authenticated
+          </Route>
+          <Authenticated
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
-            layout={LegacyLayout}
           />
-          <RouteWithLayout path={`${CONNECT_ROUTE}/:id`} layout={RootLayout}>
+          <Route path={`${CONNECT_ROUTE}/:id`}>
             {createV5CompatRoute<{ id: string }>(PermissionsConnect, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
               includeMatch: true,
             })}
-          </RouteWithLayout>
-          <RouteWithLayout
-            path={`${ASSET_ROUTE}/image/:asset/:id`}
-            layout={RootLayout}
-          >
+          </Route>
+          <Route path={`${ASSET_ROUTE}/image/:asset/:id`}>
             {createV5CompatRoute<{ asset: string; id: string }>(NftFullImage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </RouteWithLayout>
-          <RouteWithLayout
-            path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
-            layout={RootLayout}
-          >
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId/:asset/:id`}>
             {createV5CompatRoute<{
               chainId: string;
               asset: string;
@@ -908,11 +840,8 @@ export default function Routes() {
               includeParams: true,
               paramsAsProps: false,
             })}
-          </RouteWithLayout>
-          <RouteWithLayout
-            path={`${ASSET_ROUTE}/:chainId/:asset/`}
-            layout={RootLayout}
-          >
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId/:asset/`}>
             {createV5CompatRoute<{
               chainId: string;
               asset: string;
@@ -921,18 +850,15 @@ export default function Routes() {
               includeParams: true,
               paramsAsProps: false,
             })}
-          </RouteWithLayout>
-          <RouteWithLayout path={`${ASSET_ROUTE}/:chainId`} layout={RootLayout}>
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId`}>
             {createV5CompatRoute<{ chainId: string }>(Asset, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </RouteWithLayout>
-          <RouteWithLayout
-            path={`${DEFI_ROUTE}/:chainId/:protocolId`}
-            layout={RootLayout}
-          >
+          </Route>
+          <Route path={`${DEFI_ROUTE}/:chainId/:protocolId`}>
             {createV5CompatRoute<{
               chainId: string;
               protocolId: string;
@@ -942,137 +868,88 @@ export default function Routes() {
               includeParams: true,
               paramsAsProps: false,
             })}
-          </RouteWithLayout>
-          <RouteWithLayout
-            authenticated
+          </Route>
+          <Authenticated
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
-            layout={LegacyLayout}
           />
-          <RouteWithLayout
-            authenticated
-            path={PERMISSIONS}
-            component={PermissionsPage}
-            exact
-            layout={RootLayout}
-          />
-          <RouteWithLayout
-            authenticated
+          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
+          <Authenticated
             path={GATOR_PERMISSIONS}
             component={GatorPermissionsPage}
             exact
-            layout={LegacyLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={TOKEN_TRANSFER_ROUTE}
             component={TokenTransferPage}
             exact
-            layout={LegacyLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
             component={ReviewGatorPermissionsPage}
             exact
-            layout={LegacyLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             component={MemoizedReviewPermissionsWrapper}
             exact
-            layout={LegacyLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={ACCOUNT_LIST_PAGE_ROUTE}
             component={AccountList}
             exact
-            layout={RootLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
             component={MultichainAccountAddressListPage}
             exact
-            layout={RootLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
             component={MultichainAccountPrivateKeyListPage}
             exact
-            layout={LegacyLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={ADD_WALLET_PAGE_ROUTE}
             component={AddWalletPage}
             exact
-            layout={RootLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
             component={MultichainAccountDetailsPage}
             exact
-            layout={RootLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
             component={SmartAccountPage}
             exact
-            layout={RootLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
             component={WalletDetailsPage}
             exact
-            layout={RootLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={WALLET_DETAILS_ROUTE}
             component={WalletDetails}
             exact
-            layout={LegacyLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
             component={MultichainAccountDetails}
             exact
-            layout={LegacyLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
             component={AddressQRCode}
             exact
-            layout={LegacyLayout}
           />
-          <RouteWithLayout
-            authenticated
+          <Authenticated
             path={NONEVM_BALANCE_CHECK_ROUTE}
             component={NonEvmBalanceCheck}
-            layout={LegacyLayout}
           />
-
-          <RouteWithLayout
-            authenticated
-            path={SHIELD_PLAN_ROUTE}
-            component={ShieldPlan}
-            layout={LegacyLayout}
-          />
-          <RouteWithLayout
-            authenticated
-            path={DEFAULT_ROUTE}
-            component={Home}
-            layout={RootLayout}
-          />
+          <Authenticated path={SHIELD_PLAN_ROUTE} component={ShieldPlan} />
+          <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
     );
@@ -1150,20 +1027,27 @@ export default function Routes() {
     />
   );
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   const isSidepanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <div
       className={classnames('app', {
         [`os-${os}`]: Boolean(os),
         [`browser-${browser}`]: Boolean(browser),
-        'group app--sidepanel': isSidepanel,
+        ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+        'app--sidepanel': isSidepanel,
+        ///: END:ONLY_INCLUDE_IF
       })}
       dir={textDirection}
     >
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />
+      {process.env.REMOVE_GNS
+        ? showAppHeader({ location }) && <AppHeader location={location} />
+        : !hideAppHeader({ location }) && <AppHeader location={location} />}
       {isConfirmTransactionRoute(location.pathname) && (
         <MultichainMetaFoxLogo />
       )}
@@ -1211,10 +1095,10 @@ export default function Routes() {
         />
       ) : null}
 
-      {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-
-      {renderRoutes()}
-
+      <Box className="main-container-wrapper">
+        {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
+        {renderRoutes()}
+      </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
       {React.createElement(
         ToastMaster as React.ComponentType<{

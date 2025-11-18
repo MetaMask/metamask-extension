@@ -81,10 +81,6 @@ describe('Account syncing - Unsupported Account types', function () {
           prepareEventsEmittedCounter,
           waitUntilSyncedAccountsNumberEquals,
         } = arrangeTestUtils(driver, userStorageMockttpController);
-
-        // Wait for initial account sync to complete before adding a new account
-        await waitUntilSyncedAccountsNumberEquals(1);
-
         const { waitUntilEventsEmittedNumberEquals } =
           prepareEventsEmittedCounter(
             UserStorageMockttpControllerEvents.PUT_SINGLE,
@@ -94,9 +90,8 @@ describe('Account syncing - Unsupported Account types', function () {
         await accountListPage.addMultichainAccount();
 
         // Wait for sync operation to complete
-        // Check event first to ensure sync was attempted, then verify state
-        await waitUntilEventsEmittedNumberEquals(1);
         await waitUntilSyncedAccountsNumberEquals(2);
+        await waitUntilEventsEmittedNumberEquals(1);
 
         // Verify both regular accounts are visible
         await accountListPage.checkAccountDisplayedInAccountList(

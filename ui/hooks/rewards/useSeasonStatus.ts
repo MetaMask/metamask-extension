@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import log from 'loglevel';
 import {
   getRewardsSeasonMetadata,
   getRewardsSeasonStatus,
@@ -9,21 +10,18 @@ import {
   SeasonDtoState,
   SeasonStatusState,
 } from '../../../shared/types/rewards';
-import { selectRewardsEnabled } from '../../ducks/rewards/selectors';
-import {
-  setSeasonStatus,
-  setSeasonStatusError,
-  setSeasonStatusLoading,
-} from '../../ducks/rewards';
-import { CandidateSubscriptionId } from '../../ducks/rewards/types';
-import { REWARDS_ERROR_MESSAGES } from '../../../shared/constants/rewards';
+import { useAppSelector } from '../../store/store';
+import { useRewardsEnabled } from './useRewardsEnabled';
 
 type UseSeasonStatusOptions = {
-  subscriptionId: CandidateSubscriptionId;
+  subscriptionId: string | null;
   onAuthorizationError: () => Promise<void>;
 };
 
 type UseSeasonStatusReturn = {
+  seasonStatus: SeasonStatusState | null;
+  seasonStatusError: string | null;
+  seasonStatusLoading: boolean;
   fetchSeasonStatus: () => Promise<void>;
 };
 
@@ -40,22 +38,24 @@ export const useSeasonStatus = ({
 }: UseSeasonStatusOptions): UseSeasonStatusReturn => {
   const dispatch = useDispatch();
   const isUnlocked = useSelector(getIsUnlocked);
-  const isRewardsEnabled = useSelector(selectRewardsEnabled);
-
+  const isRewardsEnabled = useRewardsEnabled();
+  const [seasonStatus, setSeasonStatus] = useState<SeasonStatusState | null>(
+    null,
+  );
+  const [seasonStatusError, setSeasonStatusError] = useState<string | null>(
+    null,
+  );
+  const [seasonStatusLoading, setSeasonStatusLoading] = useState(false);
+  const activeRewardsCaipAccountId = useAppSelector(
+    (state) => state.metamask.rewardsActiveAccount?.account,
+  );
   const isLoading = useRef(false);
 
   const fetchSeasonStatus = useCallback(async (): Promise<void> => {
     // Don't fetch if no subscriptionId or season metadata
-    if (
-      !subscriptionId ||
-      subscriptionId === 'pending' ||
-      subscriptionId === 'retry' ||
-      subscriptionId === 'error' ||
-      !isRewardsEnabled
-    ) {
-      dispatch(setSeasonStatus(null));
-      dispatch(setSeasonStatusError(null));
-      dispatch(setSeasonStatusLoading(false));
+    if (!subscriptionId || !isRewardsEnabled) {
+      setSeasonStatus(null);
+      setSeasonStatusLoading(false);
       return;
     }
 
@@ -65,7 +65,7 @@ export const useSeasonStatus = ({
 
     isLoading.current = true;
 
-    dispatch(setSeasonStatusLoading(true));
+    setSeasonStatusLoading(true);
 
     try {
       const currentSeasonMetadata = (await dispatch(
@@ -80,36 +80,40 @@ export const useSeasonStatus = ({
         getRewardsSeasonStatus(subscriptionId, currentSeasonMetadata.id),
       )) as unknown as SeasonStatusState | null;
 
-      dispatch(setSeasonStatus(statusData));
-      dispatch(setSeasonStatusError(null));
+      setSeasonStatus(statusData);
+      setSeasonStatusError(null);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
-      dispatch(setSeasonStatusError(errorMessage));
+      log.error('[useSeasonStatus] Error fetching season status:', error);
+      setSeasonStatusError(errorMessage);
 
-      // If authorization failed or season not found, trigger callback
+      // If authorization failed, trigger callback
       if (
-        (errorMessage.includes(REWARDS_ERROR_MESSAGES.AUTHORIZATION_FAILED) ||
-          errorMessage.includes(REWARDS_ERROR_MESSAGES.SEASON_NOT_FOUND)) &&
+        (errorMessage.includes('Authorization') ||
+          errorMessage.includes('Unauthorized')) &&
         onAuthorizationError
       ) {
         await onAuthorizationError();
-        dispatch(setSeasonStatus(null));
+        setSeasonStatus(null);
       }
     } finally {
+      setSeasonStatusLoading(false);
       isLoading.current = false;
-      dispatch(setSeasonStatusLoading(false));
     }
   }, [subscriptionId, onAuthorizationError, isRewardsEnabled, dispatch]);
 
   // Fetch season status when dependencies change
   useEffect(() => {
-    if (isUnlocked && subscriptionId) {
+    if (isUnlocked && activeRewardsCaipAccountId) {
       fetchSeasonStatus();
     }
-  }, [isUnlocked, fetchSeasonStatus, subscriptionId]);
+  }, [isUnlocked, fetchSeasonStatus, activeRewardsCaipAccountId]);
 
   return {
+    seasonStatus,
+    seasonStatusError,
+    seasonStatusLoading,
     fetchSeasonStatus,
   };
 };

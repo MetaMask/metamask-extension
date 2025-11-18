@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { INotification } from '@metamask/notification-services-controller/notification-services';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -15,11 +14,12 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
 import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
 import { NotificationsListItem } from './notifications-list-item';
+import type { Notification } from './notifications';
 import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
 
 export type NotificationsListProps = {
   activeTab: TAB_KEYS;
-  notifications: INotification[];
+  notifications: Notification[];
   isLoading: boolean;
   isError: boolean;
   notificationsCount: number;
@@ -39,7 +39,9 @@ export const enum TAB_KEYS {
   WEB3 = 'notifications-other-tab',
 }
 
-const LoadingContent = () => {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function LoadingContent() {
   return (
     <Box
       height={BlockSize.Full}
@@ -53,9 +55,11 @@ const LoadingContent = () => {
       <Preloader size={36} />
     </Box>
   );
-};
+}
 
-const EmptyContent = () => {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function EmptyContent() {
   const t = useI18nContext();
   return (
     <NotificationsPlaceholder
@@ -63,9 +67,11 @@ const EmptyContent = () => {
       text={t('notificationsPageNoNotificationsContent')}
     />
   );
-};
+}
 
-const ErrorContent = () => {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function ErrorContent() {
   const t = useI18nContext();
   return (
     <NotificationsPlaceholder
@@ -73,19 +79,23 @@ const ErrorContent = () => {
       text={t('notificationsPageErrorContent')}
     />
   );
-};
+}
 
-const NotificationItem = (props: { notification: INotification }) => {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function NotificationItem(props: { notification: Notification }) {
   const { notification } = props;
   return <NotificationsListItem notification={notification} />;
-};
+}
 
-const NotificationsListStates = ({
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function NotificationsListStates({
   activeTab,
   notifications,
   isLoading,
   isError,
-}: NotificationsListProps) => {
+}: NotificationsListProps) {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -116,9 +126,11 @@ const NotificationsListStates = ({
       ))}
     </>
   );
-};
+}
 
-export const NotificationsList = (props: NotificationsListProps) => {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function NotificationsList(props: NotificationsListProps) {
   return (
     <Box
       data-testid="notifications-list"
@@ -135,4 +147,4 @@ export const NotificationsList = (props: NotificationsListProps) => {
       ) : null}
     </Box>
   );
-};
+}

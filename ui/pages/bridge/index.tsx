@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom-v5-compat';
 import {
   UnifiedSwapBridgeEventName,
-  isNonEvmChainId,
+  // TODO: update this with all non-EVM chains when bitcoin added.
+  isSolanaChainId,
 } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
@@ -78,10 +79,10 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
-
-  // Only fetch gas estimates if the source chain is EVM (not Solana, Bitcoin, or Tron)
+  // Only fetch gas estimates if the source chain is EVM (not Solana)
   const shouldFetchGasEstimates =
-    fromChain?.chainId && !isNonEvmChainId(fromChain.chainId);
+    // TODO: update this with all non-EVM chains when bitcoin added.
+    fromChain?.chainId && !isSolanaChainId(fromChain.chainId);
 
   useEffect(() => {
     dispatch(

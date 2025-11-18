@@ -14,7 +14,6 @@ import historyReducer from './history/history';
 import rampsReducer from './ramps/ramps';
 import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
 import smartAccountsReducer from './smart-accounts/smart-accounts';
-import rewardsReducer from './rewards';
 
 export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,
@@ -33,5 +32,4 @@ export default combineReducers({
   gas: gasReducer,
   localeMessages: localeMessagesReducer,
   smartAccounts: smartAccountsReducer,
-  rewards: rewardsReducer,
 });

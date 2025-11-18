@@ -584,11 +584,10 @@ export default class MetamaskController extends EventEmitter {
       PermissionLogController: PermissionLogControllerInit,
       SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
-      OnboardingController: OnboardingControllerInit,
-      RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       NetworkController: NetworkControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
+      RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       GasFeeController: GasFeeControllerInit,
       UserOperationController: UserOperationControllerInit,
       ExecutionService: ExecutionServiceInit,
@@ -605,6 +604,7 @@ export default class MetamaskController extends EventEmitter {
       AccountActivityService: AccountActivityServiceInit,
       PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
+      OnboardingController: OnboardingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
       TransactionController: TransactionControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
@@ -2604,24 +2604,6 @@ export default class MetamaskController extends EventEmitter {
       estimateRewardsPoints: this.rewardsController.estimatePoints.bind(
         this.rewardsController,
       ),
-      validateRewardsReferralCode:
-        this.rewardsController.validateReferralCode.bind(
-          this.rewardsController,
-        ),
-      getRewardsGeoMetadata: this.rewardsController.getRewardsGeoMetadata.bind(
-        this.rewardsController,
-      ),
-      rewardsOptIn: this.rewardsController.optIn.bind(this.rewardsController),
-      rewardsIsOptInSupported: this.rewardsController.isOptInSupported.bind(
-        this.rewardsController,
-      ),
-      rewardsGetOptInStatus: this.rewardsController.getOptInStatus.bind(
-        this.rewardsController,
-      ),
-      rewardsLinkAccountsToSubscriptionCandidate:
-        this.rewardsController.linkAccountsToSubscriptionCandidate.bind(
-          this.rewardsController,
-        ),
 
       // claims
       getSubmitClaimConfig: this.claimsController.getSubmitClaimConfig.bind(
@@ -2956,10 +2938,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setDefaultSubscriptionPaymentOptions.bind(
           appStateController,
         ),
-      setShieldSubscriptionMetricsProps:
-        appStateController.setShieldSubscriptionMetricsProps.bind(
-          appStateController,
-        ),
 
       // EnsController
       tryReverseResolveAddress:
@@ -2992,10 +2970,6 @@ export default class MetamaskController extends EventEmitter {
         this.restoreSocialBackupAndGetSeedPhrase.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
       changePassword: this.changePassword.bind(this),
-      getIsSeedlessOnboardingUserAuthenticated:
-        this.seedlessOnboardingController.getIsUserAuthenticated.bind(
-          this.seedlessOnboardingController,
-        ),
 
       // GatorPermissionsController
       fetchAndUpdateGatorPermissions:
@@ -3319,9 +3293,6 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController,
       ),
       trackInsightSnapView: this.trackInsightSnapView.bind(this),
-      updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
-        metaMetricsController,
-      ),
 
       // MetaMetrics buffering for onboarding
       addEventBeforeMetricsOptIn:
@@ -4005,9 +3976,11 @@ export default class MetamaskController extends EventEmitter {
    * Unlock the vault with the latest global password.
    *
    * @param {string} password - latest global seedless password
-   * @returns {void}
+   * @returns {boolean} true if the sync was successful, false otherwise. Sync can fail if user is on a very old device
+   * and user has changed password more than 20 times since the last time they used the app on this device.
    */
   async syncPasswordAndUnlockWallet(password) {
+    let isPasswordSynced = false;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
     // check if the password is outdated
     let isPasswordOutdated = false;
@@ -4043,7 +4016,8 @@ export default class MetamaskController extends EventEmitter {
               });
           });
       }
-      return;
+      isPasswordSynced = true;
+      return isPasswordSynced;
     }
     const releaseLock = await this.seedlessOperationMutex.acquire();
 
@@ -4068,6 +4042,10 @@ export default class MetamaskController extends EventEmitter {
           globalPassword: password,
           maxKeyChainLength: 20,
         })
+        .then(() => {
+          // Case 1.
+          isPasswordSynced = true;
+        })
         .catch((err) => {
           log.error(`error while submitting global password: ${err.message}`);
           if (err instanceof RecoveryError) {
@@ -4082,9 +4060,27 @@ export default class MetamaskController extends EventEmitter {
               );
             }
             throw new JsonRpcError(-32603, err.message, err.data);
+          } else if (
+            err.message ===
+            SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded
+          ) {
+            isPasswordSynced = false;
+          } else {
+            throw err;
           }
-          throw err;
         });
+
+      // we are unable to recover the old pwd enc key as user is on a very old device.
+      // create a new vault and encrypt the new vault with the latest global password.
+      // also show a info popup to user.
+      if (!isPasswordSynced) {
+        // refresh the current auth tokens to get the latest auth tokens
+        await this.seedlessOnboardingController.refreshAuthTokens();
+        // create a new vault and encrypt the new vault with the latest global password
+        await this.restoreSocialBackupAndGetSeedPhrase(password);
+        // display info popup to user based on the password sync status
+        return isPasswordSynced;
+      }
 
       // re-encrypt the old vault data with the latest global password
       const keyringEncryptionKey =
@@ -4151,6 +4147,7 @@ export default class MetamaskController extends EventEmitter {
           data: { success: changePasswordSuccess },
         });
       }
+      return isPasswordSynced;
     } finally {
       releaseLock();
     }
@@ -4608,9 +4605,8 @@ export default class MetamaskController extends EventEmitter {
         const newHdEntropyIndex = this.getHDEntropyIndex();
 
         this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
+          event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
           properties: {
-            status: 'completed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: newHdEntropyIndex,
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -5219,15 +5215,6 @@ export default class MetamaskController extends EventEmitter {
       await this.getSnapKeyring(),
       this.accountTreeController.getSelectedAccountGroup(),
     );
-
-    if (this.isMultichainAccountsFeatureState2Enabled()) {
-      // This allows to create missing accounts if new account providers have been added.
-      // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
-      // for mobile, but for now, this easy fix should cover new provider accounts.
-      // NOTE: We run this asynchronously on purpose, see FIXME^.
-      // eslint-disable-next-line no-void
-      void this.multichainAccountService.alignWallets();
-    }
   }
 
   async _loginUser(password) {

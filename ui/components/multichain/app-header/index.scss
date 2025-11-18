@@ -10,10 +10,22 @@
   max-width: 100%;
   flex-flow: column nowrap;
   z-index: design-system.$header-z-index;
-  min-height: var(--header-height);
+  min-height: 68px;
 
   &__contents {
-    height: var(--header-height);
+    height: 68px;
+
+    @include design-system.screen-sm-min {
+      width: $width-screen-sm-min;
+    }
+
+    @include design-system.screen-md-min {
+      width: $width-screen-md-min;
+    }
+
+    @include design-system.screen-lg-min {
+      width: $width-screen-lg-min;
+    }
 
     &__network-picker {
       max-width: 250px;
@@ -36,7 +48,7 @@
 
   &__lock-contents {
     flex-flow: row nowrap;
-    height: var(--header-height);
+    height: 68px;
 
     @include design-system.screen-sm-max {
       height: $height-screen-sm-max;

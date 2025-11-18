@@ -1,331 +1,199 @@
 import { act } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
+import log from 'loglevel';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
-import {
-  SeasonDtoState,
-  SeasonStatusState,
-} from '../../../shared/types/rewards';
-import { REWARDS_ERROR_MESSAGES } from '../../../shared/constants/rewards';
+import { SeasonStatusState } from '../../../shared/types/rewards';
 import { useSeasonStatus } from './useSeasonStatus';
+import { useRewardsEnabled } from './useRewardsEnabled';
 
-// Mock store actions used by the hook
-jest.mock('../../store/actions', () => ({
-  getRewardsSeasonMetadata: jest.fn(() => async () => null),
-  getRewardsSeasonStatus: jest.fn(() => async () => null),
+// Mock dependencies
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn(),
 }));
 
-const { getRewardsSeasonMetadata, getRewardsSeasonStatus } = jest.requireMock(
-  '../../store/actions',
-) as {
-  getRewardsSeasonMetadata: jest.Mock;
-  getRewardsSeasonStatus: jest.Mock;
-};
+jest.mock('./useRewardsEnabled', () => ({
+  useRewardsEnabled: jest.fn(),
+}));
 
-// Common test data
-const mockSeasonMetadata: SeasonDtoState = {
-  id: 'season-1',
-  name: 'Season 1',
-  startDate: 1640995200000,
-  endDate: 1672531200000,
-  tiers: [
-    {
-      id: 'tier-1',
-      name: 'Bronze',
-      pointsNeeded: 0,
-      image: { lightModeUrl: 'bronze-light', darkModeUrl: 'bronze-dark' },
-      levelNumber: '1',
-      rewards: [],
-    },
-    {
-      id: 'tier-2',
-      name: 'Silver',
-      pointsNeeded: 100,
-      image: { lightModeUrl: 'silver-light', darkModeUrl: 'silver-dark' },
-      levelNumber: '2',
-      rewards: [],
-    },
-  ],
-  lastFetched: Date.now(),
-};
+jest.mock('loglevel', () => ({
+  error: jest.fn(),
+  setLevel: jest.fn(),
+}));
 
-const mockSeasonStatus: SeasonStatusState = {
-  season: mockSeasonMetadata,
-  balance: { total: 150, updatedAt: Date.now() },
-  tier: {
-    currentTier: mockSeasonMetadata.tiers[0],
-    nextTier: mockSeasonMetadata.tiers[1],
-    nextTierPointsNeeded: 0,
-  },
-  lastFetched: Date.now(),
-};
+// Suppress console.log during tests
+const originalConsoleLog = console.log;
+beforeAll(() => {
+  console.log = jest.fn();
+});
 
-// Helper to assert store is defined and returns a typed slice
-type RewardsSliceForTest = {
-  seasonStatus: SeasonStatusState | null;
-  seasonStatusError: string | null;
-  seasonStatusLoading: boolean;
-};
+afterAll(() => {
+  console.log = originalConsoleLog;
+});
 
-const getRewardsSlice = (store: unknown): RewardsSliceForTest => {
-  const typed = store as {
-    getState: () => { rewards: RewardsSliceForTest };
-  };
-  if (!typed || typeof typed.getState !== 'function') {
-    throw new Error('Store is undefined');
-  }
-  return typed.getState().rewards;
-};
+const mockSubmitRequestToBackground =
+  submitRequestToBackground as jest.MockedFunction<
+    typeof submitRequestToBackground
+  >;
+const mockUseRewardsEnabled = useRewardsEnabled as jest.MockedFunction<
+  typeof useRewardsEnabled
+>;
+const mockLogError = log.error as jest.MockedFunction<typeof log.error>;
+
+// Mock authorization error callback
+const mockOnAuthorizationError = jest.fn().mockResolvedValue(undefined);
 
 describe('useSeasonStatus', () => {
-  const mockOnAuthorizationError = jest.fn().mockResolvedValue(undefined);
+  const mockSeasonMetadata = {
+    id: 'season-1',
+    name: 'Season 1',
+    startDate: 1640995200000, // 2022-01-01
+    endDate: 1672531200000, // 2023-01-01
+    tiers: [
+      {
+        id: 'tier-1',
+        name: 'Bronze',
+        pointsNeeded: 0,
+        image: {
+          lightModeUrl: 'https://example.com/bronze-light.png',
+          darkModeUrl: 'https://example.com/bronze-dark.png',
+        },
+        levelNumber: '1',
+        rewards: [],
+      },
+      {
+        id: 'tier-2',
+        name: 'Silver',
+        pointsNeeded: 100,
+        image: {
+          lightModeUrl: 'https://example.com/silver-light.png',
+          darkModeUrl: 'https://example.com/silver-dark.png',
+        },
+        levelNumber: '2',
+        rewards: [],
+      },
+    ],
+    lastFetched: Date.now(),
+  };
+
+  const mockSeasonStatus: SeasonStatusState = {
+    season: {
+      id: 'season-1',
+      name: 'Season 1',
+      startDate: 1640995200000, // 2022-01-01
+      endDate: 1672531200000, // 2023-01-01
+      tiers: [
+        {
+          id: 'tier-1',
+          name: 'Bronze',
+          pointsNeeded: 0,
+          image: {
+            lightModeUrl: 'https://example.com/bronze-light.png',
+            darkModeUrl: 'https://example.com/bronze-dark.png',
+          },
+          levelNumber: '1',
+          rewards: [],
+        },
+        {
+          id: 'tier-2',
+          name: 'Silver',
+          pointsNeeded: 100,
+          image: {
+            lightModeUrl: 'https://example.com/silver-light.png',
+            darkModeUrl: 'https://example.com/silver-dark.png',
+          },
+          levelNumber: '2',
+          rewards: [],
+        },
+      ],
+      lastFetched: Date.now(),
+    },
+    balance: {
+      total: 50,
+      updatedAt: Date.now(),
+    },
+    tier: {
+      currentTier: {
+        id: 'tier-1',
+        name: 'Bronze',
+        pointsNeeded: 0,
+        image: {
+          lightModeUrl: 'https://example.com/bronze-light.png',
+          darkModeUrl: 'https://example.com/bronze-dark.png',
+        },
+        levelNumber: '1',
+        rewards: [],
+      },
+      nextTier: {
+        id: 'tier-2',
+        name: 'Silver',
+        pointsNeeded: 100,
+        image: {
+          lightModeUrl: 'https://example.com/silver-light.png',
+          darkModeUrl: 'https://example.com/silver-dark.png',
+        },
+        levelNumber: '2',
+        rewards: [],
+      },
+      nextTierPointsNeeded: 50,
+    },
+    lastFetched: Date.now(),
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseRewardsEnabled.mockReturnValue(false); // Start with rewards disabled to prevent auto-fetch
+    // Mock submitRequestToBackground to return metadata first, then status
+    mockSubmitRequestToBackground.mockImplementation((method) => {
+      if (method === 'getRewardsSeasonMetadata') {
+        return Promise.resolve(mockSeasonMetadata);
+      }
+      if (method === 'getRewardsSeasonStatus') {
+        return Promise.resolve(mockSeasonStatus);
+      }
+      return Promise.resolve(null);
+    });
+    mockOnAuthorizationError.mockClear();
   });
 
-  describe('Initial State', () => {
-    it('exposes fetch function and state starts unchanged', () => {
-      const { result, store } = renderHookWithProvider(
+  describe('when rewards are enabled and user is unlocked', () => {
+    it('should fetch season status with subscriptionId', async () => {
+      mockUseRewardsEnabled.mockReturnValue(true); // Enable rewards for this test
+
+      const { result } = renderHookWithProvider(
         () =>
           useSeasonStatus({
-            subscriptionId: 'sub-1',
-            onAuthorizationError: mockOnAuthorizationError,
-          }),
-        {
-          metamask: {
-            isUnlocked: false,
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: true },
-            rewardsActiveAccount: null,
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      expect(typeof result.current.fetchSeasonStatus).toBe('function');
-      const rewardsState = getRewardsSlice(store);
-      expect(rewardsState.seasonStatus).toBeNull();
-      expect(rewardsState.seasonStatusError).toBeNull();
-      expect(rewardsState.seasonStatusLoading).toBe(false);
-    });
-  });
-
-  describe('Conditional fetching via useEffect', () => {
-    it('does nothing when wallet is locked', async () => {
-      const { store } = renderHookWithProvider(
-        () =>
-          useSeasonStatus({
-            subscriptionId: 'sub-1',
-            onAuthorizationError: mockOnAuthorizationError,
-          }),
-        {
-          metamask: {
-            isUnlocked: false,
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: true },
-            rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-1',
-            },
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      await waitFor(() => {
-        expect(getRewardsSeasonMetadata).not.toHaveBeenCalled();
-        expect(getRewardsSeasonStatus).not.toHaveBeenCalled();
-        const rewardsState = getRewardsSlice(store);
-        expect(rewardsState.seasonStatus).toBeNull();
-        expect(rewardsState.seasonStatusLoading).toBe(false);
-        expect(rewardsState.seasonStatusError).toBeNull();
-      });
-    });
-
-    it('fetches when unlocked and rewards enabled with subscriptionId', async () => {
-      (getRewardsSeasonMetadata as jest.Mock).mockImplementation(
-        () => async () => mockSeasonMetadata,
-      );
-      (getRewardsSeasonStatus as jest.Mock).mockImplementation(
-        () => async () => mockSeasonStatus,
-      );
-
-      const { store } = renderHookWithProvider(
-        () =>
-          useSeasonStatus({
-            subscriptionId: 'sub-1',
+            subscriptionId: 'test-subscription-id',
             onAuthorizationError: mockOnAuthorizationError,
           }),
         {
           metamask: {
             isUnlocked: true,
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: true },
             rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-1',
+              account: 'test-account-id',
             },
-            rewardsSubscriptions: {},
           },
         },
       );
 
       await waitFor(() => {
-        expect(getRewardsSeasonMetadata).toHaveBeenCalled();
-        expect(getRewardsSeasonStatus).toHaveBeenCalled();
-        const rewardsState = getRewardsSlice(store);
-        expect(rewardsState.seasonStatusLoading).toBe(false);
-        expect(rewardsState.seasonStatus).toEqual(mockSeasonStatus);
-        expect(rewardsState.seasonStatusError).toBeNull();
-      });
-    });
-  });
-
-  describe('fetchSeasonStatus function', () => {
-    it('updates state when action resolves (without auto-effect)', async () => {
-      (getRewardsSeasonMetadata as jest.Mock).mockImplementation(
-        () => async () => mockSeasonMetadata,
-      );
-      (getRewardsSeasonStatus as jest.Mock).mockImplementation(
-        () => async () => mockSeasonStatus,
-      );
-
-      const { result, store } = renderHookWithProvider(
-        () =>
-          useSeasonStatus({
-            subscriptionId: 'sub-1',
-            onAuthorizationError: mockOnAuthorizationError,
-          }),
-        {
-          metamask: {
-            isUnlocked: false, // prevent useEffect auto-fetch
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: true },
-            rewardsActiveAccount: null, // prevent useEffect auto-fetch
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      await act(async () => {
-        await result.current.fetchSeasonStatus();
+        expect(result.current.seasonStatus).toEqual(mockSeasonStatus);
       });
 
-      const rewardsState = getRewardsSlice(store);
-      expect(rewardsState.seasonStatusLoading).toBe(false);
-      expect(rewardsState.seasonStatus).toEqual(mockSeasonStatus);
-      expect(rewardsState.seasonStatusError).toBeNull();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'getRewardsSeasonMetadata',
+        ['current'],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'getRewardsSeasonStatus',
+        ['test-subscription-id', 'season-1'],
+      );
+      expect(result.current.seasonStatusError).toBeNull();
+      expect(result.current.seasonStatusLoading).toBe(false);
     });
 
-    it('sets to null and does not call actions when rewards disabled', async () => {
-      const { result, store } = renderHookWithProvider(
-        () =>
-          useSeasonStatus({
-            subscriptionId: 'sub-1',
-            onAuthorizationError: mockOnAuthorizationError,
-          }),
-        {
-          metamask: {
-            isUnlocked: true,
-            useExternalServices: false, // disables rewards via selector
-            remoteFeatureFlags: { rewardsEnabled: true },
-            rewardsActiveAccount: {
-              account: 'eip155:1:0xabc',
-              subscriptionId: 'sub-1',
-            },
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      await act(async () => {
-        await result.current.fetchSeasonStatus();
-      });
-
-      expect(getRewardsSeasonMetadata).not.toHaveBeenCalled();
-      expect(getRewardsSeasonStatus).not.toHaveBeenCalled();
-      const rewardsState = getRewardsSlice(store);
-      expect(rewardsState.seasonStatus).toBeNull();
-      expect(rewardsState.seasonStatusLoading).toBe(false);
-      expect(rewardsState.seasonStatusError).toBeNull();
-    });
-
-    it('sets error when action throws (non-authorization)', async () => {
-      (getRewardsSeasonMetadata as jest.Mock).mockImplementation(
-        () => async () => mockSeasonMetadata,
-      );
-      const mockError = new Error('Network error');
-      (getRewardsSeasonStatus as jest.Mock).mockImplementation(
-        () => async () => {
-          throw mockError;
-        },
-      );
-
-      const { result, store } = renderHookWithProvider(
-        () =>
-          useSeasonStatus({
-            subscriptionId: 'sub-1',
-            onAuthorizationError: mockOnAuthorizationError,
-          }),
-        {
-          metamask: {
-            isUnlocked: false,
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: true },
-            rewardsActiveAccount: null,
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      await act(async () => {
-        await result.current.fetchSeasonStatus();
-      });
-
-      const rewardsState = getRewardsSlice(store);
-      expect(rewardsState.seasonStatus).toBeNull();
-      expect(rewardsState.seasonStatusError).toBe('Network error');
-      expect(rewardsState.seasonStatusLoading).toBe(false);
-      expect(mockOnAuthorizationError).not.toHaveBeenCalled();
-    });
-
-    const SUB_IDS = ['pending', 'retry', 'error'] as const;
-    type PendingState = (typeof SUB_IDS)[number];
-
-    SUB_IDS.forEach((subId: PendingState) => {
-      it(`sets to null and does not call actions when subscriptionId is ${subId}`, async () => {
-        const { result, store } = renderHookWithProvider(
-          () =>
-            useSeasonStatus({
-              subscriptionId: subId,
-              onAuthorizationError: mockOnAuthorizationError,
-            }),
-          {
-            metamask: {
-              isUnlocked: false, // prevent auto-fetch via useEffect
-              useExternalServices: true,
-              remoteFeatureFlags: { rewardsEnabled: true },
-              rewardsActiveAccount: null,
-              rewardsSubscriptions: {},
-            },
-          },
-        );
-
-        await act(async () => {
-          await result.current.fetchSeasonStatus();
-        });
-
-        expect(getRewardsSeasonMetadata).not.toHaveBeenCalled();
-        expect(getRewardsSeasonStatus).not.toHaveBeenCalled();
-        const rewardsState = getRewardsSlice(store);
-        expect(rewardsState.seasonStatus).toBeNull();
-        expect(rewardsState.seasonStatusLoading).toBe(false);
-        expect(rewardsState.seasonStatusError).toBeNull();
-      });
-    });
-
-    it('sets to null and does not call actions when subscriptionId is null', async () => {
-      const { result, store } = renderHookWithProvider(
+    it('should not fetch season status without subscriptionId', () => {
+      const { result } = renderHookWithProvider(
         () =>
           useSeasonStatus({
             subscriptionId: null,
@@ -333,313 +201,469 @@ describe('useSeasonStatus', () => {
           }),
         {
           metamask: {
-            isUnlocked: false, // prevent auto-fetch via useEffect
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: true },
-            rewardsActiveAccount: null,
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      await act(async () => {
-        await result.current.fetchSeasonStatus();
-      });
-
-      expect(getRewardsSeasonMetadata).not.toHaveBeenCalled();
-      expect(getRewardsSeasonStatus).not.toHaveBeenCalled();
-      const rewardsState = getRewardsSlice(store);
-      expect(rewardsState.seasonStatus).toBeNull();
-      expect(rewardsState.seasonStatusLoading).toBe(false);
-      expect(rewardsState.seasonStatusError).toBeNull();
-    });
-
-    it('calls onAuthorizationError and clears state on authorization failure', async () => {
-      (getRewardsSeasonMetadata as jest.Mock).mockImplementation(
-        () => async () => mockSeasonMetadata,
-      );
-      const mockError = new Error(REWARDS_ERROR_MESSAGES.AUTHORIZATION_FAILED);
-      (getRewardsSeasonStatus as jest.Mock).mockImplementation(
-        () => async () => {
-          throw mockError;
-        },
-      );
-
-      const { result, store } = renderHookWithProvider(
-        () =>
-          useSeasonStatus({
-            subscriptionId: 'sub-1',
-            onAuthorizationError: mockOnAuthorizationError,
-          }),
-        {
-          metamask: {
-            isUnlocked: false,
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: true },
-            rewardsActiveAccount: null,
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      await act(async () => {
-        await result.current.fetchSeasonStatus();
-      });
-
-      const rewardsState = getRewardsSlice(store);
-      expect(mockOnAuthorizationError).toHaveBeenCalled();
-      expect(rewardsState.seasonStatus).toBeNull();
-      expect(rewardsState.seasonStatusError).toBe(
-        REWARDS_ERROR_MESSAGES.AUTHORIZATION_FAILED,
-      );
-      expect(rewardsState.seasonStatusLoading).toBe(false);
-    });
-
-    it('calls onAuthorizationError and clears state on season not found error', async () => {
-      (getRewardsSeasonMetadata as jest.Mock).mockImplementation(
-        () => async () => mockSeasonMetadata,
-      );
-      const mockError = new Error(REWARDS_ERROR_MESSAGES.SEASON_NOT_FOUND);
-      (getRewardsSeasonStatus as jest.Mock).mockImplementation(
-        () => async () => {
-          throw mockError;
-        },
-      );
-
-      const { result, store } = renderHookWithProvider(
-        () =>
-          useSeasonStatus({
-            subscriptionId: 'sub-1',
-            onAuthorizationError: mockOnAuthorizationError,
-          }),
-        {
-          metamask: {
-            isUnlocked: false,
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: true },
-            rewardsActiveAccount: null,
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      await act(async () => {
-        await result.current.fetchSeasonStatus();
-      });
-
-      const rewardsState = getRewardsSlice(store);
-      expect(mockOnAuthorizationError).toHaveBeenCalled();
-      expect(rewardsState.seasonStatus).toBeNull();
-      expect(rewardsState.seasonStatusError).toBe(
-        REWARDS_ERROR_MESSAGES.SEASON_NOT_FOUND,
-      );
-      expect(rewardsState.seasonStatusLoading).toBe(false);
-    });
-
-    it('sets error when season metadata is null', async () => {
-      (getRewardsSeasonMetadata as jest.Mock).mockImplementation(
-        () => async () => null,
-      );
-
-      const { result, store } = renderHookWithProvider(
-        () =>
-          useSeasonStatus({
-            subscriptionId: 'sub-1',
-            onAuthorizationError: mockOnAuthorizationError,
-          }),
-        {
-          metamask: {
-            isUnlocked: false,
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: true },
-            rewardsActiveAccount: null,
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      await act(async () => {
-        await result.current.fetchSeasonStatus();
-      });
-
-      expect(getRewardsSeasonStatus).not.toHaveBeenCalled();
-      const rewardsState = getRewardsSlice(store);
-      expect(rewardsState.seasonStatus).toBeNull();
-      expect(rewardsState.seasonStatusError).toBe('No season metadata found');
-      expect(rewardsState.seasonStatusLoading).toBe(false);
-      expect(mockOnAuthorizationError).not.toHaveBeenCalled();
-    });
-
-    it('prevents concurrent fetches when already loading', async () => {
-      let resolveMetadata!: (value: SeasonDtoState | null) => void;
-      let resolveStatus!: (value: SeasonStatusState | null) => void;
-
-      (getRewardsSeasonMetadata as jest.Mock).mockImplementation(
-        () => async () =>
-          new Promise<SeasonDtoState | null>((resolve) => {
-            resolveMetadata = resolve;
-          }),
-      );
-
-      (getRewardsSeasonStatus as jest.Mock).mockImplementation(
-        () => async () =>
-          new Promise<SeasonStatusState | null>((resolve) => {
-            resolveStatus = resolve;
-          }),
-      );
-
-      const { result, store } = renderHookWithProvider(
-        () =>
-          useSeasonStatus({
-            subscriptionId: 'sub-1',
-            onAuthorizationError: mockOnAuthorizationError,
-          }),
-        {
-          metamask: {
-            isUnlocked: false,
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: true },
+            isUnlocked: true,
             rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-1',
+              account: 'test-account-id',
             },
-            rewardsSubscriptions: {},
           },
         },
       );
 
-      // Start first fetch
-      act(() => {
-        result.current.fetchSeasonStatus();
-      });
-
-      await waitFor(() => {
-        expect(getRewardsSlice(store).seasonStatusLoading).toBe(true);
-      });
-
-      // Try to start second fetch while first is still loading
-      act(() => {
-        result.current.fetchSeasonStatus();
-      });
-
-      // Verify only one metadata call was made
-      expect(getRewardsSeasonMetadata).toHaveBeenCalledTimes(1);
-
-      // Resolve the first fetch
-      act(() => {
-        resolveMetadata(mockSeasonMetadata);
-      });
-      await waitFor(() => {
-        expect(getRewardsSeasonStatus).toHaveBeenCalled();
-      });
-      act(() => {
-        resolveStatus(mockSeasonStatus);
-      });
-
-      await waitFor(() => {
-        const rewardsState = getRewardsSlice(store);
-        expect(rewardsState.seasonStatusLoading).toBe(false);
-        expect(rewardsState.seasonStatus).toEqual(mockSeasonStatus);
-      });
-
-      // Verify still only one metadata call
-      expect(getRewardsSeasonMetadata).toHaveBeenCalledTimes(1);
-      expect(getRewardsSeasonStatus).toHaveBeenCalledTimes(1);
-    });
-
-    it('sets loading=true during fetch then false after resolve', async () => {
-      let resolveMetadata!: (value: SeasonDtoState | null) => void;
-      let resolveStatus!: (value: SeasonStatusState | null) => void;
-
-      (getRewardsSeasonMetadata as jest.Mock).mockImplementation(
-        () => async () =>
-          new Promise<SeasonDtoState | null>((resolve) => {
-            resolveMetadata = resolve;
-          }),
-      );
-
-      (getRewardsSeasonStatus as jest.Mock).mockImplementation(
-        () => async () =>
-          new Promise<SeasonStatusState | null>((resolve) => {
-            resolveStatus = resolve;
-          }),
-      );
-
-      const { result, store } = renderHookWithProvider(
-        () =>
-          useSeasonStatus({
-            subscriptionId: 'sub-1',
-            onAuthorizationError: mockOnAuthorizationError,
-          }),
-        {
-          metamask: {
-            isUnlocked: false,
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: true },
-            // Provide active account so manual fetch can proceed
-            rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-1',
-            },
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      act(() => {
-        result.current.fetchSeasonStatus();
-      });
-
-      await waitFor(() => {
-        expect(getRewardsSlice(store).seasonStatusLoading).toBe(true);
-      });
-
-      act(() => {
-        resolveMetadata(mockSeasonMetadata);
-      });
-      // Wait until status fetch is dispatched after metadata resolves
-      await waitFor(() => {
-        expect(getRewardsSeasonStatus).toHaveBeenCalled();
-      });
-      act(() => {
-        resolveStatus(mockSeasonStatus);
-      });
-
-      await waitFor(() => {
-        const rewardsState = getRewardsSlice(store);
-        expect(rewardsState.seasonStatusLoading).toBe(false);
-        expect(rewardsState.seasonStatus).toEqual(mockSeasonStatus);
-        expect(rewardsState.seasonStatusError).toBeNull();
-      });
+      expect(result.current.seasonStatus).toBeNull();
+      expect(result.current.seasonStatusError).toBeNull();
+      expect(result.current.seasonStatusLoading).toBe(false);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
   });
 
-  describe('memoization', () => {
-    it('returns stable fetchSeasonStatus function across rerenders', () => {
-      const { result, rerender } = renderHookWithProvider(
+  describe('when rewards are disabled', () => {
+    it('should not fetch season status', () => {
+      mockUseRewardsEnabled.mockReturnValue(false);
+
+      const { result } = renderHookWithProvider(
         () =>
           useSeasonStatus({
-            subscriptionId: 'sub-1',
+            subscriptionId: 'test-subscription-id',
             onAuthorizationError: mockOnAuthorizationError,
           }),
         {
           metamask: {
             isUnlocked: true,
-            useExternalServices: true,
-            remoteFeatureFlags: { rewardsEnabled: true },
             rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-1',
+              account: 'test-account-id',
             },
-            rewardsSubscriptions: {},
           },
         },
       );
 
-      const firstFn = result.current.fetchSeasonStatus;
+      expect(result.current.seasonStatus).toBeNull();
+      expect(result.current.seasonStatusError).toBeNull();
+      expect(result.current.seasonStatusLoading).toBe(false);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when user is locked', () => {
+    it('should not fetch season status', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: false,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
+          },
+        },
+      );
+
+      expect(result.current.seasonStatus).toBeNull();
+      expect(result.current.seasonStatusError).toBeNull();
+      expect(result.current.seasonStatusLoading).toBe(false);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when activeRewardsCaipAccountId is missing', () => {
+    it('should not fetch season status when activeRewardsCaipAccountId is null', () => {
+      mockUseRewardsEnabled.mockReturnValue(true);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: null,
+          },
+        },
+      );
+
+      expect(result.current.seasonStatus).toBeNull();
+      expect(result.current.seasonStatusError).toBeNull();
+      expect(result.current.seasonStatusLoading).toBe(false);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('should not fetch season status when activeRewardsCaipAccountId is undefined', () => {
+      mockUseRewardsEnabled.mockReturnValue(true);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: undefined,
+          },
+        },
+      );
+
+      expect(result.current.seasonStatus).toBeNull();
+      expect(result.current.seasonStatusError).toBeNull();
+      expect(result.current.seasonStatusLoading).toBe(false);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('should not fetch season status when rewardsActiveAccount.account is null', () => {
+      mockUseRewardsEnabled.mockReturnValue(true);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: null,
+            },
+          },
+        },
+      );
+
+      expect(result.current.seasonStatus).toBeNull();
+      expect(result.current.seasonStatusError).toBeNull();
+      expect(result.current.seasonStatusLoading).toBe(false);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('error handling', () => {
+    it('should handle fetch errors', async () => {
+      mockUseRewardsEnabled.mockReturnValue(true); // Enable rewards for this test
+      const mockError = new Error('Failed to fetch season status');
+      mockSubmitRequestToBackground.mockRejectedValue(mockError);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
+          },
+        },
+      );
+
+      await waitFor(() => {
+        expect(result.current.seasonStatusLoading).toBe(false);
+      });
+
+      expect(result.current.seasonStatus).toBeNull();
+      expect(result.current.seasonStatusError).toBe(
+        'Failed to fetch season status',
+      );
+      expect(mockLogError).toHaveBeenCalledWith(
+        '[useSeasonStatus] Error fetching season status:',
+        mockError,
+      );
+    });
+
+    it('should call onAuthorizationError when authorization fails', async () => {
+      mockUseRewardsEnabled.mockReturnValue(true); // Enable rewards for this test
+      const mockAuthError = new Error('Authorization failed');
+      mockAuthError.name = 'AuthorizationFailedError';
+      mockSubmitRequestToBackground.mockRejectedValue(mockAuthError);
+
+      const localMockOnAuthorizationError = jest
+        .fn()
+        .mockResolvedValue(undefined);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: localMockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
+          },
+        },
+      );
+
+      await waitFor(() => {
+        expect(result.current.seasonStatusLoading).toBe(false);
+      });
+
+      expect(localMockOnAuthorizationError).toHaveBeenCalled();
+      expect(result.current.seasonStatus).toBeNull();
+      expect(result.current.seasonStatusError).toBe('Authorization failed');
+    });
+
+    it('should not call onAuthorizationError for non-authorization errors', async () => {
+      mockUseRewardsEnabled.mockReturnValue(true); // Enable rewards for this test
+      const mockError = new Error('Network error');
+      mockSubmitRequestToBackground.mockRejectedValue(mockError);
+
+      const localMockOnAuthorizationError = jest.fn();
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: localMockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
+          },
+        },
+      );
+
+      await waitFor(() => {
+        expect(result.current.seasonStatusLoading).toBe(false);
+      });
+
+      expect(localMockOnAuthorizationError).not.toHaveBeenCalled();
+      expect(result.current.seasonStatusError).toBe('Network error');
+    });
+  });
+
+  describe('loading states', () => {
+    it('should show loading state during fetch', async () => {
+      mockUseRewardsEnabled.mockReturnValue(true); // Enable rewards for this test
+      let resolveMetadataPromise!: (value: typeof mockSeasonMetadata) => void;
+      let resolveStatusPromise!: (value: SeasonStatusState) => void;
+      const metadataPromise = new Promise<typeof mockSeasonMetadata>(
+        (resolve) => {
+          resolveMetadataPromise = resolve;
+        },
+      );
+      const statusPromise = new Promise<SeasonStatusState>((resolve) => {
+        resolveStatusPromise = resolve;
+      });
+      mockSubmitRequestToBackground.mockImplementation((method) => {
+        if (method === 'getRewardsSeasonMetadata') {
+          return metadataPromise;
+        }
+        if (method === 'getRewardsSeasonStatus') {
+          return statusPromise;
+        }
+        return Promise.resolve(null);
+      });
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
+          },
+        },
+      );
+
+      expect(result.current.seasonStatusLoading).toBe(true);
+      expect(result.current.seasonStatus).toBeNull();
+      expect(result.current.seasonStatusError).toBeNull();
+
+      // Resolve metadata first
+      resolveMetadataPromise(mockSeasonMetadata);
+      // Then resolve status
+      resolveStatusPromise(mockSeasonStatus);
+
+      await waitFor(() => {
+        expect(result.current.seasonStatusLoading).toBe(false);
+      });
+
+      expect(result.current.seasonStatus).toEqual(mockSeasonStatus);
+    });
+  });
+
+  describe('fetchSeasonStatus function', () => {
+    it('should expose fetchSeasonStatus function', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
+          },
+        },
+      );
+
+      expect(typeof result.current.fetchSeasonStatus).toBe('function');
+    });
+
+    it('should allow manual refetch via fetchSeasonStatus', async () => {
+      mockUseRewardsEnabled.mockReturnValue(true); // Enable rewards for this test
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
+          },
+        },
+      );
+
+      // Wait for initial fetch
+      await waitFor(() => {
+        expect(result.current.seasonStatusLoading).toBe(false);
+      });
+
+      // Clear previous calls
+      mockSubmitRequestToBackground.mockClear();
+
+      // Manual refetch
+      await act(async () => {
+        await result.current.fetchSeasonStatus();
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'getRewardsSeasonMetadata',
+        ['current'],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'getRewardsSeasonStatus',
+        ['test-subscription-id', 'season-1'],
+      );
+    });
+
+    it('should not fetch if subscriptionId is not available during manual refetch', async () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: null,
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.fetchSeasonStatus();
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('dependency changes', () => {
+    it('should refetch when subscriptionId changes', async () => {
+      mockUseRewardsEnabled.mockReturnValue(true); // Enable rewards for this test
+
+      let subscriptionId = 'subscription-1';
+      const { result, rerender } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId,
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
+          },
+        },
+      );
+
+      // Wait for initial fetch
+      await waitFor(() => {
+        expect(result.current.seasonStatusLoading).toBe(false);
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'getRewardsSeasonMetadata',
+        ['current'],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'getRewardsSeasonStatus',
+        ['subscription-1', 'season-1'],
+      );
+
+      // Change subscriptionId and rerender
+      subscriptionId = 'subscription-2';
       rerender();
-      const secondFn = result.current.fetchSeasonStatus;
-      expect(firstFn).toBe(secondFn);
+
+      // Wait for refetch
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'getRewardsSeasonStatus',
+          ['subscription-2', 'season-1'],
+        );
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(4); // 2 calls for each fetch (metadata + status)
+    });
+  });
+
+  describe('memoization', () => {
+    it('should return stable fetchSeasonStatus function', () => {
+      const { result, rerender } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: 'test-subscription-id',
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            rewardsActiveAccount: {
+              account: 'test-account-id',
+            },
+          },
+        },
+      );
+
+      const firstFetchFunction = result.current.fetchSeasonStatus;
+
+      rerender();
+
+      const secondFetchFunction = result.current.fetchSeasonStatus;
+
+      expect(firstFetchFunction).toBe(secondFetchFunction);
     });
   });
 });

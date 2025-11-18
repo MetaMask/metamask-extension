@@ -130,18 +130,6 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   const handleOptionClick = (option: WalletOption) => {
     onClose?.();
 
-    if (option.id === 'import-wallet') {
-      // Track the event for the selected option.
-      trackEvent({
-        category: MetaMetricsEventCategory.Navigation,
-        event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
-        properties: {
-          status: 'started',
-          location: 'Add Wallet Modal',
-        },
-      });
-    }
-
     // Hardware wallet connections require expanded view
     if (option.id === 'hardware-wallet') {
       if (

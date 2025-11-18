@@ -10,15 +10,6 @@
   .shield-plan-page__plan {
     border: 1px solid transparent;
     position: relative;
-    padding-top: 16px;
-    padding-bottom: 16px;
-    column-gap: 16px;
-
-    @include design-system.screen-sm-max {
-      padding-top: 8px;
-      padding-bottom: 8px;
-      column-gap: 8px;
-    }
 
     .shield-plan-page__radio {
       display: flex;
@@ -40,12 +31,6 @@
       top: -8px;
       height: 20px;
       background-color: var(--color-primary-default);
-    }
-
-    .shield-plan-page__plan-price {
-      @include design-system.screen-sm-max {
-        font-size: 16px;
-      }
     }
   }
 

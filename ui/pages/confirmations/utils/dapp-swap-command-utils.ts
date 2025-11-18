@@ -8,9 +8,7 @@ import { decodeCommandV3Path } from '../../../../shared/modules/decoding';
 
 enum SwapCommands {
   V3_SWAP_EXACT_IN = '00',
-  V3_SWAP_EXACT_OUT = '01',
   V2_SWAP_EXACT_IN = '08',
-  V2_SWAP_EXACT_OUT = '09',
   V4_SWAP = '10',
 }
 
@@ -25,8 +23,6 @@ type Commands = SwapCommands | NonSwapCommands;
 enum V4Actions {
   SWAP_EXACT_IN_SINGLE = '06',
   SWAP_EXACT_IN = '07',
-  SWAP_EXACT_OUT_SINGLE = '08',
-  SWAP_EXACT_OUT = '09',
 }
 
 const BASE_COMMANDS_ABI_DEFINITION: Partial<
@@ -149,16 +145,8 @@ type DAPP_SWAP_COMMANDS_PARSER_TYPE = {
 };
 
 const DAPP_SWAP_COMMANDS_PARSER: DAPP_SWAP_COMMANDS_PARSER_TYPE[] = [
-  { value: '00', handler: handleV3CommandSwapExactIn },
-  {
-    value: '01',
-    handler: handleCommandExactOut as DAPP_SWAP_COMMANDS_PARSER_TYPE['handler'],
-  },
-  {
-    value: '09',
-    handler: handleCommandExactOut as DAPP_SWAP_COMMANDS_PARSER_TYPE['handler'],
-  },
-  { value: '10', handler: handleV4CommandSwap },
+  { value: '00', handler: handleV3SwapExactInCommand },
+  { value: '10', handler: handleV4SwapCommand },
   { value: '04', handler: handleCommandSweep },
   { value: '0b', handler: handleCommandWrapETH },
   { value: '0c', handler: handleCommandUnwrapETH },
@@ -167,15 +155,61 @@ const DAPP_SWAP_COMMANDS_PARSER: DAPP_SWAP_COMMANDS_PARSER_TYPE[] = [
 const V4_SWAP_ACTIONS_PARSER: DAPP_SWAP_COMMANDS_PARSER_TYPE[] = [
   { value: '06', handler: handleV4CommandSwapExactInSingle },
   { value: '07', handler: handleV4CommandSwapExactIn },
-  {
-    value: '08',
-    handler: handleCommandExactOut as DAPP_SWAP_COMMANDS_PARSER_TYPE['handler'],
-  },
-  {
-    value: '09',
-    handler: handleCommandExactOut as DAPP_SWAP_COMMANDS_PARSER_TYPE['handler'],
-  },
 ];
+
+function handleCommandSweep(
+  data: string,
+  decodedResult: COMMAND_VALUES_RESULT,
+  _chainId: Hex,
+) {
+  const { quotesInput } = decodedResult;
+  const result = decodeCommandData(
+    NonSwapCommands.SWEEP,
+    data,
+    BASE_COMMANDS_ABI_DEFINITION,
+  );
+
+  return {
+    amountMin: result[2].toHexString(),
+    quotesInput: quotesInput as GenericQuoteRequest,
+  };
+}
+
+function handleCommandWrapETH(
+  _data: string,
+  decodedResult: COMMAND_VALUES_RESULT,
+  chainId: Hex,
+) {
+  const { amountMin, quotesInput } = decodedResult;
+  return {
+    amountMin,
+    quotesInput: {
+      ...(quotesInput ?? {}),
+      srcTokenAddress: getNativeTokenAddress(chainId),
+    } as GenericQuoteRequest,
+  };
+}
+
+function handleCommandUnwrapETH(
+  data: string,
+  decodedResult: COMMAND_VALUES_RESULT,
+  chainId: Hex,
+) {
+  const { quotesInput } = decodedResult;
+  const result = decodeCommandData(
+    NonSwapCommands.UNWRAP_WETH,
+    data,
+    BASE_COMMANDS_ABI_DEFINITION,
+  );
+
+  return {
+    amountMin: result[1].toHexString(),
+    quotesInput: {
+      ...(quotesInput ?? {}),
+      destTokenAddress: getNativeTokenAddress(chainId),
+    } as GenericQuoteRequest,
+  };
+}
 
 const decodeV4SwapCommandData = (data: string) => {
   const abiDecoder = Interface.getAbiCoder();
@@ -215,7 +249,7 @@ function getCommandData(
   return inputs[commandIndex];
 }
 
-function handleV4CommandSwap(
+function handleV4SwapCommand(
   data: string,
   decodedResult: COMMAND_VALUES_RESULT,
   chainId: Hex,
@@ -341,7 +375,7 @@ function handleV4CommandSwapExactInSingle(
   };
 }
 
-function handleV3CommandSwapExactIn(
+function handleV3SwapExactInCommand(
   data: string,
   decodedResult: COMMAND_VALUES_RESULT,
   _chainId: Hex,
@@ -371,64 +405,6 @@ function handleV3CommandSwapExactIn(
   };
 }
 
-function handleCommandSweep(
-  data: string,
-  decodedResult: COMMAND_VALUES_RESULT,
-  _chainId: Hex,
-) {
-  const { quotesInput } = decodedResult;
-  const result = decodeCommandData(
-    NonSwapCommands.SWEEP,
-    data,
-    BASE_COMMANDS_ABI_DEFINITION,
-  );
-
-  return {
-    amountMin: result[2].toHexString(),
-    quotesInput: quotesInput as GenericQuoteRequest,
-  };
-}
-
-function handleCommandWrapETH(
-  _data: string,
-  decodedResult: COMMAND_VALUES_RESULT,
-  chainId: Hex,
-) {
-  const { amountMin, quotesInput } = decodedResult;
-  return {
-    amountMin,
-    quotesInput: {
-      ...(quotesInput ?? {}),
-      srcTokenAddress: getNativeTokenAddress(chainId),
-    } as GenericQuoteRequest,
-  };
-}
-
-function handleCommandUnwrapETH(
-  data: string,
-  decodedResult: COMMAND_VALUES_RESULT,
-  chainId: Hex,
-) {
-  const { quotesInput } = decodedResult;
-  const result = decodeCommandData(
-    NonSwapCommands.UNWRAP_WETH,
-    data,
-    BASE_COMMANDS_ABI_DEFINITION,
-  );
-
-  return {
-    amountMin: result[1].toHexString(),
-    quotesInput: {
-      ...(quotesInput ?? {}),
-      destTokenAddress: getNativeTokenAddress(chainId),
-    } as GenericQuoteRequest,
-  };
-}
-
-function handleCommandExactOut(_1: string, _2: COMMAND_VALUES_RESULT, _3: Hex) {
-  throw new Error('Exact-out commands are not supported yet');
-}
-
 function getGenericValues(
   commandBytes: string[],
   inputs: string[],
@@ -454,9 +430,10 @@ function getGenericValues(
   );
 
   if (swapCommands.length !== 1) {
-    throw new Error(`Found swap commands ${swapCommands.length} instead of 1`);
+    throw new Error(
+      `Found exact-in swap commands ${swapCommands.length} instead of 1`,
+    );
   }
-
   let nonSwapCommands: string[] = [];
   if (nonSwapCommandsDefinition) {
     nonSwapCommands = commandBytes.filter((commandByte) =>

@@ -63,20 +63,6 @@ export const NotificationDetailCopyButton: FC<
   const onClick = () => {
     typeof handleCopy === 'function' && handleCopy(text);
     if (notification) {
-      const otherNotificationProperties = () => {
-        if (
-          'notification_type' in notification &&
-          notification.notification_type === 'on-chain' &&
-          notification.payload?.chain_id
-        ) {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          return { chain_id: notification.payload.chain_id };
-        }
-
-        return undefined;
-      };
-
       trackEvent({
         category: MetaMetricsEventCategory.NotificationInteraction,
         event: MetaMetricsEventName.NotificationDetailClicked,
@@ -87,7 +73,11 @@ export const NotificationDetailCopyButton: FC<
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           notification_type: notification.type,
-          ...otherNotificationProperties(),
+          ...('chain_id' in notification && {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: notification.chain_id,
+          }),
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           clicked_item: 'tx_id',

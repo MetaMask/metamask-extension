@@ -52,8 +52,8 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
-import { RewardsPointsBalance } from '../rewards/RewardsPointsBalance';
-import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
+import { useRewardsEnabled } from '../../../hooks/rewards';
+import { RewardsPointsBalance } from '../rewards';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import {
@@ -222,7 +222,7 @@ export const CoinOverview = ({
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
-  const isRewardsEnabled = useSelector(selectRewardsEnabled);
+  const isRewardsEnabled = useRewardsEnabled();
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));

@@ -1369,7 +1369,6 @@ function determineTransactionTypeAndContractInteraction(
     TransactionType.deployContract,
     TransactionType.gasPayment,
     TransactionType.batch,
-    TransactionType.shieldSubscriptionApprove,
   ];
 
   if (directTypeMappings.includes(type)) {

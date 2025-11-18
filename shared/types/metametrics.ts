@@ -17,7 +17,6 @@ import type { HardwareKeyringType } from '../constants/hardware-wallets';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import type { SnapAndHardwareMessenger } from '../../app/scripts/lib/snap-keyring/metrics';
-import { EntryModalSourceEnum } from '../constants/subscriptions';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -93,13 +92,4 @@ export type DefaultSubscriptionPaymentOptions = {
   defaultPaymentType: PaymentType;
   defaultPaymentCurrency: string;
   defaultPaymentChain?: string;
-};
-
-/**
- * Some properties for the Shield subscription metrics that are not accessible in the background, hence provided from the UI.
- */
-export type ShieldSubscriptionMetricsPropsFromUI = {
-  userBalanceInUSD: number;
-  source: EntryModalSourceEnum;
-  marketingUtmId?: string;
 };

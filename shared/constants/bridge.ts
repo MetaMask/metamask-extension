@@ -12,9 +12,6 @@ const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
   MultichainNetworks.BITCOIN,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  MultichainNetworks.TRON,
-  ///: END:ONLY_INCLUDE_IF
 ];
 
 const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
@@ -38,9 +35,6 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.BASE,
   MultichainNetworks.SOLANA,
   MultichainNetworks.BITCOIN,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  MultichainNetworks.TRON,
-  ///: END:ONLY_INCLUDE_IF
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP =
@@ -98,9 +92,6 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [MultichainNetworks.BITCOIN]: 'Bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
   [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  [MultichainNetworks.TRON]: 'Tron',
   ///: END:ONLY_INCLUDE_IF
 };
 
@@ -201,13 +192,4 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     decimals: 6,
     name: 'USD Coin',
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  [MultichainNetworks.TRON]: {
-    // TRX -> USDT on Tron
-    address: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-    symbol: 'USDT',
-    decimals: 6,
-    name: 'Tether USD',
-  },
-  ///: END:ONLY_INCLUDE_IF
 } as const;

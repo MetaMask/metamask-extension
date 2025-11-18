@@ -6,7 +6,6 @@ import {
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SnapId } from '@metamask/snaps-sdk';
-import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { getRootMessenger } from '../messenger';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import {
@@ -44,7 +43,6 @@ const mockLocale = 'en';
 const mockPreferencesControllerGetState = jest.fn();
 const mockSnapControllerGet = jest.fn();
 const mockSnapControllerHandleRequest = jest.fn();
-const mockRemoteFeatureFlagsGetStateRequest = jest.fn();
 
 const mockFlowId = '123';
 const address = '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA';
@@ -116,7 +114,6 @@ const createControllerMessenger = ({
       'PreferencesController:getState',
       'SnapController:get',
       'SnapController:handleRequest',
-      'RemoteFeatureFlagController:getState',
     ],
   });
 
@@ -174,9 +171,6 @@ const createControllerMessenger = ({
       case 'SnapController:handleRequest':
         return mockSnapControllerHandleRequest(params);
 
-      case 'RemoteFeatureFlagController:getState':
-        return mockRemoteFeatureFlagsGetStateRequest(params);
-
       default:
         throw new Error(
           `MOCK_FAIL - unsupported messenger call: ${actionType}`,
@@ -196,11 +190,6 @@ const createSnapKeyringBuilder = ({
 } = {}) => {
   jest.mocked(isSnapPreinstalled).mockReturnValue(snapPreinstalled);
   jest.mocked(getSnapName).mockReturnValue(snapName);
-
-  // Needed now to know if state 2 is enabled or not.
-  mockRemoteFeatureFlagsGetStateRequest.mockReturnValue({
-    remoteFeatureFlags: {},
-  } as RemoteFeatureFlagControllerState);
 
   return snapKeyringBuilder(createControllerMessenger(), {
     persistKeyringHelper: mockPersistKeyringHelper,

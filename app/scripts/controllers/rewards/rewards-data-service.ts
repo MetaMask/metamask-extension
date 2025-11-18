@@ -4,22 +4,19 @@
 import log from 'loglevel';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import ExtensionPlatform from '../../platforms/extension';
-import {
-  REWARDS_API_URL,
-  REWARDS_ERROR_MESSAGES,
-} from '../../../../shared/constants/rewards';
+import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 import type { RewardsDataServiceMessenger } from '../../controller-init/messengers/reward-data-service-messenger';
 import { FALLBACK_LOCALE } from '../../../../shared/modules/i18n';
 import {
   EstimatePointsDto,
   EstimatedPointsDto,
-  OptInStatusDto,
-  OptInStatusInputDto,
 } from '../../../../shared/types/rewards';
 import type {
   LoginResponseDto,
   MobileLoginDto,
   SubscriptionDto,
+  OptInStatusInputDto,
+  OptInStatusDto,
   MobileOptinDto,
   SeasonStateDto,
   SeasonMetadataDto,
@@ -43,9 +40,7 @@ export class InvalidTimestampError extends Error {
  * Custom error for authorization failures
  */
 export class AuthorizationFailedError extends Error {
-  static readonly defaultMessage = REWARDS_ERROR_MESSAGES.AUTHORIZATION_FAILED;
-
-  constructor(message: string = AuthorizationFailedError.defaultMessage) {
+  constructor(message: string) {
     super(message);
     this.name = 'AuthorizationFailedError';
   }
@@ -55,9 +50,7 @@ export class AuthorizationFailedError extends Error {
  * Custom error for season not found
  */
 export class SeasonNotFoundError extends Error {
-  static readonly defaultMessage = REWARDS_ERROR_MESSAGES.SEASON_NOT_FOUND;
-
-  constructor(message: string = SeasonNotFoundError.defaultMessage) {
+  constructor(message: string) {
     super(message);
     this.name = 'SeasonNotFoundError';
   }
@@ -168,7 +161,7 @@ export class RewardsDataService {
     ) {
       return REWARDS_API_URL.PRD;
     }
-    return REWARDS_API_URL.PRD;
+    return REWARDS_API_URL.UAT;
   }
 
   /**
@@ -409,11 +402,15 @@ export class RewardsDataService {
     if (!response.ok) {
       const errorData = await response.json();
       if (errorData?.message?.includes('Rewards authorization failed')) {
-        throw new AuthorizationFailedError();
+        throw new AuthorizationFailedError(
+          'Rewards authorization failed. Please login and try again.',
+        );
       }
 
       if (errorData?.message?.includes('Season not found')) {
-        throw new SeasonNotFoundError();
+        throw new SeasonNotFoundError(
+          'Season not found. Please try again with a different season.',
+        );
       }
 
       throw new Error(`Get season state failed: ${response.status}`);

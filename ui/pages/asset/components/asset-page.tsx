@@ -1,11 +1,6 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import {
-  BtcMethod,
-  EthMethod,
-  SolMethod,
-  TrxAccountType,
-} from '@metamask/keyring-api';
+import { BtcMethod, EthMethod, SolMethod } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type CaipAssetType,
@@ -79,7 +74,6 @@ import {
   getMultichainIsTestnet,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,
-  getMultichainIsTron,
 } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
@@ -88,7 +82,6 @@ import { Asset } from '../types/asset';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
-import { TronDailyResources } from './tron-daily-resources';
 
 // TODO BIP44 Refactor: This page needs a significant refactor after BIP44 is enabled to remove confusing branching logic
 // A page representing a native or token asset
@@ -134,8 +127,7 @@ const AssetPage = ({
     selectedAccount.methods.includes(EthMethod.SignTransaction) ||
     selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
     selectedAccount.methods.includes(SolMethod.SignTransaction) ||
-    selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
-    selectedAccount.type === TrxAccountType.Eoa;
+    selectedAccount.methods.includes(BtcMethod.SignPsbt);
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
@@ -316,10 +308,6 @@ const AssetPage = ({
   );
   const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
 
-  // Check if we should show Tron resources
-  const isTron = useMultichainSelector(getMultichainIsTron, selectedAccount);
-  const showTronResources = isTron && type === AssetType.native;
-
   return (
     <Box
       marginLeft="auto"
@@ -388,18 +376,6 @@ const AssetPage = ({
         flexDirection={FlexDirection.Column}
         paddingTop={3}
       >
-        {showTronResources && (
-          <Box>
-            <TronDailyResources account={selectedAccount} chainId={chainId} />
-            <Box
-              marginTop={2}
-              marginBottom={2}
-              borderColor={BorderColor.borderMuted}
-              marginInline={4}
-              style={{ height: '1px', borderBottomWidth: 0 }}
-            />
-          </Box>
-        )}
         <Text
           variant={TextVariant.headingSm}
           paddingBottom={1}
@@ -412,6 +388,7 @@ const AssetPage = ({
           <TokenCell
             key={`${symbol}-${address}`}
             token={tokenWithFiatAmount as TokenWithFiatAmount}
+            disableHover={true}
             safeChains={safeChains}
           />
         )}

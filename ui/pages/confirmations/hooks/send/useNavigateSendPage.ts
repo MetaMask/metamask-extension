@@ -1,10 +1,7 @@
 import { useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom-v5-compat';
 
-import {
-  SEND_ROUTE,
-  PREVIOUS_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { SendPages } from '../../constants/send';
 
 export const useNavigateSendPage = () => {
@@ -18,7 +15,7 @@ export const useNavigateSendPage = () => {
   }, [searchParams, navigate]);
 
   const goToPreviousPage = useCallback(() => {
-    navigate(PREVIOUS_ROUTE);
+    navigate(-1);
   }, [navigate]);
 
   return { goToAmountRecipientPage, goToPreviousPage };

@@ -32,6 +32,7 @@ import {
 export type TokenCellProps = {
   token: TokenWithFiatAmount;
   privacyMode?: boolean;
+  disableHover?: boolean;
   onClick?: () => void;
   fixCurrencyToUSD?: boolean;
   safeChains?: SafeChain[];
@@ -43,6 +44,7 @@ export default function TokenCell({
   token,
   privacyMode = false,
   onClick,
+  disableHover = false,
   fixCurrencyToUSD = false,
   safeChains,
 }: TokenCellProps) {
@@ -81,6 +83,7 @@ export default function TokenCell({
     <>
       <GenericAssetCellLayout
         onClick={showScamWarningModal ? undefined : onClick}
+        disableHover={disableHover}
         badge={<AssetCellBadge {...displayToken} />}
         headerLeftDisplay={<TokenCellTitle token={displayToken} />}
         headerRightDisplay={

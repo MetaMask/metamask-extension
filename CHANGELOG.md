@@ -7,72 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [13.9.0]
-
-### Added
-
-- Added feature flag support to temporarily hide Monad (and other networks) from the “Add Popular Network” list. (#37532)
-- Update bitcoin snap to 1.4.4 (#37537)
-- Added claims list and view page (#35800)
-- Added `Reset Wallet` feature for social-login unlock to reset the wallet if user encounters unrecoverable errors. (#36223)
-- Enabled revocation flow of advance permissions (#37209)
-- Updated the unlock wallet flow with animation changes. (#37412)
-- Introduce burn/null recipient address blocker alert (#37531)
-- Points estimate for swaps/bridges (#37529)
-- Updates wallet ready page (#36839)
-- Adds MONAD network with bridge & swap support (#37283)
-- Changed how DeFi positions are fetch in the client to reduce amount of calls (#37215)
-- Implemented the Rive animation setup using the `@rive-app/react-canvas` package and updated the welcome page by (#36113)
-  integrating the Rive animation and enhancing the UI
-- Fix subscription crypto approval screen loading flicker (#37409)
-- Added network and account selector to claims form (#37434)
-- Add back button to Settings inner pages (#37486)
-- Show rewards balance (#37361)
-- Added support for trust signals on spender addresses within Confirmations. (#36431)
-- Changed order of assets when their fiat balances are the same (#37457)
-- Register subscription and redirect to shield settings after shield crypto approval confirmation (#36748)
-- Handle shield deep link link.metamask.io/shield (#37446)
-- Handle claims submit backend errors (#37391)
-- UI and functionality improvement for file uploader (#37353)
-- Enables the bitcoin swaps features (#37587)
-- Move "Discover" button to global menu (#37551)
-- Upgrade @metamask-permissions-snap from `0.4.1` to `0.5.0` an @metamask/permissions-kernel-snap from `0.4.0` to `0.5.0` (#37534)
-
-### Fixed
-
-- Fixes a bug that makes users see duplicate tokens in search tokens modal when on popular networks. (#37568)
-- Fix incorrect shield crypto approval calculation (#37572)
-- Fixes styles for the fox icon when selecting future ETH as a gas token (#37577)
-- Fixes a bug where when a user no longer owns an NFT it still shows up in the list when clicking Send button from home page. (#37558)
-- Verify that network is bridge-enabled before navigating to the Bridge page (#37556)
-- Fixed the padding in the transaction simulation details (#37511)
-- Sets a default network order for the receiving addresses. (#37467)
-- Fix the broken link of Ledger connection toturial. (#37216)
-- Updated the error handling for invalid SRP (#37470)
-- Fix intermittent stripe checkout succeed subscription not shown (#37453)
-- Updated default pair for BTC (#37512)
-- Fixed the smart transaction link (#37461)
-- Fixed a crash that could occur during wallet initialization when connecting to dapps (#37234)
-- Fixed string sanitize for bidirectional Unicode control characters to hide in signature requests (#37056)
-- Simulation Details - Displayed "No changes" in a single line (#37464)
-- Fix showing ENS recipient if it's typed in the send flow (#37047)
-- Use correct href for phishing page proceed anyway button (#36871)
-- Token name truncation (#37429)
-- Re-add connection indicator to bip44 account cell (#36423)
-- Fixed issue where approval changes were sometimes missing in transaction simulations for batch transactions. (#37347)
-- Defer UI actions until swap SSE quotes are fully loaded (#37336)
-- @metamask/message-signing-snap to version 1.1.4 (#37579)
-- Decrease time before activating QuickNode when Infura is degraded or unavailable; decrease time before allowing users to (#37002)
-  interact with a custom network following connection issues
-- Update default bridge slippage to 2% (#37367)
-- Stops reloading of animation once completed (#37581)
-- Fixes error saying alIgnoredTokens is undefined (#37660)
-- Fixes unexpected error modal shown after user has cancelled the social login in firefox (#37658)
-- Fixes infinite spinner shown on send flow when sending very low BTC (#37657)
-- Fixed a bug causing advanced permissions requests on mainnet to fail before showing the permission picker (#37675)
-- Fixes BTC redeposits not shown in individual asset activity (#37732)
-- Automatically creates new account types on wallet unlock (#37762)
-
 ## [13.8.0]
 
 ### Added
@@ -1135,8 +1069,7 @@ authorized by the user.` error until the user fully revoked dapp
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.9.0...HEAD
-[13.9.0]: https://github.com/MetaMask/metamask-extension/compare/v13.8.0...v13.9.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.8.0...HEAD
 [13.8.0]: https://github.com/MetaMask/metamask-extension/compare/v13.7.0...v13.8.0
 [13.7.0]: https://github.com/MetaMask/metamask-extension/compare/v13.6.0...v13.7.0
 [13.6.0]: https://github.com/MetaMask/metamask-extension/compare/v13.5.0...v13.6.0

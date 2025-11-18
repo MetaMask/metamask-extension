@@ -28,6 +28,7 @@ import {
   getEditedNetwork,
   selectPendingApprovalsForNavigation,
   getShowUpdateModal,
+  getShowConnectionsRemovedModal,
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
   getPendingShieldCohort,
@@ -191,10 +192,10 @@ const mapStateToProps = (state) => {
     redirectAfterDefaultPage,
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
     isPrimarySeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
+    showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
     showShieldEntryModal: getShowShieldEntryModal(state),
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     pendingShieldCohort: getPendingShieldCohort(state),
-    isSignedIn: state.metamask.isSignedIn,
   };
 };
 

@@ -131,11 +131,9 @@ const EmptyContent: React.FC = () => {
 
 const HeaderWithAlert = ({
   title,
-  titleTooltip,
   transactionId,
 }: {
   title?: string;
-  titleTooltip?: string;
   transactionId: string;
 }) => {
   const t = useI18nContext();
@@ -159,11 +157,9 @@ const HeaderWithAlert = ({
       ? t('simulationDetailsTitleEnforced')
       : t('simulationDetailsTitle'));
 
-  const tooltip =
-    titleTooltip ??
-    (isEnforced
-      ? t('simulationDetailsTitleTooltipEnforced')
-      : t('simulationDetailsTitleTooltip'));
+  const tooltip = isEnforced
+    ? t('simulationDetailsTitleTooltipEnforced')
+    : t('simulationDetailsTitleTooltip');
 
   const [settingsModalVisible, setSettingsModalVisible] =
     useState<boolean>(false);
@@ -250,20 +246,12 @@ const LegacyHeader = () => {
  * @param props.isTransactionsRedesign
  * @param props.transactionId
  * @param props.title
- * @param props.titleTooltip
  */
 const HeaderLayout: React.FC<{
   isTransactionsRedesign: boolean;
   transactionId: string;
   title?: string;
-  titleTooltip?: string;
-}> = ({
-  children,
-  isTransactionsRedesign,
-  transactionId,
-  title,
-  titleTooltip,
-}) => {
+}> = ({ children, isTransactionsRedesign, transactionId, title }) => {
   return (
     <Box
       display={Display.Flex}
@@ -272,11 +260,7 @@ const HeaderLayout: React.FC<{
       justifyContent={JustifyContent.spaceBetween}
     >
       {isTransactionsRedesign ? (
-        <HeaderWithAlert
-          title={title}
-          titleTooltip={titleTooltip}
-          transactionId={transactionId}
-        />
+        <HeaderWithAlert title={title} transactionId={transactionId} />
       ) : (
         <LegacyHeader />
       )}
@@ -290,7 +274,6 @@ const HeaderLayout: React.FC<{
  *
  * @param props
  * @param props.title
- * @param props.titleTooltip
  * @param props.inHeader
  * @param props.isTransactionsRedesign
  * @param props.children
@@ -298,18 +281,10 @@ const HeaderLayout: React.FC<{
  */
 export const SimulationDetailsLayout: React.FC<{
   title?: string;
-  titleTooltip?: string;
   inHeader?: React.ReactNode;
   isTransactionsRedesign: boolean;
   transactionId: string;
-}> = ({
-  title,
-  titleTooltip,
-  inHeader,
-  isTransactionsRedesign,
-  transactionId,
-  children,
-}) =>
+}> = ({ title, inHeader, isTransactionsRedesign, transactionId, children }) =>
   isTransactionsRedesign ? (
     <ConfirmInfoSection noPadding>
       <Box
@@ -333,7 +308,6 @@ export const SimulationDetailsLayout: React.FC<{
           isTransactionsRedesign={isTransactionsRedesign}
           transactionId={transactionId}
           title={title}
-          titleTooltip={titleTooltip}
         >
           {inHeader}
         </HeaderLayout>
@@ -361,7 +335,6 @@ export const SimulationDetailsLayout: React.FC<{
       <HeaderLayout
         isTransactionsRedesign={isTransactionsRedesign}
         transactionId={transactionId}
-        titleTooltip={titleTooltip}
       >
         {inHeader}
       </HeaderLayout>

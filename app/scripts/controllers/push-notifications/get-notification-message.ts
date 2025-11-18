@@ -85,14 +85,14 @@ const perpsTranslations = {
 };
 
 const shieldTranslations = {
-  ShieldSubscriptionTitle: () => t('pushNotificationShieldSubscriptionTitle'),
+  ShieldSubscriptionCreatedTitle: () =>
+    t('pushNotificationShieldSubscriptionCreatedTitle'),
   ShieldSubscriptionCreatedDescriptionShort: () =>
     t('pushNotificationShieldSubscriptionCreatedDescriptionShort'),
+  ShieldSubscriptionPaymentFailedTitle: () =>
+    t('pushNotificationShieldSubscriptionPaymentFailedTitle'),
   ShieldSubscriptionPaymentFailedDescriptionShort: () =>
     t('pushNotificationShieldSubscriptionPaymentFailedDescriptionShort'),
-  ShieldSubscriptionUpdatePaymentCta: () =>
-    t('pushNotificationShieldUpdatePaymentCta'),
-  ShieldSubscriptionLearnMoreCta: () => t('pushNotificationShieldLearnMoreCta'),
   ShieldClaimCreatedTitle: () => t('pushNotificationShieldClaimCreatedTitle'),
   ShieldClaimCreatedDescriptionShort: () =>
     t('pushNotificationShieldClaimCreatedDescriptionShort'),

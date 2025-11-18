@@ -75,6 +75,7 @@ const meta: Meta<typeof Home> = {
     redirectAfterDefaultPage: null,
     isSeedlessPasswordOutdated: false,
     isPrimarySeedPhraseBackedUp: true,
+    showConnectionsRemovedModal: false,
     showShieldEntryModal: false,
     isSocialLoginFlow: false,
 

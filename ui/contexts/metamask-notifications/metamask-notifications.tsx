@@ -5,7 +5,6 @@ import React, {
   useEffect,
 } from 'react';
 import { useSelector } from 'react-redux';
-import type { INotification } from '@metamask/notification-services-controller/notification-services';
 import {
   useDisableNotifications,
   useEnableNotifications,
@@ -17,6 +16,7 @@ import {
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import { getUseExternalServices } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { type Notification } from '../../pages/notifications/notification-components/types/notifications/notifications';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import {
   hasNotificationSubscriptionExpired,
@@ -25,7 +25,7 @@ import {
 
 type MetamaskNotificationsContextType = {
   listNotifications: () => void;
-  notificationsData?: INotification[];
+  notificationsData?: Notification[];
   isLoading: boolean;
   error?: unknown;
 };

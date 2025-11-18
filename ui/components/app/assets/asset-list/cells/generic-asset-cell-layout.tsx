@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { Box } from '../../../../component-library';
 import {
   Display,
@@ -10,6 +10,7 @@ import { ASSET_CELL_HEIGHT } from '../../constants';
 
 type GenericAssetCellLayoutProps = {
   onClick?: () => void;
+  disableHover?: boolean;
   badge: ReactNode;
   headerLeftDisplay: ReactNode;
   headerRightDisplay: ReactNode;
@@ -21,12 +22,15 @@ type GenericAssetCellLayoutProps = {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function GenericAssetCellLayout({
   onClick,
+  disableHover = false,
   badge,
   headerLeftDisplay,
   headerRightDisplay,
   footerLeftDisplay,
   footerRightDisplay,
 }: GenericAssetCellLayoutProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <Box
       display={Display.Flex}
@@ -50,10 +54,17 @@ export default function GenericAssetCellLayout({
         paddingLeft={4}
         paddingRight={4}
         width={BlockSize.Full}
-        className={onClick ? 'hover:bg-hover cursor-pointer' : ''}
         style={{
           height: ASSET_CELL_HEIGHT,
+          cursor: onClick ? 'pointer' : 'auto',
+          backgroundColor:
+            !disableHover && isHovered
+              ? 'var(--color-background-default-hover)'
+              : 'transparent',
+          transition: 'background-color 0.2s ease-in-out',
         }}
+        onMouseEnter={() => !disableHover && setIsHovered(true)}
+        onMouseLeave={() => !disableHover && setIsHovered(false)}
         data-testid="multichain-token-list-button"
       >
         {badge}

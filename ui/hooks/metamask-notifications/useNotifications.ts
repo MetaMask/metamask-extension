@@ -2,10 +2,8 @@ import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import log from 'loglevel';
-import {
-  type MarkAsReadNotificationsParam,
-  type INotification,
-} from '@metamask/notification-services-controller/notification-services';
+
+import { type MarkAsReadNotificationsParam } from '@metamask/notification-services-controller/notification-services';
 import {
   createOnChainTriggers,
   fetchAndUpdateMetamaskNotifications,
@@ -13,6 +11,7 @@ import {
   enableMetamaskNotifications,
   disableMetamaskNotifications,
 } from '../../store/actions';
+import { type Notification } from '../../pages/notifications/notification-components/types/notifications/notifications';
 import {
   setUserHasTurnedOffNotificationsOnce,
   updateNotificationSubscriptionExpiration,
@@ -37,8 +36,8 @@ export type AccountType = InternalAccount & {
  * @returns An object containing the `listNotifications` function, loading state, and error state.
  */
 export function useListNotifications(): {
-  listNotifications: () => Promise<INotification[] | undefined>;
-  notificationsData?: INotification[];
+  listNotifications: () => Promise<Notification[] | undefined>;
+  notificationsData?: Notification[];
   isLoading: boolean;
   error?: unknown;
 } {
@@ -47,11 +46,11 @@ export function useListNotifications(): {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<unknown>(null);
   const [notificationsData, setNotificationsData] = useState<
-    INotification[] | undefined
+    Notification[] | undefined
   >(undefined);
 
   const listNotifications = useCallback(async (): Promise<
-    INotification[] | undefined
+    Notification[] | undefined
   > => {
     setLoading(true);
     setError(null);
@@ -63,8 +62,8 @@ export function useListNotifications(): {
       const data = await dispatch(
         fetchAndUpdateMetamaskNotifications(previewToken ?? undefined),
       );
-      setNotificationsData(data as unknown as INotification[]);
-      return data as unknown as INotification[];
+      setNotificationsData(data as unknown as Notification[]);
+      return data as unknown as Notification[];
     } catch (e) {
       log.error(e);
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');

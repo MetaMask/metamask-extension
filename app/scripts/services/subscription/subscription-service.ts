@@ -22,6 +22,7 @@ import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
 import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
 import {
   getSubscriptionRequestTrackingProps,
+  getSubscriptionRestartRequestTrackingProps,
   getUserAccountTypeAndCategory,
 } from '../../../../shared/modules/shield/metrics';
 import {
@@ -147,7 +148,7 @@ export class SubscriptionService {
         // open extension browser shield settings if open from pop up (no current tab)
         this.#platform.openExtensionInBrowser(
           // need `waitForSubscriptionCreation` param to wait for subscription creation happen in the background and not redirect to the shield plan page immediately
-          '/settings/transaction-shield?waitForSubscriptionCreation=true',
+          '/settings/transaction-shield/?waitForSubscriptionCreation=true',
         );
       }
 
@@ -229,19 +230,31 @@ export class SubscriptionService {
     const appStateControllerState = this.#messenger.call(
       'AppStateController:getState',
     );
-    const {
-      defaultSubscriptionPaymentOptions,
-      shieldSubscriptionMetricsProps,
-    } = appStateControllerState;
+    const { defaultSubscriptionPaymentOptions } = appStateControllerState;
 
     const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
 
     const trackingProps = getSubscriptionRequestTrackingProps(
       subscriptionControllerState,
       defaultSubscriptionPaymentOptions,
-      shieldSubscriptionMetricsProps,
       transactionMeta,
     );
+
+    const isRenewal = trackingProps.subscription_state !== 'none';
+
+    if (isRenewal) {
+      const renewalTrackingProps = getSubscriptionRestartRequestTrackingProps(
+        subscriptionControllerState,
+        requestStatus,
+        extrasProps?.error_message as string | undefined,
+      );
+
+      this.#messenger.call('MetaMetricsController:trackEvent', {
+        event: MetaMetricsEventName.ShieldMembershipRestartRequest,
+        category: MetaMetricsEventCategory.Shield,
+        properties: renewalTrackingProps,
+      });
+    }
 
     this.#messenger.call('MetaMetricsController:trackEvent', {
       event: MetaMetricsEventName.ShieldSubscriptionRequest,
@@ -249,8 +262,8 @@ export class SubscriptionService {
       properties: {
         ...accountTypeAndCategory,
         ...trackingProps,
-        ...extrasProps,
         status: requestStatus,
+        ...extrasProps,
       },
     });
   }

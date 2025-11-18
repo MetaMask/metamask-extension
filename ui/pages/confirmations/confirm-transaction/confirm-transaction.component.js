@@ -65,6 +65,7 @@ const ConfirmTransaction = ({
 
   // Use params from props (v5 route) if available, otherwise fall back to useParams (v6)
   const { id: paramsTransactionId } = routeParams || urlParams;
+
   // Use location from props (v5 route) if available, otherwise fall back to useLocation (v6)
   const location = routeLocation || hookLocation;
 

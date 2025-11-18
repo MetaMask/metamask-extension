@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -23,17 +24,17 @@ import {
   ModalBody,
   ButtonSize,
 } from '../../component-library';
-
-type ConnectionsRemovedModalProps = {
-  onConfirm: () => void;
-};
+import { setShowConnectionsRemovedModal } from '../../../store/actions';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function ConnectionsRemovedModal({
-  onConfirm,
-}: ConnectionsRemovedModalProps) {
+export default function ConnectionsRemovedModal() {
   const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const onConfirm = useCallback(() => {
+    dispatch(setShowConnectionsRemovedModal(false));
+  }, [dispatch]);
 
   return (
     <Modal
@@ -63,12 +64,7 @@ export default function ConnectionsRemovedModal({
         </ModalHeader>
         <ModalBody>{t('connectionsRemovedModalDescription')}</ModalBody>
         <ModalFooter>
-          <Button
-            size={ButtonSize.Lg}
-            block
-            onClick={onConfirm}
-            data-testid="connections-removed-modal-button"
-          >
+          <Button size={ButtonSize.Lg} block onClick={onConfirm}>
             {t('gotIt')}
           </Button>
         </ModalFooter>

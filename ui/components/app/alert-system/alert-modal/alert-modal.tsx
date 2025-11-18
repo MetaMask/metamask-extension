@@ -259,12 +259,12 @@ export function AcknowledgeCheckboxBase({
   label?: string;
 }) {
   const t = useI18nContext();
-  const severityStyle = getSeverityStyle(selectedAlert.severity);
 
   if (!requiresAcknowledgement(selectedAlert)) {
     return null;
   }
 
+  const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
     <Box
       display={Display.Flex}

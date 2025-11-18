@@ -41,10 +41,10 @@ export const useMultichainAccountTotalFiatBalance = (
   loading: boolean;
   orderedTokenList: { iconUrl: string; symbol: string; fiatBalance: string }[];
 } => {
-  const accountTotalFiatBalance = useAccountTotalFiatBalance(
-    account,
-    shouldHideZeroBalanceTokens,
-  );
+  if (isEvmAccountType(account.type)) {
+    return useAccountTotalFiatBalance(account, shouldHideZeroBalanceTokens);
+  }
+
   const currentCurrency = useMultichainSelector(
     getMultichainCurrentCurrency,
     account,
@@ -66,10 +66,6 @@ export const useMultichainAccountTotalFiatBalance = (
     MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19[
       ticker as keyof typeof MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19
     ];
-
-  if (isEvmAccountType(account.type)) {
-    return accountTotalFiatBalance;
-  }
 
   if (!balances?.[account.id]?.[asset]) {
     // FIXME: We might try to get the balance for a created account, but the

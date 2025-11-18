@@ -835,7 +835,10 @@ describe('MetaMaskController', function () {
         // We now need the Snap keyring after unlocking the wallet.
         jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
 
-        await metamaskController.syncPasswordAndUnlockWallet(password);
+        const syncAndUnlockResult =
+          await metamaskController.syncPasswordAndUnlockWallet(password);
+
+        expect(syncAndUnlockResult).toBe(true);
         expect(keyringSubmitPwdSpy).toHaveBeenCalled();
         expect(seedlessSubmitPwdSpy).toHaveBeenCalled();
       });

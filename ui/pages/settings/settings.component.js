@@ -110,7 +110,6 @@ class SettingsPage extends PureComponent {
     navigate: PropTypes.func.isRequired,
     pathnameI18nKey: PropTypes.string,
     settingsPageSnaps: PropTypes.array,
-    shouldShowShieldEntryModal: PropTypes.bool,
     snapSettingsTitle: PropTypes.string,
     toggleNetworkMenu: PropTypes.func.isRequired,
     useExternalServices: PropTypes.bool,
@@ -130,20 +129,6 @@ class SettingsPage extends PureComponent {
 
   componentDidMount() {
     this.handleConversionDate();
-
-    if (this.props.shouldShowShieldEntryModal) {
-      // if user has subscribed to shield, navigate to shield page
-      // otherwise, show shield entry modal
-      if (this.props.hasSubscribedToShield) {
-        // componentDidMount is rendered after useEffect() so we need setTimeout to ensure the navigation work
-        // TODO: use navigate normally when refactor ot use functional component
-        setTimeout(() => {
-          this.props.navigate(TRANSACTION_SHIELD_ROUTE);
-        });
-      } else {
-        this.setState({ showShieldEntryModal: true });
-      }
-    }
   }
 
   componentDidUpdate() {
@@ -184,7 +169,9 @@ class SettingsPage extends PureComponent {
     const isPopup =
       environmentType === ENVIRONMENT_TYPE_POPUP ||
       environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+    ///: END:ONLY_INCLUDE_IF
     const isSearchHidden =
       isRevealSrpListPage || isPasswordChangePage || isTransactionShieldPage;
 
@@ -194,7 +181,9 @@ class SettingsPage extends PureComponent {
           'main-container main-container--has-shadow settings-page',
           {
             'settings-page--selected': currentPath !== SETTINGS_ROUTE,
+            ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
             'settings-page--sidepanel': isSidepanel,
+            ///: END:ONLY_INCLUDE_IF
           },
         )}
       >
@@ -494,7 +483,9 @@ class SettingsPage extends PureComponent {
             this.setState({ showShieldEntryModal: true });
             return;
           }
-          navigate(key);
+          navigate(key, {
+            state: { fromPage: currentPath },
+          });
         }}
       />
     );

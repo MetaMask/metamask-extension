@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   PAYMENT_TYPES,
   PaymentType,
@@ -13,7 +13,7 @@ import {
   ModalType,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   TransactionParams,
   TransactionType,
@@ -35,10 +35,7 @@ import {
 } from '../../store/actions';
 import { useAsyncCallback, useAsyncResult } from '../useAsync';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import {
-  selectIsSignedIn,
-  selectSessionData,
-} from '../../selectors/identity/authentication';
+import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import {
   getIsShieldSubscriptionActive,
@@ -50,9 +47,7 @@ import { decimalToHex } from '../../../shared/modules/conversion.utils';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
-  getMetaMetricsId,
   getModalTypeForShieldEntryModal,
-  getUnapprovedConfirmations,
   selectNetworkConfigurationByChainId,
 } from '../../selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
@@ -60,9 +55,6 @@ import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types'
 import { EntryModalSourceEnum } from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import { getLatestSubscriptionStatus } from '../../../shared/modules/shield';
-import { openWindow } from '../../helpers/utils/window';
-import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
-import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -79,14 +71,16 @@ export const useUserSubscriptions = (
   { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const isSignedIn = useSelector(selectIsSignedIn);
+  const isUnlocked = useSelector(getIsUnlocked);
   const userSubscriptions = useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
-    if (!refetch) {
+    if (!isSignedIn || !refetch || !isUnlocked) {
       return undefined;
     }
     return await dispatch(getSubscriptions());
-  }, [refetch, dispatch]);
+  }, [refetch, dispatch, isSignedIn, isUnlocked]);
 
   return {
     ...userSubscriptions,
@@ -188,56 +182,25 @@ export const useCancelSubscription = (subscription?: Subscription) => {
   }, [dispatch, subscription, captureShieldMembershipCancelledEvent]);
 };
 
-export const useUnCancelSubscription = (subscription?: Subscription) => {
+export const useUnCancelSubscription = ({
+  subscriptionId,
+}: {
+  subscriptionId?: string;
+}) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const { captureShieldSubscriptionRestartRequestEvent } =
-    useSubscriptionMetrics();
-
-  const trackSubscriptionUncancelRequestEvent = useCallback(
-    (status: 'completed' | 'failed', errorMessage?: string) => {
-      if (!subscription) {
-        return;
-      }
-      const { cryptoPaymentChain, cryptoPaymentCurrency } =
-        getSubscriptionPaymentData(subscription);
-
-      // capture the event when the subscription restart request is triggered
-      captureShieldSubscriptionRestartRequestEvent({
-        subscriptionStatus: subscription.status,
-        paymentType: subscription.paymentMethod.type,
-        billingInterval: subscription.interval,
-        cryptoPaymentChain,
-        cryptoPaymentCurrency,
-        requestStatus: status,
-        errorMessage,
-      });
-    },
-    [captureShieldSubscriptionRestartRequestEvent, subscription],
-  );
-
   return useAsyncCallback(async () => {
-    try {
-      const subscriptionId = subscription?.id;
-      if (!subscriptionId) {
-        return;
-      }
-      await dispatch(unCancelSubscription({ subscriptionId }));
-      trackSubscriptionUncancelRequestEvent('completed');
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-      trackSubscriptionUncancelRequestEvent('failed', errorMessage);
-      throw error;
+    if (!subscriptionId) {
+      return;
     }
-  }, [dispatch, subscription, trackSubscriptionUncancelRequestEvent]);
+    await dispatch(unCancelSubscription({ subscriptionId }));
+  }, [dispatch, subscriptionId]);
 };
 
 export const useOpenGetSubscriptionBillingPortal = (
   subscription?: Subscription,
 ) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const { captureCommonExistingShieldSubscriptionEvents } =
-    useSubscriptionMetrics();
+  const { captureShieldBillingHistoryOpenedEvent } = useSubscriptionMetrics();
 
   const trackBillingHistoryOpenedEvent = useCallback(() => {
     if (!subscription) {
@@ -247,17 +210,14 @@ export const useOpenGetSubscriptionBillingPortal = (
       getSubscriptionPaymentData(subscription);
 
     // capture the event when the billing history is opened
-    captureCommonExistingShieldSubscriptionEvents(
-      {
-        subscriptionStatus: subscription.status,
-        paymentType: subscription.paymentMethod.type,
-        billingInterval: subscription.interval,
-        cryptoPaymentChain,
-        cryptoPaymentCurrency,
-      },
-      MetaMetricsEventName.ShieldBillingHistoryOpened,
-    );
-  }, [captureCommonExistingShieldSubscriptionEvents, subscription]);
+    captureShieldBillingHistoryOpenedEvent({
+      subscriptionStatus: subscription.status,
+      paymentType: subscription.paymentMethod.type,
+      billingInterval: subscription.interval,
+      cryptoPaymentChain,
+      cryptoPaymentCurrency,
+    });
+  }, [captureShieldBillingHistoryOpenedEvent, subscription]);
 
   return useAsyncCallback(async () => {
     const { url } = await dispatch(getSubscriptionBillingPortalUrl());
@@ -274,8 +234,7 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
   newRecurringInterval?: RecurringInterval;
 }) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const { captureCommonExistingShieldSubscriptionEvents } =
-    useSubscriptionMetrics();
+  const { captureShieldPaymentMethodUpdatedEvent } = useSubscriptionMetrics();
 
   return useAsyncCallback(async () => {
     if (!subscription || !newRecurringInterval) {
@@ -293,20 +252,12 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
     );
 
     // capture the event when the payment method is updated
-    captureCommonExistingShieldSubscriptionEvents(
-      {
-        subscriptionStatus: subscription.status,
-        paymentType: subscription.paymentMethod.type,
-        billingInterval: newRecurringInterval,
-      },
-      MetaMetricsEventName.ShieldPaymentMethodUpdated,
-    );
-  }, [
-    dispatch,
-    subscription,
-    newRecurringInterval,
-    captureCommonExistingShieldSubscriptionEvents,
-  ]);
+    captureShieldPaymentMethodUpdatedEvent({
+      subscriptionStatus: subscription.status,
+      paymentType: subscription.paymentMethod.type,
+      billingInterval: newRecurringInterval,
+    });
+  }, [dispatch, subscription, newRecurringInterval]);
 };
 
 export const useSubscriptionCryptoApprovalTransaction = (
@@ -328,19 +279,6 @@ export const useSubscriptionCryptoApprovalTransaction = (
     networkConfiguration?.rpcEndpoints[
       networkConfiguration.defaultRpcEndpointIndex ?? 0
     ]?.networkClientId;
-
-  const hasPendingApprovals =
-    useSelector(getUnapprovedConfirmations).length > 0;
-  const [shieldTransactionDispatched, setShieldTransactionDispatched] =
-    useState(false);
-
-  useEffect(() => {
-    // navigate to confirmation page if there are pending approvals and shield transaction is dispatched
-    // need to handle here instead of right after `await addTransaction` because approval is not created right after `addTransaction` completed
-    if (hasPendingApprovals && shieldTransactionDispatched) {
-      navigate(CONFIRM_TRANSACTION_ROUTE);
-    }
-  }, [hasPendingApprovals, shieldTransactionDispatched, navigate]);
 
   const handler = useCallback(async () => {
     if (!subscriptionPricing) {
@@ -372,9 +310,9 @@ export const useSubscriptionCryptoApprovalTransaction = (
       networkClientId: networkClientId as string,
     };
     await addTransaction(transactionParams, transactionOptions);
-    setShieldTransactionDispatched(true);
+    navigate(CONFIRM_TRANSACTION_ROUTE);
   }, [
-    setShieldTransactionDispatched,
+    navigate,
     subscriptionPricing,
     evmInternalAccount,
     selectedToken,
@@ -425,7 +363,7 @@ export const useSubscriptionEligibility = (product: ProductType) => {
         }
         return undefined;
       } catch (error) {
-        log.warn('[useSubscriptionEligibility] error', error);
+        log.error('[useSubscriptionEligibility] error', error);
         return undefined;
       }
     },
@@ -467,51 +405,14 @@ export const useHandleSubscription = ({
   useTestClock?: boolean;
 }) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const { search } = useLocation();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
   const { subscriptions, lastSubscription } = useUserSubscriptions();
-  const {
-    captureShieldSubscriptionRequestEvent,
-    setShieldSubscriptionMetricsPropsToBackground,
-  } = useSubscriptionMetrics();
+  const { captureShieldSubscriptionRequestEvent } = useSubscriptionMetrics();
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
 
   const latestSubscriptionStatus =
     getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
-
-  const getMarketingUtmId = useCallback(() => {
-    const searchParams = new URLSearchParams(search);
-    const utmId = searchParams.get('utm_id');
-    if (utmId) {
-      return utmId;
-    }
-    return undefined;
-  }, [search]);
-
-  const determineSubscriptionRequestSource =
-    useCallback((): EntryModalSourceEnum => {
-      const marketingUtmId = getMarketingUtmId();
-      if (marketingUtmId) {
-        return EntryModalSourceEnum.Marketing;
-      }
-      const sourceParam = new URLSearchParams(search).get('source');
-      switch (sourceParam) {
-        case 'homepage':
-          return EntryModalSourceEnum.Homepage;
-        case 'post_transaction':
-          return EntryModalSourceEnum.PostTransaction;
-        case 'notification':
-          return EntryModalSourceEnum.Notification;
-        case 'carousel':
-          return EntryModalSourceEnum.Carousel;
-        case 'marketing':
-          return EntryModalSourceEnum.Marketing;
-        case 'settings':
-        default:
-          return EntryModalSourceEnum.Settings;
-      }
-    }, [getMarketingUtmId, search]);
 
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
@@ -526,17 +427,10 @@ export const useHandleSubscription = ({
         }),
       );
 
-      // We need to pass the default payment options & some metrics properties to the background app state controller
-      // as these properties are not accessible in the background directly.
-      // Shield subscription metrics requests can use them for the metrics capture
-      // and also the background app state controller can use them for the metrics capture
+      // We need to pass the default options to the background app state controller
+      // so that the Shield subscription request can use it for the metrics capture
       await dispatch(setDefaultSubscriptionPaymentOptions(defaultOptions));
-      await setShieldSubscriptionMetricsPropsToBackground({
-        source: determineSubscriptionRequestSource(),
-        marketingUtmId: getMarketingUtmId(),
-      });
 
-      const source = determineSubscriptionRequestSource();
       const subscriptionRequestTrackingParams: Omit<
         CaptureShieldSubscriptionRequestParams,
         'requestStatus'
@@ -550,9 +444,8 @@ export const useHandleSubscription = ({
         paymentCurrency: 'USD',
         isTrialSubscription: !isTrialed,
         billingInterval: selectedPlan,
-        source,
+        source: EntryModalSourceEnum.Settings,
         type: modalType,
-        marketingUtmId: getMarketingUtmId(),
       };
 
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
@@ -585,46 +478,10 @@ export const useHandleSubscription = ({
       captureShieldSubscriptionRequestEvent,
       latestSubscriptionStatus,
       modalType,
-      determineSubscriptionRequestSource,
-      getMarketingUtmId,
     ]);
 
   return {
     handleSubscription,
     subscriptionResult,
-  };
-};
-
-export const useHandleSubscriptionSupportAction = () => {
-  const version = process.env.METAMASK_VERSION as string;
-  const sessionData = useSelector(selectSessionData);
-  const profileId = sessionData?.profile?.profileId;
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const { customerId: shieldCustomerId } = useUserSubscriptions();
-
-  const handleClickContactSupport = useCallback(() => {
-    let supportLinkWithUserId = SUPPORT_LINK as string;
-    const queryParams = new URLSearchParams();
-    queryParams.append('metamask_version', version);
-    if (profileId) {
-      queryParams.append('metamask_profile_id', profileId);
-    }
-    if (metaMetricsId) {
-      queryParams.append('metamask_metametrics_id', metaMetricsId);
-    }
-    if (shieldCustomerId) {
-      queryParams.append('shield_id', shieldCustomerId);
-    }
-
-    const queryString = queryParams.toString();
-    if (queryString) {
-      supportLinkWithUserId += `?${queryString}`;
-    }
-
-    openWindow(supportLinkWithUserId);
-  }, [version, profileId, metaMetricsId, shieldCustomerId]);
-
-  return {
-    handleClickContactSupport,
   };
 };

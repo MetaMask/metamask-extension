@@ -40,7 +40,9 @@ import launchMetaMaskUi, {
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
+  ///: END:ONLY_INCLUDE_IF
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
@@ -282,6 +284,7 @@ async function queryCurrentActiveTab(windowType) {
   }
 
   // Only popup queries the active tab
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   // Sidepanel uses appActiveTab from tab listeners instead
   if (
     windowType !== ENVIRONMENT_TYPE_POPUP &&
@@ -289,6 +292,14 @@ async function queryCurrentActiveTab(windowType) {
   ) {
     return {};
   }
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  // Only popup queries the active tab
+  // Dialog/notification windows get their origin from approval metadata
+  if (windowType !== ENVIRONMENT_TYPE_POPUP) {
+    return {};
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   const tabs = await browser.tabs
     .query({ active: true, currentWindow: true })

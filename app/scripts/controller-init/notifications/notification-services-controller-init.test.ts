@@ -65,7 +65,6 @@ describe('NotificationServicesControllerInit', () => {
           accessToken: 'MOCK_ACCESS_TOKEN',
           platformVersion: expect.any(String),
         },
-        locale: expect.any(Function),
       },
     });
   });

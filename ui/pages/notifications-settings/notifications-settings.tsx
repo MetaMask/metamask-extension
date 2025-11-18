@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import {
@@ -58,6 +58,7 @@ function useNotificationAccounts() {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NotificationsSettings() {
   const navigate = useNavigate();
+  const location = useLocation();
   const t = useI18nContext();
 
   // Selectors
@@ -85,6 +86,9 @@ export default function NotificationsSettings() {
     await accountSettingsProps.update(accountAddresses);
   };
 
+  // Previous page
+  const previousPage = location.state?.fromPage;
+
   return (
     <NotificationsPage>
       <Header
@@ -93,15 +97,11 @@ export default function NotificationsSettings() {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Md}
-            onClick={() => {
-              // Use browser history for natural back navigation
-              // Fallback to notifications route if no history exists
-              if (window.history.length > 1) {
-                navigate(-1);
-              } else {
-                navigate(NOTIFICATIONS_ROUTE);
-              }
-            }}
+            onClick={() =>
+              previousPage
+                ? navigate(previousPage)
+                : navigate(NOTIFICATIONS_ROUTE)
+            }
           />
         }
         endAccessory={null}

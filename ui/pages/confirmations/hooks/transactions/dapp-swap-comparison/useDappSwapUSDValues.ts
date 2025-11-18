@@ -51,7 +51,7 @@ export function useDappSwapUSDValues({
   }, [chainId, tokenAddresses?.length]);
 
   const getTokenUSDValue = useCallback(
-    (tokenAmount: string, tokenAddress: Hex, decimalsToDisplay?: number) => {
+    (tokenAmount: string, tokenAddress: Hex) => {
       if (!tokenDetails || !fiatRates) {
         return '0';
       }
@@ -70,26 +70,20 @@ export function useDappSwapUSDValues({
       const conversionRate = new BigNumber(
         getTokenValueFromRecord(fiatRates, tokenAddress) ?? 0,
       );
-      const value = new BigNumber(tokenAmount ?? 0)
+      return new BigNumber(tokenAmount ?? 0)
         .dividedBy(decimals)
-        .times(conversionRate);
-      return decimalsToDisplay
-        ? value.toFixed(decimalsToDisplay)
-        : value.toString(10);
+        .times(conversionRate)
+        .toString(10);
     },
     [fiatRates, tokenDetails],
   );
 
   const getDestinationTokenUSDValue = useCallback(
-    (tokenAmount: string, decimalsToDisplay?: number) => {
+    (tokenAmount: string) => {
       if (!destTokenAddress) {
         return '0';
       }
-      return getTokenUSDValue(
-        tokenAmount,
-        destTokenAddress as Hex,
-        decimalsToDisplay,
-      );
+      return getTokenUSDValue(tokenAmount, destTokenAddress as Hex);
     },
     [getTokenUSDValue, destTokenAddress],
   );

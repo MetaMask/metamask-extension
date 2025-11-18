@@ -92,7 +92,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
             <a
               class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
               data-testid="multichain-token-list-button"
-              style="height: 62px;"
+              style="height: 62px; cursor: auto; background-color: transparent; transition: background-color 0.2s ease-in-out;"
             >
               <div
                 class="mm-box mm-badge-wrapper mm-box--margin-right-4 mm-box--display-inline-block"

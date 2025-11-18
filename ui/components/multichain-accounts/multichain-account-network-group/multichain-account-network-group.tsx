@@ -1,17 +1,12 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-} from '@metamask/design-system-react';
+import { Box } from '@metamask/design-system-react';
+import { AvatarGroup } from '../../multichain/avatar-group';
+import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
-import { AvatarGroup } from '../../multichain/avatar-group';
-import { AvatarTokenSize } from '../../component-library';
-import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 
 export type MultichainAccountNetworkGroupProps = {
   /**
@@ -146,9 +141,8 @@ export const MultichainAccountNetworkGroup: React.FC<
             ],
         };
       })
-      .filter((network) => network.avatarValue)
-      .slice(0, limit);
-  }, [filteredChainIds, excludeTestNetworks, limit]);
+      .filter((network) => network.avatarValue); // Only include networks with valid avatar images
+  }, [filteredChainIds, excludeTestNetworks]);
 
   return (
     <Box
@@ -156,12 +150,9 @@ export const MultichainAccountNetworkGroup: React.FC<
         flexShrink: 1,
         width: 'fit-content',
       }}
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
     >
       <AvatarGroup
         limit={limit}
-        size={AvatarTokenSize.Xs}
         members={networkData}
         avatarType={AvatarType.NETWORK}
         className={className}

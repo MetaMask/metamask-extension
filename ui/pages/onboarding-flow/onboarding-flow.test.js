@@ -77,7 +77,6 @@ jest.mock('../../store/actions', () => ({
     () => async () => Promise.resolve(),
   ),
   checkIsSeedlessPasswordOutdated: jest.fn(() => Promise.resolve()),
-  getIsSeedlessOnboardingUserAuthenticated: jest.fn(() => Promise.resolve()),
 }));
 
 describe('Onboarding Flow', () => {

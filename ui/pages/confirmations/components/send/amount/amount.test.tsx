@@ -120,7 +120,6 @@ describe('Amount', () => {
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
     expect(getByText('$ 20.00')).toBeInTheDocument();
     fireEvent.click(getByTestId('toggle-fiat-mode'));
-    expect(getByText('$ 20.00 available')).toBeInTheDocument();
     expect(getByRole('textbox')).toHaveValue('20');
     expect(getByText('USD')).toBeInTheDocument();
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });

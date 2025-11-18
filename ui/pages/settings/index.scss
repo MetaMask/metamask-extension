@@ -397,9 +397,7 @@
 
         &__modules {
           @include design-system.screen-sm-max {
-            display: flex;
-            flex-flow: column;
-            overflow-y: auto;
+            display: block;
           }
         }
       }
@@ -416,6 +414,7 @@
   }
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 // Sidepanel-specific styles: apply popup layout regardless of viewport width
 .settings-page--sidepanel {
   .settings-page__header__title-container {
@@ -436,6 +435,7 @@
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
+      max-width: 250px;
     }
 
     &__close-button {
@@ -548,8 +548,8 @@
     }
 
     .settings-page__content__modules {
-      display: flex;
-      flex-flow: column;
+      display: block;
     }
   }
 }
+///: END:ONLY_INCLUDE_IF

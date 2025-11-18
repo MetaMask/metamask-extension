@@ -5,13 +5,10 @@ import packageJson from '../../../../package.json';
 
 const APP_VERSION = packageJson.version;
 
-const getNormalisedLocale = (locale: string): string =>
-  locale.replace('_', '-');
-
 export const NotificationServicesControllerInit: ControllerInitFunction<
   NotificationServicesController,
   NotificationServicesControllerMessenger
-> = ({ controllerMessenger, persistedState, getController }) => {
+> = ({ controllerMessenger, persistedState }) => {
   const controller = new NotificationServicesController({
     messenger: controllerMessenger,
     state: persistedState.NotificationServicesController,
@@ -22,10 +19,6 @@ export const NotificationServicesControllerInit: ControllerInitFunction<
         accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? ':accessToken',
         platformVersion: APP_VERSION,
       },
-      locale: () =>
-        getNormalisedLocale(
-          getController('PreferencesController').state.currentLocale,
-        ),
     },
   });
 

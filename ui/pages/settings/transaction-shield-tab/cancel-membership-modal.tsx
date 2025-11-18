@@ -30,6 +30,9 @@ export default function CancelMembershipModal({
 }) {
   const t = useI18nContext();
   const isPaused = getIsShieldSubscriptionPaused(subscription);
+  const messageKey = isPaused
+    ? 'shieldTxCancelWhenPausedDetails'
+    : 'shieldTxCancelDetails';
 
   return (
     <Modal
@@ -43,19 +46,17 @@ export default function CancelMembershipModal({
         <ModalHeader onClose={onClose}>{t('areYouSure')}</ModalHeader>
         <ModalBody>
           <Text variant={TextVariant.bodyMd}>
-            {isPaused
-              ? t('shieldTxCancelWhenPausedDetails')
-              : t('shieldTxCancelDetails', [
-                  <Text
-                    key="cancel-date"
-                    variant={TextVariant.bodyMdMedium}
-                    as="span"
-                  >
-                    {getShortDateFormatterV2().format(
-                      new Date(subscription.currentPeriodEnd),
-                    )}
-                  </Text>,
-                ])}
+            {t(messageKey, [
+              <Text
+                key="cancel-date"
+                variant={TextVariant.bodyMdMedium}
+                as="span"
+              >
+                {getShortDateFormatterV2().format(
+                  new Date(subscription.currentPeriodEnd),
+                )}
+              </Text>,
+            ])}
           </Text>
         </ModalBody>
         <ModalFooter
