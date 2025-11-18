@@ -12,7 +12,7 @@ import { useMultichainSelector } from '../useMultichainSelector';
 export const useIsTxSubmittable = () => {
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
-  const fromChainId = useMultichainSelector(getMultichainCurrentChainId);
+  // const fromChainId = useMultichainSelector(getMultichainCurrentChainId);
   const fromAmount = useSelector(getFromAmount);
   const { activeQuote } = useSelector(getBridgeQuotes);
 
@@ -26,7 +26,7 @@ export const useIsTxSubmittable = () => {
   return Boolean(
     fromToken &&
       toToken &&
-      fromChainId &&
+      // fromChainId &&
       fromAmount &&
       activeQuote &&
       !isInsufficientBalance &&

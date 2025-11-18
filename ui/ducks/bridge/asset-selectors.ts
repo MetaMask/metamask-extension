@@ -27,6 +27,7 @@ import { AccountGroupId } from '@metamask/account-api';
 import { AccountId } from '@metamask/keyring-utils';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { BridgeAppState } from './selectors';
+import { uniqBy } from 'lodash';
 
 const getEvmAssetsWithBalance = createSelector(
   [
@@ -219,18 +220,66 @@ const getBridgeAssetsForAccountGroupId = createDeepEqualSelector(
   },
 );
 
-export const getBridgeAssetsWithBalance = createSelector(
+const getBridgeAssetsWithBalance = createSelector(
   [
     (state: BridgeAppState, accountGroupId: AccountGroupId) =>
       getBridgeAssetsForAccountGroupId(state, accountGroupId),
+    (_: BridgeAppState, __: AccountGroupId, selectedAsset) => selectedAsset,
   ],
-  (assetsWithFiatBalances) => {
+  (assetsWithFiatBalances, selectedAsset) => {
     // TODO accountType
+    if (selectedAsset) {
+      assetsWithFiatBalances.unshift(selectedAsset);
+    }
     return {
       balanceByAssetId: Object.fromEntries(
         assetsWithFiatBalances.map((asset) => [asset.assetId, asset]),
       ),
       assetsWithBalance: assetsWithFiatBalances,
+    };
+  },
+);
+
+export const getFilteredBridgeAssetsWithBalance = createSelector(
+  [
+    (
+      state: BridgeAppState,
+      accountGroupId: AccountGroupId,
+      _,
+      __,
+      selectedAsset,
+    ) => getBridgeAssetsWithBalance(state, accountGroupId, selectedAsset),
+    (__: BridgeAppState, _: AccountGroupId, searchQuery: string) =>
+      searchQuery.trim(),
+    (
+      ___: BridgeAppState,
+      _: AccountGroupId,
+      __: string,
+      chainId: CaipChainId | null,
+    ) => chainId,
+  ],
+  ({ assetsWithBalance, balanceByAssetId }, searchQuery, chainId) => {
+    return {
+      assetsWithBalance: uniqBy(
+        assetsWithBalance.filter((token) => {
+          const matchesSearchQuery =
+            searchQuery && searchQuery.length > 0
+              ? token.symbol
+                  .toLowerCase()
+                  .includes(searchQuery.toLowerCase()) ||
+                token.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                token.assetId.toLowerCase().includes(searchQuery.toLowerCase())
+              : true;
+
+          const matchesChainIdFilter = chainId
+            ? token.chainId === chainId
+            : true;
+
+          return matchesSearchQuery && matchesChainIdFilter;
+        }),
+        (a) => a.assetId.toLowerCase(),
+      ),
+      balanceByAssetId,
     };
   },
 );

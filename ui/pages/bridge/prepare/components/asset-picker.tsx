@@ -65,21 +65,12 @@ export const BridgeAssetPicker = ({
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Don't trigger fetch on dest until open?
-  const { tokenList, isLoading } = useTokenList({
-    selectedAsset,
-    chainId: selectedChainId,
-    searchQuery: searchQuery?.trim(),
-    accountAddress,
-    abortControllerRef,
-  });
-
-  // TODO move tokenList to assetList to avoid fetching before modal is opened
   const handleClose = useCallback(() => {
     setSearchQuery('');
     abortControllerRef.current?.abort('=====closing asset picker');
     abortControllerRef.current = null;
     setIsNetworkPickerOpen(false);
+    setSelectedChainId(selectedAsset?.chainId);
     onClose();
   }, [onClose]);
 
@@ -100,13 +91,8 @@ export const BridgeAssetPicker = ({
           width={BlockSize.Full}
           modalDialogProps={{
             height: BlockSize.Full,
-            // width: '400px',
             minWidth: '400px',
-            maxWidth: '100%',
-            // minWidth: 'max-content',
-            // role = 'tooltip',
           }}
-          // width={'400px'}
         >
           <ModalHeader
             closeButtonProps={{ size: ButtonIconSize.Sm }}
@@ -195,13 +181,16 @@ export const BridgeAssetPicker = ({
 
             {!isNetworkPickerOpen && (
               <AssetPickerTokenList
-                isLoading={isLoading}
+                chainId={selectedChainId}
+                accountAddress={accountAddress}
+                abortControllerRef={abortControllerRef}
+                searchQuery={searchQuery}
                 selectedAsset={selectedAsset}
                 onAssetChange={(asset) => {
                   handleClose();
                   onAssetChange(asset);
+                  setSelectedChainId(asset.chainId);
                 }}
-                tokenList={tokenList}
                 {...assetListProps}
               />
             )}

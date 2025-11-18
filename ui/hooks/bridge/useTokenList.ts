@@ -14,7 +14,7 @@ import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { BridgeToken } from '../../ducks/bridge/types';
 import { toBridgeToken } from '../../ducks/bridge/utils';
 import { BridgeAppState, getFromChains } from '../../ducks/bridge/selectors';
-import { getBridgeAssetsWithBalance } from '../../ducks/bridge/asset-selectors';
+import { getFilteredBridgeAssetsWithBalance } from '../../ducks/bridge/asset-selectors';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 
 /**
@@ -48,10 +48,6 @@ export const useTokenList = ({
   const [accountGroup] = useSelector((state: BridgeAppState) =>
     getAccountGroupsByAddress(state, [accountAddress]),
   );
-  const { assetsWithBalance, balanceByAssetId } = useSelector(
-    (state: BridgeAppState) =>
-      getBridgeAssetsWithBalance(state, accountGroup.id),
-  );
 
   const fromChains = useSelector(getFromChains);
   const [isSearchResultsLoading, setIsSearchResultsLoading] = useState(false);
@@ -59,38 +55,16 @@ export const useTokenList = ({
     BridgeToken[]
   >([]);
 
-  const memoizedBalances = assetsWithBalance
-    .map(({ tokenFiatAmount }) => tokenFiatAmount)
-    .toString();
-
-  const assetsToInclude = useMemo(() => {
-    return uniqBy(
-      [selectedAsset, ...assetsWithBalance]
-        .filter((token) => {
-          const matchesSearchQuery =
-            searchQuery && searchQuery.length > 0
-              ? token.symbol
-                  .toLowerCase()
-                  .includes(searchQuery.toLowerCase()) ||
-                token.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                token.assetId.toLowerCase().includes(searchQuery.toLowerCase())
-              : true;
-
-          const matchesChainIdFilter = chainId
-            ? formatChainIdToCaip(token.chainId) === chainId
-            : true;
-
-          return matchesSearchQuery && matchesChainIdFilter;
-        })
-        .map((token) => ({
-          symbol: token.symbol,
-          assetId: token.assetId,
-          decimals: token.decimals,
-          name: token.name,
-        })),
-      (a) => a.assetId.toLowerCase(),
-    );
-  }, [assetsWithBalance, selectedAsset.assetId, chainId, searchQuery]);
+  const { assetsWithBalance: assetsToInclude, balanceByAssetId } = useSelector(
+    (state: BridgeAppState) =>
+      getFilteredBridgeAssetsWithBalance(
+        state,
+        accountGroup.id,
+        searchQuery,
+        chainId,
+        selectedAsset,
+      ),
+  );
 
   useEffect(() => {
     return () => {
@@ -101,9 +75,6 @@ export const useTokenList = ({
 
   const { value: tokenList, pending: isTokenListLoading } =
     useAsyncResult(async () => {
-      if (searchQuery && searchQuery.length > 0) {
-        return [];
-      }
       abortControllerRef.current?.abort('fetching popular list');
       setSearchResultsWithBalance([]);
       abortControllerRef.current = new AbortController();
@@ -111,7 +82,7 @@ export const useTokenList = ({
         chainIds: chainId
           ? [chainId]
           : fromChains.map((chain) => chain.chainId),
-        assetsWithBalances: [...assetsToInclude],
+        // assetsWithBalances: [...assetsToInclude],
         clientId: BridgeClientId.EXTENSION,
         signal: abortControllerRef.current?.signal,
         fetchFn: handleFetch,
