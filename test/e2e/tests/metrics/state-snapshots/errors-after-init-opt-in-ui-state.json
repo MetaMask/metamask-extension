@@ -70,8 +70,7 @@
     "showPasswordChangeToast": null,
     "showCopyAddressToast": "boolean",
     "showClaimSubmitToast": null,
-    "showSupportDataConsentModal": "boolean",
-    "showConnectionsRemovedModal": "boolean"
+    "showSupportDataConsentModal": "boolean"
   },
   "bridge": "object",
   "confirmAlerts": "object",
@@ -429,6 +428,7 @@
     "srpSessionData": "object"
   },
   "ramps": "object",
+  "rewards": "object",
   "send": "object",
   "smartAccounts": "object",
   "swaps": "object",
