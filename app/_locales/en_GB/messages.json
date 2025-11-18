@@ -6038,7 +6038,10 @@
     "message": "CLAIM HISTORY"
   },
   "shieldClaimsListTitle": {
-    "message": "Claim details"
+    "message": "Claims Management"
+  },
+  "shieldClaimsDetailTitle": {
+    "message": "Claim Details"
   },
   "shieldClaimsNumber": {
     "message": "Claim #$1",
@@ -6354,6 +6357,9 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"
+  },
+  "shieldTxMembershipViewClaims": {
+    "message": "Manage claims"
   },
   "shieldTxMembershipViewFullBenefits": {
     "message": "View full benefits"

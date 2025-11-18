@@ -813,14 +813,13 @@ const TransactionShield = () => {
           handleViewFullBenefitsClicked,
           'shield-detail-view-benefits-button',
         )}
-        {displayedShieldSubscription?.isEligibleForSupport &&
-          buttonRow(
-            t('shieldTxMembershipSubmitCase'),
-            () => {
-              navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
-            },
-            'shield-detail-submit-case-button',
-          )}
+        {buttonRow(
+          t('shieldTxMembershipViewClaims'),
+          () => {
+            navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
+          },
+          'shield-detail-view-claims-button',
+        )}
         {!isMembershipInactive &&
           currentShieldSubscription?.cancelAtPeriodEnd &&
           buttonRow(
