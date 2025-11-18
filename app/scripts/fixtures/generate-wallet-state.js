@@ -37,7 +37,7 @@ export async function generateWalletState(withState, fromTest) {
     FIXTURES_CONFIG = withState;
   }
 
-  q// This SRP has 30 accounts each with a Solana account
+  // This SRP has 30 accounts each with a Solana account
   const TEST_SRP =
     'stock grab suspect keep column cover plate grape assault patrol pistol wire';
 
