@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { hexToNumber, KnownCaipNamespace, CaipChainId } from '@metamask/utils';
 import {
   TextColor,
   TextVariant,
@@ -23,12 +24,9 @@ import {
 } from '../../../../shared/lib/gator-permissions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getUseExternalServices } from '../../../selectors';
-import {
-  getMemoizedAccountName,
-  AccountsMetaMaskState,
-} from '../../../selectors/snaps/accounts';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
+import { useDisplayName } from '../../../hooks/snaps/useDisplayName';
 import { PermissionItemProps } from './types';
 
 export const PermissionItem: React.FC<PermissionItemProps> = ({
@@ -101,9 +99,21 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
 
   const signerAddress = permission.permission.permissionResponse.address;
 
-  const accountName = useSelector((state: AccountsMetaMaskState) =>
-    signerAddress ? getMemoizedAccountName(state, signerAddress) : '',
-  );
+  // Convert hex chain ID to CAIP chain ID format (e.g., "0x1" -> "eip155:1")
+  const caipChainId: CaipChainId = `${KnownCaipNamespace.Eip155}:${hexToNumber(permission.chainId)}`;
+
+  // Always call useDisplayName hook (hooks must be called unconditionally)
+  const displayNameResult = useDisplayName({
+    chain: {
+      namespace: KnownCaipNamespace.Eip155,
+      reference: hexToNumber(permission.chainId).toString(),
+    },
+    chainId: caipChainId,
+    address: signerAddress || '',
+  });
+
+  // Only use the display name if signerAddress exists
+  const accountName = displayNameResult || undefined;
 
   // Network configuration values (simple derived values, no need for memoization)
   const networkIcon =
