@@ -833,7 +833,7 @@
     "message": "Best quote"
   },
   "bestQuoteTooltip": {
-    "message": "The best quote we found from providers, including provider fees and a 0.25% MetaMask fee. The minimum you'll receive if price changes is $20.82."
+    "message": "The best quote we found from providers, including provider fees and a 0.25% MetaMask fee. The minimum you'll receive if price changes is $1."
   },
   "beta": {
     "message": "Beta"
@@ -5576,6 +5576,21 @@
   "reward": {
     "message": "Reward"
   },
+  "rewardsErrorMessagesAccountAlreadyRegistered": {
+    "message": "This account is already registered with another Rewards profile. Please switch account to continue."
+  },
+  "rewardsErrorMessagesFailedToClaimReward": {
+    "message": "Failed to claim reward. Please try again shortly."
+  },
+  "rewardsErrorMessagesRequestRejected": {
+    "message": "You rejected the request."
+  },
+  "rewardsErrorMessagesServiceNotAvailable": {
+    "message": "Service is not available at the moment. Please try again shortly."
+  },
+  "rewardsErrorMessagesSomethingWentWrong": {
+    "message": "Something went wrong. Please try again shortly."
+  },
   "rewardsPointsBalance": {
     "message": "$1 points",
     "description": "$1 is the formatted number of rewards points"
@@ -5587,6 +5602,9 @@
   "rewardsPointsIcon": {
     "message": "Rewards Points",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsSignUp": {
+    "message": "Sign up for Rewards"
   },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
@@ -5883,6 +5901,9 @@
   "shieldClaim": {
     "message": "Submit a claim"
   },
+  "shieldClaimChainNotSupported": {
+    "message": "This chain is not supported."
+  },
   "shieldClaimDescription": {
     "message": "Description of case"
   },
@@ -5916,7 +5937,7 @@
     "message": "Total file size exceeds the maximum allowed size."
   },
   "shieldClaimFileUploader": {
-    "message": "Image Upload"
+    "message": "Image upload"
   },
   "shieldClaimFileUploaderAcceptText": {
     "message": "PDF, PNG, JPG (Max $1MB)",
@@ -5982,6 +6003,9 @@
   "shieldClaimSelectNetwork": {
     "message": "Select a network"
   },
+  "shieldClaimSignatureCoverageNotCovered": {
+    "message": "Signature coverage not found for the given transaction hash."
+  },
   "shieldClaimStatusApproved": {
     "message": "Approved"
   },
@@ -6016,6 +6040,18 @@
   "shieldClaimSubmitSuccessDescription": {
     "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
   },
+  "shieldClaimTransactionNotFound": {
+    "message": "Transaction not found on chain."
+  },
+  "shieldClaimTransactionNotFromWalletAddress": {
+    "message": "Transaction hash not from wallet address."
+  },
+  "shieldClaimTransactionNotSuccessful": {
+    "message": "Transaction not successful on chain."
+  },
+  "shieldClaimWalletOwnershipValidationFailed": {
+    "message": "Wallet ownership validation failed."
+  },
   "shieldClaimsHistoryTitle": {
     "message": "CLAIM HISTORY"
   },
@@ -6045,25 +6081,25 @@
     "message": "You're protected up to $2 with Metamask Transaction Shield. $1."
   },
   "shieldCoverageAlertHighRiskTransaction": {
-    "message": "This is a high risk transaction, so it isn't protected by Transaction Shield. $1."
+    "message": "This is a high risk transaction, so it isn't protected by MetaMask Transaction Shield. $1."
   },
   "shieldCoverageAlertMessageChainNotSupported": {
-    "message": "This chain is not supported, so it isn't protected by Transaction Shield. $1."
+    "message": "This chain is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
     "message": "See What's Covered"
   },
   "shieldCoverageAlertMessagePaused": {
-    "message": "There was an issue with your Transaction Shield plan payment. Please update your payment method to resume coverage."
+    "message": "There was an issue with your MetaMask Transaction Shield plan payment. Please update your payment method to resume coverage."
   },
   "shieldCoverageAlertMessagePausedAcknowledgeButton": {
     "message": "Update payment method"
   },
   "shieldCoverageAlertMessagePotentialRisks": {
-    "message": "This transaction has potential risks, so it isn't protected by Transaction Shield. $1."
+    "message": "This transaction has potential risks, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageSignatureNotSupported": {
-    "message": "This signature isn't supported, so it isn't protected by Transaction Shield. $1."
+    "message": "This signature isn't supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageTitle": {
     "message": "This transaction isn't covered"
@@ -6084,10 +6120,10 @@
     "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds. $1."
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
-    "message": "This transaction type is not supported, so it isn't protected by Transaction Shield. $1."
+    "message": "This transaction type is not supported, so it isn't protected by MetaMask Transaction Shield. $1."
   },
   "shieldCoverageAlertMessageUnknown": {
-    "message": "This request can't be verified, so it isn't protected by Transaction Shield. $1."
+    "message": "This request can't be verified, so it isn't protected by MetaMask Transaction Shield. $1."
   },
   "shieldCoverageEnding": {
     "message": "Shield coverage ends soon"
@@ -6242,7 +6278,7 @@
     "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."
   },
   "shieldTxDetails1Description": {
-    "message": "Secures your assets from risky transactions"
+    "message": "Secures assets on covered transactions"
   },
   "shieldTxDetails1Title": {
     "message": "Up to $10,000 transaction protection"
@@ -7898,6 +7934,26 @@
   },
   "transferRequest": {
     "message": "Transfer request"
+  },
+  "tronBandwidth": {
+    "message": "Bandwidth"
+  },
+  "tronBandwidthCoverageDescription": {
+    "message": "Sufficient to cover ~$1 TRX transfers",
+    "description": "$1 is the number of TRX transfers"
+  },
+  "tronDailyResources": {
+    "message": "Daily resource"
+  },
+  "tronDailyResourcesDescription": {
+    "message": "This is your daily allowance based on your staked TRX. You get 600 bandwidth for free daily."
+  },
+  "tronEnergy": {
+    "message": "Energy"
+  },
+  "tronEnergyCoverageDescription": {
+    "message": "Sufficient to cover ~$1 USDT",
+    "description": "$1 is the number of USDT transfers"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",

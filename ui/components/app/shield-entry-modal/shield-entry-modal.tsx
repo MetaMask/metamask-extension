@@ -163,7 +163,7 @@ const ShieldEntryModal = ({
       redirectToUrl: TRANSACTION_SHIELD_LINK,
     });
 
-    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
+    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -238,14 +238,13 @@ const ShieldEntryModal = ({
           >
             {t('shieldEntryModalGetStarted')}
           </Button>
-          <Button asChild variant={ButtonVariant.Secondary} className="w-full">
-            <a
-              onClick={handleOnLearnMoreClick}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t('learnMoreUpperCase')}
-            </a>
+          <Button
+            variant={ButtonVariant.Secondary}
+            className="w-full mb-2"
+            size={ButtonSize.Lg}
+            onClick={handleOnLearnMoreClick}
+          >
+            {t('learnMoreUpperCase')}
           </Button>
         </ModalFooter>
       </ModalContent>

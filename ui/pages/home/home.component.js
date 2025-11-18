@@ -68,7 +68,6 @@ import { AccountOverview } from '../../components/multichain';
 import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
-import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
@@ -169,7 +168,6 @@ export default class Home extends PureComponent {
     setAccountDetailsAddress: PropTypes.func,
     isSeedlessPasswordOutdated: PropTypes.bool,
     isPrimarySeedPhraseBackedUp: PropTypes.bool,
-    showConnectionsRemovedModal: PropTypes.bool,
     showShieldEntryModal: PropTypes.bool,
     isSocialLoginFlow: PropTypes.bool,
     lookupSelectedNetworks: PropTypes.func.isRequired,
@@ -868,7 +866,6 @@ export default class Home extends PureComponent {
       showUpdateModal,
       isSeedlessPasswordOutdated,
       isPrimarySeedPhraseBackedUp,
-      showConnectionsRemovedModal,
       showShieldEntryModal,
       isSocialLoginFlow,
     } = this.props;
@@ -936,7 +933,6 @@ export default class Home extends PureComponent {
           {showTermsOfUse ? (
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
-          {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
           {showShieldEntryModal && <ShieldEntryModal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
