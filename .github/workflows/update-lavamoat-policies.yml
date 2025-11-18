@@ -233,7 +233,7 @@ jobs:
       - name: Cache webpack policy
         uses: actions/cache/save@v4
         with:
-          path: lavamoat/webpack
+          path: lavamoat/webpack/mv3
           key: cache-webpack-${{ needs.prepare.outputs.COMMIT_SHA }}
 
   commit-updated-policies:
@@ -314,7 +314,7 @@ jobs:
       - name: Restore webpack policy
         uses: actions/cache/restore@v4
         with:
-          path: lavamoat/webpack
+          path: lavamoat/webpack/mv3
           key: cache-webpack-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
 
