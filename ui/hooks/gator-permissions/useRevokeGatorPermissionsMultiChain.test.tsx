@@ -21,7 +21,7 @@ import {
   findNetworkClientIdByChainId,
 } from '../../store/actions';
 import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
-import { getInternalAccounts } from '../../selectors';
+import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
 import {
   useRevokeGatorPermissionsMultiChain,
   RevokeGatorPermissionsMultiChainResults,
@@ -49,8 +49,9 @@ jest.mock('../../../shared/lib/delegation', () => ({
 }));
 
 // Mock the selectors
-jest.mock('../../selectors', () => ({
-  getInternalAccounts: jest.fn(),
+jest.mock('../../selectors/accounts', () => ({
+  ...jest.requireActual('../../selectors/accounts'),
+  getMemoizedInternalAccountByAddress: jest.fn(),
 }));
 
 // Mock useConfirmationNavigation hook
@@ -78,9 +79,10 @@ const mockEncodeDisableDelegation =
   encodeDisableDelegation as jest.MockedFunction<
     typeof encodeDisableDelegation
   >;
-const mockGetInternalAccounts = getInternalAccounts as jest.MockedFunction<
-  typeof getInternalAccounts
->;
+const mockGetMemoizedInternalAccountByAddress =
+  getMemoizedInternalAccountByAddress as jest.MockedFunction<
+    typeof getMemoizedInternalAccountByAddress
+  >;
 
 const mockStore = configureStore();
 
@@ -188,23 +190,21 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
       },
     });
 
-    mockGetInternalAccounts.mockReturnValue([
-      {
-        address: mockSelectedAccountAddress,
-        id: 'account-id-1',
-        metadata: {
-          name: 'Test Account',
-          importTime: Date.now(),
-          keyring: {
-            type: 'HD Key Tree',
-          },
+    mockGetMemoizedInternalAccountByAddress.mockReturnValue({
+      address: mockSelectedAccountAddress,
+      id: 'account-id-1',
+      metadata: {
+        name: 'Test Account',
+        importTime: Date.now(),
+        keyring: {
+          type: 'HD Key Tree',
         },
-        options: {},
-        methods: [],
-        type: 'eip155:eoa',
-        scopes: [],
       },
-    ]);
+      options: {},
+      methods: [],
+      type: 'eip155:eoa',
+      scopes: [],
+    });
 
     mockDecodeDelegations.mockReturnValue([mockDelegation]);
     mockEncodeDisableDelegation.mockReturnValue('0xencodedCallData' as Hex);
@@ -332,7 +332,7 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
     });
 
     it('should skip permissions when internal account is not found', async () => {
-      mockGetInternalAccounts.mockReturnValue([]);
+      mockGetMemoizedInternalAccountByAddress.mockReturnValue(undefined);
 
       const { result } = renderHook(
         () => useRevokeGatorPermissionsMultiChain(),
