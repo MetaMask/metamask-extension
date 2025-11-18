@@ -163,6 +163,8 @@ export const useTokenMetadata = (
   });
 
   useEffect(() => {
+    // Use AbortController to cancel stale requests when dependencies change
+    const abortController = new AbortController();
     let isMounted = true;
 
     if (!tokenAddress) {
@@ -171,6 +173,7 @@ export const useTokenMetadata = (
       }
       return () => {
         isMounted = false;
+        abortController.abort();
       };
     }
 
@@ -182,6 +185,7 @@ export const useTokenMetadata = (
       }
       return () => {
         isMounted = false;
+        abortController.abort();
       };
     }
 
@@ -196,8 +200,13 @@ export const useTokenMetadata = (
           chainId as Hex,
           undefined,
         );
+        // Check if request was aborted before updating state
+        if (abortController.signal.aborted) {
+          return;
+        }
         if (apiMetadata && isMounted) {
-          // API doesn't return name, use symbol as fallback
+          // The asset metadata API only returns symbol and decimals (no name field)
+          // Use symbol as the name value per our TokenMetadata contract
           newMetadata = createTokenMetadata(
             apiMetadata.symbol,
             apiMetadata.decimals,
@@ -205,6 +214,10 @@ export const useTokenMetadata = (
           );
         }
       } catch (error) {
+        // Check if error is due to abort
+        if (abortController.signal.aborted) {
+          return;
+        }
         log.debug('Token API fetch failed, falling back to on-chain', {
           tokenAddress,
           chainId,
@@ -213,7 +226,7 @@ export const useTokenMetadata = (
       }
 
       // Step 3: Fall back to on-chain if API didn't return metadata
-      if (!newMetadata && isMounted) {
+      if (!newMetadata && isMounted && !abortController.signal.aborted) {
         try {
           const details = await getTokenStandardAndDetailsByChain(
             tokenAddress,
@@ -221,6 +234,11 @@ export const useTokenMetadata = (
             undefined,
             chainId,
           );
+
+          // Check if request was aborted before updating state
+          if (abortController.signal.aborted) {
+            return;
+          }
 
           if (details) {
             newMetadata = createTokenMetadata(
@@ -230,6 +248,10 @@ export const useTokenMetadata = (
             );
           }
         } catch (error) {
+          // Check if error is due to abort
+          if (abortController.signal.aborted) {
+            return;
+          }
           log.error('Failed to fetch token metadata from on-chain', {
             tokenAddress,
             chainId,
@@ -239,8 +261,8 @@ export const useTokenMetadata = (
         }
       }
 
-      // Update state if we got metadata
-      if (isMounted && newMetadata) {
+      // Update state if we got metadata and request wasn't aborted
+      if (isMounted && !abortController.signal.aborted && newMetadata) {
         updateMetadataIfChanged(setTokenMetadata, newMetadata);
       }
     };
@@ -249,6 +271,7 @@ export const useTokenMetadata = (
 
     return () => {
       isMounted = false;
+      abortController.abort();
     };
   }, [
     tokenAddress,

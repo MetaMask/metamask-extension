@@ -100,14 +100,10 @@ export const convertTimestampToReadableDate = (timestamp: number): string => {
     throw new Error('Invalid date format');
   }
 
-  const msUntilTimestamp = Math.abs(dateTime.diffNow().toMillis());
-
-  // only show the time part if the timestamp is within the next day
-  const showTimePart = msUntilTimestamp < DAY;
-
-  return showTimePart
-    ? dateTime.toFormat('MM/dd/yyyy HH:mm')
-    : dateTime.toFormat('MM/dd/yyyy');
+  // Show the time part if the timestamp is within 24 hours (past or future) from now
+  const isWithinNextDay = Math.abs(dateTime.diffNow().toMillis()) < DAY;
+  const format = isWithinNextDay ? 'MM/dd/yyyy HH:mm' : 'MM/dd/yyyy';
+  return dateTime.toFormat(format);
 };
 
 /**

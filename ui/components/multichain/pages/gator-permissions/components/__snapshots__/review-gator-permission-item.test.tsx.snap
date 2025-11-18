@@ -134,9 +134,27 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           </div>
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            data-testid="review-gator-permission-account-name"
           >
-            0x4f71D...E7a63
+            Test Gator Account
           </p>
+          <button
+            aria-label="Copy to clipboard"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            color="text-icon-muted"
+            data-testid="review-gator-permission-copy-address"
+          >
+            <svg
+              class="inline-block w-4 h-4 text-inherit"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 18q-.825 0-1.412-.587C7 16.826 7 16.55 7 16V4q0-.824.588-1.412C8.176 1.999 8.45 2 9 2h9q.824 0 1.413.588C20.002 3.175 20 3.45 20 4v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587zm0-2h9V4H9zm-4 6q-.824 0-1.412-.587C2.999 20.826 3 20.55 3 20V6h2v14h11v2z"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -313,9 +331,27 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           </div>
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            data-testid="review-gator-permission-account-name"
           >
-            0x4f71D...E7a63
+            Test Gator Account
           </p>
+          <button
+            aria-label="Copy to clipboard"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            color="text-icon-muted"
+            data-testid="review-gator-permission-copy-address"
+          >
+            <svg
+              class="inline-block w-4 h-4 text-inherit"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 18q-.825 0-1.412-.587C7 16.826 7 16.55 7 16V4q0-.824.588-1.412C8.176 1.999 8.45 2 9 2h9q.824 0 1.413.588C20.002 3.175 20 3.45 20 4v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587zm0-2h9V4H9zm-4 6q-.824 0-1.412-.587C2.999 20.826 3 20.55 3 20V6h2v14h11v2z"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -492,9 +528,27 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           </div>
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            data-testid="review-gator-permission-account-name"
           >
-            0x4f71D...E7a63
+            Test Gator Account
           </p>
+          <button
+            aria-label="Copy to clipboard"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            color="text-icon-muted"
+            data-testid="review-gator-permission-copy-address"
+          >
+            <svg
+              class="inline-block w-4 h-4 text-inherit"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 18q-.825 0-1.412-.587C7 16.826 7 16.55 7 16V4q0-.824.588-1.412C8.176 1.999 8.45 2 9 2h9q.824 0 1.413.588C20.002 3.175 20 3.45 20 4v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587zm0-2h9V4H9zm-4 6q-.824 0-1.412-.587C2.999 20.826 3 20.55 3 20V6h2v14h11v2z"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -671,9 +725,27 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           </div>
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            data-testid="review-gator-permission-account-name"
           >
-            0x4f71D...E7a63
+            Test Gator Account
           </p>
+          <button
+            aria-label="Copy to clipboard"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            color="text-icon-muted"
+            data-testid="review-gator-permission-copy-address"
+          >
+            <svg
+              class="inline-block w-4 h-4 text-inherit"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 18q-.825 0-1.412-.587C7 16.826 7 16.55 7 16V4q0-.824.588-1.412C8.176 1.999 8.45 2 9 2h9q.824 0 1.413.588C20.002 3.175 20 3.45 20 4v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587zm0-2h9V4H9zm-4 6q-.824 0-1.412-.587C2.999 20.826 3 20.55 3 20V6h2v14h11v2z"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -850,9 +922,27 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           </div>
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            data-testid="review-gator-permission-account-name"
           >
-            0x4f71D...E7a63
+            Test Gator Account
           </p>
+          <button
+            aria-label="Copy to clipboard"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            color="text-icon-muted"
+            data-testid="review-gator-permission-copy-address"
+          >
+            <svg
+              class="inline-block w-4 h-4 text-inherit"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 18q-.825 0-1.412-.587C7 16.826 7 16.55 7 16V4q0-.824.588-1.412C8.176 1.999 8.45 2 9 2h9q.824 0 1.413.588C20.002 3.175 20 3.45 20 4v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587zm0-2h9V4H9zm-4 6q-.824 0-1.412-.587C2.999 20.826 3 20.55 3 20V6h2v14h11v2z"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>

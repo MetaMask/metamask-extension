@@ -220,8 +220,8 @@ describe('Permission List Item', () => {
         // Click copy button to test functionality
         fireEvent.click(copyButton);
 
-        // After clicking, the text should change to "Address copied!"
-        expect(accountText).toHaveTextContent('Address copied!');
+        // After clicking, the text should change to "Address copied"
+        expect(accountText).toHaveTextContent('Address copied');
       });
 
       it('renders native token periodic permission correctly', () => {
