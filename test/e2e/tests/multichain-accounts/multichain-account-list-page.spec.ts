@@ -4,6 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { DAPP_PATH } from '../../constants';
 import { WINDOW_TITLES } from '../../helpers';
 import { AccountType, withMultichainAccountsDesignEnabled } from './common';
@@ -52,7 +53,13 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
+        // Navigate to account list page and ensure it's loaded
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountsPage();
         const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
 
         // Ensure that wallet information is displayed
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
