@@ -117,7 +117,7 @@ class AccountList extends Component {
     );
   }
 
-  onUnlock() {
+  async onUnlock() {
     const { device, selectedPath, onUnlockAccounts } = this.props;
     const { trackEvent } = this.context;
 
@@ -128,7 +128,7 @@ class AccountList extends Component {
     }
 
     try {
-      onUnlockAccounts(device, selectedPath);
+      await onUnlockAccounts(device, selectedPath);
     } catch (error) {
       trackEvent({
         event: MetaMetricsEventName.HardwareWalletConnectionFailed,
