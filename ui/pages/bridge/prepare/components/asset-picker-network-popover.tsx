@@ -1,0 +1,116 @@
+import React from 'react';
+import {
+  formatChainIdToHex,
+  isNonEvmChainId,
+} from '@metamask/bridge-controller';
+import {
+  AvatarIcon,
+  AvatarIconSize,
+  IconColor,
+  IconName,
+} from '@metamask/design-system-react';
+import { type CaipChainId } from '@metamask/utils';
+import { Popover } from '../../../../components/component-library';
+import { NetworkListItem } from '../../../../components/multichain';
+import { getImageForChainId } from '../../../../selectors/multichain';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  BackgroundColor,
+  BorderRadius,
+  Display,
+} from '../../../../helpers/constants/design-system';
+import { type BridgeToken } from '../../../../ducks/bridge/types';
+import { Column } from '../../layout';
+
+export const AssetPickerNetworkPopover = ({
+  networks,
+  selectedChainId,
+  onNetworkChange,
+  referenceElement,
+  isOpen,
+  onClose,
+}: {
+  networks: { chainId: CaipChainId; name: string }[];
+  selectedChainId: CaipChainId | null;
+  onNetworkChange: (chainId: CaipChainId | null, token?: BridgeToken) => void;
+  referenceElement: HTMLElement | null;
+  isOpen: boolean;
+  onClose: () => void;
+}) => {
+  const t = useI18nContext();
+
+  return (
+    <>
+      <Popover
+        isOpen={isOpen}
+        referenceElement={referenceElement}
+        onClickOutside={() => {
+          onClose();
+        }}
+        preventOverflow={true}
+        offset={[0, 12]}
+        style={{
+          // zIndex: 100,
+          padding: 0,
+          // overflow: 'hidden',
+          width: 'calc(100% - 24px)',
+          height: '90%',
+          maxHeight: '90%',
+          display: 'flex',
+        }}
+        borderRadius={BorderRadius.XL}
+        backgroundColor={BackgroundColor.backgroundSubsection}
+        className="bridge-network-list-popover"
+        marginInline={3}
+      >
+        <Column
+          style={{
+            overflow: 'scroll',
+            // position: 'absolute',
+            // top: 0,
+            // left: 0,
+            maxHeight: '100%',
+          }}
+        >
+          <NetworkListItem
+            selected={!selectedChainId}
+            key="all-networks"
+            name={t('allNetworks')}
+            onClick={() => {
+              onNetworkChange(null);
+            }}
+            startAccessory={
+              <AvatarIcon
+                iconName={IconName.Global}
+                size={AvatarIconSize.Md}
+                color={IconColor.PrimaryDefault}
+                iconProps={{
+                  color: IconColor.PrimaryDefault,
+                }}
+              />
+            }
+            avatarNetworkProps={{
+              display: Display.None,
+            }}
+          />
+          {networks.map((networkOption) => (
+            <NetworkListItem
+              selected={Boolean(selectedChainId === networkOption.chainId)}
+              key={networkOption.chainId}
+              name={networkOption.name}
+              iconSrc={getImageForChainId(
+                isNonEvmChainId(networkOption.chainId)
+                  ? networkOption.chainId
+                  : formatChainIdToHex(networkOption.chainId),
+              )}
+              chainId={networkOption.chainId}
+              onClick={() => {
+                onNetworkChange(networkOption.chainId);
+              }}
+            />
+          ))}
+        </Column>
+      </Popover>
+    </>
+  );
+};

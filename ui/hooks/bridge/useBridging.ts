@@ -5,11 +5,13 @@ import {
   type BridgeAsset,
   formatChainIdToCaip,
   type GenericQuoteRequest,
-  getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { isCaipChainId } from '@metamask/utils';
 import {
   resetInputFields,
+  setFromToken,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import {
@@ -38,6 +40,7 @@ import {
   getLastSelectedChain,
 } from '../../ducks/bridge/selectors';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { getMultichainProviderConfig } from '../../selectors/multichain';
 
 const useBridging = () => {
   const navigate = useNavigate();
@@ -51,6 +54,10 @@ const useBridging = () => {
   const lastSelectedChain = useSelector(getLastSelectedChain);
   const fromChain = useSelector(getFromChain);
   const fromChains = useSelector(getFromChains);
+  /**
+   * @deprecated
+   */
+  const providerConfig = useSelector(getMultichainProviderConfig);
 
   const isChainIdEnabledForBridging = useCallback(
     (chainId: string | number) =>
@@ -70,7 +77,7 @@ const useBridging = () => {
       },
     ) => {
       // If srcToken is a bridge token, use its assetId
-      let srcAssetIdToUse =
+      const srcAssetIdToUse =
         srcToken?.chainId && isChainIdEnabledForBridging(srcToken.chainId)
           ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
           : undefined;
@@ -83,13 +90,20 @@ const useBridging = () => {
        *
        * default fromChain: srctoken.chainId > lastSelectedId > MAINNET
        */
-      const targetChainId =
+      const targetChainIdInCaip =
         lastSelectedChain?.chainId &&
         isChainIdEnabledForBridging(lastSelectedChain.chainId)
-          ? lastSelectedChain.chainId
-          : CHAIN_IDS.MAINNET;
-      if (!srcAssetIdToUse && targetChainId !== fromChain?.chainId) {
-        srcAssetIdToUse = getNativeAssetForChainId(targetChainId)?.assetId;
+          ? formatChainIdToCaip(lastSelectedChain.chainId)
+          : 'eip155:1';
+
+      const providerChainIdInCaip = isCaipChainId(providerConfig?.chainId)
+        ? providerConfig?.chainId
+        : toEvmCaipChainId(providerConfig?.chainId);
+      if (!srcAssetIdToUse && targetChainIdInCaip !== providerChainIdInCaip) {
+        // If the selectedNetwork is not supported or if the network filter is not the active network, set this so the bridge-api sets the network on load
+        // TODO should this just set fromChain directly?
+        dispatch(setFromToken({ chainId: targetChainIdInCaip }));
+        // srcAssetIdToUse = getNativeAssetForChainId(targetChainIdInCaip)?.assetId;
       }
 
       trace({
@@ -146,6 +160,7 @@ const useBridging = () => {
       isMarketingEnabled,
       fromChain?.chainId,
       lastSelectedChain?.chainId,
+      providerConfig?.chainId,
       isChainIdEnabledForBridging,
     ],
   );

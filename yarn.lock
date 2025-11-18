@@ -5740,9 +5740,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^60.1.0":
-  version: 60.1.0
-  resolution: "@metamask/bridge-controller@npm:60.1.0"
+"@metamask/bridge-controller@npm:@metamask-previews/bridge-controller@60.1.0-preview-95376346":
+  version: 60.1.0-preview-95376346
+  resolution: "@metamask-previews/bridge-controller@npm:60.1.0-preview-95376346"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5768,7 +5768,7 @@ __metadata:
     "@metamask/remote-feature-flag-controller": ^2.0.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^61.0.0
-  checksum: 10/f308a325d8c13bf21b5b4cd3823660312a4bc2721f635f533baee64fc6141979a83a5de9cc4e5be99a7735e838b1e3520bc5b26f4759198ca3eff16d8422496a
+  checksum: 10/1fe9aea5358f3d0b20eda23e90dcaf0ca0b91caf9fa1fc2dc00d6943229956459a00205e5b483752a3faf0164755793ad8945939bf985b9e64dde566b5d1f663
   languageName: node
   linkType: hard
 

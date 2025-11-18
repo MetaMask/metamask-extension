@@ -60,17 +60,9 @@ export const BridgeControllerInit: ControllerInitFunction<
           functionName: 'fetchBridgeTokens',
         });
       }
-      // Cache spot prices for 30 seconds
-      if (urlString.includes('spot-prices')) {
-        return await fetchWithCache({
-          url: urlString,
-          fetchOptions: { method: 'GET', ...requestOptions },
-          cacheOptions: { cacheRefreshTime: 30 * SECOND },
-          functionName: 'fetchAssetExchangeRates',
-        });
-      }
-      // Use handleFetch for getQuote
-      if (urlString.includes('getQuote?')) {
+      // TODO add migration to remove spot-prices from storage
+      // Use handleFetch for getQuote and spot-prices
+      if (urlString.includes('getQuote?') || urlString.includes('spot-prices')) {
         return await handleFetch(url, {
           method: 'GET',
           ...requestOptions,
