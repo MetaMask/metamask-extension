@@ -6,6 +6,7 @@ import {
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { INFURA_MAINNET_URL } from '../../constants';
 
 const AuthMocks = AuthenticationController.Mocks;
 
@@ -145,9 +146,7 @@ type MockInfuraAndAccountSyncOptions = {
   accountsToMockBalances?: string[];
 };
 
-const MOCK_ETH_BALANCE = '0xde0b6b3a7640000';
-const INFURA_URL =
-  'https://mainnet.infura.io/v3/00000000000000000000000000000000';
+const MOCK_ETH_TRANSACTION_COUNT = '0xde0b6b3a7640000';
 
 /**
  * Sets up mock responses for Infura balance checks and account syncing
@@ -178,7 +177,7 @@ export async function mockInfuraAndAccountSync(
   if (accounts.length > 0) {
     accounts.forEach((account) => {
       mockServer
-        .forPost(INFURA_URL)
+        .forPost(INFURA_MAINNET_URL)
         .always()
         .withJsonBodyIncluding({
           method: 'eth_getTransactionCount',
@@ -189,7 +188,7 @@ export async function mockInfuraAndAccountSync(
           json: {
             jsonrpc: '2.0',
             id: '1111111111111111',
-            result: MOCK_ETH_BALANCE,
+            result: MOCK_ETH_TRANSACTION_COUNT,
           },
         }));
     });

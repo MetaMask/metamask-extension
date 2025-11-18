@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { KeyringAccount } from '@metamask/keyring-api';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
@@ -11,6 +12,8 @@ import {
 } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
 
+import { ACCOUNT_TYPE, INFURA_MAINNET_URL } from '../../constants';
+import { SOLANA_URL_REGEX_MAINNET } from '../solana/common-solana';
 import {
   mockMultichainAccountsFeatureFlagDisabled,
   mockMultichainAccountsFeatureFlag,
@@ -23,6 +26,77 @@ export enum AccountType {
   HardwareWallet = 'hardware-wallet',
 }
 
+type Bip44DiscoverNextAccount = {
+  [type in ACCOUNT_TYPE]: KeyringAccount['address'];
+};
+
+// List of accounts that the account discovery will try to discover.
+const BIP44_DISCOVER_NEXT_ACCOUNTS: Bip44DiscoverNextAccount[] = [
+  // NOTE: Those accounts contain the next addresses (which followed the
+  // existing accounts in the vault).
+  {
+    // Wallet 1 > Account 1 => next
+    [ACCOUNT_TYPE.Ethereum]: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+    [ACCOUNT_TYPE.Solana]: 'ExTE8W1KuMHod2EihdQPeD8mdC87Rg9UJh2FASmbGNtt',
+    [ACCOUNT_TYPE.Bitcoin]: '',
+  },
+  {
+    // Wallet 2 > Account 1 => next
+    [ACCOUNT_TYPE.Ethereum]: '0x59a897a2dbd55d20bcc9b52d5eaa14e2859dc467',
+    [ACCOUNT_TYPE.Solana]: '5R8a8GBd971kg5B5FqisVmVRk6ooFYtsh1y7vCHNvRvf',
+    [ACCOUNT_TYPE.Bitcoin]: '',
+  },
+];
+
+async function mockEvmDiscoveryOnce(mockServer: Mockttp, address: string) {
+  return await mockServer
+    .forPost(INFURA_MAINNET_URL)
+    .once()
+    .withJsonBodyIncluding({
+      method: 'eth_getTransactionCount',
+    })
+    .withBodyIncluding(address)
+    .once()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: '0x0',
+        },
+      };
+    });
+}
+
+async function mockSolDiscoveryOnce(mockServer: Mockttp, address: string) {
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_MAINNET)
+    .withJsonBodyIncluding({
+      method: 'getSignaturesForAddress',
+    })
+    .withBodyIncluding(address)
+    .once()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          id: '1337',
+          jsonrpc: '2.0',
+          result: [],
+        },
+      };
+    });
+}
+
+export async function mockDiscovery(mockServer: Mockttp) {
+  for (const account of BIP44_DISCOVER_NEXT_ACCOUNTS) {
+    await mockEvmDiscoveryOnce(mockServer, account[ACCOUNT_TYPE.Ethereum]);
+    await mockSolDiscoveryOnce(mockServer, account[ACCOUNT_TYPE.Solana]);
+    // TODO: Add Bitcoin discovery.
+  }
+}
+
 export async function withMultichainAccountsDesignEnabled(
   {
     title,
@@ -30,6 +104,7 @@ export async function withMultichainAccountsDesignEnabled(
     accountType = AccountType.MultiSRP,
     state = 2,
     dappOptions,
+    shouldMockDiscovery = true,
   }: {
     title?: string;
     testSpecificMock?: (
@@ -38,6 +113,7 @@ export async function withMultichainAccountsDesignEnabled(
     accountType?: AccountType;
     state?: number;
     dappOptions?: { numberOfTestDapps?: number; customDappPaths?: string[] };
+    shouldMockDiscovery?: boolean;
   },
   test: (driver: Driver) => Promise<void>,
 ) {
@@ -57,10 +133,18 @@ export async function withMultichainAccountsDesignEnabled(
       fixture = new FixtureBuilder().withKeyringControllerMultiSRP().build();
   }
 
+  const mockNetworkCalls = async (mockServer: Mockttp) => {
+    if (shouldMockDiscovery) {
+      await mockDiscovery(mockServer);
+    }
+
+    await testSpecificMock?.(mockServer);
+  };
+
   await withFixtures(
     {
       fixtures: fixture,
-      testSpecificMock,
+      testSpecificMock: mockNetworkCalls,
       title,
       forceBip44Version: state === 2 ? 2 : 0,
       dappOptions,
