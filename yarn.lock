@@ -5591,9 +5591,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@88.0.0-preview-32bc01de":
-  version: 88.0.0-preview-32bc01de
-  resolution: "@metamask-previews/assets-controllers@npm:88.0.0-preview-32bc01de"
+"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@88.0.0-preview-16cf753d":
+  version: 88.0.0-preview-16cf753d
+  resolution: "@metamask-previews/assets-controllers@npm:88.0.0-preview-16cf753d"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5629,7 +5629,7 @@ __metadata:
     "@metamask/account-tree-controller": ^3.0.0
     "@metamask/accounts-controller": ^34.0.0
     "@metamask/approval-controller": ^8.0.0
-    "@metamask/core-backend": ^4.0.0
+    "@metamask/core-backend": ^4.1.0
     "@metamask/keyring-controller": ^24.0.0
     "@metamask/network-controller": ^25.0.0
     "@metamask/permission-controller": ^12.0.0
@@ -5639,7 +5639,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^61.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/28500fd4056b4ca661cfedd5c6a89e08dbc3e5f2c2a3fa93ff471b2aeb4bc371bb7e7bc431d52fced1b2b962d0b8ea5bfd4492913e75677752755545aa1bc055
+  checksum: 10/419f9f904f72dc4afe15326b8ea4a161018108a969fdc9429a251344caaaf2061bf3bf0a1087c8e7fc40aa2fa5658b1dc5dd6d088c1264d0e8f84eed4a55be01
   languageName: node
   linkType: hard
 
@@ -32507,7 +32507,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^8.0.0"
-    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@88.0.0-preview-32bc01de"
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@88.0.0-preview-16cf753d"
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.6.0"
