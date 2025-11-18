@@ -177,6 +177,43 @@ async function withFixtures(options, testSuite) {
     forceBip44Version = 0,
   } = options;
 
+  // Clean up stale temp file for this test before starting
+  if (process.env.GENERATE_WARNINGS_SNAPSHOT === 'true') {
+    try {
+      const { stack } = new Error();
+      if (stack) {
+        const matchResult = stack.match(/\((.*\.spec\.(ts|js)):/u);
+        const testFilePath = matchResult?.[1];
+
+        if (testFilePath) {
+          const snapshotType = 'e2e';
+          const tempDir = path.join(
+            process.cwd(),
+            'test',
+            `.warnings-snapshot-temp-${snapshotType}`,
+          );
+
+          const basename = path.basename(testFilePath);
+          const testName = basename.replace(/\.(spec|test)\.(ts|js)$/iu, '');
+          const sanitizedName = testName
+            .replace(/[^a-z0-9]+/giu, '-')
+            .replace(/^-|-$/gu, '');
+
+          const testTempFile = path.join(
+            tempDir,
+            `warnings-${snapshotType}-test-${sanitizedName}.json`,
+          );
+
+          if (fs.existsSync(testTempFile)) {
+            fs.unlinkSync(testTempFile);
+          }
+        }
+      }
+    } catch {
+      // Ignore cleanup errors
+    }
+  }
+
   // Normalize localNodeOptions
   const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
 
@@ -412,19 +449,123 @@ async function withFixtures(options, testSuite) {
 
     console.log(`\nExecuting testcase: '${title}'\n`);
 
-    await testSuite({
-      bundlerServer,
-      contractRegistry,
-      driver: driverProxy ?? driver,
-      localNodes,
-      mockedEndpoint,
-      mockServer,
-      extensionId,
-      getNetworkReport,
-      clearNetworkReport,
-    });
+    let testError = null;
+    try {
+      await testSuite({
+        bundlerServer,
+        contractRegistry,
+        driver: driverProxy ?? driver,
+        localNodes,
+        mockedEndpoint,
+        mockServer,
+        extensionId,
+        getNetworkReport,
+        clearNetworkReport,
+      });
+    } catch (error) {
+      // Capture test error but don't throw yet - we need to capture console errors first
+      testError = error;
+    }
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
+
+    // Capture errors and warnings for snapshot system (even if test failed)
+    // This ensures we capture all console errors/warnings from all tests
+    try {
+      const consoleCaptureModule = await import('./console-capture');
+      const captureError =
+        consoleCaptureModule.captureError ||
+        consoleCaptureModule.default?.captureError;
+      const captureWarning =
+        consoleCaptureModule.captureWarning ||
+        consoleCaptureModule.default?.captureWarning;
+
+      // Capture errors
+      if (errorsAndExceptions && driver.errors && driver.errors.length > 0) {
+        driver.errors.forEach((error) => {
+          captureError(error);
+        });
+      }
+
+      // Capture warnings
+      if (driver.warnings && driver.warnings.length > 0) {
+        driver.warnings.forEach((warning) => {
+          captureWarning(warning);
+        });
+      }
+    } catch {
+      // Ignore if console-capture module not available
+    }
+
+    // Save captured data to temp file (for snapshot generation) or validate snapshot
+    // This happens even if the test failed, so we capture all warnings/errors
+    try {
+      // Import console-capture module (tsx handles .ts files)
+      const consoleCaptureModule = await import('./console-capture');
+      // Handle both default and named exports
+      const validateSnapshotFn =
+        consoleCaptureModule?.validateSnapshot ||
+        consoleCaptureModule?.default?.validateSnapshot ||
+        (consoleCaptureModule?.default &&
+        typeof consoleCaptureModule.default === 'function'
+          ? consoleCaptureModule.default
+          : null);
+
+      if (validateSnapshotFn && typeof validateSnapshotFn === 'function') {
+        // Automatically extract test file path for 1-1 mapping (no test changes needed!)
+        // This allows us to map temp files directly to test files
+        let testIdentifier = title; // Default fallback
+
+        // Try to extract test file path from call stack
+        try {
+          const { stack } = new Error();
+          if (stack) {
+            // Look for .spec.ts or .spec.js files in the stack trace
+            const specFileMatch = stack.match(/\((.*\.spec\.(ts|js)):/u);
+            if (specFileMatch?.[1]) {
+              testIdentifier = specFileMatch[1];
+            } else {
+              // Try alternative stack format (without parentheses)
+              const altMatch = stack.match(/at.*?(\/.*\.spec\.(ts|js)):/u);
+              if (altMatch?.[1]) {
+                testIdentifier = altMatch[1];
+              }
+            }
+          }
+        } catch {
+          // If stack extraction fails, use title (maintains backward compatibility)
+        }
+
+        await validateSnapshotFn(testIdentifier);
+      } else {
+        // Silently skip if not available (snapshot system is optional)
+        console.warn('Snapshot validation not available - skipping');
+      }
+    } catch (error) {
+      // If validation fails, only throw if it's not a module loading issue
+      if (
+        error.message &&
+        !error.message.includes('Cannot find module') &&
+        !error.message.includes('not a function')
+      ) {
+        // Don't mask the original test error
+        if (testError) {
+          throw testError;
+        }
+        if (errorsAndExceptions) {
+          throw new Error(`${errorsAndExceptions}\n\n${error.message}`);
+        }
+        throw error;
+      }
+      // Silently skip if module can't be loaded
+      console.warn('Snapshot validation skipped - module not available');
+    }
+
+    // Now throw the test error if it occurred
+    if (testError) {
+      throw testError;
+    }
+
     if (errorsAndExceptions) {
       throw new Error(errorsAndExceptions);
     }

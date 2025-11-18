@@ -167,6 +167,7 @@ class Driver {
     this.timeout = timeout;
     this.exceptions = [];
     this.errors = [];
+    this.warnings = [];
     this.eventProcessingStack = [];
     this.windowHandles = disableServerMochaToBackground
       ? null
@@ -1655,7 +1656,7 @@ class Driver {
     );
 
     this.driver.onLogEvent(cdpConnection, (event) => {
-      if (event.type === 'error') {
+      if (event.type === 'error' || event.type === 'warning') {
         if (event.args.length !== 0) {
           event.ignoredConsoleErrors = ignoredConsoleErrors;
 
@@ -1683,7 +1684,13 @@ class Driver {
     const ignoreAllErrors = ignoredConsoleErrors.includes('ignore-all');
 
     if (!ignored && !ignoreAllErrors) {
-      this.errors.push(completeErrorText);
+      // Check if this was a warning or error based on the first event
+      const eventType = this.eventProcessingStack[0]?.type;
+      if (eventType === 'warning') {
+        this.warnings.push(completeErrorText);
+      } else {
+        this.errors.push(completeErrorText);
+      }
     }
 
     this.eventProcessingStack = [];
@@ -1727,7 +1734,14 @@ function logBrowserError(ignoredConsoleErrors, errorMessage) {
   let ignored = false;
 
   console.error('\n-----Received an error from Chrome-----');
-  console.error(errorMessage);
+  // Compress long multi-line errors to single line to prevent massive CI logs
+  // The problem with massive CI logs is that they sometimes prevent us from accessing
+  // the actual error that caused the CI to fail
+  const displayMessage =
+    errorMessage.length > 500
+      ? errorMessage.replace(/\s+/gu, ' ').trim() // Compress long errors to single line
+      : errorMessage; // Keep short errors as-is for readability (pretty-print JSON)
+  console.error(displayMessage);
   console.error('----------End of Chrome error----------');
 
   if (errorMessage.startsWith('Warning:')) {

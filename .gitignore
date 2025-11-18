@@ -26,6 +26,7 @@ package
 
 temp
 .tmp
+test/.warnings-snapshot-temp-*
 .sass-cache
 .DS_Store
 app/.DS_Store

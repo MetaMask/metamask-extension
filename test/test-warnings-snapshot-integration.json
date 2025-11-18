@@ -1,0 +1,27 @@
+{
+  "_metadata": {
+    "generatedAt": "2025-11-17T20:58:37.234Z",
+    "lastUpdatedAt": "2025-11-17T20:58:37.235Z",
+    "description": "Snapshot of console warnings and errors captured during test execution",
+    "note": "This snapshot is ADDITIVE - new warnings/errors are added but never automatically removed. To remove entries, manually edit this file or delete it and regenerate."
+  },
+  "errors": [
+    "Warning: An update to %s inside a test was not wrapped in act(...). When testing, code that causes React state updates should be wrapped into act(...): act(() => { /* fire events that update state */ }); /* assert on the output */ This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act%s RiveWasmProvider at children (<USER_PATH>:<LINE>:<COL>) at children (<USER_PATH>:<LINE>:<COL>) at children (<USER_PATH>:<LINE>:<COL>) at children (<USER_PATH>:<LINE>:<COL>) at child...",
+    "Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in %s.%s a useEffect cleanup function at chainId (<USER_PATH>:<LINE>:<COL>) at token (<USER_PATH>:<LINE>:<COL>)",
+    "Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in %s.%s a useEffect cleanup function at chainId (<USER_PATH>:<LINE>:<COL>) at token (<USER_PATH>:<LINE>:<COL>) at div at as (<USER_PATH>",
+    "Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in %s.%s a useEffect cleanup function at children (<USER_PATH>:<LINE>:<COL>) at Router (<USER_PATH>:<LINE>:<COL>) at HashRouter (<USER_PATH>:<LINE>:<COL>) at Provider (<USER_PATH>",
+    "Warning: Failed %s type: %s%s prop The prop `location` is marked as required in `UnlockPageWithNavState`, but its value is `undefined`. at UnlockPageWithNavState (<USER_PATH>:<LINE>:<COL>) at OnboardingFlow (<USER_PATH>:<LINE>:<COL>) at div at children (<USER_PATH>:<LINE>:<COL>) at Route (<USER_PATH>",
+    "Warning: Failed %s type: %s%s prop The prop `navigate` is marked as required in `UnlockPageWithNavState`, but its value is `undefined`. at UnlockPageWithNavState (<USER_PATH>:<LINE>:<COL>) at OnboardingFlow (<USER_PATH>:<LINE>:<COL>) at div at children (<USER_PATH>:<LINE>:<COL>) at Route (<USER_PATH>",
+    "Warning: validateDOMNesting(...): %s cannot appear as a descendant of <%s>.%s <button> button at button at as (<USER_PATH>:<LINE>:<COL>) at variant (<USER_PATH>:<LINE>:<COL>) at as (<USER_PATH>:<LINE>:<COL>) at className (<USER_PATH>",
+    "Warning: validateDOMNesting(...): %s cannot appear as a descendant of <%s>.%s <div> p at div at as (<USER_PATH>:<LINE>:<COL>) at account (<USER_PATH>:<LINE>:<COL>) at dataTestId (<USER_PATH>:<LINE>:<COL>) at p at as (<USER_PATH>",
+    "{\"type\":\"XMLHttpRequest\"}"
+  ],
+  "warnings": [
+    "An input selector returned a different result when passed same arguments. This means your output selector will likely run more frequently than intended. Avoid returning a new reference inside your input selector, e.g. `createSelector([state => state.todos.map(todo => todo.id)], todoIds => todoIds.length)` [Object: {\"arguments\":{\"<NUMBER>\":{\"invalidCustomNetwork\":{\"state\":\"CLOSED\",\"networkName\":\"\"},\"unconnectedAccount\":{...]",
+    "Infura project ID not found, cannot track network banner event",
+    "The result function returned its own inputs without modification. e.g `createSelector([state => state.todos], todos => todos)` This could lead to inefficient memoization and unnecessary re-renders. Ensure transformation logic is in the result function, and extraction logic is in the input selectors. [Object: {\"stack\":\"Error: \\n at Object.runIdentityFunctionCheck [as run] (<USER_PATH>",
+    "Warning: Hash history cannot PUSH the same path; a new entry will not be added to the history stack",
+    "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details. * Move data fetching code or side effects to componentDidUpdate. * If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state * Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppr... t",
+    "useTheme: Invalid theme resolved to \"null\". Defaulting to \"light\"."
+  ]
+}

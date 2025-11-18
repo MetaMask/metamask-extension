@@ -1,9 +1,21 @@
 // This file is for Jest-specific setup only and runs before our Jest tests.
 import '../helpers/setup-after-helper';
 
+// Setup console warnings/errors snapshot validation
+// This must be imported after setup-after-helper to ensure all globals are available
+import { setupConsoleCapture } from './console-capture';
+
+// Unit tests use 'unit' snapshot type (default, but explicit for clarity)
+if (!process.env.WARNINGS_SNAPSHOT_TYPE) {
+  process.env.WARNINGS_SNAPSHOT_TYPE = 'unit';
+}
+
+setupConsoleCapture();
+
 jest.mock('webextension-polyfill', () => {
   return {
     runtime: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       getManifest: () => ({ manifest_version: 2 }),
     },
   };
@@ -22,11 +34,11 @@ const TIME_TO_WAIT_UNTIL_UNRESOLVED = 100;
  * the promise that is produced by this function resolves first, then the other
  * one must be unresolved.
  *
- * @param {number} duration - How long to wait before resolving the promise returned by
+ * @param duration - How long to wait before resolving the promise returned by
  * this function.
  * @returns A promise that resolves to a symbol.
  */
-function treatUnresolvedAfter(duration) {
+function treatUnresolvedAfter(duration: number) {
   return new Promise((resolve) => {
     originalSetTimeout(resolve, duration, UNRESOLVED);
   });
@@ -40,17 +52,17 @@ expect.extend({
    *
    * Inspired by <https://stackoverflow.com/a/68409467/260771>.
    *
-   * @param {Promise<any>} promise - The promise to test.
+   * @param promise - The promise to test.
    * @returns The result of the matcher.
    */
-  async toBeFulfilled(promise) {
+  async toBeFulfilled(promise: Promise<unknown>) {
     if (this.isNot) {
       throw new Error(
         "Using `.not.toBeFulfilled(...)` is not supported. Use `.rejects` to test the promise's rejection value instead.",
       );
     }
 
-    let rejectionValue = UNRESOLVED;
+    let rejectionValue: symbol | unknown = UNRESOLVED;
     try {
       await promise;
     } catch (e) {
@@ -60,7 +72,7 @@ expect.extend({
     if (rejectionValue !== UNRESOLVED) {
       return {
         message: () =>
-          `Expected promise to be fulfilled, but it was rejected with ${rejectionValue}.`,
+          `Expected promise to be fulfilled, but it was rejected with ${String(rejectionValue)}.`,
         pass: false,
       };
     }
@@ -79,10 +91,10 @@ expect.extend({
    *
    * Inspired by <https://stackoverflow.com/a/68409467/260771>.
    *
-   * @param {Promise<any>} promise - The promise to test.
+   * @param promise - The promise to test.
    * @returns The result of the matcher.
    */
-  async toNeverResolve(promise) {
+  async toNeverResolve(promise: Promise<unknown>) {
     if (this.isNot) {
       throw new Error(
         'Using `.not.toNeverResolve(...)` is not supported. ' +
@@ -91,8 +103,8 @@ expect.extend({
       );
     }
 
-    let resolutionValue;
-    let rejectionValue;
+    let resolutionValue: unknown;
+    let rejectionValue: unknown;
     try {
       resolutionValue = await Promise.race([
         promise,
@@ -112,8 +124,8 @@ expect.extend({
           message: () => {
             return `Expected promise to never resolve after ${TIME_TO_WAIT_UNTIL_UNRESOLVED}ms, but it ${
               rejectionValue
-                ? `was rejected with ${rejectionValue}`
-                : `resolved with ${resolutionValue}`
+                ? `was rejected with ${String(rejectionValue)}`
+                : `resolved with ${String(resolutionValue)}`
             }`;
           },
           pass: false,
