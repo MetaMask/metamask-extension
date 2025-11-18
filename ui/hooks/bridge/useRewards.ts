@@ -117,10 +117,10 @@ type UseRewardsWithQuoteParams = {
  * A hook that accepts quote, fromAddress, and chainId as arguments
  * and estimates rewards for the given quote.
  *
- * @param options0 - The hook parameters
- * @param options0.quote - The bridge quote to estimate rewards for
- * @param options0.fromAddress - The address sending the transaction
- * @param options0.chainId - The chain ID for the transaction
+ * @param options - The hook parameters
+ * @param options.quote - The bridge quote to estimate rewards for
+ * @param options.fromAddress - The address sending the transaction
+ * @param options.chainId - The chain ID for the transaction
  * @returns An object containing rewards estimation state
  */
 export const useRewardsWithQuote = ({
@@ -334,7 +334,6 @@ export const useRewards = ({
     quoteRequest?.srcTokenAmount &&
     selectedAccount?.address;
 
-  // Use the child hook with data from selectors
   // Pass null for quote if Bridge validation fails to prevent estimation
   return useRewardsWithQuote({
     quote: hasRequiredBridgeData ? activeQuote : null,
