@@ -1,6 +1,5 @@
 import { act } from '@testing-library/react';
 import { useRewardsWithQuote } from '../../../../../hooks/bridge/useRewards';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
