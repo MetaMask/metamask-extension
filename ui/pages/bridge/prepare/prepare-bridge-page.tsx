@@ -14,7 +14,6 @@ import {
   formatChainIdToCaip,
   isNonEvmChainId,
   isValidQuoteRequest,
-  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
   isNativeAddress,
   UnifiedSwapBridgeEventName,
@@ -338,9 +337,7 @@ const PrepareBridgePage = ({
       return;
     }
     if (
-      isEstimatedReturnLow ||
       isInsufficientGasForQuote ||
-      isLowReturnBannerOpen ||
       tokenAlert ||
       txAlert ||
       isUsingHardwareWallet
@@ -351,9 +348,7 @@ const PrepareBridgePage = ({
       });
     }
   }, [
-    isEstimatedReturnLow,
     isInsufficientGasForQuote,
-    isLowReturnBannerOpen,
     tokenAlert,
     txAlert,
     isUsingHardwareWallet,
@@ -904,17 +899,6 @@ const PrepareBridgePage = ({
               actionButtonOnClick={() => openBuyCryptoInPdapp()}
             />
           )}
-        {isEstimatedReturnLow && isLowReturnBannerOpen && activeQuote && (
-          <BannerAlert
-            title={t('lowEstimatedReturnTooltipTitle')}
-            severity={BannerAlertSeverity.Warning}
-            description={t('lowEstimatedReturnTooltipMessage', [
-              BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE * 100,
-            ])}
-            textAlign={TextAlign.Left}
-            onClose={() => setIsLowReturnBannerOpen(false)}
-          />
-        )}
         <div ref={alertBannersRef} />
       </Column>
 
