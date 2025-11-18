@@ -118,6 +118,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -649,6 +650,12 @@ export default function Routes() {
   // Navigate to confirmations when there are pending approvals
   // Exclude routes that shouldn't navigate: confirmations, onboarding, lock/unlock, send, swaps
   useEffect(() => {
+    // Don't navigate in notification windows
+    const windowType = getEnvironmentType();
+    if (windowType === ENVIRONMENT_TYPE_NOTIFICATION) {
+      return;
+    }
+
     // Don't navigate if already on a confirmation route
     const isOnConfirmationRoute =
       pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
