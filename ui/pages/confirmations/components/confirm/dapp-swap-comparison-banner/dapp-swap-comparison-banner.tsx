@@ -104,7 +104,6 @@ const DappSwapComparisonInner = () => {
 
   const hideDappSwapComparisonBanner = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.preventDefault();
       event.stopPropagation();
       setShowDappSwapComparisonBanner(false);
     },

@@ -200,10 +200,9 @@ export const TransactionDetails = () => {
         {showAdvancedDetails && <MethodDataRow />}
         <SigningInWithRow />
       </ConfirmInfoSection>
-      {!isQuotedSwap &&
-        (showAdvancedDetails || hasValueAndNativeBalanceMismatch) && (
-          <AmountRow />
-        )}
+      {(showAdvancedDetails || hasValueAndNativeBalanceMismatch) && (
+        <AmountRow />
+      )}
       <PaymasterRow />
     </>
   );

@@ -152,31 +152,6 @@ describe('Transaction Details', () => {
           queryByTestId('transaction-details-amount-row'),
         ).not.toBeInTheDocument();
       });
-
-      it('should not be visible for quoted swap', () => {
-        jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
-          isQuotedSwap: true,
-        });
-        const contractInteraction =
-          genUnapprovedContractInteractionConfirmation({
-            chainId: CHAIN_IDS.GOERLI,
-          });
-        const state = getMockConfirmStateForTransaction(contractInteraction, {
-          metamask: {
-            preferences: {
-              showConfirmationAdvancedDetails: true,
-            },
-          },
-        });
-        const mockStore = configureMockStore(middleware)(state);
-        const { queryByTestId } = renderWithConfirmContextProvider(
-          <TransactionDetails />,
-          mockStore,
-        );
-        expect(
-          queryByTestId('transaction-details-amount-row'),
-        ).not.toBeInTheDocument();
-      });
     });
 
     it('display network info if there is an alert on that field', () => {
