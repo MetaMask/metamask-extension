@@ -1,3 +1,5 @@
+'use no memo';
+
 import { useMemo } from 'react';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
