@@ -48,5 +48,5 @@ export function useBurnAddressAlert(): Alert[] {
         isBlocking: true,
       },
     ];
-  }, [hasBurnAddressRecipient]);
+  }, [hasBurnAddressRecipient, t]);
 }
