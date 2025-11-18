@@ -20,6 +20,7 @@ const unsafeEntries: Set<string> = new Set([
 export const lavamoatPlugin = (args: Args) =>
   new LavaMoatPlugin({
     rootDir,
+    policyLocation: join('lavamoat', 'webpack', `mv${args.manifest_version}`),
     diagnosticsVerbosity: 0,
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
