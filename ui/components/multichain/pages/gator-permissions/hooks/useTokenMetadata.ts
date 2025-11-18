@@ -9,85 +9,168 @@ import { fetchAssetMetadata } from '../../../../../../shared/lib/asset-utils';
 export type TokenMetadata = {
   symbol: string;
   decimals: number | null;
-  name: string;
 };
 
 const UNKNOWN_TOKEN: TokenMetadata = {
   symbol: 'Unknown Token',
   decimals: null,
-  name: 'Unknown Token',
 };
 
 /**
- * Helper to get token metadata from tokensByChain cache
+ * Normalized token metadata type from various sources
+ */
+type RawTokenMetadata = {
+  symbol?: string;
+  decimals?: number | string | null;
+  name?: string;
+};
+
+/**
+ * Get token metadata from tokensByChain cache
  *
  * @param tokenAddress - The token contract address
  * @param chainId - The chain ID
  * @param tokensByChain - Token metadata organized by chain from Redux state
  * @returns TokenMetadata if found in cache, null otherwise
  */
-const getCachedTokenMetadata = (
+function getCachedTokenMetadata(
   tokenAddress: string,
   chainId: string,
-  tokensByChain: Record<
-    string,
-    {
-      data: Record<
-        string,
-        { symbol?: string; decimals?: number; name?: string }
-      >;
-    }
-  >,
-): TokenMetadata | null => {
-  const tokenListForChain = tokensByChain?.[chainId]?.data || {};
-  const foundTokenMetadata =
-    tokenListForChain[tokenAddress.toLowerCase()] ??
-    tokenListForChain[tokenAddress];
-
-  if (foundTokenMetadata?.decimals !== undefined) {
-    return {
-      symbol: foundTokenMetadata.symbol || UNKNOWN_TOKEN.symbol,
-      decimals: foundTokenMetadata.decimals,
-      name: foundTokenMetadata.name || UNKNOWN_TOKEN.name,
-    };
+  tokensByChain: Record<string, { data: Record<string, RawTokenMetadata> }>,
+): TokenMetadata | null {
+  const chainTokens = tokensByChain?.[chainId]?.data;
+  if (!chainTokens) {
+    return null;
   }
 
-  return null;
-};
+  // Try both lowercase and original casing
+  const metadata =
+    chainTokens[tokenAddress.toLowerCase()] ?? chainTokens[tokenAddress];
+
+  if (metadata?.decimals === undefined) {
+    return null;
+  }
+
+  return normalizeTokenMetadata(metadata);
+}
 
 /**
- * Helper to create TokenMetadata from various sources
+ * Normalize raw token metadata into a consistent format
  *
- * @param symbol - Token symbol
- * @param decimals - Token decimals (can be string, number, or null)
- * @param name - Token name
- * @returns TokenMetadata object
+ * @param metadata - Raw metadata from various sources
+ * @returns Normalized TokenMetadata object
  */
-const createTokenMetadata = (
-  symbol?: string,
-  decimals?: number | string | null,
-  name?: string,
-): TokenMetadata => {
-  let parsed: number | null = null;
-  if (typeof decimals === 'string') {
-    parsed = decimals ? parseInt(decimals, 10) : null;
-  } else {
-    parsed = decimals ?? null;
-  }
+function normalizeTokenMetadata(metadata: RawTokenMetadata): TokenMetadata {
+  const decimals = parseDecimals(metadata.decimals);
 
   return {
-    symbol: symbol || UNKNOWN_TOKEN.symbol,
-    decimals: parsed !== null && !Number.isNaN(parsed) ? parsed : null,
-    name: name || symbol || UNKNOWN_TOKEN.name,
+    symbol: metadata.symbol || UNKNOWN_TOKEN.symbol,
+    decimals,
   };
-};
+}
+
+/**
+ * Parse decimals from various input formats
+ *
+ * @param decimals - Decimals as string, number, or null/undefined
+ * @returns Parsed decimals or null if invalid
+ */
+function parseDecimals(
+  decimals: string | number | null | undefined,
+): number | null {
+  if (decimals === null || decimals === undefined) {
+    return null;
+  }
+
+  const parsed =
+    typeof decimals === 'string' ? parseInt(decimals, 10) : decimals;
+
+  return Number.isNaN(parsed) ? null : parsed;
+}
+
+/**
+ * Fetch token metadata from API
+ *
+ * @param tokenAddress - Token contract address
+ * @param chainId - Chain ID
+ * @param signal - AbortController signal
+ * @returns TokenMetadata or null if fetch fails
+ */
+async function fetchTokenMetadataFromAPI(
+  tokenAddress: string,
+  chainId: Hex,
+  signal: AbortSignal,
+): Promise<TokenMetadata | null> {
+  try {
+    const apiMetadata = await fetchAssetMetadata(
+      tokenAddress,
+      chainId,
+      undefined,
+    );
+
+    if (signal.aborted || !apiMetadata) {
+      return null;
+    }
+
+    return normalizeTokenMetadata(apiMetadata);
+  } catch (error) {
+    if (!signal.aborted) {
+      log.debug('Token API fetch failed, falling back to on-chain', {
+        tokenAddress,
+        chainId,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+    return null;
+  }
+}
+
+/**
+ * Fetch token metadata from on-chain
+ *
+ * @param tokenAddress - Token contract address
+ * @param chainId - Chain ID
+ * @param userAddress - User's address
+ * @param signal - AbortController signal
+ * @returns TokenMetadata or null if fetch fails
+ */
+async function fetchTokenMetadataFromOnChain(
+  tokenAddress: string,
+  chainId: string,
+  userAddress: string | undefined,
+  signal: AbortSignal,
+): Promise<TokenMetadata | null> {
+  try {
+    const details = await getTokenStandardAndDetailsByChain(
+      tokenAddress,
+      userAddress,
+      undefined,
+      chainId,
+    );
+
+    if (signal.aborted || !details) {
+      return null;
+    }
+
+    return normalizeTokenMetadata(details);
+  } catch (error) {
+    if (!signal.aborted) {
+      log.error('Failed to fetch token metadata from on-chain', {
+        tokenAddress,
+        chainId,
+        selectedAccountAddress: userAddress,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+    return null;
+  }
+}
 
 /**
  * Custom hook to fetch token metadata for tokens.
  *
  * This hook attempts to fetch token information using the following strategy:
  * 1. First checks cache + user imported tokens from tokensByChain state
- * (no external service calls needed)
  * 2. If not found, calls the token API (fetchAssetMetadata)
  * 3. If API fails, falls back to on-chain data (getTokenStandardAndDetailsByChain)
  *
@@ -95,37 +178,23 @@ const createTokenMetadata = (
  * @param chainId - The chain ID
  * @param tokensByChain - Token metadata organized by chain from Redux state
  * @param nativeTokenMetadata - Metadata to use when tokenAddress is undefined
- * @returns TokenMetadata with symbol, decimals, and name
+ * @returns TokenMetadata with symbol and decimals
  */
-export const useTokenMetadata = (
+export function useTokenMetadata(
   tokenAddress: string | undefined,
   chainId: string,
-  tokensByChain: Record<
-    string,
-    {
-      data: Record<
-        string,
-        { symbol?: string; decimals?: number; name?: string }
-      >;
-    }
-  >,
+  tokensByChain: Record<string, { data: Record<string, RawTokenMetadata> }>,
   nativeTokenMetadata: TokenMetadata,
-): TokenMetadata => {
+): TokenMetadata {
   const selectedAccount = useSelector(getSelectedAccount);
 
-  // Memoize nativeTokenMetadata to prevent infinite loops when it's a new object reference
-  // Create a new object only when the actual values change
+  // Stabilize native token metadata to prevent unnecessary re-renders
   const stableNativeTokenMetadata = useMemo(
     () => ({
       symbol: nativeTokenMetadata.symbol,
       decimals: nativeTokenMetadata.decimals,
-      name: nativeTokenMetadata.name,
     }),
-    [
-      nativeTokenMetadata.symbol,
-      nativeTokenMetadata.decimals,
-      nativeTokenMetadata.name,
-    ],
+    [nativeTokenMetadata.symbol, nativeTokenMetadata.decimals],
   );
 
   const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata>(() => {
@@ -141,104 +210,64 @@ export const useTokenMetadata = (
     const abortController = new AbortController();
     let isMounted = true;
 
-    const updateIfChanged = (newMetadata: TokenMetadata) => {
+    function updateMetadataIfChanged(newMetadata: TokenMetadata): void {
       if (!isMounted) {
         return;
       }
-      setTokenMetadata((prev) =>
-        prev.symbol !== newMetadata.symbol ||
-        prev.decimals !== newMetadata.decimals ||
-        prev.name !== newMetadata.name
-          ? newMetadata
-          : prev,
-      );
-    };
 
-    // Handle native token case
-    if (!tokenAddress) {
-      updateIfChanged(stableNativeTokenMetadata);
-      return () => {
-        isMounted = false;
-        abortController.abort();
-      };
+      setTokenMetadata((prev) => {
+        const hasChanged =
+          prev.symbol !== newMetadata.symbol ||
+          prev.decimals !== newMetadata.decimals;
+
+        return hasChanged ? newMetadata : prev;
+      });
     }
 
-    // Check cache first
-    const cached = getCachedTokenMetadata(tokenAddress, chainId, tokensByChain);
-    if (cached) {
-      updateIfChanged(cached);
-      return () => {
-        isMounted = false;
-        abortController.abort();
-      };
-    }
-
-    // Fetch from API, then fall back to on-chain
-    (async () => {
-      if (abortController.signal.aborted) {
+    async function fetchMetadata(): Promise<void> {
+      // Handle native token case
+      if (!tokenAddress) {
+        updateMetadataIfChanged(stableNativeTokenMetadata);
         return;
       }
 
-      let metadata: TokenMetadata | null = null;
+      // Check cache first
+      const cached = getCachedTokenMetadata(
+        tokenAddress,
+        chainId,
+        tokensByChain,
+      );
+      if (cached) {
+        updateMetadataIfChanged(cached);
+        return;
+      }
 
       // Try API first
-      try {
-        const apiMetadata = await fetchAssetMetadata(
-          tokenAddress,
-          chainId as Hex,
-          undefined,
-        );
-        if (!abortController.signal.aborted && apiMetadata) {
-          metadata = createTokenMetadata(
-            apiMetadata.symbol,
-            apiMetadata.decimals,
-            apiMetadata.symbol,
-          );
-        }
-      } catch (error) {
-        if (abortController.signal.aborted) {
-          return;
-        }
-        log.debug('Token API fetch failed, falling back to on-chain', {
-          tokenAddress,
-          chainId,
-          error: error instanceof Error ? error.message : String(error),
-        });
+      const apiMetadata = await fetchTokenMetadataFromAPI(
+        tokenAddress,
+        chainId as Hex,
+        abortController.signal,
+      );
+
+      if (apiMetadata) {
+        updateMetadataIfChanged(apiMetadata);
+        return;
       }
 
-      // Fall back to on-chain if needed
-      if (!metadata && !abortController.signal.aborted) {
-        try {
-          const details = await getTokenStandardAndDetailsByChain(
-            tokenAddress,
-            selectedAccount?.address,
-            undefined,
-            chainId,
-          );
-          if (!abortController.signal.aborted && details) {
-            metadata = createTokenMetadata(
-              details.symbol,
-              details.decimals,
-              details.name,
-            );
-          }
-        } catch (error) {
-          if (abortController.signal.aborted) {
-            return;
-          }
-          log.error('Failed to fetch token metadata from on-chain', {
-            tokenAddress,
-            chainId,
-            selectedAccountAddress: selectedAccount?.address,
-            error: error instanceof Error ? error.message : String(error),
-          });
-        }
-      }
+      // Fall back to on-chain
+      const onChainMetadata = await fetchTokenMetadataFromOnChain(
+        tokenAddress,
+        chainId,
+        selectedAccount?.address,
+        abortController.signal,
+      );
 
-      if (metadata && !abortController.signal.aborted) {
-        updateIfChanged(metadata);
+      if (onChainMetadata) {
+        updateMetadataIfChanged(onChainMetadata);
       }
-    })();
+    }
+
+    fetchMetadata();
 
     return () => {
       isMounted = false;
@@ -253,4 +282,4 @@ export const useTokenMetadata = (
   ]);
 
   return tokenMetadata;
-};
+}
