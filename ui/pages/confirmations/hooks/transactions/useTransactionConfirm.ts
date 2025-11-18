@@ -104,6 +104,7 @@ export function useTransactionConfirm() {
           gas: toHex(gasLimit ?? 0),
           value: value as Hex,
           type: TransactionType.bridgeApproval,
+          isAfter: false,
         } as BatchTransaction,
       ];
     }
