@@ -173,7 +173,7 @@ describe('<DappSwapComparisonBanner />', () => {
     });
   });
 
-  it('call function to update confirmation when user clicks on Market rate button', () => {
+  it('call function to update quote swap clicks on Market rate button', () => {
     const mockSetQuoteSelectedForMMSwap = jest.fn();
     jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: mockSwapConfirmation,

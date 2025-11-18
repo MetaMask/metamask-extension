@@ -40,9 +40,9 @@ export function useResimulationAlert(): Alert[] {
       },
     ];
   }, [
+    isQuotedSwapDisplayedInInfo,
     isUpdatedAfterSecurityCheck,
     isWalletInitiated,
-    isQuotedSwapDisplayedInInfo,
     t,
   ]);
 }

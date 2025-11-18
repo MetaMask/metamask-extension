@@ -95,14 +95,18 @@ export function useTransactionConfirm() {
       data,
     };
     if (quoteSelectedForMMSwap?.approval) {
-      const { data, to, gasLimit, value } =
-        quoteSelectedForMMSwap?.approval as TxData;
+      const {
+        data: approvalData,
+        to: approvalTo,
+        gasLimit: approvalGasLimit,
+        value: approvalValue,
+      } = quoteSelectedForMMSwap?.approval as TxData;
       newTransactionMeta.batchTransactions = [
         {
-          data: data as Hex,
-          to: to as Hex,
-          gas: toHex(gasLimit ?? 0),
-          value: value as Hex,
+          data: approvalData as Hex,
+          to: approvalTo as Hex,
+          gas: toHex(approvalGasLimit ?? 0),
+          value: approvalValue as Hex,
           type: TransactionType.swapApproval,
           isAfter: false,
         } as BatchTransaction,

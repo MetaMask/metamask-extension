@@ -78,6 +78,7 @@ describe('<EditGasFeesRow />', () => {
     const confirmation = genUnapprovedContractInteractionConfirmation();
     jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
       quoteSelectedForMMSwap: {} as unknown as QuoteResponse,
+      isQuotedSwapDisplayedInInfo: true,
       currentConfirmation: confirmation,
     } as ReturnType<typeof ConfirmContext.useConfirmContext>);
     const { queryByTestId } = render({

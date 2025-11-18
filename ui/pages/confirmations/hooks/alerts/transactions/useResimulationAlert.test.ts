@@ -111,7 +111,7 @@ describe('useResimulationAlert', () => {
     ).toEqual([]);
   });
 
-  it('returns no alerts if transaction is a quoted swap', () => {
+  it('returns no alerts if quote swap is shown in info', () => {
     const resimulatedConfirmation = {
       ...CONFIRMATION_MOCK,
       simulationData: {
