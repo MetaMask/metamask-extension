@@ -4,16 +4,14 @@ import {
   BridgeUserAction,
   formatChainIdToCaip,
   isNativeAddress,
-  getNativeAssetForChainId,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
+  isNonEvmChainId,
+  formatChainIdToHex,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { type InternalAccount } from '@metamask/keyring-internal-api';
-import { type CaipChainId } from '@metamask/utils';
-import type {
-  AddNetworkFields,
-  NetworkConfiguration,
-} from '@metamask/network-controller';
+import { zeroAddress } from 'ethereumjs-util';
+import { type Hex, type CaipChainId } from '@metamask/utils';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import {
   forceUpdateMetamaskState,
@@ -21,17 +19,18 @@ import {
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
   bridgeSlice,
   setDestTokenExchangeRates,
   setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
   setTxAlerts,
-  setEVMSrcTokenBalance as setEVMSrcTokenBalance_,
+  setEVMSrcTokenBalance,
   setEVMSrcNativeBalance,
 } from './bridge';
 import type { TokenPayload } from './types';
-import { isNetworkAdded, isNonEvmChain } from './utils';
+import { type BridgeAppState, getFromChains } from './selectors';
 
 const {
   setToChainId,
@@ -60,7 +59,6 @@ export {
   setWasTxDeclined,
   setSlippage,
   setTxAlerts,
-  setEVMSrcNativeBalance,
   restoreQuoteRequestFromState,
 };
 
@@ -119,96 +117,90 @@ export const updateQuoteRequestParams = (
   };
 };
 
-export const setEVMSrcTokenBalance = (
-  token: TokenPayload['payload'],
-  selectedAddress?: string,
+export const setEvmBalances = (
+  chainId: string | number,
+  tokenAddress?: string,
 ) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    if (token) {
-      trace({
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => BridgeAppState,
+  ) => {
+    if (isNonEvmChainId(chainId)) {
+      return;
+    }
+    const caipChainId = formatChainIdToCaip(chainId);
+    const selectedAccount = getInternalAccountBySelectedAccountGroupAndCaip(
+      getState(),
+      caipChainId,
+    );
+    if (!selectedAccount) {
+      return;
+    }
+    const hexChainId = formatChainIdToHex(chainId);
+    await trace(
+      {
         name: TraceName.BridgeBalancesUpdated,
         data: {
-          srcChainId: formatChainIdToCaip(token.chainId),
-          isNative: isNativeAddress(token.address),
+          chainId: caipChainId,
+          isNative: isNativeAddress(tokenAddress),
         },
         startTime: Date.now(),
-      });
-      await dispatch(
-        setEVMSrcTokenBalance_({
-          selectedAddress,
-          tokenAddress: token.address,
-          chainId: token.chainId,
-        }),
-      );
-    }
+      },
+      async () => {
+        dispatch(
+          setEVMSrcTokenBalance({
+            selectedAddress: selectedAccount.address,
+            tokenAddress: tokenAddress || zeroAddress(),
+            chainId: hexChainId,
+          }),
+        );
+        dispatch(
+          setEVMSrcNativeBalance({
+            selectedAddress: selectedAccount.address,
+            chainId: hexChainId,
+          }),
+        );
+      },
+    );
   };
 };
 
 export const setFromChain = ({
-  networkConfig,
-  selectedAccount,
+  chainId,
   token = null,
 }: {
-  networkConfig?:
-    | NetworkConfiguration
-    | AddNetworkFields
-    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
-  selectedAccount: InternalAccount | null;
+  chainId: Hex | CaipChainId | number | string;
   token?: TokenPayload['payload'];
 }) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    if (!networkConfig) {
-      return;
-    }
-
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => BridgeAppState,
+  ) => {
     // Check for ALL non-EVM chains
-    const isNonEvm = isNonEvmChain(networkConfig.chainId);
+    const isNonEvm = isNonEvmChainId(chainId);
 
     // Set the src network
     if (isNonEvm) {
-      dispatch(setActiveNetworkWithError(networkConfig.chainId));
+      const caipChainId = formatChainIdToCaip(chainId);
+      dispatch(setActiveNetworkWithError(caipChainId));
     } else {
-      const networkId = isNetworkAdded(networkConfig)
-        ? networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
-            ?.networkClientId
-        : null;
-      if (networkId) {
+      const networkConfig = getFromChains(getState()).find(
+        (chain) => chain.chainId === formatChainIdToHex(chainId),
+      );
+      if (networkConfig) {
+        const networkId =
+          networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
+            ?.networkClientId;
         dispatch(setActiveNetworkWithError(networkId));
       }
     }
 
-    // Set the src token - if no token provided, set native token for non-EVM chains
+    // Set the src token - if no token provided, use native token
     if (token) {
       dispatch(setFromToken(token));
-    } else if (isNonEvm) {
-      // Auto-select native token for non-EVM chains when switching
-      const nativeAsset = getNativeAssetForChainId(networkConfig.chainId);
-      if (nativeAsset) {
-        dispatch(
-          setFromToken({
-            ...nativeAsset,
-            chainId: networkConfig.chainId,
-          }),
-        );
-      }
-    }
-
-    // Fetch the native balance (EVM only)
-    if (selectedAccount && !isNonEvm) {
-      trace({
-        name: TraceName.BridgeBalancesUpdated,
-        data: {
-          srcChainId: formatChainIdToCaip(networkConfig.chainId),
-          isNative: true,
-        },
-        startTime: Date.now(),
-      });
-      await dispatch(
-        setEVMSrcNativeBalance({
-          selectedAddress: selectedAccount.address,
-          chainId: networkConfig.chainId,
-        }),
-      );
+    } else {
+      const nativeAsset = getNativeAssetForChainId(chainId);
+      dispatch(setFromToken(nativeAsset));
     }
   };
 };

@@ -33,10 +33,10 @@ import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import {
+  getFromChain,
   getFromChains,
-  getLastSelectedChainId,
+  getLastSelectedChain,
 } from '../../ducks/bridge/selectors';
-import { getMultichainProviderConfig } from '../../selectors/multichain';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 
 const useBridging = () => {
@@ -48,8 +48,8 @@ const useBridging = () => {
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
-  const lastSelectedChainId = useSelector(getLastSelectedChainId);
-  const providerConfig = useSelector(getMultichainProviderConfig);
+  const lastSelectedChain = useSelector(getLastSelectedChain);
+  const fromChain = useSelector(getFromChain);
   const fromChains = useSelector(getFromChains);
 
   const isChainIdEnabledForBridging = useCallback(
@@ -83,10 +83,12 @@ const useBridging = () => {
        *
        * default fromChain: srctoken.chainId > lastSelectedId > MAINNET
        */
-      const targetChainId = isChainIdEnabledForBridging(lastSelectedChainId)
-        ? lastSelectedChainId
-        : CHAIN_IDS.MAINNET;
-      if (!srcAssetIdToUse && targetChainId !== providerConfig?.chainId) {
+      const targetChainId =
+        lastSelectedChain?.chainId &&
+        isChainIdEnabledForBridging(lastSelectedChain.chainId)
+          ? lastSelectedChain.chainId
+          : CHAIN_IDS.MAINNET;
+      if (!srcAssetIdToUse && targetChainId !== fromChain?.chainId) {
         srcAssetIdToUse = getNativeAssetForChainId(targetChainId)?.assetId;
       }
 
@@ -105,7 +107,10 @@ const useBridging = () => {
           text: 'Swap',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: srcToken?.chainId ?? lastSelectedChainId,
+          chain_id:
+            srcToken?.chainId ??
+            lastSelectedChain?.chainId ??
+            CHAIN_IDS.MAINNET,
         },
       });
       dispatch(
@@ -139,8 +144,8 @@ const useBridging = () => {
       trackEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
-      lastSelectedChainId,
-      providerConfig?.chainId,
+      fromChain?.chainId,
+      lastSelectedChain?.chainId,
       isChainIdEnabledForBridging,
     ],
   );

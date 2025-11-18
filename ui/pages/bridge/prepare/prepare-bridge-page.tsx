@@ -15,14 +15,14 @@ import {
   isNonEvmChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  getNativeAssetForChainId,
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   type BridgeController,
   isCrossChain,
+  formatChainIdToHex,
   isBitcoinChainId,
 } from '@metamask/bridge-controller';
-import { Hex, parseCaipChainId } from '@metamask/utils';
+import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -85,7 +85,6 @@ import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
 } from '../utils/quote';
-import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
@@ -110,7 +109,6 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   FEATURED_NETWORK_CHAIN_IDS,
@@ -136,17 +134,22 @@ export const useEnableMissingNetwork = () => {
   const dispatch = useDispatch();
 
   const enableMissingNetwork = useCallback(
-    (chainId: Hex) => {
+    (chainId: CaipChainId | Hex) => {
+      if (isNonEvmChainId(chainId)) {
+        return;
+      }
       const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
       const caipChainId = formatChainIdToCaip(chainId);
+      const hexChainId = formatChainIdToHex(caipChainId);
       const { namespace } = parseCaipChainId(caipChainId);
 
       if (namespace) {
-        const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
+        const isPopularNetwork =
+          FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
         if (isPopularNetwork) {
-          const isNetworkEnabled = enabledNetworkKeys.includes(chainId);
+          const isNetworkEnabled = enabledNetworkKeys.includes(hexChainId);
           if (!isNetworkEnabled) {
             // Bridging between popular networks indicates we want the 'select all' enabled
             // This way users can see their full bridging tx activity
@@ -525,22 +528,15 @@ const PrepareBridgePage = ({
               address: token.address ?? zeroAddress(),
             };
             dispatch(setFromToken(bridgeToken));
-            dispatch(setFromTokenInputValue(null));
-            if (token.address === toToken?.address) {
-              dispatch(setToToken(null));
-            }
           }}
           networkProps={{
             network: fromChain,
             networks: fromChains,
             onNetworkChange: (networkConfig) => {
-              if (isNetworkAdded(networkConfig)) {
-                enableMissingNetwork(networkConfig.chainId);
-              }
+              enableMissingNetwork(networkConfig.chainId);
               dispatch(
                 setFromChain({
-                  networkConfig,
-                  selectedAccount,
+                  chainId: networkConfig.chainId,
                 }),
               );
             },
@@ -623,7 +619,14 @@ const PrepareBridgePage = ({
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
-                (toChain && !isNetworkAdded(toChain))
+                // Check if the toChain is an enabled fromChain
+                (toChain &&
+                  !fromChains.some(
+                    ({ chainId: fromChainId }) =>
+                      fromChainId === toChain.chainId ||
+                      formatChainIdToCaip(fromChainId) ===
+                        formatChainIdToCaip(toChain.chainId),
+                  ))
               }
               onClick={() => {
                 dispatch(setSelectedQuote(null));
@@ -637,25 +640,16 @@ const PrepareBridgePage = ({
                       {
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_symbol_source: toToken?.symbol ?? null,
+                        token_symbol_source: toToken.symbol,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_symbol_destination: fromToken?.symbol ?? null,
+                        token_symbol_destination: fromToken.symbol,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_address_source:
-                          toAssetId(
-                            toToken.address ?? '',
-                            formatChainIdToCaip(toToken.chainId ?? ''),
-                          ) ??
-                          getNativeAssetForChainId(toChain.chainId)?.assetId,
+                        token_address_source: toToken.assetId,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_address_destination:
-                          toAssetId(
-                            fromToken.address ?? '',
-                            formatChainIdToCaip(fromToken.chainId ?? ''),
-                          ) ?? null,
+                        token_address_destination: fromToken.assetId,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         chain_id_source: formatChainIdToCaip(toChain.chainId),
@@ -675,13 +669,12 @@ const PrepareBridgePage = ({
 
                 if (isSwap) {
                   dispatch(setFromToken(toToken));
-                } else {
+                } else if (toToken) {
                   // Handle account switching for Solana
                   dispatch(
                     setFromChain({
-                      networkConfig: toChain,
+                      chainId: toToken.chainId,
                       token: toToken,
-                      selectedAccount,
                     }),
                   );
                 }
@@ -712,9 +705,7 @@ const PrepareBridgePage = ({
               network: toChain,
               networks: toChains,
               onNetworkChange: (networkConfig) => {
-                if (isNetworkAdded(networkConfig)) {
-                  enableMissingNetwork(networkConfig.chainId);
-                }
+                enableMissingNetwork(networkConfig.chainId);
                 dispatch(setToChainId(networkConfig.chainId));
               },
               header: t('yourNetworks'),
