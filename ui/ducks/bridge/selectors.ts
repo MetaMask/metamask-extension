@@ -17,6 +17,7 @@ import {
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   isCrossChain,
+  type QuoteWarning,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import {
@@ -944,6 +945,26 @@ export const getValidationErrors = createDeepEqualSelector(
             )
           : false,
     };
+  },
+);
+
+export const getWarningLabels = createSelector(
+  [getValidationErrors],
+  ({
+    isEstimatedReturnLow,
+    isNoQuotesAvailable,
+    isInsufficientGasBalance,
+    isInsufficientGasForQuote,
+    isInsufficientBalance,
+  }) => {
+    const warnings: QuoteWarning[] = [];
+    isEstimatedReturnLow && warnings.push('low_return');
+    isNoQuotesAvailable && warnings.push('no_quotes');
+    isInsufficientGasBalance && warnings.push('insufficient_gas_balance');
+    isInsufficientGasForQuote &&
+      warnings.push('insufficient_gas_for_selected_quote');
+    isInsufficientBalance && warnings.push('insufficient_balance');
+    return warnings;
   },
 );
 
