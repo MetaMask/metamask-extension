@@ -558,6 +558,10 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
     multichainBalances: ReturnType<typeof getMultichainBalances>,
     nativeAssetType: ReturnType<typeof getMultichainNativeAssetType>,
   ) => {
+    if (!selectedAccountAddress) {
+      return zeroBalanceAssetFallback;
+    }
+
     const balances = multichainBalances?.[selectedAccountAddress.id];
 
     if (!nativeAssetType || !balances?.[nativeAssetType]) {
