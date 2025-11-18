@@ -3,12 +3,13 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 import { TxData } from '@metamask/bridge-controller';
 import { cloneDeep } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
 import { useCallback, useMemo } from 'react';
-
 import { useDispatch, useSelector } from 'react-redux';
+
 import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
@@ -94,8 +95,16 @@ export function useTransactionConfirm() {
       data,
     };
     if (quoteSelectedForMMSwap?.approval) {
+      const { data, to, gasLimit, value } =
+        quoteSelectedForMMSwap?.approval as TxData;
       newTransactionMeta.batchTransactions = [
-        quoteSelectedForMMSwap?.approval as BatchTransaction,
+        {
+          data: data as Hex,
+          to: to as Hex,
+          gas: toHex(gasLimit ?? 0),
+          value: value as Hex,
+          type: TransactionType.bridgeApproval,
+        } as BatchTransaction,
       ];
     }
     newTransactionMeta.nestedTransactions = undefined;
