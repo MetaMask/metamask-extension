@@ -10,35 +10,9 @@
         "SuppressedError": true
       }
     },
-    "@ensdomains/content-hash": {
-      "globals": {
-        "Buffer.from": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@ensdomains/content-hash>multihashes>buffer": true,
-        "@ensdomains/content-hash>cids": true,
-        "@ensdomains/content-hash>js-base64": true,
-        "@ensdomains/content-hash>multicodec": true,
-        "@ensdomains/content-hash>multihashes": true
-      }
-    },
     "@ethereumjs/tx>@ethereumjs/common": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "webpack>events": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common": {
-      "globals": {
-        "Buffer.alloc": true,
-        "Buffer.concat": true,
-        "Buffer.from": true
-      },
-      "packages": {
-        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util": true,
-        "eth-lattice-keyring>gridplus-sdk>buffer": true,
-        "eth-lattice-keyring>gridplus-sdk>crc-32": true,
         "webpack>events": true
       }
     },
@@ -47,17 +21,7 @@
         "TextEncoder": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>@ethereumjs/rlp": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
     "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>@ethereumjs/rlp": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
-    "eth-lattice-keyring>@ethereumjs/util>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
       }
@@ -73,24 +37,6 @@
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util": {
-      "globals": {
-        "Buffer.alloc": true,
-        "Buffer.allocUnsafe": true,
-        "Buffer.byteLength": true,
-        "Buffer.concat": true,
-        "Buffer.from": true,
-        "Buffer.isBuffer": true,
-        "console.warn": true
-      },
-      "packages": {
-        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>@ethereumjs/rlp": true,
-        "eth-lattice-keyring>gridplus-sdk>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "webpack>events": true,
-        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
       }
     },
     "@ethereumjs/tx>@ethereumjs/util": {
@@ -140,24 +86,6 @@
       },
       "packages": {
         "@metamask/eth-sig-util>@ethereumjs/rlp": true,
-        "buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "webpack>events": true,
-        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
-      }
-    },
-    "eth-lattice-keyring>@ethereumjs/util": {
-      "globals": {
-        "Buffer.alloc": true,
-        "Buffer.allocUnsafe": true,
-        "Buffer.byteLength": true,
-        "Buffer.concat": true,
-        "Buffer.from": true,
-        "Buffer.isBuffer": true,
-        "console.warn": true
-      },
-      "packages": {
-        "eth-lattice-keyring>@ethereumjs/util>@ethereumjs/rlp": true,
         "buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -454,112 +382,6 @@
         "ethers>@ethersproject/properties": true
       }
     },
-    "@metamask/notification-services-controller>firebase>@firebase/app": {
-      "globals": {
-        "FinalizationRegistry": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
-        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger": true,
-        "@metamask/notification-services-controller>firebase>@firebase/util": true,
-        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true
-      }
-    },
-    "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": {
-      "packages": {
-        "@metamask/notification-services-controller>firebase>@firebase/util": true
-      }
-    },
-    "@metamask/notification-services-controller>firebase>@firebase/installations": {
-      "globals": {
-        "BroadcastChannel": true,
-        "Headers": true,
-        "btoa": true,
-        "console.error": true,
-        "crypto": true,
-        "fetch": true,
-        "msCrypto": true,
-        "navigator.onLine": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/notification-services-controller>firebase>@firebase/app": true,
-        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
-        "@metamask/notification-services-controller>firebase>@firebase/util": true,
-        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true
-      }
-    },
-    "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger": {
-      "globals": {
-        "console": true
-      }
-    },
-    "@metamask/notification-services-controller>firebase>@firebase/messaging": {
-      "globals": {
-        "Headers": true,
-        "Notification.maxActions": true,
-        "Notification.permission": true,
-        "Notification.requestPermission": true,
-        "PushSubscription.prototype.hasOwnProperty": true,
-        "ServiceWorkerRegistration": true,
-        "URL": true,
-        "addEventListener": true,
-        "atob": true,
-        "btoa": true,
-        "clearTimeout": true,
-        "clients.matchAll": true,
-        "clients.openWindow": true,
-        "console.warn": true,
-        "document": true,
-        "fetch": true,
-        "indexedDB": true,
-        "location.href": true,
-        "location.origin": true,
-        "navigator": true,
-        "origin.replace": true,
-        "registration.showNotification": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/notification-services-controller>firebase>@firebase/app": true,
-        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
-        "@metamask/notification-services-controller>firebase>@firebase/installations": true,
-        "@metamask/notification-services-controller>firebase>@firebase/util": true,
-        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true
-      }
-    },
-    "@metamask/notification-services-controller>firebase>@firebase/util": {
-      "globals": {
-        "WorkerGlobalScope": true,
-        "atob": true,
-        "browser": true,
-        "btoa": true,
-        "chrome": true,
-        "console": true,
-        "document": true,
-        "indexedDB": true,
-        "navigator": true,
-        "process": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "process": true
-      }
-    },
-    "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
-      "packages": {
-        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
-        "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer>@json-schema-tools/traverse": true,
-        "@metamask/rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": {
-      "packages": {
-        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver>@json-schema-spec/json-pointer": true,
-        "@open-rpc/test-coverage>isomorphic-fetch": true
-      }
-    },
     "@keystonehq/bc-ur-registry-eth": {
       "globals": {
         "Buffer.from": true
@@ -616,94 +438,6 @@
       },
       "packages": {
         "react": true
-      }
-    },
-    "@lavamoat/snow": {
-      "globals": {
-        "Document.prototype": true,
-        "Node.prototype": true,
-        "SNOW": true,
-        "SNOW_WINDOW": true,
-        "URL.createObjectURL": true,
-        "URL.revokeObjectURL": true,
-        "console": true,
-        "document": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
-      "packages": {
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "axios": true
-      }
-    },
-    "@ledgerhq/errors": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@swc/helpers": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": {
-      "packages": {
-        "ethers>@ethersproject/constants": true,
-        "ethers>@ethersproject/hash": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
-        "axios": true,
-        "@metamask/ppom-validator>crypto-js": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": {
-      "globals": {
-        "Buffer.alloc": true,
-        "Buffer.concat": true,
-        "Buffer.from": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@ethersproject/abi": true,
-        "ethers>@ethersproject/rlp": true,
-        "ethers>@ethersproject/transactions": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service": true,
-        "@ledgerhq/errors": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "axios": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>bignumber.js": true,
-        "buffer": true,
-        "semver": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": {
-      "globals": {
-        "Buffer.alloc": true,
-        "Buffer.concat": true,
-        "Buffer.from": true,
-        "clearTimeout": true,
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ledgerhq/errors": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "buffer": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "wait-on>rxjs": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": {
-      "globals": {
-        "__ledgerLogsListen": "write",
-        "console.error": true
       }
     },
     "@material-ui/core": {
@@ -779,61 +513,9 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/assets-controllers>@metamask/abi-utils": {
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": true
-      }
-    },
     "@metamask/account-api": {
       "packages": {
         "@metamask/keyring-utils": true
-      }
-    },
-    "@metamask/account-tree-controller": {
-      "globals": {
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/account-api": true,
-        "@metamask/accounts-controller": true,
-        "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
-        "@metamask/keyring-controller": true,
-        "@metamask/profile-sync-controller": true,
-        "@metamask/snaps-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "eslint>fast-deep-equal": true
-      }
-    },
-    "@metamask/accounts-controller": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/eth-snap-keyring": true,
-        "@metamask/keyring-api": true,
-        "@metamask/keyring-controller": true,
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "lodash": true,
-        "uuid": true
-      }
-    },
-    "@metamask/address-book-controller": {
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true
-      }
-    },
-    "@metamask/announcement-controller": {
-      "packages": {
-        "@metamask/base-controller": true
       }
     },
     "@metamask/approval-controller": {
@@ -848,47 +530,21 @@
     },
     "@metamask/assets-controllers": {
       "globals": {
-        "AbortController": true,
-        "Headers": true,
         "Intl.NumberFormat": true,
         "URL": true,
-        "URLSearchParams": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "fetch": true,
-        "setInterval": true,
-        "setTimeout": true
+        "console.error": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "ethers>@ethersproject/address": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
-        "@metamask/assets-controllers>@metamask/abi-utils": true,
         "@metamask/account-api": true,
-        "@metamask/base-controller": true,
-        "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/keyring-api": true,
-        "@metamask/keyring-snap-client": true,
-        "@metamask/metamask-eth-abis": true,
-        "@metamask/phishing-controller": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true,
         "bn.js": true,
-        "immer": true,
-        "lodash": true,
         "@metamask/assets-controllers>multiformats": true,
         "reselect": true,
-        "@metamask/assets-controllers>single-call-balance-checker-abi": true,
-        "uuid": true
+        "@metamask/assets-controllers>single-call-balance-checker-abi": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": {
