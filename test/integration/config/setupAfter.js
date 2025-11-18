@@ -1,6 +1,6 @@
 // This file is for Jest-specific setup only and runs before our Jest tests.
 import { jestPreviewConfigure } from 'jest-preview';
-import './assets/index.css';
+import '../config/assets/index.css';
 import '../../helpers/setup-after-helper';
 // Setup console warnings/errors snapshot validation
 import { setupConsoleCapture } from '../../jest/console-capture';

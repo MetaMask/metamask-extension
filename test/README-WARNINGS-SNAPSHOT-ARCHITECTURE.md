@@ -312,7 +312,7 @@ setupConsoleCapture(); // Hooks console.warn/error
 
 Automatically runs before all unit tests via `jest.config.js`.
 
-**`test/integration/config/setupAfter.ts`** - Integration test setup
+**`test/integration/config/setupAfter.js`** - Integration test setup
 
 ```typescript
 // Sets WARNINGS_SNAPSHOT_TYPE='integration'
@@ -460,7 +460,7 @@ This separation prevents infinite loops where validation would fail generation a
 6. `test/jest/global-teardown.ts` - Unit validation (106 lines)
 7. `test/jest/integration-global-teardown.ts` - Integration validation (113 lines)
 8. `test/jest/setup.ts` - Unit console hooks setup (11 lines added)
-9. `test/integration/config/setupAfter.ts` - Integration console hooks setup (10 lines added)
+9. `test/integration/config/setupAfter.js` - Integration console hooks setup (10 lines added)
 
 ### Integration (3 files)
 
