@@ -118,9 +118,7 @@ export const EditGasFeesRow = ({
             {!(showFiat && !showAdvancedDetails) && !isGasFeeSponsored && (
               <TokenValue roundedValue={tokenValue} />
             )}
-            {!isQuotedSwapDisplayedInInfo && !isGasFeeSponsored && (
-              <SelectedGasFeeToken />
-            )}
+            {!isGasFeeSponsored && <SelectedGasFeeToken />}
           </Box>
         )}
       </ConfirmInfoAlertRow>
