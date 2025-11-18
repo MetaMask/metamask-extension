@@ -3,9 +3,11 @@ import { KeyringController } from '@metamask/keyring-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { cloneDeep } from 'lodash';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { v4 as uuid } from 'uuid';
+import { sha256FromString } from 'ethereumjs-util';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { WALLET_PASSWORD } from '../../../test/e2e/constants';
-import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
+import { defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { normalizeSafeAddress } from '../lib/multichain/address';
@@ -34,6 +36,10 @@ export async function generateWalletState(withState, fromTest) {
   if (withState) {
     FIXTURES_CONFIG = withState;
   }
+
+  q// This SRP has 30 accounts each with a Solana account
+  const TEST_SRP =
+    'stock grab suspect keep column cover plate grape assault patrol pistol wire';
 
   const { vault, accounts } = await generateVaultAndAccount(
     process.env.TEST_SRP || E2E_SRP,
