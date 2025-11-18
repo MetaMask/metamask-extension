@@ -496,7 +496,7 @@ describe('NetworkListMenu', () => {
           NETWORK_TYPES.MAINNET,
         ),
       );
-    }, 30000);
+    });
 
     it('fires setNetworkClientIdForDomain when test network item is clicked', async () => {
       const state = {
@@ -668,6 +668,6 @@ describe('NetworkListMenu', () => {
       await waitFor(() => expect(mockUpdateCustomNonce).toHaveBeenCalled());
       await waitFor(() => expect(mockSetNextNonce).toHaveBeenCalled());
       await waitFor(() => expect(mockDetectNfts).toHaveBeenCalled());
-    }, 30000);
+    });
   });
 });
