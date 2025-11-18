@@ -4,8 +4,7 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { PAGES } from '../../../webdriver/driver';
-import { withFixtures, unlockWallet } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import { unlockWallet } from '../../../helpers';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -14,7 +13,7 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import { withMultichainAccountsDesignEnabled } from '../../multichain-accounts/common';
 import { mockIdentityServices } from '../mocks';
 import { arrangeTestUtils } from './helpers';
 
@@ -41,18 +40,18 @@ describe('Account syncing - Settings Toggle', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
     // Phase 1: Initial setup and account creation with sync enabled
-    await withFixtures(
+    await withMultichainAccountsDesignEnabled(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        withFixtures: (fixtureBuilder) =>
+          fixtureBuilder.withBackupAndSyncSettings(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
-      async ({ driver }) => {
+      async (driver) => {
         await unlockWallet(driver);
 
         const header = new HeaderNavbar(driver);
@@ -124,13 +123,14 @@ describe('Account syncing - Settings Toggle', function () {
     );
 
     // Phase 3: Fresh app instance to verify sync persistence
-    await withFixtures(
+    await withMultichainAccountsDesignEnabled(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        withFixtures: (fixtureBuilder) =>
+          fixtureBuilder.withBackupAndSyncSettings(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
-      async ({ driver }) => {
+      async (driver) => {
         // Login to fresh app instance to test sync restoration
         await unlockWallet(driver);
 
