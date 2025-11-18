@@ -41,4 +41,15 @@
       background-color: var(--color-background-default);
     }
   }
+
+  &__sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  &__content-wrapper {
+    flex: 1;
+    overflow-y: auto;
+  }
 }

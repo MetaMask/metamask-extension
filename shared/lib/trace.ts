@@ -145,6 +145,9 @@ export type TraceRequest = {
   /**
    * The parent context of the trace.
    * If provided, the trace will be nested under the parent trace.
+   * Can be either:
+   * - A Sentry Span
+   * - { _name: TraceName, _id?: string } (when serialized across RPC)
    */
   parentContext?: TraceContext;
 
@@ -317,6 +320,54 @@ function startTrace(request: TraceRequest): TraceContext {
   );
 }
 
+/**
+ * Check if value is a valid Sentry Span (has spanContext method).
+ *
+ * @param value - The value to check.
+ * @returns True if value is a Sentry Span.
+ */
+function isValidSentrySpan(value: unknown): value is Sentry.Span {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'spanContext' in value &&
+    typeof (value as { spanContext?: unknown }).spanContext === 'function'
+  );
+}
+
+/**
+ * Resolve parentContext to a Sentry Span.
+ * Accepts either a Sentry Span or { _name, _id? } object from RPC.
+ *
+ * @param parentContext - Sentry Span or { _name: TraceName, _id?: string }.
+ * @returns Resolved Sentry Span or null.
+ */
+function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
+  if (!parentContext) {
+    return null;
+  }
+
+  if (isValidSentrySpan(parentContext)) {
+    return parentContext;
+  }
+
+  if (
+    typeof parentContext === 'object' &&
+    '_name' in parentContext &&
+    typeof (parentContext as { _name?: unknown })._name === 'string'
+  ) {
+    const ctx = parentContext as { _name: string; _id?: string };
+    const parentKey = getTraceKey({
+      name: ctx._name as TraceName,
+      id: ctx._id,
+    });
+    const parentTrace = tracesByKey.get(parentKey);
+    return parentTrace?.span ?? null;
+  }
+
+  return null;
+}
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function startSpan<T>(
@@ -324,7 +375,7 @@ function startSpan<T>(
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
   const { data: attributes, name, parentContext, startTime, op } = request;
-  const parentSpan = (parentContext ?? null) as Sentry.Span | null;
+  const parentSpan = resolveParentSpan(parentContext);
 
   const spanOptions: StartSpanOptions = {
     attributes,

@@ -19,7 +19,7 @@ import {
   TextVariant,
   IconSize,
 } from '@metamask/design-system-react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -39,18 +39,12 @@ import {
   BorderRadius,
   TextColor as DsTextColor,
 } from '../../../../helpers/constants/design-system';
-import { useClaimState } from '../../../../hooks/claims/useClaimState';
+import { useClaimState } from '../../../../hooks/shield/useClaimState';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
-import {
-  DEFAULT_ROUTE,
-  TRANSACTION_SHIELD_CLAIM_ROUTES,
-} from '../../../../helpers/constants/routes';
-import {
-  submitShieldClaim,
-  setDefaultHomeActiveTabName,
-} from '../../../../store/actions';
+import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
+import { submitShieldClaim } from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
@@ -64,12 +58,18 @@ import {
 import { SubmitClaimError } from '../claim-error';
 import AccountSelector from '../account-selector';
 import NetworkSelector from '../network-selector';
+import { getValidSubmissionWindowDays } from '../../../../selectors/shield/claims';
+import { useSubscriptionMetrics } from '../../../../hooks/shield/metrics/useSubscriptionMetrics';
+import {
+  ShieldCtaActionClickedEnum,
+  ShieldCtaSourceEnum,
+} from '../../../../../shared/constants/subscriptions';
+import { getLatestShieldSubscription } from '../../../../selectors/subscription';
 import {
   ERROR_MESSAGE_MAP,
   FIELD_ERROR_MESSAGE_KEY_MAP,
   MAX_FILE_SIZE_BYTES,
   MAX_FILE_SIZE_MB,
-  VALID_SUBMISSION_WINDOW_DAYS,
 } from './constants';
 import { isValidTransactionHash } from './utils';
 
@@ -78,6 +78,10 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { refetchClaims, pendingClaims } = useClaims();
+  const validSubmissionWindowDays = useSelector(getValidSubmissionWindowDays);
+  const latestShieldSubscription = useSelector(getLatestShieldSubscription);
+  const { captureShieldCtaClickedEvent, captureShieldClaimSubmissionEvent } =
+    useSubscriptionMetrics();
   const [isSubmittingClaim, setIsSubmittingClaim] = useState(false);
 
   const {
@@ -299,34 +303,66 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     [dispatch, setErrorMessage, t],
   );
 
-  const handleOpenActivityTab = useCallback(async () => {
-    dispatch(setDefaultHomeActiveTabName('activity'));
-    navigate(DEFAULT_ROUTE);
-  }, [dispatch, navigate]);
+  const onClickFindTransactionHash = useCallback(async () => {
+    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
+    captureShieldCtaClickedEvent({
+      source: ShieldCtaSourceEnum.Settings,
+      ctaActionClicked: ShieldCtaActionClickedEnum.FindingTxHash,
+      redirectToUrl: TRANSACTION_SHIELD_LINK,
+    });
+  }, [captureShieldCtaClickedEvent]);
 
   const handleSubmitClaim = useCallback(async () => {
     if (isInvalidData) {
       return;
     }
+
+    const trackClaimSubmissionEvent = (
+      submissionStatus: 'started' | 'completed' | 'failed',
+      errorMessage?: string,
+    ) => {
+      if (!latestShieldSubscription) {
+        return;
+      }
+      captureShieldClaimSubmissionEvent({
+        subscriptionStatus: latestShieldSubscription.status,
+        attachmentsCount: files?.length ?? 0,
+        submissionStatus,
+        errorMessage,
+      });
+    };
+
     try {
       setIsSubmittingClaim(true);
       const chainIdNumber = Number(chainId);
+      // track the event when the claim submission is started
+      trackClaimSubmissionEvent('started');
+
       await submitShieldClaim({
         chainId: chainIdNumber.toString(),
         email,
-        impactedWalletAddress,
-        impactedTransactionHash,
-        reimbursementWalletAddress,
-        caseDescription,
+        impactedWalletAddress: impactedWalletAddress as `0x${string}`,
+        impactedTxHash: impactedTransactionHash as `0x${string}`,
+        reimbursementWalletAddress: reimbursementWalletAddress as `0x${string}`,
+        description: caseDescription,
+        signature: claimSignature as `0x${string}`,
         files,
-        signature: claimSignature,
       });
+
+      // track the event when the claim submission is completed
+      trackClaimSubmissionEvent('completed');
+
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
       // update claims
       await refetchClaims();
       navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
     } catch (error) {
       handleSubmitClaimError(error as SubmitClaimError);
+      const errorMessage =
+        error instanceof SubmitClaimError ? error.message : undefined;
+
+      // track the event when the claim submission fails
+      trackClaimSubmissionEvent('failed', errorMessage);
     } finally {
       setIsSubmittingClaim(false);
     }
@@ -344,13 +380,14 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     refetchClaims,
     claimSignature,
     handleSubmitClaimError,
+    captureShieldClaimSubmissionEvent,
+    latestShieldSubscription,
   ]);
 
   return (
     <Box
-      className="submit-claim-page flex flex-col"
+      className="submit-claim-page flex flex-col pt-4 px-4 pb-4"
       data-testid="submit-claim-page"
-      padding={4}
       gap={4}
     >
       {!isView && pendingClaims.length > 0 && (
@@ -378,7 +415,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               </TextButton>,
             ])
           : t('shieldClaimDetails', [
-              VALID_SUBMISSION_WINDOW_DAYS,
+              validSubmissionWindowDays,
               <TextButton key="here-link" className="min-w-0" asChild>
                 <a
                   href={TRANSACTION_SHIELD_LINK}
@@ -392,15 +429,8 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       </Text>
       {/* Personal details */}
       <Box>
-        <Text variant={TextVariant.HeadingSm}>
+        <Text variant={TextVariant.HeadingSm} className="mb-2">
           {t('shieldClaimPersonalDetails')}
-        </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextAlternative}
-          className="mb-2"
-        >
-          {t('shieldClaimPersonalDetailsDescription')}
         </Text>
         <Box
           borderColor={BoxBorderColor.BorderMuted}
@@ -457,17 +487,9 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       />
       {/* Incident details */}
       <Box className="mt-4">
-        <Text variant={TextVariant.HeadingSm}>
+        <Text variant={TextVariant.HeadingSm} className="mb-2">
           {t('shieldClaimIncidentDetails')}
         </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextAlternative}
-          className="mb-2"
-        >
-          {t('shieldClaimIncidentDetailsDescription')}
-        </Text>
-
         <Box
           borderColor={BoxBorderColor.BorderMuted}
           className="w-full h-[1px] border border-b-0"
@@ -518,7 +540,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               <TextButton
                 size={TextButtonSize.BodySm}
                 className="min-w-0"
-                onClick={handleOpenActivityTab}
+                onClick={onClickFindTransactionHash}
               >
                 {t('shieldClaimImpactedTxHashHelpTextLink')}
               </TextButton>
@@ -532,7 +554,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               <TextButton
                 size={TextButtonSize.BodySm}
                 className="min-w-0"
-                onClick={handleOpenActivityTab}
+                onClick={onClickFindTransactionHash}
               >
                 {t('shieldClaimImpactedTxHashHelpTextLink')}
               </TextButton>

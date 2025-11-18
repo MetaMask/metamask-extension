@@ -13,6 +13,8 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { NetworkClientId } from '@metamask/network-controller';
+import { Hex } from '@metamask/utils';
 import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
@@ -77,6 +79,10 @@ describe('Delegation 7702 Publish Hook', () => {
     TransactionController['isAtomicBatchSupported']
   > = jest.fn();
 
+  const getNextNonceMock: jest.MockedFn<
+    (address: string, networkClientId: NetworkClientId) => Promise<Hex>
+  > = jest.fn();
+
   const signDelegationControllerMock: jest.MockedFn<
     DelegationControllerSignDelegationAction['handler']
   > = jest.fn();
@@ -135,6 +141,7 @@ describe('Delegation 7702 Publish Hook', () => {
     hookClass = new Delegation7702PublishHook({
       isAtomicBatchSupported: isAtomicBatchSupportedMock,
       messenger,
+      getNextNonce: getNextNonceMock,
     });
 
     isAtomicBatchSupportedMock.mockResolvedValue([]);

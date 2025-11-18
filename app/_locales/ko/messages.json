@@ -630,9 +630,6 @@
   "attributions": {
     "message": "속성"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Infura RPC URL은 더 이상 Aurora를 지원하지 않습니다."
-  },
   "authorizedPermissions": {
     "message": "다음 권한을 승인했습니다."
   },
@@ -1822,9 +1819,6 @@
   "depositCrypto": {
     "message": "지갑 주소 또는 QR 코드를 사용하여 다른 계정에서 암호화폐를 입금합니다."
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "이더리움 시스템 업데이트로 인해 Goerli 테스트 네트워크는 곧 단계적으로 지원 중단될 예정입니다."
-  },
   "deprecatedNetwork": {
     "message": "이 네트워크는 더 이상 지원되지 않습니다"
   },
@@ -2329,9 +2323,6 @@
   },
   "existingChainId": {
     "message": "입력한 정보는 기존 체인 ID와 연결되어 있습니다."
-  },
-  "expandView": {
-    "message": "보기 확장"
   },
   "experimental": {
     "message": "실험적"
@@ -5229,9 +5220,6 @@
   "shieldEntryModalGetStarted": {
     "message": "시작하기"
   },
-  "shieldEntryModalSkip": {
-    "message": "건너뛰기"
-  },
   "show": {
     "message": "보기"
   },
@@ -6484,10 +6472,6 @@
   },
   "switchNetwork": {
     "message": "네트워크 전환"
-  },
-  "switchToNetwork": {
-    "message": "$1 네트워크로 전환",
-    "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
     "message": "이 계정으로 전환"

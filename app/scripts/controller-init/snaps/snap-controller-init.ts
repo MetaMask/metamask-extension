@@ -53,6 +53,9 @@ export const SnapControllerInit: ControllerInitFunction<
   const rejectInvalidPlatformVersion = getBooleanFlag(
     process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION,
   );
+  const autoUpdatePreinstalledSnaps = getBooleanFlag(
+    process.env.AUTO_UPDATE_PREINSTALLED_SNAPS,
+  );
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const forcePreinstalledSnaps = getBooleanFlag(
@@ -112,6 +115,7 @@ export const SnapControllerInit: ControllerInitFunction<
       allowLocalSnaps,
       requireAllowlist,
       rejectInvalidPlatformVersion,
+      autoUpdatePreinstalledSnaps,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       forcePreinstalledSnaps,
       ///: END:ONLY_INCLUDE_IF

@@ -6,6 +6,14 @@ import {
 } from '../../../../shared/modules/error';
 import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import {
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+  MetaMetricsEventAccountType,
+  MetaMetricsEventPayload,
+  MetaMetricsEventOptions,
+} from '../../../../shared/constants/metametrics';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import {
@@ -40,12 +48,21 @@ export default class OAuthService {
 
   #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
 
+  #trackEvent: OAuthServiceOptions['trackEvent'];
+
+  #addEventBeforeMetricsOptIn: OAuthServiceOptions['addEventBeforeMetricsOptIn'];
+
+  #getParticipateInMetaMetrics: OAuthServiceOptions['getParticipateInMetaMetrics'];
+
   constructor({
     messenger,
     env,
     webAuthenticator,
     bufferedTrace,
     bufferedEndTrace,
+    trackEvent,
+    addEventBeforeMetricsOptIn,
+    getParticipateInMetaMetrics,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
@@ -57,6 +74,9 @@ export default class OAuthService {
     this.#webAuthenticator = webAuthenticator;
     this.#bufferedTrace = bufferedTrace;
     this.#bufferedEndTrace = bufferedEndTrace;
+    this.#trackEvent = trackEvent;
+    this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
+    this.#getParticipateInMetaMetrics = getParticipateInMetaMetrics;
 
     this.#messenger.registerActionHandler(
       `${SERVICE_NAME}:startOAuthLogin`,
@@ -80,6 +100,47 @@ export default class OAuthService {
   }
 
   /**
+   * Track a MetaMetrics event with buffering (handles consent checking)
+   *
+   * @param payload - The event payload
+   * @param options - Optional event options
+   */
+  #trackEventWithBuffering(
+    payload: MetaMetricsEventPayload,
+    options?: MetaMetricsEventOptions,
+  ): void {
+    const isMetricsEnabled = Boolean(this.#getParticipateInMetaMetrics());
+
+    if (isMetricsEnabled) {
+      this.#trackEvent(payload, options);
+    } else {
+      const bufferedPayload = {
+        ...payload,
+        actionId: `${Date.now() + Math.random()}`,
+      };
+      this.#addEventBeforeMetricsOptIn(bufferedPayload);
+    }
+  }
+
+  /**
+   * Determine if the current flow is a rehydration (existing user coming back)
+   *
+   * @returns True if this is a rehydration flow, false if not, null if status couldn't be determined
+   */
+  #isRehydrationFlow(): boolean | null {
+    try {
+      const state = this.#messenger.call('OnboardingController:getState');
+      return (
+        state.firstTimeFlowType === FirstTimeFlowType.socialImport &&
+        !state.completedOnboarding
+      );
+    } catch (error) {
+      log.error('Error checking rehydration flow:', error);
+      return null;
+    }
+  }
+
+  /**
    * Start the OAuth login process for the given social login type.
    *
    * @param authConnection - The social login type to login with.
@@ -96,7 +157,7 @@ export default class OAuthService {
       this.#webAuthenticator,
     );
 
-    return this.#handleOAuthLogin(loginHandler);
+    return this.#handleOAuthLogin(loginHandler, authConnection);
   }
 
   /**
@@ -177,10 +238,15 @@ export default class OAuthService {
    * Then, we will use the Authorization Code to get the Jwt Token from the Web3Auth Authentication Server.
    *
    * @param loginHandler - The login handler to use.
+   * @param authConnection - The auth connection type (google | apple).
    * @returns The login result.
    */
-  async #handleOAuthLogin(loginHandler: BaseLoginHandler) {
+  async #handleOAuthLogin(
+    loginHandler: BaseLoginHandler,
+    authConnection: AuthConnection,
+  ) {
     const authUrl = await loginHandler.getAuthUrl();
+    const isRehydration = this.#isRehydrationFlow();
 
     let providerLoginSuccess = false;
     let redirectUrlFromOAuth = null;
@@ -238,6 +304,25 @@ export default class OAuthService {
         name: TraceName.OnboardingOAuthProviderLoginError,
       });
 
+      // Track provider login failure
+      const isUserCancelled =
+        errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR;
+      this.#trackEventWithBuffering({
+        event: MetaMetricsEventName.SocialLoginFailed,
+        category: MetaMetricsEventCategory.Onboarding,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_rehydration:
+            isRehydration === null ? 'unknown' : String(isRehydration),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          failure_type: isUserCancelled ? 'user_cancelled' : 'error',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_category: 'provider_login',
+        },
+      });
+
       throw error;
     } finally {
       this.#bufferedEndTrace?.({
@@ -270,6 +355,23 @@ export default class OAuthService {
       });
       this.#bufferedEndTrace?.({
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
+      });
+
+      // Track token exchange failure
+      this.#trackEventWithBuffering({
+        event: MetaMetricsEventName.SocialLoginFailed,
+        category: MetaMetricsEventCategory.Onboarding,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_rehydration:
+            isRehydration === null ? 'unknown' : String(isRehydration),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          failure_type: 'error',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_category: 'get_auth_tokens',
+        },
       });
 
       throw error;

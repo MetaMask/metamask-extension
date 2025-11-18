@@ -115,6 +115,7 @@ export const lavamoatPlugin = (args: Args) =>
         'Date',
         'setTimeout',
         'clearTimeout',
+        'ResizeObserver',
         // globals sentry needs to function
         '__SENTRY__',
         'appState',

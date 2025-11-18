@@ -5,7 +5,6 @@ import {
   SubmitClaimField,
 } from '../types';
 
-export const VALID_SUBMISSION_WINDOW_DAYS = 21;
 export const MAX_FILE_SIZE_MB = 5;
 export const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
@@ -26,7 +25,6 @@ export const ERROR_MESSAGE_MAP: Partial<
   },
   [SUBMIT_CLAIM_ERROR_CODES.SUBMISSION_WINDOW_EXPIRED]: {
     messageKey: 'shieldClaimSubmissionWindowExpired',
-    params: [VALID_SUBMISSION_WINDOW_DAYS.toString()],
   },
   [SUBMIT_CLAIM_ERROR_CODES.MAX_CLAIMS_LIMIT_EXCEEDED]: {
     messageKey: 'shieldClaimMaxClaimsLimitExceeded',
@@ -49,6 +47,28 @@ export const ERROR_MESSAGE_MAP: Partial<
   },
   [SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]: {
     messageKey: 'shieldClaimInvalidRequired',
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.SIGNATURE_COVERAGE_NOT_COVERED]: {
+    messageKey: 'shieldClaimSignatureCoverageNotCovered',
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.SIGNATURE_VERIFICATION_FAILED]: {
+    messageKey: 'shieldClaimWalletOwnershipValidationFailed',
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.CHAIN_NOT_SUPPORTED]: {
+    messageKey: 'shieldClaimChainNotSupported',
+    field: SUBMIT_CLAIM_FIELDS.CHAIN_ID,
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.TRANSACTION_NOT_FOUND]: {
+    messageKey: 'shieldClaimTransactionNotFound',
+    field: SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.TRANSACTION_NOT_FROM_WALLET_ADDRESS]: {
+    messageKey: 'shieldClaimTransactionNotFromWalletAddress',
+    field: SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.TRANSACTION_NOT_SUCCESSFUL]: {
+    messageKey: 'shieldClaimTransactionNotSuccessful',
+    field: SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
   },
 };
 

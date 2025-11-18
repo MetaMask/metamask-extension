@@ -1,8 +1,8 @@
 import { isEqual } from 'lodash';
 import { GetPreferencesResult } from '@metamask/snaps-sdk';
 import { Driver } from '../../webdriver/driver';
-import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
 import { veryLargeDelayMs } from '../../helpers';
+import { DAPP_URL } from '../../constants';
 
 const inputLocator = {
   dataManageStateInput: '#dataManageState',
@@ -163,13 +163,14 @@ export class TestSnaps {
 
   private readonly installedSnapsHeader = '[data-testid="InstalledSnaps"]';
 
+  private readonly networkUrlInput = '#fetchUrl';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async openPage() {
-    console.log('Opening Test Snap Dapp page');
-    await this.driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+  async openPage(url?: string) {
+    await this.driver.openNewPage(url ?? DAPP_URL);
     await this.driver.waitForSelector(this.installedSnapsHeader);
   }
 
@@ -351,6 +352,11 @@ export class TestSnaps {
       );
     }
     console.log('Preferences result span JSON is valid');
+  }
+
+  async fillNetworkInput(name: string) {
+    console.log(`Filling network input with ${name}`);
+    await this.driver.fill(this.networkUrlInput, name);
   }
 
   /**

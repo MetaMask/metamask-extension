@@ -1,8 +1,11 @@
 import {
   MultichainAccountService,
+  AccountProviderWrapper,
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcAccountProvider,
-  AccountProviderWrapper,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  TrxAccountProvider,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain-account-service';
 import { ControllerInitFunction } from '../types';
@@ -40,11 +43,21 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   );
   ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  const trxProvider = new AccountProviderWrapper(
+    controllerMessenger,
+    new TrxAccountProvider(controllerMessenger),
+  );
+  ///: END:ONLY_INCLUDE_IF
+
   const controller = new MultichainAccountService({
     messenger: controllerMessenger,
     providers: [
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       btcProvider,
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
+      trxProvider,
       ///: END:ONLY_INCLUDE_IF
     ],
   });
@@ -90,22 +103,29 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     }, preferencesState),
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  // Handle Bitcoin provider feature flag using previousValueComparator pattern
+  // Handle Bitcoin + Tron provider feature flag using previousValueComparator pattern
   const initialRemoteFeatureFlagsState = initMessenger.call(
     'RemoteFeatureFlagController:getState',
   );
 
-  // Set initial state based on bitcoinAccounts feature flag
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const initialBitcoinEnabled = isMultichainFeatureEnabled(
     initialRemoteFeatureFlagsState?.remoteFeatureFlags?.bitcoinAccounts,
   );
   btcProvider.setEnabled(initialBitcoinEnabled);
+  ///: END:ONLY_INCLUDE_IF
 
-  // Subscribe to RemoteFeatureFlagsController:stateChange with previousValueComparator
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  const initialTronEnabled = isMultichainFeatureEnabled(
+    initialRemoteFeatureFlagsState?.remoteFeatureFlags?.tronAccounts,
+  );
+  trxProvider.setEnabled(initialTronEnabled);
+  ///: END:ONLY_INCLUDE_IF
+
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
     previousValueComparator((prevState, currState) => {
+      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       const prevBitcoinEnabled = isMultichainFeatureEnabled(
         prevState?.remoteFeatureFlags?.bitcoinAccounts,
       );
@@ -129,11 +149,33 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
         }
         // Note: When disabled, no action needed as the provider won't create new accounts
       }
+      ///: END:ONLY_INCLUDE_IF
+
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
+      const prevTronEnabled = isMultichainFeatureEnabled(
+        prevState?.remoteFeatureFlags?.tronAccounts,
+      );
+      const currTronEnabled = isMultichainFeatureEnabled(
+        currState?.remoteFeatureFlags?.tronAccounts,
+      );
+
+      if (prevTronEnabled !== currTronEnabled) {
+        trxProvider.setEnabled(currTronEnabled);
+
+        if (currTronEnabled) {
+          controller.alignWallets().catch((error) => {
+            console.error(
+              'Failed to align wallets after enabling Tron provider:',
+              error,
+            );
+          });
+        }
+      }
+      ///: END:ONLY_INCLUDE_IF
 
       return true;
     }, initialRemoteFeatureFlagsState),
   );
-  ///: END:ONLY_INCLUDE_IF
 
   return {
     memStateKey: null,
