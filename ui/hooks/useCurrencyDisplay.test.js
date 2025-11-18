@@ -216,6 +216,7 @@ describe('useCurrencyDisplay', () => {
       );
 
       const [displayValue, parts] = result.current;
+      expect(displayValue).toStrictEqual('1 POL');
       expect(parts.value).toStrictEqual('1');
       expect(parts.suffix).toStrictEqual('POL');
     });
