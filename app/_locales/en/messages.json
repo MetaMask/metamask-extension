@@ -5705,6 +5705,12 @@
     "message": "Rewards Points",
     "description": "Alt text for the rewards points icon"
   },
+  "rewardsQRCodeDescription": {
+    "message": "You'll need the app to track your progress and redeem rewards. Scan this QR code and we'll help you import your accounts."
+  },
+  "rewardsQRCodeTitle": {
+    "message": "Get the mobile app"
+  },
   "rewardsSignUp": {
     "message": "Sign up for Rewards"
   },
