@@ -43,8 +43,9 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
 
   const allowExternalServices = useSelector(getUseExternalServices);
 
-  const networkConfig =
-    networkConfigurationsByCaipChainId?.[permission.chainId];
+  const caipChainId: CaipChainId = `${KnownCaipNamespace.Eip155}:${hexToNumber(permission.chainId)}`;
+
+  const networkConfig = networkConfigurationsByCaipChainId?.[caipChainId];
 
   // Resolve token info (native or ERC-20) for this permission
   const [resolvedTokenInfo, setResolvedTokenInfo] = useState<{
@@ -98,9 +99,6 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
   );
 
   const signerAddress = permission.permission.permissionResponse.address;
-
-  // Convert hex chain ID to CAIP chain ID format (e.g., "0x1" -> "eip155:1")
-  const caipChainId: CaipChainId = `${KnownCaipNamespace.Eip155}:${hexToNumber(permission.chainId)}`;
 
   // Always call useDisplayName hook (hooks must be called unconditionally)
   const displayNameResult = useDisplayName({
