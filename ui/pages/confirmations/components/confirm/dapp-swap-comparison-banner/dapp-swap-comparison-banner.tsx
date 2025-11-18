@@ -83,6 +83,10 @@ const SwapButton = ({
 
 const DappSwapComparisonInner = () => {
   const t = useI18nContext();
+  const [
+    batchedDappSwapNestedTransactions,
+    setBatchedDappSwapNestedTransactions,
+  ] = useState<BatchTransaction[] | undefined>();
   const {
     fiatRates,
     gasDifference,
@@ -92,7 +96,7 @@ const DappSwapComparisonInner = () => {
     sourceTokenAmount,
     tokenAmountDifference,
     tokenDetails,
-  } = useDappSwapComparisonInfo();
+  } = useDappSwapComparisonInfo(batchedDappSwapNestedTransactions);
 
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -125,6 +129,7 @@ const DappSwapComparisonInner = () => {
             ...currentConfirmation,
             txParams: currentConfirmation.txParamsOriginal,
             batchTransactions: undefined,
+            nestedTransactions: batchedDappSwapNestedTransactions,
           },
           false,
         ),
@@ -149,6 +154,7 @@ const DappSwapComparisonInner = () => {
           },
           txParamsOriginal: currentConfirmation.txParams,
           batchTransactions: [selectedQuote?.approval as BatchTransaction],
+          nestedTransactions: undefined,
         },
         false,
       ),
@@ -156,6 +162,7 @@ const DappSwapComparisonInner = () => {
   }, [
     currentConfirmation,
     dispatch,
+    setBatchedDappSwapNestedTransactions,
     setSelectedSwapType,
     setShowDappSwapComparisonBanner,
     selectedQuote,
