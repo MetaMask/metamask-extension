@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useCallback, useEffect, useState } from 'react';
+import { Hex } from '@metamask/utils';
 import {
   Box,
   BoxBackgroundColor,
@@ -31,6 +32,8 @@ import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap
 import { useDappSwapComparisonMetrics } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonMetrics';
 import { useSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { QuoteSwapSimulationDetails } from '../../transactions/quote-swap-simulation-details/quote-swap-simulation-details';
+import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
+import { NetworkRow } from '../info/shared/network-row/network-row';
 
 const DAPP_SWAP_THRESHOLD = 0.01;
 
@@ -99,8 +102,8 @@ const DappSwapComparisonInner = () => {
   const { dappSwapUi } = useSelector(getRemoteFeatureFlags) as {
     dappSwapUi: DappSwapUiFlag;
   };
-  const { setQuoteSelectedForMMSwap } = useConfirmContext();
-  // update selectedSwapType depending on data
+  const { currentConfirmation, setQuoteSelectedForMMSwap } =
+    useConfirmContext();
   const [selectedSwapType, setSelectedSwapType] = useState<SwapType>(
     SwapType.Current,
   );
@@ -157,6 +160,7 @@ const DappSwapComparisonInner = () => {
 
   const dappTypeSelected = selectedSwapType === SwapType.Current;
 
+  console.log('--------------------------------selectedQuote', selectedQuote);
   return (
     <Box>
       <Box
@@ -227,14 +231,19 @@ const DappSwapComparisonInner = () => {
         </Box>
       )}
       {selectedSwapType === SwapType.Metamask && (
-        <QuoteSwapSimulationDetails
-          fiatRates={fiatRates}
-          quote={selectedQuote as QuoteResponse}
-          tokenDetails={tokenDetails}
-          sourceTokenAmount={sourceTokenAmount}
-          tokenAmountDifference={tokenAmountDifference}
-          minDestTokenAmountInUSD={minDestTokenAmountInUSD}
-        />
+        <>
+          <QuoteSwapSimulationDetails
+            fiatRates={fiatRates}
+            quote={selectedQuote as QuoteResponse}
+            tokenDetails={tokenDetails}
+            sourceTokenAmount={sourceTokenAmount}
+            tokenAmountDifference={tokenAmountDifference}
+            minDestTokenAmountInUSD={minDestTokenAmountInUSD}
+          />
+          <ConfirmInfoSection data-testid="transaction-details-section">
+            <NetworkRow />
+          </ConfirmInfoSection>
+        </>
       )}
     </Box>
   );

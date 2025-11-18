@@ -27,10 +27,10 @@ const BaseTransactionInfo = () => {
           <TransactionAccountDetails />
           <BatchSimulationDetails />
           <TransactionDetails />
-          <GasFeesSection />
-          <AdvancedDetails />
         </>
       )}
+      <GasFeesSection />
+      <AdvancedDetails />
     </>
   );
 };

@@ -36,6 +36,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
 import { BatchedApprovalFunction } from '../batched-approval-function/batched-approval-function';
+import { TxData } from '@metamask/bridge-controller';
 
 export const TransactionData = ({
   data,
@@ -48,10 +49,14 @@ export const TransactionData = ({
   to?: Hex;
   nestedTransactionIndex?: number;
 } = {}) => {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currentConfirmation, quoteSelectedForMMSwap } =
+    useConfirmContext<TransactionMeta>();
   const { nestedTransactions, txParams } = currentConfirmation ?? {};
   const { data: currentData, to: currentTo } = txParams ?? {};
-  const transactionData = data ?? (currentData as Hex);
+  const transactionData =
+    ((quoteSelectedForMMSwap?.trade as TxData)?.data as Hex) ??
+    data ??
+    (currentData as Hex);
   const transactionTo = to ?? (currentTo as Hex);
 
   const decodeResponse = useDecodedTransactionData({
