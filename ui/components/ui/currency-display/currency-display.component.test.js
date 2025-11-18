@@ -68,4 +68,19 @@ describe('CurrencyDisplay Component', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  it('should render with chainId prop', () => {
+    const props = {
+      value: '0x16345785d8a0000',
+      currency: 'POL',
+      chainId: '0x89',
+    };
+
+    const { container } = renderWithProvider(
+      <CurrencyDisplay {...props} />,
+      mockStore,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
 });

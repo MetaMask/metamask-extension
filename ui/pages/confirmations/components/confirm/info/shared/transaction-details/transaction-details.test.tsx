@@ -183,6 +183,28 @@ describe('Transaction Details', () => {
 
         useUserPreferencedCurrencySpy.mockRestore();
       });
+
+      it('passes chainId to ConfirmInfoRowCurrency for proper formatting', () => {
+        const contractInteraction =
+          genUnapprovedContractInteractionConfirmation({
+            chainId: CHAIN_IDS.POLYGON,
+          });
+        const state = getMockConfirmStateForTransaction(contractInteraction, {
+          metamask: {
+            preferences: {
+              showConfirmationAdvancedDetails: true,
+            },
+          },
+        });
+        const mockStore = configureMockStore(middleware)(state);
+        const { getByTestId } = renderWithConfirmContextProvider(
+          <TransactionDetails />,
+          mockStore,
+        );
+
+        const amountRow = getByTestId('transaction-details-amount-row');
+        expect(amountRow).toBeInTheDocument();
+      });
     });
 
     it('display network info if there is an alert on that field', () => {

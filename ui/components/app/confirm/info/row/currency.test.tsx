@@ -30,4 +30,9 @@ describe('ConfirmInfoRowCurrency', () => {
     const { container } = render({ currency: 'usd' });
     expect(container).toMatchSnapshot();
   });
+
+  it('should display with chainId prop', () => {
+    const { container } = render({ currency: 'POL', chainId: '0x89' });
+    expect(container).toMatchSnapshot();
+  });
 });
