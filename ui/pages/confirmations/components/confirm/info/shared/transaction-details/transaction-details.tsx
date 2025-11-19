@@ -118,7 +118,11 @@ export const MethodDataRow = () => {
 const AmountRow = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { currency } = useUserPreferencedCurrency(PRIMARY);
+  const { currency } = useUserPreferencedCurrency(
+    PRIMARY,
+    {},
+    currentConfirmation?.chainId,
+  );
 
   const value = currentConfirmation?.txParams?.value;
 

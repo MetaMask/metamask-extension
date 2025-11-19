@@ -17,6 +17,7 @@ import {
 } from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
+import * as useUserPreferencedCurrencyModule from '../../../../../../../hooks/useUserPreferencedCurrency';
 import { RecipientRow, TransactionDetails } from './transaction-details';
 
 jest.mock(
@@ -151,6 +152,36 @@ describe('Transaction Details', () => {
         expect(
           queryByTestId('transaction-details-amount-row'),
         ).not.toBeInTheDocument();
+      });
+
+      it('uses transaction chainId to determine currency symbol', () => {
+        const useUserPreferencedCurrencySpy = jest.spyOn(
+          useUserPreferencedCurrencyModule,
+          'useUserPreferencedCurrency',
+        );
+
+        const contractInteraction =
+          genUnapprovedContractInteractionConfirmation({
+            chainId: CHAIN_IDS.POLYGON,
+          });
+        const state = getMockConfirmStateForTransaction(contractInteraction, {
+          metamask: {
+            preferences: {
+              showConfirmationAdvancedDetails: true,
+            },
+          },
+        });
+        const mockStore = configureMockStore(middleware)(state);
+        renderWithConfirmContextProvider(<TransactionDetails />, mockStore);
+
+        // Verify useUserPreferencedCurrency was called with the transaction's chainId
+        expect(useUserPreferencedCurrencySpy).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          CHAIN_IDS.POLYGON,
+        );
+
+        useUserPreferencedCurrencySpy.mockRestore();
       });
     });
 
