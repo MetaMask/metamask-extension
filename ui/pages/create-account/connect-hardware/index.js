@@ -117,9 +117,9 @@ class ConnectHardwareForm extends Component {
   }
 
   /**
-   * Ideally we're able to record all connected devices since we can get
-   * multiple devices using the same keyring. This is a workaround that
-   * should be improved if this metric proves to be important.
+   * We use this method to get all connected hardware wallets. This is just a workaround for
+   * the moment since, ideally, we should record all connected devices because we can have
+   * multiple devices using the same keyring.
    *
    * @returns {Array} Array of hardware wallet keyrings
    */
