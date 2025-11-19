@@ -86,7 +86,12 @@ describe('Settings', function () {
 
         // Now that we no longer need the MetaMask UI, and want the browser
         // to handle the request error, we need to stop the server
-        await server.stop();
+        await server.forAnyRequest().thenPassThrough({
+          beforeRequest: (req) => {
+            console.log('MM Request going to a live server =========', req.url);
+            return {};
+          },
+        });
 
         try {
           await driver.openNewPage(ENS_NAME_URL);
