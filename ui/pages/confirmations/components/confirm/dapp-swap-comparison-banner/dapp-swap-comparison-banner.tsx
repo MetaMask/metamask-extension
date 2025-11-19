@@ -97,7 +97,7 @@ const DappSwapComparisonInner = () => {
     dappSwapUi: DappSwapUiFlag;
   };
   const { setQuoteSelectedForMMSwap } = useConfirmContext();
-  const rewardsText = useDappSwapComparisonRewardText();
+  const rewards = useDappSwapComparisonRewardText();
   const [selectedSwapType, setSelectedSwapType] = useState<SwapType>(
     SwapType.Current,
   );
@@ -216,7 +216,7 @@ const DappSwapComparisonInner = () => {
             {t('dappSwapQuoteDifference', [
               `$${(gasDifference + tokenAmountDifference).toFixed(2)}`,
             ])}
-            {rewardsText && <span>{rewardsText}</span>}
+            {rewards && <span> • {rewards.text}</span>}
           </Text>
           <Text color={TextColor.TextAlternative} variant={TextVariant.BodyXs}>
             {t('dappSwapBenefits')}

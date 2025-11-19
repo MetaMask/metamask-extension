@@ -2583,6 +2583,9 @@
   "estimatedFeeTooltip": {
     "message": "Amount paid to process the transaction on network."
   },
+  "estimatedPointsRow": {
+    "message": "Est. points"
+  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },

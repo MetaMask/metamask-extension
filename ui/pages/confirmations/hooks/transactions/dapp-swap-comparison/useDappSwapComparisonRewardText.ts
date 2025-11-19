@@ -4,10 +4,13 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from './useDappSwapComparisonInfo';
 
-export const useDappSwapComparisonRewardText = (): string | null => {
+export const useDappSwapComparisonRewardText = (): {
+  text: string;
+  estimatedPoints: number;
+} | null => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const { selectedQuote } = useDappSwapComparisonInfo();
+  const { selectedQuote } = useDappSwapComparisonInfo(undefined);
   const t = useI18nContext();
 
   const { shouldShowRewardsRow, isLoading, estimatedPoints, hasError } =
@@ -22,7 +25,10 @@ export const useDappSwapComparisonRewardText = (): string | null => {
   }
 
   if (estimatedPoints) {
-    return ` • ${t('dappSwapRewardText', [estimatedPoints.toString()])}`;
+    return {
+      text: t('dappSwapRewardText', [estimatedPoints.toString()]),
+      estimatedPoints,
+    };
   }
 
   return null;

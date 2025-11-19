@@ -88,7 +88,10 @@ describe('useDappSwapComparisonRewardText', () => {
 
     const result = await runHook();
 
-    expect(result).toBe(' • Earn 1500 points');
+    expect(result).toEqual({
+      text: 'Earn 1500 points',
+      estimatedPoints: 1500,
+    });
   });
 
   it('returns null when no estimatedPoints', async () => {
