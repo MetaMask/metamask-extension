@@ -8,6 +8,10 @@ import {
 import { SOLANA_URL_REGEX_MAINNET } from '../solana/common-solana';
 import { E2E_SRP } from '../../default-fixture';
 import { SECOND_TEST_E2E_SRP } from '../../flask/multi-srp/common-multi-srp';
+import {
+  IDENTITY_TEAM_SEED_PHRASE,
+  IDENTITY_TEAM_SEED_PHRASE_2,
+} from '../identity/constants';
 
 export type MockedDiscoveredAccount = {
   [ACCOUNT_TYPE.Ethereum]: string;
@@ -87,6 +91,42 @@ export const TEST_SRPS_TO_MOCKED_DISCOVERED_ACCOUNTS: {
     {
       [ACCOUNT_TYPE.Ethereum]: '0x9c1ba572b1a3012fa279b627ed465198c9bd5f95',
       [ACCOUNT_TYPE.Solana]: 'CXMxKApMHcgpjBSq1Ua6ikyTaFpnFCFv5EFgeRSUxQDu',
+    },
+  ],
+  [IDENTITY_TEAM_SEED_PHRASE]: [
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0xaa4179e7f103701e904d27df223a39aa9c27405a',
+      [ACCOUNT_TYPE.Solana]: '3nUFYdw4HFqLy55AxaDjuYLfPw8xqFRHaG7ivJt7o2bd',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0xd2a4afe5c2ff0a16bf81f77ba4201a8107aa874b',
+      [ACCOUNT_TYPE.Solana]: '4raoSWK12PHrALqhtr1a11Asd5XCriBXKJrJXWUah7hm',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0xd54ba25a07eb3da821face8478c3d965ded63018',
+      [ACCOUNT_TYPE.Solana]: '5DLaESifJaFpPtAyZEAii6yoknbGYhj2t5hzHZDvxFXA',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0x2c30c098e2a560988d486c7f25798e790802f953',
+      [ACCOUNT_TYPE.Solana]: 'BR8PdqM3ySXNHW1XcYaLQzDsagyMf8mMGwvVeTkaMTVC',
+    },
+  ],
+  [IDENTITY_TEAM_SEED_PHRASE_2]: [
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0xc4b422616e8636276b156276ba5a1ade13128442',
+      [ACCOUNT_TYPE.Solana]: '34ftsTTkjvtdfkWXQbQpaAcu3Vz4RAhWszJoUaFGRLw3',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0x25b08606e82f9530882fc963db25f06a3742df74',
+      [ACCOUNT_TYPE.Solana]: 'KQat5gm8Ccie7GkC9f851YGWgfWYf1nqFxXE2g5bQLx',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0x1d35c1f6f0f66fa194bf74e71f0a9b9e57474bca',
+      [ACCOUNT_TYPE.Solana]: '6nBGDoxdghPguqpP91zYpeQipzR2iX5Vkt4aYEg5mTYi',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0x40edfef353ceaa3bc8466b72c78d855f44e1121e',
+      [ACCOUNT_TYPE.Solana]: '3gnA8amo9e9zWMZXRM58fAgugzTU9Vh6p62hdyEcNxFL',
     },
   ],
 };

@@ -48,7 +48,6 @@ describe('Account syncing - Unsupported Account types', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-
       return mockIdentityServices(server, userStorageMockttpController);
     };
 

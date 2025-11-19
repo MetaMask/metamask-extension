@@ -44,7 +44,6 @@ describe('Account syncing - Settings Toggle', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
