@@ -11,6 +11,7 @@ import {
 } from '@metamask/gator-permissions-controller';
 import { Hex } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { safeDecodeURIComponent } from '../../components/multichain/pages/gator-permissions/helper';
 
 export type AppState = {
   metamask: GatorPermissionsControllerState;
@@ -241,7 +242,7 @@ const filterPermissionsByOriginAndType = (
     return [];
   }
 
-  const decodedSiteOrigin = decodeURIComponent(siteOrigin);
+  const decodedSiteOrigin = safeDecodeURIComponent(siteOrigin);
   return Object.values(gatorPermissionsMap[permissionType])
     .flat() // flatten array of arrays to get permission across all chains
     .filter((gatorPermission) => {
@@ -252,7 +253,7 @@ const filterPermissionsByOriginAndType = (
       }
 
       return isEqualCaseInsensitive(
-        decodeURIComponent(gatorPermission.siteOrigin),
+        safeDecodeURIComponent(gatorPermission.siteOrigin),
         decodedSiteOrigin,
       );
     });
@@ -507,10 +508,10 @@ export const getAggregatedGatorPermissionByChainIdAndOrigin = createSelector(
         );
 
         // Filter by origin
-        const decodedSiteOrigin = decodeURIComponent(siteOrigin);
+        const decodedSiteOrigin = safeDecodeURIComponent(siteOrigin);
         return allPermissions.filter((permission) =>
           isEqualCaseInsensitive(
-            decodeURIComponent(permission.siteOrigin),
+            safeDecodeURIComponent(permission.siteOrigin),
             decodedSiteOrigin,
           ),
         );

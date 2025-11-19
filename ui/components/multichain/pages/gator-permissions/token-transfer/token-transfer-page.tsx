@@ -25,12 +25,15 @@ import {
   getPermissionGroupMetaData,
   getPermissionGroupMetaDataByOrigin,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
-import { getDisplayOrigin } from '../helper';
+import { getDisplayOrigin, safeDecodeURIComponent } from '../helper';
 
 export const TokenTransferPage = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const { origin } = useParams<{ origin?: string }>();
+  const urlParams = useParams<{ origin?: string }>();
+  const origin = urlParams.origin
+    ? safeDecodeURIComponent(urlParams.origin)
+    : undefined;
 
   const permissionGroupName = 'token-transfer';
 

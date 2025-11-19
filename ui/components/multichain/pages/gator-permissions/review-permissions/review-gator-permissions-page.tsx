@@ -23,7 +23,11 @@ import {
 import { Content, Header, Page } from '../../page';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { extractNetworkName, getDisplayOrigin } from '../helper';
+import {
+  extractNetworkName,
+  getDisplayOrigin,
+  safeDecodeURIComponent,
+} from '../helper';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors';
 import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
 import {
@@ -36,10 +40,14 @@ import { ReviewGatorPermissionItem } from '../components';
 export const ReviewGatorPermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const { chainId, origin } = useParams<{
-    chainId?: string;
+  const urlParams = useParams<{
+    chainId: string;
     origin?: string;
   }>();
+  const { chainId } = urlParams;
+  const origin = urlParams.origin
+    ? safeDecodeURIComponent(urlParams.origin)
+    : undefined;
 
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -47,9 +55,6 @@ export const ReviewGatorPermissionsPage = () => {
   const [totalGatorPermissions, setTotalGatorPermissions] = useState(0);
 
   const networkName: string = useMemo(() => {
-    if (!chainId) {
-      return t('unknownNetworkForGatorPermissions');
-    }
     const networkNameKey = extractNetworkName(evmNetworks, chainId as Hex);
     const networkNameFromTranslation: string = t(networkNameKey);
 
@@ -79,7 +84,7 @@ export const ReviewGatorPermissionsPage = () => {
   );
 
   const { revokeGatorPermission } = useRevokeGatorPermissions({
-    chainId: (chainId ?? '') as Hex,
+    chainId: chainId as Hex,
   });
 
   useEffect(() => {

@@ -2,6 +2,25 @@ import { NetworkConfiguration } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 
 /**
+ * Safely decode a URI component, returning the original string if decoding fails.
+ *
+ * @param str - The string to decode
+ * @returns The decoded string, or the original string if decoding fails or input is invalid
+ */
+export function safeDecodeURIComponent(str: string | null | undefined): string {
+  if (!str || typeof str !== 'string') {
+    return '';
+  }
+
+  try {
+    return decodeURIComponent(str);
+  } catch (error) {
+    // If decoding fails (e.g., malformed URI), return the original string
+    return str;
+  }
+}
+
+/**
  * Extracts the network name from the network configuration.
  *
  * @param networks - The network configurations.
@@ -30,6 +49,6 @@ export const extractNetworkName = (
  * @returns The origin without the protocol prefix.
  */
 export const getDisplayOrigin = (origin: string): string => {
-  const decoded = decodeURIComponent(origin);
+  const decoded = safeDecodeURIComponent(origin);
   return decoded.replace(/^https?:\/\//u, '');
 };

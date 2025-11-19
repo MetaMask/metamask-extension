@@ -1326,6 +1326,38 @@ describe('Gator Permissions Selectors', () => {
         expect(result.tokenTransfer.count).toBe(3);
         expect(result.tokenTransfer.chains).toEqual([MOCK_CHAIN_ID_MAINNET]);
       });
+
+      it('should handle malformed URI components without throwing', () => {
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsStorageEntriesFactory({
+                [MOCK_CHAIN_ID_MAINNET]: {
+                  nativeTokenStream: 1,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 1,
+                  siteOrigin: 'https://example.com',
+                },
+              }),
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        // Test with malformed URI that would cause decodeURIComponent to throw
+        expect(() => {
+          getPermissionMetaDataByOrigin(customState, '%E0%A4%A');
+        }).not.toThrow();
+
+        // Test with empty string
+        const emptyResult = getPermissionMetaDataByOrigin(customState, '');
+        expect(emptyResult.tokenTransfer.count).toBe(0);
+      });
     });
   });
 
@@ -1674,6 +1706,34 @@ describe('Gator Permissions Selectors', () => {
         );
 
         expect(result.length).toBe(3);
+      });
+
+      it('should handle malformed URI components without throwing', () => {
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsStorageEntriesFactory({
+                [MOCK_CHAIN_ID_MAINNET]: {
+                  nativeTokenStream: 1,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 1,
+                  siteOrigin: 'https://example.com',
+                },
+              }),
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        // Test with malformed URI that would cause decodeURIComponent to throw
+        expect(() => {
+          getTokenTransferPermissionsByOrigin(customState, '%E0%A4%A');
+        }).not.toThrow();
       });
     });
   });
@@ -2269,6 +2329,37 @@ describe('Gator Permissions Selectors', () => {
             MOCK_CHAIN_ID_MAINNET,
           );
         });
+      });
+
+      it('should handle malformed URI components without throwing', () => {
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsStorageEntriesFactory({
+                [MOCK_CHAIN_ID_MAINNET]: {
+                  nativeTokenStream: 1,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 1,
+                  siteOrigin: 'https://example.com',
+                },
+              }),
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        // Test with malformed URI that would cause decodeURIComponent to throw
+        expect(() => {
+          getAggregatedGatorPermissionByChainIdAndOrigin(customState, {
+            aggregatedPermissionType: 'token-transfer',
+            chainId: MOCK_CHAIN_ID_MAINNET,
+            siteOrigin: '%E0%A4%A',
+          });
+        }).not.toThrow();
       });
     });
 
