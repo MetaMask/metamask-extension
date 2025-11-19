@@ -164,11 +164,15 @@ export function normalizeMessage(message: string): string {
     // After number normalization, catch chunk files like js-<NUMBER>.hash123.js
     .replace(/[a-z-]+-<NUMBER>\.[0-9a-f]{8,}\.js/giu, '<CHUNK_FILE>')
     .replace(/\/[a-z-]+-<NUMBER>\.[0-9a-f]{8,}\.js/giu, '/<CHUNK_FILE>')
+    // Normalize truncated URLs/paths with ellipses and hash fragments
+    // Pattern: "…<random hash letters>" from message truncation
+    // Examples: "redu…jioc", "chr…ioc", "…cjioc", "EventEmitter…kipeoacjioc"
+    .replace(/…[a-z]{2,}/gu, '…<TRUNCATED>')
     // Normalize whitespace
     .replace(/\s+/gu, ' ')
     .trim();
 
-  // Final pass: Collapse massive module graph structures that survived normalization
+  // Final pass: Collapse massive module graph structures (must be after all other normalization)
   // Pattern: { "name": "<USER_PATH> "value": <NUMBER>, "children": [ ... ]
   // Note: No comma between <USER_PATH> and "value" (removed during whitespace normalization)
   // Collapses 500+ char structures anywhere they appear in the message
