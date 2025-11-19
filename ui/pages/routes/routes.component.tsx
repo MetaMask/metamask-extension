@@ -1002,7 +1002,6 @@ export default function Routes() {
             )}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={ACCOUNT_LIST_PAGE_ROUTE}
             exact
             layout={RootLayout}
@@ -1012,7 +1011,6 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
             exact
             layout={RootLayout}
@@ -1028,7 +1026,6 @@ export default function Routes() {
             )}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
             exact
             layout={LegacyLayout}
@@ -1043,7 +1040,6 @@ export default function Routes() {
             )}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={ADD_WALLET_PAGE_ROUTE}
             exact
             layout={RootLayout}
@@ -1053,7 +1049,6 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
             exact
             layout={RootLayout}
@@ -1061,11 +1056,10 @@ export default function Routes() {
             {createV5CompatRoute<{ id: string }>(MultichainAccountDetailsPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
-              paramsAsProps: false,
+              paramsAsProps: true,
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
             exact
             layout={RootLayout}
@@ -1077,7 +1071,6 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
             exact
             layout={RootLayout}
@@ -1089,7 +1082,6 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={WALLET_DETAILS_ROUTE}
             exact
             layout={LegacyLayout}
@@ -1101,7 +1093,6 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
             exact
             layout={LegacyLayout}
@@ -1116,9 +1107,7 @@ export default function Routes() {
             )}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
-            component={AddressQRCode}
             exact
             layout={LegacyLayout}
           >

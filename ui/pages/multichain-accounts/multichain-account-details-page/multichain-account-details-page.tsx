@@ -56,12 +56,17 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
-export const MultichainAccountDetailsPage = () => {
+export const MultichainAccountDetailsPage = ({
+  id: idProp,
+}: { id?: string } = {}) => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const { id } = useParams();
+  const { id: idFromParams } = useParams();
+
+  // Use prop if provided (from createV5CompatRoute), otherwise fall back to hook
+  const id = idProp || idFromParams;
 
   const accountGroupId = decodeURIComponent(id ?? '') as AccountGroupId;
   const multichainAccount = useSelector((state) =>
