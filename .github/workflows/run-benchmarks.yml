@@ -73,7 +73,7 @@ jobs:
 
       # TODO: Pre-install this in the container image
       - name: Install AWS CLI (needed in the container)
-        run: sudo apt-get install python3-pip && sudo pip install awscli --break-system-packages
+        run: sudo apt-get update && sudo apt-get install python3-pip && sudo pip install awscli --break-system-packages
 
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS
