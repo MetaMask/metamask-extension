@@ -24,6 +24,10 @@ export const SnapsRegistryInit: ControllerInitFunction<
     state: persistedState.SnapsRegistry,
     messenger: controllerMessenger,
     refetchOnAllowlistMiss: requireAllowlist,
+    clientConfig: {
+      type: 'extension',
+      version: process.env.METAMASK_VERSION,
+    },
   });
 
   return {

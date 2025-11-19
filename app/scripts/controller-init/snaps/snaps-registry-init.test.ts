@@ -38,6 +38,10 @@ describe('SnapsRegistryInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       refetchOnAllowlistMiss: false,
+      clientConfig: {
+        type: 'extension',
+        version: process.env.METAMASK_VERSION,
+      },
     });
   });
 });
