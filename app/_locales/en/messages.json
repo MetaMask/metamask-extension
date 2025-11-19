@@ -3681,9 +3681,6 @@
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
-  "metamaskExtension": {
-    "message": "MetaMask Extension"
-  },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
   },
@@ -4222,6 +4219,9 @@
   },
   "noMMFeeSwapping": {
     "message": "No MM fee swapping into $1."
+  },
+  "noNetworkFee": {
+    "message": "No network fee"
   },
   "noNetworksAvailable": {
     "message": "No networks available"
@@ -7509,6 +7509,12 @@
   },
   "swapGasFeesSplit": {
     "message": "Gas fees on the previous screen are split between these two transactions."
+  },
+  "swapGasFeesSponsored": {
+    "message": "Paid by MetaMask"
+  },
+  "swapGasFeesSponsoredExplanation": {
+    "message": "This network fee is paid by MetaMask, so you can swap without $1 in your account."
   },
   "swapGasFeesSummary": {
     "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",
