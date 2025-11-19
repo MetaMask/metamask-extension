@@ -72,6 +72,7 @@ export async function withMultichainAccountsDesignEnabled(
       for (const srp of srps) {
         await MockedDiscoveryBuilder.from(srp)
           .skipDefaultGroupIndex()
+          .untilGroupIndex(1)
           .mock(mockServer);
       }
     }
