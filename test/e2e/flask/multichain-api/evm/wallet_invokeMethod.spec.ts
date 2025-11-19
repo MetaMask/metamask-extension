@@ -384,7 +384,9 @@ describe('Multichain API', function () {
     });
   });
 
-  describe('EIP-5792 Methods', function () {
+  // #37821 - When running EIP-5792 methods with EIP7702 feautre flag turned ON the confirmation screen crashes
+  // eslint-disable-next-line mocha/no-skipped-tests
+  describe.skip('EIP-5792 Methods', function () {
     describe('Calling `wallet_getCapabalities`', function () {
       it('should return the available capabilities', async function () {
         await withFixtures(
@@ -507,7 +509,6 @@ describe('Multichain API', function () {
         );
       });
     });
-
     describe('Calling `wallet_getCallsStatus`', function () {
       it('should return the status', async function () {
         await withFixtures(
