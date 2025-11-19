@@ -1,8 +1,12 @@
 import {
+  BatchTransaction,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
+import { TxData } from '@metamask/bridge-controller';
 import { cloneDeep } from 'lodash';
+import { toHex } from '@metamask/controller-utils';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -77,6 +81,37 @@ export function useTransactionConfirm() {
     newTransactionMeta,
     transactionMeta?.isGasFeeSponsored,
   ]);
+
+  const updateSwapWithQuoteDetails = useCallback(() => {
+    const { value, gasLimit, data, to } =
+      quoteSelectedForMMSwap?.trade as TxData;
+    newTransactionMeta.txParams = {
+      ...newTransactionMeta.txParams,
+      value,
+      to,
+      gas: toHex(gasLimit ?? 0),
+      data,
+    };
+    if (quoteSelectedForMMSwap?.approval) {
+      const {
+        data: approvalData,
+        to: approvalTo,
+        gasLimit: approvalGasLimit,
+        value: approvalValue,
+      } = quoteSelectedForMMSwap?.approval as TxData;
+      newTransactionMeta.batchTransactions = [
+        {
+          data: approvalData as Hex,
+          to: approvalTo as Hex,
+          gas: toHex(approvalGasLimit ?? 0),
+          value: approvalValue as Hex,
+          type: TransactionType.swapApproval,
+          isAfter: false,
+        } as BatchTransaction,
+      ];
+    }
+    newTransactionMeta.nestedTransactions = undefined;
+  }, [newTransactionMeta, quoteSelectedForMMSwap]);
 
   const {
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
