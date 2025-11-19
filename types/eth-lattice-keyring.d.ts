@@ -8,10 +8,13 @@ declare module 'eth-lattice-keyring' {
 
     _hasCreds(): boolean;
 
-    _getCreds(): Promise<{
-      deviceID: string;
-      password: string;
-      endpoint: string;
-    } | undefined>;
+    _getCreds(): Promise<
+      | {
+          deviceID: string;
+          password: string;
+          endpoint?: string;
+        }
+      | undefined
+    >;
   }
 }
