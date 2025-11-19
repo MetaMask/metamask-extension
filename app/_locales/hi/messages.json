@@ -7006,18 +7006,8 @@
   "walletConnectionGuide": {
     "message": "हमारी hardware wallet कनेक्शन गाइड"
   },
-  "walletDetails": {
-    "message": "वॉलेट विवरण"
-  },
   "walletName": {
     "message": "वॉलेट का नाम"
-  },
-  "walletNotFoundDescription": {
-    "message": "$1 ID वाला वॉलेट नहीं मिला।",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "वॉलेट नहीं मिला"
   },
   "walletReadyLearn": {
     "message": "$1 आप इस फ्रेज़ को सुरक्षित रख सकते हैं ताकि आप कभी भी अपने पैसे तक पहुंच न खोएं।",

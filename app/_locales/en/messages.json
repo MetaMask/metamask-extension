@@ -8422,18 +8422,8 @@
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
   },
-  "walletDetails": {
-    "message": "Wallet details"
-  },
   "walletName": {
     "message": "Wallet name"
-  },
-  "walletNotFoundDescription": {
-    "message": "The wallet with ID $1 was not found.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Wallet not found"
   },
   "walletReadyLearn": {
     "message": "$1 you can keep this phrase safe so you never lose access to your money.",

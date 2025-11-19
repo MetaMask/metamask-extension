@@ -7012,18 +7012,8 @@
   "walletConnectionGuide": {
     "message": "наше руководство по подключению аппаратного кошелька"
   },
-  "walletDetails": {
-    "message": "Реквизиты кошелька"
-  },
   "walletName": {
     "message": "Имя кошелька"
-  },
-  "walletNotFoundDescription": {
-    "message": "Кошелек с идентификатором $1 не найден.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Кошелек не найден"
   },
   "walletReadyLearn": {
     "message": "$1 Вы можете сохранить эту фразу в надежном месте, чтобы никогда не потерять доступ к своим деньгам.",

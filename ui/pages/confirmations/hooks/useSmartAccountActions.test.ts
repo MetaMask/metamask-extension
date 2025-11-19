@@ -8,7 +8,6 @@ import { useSmartAccountActions } from './useSmartAccountActions';
 
 jest.mock('../../../store/actions', () => ({
   rejectPendingApproval: jest.fn().mockReturnValue({}),
-  setAccountDetailsAddress: jest.fn(),
 }));
 
 const mockDispatch = jest.fn();

@@ -50,7 +50,6 @@ jest.mock('../info/approve/hooks/use-is-nft', () => ({
 
 jest.mock('../../../../../store/actions', () => ({
   getContractMethodData: jest.fn().mockReturnValue({ type: 'dummy' }),
-  setAccountDetailsAddress: jest.fn().mockReturnValue({ type: 'dummy' }),
 }));
 
 describe('ConfirmTitle', () => {

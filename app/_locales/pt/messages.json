@@ -7012,18 +7012,8 @@
   "walletConnectionGuide": {
     "message": "nosso guia de conexão com a carteira de hardware"
   },
-  "walletDetails": {
-    "message": "Detalhes da carteira"
-  },
   "walletName": {
     "message": "Nome da carteira"
-  },
-  "walletNotFoundDescription": {
-    "message": "A carteira com o ID $1 não foi encontrada.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Carteira não encontrada"
   },
   "walletReadyLearn": {
     "message": "$1 você pode guardar esta frase em segurança para nunca perder o acesso ao seu dinheiro.",
