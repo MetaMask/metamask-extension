@@ -83,16 +83,14 @@ export const useUserSubscriptions = (
   { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const isSignedIn = useSelector(selectIsSignedIn);
-  const isUnlocked = useSelector(getIsUnlocked);
   const userSubscriptions = useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
-    if (!isSignedIn || !refetch || !isUnlocked) {
+    if (!refetch) {
       return undefined;
     }
     return await dispatch(getSubscriptions());
-  }, [refetch, dispatch, isSignedIn, isUnlocked]);
+  }, [refetch, dispatch]);
 
   return {
     ...userSubscriptions,
