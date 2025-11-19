@@ -306,7 +306,7 @@ class ConnectHardwareForm extends Component {
         trackEvent({
           event: MetaMetricsEventName.HardwareWalletForgotten,
           properties: {
-            device_type: device,
+            device_type: capitalizeStr(device),
           },
         });
 
