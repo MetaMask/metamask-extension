@@ -84,14 +84,13 @@ describe('Settings', function () {
         await privacySettings.toggleIpfsGateway();
         await privacySettings.toggleEnsDomainResolution();
 
-        // Now that we no longer need the MetaMask UI, and want the browser
-        // to handle the request error, we need to stop the server
-        await server.forAnyRequest().thenPassThrough({
-          beforeRequest: (req) => {
-            console.log('MM Request going to a live server =========', req.url);
-            return {};
-          },
-        });
+        // Let the request pass through to verify we trigger the error page
+        await server
+          .forAnyRequest()
+          .matching(
+            (request) => request.headers.host?.toLowerCase() === ENS_NAME,
+          )
+          .thenPassThrough();
 
         try {
           await driver.openNewPage(ENS_NAME_URL);
