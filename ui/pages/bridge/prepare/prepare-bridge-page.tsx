@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
