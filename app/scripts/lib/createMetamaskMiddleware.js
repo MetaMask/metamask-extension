@@ -2,6 +2,7 @@ import {
   createScaffoldMiddleware,
   mergeMiddleware,
 } from '@metamask/json-rpc-engine';
+import { asLegacyMiddleware } from '@metamask/json-rpc-engine/v2';
 import { createWalletMiddleware } from '@metamask/eth-json-rpc-middleware';
 import {
   createPendingNonceMiddleware,
@@ -27,17 +28,19 @@ export default function createMetamaskMiddleware({
       eth_syncing: false,
       web3_clientVersion: `MetaMask/v${version}`,
     }),
-    createWalletMiddleware({
-      getAccounts,
-      processTransaction,
-      processTypedMessage,
-      processTypedMessageV3,
-      processTypedMessageV4,
-      processPersonalMessage,
-      processDecryptMessage,
-      processEncryptionPublicKey,
-      processRequestExecutionPermissions,
-    }),
+    asLegacyMiddleware(
+      createWalletMiddleware({
+        getAccounts,
+        processTransaction,
+        processTypedMessage,
+        processTypedMessageV3,
+        processTypedMessageV4,
+        processPersonalMessage,
+        processDecryptMessage,
+        processEncryptionPublicKey,
+        processRequestExecutionPermissions,
+      }),
+    ),
     createPendingNonceMiddleware({ getPendingNonce }),
     createPendingTxMiddleware({ getPendingTransactionByHash }),
   ]);
