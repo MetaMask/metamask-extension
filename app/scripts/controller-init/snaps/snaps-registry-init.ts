@@ -26,7 +26,7 @@ export const SnapsRegistryInit: ControllerInitFunction<
     refetchOnAllowlistMiss: requireAllowlist,
     clientConfig: {
       type: 'extension',
-      version: process.env.METAMASK_VERSION,
+      version: process.env.METAMASK_VERSION as SemVerVersion,
     },
   });
 
