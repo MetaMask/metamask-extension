@@ -833,7 +833,7 @@
     "message": "Best quote"
   },
   "bestQuoteTooltip": {
-    "message": "The best quote we found from providers, including provider fees and a 0.25% MetaMask fee. The minimum you'll receive if price changes is $20.82."
+    "message": "The best quote we found from providers, including provider fees and a 0.25% MetaMask fee. The minimum you'll receive if price changes is $1."
   },
   "beta": {
     "message": "Beta"
@@ -5576,6 +5576,123 @@
   "reward": {
     "message": "Reward"
   },
+  "rewardsAuthFailDescription": {
+    "message": "An unknown error occurred while authenticating this account with the rewards program. Please try again later."
+  },
+  "rewardsAuthFailTitle": {
+    "message": "Unknown Error."
+  },
+  "rewardsErrorMessagesAccountAlreadyRegistered": {
+    "message": "This account is already registered with another Rewards profile. Please switch account to continue."
+  },
+  "rewardsErrorMessagesFailedToClaimReward": {
+    "message": "Failed to claim reward. Please try again shortly."
+  },
+  "rewardsErrorMessagesRequestRejected": {
+    "message": "You rejected the request."
+  },
+  "rewardsErrorMessagesServiceNotAvailable": {
+    "message": "Service is not available at the moment. Please try again shortly."
+  },
+  "rewardsErrorMessagesSomethingWentWrong": {
+    "message": "Something went wrong. Please try again shortly."
+  },
+  "rewardsOnboardingIntroDescription": {
+    "message": "Earn points for your activity. \nAdvance through levels to unlock rewards."
+  },
+  "rewardsOnboardingIntroGeoCheckFailedDescription": {
+    "message": "We cannot determine if your country allows opting into the rewards program. Please check your connection and try again."
+  },
+  "rewardsOnboardingIntroGeoCheckFailedTitle": {
+    "message": "Cannot determine opt-in eligibility"
+  },
+  "rewardsOnboardingIntroGeoCheckRetry": {
+    "message": "Retry"
+  },
+  "rewardsOnboardingIntroHardwareWalletDescription": {
+    "message": "Hardware wallet accounts are not eligible to receive rewards yet. Please switch to a different account to proceed."
+  },
+  "rewardsOnboardingIntroHardwareWalletTitle": {
+    "message": "Account not supported"
+  },
+  "rewardsOnboardingIntroRewardsAuthFailRetry": {
+    "message": "Retry"
+  },
+  "rewardsOnboardingIntroStepConfirm": {
+    "message": "Claim 250 points"
+  },
+  "rewardsOnboardingIntroStepSkip": {
+    "message": "Not now"
+  },
+  "rewardsOnboardingIntroTitle": {
+    "message": "Rewards are here"
+  },
+  "rewardsOnboardingIntroUnsupportedRegionDescription": {
+    "message": "Rewards are not supported in your region yet. We are working on expanding access, so check back later."
+  },
+  "rewardsOnboardingIntroUnsupportedRegionTitle": {
+    "message": "Region not supported"
+  },
+  "rewardsOnboardingStep1Description": {
+    "message": "Every swap and perps trade you make in MetaMask gets you closer to rewards. Add your accounts and watch your points add up."
+  },
+  "rewardsOnboardingStep1Title": {
+    "message": "Earn points on every trade"
+  },
+  "rewardsOnboardingStep2Description": {
+    "message": "Hit points milestones to get perks like 50% off perps fees, exclusive tokens, and a free MetaMask Metal Card."
+  },
+  "rewardsOnboardingStep2Title": {
+    "message": "Level up for bigger perks"
+  },
+  "rewardsOnboardingStep3Description": {
+    "message": "You can earn points in the extension, but you’ll need the mobile app to trade perps, track your progress, and redeem rewards."
+  },
+  "rewardsOnboardingStep3Title": {
+    "message": "Unlock rewards on mobile"
+  },
+  "rewardsOnboardingStep4LegalDisclaimer1": {
+    "message": "By selecting 'Claim Points', you agree to the MetaMask Rewards "
+  },
+  "rewardsOnboardingStep4LegalDisclaimer2": {
+    "message": "Supplemental Terms of Use and Privacy Notice"
+  },
+  "rewardsOnboardingStep4LegalDisclaimer3": {
+    "message": ". We'll track onchain activity to reward you automatically –"
+  },
+  "rewardsOnboardingStep4LegalDisclaimer4": {
+    "message": "learn more"
+  },
+  "rewardsOnboardingStep4OptInError": {
+    "message": "Opt-in failed"
+  },
+  "rewardsOnboardingStep4ReferralCodeError": {
+    "message": "Invalid referral code"
+  },
+  "rewardsOnboardingStep4ReferralCodeInput": {
+    "message": "Use a referral code to earn 250 points"
+  },
+  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+    "message": "Referral code (optional)"
+  },
+  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+    "message": "Referral code couldn’t be validated."
+  },
+  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+    "message": "Check your connection and try again."
+  },
+  "rewardsOnboardingStep4Title": {
+    "message": "You'll earn 250 points when you sign up!"
+  },
+  "rewardsOnboardingStep4TitleWithReferralCode": {
+    "message": "You'll earn 500 points when you sign up with a code!"
+  },
+  "rewardsOnboardingStepConfirm": {
+    "message": "Next"
+  },
+  "rewardsOnboardingStepOptIn": {
+    "message": "Claim points"
+  },
   "rewardsPointsBalance": {
     "message": "$1 points",
     "description": "$1 is the formatted number of rewards points"
@@ -5587,6 +5704,9 @@
   "rewardsPointsIcon": {
     "message": "Rewards Points",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsSignUp": {
+    "message": "Sign up for Rewards"
   },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"

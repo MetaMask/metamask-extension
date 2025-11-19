@@ -5,11 +5,15 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
-  ButtonIconSize,
   FontWeight,
+  Icon,
+  IconName,
+  IconColor,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
+  TextAlign,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -17,8 +21,6 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CopyParams } from '../multichain-address-row/multichain-address-row';
 import { getNetworksByScopes } from '../../../../shared/modules/selectors/networks';
-import { ButtonIcon, IconName } from '../../component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
@@ -55,7 +57,6 @@ export const MultichainAggregatedAddressListRow = ({
   const [copyIcon, setCopyIcon] = useState(IconName.Copy); // Default copy icon state
   const [addressCopied, setAddressCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-
   // Track timeout ID for managing `setTimeout`
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -100,12 +101,12 @@ export const MultichainAggregatedAddressListRow = ({
   // Helper function to get icon color based on state
   const getIconColor = () => {
     if (addressCopied) {
-      return IconColor.successDefault;
+      return IconColor.SuccessDefault;
     }
     if (isHovered) {
-      return IconColor.primaryDefault;
+      return IconColor.PrimaryDefault;
     }
-    return IconColor.iconAlternative;
+    return IconColor.IconAlternative;
   };
 
   const getBackgroundColor = useMemo(() => {
@@ -144,17 +145,13 @@ export const MultichainAggregatedAddressListRow = ({
 
   return (
     <Box
-      className={`multichain-address-row ${className}`}
-      style={{
-        marginLeft: -16,
-        marginRight: -16,
-        paddingLeft: 16,
-        paddingRight: 16,
-      }}
+      className={`multichain-aggregated-address-row ${className}`}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
-      gap={4}
+      gap={3}
+      paddingTop={1}
+      paddingBottom={1}
       data-testid="multichain-address-row"
       backgroundColor={getBackgroundColor}
       onClick={handleCopyClick}
@@ -162,7 +159,7 @@ export const MultichainAggregatedAddressListRow = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <Box
-        gap={4}
+        gap={3}
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
       >
@@ -174,20 +171,25 @@ export const MultichainAggregatedAddressListRow = ({
       <Box
         gap={1}
         flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.End}
         alignItems={BoxAlignItems.Center}
       >
         <Text
           variant={TextVariant.BodyXs}
           fontWeight={FontWeight.Medium}
+          textAlign={TextAlign.Right}
           color={getTextColor()}
+          style={{
+            width: '100px',
+          }}
         >
           {displayText}
         </Text>
-        <ButtonIcon
-          iconName={copyIcon}
-          size={ButtonIconSize.Sm}
+        <Icon
+          name={copyIcon}
+          size={IconSize.Xs}
           color={getIconColor()}
-          ariaLabel={t('copyAddressShort')}
+          aria-label={t('copyAddressShort')}
         />
       </Box>
     </Box>
