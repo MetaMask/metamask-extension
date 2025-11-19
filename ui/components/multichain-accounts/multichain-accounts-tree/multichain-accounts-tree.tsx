@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useHistory } from 'react-router-dom';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
   AlignItems,
@@ -44,8 +43,6 @@ export const MultichainAccountsTree = ({
   onClose,
   onAccountTreeItemClick,
 }: MultichainAccountsTreeProps) => {
-  const history = useHistory();
-
   const accountsTree = useMemo(() => {
     // We keep a flag to check if there are any hidden accounts
     let hasHiddenAccounts: boolean = false;

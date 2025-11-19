@@ -36,7 +36,6 @@ export const ConfirmContextProvider: React.FC<{
   >(undefined);
   const { currentConfirmation } = useCurrentConfirmation();
   useSyncConfirmPath(currentConfirmation);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     setQuoteSelectedForMMSwap(undefined);
