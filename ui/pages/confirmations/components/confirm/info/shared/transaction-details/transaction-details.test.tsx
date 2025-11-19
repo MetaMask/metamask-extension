@@ -157,7 +157,7 @@ describe('Transaction Details', () => {
       it('should not be visible for quoted swap', () => {
         jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
           isQuotedSwap: true,
-        });
+        } as ReturnType<typeof SwapCheckHook.useSwapCheck>);
         const contractInteraction =
           genUnapprovedContractInteractionConfirmation({
             chainId: CHAIN_IDS.GOERLI,
@@ -255,7 +255,7 @@ describe('Transaction Details', () => {
       it('does not render for quote swap', () => {
         jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
           isQuotedSwap: true,
-        });
+        } as ReturnType<typeof SwapCheckHook.useSwapCheck>);
         const state = getMockConfirmStateForTransaction(
           genUnapprovedContractInteractionConfirmation(),
           {

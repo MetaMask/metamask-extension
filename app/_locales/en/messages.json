@@ -2896,7 +2896,7 @@
     "message": "View account on $1"
   },
   "getDollarMore": {
-    "message": "Get $$1 more"
+    "message": "Get $1 more"
   },
   "getTheNewestFeatures": {
     "message": "Get the newest features"

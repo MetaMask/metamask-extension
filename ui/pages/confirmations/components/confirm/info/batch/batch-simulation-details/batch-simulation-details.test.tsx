@@ -295,7 +295,7 @@ describe('BatchSimulationDetails', () => {
   it('return null for MetaMask Swap transaction', () => {
     jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
       isQuotedSwap: true,
-    });
+    } as ReturnType<typeof SwapCheckHook.useSwapCheck>);
     const { container } = render();
     expect(container.firstChild).toBeNull();
   });

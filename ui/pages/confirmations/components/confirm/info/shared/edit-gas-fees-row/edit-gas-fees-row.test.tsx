@@ -76,7 +76,7 @@ describe('<EditGasFeesRow />', () => {
   it('does not renders edit gas fee button for quote suggested swap', () => {
     jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
       isQuotedSwap: true,
-    });
+    } as ReturnType<typeof SwapCheckHook.useSwapCheck>);
     const { queryByTestId } = render({
       gasFeeTokens: undefined,
       selectedGasFeeToken: undefined,

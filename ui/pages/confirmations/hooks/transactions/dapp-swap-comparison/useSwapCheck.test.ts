@@ -1,3 +1,4 @@
+import { TransactionType } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -38,5 +39,17 @@ describe('useSwapCheck', () => {
     };
     const { isQuotedSwap } = await runHook(mockConfirmation as Confirmation);
     expect(isQuotedSwap).toBe(true);
+  });
+
+  it('return correct value for isSwapToBeCompared', async () => {
+    const mockConfirmation = {
+      ...mockSwapConfirmation,
+      origin: 'https://metamask.github.io',
+      type: TransactionType.contractInteraction,
+    };
+    const { isSwapToBeCompared } = await runHook(
+      mockConfirmation as Confirmation,
+    );
+    expect(isSwapToBeCompared).toBe(true);
   });
 });

@@ -114,7 +114,7 @@ describe('useResimulationAlert', () => {
   it('returns no alerts if transaction is a quoted swap', () => {
     jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
       isQuotedSwap: true,
-    });
+    } as ReturnType<typeof SwapCheckHook.useSwapCheck>);
 
     const resimulatedConfirmation = {
       ...CONFIRMATION_MOCK,
