@@ -96,12 +96,13 @@ export const SendPage = ({
   const sendStage = useSelector(getSendStage);
   const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
+  // Use v5-compat hooks as fallback (works in test environment with CompatRouter)
+  // In production, props are provided by createV5CompatRoute
   const navigateHook = useNavigate();
   const locationHook = useLocation();
-
-  // Use props if provided, otherwise fall back to hooks
   const navigate = navigateProp || navigateHook;
   const location = locationProp || locationHook;
+
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 

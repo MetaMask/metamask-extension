@@ -798,11 +798,7 @@ export default function Routes() {
             component={ConfirmTransaction}
             layout={LegacyLayout}
           />
-          <RouteWithLayout
-            authenticated
-            path={`${SEND_ROUTE}/:page?`}
-            layout={RootLayout}
-          >
+          <RouteWithLayout path={`${SEND_ROUTE}/:page?`} layout={RootLayout}>
             {createV5CompatRoute<{ page?: string }>(SendPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
