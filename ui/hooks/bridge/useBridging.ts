@@ -37,7 +37,6 @@ import {
   getFromChains,
   getLastSelectedChainId,
 } from '../../ducks/bridge/selectors';
-import { getMultichainProviderConfig } from '../../selectors/multichain';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 
 const useBridging = () => {
