@@ -27,7 +27,7 @@ describe('Token Details', function () {
     },
   };
 
-  it('shows details for an ERC20 token without prices available', async function () {
+  it('shows details for an ERC20 token without prices available TEST', async function () {
     await withFixtures(
       {
         ...fixtures,

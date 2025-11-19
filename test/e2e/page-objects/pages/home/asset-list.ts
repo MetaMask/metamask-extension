@@ -275,7 +275,11 @@ class AssetListPage {
     await this.driver.waitForSelector(this.customTokenModalOption);
     await this.driver.clickElement(this.customTokenModalOption);
     await this.driver.waitForSelector(this.modalWarningBanner);
-    await this.driver.fill(this.tokenAddressInput, tokenAddress);
+
+    // We add retries, to avoid stale element reference
+    await this.driver.fill(this.tokenAddressInput, tokenAddress, {
+      retries: 3,
+    });
     await this.driver.waitForSelector(this.tokenSymbolTitle);
 
     if (symbol) {
