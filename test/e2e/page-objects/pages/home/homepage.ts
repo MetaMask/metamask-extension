@@ -346,8 +346,9 @@ class HomePage {
         console.log(`Token secondary value text: "${text}"`);
 
         // Regular expression to match currency format: $ followed by number (with or without decimals)
-        // Examples: $11.53, $100, $0.50, $1,234.56
-        const currencyFormatRegex = /^\$\d{1,3}(,\d{3})*(\.\d{1,2})?$/u;
+        // Matches both with and without thousand separators
+        // Examples: $11.53, $100, $0.50, $1,234.56, $1234, $10000
+        const currencyFormatRegex = /^\$(\d{1,3}(,\d{3})*|\d+)(\.\d{1,2})?$/u;
 
         pricesDisplayed = currencyFormatRegex.test(text);
         console.log('pricesDisplayed ', pricesDisplayed);
