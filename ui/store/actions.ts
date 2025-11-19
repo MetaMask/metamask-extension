@@ -148,6 +148,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventAccountType,
+  MetaMetricsUserTraits,
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -192,6 +193,9 @@ import {
   SeasonStatusState,
   EstimatePointsDto,
   EstimatedPointsDto,
+  RewardsGeoMetadata,
+  OptInStatusDto,
+  OptInStatusInputDto,
 } from '../../shared/types/rewards';
 import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
 import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
@@ -206,7 +210,7 @@ import {
   callBackgroundMethod,
   submitRequestToBackground,
 } from './background-connection';
-import {
+import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
   TemporaryMessageDataType,
@@ -856,16 +860,11 @@ export function tryUnlockMetamask(
       callBackgroundMethod(
         'syncPasswordAndUnlockWallet',
         [password],
-        (error, isPasswordSynced) => {
+        (error) => {
           if (error) {
             reject(error);
             return;
           }
-          // if password is not synced show connections removal warning to user.
-          if (!isPasswordSynced) {
-            dispatch(setShowConnectionsRemovedModal(true));
-          }
-
           resolve();
         },
       );
@@ -883,6 +882,34 @@ export function tryUnlockMetamask(
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
+  };
+}
+
+/**
+ * Checks if the seedless onboarding user is authenticated.
+ *
+ * @returns True if the seedless onboarding user is authenticated, false otherwise.
+ */
+export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
+  boolean,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      dispatch(showLoadingIndication());
+      const isAuthenticated = await submitRequestToBackground<boolean>(
+        'getIsSeedlessOnboardingUserAuthenticated',
+        [],
+      );
+      return isAuthenticated;
+    } catch (error) {
+      log.warn('getIsSeedlessOnboardingUserAuthenticated error', error);
+      return false;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -2485,15 +2512,6 @@ export function unlockSucceeded(message?: string) {
   return {
     type: actionConstants.UNLOCK_SUCCEEDED,
     value: message,
-  };
-}
-
-export function setShowConnectionsRemovedModal(
-  showConnectionsRemovedModal: boolean,
-) {
-  return {
-    type: actionConstants.SET_SHOW_CONNECTIONS_REMOVED,
-    value: showConnectionsRemovedModal,
   };
 }
 
@@ -6461,6 +6479,10 @@ export function trackMetaMetricsPage(
   ]);
 }
 
+export function updateMetaMetricsTraits(traits: MetaMetricsUserTraits) {
+  return submitRequestToBackground('updateMetaMetricsTraits', [traits]);
+}
+
 export function resetViewedNotifications() {
   return submitRequestToBackground('resetViewedNotifications');
 }
@@ -6918,6 +6940,93 @@ export function estimateRewardsPoints(
       'estimateRewardsPoints',
       [request],
     );
+  };
+}
+
+export function validateRewardsReferralCode(
+  code: string,
+): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    return await submitRequestToBackground<boolean>(
+      'validateRewardsReferralCode',
+      [code],
+    );
+  };
+}
+
+export function getRewardsGeoMetadata(): ThunkAction<
+  Promise<RewardsGeoMetadata | null>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<RewardsGeoMetadata | null>(
+      'getRewardsGeoMetadata',
+    );
+  };
+}
+
+export function rewardsOptIn({
+  accounts,
+  referralCode,
+}: {
+  accounts: InternalAccount[];
+  referralCode?: string;
+}): ThunkAction<
+  Promise<string | null>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<string | null>('rewardsOptIn', [
+      accounts,
+      referralCode,
+    ]);
+  };
+}
+
+export function rewardsIsOptInSupported({
+  account,
+}: {
+  account: InternalAccount;
+}): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    return await submitRequestToBackground<boolean>('rewardsIsOptInSupported', [
+      account,
+    ]);
+  };
+}
+
+export function rewardsGetOptInStatus(
+  params: OptInStatusInputDto,
+): ThunkAction<
+  Promise<OptInStatusDto>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<OptInStatusDto>(
+      'rewardsGetOptInStatus',
+      [params],
+    );
+  };
+}
+
+export function rewardsLinkAccountsToSubscriptionCandidate(
+  accounts: InternalAccount[],
+): ThunkAction<
+  Promise<{ account: InternalAccount; success: boolean }[]>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<
+      { account: InternalAccount; success: boolean }[]
+    >('rewardsLinkAccountsToSubscriptionCandidate', [accounts]);
   };
 }
 
