@@ -35,7 +35,6 @@ import {
   checkDelegationDisabled,
 } from '../../store/controller-actions/gator-permissions-controller';
 import { useRevokeGatorPermissions } from './useRevokeGatorPermissions';
-import { findInternalAccountByAddress } from './utils';
 
 // Mock the dependencies
 jest.mock('../../store/actions', () => ({
