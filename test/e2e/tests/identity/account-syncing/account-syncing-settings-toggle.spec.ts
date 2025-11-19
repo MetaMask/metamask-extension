@@ -33,7 +33,7 @@ describe('Account syncing - Settings Toggle', function () {
   it('syncs new accounts when account sync is enabled and exclude accounts created when sync is disabled', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
-    const sharedMockSetup = (server: Mockttp) => {
+    const sharedMockSetup = async (server: Mockttp) => {
       mockMultichainAccountsFeatureFlagStateTwo(server);
 
       userStorageMockttpController.setupPath(
@@ -44,25 +44,10 @@ describe('Account syncing - Settings Toggle', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      return mockIdentityServices(server, userStorageMockttpController);
-    };
+      mockIdentityServices(server, userStorageMockttpController);
 
-    const phase1MockSetup = async (server: Mockttp) => {
-      sharedMockSetup(server);
-
-      // Stop at default account group to avoid discovering extra accounts.
       await MockedDiscoveryBuilder.fromDefaultSrp()
-        .untilGroupIndex(1)
-        .mock(server);
-    };
-
-    const phase2MockSetup = async (server: Mockttp) => {
-      sharedMockSetup(server);
-
-      // Do no discover more than 2 accounts (only 2 accounts got synced, the 3rd one was not, thus, it
-      // should not be discovered).
-      await MockedDiscoveryBuilder.fromDefaultSrp()
-        .untilGroupIndex(2)
+        .doNotDiscoverAnyAccounts()
         .mock(server);
     };
 
@@ -71,7 +56,7 @@ describe('Account syncing - Settings Toggle', function () {
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: phase1MockSetup,
+        testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -149,7 +134,7 @@ describe('Account syncing - Settings Toggle', function () {
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: phase2MockSetup,
+        testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
         // Login to fresh app instance to test sync restoration
