@@ -221,7 +221,7 @@ export function getNewNetworkAdded(state) {
 
 /**
  * @param state
- * @returns {{ chainId: import('@metamask/utils').Hex; nickname: string; editCompleted: boolean} | undefined}
+ * @returns {{ chainId: import('@metamask/utils').Hex; nickname?: string; editCompleted?: boolean; newNetwork?: boolean; trackRpcUpdateFromBanner?: boolean} | undefined}
  */
 export function getEditedNetwork(state) {
   return state.appState.editedNetwork;
@@ -290,7 +290,10 @@ export function getKeyringSnapRemovalResult(state) {
 export const getPendingTokens = (state) => state.appState.pendingTokens;
 
 export function getShowShieldEntryModal(state) {
-  return state.appState.shieldEntryModal?.show;
+  const { show, hasUserInteractedWithModal } =
+    state.appState.shieldEntryModal || {};
+  // only show the modal if `show` is true and user has not interacted with the modal
+  return Boolean(show) && !hasUserInteractedWithModal;
 }
 
 export function getPendingShieldCohort(state) {

@@ -2005,7 +2005,7 @@
     "message": "the perps page"
   },
   "deepLink_thePredictPage": {
-    "message": "the predict page"
+    "message": "the prediction markets page"
   },
   "deepLink_theRewardsPage": {
     "message": "the MetaMask Rewards page"
@@ -2896,7 +2896,7 @@
     "message": "View account on $1"
   },
   "getDollarMore": {
-    "message": "Get $$1 more"
+    "message": "Get $1 more"
   },
   "getTheNewestFeatures": {
     "message": "Get the newest features"
@@ -4632,6 +4632,12 @@
   "other": {
     "message": "other"
   },
+  "otherPermissionsOnSiteDescription": {
+    "message": "The following permissions were also found on this site. Do you want to remove them?"
+  },
+  "otherPermissionsOnSiteTitle": {
+    "message": "Other permissions on this site"
+  },
   "otherSnaps": {
     "message": "other snaps",
     "description": "Used in the 'permission_rpc' message."
@@ -4712,6 +4718,9 @@
   "pendingTransactionAlertMessageHyperlink": {
     "message": "Learn how to cancel or speed up a transaction.",
     "description": "The text for the hyperlink in the pending transaction alert message"
+  },
+  "perSecond": {
+    "message": "per second"
   },
   "percentChange": {
     "message": "Percent change"
@@ -5366,6 +5375,9 @@
     "message": "This account will be removed from MetaMask.",
     "description": "Title of a banner alert used on account remove modal."
   },
+  "removeAll": {
+    "message": "Remove all"
+  },
   "removeKeyringSnap": {
     "message": "Removing this Snap removes these accounts from MetaMask:"
   },
@@ -5704,6 +5716,12 @@
   "rewardsPointsIcon": {
     "message": "Rewards Points",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "You'll need the app to track your progress and redeem rewards. Scan this QR code and we'll help you import your accounts."
+  },
+  "rewardsQRCodeTitle": {
+    "message": "Get the mobile app"
   },
   "rewardsSignUp": {
     "message": "Sign up for Rewards"
@@ -6661,6 +6679,9 @@
   },
   "siweURI": {
     "message": "URL"
+  },
+  "skip": {
+    "message": "Skip"
   },
   "skipDeepLinkInterstitial": {
     "message": "Don't show interstitial screen when opening deep links"
@@ -7898,6 +7919,12 @@
   "tokenStandard": {
     "message": "Token standard"
   },
+  "tokenStream": {
+    "message": "Token Stream"
+  },
+  "tokenSubscription": {
+    "message": "Token Subscription"
+  },
   "tokenSymbol": {
     "message": "Token symbol"
   },
@@ -8444,6 +8471,9 @@
   "websites": {
     "message": "websites",
     "description": "Used in the 'permission_rpc' message."
+  },
+  "weekly": {
+    "message": "weekly"
   },
   "welcomeBack": {
     "message": "Welcome back"

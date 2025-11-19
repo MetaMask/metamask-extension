@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
+import { QuoteResponse } from '@metamask/bridge-controller';
 import { useDispatch } from 'react-redux';
 
 import { setAccountDetailsAddress } from '../../../../store/actions';
@@ -17,7 +18,10 @@ import { Confirmation } from '../../types/confirm';
 export type ConfirmContextType = {
   currentConfirmation: Confirmation;
   isScrollToBottomCompleted: boolean;
+  isQuotedSwapDisplayedInInfo: boolean;
+  quoteSelectedForMMSwap: QuoteResponse | undefined;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
+  setQuoteSelectedForMMSwap: (selectedQuote: QuoteResponse | undefined) => void;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -32,18 +36,30 @@ export const ConfirmContextProvider: React.FC<{
     useState(true);
   const { currentConfirmation } = useCurrentConfirmation(confirmationId);
   useSyncConfirmPath(currentConfirmation, confirmationId);
+  const [quoteSelectedForMMSwap, setQuoteSelectedForMMSwap] = useState<
+    QuoteResponse | undefined
+  >(undefined);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setQuoteSelectedForMMSwap(undefined);
+  }, [currentConfirmation?.id, setQuoteSelectedForMMSwap]);
 
   const value = useMemo(
     () => ({
       currentConfirmation,
       isScrollToBottomCompleted,
+      isQuotedSwapDisplayedInInfo: Boolean(quoteSelectedForMMSwap),
+      quoteSelectedForMMSwap,
+      setQuoteSelectedForMMSwap,
       setIsScrollToBottomCompleted,
     }),
     [
       currentConfirmation,
       isScrollToBottomCompleted,
+      quoteSelectedForMMSwap,
       setIsScrollToBottomCompleted,
+      setQuoteSelectedForMMSwap,
     ],
   );
 
@@ -77,6 +93,11 @@ export const useConfirmContext = <T = Confirmation,>() => {
   return context as {
     currentConfirmation: T;
     isScrollToBottomCompleted: boolean;
+    isQuotedSwapDisplayedInInfo: boolean;
+    quoteSelectedForMMSwap: QuoteResponse | undefined;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
+    setQuoteSelectedForMMSwap: (
+      selectedQuote: QuoteResponse | undefined,
+    ) => void;
   };
 };

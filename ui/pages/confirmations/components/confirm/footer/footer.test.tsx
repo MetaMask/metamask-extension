@@ -194,7 +194,7 @@ describe('ConfirmFooter', () => {
         currentConfirmation: signatureRequestSIWE,
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: () => undefined,
-      });
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
       const mockStateSIWE =
         getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
       const { getByText } = render(mockStateSIWE);
@@ -227,7 +227,7 @@ describe('ConfirmFooter', () => {
         },
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: () => undefined,
-      });
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
       const mockState2 = {
         ...getMockContractInteractionConfirmState(),
@@ -258,7 +258,7 @@ describe('ConfirmFooter', () => {
         currentConfirmation: genUnapprovedContractInteractionConfirmation(),
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: () => undefined,
-      });
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
       const mockStateTypedSign = getMockContractInteractionConfirmState();
       const { getByText } = render(mockStateTypedSign);
 
@@ -577,7 +577,7 @@ describe('ConfirmFooter', () => {
             currentConfirmation: contractInteractionConfirmation,
             isScrollToBottomCompleted: true,
             setIsScrollToBottomCompleted: () => undefined,
-          });
+          } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
           const { getByText } = render(
             mockStateWithContractInteractionConfirmation,
           );

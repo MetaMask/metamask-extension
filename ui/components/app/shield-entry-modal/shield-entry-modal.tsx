@@ -131,7 +131,12 @@ const ShieldEntryModal = ({
       );
     }
 
-    dispatch(setShowShieldEntryModalOnce(false));
+    dispatch(
+      setShowShieldEntryModalOnce({
+        show: false,
+        hasUserInteractedWithModal: true,
+      }),
+    );
   };
 
   const handleOnGetStarted = () => {
@@ -195,14 +200,13 @@ const ShieldEntryModal = ({
           display={Display.Flex}
           alignItems={AlignItems.center}
           flexDirection={FlexDirection.Column}
-          gap={3}
           paddingTop={4}
           height={BlockSize.Full}
         >
           <Text
             fontFamily={FontFamily.Hero}
             fontWeight={FontWeight.Regular}
-            className="shield-entry-modal__title text-center text-accent04-light"
+            className="shield-entry-modal__title text-center text-accent04-light mb-3"
           >
             {modalType === MODAL_TYPE.A
               ? t('shieldEntryModalTitleA')
@@ -211,7 +215,7 @@ const ShieldEntryModal = ({
           <Text
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
-            className="text-center"
+            className="text-center text-accent04-light"
           >
             {modalType === MODAL_TYPE.A
               ? t('shieldEntryModalSubtitleA', ['$10,000'])
@@ -228,6 +232,7 @@ const ShieldEntryModal = ({
         <ModalFooter
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
+          paddingTop={0}
           className="shield-entry-modal__footer"
         >
           <Button

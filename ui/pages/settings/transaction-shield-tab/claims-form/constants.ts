@@ -14,7 +14,6 @@ export const ERROR_MESSAGE_MAP: Partial<
     SubmitClaimErrorCode,
     {
       messageKey: string;
-      params?: (string | number)[];
       field?: SubmitClaimField;
     }
   >
