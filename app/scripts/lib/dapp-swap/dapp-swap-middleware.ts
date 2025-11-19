@@ -16,18 +16,19 @@ import { captureException } from '../../../../shared/lib/sentry';
 import { getDataFromSwap } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
 import { SecurityAlertResponse } from '../ppom/types';
 
-type DappSwapMiddlewareRequest<Params extends JsonRpcParams = JsonRpcParams> =
-  Required<JsonRpcRequest<Params>> & {
-    origin?: string;
-    securityAlertResponse?: SecurityAlertResponse | undefined;
-    networkClientId: NetworkClientId;
-    params: {
-      data: string;
-      from: string;
-      chainId: string;
-      calls: { data: string; from: string }[];
-    }[];
-  };
+export type DappSwapMiddlewareRequest<
+  Params extends JsonRpcParams = JsonRpcParams,
+> = Required<JsonRpcRequest<Params>> & {
+  origin?: string;
+  securityAlertResponse?: SecurityAlertResponse | undefined;
+  networkClientId: NetworkClientId;
+  params: {
+    data: string;
+    from: string;
+    chainId: string;
+    calls: { data: string; from: string }[];
+  }[];
+};
 
 const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
