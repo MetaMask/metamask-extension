@@ -14,7 +14,7 @@ import {
   AsyncZipDeflate,
   ZipPassThrough,
 } from 'fflate';
-import { noop, type Manifest, Browser, extensionToJs } from '../../helpers';
+import { noop, type Manifest, Browser } from '../../helpers';
 import { schema } from './schema';
 import type { ManifestPluginOptions } from './types';
 
@@ -309,9 +309,13 @@ export class ManifestPlugin<Z extends boolean> {
         manifest.manifest_version === 3 &&
         manifest.background?.service_worker
       ) {
-        manifest.background.service_worker = extensionToJs(
+        const serviceWorkerEntrypoint = compilation.entrypoints.get(
           manifest.background.service_worker,
         );
+        if (serviceWorkerEntrypoint) {
+          const serviceWorkerFiles = serviceWorkerEntrypoint.getFiles();
+          manifest.background.service_worker = serviceWorkerFiles[0];
+        }
       }
 
       // allow the user to `transform` the manifest. Use a copy of the manifest
@@ -327,19 +331,14 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private hookIntoPipelines(compilation: Compilation): void {
-    // prepare manifests early so we can catch errors early instead of waiting
-    // until the end of the compilation.
-    this.prepareManifests(compilation);
     // hook into the processAssets hook to move/zip assets
-    const tapOptions = {
-      name: NAME,
-      stage: Infinity,
-    };
+    const tapOptions = { name: NAME, stage: Infinity };
     if (this.options.zip) {
       const options = this.options as ManifestPluginOptions<true>;
       compilation.hooks.processAssets.tapPromise(
         tapOptions,
         async (assets: Assets) => {
+          this.prepareManifests(compilation);
           await this.zipAssets(compilation, assets, options);
           this.moveAssets(
             compilation,
@@ -351,6 +350,7 @@ export class ManifestPlugin<Z extends boolean> {
     } else {
       const options = this.options as ManifestPluginOptions<false>;
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
+        this.prepareManifests(compilation);
         this.moveAssets(compilation, assets, options);
       });
     }
