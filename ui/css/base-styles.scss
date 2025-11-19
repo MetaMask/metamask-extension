@@ -8,6 +8,7 @@
   --width-sm: 576px;
   --width-max: 798px;
   --width-max-sidepanel: 490px;
+  --header-height: 68px;
 }
 
 html,
@@ -25,8 +26,6 @@ body {
 }
 
 html {
-  min-height: 500px;
-
   @include design-system.screen-sm-max {
     &:not([data-theme]) {
       background-color: var(--color-background-default);

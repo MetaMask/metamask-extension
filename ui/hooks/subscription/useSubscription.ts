@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   PAYMENT_TYPES,
   PaymentType,
@@ -7,7 +7,6 @@ import {
   ProductType,
   RecurringInterval,
   Subscription,
-  BalanceCategory,
   SubscriptionEligibility,
   SubscriptionStatus,
   ModalType,
@@ -35,7 +34,10 @@ import {
 } from '../../store/actions';
 import { useAsyncCallback, useAsyncResult } from '../useAsync';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { selectIsSignedIn } from '../../selectors/identity/authentication';
+import {
+  selectIsSignedIn,
+  selectSessionData,
+} from '../../selectors/identity/authentication';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import {
   getIsShieldSubscriptionActive,
@@ -47,14 +49,24 @@ import { decimalToHex } from '../../../shared/modules/conversion.utils';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
+  getMetaMetricsId,
   getModalTypeForShieldEntryModal,
+  getSelectedInternalAccount,
+  getUnapprovedConfirmations,
   selectNetworkConfigurationByChainId,
 } from '../../selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
 import { EntryModalSourceEnum } from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
-import { getLatestSubscriptionStatus } from '../../../shared/modules/shield';
+import {
+  getLatestSubscriptionStatus,
+  getUserBalanceCategory,
+} from '../../../shared/modules/shield';
+import { openWindow } from '../../helpers/utils/window';
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -71,16 +83,14 @@ export const useUserSubscriptions = (
   { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const isSignedIn = useSelector(selectIsSignedIn);
-  const isUnlocked = useSelector(getIsUnlocked);
   const userSubscriptions = useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
-    if (!isSignedIn || !refetch || !isUnlocked) {
+    if (!refetch) {
       return undefined;
     }
     return await dispatch(getSubscriptions());
-  }, [refetch, dispatch, isSignedIn, isUnlocked]);
+  }, [refetch, dispatch]);
 
   return {
     ...userSubscriptions,
@@ -182,25 +192,56 @@ export const useCancelSubscription = (subscription?: Subscription) => {
   }, [dispatch, subscription, captureShieldMembershipCancelledEvent]);
 };
 
-export const useUnCancelSubscription = ({
-  subscriptionId,
-}: {
-  subscriptionId?: string;
-}) => {
+export const useUnCancelSubscription = (subscription?: Subscription) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const { captureShieldSubscriptionRestartRequestEvent } =
+    useSubscriptionMetrics();
+
+  const trackSubscriptionUncancelRequestEvent = useCallback(
+    (status: 'completed' | 'failed', errorMessage?: string) => {
+      if (!subscription) {
+        return;
+      }
+      const { cryptoPaymentChain, cryptoPaymentCurrency } =
+        getSubscriptionPaymentData(subscription);
+
+      // capture the event when the subscription restart request is triggered
+      captureShieldSubscriptionRestartRequestEvent({
+        subscriptionStatus: subscription.status,
+        paymentType: subscription.paymentMethod.type,
+        billingInterval: subscription.interval,
+        cryptoPaymentChain,
+        cryptoPaymentCurrency,
+        requestStatus: status,
+        errorMessage,
+      });
+    },
+    [captureShieldSubscriptionRestartRequestEvent, subscription],
+  );
+
   return useAsyncCallback(async () => {
-    if (!subscriptionId) {
-      return;
+    try {
+      const subscriptionId = subscription?.id;
+      if (!subscriptionId) {
+        return;
+      }
+      await dispatch(unCancelSubscription({ subscriptionId }));
+      trackSubscriptionUncancelRequestEvent('completed');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      trackSubscriptionUncancelRequestEvent('failed', errorMessage);
+      throw error;
     }
-    await dispatch(unCancelSubscription({ subscriptionId }));
-  }, [dispatch, subscriptionId]);
+  }, [dispatch, subscription, trackSubscriptionUncancelRequestEvent]);
 };
 
 export const useOpenGetSubscriptionBillingPortal = (
   subscription?: Subscription,
 ) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const { captureShieldBillingHistoryOpenedEvent } = useSubscriptionMetrics();
+  const { captureCommonExistingShieldSubscriptionEvents } =
+    useSubscriptionMetrics();
 
   const trackBillingHistoryOpenedEvent = useCallback(() => {
     if (!subscription) {
@@ -210,14 +251,17 @@ export const useOpenGetSubscriptionBillingPortal = (
       getSubscriptionPaymentData(subscription);
 
     // capture the event when the billing history is opened
-    captureShieldBillingHistoryOpenedEvent({
-      subscriptionStatus: subscription.status,
-      paymentType: subscription.paymentMethod.type,
-      billingInterval: subscription.interval,
-      cryptoPaymentChain,
-      cryptoPaymentCurrency,
-    });
-  }, [captureShieldBillingHistoryOpenedEvent, subscription]);
+    captureCommonExistingShieldSubscriptionEvents(
+      {
+        subscriptionStatus: subscription.status,
+        paymentType: subscription.paymentMethod.type,
+        billingInterval: subscription.interval,
+        cryptoPaymentChain,
+        cryptoPaymentCurrency,
+      },
+      MetaMetricsEventName.ShieldBillingHistoryOpened,
+    );
+  }, [captureCommonExistingShieldSubscriptionEvents, subscription]);
 
   return useAsyncCallback(async () => {
     const { url } = await dispatch(getSubscriptionBillingPortalUrl());
@@ -234,7 +278,8 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
   newRecurringInterval?: RecurringInterval;
 }) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const { captureShieldPaymentMethodUpdatedEvent } = useSubscriptionMetrics();
+  const { captureCommonExistingShieldSubscriptionEvents } =
+    useSubscriptionMetrics();
 
   return useAsyncCallback(async () => {
     if (!subscription || !newRecurringInterval) {
@@ -252,12 +297,20 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
     );
 
     // capture the event when the payment method is updated
-    captureShieldPaymentMethodUpdatedEvent({
-      subscriptionStatus: subscription.status,
-      paymentType: subscription.paymentMethod.type,
-      billingInterval: newRecurringInterval,
-    });
-  }, [dispatch, subscription, newRecurringInterval]);
+    captureCommonExistingShieldSubscriptionEvents(
+      {
+        subscriptionStatus: subscription.status,
+        paymentType: subscription.paymentMethod.type,
+        billingInterval: newRecurringInterval,
+      },
+      MetaMetricsEventName.ShieldPaymentMethodUpdated,
+    );
+  }, [
+    dispatch,
+    subscription,
+    newRecurringInterval,
+    captureCommonExistingShieldSubscriptionEvents,
+  ]);
 };
 
 export const useSubscriptionCryptoApprovalTransaction = (
@@ -279,6 +332,19 @@ export const useSubscriptionCryptoApprovalTransaction = (
     networkConfiguration?.rpcEndpoints[
       networkConfiguration.defaultRpcEndpointIndex ?? 0
     ]?.networkClientId;
+
+  const hasPendingApprovals =
+    useSelector(getUnapprovedConfirmations).length > 0;
+  const [shieldTransactionDispatched, setShieldTransactionDispatched] =
+    useState(false);
+
+  useEffect(() => {
+    // navigate to confirmation page if there are pending approvals and shield transaction is dispatched
+    // need to handle here instead of right after `await addTransaction` because approval is not created right after `addTransaction` completed
+    if (hasPendingApprovals && shieldTransactionDispatched) {
+      navigate(CONFIRM_TRANSACTION_ROUTE);
+    }
+  }, [hasPendingApprovals, shieldTransactionDispatched, navigate]);
 
   const handler = useCallback(async () => {
     if (!subscriptionPricing) {
@@ -310,9 +376,9 @@ export const useSubscriptionCryptoApprovalTransaction = (
       networkClientId: networkClientId as string,
     };
     await addTransaction(transactionParams, transactionOptions);
-    navigate(CONFIRM_TRANSACTION_ROUTE);
+    setShieldTransactionDispatched(true);
   }, [
-    navigate,
+    setShieldTransactionDispatched,
     subscriptionPricing,
     evmInternalAccount,
     selectedToken,
@@ -334,41 +400,46 @@ export const useSubscriptionEligibility = (product: ProductType) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isSignedIn = useSelector(selectIsSignedIn);
   const isUnlocked = useSelector(getIsUnlocked);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { totalFiatBalance } = useAccountTotalFiatBalance(
+    selectedAccount,
+    false,
+    true, // use USD conversion rate instead of the current currency
+  );
 
-  const getSubscriptionEligibility = useCallback(
-    async (params?: {
-      balanceCategory?: BalanceCategory;
-    }): Promise<SubscriptionEligibility | undefined> => {
-      try {
-        // if user is not signed in or unlocked, return undefined
-        if (!isSignedIn || !isUnlocked) {
-          return undefined;
-        }
-
-        // get the subscriptions before making the eligibility request
-        // here, we cannot `useUserSubscriptions` hook as the hook's initial state has empty subscriptions array and loading state is false
-        // that mistakenly makes `user does not have a subscription` and triggers the eligibility request
-        const subscriptions = await dispatch(getSubscriptions());
-        const isShieldSubscriptionActive =
-          getIsShieldSubscriptionActive(subscriptions);
-
-        if (!isShieldSubscriptionActive) {
-          // only if shield subscription is not active, get the eligibility
-          const eligibilities = await dispatch(
-            getSubscriptionsEligibilities(params),
-          );
-          return eligibilities.find(
-            (eligibility) => eligibility.product === product,
-          );
-        }
-        return undefined;
-      } catch (error) {
-        log.warn('[useSubscriptionEligibility] error', error);
+  const getSubscriptionEligibility = useCallback(async (): Promise<
+    SubscriptionEligibility | undefined
+  > => {
+    try {
+      // if user is not signed in or unlocked, return undefined
+      if (!isSignedIn || !isUnlocked) {
         return undefined;
       }
-    },
-    [isSignedIn, isUnlocked, dispatch, product],
-  );
+
+      const balanceCategory = getUserBalanceCategory(Number(totalFiatBalance));
+
+      // get the subscriptions before making the eligibility request
+      // here, we cannot `useUserSubscriptions` hook as the hook's initial state has empty subscriptions array and loading state is false
+      // that mistakenly makes `user does not have a subscription` and triggers the eligibility request
+      const subscriptions = await dispatch(getSubscriptions());
+      const isShieldSubscriptionActive =
+        getIsShieldSubscriptionActive(subscriptions);
+
+      if (!isShieldSubscriptionActive) {
+        // only if shield subscription is not active, get the eligibility
+        const eligibilities = await dispatch(
+          getSubscriptionsEligibilities({ balanceCategory }),
+        );
+        return eligibilities.find(
+          (eligibility) => eligibility.product === product,
+        );
+      }
+      return undefined;
+    } catch (error) {
+      log.warn('[useSubscriptionEligibility] error', error);
+      return undefined;
+    }
+  }, [isSignedIn, isUnlocked, dispatch, product, totalFiatBalance]);
 
   return {
     getSubscriptionEligibility,
@@ -530,5 +601,39 @@ export const useHandleSubscription = ({
   return {
     handleSubscription,
     subscriptionResult,
+  };
+};
+
+export const useHandleSubscriptionSupportAction = () => {
+  const version = process.env.METAMASK_VERSION as string;
+  const sessionData = useSelector(selectSessionData);
+  const profileId = sessionData?.profile?.profileId;
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const { customerId: shieldCustomerId } = useUserSubscriptions();
+
+  const handleClickContactSupport = useCallback(() => {
+    let supportLinkWithUserId = SUPPORT_LINK as string;
+    const queryParams = new URLSearchParams();
+    queryParams.append('metamask_version', version);
+    if (profileId) {
+      queryParams.append('metamask_profile_id', profileId);
+    }
+    if (metaMetricsId) {
+      queryParams.append('metamask_metametrics_id', metaMetricsId);
+    }
+    if (shieldCustomerId) {
+      queryParams.append('shield_id', shieldCustomerId);
+    }
+
+    const queryString = queryParams.toString();
+    if (queryString) {
+      supportLinkWithUserId += `?${queryString}`;
+    }
+
+    openWindow(supportLinkWithUserId);
+  }, [version, profileId, metaMetricsId, shieldCustomerId]);
+
+  return {
+    handleClickContactSupport,
   };
 };

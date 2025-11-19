@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { QuoteResponse, TxData } from '@metamask/bridge-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  BatchTransaction,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { fetchQuotes } from '../../../../../store/controller-actions/bridge-controller';
@@ -15,19 +19,20 @@ import {
   getBalanceChangeFromSimulationData,
 } from '../../../utils/dapp-swap-comparison-utils';
 import { useConfirmContext } from '../../../context/confirm';
-import { useTransactionEventFragment } from '../../useTransactionEventFragment';
 import { useDappSwapComparisonLatencyMetrics } from './useDappSwapComparisonLatencyMetrics';
 import { useDappSwapUSDValues } from './useDappSwapUSDValues';
+import { useDappSwapComparisonMetrics } from './useDappSwapComparisonMetrics';
 
 const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
 
-export function useDappSwapComparisonInfo() {
+export function useDappSwapComparisonInfo(
+  batchedDappSwapNestedTransactions: BatchTransaction[] | undefined,
+) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const {
     chainId,
     gasUsed,
     gasLimitNoBuffer,
-    id: transactionId,
     simulationData,
     txParams,
     txParamsOriginal,
@@ -36,7 +41,6 @@ export function useDappSwapComparisonInfo() {
     txParams: {},
   };
   const { data, gas } = txParamsOriginal ?? txParams ?? {};
-  const { updateTransactionEventFragment } = useTransactionEventFragment();
   const {
     requestDetectionLatency,
     quoteRequestLatency,
@@ -48,38 +52,22 @@ export function useDappSwapComparisonInfo() {
     updateSwapComparisonLatency,
   } = useDappSwapComparisonLatencyMetrics();
 
-  const captureDappSwapComparisonMetricsProperties = useCallback(
-    (params: {
-      properties: Record<string, string>;
-      sensitiveProperties?: Record<string, string>;
-    }) => {
-      updateTransactionEventFragment(
-        {
-          ...params,
-        },
-        transactionId,
-      );
-    },
-    [transactionId, updateTransactionEventFragment],
-  );
-
-  const captureDappSwapComparisonFailed = useCallback(
-    (reason: string) => {
-      captureDappSwapComparisonMetricsProperties({
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_dapp_comparison: reason ?? 'failed',
-        },
-      });
-    },
-    [captureDappSwapComparisonMetricsProperties],
-  );
+  const {
+    captureDappSwapComparisonFailed,
+    captureDappSwapComparisonLoading,
+    captureDappSwapComparisonMetricsProperties,
+  } = useDappSwapComparisonMetrics();
 
   const { commands, quotesInput, amountMin, tokenAddresses } = useMemo(() => {
     try {
       let transactionData = data;
-      if (nestedTransactions?.length) {
-        transactionData = nestedTransactions?.find(({ data: trxnData }) =>
+      if (
+        nestedTransactions?.length ||
+        batchedDappSwapNestedTransactions?.length
+      ) {
+        transactionData = (
+          nestedTransactions ?? batchedDappSwapNestedTransactions
+        )?.find(({ data: trxnData }) =>
           trxnData?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
         )?.data;
       }
@@ -101,6 +89,7 @@ export function useDappSwapComparisonInfo() {
       };
     }
   }, [
+    batchedDappSwapNestedTransactions,
     captureDappSwapComparisonFailed,
     chainId,
     data,
@@ -129,14 +118,7 @@ export function useDappSwapComparisonInfo() {
         return undefined;
       }
 
-      captureDappSwapComparisonMetricsProperties({
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_dapp_comparison: 'loading',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_dapp_commands: commands,
-        },
-      });
+      captureDappSwapComparisonLoading(commands);
 
       updateQuoteRequestLatency();
       const startTime = new Date().getTime();
@@ -151,7 +133,7 @@ export function useDappSwapComparisonInfo() {
   }, [
     commands,
     captureDappSwapComparisonFailed,
-    captureDappSwapComparisonMetricsProperties,
+    captureDappSwapComparisonLoading,
     quotesInput,
     updateQuoteResponseLatency,
     updateQuoteRequestLatency,
@@ -227,65 +209,45 @@ export function useDappSwapComparisonInfo() {
 
       captureDappSwapComparisonMetricsProperties({
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_comparison: 'completed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_commands: commands,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_from_token_simulated_value_usd: getTokenUSDValue(
             srcTokenAmount,
             srcTokenAddress as Hex,
           ),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_to_token_simulated_value_usd: getDestinationTokenUSDValue(
             destTokenBalanceChange,
           ),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_minimum_received_value_usd:
             getDestinationTokenUSDValue(amountMin),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_network_fee_usd: confirmationGasUsd,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_from_token_simulated_value_usd: getTokenUSDValue(
             srcTokenAmount,
             srcTokenAddress as Hex,
           ),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_to_token_simulated_value_usd:
             getDestinationTokenUSDValue(destTokenAmount),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_minimum_received_value_usd:
             getDestinationTokenUSDValue(minDestTokenAmount),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_slippage: (bestQuote.quote as unknown as { slippage: string })
             .slippage,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_provider: (
             bestQuote.quote as unknown as { aggregator: string }
           ).aggregator,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_network_fee_usd: totalGasInQuote,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_comparison_total_latency_ms: swapComparisonLatency,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_request_detection_latency_ms: requestDetectionLatency,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_request_latency_ms: quoteRequestLatency,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_response_latency_ms: quoteResponseLatency,
         },
         sensitiveProperties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_from_token_contract: srcTokenAddress,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_from_token_symbol:
             getTokenValueFromRecord<TokenStandAndDetails>(
               tokenDetails,
               srcTokenAddress as Hex,
             )?.symbol ?? 'N/A',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_to_token_contract: destTokenAddress,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_to_token_symbol:
             getTokenValueFromRecord<TokenStandAndDetails>(
               tokenDetails,
@@ -417,6 +379,10 @@ export function useDappSwapComparisonInfo() {
     selectedQuote,
     selectedQuoteValueDifference,
     sourceTokenAmount: quotesInput?.srcTokenAmount,
+    minDestTokenAmountInUSD: getDestinationTokenUSDValue(
+      selectedQuote?.quote?.minDestTokenAmount ?? '0',
+      2,
+    ),
     tokenAmountDifference,
     tokenDetails,
   };

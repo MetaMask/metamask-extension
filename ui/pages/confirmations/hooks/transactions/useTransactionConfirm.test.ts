@@ -28,6 +28,13 @@ jest.mock('../gas/useIsGaslessSupported');
 
 jest.mock('../gas/useGaslessSupportedSmartTransactions');
 
+const mockCaptureSwapSubmit = jest.fn();
+jest.mock('./dapp-swap-comparison/useDappSwapComparisonMetrics', () => ({
+  useDappSwapComparisonMetrics: () => ({
+    captureSwapSubmit: mockCaptureSwapSubmit,
+  }),
+}));
+
 const CUSTOM_NONCE_VALUE = '1234';
 
 const TRANSACTION_META_MOCK =
@@ -306,6 +313,14 @@ describe('useTransactionConfirm', () => {
 
     const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
     expect(actualTransactionMeta.customNonceValue).toBe(CUSTOM_NONCE_VALUE);
+  });
+
+  it('call function to capture swap submit', async () => {
+    const { onTransactionConfirm } = runHook({ customNonceValue: '1234' });
+
+    await onTransactionConfirm();
+
+    expect(mockCaptureSwapSubmit).toHaveBeenCalledTimes(1);
   });
 
   it('updates batch transaction if smart transaction and selected gas fee token', async () => {
