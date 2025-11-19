@@ -19,7 +19,13 @@ const usePolling = <PollingInput>(
     JSON.stringify(usePollingOptions.input) !==
     prevPollingInputStringified.current;
 
-  const isMounted = useRef(true);
+  const isMounted = useRef(false);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (usePollingOptions.enabled === false || !hasPollingInputChanged) {
@@ -52,7 +58,6 @@ const usePolling = <PollingInput>(
 
     // Return a cleanup function to stop polling when the component unmounts
     return () => {
-      isMounted.current = false;
       prevPollingInputStringified.current = null;
       cleanup();
     };

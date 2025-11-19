@@ -48,7 +48,7 @@ export function useAssetDetails(
     return () => {
       isMounted.current = false;
     };
-  });
+  }, []);
 
   useEffect(() => {
     if (!tokenAddress && !userAddress && !transactionData) {
