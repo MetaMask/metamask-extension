@@ -7720,3 +7720,10 @@ export async function submitShieldClaim(params: {
     throw new SubmitClaimError(ClaimSubmitToastType.Errored);
   }
 }
+
+/**
+ * Migrates the state to a split state structure.
+ */
+export async function migrateToSplitState() {
+  await submitRequestToBackground('migrateToSplitState');
+}

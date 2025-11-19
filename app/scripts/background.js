@@ -725,8 +725,14 @@ async function initialize(backup) {
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
 
-  const { update, requestSafeReload } =
+  const { persist, requestSafeReload } =
     getRequestSafeReload(persistenceManager);
+
+  const migrateToSplitState = async () => {
+    await requestSafeReload(async () => {
+      return await persistenceManager.migrateToSplitState();
+    });
+  };
 
   setupController(
     initState,
@@ -738,18 +744,20 @@ async function initialize(backup) {
     preinstalledSnaps,
     requestSafeReload,
     cronjobControllerStorageManager,
+    migrateToSplitState,
   );
 
   if (persistenceManager.storageKind === 'split') {
+    debugger;
     controller.store.on(
       'stateChange',
       async ({ controllerKey, newState, _oldState, _patches }) => {
         persistenceManager.update(controllerKey, newState);
-        await update();
+        await persist();
       },
     );
   } else {
-    controller.store.on('update', update);
+    controller.store.on('update', persist);
   }
   controller.store.on('error', (error) => {
     log.error('MetaMask controller.store error:', error);
@@ -963,6 +971,10 @@ export async function loadStateFromPersistence(backup) {
       `MetaMask - migrator metadata version has invalid type '${typeof versionedData
         .meta.version}'`,
     );
+  } else if (!['data', 'split'].includes(versionedData.meta.storageKind)) {
+    throw new Error(
+      `MetaMask - migrator metadata storageKind has invalid value '${versionedData.meta.storageKind}'`,
+    );
   } else if (!isObject(versionedData.data)) {
     throw new Error(
       `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
@@ -970,17 +982,23 @@ export async function loadStateFromPersistence(backup) {
   }
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
-
-  // write to disk
-  if (writeAll) {
-    for (const [key, value] of Object.entries(versionedData.data)) {
-      persistenceManager.set(key, value);
-    }
+debugger;
+  if (persistenceManager.storageKind === 'data') {
+    // write to disk
+    await persistenceManager.set(versionedData.data);
   } else {
-    // write changes only
-    for (const key of changedKeys) {
-      persistenceManager.set(key, versionedData.data[key]);
+    if (writeAll) {
+      for (const [key, value] of Object.entries(versionedData.data)) {
+        persistenceManager.update(key, value);
+      }
+    } else {
+      // write changes only
+      for (const key of changedKeys) {
+        persistenceManager.update(key, versionedData.data[key]);
+      }
     }
+    // write to disk
+    persistenceManager.persist();
   }
 
   // return just the data
@@ -1131,6 +1149,8 @@ function trackAppOpened(environment) {
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
  * @param {() => Promise<void>)} requestSafeReload - A function that requests a safe reload of the extension.
  * @param {CronjobControllerStorageManager} cronjobControllerStorageManager - A storage manager for the CronjobController.
+ * @param {typeof migrateStorageToSplitState} migrateStorageToSplitState - A function that migrates storage to split state.
+ * @param migrateToSplitState
  */
 export function setupController(
   initState,
@@ -1142,6 +1162,7 @@ export function setupController(
   preinstalledSnaps,
   requestSafeReload,
   cronjobControllerStorageManager,
+  migrateToSplitState,
 ) {
   //
   // MetaMask Controller
@@ -1172,6 +1193,7 @@ export function setupController(
     preinstalledSnaps,
     requestSafeReload,
     cronjobControllerStorageManager,
+    migrateToSplitState,
   });
 
   setupEnsIpfsResolver({

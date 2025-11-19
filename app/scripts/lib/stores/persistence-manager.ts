@@ -1,6 +1,7 @@
 import log from 'loglevel';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
+import { meta } from '@babel/eslint-parser';
 import { captureException } from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { IndexedDBStore } from './indexeddb-store';
@@ -183,6 +184,11 @@ export class PersistenceManager {
   }
 
   setMetadata(metadata: MetaData) {
+    // don't rewrite if nothing has changed
+    // this is a cheap comparison since metadata is small.
+    if (JSON.stringify(this.#metadata) === JSON.stringify(metadata)) {
+      return;
+    }
     this.#metadata = metadata;
     this.pendingPairs.set('meta', metadata);
   }
@@ -192,7 +198,7 @@ export class PersistenceManager {
   pendingPairs = new Map<string, unknown>();
 
   /** @type {null | 'data' | 'split'} */
-  storageKind = 'split';
+  storageKind = 'data';
 
   /**
    * Sets the state in the local store.
@@ -282,10 +288,7 @@ export class PersistenceManager {
    * to delete the key.
    * @throws Error if the storageKind is not 'split'.
    */
-  update<Key extends keyof MetaMaskStateType, Value extends MetaMaskStateType>(
-    key: Key,
-    value: Value,
-  ) {
+  update(key: keyof MetaMaskStateType, value: MetaMaskStateType | undefined) {
     if (this.storageKind !== 'split') {
       throw new Error(
         'MetaMask - cannot set individual keys when storageKind is not "split"',
@@ -295,6 +298,12 @@ export class PersistenceManager {
   }
 
   async persist() {
+    if (this.storageKind !== 'split') {
+      throw new Error(
+        'MetaMask - cannot use `persist` when storageKind is not "split"',
+      );
+    }
+
     await this.open();
 
     const meta = this.#metadata;
@@ -419,7 +428,8 @@ export class PersistenceManager {
         }
 
         this.storageKind =
-          (result.data?.meta as { kind?: string })?.kind ?? 'data';
+          (result.data?.meta as { storageKind?: string })?.storageKind ??
+          'data';
 
         return result;
       },
@@ -509,5 +519,26 @@ export class PersistenceManager {
     if (this.#mostRecentRetrievedState) {
       this.#mostRecentRetrievedState = null;
     }
+  }
+
+  async migrateToSplitState() {
+    if (!this.#metadata) {
+      throw new Error(
+        'MetaMask - metadata must be set before calling "migrateToSplitState"',
+      );
+    }
+    const state = await this.get({ validateVault: false });
+
+    const metadata = structuredClone(this.#metadata);
+    metadata.storageKind = 'split';
+    this.storageKind = 'split';
+    this.setMetadata(metadata);
+    for (const key of Object.keys(state?.data || {})) {
+      const value = state?.data
+        ? state.data[key as keyof MetaMaskStateType]
+        : undefined;
+      this.update(key, value as MetaMaskStateType | undefined);
+    }
+    await this.persist();
   }
 }

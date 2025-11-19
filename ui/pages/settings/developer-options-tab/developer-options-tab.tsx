@@ -39,6 +39,7 @@ import { getRemoteFeatureFlags } from '../../../selectors';
 import ToggleRow from './developer-options-toggle-row-component';
 import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
+import MigrateToSplitStateTest from './migrate-to-split-state-test';
 
 /**
  * Settings Page for Developer Options (internal-only)
@@ -258,9 +259,9 @@ const DeveloperOptionsTab = () => {
       >
         Current States
       </Text>
-      <div className="settings-page__content-padded">
+      <pre className="settings-page__content-padded">
         {renderRemoteFeatureFlags()}
-      </div>
+      </pre>
       <Text
         className="settings-page__security-tab-sub-header"
         color={TextColor.textAlternative}
@@ -277,6 +278,8 @@ const DeveloperOptionsTab = () => {
 
       <BackupAndSyncDevSettings />
       <SentryTest />
+      <hr></hr>
+      <MigrateToSplitStateTest />
     </div>
   );
 };

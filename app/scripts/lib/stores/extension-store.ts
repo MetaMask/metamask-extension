@@ -36,20 +36,24 @@ export default class ExtensionStore implements BaseStore {
     const { local } = browser.storage;
     // don't fetch more than we need, incase extra stuff was put in the db
     // by testing or users playing with the db
-    const keys = ((await local.get('manifest')) as undefined | string[]) ?? [];
+    const response = await local.get(['manifest']);
+    if (response.manifest && Array.isArray(response.manifest)) {
+      const keys = response.manifest;
 
-    // get all keys from the manifest, and load those keys
-    const data = await local.get(keys);
-    this.manifest = new Set(keys);
-    const { meta } = data;
-    if (!meta) {
-      return null;
+      // get all keys from the manifest, and load those keys
+      const data = await local.get(keys);
+      this.manifest = new Set(keys);
+      const { meta } = data;
+      delete data.meta;
+      return {
+        data,
+        meta: meta as unknown as MetaData,
+      };
+    } else {
+      // don't fetch more than we need, incase extra stuff was put in the db
+      // by testing or users playing with the db
+      return await local.get(['data', 'meta']);
     }
-    delete data.meta;
-    return {
-      meta: meta as unknown as MetaData,
-      data,
-    };
   }
 
   async setKeyValues(pairs: Map<string, unknown>): Promise<void> {

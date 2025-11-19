@@ -158,6 +158,7 @@ export default class Migrator extends EventEmitter {
     return {
       data,
       meta: {
+        storageKind: 'data',
         version: this.defaultVersion,
       },
     };
