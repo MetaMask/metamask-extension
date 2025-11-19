@@ -125,6 +125,7 @@ import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
+import { useNonEvmInsufficientBalOverride } from '../../../hooks/bridge/useNonEvmInsufficientBalOverride';
 
 /**
  * Ensures that any missing network gets added to the NetworkEnabledMap (which handles network polling)
@@ -362,6 +363,13 @@ const PrepareBridgePage = ({
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
+  const insufficientBalOverride = useNonEvmInsufficientBalOverride({
+    fromAmount,
+    fromChain: fromChain ?? null,
+    fromToken,
+    accountId: selectedAccount?.id,
+  });
+
   const quoteParams:
     | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
     | undefined = useMemo(
@@ -388,7 +396,7 @@ const PrepareBridgePage = ({
             // balance is less than the tenderly balance
             insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
               ? true
-              : undefined,
+              : insufficientBalOverride,
             slippage,
             walletAddress: selectedAccount.address,
             destWalletAddress: selectedDestinationAccount?.address,
@@ -409,6 +417,7 @@ const PrepareBridgePage = ({
       providerConfig?.rpcUrl,
       gasIncluded,
       gasIncluded7702,
+      insufficientBalOverride,
     ],
   );
 
