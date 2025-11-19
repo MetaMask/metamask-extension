@@ -412,7 +412,6 @@ const AssetPage = ({
           <TokenCell
             key={`${symbol}-${address}`}
             token={tokenWithFiatAmount as TokenWithFiatAmount}
-            disableHover={true}
             safeChains={safeChains}
           />
         )}
