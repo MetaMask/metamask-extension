@@ -1,4 +1,4 @@
-import React, { ReactChildren, ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 
 import { ConfirmContextProvider } from '../../../ui/pages/confirmations/context/confirm';
 import { DappSwapContextProvider } from '../../../ui/pages/confirmations/context/dapp-swap';
