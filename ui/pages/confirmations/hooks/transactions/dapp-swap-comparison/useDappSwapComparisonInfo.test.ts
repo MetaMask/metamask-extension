@@ -145,7 +145,6 @@ describe('useDappSwapComparisonInfo', () => {
 
     const {
       fiatRates,
-      destinationTokenSymbol,
       gasDifference,
       selectedQuote,
       selectedQuoteValueDifference,

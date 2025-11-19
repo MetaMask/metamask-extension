@@ -123,6 +123,7 @@ describe('useResimulationAlert', () => {
     jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: jest.fn(),
+      isQuotedSwapDisplayedInInfo: true,
     } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
     const alerts = runHook({
