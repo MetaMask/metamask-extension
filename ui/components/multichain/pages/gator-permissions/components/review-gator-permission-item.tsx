@@ -27,6 +27,7 @@ import {
   PermissionTypesWithCustom,
   Signer,
   StoredGatorPermissionSanitized,
+  extractExpiryFromPermissionContext,
 } from '@metamask/gator-permissions-controller';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
@@ -37,7 +38,6 @@ import {
   getPeriodFrequencyValueTranslationKey,
   convertAmountPerSecondToAmountPerPeriod,
   getDecimalizedHexValue,
-  extractExpiryTimestampFromDelegation,
 } from '../../../../../../shared/lib/gator-permissions';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
@@ -166,12 +166,12 @@ export const ReviewGatorPermissionItem = ({
    * @returns The expiration date
    */
   const getExpirationDate = useCallback((): string => {
-    const expiryTimestamp = extractExpiryTimestampFromDelegation(
+    const expiryTimestamp = extractExpiryFromPermissionContext(
       permissionContext,
       chainId,
     );
 
-    if (expiryTimestamp === 0) {
+    if (!expiryTimestamp) {
       return t('gatorPermissionNoExpiration');
     }
 

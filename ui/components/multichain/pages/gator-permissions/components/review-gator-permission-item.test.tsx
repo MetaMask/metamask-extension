@@ -29,9 +29,9 @@ jest.mock(
   }),
 );
 
-jest.mock('../../../../../../shared/lib/gator-permissions', () => ({
-  ...jest.requireActual('../../../../../../shared/lib/gator-permissions'),
-  extractExpiryTimestampFromDelegation: jest.fn(),
+jest.mock('@metamask/gator-permissions-controller', () => ({
+  ...jest.requireActual('@metamask/gator-permissions-controller'),
+  extractExpiryFromPermissionContext: jest.fn(),
 }));
 
 describe('Permission List Item', () => {
@@ -56,10 +56,10 @@ describe('Permission List Item', () => {
       const mockExpiryTimestamp = 1767225600; // January 1, 2026
 
       beforeEach(() => {
-        const { extractExpiryTimestampFromDelegation } = jest.requireMock(
-          '../../../../../../shared/lib/gator-permissions',
+        const { extractExpiryFromPermissionContext } = jest.requireMock(
+          '@metamask/gator-permissions-controller',
         );
-        (extractExpiryTimestampFromDelegation as jest.Mock).mockReturnValue(
+        (extractExpiryFromPermissionContext as jest.Mock).mockReturnValue(
           mockExpiryTimestamp,
         );
       });
@@ -240,10 +240,10 @@ describe('Permission List Item', () => {
       const mockExpiryTimestamp = 1767225600; // January 1, 2026
 
       beforeEach(() => {
-        const { extractExpiryTimestampFromDelegation } = jest.requireMock(
-          '../../../../../../shared/lib/gator-permissions',
+        const { extractExpiryFromPermissionContext } = jest.requireMock(
+          '@metamask/gator-permissions-controller',
         );
-        (extractExpiryTimestampFromDelegation as jest.Mock).mockReturnValue(
+        (extractExpiryFromPermissionContext as jest.Mock).mockReturnValue(
           mockExpiryTimestamp,
         );
       });
@@ -489,10 +489,10 @@ describe('Permission List Item', () => {
       });
 
       it('renders "No expiration" when permission has no expiry', () => {
-        const { extractExpiryTimestampFromDelegation } = jest.requireMock(
-          '../../../../../../shared/lib/gator-permissions',
+        const { extractExpiryFromPermissionContext } = jest.requireMock(
+          '@metamask/gator-permissions-controller',
         );
-        (extractExpiryTimestampFromDelegation as jest.Mock).mockReturnValue(0);
+        (extractExpiryFromPermissionContext as jest.Mock).mockReturnValue(null);
 
         const mockPermissionWithoutExpiry: StoredGatorPermissionSanitized<
           Signer,
@@ -545,10 +545,10 @@ describe('Permission List Item', () => {
       it('renders correct expiration date when permission has expiry', () => {
         const customExpiryTimestamp = 1744588800; // April 14, 2025
 
-        const { extractExpiryTimestampFromDelegation } = jest.requireMock(
-          '../../../../../../shared/lib/gator-permissions',
+        const { extractExpiryFromPermissionContext } = jest.requireMock(
+          '@metamask/gator-permissions-controller',
         );
-        (extractExpiryTimestampFromDelegation as jest.Mock).mockReturnValue(
+        (extractExpiryFromPermissionContext as jest.Mock).mockReturnValue(
           customExpiryTimestamp,
         );
 
