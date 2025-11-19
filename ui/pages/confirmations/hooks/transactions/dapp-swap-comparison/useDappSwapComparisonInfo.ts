@@ -3,9 +3,9 @@ import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { QuoteResponse, TxData } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { captureException } from '@sentry/browser';
 import { useEffect, useMemo } from 'react';
 
+import { captureException } from '../../../../../../shared/lib/sentry';
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { fetchQuotes } from '../../../../../store/controller-actions/bridge-controller';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
