@@ -57,7 +57,6 @@ describe('Power user persona', function () {
         await assetListPage.checkPriceChartIsShown();
         await assetListPage.checkPriceChartLoaded(USDC_TOKEN_ADDRESS);
         timer1.stopTimer();
-        console.log(`Timer 1:  ${timer1.getDurationInSeconds()} s`);
       },
     );
   });

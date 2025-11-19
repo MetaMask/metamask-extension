@@ -332,7 +332,7 @@ class HomePage {
   async checkTokenListPricesAreDisplayed(): Promise<void> {
     let pricesDisplayed = false;
     let attempts = 0;
-    while (!pricesDisplayed && attempts < 100) {
+    while (!pricesDisplayed && attempts < 1000) {
       // Reduced to 100 for performance tests to avoid timeouts
       try {
         console.log('Checking if token secondary value has currency format');
@@ -366,9 +366,15 @@ class HomePage {
           'Error checking token secondary value currency format:',
           error,
         );
-        await this.driver.delay(100); // Reduced delay from 200ms to 100ms
+        await this.driver.delay(100);
       }
       attempts += 1;
+    }
+
+    if (!pricesDisplayed) {
+      const errorMessage = `Token list prices were not displayed in valid currency format after ${attempts} attempts`;
+      console.log(errorMessage);
+      throw new Error(errorMessage);
     }
   }
 

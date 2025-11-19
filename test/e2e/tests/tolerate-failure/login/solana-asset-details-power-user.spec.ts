@@ -60,7 +60,6 @@ describe('Power user persona', function () {
         await assetListPage.checkPriceChartIsShown();
         await assetListPage.checkPriceChartLoaded(SOL_TOKEN_ADDRESS); // SOL address
         timer1.stopTimer();
-        console.log(`Timer 1:  ${timer1.getDurationInSeconds()} s`);
       },
     );
   });
