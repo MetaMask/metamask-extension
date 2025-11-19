@@ -86,6 +86,7 @@ import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
+  safeAmountForCalc,
 } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
@@ -124,7 +125,7 @@ import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
-import { BridgeInputGroup, sanitizeAmountInput } from './bridge-input-group';
+import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
 
@@ -375,8 +376,7 @@ const PrepareBridgePage = ({
       return undefined;
     }
 
-    const sanitizedAmount = sanitizeAmountInput(fromAmount);
-    return new BigNumber(fromTokenBalance).lt(sanitizedAmount);
+    return new BigNumber(fromTokenBalance).lt(safeAmountForCalc(fromAmount));
   }, [fromAmount, fromChain, fromTokenBalance]);
 
   const quoteParams:
@@ -390,8 +390,7 @@ const PrepareBridgePage = ({
             srcTokenAmount:
               fromAmount && fromToken?.decimals
                 ? calcTokenValue(
-                    // Treat empty or incomplete amount as 0 to reject NaN
-                    sanitizeAmountInput(fromAmount),
+                    safeAmountForCalc(fromAmount),
                     fromToken.decimals,
                   )
                     .toFixed()
