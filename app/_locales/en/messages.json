@@ -1887,6 +1887,9 @@
   "dappSwapQuoteDifference": {
     "message": "Save $1"
   },
+  "dappSwapRewardText": {
+    "message": "Earn $1 points"
+  },
   "darkTheme": {
     "message": "Dark"
   },
@@ -2579,6 +2582,9 @@
   },
   "estimatedFeeTooltip": {
     "message": "Amount paid to process the transaction on network."
+  },
+  "estimatedPointsRow": {
+    "message": "Est. points"
   },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
@@ -3674,9 +3680,6 @@
   "metadataModalSourceTooltip": {
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
-  },
-  "metamaskExtension": {
-    "message": "MetaMask Extension"
   },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
