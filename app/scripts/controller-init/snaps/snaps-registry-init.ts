@@ -19,11 +19,14 @@ export const SnapsRegistryInit: ControllerInitFunction<
 > = ({ controllerMessenger, persistedState }) => {
   const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const parsedVersion = parse(process.env.METAMASK_VERSION)!;
+  const originalVersion = process.env.METAMASK_VERSION;
+  const parsedVersion = parse(originalVersion);
   // Strip prerelease versions as they just indicate build types.
-  const version =
-    `${parsedVersion.major}.${parsedVersion.minor}.${parsedVersion.patch}` as SemVerVersion;
+  const version = (
+    parsedVersion
+      ? `${parsedVersion.major}.${parsedVersion.minor}.${parsedVersion.patch}`
+      : originalVersion
+  ) as SemVerVersion;
 
   const controller = new JsonSnapsRegistry({
     // @ts-expect-error: `persistedState.SnapsRegistry` is not compatible
