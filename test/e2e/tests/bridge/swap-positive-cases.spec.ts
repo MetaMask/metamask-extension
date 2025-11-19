@@ -1,5 +1,5 @@
-import { Suite } from 'mocha';
 import { strict as assert } from 'assert';
+import { Suite } from 'mocha';
 import { getEventPayloads, unlockWallet, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
@@ -37,11 +37,10 @@ describe('Swap tests', function (this: Suite) {
           expectedDestAmount: '3,839',
         });
 
-        let events = (await getEventPayloads(driver, mockedEndpoints)).filter(
+        const events = (await getEventPayloads(driver, mockedEndpoints)).filter(
           (e) => e?.event?.includes('Unified SwapBridge'),
         );
-        const requestedToCompletedEvents = events
-          .slice(6)
+        const requestedToCompletedEvents = events.slice(6);
         const expectedEvents = [
           'Unified SwapBridge Quotes Requested',
           'Unified SwapBridge Quotes Received',
@@ -102,11 +101,10 @@ describe('Swap tests', function (this: Suite) {
           expectedDestAmount: '3.011',
         });
 
-        let events = (await getEventPayloads(driver, mockedEndpoints)).filter(
+        const events = (await getEventPayloads(driver, mockedEndpoints)).filter(
           (e) => e?.event?.includes('Unified SwapBridge'),
         );
-        const requestedToCompletedEvents = events
-          .slice(6)
+        const requestedToCompletedEvents = events.slice(6);
 
         const expectedEvents = [
           'Unified SwapBridge Quotes Requested',
