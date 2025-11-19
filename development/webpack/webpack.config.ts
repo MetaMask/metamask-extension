@@ -37,7 +37,11 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getVariables, reactCompilerOptions } from './utils/config';
+import {
+  getVariables,
+  reactCompilerOptions,
+  getReactCompilerLogger,
+} from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 
@@ -203,6 +207,17 @@ if (args.progress) {
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
 }
+
+// React Compiler statistics logger plugin
+plugins.push({
+  apply(compiler) {
+    compiler.hooks.done.tap('ReactCompilerStatsPlugin', () => {
+      const logger = getReactCompilerLogger();
+      logger.logSummary();
+    });
+  },
+} as WebpackPluginInstance);
+
 // #endregion plugins
 
 const swcConfig = { args, browsersListQuery, isDevelopment };
