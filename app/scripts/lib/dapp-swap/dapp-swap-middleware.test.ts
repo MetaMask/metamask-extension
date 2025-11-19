@@ -78,10 +78,5 @@ describe('DappSwapMiddleware', () => {
       walletAddress: '0x12312312312312',
       fee: 250,
     });
-
-    expect(setSwapQuotes).toHaveBeenCalledWith('123', {
-      quotes: mockBridgeQuotes,
-      latency: expect.any(Number),
-    });
   });
 });

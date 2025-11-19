@@ -64,9 +64,10 @@ export function useDappSwapActions() {
     if (!isSwapToBeCompared) {
       return;
     }
-    deleteDappSwapComparisonData(
-      currentConfirmation.securityAlertResponse?.securityAlertId ?? '',
-    );
+    const uniqueId = currentConfirmation.securityAlertResponse?.securityAlertId;
+    if (uniqueId) {
+      deleteDappSwapComparisonData(uniqueId);
+    }
     captureSwapSubmit();
   }, [
     isSwapToBeCompared,

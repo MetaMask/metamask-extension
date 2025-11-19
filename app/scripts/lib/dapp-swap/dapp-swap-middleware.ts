@@ -90,12 +90,13 @@ export function createDappSwapMiddleware<
           const { quotesInput } = getDataFromSwap(chainId as Hex, data, from);
           if (quotesInput) {
             const startTime = new Date().getTime();
-            const quotes = await fetchQuotes(quotesInput);
-            const endTime = new Date().getTime();
-            const latency = endTime - startTime;
-            if (quotes) {
-              setSwapQuotes(securityAlertId, { quotes, latency });
-            }
+            fetchQuotes(quotesInput).then((quotes) => {
+              const endTime = new Date().getTime();
+              const latency = endTime - startTime;
+              if (quotes) {
+                setSwapQuotes(securityAlertId, { quotes, latency });
+              }
+            });
           }
         }
       }
