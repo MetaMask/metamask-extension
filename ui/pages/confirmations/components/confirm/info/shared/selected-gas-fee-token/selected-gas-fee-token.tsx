@@ -45,6 +45,7 @@ export function SelectedGasFeeToken() {
   const supportsFutureNative = hasInsufficientNative && isSmartTransaction;
 
   const hasGasFeeTokens =
+    !isQuotedSwapDisplayedInInfo &&
     isGaslessSupported &&
     Boolean(gasFeeTokens?.length) &&
     (!hasOnlyFutureNativeToken || supportsFutureNative);
@@ -95,7 +96,7 @@ export function SelectedGasFeeToken() {
           size={GasFeeTokenIconSize.Sm}
         />
         <Text>{symbol}</Text>
-        {!isQuotedSwapDisplayedInInfo && hasGasFeeTokens && (
+        {hasGasFeeTokens && (
           <Icon
             data-testid="selected-gas-fee-token-arrow"
             name={IconName.ArrowDown}
