@@ -17,6 +17,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { capitalizeStr } from './utils';
 
 class AccountList extends Component {
   state = {
@@ -30,7 +31,7 @@ class AccountList extends Component {
     trackEvent({
       event: MetaMetricsEventName.ConnectHardwareWalletAccountSelectorViewed,
       properties: {
-        device_type: device,
+        device_type: capitalizeStr(device),
       },
     });
   }
