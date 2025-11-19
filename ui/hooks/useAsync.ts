@@ -1,3 +1,5 @@
+'use no memo';
+
 import {
   useState,
   useEffect,
@@ -91,10 +93,11 @@ export function useAsyncCallback<T>(
   const [result, setResult] = useState<AsyncResult<T>>(RESULT_IDLE);
 
   // Track component mount state
-  const isMounted = useRef(true);
+  const isMounted = useRef(false);
 
   // Update ref when component unmounts
   useEffect(() => {
+    isMounted.current = true;
     return () => {
       isMounted.current = false;
     };
