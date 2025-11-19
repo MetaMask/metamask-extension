@@ -53,7 +53,11 @@ describe('useTransactionFocusEffect', () => {
   beforeEach(() => {
     useDispatchMock.mockReturnValue(dispatchMock);
     useWindowFocusMock.mockReturnValue(true);
-    useConfirmContextMock.mockReturnValue(confirmContextMock);
+    useConfirmContextMock.mockReturnValue(
+      confirmContextMock as unknown as ReturnType<
+        typeof useConfirmContext<Confirmation>
+      >,
+    );
 
     setTransactionActiveMock.mockClear();
     dispatchMock.mockClear();
@@ -76,7 +80,7 @@ describe('useTransactionFocusEffect', () => {
     useConfirmContextMock.mockReturnValue({
       ...confirmContextMock,
       currentConfirmation: simpleSendConfirmation,
-    });
+    } as unknown as ReturnType<typeof useConfirmContext>);
 
     rerender();
 
@@ -104,7 +108,7 @@ describe('useTransactionFocusEffect', () => {
       useConfirmContextMock.mockReturnValue({
         ...confirmContextMock,
         currentConfirmation: signatureConfirmation,
-      });
+      } as unknown as ReturnType<typeof useConfirmContext>);
       renderHook(() => useTransactionFocusEffect());
       expect(dispatchMock).not.toHaveBeenCalled();
     });
@@ -120,7 +124,7 @@ describe('useTransactionFocusEffect', () => {
       useConfirmContextMock.mockReturnValue({
         ...confirmContextMock,
         currentConfirmation: signatureConfirmation,
-      });
+      } as unknown as ReturnType<typeof useConfirmContext>);
 
       rerender();
 

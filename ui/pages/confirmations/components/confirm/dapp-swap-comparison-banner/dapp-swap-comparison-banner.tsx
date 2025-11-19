@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+/* eslint-disable @typescript-eslint/naming-convention */
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -14,23 +15,19 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  BatchTransaction,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
-import { QuoteResponse, TxData } from '@metamask/bridge-controller';
-import { toHex } from '@metamask/controller-utils';
-import { useDispatch, useSelector } from 'react-redux';
+import { QuoteResponse } from '@metamask/bridge-controller';
+import { useSelector } from 'react-redux';
 
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { updateTransaction } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
+import { useDappSwapComparisonMetrics } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonMetrics';
+import { useSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { QuoteSwapSimulationDetails } from '../../transactions/quote-swap-simulation-details/quote-swap-simulation-details';
+import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
+import { NetworkRow } from '../info/shared/network-row/network-row';
 
-const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
-const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
 const DAPP_SWAP_THRESHOLD = 0.01;
 
 type DappSwapUiFlag = {
@@ -83,10 +80,6 @@ const SwapButton = ({
 
 const DappSwapComparisonInner = () => {
   const t = useI18nContext();
-  const [
-    batchedDappSwapNestedTransactions,
-    setBatchedDappSwapNestedTransactions,
-  ] = useState<BatchTransaction[] | undefined>();
   const {
     fiatRates,
     gasDifference,
@@ -96,15 +89,13 @@ const DappSwapComparisonInner = () => {
     sourceTokenAmount,
     tokenAmountDifference,
     tokenDetails,
-  } = useDappSwapComparisonInfo(batchedDappSwapNestedTransactions);
-
-  const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  } = useDappSwapComparisonInfo();
+  const { captureDappSwapComparisonDisplayProperties } =
+    useDappSwapComparisonMetrics();
   const { dappSwapUi } = useSelector(getRemoteFeatureFlags) as {
     dappSwapUi: DappSwapUiFlag;
   };
-
-  // update selectedSwapType depending on data
+  const { setQuoteSelectedForMMSwap } = useConfirmContext();
   const [selectedSwapType, setSelectedSwapType] = useState<SwapType>(
     SwapType.Current,
   );
@@ -113,7 +104,6 @@ const DappSwapComparisonInner = () => {
 
   const hideDappSwapComparisonBanner = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.preventDefault();
       event.stopPropagation();
       setShowDappSwapComparisonBanner(false);
     },
@@ -121,58 +111,41 @@ const DappSwapComparisonInner = () => {
   );
 
   const updateSwapToCurrent = useCallback(() => {
+    setQuoteSelectedForMMSwap(undefined);
     setSelectedSwapType(SwapType.Current);
-    if (currentConfirmation.txParamsOriginal) {
-      dispatch(
-        updateTransaction(
-          {
-            ...currentConfirmation,
-            txParams: currentConfirmation.txParamsOriginal,
-            batchTransactions: undefined,
-            nestedTransactions: batchedDappSwapNestedTransactions,
-          },
-          false,
-        ),
-      );
-    }
-  }, [currentConfirmation, dispatch, setSelectedSwapType]);
+  }, [setQuoteSelectedForMMSwap, setSelectedSwapType]);
 
   const updateSwapToSelectedQuote = useCallback(() => {
+    setQuoteSelectedForMMSwap(selectedQuote);
+    captureDappSwapComparisonDisplayProperties({
+      swap_mm_opened: 'true',
+    });
     setSelectedSwapType(SwapType.Metamask);
     setShowDappSwapComparisonBanner(false);
-    const { value, gasLimit, data, to } = selectedQuote?.trade as TxData;
-    dispatch(
-      updateTransaction(
-        {
-          ...currentConfirmation,
-          txParams: {
-            ...currentConfirmation.txParams,
-            value,
-            to,
-            gas: toHex(gasLimit ?? 0),
-            data,
-          },
-          txParamsOriginal: currentConfirmation.txParams,
-          batchTransactions: [selectedQuote?.approval as BatchTransaction],
-          nestedTransactions: undefined,
-        },
-        false,
-      ),
-    );
   }, [
-    currentConfirmation,
-    dispatch,
-    setBatchedDappSwapNestedTransactions,
+    captureDappSwapComparisonDisplayProperties,
+    setQuoteSelectedForMMSwap,
     setSelectedSwapType,
     setShowDappSwapComparisonBanner,
     selectedQuote,
   ]);
 
-  if (
-    !dappSwapUi?.enabled ||
-    selectedQuoteValueDifference <
-      (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD)
-  ) {
+  const swapComparisonDisplayed =
+    dappSwapUi?.enabled &&
+    selectedQuoteValueDifference >=
+      (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD);
+
+  useEffect(() => {
+    let dappSwapComparisonDisplayed = false;
+    if (swapComparisonDisplayed) {
+      dappSwapComparisonDisplayed = true;
+    }
+    captureDappSwapComparisonDisplayProperties({
+      swap_mm_cta_displayed: dappSwapComparisonDisplayed.toString(),
+    });
+  }, [captureDappSwapComparisonDisplayProperties, swapComparisonDisplayed]);
+
+  if (!swapComparisonDisplayed) {
     return null;
   }
 
@@ -248,28 +221,31 @@ const DappSwapComparisonInner = () => {
         </Box>
       )}
       {selectedSwapType === SwapType.Metamask && (
-        <QuoteSwapSimulationDetails
-          fiatRates={fiatRates}
-          quote={selectedQuote as QuoteResponse}
-          tokenDetails={tokenDetails}
-          sourceTokenAmount={sourceTokenAmount}
-          tokenAmountDifference={tokenAmountDifference}
-          minDestTokenAmountInUSD={minDestTokenAmountInUSD}
-        />
+        <>
+          <QuoteSwapSimulationDetails
+            fiatRates={fiatRates}
+            quote={selectedQuote as QuoteResponse}
+            tokenDetails={tokenDetails}
+            sourceTokenAmount={sourceTokenAmount}
+            tokenAmountDifference={tokenAmountDifference}
+            minDestTokenAmountInUSD={minDestTokenAmountInUSD}
+          />
+          <ConfirmInfoSection data-testid="transaction-details-section">
+            <NetworkRow />
+          </ConfirmInfoSection>
+        </>
       )}
     </Box>
   );
 };
 
 export const DappSwapComparisonBanner = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
   const { dappSwapMetrics } = useSelector(getRemoteFeatureFlags);
+  const { isSwapToBeCompared } = useSwapCheck();
 
   const dappSwapMetricsEnabled =
     (dappSwapMetrics as { enabled: boolean })?.enabled === true &&
-    (transactionMeta.origin === DAPP_SWAP_COMPARISON_ORIGIN ||
-      transactionMeta.origin === TEST_DAPP_ORIGIN);
+    isSwapToBeCompared;
 
   if (!dappSwapMetricsEnabled) {
     return null;

@@ -176,7 +176,7 @@ export const QuoteSwapSimulationDetails = ({
                 color={TextColor.SuccessDefault}
                 variant={TextVariant.BodyXs}
               >
-                {t('getDollarMore', [tokenAmountDifference?.toFixed(2)])}
+                {t('getDollarMore', [`$${tokenAmountDifference?.toFixed(2)}`])}
               </Text>
             </Box>
           </Box>
