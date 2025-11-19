@@ -82,10 +82,9 @@ export function createDappSwapMiddleware<
       const { securityAlertId } = securityAlertResponse ?? {};
 
       if (
-        ((req.method === 'eth_sendTransaction' ||
+        (req.method === 'eth_sendTransaction' ||
           req.method === 'wallet_sendCalls') &&
-          origin === DAPP_SWAP_COMPARISON_ORIGIN) ||
-        origin === TEST_DAPP_ORIGIN
+        (origin === DAPP_SWAP_COMPARISON_ORIGIN || origin === TEST_DAPP_ORIGIN)
       ) {
         const { data, from, chainId } = getSwapDetails(params);
         if (data && securityAlertId) {
