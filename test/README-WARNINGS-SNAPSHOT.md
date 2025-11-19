@@ -6,8 +6,8 @@ Prevents introduction of new console warnings/errors in unit, integration and e2
 
 - Unit: 81 warnings, 262 errors (343 total)
 - Integration: 6 warnings, 9 errors (15 total)
-- E2E: 87 warnings, 0 errors (87 total)
-- **Total: 445 warnings/errors captured in baseline**
+- E2E: 53 warnings, 1 error (54 total)
+- **Total: 412 warnings/errors captured in baseline**
 
 All these warnings/errors are stored in 3 independent snapshot files:
 

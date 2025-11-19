@@ -168,7 +168,16 @@ export function normalizeMessage(message: string): string {
     .replace(/\s+/gu, ' ')
     .trim();
 
-  return normalized;
+  // Final pass: Collapse massive module graph structures that survived normalization
+  // Pattern: { "name": "<USER_PATH> "value": <NUMBER>, "children": [ ... ]
+  // Note: No comma between <USER_PATH> and "value" (removed during whitespace normalization)
+  // Collapses 500+ char structures anywhere they appear in the message
+  const finalNormalized = normalized.replace(
+    /\{ "name": "<USER_PATH> "value": <NUMBER>, "children": \[.{500,}/gu,
+    '<MODULE_GRAPH_STATS>',
+  );
+
+  return finalNormalized;
 }
 
 /**

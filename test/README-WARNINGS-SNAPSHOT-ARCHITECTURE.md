@@ -31,8 +31,8 @@ The snapshot system prevents new console warnings and errors from being introduc
 
 - Unit: 81 warnings + 262 errors = 343 issues
 - Integration: 6 warnings + 9 errors = 15 issues
-- E2E: 87 warnings + 0 errors = 87 issues
-- **Total: 445 issues**
+- E2E: 53 warnings + 1 error = 54 issues
+- **Total: 412 issues**
 
 ---
 
@@ -359,7 +359,7 @@ test/.warnings-snapshot-temp-*/
 
 **`test/test-warnings-snapshot-unit.json`** - Unit baseline (343 issues)
 **`test/test-warnings-snapshot-integration.json`** - Integration baseline (15 issues)
-**`test/test-warnings-snapshot-e2e.json`** - E2E baseline (87 issues)
+**`test/test-warnings-snapshot-e2e.json`** - E2E baseline (54 issues)
 
 Structure:
 
@@ -409,8 +409,25 @@ Structure:
 - Numbers: `123`, `in 827ms` → `<NUMBER>`, `in <DURATION>ms`
 - IDs: UUIDs, addresses, hashes, chain IDs, client IDs → placeholders
 - Line numbers: `:140:19` → `:<LINE>:<COL>`
+- **Module Graph Stats**: Massive JSON structures (2KB+) → `<MODULE_GRAPH_STATS>`
 
 **Result:** Snapshots work identically on macOS, Linux, Windows, CI.
+
+**Special Case - Module Graph Stats:**
+
+LavaMoat logs module initialization performance data in test builds:
+
+```json
+{
+  "children": [
+    /* nested dependencies */
+  ],
+  "name": "/path/to/module.js",
+  "value": 145 // milliseconds
+}
+```
+
+These warnings are numerous, verbose, non-deterministic, and differentiating them doesn't provide very valuable information. Collapsing them into `<MODULE_GRAPH_STATS>` reduces the number of e2e snapshot warnings.
 
 ### 4. Why Global Teardown for Jest but Not E2E?
 

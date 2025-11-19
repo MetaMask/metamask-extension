@@ -20,8 +20,8 @@
     "An input selector returned a different result when passed same arguments. This means your output selector will likely run more frequently than intended. Avoid returning a new reference inside your input selector, e.g. `createSelector([state => state.todos.map(todo => todo.id)], todoIds => todoIds.length)` [Object: {\"arguments\":{\"<NUMBER>\":{\"invalidCustomNetwork\":{\"state\":\"CLOSED\",\"networkName\":\"\"},\"unconnectedAccount\":{...]",
     "Infura project ID not found, cannot track network banner event",
     "The result function returned its own inputs without modification. e.g `createSelector([state => state.todos], todos => todos)` This could lead to inefficient memoization and unnecessary re-renders. Ensure transformation logic is in the result function, and extraction logic is in the input selectors. [Object: {\"stack\":\"Error: \\n at Object.runIdentityFunctionCheck [as run] (<USER_PATH>",
-    "Warning: Hash history cannot PUSH the same path; a new entry will not be added to the history stack",
+    "useTheme: Invalid theme resolved to \"null\". Defaulting to \"light\".",
     "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details. * Move data fetching code or side effects to componentDidUpdate. * If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state * Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppr... t",
-    "useTheme: Invalid theme resolved to \"null\". Defaulting to \"light\"."
+    "Warning: Hash history cannot PUSH the same path; a new entry will not be added to the history stack"
   ]
 }
