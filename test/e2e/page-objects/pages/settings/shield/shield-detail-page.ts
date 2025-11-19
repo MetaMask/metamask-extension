@@ -289,7 +289,7 @@ export default class ShieldDetailPage {
   }): Promise<void> {
     const {
       customerId = 'test_customer_id',
-      membershipStatus = 'Active membership',
+      membershipStatus = 'Active plan',
       nextBillingDate = 'Nov 3',
       charges = '$80',
       paymentMethod = 'Visa',

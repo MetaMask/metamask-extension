@@ -88,12 +88,6 @@ export default class ShieldPlanPage {
 
     await this.clickContinueButton();
 
-    // Wait for checkout tab to open and switch to it
-    await this.driver.waitUntilXWindowHandles(2);
-
-    // Switch back to the main MetaMask window
-    await this.driver.switchToWindowWithTitle('MetaMask');
-
     console.log(`Shield plan subscription flow completed for ${plan} plan`);
   }
 }

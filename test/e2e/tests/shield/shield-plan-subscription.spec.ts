@@ -97,6 +97,12 @@ async function mockSubscriptionApiCalls(
         };
       }),
 
+    // Mock checkout session URL to redirect to success URL
+    await mockServer.forGet(MOCK_CHECKOUT_SESSION_URL).thenCallback(() => ({
+      statusCode: 302,
+      headers: { Location: 'https://mock-redirect-url.com' },
+    })),
+
     // Using .always() to ensure this overrides global mocks
     await mockServer
       .forGet(
@@ -109,6 +115,7 @@ async function mockSubscriptionApiCalls(
           canViewEntryModal: true,
           minBalanceUSD: 1000,
           product: 'shield',
+          modalType: 'A',
           cohorts: [
             {
               cohort: 'wallet_home',

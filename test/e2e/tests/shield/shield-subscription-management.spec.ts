@@ -282,14 +282,14 @@ describe('Shield Plan Stripe Integration', function () {
         await shieldDetailPage.cancelSubscription();
 
         await shieldDetailPage.checkNotificationShieldBanner(
-          'Your membership will be cancelled on Nov 3, 2025.',
+          'Your plan will be cancelled on Nov 3, 2025.',
         );
 
         // Renew the subscription
         await shieldDetailPage.clickRenewButton();
 
         await shieldDetailPage.checkNotificationShieldBannerRemoved();
-        await shieldDetailPage.checkMembershipStatus('Active membership');
+        await shieldDetailPage.checkMembershipStatus('Active plan');
       },
     );
   });

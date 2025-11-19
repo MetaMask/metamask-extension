@@ -19,6 +19,7 @@ export const BASE_SHIELD_SUBSCRIPTION = {
     type: 'card',
     card: { brand: 'visa', displayBrand: 'visa', last4: '4242' },
   },
+  isEligibleForSupport: true,
 };
 
 export const MOCK_CHECKOUT_SESSION_URL =

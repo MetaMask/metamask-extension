@@ -79,6 +79,9 @@ const blocklistedHosts = [
   'sei-mainnet.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
+  'cdn.jsdelivr.net',
+  'unpkg.com',
+  'mock-redirect-url.com',
 ];
 const {
   mockEmptyStalelistAndHotlist,
@@ -1312,9 +1315,16 @@ async function setupMocking(
       return;
     }
 
+    // Exclude browser API requests, portfolio requests, and test-only CDN domains
+    const isTestCDNDomain =
+      request.headers.host === 'cdn.jsdelivr.net' ||
+      request.headers.host === 'unpkg.com' ||
+      request.headers.host === 'mock-redirect-url.com';
+
     if (
       request.headers.host.match(browserAPIRequestDomains) === null &&
-      !portfolioRequestsMatcher(request)
+      !portfolioRequestsMatcher(request) &&
+      !isTestCDNDomain
     ) {
       privacyReport.add(request.headers.host);
     }
