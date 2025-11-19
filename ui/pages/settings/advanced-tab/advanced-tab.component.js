@@ -493,6 +493,7 @@ export default class AdvancedTab extends PureComponent {
                 category: MetaMetricsEventCategory.Settings,
                 properties: {
                   enabled: !value,
+                  location: 'Advanced Settings',
                 },
               });
             }}
