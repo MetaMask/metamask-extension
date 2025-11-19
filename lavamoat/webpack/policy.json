@@ -893,6 +893,19 @@
     },
     "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": {
       "globals": {
+        "Buffer.from": true,
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@noble/hashes": true,
+        "bn.js": true,
+        "buffer": true,
+        "eslint>json-stable-stringify-without-jsonify": true
+      }
+    },
+    "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@metamask/auth-network-utils": {
+      "globals": {
         "Buffer.concat": true,
         "Buffer.from": true,
         "clearTimeout": true,
@@ -2088,7 +2101,7 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": true,
+        "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@metamask/auth-network-utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
         "@noble/hashes": true,
