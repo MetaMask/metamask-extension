@@ -160,6 +160,7 @@ export const RewardsPointsBalance = () => {
       <RewardsBadge
         formattedPoints={formattedPoints}
         boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+        onClick={openRewardsOnboardingModal}
       />
     );
   }
