@@ -68,15 +68,13 @@ export default function RecoveryPhraseReminder({ onConfirm }) {
             display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
+            marginBottom={2}
           >
             <img
               src="images/forgot-password-lock.png"
-              width={154}
-              height={154}
+              width={100}
+              height={100}
               alt={t('recoveryPhraseReminderTitle')}
-              style={{
-                alignSelf: 'center',
-              }}
             />
           </Box>
           <Text>{t('recoveryPhraseReminderSubText')}</Text>
