@@ -45,10 +45,7 @@ import { MultichainSrpBackup } from '../../../components/multichain-accounts/mul
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
 import { MultichainAccountEditModal } from '../../../components/multichain-accounts/multichain-account-edit-modal';
 import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
-import {
-  removeAccount,
-  setAccountDetailsAddress,
-} from '../../../store/actions';
+import { removeAccount } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -137,7 +134,6 @@ export const MultichainAccountDetailsPage = () => {
         },
       });
 
-      dispatch(setAccountDetailsAddress(''));
       history.push(DEFAULT_ROUTE);
     }
   }, [dispatch, trackEvent, history, wallet?.type, accountsWithAddresses]);
