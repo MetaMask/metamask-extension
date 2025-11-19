@@ -1,5 +1,10 @@
 import { Mockttp } from 'mockttp';
-import { ACCOUNT_TYPE, INFURA_MAINNET_URL } from '../../constants';
+import {
+  ACCOUNT_TYPE,
+  INFURA_MAINNET_URL,
+  TEST_SEED_PHRASE,
+  TEST_SEED_PHRASE_TWO,
+} from '../../constants';
 import { SOLANA_URL_REGEX_MAINNET } from '../solana/common-solana';
 import { E2E_SRP } from '../../default-fixture';
 import { SECOND_TEST_E2E_SRP } from '../../flask/multi-srp/common-multi-srp';
@@ -46,6 +51,42 @@ export const TEST_SRPS_TO_MOCKED_DISCOVERED_ACCOUNTS: {
     {
       [ACCOUNT_TYPE.Ethereum]: '0x8137ec5954a8ed45a90f3bd58f717228b5670858',
       [ACCOUNT_TYPE.Solana]: 'AeHVnxJ4GnXXgqz3ZY8FXXRJyNW7Cb4A1uLeRf4b74Jh',
+    },
+  ],
+  [TEST_SEED_PHRASE]: [
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+      [ACCOUNT_TYPE.Solana]: '9nu7EvqN1EAMsv9q5gtTPMyTXrXNvBBzxffqp3kom21C',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0x3ed0ee22e0685ebbf07b2360a8331693c413cc59',
+      [ACCOUNT_TYPE.Solana]: '42Hr8wst5ibT6HBZDrGYTtAwsc7UiBoQC4H9Wp43ShAq',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0xd38d853771fb546bd8b18b2f3638491bc0b0e906',
+      [ACCOUNT_TYPE.Solana]: 'DkZp8j4gD9SjQxj8SceHpgLDYqGXm81kyTfNRynoBZt6',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0x0bfd76d9e58e31f4f94320460c85b8e4c3148a41',
+      [ACCOUNT_TYPE.Solana]: 'DiAcmco4tCD1fswUdPkGYVPjAcyEPrzHsNQkRSvXiqyr',
+    },
+  ],
+  [TEST_SEED_PHRASE_TWO]: [
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
+      [ACCOUNT_TYPE.Solana]: 'Az5DKQBKD44LYkTJdFSHSxLD7xkX6sw3EFzoTPSrSXKC',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
+      [ACCOUNT_TYPE.Solana]: 'Feghri31um5HAnoNJzekDk5LEircpeqGzVchJpCLLSL9',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0x7a46ce51fbbb29c34aea1fe9833c27b5d2781925',
+      [ACCOUNT_TYPE.Solana]: '9SiSPGmKifGghKwbARy7tD4AWb3XkNo5tAERixGU7MMt',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0x9c1ba572b1a3012fa279b627ed465198c9bd5f95',
+      [ACCOUNT_TYPE.Solana]: 'CXMxKApMHcgpjBSq1Ua6ikyTaFpnFCFv5EFgeRSUxQDu',
     },
   ],
 };
