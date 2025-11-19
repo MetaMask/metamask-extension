@@ -168,7 +168,7 @@ class ConnectHardwareForm extends Component {
         event: MetaMetricsEventName.ConnectHardwareWalletClicked,
         properties: {
           device_type: capitalizeStr(device),
-          connected_device_count: deviceCount + 1,
+          connected_device_count: deviceCount,
         },
       });
     } catch (e) {
