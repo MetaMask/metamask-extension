@@ -310,7 +310,8 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        { test: false },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
       );
@@ -333,7 +334,8 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        { test: false },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
       );
@@ -365,7 +367,8 @@ describe('ManifestPlugin', () => {
       });
 
       const transform = transformManifest(
-        { test: false },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
       );
@@ -382,7 +385,8 @@ describe('ManifestPlugin', () => {
 
     it('silently ignores non-ENOENT filesystem errors', () => {
       const transform = transformManifest(
-        { test: false },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
       );

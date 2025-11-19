@@ -13,10 +13,10 @@ import type { Args } from '../../cli';
  * @param manifestOverridesPath
  * @returns a function that will transform the manifest JSON object
  * @throws an error if the manifest already contains the "tabs" permission and
- * `test` is `true`
+ * `test` is `true` in MV2
  */
 export function transformManifest(
-  args: Partial<Args>,
+  args: Pick<Args, 'test' | 'manifest_version'>,
   isDevelopment: boolean,
   manifestOverridesPath?: string | undefined,
 ) {
