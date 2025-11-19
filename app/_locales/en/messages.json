@@ -833,7 +833,7 @@
     "message": "Best quote"
   },
   "bestQuoteTooltip": {
-    "message": "The best quote we found from providers, including provider fees and a 0.25% MetaMask fee. The minimum you'll receive if price changes is $20.82."
+    "message": "The best quote we found from providers, including provider fees and a 0.25% MetaMask fee. The minimum you'll receive if price changes is $1."
   },
   "beta": {
     "message": "Beta"
@@ -1887,6 +1887,9 @@
   "dappSwapQuoteDifference": {
     "message": "Save $1"
   },
+  "dappSwapRewardText": {
+    "message": "Earn $1 points"
+  },
   "darkTheme": {
     "message": "Dark"
   },
@@ -2005,7 +2008,7 @@
     "message": "the perps page"
   },
   "deepLink_thePredictPage": {
-    "message": "the predict page"
+    "message": "the prediction markets page"
   },
   "deepLink_theRewardsPage": {
     "message": "the MetaMask Rewards page"
@@ -2580,6 +2583,9 @@
   "estimatedFeeTooltip": {
     "message": "Amount paid to process the transaction on network."
   },
+  "estimatedPointsRow": {
+    "message": "Est. points"
+  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
@@ -2896,7 +2902,7 @@
     "message": "View account on $1"
   },
   "getDollarMore": {
-    "message": "Get $$1 more"
+    "message": "Get $1 more"
   },
   "getTheNewestFeatures": {
     "message": "Get the newest features"
@@ -3674,9 +3680,6 @@
   "metadataModalSourceTooltip": {
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
-  },
-  "metamaskExtension": {
-    "message": "MetaMask Extension"
   },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
@@ -4632,6 +4635,12 @@
   "other": {
     "message": "other"
   },
+  "otherPermissionsOnSiteDescription": {
+    "message": "The following permissions were also found on this site. Do you want to remove them?"
+  },
+  "otherPermissionsOnSiteTitle": {
+    "message": "Other permissions on this site"
+  },
   "otherSnaps": {
     "message": "other snaps",
     "description": "Used in the 'permission_rpc' message."
@@ -4712,6 +4721,9 @@
   "pendingTransactionAlertMessageHyperlink": {
     "message": "Learn how to cancel or speed up a transaction.",
     "description": "The text for the hyperlink in the pending transaction alert message"
+  },
+  "perSecond": {
+    "message": "per second"
   },
   "percentChange": {
     "message": "Percent change"
@@ -5366,6 +5378,9 @@
     "message": "This account will be removed from MetaMask.",
     "description": "Title of a banner alert used on account remove modal."
   },
+  "removeAll": {
+    "message": "Remove all"
+  },
   "removeKeyringSnap": {
     "message": "Removing this Snap removes these accounts from MetaMask:"
   },
@@ -5576,6 +5591,123 @@
   "reward": {
     "message": "Reward"
   },
+  "rewardsAuthFailDescription": {
+    "message": "An unknown error occurred while authenticating this account with the rewards program. Please try again later."
+  },
+  "rewardsAuthFailTitle": {
+    "message": "Unknown Error."
+  },
+  "rewardsErrorMessagesAccountAlreadyRegistered": {
+    "message": "This account is already registered with another Rewards profile. Please switch account to continue."
+  },
+  "rewardsErrorMessagesFailedToClaimReward": {
+    "message": "Failed to claim reward. Please try again shortly."
+  },
+  "rewardsErrorMessagesRequestRejected": {
+    "message": "You rejected the request."
+  },
+  "rewardsErrorMessagesServiceNotAvailable": {
+    "message": "Service is not available at the moment. Please try again shortly."
+  },
+  "rewardsErrorMessagesSomethingWentWrong": {
+    "message": "Something went wrong. Please try again shortly."
+  },
+  "rewardsOnboardingIntroDescription": {
+    "message": "Earn points for your activity. \nAdvance through levels to unlock rewards."
+  },
+  "rewardsOnboardingIntroGeoCheckFailedDescription": {
+    "message": "We cannot determine if your country allows opting into the rewards program. Please check your connection and try again."
+  },
+  "rewardsOnboardingIntroGeoCheckFailedTitle": {
+    "message": "Cannot determine opt-in eligibility"
+  },
+  "rewardsOnboardingIntroGeoCheckRetry": {
+    "message": "Retry"
+  },
+  "rewardsOnboardingIntroHardwareWalletDescription": {
+    "message": "Hardware wallet accounts are not eligible to receive rewards yet. Please switch to a different account to proceed."
+  },
+  "rewardsOnboardingIntroHardwareWalletTitle": {
+    "message": "Account not supported"
+  },
+  "rewardsOnboardingIntroRewardsAuthFailRetry": {
+    "message": "Retry"
+  },
+  "rewardsOnboardingIntroStepConfirm": {
+    "message": "Claim 250 points"
+  },
+  "rewardsOnboardingIntroStepSkip": {
+    "message": "Not now"
+  },
+  "rewardsOnboardingIntroTitle": {
+    "message": "Rewards are here"
+  },
+  "rewardsOnboardingIntroUnsupportedRegionDescription": {
+    "message": "Rewards are not supported in your region yet. We are working on expanding access, so check back later."
+  },
+  "rewardsOnboardingIntroUnsupportedRegionTitle": {
+    "message": "Region not supported"
+  },
+  "rewardsOnboardingStep1Description": {
+    "message": "Every swap and perps trade you make in MetaMask gets you closer to rewards. Add your accounts and watch your points add up."
+  },
+  "rewardsOnboardingStep1Title": {
+    "message": "Earn points on every trade"
+  },
+  "rewardsOnboardingStep2Description": {
+    "message": "Hit points milestones to get perks like 50% off perps fees, exclusive tokens, and a free MetaMask Metal Card."
+  },
+  "rewardsOnboardingStep2Title": {
+    "message": "Level up for bigger perks"
+  },
+  "rewardsOnboardingStep3Description": {
+    "message": "You can earn points in the extension, but you’ll need the mobile app to trade perps, track your progress, and redeem rewards."
+  },
+  "rewardsOnboardingStep3Title": {
+    "message": "Unlock rewards on mobile"
+  },
+  "rewardsOnboardingStep4LegalDisclaimer1": {
+    "message": "By selecting 'Claim Points', you agree to the MetaMask Rewards "
+  },
+  "rewardsOnboardingStep4LegalDisclaimer2": {
+    "message": "Supplemental Terms of Use and Privacy Notice"
+  },
+  "rewardsOnboardingStep4LegalDisclaimer3": {
+    "message": ". We'll track onchain activity to reward you automatically –"
+  },
+  "rewardsOnboardingStep4LegalDisclaimer4": {
+    "message": "learn more"
+  },
+  "rewardsOnboardingStep4OptInError": {
+    "message": "Opt-in failed"
+  },
+  "rewardsOnboardingStep4ReferralCodeError": {
+    "message": "Invalid referral code"
+  },
+  "rewardsOnboardingStep4ReferralCodeInput": {
+    "message": "Use a referral code to earn 250 points"
+  },
+  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+    "message": "Referral code (optional)"
+  },
+  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+    "message": "Referral code couldn’t be validated."
+  },
+  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+    "message": "Check your connection and try again."
+  },
+  "rewardsOnboardingStep4Title": {
+    "message": "You'll earn 250 points when you sign up!"
+  },
+  "rewardsOnboardingStep4TitleWithReferralCode": {
+    "message": "You'll earn 500 points when you sign up with a code!"
+  },
+  "rewardsOnboardingStepConfirm": {
+    "message": "Next"
+  },
+  "rewardsOnboardingStepOptIn": {
+    "message": "Claim points"
+  },
   "rewardsPointsBalance": {
     "message": "$1 points",
     "description": "$1 is the formatted number of rewards points"
@@ -5587,6 +5719,15 @@
   "rewardsPointsIcon": {
     "message": "Rewards Points",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "You'll need the app to track your progress and redeem rewards. Scan this QR code and we'll help you import your accounts."
+  },
+  "rewardsQRCodeTitle": {
+    "message": "Get the mobile app"
+  },
+  "rewardsSignUp": {
+    "message": "Sign up for Rewards"
   },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
@@ -6541,6 +6682,9 @@
   },
   "siweURI": {
     "message": "URL"
+  },
+  "skip": {
+    "message": "Skip"
   },
   "skipDeepLinkInterstitial": {
     "message": "Don't show interstitial screen when opening deep links"
@@ -7778,6 +7922,12 @@
   "tokenStandard": {
     "message": "Token standard"
   },
+  "tokenStream": {
+    "message": "Token Stream"
+  },
+  "tokenSubscription": {
+    "message": "Token Subscription"
+  },
   "tokenSymbol": {
     "message": "Token symbol"
   },
@@ -8324,6 +8474,9 @@
   "websites": {
     "message": "websites",
     "description": "Used in the 'permission_rpc' message."
+  },
+  "weekly": {
+    "message": "weekly"
   },
   "welcomeBack": {
     "message": "Welcome back"

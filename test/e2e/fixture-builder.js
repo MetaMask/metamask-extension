@@ -1916,6 +1916,14 @@ class FixtureBuilder {
     return this;
   }
 
+  withRemoteFeatureFlags(remoteFeatureFlags = {}) {
+    merge(
+      this.fixture.data.RemoteFeatureFlagController.remoteFeatureFlags,
+      remoteFeatureFlags,
+    );
+    return this;
+  }
+
   build() {
     if (!this.fixture.meta) {
       this.fixture.meta = {

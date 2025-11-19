@@ -654,21 +654,33 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
   };
 }
 
-export function setShowShieldEntryModalOnce(
-  show: boolean | null,
-  shouldSubmitEvents: boolean = false,
-  triggeringCohort?: string,
-  modalType?: ModalType,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function setShowShieldEntryModalOnce({
+  show,
+  shouldSubmitEvents = false,
+  triggeringCohort,
+  modalType,
+  hasUserInteractedWithModal = false,
+  shouldUpdateBackgroundState = true,
+}: {
+  show: boolean | null;
+  shouldSubmitEvents?: boolean;
+  triggeringCohort?: string;
+  modalType?: ModalType;
+  hasUserInteractedWithModal?: boolean;
+  shouldUpdateBackgroundState?: boolean;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setShowShieldEntryModalOnce', [show]);
+      if (shouldUpdateBackgroundState) {
+        await submitRequestToBackground('setShowShieldEntryModalOnce', [show]);
+      }
       dispatch(
         setShowShieldEntryModalOnceAction({
           show: Boolean(show),
           shouldSubmitEvents,
           triggeringCohort,
           modalType,
+          hasUserInteractedWithModal,
         }),
       );
     } catch (error) {
@@ -684,9 +696,10 @@ export function setShowShieldEntryModalOnceAction(payload: {
   shouldSubmitEvents: boolean;
   triggeringCohort?: string;
   modalType: ModalType;
+  hasUserInteractedWithModal?: boolean;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
-    type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
+    type: actionConstants.SET_SHIELD_ENTRY_MODAL_STATUS,
     payload,
   };
 }
@@ -882,6 +895,34 @@ export function tryUnlockMetamask(
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
+  };
+}
+
+/**
+ * Checks if the seedless onboarding user is authenticated.
+ *
+ * @returns True if the seedless onboarding user is authenticated, false otherwise.
+ */
+export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
+  boolean,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      dispatch(showLoadingIndication());
+      const isAuthenticated = await submitRequestToBackground<boolean>(
+        'getIsSeedlessOnboardingUserAuthenticated',
+        [],
+      );
+      return isAuthenticated;
+    } catch (error) {
+      log.warn('getIsSeedlessOnboardingUserAuthenticated error', error);
+      return false;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -5719,6 +5760,7 @@ export function setEditedNetwork(
         nickname?: string;
         editCompleted?: boolean;
         newNetwork?: boolean;
+        trackRpcUpdateFromBanner?: boolean;
       }
     | undefined = undefined,
 ): PayloadAction<object> {
@@ -8007,6 +8049,9 @@ export async function submitShieldClaim(
 
     return ClaimSubmitToastType.Success;
   } catch (error) {
+    if (error instanceof SubmitClaimError) {
+      throw error;
+    }
     log.error('[submitShieldClaim] Failed to submit shield claim:', error);
     throw new SubmitClaimError(ClaimSubmitToastType.Errored);
   }
