@@ -46,9 +46,9 @@ describe('State logs', function () {
             .thenCallback(() => ({
               statusCode: 200,
               json: {
-                usd: {
-                  name: 'US Dollar',
-                  ticker: 'usd',
+                eth: {
+                  name: 'Ethereum',
+                  ticker: 'eth',
                   value: 1,
                   currencyType: 'fiat',
                 },
@@ -125,11 +125,12 @@ describe('State logs', function () {
             .thenCallback(() => ({
               statusCode: 200,
               json: {
-                usd: {
-                  name: 'US Dollar',
-                  ticker: 'usd',
+                eth: {
+                  name: 'Ethereum',
+                  ticker: 'eth',
                   value: 1,
                   currencyType: 'fiat',
+                  usd: 1,
                 },
               },
             }));
@@ -138,6 +139,8 @@ describe('State logs', function () {
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
         await loginWithBalanceValidation(driver);
+
+        await driver.delay(10000);
 
         // Download state logs
         await new HeaderNavbar(driver).openSettingsPage();
