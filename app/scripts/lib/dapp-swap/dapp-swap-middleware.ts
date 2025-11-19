@@ -92,13 +92,18 @@ export function createDappSwapMiddleware<
           const { quotesInput } = getDataFromSwap(chainId as Hex, data, from);
           if (quotesInput) {
             const startTime = new Date().getTime();
-            fetchQuotes(quotesInput).then((quotes) => {
-              const endTime = new Date().getTime();
-              const latency = endTime - startTime;
-              if (quotes) {
-                setSwapQuotes(securityAlertId, { quotes, latency });
-              }
-            });
+            fetchQuotes(quotesInput)
+              .then((quotes) => {
+                const endTime = new Date().getTime();
+                const latency = endTime - startTime;
+                if (quotes) {
+                  setSwapQuotes(securityAlertId, { quotes, latency });
+                }
+              })
+              .catch((error) => {
+                log.error('Error fetching dapp swap quotes', error);
+                captureException(error);
+              });
           }
         }
       }
