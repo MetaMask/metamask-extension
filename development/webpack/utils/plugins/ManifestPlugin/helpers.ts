@@ -9,6 +9,8 @@ import type { Args } from '../../cli';
  * - If `test` is `true`, adds the "tabs" permission to the manifest in MV2
  *
  * @param args
+ * @param args.test
+ * @param args.manifest_version
  * @param isDevelopment
  * @param manifestOverridesPath
  * @returns a function that will transform the manifest JSON object
