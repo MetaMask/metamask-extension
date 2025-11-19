@@ -14,7 +14,7 @@
     "ui/pages/confirmations/confirmation/templates/error.js",
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
+    "ui/store/actions.ts",
   ],
   [
     "shared/modules/selectors/index.ts",
@@ -23,7 +23,7 @@
     "ui/pages/confirmations/confirmation/templates/error.js",
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
+    "ui/store/actions.ts",
   ],
   [
     "shared/modules/selectors/index.ts",
@@ -31,7 +31,7 @@
     "ui/pages/confirmations/confirmation/templates/error.js",
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
+    "ui/store/actions.ts",
   ],
   [
     "ui/components/app/assets/asset-list/asset-list-funding-modals/asset-list-funding-modals.tsx",
@@ -43,7 +43,7 @@
     "ui/components/multichain/account-overview/account-overview-tabs.tsx",
     "ui/components/multichain/account-overview/account-overview.tsx",
     "ui/components/multichain/account-overview/index.js",
-    "ui/components/multichain/index.js"
+    "ui/components/multichain/index.js",
   ],
   [
     "ui/components/app/connected-status-indicator/connected-status-indicator.js",
@@ -51,14 +51,14 @@
     "ui/components/multichain/app-header/app-header-unlocked-content.tsx",
     "ui/components/multichain/app-header/app-header.js",
     "ui/components/multichain/app-header/index.js",
-    "ui/components/multichain/index.js"
+    "ui/components/multichain/index.js",
   ],
   [
     "ui/components/app/metamask-template-renderer/index.js",
     "ui/components/app/metamask-template-renderer/metamask-template-renderer.js",
     "ui/components/app/metamask-template-renderer/safe-component-list.js",
     "ui/components/app/metamask-translation/index.js",
-    "ui/components/app/metamask-translation/metamask-translation.js"
+    "ui/components/app/metamask-translation/metamask-translation.js",
   ],
   [
     "ui/components/app/transaction-list-item/index.js",
@@ -70,7 +70,7 @@
     "ui/components/multichain/account-overview/account-overview-tabs.tsx",
     "ui/components/multichain/account-overview/account-overview.tsx",
     "ui/components/multichain/account-overview/index.js",
-    "ui/components/multichain/index.js"
+    "ui/components/multichain/index.js",
   ],
   [
     "ui/components/app/transaction-list-item/smart-transaction-list-item.component.js",
@@ -81,7 +81,7 @@
     "ui/components/multichain/account-overview/account-overview-tabs.tsx",
     "ui/components/multichain/account-overview/account-overview.tsx",
     "ui/components/multichain/account-overview/index.js",
-    "ui/components/multichain/index.js"
+    "ui/components/multichain/index.js",
   ],
   [
     "ui/components/component-library/index.ts",
@@ -99,7 +99,7 @@
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/custom-gas.js",
     "ui/selectors/index.js",
-    "ui/selectors/selectors.js"
+    "ui/selectors/selectors.js",
   ],
   [
     "ui/components/component-library/index.ts",
@@ -114,7 +114,7 @@
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/custom-gas.js",
     "ui/selectors/index.js",
-    "ui/selectors/selectors.js"
+    "ui/selectors/selectors.js",
   ],
   [
     "ui/components/component-library/index.ts",
@@ -128,7 +128,7 @@
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/index.js",
-    "ui/selectors/selectors.js"
+    "ui/selectors/selectors.js",
   ],
   [
     "ui/components/component-library/index.ts",
@@ -142,7 +142,7 @@
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/custom-gas.js",
     "ui/selectors/index.js",
-    "ui/selectors/selectors.js"
+    "ui/selectors/selectors.js",
   ],
   [
     "ui/components/component-library/index.ts",
@@ -155,7 +155,7 @@
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/index.js",
-    "ui/selectors/selectors.js"
+    "ui/selectors/selectors.js",
   ],
   [
     "ui/components/component-library/index.ts",
@@ -168,7 +168,7 @@
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/index.js",
     "ui/selectors/multichain/networks.ts",
-    "ui/selectors/selectors.js"
+    "ui/selectors/selectors.js",
   ],
   [
     "ui/components/component-library/index.ts",
@@ -180,7 +180,7 @@
     "ui/pages/confirmations/confirmation/templates/error.js",
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/index.js",
-    "ui/selectors/selectors.js"
+    "ui/selectors/selectors.js",
   ],
   [
     "ui/components/multichain/asset-picker-amount/asset-picker-amount.tsx",
@@ -188,12 +188,12 @@
     "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx",
     "ui/components/multichain/asset-picker-amount/asset-picker/asset-picker.tsx",
     "ui/components/multichain/asset-picker-amount/index.ts",
-    "ui/components/multichain/index.js"
+    "ui/components/multichain/index.js",
   ],
   [
     "ui/components/multichain/edit-networks-modal/edit-networks-modal.js",
     "ui/components/multichain/edit-networks-modal/index.js",
-    "ui/components/multichain/index.js"
+    "ui/components/multichain/index.js",
   ],
   ["ui/ducks/alerts/unconnected-account.js", "ui/store/actions.ts"],
   [
@@ -205,7 +205,7 @@
     "ui/pages/confirmations/confirmation/templates/error.js",
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
+    "ui/store/actions.ts",
   ],
   [
     "ui/ducks/metamask/metamask.js",
@@ -213,13 +213,13 @@
     "ui/pages/confirmations/confirmation/templates/error.js",
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
+    "ui/store/actions.ts",
   ],
   [
     "ui/ducks/metamask/metamask.js",
     "ui/selectors/multichain.ts",
-    "ui/selectors/selectors.js"
+    "ui/selectors/selectors.js",
   ],
   ["ui/ducks/metamask/metamask.js", "ui/selectors/selectors.js"],
-  ["ui/selectors/multichain.ts", "ui/selectors/selectors.js"]
+  ["ui/selectors/multichain.ts", "ui/selectors/selectors.js"],
 ]

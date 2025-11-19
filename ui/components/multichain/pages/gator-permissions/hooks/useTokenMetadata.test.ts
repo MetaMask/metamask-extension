@@ -32,10 +32,7 @@ describe('useTokenMetadata', () => {
     >;
 
   const MOCK_NATIVE_TOKEN: TokenMetadata = { symbol: 'ETH', decimals: 18 };
-  const UNKNOWN_TOKEN: TokenMetadata = {
-    symbol: 'Unknown Token',
-    decimals: null,
-  };
+  const UNKNOWN_TOKEN: TokenMetadata = { symbol: 'Unknown Token', decimals: null };
   const CHAIN_ID = '0x1';
   const EMPTY_TOKENS_BY_CHAIN = { [CHAIN_ID]: { data: {} } };
 
