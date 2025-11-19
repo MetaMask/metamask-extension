@@ -60,7 +60,7 @@ import {
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
-import { FEATURED_RPCS } from '../../../shared/constants/network';
+import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getMultichainBalances,
   getMultichainCoinRates,
@@ -263,7 +263,7 @@ export const getLastSelectedChainId = createSelector(
   (allEnabledNetworksForAllNamespaces, fromChains) => {
     // If there is no network filter, return mainnet
     if (allEnabledNetworksForAllNamespaces.length > 1) {
-      return fromChains[0]?.chainId;
+      return CHAIN_IDS.MAINNET;
     }
     // Find the matching bridge fromChain for the selected network filter
     return fromChains.find(
