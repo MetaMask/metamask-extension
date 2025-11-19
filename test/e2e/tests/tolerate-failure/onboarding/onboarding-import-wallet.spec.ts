@@ -15,8 +15,8 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { getCommonMocks } from '../utils/commonMocks.js';
 import { setupTimerReporting } from '../utils/testSetup.js';
-import Timers from '../../timers/Timers.js';
-import { E2E_SRP } from '../../../default-fixture.js';
+import Timers from '../../../../timers/Timers.js';
+import { E2E_SRP } from '../../../default-fixture';
 
 describe('MetaMask onboarding', function () {
   // Setup timer reporting for all tests in this describe block
@@ -53,12 +53,15 @@ describe('MetaMask onboarding', function () {
           'Time since the user clicks on "Confirm" button until "Password" form is visible',
         );
         const timer4 = Timers.createTimer(
-          'Time since the user clicks on "Continue" button until "Onboarding Success" screen is visible',
+          'Time since the user clicks on "Continue" button on Password form until "Help improve Metamask" screen is visible',
         );
         const timer5 = Timers.createTimer(
-          'Time since the user clicks on "Done" button until "Home" screen is visible',
+          'Time since the user clicks on "Continue" button until "Wallet is ready" screen is visible',
         );
         const timer6 = Timers.createTimer(
+          'Time since the user clicks on "Done" button until "Home" screen is visible',
+        );
+        const timer7 = Timers.createTimer(
           'Time since the user opens "account list" until the account list is loaded',
         );
         await driver.navigate();
@@ -75,42 +78,35 @@ describe('MetaMask onboarding', function () {
         timer2.stopTimer();
         await onboardingSrpPage.fillSrp(srp);
         await onboardingSrpPage.clickConfirmButton();
-
+        timer3.startTimer();
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.checkPageIsLoaded();
-        timer2.stopTimer();
+        timer3.stopTimer();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
-        timer3.startTimer();
+        timer4.startTimer();
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
         await onboardingMetricsPage.checkPageIsLoaded();
-        timer3.stopTimer();
-
+        timer4.stopTimer();
         await onboardingMetricsPage.clickOnContinueButton();
-        timer4.startTimer();
+        timer5.startTimer();
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.checkPageIsLoaded();
-        timer4.stopTimer();
+        timer5.stopTimer();
         await onboardingCompletePage.completeOnboarding();
-        timer5.startTimer();
+        timer6.startTimer();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkTokenListIsDisplayed();
         await homePage.checkTokenListPricesAreDisplayed();
         await homePage.checkAssetIsDisplayed('Ethereum');
         await homePage.checkAssetIsDisplayed('Solana');
-        timer5.stopTimer();
+        timer6.stopTimer();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountsPage();
-        timer6.startTimer();
+        timer7.startTimer();
         const accountList = new AccountListPage(driver);
         await accountList.checkListIsCompletelyLoaded();
-        timer6.stopTimer();
-        console.log(`Timer 1:  ${timer1.getDurationInSeconds()} s`);
-        console.log(`Timer 2:  ${timer2.getDurationInSeconds()} s`);
-        console.log(`Timer 3:  ${timer3.getDurationInSeconds()} s`);
-        console.log(`Timer 4:  ${timer4.getDurationInSeconds()} s`);
-        console.log(`Timer 5:  ${timer5.getDurationInSeconds()} s`);
-        console.log(`Timer 6:  ${timer6.getDurationInSeconds()} s`);
+        timer7.stopTimer();
       },
     );
   });

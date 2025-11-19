@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import Timers, { type TimerWithId } from '../../timers/Timers.js';
+import Timers, { type TimerWithId } from '../../../../timers/Timers.js';
 
 export type TimerTestResult = {
   testName: string;
@@ -46,7 +46,10 @@ class TestPerformanceTracker {
       };
 
       // Create results directory if it doesn't exist
-      const resultsDir = path.join(__dirname, '..', 'test-results');
+      const resultsDir = path.join(
+        __dirname,
+        '../../../../test-results/power-user-scenarios',
+      );
       if (!fs.existsSync(resultsDir)) {
         fs.mkdirSync(resultsDir, { recursive: true });
       }

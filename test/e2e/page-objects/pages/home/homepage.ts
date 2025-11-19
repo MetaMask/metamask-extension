@@ -318,8 +318,6 @@ class HomePage {
           `[data-testid="multichain-token-list-item-token-name"]`,
         );
         for (const element of assetNameElement) {
-          console.log(`Asset name element: ${await element.getText()}`);
-          console.log(`Asset name: ${assetName}`);
           if ((await element.getText()) === assetName) {
             return true;
           }

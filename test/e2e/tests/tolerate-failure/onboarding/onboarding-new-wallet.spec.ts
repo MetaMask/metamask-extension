@@ -13,7 +13,7 @@ import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-n
 import FixtureBuilder from '../../../fixture-builder';
 import { getCommonMocks } from '../utils/commonMocks.js';
 import { setupTimerReporting } from '../utils/testSetup.js';
-import Timers from '../../timers/Timers.js';
+import Timers from '../../../../timers/Timers.js';
 
 describe('MetaMask onboarding', function () {
   // Setup timer reporting for all tests in this describe block
@@ -67,8 +67,8 @@ describe('MetaMask onboarding', function () {
         await startOnboardingPage.checkSocialSignUpFormIsVisible();
         timer1.stopTimer();
 
-        timer2.startTimer();
         await startOnboardingPage.clickCreateWithSrpButton();
+        timer2.startTimer();
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.checkPageIsLoaded();
         timer2.stopTimer();
@@ -100,15 +100,6 @@ describe('MetaMask onboarding', function () {
         await homePage.checkTokenListPricesAreDisplayed();
         await homePage.checkAssetIsDisplayed('Ethereum');
         await homePage.checkAssetIsDisplayed('Solana');
-
-        console.log(`Timer 1:  ${timer1.getDurationInSeconds()} s`);
-        console.log('Token list is displayed');
-        console.log(`Timer 1:  ${timer1.getDuration()} ms`);
-        console.log(`Timer 2:  ${timer2.getDuration()} ms`);
-        console.log(`Timer 3:  ${timer3.getDuration()} ms`);
-        console.log(`Timer 4:  ${timer4.getDuration()} ms`);
-        console.log(`Timer 5:  ${timer5.getDuration()} ms`);
-        console.log(`Timer 6:  ${timer6.getDuration()} ms`);
       },
     );
   });

@@ -9,7 +9,7 @@ import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
 
 import { setupTimerReporting } from '../utils/testSetup.js';
-import Timers from '../../timers/Timers.js';
+import Timers from '../../../../timers/Timers.js';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 describe('Power user persona', function () {
@@ -49,7 +49,6 @@ describe('Power user persona', function () {
         await assetListPage.openNetworksFilter();
         const networkManager = new NetworkManager(driver);
         await networkManager.selectNetworkByNameWithWait('Solana');
-        await driver.delay(1000);
         await homePage.checkPageIsLoaded();
         await homePage.checkTokenListIsDisplayed();
         await homePage.checkTokenListPricesAreDisplayed();

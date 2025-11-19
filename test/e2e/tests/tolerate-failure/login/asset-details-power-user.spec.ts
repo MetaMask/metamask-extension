@@ -7,8 +7,9 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
 import { setupTimerReporting } from '../utils/testSetup.js';
-import Timers from '../../timers/Timers.js';
+import Timers from '../../../../timers/Timers.js';
 
+const USDC_TOKEN_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 describe('Power user persona', function () {
   // Setup timer reporting for all tests in this describe block
   setupTimerReporting();
@@ -45,7 +46,6 @@ describe('Power user persona', function () {
         await assetListPage.openNetworksFilter();
         const networkManager = new NetworkManager(driver);
         await networkManager.selectNetworkByNameWithWait('Ethereum');
-        await driver.delay(1000);
         await homePage.checkPageIsLoaded();
         await homePage.checkTokenListIsDisplayed();
         await homePage.checkTokenListPricesAreDisplayed();
@@ -53,12 +53,9 @@ describe('Power user persona', function () {
         const timer1 = Timers.createTimer(
           'Time since the user clicks on the asset until the price chart is shown',
         );
-        await driver.delay(1000); // workaround to avoid race condition
         timer1.startTimer();
         await assetListPage.checkPriceChartIsShown();
-        await assetListPage.checkPriceChartLoaded(
-          '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-        ); // USDC address
+        await assetListPage.checkPriceChartLoaded(USDC_TOKEN_ADDRESS);
         timer1.stopTimer();
         console.log(`Timer 1:  ${timer1.getDurationInSeconds()} s`);
       },
