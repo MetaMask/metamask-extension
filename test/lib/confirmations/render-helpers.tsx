@@ -1,6 +1,7 @@
 import React, { ReactChildren, ReactElement } from 'react';
 
 import { ConfirmContextProvider } from '../../../ui/pages/confirmations/context/confirm';
+import { DappSwapContextProvider } from '../../../ui/pages/confirmations/context/dapp-swap';
 import { renderHookWithProvider, renderWithProvider } from '../render-helpers';
 
 export function renderWithConfirmContextProvider(
@@ -9,7 +10,9 @@ export function renderWithConfirmContextProvider(
   pathname = '/',
 ) {
   return renderWithProvider(
-    <ConfirmContextProvider>{component}</ConfirmContextProvider>,
+    <ConfirmContextProvider>
+      <DappSwapContextProvider>{component}</DappSwapContextProvider>
+    </ConfirmContextProvider>,
     store,
     pathname,
   );
@@ -25,12 +28,18 @@ export function renderHookWithConfirmContextProvider(
   Container?: any,
 ) {
   const contextContainer = Container
-    ? ({ children }: { children: ReactChildren }) => (
+    ? ({ children }: { children: ReactElement }) => (
         <ConfirmContextProvider>
-          <Container>{children}</Container>
+          <DappSwapContextProvider>
+            <Container>{children}</Container>
+          </DappSwapContextProvider>
         </ConfirmContextProvider>
       )
-    : ConfirmContextProvider;
+    : ({ children }: { children: ReactElement }) => (
+        <ConfirmContextProvider>
+          <DappSwapContextProvider>{children}</DappSwapContextProvider>
+        </ConfirmContextProvider>
+      );
 
   return renderHookWithProvider(hook, state, pathname, contextContainer);
 }

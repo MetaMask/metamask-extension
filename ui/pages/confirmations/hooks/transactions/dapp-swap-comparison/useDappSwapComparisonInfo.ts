@@ -13,9 +13,10 @@ import {
   getBalanceChangeFromSimulationData,
 } from '../../../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
 import { TokenStandAndDetails } from '../../../../../store/actions';
+import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { ConfirmMetamaskState } from '../../../types/confirm';
-import { selectDappSwapComparisonData } from '../../../selectors/confirm';
 import { getTokenValueFromRecord } from '../../../utils/token';
+import { selectDappSwapComparisonData } from '../../../selectors/confirm';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonLatencyMetrics } from './useDappSwapComparisonLatencyMetrics';
 import { useDappSwapUSDValues } from './useDappSwapUSDValues';
@@ -24,6 +25,9 @@ import { useDappSwapComparisonMetrics } from './useDappSwapComparisonMetrics';
 const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
 
 export function useDappSwapComparisonInfo() {
+  const { dappSwapQa } = useSelector(getRemoteFeatureFlags) as {
+    dappSwapQa: { enabled: boolean };
+  };
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { quotes, latency: quoteResponseLatency } = useSelector(
     (state: ConfirmMetamaskState) => {
@@ -110,26 +114,37 @@ export function useDappSwapComparisonInfo() {
     destTokenAddress: quotesInput?.destTokenAddress as Hex,
   });
 
-  const { bestQuote, bestFilteredQuote: selectedQuote } = useMemo(() => {
+  const { bestQuote, selectedQuote } = useMemo(() => {
     try {
       if (amountMin === undefined || !quotes?.length || tokenInfoPending) {
-        return { bestQuote: undefined, bestFilteredQuote: undefined };
+        return { bestQuote: undefined, selectedQuote: undefined };
       }
 
-      return getBestQuote(
+      const { bestQuote: bestAvailableQuote, bestFilteredQuote } = getBestQuote(
         quotes,
         amountMin,
         getDestinationTokenUSDValue,
         getGasUSDValue,
       );
+
+      const selectedBestQuote =
+        bestFilteredQuote || dappSwapQa?.enabled
+          ? bestAvailableQuote
+          : undefined;
+
+      return {
+        bestQuote: bestAvailableQuote,
+        selectedQuote: selectedBestQuote,
+      };
     } catch (error) {
       captureException(error);
       captureDappSwapComparisonFailed('error getting best quote');
-      return { bestQuote: undefined, bestFilteredQuote: undefined };
+      return { bestQuote: undefined, selectedQuote: undefined };
     }
   }, [
     amountMin,
     captureDappSwapComparisonFailed,
+    dappSwapQa?.enabled,
     getGasUSDValue,
     getDestinationTokenUSDValue,
     quotes,
@@ -257,7 +272,6 @@ export function useDappSwapComparisonInfo() {
     selectedQuoteValueDifference = 0,
     gasDifference = 0,
     tokenAmountDifference = 0,
-    destinationTokenSymbol,
   } = useMemo(() => {
     if (!selectedQuote || !quotesInput || !simulationData || !tokenDetails) {
       return {};
@@ -319,16 +333,10 @@ export function useDappSwapComparisonInfo() {
       .minus(destinationTokenAmountInConfirmation)
       .toNumber();
 
-    const destinationTokenSym = getTokenValueFromRecord<TokenStandAndDetails>(
-      tokenDetails,
-      destTokenAddress as Hex,
-    )?.symbol;
-
     return {
       selectedQuoteValueDifference: selectedQuoteValueDiff,
-      gasDifference: gasDiff > 0 ? gasDiff : 0,
-      tokenAmountDifference: tokenAmountDiff > 0 ? tokenAmountDiff : 0,
-      destinationTokenSymbol: destinationTokenSym,
+      gasDifference: gasDiff,
+      tokenAmountDifference: tokenAmountDiff,
     };
   }, [
     selectedQuote,
@@ -344,15 +352,14 @@ export function useDappSwapComparisonInfo() {
 
   return {
     fiatRates,
-    destinationTokenSymbol,
     gasDifference,
-    selectedQuote,
-    selectedQuoteValueDifference,
-    sourceTokenAmount: quotesInput?.srcTokenAmount,
     minDestTokenAmountInUSD: getDestinationTokenUSDValue(
       selectedQuote?.quote?.minDestTokenAmount ?? '0',
       2,
     ),
+    selectedQuote,
+    selectedQuoteValueDifference,
+    sourceTokenAmount: quotesInput?.srcTokenAmount,
     tokenAmountDifference,
     tokenDetails,
   };

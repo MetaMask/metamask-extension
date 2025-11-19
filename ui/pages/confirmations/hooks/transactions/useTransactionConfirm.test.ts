@@ -14,7 +14,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../test/data/conf
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { updateAndApproveTx } from '../../../../store/actions';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
-import * as ConfirmContext from '../../context/confirm';
+import * as DappSwapContext from '../../context/dapp-swap';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useTransactionConfirm } from './useTransactionConfirm';
@@ -352,12 +352,11 @@ describe('useTransactionConfirm', () => {
   });
 
   it('updates swap with MM quote if available', async () => {
-    const confirmation = genUnapprovedContractInteractionConfirmation();
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      quoteSelectedForMMSwap: mockBridgeQuotes[0] as unknown as QuoteResponse,
-      currentConfirmation: confirmation,
-      isQuotedSwapDisplayedInInfo: true,
-    } as ReturnType<typeof ConfirmContext.useConfirmContext>);
+    jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
+      selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,
+      setSelectedQuote: jest.fn(),
+      setQuotedSwapDisplayedInInfo: jest.fn(),
+    } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: true,
