@@ -3,7 +3,7 @@ const path = require('path');
 const ReactCompilerConfig = {
   target: '17',
   sources: (filename) => {
-    return filename.includes('ui/');
+    return filename.includes('/ui/');
   },
 };
 

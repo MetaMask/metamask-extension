@@ -196,13 +196,13 @@ export const reactCompilerOptions = {
   target: '17',
   logger: null,
   gating: null,
-  noEmit: true,
+  noEmit: false,
   compilationMode: 'all',
   eslintSuppressionRules: null,
   flowSuppressions: false,
   ignoreUseNoForget: false,
   sources: (filename) => {
-    return filename.includes('ui/');
+    return filename.includes('/ui/');
   },
   enableReanimatedCheck: false,
   environment: {} as EnvironmentConfig,

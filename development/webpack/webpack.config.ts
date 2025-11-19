@@ -32,7 +32,6 @@ import {
   __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
-  UI_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -317,22 +316,26 @@ const config = {
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [tsxLoader, codeFenceLoader],
-      },
-      // own javascript, and own javascript with jsx
-      {
-        test: /\.(?:js|mjs|jsx)$/u,
-        exclude: NODE_MODULES_RE,
-        use: [jsxLoader, codeFenceLoader],
-      },
-      {
-        test: /\.(?:ts|mts|tsx|js|mjs|jsx)$/u,
-        include: UI_RE,
         use: [
           {
             loader: reactCompilerLoader,
             options: defineReactCompilerLoaderOption(reactCompilerOptions),
           },
+          tsxLoader,
+          codeFenceLoader,
+        ],
+      },
+      // own javascript, and own javascript with jsx
+      {
+        test: /\.(?:js|mjs|jsx)$/u,
+        exclude: NODE_MODULES_RE,
+        use: [
+          {
+            loader: reactCompilerLoader,
+            options: defineReactCompilerLoaderOption(reactCompilerOptions),
+          },
+          jsxLoader,
+          codeFenceLoader,
         ],
       },
       // vendor javascript. We must transform all npm modules to ensure browser
