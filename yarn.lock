@@ -7936,9 +7936,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/shield-controller@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/shield-controller@npm:2.1.0"
+"@metamask/shield-controller@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@metamask/shield-controller@npm:2.1.1"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.15.0"
@@ -7948,7 +7948,7 @@ __metadata:
   peerDependencies:
     "@metamask/signature-controller": ^36.0.0
     "@metamask/transaction-controller": ^61.0.0
-  checksum: 10/175a9eda1ed873e85fdf9e05383604854d137a6278497158b2b6862a60593bb49f8aecb84c767d9f901687f67827ccc65507031c9bf8cf7d233d9a9eccf42868
+  checksum: 10/3abb2c55ce6bbe241bbf42549de499e8769fc7a991268996dcf0921ad9708fefef5a5828a2ae4328252c1faa795c6877418989e1a885e7f0a8b965c121004369
   languageName: node
   linkType: hard
 
@@ -33227,7 +33227,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^6.1.0"
     "@metamask/selected-network-controller": "npm:^25.0.0"
-    "@metamask/shield-controller": "npm:^2.1.0"
+    "@metamask/shield-controller": "npm:^2.1.1"
     "@metamask/signature-controller": "npm:^35.0.0"
     "@metamask/smart-transactions-controller": "npm:^20.0.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"

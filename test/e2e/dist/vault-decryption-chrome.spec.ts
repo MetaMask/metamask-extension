@@ -2,14 +2,14 @@ import os from 'os';
 import path from 'path';
 import fs from 'fs-extra';
 import level from 'level';
-import { Driver } from './webdriver/driver';
-import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from './helpers';
-import HeaderNavbar from './page-objects/pages/header-navbar';
-import HomePage from './page-objects/pages/home/homepage';
-import PrivacySettings from './page-objects/pages/settings/privacy-settings';
-import SettingsPage from './page-objects/pages/settings/settings-page';
-import VaultDecryptorPage from './page-objects/pages/vault-decryptor-page';
-import { completeCreateNewWalletOnboardingFlowWithCustomSettings } from './page-objects/flows/onboarding.flow';
+import { Driver } from '../webdriver/driver';
+import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../helpers';
+import HeaderNavbar from '../page-objects/pages/header-navbar';
+import HomePage from '../page-objects/pages/home/homepage';
+import PrivacySettings from '../page-objects/pages/settings/privacy-settings';
+import SettingsPage from '../page-objects/pages/settings/settings-page';
+import VaultDecryptorPage from '../page-objects/pages/vault-decryptor-page';
+import { completeCreateNewWalletOnboardingFlowWithCustomSettings } from '../page-objects/flows/onboarding.flow';
 
 const VAULT_DECRYPTOR_PAGE = 'https://metamask.github.io/vault-decryptor';
 
@@ -74,6 +74,7 @@ function getExtensionLogFile(extensionStoragePath: string): string {
     .readdirSync(extensionStoragePath)
     .filter((filename: string) => filename.endsWith('.log'));
 
+  console.log('Log Files =========================:', logFiles.length);
   // Use the first of the `.log` files found
   return path.resolve(extensionStoragePath, logFiles[0]);
 }
@@ -95,7 +96,6 @@ async function getFileSize(filePath: string): Promise<number> {
  *
  * @param options - The options object.
  * @param options.driver - The WebDriver instance.
- * @param options.filePath - The path to the file.
  * @param options.maxRetries - The maximum number of retries.
  * @param options.minFileSize - The minimum file size in bytes.
  * @returns Resolves if the file meets the size requirement within the retries.
@@ -103,17 +103,17 @@ async function getFileSize(filePath: string): Promise<number> {
  */
 async function waitUntilFileIsWritten({
   driver,
-  filePath,
   maxRetries = 5,
   minFileSize = 1000000,
 }: {
   driver: Driver;
-  filePath: string;
   maxRetries?: number;
   minFileSize?: number;
 }): Promise<void> {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
-    const fileSize = await getFileSize(filePath);
+    const extensionPath = await getExtensionStorageFilePath(driver);
+    const extensionLogFile = getExtensionLogFile(extensionPath);
+    const fileSize = await getFileSize(extensionLogFile);
     if (fileSize > minFileSize) {
       console.log(`File is ready with size ${fileSize} bytes.`);
       return;
@@ -165,6 +165,10 @@ async function closePopoverIfPresent(driver: Driver) {
 
 describe('Vault Decryptor Page', function () {
   it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
+    if (process.env.SELENIUM_BROWSER !== 'chrome') {
+      // TODO: Get this working on Firefox
+      this.skip();
+    }
     await withFixtures(
       {
         disableServerMochaToBackground: true,
@@ -203,15 +207,15 @@ describe('Vault Decryptor Page', function () {
         await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
         const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
 
-        // Retry-logic to ensure the file is ready before uploading itto mitigate flakiness when Chrome hasn't finished writing
-        const extensionPath = await getExtensionStorageFilePath(driver);
-        const extensionLogFile = getExtensionLogFile(extensionPath);
-        await waitUntilFileIsWritten({ driver, filePath: extensionLogFile });
+        // Retry-logic to ensure the file is ready before uploading it to mitigate flakiness when Chrome hasn't finished writing
+        await waitUntilFileIsWritten({ driver });
 
         // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
         await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
         const vaultDecryptorPage = new VaultDecryptorPage(driver);
         await vaultDecryptorPage.checkPageIsLoaded();
+        const extensionPath = await getExtensionStorageFilePath(driver);
+        const extensionLogFile = getExtensionLogFile(extensionPath);
         await vaultDecryptorPage.uploadLogFile(extensionLogFile);
 
         // fill the password and decrypt
@@ -223,6 +227,10 @@ describe('Vault Decryptor Page', function () {
   });
 
   it('is able to decrypt the vault pasting the text in the vault-decryptor webapp', async function () {
+    if (process.env.SELENIUM_BROWSER !== 'chrome') {
+      // TODO: Get this working on Firefox
+      this.skip();
+    }
     await withFixtures(
       {
         disableServerMochaToBackground: true,
@@ -264,8 +272,7 @@ describe('Vault Decryptor Page', function () {
 
         // retry-logic to ensure the file is written before copying it
         const extensionPath = await getExtensionStorageFilePath(driver);
-        const extensionLogFile = getExtensionLogFile(extensionPath);
-        await waitUntilFileIsWritten({ driver, filePath: extensionLogFile });
+        await waitUntilFileIsWritten({ driver });
 
         // copy log file to a temp location, to avoid reading it while the browser is writting it
         type VaultData = {

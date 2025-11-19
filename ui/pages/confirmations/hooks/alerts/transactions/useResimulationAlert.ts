@@ -9,12 +9,11 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../context/confirm';
-import { useSwapCheck } from '../../transactions/dapp-swap-comparison/useSwapCheck';
 
 export function useResimulationAlert(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
-  const { isQuotedSwap } = useSwapCheck();
+  const { currentConfirmation, isQuotedSwapDisplayedInInfo } =
+    useConfirmContext();
 
   const transactionMeta = currentConfirmation as TransactionMeta;
 
@@ -23,7 +22,11 @@ export function useResimulationAlert(): Alert[] {
   const isWalletInitiated = transactionMeta?.origin === ORIGIN_METAMASK;
 
   return useMemo(() => {
-    if (!isUpdatedAfterSecurityCheck || isWalletInitiated || isQuotedSwap) {
+    if (
+      !isUpdatedAfterSecurityCheck ||
+      isWalletInitiated ||
+      isQuotedSwapDisplayedInInfo
+    ) {
       return [];
     }
 
@@ -38,5 +41,10 @@ export function useResimulationAlert(): Alert[] {
         severity: Severity.Danger,
       },
     ];
-  }, [isUpdatedAfterSecurityCheck, isWalletInitiated, isQuotedSwap, t]);
+  }, [
+    isQuotedSwapDisplayedInInfo,
+    isUpdatedAfterSecurityCheck,
+    isWalletInitiated,
+    t,
+  ]);
 }

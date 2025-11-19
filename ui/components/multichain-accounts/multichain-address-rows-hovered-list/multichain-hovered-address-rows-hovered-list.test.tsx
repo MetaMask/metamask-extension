@@ -63,10 +63,6 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock('../../../../app/scripts/lib/multichain/address', () => ({
-  normalizeSafeAddress: jest.fn((address: string) => address),
-}));
-
 const mockHandleCopy = jest.fn();
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: () => [false, mockHandleCopy],
@@ -102,7 +98,7 @@ const WALLET_ID_MOCK = toAccountWalletId(
 const GROUP_ID_MOCK = `${WALLET_ID_MOCK}/0` as AccountGroupId;
 const SPECIAL_GROUP_ID = `${WALLET_ID_MOCK}/special-0` as AccountGroupId;
 const ACCOUNT_EVM_ID_MOCK =
-  'entropy:01K437Z7EJ0VCMFDE9TQKRV60A:multichain-account:01K437Z7EJ0VCMFDE9TQKRV60A:eoa:0x1234567890123456789012345678901234567890';
+  'entropy:01K437Z7EJ0VCMFDE9TQKRV60A:multichain-account:01K437Z7EJ0VCMFDE9TQKRV60A:eoa:0x4b42aed7d99fc7874a56e6003629c89210a31c34';
 const ACCOUNT_BITCOIN_ID_MOCK =
   'bitcoin:mainnet:4e445ed5a8c09d4d3be8e7fbf7dc3314';
 const ACCOUNT_SOLANA_ID_MOCK =
@@ -112,7 +108,7 @@ const ACCOUNT_TRON_ID_MOCK = 'tron:mainnet:6e445ed5a8c09d4d3be8e7fbf7dc3314';
 const INTERNAL_ACCOUNTS_MOCK: Record<string, InternalAccount> = {
   [ACCOUNT_EVM_ID_MOCK]: {
     id: ACCOUNT_EVM_ID_MOCK,
-    address: '0x1234567890123456789012345678901234567890',
+    address: '0x4b42aed7d99fc7874a56e6003629c89210a31c34',
     metadata: {
       name: 'EVM Account',
       importTime: Date.now(),
@@ -525,7 +521,7 @@ describe('MultichainHoveredAddressRowsList', () => {
     if (copyButton) {
       fireEvent.click(copyButton);
       expect(mockHandleCopy).toHaveBeenCalledWith(
-        '0x1234567890123456789012345678901234567890',
+        '0x4B42aED7d99fC7874A56E6003629c89210A31C34',
       );
     }
   });
@@ -644,7 +640,7 @@ describe('MultichainHoveredAddressRowsList', () => {
 
       expect(mockHandleCopy).toHaveBeenCalledTimes(1);
       expect(mockHandleCopy).toHaveBeenCalledWith(
-        '0x1234567890123456789012345678901234567890',
+        '0x4B42aED7d99fC7874A56E6003629c89210A31C34',
       );
     });
 
@@ -665,7 +661,7 @@ describe('MultichainHoveredAddressRowsList', () => {
 
       expect(mockHandleCopy).toHaveBeenCalledTimes(1);
       expect(mockHandleCopy).toHaveBeenCalledWith(
-        '0x1234567890123456789012345678901234567890',
+        '0x4B42aED7d99fC7874A56E6003629c89210A31C34',
       );
     });
   });

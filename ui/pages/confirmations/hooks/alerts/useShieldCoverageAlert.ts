@@ -302,6 +302,7 @@ export function useShieldCoverageAlert(): Alert[] {
         inlineAlertText,
         inlineAlertTextPill: true,
         inlineAlertTextBackgroundColor,
+        alertDetailsBackgroundColor: BackgroundColor.backgroundDefault,
         inlineAlertIconRight: true,
         iconName: IconName.Info,
         iconColor: IconColor.inherit,

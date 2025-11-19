@@ -1039,6 +1039,7 @@
     "seasonStatusError": "null",
     "seasonStatusLoading": "boolean",
     "rewardsEnabled": "boolean",
+    "rewardsBadgeHidden": "boolean",
     "errorToast": {
       "actionText": "string",
       "description": "string",

@@ -105,27 +105,35 @@ type UseRewardsParams = {
   > | null;
 };
 
-export const useRewards = ({
-  activeQuote,
-}: UseRewardsParams): UseRewardsResult => {
+type UseRewardsWithQuoteParams = {
+  quote: NonNullable<
+    NonNullable<ReturnType<typeof selectBridgeQuotes>['activeQuote']>['quote']
+  > | null;
+  fromAddress: string | null | undefined;
+  chainId: string | null | undefined;
+};
+
+/**
+ * A hook that accepts quote, fromAddress, and chainId as arguments
+ * and estimates rewards for the given quote.
+ *
+ * @param options - The hook parameters
+ * @param options.quote - The bridge quote to estimate rewards for
+ * @param options.fromAddress - The address sending the transaction
+ * @param options.chainId - The chain ID for the transaction
+ * @returns An object containing rewards estimation state
+ */
+export const useRewardsWithQuote = ({
+  quote,
+  fromAddress,
+  chainId,
+}: UseRewardsWithQuoteParams): UseRewardsResult => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [estimatedPoints, setEstimatedPoints] = useState<number | null>(null);
   const [shouldShowRewardsRow, setShouldShowRewardsRow] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const prevRequestId = usePrevious(activeQuote?.requestId);
-  const fromToken = useSelector(getFromToken);
-  const toToken = useSelector(getToToken);
-  const quoteRequest = useSelector(getQuoteRequest);
-  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
-  const caipChainId = currentChainId
-    ? formatChainIdToCaip(currentChainId.toString())
-    : null;
-  const selectedAccount = useSelector((state) =>
-    caipChainId
-      ? getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId)
-      : null,
-  );
+  const prevRequestId = usePrevious(quote?.requestId);
   const rewardsEnabled = useSelector(selectRewardsEnabled);
 
   const debouncedEstimatePoints = useCallback(
@@ -203,7 +211,7 @@ export const useRewards = ({
 
           setEstimatedPoints(result.pointsEstimate);
         } catch (error) {
-          log.error('[useRewards] Error estimating points:', error);
+          log.error('[useRewardsWithQuote] Error estimating points:', error);
           setEstimatedPoints(null);
           setHasError(true);
         } finally {
@@ -224,15 +232,7 @@ export const useRewards = ({
         | null,
     ) => {
       // Skip if no active quote or missing required data
-      if (
-        !estimationQuoteArg ||
-        !fromToken ||
-        !toToken ||
-        !selectedAccount?.address ||
-        !quoteRequest?.srcTokenAmount ||
-        !currentChainId ||
-        !rewardsEnabled
-      ) {
+      if (!estimationQuoteArg || !fromAddress || !chainId || !rewardsEnabled) {
         setEstimatedPoints(null);
         setShouldShowRewardsRow(false);
         setIsLoading(false);
@@ -244,10 +244,7 @@ export const useRewards = ({
 
       try {
         // Format account to CAIP-10
-        caipAccount = formatAccountToCaipAccountId(
-          selectedAccount.address,
-          currentChainId.toString(),
-        );
+        caipAccount = formatAccountToCaipAccountId(fromAddress, chainId);
 
         if (!caipAccount) {
           return;
@@ -280,28 +277,19 @@ export const useRewards = ({
         setHasError(false);
       }
     },
-    [
-      fromToken,
-      toToken,
-      selectedAccount,
-      quoteRequest,
-      currentChainId,
-      rewardsEnabled,
-      debouncedEstimatePoints,
-      dispatch,
-    ],
+    [fromAddress, chainId, rewardsEnabled, debouncedEstimatePoints, dispatch],
   );
 
   // Estimate points when dependencies change
   useEffect(() => {
-    if (prevRequestId !== activeQuote?.requestId) {
-      estimatePoints(activeQuote);
+    if (prevRequestId !== quote?.requestId) {
+      estimatePoints(quote);
     }
   }, [
     estimatePoints,
     // Only re-estimate when quote changes (not during loading)
-    activeQuote?.requestId,
-    activeQuote,
+    quote?.requestId,
+    quote,
     prevRequestId,
   ]);
 
@@ -311,4 +299,44 @@ export const useRewards = ({
     estimatedPoints,
     hasError,
   };
+};
+
+/**
+ * A hook that reads data from Redux selectors and passes it to useRewardsWithQuote.
+ * Includes Bridge-specific validation checks for fromToken, toToken, and quoteRequest
+ * and passes the data to useRewardsWithQuote.
+ *
+ * @param options - The hook parameters
+ * @param options.activeQuote - The active bridge quote
+ * @returns An object containing rewards estimation state
+ */
+export const useRewards = ({
+  activeQuote,
+}: UseRewardsParams): UseRewardsResult => {
+  const fromToken = useSelector(getFromToken);
+  const toToken = useSelector(getToToken);
+  const quoteRequest = useSelector(getQuoteRequest);
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
+  const caipChainId = currentChainId
+    ? formatChainIdToCaip(currentChainId.toString())
+    : null;
+  const selectedAccount = useSelector((state) =>
+    caipChainId
+      ? getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId)
+      : null,
+  );
+
+  // Bridge-specific validation: ensure all required Bridge UI data is present
+  const hasRequiredBridgeData =
+    fromToken &&
+    toToken &&
+    quoteRequest?.srcTokenAmount &&
+    selectedAccount?.address;
+
+  // Pass null for quote if Bridge validation fails to prevent estimation
+  return useRewardsWithQuote({
+    quote: hasRequiredBridgeData ? activeQuote : null,
+    fromAddress: selectedAccount?.address,
+    chainId: currentChainId?.toString(),
+  });
 };
