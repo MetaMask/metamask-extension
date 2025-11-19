@@ -11,11 +11,9 @@ const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
 
 export function useSwapCheck() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { txParamsOriginal, txParams, origin, type } = currentConfirmation ?? {
+  const { origin, type } = currentConfirmation ?? {
     txParams: { data: '' },
   };
-  const { data: txParamsOriginalData } = txParamsOriginal ?? { data: '' };
-  const { data: txParamsData } = txParams ?? {};
 
   const isSwapToBeCompared = useMemo(() => {
     return (
@@ -26,7 +24,5 @@ export function useSwapCheck() {
 
   return {
     isSwapToBeCompared,
-    isQuotedSwap:
-      (txParamsOriginal && txParamsOriginalData !== txParamsData) ?? false,
   };
 }

@@ -23,22 +23,16 @@ async function runHook(mockConfirmation?: Confirmation) {
 }
 
 describe('useSwapCheck', () => {
-  it('return isQuotedSwap false for dapp suggested swap', async () => {
-    const { isQuotedSwap } = await runHook();
-    expect(isQuotedSwap).toBe(false);
-  });
-
-  it('return isQuotedSwap true for quoted swap', async () => {
+  it('return correct value for isSwapToBeCompared', async () => {
     const mockConfirmation = {
       ...mockSwapConfirmation,
-      txParamsOriginal: mockSwapConfirmation.txParams,
-      txParams: {
-        ...mockSwapConfirmation.txParams,
-        data: '0x1234567890',
-      },
+      origin: 'https://metamask.github.io',
+      type: TransactionType.contractInteraction,
     };
-    const { isQuotedSwap } = await runHook(mockConfirmation as Confirmation);
-    expect(isQuotedSwap).toBe(true);
+    const { isSwapToBeCompared } = await runHook(
+      mockConfirmation as Confirmation,
+    );
+    expect(isSwapToBeCompared).toBe(true);
   });
 
   it('return correct value for isSwapToBeCompared', async () => {
