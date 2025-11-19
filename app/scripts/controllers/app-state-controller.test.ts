@@ -1022,6 +1022,7 @@ describe('AppStateController', () => {
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
+              "dappSwapComparisonData": {},
               "defaultHomeActiveTabName": null,
               "enableEnforcedSimulations": true,
               "enableEnforcedSimulationsForTransactions": {},
@@ -1070,7 +1071,6 @@ describe('AppStateController', () => {
               "surveyLinkLastClickedOrClosed": null,
               "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
-              "dappSwapComparisonData": {},
               "updateModalLastDismissedAt": null,
             }
           `);
