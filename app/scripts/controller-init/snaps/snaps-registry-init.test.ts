@@ -25,6 +25,15 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('SnapsRegistryInit', () => {
+  const metamaskVersion = process.env.METAMASK_VERSION;
+  beforeAll(() => {
+    process.env.METAMASK_VERSION = '13.9.0-flask.0';
+  });
+
+  afterAll(() => {
+    process.env.METAMASK_VERSION = metamaskVersion;
+  });
+
   it('initializes the controller', () => {
     const { controller } = SnapsRegistryInit(getInitRequestMock());
     expect(controller).toBeInstanceOf(JsonSnapsRegistry);
@@ -40,7 +49,7 @@ describe('SnapsRegistryInit', () => {
       refetchOnAllowlistMiss: false,
       clientConfig: {
         type: 'extension',
-        version: process.env.METAMASK_VERSION,
+        version: '13.9.0',
       },
     });
   });

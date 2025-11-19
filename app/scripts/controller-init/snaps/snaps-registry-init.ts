@@ -1,9 +1,9 @@
 import { JsonSnapsRegistry } from '@metamask/snaps-controllers';
 import { SemVerVersion } from '@metamask/utils';
+import { parse } from 'semver';
 import { ControllerInitFunction } from '../types';
 import { SnapsRegistryMessenger } from '../messengers/snaps';
 import { getBooleanFlag } from '../../lib/util';
-import {} from 'semver';
 
 /**
  * Initialize the Snaps registry controller.
@@ -19,6 +19,12 @@ export const SnapsRegistryInit: ControllerInitFunction<
 > = ({ controllerMessenger, persistedState }) => {
   const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const parsedVersion = parse(process.env.METAMASK_VERSION)!;
+  // Strip prerelease versions as they just indicate build types.
+  const version =
+    `${parsedVersion.major}.${parsedVersion.minor}.${parsedVersion.patch}` as SemVerVersion;
+
   const controller = new JsonSnapsRegistry({
     // @ts-expect-error: `persistedState.SnapsRegistry` is not compatible
     // with the expected type.
@@ -28,11 +34,7 @@ export const SnapsRegistryInit: ControllerInitFunction<
     refetchOnAllowlistMiss: requireAllowlist,
     clientConfig: {
       type: 'extension',
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      version: process.env.METAMASK_VERSION!.replace(
-        '-flask.0',
-        '',
-      ) as SemVerVersion,
+      version,
     },
   });
 
