@@ -96,7 +96,7 @@ export const convertTimestampToReadableDate = (timestamp: number): string => {
     return '';
   }
 
-  const dateTime = DateTime.fromSeconds(timestamp, { zone: 'utc' });
+  const dateTime = DateTime.fromSeconds(timestamp);
 
   if (!dateTime.isValid) {
     throw new Error('Invalid date format');
