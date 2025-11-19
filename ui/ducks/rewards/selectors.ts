@@ -66,3 +66,7 @@ export const selectErrorToast = (state: MetaMaskReduxState) =>
 
 export const selectRewardsBadgeHidden = (state: MetaMaskReduxState) =>
   state.rewards.rewardsBadgeHidden;
+
+export const selectRewardsAccountLinkedTimestamp = (
+  state: MetaMaskReduxState,
+) => state.rewards?.accountLinkedTimestamp ?? null;
