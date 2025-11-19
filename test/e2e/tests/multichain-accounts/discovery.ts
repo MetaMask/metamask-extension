@@ -146,10 +146,13 @@ export class MockedDiscoveryBuilder {
 
   #untilGroupIndex?: number;
 
+  #shouldDiscover: boolean;
+
   constructor(srp: string) {
     this.#srp = srp;
     this.#stopAt = new Set();
     this.#skipGroupIndex = new Set();
+    this.#shouldDiscover = true;
 
     // We need to know about this SRP before going further.
     this.#accounts = TEST_SRPS_TO_MOCKED_DISCOVERED_ACCOUNTS[this.#srp];
@@ -184,9 +187,7 @@ export class MockedDiscoveryBuilder {
   }
 
   doNotDiscoverAnyAccounts(): MockedDiscoveryBuilder {
-    for (const accounts of this.#accounts) {
-      this.#stopAt.add(accounts[ACCOUNT_TYPE.Ethereum]);
-    }
+    this.#shouldDiscover = false;
     return this;
   }
 
@@ -280,15 +281,23 @@ export class MockedDiscoveryBuilder {
       const evmAddress = account[ACCOUNT_TYPE.Ethereum];
       const solAddress = account[ACCOUNT_TYPE.Solana];
 
+      const isLastIndex = index === untilGroupIndex;
+
       const shouldSkip = this.#skipGroupIndex.has(index);
-      const shouldStop =
-        this.#stopAt.has(evmAddress) || index === untilGroupIndex;
+      const shouldDiscover = this.#shouldDiscover;
+      const shouldStop = this.#stopAt.has(evmAddress) || isLastIndex;
 
       // We only use EVM to stop the discovery for now.
-      if (!shouldSkip) {
-        await this.#mockEvmDiscoveryOnce(mockServer, evmAddress, shouldStop);
-        await this.#mockSolDiscoveryOnce(mockServer, solAddress);
+      if (shouldSkip) {
+        continue;
       }
+
+      await this.#mockEvmDiscoveryOnce(
+        mockServer,
+        evmAddress,
+        !shouldDiscover || shouldStop,
+      );
+      await this.#mockSolDiscoveryOnce(mockServer, solAddress);
 
       if (shouldStop) {
         break;
