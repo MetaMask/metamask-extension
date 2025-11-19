@@ -131,7 +131,12 @@ const ShieldEntryModal = ({
       );
     }
 
-    dispatch(setShowShieldEntryModalOnce(false));
+    dispatch(
+      setShowShieldEntryModalOnce({
+        show: false,
+        hasUserInteractedWithModal: true,
+      }),
+    );
   };
 
   const handleOnGetStarted = () => {
