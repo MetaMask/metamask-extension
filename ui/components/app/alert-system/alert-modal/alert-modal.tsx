@@ -207,13 +207,16 @@ function AlertDetails({
 }) {
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
+  const alertDetailsBackgroundColor =
+    selectedAlert.alertDetailsBackgroundColor ?? severityStyle.background;
+
   return (
     <Box
       key={selectedAlert.key}
       display={Display.InlineBlock}
       padding={customDetails ? 0 : 2}
       width={BlockSize.Full}
-      backgroundColor={customDetails ? undefined : severityStyle.background}
+      backgroundColor={customDetails ? undefined : alertDetailsBackgroundColor}
       borderRadius={BorderRadius.SM}
     >
       {customDetails ?? (

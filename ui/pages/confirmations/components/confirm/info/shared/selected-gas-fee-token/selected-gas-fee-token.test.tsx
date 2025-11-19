@@ -12,6 +12,7 @@ import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmati
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
+import * as ConfirmContext from '../../../../../context/confirm';
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
 
 jest.mock('../../../../../../../../shared/modules/selectors');
@@ -147,6 +148,20 @@ describe('SelectedGasFeeToken', () => {
           { ...GAS_FEE_TOKEN_MOCK, tokenAddress: NATIVE_TOKEN_ADDRESS },
         ],
       }),
+    );
+
+    expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();
+  });
+
+  it('does not render arrow icon if quoted swap displayed in info', () => {
+    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+      isQuotedSwapDisplayedInInfo: true,
+      currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+    } as ReturnType<typeof ConfirmContext.useConfirmContext>);
+
+    const result = renderWithConfirmContextProvider(
+      <SelectedGasFeeToken />,
+      getStore(),
     );
 
     expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();
