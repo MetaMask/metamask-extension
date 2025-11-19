@@ -23,12 +23,6 @@ jest.mock('react-router-dom-v5-compat', () => {
   };
 });
 
-jest.mock('../../../hooks/subscription/useAddFundTrigger', () => {
-  return {
-    useShieldAddFundTrigger: jest.fn(),
-  };
-});
-
 jest.mock(
   '../../../components/app/shield-entry-modal/shield-illustration-animation',
   () => ({
