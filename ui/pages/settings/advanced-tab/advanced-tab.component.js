@@ -486,7 +486,16 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item-col">
           <ToggleButton
             value={showExtensionInFullSizeView}
-            onToggle={(value) => setShowExtensionInFullSizeView(!value)}
+            onToggle={(value) => {
+              setShowExtensionInFullSizeView(!value);
+              this.context.trackEvent({
+                event: MetaMetricsEventName.ExtensionFullSizeViewToggled,
+                category: MetaMetricsEventCategory.Settings,
+                properties: {
+                  enabled: !value,
+                },
+              });
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
           />
