@@ -178,6 +178,7 @@ export default class Home extends PureComponent {
     setPendingShieldCohort: PropTypes.func,
     isSignedIn: PropTypes.bool,
     rewardsEnabled: PropTypes.bool,
+    rewardsOnboardingEnabled: PropTypes.bool,
   };
 
   state = {
@@ -871,6 +872,7 @@ export default class Home extends PureComponent {
       showShieldEntryModal,
       isSocialLoginFlow,
       rewardsEnabled,
+      rewardsOnboardingEnabled,
     } = this.props;
 
     if (forgottenPassword) {
@@ -909,6 +911,23 @@ export default class Home extends PureComponent {
       showTermsOfUsePopup &&
       !isSocialLoginFlow;
 
+    const showRecoveryPhrase =
+      !showWhatsNew &&
+      showRecoveryPhraseReminder &&
+      !isPrimarySeedPhraseBackedUp;
+
+    const showRewardsModal =
+      rewardsEnabled &&
+      rewardsOnboardingEnabled &&
+      canSeeModals &&
+      !showTermsOfUse &&
+      !showWhatsNew &&
+      !showMultiRpcEditModal &&
+      !displayUpdateModal &&
+      !isSeedlessPasswordOutdated &&
+      !showShieldEntryModal &&
+      !showRecoveryPhrase;
+
     return (
       <ScrollContainer className="main-container main-container--has-shadow">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -926,9 +945,7 @@ export default class Home extends PureComponent {
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {displayUpdateModal && <UpdateModal />}
           {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
-          {!showWhatsNew &&
-          showRecoveryPhraseReminder &&
-          !isPrimarySeedPhraseBackedUp ? (
+          {showRecoveryPhrase ? (
             <RecoveryPhraseReminder
               onConfirm={this.onRecoveryPhraseReminderClose}
             />
@@ -937,11 +954,7 @@ export default class Home extends PureComponent {
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
           {showShieldEntryModal && <ShieldEntryModal />}
-          {rewardsEnabled &&
-            !showTermsOfUse &&
-            !showWhatsNew &&
-            !showMultiRpcEditModal &&
-            !displayUpdateModal && <RewardsOnboardingModal />}
+          {showRewardsModal && <RewardsOnboardingModal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
