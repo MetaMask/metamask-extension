@@ -138,6 +138,8 @@ function asJsonBody(body: object | undefined) {
 export class MockedDiscoveryBuilder {
   readonly #srp: string;
 
+  readonly #accounts: MockedDiscoveredAccount[];
+
   readonly #stopAt: Set<string>;
 
   readonly #skipGroupIndex: Set<number>;
@@ -148,6 +150,15 @@ export class MockedDiscoveryBuilder {
     this.#srp = srp;
     this.#stopAt = new Set();
     this.#skipGroupIndex = new Set();
+
+    // We need to know about this SRP before going further.
+    this.#accounts = TEST_SRPS_TO_MOCKED_DISCOVERED_ACCOUNTS[this.#srp];
+    if (this.#accounts === undefined) {
+      throw new Error(`Unknown test SRP for discovery (srp="${srp}")`);
+    }
+    if (!this.#accounts.length) {
+      throw new Error(`SRP has no accounts (srp="${srp}")`);
+    }
   }
 
   static from(srp: string): MockedDiscoveryBuilder {
@@ -170,6 +181,13 @@ export class MockedDiscoveryBuilder {
 
   skipDefaultGroupIndex(): MockedDiscoveryBuilder {
     return this.skipGroupIndex(0);
+  }
+
+  doNotDiscoverAnyAccounts(): MockedDiscoveryBuilder {
+    for (const accounts of this.#accounts) {
+      this.#stopAt.add(accounts[ACCOUNT_TYPE.Ethereum]);
+    }
+    return this;
   }
 
   fromGroupIndex(groupIndex: number): MockedDiscoveryBuilder {
@@ -248,15 +266,7 @@ export class MockedDiscoveryBuilder {
 
   async mock(mockServer: Mockttp): Promise<void> {
     const srp = this.#srp;
-    const accounts = TEST_SRPS_TO_MOCKED_DISCOVERED_ACCOUNTS[this.#srp];
-
-    if (accounts === undefined) {
-      throw new Error(`Unknown test SRP for discovery (srp="${srp}")`);
-    }
-
-    if (!accounts.length) {
-      throw new Error(`SRP has no accounts (srp="${srp}")`);
-    }
+    const accounts = this.#accounts;
 
     const maxGroupIndex = accounts.length - 1;
     const untilGroupIndex = this.#untilGroupIndex ?? maxGroupIndex;
