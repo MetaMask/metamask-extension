@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
@@ -56,37 +56,17 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
-type MultichainAccountDetailsPageProps = {
-  params?: { id: string };
-};
-
-export const MultichainAccountDetailsPage = ({
-  params: propsParams,
-}: MultichainAccountDetailsPageProps = {}) => {
+export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const hookParams = useParams();
+  const { id } = useParams();
 
-  const { id } = propsParams || hookParams;
-
-  // Validate URL parameter early
-  if (!id) {
-    navigate(DEFAULT_ROUTE);
-    return null;
-  }
-
-  const accountGroupId = decodeURIComponent(id) as AccountGroupId;
+  const accountGroupId = decodeURIComponent(id ?? '') as AccountGroupId;
   const multichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, accountGroupId),
   );
-
-  // Redirect if account doesn't exist
-  if (!multichainAccount) {
-    navigate(DEFAULT_ROUTE);
-    return null;
-  }
 
   const walletId = extractWalletIdFromGroupId(accountGroupId);
   const wallet = useSelector((state) => getWallet(state, walletId));
@@ -167,7 +147,14 @@ export const MultichainAccountDetailsPage = ({
     navigate(walletRoute);
   };
 
-  return (
+  useEffect(() => {
+    // Redirect if account doesn't exist
+    if (!id || !multichainAccount) {
+      navigate(DEFAULT_ROUTE);
+    }
+  }, [id, multichainAccount, navigate]);
+
+  return id && multichainAccount ? (
     <Page className="multichain-account-details-page">
       <Header
         textProps={{
@@ -326,5 +313,5 @@ export const MultichainAccountDetailsPage = ({
         )}
       </Content>
     </Page>
-  );
+  ) : null;
 };

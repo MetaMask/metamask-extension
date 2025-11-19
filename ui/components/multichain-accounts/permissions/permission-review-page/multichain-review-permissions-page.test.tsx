@@ -9,7 +9,10 @@ import configureStore from '../../../../store/store';
 import * as actions from '../../../../store/actions';
 import * as hooks from '../../../../hooks/useAccountGroupsForPermissions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
-import { getPermissionMetaDataByOrigin } from '../../../../selectors/gator-permissions/gator-permissions';
+import {
+  getTokenTransferPermissionsByOrigin,
+  getPermissionMetaDataByOrigin,
+} from '../../../../selectors/gator-permissions/gator-permissions';
 import { MultichainReviewPermissions } from './multichain-review-permissions-page';
 
 const mockUseNavigate = jest.fn();
@@ -53,6 +56,7 @@ jest.mock('../../../../../shared/modules/environment');
 
 jest.mock('../../../../selectors/gator-permissions/gator-permissions', () => ({
   getPermissionMetaDataByOrigin: jest.fn(),
+  getTokenTransferPermissionsByOrigin: jest.fn(),
 }));
 
 const mockAccountGroups = [
@@ -148,6 +152,14 @@ const render = (state = {}) => {
 };
 
 describe('MultichainReviewPermissions', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest
+      .mocked(isGatorPermissionsRevocationFeatureEnabled)
+      .mockReturnValue(false);
+    jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
+  });
+
   it('renders summary page when no account groups are connected', () => {
     const { getByTestId } = render();
 
@@ -383,9 +395,14 @@ describe('gator permissions', () => {
       },
     });
 
-    const { getByTestId } = render();
+    jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
 
-    expect(getByTestId(TEST_IDS.GATOR_PERMISSIONS_CELL)).toBeInTheDocument();
+    const { getAllByTestId } = render();
+
+    const gatorPermissionsCells = getAllByTestId(
+      TEST_IDS.GATOR_PERMISSIONS_CELL,
+    );
+    expect(gatorPermissionsCells.length).toBeGreaterThan(0);
   });
 
   it('should not render gator permissions cell when feature is disabled and there are permissions', () => {
@@ -399,6 +416,8 @@ describe('gator permissions', () => {
         chains: ['0x1'],
       },
     });
+
+    jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
 
     const { queryByTestId } = render();
 
@@ -418,6 +437,8 @@ describe('gator permissions', () => {
         chains: [],
       },
     });
+
+    jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
 
     const { queryByTestId } = render();
 
