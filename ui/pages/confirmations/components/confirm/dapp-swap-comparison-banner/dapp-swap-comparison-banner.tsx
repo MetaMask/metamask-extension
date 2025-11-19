@@ -23,7 +23,8 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 import { useDappSwapComparisonMetrics } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonMetrics';
-import { useDappSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapCheck';
+import { useDappSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
+import { useDappSwapComparisonRewardText } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText';
 import { QuoteSwapSimulationDetails } from '../../transactions/quote-swap-simulation-details/quote-swap-simulation-details';
 import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
 import { NetworkRow } from '../info/shared/network-row/network-row';
@@ -96,6 +97,7 @@ const DappSwapComparisonInner = () => {
     dappSwapUi: DappSwapUiFlag;
   };
   const { setQuoteSelectedForMMSwap } = useConfirmContext();
+  const rewards = useDappSwapComparisonRewardText();
   const [selectedSwapType, setSelectedSwapType] = useState<SwapType>(
     SwapType.Current,
   );
@@ -214,6 +216,7 @@ const DappSwapComparisonInner = () => {
             {t('dappSwapQuoteDifference', [
               `$${(gasDifference + tokenAmountDifference).toFixed(2)}`,
             ])}
+            {rewards && <span>{` • ${rewards.text}`}</span>}
           </Text>
           <Text color={TextColor.TextAlternative} variant={TextVariant.BodyXs}>
             {t('dappSwapBenefits')}

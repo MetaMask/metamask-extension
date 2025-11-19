@@ -11,6 +11,7 @@ import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-f
 import { Confirmation } from '../../../types/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 import * as ConfirmContext from '../../../context/confirm';
+import { useDappSwapComparisonRewardText } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText';
 import { DappSwapComparisonBanner } from './dapp-swap-comparison-banner';
 
 jest.mock(
@@ -42,6 +43,13 @@ jest.mock(
       captureDappSwapComparisonDisplayProperties:
         mockCaptureDappSwapComparisonDisplayProperties,
     })),
+  }),
+);
+
+jest.mock(
+  '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText',
+  () => ({
+    useDappSwapComparisonRewardText: jest.fn(),
   }),
 );
 
@@ -101,6 +109,9 @@ function render(args: Record<string, string> = {}) {
 describe('<DappSwapComparisonBanner />', () => {
   const mockGetRemoteFeatureFlags = jest.mocked(getRemoteFeatureFlags);
   const mockUseDappSwapComparisonInfo = jest.mocked(useDappSwapComparisonInfo);
+  const mockUseDappSwapComparisonRewardText = jest.mocked(
+    useDappSwapComparisonRewardText,
+  );
 
   beforeEach(() => {
     mockCaptureDappSwapComparisonDisplayProperties.mockClear();
@@ -108,6 +119,7 @@ describe('<DappSwapComparisonBanner />', () => {
       dappSwapMetrics: { enabled: true },
       dappSwapUi: { enabled: true, threshold: 0.01 },
     });
+    mockUseDappSwapComparisonRewardText.mockReturnValue(null);
   });
 
   it('renders component without errors', () => {
@@ -199,5 +211,14 @@ describe('<DappSwapComparisonBanner />', () => {
     ).toHaveBeenNthCalledWith(1, {
       swap_mm_cta_displayed: 'true',
     });
+  });
+
+  it('renders rewards text when it is provided', () => {
+    mockUseDappSwapComparisonRewardText.mockReturnValue({
+      text: 'Earn 100 points',
+      estimatedPoints: 100,
+    });
+    const { getByText } = render();
+    expect(getByText(/Earn 100 points/u)).toBeInTheDocument();
   });
 });
