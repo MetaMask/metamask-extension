@@ -7,7 +7,6 @@ import React, {
   useState,
 } from 'react';
 import { QuoteResponse } from '@metamask/bridge-controller';
-import { useDispatch } from 'react-redux';
 
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';

@@ -155,6 +155,24 @@ class MultichainAccountDetailsPage {
     await netoworksRow.click();
   }
 
+  async getTruncatedAccountAddressFromNetworksPage(options: {
+    accountRowIndex: number;
+  }): Promise<string> {
+    console.log(
+      'Get truncated account address from account details > networks page',
+    );
+    const { accountRowIndex } = options;
+    const accountRows = await this.driver.findElements(
+      '[data-testid="multichain-address-row-address"]',
+    );
+    if (accountRowIndex < 0 || accountRowIndex >= accountRows.length) {
+      throw new Error('Invalid account row index');
+    }
+    const accountRow = accountRows[accountRowIndex];
+    const address = await accountRow.getText();
+    return address;
+  }
+
   /**
    * Click on the private key row
    */
