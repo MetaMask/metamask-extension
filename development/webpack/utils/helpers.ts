@@ -119,6 +119,8 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     addHtml(manifest.background?.page);
   }
 
+  addManifestScript('scripts/app-init.js');
+
   for (const filename of readdirSync(appRoot)) {
     // ignore non-htm/html files
     if (/\.html?$/iu.test(filename)) {

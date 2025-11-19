@@ -1,7 +1,7 @@
+import { AnyCnameRecord } from 'node:dns';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import type { MetaMaskStorageStructure, BaseStore } from './base-store';
-import { AnyCnameRecord } from 'node:dns';
 
 /**
  * An implementation of the MetaMask Extension BaseStore system that uses the
@@ -16,6 +16,7 @@ export default class ExtensionStore implements BaseStore {
       log.error('Storage local API not available.');
     }
   }
+
   manifest: any;
 
   /**
@@ -28,7 +29,7 @@ export default class ExtensionStore implements BaseStore {
       log.error('Storage local API not available.');
       return null;
     }
-    debugger;
+
     const { local } = browser.storage;
     // don't fetch more than we need, incase extra stuff was put in the db
     // by testing or users playing with the db
@@ -46,7 +47,7 @@ export default class ExtensionStore implements BaseStore {
       },
       {} as MetaMaskStorageStructure['data'],
     ) as any;
-    const meta = data.meta;
+    const { meta } = data;
     delete data.meta;
     if (!meta) {
       return null;
@@ -62,7 +63,7 @@ export default class ExtensionStore implements BaseStore {
       key: Key;
       value: MetaMaskStorageStructure['data'][Key];
     }[],
-    meta: AnyCnameRecord
+    meta: AnyCnameRecord,
   ): Promise<void> {
     if (!this.isSupported) {
       throw new Error(
@@ -71,7 +72,7 @@ export default class ExtensionStore implements BaseStore {
     }
     const { local } = browser.storage;
     const toSet: Record<string, string> = {
-      meta
+      meta,
     };
 
     for (const { key, value } of pairs) {
@@ -83,13 +84,13 @@ export default class ExtensionStore implements BaseStore {
       for (const { key } of pairs) {
         this.manifest[key] = true;
       }
-      toSet['manifest'] = this.manifest;
+      toSet.manifest = this.manifest;
     } else {
       const manifest: Record<string, boolean> = {};
       for (const { key } of pairs) {
         manifest[key] = true;
       }
-      toSet['manifest'] = manifest;
+      toSet.manifest = manifest;
       this.manifest = manifest;
     }
     this.manifest.meta = true;

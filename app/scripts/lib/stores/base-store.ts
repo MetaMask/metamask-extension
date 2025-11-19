@@ -56,9 +56,9 @@ export type MetaMaskStorageStructure = {
 export type BaseStore = {
   setKeyValues: <Key extends keyof MetaMaskStateType>(
     pairs: {
-      key: Key,
-      value: MetaMaskStateType[Key],
-    }[]
+      key: Key;
+      value: MetaMaskStateType[Key];
+    }[],
   ) => Promise<void>;
   set: (state: Required<MetaMaskStorageStructure>) => Promise<void>;
 

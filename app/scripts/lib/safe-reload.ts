@@ -2,7 +2,6 @@ import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { OperationSafener } from './operation-safener';
 import { PersistenceManager } from './stores/persistence-manager';
-import { MetaMaskStateType } from './stores/base-store';
 
 const { sentry } = global;
 
@@ -12,7 +11,9 @@ const { sentry } = global;
  * @param persistenceManager - The PersistenceManager instance to be used for
  * updates.
  */
-export function getRequestSafeReload<T extends PersistenceManager>(persistenceManager: T) {
+export function getRequestSafeReload<Type extends PersistenceManager>(
+  persistenceManager: Type,
+) {
   const operationSafener = new OperationSafener({
     op: async () => {
       try {
@@ -29,10 +30,8 @@ export function getRequestSafeReload<T extends PersistenceManager>(persistenceMa
 
   return {
     /**
-     * Safely updates the persistence manager with the provided parameters.
+     * Safely updates the persistence manager
      *
-     * @param params - Parameters to be passed to the persistence manager's
-     * `set` method.
      * @returns true if the update was queued, false if writes are not allowed.
      */
     update: async () => {

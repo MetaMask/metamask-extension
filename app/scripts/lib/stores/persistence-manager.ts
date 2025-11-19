@@ -189,10 +189,8 @@ export class PersistenceManager {
   #pendingState: void | AbortController = undefined;
 
   pendingPairs: { key: string; value: unknown }[] = [];
-  set<
-    Key extends keyof MetaMaskStateType,
-    Value extends MetaMaskStateType,
-  >(
+
+  set<Key extends keyof MetaMaskStateType, Value extends MetaMaskStateType>(
     key: Key,
     value: Value,
   ) {
@@ -200,7 +198,7 @@ export class PersistenceManager {
     const existingIndex = this.pendingPairs.findIndex(
       (pair) => pair.key === key,
     );
-    if (existingIndex !== -1) {
+    if (existingIndex > -1) {
       this.pendingPairs[existingIndex].value = value;
     } else {
       this.pendingPairs.push({ key, value });
@@ -240,11 +238,13 @@ export class PersistenceManager {
           // save them all!
           await this.#localStore.setKeyValues(clone, meta);
 
-
-          const backup = makeBackup(clone.reduce((acc, pair) => {
-            acc[pair.key] = pair.value;
-            return acc;
-          }, {} as MetaMaskStateType), meta);
+          const backup = makeBackup(
+            clone.reduce((acc, pair) => {
+              acc[pair.key] = pair.value;
+              return acc;
+            }, {} as MetaMaskStateType),
+            meta,
+          );
           // if we just updated any part of the vault we should back it up
           // TODO: `makeBackup` uses multiple controllers, but hasVault only checks
           // one :-/ figure this out.

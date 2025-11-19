@@ -39,7 +39,7 @@ export default class Migrator extends EventEmitter {
     const changedControllers =
       initialData.meta.version < MIGRATION_V2_START_VERSION
         ? new Set(Object.keys(initialData.data))
-        : new Set()
+        : new Set();
 
     let state = initialData;
 
@@ -60,7 +60,7 @@ export default class Migrator extends EventEmitter {
         } else {
           // in version two we expect migrations to report which controllers
           // changed, and two directly mutate the `versionedData` object
-          migratedData = cloneDeep(state);
+          migratedData = structuredClone(state);
           /** @type {Set<string>} */
           const localChangedControllers = new Set();
           const returnValue = await migration.migrate(
@@ -71,7 +71,7 @@ export default class Migrator extends EventEmitter {
           // migrations should mutate in place and must not return new state
           assertValidShape(migratedData, migration);
 
-          if (typeof returnValue !== 'undefined ') {
+          if (typeof returnValue !== 'undefined') {
             throw new Error(
               'Migrator - migration returned value when none expected',
             );
@@ -102,16 +102,17 @@ export default class Migrator extends EventEmitter {
       }
     }
 
-    const changedKeys = initialData.meta.version < MIGRATION_V2_START_VERSION
-      // we had to run older migrations, so assume all controllers changed
-      ? new Set(Object.keys(state.data))
-      : new Set();
+    const changedKeys =
+      initialData.meta.version < MIGRATION_V2_START_VERSION
+        ? // we had to run older migrations, so assume all controllers changed
+          new Set(Object.keys(state.data))
+        : new Set();
 
     for (const controllerKey of changedControllers) {
       changedKeys.add(controllerKey);
     }
 
-    return {state, changedKeys};
+    return { state, changedKeys };
 
     /**
      * Returns whether or not the migration is pending

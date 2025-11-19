@@ -746,14 +746,11 @@ async function initialize(backup) {
    * @param {object} param0
    * @param {keyof MetaMaskState} param0.controllerKey
    * @param {MetaMaskState} param0.newState
-   * @param {MetaMaskState} param0.oldState
-   * @param {import('immer').Patch[]} param0.patches
+   * @param {MetaMaskState} param0._oldState
+   * @param {import('immer').Patch[]} param0._patches
    */
-  async function stateChange({ controllerKey, newState, oldState, patches }) {
-    persistenceManager.set(
-      controllerKey,
-      newState,
-    );
+  async function stateChange({ controllerKey, newState, _oldState, _patches }) {
+    persistenceManager.set(controllerKey, newState);
     await update();
   }
 
@@ -956,7 +953,9 @@ export async function loadStateFromPersistence(backup) {
   }
 
   // migrate data
-  const { state: versionedData, changedKeys } = await migrator.migrateData(preMigrationVersionedData);
+  const { state: versionedData, changedKeys } = await migrator.migrateData(
+    preMigrationVersionedData,
+  );
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
   } else if (!isObject(versionedData.meta)) {
@@ -987,7 +986,6 @@ export async function loadStateFromPersistence(backup) {
       persistenceManager.set(key, versionedData.data[key]);
     }
   }
-
 
   // return just the data
   return versionedData;

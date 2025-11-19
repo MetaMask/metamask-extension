@@ -1,5 +1,6 @@
 import merge from 'lodash/merge';
 import { MANIFEST_DEV_KEY } from '../../../../build/constants';
+import { Args } from '../../cli';
 /**
  * Returns a function that will transform a manifest JSON object based on the
  * given build args.
@@ -16,7 +17,7 @@ import { MANIFEST_DEV_KEY } from '../../../../build/constants';
  * `test` is `true`
  */
 export function transformManifest(
-  args: { test: boolean },
+  args: Pick<Args, 'test' | 'manifest_version'>,
   isDevelopment: boolean,
   manifestOverridesPath?: string | undefined,
 ) {
