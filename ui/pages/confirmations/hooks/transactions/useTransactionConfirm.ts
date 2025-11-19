@@ -1,12 +1,8 @@
 import {
-  BatchTransaction,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
-import { TxData } from '@metamask/bridge-controller';
 import { cloneDeep } from 'lodash';
-import { toHex } from '@metamask/controller-utils';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 

@@ -10,12 +10,14 @@ import { useCallback } from 'react';
 
 import { deleteDappSwapComparisonData } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
+import { useDappSwapCheck } from './useDappSwapCheck';
 import { useDappSwapComparisonMetrics } from './useDappSwapComparisonMetrics';
 
 export function useDappSwapActions() {
   const { currentConfirmation, quoteSelectedForMMSwap } =
     useConfirmContext<TransactionMeta>();
   const { captureSwapSubmit } = useDappSwapComparisonMetrics();
+  const { isSwapToBeCompared } = useDappSwapCheck();
 
   const updateSwapWithQuoteDetails = useCallback(
     (transactionMeta: TransactionMeta) => {
@@ -59,7 +61,7 @@ export function useDappSwapActions() {
   );
 
   const onDappSwapCompleted = useCallback(() => {
-    if (!quoteSelectedForMMSwap) {
+    if (!isSwapToBeCompared) {
       return;
     }
     deleteDappSwapComparisonData(
@@ -67,8 +69,8 @@ export function useDappSwapActions() {
     );
     captureSwapSubmit();
   }, [
-    quoteSelectedForMMSwap,
-    currentConfirmation.securityAlertResponse?.securityAlertId,
+    isSwapToBeCompared,
+    currentConfirmation?.securityAlertResponse?.securityAlertId,
   ]);
 
   return {
