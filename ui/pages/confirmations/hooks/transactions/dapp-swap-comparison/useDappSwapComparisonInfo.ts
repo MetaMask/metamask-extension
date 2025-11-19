@@ -1,7 +1,10 @@
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { QuoteResponse, TxData } from '@metamask/bridge-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  BatchTransaction,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
 import { useCallback, useEffect, useMemo } from 'react';
 
@@ -21,7 +24,9 @@ import { useDappSwapUSDValues } from './useDappSwapUSDValues';
 
 const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
 
-export function useDappSwapComparisonInfo() {
+export function useDappSwapComparisonInfo(
+  batchedDappSwapNestedTransactions: BatchTransaction[] | undefined,
+) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const {
     chainId,
@@ -63,11 +68,28 @@ export function useDappSwapComparisonInfo() {
     [transactionId, updateTransactionEventFragment],
   );
 
+  const captureDappSwapComparisonFailed = useCallback(
+    (reason: string) => {
+      captureDappSwapComparisonMetricsProperties({
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_comparison: reason ?? 'failed',
+        },
+      });
+    },
+    [captureDappSwapComparisonMetricsProperties],
+  );
+
   const { commands, quotesInput, amountMin, tokenAddresses } = useMemo(() => {
     try {
       let transactionData = data;
-      if (nestedTransactions?.length) {
-        transactionData = nestedTransactions?.find(({ data: trxnData }) =>
+      if (
+        nestedTransactions?.length ||
+        batchedDappSwapNestedTransactions?.length
+      ) {
+        transactionData = (
+          nestedTransactions ?? batchedDappSwapNestedTransactions
+        )?.find(({ data: trxnData }) =>
           trxnData?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
         )?.data;
       }
@@ -80,6 +102,7 @@ export function useDappSwapComparisonInfo() {
       return result;
     } catch (error) {
       captureException(error);
+      captureDappSwapComparisonFailed('error parsing swap data');
       return {
         commands: '',
         quotesInput: undefined,
@@ -88,6 +111,8 @@ export function useDappSwapComparisonInfo() {
       };
     }
   }, [
+    batchedDappSwapNestedTransactions,
+    captureDappSwapComparisonFailed,
     chainId,
     data,
     nestedTransactions,
@@ -110,44 +135,59 @@ export function useDappSwapComparisonInfo() {
   const { value: quotes } = useAsyncResult<
     QuoteResponse[] | undefined
   >(async () => {
-    if (!quotesInput) {
+    try {
+      if (!quotesInput) {
+        return undefined;
+      }
+
+      captureDappSwapComparisonMetricsProperties({
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_comparison: 'loading',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_commands: commands,
+        },
+      });
+
+      updateQuoteRequestLatency();
+      const startTime = new Date().getTime();
+      const quotesList = await fetchQuotes(quotesInput);
+      updateQuoteResponseLatency(startTime);
+      return quotesList;
+    } catch (error) {
+      captureException(error);
+      captureDappSwapComparisonFailed('error fetching quotes');
       return undefined;
     }
-
-    captureDappSwapComparisonMetricsProperties({
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        swap_dapp_comparison: 'loading',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        swap_dapp_commands: commands,
-      },
-    });
-
-    updateQuoteRequestLatency();
-    const startTime = new Date().getTime();
-    const quotesList = await fetchQuotes(quotesInput);
-    updateQuoteResponseLatency(startTime);
-    return quotesList;
   }, [
     commands,
+    captureDappSwapComparisonFailed,
     captureDappSwapComparisonMetricsProperties,
     quotesInput,
-    requestDetectionLatency,
+    updateQuoteResponseLatency,
+    updateQuoteRequestLatency,
   ]);
 
   const { bestQuote, bestFilteredQuote: selectedQuote } = useMemo(() => {
-    if (amountMin === undefined || !quotes?.length || tokenInfoPending) {
+    try {
+      if (amountMin === undefined || !quotes?.length || tokenInfoPending) {
+        return { bestQuote: undefined, bestFilteredQuote: undefined };
+      }
+
+      return getBestQuote(
+        quotes,
+        amountMin,
+        getDestinationTokenUSDValue,
+        getGasUSDValue,
+      );
+    } catch (error) {
+      captureException(error);
+      captureDappSwapComparisonFailed('error getting best quote');
       return { bestQuote: undefined, bestFilteredQuote: undefined };
     }
-
-    return getBestQuote(
-      quotes,
-      amountMin,
-      getDestinationTokenUSDValue,
-      getGasUSDValue,
-    );
   }, [
     amountMin,
+    captureDappSwapComparisonFailed,
     getGasUSDValue,
     getDestinationTokenUSDValue,
     quotes,
@@ -266,10 +306,12 @@ export function useDappSwapComparisonInfo() {
       });
     } catch (error) {
       captureException(error);
+      captureDappSwapComparisonFailed('error calculating metrics values');
     }
   }, [
     amountMin,
     bestQuote,
+    captureDappSwapComparisonFailed,
     captureDappSwapComparisonMetricsProperties,
     commands,
     gas,
@@ -386,6 +428,10 @@ export function useDappSwapComparisonInfo() {
     selectedQuote,
     selectedQuoteValueDifference,
     sourceTokenAmount: quotesInput?.srcTokenAmount,
+    minDestTokenAmountInUSD: getDestinationTokenUSDValue(
+      selectedQuote?.quote?.minDestTokenAmount ?? '0',
+      2,
+    ),
     tokenAmountDifference,
     tokenDetails,
   };

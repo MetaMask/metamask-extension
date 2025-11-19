@@ -114,7 +114,7 @@ export type Preferences = {
     sortCallback: string;
   };
   useNativeCurrencyAsPrimaryCurrency: boolean;
-  useSidePanelAsDefault?: boolean; // Only available in build-experimental
+  useSidePanelAsDefault?: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -222,9 +222,7 @@ export const getDefaultPreferencesControllerState =
         sortCallback: 'stringNumeric',
       },
       useNativeCurrencyAsPrimaryCurrency: true,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-      useSidePanelAsDefault: true,
-      ///: END:ONLY_INCLUDE_IF
+      useSidePanelAsDefault: false,
     },
     securityAlertsEnabled: true,
     selectedAddress: '',
@@ -1013,6 +1011,12 @@ export class PreferencesController extends BaseController<
   setServiceWorkerKeepAlivePreference(value: boolean): void {
     this.update((state) => {
       state.enableMV3TimestampSave = value;
+    });
+  }
+
+  setUseSidePanelAsDefault(value: boolean): void {
+    this.update((state) => {
+      state.preferences.useSidePanelAsDefault = value;
     });
   }
 
