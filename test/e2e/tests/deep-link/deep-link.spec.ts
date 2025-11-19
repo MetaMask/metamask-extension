@@ -274,7 +274,9 @@ and we'll take you to the right place.`
         // test signed flow
         await driver.openNewURL(signedUrl);
 
-        await driver.waitForUrl({ url: `${BaseUrl.MetaMask}/predict` });
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/prediction-markets`,
+        });
 
         await driver.navigate();
         await homePage.checkPageIsLoaded();
@@ -282,7 +284,9 @@ and we'll take you to the right place.`
         // test unsigned flow
         await driver.openNewURL(rawUrl);
 
-        await driver.waitForUrl({ url: `${BaseUrl.MetaMask}/predict` });
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/prediction-markets`,
+        });
       },
     );
   });
