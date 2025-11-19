@@ -6,7 +6,6 @@ import {
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
-import { INFURA_MAINNET_URL } from '../../constants';
 
 const AuthMocks = AuthenticationController.Mocks;
 
@@ -142,26 +141,16 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
   });
 }
 
-type MockInfuraAndAccountSyncOptions = {
-  accountsToMockBalances?: string[];
-};
-
-const MOCK_ETH_TRANSACTION_COUNT = '0xde0b6b3a7640000';
-
 /**
  * Sets up mock responses for Infura balance checks and account syncing
  *
  * @param mockServer - The Mockttp server instance
  * @param userStorageMockttpController - Controller for user storage mocks
- * @param options - Configuration options for mocking
  */
-export async function mockInfuraAndAccountSync(
+export async function mockAccountSync(
   mockServer: Mockttp,
   userStorageMockttpController: UserStorageMockttpController,
-  options: MockInfuraAndAccountSyncOptions = {},
 ): Promise<void> {
-  const accounts = options.accountsToMockBalances ?? [];
-
   // Set up User Storage / Account Sync mock
   userStorageMockttpController.setupPath(
     USER_STORAGE_WALLETS_FEATURE_KEY,
@@ -172,27 +161,6 @@ export async function mockInfuraAndAccountSync(
     USER_STORAGE_GROUPS_FEATURE_KEY,
     mockServer,
   );
-
-  // Account Balances
-  if (accounts.length > 0) {
-    accounts.forEach((account) => {
-      mockServer
-        .forPost(INFURA_MAINNET_URL)
-        .always()
-        .withJsonBodyIncluding({
-          method: 'eth_getTransactionCount',
-          params: [account.toLowerCase()],
-        })
-        .thenCallback(() => ({
-          statusCode: 200,
-          json: {
-            jsonrpc: '2.0',
-            id: '1111111111111111',
-            result: MOCK_ETH_TRANSACTION_COUNT,
-          },
-        }));
-    });
-  }
 
   mockIdentityServices(mockServer, userStorageMockttpController);
 }

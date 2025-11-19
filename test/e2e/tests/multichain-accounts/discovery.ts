@@ -68,6 +68,13 @@ export class MockedDiscoveryBuilder {
     return this.skipGroupIndex(0);
   }
 
+  fromGroupIndex(groupIndex: number): MockedDiscoveryBuilder {
+    for (let i = 0; i < groupIndex; i++) {
+      this.#skipGroupIndex.add(i);
+    }
+    return this;
+  }
+
   untilGroupIndex(groupIndex: number): MockedDiscoveryBuilder {
     this.#untilGroupIndex = groupIndex;
     return this;
