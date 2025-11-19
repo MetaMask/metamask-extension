@@ -252,3 +252,43 @@ export const mockSwapConfirmation = {
     ],
   },
 };
+
+export const mockBridgeQuotes = [
+  {
+    quote: {
+      requestId:
+        '0xb7e0cdb746800056208ae5408a1755d9c8c10970c067a5e1fbbe768d2f6f626c',
+      bridgeId: '0x',
+      srcChainId: 42161,
+      destChainId: 42161,
+      aggregator: 'openocean',
+      aggregatorType: 'AGG',
+      srcTokenAmount: '9913',
+      destTokenAmount: '11104',
+      minDestTokenAmount: '10881',
+      walletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
+      destWalletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
+      bridges: ['0x'],
+      protocols: ['0x'],
+      steps: [],
+      slippage: 2,
+    },
+    approval: {
+      chainId: 42161,
+      to: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      from: '0x178239802520a9C99DCBD791f81326B70298d629',
+      value: '0x0',
+      data: '0x1234567890abcdef',
+      gasLimit: 63109,
+    },
+    trade: {
+      chainId: 42161,
+      to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
+      from: '0x178239802520a9C99DCBD791f81326B70298d629',
+      value: '0x0',
+      data: '0x1234567890abcdef',
+      gasLimit: 596053,
+    },
+    estimatedProcessingTimeInSeconds: 0,
+  },
+];

@@ -28,12 +28,14 @@ export type RewardsState = {
   rewardsEnabled: boolean;
   // Error
   errorToast: RewardsErrorToastState;
+  // Show/hide rewards badge
+  rewardsBadgeHidden: boolean;
 };
 
 export const initialState: RewardsState = {
   onboardingModalOpen: false,
   onboardingActiveStep: OnboardingStep.INTRO,
-  onboardingModalRendered: false,
+  onboardingModalRendered: true,
 
   geoLocation: null,
   optinAllowedForGeo: null,
@@ -56,6 +58,8 @@ export const initialState: RewardsState = {
     actionText: '',
     onActionClick: undefined,
   },
+  // Show/hide rewards badge
+  rewardsBadgeHidden: true,
 };
 
 const rewardsSlice = createSlice({
@@ -150,6 +154,10 @@ const rewardsSlice = createSlice({
     setErrorToast: (state, action: PayloadAction<RewardsErrorToastState>) => {
       state.errorToast = action.payload;
     },
+
+    setRewardsBadgeHidden: (state, action: PayloadAction<boolean>) => {
+      state.rewardsBadgeHidden = action.payload;
+    },
   },
 });
 
@@ -166,6 +174,7 @@ export const {
   setRewardsGeoMetadataLoading,
   setRewardsGeoMetadataError,
   setErrorToast,
+  setRewardsBadgeHidden,
 } = rewardsSlice.actions;
 
 export default rewardsSlice.reducer;

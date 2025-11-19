@@ -67,7 +67,10 @@ describe('Shield Entry Modal', () => {
 
     const closeButton = getByTestId('shield-entry-modal-close-button');
     fireEvent.click(closeButton);
-    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
+    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith({
+      show: false,
+      hasUserInteractedWithModal: true,
+    });
   });
 
   it('should call onGetStarted when the get started button is clicked', async () => {
@@ -78,7 +81,10 @@ describe('Shield Entry Modal', () => {
     );
 
     fireEvent.click(getStartedButton);
-    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
+    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith({
+      show: false,
+      hasUserInteractedWithModal: true,
+    });
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith({
         pathname: SHIELD_PLAN_ROUTE,
@@ -110,7 +116,10 @@ describe('Shield Entry Modal', () => {
         event: SubscriptionUserEvent.ShieldEntryModalViewed,
         cohort: mockState.appState.shieldEntryModal.triggeringCohort,
       });
-      expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
+      expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith({
+        show: false,
+        hasUserInteractedWithModal: true,
+      });
     });
   });
 });

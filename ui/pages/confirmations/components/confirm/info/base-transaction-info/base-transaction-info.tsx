@@ -10,7 +10,7 @@ import { TransactionAccountDetails } from '../batch/transaction-account-details'
 import { BatchSimulationDetails } from '../batch/batch-simulation-details/batch-simulation-details';
 
 const BaseTransactionInfo = () => {
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, isQuotedSwapDisplayedInInfo } =
     useConfirmContext<TransactionMeta>();
 
   if (!transactionMeta?.txParams) {
@@ -20,9 +20,13 @@ const BaseTransactionInfo = () => {
   return (
     <>
       <DappSwapComparisonBanner />
-      <TransactionAccountDetails />
-      <BatchSimulationDetails />
-      <TransactionDetails />
+      {!isQuotedSwapDisplayedInInfo && (
+        <>
+          <TransactionAccountDetails />
+          <BatchSimulationDetails />
+          <TransactionDetails />
+        </>
+      )}
       <GasFeesSection />
       <AdvancedDetails />
     </>

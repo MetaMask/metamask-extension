@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { QuoteResponse } from '@metamask/bridge-controller';
 import { act } from '@testing-library/react';
 
@@ -44,7 +45,7 @@ jest.mock('./useDappSwapComparisonLatencyMetrics', () => ({
 
 async function runHook() {
   const response = renderHookWithConfirmContextProvider(
-    useDappSwapComparisonInfo,
+    () => useDappSwapComparisonInfo(),
     getMockConfirmStateForTransaction(mockSwapConfirmation as Confirmation),
   );
 
@@ -218,9 +219,7 @@ describe('useDappSwapComparisonInfo', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenLastCalledWith(
       {
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_comparison: 'loading',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_commands: '0x0a100604',
         },
       },
@@ -249,48 +248,28 @@ describe('useDappSwapComparisonInfo', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenLastCalledWith(
       {
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_comparison: 'completed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_commands: '0x0a100604',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_comparison_total_latency_ms: '1500',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_from_token_simulated_value_usd: '1',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_minimum_received_value_usd: '0.000000000000972677317872',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_network_fee_usd: '0.01119466650091628514',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_request_detection_latency_ms: '1200',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_to_token_simulated_value_usd: '0.000000000000996995550564',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_from_token_simulated_value_usd: '1',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_minimum_received_value_usd: '0.00000000000097267931748',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_network_fee_usd: '0.00550828904272868',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_provider: 'openocean',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_request_latency_ms: '2400',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_response_latency_ms: '3600',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_slippage: 2,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_to_token_simulated_value_usd: '0.000000000001003803216',
         },
         sensitiveProperties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_from_token_contract:
             '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_from_token_symbol: 'N/A',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_to_token_contract: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_to_token_symbol: 'N/A',
         },
       },

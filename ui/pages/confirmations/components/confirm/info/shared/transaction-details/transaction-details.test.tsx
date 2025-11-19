@@ -15,7 +15,6 @@ import {
   downgradeAccountConfirmation,
   upgradeAccountConfirmationOnly,
 } from '../../../../../../../../test/data/confirmations/batch-transaction';
-import * as SwapCheckHook from '../../../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
 import { RecipientRow, TransactionDetails } from './transaction-details';
@@ -225,28 +224,6 @@ describe('Transaction Details', () => {
         expect(
           getByTestId('transaction-details-recipient-row'),
         ).toBeInTheDocument();
-      });
-
-      it('does not render for quote swap', () => {
-        jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
-          isQuotedSwap: true,
-        });
-        const state = getMockConfirmStateForTransaction(
-          genUnapprovedContractInteractionConfirmation(),
-          {
-            metamask: {
-              preferences: {
-                showConfirmationAdvancedDetails: true,
-              },
-            },
-          },
-        );
-        const mockStore = configureMockStore(middleware)(state);
-        const { queryByTestId } = renderWithConfirmContextProvider(
-          <TransactionDetails />,
-          mockStore,
-        );
-        expect(queryByTestId('transaction-details-recipient-row')).toBeNull();
       });
     });
 
