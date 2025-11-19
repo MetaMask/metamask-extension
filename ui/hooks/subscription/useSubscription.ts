@@ -7,7 +7,6 @@ import {
   ProductType,
   RecurringInterval,
   Subscription,
-  BalanceCategory,
   SubscriptionEligibility,
   SubscriptionStatus,
   ModalType,
@@ -52,6 +51,7 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors
 import {
   getMetaMetricsId,
   getModalTypeForShieldEntryModal,
+  getSelectedInternalAccount,
   getUnapprovedConfirmations,
   selectNetworkConfigurationByChainId,
 } from '../../selectors';
@@ -59,10 +59,14 @@ import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics
 import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
 import { EntryModalSourceEnum } from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
-import { getLatestSubscriptionStatus } from '../../../shared/modules/shield';
+import {
+  getLatestSubscriptionStatus,
+  getUserBalanceCategory,
+} from '../../../shared/modules/shield';
 import { openWindow } from '../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -396,41 +400,46 @@ export const useSubscriptionEligibility = (product: ProductType) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isSignedIn = useSelector(selectIsSignedIn);
   const isUnlocked = useSelector(getIsUnlocked);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { totalFiatBalance } = useAccountTotalFiatBalance(
+    selectedAccount,
+    false,
+    true, // use USD conversion rate instead of the current currency
+  );
 
-  const getSubscriptionEligibility = useCallback(
-    async (params?: {
-      balanceCategory?: BalanceCategory;
-    }): Promise<SubscriptionEligibility | undefined> => {
-      try {
-        // if user is not signed in or unlocked, return undefined
-        if (!isSignedIn || !isUnlocked) {
-          return undefined;
-        }
-
-        // get the subscriptions before making the eligibility request
-        // here, we cannot `useUserSubscriptions` hook as the hook's initial state has empty subscriptions array and loading state is false
-        // that mistakenly makes `user does not have a subscription` and triggers the eligibility request
-        const subscriptions = await dispatch(getSubscriptions());
-        const isShieldSubscriptionActive =
-          getIsShieldSubscriptionActive(subscriptions);
-
-        if (!isShieldSubscriptionActive) {
-          // only if shield subscription is not active, get the eligibility
-          const eligibilities = await dispatch(
-            getSubscriptionsEligibilities(params),
-          );
-          return eligibilities.find(
-            (eligibility) => eligibility.product === product,
-          );
-        }
-        return undefined;
-      } catch (error) {
-        log.warn('[useSubscriptionEligibility] error', error);
+  const getSubscriptionEligibility = useCallback(async (): Promise<
+    SubscriptionEligibility | undefined
+  > => {
+    try {
+      // if user is not signed in or unlocked, return undefined
+      if (!isSignedIn || !isUnlocked) {
         return undefined;
       }
-    },
-    [isSignedIn, isUnlocked, dispatch, product],
-  );
+
+      const balanceCategory = getUserBalanceCategory(Number(totalFiatBalance));
+
+      // get the subscriptions before making the eligibility request
+      // here, we cannot `useUserSubscriptions` hook as the hook's initial state has empty subscriptions array and loading state is false
+      // that mistakenly makes `user does not have a subscription` and triggers the eligibility request
+      const subscriptions = await dispatch(getSubscriptions());
+      const isShieldSubscriptionActive =
+        getIsShieldSubscriptionActive(subscriptions);
+
+      if (!isShieldSubscriptionActive) {
+        // only if shield subscription is not active, get the eligibility
+        const eligibilities = await dispatch(
+          getSubscriptionsEligibilities({ balanceCategory }),
+        );
+        return eligibilities.find(
+          (eligibility) => eligibility.product === product,
+        );
+      }
+      return undefined;
+    } catch (error) {
+      log.warn('[useSubscriptionEligibility] error', error);
+      return undefined;
+    }
+  }, [isSignedIn, isUnlocked, dispatch, product, totalFiatBalance]);
 
   return {
     getSubscriptionEligibility,
