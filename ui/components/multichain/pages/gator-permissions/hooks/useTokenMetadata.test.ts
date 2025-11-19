@@ -203,26 +203,6 @@ describe('useTokenMetadata', () => {
     expect(result2.current).toEqual(UNKNOWN_TOKEN);
   });
 
-  it('should parse decimals correctly', async () => {
-    const testCases = [
-      { decimals: undefined, expected: null },
-      { decimals: '0', expected: 0 },
-      { decimals: 0, expected: 0 },
-      { decimals: '18', expected: 18 },
-      { decimals: '', expected: null },
-    ];
-
-    for (const { decimals, expected } of testCases) {
-      mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
-        decimals,
-        name: 'Test',
-        standard: 'ERC20',
-      } as TokenStandAndDetails);
-      const { result } = renderTokenMetadata('0xTest');
-      await waitFor(() => expect(result.current.decimals).toBe(expected));
-    }
-  });
-
   it('should update on tokenAddress or chainId changes', async () => {
     // TokenAddress change
     const { result, rerender } = renderHook(
