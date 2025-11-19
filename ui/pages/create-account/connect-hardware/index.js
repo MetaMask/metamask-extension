@@ -160,19 +160,16 @@ class ConnectHardwareForm extends Component {
     }
 
     // Default values
-    try {
-      const deviceCount = this.getHardwareWalletKeyrings().length;
+    const deviceCount = this.getHardwareWalletKeyrings().length;
 
-      this.context.trackEvent({
-        event: MetaMetricsEventName.ConnectHardwareWalletClicked,
-        properties: {
-          device_type: capitalizeStr(device),
-          connected_device_count: deviceCount,
-        },
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    this.context.trackEvent({
+      event: MetaMetricsEventName.ConnectHardwareWalletClicked,
+      properties: {
+        device_type: capitalizeStr(device),
+        connected_device_count: deviceCount,
+      },
+    });
+
     this.getPage(device, 0, this.props.defaultHdPaths[device], true);
   };
 
