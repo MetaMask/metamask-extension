@@ -147,7 +147,8 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
   for (const filename of readdirSync(appRoot)) {
     // ignore non-htm/html files
     if (/\.html?$/iu.test(filename)) {
-      // ignore background.html, as that is already handled above
+      // ignore background.html for MV2 as it was already handled above.
+      // we also ignore it for MV3 as there is no background page.
       if (filename === 'background.html') {
         continue;
       }
