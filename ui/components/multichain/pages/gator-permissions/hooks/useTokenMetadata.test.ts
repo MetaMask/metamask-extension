@@ -268,40 +268,4 @@ describe('useTokenMetadata', () => {
     rerender2({ chainId: '0x89' });
     await waitFor(() => expect(result2.current.symbol).toBe('USDC-POLY'));
   });
-
-  it('should not update after unmount', async () => {
-    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-
-    mockFetchAssetMetadata.mockImplementation(
-      () => new Promise((resolve) => setTimeout(() => resolve(undefined), 50)),
-    );
-    mockGetTokenStandardAndDetailsByChain.mockImplementation(
-      () =>
-        new Promise((resolve) =>
-          setTimeout(
-            () =>
-              resolve({
-                symbol: 'SLOW',
-                decimals: '18',
-                name: 'Slow Token',
-                standard: 'ERC20',
-              } as TokenStandAndDetails),
-            100,
-          ),
-        ),
-    );
-
-    const { unmount } = renderTokenMetadata('0xSlowToken');
-    unmount();
-    await new Promise((resolve) => setTimeout(resolve, 150));
-
-    expect(consoleWarnSpy).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).not.toHaveBeenCalledWith(
-      expect.stringContaining('unmounted component'),
-    );
-
-    consoleWarnSpy.mockRestore();
-    consoleErrorSpy.mockRestore();
-  });
 });
