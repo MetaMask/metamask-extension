@@ -121,7 +121,9 @@ export const sanitizeAmountInput = (textToSanitize: string) => {
  * @param amount - The raw amount string from input
  * @returns A safe string for BigNumber operations
  */
-export const safeAmountForCalc = (amount: string | null | undefined): string => {
+export const safeAmountForCalc = (
+  amount: string | null | undefined,
+): string => {
   if (!amount) {
     return '0';
   }
