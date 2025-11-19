@@ -48,31 +48,31 @@ class Index extends PureComponent {
 
     return (
       <Provider store={store}>
-        <HashRouter hashType="noslash">
-          <CompatRouter>
-            <NavigationStateProvider>
-              <MetaMetricsProvider>
-                <LegacyMetaMetricsProvider>
-                  <I18nProvider>
-                    <LegacyI18nProvider>
-                      <AssetPollingProvider>
-                        <MetamaskIdentityProvider>
-                          <MetamaskNotificationsProvider>
-                            <ShieldSubscriptionProvider>
-                              <RiveWasmProvider>
+        <NavigationStateProvider>
+          <MetaMetricsProvider>
+            <LegacyMetaMetricsProvider>
+              <I18nProvider>
+                <LegacyI18nProvider>
+                  <AssetPollingProvider>
+                    <MetamaskIdentityProvider>
+                      <MetamaskNotificationsProvider>
+                        <ShieldSubscriptionProvider>
+                          <RiveWasmProvider>
+                            <HashRouter hashType="noslash">
+                              <CompatRouter>
                                 <Routes />
-                              </RiveWasmProvider>
-                            </ShieldSubscriptionProvider>
-                          </MetamaskNotificationsProvider>
-                        </MetamaskIdentityProvider>
-                      </AssetPollingProvider>
-                    </LegacyI18nProvider>
-                  </I18nProvider>
-                </LegacyMetaMetricsProvider>
-              </MetaMetricsProvider>
-            </NavigationStateProvider>
-          </CompatRouter>
-        </HashRouter>
+                              </CompatRouter>
+                            </HashRouter>
+                          </RiveWasmProvider>
+                        </ShieldSubscriptionProvider>
+                      </MetamaskNotificationsProvider>
+                    </MetamaskIdentityProvider>
+                  </AssetPollingProvider>
+                </LegacyI18nProvider>
+              </I18nProvider>
+            </LegacyMetaMetricsProvider>
+          </MetaMetricsProvider>
+        </NavigationStateProvider>
       </Provider>
     );
   }
