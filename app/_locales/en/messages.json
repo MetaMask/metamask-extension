@@ -6052,21 +6052,18 @@
   "shieldClaimWalletOwnershipValidationFailed": {
     "message": "Wallet ownership validation failed."
   },
+  "shieldClaimsDetailTitle": {
+    "message": "Claim Details"
+  },
   "shieldClaimsHistoryTitle": {
     "message": "CLAIM HISTORY"
   },
   "shieldClaimsListTitle": {
     "message": "Claims Management"
   },
-  "shieldClaimsDetailTitle": {
-    "message": "Claim Details"
-  },
   "shieldClaimsNumber": {
     "message": "Claim #$1",
     "description": "The $1 is the claim number"
-  },
-  "shieldClaimsPendingAlertActionButtonLabel": {
-    "message": "View claims"
   },
   "shieldClaimsPendingAlertDescription": {
     "message": "Your claims is being reviewed by our team. We will notify you when it has been approved by email."
