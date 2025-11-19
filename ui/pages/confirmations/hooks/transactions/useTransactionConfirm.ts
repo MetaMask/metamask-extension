@@ -11,6 +11,7 @@ import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useG
 import { updateAndApproveTx } from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
+import { useDappSwapComparisonMetrics } from './dapp-swap-comparison/useDappSwapComparisonMetrics';
 import { useShieldConfirm } from './useShieldConfirm';
 
 export function useTransactionConfirm() {
@@ -23,6 +24,7 @@ export function useTransactionConfirm() {
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
+  const { captureSwapSubmit } = useDappSwapComparisonMetrics();
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),
@@ -99,6 +101,8 @@ export function useTransactionConfirm() {
       );
       throw error;
     }
+
+    captureSwapSubmit();
   }, [
     newTransactionMeta,
     customNonceValue,
@@ -109,6 +113,7 @@ export function useTransactionConfirm() {
     selectedGasFeeToken,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
+    captureSwapSubmit,
   ]);
 
   return {
