@@ -28,15 +28,18 @@ class LatticeKeyringOffscreen extends LatticeKeyring {
     super(opts);
   }
 
-  async _getCreds(): Promise<{
-    deviceID: string;
-    password: string;
-    endpoint: string;
-  } | undefined> {
+  async _getCreds(): Promise<
+    | {
+        deviceID: string;
+        password: string;
+        endpoint?: string;
+      }
+    | undefined
+  > {
     try {
       // If we already have credentials cached
       if (this._hasCreds()) {
-        return;
+        return undefined;
       }
 
       // If we are not aware of what Lattice we should be talking to,
@@ -50,7 +53,7 @@ class LatticeKeyringOffscreen extends LatticeKeyring {
       const creds = await new Promise<{
         deviceID: string;
         password: string;
-        endpoint: string;
+        endpoint?: string;
       }>((resolve, reject) => {
         chrome.runtime.sendMessage(
           {
