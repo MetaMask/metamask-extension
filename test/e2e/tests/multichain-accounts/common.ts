@@ -12,13 +12,13 @@ import {
 import { MockedEndpoint } from '../../mock-e2e';
 
 import { E2E_SRP } from '../../default-fixture';
+import { SECOND_TEST_E2E_SRP } from '../../flask/multi-srp/common-multi-srp';
 import {
   mockMultichainAccountsFeatureFlagDisabled,
   mockMultichainAccountsFeatureFlag,
   mockMultichainAccountsFeatureFlagStateTwo,
 } from './feature-flag-mocks';
 import { MockedDiscoveryBuilder } from './discovery';
-import { SECOND_TEST_E2E_SRP } from '../../flask/multi-srp/common-multi-srp';
 
 export enum AccountType {
   MultiSRP = 'multi-srp',
