@@ -93,36 +93,16 @@ export enum HardwareAffiliateLinks {
 }
 
 export enum HardwareAffiliateTutorialLinks {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  ledger = 'https://support.ledger.com/article/4404366864657-zd',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  gridplus = 'https://docs.gridplus.io/setup/metamask',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  trezor = 'https://wiki.trezor.io/Apps:MetaMask',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  keystone = 'https://support.keyst.one/3rd-party-wallets/eth-and-web3-wallets-keystone/bind-metamask-with-keystone',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  airgap = 'https://support.airgap.it/guides/metamask/',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  coolwallet = 'https://www.coolwallet.io/metamask-step-by-step-guides/',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  dcent = 'https://medium.com/dcentwallet/dcent-wallet-now-supports-qr-based-protocol-to-link-with-metamask-57555f02603f',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  ngrave = 'https://ngrave.io/zero',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  imtoken = 'https://support.token.im/hc/en-us/articles/24652624775961/',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  onekey = 'https://help.onekey.so/en/articles/11461108-connect-onekey-pro-to-metamask-via-qr-codes-air-gapped',
+  Ledger = 'https://support.ledger.com/article/4404366864657-zd',
+  GridPlus = 'https://docs.gridplus.io/setup/metamask',
+  Trezor = 'https://wiki.trezor.io/Apps:MetaMask',
+  Keystone = 'https://support.keyst.one/3rd-party-wallets/eth-and-web3-wallets-keystone/bind-metamask-with-keystone',
+  AirGap = 'https://support.airgap.it/guides/metamask/',
+  CoolWallet = 'https://www.coolwallet.io/metamask-step-by-step-guides/',
+  Dcent = 'https://medium.com/dcentwallet/dcent-wallet-now-supports-qr-based-protocol-to-link-with-metamask-57555f02603f',
+  Ngrave = 'https://ngrave.io/zero',
+  ImToken = 'https://support.token.im/hc/en-us/articles/24652624775961/',
+  OneKey = 'https://help.onekey.so/en/articles/11461108-connect-onekey-pro-to-metamask-via-qr-codes-air-gapped',
 }
 
 /**

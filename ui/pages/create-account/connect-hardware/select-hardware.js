@@ -554,7 +554,7 @@ export default class SelectHardware extends Component {
                     MarketingActionNames.Tutorial,
                     HardwareDeviceNames.lattice,
                   );
-                  openWindow(HardwareAffiliateTutorialLinks.gridplus);
+                  openWindow(HardwareAffiliateTutorialLinks.GridPlus);
                 }}
               >
                 {this.context.t('tutorial')}
@@ -633,7 +633,7 @@ export default class SelectHardware extends Component {
                     MarketingActionNames.Tutorial,
                     HardwareDeviceNames.trezor,
                   );
-                  openWindow(HardwareAffiliateTutorialLinks.trezor);
+                  openWindow(HardwareAffiliateTutorialLinks.Trezor);
                 }}
               >
                 {this.context.t('tutorial')}
@@ -689,7 +689,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.Tutorial,
                   QrHardwareDeviceNames.Keystone,
                 );
-                openWindow(HardwareAffiliateTutorialLinks.keystone);
+                openWindow(HardwareAffiliateTutorialLinks.Keystone);
               }}
             >
               {this.context.t('tutorial')}
@@ -724,7 +724,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.Tutorial,
                   QrHardwareDeviceNames.AirGap,
                 );
-                openWindow(HardwareAffiliateTutorialLinks.airgap);
+                openWindow(HardwareAffiliateTutorialLinks.AirGap);
               }}
             >
               {this.context.t('tutorial')}
@@ -759,7 +759,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.Tutorial,
                   QrHardwareDeviceNames.CoolWallet,
                 );
-                openWindow(HardwareAffiliateTutorialLinks.coolwallet);
+                openWindow(HardwareAffiliateTutorialLinks.CoolWallet);
               }}
             >
               {this.context.t('tutorial')}
@@ -792,7 +792,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.Tutorial,
                   QrHardwareDeviceNames.Dcent,
                 );
-                openWindow(HardwareAffiliateTutorialLinks.dcent);
+                openWindow(HardwareAffiliateTutorialLinks.Dcent);
               }}
             >
               {this.context.t('tutorial')}
@@ -827,7 +827,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.Tutorial,
                   QrHardwareDeviceNames.ImToken,
                 );
-                openWindow(HardwareAffiliateTutorialLinks.imtoken);
+                openWindow(HardwareAffiliateTutorialLinks.ImToken);
               }}
             >
               {this.context.t('tutorial')}
@@ -862,7 +862,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.Tutorial,
                   HardwareDeviceNames.oneKey,
                 );
-                openWindow(HardwareAffiliateTutorialLinks.onekey);
+                openWindow(HardwareAffiliateTutorialLinks.OneKey);
               }}
             >
               {this.context.t('tutorial')}
@@ -898,7 +898,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.Tutorial,
                   QrHardwareDeviceNames.Ngrave,
                 );
-                openWindow(HardwareAffiliateTutorialLinks.ngrave);
+                openWindow(HardwareAffiliateTutorialLinks.Ngrave);
               }}
               data-testid="ngrave-brand-learn-more-btn"
             >
