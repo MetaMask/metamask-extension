@@ -82,6 +82,7 @@ const blocklistedHosts = [
   'cdn.jsdelivr.net',
   'unpkg.com',
   'mock-redirect-url.com',
+  'claims.dev-api.cx.metamask.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
@@ -1315,16 +1316,17 @@ async function setupMocking(
       return;
     }
 
-    // Exclude browser API requests, portfolio requests, and test-only CDN domains
-    const isTestCDNDomain =
+    // Exclude browser API requests, portfolio requests, and test-only domains from privacy report
+    const isTestOnlyDomain =
       request.headers.host === 'cdn.jsdelivr.net' ||
       request.headers.host === 'unpkg.com' ||
-      request.headers.host === 'mock-redirect-url.com';
+      request.headers.host === 'mock-redirect-url.com' ||
+      request.headers.host === 'claims.dev-api.cx.metamask.io';
 
     if (
       request.headers.host.match(browserAPIRequestDomains) === null &&
       !portfolioRequestsMatcher(request) &&
-      !isTestCDNDomain
+      !isTestOnlyDomain
     ) {
       privacyReport.add(request.headers.host);
     }
