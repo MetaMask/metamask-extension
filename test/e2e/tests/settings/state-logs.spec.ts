@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { MockttpServer } from 'mockttp';
 import { createDownloadFolder, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
@@ -6,6 +7,8 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockSpotPrices } from '../tokens/utils/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import referenceStateLogsDefinition from './state-logs.json';
 import {
   compareTypeMaps,
@@ -28,6 +31,15 @@ describe('State logs', function () {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 3401,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
@@ -70,6 +82,15 @@ describe('State logs', function () {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 3401,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
