@@ -55,17 +55,17 @@ export const useShieldSubscriptionCryptoSufficientBalanceCheck = () => {
         ?.find(
           (chain) =>
             chain.chainId.toLowerCase() ===
-            cryptoPaymentInfo?.crypto.chainId.toLowerCase(),
+            cryptoPaymentInfo?.crypto?.chainId.toLowerCase(),
         )
         ?.tokens.find(
           (token) =>
             token.symbol.toLowerCase() ===
-            cryptoPaymentInfo?.crypto.tokenSymbol.toLowerCase(),
+            cryptoPaymentInfo?.crypto?.tokenSymbol.toLowerCase(),
         )
     : undefined;
 
   const paymentChainIds = useMemo(
-    () => (cryptoPaymentInfo ? [cryptoPaymentInfo.crypto.chainId] : []),
+    () => (cryptoPaymentInfo ? [cryptoPaymentInfo.crypto?.chainId] : []),
     [cryptoPaymentInfo],
   );
 
@@ -84,7 +84,7 @@ export const useShieldSubscriptionCryptoSufficientBalanceCheck = () => {
     }
 
     const params = {
-      chainId: cryptoPaymentInfo.crypto.chainId,
+      chainId: cryptoPaymentInfo.crypto?.chainId,
       paymentTokenAddress: selectedTokenPrice.address,
       productType: PRODUCT_TYPES.SHIELD,
       interval: shieldSubscription.interval,
@@ -108,7 +108,7 @@ export const useShieldSubscriptionCryptoSufficientBalanceCheck = () => {
 
     const token = evmBalances.find(
       (t) =>
-        cryptoPaymentInfo.crypto.chainId === t.chainId &&
+        cryptoPaymentInfo.crypto?.chainId === t.chainId &&
         selectedTokenPrice.address.toLowerCase() === t.address.toLowerCase(),
     );
     if (!token || !token.balance) {
