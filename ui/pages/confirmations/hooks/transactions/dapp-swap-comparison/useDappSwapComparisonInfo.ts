@@ -273,6 +273,7 @@ export function useDappSwapComparisonInfo() {
     gasDifference = 0,
     tokenAmountDifference = 0,
   } = useMemo(() => {
+    console.log('--------------------------------1');
     if (!selectedQuote || !quotesInput || !simulationData || !tokenDetails) {
       return {};
     }
@@ -298,6 +299,7 @@ export function useDappSwapComparisonInfo() {
       ),
     );
 
+    console.log('--------------------------------2');
     const destinationTokenAmountInQuote = new BigNumber(
       getDestinationTokenUSDValue(destTokenAmount),
     );
@@ -328,10 +330,20 @@ export function useDappSwapComparisonInfo() {
       .toNumber();
 
     const gasDiff = totalGasInConfirmation.minus(totalGasInQuote).toNumber();
+    console.log('--------------------------------3 gasDiff', gasDiff);
 
     const tokenAmountDiff = destinationTokenAmountInQuote
       .minus(destinationTokenAmountInConfirmation)
       .toNumber();
+    console.log(
+      '--------------------------------4 tokenAmountDiff',
+      tokenAmountDiff,
+    );
+
+    console.log(
+      '--------------------------------5 selectedQuoteValueDiff',
+      selectedQuoteValueDiff,
+    );
 
     return {
       selectedQuoteValueDifference: selectedQuoteValueDiff,
@@ -349,6 +361,14 @@ export function useDappSwapComparisonInfo() {
     simulationData,
     tokenDetails,
   ]);
+
+  console.log(
+    '--------------------------------',
+    selectedQuote,
+    selectedQuoteValueDifference,
+    tokenAmountDifference,
+    gasDifference,
+  );
 
   return {
     fiatRates,
