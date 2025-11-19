@@ -3681,9 +3681,6 @@
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
-  "metamaskExtension": {
-    "message": "MetaMask Extension"
-  },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
   },
