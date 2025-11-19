@@ -9,6 +9,7 @@ import {
   oldestPendingConfirmationSelector,
   selectPendingApproval,
 } from '../../../selectors';
+import { getPendingApprovals } from '../../../selectors/approvals';
 import { selectUnapprovedMessage } from '../../../selectors/signatures';
 import {
   shouldUseRedesignForSignatures,
@@ -34,11 +35,30 @@ const useCurrentConfirmation = (providedConfirmationId?: string) => {
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
   );
 
-  const transactionMetadata = useSelector((state) =>
+  const transactionMetadata = useSelector((state) => {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getUnapprovedTransaction as any)(state, confirmationId),
-  ) as TransactionMeta | undefined;
+    let tx = (getUnapprovedTransaction as any)(state, confirmationId);
+
+    // If transaction not found for the specific confirmationId, try to find transaction
+    // for the first pending approval that has an unapproved transaction
+    // This handles cases where route params point to a signed/submitted transaction
+    if (!tx && pendingApproval?.type === ApprovalType.Transaction) {
+      const allPendingApprovals = getPendingApprovals(state as ApprovalsMetaMaskState);
+      for (const approval of allPendingApprovals) {
+        if (approval.type === ApprovalType.Transaction && approval.id !== confirmationId) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const candidateTx = (getUnapprovedTransaction as any)(state, approval.id);
+          if (candidateTx) {
+            tx = candidateTx;
+            break;
+          }
+        }
+      }
+    }
+
+    return tx;
+  }) as TransactionMeta | undefined;
 
   const signatureMessage = useSelector((state) =>
     selectUnapprovedMessage(state, confirmationId),

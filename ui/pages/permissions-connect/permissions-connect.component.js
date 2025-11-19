@@ -15,7 +15,6 @@ import {
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
-import { getRelativeLocationForNestedRoutes } from '../routes/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
@@ -456,7 +455,6 @@ export default class PermissionConnect extends Component {
       setSnapsInstallPrivacyWarningShownStatus,
       approvePermissionsRequest,
       navigate,
-      location,
     } = this.props;
     const {
       selectedAccountAddresses,
@@ -467,21 +465,17 @@ export default class PermissionConnect extends Component {
 
     const isRequestingSnap = isSnapId(permissionsRequest?.metadata?.origin);
 
-    // Create a relative location for nested v5-compat Routes
-    const relativeLocation = getRelativeLocationForNestedRoutes(
-      location,
-      connectPath,
-    );
-
     return (
       <div className="permissions-connect">
         {!hideTopBar && this.renderTopBar(permissionsRequestId)}
         {redirecting && permissionsApproved ? (
           <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
         ) : (
-          <Routes location={relativeLocation}>
+          // Nested Routes match relative to parent route (/connect/:id) automatically
+          // Use relative paths without leading slash
+          <Routes>
             <Route
-              path="/"
+              index
               element={(() => {
                 if (isRequestingSnap) {
                   return (
@@ -500,7 +494,7 @@ export default class PermissionConnect extends Component {
               })()}
             />
             <Route
-              path={CONNECT_CONFIRM_PERMISSIONS_ROUTE}
+              path={CONNECT_CONFIRM_PERMISSIONS_ROUTE.replace(/^\//u, '')}
               element={
                 <PermissionPageContainer
                   request={permissionsRequest || {}}
@@ -530,7 +524,7 @@ export default class PermissionConnect extends Component {
               }
             />
             <Route
-              path={CONNECT_SNAPS_CONNECT_ROUTE}
+              path={CONNECT_SNAPS_CONNECT_ROUTE.replace(/^\//u, '')}
               element={
                 <SnapsConnect
                   request={permissionsRequest || {}}
@@ -549,7 +543,7 @@ export default class PermissionConnect extends Component {
               }
             />
             <Route
-              path={CONNECT_SNAP_INSTALL_ROUTE}
+              path={CONNECT_SNAP_INSTALL_ROUTE.replace(/^\//u, '')}
               element={
                 <SnapInstall
                   request={permissionsRequest || {}}
@@ -574,7 +568,7 @@ export default class PermissionConnect extends Component {
               }
             />
             <Route
-              path={CONNECT_SNAP_UPDATE_ROUTE}
+              path={CONNECT_SNAP_UPDATE_ROUTE.replace(/^\//u, '')}
               element={
                 <SnapUpdate
                   request={permissionsRequest || {}}
@@ -599,7 +593,7 @@ export default class PermissionConnect extends Component {
               }
             />
             <Route
-              path={CONNECT_SNAP_RESULT_ROUTE}
+              path={CONNECT_SNAP_RESULT_ROUTE.replace(/^\//u, '')}
               element={
                 <SnapResult
                   request={permissionsRequest || {}}

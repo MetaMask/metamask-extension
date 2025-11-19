@@ -1,5 +1,7 @@
+import React from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'redux';
+import { useParams, useNavigate } from 'react-router-dom-v5-compat';
+
 import {
   goHome,
   encryptionPublicKeyMsg,
@@ -14,7 +16,6 @@ import {
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
-import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component';
 
 function mapStateToProps(state, ownProps) {
@@ -24,8 +25,7 @@ function mapStateToProps(state, ownProps) {
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
 
-  // withRouterHooks provides params directly (not nested in match)
-  const approvalId = ownProps.params?.id;
+  const { id: approvalId } = ownProps;
 
   const txData = unconfirmedTransactions.find((tx) => tx.id === approvalId);
 
@@ -45,7 +45,7 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   return {
     goHome: () => dispatch(goHome()),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
@@ -58,10 +58,20 @@ function mapDispatchToProps(dispatch) {
       event.stopPropagation();
       return dispatch(cancelEncryptionPublicKeyMsg(msgData));
     },
+    navigate: ownProps.navigate,
   };
 }
 
-export default compose(
-  withRouterHooks,
-  connect(mapStateToProps, mapDispatchToProps),
+const ConnectedConfirmEncryptionPublicKey = connect(
+  mapStateToProps,
+  mapDispatchToProps,
 )(ConfirmEncryptionPublicKey);
+
+const ConfirmEncryptionPublicKeyContainer = () => {
+  const params = useParams();
+  const id = params?.id;
+  const navigate = useNavigate();
+  return <ConnectedConfirmEncryptionPublicKey id={id} navigate={navigate} />;
+};
+
+export default ConfirmEncryptionPublicKeyContainer;

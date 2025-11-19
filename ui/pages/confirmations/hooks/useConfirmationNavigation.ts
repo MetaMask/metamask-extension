@@ -6,29 +6,12 @@ import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
-import {
-  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
-  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  CONFIRM_TRANSACTION_ROUTE,
-  CONFIRMATION_V_NEXT_ROUTE,
-  CONNECT_ROUTE,
-  DECRYPT_MESSAGE_REQUEST_PATH,
-  ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
-  SIGNATURE_REQUEST_PATH,
-} from '../../../helpers/constants/routes';
-import { isSignatureTransactionType } from '../utils';
+import { CONFIRMATION_V_NEXT_ROUTE } from '../../../helpers/constants/routes';
 import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
-
-const CONNECT_APPROVAL_TYPES = [
-  ApprovalType.WalletRequestPermissions,
-  'wallet_installSnap',
-  'wallet_updateSnap',
-  'wallet_installSnapResult',
-];
+import { getConfirmationRoute } from '../utils/getConfirmationRoute';
 
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
@@ -149,63 +132,21 @@ export function navigateToConfirmation(
     return;
   }
 
-  const type = nextConfirmation.type as ApprovalType;
+  const routeInfo = getConfirmationRoute(nextConfirmation, confirmationId);
 
-  if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
-    navigateTo(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`);
+  if (!routeInfo) {
     return;
   }
 
-  if (isSignatureTransactionType(nextConfirmation)) {
-    navigateTo(
-      `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${SIGNATURE_REQUEST_PATH}`,
-    );
-    return;
+  // Handle query string for transactions
+  const { route: baseRoute } = routeInfo;
+  let route = baseRoute;
+  if (
+    nextConfirmation.type === ApprovalType.Transaction &&
+    queryString.length
+  ) {
+    route = `${route}${queryString}`;
   }
 
-  if (type === ApprovalType.Transaction) {
-    let url = `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`;
-    if (queryString.length) {
-      url = `${url}${queryString}`;
-    }
-    navigateTo(url);
-    return;
-  }
-
-  if (type === ApprovalType.AddEthereumChain) {
-    navigateTo(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
-    return;
-  }
-
-  if (type === ApprovalType.EthDecrypt) {
-    navigateTo(
-      `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${DECRYPT_MESSAGE_REQUEST_PATH}`,
-    );
-    return;
-  }
-
-  if (type === ApprovalType.EthGetEncryptionPublicKey) {
-    navigateTo(
-      `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
-    );
-    return;
-  }
-
-  if (CONNECT_APPROVAL_TYPES.includes(type)) {
-    navigateTo(`${CONNECT_ROUTE}/${confirmationId}`);
-    return;
-  }
-
-  const tokenId = (
-    nextConfirmation?.requestData?.asset as Record<string, unknown>
-  )?.tokenId as string;
-
-  if (type === ApprovalType.WatchAsset && !tokenId) {
-    navigateTo(`${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`);
-    return;
-  }
-
-  if (type === ApprovalType.WatchAsset && tokenId) {
-    navigateTo(`${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`);
-  }
+  navigateTo(route);
 }

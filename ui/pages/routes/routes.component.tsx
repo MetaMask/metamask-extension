@@ -92,7 +92,7 @@ import {
   getPendingApprovals,
   getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
-import { getApprovalFlows } from '../../selectors/approvals';
+// import { getApprovalFlows } from '../../selectors/approvals';
 
 import {
   hideImportNftsModal,
@@ -116,7 +116,6 @@ import {
 } from '../../ducks/metamask/metamask';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -254,7 +253,7 @@ const createV5CompatRoute = <
     if (includeMatch) {
       componentProps.match = match;
     }
-    if (includeParams) {
+    if (includeParams && match?.params) {
       if (paramsAsProps) {
         Object.assign(componentProps, match.params);
       } else {
@@ -498,7 +497,7 @@ export default function Routes() {
   );
   const pendingApprovals = useAppSelector(getPendingApprovals);
   const transactionsMetadata = useAppSelector(getUnapprovedTransactions);
-  const approvalFlows = useAppSelector(getApprovalFlows);
+  // const approvalFlows = useAppSelector(getApprovalFlows);
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
@@ -646,44 +645,6 @@ export default function Routes() {
       dispatch(setCurrentCurrency('usd'));
     }
   }, [currentCurrency, dispatch]);
-
-  // Navigate to confirmations when there are pending approvals and user is on asset details page
-  // This behavior is only enabled in sidepanel to avoid interfering with popup/extension flows
-  useEffect(() => {
-    const windowType = getEnvironmentType();
-
-    // Only run this navigation logic in sidepanel
-    if (windowType !== ENVIRONMENT_TYPE_SIDEPANEL) {
-      return;
-    }
-
-    // Only navigate to confirmations when user is on an asset details page
-    const isOnAssetDetailsPage = location.pathname.startsWith(ASSET_ROUTE);
-
-    // Network operations (addEthereumChain, switchEthereumChain) have their own UI
-    // and shouldn't trigger auto-navigation
-    const hasNonNavigableApprovals = pendingApprovals.some(
-      (approval) =>
-        approval.type === 'wallet_addEthereumChain' ||
-        approval.type === 'wallet_switchEthereumChain',
-    );
-
-    if (
-      isOnAssetDetailsPage &&
-      !hasNonNavigableApprovals &&
-      isUnlocked &&
-      (pendingApprovals.length > 0 || approvalFlows?.length > 0)
-    ) {
-      navigateToConfirmation(
-        pendingApprovals[0]?.id,
-        pendingApprovals,
-        Boolean(approvalFlows?.length),
-        history,
-        '', // queryString
-        location.pathname, // currentPathname for skip-navigation optimization
-      );
-    }
-  }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
 
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
