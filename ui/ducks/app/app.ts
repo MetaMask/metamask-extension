@@ -139,6 +139,10 @@ type AppState = {
     shouldSubmitEvents: boolean;
     modalType?: ModalType;
     triggeringCohort?: string;
+    /**
+     * Whether the user has interacted with the modal.
+     */
+    hasUserInteractedWithModal?: boolean;
   };
 };
 
@@ -797,7 +801,7 @@ export default function reduceApp(
         showSupportDataConsentModal: action.payload,
       };
 
-    case actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE:
+    case actionConstants.SET_SHIELD_ENTRY_MODAL_STATUS:
       return {
         ...appState,
         shieldEntryModal: {
