@@ -21,7 +21,13 @@ jest.mock('../../context/confirm', () => ({
 }));
 
 jest.mock('../../../../components/app/confirm/info/row', () => ({
-  ConfirmInfoRow: ({ children, label }: any) => (
+  ConfirmInfoRow: ({
+    children,
+    label,
+  }: {
+    children: React.ReactNode;
+    label: string;
+  }) => (
     <div data-testid="confirm-info-row" data-label={label}>
       {children}
     </div>
@@ -29,13 +35,13 @@ jest.mock('../../../../components/app/confirm/info/row', () => ({
 }));
 
 jest.mock('../../../../components/app/confirm/info/row/section', () => ({
-  ConfirmInfoSection: ({ children }: any) => (
+  ConfirmInfoSection: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="confirm-info-section">{children}</div>
   ),
 }));
 
 jest.mock('../../../../components/app/rewards/RewardsBadge', () => ({
-  RewardsBadge: ({ formattedPoints }: any) => (
+  RewardsBadge: ({ formattedPoints }: { formattedPoints: string }) => (
     <div data-testid="rewards-badge">{formattedPoints}</div>
   ),
 }));
