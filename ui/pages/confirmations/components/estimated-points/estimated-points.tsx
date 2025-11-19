@@ -5,14 +5,14 @@ import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import { RewardsBadge } from '../../../../components/app/rewards/RewardsBadge';
 import { useDappSwapComparisonRewardText } from '../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText';
-import { useSwapCheck } from '../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
+import { useConfirmContext } from '../../context/confirm';
 
 export const EstimatedPointsSection = () => {
   const t = useI18nContext();
   const rewards = useDappSwapComparisonRewardText();
-  const { isQuotedSwap } = useSwapCheck();
+  const { isQuotedSwapDisplayedInInfo } = useConfirmContext();
 
-  if (!rewards || !isQuotedSwap) {
+  if (!rewards || !isQuotedSwapDisplayedInInfo) {
     return null;
   }
 

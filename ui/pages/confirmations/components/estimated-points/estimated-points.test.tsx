@@ -1,5 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useDappSwapComparisonRewardText } from '../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText';
+import { useConfirmContext } from '../../context/confirm';
 import { EstimatedPointsSection } from './estimated-points';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -13,8 +16,8 @@ jest.mock(
   }),
 );
 
-jest.mock('../../hooks/transactions/dapp-swap-comparison/useSwapCheck', () => ({
-  useSwapCheck: jest.fn(),
+jest.mock('../../context/confirm', () => ({
+  useConfirmContext: jest.fn(),
 }));
 
 jest.mock('../../../../components/app/confirm/info/row', () => ({
@@ -37,49 +40,53 @@ jest.mock('../../../../components/app/rewards/RewardsBadge', () => ({
   ),
 }));
 
-const { useI18nContext } = require('../../../../hooks/useI18nContext');
-const {
+const mockUseI18nContext = jest.mocked(useI18nContext);
+const mockUseDappSwapComparisonRewardText = jest.mocked(
   useDappSwapComparisonRewardText,
-} = require('../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText');
-const {
-  useSwapCheck,
-} = require('../../hooks/transactions/dapp-swap-comparison/useSwapCheck');
+);
+const mockUseConfirmContext = jest.mocked(useConfirmContext);
 
 describe('EstimatedPointsSection', () => {
   const mockT = jest.fn((key) => key);
 
   beforeEach(() => {
     jest.clearAllMocks();
-    useI18nContext.mockReturnValue(mockT);
+    mockUseI18nContext.mockReturnValue(mockT);
   });
 
   it('returns null when rewards is null', () => {
-    useDappSwapComparisonRewardText.mockReturnValue(null);
-    useSwapCheck.mockReturnValue({ isQuotedSwap: true });
+    mockUseDappSwapComparisonRewardText.mockReturnValue(null);
+    mockUseConfirmContext.mockReturnValue({
+      isQuotedSwapDisplayedInInfo: true,
+    } as unknown as ReturnType<typeof useConfirmContext>);
 
     const { container } = render(<EstimatedPointsSection />);
 
     expect(container.firstChild).toBeNull();
   });
 
-  it('returns null when isQuotedSwap is false', () => {
-    useDappSwapComparisonRewardText.mockReturnValue({
+  it('returns null when isQuotedSwapDisplayedInInfo is false', () => {
+    mockUseDappSwapComparisonRewardText.mockReturnValue({
       text: 'Earn up to 100 points',
       estimatedPoints: 100,
     });
-    useSwapCheck.mockReturnValue({ isQuotedSwap: false });
+    mockUseConfirmContext.mockReturnValue({
+      isQuotedSwapDisplayedInInfo: false,
+    } as unknown as ReturnType<typeof useConfirmContext>);
 
     const { container } = render(<EstimatedPointsSection />);
 
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders the section when rewards exist and isQuotedSwap is true', () => {
-    useDappSwapComparisonRewardText.mockReturnValue({
+  it('renders the section when rewards exist and isQuotedSwapDisplayedInInfo is true', () => {
+    mockUseDappSwapComparisonRewardText.mockReturnValue({
       text: 'Earn up to 100 points',
       estimatedPoints: 100,
     });
-    useSwapCheck.mockReturnValue({ isQuotedSwap: true });
+    mockUseConfirmContext.mockReturnValue({
+      isQuotedSwapDisplayedInInfo: true,
+    } as unknown as ReturnType<typeof useConfirmContext>);
 
     render(<EstimatedPointsSection />);
 
