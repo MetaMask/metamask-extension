@@ -347,11 +347,9 @@ describe('useTokenMetadata', () => {
       },
     ];
 
-    it.each(decimalTestCases)(
-      'should handle $description',
-      async ({ decimals, expected }) => {
+    for (const { description, decimals, expected } of decimalTestCases) {
+      it(`should handle ${description}`, async () => {
         mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
-          symbol: 'TEST',
           decimals,
           name: 'Test Token',
           standard: 'ERC20',
@@ -365,8 +363,8 @@ describe('useTokenMetadata', () => {
             decimals: expected,
           });
         });
-      },
-    );
+      });
+    }
   });
 
   describe('Dynamic Updates', () => {
@@ -412,12 +410,7 @@ describe('useTokenMetadata', () => {
 
       const { result, rerender } = renderHook(
         ({ chainId }) =>
-          useTokenMetadata(
-            '0xUSDC',
-            chainId,
-            tokensByChain,
-            MOCK_NATIVE_TOKEN,
-          ),
+          useTokenMetadata('0xUSDC', chainId, tokensByChain, MOCK_NATIVE_TOKEN),
         { initialProps: { chainId: CHAIN_ID } },
       );
 
@@ -440,7 +433,8 @@ describe('useTokenMetadata', () => {
 
       // Delay API response
       mockFetchAssetMetadata.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve(undefined), 50)),
+        () =>
+          new Promise((resolve) => setTimeout(() => resolve(undefined), 50)),
       );
 
       // Delay on-chain response
