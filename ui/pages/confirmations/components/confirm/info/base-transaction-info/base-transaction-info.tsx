@@ -8,6 +8,7 @@ import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { TransactionDetails } from '../shared/transaction-details/transaction-details';
 import { TransactionAccountDetails } from '../batch/transaction-account-details';
 import { BatchSimulationDetails } from '../batch/batch-simulation-details/batch-simulation-details';
+import { EstimatedPointsSection } from '../../../estimated-points';
 
 const BaseTransactionInfo = () => {
   const { currentConfirmation: transactionMeta, isQuotedSwapDisplayedInInfo } =
@@ -29,6 +30,7 @@ const BaseTransactionInfo = () => {
       )}
       <GasFeesSection />
       <AdvancedDetails />
+      <EstimatedPointsSection />
     </>
   );
 };
