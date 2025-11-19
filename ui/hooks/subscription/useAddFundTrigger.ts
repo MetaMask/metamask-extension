@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   PAYMENT_TYPES,
@@ -17,7 +17,7 @@ import { getSelectedAccount } from '../../selectors';
 import { getTokenBalancesEvm } from '../../selectors/assets';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
-import { useAsyncResult } from '../useAsync';
+import { useAsyncCallback, useAsyncResult } from '../useAsync';
 import { MINUTE } from '../../../shared/constants/time';
 import { useThrottle } from '../useThrottle';
 import {
@@ -174,50 +174,52 @@ export const useHandleShieldAddFundTrigger = () => {
     | SubscriptionCryptoPaymentMethod
     | undefined;
 
-  const handleTriggerSubscriptionCheck = useCallback(async () => {
-    if (
-      !shieldSubscription ||
-      !selectedProductPrice ||
-      !cryptoPaymentInfo ||
-      !isSubscriptionPaused
-    ) {
-      throw new Error('Invalid parameters to handle shield add fund trigger');
-    }
+  const [handleTriggerSubscriptionCheck, result] =
+    useAsyncCallback(async () => {
+      if (
+        !shieldSubscription ||
+        !selectedProductPrice ||
+        !cryptoPaymentInfo ||
+        !isSubscriptionPaused
+      ) {
+        throw new Error('Invalid parameters to handle shield add fund trigger');
+      }
 
-    try {
-      // selected token is available, so we can trigger the subscription check
-      await dispatch(
-        updateSubscriptionCryptoPaymentMethod({
-          subscriptionId: shieldSubscription.id,
-          paymentType: PAYMENT_TYPES.byCrypto,
-          recurringInterval: shieldSubscription.interval,
-          chainId: cryptoPaymentInfo.crypto.chainId,
-          payerAddress: cryptoPaymentInfo.crypto.payerAddress,
-          tokenSymbol: cryptoPaymentInfo.crypto.tokenSymbol,
-          billingCycles:
-            shieldSubscription.billingCycles ??
-            selectedProductPrice?.minBillingCycles,
-          rawTransaction: undefined, // no raw transaction to trigger server to check for new funded balance
-        }),
-      );
-      // refetch subscription after trigger subscription check for new status
-      await dispatch(getSubscriptions());
-    } catch (error) {
-      log.error(
-        '[useShieldAddFundTrigger] error triggering subscription check',
-        error,
-      );
-    }
-  }, [
-    dispatch,
-    shieldSubscription,
-    selectedProductPrice,
-    cryptoPaymentInfo,
-    isSubscriptionPaused,
-  ]);
+      try {
+        // selected token is available, so we can trigger the subscription check
+        await dispatch(
+          updateSubscriptionCryptoPaymentMethod({
+            subscriptionId: shieldSubscription.id,
+            paymentType: PAYMENT_TYPES.byCrypto,
+            recurringInterval: shieldSubscription.interval,
+            chainId: cryptoPaymentInfo.crypto.chainId,
+            payerAddress: cryptoPaymentInfo.crypto.payerAddress,
+            tokenSymbol: cryptoPaymentInfo.crypto.tokenSymbol,
+            billingCycles:
+              shieldSubscription.billingCycles ??
+              selectedProductPrice?.minBillingCycles,
+            rawTransaction: undefined, // no raw transaction to trigger server to check for new funded balance
+          }),
+        );
+        // refetch subscription after trigger subscription check for new status
+        await dispatch(getSubscriptions());
+      } catch (error) {
+        log.error(
+          '[useShieldAddFundTrigger] error triggering subscription check',
+          error,
+        );
+      }
+    }, [
+      dispatch,
+      shieldSubscription,
+      selectedProductPrice,
+      cryptoPaymentInfo,
+      isSubscriptionPaused,
+    ]);
 
   return {
     handleTriggerSubscriptionCheck,
+    result,
   };
 };
 
