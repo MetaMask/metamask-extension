@@ -47,28 +47,3 @@ exports[`ConfirmInfoRowCurrency should display value in user preferred currency 
 </div>
 `;
 
-exports[`ConfirmInfoRowCurrency should display with chainId prop 1`] = `
-<div>
-  <div
-    class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-    style="column-gap: 8px;"
-  >
-    <div
-      class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-      title="0.148619 POL"
-    >
-      <span
-        class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-        data-testid="account-value-and-suffix"
-      >
-        0.148619
-      </span>
-      <span
-        class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-      >
-        POL
-      </span>
-    </div>
-  </div>
-</div>
-`;

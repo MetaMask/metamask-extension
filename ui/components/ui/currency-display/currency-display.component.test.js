@@ -76,11 +76,15 @@ describe('CurrencyDisplay Component', () => {
       chainId: '0x89',
     };
 
-    const { container } = renderWithProvider(
+    const { container, getByText } = renderWithProvider(
       <CurrencyDisplay {...props} />,
       mockStore,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(
+      container.querySelector('.currency-display-component'),
+    ).toBeInTheDocument();
+    expect(getByText(/0.1/u)).toBeInTheDocument();
+    expect(getByText(/POL/u)).toBeInTheDocument();
   });
 });

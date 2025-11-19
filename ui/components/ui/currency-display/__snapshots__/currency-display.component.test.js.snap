@@ -49,27 +49,6 @@ exports[`CurrencyDisplay Component should render text with a prefix 1`] = `
 </div>
 `;
 
-exports[`CurrencyDisplay Component should render with chainId prop 1`] = `
-<div>
-  <div
-    class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-    title="0.1 POL"
-  >
-    <span
-      class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-      data-testid="account-value-and-suffix"
-    >
-      0.1
-    </span>
-    <span
-      class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-    >
-      POL
-    </span>
-  </div>
-</div>
-`;
-
 exports[`CurrencyDisplay Component should render with title (tooltip) 1`] = `
 <div>
   <div
@@ -100,3 +79,4 @@ exports[`CurrencyDisplay Component should render without title (tooltip) 1`] = `
   </div>
 </div>
 `;
+

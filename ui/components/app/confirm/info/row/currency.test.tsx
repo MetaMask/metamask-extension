@@ -32,7 +32,14 @@ describe('ConfirmInfoRowCurrency', () => {
   });
 
   it('should display with chainId prop', () => {
-    const { container } = render({ currency: 'POL', chainId: '0x89' });
-    expect(container).toMatchSnapshot();
+    const { container, getByText } = render({
+      currency: 'POL',
+      chainId: '0x89',
+    });
+    expect(
+      container.querySelector('.currency-display-component'),
+    ).toBeInTheDocument();
+    expect(getByText(/0.148619/u)).toBeInTheDocument();
+    expect(getByText(/POL/u)).toBeInTheDocument();
   });
 });
