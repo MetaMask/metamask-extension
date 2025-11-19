@@ -98,7 +98,7 @@ describe('MetaMaskController', function () {
 
   beforeAll(async function () {
     await ganacheServer.start({ port: 32545 });
-  }, 30000);
+  });
 
   beforeEach(function () {
     nock(PHISHING_CONFIG_BASE_URL)
@@ -158,7 +158,7 @@ describe('MetaMaskController', function () {
 
   afterAll(async function () {
     await ganacheServer.quit();
-  }, 30000);
+  });
 
   describe('Phishing Detection Mock', function () {
     it('should be updated to use v1 of the API', function () {
