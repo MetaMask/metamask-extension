@@ -2,6 +2,7 @@ import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { OperationSafener } from './operation-safener';
 import { PersistenceManager } from './stores/persistence-manager';
+import { MetaMaskStateType } from './stores/base-store';
 
 const { sentry } = global;
 
@@ -15,9 +16,16 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
   persistenceManager: Type,
 ) {
   const operationSafener = new OperationSafener({
-    op: async () => {
+    op: async (state?: MetaMaskStateType) => {
       try {
-        await persistenceManager.persist();
+        if (persistenceManager.storageKind === 'data') {
+          if (!state) {
+            throw new Error("State must be provided for 'data' storageKind");
+          }
+          await persistenceManager.set(state);
+        } else {
+          await persistenceManager.persist();
+        }
       } catch (error) {
         // unlikely to have an error here, as `persistenceManager.set` handles
         // nearly all error cases internally already.
@@ -32,10 +40,15 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
     /**
      * Safely updates the persistence manager
      *
+     * @param params
      * @returns true if the update was queued, false if writes are not allowed.
      */
-    update: async () => {
-      return operationSafener.execute();
+    update: async (
+      ...params: Parameters<
+        PersistenceManager['set'] | PersistenceManager['persist']
+      >
+    ) => {
+      return operationSafener.execute(...params);
     },
     /**
      * Requests a safe reload of the browser. It prevents any new updates from

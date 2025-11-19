@@ -1,7 +1,10 @@
-import { AnyCnameRecord } from 'node:dns';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import type { MetaMaskStorageStructure, BaseStore } from './base-store';
+import type {
+  MetaMaskStorageStructure,
+  BaseStore,
+  MetaData,
+} from './base-store';
 
 /**
  * An implementation of the MetaMask Extension BaseStore system that uses the
@@ -17,7 +20,7 @@ export default class ExtensionStore implements BaseStore {
     }
   }
 
-  manifest: any;
+  manifest: Set<string> = new Set();
 
   /**
    * Return all data in `local` extension storage area.
@@ -33,70 +36,68 @@ export default class ExtensionStore implements BaseStore {
     const { local } = browser.storage;
     // don't fetch more than we need, incase extra stuff was put in the db
     // by testing or users playing with the db
-    const db = await local.get(['manifest']);
+    const keys = ((await local.get('manifest')) as undefined | string[]) ?? [];
 
     // get all keys from the manifest, and load those keys
-    const keys = db.manifest ? Object.keys(db.manifest) : [];
-    const storedData = await local.get(keys);
-    this.manifest = db.manifest;
-    const data = keys.reduce(
-      (acc, key) => {
-        // @ts-expect-error TODO
-        acc[key] = storedData[key];
-        return acc;
-      },
-      {} as MetaMaskStorageStructure['data'],
-    ) as any;
+    const data = await local.get(keys);
+    this.manifest = new Set(keys);
     const { meta } = data;
-    delete data.meta;
     if (!meta) {
       return null;
     }
+    delete data.meta;
     return {
-      meta,
+      meta: meta as unknown as MetaData,
       data,
     };
   }
 
-  async setKeyValues<Key extends keyof MetaMaskStorageStructure['data']>(
-    pairs: {
-      key: Key;
-      value: MetaMaskStorageStructure['data'][Key];
-    }[],
-    meta: AnyCnameRecord,
-  ): Promise<void> {
+  async setKeyValues(pairs: Map<string, unknown>): Promise<void> {
     if (!this.isSupported) {
       throw new Error(
         'Metamask- cannot persist state to local store as this browser does not support this action',
       );
     }
-    const { local } = browser.storage;
-    const toSet: Record<string, string> = {
-      meta,
-    };
 
-    for (const { key, value } of pairs) {
+    const { local } = browser.storage;
+    const toSet: Record<string, unknown> = Object.create(null);
+    const toRemove: string[] = [];
+    let updateManifest = false;
+    for (const [key, value] of pairs) {
+      const keyExists = this.manifest.has(key);
+      const isRemoving = typeof value === 'undefined';
+      if (isRemoving) {
+        if (!keyExists) {
+          console.warn(
+            '[ExtensionStore] Trying to remove a key that does not exist in manifest:',
+            key,
+          );
+          continue;
+        }
+        this.manifest.delete(key);
+        updateManifest = true;
+        toRemove.push(key);
+        continue;
+      }
+      if (!keyExists) {
+        this.manifest.add(key);
+        updateManifest = true;
+      }
       toSet[key] = value;
     }
 
-    // update the manifest
-    if (this.manifest) {
-      for (const { key } of pairs) {
-        this.manifest[key] = true;
-      }
-      toSet.manifest = this.manifest;
-    } else {
-      const manifest: Record<string, boolean> = {};
-      for (const { key } of pairs) {
-        manifest[key] = true;
-      }
-      toSet.manifest = manifest;
-      this.manifest = manifest;
+    if (updateManifest) {
+      toSet.manifest = Array.from(this.manifest);
     }
-    this.manifest.meta = true;
 
-    console.log(`Writing ${pairs.length} keys to local store`);
-    return await local.set(toSet);
+    console.log(
+      `[ExtensionStore] Writing ${Object.keys(toSet).length} keys to local store`,
+    );
+    await local.set(toSet);
+    console.log(
+      `[ExtensionStore] Removing ${toRemove.length} keys from local store`,
+    );
+    await local.remove(toRemove);
   }
 
   /**

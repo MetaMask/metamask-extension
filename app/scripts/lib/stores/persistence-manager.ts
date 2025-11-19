@@ -184,30 +184,38 @@ export class PersistenceManager {
 
   setMetadata(metadata: MetaData) {
     this.#metadata = metadata;
+    this.pendingPairs.set('meta', metadata);
   }
 
   #pendingState: void | AbortController = undefined;
 
-  pendingPairs: { key: string; value: unknown }[] = [];
+  pendingPairs = new Map<string, unknown>();
 
-  set<Key extends keyof MetaMaskStateType, Value extends MetaMaskStateType>(
-    key: Key,
-    value: Value,
-  ) {
-    // update pair if it already exists
-    const existingIndex = this.pendingPairs.findIndex(
-      (pair) => pair.key === key,
-    );
-    if (existingIndex > -1) {
-      this.pendingPairs[existingIndex].value = value;
-    } else {
-      this.pendingPairs.push({ key, value });
+  /** @type {null | 'data' | 'split'} */
+  storageKind = 'split';
+
+  /**
+   * Sets the state in the local store.
+   *
+   * @param state - The state to set in the local store. This should be an object
+   * containing the state data to be stored.
+   * @throws Error if the state is missing or if the metadata is not set before
+   * calling this method.
+   * @throws Error if the local store is not open.
+   * @throws Error if the data persistence fails during the write operation.
+   */
+  async set(state: MetaMaskStateType) {
+    if (this.storageKind !== 'data') {
+      throw new Error(
+        'MetaMask - cannot set full state when storageKind is not "data"',
+      );
     }
-  }
 
-  async persist() {
     await this.open();
 
+    if (!state) {
+      throw new Error('MetaMask - updated state is missing');
+    }
     const meta = this.#metadata;
     if (!meta) {
       throw new Error('MetaMask - metadata must be set before calling "set"');
@@ -232,15 +240,98 @@ export class PersistenceManager {
       async () => {
         this.#pendingState = undefined;
         try {
+          // atomically set all the keys
+          await this.#localStore.set({
+            data: state,
+            meta,
+          });
+
+          const backup = makeBackup(state, meta);
+          // if we have a vault we can back it up
+          if (hasVault(backup)) {
+            const stringifiedBackup = JSON.stringify(backup);
+            // and the backup has changed
+            if (this.#backup !== stringifiedBackup) {
+              // save it to the backup DB
+              await this.#backupDb?.set(backup);
+              this.#backup = stringifiedBackup;
+            }
+          }
+
+          if (this.#dataPersistenceFailing) {
+            this.#dataPersistenceFailing = false;
+          }
+        } catch (err) {
+          if (!this.#dataPersistenceFailing) {
+            this.#dataPersistenceFailing = true;
+            captureException(err);
+          }
+          log.error('error setting state in local store:', err);
+        } finally {
+          this.#isExtensionInitialized = true;
+        }
+      },
+    );
+  }
+
+  /**
+   * Updates a specific top-level (Controller) key in the local store.
+   *
+   * @param key - The top-level key to update in the local store.
+   * @param value - The value to set for the specified key. Specify `undefined`
+   * to delete the key.
+   * @throws Error if the storageKind is not 'split'.
+   */
+  update<Key extends keyof MetaMaskStateType, Value extends MetaMaskStateType>(
+    key: Key,
+    value: Value,
+  ) {
+    if (this.storageKind !== 'split') {
+      throw new Error(
+        'MetaMask - cannot set individual keys when storageKind is not "split"',
+      );
+    }
+    this.pendingPairs.set(key, value);
+  }
+
+  async persist() {
+    await this.open();
+
+    const meta = this.#metadata;
+    if (!meta) {
+      throw new Error(
+        'MetaMask - metadata must be set before calling "persist"',
+      );
+    }
+
+    const abortController = new AbortController();
+
+    // If we already have a write _pending_, abort it so the more up-to-date
+    // write can take its place. This is to prevent piling up multiple writes
+    // in the lock queue, which is pointless because we only care about the most
+    // recent write. This should rarely happen, as elsewhere we make use of
+    // `debounce` for all `set` requests in order to slow them to once per
+    // 1000ms; however, if the state is very large it *can* take more than the
+    // `debounce`'s `wait` time to write, resulting in a pile up right here.
+    // This prevents that pile up from happening.
+    this.#pendingState?.abort();
+    this.#pendingState = abortController;
+
+    await navigator.locks.request(
+      STATE_LOCK,
+      { mode: 'exclusive', signal: abortController.signal },
+      async () => {
+        this.#pendingState = undefined;
+        try {
           const clone = structuredClone(this.pendingPairs);
-          // reset the keys
-          this.pendingPairs.length = 0;
-          // save them all!
-          await this.#localStore.setKeyValues(clone, meta);
+          // reset the pendingPairs
+          this.pendingPairs.clear();
+          // save the pairs
+          await this.#localStore.setKeyValues(clone);
 
           const backup = makeBackup(
-            clone.reduce((acc, pair) => {
-              acc[pair.key] = pair.value;
+            Array.from(clone).reduce((acc, [key, value]) => {
+              acc[key] = value;
               return acc;
             }, {} as MetaMaskStateType),
             meta,
@@ -326,6 +417,10 @@ export class PersistenceManager {
         if (!this.#isExtensionInitialized) {
           this.#mostRecentRetrievedState = result;
         }
+
+        this.storageKind =
+          (result.data?.meta as { kind?: string })?.kind ?? 'data';
+
         return result;
       },
     );

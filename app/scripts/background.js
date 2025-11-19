@@ -740,21 +740,17 @@ async function initialize(backup) {
     cronjobControllerStorageManager,
   );
 
-  /** @type {MetamaskController} */
-  const c = controller;
-  /**
-   * @param {object} param0
-   * @param {keyof MetaMaskState} param0.controllerKey
-   * @param {MetaMaskState} param0.newState
-   * @param {MetaMaskState} param0._oldState
-   * @param {import('immer').Patch[]} param0._patches
-   */
-  async function stateChange({ controllerKey, newState, _oldState, _patches }) {
-    persistenceManager.set(controllerKey, newState);
-    await update();
+  if (persistenceManager.storageKind === 'split') {
+    controller.store.on(
+      'stateChange',
+      async ({ controllerKey, newState, _oldState, _patches }) => {
+        persistenceManager.update(controllerKey, newState);
+        await update();
+      },
+    );
+  } else {
+    controller.store.on('update', update);
   }
-
-  c.store.on('stateChange', stateChange);
   controller.store.on('error', (error) => {
     log.error('MetaMask controller.store error:', error);
     sentry?.captureException(error);
