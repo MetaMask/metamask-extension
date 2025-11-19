@@ -268,17 +268,6 @@ export default class ShieldDetailPage {
     await this.driver.assertElementNotPresent(this.notificationShieldBanner);
   }
 
-  /**
-   * Validate all Shield Detail page elements with expected values
-   *
-   * @param options - Optional validation options
-   * @param options.customerId - Expected customer ID text (default: 'test_customer_id')
-   * @param options.membershipStatus - Expected membership status text (default: 'Active membership')
-   * @param options.nextBillingDate - Expected next billing date text (default: 'Nov 3')
-   * @param options.charges - Expected charges text (default: '$80')
-   * @param options.paymentMethod - Expected payment method text (default: 'Visa')
-   * @param options.expectTrialTag - Whether to check for trial tag (default: true)
-   */
   async validateShieldDetailPage(options?: {
     customerId?: string;
     membershipStatus?: string;
@@ -298,26 +287,18 @@ export default class ShieldDetailPage {
 
     await this.checkPageIsLoaded();
 
-    // Verify customer ID matches mock response
     await this.checkCustomerId(customerId);
 
-    // Verify trial badge is displayed (status is 'trialing' in mock)
     if (expectTrialTag) {
       await this.checkTrialTagDisplayed();
     }
 
-    // Verify membership status
     await this.checkMembershipStatus(membershipStatus);
 
-    // Verify next billing date (should be 2025-11-03 based on mock)
     await this.checkNextBillingDate(nextBillingDate);
 
-    // Verify charges (should be $80.00 based on mock unitAmount: 8000, unitDecimals: 2)
     await this.checkCharges(charges);
 
-    // Verify payment method (should show Visa ending in 4242 based on mock)
     await this.checkPaymentMethod(paymentMethod);
-
-    console.log('All Shield Detail page assertions passed successfully');
   }
 }
