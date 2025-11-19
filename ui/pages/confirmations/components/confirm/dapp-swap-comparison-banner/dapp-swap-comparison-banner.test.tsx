@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { QuoteResponse } from '@metamask/bridge-controller';
@@ -29,6 +30,18 @@ jest.mock(
   () => ({
     useDappSwapComparisonInfo: jest.fn(() => ({
       selectedQuote: { destTokenAmount: 100 },
+    })),
+  }),
+);
+
+const mockCaptureDappSwapComparisonDisplayProperties = jest.fn();
+jest.mock(
+  '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonMetrics',
+  () => ({
+    useDappSwapComparisonMetrics: jest.fn(() => ({
+      captureSwapSubmit: jest.fn(),
+      captureDappSwapComparisonDisplayProperties:
+        mockCaptureDappSwapComparisonDisplayProperties,
     })),
   }),
 );
@@ -91,6 +104,7 @@ describe('<DappSwapComparisonBanner />', () => {
   const mockUseDappSwapComparisonInfo = jest.mocked(useDappSwapComparisonInfo);
 
   beforeEach(() => {
+    mockCaptureDappSwapComparisonDisplayProperties.mockClear();
     mockGetRemoteFeatureFlags.mockReturnValue({
       dappSwapMetrics: { enabled: true },
       dappSwapUi: { enabled: true, threshold: 0.01 },
@@ -139,12 +153,26 @@ describe('<DappSwapComparisonBanner />', () => {
     const quoteSwapButton = getByText('Metamask Swap');
     fireEvent.click(quoteSwapButton);
     expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(
+      mockCaptureDappSwapComparisonDisplayProperties,
+    ).toHaveBeenCalledTimes(2);
+    expect(
+      mockCaptureDappSwapComparisonDisplayProperties,
+    ).toHaveBeenNthCalledWith(1, {
+      swap_mm_cta_displayed: 'true',
+    });
+    expect(
+      mockCaptureDappSwapComparisonDisplayProperties,
+    ).toHaveBeenNthCalledWith(2, {
+      swap_mm_opened: 'true',
+    });
   });
 
   it('call function to update confirmation when user clicks on Market rate button', () => {
     jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
+      isSwapToBeCompared: true,
       isQuotedSwap: true,
-    });
+    } as ReturnType<typeof SwapCheckHook.useSwapCheck>);
     mockUseDappSwapComparisonInfo.mockReturnValue({
       selectedQuote: quote as unknown as QuoteResponse,
       selectedQuoteValueDifference: 0.1,
@@ -156,5 +184,13 @@ describe('<DappSwapComparisonBanner />', () => {
     const quoteSwapButton = getByText('Market rate');
     fireEvent.click(quoteSwapButton);
     expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(
+      mockCaptureDappSwapComparisonDisplayProperties,
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      mockCaptureDappSwapComparisonDisplayProperties,
+    ).toHaveBeenNthCalledWith(1, {
+      swap_mm_cta_displayed: 'true',
+    });
   });
 });

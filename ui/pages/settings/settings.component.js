@@ -494,9 +494,7 @@ class SettingsPage extends PureComponent {
             this.setState({ showShieldEntryModal: true });
             return;
           }
-          navigate(key, {
-            state: { fromPage: currentPath },
-          });
+          navigate(key);
         }}
       />
     );
