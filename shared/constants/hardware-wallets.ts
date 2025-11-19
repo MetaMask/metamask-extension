@@ -59,9 +59,9 @@ export enum QrHardwareDeviceNames {
   Keystone = 'Keystone',
   AirGap = 'AirGap Vault',
   CoolWallet = 'CoolWallet',
-  Dcent = 'Dcent',
+  DCent = 'DCent',
   Ngrave = 'Ngrave',
-  ImToken = 'ImToken',
+  ImToken = 'imToken',
 }
 
 export enum HardwareTransportStates {
@@ -80,36 +80,16 @@ export enum HardwareTransportStates {
 }
 
 export enum HardwareAffiliateLinks {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  ledger = 'https://shop.ledger.com/?r=17c4991a03fa',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  gridplus = 'https://gridplus.io/?afmc=7p',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  trezor = 'https://shop.trezor.io/product/trezor-one-black?offer_id=35&aff_id=11009',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  keystone = 'https://keyst.one/metamask?rfsn=6088257.656b3e9&utm_source=refersion&utm_medium=affiliate&utm_campaign=6088257.656b3e9',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  airgap = 'https://airgap.it/',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  coolwallet = 'https://www.coolwallet.io/',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  dcent = 'https://dcentwallet.com/',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  ngrave = 'https://shop.ngrave.io/',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  imtoken = 'https://token.im/',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  onekey = 'https://onekey.so/products/onekey-pro-hardware-wallet/',
+  Ledger = 'https://shop.ledger.com/?r=17c4991a03fa',
+  GridPlus = 'https://gridplus.io/?afmc=7p',
+  Trezor = 'https://shop.trezor.io/product/trezor-one-black?offer_id=35&aff_id=11009',
+  Keystone = 'https://keyst.one/metamask?rfsn=6088257.656b3e9&utm_source=refersion&utm_medium=affiliate&utm_campaign=6088257.656b3e9',
+  AirGap = 'https://airgap.it/',
+  CoolWallet = 'https://www.coolwallet.io/',
+  Dcent = 'https://dcentwallet.com/',
+  Ngrave = 'https://shop.ngrave.io/',
+  ImToken = 'https://token.im/',
+  OneKey = 'https://onekey.so/products/onekey-pro-hardware-wallet/',
 }
 
 export enum HardwareAffiliateTutorialLinks {

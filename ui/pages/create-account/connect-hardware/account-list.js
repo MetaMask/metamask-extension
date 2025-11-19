@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { KeyringType } from '../../../../shared/constants/keyring';
 
 import {
   Button,
@@ -83,93 +81,20 @@ class AccountList extends Component {
     );
   }
 
-  capitalizeDevice(device) {
-    return device.slice(0, 1).toUpperCase() + device.slice(1);
-  }
-
-  shouldShowHdPaths(device) {
-    return [
+  renderHeader() {
+    const { device } = this.props;
+    const shouldShowHDPaths = [
       HardwareDeviceNames.ledger,
       HardwareDeviceNames.lattice,
       HardwareDeviceNames.trezor,
       HardwareDeviceNames.oneKey,
     ].includes(device);
-  }
-
-  /**
-   * Ideally we're able to record all connected devices since we can get
-   * multiple devices using the same keyring. This is a workaround that
-   * should be improved if this metric proves to be important.
-   *
-   * @returns {Array} Array of hardware wallet keyrings
-   */
-  getHardwareWalletKeyrings() {
-    const { keyrings } = this.props;
-    return keyrings.filter(
-      (keyring) =>
-        [
-          KeyringType.ledger,
-          KeyringType.trezor,
-          KeyringType.lattice,
-          KeyringType.qr,
-          KeyringType.oneKey,
-        ].includes(keyring.type) && keyring.accounts.length > 0,
-    );
-  }
-
-  async onUnlock() {
-    const { device, selectedPath, onUnlockAccounts } = this.props;
-    const { trackEvent } = this.context;
-
-    const properties = { device_type: device };
-
-    if (this.shouldShowHdPaths(device)) {
-      properties.hd_path = selectedPath;
-    }
-
-    try {
-      await onUnlockAccounts(device, selectedPath);
-    } catch (error) {
-      trackEvent({
-        event: MetaMetricsEventName.HardwareWalletConnectionFailed,
-        properties,
-      });
-      return;
-    }
-
-    const deviceCount = this.getHardwareWalletKeyrings().length;
-
-    trackEvent({
-      event: MetaMetricsEventName.HardwareWalletAccountConnected,
-      properties: {
-        ...properties,
-        connected_device_count: deviceCount + 1,
-      },
-    });
-  }
-
-  onForgetDevice() {
-    const { device, onForgetDevice } = this.props;
-    const { trackEvent } = this.context;
-    trackEvent({
-      event: MetaMetricsEventName.HardwareWalletForgotten,
-      properties: {
-        device_type: device,
-      },
-    });
-
-    onForgetDevice(device);
-  }
-
-  renderHeader() {
-    const { device } = this.props;
-    const showHdPaths = this.shouldShowHdPaths(device);
     return (
       <div className="hw-connect">
         <h3 className="hw-connect__unlock-title">
           {this.context.t('selectAnAccount')}
         </h3>
-        {showHdPaths ? this.renderHdPathSelector() : null}
+        {shouldShowHDPaths ? this.renderHdPathSelector() : null}
         <h3 className="hw-connect__hdPath__title">
           {this.context.t('selectAnAccount')}
         </h3>
@@ -308,7 +233,11 @@ class AccountList extends Component {
           block
           className="new-external-account-form__button unlock"
           disabled={disabled}
-          onClick={this.onUnlock.bind(this)}
+          onClick={this.props.onUnlockAccounts.bind(
+            this,
+            this.props.device,
+            this.props.selectedPath,
+          )}
         >
           {this.context.t('unlock')}
         </Button>
@@ -319,7 +248,7 @@ class AccountList extends Component {
   renderForgetDevice() {
     return (
       <div className="hw-forget-device-container">
-        <a onClick={this.onForgetDevice.bind(this)}>
+        <a onClick={this.props.onForgetDevice.bind(this, this.props.device)}>
           {this.context.t('forgetDevice')}
         </a>
       </div>
@@ -355,7 +284,6 @@ AccountList.propTypes = {
   onCancel: PropTypes.func,
   onAccountRestriction: PropTypes.func,
   hdPaths: PropTypes.object.isRequired,
-  keyrings: PropTypes.array.isRequired,
 };
 
 AccountList.contextTypes = {
@@ -363,10 +291,4 @@ AccountList.contextTypes = {
   trackEvent: PropTypes.func,
 };
 
-function mapStateToProps(state) {
-  return {
-    keyrings: state.metamask.keyrings,
-  };
-}
-
-export default connect(mapStateToProps)(AccountList);
+export default AccountList;

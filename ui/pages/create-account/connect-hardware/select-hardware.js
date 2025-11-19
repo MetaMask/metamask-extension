@@ -40,6 +40,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { capitalizeStr } from './utils';
 
 // Not all browsers have usb support. In particular, Firefox does
 // not support usb. More information on that can be found here:
@@ -81,7 +82,7 @@ export default class SelectHardware extends Component {
       event: MetaMetricsEventName.HardwareWalletMarketingButtonClicked,
       properties: {
         button_type: type,
-        device_type: device,
+        device_type: capitalizeStr(device),
       },
     });
   };
@@ -106,7 +107,7 @@ export default class SelectHardware extends Component {
             event:
               MetaMetricsEventName.ConnectHardwareWalletContinueButtonClicked,
             properties: {
-              device_type: selectedDevice,
+              device_type: capitalizeStr(selectedDevice),
             },
           });
         } catch (e) {
@@ -121,7 +122,7 @@ export default class SelectHardware extends Component {
       this.context.trackEvent({
         event: MetaMetricsEventName.ConnectHardwareWalletClicked,
         properties: {
-          device_type: selectedDevice,
+          device_type: capitalizeStr(selectedDevice),
         },
       });
       this.props.connectToHardwareWallet(selectedDevice);
@@ -460,7 +461,7 @@ export default class SelectHardware extends Component {
                       MarketingActionNames.BuyNow,
                       HardwareDeviceNames.ledger,
                     );
-                    openWindow(HardwareAffiliateLinks.ledger);
+                    openWindow(HardwareAffiliateLinks.Ledger);
                   }}
                 >
                   {this.context.t('buyNow')}
@@ -473,7 +474,7 @@ export default class SelectHardware extends Component {
                       MarketingActionNames.Tutorial,
                       HardwareDeviceNames.ledger,
                     );
-                    openWindow(HardwareAffiliateTutorialLinks.ledger);
+                    openWindow(HardwareAffiliateTutorialLinks.Ledger);
                   }}
                 >
                   {this.context.t('tutorial')}
@@ -540,7 +541,7 @@ export default class SelectHardware extends Component {
                     MarketingActionNames.BuyNow,
                     HardwareDeviceNames.lattice,
                   );
-                  openWindow(HardwareAffiliateLinks.gridplus);
+                  openWindow(HardwareAffiliateLinks.GridPlus);
                 }}
               >
                 {this.context.t('buyNow')}
@@ -619,7 +620,7 @@ export default class SelectHardware extends Component {
                     MarketingActionNames.BuyNow,
                     HardwareDeviceNames.trezor,
                   );
-                  openWindow(HardwareAffiliateLinks.trezor);
+                  openWindow(HardwareAffiliateLinks.Trezor);
                 }}
               >
                 {this.context.t('buyNow')}
@@ -675,7 +676,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.LearnMore,
                   QrHardwareDeviceNames.Keystone,
                 );
-                openWindow(HardwareAffiliateLinks.keystone);
+                openWindow(HardwareAffiliateLinks.Keystone);
               }}
             >
               {this.context.t('learnMoreKeystone')}
@@ -710,7 +711,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.BuyNow,
                   QrHardwareDeviceNames.AirGap,
                 );
-                openWindow(HardwareAffiliateLinks.airgap);
+                openWindow(HardwareAffiliateLinks.AirGap);
               }}
             >
               {this.context.t('downloadNow')}
@@ -745,7 +746,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.BuyNow,
                   QrHardwareDeviceNames.CoolWallet,
                 );
-                openWindow(HardwareAffiliateLinks.coolwallet);
+                openWindow(HardwareAffiliateLinks.CoolWallet);
               }}
             >
               {this.context.t('buyNow')}
@@ -778,7 +779,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.BuyNow,
                   QrHardwareDeviceNames.Dcent,
                 );
-                openWindow(HardwareAffiliateLinks.dcent);
+                openWindow(HardwareAffiliateLinks.Dcent);
               }}
             >
               {this.context.t('buyNow')}
@@ -813,7 +814,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.BuyNow,
                   QrHardwareDeviceNames.ImToken,
                 );
-                openWindow(HardwareAffiliateLinks.imtoken);
+                openWindow(HardwareAffiliateLinks.ImToken);
               }}
             >
               {this.context.t('downloadNow')}
@@ -848,7 +849,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.BuyNow,
                   HardwareDeviceNames.oneKey,
                 );
-                openWindow(HardwareAffiliateLinks.onekey);
+                openWindow(HardwareAffiliateLinks.OneKey);
               }}
             >
               {this.context.t('buyNow')}
@@ -883,7 +884,7 @@ export default class SelectHardware extends Component {
                   MarketingActionNames.BuyNow,
                   QrHardwareDeviceNames.Ngrave,
                 );
-                openWindow(HardwareAffiliateLinks.ngrave);
+                openWindow(HardwareAffiliateLinks.Ngrave);
               }}
               data-testid="ngrave-brand-buy-now-btn"
             >
