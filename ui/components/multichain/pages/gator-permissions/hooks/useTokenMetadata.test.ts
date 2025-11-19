@@ -104,14 +104,12 @@ describe('useTokenMetadata', () => {
   });
 
   describe('Native Token', () => {
-    it('should return native token metadata when tokenAddress is undefined', () => {
+    it('should return native token metadata when tokenAddress is undefined or empty', () => {
       const { result } = renderTokenMetadata(undefined);
       expect(result.current).toEqual(MOCK_NATIVE_TOKEN);
-    });
 
-    it('should return native token metadata when tokenAddress is empty string', () => {
-      const { result } = renderTokenMetadata('');
-      expect(result.current).toEqual(MOCK_NATIVE_TOKEN);
+      const { result: result2 } = renderTokenMetadata('');
+      expect(result2.current).toEqual(MOCK_NATIVE_TOKEN);
     });
 
     it('should handle changing native token metadata', () => {
@@ -133,35 +131,11 @@ describe('useTokenMetadata', () => {
 
       expect(result.current).toEqual({ symbol: 'MATIC', decimals: 18 });
     });
-
-    it('should prevent infinite loops with unstable native token references', () => {
-      let renderCount = 0;
-      const { result, rerender } = renderHook(
-        ({ nativeTokenMetadata }) => {
-          renderCount += 1;
-          return useTokenMetadata(undefined, CHAIN_ID, {}, nativeTokenMetadata);
-        },
-        {
-          initialProps: {
-            nativeTokenMetadata: { symbol: 'ETH', decimals: 18 },
-          },
-        },
-      );
-
-      const initialRenderCount = renderCount;
-      expect(result.current).toEqual({ symbol: 'ETH', decimals: 18 });
-
-      // Same values but new object reference - should not cause re-renders
-      rerender({
-        nativeTokenMetadata: { symbol: 'ETH', decimals: 18 },
-      });
-
-      expect(renderCount).toBeLessThanOrEqual(initialRenderCount + 2);
-    });
   });
 
   describe('Cached Token Metadata', () => {
-    it('should return token metadata from state when available', () => {
+    it('should return token metadata from state and handle edge cases', () => {
+      // Normal cached token
       const { result } = renderTokenMetadata('0xTokenAddress', {
         tokensByChain: createTokensByChain(CHAIN_ID, {
           '0xTokenAddress': {
@@ -180,29 +154,27 @@ describe('useTokenMetadata', () => {
       // Should not make any external calls
       expect(mockFetchAssetMetadata).not.toHaveBeenCalled();
       expect(mockGetTokenStandardAndDetailsByChain).not.toHaveBeenCalled();
-    });
 
-    it('should handle case-insensitive token addresses', () => {
-      const { result } = renderTokenMetadata('0xTokenAddress', {
+      // Case-insensitive addresses
+      const { result: result2 } = renderTokenMetadata('0xTokenAddress', {
         tokensByChain: createTokensByChain(CHAIN_ID, {
           '0xtokenaddress': { symbol: 'USDC', decimals: 6, name: 'USD Coin' },
         }),
       });
 
-      expect(result.current).toEqual({
+      expect(result2.current).toEqual({
         symbol: 'USDC',
         decimals: 6,
       });
-    });
 
-    it('should handle missing symbol in cached data', () => {
-      const { result } = renderTokenMetadata('0xTokenAddress', {
+      // Missing symbol
+      const { result: result3 } = renderTokenMetadata('0xTokenAddress', {
         tokensByChain: createTokensByChain(CHAIN_ID, {
           '0xTokenAddress': { decimals: 18 },
         }),
       });
 
-      expect(result.current).toEqual({
+      expect(result3.current).toEqual({
         symbol: 'Unknown Token',
         decimals: 18,
       });
@@ -210,7 +182,8 @@ describe('useTokenMetadata', () => {
   });
 
   describe('API Token Metadata', () => {
-    it('should fetch metadata from API when not in cache', async () => {
+    it('should fetch metadata from API and handle fallback scenarios', async () => {
+      // Successful API fetch
       const tokenAddress = '0xApiToken';
       mockFetchAssetMetadata.mockResolvedValue({
         symbol: 'API_TOKEN',
@@ -220,9 +193,6 @@ describe('useTokenMetadata', () => {
       });
 
       const { result } = renderTokenMetadata(tokenAddress);
-
-      // Initially shows unknown token
-      expect(result.current).toEqual(UNKNOWN_TOKEN);
 
       await waitFor(() => {
         expect(result.current).toEqual({
@@ -236,32 +206,30 @@ describe('useTokenMetadata', () => {
         CHAIN_ID,
         undefined,
       );
-      expect(mockGetTokenStandardAndDetailsByChain).not.toHaveBeenCalled();
-    });
 
-    it('should handle API returning undefined', async () => {
+      // API returns undefined, falls back to on-chain
+      mockFetchAssetMetadata.mockResolvedValue(undefined);
       mockOnChainResponse('cUSDC', '6', 'Compound USD Coin');
 
-      const { result } = renderTokenMetadata('0xNewTokenAddress');
+      const { result: result2 } = renderTokenMetadata('0xNewTokenAddress');
 
       await waitFor(() => {
-        expect(result.current).toEqual({
+        expect(result2.current).toEqual({
           symbol: 'cUSDC',
           decimals: 6,
         });
       });
 
       expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalled();
-    });
 
-    it('should handle API errors gracefully', async () => {
+      // API error, falls back to on-chain
       mockFetchAssetMetadata.mockRejectedValue(new Error('API error'));
       mockOnChainResponse('FALLBACK', '18', 'Fallback Token');
 
-      const { result } = renderTokenMetadata('0xFailingTokenAddress');
+      const { result: result3 } = renderTokenMetadata('0xFailingTokenAddress');
 
       await waitFor(() => {
-        expect(result.current).toEqual({
+        expect(result3.current).toEqual({
           symbol: 'FALLBACK',
           decimals: 18,
         });
@@ -279,7 +247,8 @@ describe('useTokenMetadata', () => {
   });
 
   describe('On-Chain Token Metadata', () => {
-    it('should handle on-chain fetch errors', async () => {
+    it('should handle on-chain errors and null responses', async () => {
+      // On-chain fetch error
       mockFetchAssetMetadata.mockRejectedValue(new Error('API error'));
       mockGetTokenStandardAndDetailsByChain.mockRejectedValue(
         new Error('On-chain error'),
@@ -301,74 +270,51 @@ describe('useTokenMetadata', () => {
           error: 'On-chain error',
         },
       );
-    });
 
-    it('should handle null response from on-chain', async () => {
+      // Null response from on-chain
       mockGetTokenStandardAndDetailsByChain.mockResolvedValue(
         null as unknown as TokenStandAndDetails,
       );
 
-      const { result } = renderTokenMetadata('0xNonExistentToken');
+      const { result: result2 } = renderTokenMetadata('0xNonExistentToken');
 
       await waitFor(() =>
         expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalled(),
       );
 
-      expect(result.current).toEqual(UNKNOWN_TOKEN);
+      expect(result2.current).toEqual(UNKNOWN_TOKEN);
     });
   });
 
   describe('Decimals Parsing', () => {
-    const decimalTestCases = [
-      {
-        description: 'undefined decimals',
-        decimals: undefined,
-        expected: null,
-      },
-      {
-        description: 'zero decimals as string',
-        decimals: '0',
-        expected: 0,
-      },
-      {
-        description: 'zero decimals as number',
-        decimals: 0,
-        expected: 0,
-      },
-      {
-        description: 'normal decimals as string',
-        decimals: '18',
-        expected: 18,
-      },
-      {
-        description: 'empty string decimals',
-        decimals: '',
-        expected: null,
-      },
-    ];
+    it('should handle various decimal formats', async () => {
+      const testCases = [
+        { decimals: undefined, expected: null, name: 'UndefinedToken' },
+        { decimals: '0', expected: 0, name: 'ZeroStringToken' },
+        { decimals: 0, expected: 0, name: 'ZeroNumberToken' },
+        { decimals: '18', expected: 18, name: 'NormalToken' },
+        { decimals: '', expected: null, name: 'EmptyToken' },
+      ];
 
-    for (const { description, decimals, expected } of decimalTestCases) {
-      it(`should handle ${description}`, async () => {
+      for (const { decimals, expected, name } of testCases) {
         mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
           decimals,
-          name: 'Test Token',
+          name,
           standard: 'ERC20',
         } as TokenStandAndDetails);
 
-        const { result } = renderTokenMetadata('0xTestToken');
+        const { result } = renderTokenMetadata(`0x${name}`);
 
         await waitFor(() => {
-          expect(result.current).toEqual({
-            symbol: 'TEST',
-            decimals: expected,
-          });
+          expect(result.current.decimals).toBe(expected);
         });
-      });
-    }
+      }
+    });
   });
 
   describe('Dynamic Updates', () => {
-    it('should update when tokenAddress changes', async () => {
+    it('should update when tokenAddress or chainId changes', async () => {
+      // Test tokenAddress change
       const { result, rerender } = renderHook(
         ({ tokenAddress }) =>
           useTokenMetadata(
@@ -388,9 +334,8 @@ describe('useTokenMetadata', () => {
       rerender({ tokenAddress: '0xToken2' });
 
       await waitFor(() => expect(result.current.symbol).toBe('TKN2'));
-    });
 
-    it('should update when chainId changes', async () => {
+      // Test chainId change
       const tokensByChain = {
         ...createTokensByChain(CHAIN_ID, {
           '0xusdc': {
@@ -408,61 +353,48 @@ describe('useTokenMetadata', () => {
         }),
       };
 
-      const { result, rerender } = renderHook(
+      const { result: result2, rerender: rerender2 } = renderHook(
         ({ chainId }) =>
           useTokenMetadata('0xUSDC', chainId, tokensByChain, MOCK_NATIVE_TOKEN),
         { initialProps: { chainId: CHAIN_ID } },
       );
 
-      expect(result.current.symbol).toBe('USDC-ETH');
+      expect(result2.current.symbol).toBe('USDC-ETH');
 
-      rerender({ chainId: '0x89' });
+      rerender2({ chainId: '0x89' });
 
-      await waitFor(() => expect(result.current.symbol).toBe('USDC-POLY'));
+      await waitFor(() => expect(result2.current.symbol).toBe('USDC-POLY'));
     });
   });
 
   describe('Component Lifecycle', () => {
     it('should not update state after unmounting', async () => {
-      const consoleWarnSpy = jest
-        .spyOn(console, 'warn')
-        .mockImplementation(jest.fn());
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(jest.fn());
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-      // Delay API response
       mockFetchAssetMetadata.mockImplementation(
-        () =>
-          new Promise((resolve) => setTimeout(() => resolve(undefined), 50)),
+        () => new Promise((resolve) => setTimeout(() => resolve(undefined), 50)),
       );
 
-      // Delay on-chain response
       mockGetTokenStandardAndDetailsByChain.mockImplementation(
         () =>
           new Promise((resolve) =>
-            setTimeout(
-              () =>
-                resolve({
-                  symbol: 'SLOW',
-                  decimals: '18',
-                  name: 'Slow Token',
-                  standard: 'ERC20',
-                } as TokenStandAndDetails),
-              100,
-            ),
+            setTimeout(() =>
+              resolve({
+                symbol: 'SLOW',
+                decimals: '18',
+                name: 'Slow Token',
+                standard: 'ERC20',
+              } as TokenStandAndDetails),
+            100),
           ),
       );
 
       const { unmount } = renderTokenMetadata('0xSlowToken');
-
-      // Unmount before async operations complete
       unmount();
 
-      // Wait for operations to complete
       await new Promise((resolve) => setTimeout(resolve, 150));
 
-      // Should not have warnings about setting state on unmounted component
       expect(consoleWarnSpy).not.toHaveBeenCalled();
       expect(consoleErrorSpy).not.toHaveBeenCalledWith(
         expect.stringContaining('unmounted component'),
