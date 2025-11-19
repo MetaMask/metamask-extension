@@ -118,6 +118,7 @@ export const sanitizeAmountInput = (textToSanitize: string) => {
 
 /**
  * Sanitizes the amount string for BigNumber calculations by converting empty strings or single decimal points to '0'.
+ *
  * @param amount - The raw amount string from input
  * @returns A safe string for BigNumber operations
  */
