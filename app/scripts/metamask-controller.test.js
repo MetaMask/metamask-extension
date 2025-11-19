@@ -728,6 +728,24 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#submitPasswordOrEncryptionKey', () => {
+      const password = 'a-fake-password';
+
+      it('should call multichainAccountService.resyncAccounts when submitPasswordOrEncryptionKey is called', async () => {
+        const mockResyncAccounts = jest.fn();
+
+        metamaskController.multichainAccountService = {
+          init: jest.fn(),
+          resyncAccounts: mockResyncAccounts,
+        };
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.submitPasswordOrEncryptionKey({ password });
+
+        expect(mockResyncAccounts).toHaveBeenCalled();
+      });
+    });
+
     describe('setLocked', () => {
       it('should lock KeyringController', async () => {
         await metamaskController.createNewVaultAndKeychain('password');

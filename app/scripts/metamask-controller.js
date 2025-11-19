@@ -5207,12 +5207,20 @@ export default class MetamaskController extends EventEmitter {
     }
 
     await this.accountsController.updateAccounts();
+
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     // Init multichain accounts after creating internal accounts.
     await this.multichainAccountService.init();
+    // READ THIS CAREFULLY:
+    // There is is/was a bug with Snap accounts that can be desynchronized (Solana). To
+    // automatically "fix" this corrupted state, we run this method which will re-sync
+    // MetaMask accounts and Snap accounts upon login.
+    await this.multichainAccountService.resyncAccounts();
     ///: END:ONLY_INCLUDE_IF
+
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
+
     // TODO: Move this logic to the SnapKeyring directly.
     // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
     await this.forwardSelectedAccountGroupToSnapKeyring(
