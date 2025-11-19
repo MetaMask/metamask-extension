@@ -118,13 +118,6 @@ export default class SelectHardware extends Component {
           this.setState({ trezorRequestDevicePending: false });
         }
       }
-
-      this.context.trackEvent({
-        event: MetaMetricsEventName.ConnectHardwareWalletClicked,
-        properties: {
-          device_type: capitalizeStr(selectedDevice),
-        },
-      });
       this.props.connectToHardwareWallet(selectedDevice);
     }
     return null;
