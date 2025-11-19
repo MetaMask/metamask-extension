@@ -3,10 +3,10 @@ import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { TxData } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { captureException } from '@sentry/browser';
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { captureException } from '../../../../../../shared/lib/sentry';
 import {
   getDataFromSwap,
   getBestQuote,

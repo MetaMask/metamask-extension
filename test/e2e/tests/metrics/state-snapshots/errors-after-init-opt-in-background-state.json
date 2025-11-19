@@ -74,6 +74,7 @@
     "showShieldEntryModalOnce": "boolean",
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
+    "dappSwapComparisonData": "object",
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "networkConnectionBanner": "object",
