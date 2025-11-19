@@ -75,6 +75,7 @@ async #mockEvmDiscoveryOnce(
   address: string,
   shouldStop: boolean = false,
 ) {
+  console.log(`Mocking EVM discovery request for: "${address}"${shouldStop ? ' (shouldStop)' : ''}`);
   return await mockServer
     .forPost(INFURA_MAINNET_URL)
     .once()
@@ -85,7 +86,7 @@ async #mockEvmDiscoveryOnce(
     .once()
     .thenCallback(async (request) => {
       const json = await request.body.getJson();
-      console.log(`Mocking EVM discovery request for: "${address}" -> ${json}`);
+      console.log(`Mocked EVM discovery request for: "${address}" -> ${json}`);
 
       return {
         statusCode: 200,
@@ -99,6 +100,7 @@ async #mockEvmDiscoveryOnce(
 }
 
 async #mockSolDiscoveryOnce(mockServer: Mockttp, address: string) {
+  console.log(`Mocking SOL discovery request for: "${address}"`);
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
@@ -108,7 +110,7 @@ async #mockSolDiscoveryOnce(mockServer: Mockttp, address: string) {
     .once()
     .thenCallback(async (request) => {
       const json = await request.body.getJson();
-      console.log(`Mocking SOL discovery request for: "${address}" -> ${json}`);
+      console.log(`Mocked SOL discovery request for: "${address}" -> ${json}`);
 
       return {
         statusCode: 200,
