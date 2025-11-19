@@ -53,6 +53,7 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getIsMultichainAccountsState2Enabled,
   getSelectedInternalAccount,
+  getGasFeesSponsoredNetworkEnabled,
 } from '../../../../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
@@ -115,6 +116,28 @@ const DefaultNetworks = memo(() => {
   // Get blacklisted chain IDs from feature flag
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
+  );
+
+  // This selector provides the indication if the "Gas sponsored" label
+  // is enabled based on the remote feature flag.
+  const isGasFeesSponsoredNetworkEnabled = useSelector(
+    getGasFeesSponsoredNetworkEnabled,
+  );
+
+  // Check if a network has gas sponsorship enabled
+  const isNetworkGasSponsored = useCallback(
+    (chainId: string | undefined): boolean => {
+      if (!chainId) {
+        return false;
+      }
+
+      return Boolean(
+        isGasFeesSponsoredNetworkEnabled?.[
+          chainId as keyof typeof isGasFeesSponsoredNetworkEnabled
+        ],
+      );
+    },
+    [isGasFeesSponsoredNetworkEnabled],
   );
 
   // Use the shared state hook
@@ -334,12 +357,22 @@ const DefaultNetworks = memo(() => {
             src={networkImageUrl}
             borderRadius={BorderRadius.LG}
           />
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textDefault}
-          >
-            {network.name}
-          </Text>
+          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textDefault}
+            >
+              {network.name}
+            </Text>
+            {isNetworkGasSponsored(network.chainId) && (
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('noNetworkFee')}
+              </Text>
+            )}
+          </Box>
           <ButtonIcon
             size={ButtonIconSize.Md}
             color={IconColor.iconDefault}
@@ -351,7 +384,12 @@ const DefaultNetworks = memo(() => {
         </Box>
       );
     });
-  }, [featuredNetworksNotYetEnabled, handleAdditionalNetworkClick, t]);
+  }, [
+    featuredNetworksNotYetEnabled,
+    handleAdditionalNetworkClick,
+    t,
+    isNetworkGasSponsored,
+  ]);
 
   return (
     <>
