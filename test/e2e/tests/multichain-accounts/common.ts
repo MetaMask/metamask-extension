@@ -18,6 +18,7 @@ import {
   mockMultichainAccountsFeatureFlagStateTwo,
 } from './feature-flag-mocks';
 import { MockedDiscoveryBuilder } from './discovery';
+import { SECOND_TEST_E2E_SRP } from '../../flask/multi-srp/common-multi-srp';
 
 export enum AccountType {
   MultiSRP = 'multi-srp',
@@ -48,19 +49,18 @@ export async function withMultichainAccountsDesignEnabled(
   test: (driver: Driver) => Promise<void>,
 ) {
   let fixtureBuilder = new FixtureBuilder();
+  let srps: string[] = [];
 
   switch (accountType) {
-    case AccountType.MultiSRP:
-      fixtureBuilder = fixtureBuilder.withKeyringControllerMultiSRP();
-      break;
-    case AccountType.SSK:
-      fixtureBuilder = fixtureBuilder.withKeyringControllerMultiSRP();
-      break;
     case AccountType.HardwareWallet:
       fixtureBuilder = fixtureBuilder.withLedgerAccount();
+      srps = [E2E_SRP];
       break;
+    case AccountType.SSK:
+    case AccountType.MultiSRP:
     default:
       fixtureBuilder = fixtureBuilder.withKeyringControllerMultiSRP();
+      srps = [E2E_SRP, SECOND_TEST_E2E_SRP];
   }
 
   if (withMoreFixtures) {
@@ -69,9 +69,11 @@ export async function withMultichainAccountsDesignEnabled(
 
   const mockNetworkCalls = async (mockServer: Mockttp) => {
     if (shouldMockDiscovery) {
-      await MockedDiscoveryBuilder.from(E2E_SRP)
-        .skipDefaultGroupIndex()
-        .mock(mockServer);
+      for (const srp of srps) {
+        await MockedDiscoveryBuilder.from(srp)
+          .skipDefaultGroupIndex()
+          .mock(mockServer);
+      }
     }
 
     await testSpecificMock?.(mockServer);

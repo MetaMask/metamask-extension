@@ -2,6 +2,7 @@ import { Mockttp } from 'mockttp';
 import { ACCOUNT_TYPE, INFURA_MAINNET_URL } from '../../constants';
 import { SOLANA_URL_REGEX_MAINNET } from '../solana/common-solana';
 import { E2E_SRP } from '../../default-fixture';
+import { SECOND_TEST_E2E_SRP } from '../../flask/multi-srp/common-multi-srp';
 
 export type MockedDiscoveredAccount = {
   [ACCOUNT_TYPE.Ethereum]: string;
@@ -27,6 +28,24 @@ export const TEST_SRPS_TO_MOCKED_DISCOVERED_ACCOUNTS: {
     {
       [ACCOUNT_TYPE.Ethereum]: '0xa870b4e335b9ca39009d0ba50c312562fbef867d',
       [ACCOUNT_TYPE.Solana]: '9JaUkPErzbn9ZGbrjyiEPWG8VVixN81UsH9wXMyVAqNs',
+    },
+  ],
+  [SECOND_TEST_E2E_SRP]: [
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf',
+      [ACCOUNT_TYPE.Solana]: 'CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0x59a897a2dbd55d20bcc9b52d5eaa14e2859dc467',
+      [ACCOUNT_TYPE.Solana]: '5R8a8GBd971kg5B5FqisVmVRk6ooFYtsh1y7vCHNvRvf',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0x7d5e716bbc8771af9c5ec3b0555b48a4a84d4ba7',
+      [ACCOUNT_TYPE.Solana]: '24iMjt1Z1Ga9menNQKyrCcknGCf6oQSTHUpzsLNK1Tas',
+    },
+    {
+      [ACCOUNT_TYPE.Ethereum]: '0x8137ec5954a8ed45a90f3bd58f717228b5670858',
+      [ACCOUNT_TYPE.Solana]: 'AeHVnxJ4GnXXgqz3ZY8FXXRJyNW7Cb4A1uLeRf4b74Jh',
     },
   ],
 };
