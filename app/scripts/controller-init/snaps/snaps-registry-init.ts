@@ -1,4 +1,5 @@
 import { JsonSnapsRegistry } from '@metamask/snaps-controllers';
+import { SemVerVersion } from '@metamask/utils';
 import { ControllerInitFunction } from '../types';
 import { SnapsRegistryMessenger } from '../messengers/snaps';
 import { getBooleanFlag } from '../../lib/util';
