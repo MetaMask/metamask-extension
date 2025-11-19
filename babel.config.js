@@ -3,7 +3,26 @@ const path = require('path');
 const ReactCompilerConfig = {
   target: '17',
   sources: (filename) => {
-    return filename.includes('/ui/');
+    if (!filename.includes('/ui/')) {
+      return false;
+    }
+    const excludePatterns = [
+      '.test.',
+      '.stories.',
+      '.container.',
+      '/__mocks__/',
+      '/__snapshots__/',
+      '/constants/',
+      '/helpers/',
+      '/ducks/',
+      '/selectors/',
+      '/store/',
+      '/component-library/',
+    ];
+    if (excludePatterns.some((pattern) => filename.includes(pattern))) {
+      return false;
+    }
+    return true;
   },
 };
 
