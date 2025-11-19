@@ -16,6 +16,7 @@ import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-a
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockIdentityServices } from '../mocks';
+import { MockedDiscoveryBuilder } from '../../multichain-accounts/discovery';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Settings Toggle', function () {
@@ -33,6 +34,8 @@ describe('Account syncing - Settings Toggle', function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
+      mockMultichainAccountsFeatureFlagStateTwo(server);
+
       userStorageMockttpController.setupPath(
         USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
@@ -41,8 +44,27 @@ describe('Account syncing - Settings Toggle', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      mockMultichainAccountsFeatureFlagStateTwo(server);
+
       return mockIdentityServices(server, userStorageMockttpController);
+    };
+
+    const phase1MockSetup = async (server: Mockttp) => {
+      sharedMockSetup(server);
+
+      // Stop at default account group to avoid discovering extra accounts.
+      await MockedDiscoveryBuilder.fromDefaultSrp()
+        .untilGroupIndex(1)
+        .mock(server);
+    };
+
+    const phase2MockSetup = async (server: Mockttp) => {
+      sharedMockSetup(server);
+
+      // Do no discover more than 2 accounts (only 2 accounts got synced, the 3rd one was not, thus, it
+      // should not be discovered).
+      await MockedDiscoveryBuilder.fromDefaultSrp()
+        .untilGroupIndex(2)
+        .mock(server);
     };
 
     // Phase 1: Initial setup and account creation with sync enabled
@@ -50,7 +72,7 @@ describe('Account syncing - Settings Toggle', function () {
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: sharedMockSetup,
+        testSpecificMock: phase1MockSetup,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -123,12 +145,12 @@ describe('Account syncing - Settings Toggle', function () {
       },
     );
 
-    // Phase 3: Fresh app instance to verify sync persistence
+    // Phase 2: Fresh app instance to verify sync persistence
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: sharedMockSetup,
+        testSpecificMock: phase2MockSetup,
       },
       async ({ driver }) => {
         // Login to fresh app instance to test sync restoration

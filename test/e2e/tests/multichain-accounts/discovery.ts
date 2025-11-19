@@ -114,6 +114,10 @@ export class MockedDiscoveryBuilder {
     return new MockedDiscoveryBuilder(srp);
   }
 
+  static fromDefaultSrp(): MockedDiscoveryBuilder {
+    return new MockedDiscoveryBuilder(E2E_SRP);
+  }
+
   stopAt(address: string): MockedDiscoveryBuilder {
     this.#stopAt.add(address);
     return this;
