@@ -962,7 +962,7 @@ export enum MetaMetricsEventName {
   Wallet5792Called = 'EIP-5792 API Called',
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
-  ExtensionFullSizeViewToggled = 'Extension Full Size View Toggled',
+  OpenFullScreenClicked = 'Open Full Screen Clicked',
   ExtensionPinned = 'Extension Pinned',
   // Extension Port Stream
   PortStreamChunked = 'Port Stream Chunked',
