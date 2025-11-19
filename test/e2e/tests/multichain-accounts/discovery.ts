@@ -38,13 +38,12 @@ export class MockedDiscoveryBuilder {
 
   readonly #skipGroupIndex: Set<number>;
 
-  #untilGroupIndex: number;
+  #untilGroupIndex?: number;
 
   constructor(srp: string) {
     this.#srp = srp;
     this.#stopAt = new Set();
     this.#skipGroupIndex = new Set();
-    this.#untilGroupIndex = 0;
   }
 
   static from(srp: string): MockedDiscoveryBuilder {
@@ -138,8 +137,11 @@ async #mockSolDiscoveryOnce(mockServer: Mockttp, address: string) {
     }
 
     const maxGroupIndex = accounts.length - 1;
-    if (this.#untilGroupIndex > maxGroupIndex) {
-      throw new Error(`SRP accounts have a max group index of: ${maxGroupIndex} (srp="${srp}")`);
+    const untilGroupIndex = this.#untilGroupIndex ?? maxGroupIndex;
+    if (untilGroupIndex > maxGroupIndex) {
+      throw new Error(
+        `SRP accounts have a max group index of ${maxGroupIndex}, it cannot go until ${untilGroupIndex} group index (srp="${srp}")`
+      );
     }
 
     for (const [index, account] of accounts.entries()) {
@@ -147,7 +149,7 @@ async #mockSolDiscoveryOnce(mockServer: Mockttp, address: string) {
       const solAddress = account[ACCOUNT_TYPE.Solana];
 
       const shouldSkip = this.#skipGroupIndex.has(index);
-      const shouldStop = this.#stopAt.has(evmAddress) || index === this.#untilGroupIndex;
+      const shouldStop = this.#stopAt.has(evmAddress) || index === untilGroupIndex;
 
       // We only use EVM to stop the discovery for now.
       if (!shouldSkip) {
