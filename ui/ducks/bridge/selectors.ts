@@ -259,9 +259,17 @@ export const getFromChains = createDeepEqualSelector(
  * This matches the network filter in the activity and asset lists
  */
 export const getLastSelectedChainId = createSelector(
-  [getAllEnabledNetworksForAllNamespaces],
-  (allEnabledNetworksForAllNamespaces) => {
-    return allEnabledNetworksForAllNamespaces[0];
+  [getAllEnabledNetworksForAllNamespaces, getFromChains],
+  (allEnabledNetworksForAllNamespaces, fromChains) => {
+    // If there is no network filter, return mainnet
+    if (allEnabledNetworksForAllNamespaces.length > 1) {
+      return fromChains[0]?.chainId;
+    }
+    // Find the matching bridge fromChain for the selected network filter
+    return fromChains.find(
+      ({ chainId: fromChainId }) =>
+        fromChainId === allEnabledNetworksForAllNamespaces[0],
+    )?.chainId;
   },
 );
 
