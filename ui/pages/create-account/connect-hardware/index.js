@@ -15,6 +15,16 @@ import { SECOND } from '../../../../shared/constants/time';
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
+  U2F_ERROR,
+  LEDGER_ERRORS_CODES,
+  LEDGER_LIVE_PATH,
+  MEW_PATH,
+  BIP44_PATH,
+  LATTICE_STANDARD_BIP44_PATH,
+  LATTICE_LEDGER_LIVE_PATH,
+  LATTICE_MEW_PATH,
+  TREZOR_TESTNET_PATH,
+  DEVICE_KEYRING_MAP,
 } from '../../../../shared/constants/hardware-wallets';
 import {
   BUTTON_VARIANT,
@@ -30,17 +40,6 @@ import { KeyringType } from '../../../../shared/constants/keyring';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
-import {
-  U2F_ERROR,
-  LEDGER_ERRORS_CODES,
-  LEDGER_LIVE_PATH,
-  MEW_PATH,
-  BIP44_PATH,
-  LATTICE_STANDARD_BIP44_PATH,
-  LATTICE_LEDGER_LIVE_PATH,
-  LATTICE_MEW_PATH,
-  TREZOR_TESTNET_PATH,
-} from './constants';
 import { capitalizeStr } from './utils';
 
 export const LEDGER_HD_PATHS = [
@@ -344,14 +343,21 @@ class ConnectHardwareForm extends Component {
       description,
     )
       .then((_) => {
-        const deviceCount = this.getHardwareWalletKeyrings().length;
+        const connectedDevices = this.getHardwareWalletKeyrings();
+        const deviceCount = connectedDevices.length;
+
+        const isAlreadyConnected = connectedDevices.some((keyring) => {
+          return keyring.type === DEVICE_KEYRING_MAP[deviceName];
+        });
 
         trackEvent({
           event: MetaMetricsEventName.HardwareWalletAccountConnected,
           properties: {
             device_type: capitalizeStr(deviceName),
             hd_path: path,
-            connected_device_count: deviceCount + 1,
+            connected_device_count: isAlreadyConnected
+              ? deviceCount
+              : deviceCount + 1,
           },
         });
 
