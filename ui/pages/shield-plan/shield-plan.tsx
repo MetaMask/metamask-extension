@@ -220,16 +220,22 @@ const ShieldPlan = () => {
     setSelectedToken(undefined);
   }, [selectedPlan, setSelectedToken]);
 
+  const selectedTokenAddress = selectedToken?.address;
   // set default selected payment method to crypto if selected token available
+  // should only trigger if selectedTokenAddress change (shouldn't trigger again if selected token object updated but still same token)
   useEffect(() => {
     const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
-    // if the last used payment method is not crypto, don't set default method
-    if (selectedToken && lastUsedPaymentMethod !== PAYMENT_TYPES.byCard) {
+    if (
+      selectedTokenAddress &&
+      lastUsedPaymentMethod !== PAYMENT_TYPES.byCard
+    ) {
       setSelectedPaymentMethod(PAYMENT_TYPES.byCrypto);
     } else {
+      // should reset to byCard when selectedTokenAddress becomes undefined (no tokens available)
+      // to prevent switching to a plan without available tokens leaves selectedPaymentMethod as byCrypto with no tokens
       setSelectedPaymentMethod(PAYMENT_TYPES.byCard);
     }
-  }, [selectedToken, setSelectedPaymentMethod, lastUsedPaymentDetails]);
+  }, [selectedTokenAddress, setSelectedPaymentMethod, lastUsedPaymentDetails]);
 
   const tokensSupported = useMemo(() => {
     const chainsAndTokensSupported = cryptoPaymentMethod?.chains ?? [];
