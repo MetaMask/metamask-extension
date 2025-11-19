@@ -4,11 +4,17 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
+import { QuoteResponse } from '@metamask/bridge-controller';
+
+import {
+  genUnapprovedContractInteractionConfirmation,
+  mockBridgeQuotes,
+} from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { updateAndApproveTx } from '../../../../store/actions';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
+import * as ConfirmContext from '../../context/confirm';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useTransactionConfirm } from './useTransactionConfirm';
@@ -27,6 +33,13 @@ jest.mock('react-router-dom-v5-compat', () => ({
 jest.mock('../gas/useIsGaslessSupported');
 
 jest.mock('../gas/useGaslessSupportedSmartTransactions');
+
+const mockCaptureSwapSubmit = jest.fn();
+jest.mock('./dapp-swap-comparison/useDappSwapComparisonMetrics', () => ({
+  useDappSwapComparisonMetrics: () => ({
+    captureSwapSubmit: mockCaptureSwapSubmit,
+  }),
+}));
 
 const CUSTOM_NONCE_VALUE = '1234';
 
@@ -308,6 +321,14 @@ describe('useTransactionConfirm', () => {
     expect(actualTransactionMeta.customNonceValue).toBe(CUSTOM_NONCE_VALUE);
   });
 
+  it('call function to capture swap submit', async () => {
+    const { onTransactionConfirm } = runHook({ customNonceValue: '1234' });
+
+    await onTransactionConfirm();
+
+    expect(mockCaptureSwapSubmit).toHaveBeenCalledTimes(1);
+  });
+
   it('updates batch transaction if smart transaction and selected gas fee token', async () => {
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: true,
@@ -329,6 +350,42 @@ describe('useTransactionConfirm', () => {
         type: TransactionType.gasPayment,
       }),
     ]);
+  });
+
+  it('updates swap with MM quote if available', async () => {
+    const confirmation = genUnapprovedContractInteractionConfirmation();
+    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+      quoteSelectedForMMSwap: mockBridgeQuotes[0] as unknown as QuoteResponse,
+      currentConfirmation: confirmation,
+      isQuotedSwapDisplayedInInfo: true,
+    } as ReturnType<typeof ConfirmContext.useConfirmContext>);
+
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.txParams).toStrictEqual(
+      expect.objectContaining({
+        authorizationList: undefined,
+        data: '0x1234567890abcdef',
+        from: '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b',
+        gas: '0x91855',
+        maxFeePerGas: '0xaa350353',
+        maxPriorityFeePerGas: '0x59682f00',
+        to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
+        value: '0x0',
+      }),
+    );
   });
 
   it('updates transaction params if smart transaction and selected gas fee token', async () => {

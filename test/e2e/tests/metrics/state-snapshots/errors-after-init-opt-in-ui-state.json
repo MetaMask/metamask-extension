@@ -70,8 +70,7 @@
     "showPasswordChangeToast": null,
     "showCopyAddressToast": "boolean",
     "showClaimSubmitToast": null,
-    "showSupportDataConsentModal": "boolean",
-    "showConnectionsRemovedModal": "boolean"
+    "showSupportDataConsentModal": "boolean"
   },
   "bridge": "object",
   "confirmAlerts": "object",
@@ -111,6 +110,7 @@
       "tokenNetworkFilter": { "0x539": "boolean" },
       "tokenSortConfig": "object",
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
+      "useSidePanelAsDefault": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "firstTimeFlowType": "import",
@@ -428,6 +428,7 @@
     "srpSessionData": "object"
   },
   "ramps": "object",
+  "rewards": "object",
   "send": "object",
   "smartAccounts": "object",
   "swaps": "object",

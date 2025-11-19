@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Atribusi"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "URL RPC Infura tidak lagi mendukung Aurora."
-  },
   "authorizedPermissions": {
     "message": "Anda telah mengotorisasi izin berikut"
   },
@@ -1822,9 +1819,6 @@
   "depositCrypto": {
     "message": "Mendeposit kripto dari akun lain dengan alamat dompet atau kode QR."
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Karena pembaruan pada sistem Ethereum, jaringan uji Goerli akan segera dihentikan."
-  },
   "deprecatedNetwork": {
     "message": "Jaringan ini tidak digunakan lagi"
   },
@@ -2329,9 +2323,6 @@
   },
   "existingChainId": {
     "message": "Informasi yang Anda masukkan terhubung dengan ID chain yang ada."
-  },
-  "expandView": {
-    "message": "Perluas tampilan"
   },
   "experimental": {
     "message": "Eksperimental"
@@ -6481,10 +6472,6 @@
   },
   "switchNetwork": {
     "message": "Beralih jaringan"
-  },
-  "switchToNetwork": {
-    "message": "Beralih ke $1",
-    "description": "$1 represents the custom network that has previously been added"
   },
   "switchToThisAccount": {
     "message": "Beralih ke akun ini"

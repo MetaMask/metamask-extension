@@ -207,6 +207,7 @@ export const CHAIN_IDS = {
   LUKSO: '0x2a',
   INJECTIVE: '0x6f0',
   MONAD: '0x8f',
+  HYPE: '0x3e7',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -285,8 +286,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
-// `DEPRECATED_NETWORKS` and optionally add network specific logic to
-// `ui/components/ui/deprecated-networks/deprecated-networks.js`.
+// `DEPRECATED_NETWORKS`
 export const DEPRECATED_NETWORKS = [
   CHAIN_IDS.GOERLI,
   CHAIN_IDS.ARBITRUM_GOERLI,
@@ -369,6 +369,7 @@ export const HEMI_DISPLAY_NAME = 'Hemi';
 export const PLASMA_DISPLAY_NAME = 'Plasma';
 export const LUKSO_DISPLAY_NAME = 'Lukso';
 export const INJECTIVE_DISPLAY_NAME = 'Injective';
+export const HYPEREVM_DISPLAY_NAME = 'HyperEVM';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -453,6 +454,7 @@ export const CURRENCY_SYMBOLS = {
   PLASMA: 'XPL',
   LUKSO: 'LYX',
   INJECTIVE: 'INJ',
+  HYPE: 'HYPE',
 } as const;
 
 // Non-EVM currency symbols
@@ -647,7 +649,7 @@ export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
 export const KATANA_IMAGE_URL = './images/katana.svg';
 export const MONAD_IMAGE_URL = './images/monad.svg';
-export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.png';
+export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.svg';
 export const SOPHON_IMAGE_URL = './images/sophon.svg';
 export const SOPHON_TESTNET_IMAGE_URL = './images/sophon-testnet.svg';
 export const BERACHAIN_IMAGE_URL = './images/berachain.svg';
@@ -674,7 +676,7 @@ export const PLASMA_NATIVE_TOKEN_IMAGE_URL = './images/plasma-native.svg';
 export const LUKSO_IMAGE_URL = './images/lukso.svg';
 export const LUKSO_NATIVE_TOKEN_IMAGE_URL = './images/lukso-native.svg';
 export const INJECTIVE_IMAGE_URL = './images/injective.svg';
-export const INJECTIVE_NATIVE_TOKEN_IMAGE_URL = './images/injective-native.svg';
+export const HYPEREVM_IMAGE_URL = './images/hyperevm.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -836,6 +838,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.PLASMA]: PLASMA_DISPLAY_NAME,
   [CHAIN_IDS.LUKSO]: LUKSO_DISPLAY_NAME,
   [CHAIN_IDS.INJECTIVE]: INJECTIVE_DISPLAY_NAME,
+  [CHAIN_IDS.HYPE]: HYPEREVM_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -993,6 +996,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.PLASMA]: CURRENCY_SYMBOLS.PLASMA,
   [CHAIN_IDS.LUKSO]: CURRENCY_SYMBOLS.LUKSO,
   [CHAIN_IDS.INJECTIVE]: CURRENCY_SYMBOLS.INJECTIVE,
+  [CHAIN_IDS.HYPE]: CURRENCY_SYMBOLS.HYPE,
 } as const;
 
 /**
@@ -1169,6 +1173,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.PLASMA]: PLASMA_IMAGE_URL,
   [CHAIN_IDS.LUKSO]: LUKSO_IMAGE_URL,
   [CHAIN_IDS.INJECTIVE]: INJECTIVE_IMAGE_URL,
+  [CHAIN_IDS.HYPE]: HYPEREVM_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1250,13 +1255,17 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.HEMI]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.PLASMA]: PLASMA_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LUKSO]: LUKSO_NATIVE_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.INJECTIVE]: INJECTIVE_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.INJECTIVE]: INJECTIVE_IMAGE_URL,
+  [CHAIN_IDS.HYPE]: HYPEREVM_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
   [MultichainNetworks.BITCOIN]: BITCOIN_IMAGE_URL,
   [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_IMAGE_URL,
   [MultichainNetworks.BITCOIN_SIGNET]: BITCOIN_SIGNET_IMAGE_URL,
+  [MultichainNetworks.TRON]: TRON_IMAGE_URL,
+  [MultichainNetworks.TRON_NILE]: TRON_NILE_IMAGE_URL,
+  [MultichainNetworks.TRON_SHASTA]: TRON_SHASTA_IMAGE_URL,
 } as const;
 
 /**
@@ -1541,6 +1550,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://monadscan.com/'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.HYPE,
+    name: HYPEREVM_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.HYPE,
+    rpcEndpoints: [
+      {
+        url: 'https://rpc.hyperliquid.xyz/evm',
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://hyperevmscan.io/'],
     defaultBlockExplorerUrlIndex: 0,
   },
   {

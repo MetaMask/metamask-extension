@@ -7,8 +7,7 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
 } from '@metamask/subscription-controller';
-import { Hex } from '@metamask/utils';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { Checkbox, TextVariant } from '@metamask/design-system-react';
 import {
@@ -65,24 +64,18 @@ import {
   useSubscriptionProductPlans,
 } from '../../hooks/subscription/useSubscriptionPricing';
 import {
-  setLastUsedSubscriptionPaymentDetails,
-  startSubscriptionWithCard,
-} from '../../store/actions';
-import {
-  useSubscriptionCryptoApprovalTransaction,
+  useHandleSubscription,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
-import { useAsyncCallback } from '../../hooks/useAsync';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { selectNetworkConfigurationByChainId } from '../../selectors';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constants/subscriptions';
 import {
   isDevOrTestEnvironment,
   isDevOrUatBuild,
-} from '../../../shared/modules/shield/config';
+  getIsTrialedSubscription,
+} from '../../../shared/modules/shield';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -90,7 +83,6 @@ import { getProductPrice } from './utils';
 const ShieldPlan = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const dispatch = useDispatch();
 
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
@@ -102,10 +94,6 @@ const ShieldPlan = () => {
   );
   const showTestClocksCheckbox = isDevOrUatBuild() || isDevOrTestEnvironment();
 
-  const evmInternalAccount = useSelector((state) =>
-    // Account address will be the same for all EVM accounts
-    getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
-  );
   const {
     subscriptions,
     trialedProducts,
@@ -117,7 +105,10 @@ const ShieldPlan = () => {
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
-  const isTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
+  const isTrialed = getIsTrialedSubscription(
+    trialedProducts,
+    PRODUCT_TYPES.SHIELD,
+  );
 
   useEffect(() => {
     if (shieldSubscription) {
@@ -158,24 +149,35 @@ const ShieldPlan = () => {
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentType>(() => {
+      // always default to card if no token is available
+      if (!hasAvailableToken) {
+        return PAYMENT_TYPES.byCard;
+      }
       if (lastUsedPaymentDetails?.type) {
         return lastUsedPaymentDetails.type;
       }
-      return hasAvailableToken ? PAYMENT_TYPES.byCrypto : PAYMENT_TYPES.byCard;
+      return PAYMENT_TYPES.byCrypto;
     });
+
+  // default options for the new subscription request
+  const defaultOptions = useMemo(() => {
+    const paymentType =
+      availableTokenBalances.length > 0
+        ? PAYMENT_TYPES.byCrypto
+        : PAYMENT_TYPES.byCard;
+    const paymentCurrency = availableTokenBalances[0]?.symbol || 'USD';
+    return {
+      defaultPaymentType: paymentType,
+      defaultPaymentCurrency: paymentCurrency,
+      defaultBillingInterval: RECURRING_INTERVALS.year,
+    };
+  }, [availableTokenBalances]);
 
   const [selectedToken, setSelectedToken] = useState<
     TokenWithApprovalAmount | undefined
   >(() => {
     return availableTokenBalances[0];
   });
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, selectedToken?.chainId as Hex),
-  );
-  const networkClientId =
-    networkConfiguration?.rpcEndpoints[
-      networkConfiguration.defaultRpcEndpointIndex ?? 0
-    ]?.networkClientId;
 
   // set selected token to the first available token if no token is selected
   useEffect(() => {
@@ -218,52 +220,22 @@ const ShieldPlan = () => {
     setSelectedToken(undefined);
   }, [selectedPlan, setSelectedToken]);
 
+  const selectedTokenAddress = selectedToken?.address;
   // set default selected payment method to crypto if selected token available
+  // should only trigger if selectedTokenAddress change (shouldn't trigger again if selected token object updated but still same token)
   useEffect(() => {
-    if (selectedToken) {
+    const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
+    if (
+      selectedTokenAddress &&
+      lastUsedPaymentMethod !== PAYMENT_TYPES.byCard
+    ) {
       setSelectedPaymentMethod(PAYMENT_TYPES.byCrypto);
+    } else {
+      // should reset to byCard when selectedTokenAddress becomes undefined (no tokens available)
+      // to prevent switching to a plan without available tokens leaves selectedPaymentMethod as byCrypto with no tokens
+      setSelectedPaymentMethod(PAYMENT_TYPES.byCard);
     }
-  }, [selectedToken, setSelectedPaymentMethod]);
-
-  const { execute: executeSubscriptionCryptoApprovalTransaction } =
-    useSubscriptionCryptoApprovalTransaction(selectedToken);
-
-  const [handleSubscription, subscriptionResult] =
-    useAsyncCallback(async () => {
-      // save the last used subscription payment method and plan to Redux store
-      await dispatch(
-        setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
-          type: selectedPaymentMethod,
-          paymentTokenAddress: selectedToken?.address as Hex,
-          paymentTokenSymbol: selectedToken?.symbol,
-          plan: selectedPlan,
-          useTestClock: enableStripeTestClock,
-        }),
-      );
-      if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
-        await dispatch(
-          startSubscriptionWithCard({
-            products: [PRODUCT_TYPES.SHIELD],
-            isTrialRequested: !isTrialed,
-            recurringInterval: selectedPlan,
-            useTestClock: enableStripeTestClock,
-          }),
-        );
-      } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
-        await executeSubscriptionCryptoApprovalTransaction();
-      }
-    }, [
-      dispatch,
-      evmInternalAccount?.address,
-      isTrialed,
-      navigate,
-      networkClientId,
-      selectedPaymentMethod,
-      selectedPlan,
-      selectedToken,
-      subscriptionPricing,
-      enableStripeTestClock,
-    ]);
+  }, [selectedTokenAddress, setSelectedPaymentMethod, lastUsedPaymentDetails]);
 
   const tokensSupported = useMemo(() => {
     const chainsAndTokensSupported = cryptoPaymentMethod?.chains ?? [];
@@ -276,6 +248,15 @@ const ShieldPlan = () => {
       ),
     ];
   }, [cryptoPaymentMethod?.chains]);
+
+  const { handleSubscription, subscriptionResult } = useHandleSubscription({
+    selectedPaymentMethod,
+    selectedToken,
+    selectedPlan,
+    defaultOptions,
+    isTrialed,
+    useTestClock: enableStripeTestClock,
+  });
 
   const loading =
     subscriptionsLoading ||
@@ -290,7 +271,9 @@ const ShieldPlan = () => {
           const price = getProductPrice(plan);
           return {
             id: plan.interval,
-            label: t(isYearly ? 'shieldPlanAnnual' : 'shieldPlanMonthly'),
+            label: isYearly
+              ? t('shieldPlanAnnual')
+              : `${t('shieldPlanMonthly')}${selectedPaymentMethod === PAYMENT_TYPES.byCrypto ? '*' : ''}`,
             price: t(
               isYearly ? 'shieldPlanAnnualPrice' : 'shieldPlanMonthlyPrice',
               [`$${price}`],
@@ -301,7 +284,7 @@ const ShieldPlan = () => {
           // sort by year first
           a.id === RECURRING_INTERVALS.year ? -1 : 1,
         ) ?? [],
-    [pricingPlans, t],
+    [pricingPlans, selectedPaymentMethod, t],
   );
 
   const planDetails = useMemo(() => {
@@ -314,20 +297,10 @@ const ShieldPlan = () => {
         ]),
       );
     }
-
-    let planDetails2 = t('shieldPlanDetails2Card');
-    if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
-      planDetails2 =
-        selectedPlan === RECURRING_INTERVALS.year
-          ? t('shieldPlanDetails2CryptoYear')
-          : t('shieldPlanDetails2CryptoMonth');
-    }
-    details.push(planDetails2);
-    if (selectedPlan === RECURRING_INTERVALS.month) {
-      details.push(t('shieldPlanDetails3'));
-    }
+    details.push(t('shieldPlanDetails2', ['$10k']));
+    details.push(t('shieldPlanDetails3'));
     return details;
-  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice, selectedPlan]);
+  }, [t, isTrialed, selectedProductPrice]);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
@@ -380,9 +353,6 @@ const ShieldPlan = () => {
                   key={plan.id}
                   {...rowsStyleProps}
                   borderRadius={BorderRadius.LG}
-                  paddingTop={2}
-                  paddingBottom={2}
-                  gap={4}
                   className={classnames('shield-plan-page__plan', {
                     'shield-plan-page__plan--selected':
                       plan.id === selectedPlan,
@@ -396,7 +366,12 @@ const ShieldPlan = () => {
                     className="shield-plan-page__radio-label"
                   >
                     <Text variant={DSTextVariant.bodySm}>{plan.label}</Text>
-                    <Text variant={DSTextVariant.headingMd}>{plan.price}</Text>
+                    <Text
+                      variant={DSTextVariant.headingMd}
+                      className="shield-plan-page__plan-price"
+                    >
+                      {plan.price}
+                    </Text>
                   </Box>
                   {plan.id === RECURRING_INTERVALS.year && (
                     <Box
@@ -500,11 +475,21 @@ const ShieldPlan = () => {
                           color={IconColor.primaryDefault}
                         />
                       </Box>
-                      <Text variant={DSTextVariant.bodySm}>{detail}</Text>
+                      <Text variant={DSTextVariant.bodyMd}>{detail}</Text>
                     </Box>
                   ))}
                 </Box>
               </Box>
+              {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
+                selectedPlan === RECURRING_INTERVALS.month && (
+                  <Text
+                    variant={DSTextVariant.bodySm}
+                    color={TextColor.textAlternative}
+                    marginTop={4}
+                  >
+                    * {t('shieldPlanCryptoMonthlyNote')}
+                  </Text>
+                )}
             </Box>
             <ShieldPaymentModal
               isOpen={showPaymentModal}
@@ -521,6 +506,7 @@ const ShieldPlan = () => {
           <Footer
             className="shield-plan-page__footer"
             flexDirection={FlexDirection.Column}
+            gap={3}
             backgroundColor={BackgroundColor.backgroundMuted}
           >
             {showTestClocksCheckbox && (
@@ -545,6 +531,15 @@ const ShieldPlan = () => {
             >
               {t('continue')}
             </Button>
+            <Text
+              variant={DSTextVariant.bodySm}
+              color={TextColor.textAlternative}
+              textAlign={TextAlign.Center}
+            >
+              {selectedPlan === RECURRING_INTERVALS.year
+                ? t('shieldPlanFooterNoteYearly')
+                : t('shieldPlanFooterNoteMonthly')}
+            </Text>
           </Footer>
         </>
       )}
