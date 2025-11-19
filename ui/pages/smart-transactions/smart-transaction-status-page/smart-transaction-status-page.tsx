@@ -131,10 +131,10 @@ const PortfolioSmartTransactionStatusUrl = ({
   onCloseExtension: () => void;
 }) => {
   const t = useI18nContext();
-  if (!portfolioSmartTransactionStatusUrl) {
-    return null;
-  }
   const handleViewTransactionLinkClick = useCallback(() => {
+    if (!portfolioSmartTransactionStatusUrl) {
+      return;
+    }
     const isWiderThanNotificationWidth = window.innerWidth > NOTIFICATION_WIDTH;
     if (!isSmartTransactionPending || isWiderThanNotificationWidth) {
       onCloseExtension();
@@ -147,6 +147,9 @@ const PortfolioSmartTransactionStatusUrl = ({
     onCloseExtension,
     portfolioSmartTransactionStatusUrl,
   ]);
+  if (!portfolioSmartTransactionStatusUrl) {
+    return null;
+  }
   return (
     <Box
       display={Display.Flex}
@@ -309,7 +312,7 @@ export const SmartTransactionStatusPage = ({
 
   useEffect(() => {
     dispatch(hideLoadingIndication());
-  }, []);
+  }, [dispatch]);
 
   const canShowSimulationDetails =
     fullTxData.simulationData?.tokenBalanceChanges?.length > 0 ||
@@ -362,7 +365,10 @@ export const SmartTransactionStatusPage = ({
         </Box>
         {canShowSimulationDetails && (
           <Box width={BlockSize.Full}>
-            <SimulationDetails transaction={fullTxData} />
+            <SimulationDetails
+              transaction={fullTxData}
+              smartTransactionStatus={smartTransaction?.status?.toLowerCase()}
+            />
           </Box>
         )}
       </Box>

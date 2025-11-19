@@ -70,10 +70,6 @@ describe('BackendWebSocketServiceInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       url: 'wss://gateway.api.cx.metamask.io/v1',
-      timeout: 15000,
-      reconnectDelay: 1000,
-      maxReconnectDelay: 30000,
-      requestTimeout: 20000,
       traceFn: expect.any(Function),
       isEnabled: expect.any(Function),
     });

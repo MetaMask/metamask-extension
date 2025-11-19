@@ -9,7 +9,6 @@ import {
   getRewardsHasAccountOptedIn,
   estimateRewardsPoints,
 } from '../../store/actions';
-import { useRewardsContext } from '../rewards';
 import { usePrevious } from '../usePrevious';
 import { useMultichainSelector } from '../useMultichainSelector';
 import {
@@ -17,6 +16,7 @@ import {
   getToToken,
   getQuoteRequest,
 } from '../../ducks/bridge/selectors';
+import { selectRewardsEnabled } from '../../ducks/rewards/selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { useRewards, getUsdPricePerToken } from './useRewards';
 
@@ -26,9 +26,7 @@ jest.mock('../../store/actions', () => ({
   estimateRewardsPoints: jest.fn(),
 }));
 
-jest.mock('../rewards', () => ({
-  useRewardsContext: jest.fn(),
-}));
+// Rewards context is no longer used in useRewards; mock redux selector instead
 
 jest.mock('../usePrevious', () => ({
   usePrevious: jest.fn(),
@@ -42,6 +40,10 @@ jest.mock('../../ducks/bridge/selectors', () => ({
   getFromToken: jest.fn(),
   getToToken: jest.fn(),
   getQuoteRequest: jest.fn(),
+}));
+
+jest.mock('../../ducks/rewards/selectors', () => ({
+  selectRewardsEnabled: jest.fn(),
 }));
 
 jest.mock('../../selectors/multichain-accounts/account-tree', () => ({
@@ -67,9 +69,6 @@ const mockGetRewardsHasAccountOptedIn =
 const mockEstimateRewardsPoints = estimateRewardsPoints as jest.MockedFunction<
   typeof estimateRewardsPoints
 >;
-const mockUseRewardsContext = useRewardsContext as jest.MockedFunction<
-  typeof useRewardsContext
->;
 const mockUsePrevious = usePrevious as jest.MockedFunction<typeof usePrevious>;
 const mockUseMultichainSelector = useMultichainSelector as jest.MockedFunction<
   typeof useMultichainSelector
@@ -88,6 +87,9 @@ const mockGetInternalAccountBySelectedAccountGroupAndCaip =
   getInternalAccountBySelectedAccountGroupAndCaip as jest.MockedFunction<
     typeof getInternalAccountBySelectedAccountGroupAndCaip
   >;
+const mockSelectRewardsEnabled = selectRewardsEnabled as jest.MockedFunction<
+  typeof selectRewardsEnabled
+>;
 
 describe('useRewards', () => {
   const mockAddress = '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
@@ -149,15 +151,6 @@ describe('useRewards', () => {
     jest.clearAllMocks();
     jest.useFakeTimers();
 
-    mockUseRewardsContext.mockReturnValue({
-      rewardsEnabled: true,
-      candidateSubscriptionId: 'sub-123',
-      candidateSubscriptionIdError: false,
-      seasonStatus: null,
-      seasonStatusError: null,
-      seasonStatusLoading: false,
-      refetchSeasonStatus: jest.fn(),
-    });
     mockUsePrevious.mockReturnValue(undefined);
     mockUseMultichainSelector.mockReturnValue(mockChainId);
     mockGetFromToken.mockReturnValue(mockFromToken);
@@ -166,6 +159,7 @@ describe('useRewards', () => {
     mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
       mockSelectedAccount,
     );
+    mockSelectRewardsEnabled.mockReturnValue(true as never);
 
     mockUseSelector.mockImplementation(((selector: unknown) => {
       if (selector === mockGetFromToken) {
@@ -176,6 +170,9 @@ describe('useRewards', () => {
       }
       if (selector === mockGetQuoteRequest) {
         return mockGetQuoteRequest({} as never);
+      }
+      if (selector === mockSelectRewardsEnabled) {
+        return mockSelectRewardsEnabled({} as never);
       }
       // Handle the account selector
       if (typeof selector === 'function') {
@@ -397,15 +394,7 @@ describe('useRewards', () => {
     });
 
     it('should not estimate points when rewardsEnabled is false', async () => {
-      mockUseRewardsContext.mockReturnValue({
-        rewardsEnabled: false,
-        candidateSubscriptionId: 'sub-123',
-        candidateSubscriptionIdError: false,
-        seasonStatus: null,
-        seasonStatusError: null,
-        seasonStatusLoading: false,
-        refetchSeasonStatus: jest.fn(),
-      });
+      mockSelectRewardsEnabled.mockReturnValue(false as never);
 
       const { result } = renderHookWithProvider(
         () => useRewards({ activeQuote: mockActiveQuote }),
@@ -805,7 +794,7 @@ describe('useRewards', () => {
       expect(result.current.hasError).toBe(true);
       expect(result.current.estimatedPoints).toBeNull();
       expect(mockLogError).toHaveBeenCalledWith(
-        '[useRewards] Error estimating points:',
+        '[useRewardsWithQuote] Error estimating points:',
         error,
       );
     });

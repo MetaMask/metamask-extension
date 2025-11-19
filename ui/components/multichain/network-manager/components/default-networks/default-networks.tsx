@@ -1,7 +1,7 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BtcScope, EthScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
@@ -53,6 +53,7 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getIsMultichainAccountsState2Enabled,
   getSelectedInternalAccount,
+  getGasFeesSponsoredNetworkEnabled,
 } from '../../../../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
@@ -104,9 +105,39 @@ const DefaultNetworks = memo(() => {
   );
   ///: END:ONLY_INCLUDE_IF
 
+  let trxAccountGroup = null;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  trxAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
+  );
+  ///: END:ONLY_INCLUDE_IF
+
   // Get blacklisted chain IDs from feature flag
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
+  );
+
+  // This selector provides the indication if the "Gas sponsored" label
+  // is enabled based on the remote feature flag.
+  const isGasFeesSponsoredNetworkEnabled = useSelector(
+    getGasFeesSponsoredNetworkEnabled,
+  );
+
+  // Check if a network has gas sponsorship enabled
+  const isNetworkGasSponsored = useCallback(
+    (chainId: string | undefined): boolean => {
+      if (!chainId) {
+        return false;
+      }
+
+      return Boolean(
+        isGasFeesSponsoredNetworkEnabled?.[
+          chainId as keyof typeof isGasFeesSponsoredNetworkEnabled
+        ],
+      );
+    },
+    [isGasFeesSponsoredNetworkEnabled],
   );
 
   // Use the shared state hook
@@ -204,6 +235,9 @@ const DefaultNetworks = memo(() => {
           if (btcAccountGroup && network.chainId === BtcScope.Mainnet) {
             return true;
           }
+          if (trxAccountGroup && network.chainId === TrxScope.Mainnet) {
+            return true;
+          }
           return false;
         });
       }
@@ -216,6 +250,9 @@ const DefaultNetworks = memo(() => {
         }
         if (selectedAccount.scopes.includes(BtcScope.Mainnet)) {
           return network.chainId === BtcScope.Mainnet;
+        }
+        if (selectedAccount.scopes.includes(TrxScope.Mainnet)) {
+          return network.chainId === TrxScope.Mainnet;
         }
         return false;
       });
@@ -282,6 +319,7 @@ const DefaultNetworks = memo(() => {
     handleNetworkChangeCallback,
     btcAccountGroup,
     solAccountGroup,
+    trxAccountGroup,
     isMultichainAccountsState2Enabled,
     evmAccountGroup,
     dispatch,
@@ -319,12 +357,22 @@ const DefaultNetworks = memo(() => {
             src={networkImageUrl}
             borderRadius={BorderRadius.LG}
           />
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textDefault}
-          >
-            {network.name}
-          </Text>
+          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textDefault}
+            >
+              {network.name}
+            </Text>
+            {isNetworkGasSponsored(network.chainId) && (
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('noNetworkFee')}
+              </Text>
+            )}
+          </Box>
           <ButtonIcon
             size={ButtonIconSize.Md}
             color={IconColor.iconDefault}
@@ -336,7 +384,12 @@ const DefaultNetworks = memo(() => {
         </Box>
       );
     });
-  }, [featuredNetworksNotYetEnabled, handleAdditionalNetworkClick, t]);
+  }, [
+    featuredNetworksNotYetEnabled,
+    handleAdditionalNetworkClick,
+    t,
+    isNetworkGasSponsored,
+  ]);
 
   return (
     <>

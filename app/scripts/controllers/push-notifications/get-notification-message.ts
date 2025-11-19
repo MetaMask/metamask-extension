@@ -84,9 +84,28 @@ const perpsTranslations = {
     t('pushNotificationLimitOrderFilledDescriptionShort', symbol),
 };
 
+const shieldTranslations = {
+  ShieldSubscriptionTitle: () => t('pushNotificationShieldSubscriptionTitle'),
+  ShieldSubscriptionCreatedDescriptionShort: () =>
+    t('pushNotificationShieldSubscriptionCreatedDescriptionShort'),
+  ShieldSubscriptionPaymentFailedDescriptionShort: () =>
+    t('pushNotificationShieldSubscriptionPaymentFailedDescriptionShort'),
+  ShieldSubscriptionUpdatePaymentCta: () =>
+    t('pushNotificationShieldUpdatePaymentCta'),
+  ShieldSubscriptionLearnMoreCta: () => t('pushNotificationShieldLearnMoreCta'),
+  ShieldClaimCreatedTitle: () => t('pushNotificationShieldClaimCreatedTitle'),
+  ShieldClaimCreatedDescriptionShort: () =>
+    t('pushNotificationShieldClaimCreatedDescriptionShort'),
+  ShieldClaimStatusUpdatedTitle: () =>
+    t('pushNotificationShieldClaimStatusUpdatedTitle'),
+  ShieldClaimStatusUpdatedDescriptionShort: () =>
+    t('pushNotificationShieldClaimStatusUpdatedDescriptionShort'),
+};
+
 const translations = {
   ...walletNotifTranslations,
   ...perpsTranslations,
+  ...shieldTranslations,
 };
 
 export function createNotificationMessage(

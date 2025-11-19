@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Özellikler"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Infura RPC URL adresi artık Aurora'yı desteklemiyor."
-  },
   "authorizedPermissions": {
     "message": "Aşağıdaki izinleri verdiniz"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Özel Token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Token algılama henüz bu ağda mevcut değil. Lütfen tokeni manuel olarak içe aktarın ve ona güvendiğinizden emin olun. $1 hakkında bilgi edinin"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Mevcut tokenlerin sahteleri de dahil olmak üzere herkes bir token oluşturabilir. $1 hakkında bilgi edinin"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Bir tokeni içe aktarmadan önce ona güvendiğinizden emin olun. $1 kaçınmayı öğrenin. Ayrıca token algılamayı $2 etkinleştirebilirsiniz."
   },
   "customerSupport": {
     "message": "müşteri hizmetleri"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Cüzdan adresi veya QR kodu ile başka bir hesaptan kripto yatırın."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Ethereum sistemindeki güncellemelerden dolayı Goerli test ağı yakında aşamalı olarak devre dışı bırakılacaktır."
   },
   "deprecatedNetwork": {
     "message": "Bu ağ artık kullanılmıyor"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "Girdiğiniz bilgiler mevcut bir zincir kimliği ile ilişkilidir."
   },
-  "expandView": {
-    "message": "Görünümü genişlet"
-  },
   "experimental": {
     "message": "Deneysel"
   },
@@ -2787,9 +2772,6 @@
   "imported": {
     "message": "İçe Aktarıldı",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "Ayarlar kısmında"
   },
   "included": {
     "message": "dahil"
@@ -5238,9 +5220,6 @@
   "shieldEntryModalGetStarted": {
     "message": "Başlarken"
   },
-  "shieldEntryModalSkip": {
-    "message": "Atla"
-  },
   "show": {
     "message": "Göster"
   },
@@ -6494,10 +6473,6 @@
   "switchNetwork": {
     "message": "Ağı değiştir"
   },
-  "switchToNetwork": {
-    "message": "$1 ağına geçin",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Bu hesaba geç"
   },
@@ -6603,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Token pazar yeri"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "token dolandırıcılıkları ve güvenlik riskleri"
   },
   "tokenStandard": {
     "message": "Token standardı"

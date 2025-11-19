@@ -2,7 +2,6 @@ import { EventEmitter } from 'events';
 import React, { Component, lazy, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
-import log from 'loglevel';
 import {
   Text,
   FormTextField,
@@ -42,10 +41,10 @@ import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { withMetaMetrics } from '../../contexts/metametrics';
-import { ThemeType } from '../../../shared/constants/preferences';
-import { getThemeFromRawTheme } from '../routes/utils';
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
+import MetaFoxHorizontalLogo from '../../components/ui/metafox-logo/horizontal-logo';
+import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
@@ -64,13 +63,17 @@ class UnlockPage extends Component {
 
   static propTypes = {
     /**
-     * History router for redirect after action
+     * navigate function for redirect after action
      */
-    history: PropTypes.object.isRequired,
+    navigate: PropTypes.func.isRequired,
     /**
      * Location router for redirect after action
      */
     location: PropTypes.object.isRequired,
+    /**
+     * Navigation state from v5-compat navigation context
+     */
+    navState: PropTypes.object,
     /**
      * If isUnlocked is true will redirect to most recent route in history
      */
@@ -93,6 +96,10 @@ class UnlockPage extends Component {
      */
     checkIsSeedlessPasswordOutdated: PropTypes.func,
     /**
+     * check if the seedless onboarding user is authenticated for social login flow to do the rehydration
+     */
+    getIsSeedlessOnboardingUserAuthenticated: PropTypes.func,
+    /**
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
@@ -113,13 +120,13 @@ class UnlockPage extends Component {
      */
     firstTimeFlowType: PropTypes.string,
     /**
-     * The theme of the app
-     */
-    theme: PropTypes.string,
-    /**
      * Reset Wallet
      */
     resetWallet: PropTypes.func,
+    /**
+     * Indicates if the environment is a popup
+     */
+    isPopup: PropTypes.bool,
   };
 
   state = {
@@ -130,6 +137,7 @@ class UnlockPage extends Component {
     isSubmitting: false,
     unlockDelayPeriod: 0,
     showLoginErrorModal: false,
+    showConnectionsRemovedModal: false,
   };
 
   failed_attempts = 0;
@@ -149,26 +157,33 @@ class UnlockPage extends Component {
   }
 
   UNSAFE_componentWillMount() {
-    const { isUnlocked, history, location } = this.props;
+    const { isUnlocked, navigate, location, navState } = this.props;
 
     if (isUnlocked) {
       // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
       let redirectTo = DEFAULT_ROUTE;
-      if (location.state?.from?.pathname) {
-        const search = location.state.from.search || '';
-        redirectTo = location.state.from.pathname + search;
+      // Read from both v5 location.state and v5-compat navState
+      const fromLocation = location.state?.from || navState?.from;
+      if (fromLocation?.pathname) {
+        const search = fromLocation.search || '';
+        redirectTo = fromLocation.pathname + search;
       }
-      history.push(redirectTo);
+      navigate(redirectTo);
     }
   }
 
   async componentDidMount() {
-    const { isOnboardingCompleted } = this.props;
+    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     if (isOnboardingCompleted) {
-      try {
-        await this.props.checkIsSeedlessPasswordOutdated();
-      } catch (error) {
-        log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
+      await this.props.checkIsSeedlessPasswordOutdated();
+    } else if (isSocialLoginFlow) {
+      // if the onboarding is not completed, check if the seedless onboarding user is authenticated to do the rehydration
+      // we have to consider the case where required tokens for rehydration are removed when user closed the browser app after social login is completed.
+      const isAuthenticated =
+        await this.props.getIsSeedlessOnboardingUserAuthenticated();
+      if (!isAuthenticated) {
+        // if the seedless onboarding user is not authenticated, redirect to the onboarding welcome page
+        this.props.navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
       }
     }
   }
@@ -268,6 +283,7 @@ class UnlockPage extends Component {
     let finalUnlockDelayPeriod = 0;
     let errorReason;
     let shouldShowLoginErrorModal = false;
+    let shouldShowConnectionsRemovedModal = false;
 
     // Check if we are in the onboarding flow
     if (!isOnboardingCompleted) {
@@ -307,6 +323,10 @@ class UnlockPage extends Component {
           shouldShowLoginErrorModal = true;
         }
         break;
+      case SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded:
+        finalErrorMessage = message;
+        shouldShowConnectionsRemovedModal = true;
+        break;
       default:
         finalErrorMessage = message;
         break;
@@ -339,6 +359,7 @@ class UnlockPage extends Component {
       error: finalErrorMessage,
       unlockDelayPeriod: finalUnlockDelayPeriod,
       showLoginErrorModal: shouldShowLoginErrorModal,
+      showConnectionsRemovedModal: shouldShowConnectionsRemovedModal,
     });
   };
 
@@ -415,7 +436,7 @@ class UnlockPage extends Component {
   };
 
   onForgotPasswordOrLoginWithDiffMethods = async () => {
-    const { isSocialLoginFlow, history, isOnboardingCompleted } = this.props;
+    const { isSocialLoginFlow, navigate, isOnboardingCompleted } = this.props;
 
     // in `onboarding_unlock` route, if the user is on a social login flow and onboarding is not completed,
     // we can redirect to `onboarding_welcome` route to select a different login method
@@ -431,7 +452,7 @@ class UnlockPage extends Component {
 
       await this.props.loginWithDifferentMethod();
       await this.props.forceUpdateMetamaskState();
-      history.replace(ONBOARDING_WELCOME_ROUTE);
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
       return;
     }
 
@@ -460,10 +481,14 @@ class UnlockPage extends Component {
   };
 
   onResetWallet = async () => {
-    this.setState({ showLoginErrorModal: false });
+    this.setState({
+      showLoginErrorModal: false,
+      showConnectionsRemovedModal: false,
+      showResetPasswordModal: false,
+    });
     await this.props.resetWallet();
     await this.props.forceUpdateMetamaskState();
-    this.props.history.replace(DEFAULT_ROUTE);
+    this.props.navigate(DEFAULT_ROUTE, { replace: true });
   };
 
   render() {
@@ -473,15 +498,14 @@ class UnlockPage extends Component {
       isLocked,
       showResetPasswordModal,
       showLoginErrorModal,
+      showConnectionsRemovedModal,
     } = this.state;
-    const { isOnboardingCompleted, isSocialLoginFlow, theme } = this.props;
+    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
     const isTestEnvironment = Boolean(process.env.IN_TEST);
-    const themeType = getThemeFromRawTheme(theme);
-    const isDarkTheme = themeType === ThemeType.dark;
 
     return (
       <Box
@@ -489,12 +513,9 @@ class UnlockPage extends Component {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        backgroundColor={
-          isRehydrationFlow ? BackgroundColor.backgroundDefault : ''
-        }
+        backgroundColor={BackgroundColor.backgroundDefault}
         width={BlockSize.Full}
         paddingBottom={12} // offset header to center content
-        className={isRehydrationFlow ? '' : 'unlock-page__container'}
       >
         {showResetPasswordModal && (
           <ResetPasswordModal
@@ -507,6 +528,9 @@ class UnlockPage extends Component {
             onDone={this.onResetWallet}
             loginError={LOGIN_ERROR.RESET_WALLET}
           />
+        )}
+        {showConnectionsRemovedModal && (
+          <ConnectionsRemovedModal onConfirm={this.onResetWallet} />
         )}
         <Box
           as="form"
@@ -533,17 +557,9 @@ class UnlockPage extends Component {
               {isRehydrationFlow ? (
                 this.renderMascot()
               ) : (
-                <Box className="unlock-page__mascot-container__logo">
-                  <img
-                    src={
-                      isDarkTheme
-                        ? './images/logo/dark-logo.png'
-                        : './images/logo/light-logo.png'
-                    }
-                    width="180"
-                    height="180"
-                  />
-                </Box>
+                <MetaFoxHorizontalLogo
+                  className={`unlock-page__mascot-container__horizontal-logo ${this.props.isPopup ? 'unlock-page__mascot-container__horizontal-logo--popup' : ''}`}
+                />
               )}
               {isBeta() ? (
                 <Text
@@ -579,7 +595,6 @@ class UnlockPage extends Component {
                   ? t('enterYourPasswordSocialLoginFlow')
                   : t('enterYourPassword')
               }
-              className="unlock-page__password-input-container"
               size={FormTextFieldSize.Lg}
               placeholderColor={TextColor.textDefault}
               inputProps={{
@@ -588,7 +603,6 @@ class UnlockPage extends Component {
               }}
               textFieldProps={{
                 disabled: isLocked,
-                className: 'unlock-page__password-input',
               }}
               onChange={(event) => this.handleInputChange(event)}
               type={TextFieldType.Password}
@@ -618,18 +632,23 @@ class UnlockPage extends Component {
               key="import-account"
               type="button"
               onClick={this.onForgotPasswordOrLoginWithDiffMethods}
-              marginBottom={6}
-              color={TextColor.textDefault}
+              marginBottom={4}
+              color={
+                isRehydrationFlow
+                  ? TextColor.textDefault
+                  : TextColor.primaryDefault
+              }
             >
               {isRehydrationFlow
                 ? t('useDifferentLoginMethod')
                 : t('forgotPassword')}
             </Button>
 
-            <Text>
+            <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
               {t('needHelp', [
                 <Button
                   variant={ButtonVariant.Link}
+                  color={TextColor.primaryDefault}
                   href={SUPPORT_LINK}
                   type="button"
                   target="_blank"

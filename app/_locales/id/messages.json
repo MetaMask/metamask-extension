@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Atribusi"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "URL RPC Infura tidak lagi mendukung Aurora."
-  },
   "authorizedPermissions": {
     "message": "Anda telah mengotorisasi izin berikut"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Token kustom"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Deteksi token belum tersedia di jaringan ini. Harap impor token secara manual dan pastikan keamanannya. Pelajari seputar $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Siapa pun dapat membuat token, termasuk membuat versi palsu dari token yang ada. Pelajari tentang $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Pastikan keamanan token sebelum mengimpornya. Pelajari cara menghindari $1. Anda juga dapat mengaktifkan deteksi token $2."
   },
   "customerSupport": {
     "message": "dukungan pelanggan"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Mendeposit kripto dari akun lain dengan alamat dompet atau kode QR."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Karena pembaruan pada sistem Ethereum, jaringan uji Goerli akan segera dihentikan."
   },
   "deprecatedNetwork": {
     "message": "Jaringan ini tidak digunakan lagi"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "Informasi yang Anda masukkan terhubung dengan ID chain yang ada."
   },
-  "expandView": {
-    "message": "Perluas tampilan"
-  },
   "experimental": {
     "message": "Eksperimental"
   },
@@ -2787,9 +2772,6 @@
   "imported": {
     "message": "Diimpor",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "di Pengaturan Anda"
   },
   "included": {
     "message": "termasuk"
@@ -5238,9 +5220,6 @@
   "shieldEntryModalGetStarted": {
     "message": "Mulai"
   },
-  "shieldEntryModalSkip": {
-    "message": "Lewati"
-  },
   "show": {
     "message": "Tampil"
   },
@@ -6494,10 +6473,6 @@
   "switchNetwork": {
     "message": "Beralih jaringan"
   },
-  "switchToNetwork": {
-    "message": "Beralih ke $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Beralih ke akun ini"
   },
@@ -6603,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Pasar token"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "penipuan dan risiko keamanan token"
   },
   "tokenStandard": {
     "message": "Standar token"
