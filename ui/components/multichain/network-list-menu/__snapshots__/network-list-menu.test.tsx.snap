@@ -346,6 +346,69 @@ exports[`NetworkListMenu renders properly 1`] = `
                     </button>
                   </div>
                 </div>
+                <div
+                  aria-describedby="rbd-hidden-text-0-hidden-text-0"
+                  class="mm-box"
+                  data-rbd-drag-handle-context-id="0"
+                  data-rbd-drag-handle-draggable-id="eip155:143"
+                  data-rbd-draggable-context-id="0"
+                  data-rbd-draggable-id="eip155:143"
+                  draggable="false"
+                  role="button"
+                  tabindex="0"
+                >
+                  <div
+                    class="mm-box multichain-network-list-item multichain-network-list-item--deselected multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                    data-testid="network-list-item-eip155:143"
+                  >
+                    <div
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    >
+                      <img
+                        alt="Monad logo"
+                        class="mm-avatar-network__network-image"
+                        src="./images/monad.svg"
+                      />
+                    </div>
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+                      style="overflow: hidden;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        data-testid="Monad"
+                      >
+                        <div
+                          class="multichain-network-list-item__tooltip"
+                        >
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              Monad
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      aria-label="Network options"
+                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      data-testid="network-list-item-options-button-eip155:143"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/more-vertical.svg');"
+                      />
+                    </button>
+                  </div>
+                </div>
               </div>
               <div
                 class="mm-box new-network-list__networks-container"
@@ -473,6 +536,44 @@ exports[`NetworkListMenu renders properly 1`] = `
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
                           Base
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <button
+                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                        data-testid="test-add-button"
+                        type="link"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                    data-testid="popular-network-0x3e7"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                      >
+                        <img
+                          alt="HyperEVM logo"
+                          class="mm-avatar-network__network-image"
+                          src="./images/hyperevm.svg"
+                        />
+                      </div>
+                      <div
+                        class="mm-box mm-box--margin-left-4"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                        >
+                          HyperEVM
                         </p>
                       </div>
                     </div>
@@ -1106,7 +1207,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                 data-rbd-droppable-id="characters"
               >
                 <div
-                  aria-describedby="rbd-hidden-text-1-hidden-text-6"
+                  aria-describedby="rbd-hidden-text-1-hidden-text-7"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="1"
                   data-rbd-drag-handle-draggable-id="eip155:1"
@@ -1169,7 +1270,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   </div>
                 </div>
                 <div
-                  aria-describedby="rbd-hidden-text-1-hidden-text-6"
+                  aria-describedby="rbd-hidden-text-1-hidden-text-7"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="1"
                   data-rbd-drag-handle-draggable-id="eip155:59144"
@@ -1232,7 +1333,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   </div>
                 </div>
                 <div
-                  aria-describedby="rbd-hidden-text-1-hidden-text-6"
+                  aria-describedby="rbd-hidden-text-1-hidden-text-7"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="1"
                   data-rbd-drag-handle-draggable-id="eip155:56"
@@ -1295,7 +1396,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   </div>
                 </div>
                 <div
-                  aria-describedby="rbd-hidden-text-1-hidden-text-6"
+                  aria-describedby="rbd-hidden-text-1-hidden-text-7"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="1"
                   data-rbd-drag-handle-draggable-id="eip155:5"
@@ -1345,6 +1446,69 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       aria-label="Network options"
                       class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
                       data-testid="network-list-item-options-button-eip155:5"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/more-vertical.svg');"
+                      />
+                    </button>
+                  </div>
+                </div>
+                <div
+                  aria-describedby="rbd-hidden-text-1-hidden-text-7"
+                  class="mm-box"
+                  data-rbd-drag-handle-context-id="1"
+                  data-rbd-drag-handle-draggable-id="eip155:143"
+                  data-rbd-draggable-context-id="1"
+                  data-rbd-draggable-id="eip155:143"
+                  draggable="false"
+                  role="button"
+                  tabindex="0"
+                >
+                  <div
+                    class="mm-box multichain-network-list-item multichain-network-list-item--deselected multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                    data-testid="network-list-item-eip155:143"
+                  >
+                    <div
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    >
+                      <img
+                        alt="Monad logo"
+                        class="mm-avatar-network__network-image"
+                        src="./images/monad.svg"
+                      />
+                    </div>
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+                      style="overflow: hidden;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        data-testid="Monad"
+                      >
+                        <div
+                          class="multichain-network-list-item__tooltip"
+                        >
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              Monad
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      aria-label="Network options"
+                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      data-testid="network-list-item-options-button-eip155:143"
                     >
                       <span
                         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -1480,6 +1644,44 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
                           Base
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <button
+                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                        data-testid="test-add-button"
+                        type="link"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                    data-testid="popular-network-0x3e7"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                      >
+                        <img
+                          alt="HyperEVM logo"
+                          class="mm-avatar-network__network-image"
+                          src="./images/hyperevm.svg"
+                        />
+                      </div>
+                      <div
+                        class="mm-box mm-box--margin-left-4"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                        >
+                          HyperEVM
                         </p>
                       </div>
                     </div>
@@ -1730,7 +1932,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
     style="position: absolute; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%);"
   />
   <div
-    id="rbd-hidden-text-1-hidden-text-6"
+    id="rbd-hidden-text-1-hidden-text-7"
     style="display: none;"
   >
     

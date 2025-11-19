@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useStore } from 'react-redux';
 import {
   TransactionMeta,
   TransactionType,
@@ -14,12 +14,10 @@ import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../store/actions';
-import { getInternalAccounts } from '../../selectors';
+import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
 import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
-import {
-  extractDelegationFromGatorPermissionContext,
-  findInternalAccountByAddress as findAccountByAddress,
-} from './utils';
+import { addPendingRevocation } from '../../store/controller-actions/gator-permissions-controller';
+import { extractDelegationFromGatorPermissionContext } from './utils';
 import { useGatorPermissionRedirect } from './useGatorPermissionRedirect';
 
 export type RevokeGatorPermissionsMultiChainResults = Record<
@@ -49,7 +47,7 @@ export function useRevokeGatorPermissionsMultiChain({
   onRedirect?: () => void;
 } = {}) {
   const { setTransactionId } = useGatorPermissionRedirect({ onRedirect });
-  const internalAccounts = useSelector(getInternalAccounts);
+  const store = useStore();
 
   /**
    * Revokes gator permissions across multiple chains.
@@ -101,8 +99,8 @@ export function useRevokeGatorPermissionsMultiChain({
         for (const permission of permissions) {
           try {
             const { permissionResponse } = permission;
-            const internalAccount = findAccountByAddress(
-              internalAccounts,
+            const internalAccount = getMemoizedInternalAccountByAddress(
+              store.getState(),
               permissionResponse.address as Hex,
             );
 
@@ -133,10 +131,20 @@ export function useRevokeGatorPermissionsMultiChain({
               },
             );
 
-            if (transactionMeta?.id) {
-              results[currentChainId as Hex].revoked.push(transactionMeta);
-              allTransactionIds.push(transactionMeta.id);
+            if (!transactionMeta) {
+              throw new Error('No transaction meta found');
             }
+
+            if (!transactionMeta.id) {
+              throw new Error('No transaction id found');
+            }
+
+            results[currentChainId as Hex].revoked.push(transactionMeta);
+            allTransactionIds.push(transactionMeta.id);
+            await addPendingRevocation({
+              txId: transactionMeta.id,
+              permissionContext: permissionResponse.context,
+            });
           } catch (error) {
             results[currentChainId as Hex].errors.push(error as Error);
           }
@@ -150,7 +158,7 @@ export function useRevokeGatorPermissionsMultiChain({
 
       return results;
     },
-    [internalAccounts, setTransactionId],
+    [store, setTransactionId],
   );
 
   return {

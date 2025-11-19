@@ -17,13 +17,23 @@ import {
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { addTransaction } from '../../store/actions';
-import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
+import {
+  addTransaction,
+  findNetworkClientIdByChainId,
+} from '../../store/actions';
+import {
+  encodeDisableDelegation,
+  getDelegationHashOffchain,
+} from '../../../shared/lib/delegation/delegation';
 import {
   getInternalAccounts,
   selectDefaultRpcEndpointByChainId,
 } from '../../selectors';
+import {
+  addPendingRevocation,
+  submitRevocation,
+  checkDelegationDisabled,
+} from '../../store/controller-actions/gator-permissions-controller';
 import { useRevokeGatorPermissions } from './useRevokeGatorPermissions';
 import { findInternalAccountByAddress } from './utils';
 
@@ -31,11 +41,21 @@ import { findInternalAccountByAddress } from './utils';
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   addTransaction: jest.fn(),
+  findNetworkClientIdByChainId: jest.fn(),
 }));
 
 jest.mock('../../store/controller-actions/transaction-controller', () => ({
   addTransactionBatch: jest.fn(),
 }));
+
+jest.mock(
+  '../../store/controller-actions/gator-permissions-controller',
+  () => ({
+    addPendingRevocation: jest.fn(),
+    submitRevocation: jest.fn(),
+    checkDelegationDisabled: jest.fn(),
+  }),
+);
 
 jest.mock('@metamask/delegation-core', () => ({
   decodeDelegations: jest.fn(),
@@ -43,6 +63,7 @@ jest.mock('@metamask/delegation-core', () => ({
 
 jest.mock('../../../shared/lib/delegation/delegation', () => ({
   encodeDisableDelegation: jest.fn(),
+  getDelegationHashOffchain: jest.fn(),
 }));
 
 jest.mock('../../../shared/lib/delegation', () => ({
@@ -71,12 +92,31 @@ jest.mock('../../pages/confirmations/hooks/useConfirmationNavigation', () => ({
 const mockAddTransaction = addTransaction as jest.MockedFunction<
   typeof addTransaction
 >;
+const mockFindNetworkClientIdByChainId =
+  findNetworkClientIdByChainId as unknown as jest.MockedFunction<
+    (chainId: string) => Promise<string>
+  >;
 const mockDecodeDelegations = decodeDelegations as jest.MockedFunction<
   typeof decodeDelegations
 >;
 const mockEncodeDisableDelegation =
   encodeDisableDelegation as jest.MockedFunction<
     typeof encodeDisableDelegation
+  >;
+const mockGetDelegationHashOffchain =
+  getDelegationHashOffchain as jest.MockedFunction<
+    typeof getDelegationHashOffchain
+  >;
+
+const mockAddPendingRevocation = addPendingRevocation as jest.MockedFunction<
+  typeof addPendingRevocation
+>;
+const mockSubmitRevocation = submitRevocation as jest.MockedFunction<
+  typeof submitRevocation
+>;
+const mockCheckDelegationDisabled =
+  checkDelegationDisabled as jest.MockedFunction<
+    typeof checkDelegationDisabled
   >;
 
 const mockGetInternalAccounts = getInternalAccounts as jest.MockedFunction<
@@ -225,10 +265,17 @@ describe('useRevokeGatorPermissions', () => {
     mockNavigateToId.mockClear();
 
     // Setup default mock implementations
+    mockFindNetworkClientIdByChainId.mockResolvedValue(mockNetworkClientId);
     mockDecodeDelegations.mockReturnValue([mockDelegation]);
     mockEncodeDisableDelegation.mockReturnValue(
       '0xencodeddata' as `0x${string}`,
     );
+    mockGetDelegationHashOffchain.mockReturnValue(
+      '0xfd165b374563126931d2be865bbec75623dca111840d148cf88492c0bb997f96' as `0x${string}`,
+    );
+    mockCheckDelegationDisabled.mockResolvedValue(false);
+    mockSubmitRevocation.mockResolvedValue(undefined);
+    mockAddPendingRevocation.mockResolvedValue(undefined);
     mockAddTransaction.mockResolvedValue(mockTransactionMeta as never);
 
     // Setup selector mocks
@@ -449,33 +496,6 @@ describe('useRevokeGatorPermissions', () => {
       expect(mockOnRedirect).not.toHaveBeenCalled();
     });
 
-    it('should handle missing defaultRpcEndpoint', async () => {
-      // Override the selector mock to return undefined for this test
-      mockSelectDefaultRpcEndpointByChainId.mockReturnValue(undefined);
-
-      const { result } = renderHook(
-        () =>
-          useRevokeGatorPermissions({
-            chainId: mockChainId,
-          }),
-        {
-          wrapper: ({ children }) => (
-            <Provider store={store}>{children}</Provider>
-          ),
-        },
-      );
-
-      await act(async () => {
-        await expect(
-          result.current.revokeGatorPermission(mockGatorPermission),
-        ).rejects.toThrow('No default RPC endpoint found');
-      });
-
-      expect(mockDecodeDelegations).not.toHaveBeenCalled();
-      expect(mockEncodeDisableDelegation).not.toHaveBeenCalled();
-      expect(mockAddTransaction).not.toHaveBeenCalled();
-    });
-
     it('should throw error when no delegation is found in permission context', async () => {
       mockDecodeDelegations.mockReturnValue([]);
 
@@ -648,86 +668,6 @@ describe('useRevokeGatorPermissions', () => {
       });
 
       expect(mockNavigateToId).toHaveBeenCalledWith('test-transaction-id');
-    });
-
-    it('should find delegator from internal accounts', () => {
-      const internalAccounts: InternalAccount[] = [
-        {
-          id: 'mock-account-id',
-          address: mockSelectedAccountAddress,
-          type: 'eip155:eoa',
-          options: {},
-          metadata: {
-            name: 'Account 1',
-            importTime: Date.now(),
-            keyring: { type: 'HD Key Tree' },
-          },
-          scopes: [],
-          methods: [],
-        },
-      ];
-
-      const foundAccount = findInternalAccountByAddress(
-        internalAccounts,
-        mockSelectedAccountAddress as Hex,
-      );
-
-      expect(foundAccount).toBeDefined();
-      expect(foundAccount?.address).toBe(mockSelectedAccountAddress);
-      expect(foundAccount?.id).toBe('mock-account-id');
-    });
-
-    it('should return undefined when delegator is not found in internal accounts', () => {
-      const internalAccounts: InternalAccount[] = [
-        {
-          id: 'mock-account-id',
-          address: mockSelectedAccountAddress,
-          type: 'eip155:eoa',
-          options: {},
-          metadata: {
-            name: 'Account 1',
-            importTime: Date.now(),
-            keyring: { type: 'HD Key Tree' },
-          },
-          scopes: [],
-          methods: [],
-        },
-      ];
-
-      const foundAccount = findInternalAccountByAddress(
-        internalAccounts,
-        '0x1234567890123456789012345678901234567890' as Hex,
-      );
-
-      expect(foundAccount).toBeUndefined();
-    });
-
-    it('should find account with case insensitive address matching', () => {
-      const internalAccounts: InternalAccount[] = [
-        {
-          id: 'mock-account-id',
-          address: mockSelectedAccountAddress,
-          type: 'eip155:eoa',
-          options: {},
-          metadata: {
-            name: 'Account 1',
-            importTime: Date.now(),
-            keyring: { type: 'HD Key Tree' },
-          },
-          scopes: [],
-          methods: [],
-        },
-      ];
-
-      // Test with uppercase address
-      const foundAccount = findInternalAccountByAddress(
-        internalAccounts,
-        mockSelectedAccountAddress.toUpperCase() as Hex,
-      );
-
-      expect(foundAccount).toBeDefined();
-      expect(foundAccount?.address).toBe(mockSelectedAccountAddress);
-      expect(foundAccount?.id).toBe('mock-account-id');
     });
   });
 

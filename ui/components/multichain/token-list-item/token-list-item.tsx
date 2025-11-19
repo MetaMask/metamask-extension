@@ -18,6 +18,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -57,7 +58,7 @@ import { setEditedNetwork } from '../../../store/actions';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { selectNoFeeAssets } from '../../../ducks/bridge/selectors';
-import { accountTypeLabel } from '../../app/assets/token-cell/cells/token-cell-title';
+import { ACCOUNT_TYPE_LABELS } from '../../app/assets/constants';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
 
@@ -124,6 +125,7 @@ export const TokenListItemComponent = ({
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+  const [showTokenInsights, setShowTokenInsights] = useState(false);
   const history = useHistory();
 
   const getTokenTitle = () => {
@@ -283,8 +285,8 @@ export const TokenListItemComponent = ({
                   )}
                 </Text>
               )}
-              {accountType && accountTypeLabel[accountType] && (
-                <Tag label={accountTypeLabel[accountType]} />
+              {accountType && ACCOUNT_TYPE_LABELS[accountType] && (
+                <Tag label={ACCOUNT_TYPE_LABELS[accountType]} />
               )}
               {isNoFeeAsset && <Tag label={t('bridgeNoMMFee')} />}
             </Box>
@@ -376,6 +378,21 @@ export const TokenListItemComponent = ({
             )}
           </Box>
         </Box>
+
+        {isDestinationToken && (
+          <ButtonIcon
+            iconName={IconName.Info}
+            size={ButtonIconSize.Sm}
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setShowTokenInsights(true);
+            }}
+            className="multichain-token-list-item__info-icon"
+            color={IconColor.iconAlternative}
+            ariaLabel={t('viewTokenDetails')}
+          />
+        )}
       </Box>
       {isEvm && showScamWarningModal ? (
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
@@ -407,6 +424,20 @@ export const TokenListItemComponent = ({
           </ModalContent>
         </Modal>
       ) : null}
+
+      {showTokenInsights && (
+        <TokenInsightsModal
+          isOpen={showTokenInsights}
+          onClose={() => setShowTokenInsights(false)}
+          token={{
+            address,
+            symbol: tokenSymbol || title,
+            name: title,
+            chainId,
+            iconUrl: tokenImage,
+          }}
+        />
+      )}
     </Box>
   );
 };

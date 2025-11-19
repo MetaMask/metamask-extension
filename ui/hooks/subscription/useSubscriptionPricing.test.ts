@@ -6,17 +6,12 @@ import {
   ProductType,
   PaymentType,
 } from '@metamask/subscription-controller';
-import {
-  TransactionMeta,
-  TransactionStatus,
-} from '@metamask/transaction-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import baseMockState from '../../../test/data/mock-state.json';
 import {
   useSubscriptionPricing,
   useSubscriptionProductPlans,
   useSubscriptionPaymentMethods,
-  useShieldSubscriptionPricingFromTokenApproval,
 } from './useSubscriptionPricing';
 
 const mockSubscriptionPricing: PricingResponse = {
@@ -184,103 +179,6 @@ describe('useSubscriptionPricing', () => {
       );
 
       expect(result.current).toBeUndefined();
-    });
-  });
-
-  describe('useShieldSubscriptionPricingFromTokenApproval', () => {
-    const mockTransactionMeta: TransactionMeta = {
-      id: 'test-tx-id',
-      chainId: '0x1',
-      networkClientId: 'mainnet',
-      status: TransactionStatus.unapproved,
-      time: Date.now(),
-      txParams: {
-        from: '0x1234567890123456789012345678901234567890',
-        to: '0x0000000000000000000000000000000000000000',
-      },
-    };
-
-    it('should return monthly plan when approval amount matches monthly', async () => {
-      const { result } = renderHookWithProvider(
-        () =>
-          useShieldSubscriptionPricingFromTokenApproval({
-            transactionMeta: mockTransactionMeta,
-            decodedApprovalAmount: '120000000',
-          }),
-        mockState,
-      );
-
-      // Wait for async operation to complete
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      expect(result.current.productPrice).toEqual({
-        interval: RECURRING_INTERVALS.month,
-        unitAmount: 120000000,
-        unitDecimals: 6,
-        currency: 'usd',
-        trialPeriodDays: 7,
-        minBillingCycles: 1,
-      });
-      expect(result.current.selectedTokenPrice).toEqual(
-        mockSubscriptionPricing?.paymentMethods?.find(
-          (paymentMethod) => paymentMethod.type === PAYMENT_TYPES.byCrypto,
-        )?.chains?.[0]?.tokens?.[0],
-      );
-    });
-
-    it('should return yearly plan when approval amount matches yearly', async () => {
-      const { result } = renderHookWithProvider(
-        () =>
-          useShieldSubscriptionPricingFromTokenApproval({
-            transactionMeta: mockTransactionMeta,
-            decodedApprovalAmount: '100000000',
-          }),
-        mockState,
-      );
-
-      // Wait for async operation to complete
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      expect(result.current.productPrice).toEqual({
-        interval: RECURRING_INTERVALS.year,
-        unitAmount: 100000000,
-        unitDecimals: 6,
-        currency: 'usd',
-        trialPeriodDays: 7,
-        minBillingCycles: 1,
-      });
-    });
-
-    it('should return undefined when approval amount does not match any plan', async () => {
-      const { result } = renderHookWithProvider(
-        () =>
-          useShieldSubscriptionPricingFromTokenApproval({
-            transactionMeta: mockTransactionMeta,
-            decodedApprovalAmount: '99999999',
-          }),
-        mockState,
-      );
-
-      // Wait for async operation to complete
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      expect(result.current.productPrice).toBeUndefined();
-    });
-
-    it('should return undefined when transaction meta is not provided', async () => {
-      const { result } = renderHookWithProvider(
-        () =>
-          useShieldSubscriptionPricingFromTokenApproval({
-            transactionMeta: undefined,
-            decodedApprovalAmount: '120000000',
-          }),
-        mockState,
-      );
-
-      // Wait for async operation to complete
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      expect(result.current.productPrice).toBeUndefined();
     });
   });
 });

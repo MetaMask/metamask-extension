@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   ExecuteSnapAction,
   TerminateSnapAction,
@@ -43,6 +43,7 @@ import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@met
 import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | GetEndowments
@@ -91,17 +92,26 @@ export type SnapControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getSnapControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'SnapController',
-    allowedEvents: [
+  const controllerMessenger = new Messenger<
+    'SnapController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'SnapController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    events: [
       'ExecutionService:unhandledError',
       'ExecutionService:outboundRequest',
       'ExecutionService:outboundResponse',
       'KeyringController:lock',
     ],
-    allowedActions: [
+    actions: [
       'PermissionController:getEndowments',
       'PermissionController:getPermissions',
       'PermissionController:hasPermission',
@@ -131,6 +141,7 @@ export function getSnapControllerMessenger(
       'SnapInterfaceController:getInterface',
     ],
   });
+  return controllerMessenger;
 }
 
 type InitActions =
@@ -153,16 +164,26 @@ export type SnapControllerInitMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getSnapControllerInitMessenger(
-  messenger: Messenger<InitActions, InitEvents>,
+  messenger: RootMessenger<InitActions, InitEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'SnapControllerInit',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'SnapControllerInit',
+    InitActions,
+    InitEvents,
+    typeof messenger
+  >({
+    namespace: 'SnapControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'KeyringController:getKeyringsByType',
       'PreferencesController:getState',
       'MetaMetricsController:trackEvent',
       'SnapController:setClientActive',
     ],
-    allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
+    events: ['KeyringController:lock', 'KeyringController:unlock'],
   });
+  return controllerInitMessenger;
 }

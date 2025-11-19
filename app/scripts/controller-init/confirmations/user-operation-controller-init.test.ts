@@ -1,9 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
 import { UserOperationController } from '@metamask/user-operation-controller';
-import type {
-  TransactionControllerEmulateNewTransaction,
-  TransactionControllerEmulateTransactionUpdate,
-} from '@metamask/transaction-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
@@ -12,6 +7,7 @@ import {
   UserOperationControllerMessenger,
   UserOperationControllerInitMessenger,
 } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { UserOperationControllerInit } from './user-operation-controller-init';
 
 jest.mock('@metamask/user-operation-controller', () => ({
@@ -28,26 +24,13 @@ function getInitRequestMock(): jest.Mocked<
     UserOperationControllerInitMessenger
   >
 > {
-  const baseMessenger = new Messenger<
-    | TransactionControllerEmulateNewTransaction
-    | TransactionControllerEmulateTransactionUpdate,
-    never
-  >();
+  const baseMessenger = getRootMessenger();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getUserOperationControllerMessenger(baseMessenger),
     initMessenger: getUserOperationControllerInitMessenger(baseMessenger),
   };
-
-  baseMessenger.registerActionHandler(
-    'TransactionController:emulateNewTransaction',
-    jest.fn(),
-  );
-  baseMessenger.registerActionHandler(
-    'TransactionController:emulateTransactionUpdate',
-    jest.fn(),
-  );
 
   // @ts-expect-error: Partial mock.
   requestMock.getController.mockImplementation((name: string) => {
@@ -92,7 +75,9 @@ describe('UserOperationControllerInit', () => {
       };
     });
     const initRequest = getInitRequestMock();
-    const initMessengerCallSpy = jest.spyOn(initRequest.initMessenger, 'call');
+    const initMessengerCallSpy = jest
+      .spyOn(initRequest.initMessenger, 'call')
+      .mockImplementation(jest.fn());
 
     UserOperationControllerInit(initRequest);
     const onUserOperationAdded = onSpy.mock.calls.find(
@@ -118,7 +103,9 @@ describe('UserOperationControllerInit', () => {
       };
     });
     const initRequest = getInitRequestMock();
-    const initMessengerCallSpy = jest.spyOn(initRequest.initMessenger, 'call');
+    const initMessengerCallSpy = jest
+      .spyOn(initRequest.initMessenger, 'call')
+      .mockImplementation(jest.fn());
 
     UserOperationControllerInit(initRequest);
     const onTransactionUpdated = onSpy.mock.calls.find(

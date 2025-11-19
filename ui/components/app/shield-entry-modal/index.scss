@@ -1,8 +1,59 @@
+@use "design-system";
+
 .shield-entry-modal {
-  &__header {
-    background: url('/images/shield-entry-modal-banner.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  .shield-entry-modal__title {
+    line-height: 1em;
+    font-size: 2.25rem;
+
+    @include design-system.screen-sm-max {
+      font-size: 2rem;
+    }
+  }
+
+  .shield-entry-modal__content {
+    .shield-entry-modal__dialog {
+      background-color: var(--color-accent03-dark);
+      max-width: 400px;
+    }
+  }
+
+  @include design-system.screen-sm-max {
+    .shield-entry-modal__content {
+      padding: 0;
+      height: 100%;
+      width: 100%;
+
+      .shield-entry-modal__dialog {
+        height: 100%;
+        width: 100%;
+        max-width: unset;
+        border-radius: 0;
+      }
+
+      .shield-entry-modal__footer {
+        margin-top: auto;
+      }
+    }
+  }
+
+  &-shield-illustration {
+    &__container {
+      height: 200px;
+      width: 247px;
+    }
+
+    &__canvas {
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  &-sheild-image {
+    width: 346px;
+    height: 252px;
+
+    @include design-system.screen-sm-max {
+      width: 322px;
+    }
   }
 }

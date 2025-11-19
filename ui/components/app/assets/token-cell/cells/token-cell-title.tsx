@@ -1,30 +1,23 @@
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import { BtcAccountType, type KeyringAccountType } from '@metamask/keyring-api';
 import React from 'react';
 import { TokenFiatDisplayInfo } from '../../types';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import { Tag } from '../../../../component-library';
+import { ACCOUNT_TYPE_LABELS } from '../../constants';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
 };
 
-export const accountTypeLabel: Partial<Record<KeyringAccountType, string>> = {
-  [BtcAccountType.P2pkh]: 'Legacy',
-  [BtcAccountType.P2sh]: 'Nested SegWit',
-  [BtcAccountType.P2wpkh]: 'Native SegWit',
-  [BtcAccountType.P2tr]: 'Taproot',
-};
-
 export const TokenCellTitle = React.memo(
   ({ token }: TokenCellTitleProps) => {
     const label = token.accountType
-      ? accountTypeLabel[token.accountType]
+      ? ACCOUNT_TYPE_LABELS[token.accountType]
       : undefined;
     return (
-      <Box flexDirection={BoxFlexDirection.Row}>
-        <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+      <Box flexDirection={BoxFlexDirection.Row} className="min-w-0">
+        <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
           <AssetCellTitle title={token.title} />
           {label && <Tag label={label} />}
         </Box>

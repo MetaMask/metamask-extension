@@ -1,16 +1,28 @@
-import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import OnboardingController, {
+  OnboardingControllerMessenger,
   getDefaultOnboardingControllerState,
 } from './onboarding';
 
 function setupController(): OnboardingController {
-  const messenger = new Messenger();
-  const onboardingControllerMessenger = messenger.getRestricted({
-    name: 'OnboardingController',
-    allowedActions: [],
-    allowedEvents: [],
-  });
+  const messenger = new Messenger<
+    MockAnyNamespace,
+    MessengerActions<OnboardingControllerMessenger>,
+    MessengerEvents<OnboardingControllerMessenger>
+  >({ namespace: MOCK_ANY_NAMESPACE });
+  const onboardingControllerMessenger: OnboardingControllerMessenger =
+    new Messenger({
+      namespace: 'OnboardingController',
+      parent: messenger,
+    });
   const onboardingController = new OnboardingController({
     messenger: onboardingControllerMessenger,
     state: getDefaultOnboardingControllerState(),
@@ -49,7 +61,7 @@ describe('OnboardingController', () => {
         deriveStateFromMetadata(
           controller.state,
           controller.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`
         {

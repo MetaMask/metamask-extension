@@ -581,3 +581,14 @@ export const getAggregatedGatorPermissionByChainId = createSelector(
     }
   },
 );
+
+/**
+ * Get the list of gator permissions pending a revocation transaction.
+ *
+ * @param state - The current state
+ * @returns The list of gator permissions pending a revocation transaction
+ */
+export const getPendingRevocations = createSelector(
+  [getMetamask],
+  (metamask) => metamask.pendingRevocations,
+);

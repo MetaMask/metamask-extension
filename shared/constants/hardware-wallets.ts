@@ -106,7 +106,7 @@ export enum HardwareAffiliateLinks {
 export enum HardwareAffiliateTutorialLinks {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  ledger = 'https://support.ledger.com/hc/en-us/articles/4404366864657-Set-up-and-use-MetaMask-to-access-your-Ledger-Ethereum-ETH-account?docs=true',
+  ledger = 'https://support.ledger.com/article/4404366864657-zd',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   gridplus = 'https://docs.gridplus.io/setup/metamask',
@@ -133,7 +133,7 @@ export enum HardwareAffiliateTutorialLinks {
   imtoken = 'https://support.token.im/hc/en-us/articles/24652624775961/',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  onekey = 'https://help.onekey.so/hc/articles/9426592069903',
+  onekey = 'https://help.onekey.so/en/articles/11461108-connect-onekey-pro-to-metamask-via-qr-codes-air-gapped',
 }
 
 /**

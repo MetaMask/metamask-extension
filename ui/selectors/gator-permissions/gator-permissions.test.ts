@@ -21,6 +21,7 @@ import {
   getGatorPermissionCountsBySiteOrigin,
   getTotalUniqueSitesCount,
   getMergedConnectionsListWithGatorPermissions,
+  getPendingRevocations,
 } from './gator-permissions';
 
 const MOCK_CHAIN_ID_MAINNET = '0x1' as Hex;
@@ -264,6 +265,7 @@ describe('Gator Permissions Selectors', () => {
       isGatorPermissionsEnabled: true,
       isFetchingGatorPermissions: false,
       gatorPermissionsProviderSnapId: 'local:http://localhost:8080/' as SnapId,
+      pendingRevocations: [],
     },
   };
 
@@ -315,6 +317,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -351,6 +354,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -416,6 +420,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -462,6 +467,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -508,6 +514,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -554,6 +561,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -625,6 +633,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -658,6 +667,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -704,6 +714,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -750,6 +761,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -796,6 +808,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -848,6 +861,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -891,6 +905,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -998,6 +1013,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1043,6 +1059,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1094,6 +1111,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1140,6 +1158,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1186,6 +1205,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1232,6 +1252,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1264,6 +1285,7 @@ describe('Gator Permissions Selectors', () => {
             isFetchingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1294,6 +1316,7 @@ describe('Gator Permissions Selectors', () => {
             isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1352,6 +1375,7 @@ describe('Gator Permissions Selectors', () => {
           isUpdatingGatorPermissions: false,
           gatorPermissionsProviderSnapId:
             'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
         },
       };
 
@@ -1387,6 +1411,7 @@ describe('Gator Permissions Selectors', () => {
           isUpdatingGatorPermissions: false,
           gatorPermissionsProviderSnapId:
             'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
         },
       };
 
@@ -1423,6 +1448,7 @@ describe('Gator Permissions Selectors', () => {
             isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1455,6 +1481,7 @@ describe('Gator Permissions Selectors', () => {
             isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1484,6 +1511,7 @@ describe('Gator Permissions Selectors', () => {
             isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1519,6 +1547,7 @@ describe('Gator Permissions Selectors', () => {
             isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1568,6 +1597,7 @@ describe('Gator Permissions Selectors', () => {
             isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1615,6 +1645,7 @@ describe('Gator Permissions Selectors', () => {
             isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1662,6 +1693,7 @@ describe('Gator Permissions Selectors', () => {
             isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1695,6 +1727,7 @@ describe('Gator Permissions Selectors', () => {
             isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1724,6 +1757,7 @@ describe('Gator Permissions Selectors', () => {
             isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -1852,6 +1886,7 @@ describe('Gator Permissions Selectors', () => {
           isFetchingGatorPermissions: false,
           gatorPermissionsProviderSnapId:
             'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
         },
       };
 
@@ -1898,6 +1933,7 @@ describe('Gator Permissions Selectors', () => {
           isFetchingGatorPermissions: false,
           gatorPermissionsProviderSnapId:
             'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
         },
       };
 
@@ -1951,6 +1987,7 @@ describe('Gator Permissions Selectors', () => {
           isFetchingGatorPermissions: false,
           gatorPermissionsProviderSnapId:
             'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
         },
       };
 
@@ -1985,6 +2022,7 @@ describe('Gator Permissions Selectors', () => {
           isFetchingGatorPermissions: false,
           gatorPermissionsProviderSnapId:
             'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
         },
       };
 
@@ -2067,6 +2105,29 @@ describe('Gator Permissions Selectors', () => {
       expect(result['http://localhost:8001']).toBeDefined();
       expect(result['http://localhost:8001'].advancedPermissionsCount).toBe(2);
       expect(result['http://localhost:8001'].addresses).toEqual([]);
+    });
+  });
+
+  describe('getPendingRevocations', () => {
+    it('should return the list of gator permissions pending a revocation transaction', () => {
+      const result = getPendingRevocations({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          pendingRevocations: [
+            {
+              txId: '1',
+              permissionContext: '0x1',
+            },
+          ],
+        },
+      });
+      expect(result).toEqual([
+        {
+          txId: '1',
+          permissionContext: '0x1',
+        },
+      ]);
     });
   });
 });

@@ -43,7 +43,7 @@ const setupSubmitRequestToBackgroundMocks = (
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
       ...mockedBackgroundRequests,
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };

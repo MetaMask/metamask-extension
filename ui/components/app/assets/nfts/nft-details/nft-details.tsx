@@ -234,37 +234,14 @@ export function NftDetailsComponent({
   }, [trackEvent, chainId]);
 
   const onRemove = async () => {
-    let isSuccessfulEvent = false;
     try {
       await dispatch(removeAndIgnoreNft(address, tokenId, nftNetworkClientId));
       dispatch(setNewNftAddedMessage(''));
       dispatch(setRemoveNftMessage('success'));
-      isSuccessfulEvent = true;
     } catch (err) {
       dispatch(setNewNftAddedMessage(''));
       dispatch(setRemoveNftMessage('error'));
     } finally {
-      // track event
-      trackEvent({
-        event: MetaMetricsEventName.NFTRemoved,
-        category: 'Wallet',
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_contract_address: address,
-          tokenId: tokenId.toString(),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          asset_type: AssetType.NFT,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_standard: standard,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: currentNetwork,
-          isSuccessful: isSuccessfulEvent,
-        },
-      });
       navigate(DEFAULT_ROUTE);
     }
   };
@@ -341,6 +318,7 @@ export function NftDetailsComponent({
     navigateToSendRoute(navigate, isSendRedesignEnabled, {
       address: nft.address,
       chainId: nftChainId,
+      tokenId: nft.tokenId,
     });
   };
 

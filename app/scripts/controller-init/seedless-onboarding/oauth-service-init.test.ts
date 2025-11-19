@@ -1,9 +1,9 @@
-import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import {
   getOAuthServiceMessenger,
   OAuthServiceMessenger,
 } from '../messengers/seedless-onboarding';
+import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import OAuthService from '../../services/oauth/oauth-service';
 import { OAuthServiceInit } from './oauth-service-init';
@@ -11,7 +11,7 @@ import { OAuthServiceInit } from './oauth-service-init';
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<OAuthServiceMessenger>
 > {
-  const baseControllerMessenger = new Messenger<never, never>();
+  const baseControllerMessenger = getRootMessenger<never, never>();
 
   return {
     ...buildControllerInitRequestMock(),
@@ -29,6 +29,9 @@ describe('OAuthServiceInit', () => {
       return {
         bufferedTrace: jest.fn(),
         bufferedEndTrace: jest.fn(),
+        trackEvent: jest.fn(),
+        addEventBeforeMetricsOptIn: jest.fn(),
+        state: { participateInMetaMetrics: false },
       };
     });
 

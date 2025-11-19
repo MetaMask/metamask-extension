@@ -52,6 +52,8 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
+import { RewardsPointsBalance } from '../rewards/RewardsPointsBalance';
+import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import {
@@ -220,6 +222,7 @@ export const CoinOverview = ({
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
+  const isRewardsEnabled = useSelector(selectRewardsEnabled);
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
@@ -245,7 +248,10 @@ export const CoinOverview = ({
   }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
 
   const renderPercentageAndAmountChange = () => {
-    const renderPortfolioButton = () => {
+    const renderPercentageAndAmountChangeTrail = () => {
+      if (isRewardsEnabled) {
+        return <RewardsPointsBalance />;
+      }
       return (
         <ButtonLink
           endIconName={IconName.Export}
@@ -257,7 +263,6 @@ export const CoinOverview = ({
           {t('discover')}
         </ButtonLink>
       );
-      return null;
     };
 
     const renderNativeTokenView = () => {
@@ -270,7 +275,7 @@ export const CoinOverview = ({
         >
           <Box className="wallet-overview__currency-wrapper">
             <PercentageAndAmountChange value={value} />
-            {renderPortfolioButton()}
+            {renderPercentageAndAmountChangeTrail()}
           </Box>
         </Skeleton>
       );
@@ -280,11 +285,11 @@ export const CoinOverview = ({
       <Box className="wallet-overview__currency-wrapper">
         {isTokenNetworkFilterEqualCurrentNetwork ? (
           <AggregatedPercentageOverview
-            portfolioButton={renderPortfolioButton}
+            trailingChild={renderPercentageAndAmountChangeTrail}
           />
         ) : (
           <AggregatedPercentageOverviewCrossChains
-            portfolioButton={renderPortfolioButton}
+            trailingChild={renderPercentageAndAmountChangeTrail}
           />
         )}
       </Box>
@@ -294,7 +299,7 @@ export const CoinOverview = ({
       <Box className="wallet-overview__currency-wrapper">
         <AggregatedMultichainPercentageOverview
           privacyMode={privacyMode}
-          portfolioButton={renderPortfolioButton}
+          trailingChild={renderPercentageAndAmountChangeTrail}
         />
       </Box>
     );
@@ -305,7 +310,7 @@ export const CoinOverview = ({
         <Box className="wallet-overview__currency-wrapper">
           <AccountGroupBalanceChange
             period="1d"
-            portfolioButton={renderPortfolioButton}
+            trailingChild={renderPercentageAndAmountChangeTrail}
           />
         </Box>
       );
@@ -328,6 +333,8 @@ export const CoinOverview = ({
         classPrefix={classPrefix}
         balanceIsCached={balanceIsCached}
         handleSensitiveToggle={handleSensitiveToggle}
+        balance={balance}
+        chainId={chainId}
       />
     );
   } else if (isEvm) {

@@ -1,5 +1,9 @@
 import { SnapController } from '@metamask/snaps-controllers';
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
@@ -12,12 +16,13 @@ import {
   SnapControllerInitMessenger,
   SnapControllerMessenger,
 } from '../messengers/snaps';
+import { getRootMessenger } from '../../lib/messenger';
 import { SnapControllerInit } from './snap-controller-init';
 
 jest.mock('@metamask/snaps-controllers');
 
 function getInitRequestMock(
-  baseMessenger = new Messenger<never, never>(),
+  baseMessenger = getRootMessenger(),
 ): jest.Mocked<
   ControllerInitRequest<SnapControllerMessenger, SnapControllerInitMessenger>
 > {
@@ -49,7 +54,6 @@ describe('SnapControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       closeAllConnections: expect.any(Function),
-      dynamicPermissions: ['endowment:caip25'],
       encryptor: expect.any(Object),
       environmentEndowmentPermissions: expect.any(Array),
       excludedPermissions: expect.any(Object),
@@ -58,6 +62,7 @@ describe('SnapControllerInit', () => {
         rejectInvalidPlatformVersion: false,
         requireAllowlist: false,
         forcePreinstalledSnaps: false,
+        autoUpdatePreinstalledSnaps: false,
       },
       getFeatureFlags: expect.any(Function),
       getMnemonicSeed: expect.any(Function),
@@ -67,7 +72,11 @@ describe('SnapControllerInit', () => {
   });
 
   it('calls `SnapController:setClientActive` when the client is locked', () => {
-    const baseMessenger = new Messenger<never, KeyringControllerLockEvent>();
+    const baseMessenger = new Messenger<
+      MockAnyNamespace,
+      never,
+      KeyringControllerLockEvent
+    >({ namespace: MOCK_ANY_NAMESPACE });
 
     const request = getInitRequestMock(baseMessenger);
     const { initMessenger } = request;
@@ -81,7 +90,11 @@ describe('SnapControllerInit', () => {
   });
 
   it('calls `SnapController:setClientActive` when the client is unlocked', () => {
-    const baseMessenger = new Messenger<never, KeyringControllerUnlockEvent>();
+    const baseMessenger = new Messenger<
+      MockAnyNamespace,
+      never,
+      KeyringControllerUnlockEvent
+    >({ namespace: MOCK_ANY_NAMESPACE });
 
     const request = getInitRequestMock(baseMessenger);
     const { initMessenger } = request;

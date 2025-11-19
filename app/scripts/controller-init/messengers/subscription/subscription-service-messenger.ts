@@ -1,10 +1,11 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import type { SubscriptionControllerEvents } from '@metamask/subscription-controller';
 import {
   SERVICE_NAME,
   SubscriptionServiceAction,
   SubscriptionServiceMessenger,
 } from '../../../services/subscription/types';
+import { RootMessenger } from '../../../lib/messenger';
 
 /**
  * Get a restricted messenger for the SubscriptionService. This is scoped to the
@@ -14,19 +15,42 @@ import {
  * @returns The restricted messenger.
  */
 export function getSubscriptionServiceMessenger(
-  messenger: Messenger<SubscriptionServiceAction, SubscriptionControllerEvents>,
+  messenger: RootMessenger<
+    SubscriptionServiceAction,
+    SubscriptionControllerEvents
+  >,
 ): SubscriptionServiceMessenger {
-  return messenger.getRestricted({
-    name: SERVICE_NAME,
-    allowedActions: [
+  const serviceMessenger = new Messenger<
+    'SubscriptionService',
+    SubscriptionServiceAction,
+    SubscriptionControllerEvents,
+    typeof messenger
+  >({
+    namespace: SERVICE_NAME,
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: serviceMessenger,
+    actions: [
       'SubscriptionController:getPricing',
       'SubscriptionController:getSubscriptions',
       'SubscriptionController:startShieldSubscriptionWithCard',
       'SubscriptionController:updatePaymentMethod',
       'SubscriptionController:getCryptoApproveTransactionParams',
       'SubscriptionController:getBillingPortalUrl',
+      'SubscriptionController:submitSponsorshipIntents',
+      'SubscriptionController:getState',
+      'AppStateController:getState',
       'AuthenticationController:getBearerToken',
+      'TransactionController:getTransactions',
+      'AccountsController:getState',
+      'PreferencesController:getState',
+      'SmartTransactionsController:getState',
+      'NetworkController:getState',
+      'SwapsController:getState',
+      'MetaMetricsController:trackEvent',
+      'KeyringController:getState',
     ],
-    allowedEvents: [],
   });
+  return serviceMessenger;
 }

@@ -1,10 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-
-import {
-  renderWithProvider,
-  createSwapsMockStore,
-} from '../../../../test/jest';
+import { createSwapsMockStore } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import AwaitingSignatures from '.';
 
 describe('AwaitingSignatures', () => {

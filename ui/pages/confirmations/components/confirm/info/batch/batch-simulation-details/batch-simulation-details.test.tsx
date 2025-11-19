@@ -21,6 +21,7 @@ import {
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { Confirmation } from '../../../../../types/confirm';
 import { updateApprovalAmount } from '../../../../../../../../shared/lib/transactions/approvals';
+import * as SwapCheckHook from '../../../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { BatchSimulationDetails } from './batch-simulation-details';
 
 jest.mock('../../../../../../../../shared/lib/transactions/approvals');
@@ -291,8 +292,27 @@ describe('BatchSimulationDetails', () => {
     expect(container.firstChild).toBeNull();
   });
 
+  it('return null for MetaMask Swap transaction', () => {
+    jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
+      isQuotedSwap: true,
+    });
+    const { container } = render();
+    expect(container.firstChild).toBeNull();
+  });
+
   it('return null for upgrade transaction if there are no nested transactions', () => {
     const { container } = render(upgradeAccountConfirmationOnly);
     expect(container.firstChild).toBeNull();
+  });
+
+  it('does not render SimulationDetails and EditSpendingCapModal while approvePending is true', () => {
+    useBatchApproveBalanceChangesMock.mockReturnValue({
+      pending: true,
+      value: [BALANCE_CHANGE_ERC20_MOCK],
+    });
+    const { queryByText, queryByTestId } = render();
+    expect(queryByText('Edit spending cap')).toBeNull();
+    expect(queryByTestId('balance-change-edit')).toBeNull();
+    expect(queryByText('You approve')).toBeNull();
   });
 });

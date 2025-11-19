@@ -3,7 +3,7 @@
     "pinnedAccountList": {},
     "hiddenAccountList": {}
   },
-  "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
+  "AccountTracker": { "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountTree": "object",
     "isAccountTreeSyncingInProgress": "boolean",
@@ -31,6 +31,7 @@
     "activeQrCodeScanRequest": null,
     "appActiveTab": "object",
     "browserEnvironment": { "os": "string", "browser": "string" },
+    "canTrackWalletFundsObtained": false,
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "enableEnforcedSimulations": true,
@@ -49,6 +50,8 @@
     "notificationGasPollTokens": "object",
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
+    "pendingShieldCohort": null,
+    "pendingShieldCohortTxType": null,
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
@@ -66,6 +69,7 @@
     "throttledOrigins": "object",
     "trezorModel": null,
     "updateModalLastDismissedAt": null,
+    "isWalletResetInProgress": "boolean",
     "hasShownMultichainAccountsIntroModal": "boolean",
     "showShieldEntryModalOnce": "boolean",
     "addressSecurityAlertResponses": "object",
@@ -99,6 +103,8 @@
     "minimumBalanceForRentExemptionInLamports": "string"
   },
   "BridgeStatusController": { "txHistory": "object" },
+  "ClaimsController": "object",
+  "ClaimsService": "undefined",
   "CronjobController": { "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
@@ -163,7 +169,8 @@
   },
   "MultichainAssetsController": {
     "accountsAssets": "object",
-    "assetsMetadata": "object"
+    "assetsMetadata": "object",
+    "allIgnoredAssets": "object"
   },
   "MultichainAssetsRatesController": {
     "conversionRates": "object",
@@ -195,7 +202,16 @@
     "enabledNetworkMap": { "eip155": "object", "solana": "object" }
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+    "orderedNetworkList": {
+      "0": "object",
+      "1": "object",
+      "2": "object",
+      "3": "object",
+      "4": "object",
+      "5": "object",
+      "6": "object",
+      "7": "object"
+    }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -272,6 +288,7 @@
       "tokenNetworkFilter": { "0x539": "boolean" },
       "tokenSortConfig": "object",
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
+      "useSidePanelAsDefault": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "securityAlertsEnabled": "boolean",
@@ -303,6 +320,15 @@
     },
     "cacheTimestamp": "number"
   },
+  "RewardsController": {
+    "rewardsAccounts": "object",
+    "rewardsActiveAccount": null,
+    "rewardsSeasonStatuses": "object",
+    "rewardsSeasons": "object",
+    "rewardsSubscriptionTokens": "object",
+    "rewardsSubscriptions": "object"
+  },
+  "RewardsDataService": "undefined",
   "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "ShieldController": "object",
@@ -330,8 +356,8 @@
   "SnapInsightsController": { "insights": "object" },
   "SnapInterfaceController": { "interfaces": "object" },
   "SnapsRegistry": {
-    "database": null,
-    "lastUpdated": null,
+    "database": "object",
+    "lastUpdated": "number",
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },

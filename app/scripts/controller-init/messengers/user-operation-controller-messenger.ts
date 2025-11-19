@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { AddApprovalRequest } from '@metamask/approval-controller';
 import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import {
@@ -10,15 +10,14 @@ import type {
   TransactionControllerEmulateNewTransaction,
   TransactionControllerEmulateTransactionUpdate,
 } from '@metamask/transaction-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
   | AddApprovalRequest
   | KeyringControllerPatchUserOperationAction
   | KeyringControllerPrepareUserOperationAction
   | KeyringControllerSignUserOperationAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | TransactionControllerEmulateNewTransaction
-  | TransactionControllerEmulateTransactionUpdate;
+  | NetworkControllerGetNetworkClientByIdAction;
 
 export type UserOperationControllerMessenger = ReturnType<
   typeof getUserOperationControllerMessenger
@@ -36,20 +35,35 @@ export type UserOperationControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getUserOperationControllerMessenger(
-  messenger: Messenger<AllowedActions, never>,
+  messenger: RootMessenger<AllowedActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'UserOperationController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'UserOperationController',
+    AllowedActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'UserOperationController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'ApprovalController:addRequest',
       'NetworkController:getNetworkClientById',
       'KeyringController:prepareUserOperation',
       'KeyringController:patchUserOperation',
       'KeyringController:signUserOperation',
     ],
-    allowedEvents: [],
   });
+  return controllerMessenger;
 }
+
+type InitMessengerActions =
+  | TransactionControllerEmulateNewTransaction
+  | TransactionControllerEmulateTransactionUpdate;
+
+type InitMessengerEvents = never;
 
 /**
  * Create a messenger restricted to the actions/events required to initialize
@@ -59,14 +73,23 @@ export function getUserOperationControllerMessenger(
  * messenger.
  */
 export function getUserOperationControllerInitMessenger(
-  messenger: Messenger<AllowedActions, never>,
+  messenger: RootMessenger<InitMessengerActions, InitMessengerEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'UserOperationControllerInit',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'UserOperationControllerInit',
+    InitMessengerActions,
+    InitMessengerEvents,
+    typeof messenger
+  >({
+    namespace: 'UserOperationControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'TransactionController:emulateNewTransaction',
       'TransactionController:emulateTransactionUpdate',
     ],
-    allowedEvents: [],
   });
+  return controllerInitMessenger;
 }

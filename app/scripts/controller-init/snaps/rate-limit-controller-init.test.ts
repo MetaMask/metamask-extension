@@ -1,4 +1,3 @@
-import { Messenger } from '@metamask/base-controller';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
@@ -8,6 +7,7 @@ import {
   RateLimitControllerInitMessenger,
   RateLimitControllerMessenger,
 } from '../messengers/snaps';
+import { getRootMessenger } from '../../lib/messenger';
 import { RateLimitControllerInit } from './rate-limit-controller-init';
 
 jest.mock('@metamask/rate-limit-controller');
@@ -18,7 +18,7 @@ function getInitRequestMock(): jest.Mocked<
     RateLimitControllerInitMessenger
   >
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

@@ -722,6 +722,33 @@ describe('Multichain Accounts Selectors', () => {
 
       expect(result).toBeUndefined();
     });
+
+    it('returns undefined when accountId is null', () => {
+      const result = getMultichainAccountGroupById(
+        typedMockState,
+        null as unknown as AccountGroupId,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when accountId is undefined', () => {
+      const result = getMultichainAccountGroupById(
+        typedMockState,
+        undefined as unknown as AccountGroupId,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when accountId is an empty string', () => {
+      const result = getMultichainAccountGroupById(
+        typedMockState,
+        '' as unknown as AccountGroupId,
+      );
+
+      expect(result).toBeUndefined();
+    });
   });
 
   describe('getAllAccountGroups', () => {

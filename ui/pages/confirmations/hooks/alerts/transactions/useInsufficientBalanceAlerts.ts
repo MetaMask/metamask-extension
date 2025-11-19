@@ -13,8 +13,8 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getMultichainNetworkConfigurationsByChainId,
+  getNativeTokenCachedBalanceByChainIdByAccountAddress,
   getUseTransactionSimulations,
-  selectTransactionAvailableBalance,
   selectTransactionFeeById,
 } from '../../../../../selectors';
 import { useConfirmContext } from '../../../context/confirm';
@@ -33,7 +33,7 @@ export function useInsufficientBalanceAlerts({
     chainId,
     selectedGasFeeToken,
     gasFeeTokens,
-    txParams: { value = '0x0' } = {},
+    txParams: { value = '0x0', from: fromAddress = '' } = {},
   } = currentConfirmation ?? {};
 
   const batchTransactionValues =
@@ -43,9 +43,14 @@ export function useInsufficientBalanceAlerts({
 
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
 
-  const balance = useSelector((state) =>
-    selectTransactionAvailableBalance(state, transactionId, chainId),
-  );
+  const chainBalances = useSelector((state) =>
+    getNativeTokenCachedBalanceByChainIdByAccountAddress(
+      state,
+      fromAddress ?? '',
+    ),
+  ) as Record<Hex, Hex>;
+
+  const balance = chainBalances?.[chainId as Hex] ?? '0x0';
 
   const totalValue = sumHexes(value, ...batchTransactionValues);
 

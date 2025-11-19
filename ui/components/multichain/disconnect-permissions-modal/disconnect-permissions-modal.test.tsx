@@ -77,14 +77,6 @@ describe('DisconnectPermissionsModal', () => {
     jest.clearAllMocks();
   });
 
-  it('should render correctly', () => {
-    const { container } = renderWithProvider(
-      <DisconnectPermissionsModal {...args} />,
-      mockStore,
-    );
-    expect(container).toMatchSnapshot();
-  });
-
   it('should fire onSkip when Skip button is clicked', () => {
     const { getByTestId } = renderWithProvider(
       <DisconnectPermissionsModal {...args} />,

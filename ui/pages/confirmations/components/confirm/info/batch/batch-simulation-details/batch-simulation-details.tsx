@@ -17,6 +17,7 @@ import { EditSpendingCapModal } from '../../approve/edit-spending-cap-modal/edit
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
+import { useSwapCheck } from '../../../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -24,13 +25,14 @@ import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
 export function BatchSimulationDetails() {
   const t = useI18nContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
+  const { isQuotedSwap } = useSwapCheck();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
   const { id, nestedTransactions } = transactionMeta;
 
-  const { value: approveBalanceChanges } =
+  const { value: approveBalanceChanges, pending: approvePending } =
     useBatchApproveBalanceChanges() ?? {};
 
   const [isEditApproveModalOpen, setIsEditApproveModalOpen] = useState(false);
@@ -58,13 +60,6 @@ export function BatchSimulationDetails() {
     [id, nestedTransactionIndexToEdit],
   );
 
-  if (
-    transactionMeta?.type === TransactionType.revokeDelegation ||
-    isUpgradeOnly
-  ) {
-    return null;
-  }
-
   const approveRows: StaticRow[] = useMemo(() => {
     const finalBalanceChanges = approveBalanceChanges?.map((change) => ({
       ...change,
@@ -82,6 +77,15 @@ export function BatchSimulationDetails() {
     ];
   }, [approveBalanceChanges, handleEdit]);
 
+  if (
+    transactionMeta?.type === TransactionType.revokeDelegation ||
+    isUpgradeOnly ||
+    isQuotedSwap ||
+    !transactionMeta?.txParams
+  ) {
+    return null;
+  }
+
   const nestedTransactionToEdit =
     nestedTransactionIndexToEdit === undefined
       ? undefined
@@ -89,23 +93,27 @@ export function BatchSimulationDetails() {
 
   return (
     <>
-      {isEditApproveModalOpen && (
-        <EditSpendingCapModal
-          data={nestedTransactionToEdit?.data}
-          isOpenEditSpendingCapModal={true}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onSubmit={handleEditSubmit}
-          setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
-          to={nestedTransactionToEdit?.to}
-        />
+      {!approvePending && (
+        <>
+          {isEditApproveModalOpen && (
+            <EditSpendingCapModal
+              data={nestedTransactionToEdit?.data}
+              isOpenEditSpendingCapModal={true}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onSubmit={handleEditSubmit}
+              setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
+              to={nestedTransactionToEdit?.to}
+            />
+          )}
+          <SimulationDetails
+            transaction={transactionMeta}
+            staticRows={approveRows}
+            isTransactionsRedesign
+            enableMetrics
+          />
+        </>
       )}
-      <SimulationDetails
-        transaction={transactionMeta}
-        staticRows={approveRows}
-        isTransactionsRedesign
-        enableMetrics
-      />
     </>
   );
 }

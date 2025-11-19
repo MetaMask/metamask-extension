@@ -141,6 +141,11 @@ export type MetaMetricsEventPayload = {
    * Whether the event is a duplicate of an anonymized event.
    */
   isDuplicateAnonymizedEvent?: boolean;
+  /**
+   * The timestamp of the event. If provided, this timestamp will be used
+   * instead of the current time when sending to Segment.
+   */
+  timestamp?: string;
 };
 
 export type UnsanitizedMetaMetricsEventPayload = Omit<
@@ -536,6 +541,24 @@ export type MetaMetricsUserTraits = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   profile_id?: string;
+  /**
+   * Whether the user has opted into Rewards.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  has_rewards_opted_in?: string;
+  /**
+   * Whether the user was referred when opting into Rewards.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  rewards_referred?: boolean;
+  /**
+   * The referral code used when opting into Rewards.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  rewards_referral_code_used?: string;
 };
 
 export enum MetaMetricsUserTrait {
@@ -642,6 +665,12 @@ export enum MetaMetricsUserTrait {
    * Identified when the user adds or removes configured chains (evm or non-evm)
    */
   ChainIdList = 'chain_id_list',
+  /**
+   * Rewards-specific traits
+   */
+  HasRewardsOptedIn = 'has_rewards_opted_in',
+  RewardsReferred = 'rewards_referred',
+  RewardsReferralCodeUsed = 'rewards_referral_code_used',
 }
 
 /**
@@ -694,10 +723,9 @@ export enum MetaMetricsEventName {
   BannerDisplay = 'Banner Display',
   BannerCloseAll = 'Banner Close All',
   BannerSelect = 'Banner Select',
-  BannerNavigated = 'Banner Navigated',
   BridgeLinkClicked = 'Bridge Link Clicked',
   SwapLinkClicked = 'Swap Link Clicked',
-  CurrentCurrency = 'Current Currency',
+  CurrentCurrency = 'Selected Currency Changed',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',
@@ -709,16 +737,13 @@ export enum MetaMetricsEventName {
   EmptyBuyBannerClicked = 'Empty Buy Banner Clicked',
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
-  EmptyNftsBannerDisplayed = 'Empty NFTs Banner Displayed',
   EmptyNftsBannerClicked = 'Empty NFTs Banner Clicked',
-  EnablingNotifications = 'Notifications Enabled',
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
   ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
-  ImportSecretRecoveryPhraseClicked = 'Import Secret Recovery Phrase Clicked',
-  ImportSecretRecoveryPhraseCompleted = 'Import Secret Recovery Phrase Completed',
+  ImportSecretRecoveryPhrase = 'Import Secret Recovery Phrase',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
   KeyExportFailed = 'Key Export Failed',
@@ -729,8 +754,6 @@ export enum MetaMetricsEventName {
   KeyGlobalSecurityToggleSelected = 'Key Global Security/Privacy Settings',
   KeyBalanceTokenPriceChecker = 'Key Show Balance and Token Price Checker Settings',
   KeyGasFeeEstimationBuySwapTokens = 'Key Show Gas Fee Estimation, Buy Crypto and Swap Tokens',
-  KeyAutoDetectTokens = 'Key Autodetect tokens',
-  KeyBatchAccountBalanceRequests = 'Key Batch account balance requests',
   MarkAllNotificationsRead = 'Notifications Marked All as Read',
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
@@ -821,17 +844,14 @@ export enum MetaMetricsEventName {
   TokenImportButtonClicked = 'Import Token Button Clicked',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
-  TokenRemoved = 'Token Removed',
-  TokenSortPreference = 'Token Sort Preference',
-  TokenListRefreshed = 'Token List Refreshed',
-  NFTRemoved = 'NFT Removed',
+  TokenSortPreference = 'Token Sort Preference Updated',
   EmptyNFTTabButtonClicked = 'Empty NFT Tab Button Clicked',
   TokenDetected = 'Token Detected',
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
-  ShowNativeTokenAsMainBalance = 'Show native token as main balance',
   WalletSetupStarted = 'Wallet Setup Started',
+  WalletFundsObtained = 'Wallet Funds Obtained',
   WalletImportStarted = 'Wallet Import Started',
   WalletImportAttempted = 'Wallet Import Attempted',
   WalletImported = 'Wallet Imported',
@@ -840,11 +860,13 @@ export enum MetaMetricsEventName {
   WalletSetupFailure = 'Wallet Setup Failure',
   WalletSetupCompleted = 'Wallet Setup Completed',
   SocialLoginCompleted = 'Social Login Completed',
+  SocialLoginFailed = 'Social Login Failed',
   AccountAlreadyExistsPageViewed = 'Account Already Exists Page Viewed',
   AccountNotFoundPageViewed = 'Account Not Found Page Viewed',
   RehydrationPasswordAttempted = 'Rehydration Password Attempted',
   RehydrationCompleted = 'Rehydration Completed',
   RehydrationPasswordFailed = 'Rehydration Password Failed',
+  UseDifferentLoginMethodClicked = 'Use Different Login Method Clicked',
   // BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF
@@ -856,7 +878,6 @@ export enum MetaMetricsEventName {
   AddNetworkButtonClick = 'Add Network Button Clicked',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
-  NftScreenOpened = 'NFT Screen Opened',
   NftDetailsOpened = 'NFT Details Opened',
   DeFiScreenOpened = 'DeFi Screen Opened',
   DeFiDetailsOpened = 'DeFi Details Opened',
@@ -944,6 +965,30 @@ export enum MetaMetricsEventName {
   ExtensionPinned = 'Extension Pinned',
   // Extension Port Stream
   PortStreamChunked = 'Port Stream Chunked',
+  ViewportSwitched = 'Viewport Switched',
+  // Rewards
+  RewardsOptInStarted = 'REWARDS_OPT_IN_STARTED',
+  RewardsOptInFailed = 'REWARDS_OPT_IN_FAILED',
+  RewardsOptInCompleted = 'REWARDS_OPT_IN_COMPLETED',
+  RewardsAccountLinkingStarted = 'REWARDS_ACCOUNT_LINKING_STARTED',
+  RewardsAccountLinkingCompleted = 'REWARDS_ACCOUNT_LINKING_COMPLETED',
+  RewardsAccountLinkingFailed = 'REWARDS_ACCOUNT_LINKING_FAILED',
+  // Shield
+  ShieldEntryModal = 'Shield Entry Modal',
+  ShieldSubscriptionRequest = 'Shield Subscription Request',
+  ShieldMembershipRestartRequest = 'Shield Membership Restart Request',
+  ShieldMembershipCancelled = 'Shield Membership Cancelled',
+  ShieldPaymentMethodChange = 'Shield Payment Method Change',
+  ShieldPaymentMethodRetried = 'Shield Payment Method Retried',
+  ShieldPaymentMethodUpdated = 'Shield Payment Method Updated',
+  ShieldBillingHistoryOpened = 'Shield Billing History Opened',
+  ShieldMembershipErrorStateClicked = 'Shield Membership Error State Clicked',
+  ShieldCtaClicked = 'Shield CTA Clicked',
+  ShieldClaimSubmission = 'Shield Claim Submission',
+  ShieldSubscriptionCryptoConfirmation = 'Shield Subscription Crypto Confirmation',
+  ShieldPrioritySupportClicked = 'Shield Priority Support Clicked',
+  ShieldEligibilityCohortAssigned = 'Shield Eligibility Cohort Assigned',
+  ShieldEligibilityCohortTimeout = 'Shield Eligibility Cohort Timeout',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1008,6 +1053,8 @@ export enum MetaMetricsEventCategory {
   Confirmations = 'Confirmations',
   CrossChainSwaps = 'Cross Chain Swaps',
   PortStream = 'Port Stream',
+  Rewards = 'Rewards',
+  Shield = 'Shield',
 }
 
 export enum MetaMetricsEventLinkType {

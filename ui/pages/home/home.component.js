@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
+import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
@@ -21,6 +22,7 @@ import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+import { ScrollContainer } from '../../contexts/scroll-container';
 
 import {
   FontWeight,
@@ -66,7 +68,6 @@ import { AccountOverview } from '../../components/multichain/account-overview';
 import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
-import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
@@ -167,10 +168,14 @@ export default class Home extends PureComponent {
     setAccountDetailsAddress: PropTypes.func,
     isSeedlessPasswordOutdated: PropTypes.bool,
     isPrimarySeedPhraseBackedUp: PropTypes.bool,
-    showConnectionsRemovedModal: PropTypes.bool,
     showShieldEntryModal: PropTypes.bool,
     isSocialLoginFlow: PropTypes.bool,
     lookupSelectedNetworks: PropTypes.func.isRequired,
+    navState: PropTypes.object,
+    evaluateCohortEligibility: PropTypes.func,
+    pendingShieldCohort: PropTypes.string,
+    setPendingShieldCohort: PropTypes.func,
+    isSignedIn: PropTypes.bool,
   };
 
   state = {
@@ -191,8 +196,12 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
+      navState,
     } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
+    // Read stayOnHomePage from both v5 location.state and v5-compat navState
+    const stayOnHomePage =
+      Boolean(location?.state?.stayOnHomePage) ||
+      Boolean(navState?.stayOnHomePage);
 
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
@@ -221,8 +230,12 @@ export default class Home extends PureComponent {
       location,
       pendingApprovals,
       hasApprovalFlows,
+      navState,
     } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
+    // Read stayOnHomePage from both v5 location.state and v5-compat navState
+    const stayOnHomePage =
+      Boolean(location?.state?.stayOnHomePage) ||
+      Boolean(navState?.stayOnHomePage);
 
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
@@ -273,6 +286,11 @@ export default class Home extends PureComponent {
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
     this.props.lookupSelectedNetworks();
+
+    // Set pending Shield cohort for wallet home evaluation if there's no existing pending cohort
+    if (this.props.setPendingShieldCohort && !this.props.pendingShieldCohort) {
+      this.props.setPendingShieldCohort(COHORT_NAMES.WALLET_HOME);
+    }
   }
 
   static getDerivedStateFromProps(props) {
@@ -291,6 +309,10 @@ export default class Home extends PureComponent {
       setActiveNetwork,
       clearNewNetworkAdded,
       isSidepanel,
+      pendingShieldCohort,
+      evaluateCohortEligibility,
+      setPendingShieldCohort,
+      isSignedIn,
     } = this.props;
 
     const {
@@ -314,6 +336,12 @@ export default class Home extends PureComponent {
       isSidepanel
     ) {
       this.checkStatusAndNavigate();
+    }
+
+    // Check for pending Shield cohort evaluation if user is signed in
+    if (pendingShieldCohort && evaluateCohortEligibility && isSignedIn) {
+      setPendingShieldCohort(null);
+      evaluateCohortEligibility(pendingShieldCohort);
     }
 
     // Check for redirect after default page on updates
@@ -836,7 +864,6 @@ export default class Home extends PureComponent {
       showUpdateModal,
       isSeedlessPasswordOutdated,
       isPrimarySeedPhraseBackedUp,
-      showConnectionsRemovedModal,
       showShieldEntryModal,
       isSocialLoginFlow,
     } = this.props;
@@ -878,7 +905,7 @@ export default class Home extends PureComponent {
       !isSocialLoginFlow;
 
     return (
-      <div className="main-container main-container--has-shadow">
+      <ScrollContainer className="main-container main-container--has-shadow">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Route
           path={CONNECTED_ACCOUNTS_ROUTE}
@@ -904,7 +931,6 @@ export default class Home extends PureComponent {
           {showTermsOfUse ? (
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
-          {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
           {showShieldEntryModal && <ShieldEntryModal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
@@ -936,7 +962,7 @@ export default class Home extends PureComponent {
           </div>
           {this.renderNotifications()}
         </div>
-      </div>
+      </ScrollContainer>
     );
   }
 }

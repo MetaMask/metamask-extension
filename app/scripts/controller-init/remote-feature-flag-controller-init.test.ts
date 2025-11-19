@@ -2,9 +2,15 @@ import {
   ClientConfigApiService,
   RemoteFeatureFlagController,
 } from '@metamask/remote-feature-flag-controller';
-import { ActionConstraint, Messenger } from '@metamask/base-controller';
+import {
+  ActionConstraint,
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { ENVIRONMENT } from '../../../development/build/constants';
 import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
+import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   getConfigForRemoteFeatureFlagRequest,
   RemoteFeatureFlagControllerInit,
@@ -27,14 +33,25 @@ function getInitRequestMock(): jest.Mocked<
   >
 > {
   const baseMessenger = new Messenger<
-    PreferencesControllerGetStateAction | ActionConstraint,
+    MockAnyNamespace,
+    | PreferencesControllerGetStateAction
+    | OnboardingControllerGetStateAction
+    | ActionConstraint,
     never
-  >();
+  >({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 
   baseMessenger.registerActionHandler(
     'PreferencesController:getState',
     jest.fn().mockReturnValue({
       useExternalServices: true,
+    }),
+  );
+  baseMessenger.registerActionHandler(
+    'OnboardingController:getState',
+    jest.fn().mockReturnValue({
+      completedOnboarding: true,
     }),
   );
 

@@ -15,19 +15,22 @@ import {
   SignatureRequest,
   SignatureStateChange,
 } from '@metamask/signature-controller';
-import { Messenger } from '@metamask/base-controller';
 import { cloneDeep } from 'lodash';
+import { isSnapId } from '@metamask/snaps-utils';
+import { SnapId } from '@metamask/snaps-sdk';
 import {
   BlockaidReason,
   BlockaidResultType,
   LOADING_SECURITY_ALERT_RESPONSE,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
+import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { AppStateController } from '../../controllers/app-state-controller';
 import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-signature';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { RootMessenger } from '../messenger';
 import {
   SecurityAlertResponse,
   GetSecurityAlertsConfig,
@@ -54,11 +57,6 @@ type PPOMRequest = JsonRpcRequest & {
   delegationMock?: Hex;
   origin?: string;
 };
-
-export type PPOMMessenger = Messenger<
-  never,
-  SignatureStateChange | TransactionControllerUnapprovedTransactionAddedEvent
->;
 
 export async function validateRequestWithPPOM({
   ppomController,
@@ -125,7 +123,7 @@ export async function updateSecurityAlertResponse({
   transactionController,
 }: {
   appStateController: AppStateController;
-  messenger: PPOMMessenger;
+  messenger: RootMessenger;
   method: string;
   securityAlertId: string;
   securityAlertResponse: SecurityAlertResponse;
@@ -189,7 +187,10 @@ function normalizePPOMRequest(
 ): PPOMRequest {
   let normalizedRequest = cloneDeep(request);
 
-  normalizedRequest = normalizeSignatureRequest(normalizedRequest);
+  normalizedRequest = normalizeSignatureRequest(
+    normalizedRequest,
+    controllerObject,
+  );
 
   normalizedRequest = normalizeTransactionRequest(
     normalizedRequest,
@@ -242,7 +243,10 @@ function normalizeTransactionRequest(
   };
 }
 
-export function normalizeSignatureRequest(request: PPOMRequest): PPOMRequest {
+export function normalizeSignatureRequest(
+  request: PPOMRequest,
+  controllerObject?: TransactionMeta | SignatureRequest,
+): PPOMRequest {
   // This is a temporary fix to prevent a PPOM bypass
   if (
     request.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 &&
@@ -263,8 +267,26 @@ export function normalizeSignatureRequest(request: PPOMRequest): PPOMRequest {
     typedDataMessage.primaryType,
   );
 
+  // Handle permission origin logic for typed data signatures
+  let actualOrigin = request.origin;
+  if (
+    controllerObject &&
+    'decodedPermission' in controllerObject &&
+    controllerObject.decodedPermission?.origin
+  ) {
+    // Security check: Only allow origin override for legitimate snap requests.
+    const isRequestFromSnap = isSnapId(request.origin);
+    const isPreinstalledSnap =
+      isRequestFromSnap && isSnapPreinstalled(request.origin as SnapId);
+    if (isRequestFromSnap && isPreinstalledSnap) {
+      // Use the actual DApp origin from decodedPermission for security validation
+      actualOrigin = controllerObject.decodedPermission.origin;
+    }
+  }
+
   return {
     ...request,
+    origin: actualOrigin,
     params: [
       request.params[0],
       JSON.stringify({
@@ -341,7 +363,10 @@ async function validateWithAPI(
 async function waitForTransactionMetadata(
   transactionController: TransactionController,
   securityAlertId: string,
-  messenger: PPOMMessenger,
+  messenger: RootMessenger<
+    never,
+    TransactionControllerUnapprovedTransactionAddedEvent
+  >,
 ): Promise<TransactionMeta> {
   const transactionFilter = (meta: TransactionMeta) =>
     meta.securityAlertResponse?.securityAlertId === securityAlertId;
@@ -382,7 +407,7 @@ async function waitForTransactionMetadata(
 async function waitForSignatureRequest(
   signatureController: SignatureController,
   securityAlertId: string,
-  messenger: PPOMMessenger,
+  messenger: RootMessenger<never, SignatureStateChange>,
 ): Promise<SignatureRequest> {
   const signatureFilter = (state: SignatureControllerState) =>
     Object.values(state.signatureRequests).find(

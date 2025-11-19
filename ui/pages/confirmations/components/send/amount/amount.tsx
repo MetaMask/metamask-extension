@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ERC721 } from '@metamask/controller-utils';
 
 import {
@@ -20,7 +20,6 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
-import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useBalance } from '../../../hooks/send/useBalance';
 import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversions';
 import { useMaxAmount } from '../../../hooks/send/useMaxAmount';
@@ -33,14 +32,13 @@ import {
 } from '../../../utils/send';
 
 export const Amount = ({
-  setAmountValueError,
+  amountError,
 }: {
-  setAmountValueError: (str?: string) => void;
+  amountError: string | undefined;
 }) => {
   const t = useI18nContext();
   const { asset, updateValue, value } = useSendContext();
   const [amount, setAmount] = useState(value ?? '');
-  const [amountValueError, setAmountValueErrorLocal] = useState<string>();
   const { balance } = useBalance();
   const [fiatMode, setFiatMode] = useState(false);
   const {
@@ -66,20 +64,6 @@ export const Amount = ({
         : getFiatDisplayValue(amount),
     [amount, fiatMode, getFiatDisplayValue, value],
   );
-  const { amountError } = useAmountValidation();
-
-  useEffect(() => {
-    let amtError: string | undefined;
-    if (amountError) {
-      amtError = amountError;
-    } else if (amount === undefined || amount === null || amount === '') {
-      amtError = undefined;
-    } else if (!isValidPositiveNumericString(amount)) {
-      amtError = t('invalidValue');
-    }
-    setAmountValueError(amtError);
-    setAmountValueErrorLocal(amtError);
-  }, [amount, amountError, setAmountValueError, setAmountValueErrorLocal, t]);
 
   const onChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,6 +121,12 @@ export const Amount = ({
     updateValue,
   ]);
 
+  const balanceDisplayValue = useMemo(() => {
+    return fiatMode
+      ? `${getFiatDisplayValue(String(balance))} ${t('available')}`
+      : `${balance} ${asset?.symbol} ${t('available')}`;
+  }, [fiatMode, getFiatDisplayValue, balance, asset?.symbol, t]);
+
   if (asset?.standard === ERC721) {
     return null;
   }
@@ -147,7 +137,7 @@ export const Amount = ({
         {t('amount')}
       </Text>
       <TextField
-        error={Boolean(amountValueError)}
+        error={Boolean(amountError)}
         onChange={onChange}
         onPaste={setAmountInputMethodPasted}
         onInput={setAmountInputMethodManual}
@@ -180,18 +170,16 @@ export const Amount = ({
       >
         <Text
           color={
-            amountValueError
-              ? TextColor.errorDefault
-              : TextColor.textAlternative
+            amountError ? TextColor.errorDefault : TextColor.textAlternative
           }
           variant={TextVariant.bodySm}
         >
-          {amountValueError ||
+          {amountError ||
             (conversionSupportedForAsset ? alternateDisplayValue : '')}
         </Text>
         <Box display={Display.Flex}>
           <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
-            {balance} {asset?.symbol} {t('available')}
+            {balanceDisplayValue}
           </Text>
           {!isNonEvmNativeSendType && (
             <ButtonLink

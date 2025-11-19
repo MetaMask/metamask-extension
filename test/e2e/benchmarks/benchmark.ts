@@ -23,7 +23,7 @@ import {
   StatisticalResult,
 } from './types-generated';
 import {
-  ALL_TRACES,
+  ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
   DEFAULT_NUM_PAGE_LOADS,
   WITH_STATE_POWER_USER,
@@ -42,14 +42,21 @@ async function measurePageStandard(
       disableServerMochaToBackground: true,
       title: 'benchmark-pageload',
     },
-    async ({ driver }) => {
+    async ({ driver, getNetworkReport, clearNetworkReport }) => {
       await unlockWallet(driver);
 
       for (let i = 0; i < pageLoads; i++) {
+        // Reset network report before next page load
+        clearNetworkReport();
+
         await driver.navigate(pageName);
         await driver.delay(1000);
 
-        metrics.push(await driver.collectMetrics());
+        const metricsThisLoad = await driver.collectMetrics();
+
+        metricsThisLoad.numNetworkReqs = getNetworkReport().numNetworkReqs;
+
+        metrics.push(metricsThisLoad);
       }
     },
   );
@@ -76,11 +83,13 @@ async function measurePagePowerUser(
       useMockingPassThrough: true,
       disableServerMochaToBackground: true,
     },
-
-    async ({ driver }) => {
+    async ({ driver, getNetworkReport, clearNetworkReport }) => {
       await unlockWallet(driver);
 
       for (let i = 0; i < pageLoads; i++) {
+        // Reset network report before next page load
+        clearNetworkReport();
+
         await driver.navigate(pageName);
 
         // Confirm the number of accounts in the account list
@@ -98,7 +107,11 @@ async function measurePagePowerUser(
         await driver.delay(1000);
 
         try {
-          metrics.push(await driver.collectMetrics());
+          const metricsThisLoad = await driver.collectMetrics();
+
+          metricsThisLoad.numNetworkReqs = getNetworkReport().numNetworkReqs;
+
+          metrics.push(metricsThisLoad);
         } catch (error) {
           // This sometimes errors in chrome-webpack-powerUser (see https://github.com/MetaMask/metamask-extension/issues/36935)
           console.error(`Error collecting metrics for ${pageName}:`, error);
@@ -169,6 +182,7 @@ async function profilePageLoad(
     let runResults: Metrics[] = [];
 
     for (let i = 0; i < browserLoads; i += 1) {
+      console.log('Starting browser load', i + 1, 'of', browserLoads);
       const result = await retry({ retries }, () =>
         measurePageFunction(pageName, pageLoads),
       );
@@ -192,7 +206,7 @@ async function profilePageLoad(
 
     const result: Record<string, number[]> = {};
 
-    for (const [key, tracePath] of Object.entries(ALL_TRACES)) {
+    for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
       // Using lodash get to support nested properties like 'navigation[0].load'
       result[key] = runResults
         .map((metrics) => get(metrics, tracePath) as number)

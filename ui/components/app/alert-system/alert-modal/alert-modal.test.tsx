@@ -206,6 +206,42 @@ describe('AlertModal', () => {
     useAlertsSpy.mockRestore();
   });
 
+  it('allows bypassing acknowledgement for danger alerts when acknowledgeBypass is true', () => {
+    const dangerAlert = alertsMock.find(
+      (alert) => alert.key === DATA_ALERT_KEY_MOCK,
+    ) as Alert;
+
+    const dangerAlertWithBypass = {
+      ...dangerAlert,
+      acknowledgeBypass: true,
+    };
+
+    const bypassStore = configureMockStore([])({
+      ...STATE_MOCK,
+      confirmAlerts: {
+        alerts: { [OWNER_ID_MOCK]: [dangerAlertWithBypass] },
+        confirmed: {
+          [OWNER_ID_MOCK]: {
+            [DATA_ALERT_KEY_MOCK]: false,
+          },
+        },
+      },
+    });
+
+    const { queryByTestId, getByTestId } = renderWithProvider(
+      <AlertModal
+        ownerId={OWNER_ID_MOCK}
+        onAcknowledgeClick={onAcknowledgeClickMock}
+        onClose={onCloseMock}
+        alertKey={DATA_ALERT_KEY_MOCK}
+      />,
+      bypassStore,
+    );
+
+    expect(queryByTestId('alert-modal-acknowledge-checkbox')).toBeNull();
+    expect(getByTestId('alert-modal-button')).toBeEnabled();
+  });
+
   it('calls onClose when the button is clicked', () => {
     const { getByLabelText } = renderWithProvider(
       <AlertModal

@@ -8,21 +8,6 @@ import {
   BalanceEmptyStateProps,
 } from './balance-empty-state';
 
-// Mock useRamps hook
-const mockOpenBuyCryptoInPdapp = jest.fn();
-jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: jest.fn(() => ({
-    openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
-  })),
-  RampsMetaMaskEntry: {
-    TokensBanner: 'tokens-banner',
-    ActivityBanner: 'activity-banner',
-    BtcBanner: 'btc-banner',
-  },
-}));
-
 const store = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -43,12 +28,14 @@ describe('BalanceEmptyState', () => {
     expect(screen.getByRole('button')).toBeInTheDocument();
   });
 
-  it('should call openBuyCryptoInPdapp when button is clicked', () => {
+  it('should open the funding method modal when button is clicked', () => {
     renderComponent();
 
     const button = screen.getByRole('button');
     fireEvent.click(button);
 
-    expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
+    expect(
+      screen.getByTestId('balance-empty-state-funding-modal'),
+    ).toBeInTheDocument();
   });
 });

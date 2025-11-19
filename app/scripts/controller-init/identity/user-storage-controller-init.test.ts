@@ -1,5 +1,4 @@
 import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
-import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
@@ -10,6 +9,7 @@ import {
   getUserStorageControllerInitMessenger,
   UserStorageControllerInitMessenger,
 } from '../messengers/identity/user-storage-controller-messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import { UserStorageControllerInit } from './user-storage-controller-init';
 
 jest.mock('@metamask/profile-sync-controller/user-storage');
@@ -24,7 +24,7 @@ function buildInitRequestMock(): jest.Mocked<
     UserStorageControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
 
   return {
     ...buildControllerInitRequestMock(),

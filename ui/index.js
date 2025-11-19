@@ -19,6 +19,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../shared/constants/app';
+import { getBrowserName } from '../shared/modules/browser-runtime.utils';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
@@ -31,6 +32,8 @@ import {
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getAllPermittedAccountsForCurrentTab,
+  getIsSocialLoginFlow,
+  getFirstTimeFlowType,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -242,6 +245,22 @@ async function startApp(metamaskState, opts) {
 async function runInitialActions(store) {
   const initialState = store.getState();
 
+  // Update browser environment with accurate browser detection from UI
+  // This corrects the initial detection from background which can't detect Brave
+  try {
+    const browserName = getBrowserName().toLowerCase();
+    const { os } = initialState.metamask.browserEnvironment || {};
+    if (os && browserName) {
+      store
+        .dispatch(actions.setBrowserEnvironment(os, browserName))
+        .catch((err) => {
+          log.error('Failed to update browser environment:', err);
+        });
+    }
+  } catch (error) {
+    log.error('Failed to get browser name:', error);
+  }
+
   // This block autoswitches chains based on the last chain used
   // for a given dapp, when there are no pending confimrations
   // This allows the user to be connected on one chain
@@ -271,8 +290,15 @@ async function runInitialActions(store) {
     };
     await validateSeedlessPasswordOutdated(initialState);
     // periodically check seedless password outdated when app UI is open
-    setInterval(() => {
+    const pwdCheckIntervalId = setInterval(() => {
       const state = store.getState();
+      const firstTimeFlowType = getFirstTimeFlowType(state);
+      const isSocialLoginFlow = getIsSocialLoginFlow(state);
+      if (firstTimeFlowType !== null && !isSocialLoginFlow) {
+        // if the onboarding type is not social login, after wallet reset, we should stop checking for password outdated
+        clearInterval(pwdCheckIntervalId);
+        return;
+      }
       validateSeedlessPasswordOutdated(state);
     }, SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS);
   } catch (e) {

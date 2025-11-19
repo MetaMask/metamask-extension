@@ -87,7 +87,7 @@ describe('SortControl', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith({
       category: 'Settings',
-      event: 'Token Sort Preference',
+      event: 'Token Sort Preference Updated',
       properties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -113,7 +113,7 @@ describe('SortControl', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith({
       category: 'Settings',
-      event: 'Token Sort Preference',
+      event: 'Token Sort Preference Updated',
       properties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention

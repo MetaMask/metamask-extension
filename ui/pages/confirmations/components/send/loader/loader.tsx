@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import {
   BITCOIN_WALLET_SNAP_ID,
   SOLANA_WALLET_SNAP_ID,
+  TRON_WALLET_SNAP_ID,
 } from '../../../../../../shared/lib/accounts';
 import LoadingScreen from '../../../../../components/ui/loading-screen';
 import { getMemoizedUnapprovedTemplatedConfirmations } from '../../../../../selectors';
@@ -20,7 +21,8 @@ export const Loader = () => {
     const pendingSend = unapprovedTemplatedConfirmations.find(
       (approval) =>
         approval.origin === SOLANA_WALLET_SNAP_ID ||
-        approval.origin === BITCOIN_WALLET_SNAP_ID,
+        approval.origin === BITCOIN_WALLET_SNAP_ID ||
+        approval.origin === TRON_WALLET_SNAP_ID,
     );
     if (pendingSend) {
       history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${pendingSend.id}`);

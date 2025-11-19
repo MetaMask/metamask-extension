@@ -1,6 +1,5 @@
 import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
-import { searchAndSwitchToNetworkFromGlobalMenuFlow } from '../../page-objects/flows/network.flow';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
 
@@ -11,9 +10,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeL2Fixtures(this.test?.fullTitle(), DEFAULT_BRIDGE_FEATURE_FLAGS),
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Add Arbitrum
-        await searchAndSwitchToNetworkFromGlobalMenuFlow(driver, 'Arbitrum');
 
         await bridgeTransaction({
           driver,

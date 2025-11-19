@@ -136,6 +136,10 @@ import {
   getRemoteFeatureFlagControllerMessenger,
 } from './remote-feature-flag-controller-messenger';
 import {
+  getRewardsControllerInitMessenger,
+  getRewardsControllerMessenger,
+} from './rewards-controller-messenger';
+import {
   getSwapsControllerInitMessenger,
   getSwapsControllerMessenger,
 } from './swaps-controller-messenger';
@@ -190,6 +194,12 @@ import {
   getUserOperationControllerInitMessenger,
   getUserOperationControllerMessenger,
 } from './user-operation-controller-messenger';
+import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
+import {
+  getClaimsControllerInitMessenger,
+  getClaimsControllerMessenger,
+} from './claims/claims-controller-messenger';
+import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -337,6 +347,12 @@ export {
 export type { SubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export type {
+  RewardsControllerMessenger,
+  RewardsControllerActions,
+  RewardsControllerEvents,
+} from './rewards-controller-messenger';
+export { getRewardsControllerMessenger } from './rewards-controller-messenger';
+export type {
   SwapsControllerMessenger,
   SwapsControllerInitMessenger,
 } from './swaps-controller-messenger';
@@ -432,6 +448,14 @@ export const CONTROLLER_MESSENGERS = {
   },
   BridgeStatusController: {
     getMessenger: getBridgeStatusControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ClaimsController: {
+    getMessenger: getClaimsControllerMessenger,
+    getInitMessenger: getClaimsControllerInitMessenger,
+  },
+  ClaimsService: {
+    getMessenger: getClaimsServiceMessenger,
     getInitMessenger: noop,
   },
   CronjobController: {
@@ -631,6 +655,14 @@ export const CONTROLLER_MESSENGERS = {
   SubscriptionService: {
     getMessenger: getSubscriptionServiceMessenger,
     getInitMessenger: noop,
+  },
+  RewardsDataService: {
+    getMessenger: getRewardsDataServiceMessenger,
+    getInitMessenger: noop,
+  },
+  RewardsController: {
+    getMessenger: getRewardsControllerMessenger,
+    getInitMessenger: getRewardsControllerInitMessenger,
   },
   SwapsController: {
     getMessenger: getSwapsControllerMessenger,

@@ -43,7 +43,7 @@ export function isConfirmTransactionRoute(pathname) {
   );
 }
 
-function getThemeFromRawTheme(theme) {
+export function getThemeFromRawTheme(theme) {
   if (theme === ThemeType.os) {
     if (window?.matchMedia('(prefers-color-scheme: dark)')?.matches) {
       return ThemeType.dark;
