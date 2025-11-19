@@ -281,15 +281,13 @@ class Driver {
 
   /**
    * Fills the given web element with the provided value.
-   * Automatically retries locating and refilling the element when a stale reference
-   * error is raised to guard against transient DOM updates during typing.
    * This method is particularly useful for automating interactions with text fields,
    * such as username or password inputs, search boxes, or any editable text areas.
    *
    * @param {string | object} rawLocator - Element locator
    * @param {string} input - The value to fill the element with
    * @param {object} [options] - Optional configuration
-   * @param {number} [options.retries] - Number of attempts to re-fill and verify the final value before failing. Defaults to 0.
+   * @param {number} [options.retries] - Number of attempts, Defaults to 0
    * @returns {Promise<WebElement>} Promise resolving to the filled element
    * @example <caption>Example to fill address in the send transaction screen</caption>
    *          await driver.fill(
@@ -297,70 +295,36 @@ class Driver {
    *                '0xc427D562164062a23a5cFf596A4a3208e72Acd28');
    */
   async fill(rawLocator, input, { retries = 0 } = {}) {
-    const retryableErrors = ['StaleElementReferenceError'];
-    const retryableErrorsCount = 3;
+    const element = await this.findElement(rawLocator);
 
-    for (let attempt = 0; attempt < retryableErrorsCount; attempt++) {
+    // No verification/retry path (default behavior)
+    if (retries === 0) {
+      await element.fill(input);
+      return element;
+    }
+
+    // Verify + retry path
+    for (let attempt = 0; attempt < retries; attempt++) {
+      await element.fill(input);
       try {
-        // No verification/retry path (default behavior)
-        if (retries === 0) {
-          const element = await this.findElement(rawLocator);
-          await element.fill(input);
-          return element;
-        }
-
-        let element;
-        // Verify + retry path
-        for (let fillAttempt = 0; fillAttempt < retries; fillAttempt++) {
-          element = await this.findElement(rawLocator);
-          await element.fill(input);
-          try {
-            const currentElement = element;
-            await this.waitUntil(
-              async () =>
-                (await currentElement.getAttribute('value')) === input,
-              { interval: 50, timeout: 1000 },
-            );
-            return element;
-          } catch (error) {
-            if (error.name === 'StaleElementReferenceError') {
-              throw error;
-            }
-
-            // On final attempt, verify the value one last time before failing
-            if (fillAttempt === retries - 1) {
-              const latestElement = await this.findElement(rawLocator);
-              const current = await latestElement.getAttribute('value');
-              if (current !== input) {
-                throw new Error(
-                  `Failed to set exact value after ${retries}. Expected '${input}', got '${current}'.`,
-                );
-              }
-              return latestElement;
-            }
-          }
-        }
-      } catch (error) {
-        if (
-          retryableErrors.includes(error.name) &&
-          attempt < retryableErrorsCount - 1
-        ) {
-          console.warn(
-            `Retrying fill (attempt ${attempt + 1}/${retryableErrorsCount}) due to: ${error.name}`,
-          );
-          await this.delay(1000);
-          continue;
-        }
-
-        throw error;
+        await this.waitUntil(
+          async () => (await element.getAttribute('value')) === input,
+          { interval: 50, timeout: 1000 },
+        );
+        return element;
+      } catch (_) {
+        // retry if attempts remain
       }
     }
 
-    throw new Error(
-      `Failed to fill element '${JSON.stringify(
-        rawLocator,
-      )}' after ${retryableErrorsCount} attempts.`,
-    );
+    const current = await element.getAttribute('value');
+    if (current !== input) {
+      throw new Error(
+        `Failed to set exact value after ${retries}. Expected '${input}', got '${current}'.`,
+      );
+    }
+
+    return element;
   }
 
   /**
