@@ -276,8 +276,6 @@ describe('Swap-Send ETH', function () {
 
           await swapSendPage.fillAmountInput('10');
 
-          await driver.delay(10000);
-
           const ETH_WETH_TOKEN_INPUTS = [
             [NATIVE_TOKEN_SYMBOL, 'WETH'],
             ['10', '10'],
