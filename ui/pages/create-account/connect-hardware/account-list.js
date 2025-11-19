@@ -249,7 +249,13 @@ class AccountList extends Component {
   renderForgetDevice() {
     return (
       <div className="hw-forget-device-container">
-        <a onClick={this.props.onForgetDevice.bind(this, this.props.device)}>
+        <a
+          onClick={this.props.onForgetDevice.bind(
+            this,
+            this.props.device,
+            this.props.selectedPath,
+          )}
+        >
           {this.context.t('forgetDevice')}
         </a>
       </div>

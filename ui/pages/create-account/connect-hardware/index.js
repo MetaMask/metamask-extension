@@ -293,7 +293,7 @@ class ConnectHardwareForm extends Component {
       });
   };
 
-  onForgetDevice = (device) => {
+  onForgetDevice = (device, hdPath) => {
     const { trackEvent } = this.context;
     const { forgetDevice } = this.props;
 
@@ -314,6 +314,14 @@ class ConnectHardwareForm extends Component {
         });
       })
       .catch((e) => {
+        trackEvent({
+          event: MetaMetricsEventName.HardwareWalletConnectionFailed,
+          properties: {
+            hd_path: hdPath,
+            device_type: capitalizeStr(device),
+          },
+        });
+
         this.setState({ error: e.message });
       });
   };
