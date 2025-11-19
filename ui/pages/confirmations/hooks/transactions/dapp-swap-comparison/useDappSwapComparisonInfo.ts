@@ -428,6 +428,10 @@ export function useDappSwapComparisonInfo(
     selectedQuote,
     selectedQuoteValueDifference,
     sourceTokenAmount: quotesInput?.srcTokenAmount,
+    minDestTokenAmountInUSD: getDestinationTokenUSDValue(
+      selectedQuote?.quote?.minDestTokenAmount ?? '0',
+      2,
+    ),
     tokenAmountDifference,
     tokenDetails,
   };
