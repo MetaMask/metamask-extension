@@ -1,4 +1,5 @@
 import { act } from '@testing-library/react';
+import { QuoteResponse } from '@metamask/bridge-controller';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import {
@@ -10,7 +11,6 @@ import { deleteDappSwapComparisonData } from '../../../../../store/actions';
 import { Confirmation } from '../../../types/confirm';
 import * as ConfirmContext from '../../../context/confirm';
 import { useDappSwapActions } from './useDappSwapActions';
-import { QuoteResponse } from '@metamask/bridge-controller';
 
 jest.mock('../../../../../store/actions', () => ({
   deleteDappSwapComparisonData: jest.fn(),
