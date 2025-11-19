@@ -34,4 +34,16 @@ describe('useSwapCheck', () => {
     );
     expect(isSwapToBeCompared).toBe(true);
   });
+
+  it('return correct value for isSwapToBeCompared', async () => {
+    const mockConfirmation = {
+      ...mockSwapConfirmation,
+      origin: 'https://metamask.github.io',
+      type: TransactionType.contractInteraction,
+    };
+    const { isSwapToBeCompared } = await runHook(
+      mockConfirmation as Confirmation,
+    );
+    expect(isSwapToBeCompared).toBe(true);
+  });
 });

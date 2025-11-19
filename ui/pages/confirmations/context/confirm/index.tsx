@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux';
 
 import { setAccountDetailsAddress } from '../../../../store/actions';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
-import syncConfirmPath from '../../hooks/syncConfirmPath';
+import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { Confirmation } from '../../types/confirm';
 
 export type ConfirmContextType = {
@@ -37,7 +37,7 @@ export const ConfirmContextProvider: React.FC<{
     QuoteResponse | undefined
   >(undefined);
   const { currentConfirmation } = useCurrentConfirmation();
-  syncConfirmPath(currentConfirmation);
+  useSyncConfirmPath(currentConfirmation);
   const dispatch = useDispatch();
 
   useEffect(() => {
