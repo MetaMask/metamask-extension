@@ -88,6 +88,7 @@ describe('SmartAccountUpdate', () => {
       <SmartAccountUpdate />,
       mockStore,
       `/confirm-transaction/${upgradeAccountConfirmation.id}`,
+      upgradeAccountConfirmation.id,
     );
 
     fireEvent.click(getByTestId('smart-account-update-close'));

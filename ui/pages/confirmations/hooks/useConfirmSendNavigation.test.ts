@@ -1,5 +1,5 @@
 import mockState from '../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as ConfirmContext from '../context/confirm';
 import { useRedesignedSendFlow } from './useRedesignedSendFlow';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
