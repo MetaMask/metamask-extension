@@ -143,6 +143,8 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
       },
     },
     true,
+    false,
+    [],
   ],
 ]
 `;
@@ -282,6 +284,8 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
       },
     },
     true,
+    false,
+    [],
   ],
 ]
 `;
