@@ -6,6 +6,7 @@
     "Failed to detect if URL hostname contains non-ASCII characters: iոfura.io:<NUMBER>/gnosis?x=test. Error: TypeError: Invalid URL",
     "Failed to get bearer token {}",
     "Failed to update remote feature flags: {}",
+    "Failed to update remote feature flags: {\"message\":\"request to https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=dev failed, reason: Nock: Disallowed net connect for \\\"client-config.api.cx.metamask.io:<NUMBER>/v1/flags?client=extension&distribution=main&environment=dev\\\"\",\"type\":\"system\",\"errno\":\"ENETUNREACH\",\"code\":\"ENETUNREACH\"}",
     "Migration <NUMBER>.<NUMBER>: Invalid PhishingController.phishingLists state",
     "Migration <NUMBER>.<NUMBER>: Invalid SelectedNetworkController domains state of type 'string'",
     "Migration <NUMBER>.<NUMBER>: Invalid SelectedNetworkController state of type 'string'",
