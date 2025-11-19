@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { QuoteResponse } from '@metamask/bridge-controller';
@@ -9,26 +10,37 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { Confirmation } from '../../../types/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
-import * as SwapCheckHook from '../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
+import * as ConfirmContext from '../../../context/confirm';
 import { DappSwapComparisonBanner } from './dapp-swap-comparison-banner';
 
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: () => mockDispatch,
-}));
-
-const mockUpdateTransaction = jest.fn();
-jest.mock('../../../../../store/actions', () => ({
-  ...jest.requireActual('../../../../../store/actions'),
-  updateTransaction: () => mockUpdateTransaction,
-}));
+jest.mock(
+  '../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackInlineAlertClicked: jest.fn(),
+      trackAlertRender: jest.fn(),
+      trackAlertActionClicked: jest.fn(),
+    })),
+  }),
+);
 
 jest.mock(
   '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo',
   () => ({
     useDappSwapComparisonInfo: jest.fn(() => ({
       selectedQuote: { destTokenAmount: 100 },
+    })),
+  }),
+);
+
+const mockCaptureDappSwapComparisonDisplayProperties = jest.fn();
+jest.mock(
+  '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonMetrics',
+  () => ({
+    useDappSwapComparisonMetrics: jest.fn(() => ({
+      captureSwapSubmit: jest.fn(),
+      captureDappSwapComparisonDisplayProperties:
+        mockCaptureDappSwapComparisonDisplayProperties,
     })),
   }),
 );
@@ -91,6 +103,7 @@ describe('<DappSwapComparisonBanner />', () => {
   const mockUseDappSwapComparisonInfo = jest.mocked(useDappSwapComparisonInfo);
 
   beforeEach(() => {
+    mockCaptureDappSwapComparisonDisplayProperties.mockClear();
     mockGetRemoteFeatureFlags.mockReturnValue({
       dappSwapMetrics: { enabled: true },
       dappSwapUi: { enabled: true, threshold: 0.01 },
@@ -127,7 +140,13 @@ describe('<DappSwapComparisonBanner />', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('call function to update confirmation when user clicks on Metamask Swap button', () => {
+  it('call function to update quote swap when user clicks on Metamask Swap button', () => {
+    const mockSetQuoteSelectedForMMSwap = jest.fn();
+    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: mockSwapConfirmation,
+      setQuoteSelectedForMMSwap: mockSetQuoteSelectedForMMSwap,
+    } as unknown as ReturnType<typeof ConfirmContext.useConfirmContext>);
+
     mockUseDappSwapComparisonInfo.mockReturnValue({
       selectedQuote: quote as unknown as QuoteResponse,
       selectedQuoteValueDifference: 0.1,
@@ -138,13 +157,29 @@ describe('<DappSwapComparisonBanner />', () => {
     const { getByText } = render();
     const quoteSwapButton = getByText('Metamask Swap');
     fireEvent.click(quoteSwapButton);
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(mockSetQuoteSelectedForMMSwap).toHaveBeenCalledTimes(1);
+    expect(
+      mockCaptureDappSwapComparisonDisplayProperties,
+    ).toHaveBeenCalledTimes(2);
+    expect(
+      mockCaptureDappSwapComparisonDisplayProperties,
+    ).toHaveBeenNthCalledWith(1, {
+      swap_mm_cta_displayed: 'true',
+    });
+    expect(
+      mockCaptureDappSwapComparisonDisplayProperties,
+    ).toHaveBeenNthCalledWith(2, {
+      swap_mm_opened: 'true',
+    });
   });
 
-  it('call function to update confirmation when user clicks on Market rate button', () => {
-    jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
-      isQuotedSwap: true,
-    });
+  it('call function to update quote swap clicks on Market rate button', () => {
+    const mockSetQuoteSelectedForMMSwap = jest.fn();
+    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: mockSwapConfirmation,
+      setQuoteSelectedForMMSwap: mockSetQuoteSelectedForMMSwap,
+    } as unknown as ReturnType<typeof ConfirmContext.useConfirmContext>);
+
     mockUseDappSwapComparisonInfo.mockReturnValue({
       selectedQuote: quote as unknown as QuoteResponse,
       selectedQuoteValueDifference: 0.1,
@@ -155,6 +190,14 @@ describe('<DappSwapComparisonBanner />', () => {
     const { getByText } = render();
     const quoteSwapButton = getByText('Market rate');
     fireEvent.click(quoteSwapButton);
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(mockSetQuoteSelectedForMMSwap).toHaveBeenCalledTimes(1);
+    expect(
+      mockCaptureDappSwapComparisonDisplayProperties,
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      mockCaptureDappSwapComparisonDisplayProperties,
+    ).toHaveBeenNthCalledWith(1, {
+      swap_mm_cta_displayed: 'true',
+    });
   });
 });
