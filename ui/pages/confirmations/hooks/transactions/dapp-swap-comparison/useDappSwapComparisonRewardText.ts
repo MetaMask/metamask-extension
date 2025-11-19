@@ -10,7 +10,7 @@ export const useDappSwapComparisonRewardText = (): {
 } | null => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const { selectedQuote } = useDappSwapComparisonInfo(undefined);
+  const { selectedQuote } = useDappSwapComparisonInfo();
   const t = useI18nContext();
 
   const { shouldShowRewardsRow, isLoading, estimatedPoints, hasError } =
