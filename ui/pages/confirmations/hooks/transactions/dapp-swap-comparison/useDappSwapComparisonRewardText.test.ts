@@ -5,8 +5,8 @@ import { getMockConfirmStateForTransaction } from '../../../../../../test/data/c
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Confirmation } from '../../../types/confirm';
-import { useDappSwapComparisonRewardText } from './useDappSwapComparisonRewardText';
 import * as DappSwapContext from '../../../context/dapp-swap';
+import { useDappSwapComparisonRewardText } from './useDappSwapComparisonRewardText';
 
 jest.mock('../../../../../hooks/bridge/useRewards');
 
