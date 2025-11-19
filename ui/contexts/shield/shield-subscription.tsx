@@ -151,7 +151,11 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
         }
 
         if (isShieldSubscriptionActive) {
-          dispatch(setShowShieldEntryModalOnce(false));
+          dispatch(
+            setShowShieldEntryModalOnce({
+              show: false,
+            }),
+          );
           return;
         }
 
@@ -214,14 +218,16 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             return;
           }
 
-          const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event
           dispatch(
-            setShowShieldEntryModalOnce(
-              true,
-              shouldSubmitUserEvents,
-              entrypointCohort,
+            setShowShieldEntryModalOnce({
+              show: true,
+              shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event
+              triggeringCohort: entrypointCohort,
               modalType,
-            ),
+              // we will show the modal but we won't update the background state yet,
+              // we will only update after the user has interacted with the modal
+              shouldUpdateBackgroundState: false,
+            }),
           );
           return;
         }
@@ -237,14 +243,16 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             modalType,
           );
           if (selectedCohort?.cohort === COHORT_NAMES.WALLET_HOME) {
-            const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event to subscription backend
             dispatch(
-              setShowShieldEntryModalOnce(
-                true,
-                shouldSubmitUserEvents,
-                selectedCohort.cohort,
+              setShowShieldEntryModalOnce({
+                show: true,
+                shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event to subscription backend
+                triggeringCohort: selectedCohort.cohort,
                 modalType,
-              ),
+                // we will show the modal but we won't update the background state yet,
+                // we will only update after the user has interacted with the modal
+                shouldUpdateBackgroundState: false,
+              }),
             );
           }
         }

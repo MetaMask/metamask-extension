@@ -33,12 +33,12 @@ describe('useNetworkManagerInitialTab() tests', () => {
     },
     {
       scenario: 'some enabled networks are not featured',
-      enabledNetworks: ['eip155:1', 'eip155:137', 'eip155:999'],
+      enabledNetworks: ['eip155:1', 'eip155:137', 'eip155:1776'],
       expectedTab: 'custom-networks',
     },
     {
       scenario: 'all enabled networks are non-featured',
-      enabledNetworks: ['eip155:999', 'eip155:1000'],
+      enabledNetworks: ['eip155:1776', 'eip155:1000'],
       expectedTab: 'custom-networks',
     },
     {

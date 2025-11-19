@@ -349,7 +349,9 @@ const TransactionShield = () => {
         {showSkeletonLoader ? (
           <Skeleton width="30%" height={24} />
         ) : (
-          <Text variant={TextVariant.bodyMdMedium}>{value}</Text>
+          <Text variant={TextVariant.bodyMdMedium} className="flex-shrink-0">
+            {value}
+          </Text>
         )}
       </Box>
     );
@@ -886,7 +888,8 @@ const TransactionShield = () => {
                       getProductPrice(productInfo as Product),
                       productInfo?.currency.toUpperCase(),
                       {
-                        maximumFractionDigits: 0,
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 0,
                       },
                     )} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`,
                 'shield-detail-charges',
