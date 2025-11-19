@@ -14,7 +14,7 @@ describe('AccountListItem Component', () => {
     const props = {
       account: {
         // NOTE: We now uses an explicit "0x" prefix since the support of non-EVM addresses
-        // accross the extension
+        // across the extension
         address: '0xmockAddress',
         balance: 'mockBalance',
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
