@@ -6,6 +6,16 @@ import PermissionConnectHeader from './permission-connect-header';
 
 const STORE_MOCK = configureMockStore()({ metamask: { pendingApprovals: {} } });
 
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
+
 describe('Permission Connect Header', () => {
   const mockOriginData = {
     origin: 'https://metamask.github.io',
@@ -13,6 +23,17 @@ describe('Permission Connect Header', () => {
   };
   const expectedTitle = 'metamask.github.io';
   const expectedAltImageText = 'metamask.github.io logo';
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({
+      pathname: '/',
+      search: '',
+      hash: '',
+      state: null,
+      key: 'test',
+    });
+  });
 
   it('renders permission connect header', () => {
     const { getByAltText } = renderWithProvider(

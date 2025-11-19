@@ -26,10 +26,14 @@ jest.mock('../../../../store/actions', () => ({
   updateAndApproveTx: jest.fn(),
 }));
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: jest.fn(),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
 jest.mock('../gas/useIsGaslessSupported');
 
 jest.mock('../gas/useGaslessSupportedSmartTransactions');

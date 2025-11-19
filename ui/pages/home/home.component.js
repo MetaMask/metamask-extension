@@ -64,7 +64,7 @@ import {
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
-import { AccountOverview } from '../../components/multichain/account-overview';
+import { AccountOverview } from '../../components/multichain';
 import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
@@ -249,6 +249,8 @@ export default class Home extends PureComponent {
         pendingApprovals,
         hasApprovalFlows,
         history,
+        '', // queryString
+        location.pathname, // currentPathname for skip-navigation optimization
       );
     }
   }

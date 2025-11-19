@@ -27,14 +27,15 @@ export const ConfirmContext = createContext<ConfirmContextType | undefined>(
 
 export const ConfirmContextProvider: React.FC<{
   children: ReactElement;
-}> = ({ children }) => {
+  confirmationId?: string;
+}> = ({ children, confirmationId }) => {
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
+  const { currentConfirmation } = useCurrentConfirmation(confirmationId);
+  useSyncConfirmPath(currentConfirmation, confirmationId);
   const [quoteSelectedForMMSwap, setQuoteSelectedForMMSwap] = useState<
     QuoteResponse | undefined
   >(undefined);
-  const { currentConfirmation } = useCurrentConfirmation();
-  useSyncConfirmPath(currentConfirmation);
 
   useEffect(() => {
     setQuoteSelectedForMMSwap(undefined);

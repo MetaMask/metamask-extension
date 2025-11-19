@@ -794,7 +794,7 @@ describe('useRewards', () => {
       expect(result.current.hasError).toBe(true);
       expect(result.current.estimatedPoints).toBeNull();
       expect(mockLogError).toHaveBeenCalledWith(
-        '[useRewards] Error estimating points:',
+        '[useRewardsWithQuote] Error estimating points:',
         error,
       );
     });
