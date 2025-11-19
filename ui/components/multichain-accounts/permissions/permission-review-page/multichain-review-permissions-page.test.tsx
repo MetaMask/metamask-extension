@@ -28,6 +28,12 @@ jest.mock('react-router-dom', () => ({
   ),
 }));
 
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => jest.fn(),
+  useLocation: () => ({ pathname: '/test', search: '', hash: '', state: null }),
+}));
+
 jest.mock('../../../../hooks/useAccountGroupsForPermissions', () => ({
   useAccountGroupsForPermissions: jest.fn(() => ({
     supportedAccountGroups: [],
