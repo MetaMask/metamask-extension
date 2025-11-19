@@ -376,9 +376,9 @@ describe('useTransactionConfirm', () => {
     expect(actual.txParams).toStrictEqual(
       expect.objectContaining({
         authorizationList: undefined,
-        data: '0x1234567890abcdef',
+        data: '',
         from: '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b',
-        gas: '0x91855',
+        gas: '0x619f7',
         maxFeePerGas: '0xaa350353',
         maxPriorityFeePerGas: '0x59682f00',
         to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
