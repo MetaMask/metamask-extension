@@ -9,7 +9,7 @@ export type MockedDiscoveredAccount = {
 };
 
 export const TEST_SRPS_TO_MOCKED_DISCOVERED_ACCOUNTS: {
-  [srp: string]: MockedDiscoveredAccount[],
+  [srp: string]: MockedDiscoveredAccount[];
 } = {
   [E2E_SRP]: [
     {
@@ -30,6 +30,10 @@ export const TEST_SRPS_TO_MOCKED_DISCOVERED_ACCOUNTS: {
     },
   ],
 };
+
+function asJsonBody(body: object | undefined) {
+  return body ? JSON.stringify(body, null, 2) : '<no-body>';
+}
 
 export class MockedDiscoveryBuilder {
   readonly #srp: string;
@@ -69,62 +73,67 @@ export class MockedDiscoveryBuilder {
     return this;
   }
 
+  async #mockEvmDiscoveryOnce(
+    mockServer: Mockttp,
+    address: string,
+    shouldStop: boolean = false,
+  ) {
+    console.log(
+      `Mocking EVM discovery request for: "${address}"${shouldStop ? ' (shouldStop)' : ''}`,
+    );
+    return await mockServer
+      .forPost(INFURA_MAINNET_URL)
+      .once()
+      .withJsonBodyIncluding({
+        method: 'eth_getTransactionCount',
+      })
+      .withBodyIncluding(address)
+      .once()
+      .thenCallback(async (request) => {
+        const json = await request.body.getJson();
+        console.log(
+          `Mocked EVM discovery request for: "${address}" -> ${asJsonBody(json)}`,
+        );
 
-async #mockEvmDiscoveryOnce(
-  mockServer: Mockttp,
-  address: string,
-  shouldStop: boolean = false,
-) {
-  console.log(`Mocking EVM discovery request for: "${address}"${shouldStop ? ' (shouldStop)' : ''}`);
-  return await mockServer
-    .forPost(INFURA_MAINNET_URL)
-    .once()
-    .withJsonBodyIncluding({
-      method: 'eth_getTransactionCount',
-    })
-    .withBodyIncluding(address)
-    .once()
-    .thenCallback(async (request) => {
-      const json = await request.body.getJson();
-      console.log(`Mocked EVM discovery request for: "${address}" -> ${json}`);
+        return {
+          statusCode: 200,
+          json: {
+            jsonrpc: '2.0',
+            id: '1',
+            result: shouldStop ? '0x0' : '0x1',
+          },
+        };
+      });
+  }
 
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: '1',
-          result: shouldStop ? '0x0' : '0x1',
-        },
-      };
-    });
-}
+  async #mockSolDiscoveryOnce(mockServer: Mockttp, address: string) {
+    console.log(`Mocking SOL discovery request for: "${address}"`);
+    return await mockServer
+      .forPost(SOLANA_URL_REGEX_MAINNET)
+      .withJsonBodyIncluding({
+        method: 'getSignaturesForAddress',
+      })
+      .withBodyIncluding(address)
+      .once()
+      .thenCallback(async (request) => {
+        const json = await request.body.getJson();
+        console.log(
+          `Mocked SOL discovery request for: "${address}" -> ${asJsonBody(json)}`,
+        );
 
-async #mockSolDiscoveryOnce(mockServer: Mockttp, address: string) {
-  console.log(`Mocking SOL discovery request for: "${address}"`);
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX_MAINNET)
-    .withJsonBodyIncluding({
-      method: 'getSignaturesForAddress',
-    })
-    .withBodyIncluding(address)
-    .once()
-    .thenCallback(async (request) => {
-      const json = await request.body.getJson();
-      console.log(`Mocked SOL discovery request for: "${address}" -> ${json}`);
-
-      return {
-        statusCode: 200,
-        json: {
-          id: '1',
-          jsonrpc: '2.0',
-          // NOTE: For now, Solana discovery is not returning anything, and we mainly
-          // rely on the EVM one for custom logic. Though, we still need to mock those
-          // network requests regardless.
-          result: [],
-        },
-      };
-    });
-}
+        return {
+          statusCode: 200,
+          json: {
+            id: '1',
+            jsonrpc: '2.0',
+            // NOTE: For now, Solana discovery is not returning anything, and we mainly
+            // rely on the EVM one for custom logic. Though, we still need to mock those
+            // network requests regardless.
+            result: [],
+          },
+        };
+      });
+  }
 
   async mock(mockServer: Mockttp): Promise<void> {
     const srp = this.#srp;
@@ -142,7 +151,7 @@ async #mockSolDiscoveryOnce(mockServer: Mockttp, address: string) {
     const untilGroupIndex = this.#untilGroupIndex ?? maxGroupIndex;
     if (untilGroupIndex > maxGroupIndex) {
       throw new Error(
-        `SRP accounts have a max group index of ${maxGroupIndex}, it cannot go until ${untilGroupIndex} group index (srp="${srp}")`
+        `SRP accounts have a max group index of ${maxGroupIndex}, it cannot go until ${untilGroupIndex} group index (srp="${srp}")`,
       );
     }
 
@@ -151,7 +160,8 @@ async #mockSolDiscoveryOnce(mockServer: Mockttp, address: string) {
       const solAddress = account[ACCOUNT_TYPE.Solana];
 
       const shouldSkip = this.#skipGroupIndex.has(index);
-      const shouldStop = this.#stopAt.has(evmAddress) || index === untilGroupIndex;
+      const shouldStop =
+        this.#stopAt.has(evmAddress) || index === untilGroupIndex;
 
       // We only use EVM to stop the discovery for now.
       if (!shouldSkip) {
