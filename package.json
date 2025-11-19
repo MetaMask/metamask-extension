@@ -132,6 +132,8 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/bridge-status-controller@^60.1.0": "npm:@metamask-previews/bridge-status-controller@61.0.0-preview-f4ab1511",
+    "@metamask/bridge-controller@^60.1.0": "npm:@metamask-previews/bridge-controller@61.0.0-preview-f4ab1511",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",

@@ -5757,9 +5757,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^60.1.0":
-  version: 60.1.0
-  resolution: "@metamask/bridge-controller@npm:60.1.0"
+"@metamask/bridge-controller@npm:@metamask-previews/bridge-controller@61.0.0-preview-f4ab1511":
+  version: 61.0.0-preview-f4ab1511
+  resolution: "@metamask-previews/bridge-controller@npm:61.0.0-preview-f4ab1511"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5780,18 +5780,18 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/accounts-controller": ^34.0.0
-    "@metamask/assets-controllers": ^88.0.0
+    "@metamask/assets-controllers": ^89.0.0
     "@metamask/network-controller": ^25.0.0
     "@metamask/remote-feature-flag-controller": ^2.0.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^61.0.0
-  checksum: 10/f308a325d8c13bf21b5b4cd3823660312a4bc2721f635f533baee64fc6141979a83a5de9cc4e5be99a7735e838b1e3520bc5b26f4759198ca3eff16d8422496a
+  checksum: 10/6149121cd419b58ccc9de744cc8ac035d14a9259124f19a0097147a63510a801d931605c9f05d785473e3f5d58765971809d6b8df1ee052cd651d39e553e7afa
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^60.1.0":
-  version: 60.1.0
-  resolution: "@metamask/bridge-status-controller@npm:60.1.0"
+"@metamask/bridge-status-controller@npm:@metamask-previews/bridge-status-controller@61.0.0-preview-f4ab1511":
+  version: 61.0.0-preview-f4ab1511
+  resolution: "@metamask-previews/bridge-status-controller@npm:61.0.0-preview-f4ab1511"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.15.0"
@@ -5802,12 +5802,12 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/accounts-controller": ^34.0.0
-    "@metamask/bridge-controller": ^60.0.0
+    "@metamask/bridge-controller": ^61.0.0
     "@metamask/gas-fee-controller": ^25.0.0
     "@metamask/network-controller": ^25.0.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^61.0.0
-  checksum: 10/94552840a28eae74465db95a01033fb19d5db190ce58359a1bad0719cd735db3e271581f27682102573dc457a7ce2516b76c0d219313f3a29c57a34674a2246d
+  checksum: 10/5375344e7f9534f453da851afffd7066ab01e3453dfe2e8f35e7be6d371d861aba22f7770e49eace3ac905ae47a4db6e6b2ce3c90cba8c653f08a8af3349b84a
   languageName: node
   linkType: hard
 
