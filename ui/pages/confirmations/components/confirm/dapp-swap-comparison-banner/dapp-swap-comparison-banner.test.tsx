@@ -219,6 +219,6 @@ describe('<DappSwapComparisonBanner />', () => {
       estimatedPoints: 100,
     });
     const { getByText } = render();
-    expect(getByText('Earn 100 points')).toBeInTheDocument();
+    expect(getByText(/Earn 100 points/u)).toBeInTheDocument();
   });
 });
