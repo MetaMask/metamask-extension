@@ -3,6 +3,7 @@ import { SemVerVersion } from '@metamask/utils';
 import { ControllerInitFunction } from '../types';
 import { SnapsRegistryMessenger } from '../messengers/snaps';
 import { getBooleanFlag } from '../../lib/util';
+import {} from 'semver';
 
 /**
  * Initialize the Snaps registry controller.
@@ -27,7 +28,11 @@ export const SnapsRegistryInit: ControllerInitFunction<
     refetchOnAllowlistMiss: requireAllowlist,
     clientConfig: {
       type: 'extension',
-      version: process.env.METAMASK_VERSION as SemVerVersion,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      version: process.env.METAMASK_VERSION!.replace(
+        '-flask.0',
+        '',
+      ) as SemVerVersion,
     },
   });
 
