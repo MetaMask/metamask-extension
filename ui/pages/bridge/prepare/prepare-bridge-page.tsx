@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import BigNumber from 'bignumber.js';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
@@ -57,6 +58,7 @@ import {
   getFromAccount,
   getIsStxEnabled,
   getIsGasIncluded,
+  getFromTokenBalance,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -122,10 +124,9 @@ import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
-import { BridgeInputGroup } from './bridge-input-group';
+import { BridgeInputGroup, sanitizeAmountInput } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
-import { useNonEvmInsufficientBalOverride } from '../../../hooks/bridge/useNonEvmInsufficientBalOverride';
 
 /**
  * Ensures that any missing network gets added to the NetworkEnabledMap (which handles network polling)
@@ -207,6 +208,7 @@ const PrepareBridgePage = ({
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
+  const fromTokenBalance = useSelector(getFromTokenBalance);
   const {
     isLoading,
     // This quote may be older than the refresh rate, but we keep it for display purposes
@@ -363,12 +365,19 @@ const PrepareBridgePage = ({
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
-  const insufficientBalOverride = useNonEvmInsufficientBalOverride({
-    fromAmount,
-    fromChain: fromChain ?? null,
-    fromToken,
-    accountId: selectedAccount?.id,
-  });
+  const insufficientBalOverride = useMemo(() => {
+    if (
+      !fromChain ||
+      !isNonEvmChainId(fromChain.chainId) ||
+      !fromAmount ||
+      !fromTokenBalance
+    ) {
+      return undefined;
+    }
+
+    const sanitizedAmount = sanitizeAmountInput(fromAmount);
+    return new BigNumber(fromTokenBalance).lt(sanitizedAmount);
+  }, [fromAmount, fromChain, fromTokenBalance]);
 
   const quoteParams:
     | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
@@ -382,7 +391,7 @@ const PrepareBridgePage = ({
               fromAmount && fromToken?.decimals
                 ? calcTokenValue(
                     // Treat empty or incomplete amount as 0 to reject NaN
-                    ['', '.'].includes(fromAmount) ? '0' : fromAmount,
+                    sanitizeAmountInput(fromAmount),
                     fromToken.decimals,
                   )
                     .toFixed()
