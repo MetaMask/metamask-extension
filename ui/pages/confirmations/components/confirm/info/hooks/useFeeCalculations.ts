@@ -1,5 +1,5 @@
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { QuoteResponse, TxData } from '@metamask/bridge-controller';
+import { TxData } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex, add0x } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
