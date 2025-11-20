@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { createDownloadFolder, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -8,7 +7,7 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import { mockPriceApi } from '../tokens/utils/mocks';
 
 import referenceStateLogsDefinition from './state-logs.json';
 import {
@@ -37,31 +36,14 @@ describe('State logs', function () {
               showNativeTokenAsMainBalance: false,
             },
           })
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockServer
-            .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-            .withQuery({ baseCurrency: 'usd' })
-            .thenCallback(() => ({
-              statusCode: 200,
-              json: {
-                eth: {
-                  name: 'Ethereum',
-                  ticker: 'eth',
-                  value: 1,
-                  currencyType: 'fiat',
-                },
-              },
-            }));
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
-              price: 3401,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
-        },
+        testSpecificMock: mockPriceApi,
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
@@ -111,30 +93,7 @@ describe('State logs', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
-              price: 3401,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
-          await mockServer
-            .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-            .withQuery({ baseCurrency: 'usd' })
-            .thenCallback(() => ({
-              statusCode: 200,
-              json: {
-                eth: {
-                  name: 'Ethereum',
-                  ticker: 'eth',
-                  value: 1,
-                  currencyType: 'fiat',
-                  usd: 1,
-                },
-              },
-            }));
-        },
+        testSpecificMock: mockPriceApi,
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
