@@ -18,10 +18,6 @@ class ShieldSubscriptionApprovePage extends TransactionConfirmation {
   private readonly subscriptionDetailsSection: RawLocator =
     '[data-testid="shield-subscription-approve__subscription_details_section"]';
 
-  constructor(driver: Driver) {
-    super(driver);
-  }
-
   async checkPageIsLoaded(): Promise<void> {
     console.log('Checking Shield Subscription Approve page is loaded');
     await this.driver.waitForMultipleSelectors([
