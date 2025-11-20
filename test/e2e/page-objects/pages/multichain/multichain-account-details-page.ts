@@ -41,6 +41,9 @@ class MultichainAccountDetailsPage {
   // Account-specific features
   private readonly showSrpButton = '[data-testid="account-show-srp-button"]';
 
+  private readonly secretRecoveryPhraseRow =
+    '[data-testid="multichain-srp-backup"]';
+
   private readonly showPrivateKeyButton =
     '[data-testid="account-show-private-key-button"]';
 
@@ -248,6 +251,12 @@ class MultichainAccountDetailsPage {
   async clickViewOnEtherscanButton(): Promise<void> {
     console.log('Click on the view on etherscan button');
     await this.driver.clickElement(this.viewOnEtherscanButton);
+    await this.driver.delay(largeDelayMs);
+  }
+
+  async clickSecretRecoveryPhraseRow(): Promise<void> {
+    console.log('Click on the Secret Recovery Phrase row');
+    await this.driver.clickElement(this.secretRecoveryPhraseRow);
     await this.driver.delay(largeDelayMs);
   }
 

@@ -14,6 +14,7 @@ import {
   mockActiveNetworks,
   withMultiSrp,
 } from './common-multi-srp';
+import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 
 const TEST_SRP_WORDS_FOR_UI_TEST = [
   'ghost',
@@ -56,7 +57,11 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.startExportSrpForAccount('Account 2');
+        await accountListPage.openAccountDetailsModal('Account 2');
+
+        const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+        await accountDetailsPage.checkPageIsLoaded();
+        await accountDetailsPage.clickSecretRecoveryPhraseRow();
 
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.completeRevealSrpQuiz();

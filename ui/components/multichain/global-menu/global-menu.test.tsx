@@ -48,6 +48,10 @@ jest.mock('react-router-dom-v5-compat', () => ({
 
 const mockLockMetaMask = jest.fn();
 
+jest.mock('../../../store/actions', () => ({
+  lockMetamask: () => mockLockMetaMask,
+}));
+
 jest.mock('../../../../shared/modules/environment');
 
 jest.mock('../../../hooks/useSidePanelEnabled', () => ({
