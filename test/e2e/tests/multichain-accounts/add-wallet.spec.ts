@@ -15,10 +15,51 @@ import {
   getAccountsSyncMockResponse,
 } from '../identity/account-syncing/mock-data';
 import { mockIdentityServices } from '../identity/mocks';
-import { mockEtherumSpotPrices } from '../tokens/utils/mocks';
 import { withMultichainAccountsDesignEnabled } from './common';
 
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '42,500.00';
+
+async function mockPriceApi(mockServer: Mockttp) {
+  const spotPricesMockEth = await mockServer
+    .forGet(
+      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+    )
+
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        '0x0000000000000000000000000000000000000000': {
+          id: 'ethereum',
+          price: 1,
+          marketCap: 112500000,
+          totalVolume: 4500000,
+          dilutedMarketCap: 120000000,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+  const mockExchangeRates = await mockServer
+    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: 1 / 1700,
+          currencyType: 'crypto',
+        },
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
+
+  return [spotPricesMockEth, mockExchangeRates];
+}
 
 describe('Add wallet', function () {
   const arrange = async () => {
@@ -49,7 +90,7 @@ describe('Add wallet', function () {
               getResponse: mockedAccountSyncResponse,
             },
           );
-          await mockEtherumSpotPrices(server);
+          await mockPriceApi(server);
           return mockIdentityServices(server, userStorageMockttpController);
         },
         title: this.test?.fullTitle(),
@@ -90,6 +131,7 @@ describe('Add wallet', function () {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
+        testSpecificMock: mockPriceApi,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
@@ -114,7 +156,8 @@ describe('Add wallet', function () {
           .withKeyringControllerImportedAccountVault()
           .withPreferencesControllerImportedAccountIdentities()
           .build(),
-        testSpecificMock: (server: Mockttp) => {
+        testSpecificMock: async (server: Mockttp) => {
+          await mockPriceApi(server);
           userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
@@ -170,7 +213,8 @@ describe('Add wallet', function () {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
           .build(),
-        testSpecificMock: (server: Mockttp) => {
+        testSpecificMock: async (server: Mockttp) => {
+          await mockPriceApi(server);
           userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
