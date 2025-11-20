@@ -37,6 +37,8 @@ import {
   getPeriodFrequencyValueTranslationKey,
   convertAmountPerSecondToAmountPerPeriod,
   getDecimalizedHexValue,
+  extractExpiryToReadableDate,
+  GatorPermissionRule,
 } from '../../../../../../shared/lib/gator-permissions';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
@@ -160,33 +162,19 @@ export const ReviewGatorPermissionItem = ({
   };
 
   /**
-   * Returns the expiration date from the delegation context
+   * Returns the expiration date from the permission rules
    *
    * @returns The expiration date
    */
   const getExpirationDate = useCallback((): string => {
-    // Check if rules exist in the permission response
-    if ('rules' in permissionResponse) {
-      const { rules } = permissionResponse;
-
-      if (rules && Array.isArray(rules)) {
-        const expiryRule = rules.find(
-          (rule: { type: string }) => rule.type === 'expiry',
-        );
-
-        if (
-          expiryRule &&
-          'data' in expiryRule &&
-          expiryRule.data &&
-          typeof expiryRule.data === 'object' &&
-          'timestamp' in expiryRule.data
-        ) {
-          const { timestamp } = expiryRule.data;
-          return convertTimestampToReadableDate(timestamp as number);
-        }
+    if ('rules' in permissionResponse && permissionResponse.rules) {
+      const expiryDate = extractExpiryToReadableDate(
+        permissionResponse.rules as GatorPermissionRule[],
+      );
+      if (expiryDate) {
+        return expiryDate;
       }
     }
-
     return t('gatorPermissionNoExpiration');
   }, [permissionResponse, t]);
 
