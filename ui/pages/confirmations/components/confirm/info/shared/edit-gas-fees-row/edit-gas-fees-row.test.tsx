@@ -77,7 +77,7 @@ describe('<EditGasFeesRow />', () => {
   it('does not renders edit gas fee button for quote suggested swap', () => {
     jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
       isQuotedSwapDisplayedInInfo: true,
-      quoteSelectedForMMSwap: {} as unknown as QuoteResponse,
+      selectedQuote: {} as unknown as QuoteResponse,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: jest.fn(),
     } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);

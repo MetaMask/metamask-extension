@@ -5615,6 +5615,12 @@
   "rewardsErrorMessagesSomethingWentWrong": {
     "message": "Something went wrong. Please try again shortly."
   },
+  "rewardsLinkAccount": {
+    "message": "Add account"
+  },
+  "rewardsLinkAccountError": {
+    "message": "Failed to add account"
+  },
   "rewardsOnboardingIntroDescription": {
     "message": "Earn points for your activity. \nAdvance through levels to unlock rewards."
   },

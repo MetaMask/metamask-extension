@@ -25,6 +25,18 @@ jest.mock('../../store/actions', () => ({
   ),
 }));
 
+// Mock the rewards duck to spy on setRewardsAccountLinkedTimestamp
+jest.mock('../../ducks/rewards', () => {
+  const actual = jest.requireActual('../../ducks/rewards');
+  return {
+    ...actual,
+    setRewardsAccountLinkedTimestamp: jest.fn((timestamp: number) => ({
+      type: 'rewards/setRewardsAccountLinkedTimestamp',
+      payload: timestamp,
+    })),
+  };
+});
+
 const {
   rewardsIsOptInSupported,
   rewardsGetOptInStatus,
@@ -33,6 +45,12 @@ const {
   rewardsIsOptInSupported: jest.Mock;
   rewardsGetOptInStatus: jest.Mock;
   rewardsLinkAccountsToSubscriptionCandidate: jest.Mock;
+};
+
+const {
+  setRewardsAccountLinkedTimestamp: mockSetRewardsAccountLinkedTimestamp,
+} = jest.requireMock('../../ducks/rewards') as {
+  setRewardsAccountLinkedTimestamp: jest.Mock;
 };
 
 // Simple container to provide MetaMetrics context
@@ -233,6 +251,12 @@ describe('useLinkAccountGroup', () => {
       expect(completedCount).toBe(1);
       expect(failedCount).toBe(1);
 
+      // Verify timestamp is set when at least one account succeeds
+      expect(mockSetRewardsAccountLinkedTimestamp).toHaveBeenCalledTimes(1);
+      expect(mockSetRewardsAccountLinkedTimestamp).toHaveBeenCalledWith(
+        expect.any(Number),
+      );
+
       expect(result.current.isError).toBe(true);
       expect(report).toEqual({
         success: false,
@@ -288,10 +312,119 @@ describe('useLinkAccountGroup', () => {
       expect(completedCount).toBe(0);
       expect(failedCount).toBe(2);
 
+      // Verify timestamp is NOT set when all accounts fail
+      expect(mockSetRewardsAccountLinkedTimestamp).not.toHaveBeenCalled();
+
       expect(result.current.isError).toBe(true);
       expect(report).toEqual({
         success: false,
         byAddress: { '0x111': false, '0x222': false },
+      });
+    });
+
+    it('links all accounts successfully, dispatches timestamp, and returns success', async () => {
+      const a1 = createMockInternalAccount({ id: 'acc-1', address: '0x111' });
+      const a2 = createMockInternalAccount({ id: 'acc-2', address: '0x222' });
+      const state = buildStateWithAccounts([a1, a2]);
+
+      (rewardsIsOptInSupported as jest.Mock).mockImplementation(
+        () => () => true,
+      );
+      (rewardsGetOptInStatus as jest.Mock).mockImplementation(
+        () => async () => ({ ois: [false, false] }),
+      );
+      (
+        rewardsLinkAccountsToSubscriptionCandidate as jest.Mock
+      ).mockImplementation(() => async () => [
+        { account: a1, success: true },
+        { account: a2, success: true },
+      ]);
+
+      const { result } = renderHookWithProvider(
+        () => useLinkAccountGroup(GROUP_ID),
+        state,
+        undefined,
+        Container,
+      );
+
+      let report;
+      await act(async () => {
+        report = await result.current.linkAccountGroup();
+      });
+
+      expect(rewardsIsOptInSupported).toHaveBeenCalledTimes(2);
+      expect(rewardsGetOptInStatus).toHaveBeenCalledTimes(1);
+      expect(rewardsLinkAccountsToSubscriptionCandidate).toHaveBeenCalledTimes(
+        1,
+      );
+
+      // Metrics: started for both, then completed for both
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalled();
+      });
+      const calls = mockTrackEvent.mock.calls.map((args) => args[0]);
+      const eventNames = calls.map(
+        (c: { event: MetaMetricsEventName }) => c.event,
+      );
+      const startedCount = eventNames.filter(
+        (e) => e === MetaMetricsEventName.RewardsAccountLinkingStarted,
+      ).length;
+      const completedCount = eventNames.filter(
+        (e) => e === MetaMetricsEventName.RewardsAccountLinkingCompleted,
+      ).length;
+      const failedCount = eventNames.filter(
+        (e) => e === MetaMetricsEventName.RewardsAccountLinkingFailed,
+      ).length;
+
+      expect(startedCount).toBe(2);
+      expect(completedCount).toBe(2);
+      expect(failedCount).toBe(0);
+
+      // Verify timestamp is set when all accounts succeed
+      expect(mockSetRewardsAccountLinkedTimestamp).toHaveBeenCalledTimes(1);
+      expect(mockSetRewardsAccountLinkedTimestamp).toHaveBeenCalledWith(
+        expect.any(Number),
+      );
+
+      expect(result.current.isError).toBe(false);
+      expect(report).toEqual({
+        success: true,
+        byAddress: { '0x111': true, '0x222': true },
+      });
+    });
+
+    it('does not dispatch timestamp when no accounts are supported', async () => {
+      const a1 = createMockInternalAccount({ id: 'acc-1', address: '0x111' });
+      const a2 = createMockInternalAccount({ id: 'acc-2', address: '0x222' });
+      const state = buildStateWithAccounts([a1, a2]);
+
+      (rewardsIsOptInSupported as jest.Mock).mockImplementation(
+        () => () => false,
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useLinkAccountGroup(GROUP_ID),
+        state,
+        undefined,
+        Container,
+      );
+
+      let report;
+      await act(async () => {
+        report = await result.current.linkAccountGroup();
+      });
+
+      expect(rewardsIsOptInSupported).toHaveBeenCalledTimes(2);
+      expect(rewardsGetOptInStatus).not.toHaveBeenCalled();
+      expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
+
+      // Verify timestamp is NOT set when no accounts are supported
+      expect(mockSetRewardsAccountLinkedTimestamp).not.toHaveBeenCalled();
+
+      expect(result.current.isError).toBe(true);
+      expect(report).toEqual({
+        success: false,
+        byAddress: {},
       });
     });
   });

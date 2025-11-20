@@ -15,6 +15,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { getAccountTypeCategory } from '../../pages/multichain-accounts/account-details/account-type-utils';
+import { setRewardsAccountLinkedTimestamp } from '../../ducks/rewards';
 
 type LinkStatusReport = {
   success: boolean;
@@ -144,6 +145,10 @@ export const useLinkAccountGroup = (
               result.account,
             );
           }
+        }
+
+        if (results.some((result) => result.success)) {
+          dispatch(setRewardsAccountLinkedTimestamp(Date.now()));
         }
       } catch (err) {
         // Mark all accounts as failed and emit failure events
