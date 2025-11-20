@@ -38,8 +38,21 @@ async function mockSnapSimpleKeyringAndSiteWithSpotPrices(
         },
       },
     }));
+  const mockExchangeRates = await mockServer
+    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ethereum',
+          ticker: 'eth',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
 
-  return [...snapMocks, spotPricesMock];
+  return [...snapMocks, spotPricesMock, mockExchangeRates];
 }
 
 describe('Snap Account Transfers', function (this: Suite) {
@@ -49,7 +62,6 @@ describe('Snap Account Transfers', function (this: Suite) {
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
-        fixtures: new FixtureBuilder().build(),
         fixtures: new FixtureBuilder()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .withShowFiatTestnetEnabled()
