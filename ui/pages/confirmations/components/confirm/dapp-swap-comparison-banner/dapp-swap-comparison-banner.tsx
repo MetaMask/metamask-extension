@@ -37,6 +37,36 @@ const enum SwapType {
   Metamask = 'metamask',
 }
 
+// Swaps tabs are memoized to prevent animation jitter in MMSwap tab
+const SwapTabs = React.memo(
+  ({ onTabClick }: { onTabClick: (key: string) => void }) => {
+    const t = useI18nContext();
+
+    return (
+      <Tabs
+        defaultActiveTabKey="marketRate"
+        onTabClick={onTabClick}
+        tabListProps={{
+          className: 'dapp-swap__tabs',
+        }}
+      >
+        <Tab
+          tabKey="marketRate"
+          name={t('marketRate')}
+          className="flex-1"
+          data-testid="market-rate-tab"
+        />
+        <Tab
+          tabKey="mmswap"
+          name={t('metamaskSwap')}
+          className="flex-1 animate-mm-swap-text"
+          data-testid="metamask-swap-tab"
+        />
+      </Tabs>
+    );
+  },
+);
+
 const DappSwapComparisonInner = () => {
   const t = useI18nContext();
   const {
@@ -123,34 +153,15 @@ const DappSwapComparisonInner = () => {
     setSelectedQuote(selectedQuote);
   }, [selectedQuote, setSelectedQuote]);
 
-  if (!swapComparisonDisplayed) {
-    return null;
-  }
+  // if (!swapComparisonDisplayed) {
+  //   return null;
+  // }
 
   const dappTypeSelected = selectedSwapType === SwapType.Current;
 
   return (
     <Box>
-      <Tabs
-        defaultActiveTabKey="marketRate"
-        onTabClick={onTabClick}
-        tabListProps={{
-          className: 'dapp-swap__tabs',
-        }}
-      >
-        <Tab
-          tabKey="marketRate"
-          name={t('marketRate')}
-          className="flex-1"
-          data-testid="market-rate-tab"
-        />
-        <Tab
-          tabKey="mmswap"
-          name={t('metamaskSwap')}
-          className="flex-1"
-          data-testid="metamask-swap-tab"
-        />
-      </Tabs>
+      <SwapTabs onTabClick={onTabClick} />
       {showDappSwapComparisonBanner && dappTypeSelected && (
         <Box
           className="dapp-swap_callout"
