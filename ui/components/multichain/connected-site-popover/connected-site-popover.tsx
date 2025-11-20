@@ -188,22 +188,13 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
             </ButtonLink>
           </Box>
         )}
-        <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
-          <ButtonSecondary
-            block
-            onClick={() => {
-              if (isConnected) {
-                onClick();
-              } else {
-                global.platform.openTab({
-                  url: 'https://app.metamask.io/explore/dapps',
-                });
-              }
-            }}
-          >
-            {isConnected ? t('managePermissions') : t('exploreweb3')}
-          </ButtonSecondary>
-        </Box>
+        {isConnected && (
+          <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
+            <ButtonSecondary block onClick={() => onClick()}>
+              {t('managePermissions')}
+            </ButtonSecondary>
+          </Box>
+        )}
       </Box>
     </Popover>
   );
