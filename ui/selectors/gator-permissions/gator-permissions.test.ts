@@ -16,7 +16,11 @@ import {
   AppState,
   getPermissionGroupMetaData,
   getPermissionMetaDataByOrigin,
+  getUniqueSiteOriginsFromTokenTransferPermissions,
   getTokenTransferPermissionsByOrigin,
+  getGatorPermissionCountsBySiteOrigin,
+  getTotalUniqueSitesCount,
+  getMergedConnectionsListWithGatorPermissions,
   getPendingRevocations,
 } from './gator-permissions';
 
@@ -1327,6 +1331,97 @@ describe('Gator Permissions Selectors', () => {
     });
   });
 
+  describe('getUniqueSiteOriginsFromTokenTransferPermissions', () => {
+    it('should return unique site origins from token transfer permissions', () => {
+      const result =
+        getUniqueSiteOriginsFromTokenTransferPermissions(mockState);
+
+      expect(result).toEqual(
+        expect.arrayContaining([
+          'http://localhost:8000',
+          'http://localhost:8001',
+        ]),
+      );
+      expect(result).toHaveLength(2);
+    });
+
+    it('should return empty array when no permissions exist', () => {
+      const emptyState = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify({
+            'native-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'native-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            other: {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+          }),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          isUpdatingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
+        },
+      };
+
+      const result =
+        getUniqueSiteOriginsFromTokenTransferPermissions(emptyState);
+      expect(result).toEqual([]);
+    });
+
+    it('should deduplicate site origins across multiple chains', () => {
+      const customMockGatorPermissionsMap =
+        mockGatorPermissionsStorageEntriesFactory({
+          [MOCK_CHAIN_ID_MAINNET]: {
+            nativeTokenStream: 2,
+            nativeTokenPeriodic: 1,
+            erc20TokenStream: 1,
+            siteOrigin: 'https://example.com',
+          },
+          [MOCK_CHAIN_ID_POLYGON]: {
+            nativeTokenStream: 1,
+            nativeTokenPeriodic: 2,
+            erc20TokenStream: 1,
+            siteOrigin: 'https://example.com',
+          },
+        });
+
+      const customState = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify(
+            customMockGatorPermissionsMap,
+          ),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          isUpdatingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
+        },
+      };
+
+      const result =
+        getUniqueSiteOriginsFromTokenTransferPermissions(customState);
+      expect(result).toEqual(['https://example.com']);
+      expect(result).toHaveLength(1);
+    });
+  });
+
   describe('getTokenTransferPermissionsByOrigin', () => {
     describe('token transfer permissions by origin', () => {
       it('should return correct permissions for a site origin with permissions', () => {
@@ -1851,6 +1946,165 @@ describe('Gator Permissions Selectors', () => {
       );
 
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('getGatorPermissionCountsBySiteOrigin', () => {
+    it('should return a map with permission counts per site origin', () => {
+      const result = getGatorPermissionCountsBySiteOrigin(mockState);
+
+      expect(result).toBeInstanceOf(Map);
+      expect(result.get('http://localhost:8000')).toBe(5);
+      expect(result.get('http://localhost:8001')).toBe(3);
+    });
+
+    it('should return an empty map when no permissions exist', () => {
+      const emptyState = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify({
+            'native-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'native-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            other: {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+          }),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
+        },
+      };
+
+      const result = getGatorPermissionCountsBySiteOrigin(emptyState);
+      expect(result).toBeInstanceOf(Map);
+      expect(result.size).toBe(0);
+    });
+
+    it('should aggregate counts for the same site origin across multiple chains', () => {
+      const customMockGatorPermissionsMap =
+        mockGatorPermissionsStorageEntriesFactory({
+          [MOCK_CHAIN_ID_MAINNET]: {
+            nativeTokenStream: 2,
+            nativeTokenPeriodic: 1,
+            erc20TokenStream: 1,
+            siteOrigin: 'https://example.com',
+          },
+          [MOCK_CHAIN_ID_POLYGON]: {
+            nativeTokenStream: 1,
+            nativeTokenPeriodic: 2,
+            erc20TokenStream: 1,
+            siteOrigin: 'https://example.com',
+          },
+        });
+
+      const customState = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify(
+            customMockGatorPermissionsMap,
+          ),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
+        },
+      };
+
+      const result = getGatorPermissionCountsBySiteOrigin(customState);
+      expect(result.get('https://example.com')).toBe(8);
+    });
+  });
+
+  describe('getTotalUniqueSitesCount', () => {
+    it('should return the total count of unique sites from both connections and gator permissions', () => {
+      const sitesConnectionsList = {
+        'https://app1.com': {},
+        'https://app2.com': {},
+      };
+      const gatorPermissionSiteOrigins = [
+        'http://localhost:8000',
+        'https://app1.com',
+      ];
+
+      const result = getTotalUniqueSitesCount.resultFunc(
+        sitesConnectionsList,
+        gatorPermissionSiteOrigins,
+      );
+
+      expect(result).toBe(3);
+    });
+
+    it('should return count when no traditional connections exist', () => {
+      const sitesConnectionsList = {};
+      const gatorPermissionSiteOrigins = [
+        'http://localhost:8000',
+        'http://localhost:8001',
+      ];
+
+      const result = getTotalUniqueSitesCount.resultFunc(
+        sitesConnectionsList,
+        gatorPermissionSiteOrigins,
+      );
+
+      expect(result).toBe(2);
+    });
+  });
+
+  describe('getMergedConnectionsListWithGatorPermissions', () => {
+    it('should add gator permission counts to existing connections', () => {
+      const sitesConnectionsList = {
+        'http://localhost:8000': {
+          addresses: ['0x123'],
+          origin: 'http://localhost:8000',
+          name: 'Test Site',
+          iconUrl: null,
+          subjectType: 'website' as never,
+          networkIconUrl: '',
+          networkName: 'Mainnet',
+          extensionId: null,
+        },
+      };
+      const gatorPermissionCounts = new Map([
+        ['http://localhost:8000', 3],
+        ['http://localhost:8001', 2],
+      ]);
+      const mockStateForMetadata = {
+        metamask: {
+          subjectMetadata: {
+            'http://localhost:8001': {
+              name: 'Another Site',
+              iconUrl: 'https://example.com/icon.png',
+            },
+          },
+        },
+      };
+
+      const result = getMergedConnectionsListWithGatorPermissions.resultFunc(
+        sitesConnectionsList,
+        gatorPermissionCounts,
+        mockStateForMetadata as never,
+      );
+
+      expect(result['http://localhost:8000'].advancedPermissionsCount).toBe(3);
+      expect(result['http://localhost:8001']).toBeDefined();
+      expect(result['http://localhost:8001'].advancedPermissionsCount).toBe(2);
+      expect(result['http://localhost:8001'].addresses).toEqual([]);
     });
   });
 
