@@ -185,7 +185,7 @@ describe('MetaMask onboarding', function () {
         await homePage.refreshErc20TokenList();
 
         // intended delay to allow for network requests to complete
-        await driver.delay(1000);
+        await driver.delay(2000);
         for (const mockedEndpoint of mockedEndpoints) {
           const requests = await mockedEndpoint.getSeenRequests();
           assert.equal(
