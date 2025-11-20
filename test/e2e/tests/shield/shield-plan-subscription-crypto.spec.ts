@@ -191,8 +191,9 @@ describe('Shield Subscription Crypto Payment Tests', function () {
           const shieldPlanPage = new ShieldPlanPage(driver);
           await shieldPlanPage.checkPageIsLoaded();
 
-          await shieldPlanPage.completeShieldPlanSubscriptionFlowWithCrypto(
+          await shieldPlanPage.completeShieldPlanSubscriptionFlow(
             'annual',
+            'crypto',
           );
 
           const shieldSubscriptionApprovePage =
@@ -251,8 +252,9 @@ describe('Shield Subscription Crypto Payment Tests', function () {
           await settingsPage.goToTransactionShieldPage();
 
           await homePage.clickOnShieldEntryModalGetStarted();
-          await shieldPlanPage.completeShieldPlanSubscriptionFlowWithCrypto(
+          await shieldPlanPage.completeShieldPlanSubscriptionFlow(
             'monthly',
+            'crypto',
           );
 
           const shieldSubscriptionApprovePage =

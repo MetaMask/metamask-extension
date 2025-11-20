@@ -169,8 +169,9 @@ describe('Shield Subscription Tests', function () {
           await homePage.clickOnShieldEntryModalGetStarted();
 
           const shieldPlanPage = new ShieldPlanPage(driver);
-          await shieldPlanPage.completeShieldPlanSubscriptionFlowWithCard(
+          await shieldPlanPage.completeShieldPlanSubscriptionFlow(
             'annual',
+            'card',
           );
 
           const shieldDetailPage = new ShieldDetailPage(driver);
@@ -200,8 +201,9 @@ describe('Shield Subscription Tests', function () {
           await homePage.clickOnShieldEntryModalGetStarted();
 
           const shieldPlanPage = new ShieldPlanPage(driver);
-          await shieldPlanPage.completeShieldPlanSubscriptionFlowWithCard(
+          await shieldPlanPage.completeShieldPlanSubscriptionFlow(
             'monthly',
+            'card',
           );
 
           const shieldDetailPage = new ShieldDetailPage(driver);
@@ -242,8 +244,9 @@ describe('Shield Subscription Tests', function () {
           await homePage.checkShieldEntryModalIsDisplayed();
           await homePage.clickOnShieldEntryModalGetStarted();
 
-          await shieldPlanPage.completeShieldPlanSubscriptionFlowWithCard(
+          await shieldPlanPage.completeShieldPlanSubscriptionFlow(
             'annual',
+            'card',
           );
 
           const shieldDetailPage = new ShieldDetailPage(driver);
@@ -280,8 +283,9 @@ describe('Shield Subscription Tests', function () {
           await settingsPage.goToTransactionShieldPage();
 
           await homePage.clickOnShieldEntryModalGetStarted();
-          await shieldPlanPage.completeShieldPlanSubscriptionFlowWithCard(
+          await shieldPlanPage.completeShieldPlanSubscriptionFlow(
             'monthly',
+            'card',
           );
 
           const shieldDetailPage = new ShieldDetailPage(driver);

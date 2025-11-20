@@ -103,35 +103,21 @@ export default class ShieldPlanPage {
     await this.driver.assertElementNotPresent(this.paymentModal);
   }
 
-  async completeShieldPlanSubscriptionFlowWithCard(
+  async completeShieldPlanSubscriptionFlow(
     plan: 'annual' | 'monthly',
+    paymentMethod: 'card' | 'crypto',
   ): Promise<void> {
     console.log(
-      `Completing shield plan subscription flow with card payment for ${plan} plan`,
+      `Completing shield plan subscription flow with ${paymentMethod} payment for ${plan} plan`,
     );
     await this.checkPageIsLoaded();
 
     if (plan === 'annual') {
       await this.selectAnnualPlan();
+    } else if (paymentMethod === 'crypto') {
+      await this.selectMonthlyCryptoPlan();
     } else {
       await this.selectMonthlyPlan();
-    }
-
-    await this.clickContinueButton();
-  }
-
-  async completeShieldPlanSubscriptionFlowWithCrypto(
-    plan: 'annual' | 'monthly',
-  ): Promise<void> {
-    console.log(
-      `Completing shield plan subscription flow with crypto payment for ${plan} plan`,
-    );
-    await this.checkPageIsLoaded();
-
-    if (plan === 'annual') {
-      await this.selectAnnualPlan();
-    } else {
-      await this.selectMonthlyCryptoPlan();
     }
 
     await this.clickContinueButton();
