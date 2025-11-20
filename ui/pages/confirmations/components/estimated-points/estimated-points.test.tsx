@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useDappSwapComparisonRewardText } from '../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText';
-import { useConfirmContext } from '../../context/confirm';
+import { useDappSwapContext } from '../../context/dapp-swap';
 import { EstimatedPointsSection } from './estimated-points';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -16,8 +16,8 @@ jest.mock(
   }),
 );
 
-jest.mock('../../context/confirm', () => ({
-  useConfirmContext: jest.fn(),
+jest.mock('../../context/dapp-swap', () => ({
+  useDappSwapContext: jest.fn(),
 }));
 
 jest.mock('../../../../components/app/confirm/info/row', () => ({
@@ -50,7 +50,7 @@ const mockUseI18nContext = jest.mocked(useI18nContext);
 const mockUseDappSwapComparisonRewardText = jest.mocked(
   useDappSwapComparisonRewardText,
 );
-const mockUseConfirmContext = jest.mocked(useConfirmContext);
+const mockUseDappSwapContext = jest.mocked(useDappSwapContext);
 
 describe('EstimatedPointsSection', () => {
   const mockT = jest.fn((key) => key);
@@ -62,9 +62,9 @@ describe('EstimatedPointsSection', () => {
 
   it('returns null when rewards is null', () => {
     mockUseDappSwapComparisonRewardText.mockReturnValue(null);
-    mockUseConfirmContext.mockReturnValue({
+    mockUseDappSwapContext.mockReturnValue({
       isQuotedSwapDisplayedInInfo: true,
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    } as unknown as ReturnType<typeof useDappSwapContext>);
 
     const { container } = render(<EstimatedPointsSection />);
 
@@ -76,9 +76,9 @@ describe('EstimatedPointsSection', () => {
       text: 'Earn up to 100 points',
       estimatedPoints: 100,
     });
-    mockUseConfirmContext.mockReturnValue({
+    mockUseDappSwapContext.mockReturnValue({
       isQuotedSwapDisplayedInInfo: false,
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    } as unknown as ReturnType<typeof useDappSwapContext>);
 
     const { container } = render(<EstimatedPointsSection />);
 
@@ -90,9 +90,9 @@ describe('EstimatedPointsSection', () => {
       text: 'Earn up to 100 points',
       estimatedPoints: 100,
     });
-    mockUseConfirmContext.mockReturnValue({
+    mockUseDappSwapContext.mockReturnValue({
       isQuotedSwapDisplayedInInfo: true,
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    } as unknown as ReturnType<typeof useDappSwapContext>);
 
     render(<EstimatedPointsSection />);
 

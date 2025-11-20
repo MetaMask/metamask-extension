@@ -32,10 +32,12 @@ export function useDappSwapUSDValues({
 
   const { value: fiatRates, pending: fiatRatesPending } = useAsyncResult<
     Record<Hex, number | undefined>
-  >(
-    () => fetchTokenExchangeRates('usd', tokenAddresses as Hex[], chainId),
-    [chainId, tokenAddresses?.length],
-  );
+  >(() => {
+    const addresses = tokenAddresses.filter(
+      (tokenAddress) => !isNativeAddress(tokenAddress),
+    );
+    return fetchTokenExchangeRates('usd', addresses as Hex[], chainId);
+  }, [chainId, tokenAddresses?.length]);
 
   const { value: tokenDetails, pending: tokenDetailsPending } = useAsyncResult<
     Record<Hex, TokenStandAndDetails>
