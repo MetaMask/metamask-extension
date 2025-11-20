@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { KnownCaipNamespace, CaipChainId, hexToNumber } from '@metamask/utils';
 import {
   BoxFlexDirection,
   IconColor,
@@ -41,9 +41,10 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
 import {
   getInternalAccountByAddress,
-  getNativeTokenInfo,
-  selectERC20TokensByChain,
+  getUseExternalServices,
 } from '../../../../../selectors/selectors';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
 import {
   convertTimestampToReadableDate,
   getPeriodFrequencyValueTranslationKey,
@@ -55,7 +56,11 @@ import {
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
-import { useTokenMetadata, type TokenMetadata } from '../hooks';
+import {
+  GatorPermissionData,
+  getGatorPermissionTokenInfo,
+  type GatorTokenInfo,
+} from '../../../../../../shared/lib/gator-permissions/gator-permissions-utils';
 
 type ReviewGatorPermissionItemProps = {
   /**
@@ -114,15 +119,12 @@ export const ReviewGatorPermissionItem = ({
   const justification = permissionResponse.permission.data.justification as
     | string
     | undefined;
-  const tokenAddress = permissionResponse.permission.data.tokenAddress as
-    | Hex
-    | undefined;
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const tokensByChain = useSelector(selectERC20TokensByChain);
-  const nativeTokenMetadata = useSelector((state) =>
-    getNativeTokenInfo(state, chainId),
-  ) as TokenMetadata;
+  const allowExternalServices = useSelector(getUseExternalServices);
+  const networkConfigurationsByCaipChainId = useSelector(
+    getAllNetworkConfigurationsByCaipChainId,
+  );
   const pendingRevocations = useSelector(getPendingRevocations);
   const internalAccount = useSelector((state) =>
     getInternalAccountByAddress(state, permissionAccount),
@@ -139,6 +141,7 @@ export const ReviewGatorPermissionItem = ({
   const accountTextRef = useRef(accountText);
   const mountedRef = useRef(true);
   const [, handleCopy] = useCopyToClipboard();
+  const loadingText = t('loading');
 
   // Keep ref in sync with state
   useEffect(() => {
@@ -196,12 +199,42 @@ export const ReviewGatorPermissionItem = ({
     }, 1000);
   }, [permissionAccount, handleCopy, t]);
 
-  const tokenMetadata = useTokenMetadata(
-    tokenAddress,
+  // Resolve token info (native or ERC-20) for this permission
+  const [tokenMetadata, setTokenMetadata] = useState<GatorTokenInfo>({
+    symbol: 'unknown',
+    decimals: -1,
+  });
+
+  const caipChainId: CaipChainId = `${KnownCaipNamespace.Eip155}:${hexToNumber(chainId)}`;
+  const networkConfig = networkConfigurationsByCaipChainId?.[caipChainId];
+
+  // Resolve token info (native or ERC-20) for this permission
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const info = await getGatorPermissionTokenInfo({
+        permissionType,
+        chainId,
+        networkConfig,
+        permissionData: permissionResponse.permission
+          .data as GatorPermissionData,
+        allowExternalServices,
+        getTokenStandardAndDetailsByChain,
+      });
+      if (!cancelled) {
+        setTokenMetadata(info);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    allowExternalServices,
+    permissionType,
     chainId,
-    tokensByChain,
-    nativeTokenMetadata,
-  );
+    networkConfig,
+    permissionResponse.permission.data,
+  ]);
 
   const isPendingRevocation = useMemo(() => {
     return pendingRevocations.some(
@@ -254,8 +287,8 @@ export const ReviewGatorPermissionItem = ({
         amountLabel: {
           translationKey: 'gatorPermissionsStreamingAmountLabel',
           value:
-            decimals === null
-              ? t('gatorPermissionUnknownTokenAmount')
+            decimals < 0
+              ? loadingText
               : `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`,
           testId: 'review-gator-permission-amount-label',
         },
@@ -268,8 +301,8 @@ export const ReviewGatorPermissionItem = ({
           initialAllowance: {
             translationKey: 'gatorPermissionsInitialAllowance',
             value:
-              decimals === null
-                ? t('gatorPermissionUnknownTokenAmount')
+              decimals < 0
+                ? loadingText
                 : `${getDecimalizedHexValue(
                     permission.data.initialAmount || '0x0',
                     decimals,
@@ -279,8 +312,8 @@ export const ReviewGatorPermissionItem = ({
           maxAllowance: {
             translationKey: 'gatorPermissionsMaxAllowance',
             value:
-              decimals === null
-                ? t('gatorPermissionUnknownTokenAmount')
+              decimals < 0
+                ? loadingText
                 : `${getDecimalizedHexValue(
                     permission.data.maxAmount || '0x0',
                     decimals,
@@ -306,8 +339,8 @@ export const ReviewGatorPermissionItem = ({
           streamRate: {
             translationKey: 'gatorPermissionsStreamRate',
             value:
-              decimals === null
-                ? t('gatorPermissionUnknownTokenAmount')
+              decimals < 0
+                ? loadingText
                 : `${getDecimalizedHexValue(
                     permission.data.amountPerSecond,
                     decimals,
@@ -317,7 +350,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, t, getExpirationDate],
+    [tokenMetadata, loadingText, getExpirationDate],
   );
 
   /**
@@ -335,8 +368,8 @@ export const ReviewGatorPermissionItem = ({
         amountLabel: {
           translationKey: 'amount',
           value:
-            decimals === null
-              ? t('gatorPermissionUnknownTokenAmount')
+            decimals < 0
+              ? loadingText
               : `${getDecimalizedHexValue(
                   permission.data.periodAmount,
                   decimals,
@@ -370,7 +403,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, t, getExpirationDate],
+    [tokenMetadata, loadingText, getExpirationDate],
   );
 
   /**

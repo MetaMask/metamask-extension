@@ -52,6 +52,34 @@ jest.mock(
   }),
 );
 
+jest.mock(
+  '../../../../../../shared/lib/gator-permissions/gator-permissions-utils',
+  () => {
+    const actual = jest.requireActual(
+      '../../../../../../shared/lib/gator-permissions/gator-permissions-utils',
+    );
+    return {
+      ...actual,
+      getGatorPermissionTokenInfo: jest
+        .fn()
+        .mockImplementation(async ({ permissionType, permissionData }) => {
+          const isNative = permissionType.includes('native-token');
+          if (isNative) {
+            return { symbol: 'ETH', decimals: 18 };
+          }
+
+          const tokenAddress = permissionData?.tokenAddress;
+          if (tokenAddress === '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599') {
+            return { symbol: 'WBTC', decimals: 8 };
+          }
+
+          // Return loading state for unknown tokens
+          return { symbol: 'unknown', decimals: -1 };
+        }),
+    };
+  },
+);
+
 describe('Permission List Item', () => {
   beforeAll(() => {
     // Set Luxon to use UTC as the default timezone for consistent test results
@@ -479,9 +507,9 @@ describe('Permission List Item', () => {
         expect(networkName).toHaveTextContent(mockNetworkName);
       });
 
-      it('renders erc20 token permission with unknown token amount correctly', () => {
+      it('renders erc20 token permission with loading state for unknown token', () => {
         // Use a token address that won't be found in the mock state
-        // This simulates a scenario where token metadata is not available
+        // This simulates a scenario where token metadata is still loading
         const unknownTokenAddress: Hex =
           '0x0000000000000000000000000000000000000001';
 
@@ -525,9 +553,9 @@ describe('Permission List Item', () => {
 
         expect(getByTestId('review-gator-permission-item')).toBeInTheDocument();
 
-        // Verify that when token metadata is not found, it shows unknown amount text
+        // Verify that when token metadata is loading (decimals < 0), it shows loading text
         const amountLabel = getByTestId('review-gator-permission-amount-label');
-        expect(amountLabel.textContent).toContain('Unknown amount');
+        expect(amountLabel.textContent).toContain('Loading');
 
         // Expand to see more details
         const expandButton = container.querySelector('[aria-label="expand"]');
@@ -535,21 +563,21 @@ describe('Permission List Item', () => {
           fireEvent.click(expandButton);
         }
 
-        // Verify initial allowance shows unknown amount
+        // Verify initial allowance shows loading text
         const initialAllowance = getByTestId(
           'review-gator-permission-initial-allowance',
         );
-        expect(initialAllowance.textContent).toContain('Unknown amount');
+        expect(initialAllowance.textContent).toContain('Loading');
 
-        // Verify max allowance shows unknown amount
+        // Verify max allowance shows loading text
         const maxAllowance = getByTestId(
           'review-gator-permission-max-allowance',
         );
-        expect(maxAllowance.textContent).toContain('Unknown amount');
+        expect(maxAllowance.textContent).toContain('Loading');
 
-        // Verify stream rate shows unknown amount
+        // Verify stream rate shows loading text
         const streamRate = getByTestId('review-gator-permission-stream-rate');
-        expect(streamRate.textContent).toContain('Unknown amount');
+        expect(streamRate.textContent).toContain('Loading');
       });
     });
   });
