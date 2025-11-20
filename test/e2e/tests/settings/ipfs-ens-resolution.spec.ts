@@ -62,11 +62,16 @@ describe('Settings', function () {
     async function ensDomainPassthrough(
       mockServer: MockttpServer,
     ): Promise<MockedEndpoint[]> {
-      const passthroughEndpoint = await mockServer
+      // We want the browser to handle the request error
+      const ensNamePassThrough = await mockServer
         .forGet(ENS_NAME_URL)
         .thenPassThrough();
+      // This should never be hit, but in case it is, then we'll catch it
+      const ensDomainsPassThrough = await mockServer
+        .forGet(/https:\/\/app\.ens\.domains\/name\/.*/u)
+        .thenPassThrough();
 
-      return [passthroughEndpoint];
+      return [ensNamePassThrough, ensDomainsPassThrough];
     }
 
     await withFixtures(
