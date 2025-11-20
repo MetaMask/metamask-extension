@@ -237,15 +237,6 @@ class ConnectHardwareForm extends Component {
         }
       })
       .catch((e) => {
-        const { trackEvent } = this.context;
-        trackEvent({
-          event: MetaMetricsEventName.HardwareWalletConnectionFailed,
-          properties: {
-            hd_path: hdPath,
-            device_type: capitalizeStr(device),
-          },
-        });
-
         const errorMessage = typeof e === 'string' ? e : e.message;
         const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
           (errorCode) => errorMessage.includes(errorCode),
@@ -369,6 +360,14 @@ class ConnectHardwareForm extends Component {
         navigate(mostRecentOverviewPage);
       })
       .catch((e) => {
+        trackEvent({
+          event: MetaMetricsEventName.HardwareWalletConnectionFailed,
+          properties: {
+            hd_path: path,
+            device_type: capitalizeStr(deviceName),
+            error: e.message,
+          },
+        });
         this.setState({ error: e.message });
       });
   };
