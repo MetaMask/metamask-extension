@@ -146,6 +146,9 @@ describe('RewardsPointsBalance', () => {
       if (selector === selectOnboardingModalRendered) {
         return onboardingModalRendered;
       }
+      if (selector === selectSeasonStatusError) {
+        return seasonStatusError;
+      }
       return undefined;
     });
 

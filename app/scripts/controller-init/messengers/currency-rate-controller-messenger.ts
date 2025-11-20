@@ -1,9 +1,14 @@
 import { Messenger } from '@metamask/messenger';
-import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
+import {
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetStateAction,
+} from '@metamask/network-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { RootMessenger } from '../../lib/messenger';
 
-type AllowedActions = NetworkControllerGetNetworkClientByIdAction;
+type AllowedActions =
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetStateAction;
 
 export type CurrencyRateControllerMessenger = ReturnType<
   typeof getCurrencyRateControllerMessenger
@@ -30,7 +35,10 @@ export function getCurrencyRateControllerMessenger(
   });
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: ['NetworkController:getNetworkClientById'],
+    actions: [
+      'NetworkController:getNetworkClientById',
+      'NetworkController:getState',
+    ],
   });
   return controllerMessenger;
 }

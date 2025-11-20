@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom-v5-compat';
 import { getInternalAccountByAddress } from '../../../selectors';
 import { EVMAccountDetails } from './evm-account-details';
 import { getAccountTypeCategory } from './account-type-utils';
@@ -11,8 +11,16 @@ import { InstitutionalEVMAccountDetails } from './institutional-evm-account-deta
 import { BitcoinAccountDetails } from './btc-account-details';
 import { TronAccountDetails } from './tron-account-details';
 
-export const MultichainAccountDetails = () => {
-  const { address } = useParams();
+type MultichainAccountDetailsProps = {
+  params?: { address: string };
+};
+
+export const MultichainAccountDetails = ({
+  params: propsParams,
+}: MultichainAccountDetailsProps = {}) => {
+  const hookParams = useParams();
+
+  const { address } = propsParams || hookParams;
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
   );

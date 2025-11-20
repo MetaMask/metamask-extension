@@ -5,14 +5,16 @@ import {
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
+import { useDappSwapContext } from '../../context/dapp-swap';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
-import { useDappSwapComparisonMetrics } from './dapp-swap-comparison/useDappSwapComparisonMetrics';
 import { useShieldConfirm } from './useShieldConfirm';
+import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
@@ -20,11 +22,13 @@ export function useTransactionConfirm() {
   const selectedGasFeeToken = useSelectedGasFeeToken();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const { captureSwapSubmit } = useDappSwapComparisonMetrics();
+  const { onDappSwapCompleted, updateSwapWithQuoteDetails } =
+    useDappSwapActions();
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),
@@ -84,6 +88,8 @@ export function useTransactionConfirm() {
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
 
+    updateSwapWithQuoteDetails(newTransactionMeta);
+
     if (isGaslessSupportedSTX) {
       handleSmartTransaction();
     } else if (selectedGasFeeToken) {
@@ -102,7 +108,7 @@ export function useTransactionConfirm() {
       throw error;
     }
 
-    captureSwapSubmit();
+    onDappSwapCompleted();
   }, [
     newTransactionMeta,
     customNonceValue,
@@ -111,9 +117,11 @@ export function useTransactionConfirm() {
     handleSmartTransaction,
     handleGasless7702,
     selectedGasFeeToken,
+    isQuotedSwapDisplayedInInfo,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
-    captureSwapSubmit,
+    onDappSwapCompleted,
+    updateSwapWithQuoteDetails,
   ]);
 
   return {

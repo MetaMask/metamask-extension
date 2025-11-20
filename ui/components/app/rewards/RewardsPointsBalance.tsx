@@ -1,12 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { Skeleton } from '../../component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setOnboardingModalOpen } from '../../../ducks/rewards';
+import {
+  setOnboardingModalOpen,
+  setOnboardingModalRendered,
+  setRewardsBadgeHidden,
+} from '../../../ducks/rewards';
 import {
   selectCandidateSubscriptionId,
   selectOnboardingModalRendered,
+  selectRewardsBadgeHidden,
   selectRewardsEnabled,
   selectSeasonStatus,
   selectSeasonStatusError,
@@ -19,7 +24,10 @@ import {
 } from '../../../../shared/lib/storage-helpers';
 import { useAppSelector } from '../../../store/store';
 import { RewardsBadge } from './RewardsBadge';
-import { REWARDS_GTM_MODAL_SHOWN } from './utils/constants';
+import {
+  REWARDS_BADGE_HIDDEN,
+  REWARDS_GTM_MODAL_SHOWN,
+} from './utils/constants';
 
 /**
  * Component to display the rewards points balance
@@ -31,6 +39,7 @@ export const RewardsPointsBalance = () => {
   const dispatch = useDispatch();
 
   const rewardsEnabled = useSelector(selectRewardsEnabled);
+  const rewardsBadgeHidden = useSelector(selectRewardsBadgeHidden);
   const seasonStatus = useSelector(selectSeasonStatus);
   const seasonStatusError = useSelector(selectSeasonStatusError);
   const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
@@ -45,7 +54,6 @@ export const RewardsPointsBalance = () => {
       candidateSubscriptionId === 'retry');
   const candidateSubscriptionIdError = candidateSubscriptionId === 'error';
 
-  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(true);
   const isTestEnv = Boolean(process.env.IN_TEST);
 
   const openRewardsOnboardingModal = useCallback(() => {
@@ -59,32 +67,46 @@ export const RewardsPointsBalance = () => {
     onAuthorizationError: fetchCandidateSubscriptionId,
   });
 
+  // check has seen rewards onboarding modal
   useEffect(() => {
     const checkHasSeenFlag = async () => {
       try {
         const seenBefore = await getStorageItem(REWARDS_GTM_MODAL_SHOWN);
-        setHasSeenOnboarding(seenBefore === 'true');
+        dispatch(setOnboardingModalRendered(seenBefore === 'true'));
       } catch (_e) {
-        setHasSeenOnboarding(false);
+        // set to default value
+        dispatch(setOnboardingModalRendered(true));
       }
     };
     checkHasSeenFlag();
-  }, []);
+  }, [dispatch]);
+
+  // check has hidden rewards badge
+  useEffect(() => {
+    const checkHasHiddenBadge = async () => {
+      try {
+        const hiddenBefore = await getStorageItem(REWARDS_BADGE_HIDDEN);
+        dispatch(setRewardsBadgeHidden(hiddenBefore === 'true'));
+      } catch (_e) {
+        // set to default value
+        dispatch(setRewardsBadgeHidden(true));
+      }
+    };
+    checkHasHiddenBadge();
+  }, [dispatch]);
 
   // dispatch onboarding modal open if not seen before
   useEffect(() => {
     if (
       !isTestEnv &&
       rewardsEnabled &&
-      !hasSeenOnboarding &&
       candidateSubscriptionId === null && // determined that it's null
       !rewardsActiveAccountSubscriptionId && // determined that it's not the active account
-      onboardingModalRendered
+      !onboardingModalRendered
     ) {
       openRewardsOnboardingModal();
     }
   }, [
-    hasSeenOnboarding,
     openRewardsOnboardingModal,
     rewardsEnabled,
     isTestEnv,
@@ -113,7 +135,6 @@ export const RewardsPointsBalance = () => {
       } catch (_e) {
         // Silently fail - should not block the user from seeing the points balance
       }
-      setHasSeenOnboarding(true);
     }
   }, [candidateSubscriptionId, setHasSeenOnboardingInStorage]);
 
@@ -122,12 +143,13 @@ export const RewardsPointsBalance = () => {
   }
 
   if (!candidateSubscriptionId) {
-    return (
+    return rewardsBadgeHidden ? null : (
       <RewardsBadge
         boxClassName="gap-1 px-1.5 bg-background-muted rounded"
         formattedPoints={t('rewardsSignUp')}
         withPointsSuffix={false}
         onClick={openRewardsOnboardingModal}
+        allowHideBadge
       />
     );
   }
@@ -160,9 +182,10 @@ export const RewardsPointsBalance = () => {
       <RewardsBadge
         formattedPoints={formattedPoints}
         boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+        onClick={openRewardsOnboardingModal}
       />
     );
   }
 
-  return <Skeleton width="100px" />;
+  return rewardsBadgeHidden ? null : <Skeleton width="100px" />;
 };

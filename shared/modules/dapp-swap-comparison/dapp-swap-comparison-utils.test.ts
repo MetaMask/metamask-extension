@@ -5,7 +5,6 @@ import {
   getBestQuote,
   getDataFromSwap,
   getBalanceChangeFromSimulationData,
-  getTokenValueFromRecord,
 } from './dapp-swap-comparison-utils';
 
 const MOCK_QUOTES = [
@@ -68,7 +67,7 @@ describe('dapp-swap utils', () => {
         sweepData,
         '0x178239802520a9c99dcbd791f81326b70298d629',
       );
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         amountMin: '0x060147',
         commands: '0x100604',
         tokenAddresses: [
@@ -96,7 +95,7 @@ describe('dapp-swap utils', () => {
         seaportData,
         '0x178239802520a9c99dcbd791f81326b70298d629',
       );
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         amountMin: '0x5f',
         commands: '0x10',
         tokenAddresses: [
@@ -126,8 +125,8 @@ describe('dapp-swap utils', () => {
         (val) => val,
         (val) => val.toString(),
       );
-      expect(result.bestQuote).toEqual(MOCK_QUOTES[2]);
-      expect(result.bestFilteredQuote).toEqual(MOCK_QUOTES[2]);
+      expect(result.bestQuote).toBe(MOCK_QUOTES[2]);
+      expect(result.bestFilteredQuote).toBe(MOCK_QUOTES[2]);
     });
 
     it('bestFilteredQuote is undefined if no quote has minimum amount greater than confirmation', () => {
@@ -137,8 +136,8 @@ describe('dapp-swap utils', () => {
         (val) => val,
         (val) => val.toString(),
       );
-      expect(result.bestQuote).toEqual(MOCK_QUOTES[2]);
-      expect(result.bestFilteredQuote).toEqual(undefined);
+      expect(result.bestQuote).toStrictEqual(MOCK_QUOTES[2]);
+      expect(result.bestFilteredQuote).toBe(undefined);
     });
 
     it('returns undefined for empty quotes array', () => {
@@ -148,34 +147,8 @@ describe('dapp-swap utils', () => {
         (val) => val,
         (val) => val.toString(),
       );
-      expect(result.bestQuote).toEqual(undefined);
-      expect(result.bestFilteredQuote).toEqual(undefined);
-    });
-  });
-
-  describe('getTokenValueFromRecord', () => {
-    it('returns the correct value for token address', () => {
-      const result = getTokenValueFromRecord(
-        {
-          '0xaf88d065e77c8cc2239327c5edb3a432268e5831': 6,
-          '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9': 6,
-          '0x0000000000000000000000000000000000000000': 18,
-        },
-        '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
-      );
-      expect(result).toEqual(6);
-    });
-
-    it('returns undefined if record is not found', () => {
-      const result = getTokenValueFromRecord(
-        {
-          '0xaf88d065e77c8cc2239327c5edb3a432268e5831': 6,
-          '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9': 6,
-          '0x0000000000000000000000000000000000000000': 18,
-        },
-        '0x123',
-      );
-      expect(result).toEqual(undefined);
+      expect(result.bestQuote).toBe(undefined);
+      expect(result.bestFilteredQuote).toBe(undefined);
     });
   });
 
@@ -196,20 +169,20 @@ describe('dapp-swap utils', () => {
           ],
         },
       );
-      expect(result).toEqual('100');
+      expect(result).toBe('100');
     });
     it('returns 0 if simulation data is not provided', () => {
       const result = getBalanceChangeFromSimulationData(
         '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
         undefined,
       );
-      expect(result).toEqual('0');
+      expect(result).toBe('0');
     });
     it('returns 0 if record is not found', () => {
       const result = getBalanceChangeFromSimulationData('0x123', {
         tokenBalanceChanges: [],
       });
-      expect(result).toEqual('0');
+      expect(result).toBe('0');
     });
   });
 });

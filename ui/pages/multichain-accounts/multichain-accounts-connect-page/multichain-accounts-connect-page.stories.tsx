@@ -1,7 +1,6 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { StoryObj, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter, Route } from 'react-router-dom';
 import { action } from '@storybook/addon-actions';
 import {
   Caip25CaveatType,
@@ -148,28 +147,20 @@ const store = configureStore({
   },
 });
 
-interface WrapperProps {
-  children: ReactNode;
-}
-
-const Wrapper: React.FC<WrapperProps> = ({ children }) => (
-  <Provider store={store}>
-    <MemoryRouter initialEntries={['/multichain-accounts-connect']}>
-      <Route path="*">{children}</Route>
-    </MemoryRouter>
-  </Provider>
-);
-
 const meta: Meta<typeof MultichainAccountsConnectPage> = {
   title: 'Pages/MultichainAccounts/MultichainAccountsConnectPage',
   component: MultichainAccountsConnectPage,
   decorators: [
     (Story) => (
-      <Wrapper>
+      <Provider store={store}>
         <Story />
-      </Wrapper>
+      </Provider>
     ),
   ],
+  parameters: {
+    initialEntries: ['/multichain-accounts-connect'],
+    path: '*',
+  },
 };
 
 export default meta;

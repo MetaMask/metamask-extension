@@ -15,9 +15,9 @@ import {
   downgradeAccountConfirmation,
   upgradeAccountConfirmationOnly,
 } from '../../../../../../../../test/data/confirmations/batch-transaction';
-import * as SwapCheckHook from '../../../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
+import * as useUserPreferencedCurrencyModule from '../../../../../../../hooks/useUserPreferencedCurrency';
 import { RecipientRow, TransactionDetails } from './transaction-details';
 
 jest.mock(
@@ -154,13 +154,15 @@ describe('Transaction Details', () => {
         ).not.toBeInTheDocument();
       });
 
-      it('should not be visible for quoted swap', () => {
-        jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
-          isQuotedSwap: true,
-        } as ReturnType<typeof SwapCheckHook.useSwapCheck>);
+      it('uses transaction chainId to determine currency symbol', () => {
+        const useUserPreferencedCurrencySpy = jest.spyOn(
+          useUserPreferencedCurrencyModule,
+          'useUserPreferencedCurrency',
+        );
+
         const contractInteraction =
           genUnapprovedContractInteractionConfirmation({
-            chainId: CHAIN_IDS.GOERLI,
+            chainId: CHAIN_IDS.POLYGON,
           });
         const state = getMockConfirmStateForTransaction(contractInteraction, {
           metamask: {
@@ -170,13 +172,38 @@ describe('Transaction Details', () => {
           },
         });
         const mockStore = configureMockStore(middleware)(state);
-        const { queryByTestId } = renderWithConfirmContextProvider(
+        renderWithConfirmContextProvider(<TransactionDetails />, mockStore);
+
+        // Verify useUserPreferencedCurrency was called with the transaction's chainId
+        expect(useUserPreferencedCurrencySpy).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          CHAIN_IDS.POLYGON,
+        );
+
+        useUserPreferencedCurrencySpy.mockRestore();
+      });
+
+      it('passes chainId to ConfirmInfoRowCurrency for proper formatting', () => {
+        const contractInteraction =
+          genUnapprovedContractInteractionConfirmation({
+            chainId: CHAIN_IDS.POLYGON,
+          });
+        const state = getMockConfirmStateForTransaction(contractInteraction, {
+          metamask: {
+            preferences: {
+              showConfirmationAdvancedDetails: true,
+            },
+          },
+        });
+        const mockStore = configureMockStore(middleware)(state);
+        const { getByTestId } = renderWithConfirmContextProvider(
           <TransactionDetails />,
           mockStore,
         );
-        expect(
-          queryByTestId('transaction-details-amount-row'),
-        ).not.toBeInTheDocument();
+
+        const amountRow = getByTestId('transaction-details-amount-row');
+        expect(amountRow).toBeInTheDocument();
       });
     });
 
@@ -250,28 +277,6 @@ describe('Transaction Details', () => {
         expect(
           getByTestId('transaction-details-recipient-row'),
         ).toBeInTheDocument();
-      });
-
-      it('does not render for quote swap', () => {
-        jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
-          isQuotedSwap: true,
-        } as ReturnType<typeof SwapCheckHook.useSwapCheck>);
-        const state = getMockConfirmStateForTransaction(
-          genUnapprovedContractInteractionConfirmation(),
-          {
-            metamask: {
-              preferences: {
-                showConfirmationAdvancedDetails: true,
-              },
-            },
-          },
-        );
-        const mockStore = configureMockStore(middleware)(state);
-        const { queryByTestId } = renderWithConfirmContextProvider(
-          <TransactionDetails />,
-          mockStore,
-        );
-        expect(queryByTestId('transaction-details-recipient-row')).toBeNull();
       });
     });
 

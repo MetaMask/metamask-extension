@@ -221,7 +221,7 @@ export function getNewNetworkAdded(state) {
 
 /**
  * @param state
- * @returns {{ chainId: import('@metamask/utils').Hex; nickname: string; editCompleted: boolean} | undefined}
+ * @returns {{ chainId: import('@metamask/utils').Hex; nickname?: string; editCompleted?: boolean; newNetwork?: boolean; trackRpcUpdateFromBanner?: boolean} | undefined}
  */
 export function getEditedNetwork(state) {
   return state.appState.editedNetwork;
@@ -3303,6 +3303,18 @@ export function getIsCustomNetwork(state) {
 export function getNetworkDiscoverButtonEnabled(state) {
   const { neNetworkDiscoverButton } = getRemoteFeatureFlags(state);
   return neNetworkDiscoverButton;
+}
+
+/**
+ * Get the state of the `gasFeesSponsoredNetwork` remote feature flag.
+ * This flag determines whether the user should see a `Gas sponsored` label on the network menu list.
+ *
+ * @param {*} state
+ * @returns The state of the `gasFeesSponsoredNetwork` remote feature flag.
+ */
+export function getGasFeesSponsoredNetworkEnabled(state) {
+  const { gasFeesSponsoredNetwork } = getRemoteFeatureFlags(state);
+  return gasFeesSponsoredNetwork;
 }
 
 export function getBlockExplorerLinkText(
