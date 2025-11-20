@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom-v5-compat';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom-v5-compat';
 import { UNLOCK_ROUTE, ONBOARDING_ROUTE } from '../../constants/routes';
 
 type AuthenticatedV5CompatProps = {

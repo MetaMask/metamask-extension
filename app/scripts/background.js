@@ -101,7 +101,7 @@ import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferra
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
  */
 
-// MV3 configures the ExtensionLazyListener in app-init.js and sets it on globalThis.stateHooks,
+// MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
 // but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,
 // as it doesn't need them).
 const lazyListener =
@@ -510,7 +510,7 @@ const handleOnConnect = async (port) => {
 
   try {
     // `handleOnConnect` can be called asynchronously, well after the `onConnect`
-    // event was emitted, due to the lazy listener setup in `app-init.js`, so we
+    // event was emitted, due to the lazy listener setup in `service-worker.ts`, so we
     // might not be able to send this message if the window has already closed.
     port.postMessage({
       data: {

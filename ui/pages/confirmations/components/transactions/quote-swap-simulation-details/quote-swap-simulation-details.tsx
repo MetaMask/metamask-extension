@@ -16,8 +16,10 @@ import { toHex } from '@metamask/controller-utils';
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { calculateTokenAmount } from '../../../utils/token';
-import { getTokenValueFromRecord } from '../../../utils/dapp-swap-comparison-utils';
+import {
+  calculateTokenAmount,
+  getTokenValueFromRecord,
+} from '../../../utils/token';
 import { useConfirmContext } from '../../../context/confirm';
 import { AssetIdentifier } from '../../simulation-details/types';
 import { BalanceChangeRow } from '../../simulation-details/balance-change-row';
@@ -176,7 +178,7 @@ export const QuoteSwapSimulationDetails = ({
                 color={TextColor.SuccessDefault}
                 variant={TextVariant.BodyXs}
               >
-                {t('getDollarMore', [tokenAmountDifference?.toFixed(2)])}
+                {t('getDollarMore', [`$${tokenAmountDifference?.toFixed(2)}`])}
               </Text>
             </Box>
           </Box>

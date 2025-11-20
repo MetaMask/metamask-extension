@@ -224,6 +224,8 @@ describe('ManifestPlugin', () => {
     const keep = ['scripts/contentscript.js', 'scripts/inpage.js'];
     const argsMatrix = {
       test: [true, false],
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      manifest_version: [2, 3] as const,
     };
     const manifestMatrix = {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -248,7 +250,7 @@ describe('ManifestPlugin', () => {
         const hasTabsPermission = (manifest.permissions || []).includes('tabs');
         const transform = transformManifest(args, false);
 
-        if (args.test && hasTabsPermission) {
+        if (args.test && args.manifest_version === 2 && hasTabsPermission) {
           it("throws in test mode when manifest already contains 'tabs' permission", () => {
             assert(transform, 'transform should be truthy');
             const p = () => {
@@ -260,7 +262,7 @@ describe('ManifestPlugin', () => {
               'should throw when manifest contains tabs already',
             );
           });
-        } else if (args.test) {
+        } else if (args.test && args.manifest_version === 2) {
           it(`works for args.test of ${args.test}. Manifest: ${JSON.stringify(manifest)}`, () => {
             assert(transform, 'transform should be truthy');
             const transformed = transform(manifest, 'chrome');
@@ -308,7 +310,8 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        { test: false },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
       );
@@ -331,7 +334,8 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        { test: false },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
       );
@@ -363,7 +367,8 @@ describe('ManifestPlugin', () => {
       });
 
       const transform = transformManifest(
-        { test: false },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
       );
@@ -380,7 +385,8 @@ describe('ManifestPlugin', () => {
 
     it('silently ignores non-ENOENT filesystem errors', () => {
       const transform = transformManifest(
-        { test: false },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
       );

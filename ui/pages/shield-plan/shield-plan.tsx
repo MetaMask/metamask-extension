@@ -225,12 +225,15 @@ const ShieldPlan = () => {
   // should only trigger if selectedTokenAddress change (shouldn't trigger again if selected token object updated but still same token)
   useEffect(() => {
     const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
-    // if the last used payment method is not crypto, don't set default method
     if (
       selectedTokenAddress &&
       lastUsedPaymentMethod !== PAYMENT_TYPES.byCard
     ) {
       setSelectedPaymentMethod(PAYMENT_TYPES.byCrypto);
+    } else {
+      // should reset to byCard when selectedTokenAddress becomes undefined (no tokens available)
+      // to prevent switching to a plan without available tokens leaves selectedPaymentMethod as byCrypto with no tokens
+      setSelectedPaymentMethod(PAYMENT_TYPES.byCard);
     }
   }, [selectedTokenAddress, setSelectedPaymentMethod, lastUsedPaymentDetails]);
 
@@ -327,6 +330,7 @@ const ShieldPlan = () => {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={handleBack}
+            data-testid="shield-plan-back-button"
           />
         }
       >

@@ -11,7 +11,7 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
-import * as SwapCheckHook from '../../transactions/dapp-swap-comparison/useSwapCheck';
+import * as DappSwapContext from '../../../context/dapp-swap';
 import { useResimulationAlert } from './useResimulationAlert';
 
 const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -111,11 +111,7 @@ describe('useResimulationAlert', () => {
     ).toEqual([]);
   });
 
-  it('returns no alerts if transaction is a quoted swap', () => {
-    jest.spyOn(SwapCheckHook, 'useSwapCheck').mockReturnValue({
-      isQuotedSwap: true,
-    });
-
+  it('returns no alerts if quote swap is shown in info', () => {
     const resimulatedConfirmation = {
       ...CONFIRMATION_MOCK,
       simulationData: {
@@ -123,6 +119,13 @@ describe('useResimulationAlert', () => {
         tokenBalanceChanges: [],
       },
     };
+
+    jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
+      setSelectedQuote: jest.fn(),
+      setQuotedSwapDisplayedInInfo: jest.fn(),
+      isQuotedSwapDisplayedInInfo: true,
+    } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
+
     const alerts = runHook({
       currentConfirmation: resimulatedConfirmation,
     });

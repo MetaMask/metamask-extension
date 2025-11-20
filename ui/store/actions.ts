@@ -5760,6 +5760,7 @@ export function setEditedNetwork(
         nickname?: string;
         editCompleted?: boolean;
         newNetwork?: boolean;
+        trackRpcUpdateFromBanner?: boolean;
       }
     | undefined = undefined,
 ): PayloadAction<object> {
@@ -7803,6 +7804,14 @@ export async function getLastInteractedConfirmationInfo(): Promise<
   return await submitRequestToBackground<void>(
     'getLastInteractedConfirmationInfo',
   );
+}
+
+export async function deleteDappSwapComparisonData(
+  uniqueId: string,
+): Promise<void> {
+  return await submitRequestToBackground<void>('deleteDappSwapComparisonData', [
+    uniqueId,
+  ]);
 }
 
 export async function setLastInteractedConfirmationInfo(
