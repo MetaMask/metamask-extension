@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import AccountList from './account-list';
 
 const mockTrackEvent = (event, properties) => {
@@ -6,8 +7,30 @@ const mockTrackEvent = (event, properties) => {
   return Promise.resolve();
 };
 
+class TrackEventProvider extends Component {
+  getChildContext() {
+    return {
+      trackEvent: mockTrackEvent,
+    };
+  }
+
+  render() {
+    return this.props.children;
+  }
+}
+
+TrackEventProvider.childContextTypes = {
+  trackEvent: PropTypes.func,
+};
+
+TrackEventProvider.propTypes = {
+  children: PropTypes.node,
+};
+
 export default {
   title: 'Pages/CreateAccount/ConnectHardware/AccountList',
+  component: AccountList,
+  decorators: [(story) => <TrackEventProvider>{story()}</TrackEventProvider>],
 
   argTypes: {
     onPathChange: {
@@ -89,9 +112,6 @@ export default {
         value: `m/44'/60'/0'/0`,
       },
     ],
-    context: {
-      trackEvent: mockTrackEvent,
-    },
   },
 };
 
