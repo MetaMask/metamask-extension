@@ -10,22 +10,22 @@ import { useCallback } from 'react';
 
 import { deleteDappSwapComparisonData } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
+import { useDappSwapContext } from '../../../context/dapp-swap';
 import { useDappSwapCheck } from './useDappSwapCheck';
 import { useDappSwapComparisonMetrics } from './useDappSwapComparisonMetrics';
 
 export function useDappSwapActions() {
-  const { currentConfirmation, quoteSelectedForMMSwap } =
-    useConfirmContext<TransactionMeta>();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { selectedQuote } = useDappSwapContext();
   const { captureSwapSubmit } = useDappSwapComparisonMetrics();
   const { isSwapToBeCompared } = useDappSwapCheck();
 
   const updateSwapWithQuoteDetails = useCallback(
     (transactionMeta: TransactionMeta) => {
-      if (!quoteSelectedForMMSwap) {
+      if (!selectedQuote) {
         return;
       }
-      const { value, gasLimit, data, to } =
-        quoteSelectedForMMSwap?.trade as TxData;
+      const { value, gasLimit, data, to } = selectedQuote?.trade as TxData;
       transactionMeta.txParams = {
         ...transactionMeta.txParams,
         value,
@@ -33,13 +33,13 @@ export function useDappSwapActions() {
         gas: toHex(gasLimit ?? 0),
         data,
       };
-      if (quoteSelectedForMMSwap?.approval) {
+      if (selectedQuote?.approval) {
         const {
           data: approvalData,
           to: approvalTo,
           gasLimit: approvalGasLimit,
           value: approvalValue,
-        } = quoteSelectedForMMSwap?.approval as TxData;
+        } = selectedQuote?.approval as TxData;
         transactionMeta.batchTransactions = [
           {
             data: approvalData as Hex,
@@ -57,7 +57,7 @@ export function useDappSwapActions() {
       transactionMeta.batchTransactionsOptions = {};
       transactionMeta.nestedTransactions = undefined;
     },
-    [quoteSelectedForMMSwap],
+    [selectedQuote],
   );
 
   const onDappSwapCompleted = useCallback(() => {

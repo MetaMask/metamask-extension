@@ -17,6 +17,7 @@ import {
   Display,
 } from '../../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import { GasFeeTokenModal } from '../gas-fee-token-modal';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
@@ -28,8 +29,8 @@ import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficient
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { currentConfirmation, isQuotedSwapDisplayedInInfo } =
-    useConfirmContext<TransactionMeta>();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
   const { chainId, gasFeeTokens } = currentConfirmation;
 
   const { isSupported: isGaslessSupported, isSmartTransaction } =
@@ -44,6 +45,7 @@ export function SelectedGasFeeToken() {
   const supportsFutureNative = hasInsufficientNative && isSmartTransaction;
 
   const hasGasFeeTokens =
+    !isQuotedSwapDisplayedInInfo &&
     isGaslessSupported &&
     Boolean(gasFeeTokens?.length) &&
     (!hasOnlyFutureNativeToken || supportsFutureNative);
@@ -94,7 +96,7 @@ export function SelectedGasFeeToken() {
           size={GasFeeTokenIconSize.Sm}
         />
         <Text>{symbol}</Text>
-        {!isQuotedSwapDisplayedInInfo && hasGasFeeTokens && (
+        {hasGasFeeTokens && (
           <Icon
             data-testid="selected-gas-fee-token-arrow"
             name={IconName.ArrowDown}
