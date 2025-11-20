@@ -1,4 +1,4 @@
-import { MockttpServer } from 'mockttp';
+import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -59,15 +59,21 @@ describe('Settings', function () {
   });
 
   it('Does not fetch ENS data for ENS Domain when ENS and IPFS switched off', async function () {
-    let server: MockttpServer;
+    async function ensDomainPassthrough(
+      mockServer: MockttpServer,
+    ): Promise<MockedEndpoint[]> {
+      const passthroughEndpoint = await mockServer
+        .forGet(ENS_NAME_URL)
+        .thenPassThrough();
+
+      return [passthroughEndpoint];
+    }
 
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (mockServer: MockttpServer) => {
-          server = mockServer;
-        },
+        testSpecificMock: ensDomainPassthrough,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -83,14 +89,6 @@ describe('Settings', function () {
         await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleIpfsGateway();
         await privacySettings.toggleEnsDomainResolution();
-
-        // Let the request pass through to verify we trigger the error page
-        await server
-          .forAnyRequest()
-          .matching(
-            (request) => request.headers.host?.toLowerCase() === ENS_NAME,
-          )
-          .thenPassThrough();
 
         try {
           await driver.openNewPage(ENS_NAME_URL);
