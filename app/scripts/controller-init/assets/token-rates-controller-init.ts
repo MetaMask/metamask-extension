@@ -30,6 +30,7 @@ export const TokenRatesControllerInit: ControllerInitFunction<
     state: persistedState.TokenRatesController,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
     disabled: !preferencesState.useCurrencyRateCheck,
+    interval: 5000,
   });
 
   initMessenger.subscribe(
