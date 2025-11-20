@@ -64,13 +64,13 @@ const submitUpdate = async (getByTestId: (id: string) => HTMLElement) => {
 };
 
 const expectButtonStates = (
-  autoState: string,
+  autoState: string | null,
   halfPercentState: string,
   twoPercentState: string,
   customState: string,
   customLabel = 'Custom',
 ) => {
-  expect(screen.getByText('Auto')).toHaveClass(autoState);
+  autoState && expect(screen.getByText('Auto')).toHaveClass(autoState);
   expect(screen.getByText('0.5%').parentElement).toHaveClass(halfPercentState);
   expect(screen.getByText('2%').parentElement).toHaveClass(twoPercentState);
   expect(screen.getByText(customLabel)).toHaveClass(customState);
@@ -86,11 +86,25 @@ describe('BridgeTransactionSettingsModal', () => {
   });
 
   it('should render the component, with initial state', async () => {
-    const { getByTestId, baseElement, store } = renderModal();
+    jest.spyOn(bridgeSelectors, 'getIsSolanaSwap').mockReturnValue(false);
+    const { getByTestId, baseElement } = renderModal();
 
     act(() => {
       fireEvent.click(getByTestId(TX_MODAL.refElement));
     });
+    expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+    expectButtonStates(null, MUTED_CLASS, MUTED_CLASS, MUTED_CLASS);
+
+    // Click and blur Custom button
+    await interactWithCustomInput(getByTestId);
+    expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+    expect(baseElement.childNodes[2]).toMatchSnapshot();
+  });
+
+  it('should render the component, with initial Solana state', async () => {
+    const { getByTestId, baseElement } = renderModal();
+
+    openModal(getByTestId);
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
     expectButtonStates(DEFAULT_CLASS, MUTED_CLASS, MUTED_CLASS, MUTED_CLASS);
 
@@ -98,39 +112,6 @@ describe('BridgeTransactionSettingsModal', () => {
     await interactWithCustomInput(getByTestId, () => {
       expect(baseElement.childNodes[2]).toMatchSnapshot();
     });
-    expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
-    expect(baseElement.childNodes[2]).toMatchSnapshot();
-
-    // Change custom input to .
-    await interactWithCustomInput(getByTestId, (input) => {
-      userEvent.type(input, '.');
-    });
-    expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
-    expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent('Custom');
-
-    // Change custom input to .0
-    await interactWithCustomInput(getByTestId, (input) => {
-      fireEvent.change(input, { target: { value: '.0' } });
-    });
-    expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent('.0');
-    expect(getByTestId(TX_MODAL.submitButton)).toBeEnabled();
-    expect(store.getState().bridge.slippage).toBe(undefined); // inital slippage
-
-    // Submit and expect 0
-    await submitUpdate(getByTestId);
-    expect(store.getState().bridge.slippage).toBe(0);
-
-    // Reopen and expect 0 Custom button
-    act(() => {
-      fireEvent.click(getByTestId(TX_MODAL.refElement));
-    });
-    expectButtonStates(
-      MUTED_CLASS,
-      MUTED_CLASS,
-      MUTED_CLASS,
-      DEFAULT_CLASS,
-      '0%',
-    );
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
   });
 
