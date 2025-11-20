@@ -158,6 +158,7 @@ import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
+import { State2Wrapper } from '../../components/multichain-accounts/state2-wrapper/state2-wrapper';
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { RouteWithLayout } from '../../layouts/route-with-layout';
@@ -413,13 +414,6 @@ const Connections = mmLazy(
       '../../components/multichain/pages/connections/index.js'
     )) as unknown as DynamicImportType,
 );
-const State2Wrapper = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain-accounts/state2-wrapper/state2-wrapper.tsx'
-    )) as unknown as DynamicImportType,
-);
 
 const Home = mmLazy(
   (() => import('../home/index.js')) as unknown as DynamicImportType,
@@ -472,8 +466,10 @@ const MemoizedReviewPermissionsWrapper = React.memo(
   }) => (
     <State2Wrapper
       {...props}
-      state1Component={ReviewPermissions}
-      state2Component={MultichainReviewPermissions}
+      state1Component={ReviewPermissions as React.ComponentType<unknown>}
+      state2Component={
+        MultichainReviewPermissions as React.ComponentType<unknown>
+      }
     />
   ),
 );
