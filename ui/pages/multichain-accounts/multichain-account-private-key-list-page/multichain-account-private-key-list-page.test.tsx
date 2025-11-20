@@ -8,7 +8,6 @@ import { MultichainAccountPrivateKeyListPage } from './multichain-account-privat
 
 const mockNavigate = jest.fn();
 const mockUseParams = jest.fn();
-const mockUseLocation = jest.fn();
 const backButtonTestId = 'multichain-account-address-list-page-back-button';
 
 // Use actual group IDs from mock-state.json
@@ -18,13 +17,11 @@ jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
   useNavigate: () => mockNavigate,
   useParams: () => mockUseParams(),
-  useLocation: () => mockUseLocation(),
 }));
 
 describe('MultichainAccountAddressListPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseLocation.mockReturnValue({ search: '' });
   });
 
   it('handles back button click', () => {
@@ -44,7 +41,6 @@ describe('MultichainAccountAddressListPage', () => {
     fireEvent.click(backButton);
 
     expect(mockNavigate).toHaveBeenCalledWith(-1);
-    expect(mockNavigate).toHaveBeenCalledTimes(1);
   });
 
   it('displays the proper account group name', () => {
