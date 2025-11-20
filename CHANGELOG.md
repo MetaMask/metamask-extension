@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.11.0]
 
+### Uncategorized
+
+- None - dependency bump (#37902)
+- Null (#37912)
+
 ### Added
 
 - feat: added metrics for advanced expanded view (#37969)
