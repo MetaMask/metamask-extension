@@ -56,9 +56,12 @@ export function useDappSwapActions() {
       }
       transactionMeta.batchTransactionsOptions = {};
       transactionMeta.nestedTransactions = undefined;
-      transactionMeta.layer1GasFee = (
+      const layer1GasFeesInHexWei = (
         selectedQuote as QuoteResponse & { l1GasFeesInHexWei: Hex }
       )?.l1GasFeesInHexWei;
+      if (layer1GasFeesInHexWei) {
+        transactionMeta.layer1GasFee = layer1GasFeesInHexWei;
+      }
     },
     [selectedQuote],
   );
