@@ -37,7 +37,11 @@ import { TextColor } from '../../../helpers/constants/design-system';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { KeyringType } from '../../../../shared/constants/keyring';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 import { capitalizeStr } from './utils';
@@ -318,7 +322,11 @@ class ConnectHardwareForm extends Component {
   };
 
   onUnlockAccounts = async (deviceName, path) => {
-    const { navigate, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
+    const {
+      navigate,
+      mostRecentOverviewPage,
+      unlockHardwareWalletAccounts,
+      hdEntropyIndex,
       this.props;
     const { selectedAccounts } = this.state;
     const { trackEvent } = this.context;
@@ -339,6 +347,19 @@ class ConnectHardwareForm extends Component {
       description,
     )
       .then((_) => {
+        // Legacy event. Keeping it in case we have dashboards depending on it.
+        this.context.trackEvent({
+          category: MetaMetricsEventCategory.Accounts,
+          event: MetaMetricsEventName.AccountAdded,
+          properties: {
+            account_type: MetaMetricsEventAccountType.Hardware,
+            // For now we keep using the device name to avoid any discrepancies with our current metrics.
+            // TODO: This will be addressed later, see: https://github.com/MetaMask/metamask-extension/issues/29777
+            account_hardware_type: deviceName,
+            is_suggested_name: true,
+          },
+        });
+
         const connectedDevices = this.getHardwareWalletKeyrings();
         const deviceCount = connectedDevices.length;
 
@@ -360,6 +381,19 @@ class ConnectHardwareForm extends Component {
         navigate(mostRecentOverviewPage);
       })
       .catch((e) => {
+        // Legacy event. Keeping it in case we have dashboards depending on it.
+        this.context.trackEvent({
+          category: MetaMetricsEventCategory.Accounts,
+          event: MetaMetricsEventName.AccountAddFailed,
+          properties: {
+            account_type: MetaMetricsEventAccountType.Hardware,
+            // See comment above about `account_hardware_type`.
+            account_hardware_type: deviceName,
+            error: e.message,
+            hd_entropy_index: hdEntropyIndex,
+          },
+        });
+
         trackEvent({
           event: MetaMetricsEventName.HardwareWalletConnectionFailed,
           properties: {

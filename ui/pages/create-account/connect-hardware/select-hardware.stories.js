@@ -16,7 +16,10 @@ export const DefaultStory = () => {
         action(`Continue connect to ${selectedDevice}`)()
       }
       ledgerTransportType={LedgerTransportTypes.live}
-      context={{}}
+      context={{
+        // eslint-disable-next-line no-empty-function
+        trackEvent: () => {},
+      }}
     />
   );
 };
@@ -30,7 +33,10 @@ export const BrowserNotSupported = () => {
       browserSupported={false}
       connectToHardwareWallet={() => undefined}
       ledgerTransportType={LedgerTransportTypes.live}
-      context={{}}
+      context={{
+        // eslint-disable-next-line no-empty-function
+        trackEvent: () => {},
+      }}
     />
   );
 };
