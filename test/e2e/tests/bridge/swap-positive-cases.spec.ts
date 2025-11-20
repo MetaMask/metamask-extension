@@ -33,7 +33,7 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
-          submitDelay: 5000,
+          submitDelay: 10000,
           expectedDestAmount: '3,839',
         });
 
