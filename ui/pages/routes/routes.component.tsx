@@ -965,7 +965,6 @@ export default function Routes() {
             layout={LegacyLayout}
           />
           <RouteWithLayout
-            authenticated
             path={TOKEN_TRANSFER_ROUTE}
             exact
             layout={LegacyLayout}
@@ -977,7 +976,6 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${TOKEN_TRANSFER_ROUTE}/:origin`}
             exact
             layout={LegacyLayout}
@@ -990,7 +988,6 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
             exact
             layout={LegacyLayout}
@@ -1006,7 +1003,6 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin`}
             exact
             layout={LegacyLayout}
