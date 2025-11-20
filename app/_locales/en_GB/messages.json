@@ -944,7 +944,7 @@
     "message": "You'll need to allow access to $1 $2 for bridging, and then approve bridging to $3. This will require two separate confirmations."
   },
   "bridgeBlockExplorerLinkCopied": {
-    "message": "Block explorer link copied!"
+    "message": "Block explorer link copied"
   },
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
@@ -1025,7 +1025,7 @@
     "message": "Price impact reflects how your swap affects the market price. If you don't have enough for gas, some of your tokens are used to cover fees, which raises price impact. MetaMask doesn't set or control this."
   },
   "bridgePriceImpactTooltipTitle": {
-    "message": "Price Impact"
+    "message": "Price impact"
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Price Impact Warning"
@@ -1426,7 +1426,7 @@
     "message": "Now"
   },
   "confirmInfoSwitchingTo": {
-    "message": "Switching To"
+    "message": "Switching to"
   },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
@@ -1477,7 +1477,7 @@
     "message": "You're switching back to a standard account (EOA)."
   },
   "confirmTitleDescDelegationUpgrade": {
-    "message": "You're switching to a smart account"
+    "message": "You're switching to a smart account."
   },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
@@ -1707,7 +1707,7 @@
     "message": "CoolWallet"
   },
   "copiedExclamation": {
-    "message": "Copied."
+    "message": "Copied"
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
@@ -4153,7 +4153,7 @@
     "message": "NFT autodetection enabled"
   },
   "nftDisclaimer": {
-    "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
+    "message": "Disclaimer: MetaMask pulls the media file from the source URL. This URL sometimes gets changed by the marketplace on which the NFT was minted."
   },
   "nftEmptyDescription": {
     "message": "There's a world of NFTs out there. Start your collection today."
@@ -4551,7 +4551,7 @@
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Installation is complete!"
+    "message": "Installation is complete"
   },
   "onboardingSignInWith": {
     "message": "Sign in with $1",
@@ -5778,7 +5778,7 @@
     "message": "Select Secret Recovery Phrase"
   },
   "selectType": {
-    "message": "Select Type"
+    "message": "Select type"
   },
   "selectedAccountMismatch": {
     "message": "Different account selected"
