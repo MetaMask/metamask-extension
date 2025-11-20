@@ -16,7 +16,9 @@ const validThemes = Object.values(ThemeType).filter((theme) => {
  * @param settingTheme - The theme setting from user preferences
  * @returns The resolved theme (light or dark)
  */
-function resolveTheme(settingTheme: string | undefined): string {
+function resolveTheme(
+  settingTheme: string | undefined,
+): ThemeType.light | ThemeType.dark {
   const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
     ? ThemeType.dark
     : ThemeType.light;
@@ -44,7 +46,7 @@ function resolveTheme(settingTheme: string | undefined): string {
     return ThemeType.light;
   }
 
-  return resolvedTheme;
+  return resolvedTheme as ThemeType.light | ThemeType.dark;
 }
 
 /**
@@ -52,9 +54,11 @@ function resolveTheme(settingTheme: string | undefined): string {
  *
  * @returns theme
  */
-export function useTheme() {
+export function useTheme(): ThemeType.light | ThemeType.dark {
   const settingTheme = useSelector(getTheme);
-  const [theme, setTheme] = useState(() => resolveTheme(settingTheme));
+  const [theme, setTheme] = useState<ThemeType.light | ThemeType.dark>(() =>
+    resolveTheme(settingTheme),
+  );
 
   useEffect(() => {
     const resolved = resolveTheme(settingTheme);
