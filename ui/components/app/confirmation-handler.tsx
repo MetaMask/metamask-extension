@@ -31,6 +31,7 @@ import { navigateToConfirmation } from '../../pages/confirmations/hooks/useConfi
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import { useNavState } from '../../contexts/navigation-state';
 // TODO: Remove restricted import
@@ -82,13 +83,35 @@ export const ConfirmationHandler = () => {
     [location.state, navState],
   );
 
+  const isSmartTransaction = useMemo(() => {
+    return pendingApprovals.some(
+      (approval) =>
+        approval.type ===
+        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
+    );
+  }, [pendingApprovals]);
+
+  const isSnapApproval = useMemo(
+    () =>
+      pendingApprovals.some(
+        (approval) =>
+          approval.type === 'wallet_updateSnap' ||
+          approval.type === 'wallet_installSnapResult',
+      ),
+    [pendingApprovals],
+  );
+
   const canRedirect = useMemo(() => {
-    if (stayOnHomePage || isFullscreen) {
+    if (stayOnHomePage) {
+      return false;
+    }
+
+    if (isFullscreen && !isSmartTransaction && !isSnapApproval) {
       return false;
     }
 
     return true;
-  }, [stayOnHomePage, isFullscreen]);
+  }, [stayOnHomePage, isFullscreen, isSmartTransaction, isSnapApproval]);
 
   const isOnHomePage = location.pathname === DEFAULT_ROUTE;
 
@@ -207,6 +230,7 @@ export const ConfirmationHandler = () => {
     showAwaitingSwapScreen,
     swapsFetchParams,
     targetConfirmationId,
+    location.pathname,
   ]);
 
   return null;
