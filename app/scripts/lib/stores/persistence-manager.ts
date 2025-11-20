@@ -115,8 +115,7 @@ const STATE_LOCK = 'state-lock';
  *
  * Usage:
  * The `PersistenceManager` is instantiated with a `localStore`, which is an
- * implementation of the `BaseStore` class (either `ExtensionStore` or
- * `ReadOnlyNetworkStore`). It provides methods for setting and retrieving
+ * implementation of the `BaseStore` class (`ExtensionStore`). It provides methods for setting and retrieving
  * state, managing metadata, and handling cleanup tasks.
  */
 export class PersistenceManager {
@@ -208,7 +207,7 @@ export class PersistenceManager {
 
   #pendingPairs = new Map<string, unknown>();
 
-  protected storageKind: StorageKind = 'data';
+  storageKind: StorageKind = 'data';
 
   /**
    * Sets the state in the local store.
@@ -298,7 +297,7 @@ export class PersistenceManager {
    * to delete the key.
    * @throws Error if the storageKind is not 'split'.
    */
-  update(key: keyof MetaMaskStateType, value: MetaMaskStateType | undefined) {
+  update(key: keyof MetaMaskStateType, value: unknown | undefined) {
     if (this.storageKind !== 'split') {
       throw new Error(
         'MetaMask - cannot set individual keys when storageKind is not "split"',
@@ -531,7 +530,7 @@ export class PersistenceManager {
    * This method should only be called when no other write operations can
    * occur.
    */
-  async migrateToSplitState(state: MetaMaskStorageStructure) {
+  async migrateToSplitState(state: MetaMaskStateType) {
     if (this.storageKind === 'split') {
       console.log(
         '[PersistenceManager] Storage is already split, skipping migration',
@@ -545,15 +544,12 @@ export class PersistenceManager {
       );
     }
 
+    this.storageKind = 'split';
     const metadata = structuredClone(this.#metadata);
     metadata.storageKind = 'split';
-    this.storageKind = 'split';
     this.setMetadata(metadata);
-    for (const key of Object.keys(state?.data || {})) {
-      const value = state?.data
-        ? state.data[key as keyof MetaMaskStateType]
-        : undefined;
-      this.update(key, value as MetaMaskStateType | undefined);
+    for (const [key, value] of Object.entries(state)) {
+      this.update(key, value);
     }
 
     // 😨 mark data key for deletion 😨

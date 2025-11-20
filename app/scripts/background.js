@@ -62,7 +62,6 @@ import {
   PersistenceManager,
 } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
-import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -114,11 +113,7 @@ const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-const useReadOnlyNetworkStore =
-  inTest && getManifestFlags().testing?.forceExtensionStore !== true;
-const localStore = useReadOnlyNetworkStore
-  ? new ReadOnlyNetworkStore()
-  : new ExtensionStore();
+const localStore = new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 // Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
@@ -728,9 +723,15 @@ async function initialize(backup) {
   const { persist, requestSafeReload } =
     getRequestSafeReload(persistenceManager);
 
+  /**
+   * Can be used in the UI to force a migration to "split" state storage.
+   *
+   * The mechanism will cause a full extension reload.
+   */
   const migrateToSplitState = async () => {
     await requestSafeReload(async () => {
-      return await persistenceManager.migrateToSplitState();
+      const state = controller.store.getState();
+      return await persistenceManager.migrateToSplitState(state);
     });
   };
 
@@ -949,9 +950,10 @@ export async function loadStateFromPersistence(backup) {
     });
   });
 
-  let writeAll = false;
+  let writeAllKeysToState = false;
   if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
-    writeAll = true;
+    // brand new state; write all keys!
+    writeAllKeysToState = true;
     preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
   }
 
@@ -982,22 +984,48 @@ export async function loadStateFromPersistence(backup) {
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
 
-  if (persistenceManager.storageKind === 'data') {
-    // write to disk
-    await persistenceManager.set(versionedData.data);
-  } else {
-    if (writeAll) {
-      for (const [key, value] of Object.entries(versionedData.data)) {
-        persistenceManager.update(key, value);
+  switch (persistenceManager.storageKind) {
+    case 'data':
+      // write to disk
+      const flag = versionedData.data.RemoteFeatureFlagController?.state?.remoteFeatureFlags?.extensionPlatformUseSplitStateStorage;
+      const useSplitStateStorage =
+        flag &&
+        typeof flag === 'object' &&
+        'value' in flag &&
+        Boolean(flag.value) && versionedData.meta._tried !== true
+
+      if (useSplitStateStorage) {
+        // sigil to mark that we tried to migrate to split state storage
+        versionedData.meta._tried = true;
+        persistenceManager.setMetadata(versionedData.meta);
       }
-    } else {
-      // write changes only
-      for (const key of changedKeys) {
-        persistenceManager.update(key, versionedData.data[key]);
+
+      await persistenceManager.set(versionedData.data);
+
+      if (useSplitStateStorage) {
+        await persistenceManager.migrateToSplitState();
+        delete versionedData.meta._tried;
+        persistenceManager.setMetadata(versionedData.meta);
       }
-    }
-    // write to disk
-    persistenceManager.persist();
+      break;
+    case 'split':
+      if (writeAllKeysToState) {
+        for (const [key, value] of Object.entries(versionedData.data)) {
+          persistenceManager.update(key, value);
+        }
+      } else {
+        // write changes only
+        for (const key of changedKeys) {
+          persistenceManager.update(key, versionedData.data[key]);
+        }
+      }
+      // write to disk
+      await persistenceManager.persist();
+      break;
+    default:
+      throw new Error(
+        `MetaMask - persistenceManager has invalid storageKind '${persistenceManager.storageKind}'`,
+      );
   }
 
   // return just the data

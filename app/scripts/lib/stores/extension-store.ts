@@ -20,7 +20,7 @@ export default class ExtensionStore implements BaseStore {
     }
   }
 
-  manifest: Set<string> = new Set();
+  #manifest: Set<string> = new Set();
 
   /**
    * Return all data in `local` extension storage area.
@@ -32,6 +32,7 @@ export default class ExtensionStore implements BaseStore {
       log.error('Storage local API not available.');
       return null;
     }
+    debugger;
 
     const { local } = browser.storage;
     console.time('[ExtensionStore] Reading from local store');
@@ -43,7 +44,7 @@ export default class ExtensionStore implements BaseStore {
 
       // get all keys from the manifest, and load those keys
       const data = await local.get(keys);
-      this.manifest = new Set(keys);
+      this.#manifest = new Set(keys);
       const { meta } = data;
       delete data.meta;
       console.timeEnd('[ExtensionStore] Reading from local store');
@@ -52,14 +53,14 @@ export default class ExtensionStore implements BaseStore {
         meta: meta as unknown as MetaData,
       };
     }
-    this.manifest.add('data');
-    this.manifest.add('meta');
 
     // don't fetch more than we need, in case extra stuff was put in the db
     // by testing or users playing with the db
-    const response = await local.get(['data', 'meta']);
+    const solidResponse = await local.get(['data', 'meta']);
+    this.#manifest.add('data');
+    this.#manifest.add('meta');
     console.timeEnd('[ExtensionStore] Reading from local store');
-    return response;
+    return solidResponse;
   }
 
   async setKeyValues(pairs: Map<string, unknown>): Promise<void> {
@@ -74,7 +75,7 @@ export default class ExtensionStore implements BaseStore {
     const toRemove: string[] = [];
     let updateManifest = false;
     for (const [key, value] of pairs) {
-      const keyExists = this.manifest.has(key);
+      const keyExists = this.#manifest.has(key);
       const isRemoving = typeof value === 'undefined';
       if (isRemoving) {
         if (!keyExists) {
@@ -84,20 +85,20 @@ export default class ExtensionStore implements BaseStore {
           );
           continue;
         }
-        this.manifest.delete(key);
+        this.#manifest.delete(key);
         updateManifest = true;
         toRemove.push(key);
         continue;
       }
       if (!keyExists) {
-        this.manifest.add(key);
+        this.#manifest.add(key);
         updateManifest = true;
       }
       toSet[key] = value;
     }
 
     if (updateManifest) {
-      toSet.manifest = Array.from(this.manifest);
+      toSet.manifest = Array.from(this.#manifest);
     }
 
     console.time('[ExtensionStore] Writing to local store');
@@ -142,6 +143,6 @@ export default class ExtensionStore implements BaseStore {
       );
     }
     const { local } = browser.storage;
-    return await local.remove([...this.manifest.keys()]);
+    return await local.remove([...this.#manifest.keys()]);
   }
 }

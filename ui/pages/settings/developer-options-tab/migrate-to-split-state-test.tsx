@@ -10,7 +10,13 @@ const MigrateToSplitStateTest = () => {
   };
   return (
     <div>
-      <button onClick={handleMigrate}>Migrate to Split State</button>
+      <button
+        className="button btn-primary"
+        style={{ marginTop: '16px' }}
+        onClick={handleMigrate}
+      >
+        Migrate to Split State
+      </button>
     </div>
   );
 };

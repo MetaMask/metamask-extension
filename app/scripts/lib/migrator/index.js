@@ -13,7 +13,7 @@ import log from 'loglevel';
  * @property {number} [defaultVersion] - The version to use in the initial state
  */
 
-const MIGRATION_V2_START_VERSION = 177;
+const MIGRATION_V2_START_VERSION = 183;
 
 export default class Migrator extends EventEmitter {
   /**

@@ -5,24 +5,25 @@ export const version = 0;
 /**
  * Explain the purpose of the migration here.
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
- * @param originalVersionedData.meta - State metadata.
- * @param originalVersionedData.meta.version - The current state version.
- * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
- * @returns Updated versioned MetaMask extension state.
+ * @param versionedData - Versioned MetaMask extension state, exactly what we persist to dist.
+ * @param versionedData.meta - State metadata.
+ * @param versionedData.meta.version - The current state version.
+ * @param versionedData.data - The persisted MetaMask state, keyed by controller.
+ * @returns void or a Promise that resolves to void; mutate the state in place.
  */
-export async function migrate(originalVersionedData: {
+export function migrate(versionedData: {
   meta: { version: number };
   data: Record<string, unknown>;
-}) {
-  const versionedData = cloneDeep(originalVersionedData);
+}, changedKeys: Set<string>): void | Promise<void> {
   versionedData.meta.version = version;
-  versionedData.data = transformState(versionedData.data);
-  return versionedData;
+  transformState(versionedData.data, changedKeys);
 }
 
-function transformState(state: Record<string, unknown>) {
-  const newState = state;
-  // transform state here
-  return newState;
+function transformState(state: Record<string, unknown>, changedKeys: Set<string>): Promise<void> | void {
+  (state.ControllerKey as {newProperty: string}).newProperty = 'newValue';
+  delete state.OldControllerKey;
+  // if you add/remove/edit a new controller key, you need to track it in
+  // changedKeys or your migration will not persist.
+  changedKeys.add('ControllerKey');
+  changedKeys.add('OldControllerKey');
 }
