@@ -23,36 +23,9 @@ async function mockSnapSimpleKeyringAndSiteWithSpotPrices(
   port: number = 8080,
 ) {
   const snapMocks = await mockSnapSimpleKeyringAndSite(mockServer, port);
-  const spotPricesMock = await mockServer
-    .forGet(
-      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
-    )
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        '0x0000000000000000000000000000000000000000': {
-          id: 'ethereum',
-          price: 1700,
-          marketCap: 382623505141,
-          pricePercentChange1d: 0,
-        },
-      },
-    }));
-  const mockExchangeRates = await mockServer
-    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        eth: {
-          name: 'Ethereum',
-          ticker: 'eth',
-          value: 1,
-          currencyType: 'fiat',
-        },
-      },
-    }));
+  const spotPricesMock = await mockPriceApi(mockServer);
 
-  return [...snapMocks, spotPricesMock, mockExchangeRates];
+  return [...snapMocks, spotPricesMock];
 }
 
 describe('Snap Account Transfers', function (this: Suite) {
@@ -76,7 +49,7 @@ describe('Snap Account Transfers', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed('85,025.00', 'USD');
         await homePage.checkPageIsLoaded();
 
         await installSnapSimpleKeyring(driver);
@@ -109,8 +82,8 @@ describe('Snap Account Transfers', function (this: Suite) {
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
-        await accountList.checkMultichainAccountBalanceDisplayed('$44,200');
-        await accountList.checkMultichainAccountBalanceDisplayed('$40,799');
+        await accountList.checkMultichainAccountBalanceDisplayed('$88,426');
+        await accountList.checkMultichainAccountBalanceDisplayed('$81,623');
       },
     );
   });
@@ -135,7 +108,7 @@ describe('Snap Account Transfers', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed('85,025.00', 'USD');
         await homePage.checkPageIsLoaded();
 
         await installSnapSimpleKeyring(driver, false);
@@ -170,8 +143,8 @@ describe('Snap Account Transfers', function (this: Suite) {
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
-        await accountList.checkMultichainAccountBalanceDisplayed('$44,200');
-        await accountList.checkMultichainAccountBalanceDisplayed('$40,799');
+        await accountList.checkMultichainAccountBalanceDisplayed('$88,426');
+        await accountList.checkMultichainAccountBalanceDisplayed('$81,623');
       },
     );
   });
