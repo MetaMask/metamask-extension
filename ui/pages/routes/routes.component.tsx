@@ -784,19 +784,16 @@ export default function Routes() {
             component={Notifications}
             layout={RootLayout}
           />
-          <RouteWithLayout
-            authenticated
-            path={SNAPS_ROUTE}
-            component={SnapList}
-            exact
-            layout={LegacyLayout}
-          />
-          <RouteWithLayout
-            authenticated
-            path={SNAPS_VIEW_ROUTE}
-            component={SnapView}
-            layout={LegacyLayout}
-          />
+          <RouteWithLayout path={SNAPS_ROUTE} exact layout={LegacyLayout}>
+            {createV5CompatRoute(SnapList, {
+              wrapper: AuthenticatedV5Compat,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout path={SNAPS_VIEW_ROUTE} layout={LegacyLayout}>
+            {createV5CompatRoute(SnapView, {
+              wrapper: AuthenticatedV5Compat,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout path={`${SEND_ROUTE}/:page?`} layout={RootLayout}>
             {createV5CompatRoute<{ page?: string }>(SendPage, {
               wrapper: AuthenticatedV5Compat,
@@ -958,20 +955,20 @@ export default function Routes() {
             exact
             layout={RootLayout}
           />
-          <RouteWithLayout path={GATOR_PERMISSIONS} exact layout={LegacyLayout}>
-            {createV5CompatRoute(GatorPermissionsPage, {
-              wrapper: AuthenticatedV5Compat,
-            })}
-          </RouteWithLayout>
           <RouteWithLayout
-            path={TOKEN_TRANSFER_ROUTE}
+            authenticated
+            path={GATOR_PERMISSIONS}
+            component={GatorPermissionsPage}
             exact
             layout={LegacyLayout}
-          >
-            {createV5CompatRoute(TokenTransferPage, {
-              wrapper: AuthenticatedV5Compat,
-            })}
-          </RouteWithLayout>
+          />
+          <RouteWithLayout
+            authenticated
+            path={TOKEN_TRANSFER_ROUTE}
+            component={TokenTransferPage}
+            exact
+            layout={LegacyLayout}
+          />
           <RouteWithLayout
             authenticated
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
@@ -1123,13 +1120,10 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={NONEVM_BALANCE_CHECK_ROUTE}
+            component={NonEvmBalanceCheck}
             layout={LegacyLayout}
-          >
-            {createV5CompatRoute(NonEvmBalanceCheck, {
-              wrapper: AuthenticatedV5Compat,
-              includeLocation: true,
-            })}
-          </RouteWithLayout>
+          />
+
           <RouteWithLayout
             authenticated
             path={SHIELD_PLAN_ROUTE}
@@ -1289,9 +1283,7 @@ export default function Routes() {
 
       {renderRoutes()}
 
-      {isUnlocked ? (
-        <Alerts navigate={createV5CompatNavigate(history)} />
-      ) : null}
+      {isUnlocked ? <Alerts navigate={createV5CompatNavigate(history)} /> : null}
       {React.createElement(
         ToastMaster as React.ComponentType<{
           location: RouteComponentProps['location'];

@@ -296,7 +296,15 @@ export default class Home extends PureComponent {
   }
 
   static getDerivedStateFromProps(props) {
-    if (shouldCloseNotificationPopup(props)) {
+    const shouldClose = shouldCloseNotificationPopup(props);
+    console.log('[HOME DEBUG] getDerivedStateFromProps', {
+      shouldClose,
+      isNotification: props.isNotification,
+      totalUnapprovedCount: props.totalUnapprovedCount,
+      hasApprovalFlows: props.hasApprovalFlows,
+      isSigningQRHardwareTransaction: props.isSigningQRHardwareTransaction,
+    });
+    if (shouldClose) {
       return { notificationClosing: true };
     }
     return null;
@@ -870,9 +878,24 @@ export default class Home extends PureComponent {
       isSocialLoginFlow,
     } = this.props;
 
+    console.log('[HOME DEBUG]', {
+      forgottenPassword,
+      notificationClosing: this.state.notificationClosing,
+      redirecting: this.state.redirecting,
+      completedOnboarding,
+      onboardedInThisUISession,
+      firstTimeFlowType,
+      newNetworkAddedConfigurationId,
+      showWhatsNewPopup,
+      showRecoveryPhraseReminder,
+      showTermsOfUsePopup,
+      showShieldEntryModal,
+    });
+
     if (forgottenPassword) {
       return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
     } else if (this.state.notificationClosing || this.state.redirecting) {
+      console.log('[HOME DEBUG] Returning null due to notificationClosing or redirecting');
       return null;
     }
 
@@ -905,6 +928,8 @@ export default class Home extends PureComponent {
       !onboardedInThisUISession &&
       showTermsOfUsePopup &&
       !isSocialLoginFlow;
+
+    console.log('[HOME DEBUG] Rendering home container');
 
     return (
       <ScrollContainer className="main-container main-container--has-shadow">
@@ -950,7 +975,7 @@ export default class Home extends PureComponent {
               defaultHomeActiveTabName={defaultHomeActiveTabName}
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
-            ></AccountOverview>
+            />
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
               <div className="home__support">
