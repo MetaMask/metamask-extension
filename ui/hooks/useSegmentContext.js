@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
-import { useRouteMatch } from 'react-router-dom';
+import { useLocation, matchPath } from 'react-router-dom-v5-compat';
 import { PATH_NAME_MAP, getPaths } from '../helpers/constants/routes';
-import { txDataSelector } from '../selectors';
 
 /**
  * Returns the current page if it matches our route map, as well as the origin
@@ -15,12 +14,8 @@ import { txDataSelector } from '../selectors';
  * }}
  */
 export function useSegmentContext() {
-  const match = useRouteMatch({
-    path: getPaths(),
-    exact: true,
-    strict: true,
-  });
-  const txData = useSelector(txDataSelector) || {};
+  const location = useLocation();
+  const txData = useSelector((state) => state.confirmTransaction?.txData) || {};
   const confirmTransactionOrigin = txData.origin;
 
   const referrer = confirmTransactionOrigin
@@ -28,6 +23,24 @@ export function useSegmentContext() {
         url: confirmTransactionOrigin,
       }
     : undefined;
+
+  // Find the matching path using v6 matchPath
+  const paths = getPaths();
+  let match = null;
+  for (const path of paths) {
+    match = matchPath(
+      {
+        path,
+        end: true,
+        caseSensitive: false,
+      },
+      location.pathname,
+    );
+    if (match) {
+      match.path = path; // Add the path back for compatibility
+      break;
+    }
+  }
 
   const page = match
     ? {
