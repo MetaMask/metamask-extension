@@ -65,13 +65,14 @@ async function mockStripeSubscriptionFlow(
 
   // Shared state across requests
   let cancelAtPeriodEnd = false;
+  let claimSubmitted = false;
 
   // Use provided test data or default values
   const claimData = testData || {
     email: 'test@metamask.io',
     impactedTxHash:
       '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-    reimbursementWalletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    reimbursementWalletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0',
     description: 'This is a test claim description',
   };
 
@@ -118,32 +119,52 @@ async function mockStripeSubscriptionFlow(
         checkoutSessionUrl: MOCK_CHECKOUT_SESSION_URL,
       }),
 
-    // Mock claims submission endpoint
+    // Mock POST submission endpoint
     await mockServer
-      .forPost(/https:\/\/.*\.cx\.metamask\.io\/claims/u)
-      .thenJson(200, SHIELD_CLAIMS_RESPONSE),
+      .forPost(/https:\/\/.*\.cx\.metamask\.io\/.*claims/u)
+      .thenCallback((request) => {
+        console.log('✅ Claims API POST called:', request.url);
+        claimSubmitted = true;
+        return {
+          statusCode: 200,
+          json: SHIELD_CLAIMS_RESPONSE,
+        };
+      }),
 
     // Mock GET claims endpoint - returns list of claims
-    // Returns a mock claim after submission, empty array otherwise
     await mockServer
-      .forGet(/https:\/\/.*\.cx\.metamask\.io\/claims/u)
-      .thenJson(200, [
-        {
-          id: SHIELD_CLAIMS_RESPONSE.claimId,
-          shortId: 1,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          chainId: '1',
-          email: claimData.email,
-          impactedWalletAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-          impactedTxHash: claimData.impactedTxHash,
-          reimbursementWalletAddress: claimData.reimbursementWalletAddress,
-          description: claimData.description,
-          attachments: [],
-          intercomId: `intercom_${SHIELD_CLAIMS_RESPONSE.claimId}`,
-          status: 'created',
-        },
-      ]),
+      .forGet(/https:\/\/.*\.cx\.metamask\.io\/.*claims/u)
+      .thenCallback((request) => {
+        console.log('✅ Claims API GET called:', request.url);
+        if (claimSubmitted) {
+          return {
+            statusCode: 200,
+            json: [
+              {
+                id: SHIELD_CLAIMS_RESPONSE.claimId,
+                shortId: 1,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                chainId: '1',
+                email: claimData.email,
+                impactedWalletAddress:
+                  '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                impactedTxHash: claimData.impactedTxHash,
+                reimbursementWalletAddress:
+                  claimData.reimbursementWalletAddress,
+                description: claimData.description,
+                attachments: [],
+                intercomId: `intercom_${SHIELD_CLAIMS_RESPONSE.claimId}`,
+                status: 'created',
+              },
+            ],
+          };
+        }
+        return {
+          statusCode: 200,
+          json: [],
+        };
+      }),
 
     // Mock cancel subscription endpoint
     await mockServer
@@ -174,14 +195,12 @@ async function mockStripeSubscriptionFlow(
 }
 
 describe('Shield Plan Stripe Integration', function () {
-  // TODO: This test is skipped until the claim form is implemented with the final design.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should successfully fill and submit shield claim form', async function () {
+  it('should successfully fill and submit shield claim form', async function () {
     const testData = {
       email: 'test@metamask.io',
       impactedTxHash:
         '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-      reimbursementWalletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+      reimbursementWalletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0',
       description: 'This is a test claim description',
     };
 

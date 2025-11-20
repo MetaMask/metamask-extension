@@ -400,6 +400,7 @@ const ShieldPlan = () => {
                 {...rowsStyleProps}
                 onClick={() => setShowPaymentModal(true)}
                 width={BlockSize.Full}
+                data-testid="shield-plan-payment-method-button"
               >
                 <Text variant={DSTextVariant.bodyLgMedium}>
                   {t('shieldPlanPayWith')}

@@ -3,19 +3,18 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
-import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import {
-  BASE_SHIELD_SUBSCRIPTION,
-  MOCK_CHECKOUT_SESSION_URL,
+  BASE_SHIELD_SUBSCRIPTION_CRYPTO,
   SHIELD_PRICING_DATA,
   SHIELD_USER_EVENTS_RESPONSE,
 } from '../../helpers/shield/constants';
+import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
+import ShieldSubscriptionApprovePage from '../../page-objects/pages/settings/shield/shield-subscription-approve-page';
+import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
 
-// Local fixture for this spec file
 function createShieldFixture() {
   return new FixtureBuilder()
     .withNetworkControllerOnMainnet()
@@ -27,11 +26,19 @@ function createShieldFixture() {
     .withTokensController({
       allTokens: {
         '0x1': {
+          // USDC and USDT tokens on Mainnet
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
             {
-              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-              symbol: 'WETH',
-              decimals: 18,
+              address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              symbol: 'USDC',
+              decimals: 6,
+              isERC721: false,
+              aggregators: [],
+            },
+            {
+              address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+              symbol: 'USDT',
+              decimals: 6,
               isERC721: false,
               aggregators: [],
             },
@@ -56,21 +63,21 @@ async function mockSubscriptionApiCalls(
     mockServer,
   );
 
-  // Shared state to track if card subscription was requested
-  let cardSubscriptionRequested = false;
+  // Shared state to track if crypto subscription was requested
+  let cryptoSubscriptionRequested = false;
 
   return [
-    // GET subscriptions - returns data only if card subscription was requested
+    // GET subscriptions - returns data only if crypto subscription was requested
     // Using .always() to ensure this overrides global mocks
     await mockServer
       .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
       .always()
       .thenCallback(() => ({
         statusCode: 200,
-        json: cardSubscriptionRequested
+        json: cryptoSubscriptionRequested
           ? {
               customerId: 'test_customer_id',
-              subscriptions: [BASE_SHIELD_SUBSCRIPTION],
+              subscriptions: [BASE_SHIELD_SUBSCRIPTION_CRYPTO],
               trialedProducts: ['shield'],
             }
           : {
@@ -81,27 +88,6 @@ async function mockSubscriptionApiCalls(
     await mockServer
       .forGet('https://subscription.dev-api.cx.metamask.io/v1/pricing')
       .thenJson(200, SHIELD_PRICING_DATA),
-
-    // Mock card subscription creation endpoint
-    await mockServer
-      .forPost(
-        'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/card',
-      )
-      .thenCallback(() => {
-        cardSubscriptionRequested = true;
-        return {
-          statusCode: 200,
-          json: {
-            checkoutSessionUrl: MOCK_CHECKOUT_SESSION_URL,
-          },
-        };
-      }),
-
-    // Mock checkout session URL to redirect to success URL
-    await mockServer.forGet(MOCK_CHECKOUT_SESSION_URL).thenCallback(() => ({
-      statusCode: 302,
-      headers: { Location: 'https://mock-redirect-url.com' },
-    })),
 
     // Using .always() to ensure this overrides global mocks
     await mockServer
@@ -143,12 +129,36 @@ async function mockSubscriptionApiCalls(
         cohort: 'wallet_home',
         expiresAt: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days from now
       }),
+
+    await mockServer
+      .forPost(
+        'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/crypto/approval-amount',
+      )
+      .always()
+      .thenJson(200, {
+        approveAmount: '100000000', // 100 USDC/USDT with 6 decimals (100 * 10^6)
+        paymentAddress: '0x1234567890123456789012345678901234567890',
+        paymentTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC or USDT
+      }),
+
+    // Mock crypto subscription creation endpoint
+    await mockServer
+      .forPost(
+        'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/crypto',
+      )
+      .thenCallback(() => {
+        cryptoSubscriptionRequested = true;
+        return {
+          statusCode: 200,
+          json: [BASE_SHIELD_SUBSCRIPTION_CRYPTO],
+        };
+      }),
   ];
 }
 
-describe('Shield Subscription Tests', function () {
+describe('Shield Subscription Crypto Payment Tests', function () {
   describe('Shield Entry Modal', function () {
-    it('should subscribe to the shield plan from the entry modal - annual plan', async function () {
+    it('should get started on entry modal - annual plan', async function () {
       await withFixtures(
         {
           fixtures: createShieldFixture().build(),
@@ -159,9 +169,19 @@ describe('Shield Subscription Tests', function () {
             'Could not load Rive WASM file',
             'XMLHttpRequest is not a constructor',
           ],
+          localNodeOptions: [
+            {
+              type: 'anvil',
+              options: {
+                chainId: 1,
+                loadState:
+                  './test/e2e/seeder/network-states/with100Usdc100Usdt.json',
+              },
+            },
+          ],
         },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+        async ({ driver, localNodes }) => {
+          await loginWithBalanceValidation(driver, localNodes[0]);
 
           const homePage = new HomePage(driver);
 
@@ -169,89 +189,30 @@ describe('Shield Subscription Tests', function () {
           await homePage.clickOnShieldEntryModalGetStarted();
 
           const shieldPlanPage = new ShieldPlanPage(driver);
-          await shieldPlanPage.completeShieldPlanSubscriptionFlowWithCard(
+          await shieldPlanPage.checkPageIsLoaded();
+
+          await shieldPlanPage.completeShieldPlanSubscriptionFlowWithCrypto(
             'annual',
           );
 
-          const shieldDetailPage = new ShieldDetailPage(driver);
-          await shieldDetailPage.validateShieldDetailPage();
-        },
-      );
-    });
-
-    it('should subscribe to the shield plan from the entry modal - monthly plan', async function () {
-      await withFixtures(
-        {
-          fixtures: createShieldFixture().build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: mockSubscriptionApiCalls,
-          ignoredConsoleErrors: [
-            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-            'Could not load Rive WASM file',
-            'XMLHttpRequest is not a constructor',
-          ],
-        },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
-
-          const homePage = new HomePage(driver);
-
-          await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalGetStarted();
-
-          const shieldPlanPage = new ShieldPlanPage(driver);
-          await shieldPlanPage.completeShieldPlanSubscriptionFlowWithCard(
-            'monthly',
-          );
+          const shieldSubscriptionApprovePage =
+            new ShieldSubscriptionApprovePage(driver);
+          await shieldSubscriptionApprovePage.checkPageIsLoaded();
+          await shieldSubscriptionApprovePage.clickStartNowButton();
 
           const shieldDetailPage = new ShieldDetailPage(driver);
-          await shieldDetailPage.validateShieldDetailPage();
+          await shieldDetailPage.checkPageIsLoaded();
+          await shieldDetailPage.validateShieldDetailPage({
+            charges: '80 USDC (Annual)',
+            nextBillingDate: 'Nov 3, 2025',
+            paymentMethod: 'USDC',
+          });
         },
       );
     });
   });
 
   describe('Shield Settings Subscription', function () {
-    it('should subscribe to the shield plan from the settings > shield - annual plan', async function () {
-      await withFixtures(
-        {
-          fixtures: createShieldFixture().build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: mockSubscriptionApiCalls,
-          ignoredConsoleErrors: [
-            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-            'Could not load Rive WASM file',
-            'XMLHttpRequest is not a constructor',
-          ],
-        },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
-
-          const homePage = new HomePage(driver);
-          await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalGetStarted();
-
-          const shieldPlanPage = new ShieldPlanPage(driver);
-          await shieldPlanPage.checkPageIsLoaded();
-          await shieldPlanPage.clickBackButton();
-
-          const settingsPage = new SettingsPage(driver);
-          await settingsPage.checkPageIsLoaded();
-          await settingsPage.goToTransactionShieldPage();
-
-          await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalGetStarted();
-
-          await shieldPlanPage.completeShieldPlanSubscriptionFlowWithCard(
-            'annual',
-          );
-
-          const shieldDetailPage = new ShieldDetailPage(driver);
-          await shieldDetailPage.validateShieldDetailPage();
-        },
-      );
-    });
-
     it('should subscribe to the shield plan from the settings > shield - monthly plan', async function () {
       await withFixtures(
         {
@@ -263,9 +224,19 @@ describe('Shield Subscription Tests', function () {
             'Could not load Rive WASM file',
             'XMLHttpRequest is not a constructor',
           ],
+          localNodeOptions: [
+            {
+              type: 'anvil',
+              options: {
+                chainId: 1,
+                loadState:
+                  './test/e2e/seeder/network-states/with100Usdc100Usdt.json',
+              },
+            },
+          ],
         },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+        async ({ driver, localNodes }) => {
+          await loginWithBalanceValidation(driver, localNodes[0]);
 
           const homePage = new HomePage(driver);
           await homePage.checkShieldEntryModalIsDisplayed();
@@ -280,12 +251,22 @@ describe('Shield Subscription Tests', function () {
           await settingsPage.goToTransactionShieldPage();
 
           await homePage.clickOnShieldEntryModalGetStarted();
-          await shieldPlanPage.completeShieldPlanSubscriptionFlowWithCard(
+          await shieldPlanPage.completeShieldPlanSubscriptionFlowWithCrypto(
             'monthly',
           );
 
+          const shieldSubscriptionApprovePage =
+            new ShieldSubscriptionApprovePage(driver);
+          await shieldSubscriptionApprovePage.checkPageIsLoaded();
+          await shieldSubscriptionApprovePage.clickStartNowButton();
+
           const shieldDetailPage = new ShieldDetailPage(driver);
-          await shieldDetailPage.validateShieldDetailPage();
+          await shieldDetailPage.checkPageIsLoaded();
+          await shieldDetailPage.validateShieldDetailPage({
+            charges: '80 USDC (Annual)',
+            nextBillingDate: 'Nov 3, 2025',
+            paymentMethod: 'USDC',
+          });
         },
       );
     });
