@@ -9,24 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.11.0]
 
-### Uncategorized
-
-- Fixed a rare issue where Snaps updating state rapidly would lose data (#37971)
-- Null - UI fix (#37932)
-- Add QrCode View to Rewards onboarding (#37959)
-- None - dependency bump (#37902)
-- Null (#37912)
-
 ### Added
 
 - feat: added metrics for advanced expanded view (#37969)
 - Allow add rewards account in swaps flow (#38000)
-- Change Omni Network name and logo to Nomina with native currency NOM. (#37930)
-- Added a new label "no network fee" to gas fees sponsored networks. (#36227)
+- Change Omni Network name and logo to Nomina with native currency NOM (#37930)
+- Added a new label "no network fee" to gas fees sponsored networks (#36227)
   Added a new label "Paid by MetaMask" to swap quotes for
-  gas fees sponsored networks.
+  gas fees sponsored networks
 - Fixed extra scroll on claims-form (#37931)
-- Added a dialog when user tries to disconnect from site to also show and revoke permissions granted to the site. (#36776)
+- Added a dialog when user tries to disconnect from site to also show and revoke permissions granted to the site (#36776)
 - Minor UI fixes and updates for shield settings and coverage footer (#37927)
 - Fix shield modal scroll font and spacing (#37928)
 - Update shield entry modal status only when user has interacted (#37925)
@@ -34,16 +26,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Update injective logo
 - Adds "Daily resources" section to TRX token details (#37894)
 - Fixed error handling for social login `MaxKeyChainLengthExceeded` error (#37881)
-- Added a new Token Insights modal to enhance token verification accessibility. (#37469)
-- feat: added sidepanel icon (#37777)
+- Added a new Token Insights modal to enhance token verification accessibility (#37469)
+- Added sidepanel icon (#37777)
+- Add QrCode View to Rewards onboarding (#37959)
 
 ### Fixed
 
-- Removed Sei from default networks and added QuickNode fallback RPC. (#37681)
+- Removed Sei from default networks and added QuickNode fallback RPC (#37681)
 - Remove all usage of crypto compare (#37884)
 - Detect network filter chainId correctly in order to set default Swap src token (#37985)
 - Get from address from non evm network (#37937)
-- Displays correct native asset and the right amount in the Amount row on the Confirmation page. (#37710)
+- Displays correct native asset and the right amount in the Amount row on the Confirmation page (#37710)
 - Center-aligned the image for protect wallet modal (#37968)
 - Fixed a bug in Shield Plan where payment method would not reset to card payment when switching to a plan without available (#37965)
   tokens
@@ -55,6 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `Invalid Access Token` error during the rehydrate/create with social login (#37387)
   updated `@metamask/seedless-onboarding-controller` to
   `v6`.
+- Fixed a rare issue where Snaps updating state rapidly would lose data (#37971)
+- Updates the logos so they appear consistently as squares (#37932)
 
 ## **Related issues**
 
