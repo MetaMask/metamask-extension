@@ -39,6 +39,22 @@ describe('MultiRpc:', function (this: Suite) {
               result: '0xa4b1',
             },
           })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(
+            /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+          )
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              '0x0000000000000000000000000000000000000000': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            },
+          })),
       ];
     }
     await withFixtures(
@@ -156,6 +172,22 @@ describe('MultiRpc:', function (this: Suite) {
               result: '0xa4b1',
             },
           })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(
+            /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+          )
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              '0x0000000000000000000000000000000000000000': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            },
+          })),
       ];
     }
     await withFixtures(
@@ -254,6 +286,22 @@ describe('MultiRpc:', function (this: Suite) {
               result: '0xa4b1',
             },
           })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(
+            /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+          )
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              '0x0000000000000000000000000000000000000000': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            },
+          })),
       ];
     }
     await withFixtures(
@@ -338,6 +386,22 @@ describe('MultiRpc:', function (this: Suite) {
               id: '1694444405781',
               jsonrpc: '2.0',
               result: '0xa4b1',
+            },
+          })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(
+            /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+          )
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              '0x0000000000000000000000000000000000000000': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
             },
           })),
       ];

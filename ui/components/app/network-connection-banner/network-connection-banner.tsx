@@ -190,7 +190,12 @@ export const NetworkConnectionBanner = () => {
         networkClientId: networkConnectionBanner.networkClientId,
       });
 
-      dispatch(setEditedNetwork({ chainId: networkConnectionBanner.chainId }));
+      dispatch(
+        setEditedNetwork({
+          chainId: networkConnectionBanner.chainId,
+          trackRpcUpdateFromBanner: true,
+        }),
+      );
       navigate(NETWORKS_ROUTE);
     }
   }, [networkConnectionBanner, dispatch, navigate]);
