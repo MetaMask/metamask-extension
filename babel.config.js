@@ -17,7 +17,6 @@ const ReactCompilerConfig = {
       '/ducks/',
       '/selectors/',
       '/store/',
-      '/component-library/',
     ];
     if (excludePatterns.some((pattern) => filename.includes(pattern))) {
       return false;
