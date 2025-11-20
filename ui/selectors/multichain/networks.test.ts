@@ -47,6 +47,14 @@ jest.mock('../selectors', () => ({
   getIsBitcoinTestnetSupportEnabled: jest.fn(
     (state) => state.metamask.remoteFeatureFlags.bitcoinTestnetsEnabled,
   ),
+  getIsTronSupportEnabled: jest.fn((state) => {
+    const { tronAccounts } = state.metamask.remoteFeatureFlags;
+    // Keep this simple, only check if it's enabled or not.
+    return tronAccounts?.enabled;
+  }),
+  getIsTronTestnetSupportEnabled: jest.fn(
+    (state) => state.metamask.remoteFeatureFlags.tronTestnetsEnabled,
+  ),
   getEnabledNetworks: jest.fn(() => ({ eip155: {} })),
 }));
 
@@ -140,6 +148,8 @@ const mockState: TestState = {
       solanaTestnetsEnabled: true,
       bitcoinTestnetsEnabled: false,
       bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
+      tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
+      tronTestnetsEnabled: false,
     },
     multichainNetworkConfigurationsByChainId: {
       ...mockNonEvmNetworks,

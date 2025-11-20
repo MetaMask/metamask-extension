@@ -220,10 +220,7 @@ function NativeToggle({
       >
         <img
           src="./images/logo/metamask-fox.svg"
-          height={15}
-          style={{
-            margin: 8,
-          }}
+          className="gas-fee-token-native-toggle-option__fox-icon"
         />
       </NativeToggleOption>
     </Box>

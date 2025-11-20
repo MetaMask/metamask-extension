@@ -1,20 +1,21 @@
 import merge from 'lodash/merge';
 import { MANIFEST_DEV_KEY } from '../../../../build/constants';
-import { Args } from '../../cli';
+import type { Args } from '../../cli';
 /**
  * Returns a function that will transform a manifest JSON object based on the
  * given build args.
  *
  * Applies the following transformations:
- * - If `test` is `true`, adds the "tabs" permission to the manifest
+ * - If `test` is `true`, adds the "tabs" permission to the manifest in MV2
  *
  * @param args
  * @param args.test
+ * @param args.manifest_version
  * @param isDevelopment
  * @param manifestOverridesPath
  * @returns a function that will transform the manifest JSON object
  * @throws an error if the manifest already contains the "tabs" permission and
- * `test` is `true`
+ * `test` is `true` in MV2
  */
 export function transformManifest(
   args: Pick<Args, 'test' | 'manifest_version'>,
@@ -81,8 +82,8 @@ export function transformManifest(
     }
   }
 
-  if (args.test) {
-    // test builds need "tabs" permission for switchToWindowWithTitle
+  if (args.test && args.manifest_version === 2) {
+    // test builds need "tabs" permission for switchToWindowWithTitle in MV2
     transforms.push(addTabsPermission);
   }
 

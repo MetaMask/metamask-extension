@@ -17,6 +17,7 @@ import {
   InvalidTimestampError,
   AuthorizationFailedError,
   AccountAlreadyRegisteredError,
+  SeasonNotFoundError,
 } from './rewards-data-service';
 import type {
   LoginResponseDto,
@@ -113,7 +114,7 @@ describe('RewardsDataService', () => {
       expect(service.name).toBe('RewardsDataService');
     });
 
-    it('uses UAT URL by default when no environment is set', () => {
+    it('uses PRD URL by default when no environment is set', () => {
       service = createService();
       expect(service.name).toBe('RewardsDataService');
     });
@@ -152,6 +153,14 @@ describe('RewardsDataService', () => {
       );
       expect(registerSpy).toHaveBeenCalledWith(
         'RewardsDataService:getOptInStatus',
+        expect.any(Function),
+      );
+      expect(registerSpy).toHaveBeenCalledWith(
+        'RewardsDataService:getSeasonMetadata',
+        expect.any(Function),
+      );
+      expect(registerSpy).toHaveBeenCalledWith(
+        'RewardsDataService:getDiscoverSeasons',
         expect.any(Function),
       );
     });
@@ -515,7 +524,7 @@ describe('RewardsDataService', () => {
 
       expect(result).toEqual(mockLoginResponse);
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.UAT}/auth/mobile-login`,
+        `${REWARDS_API_URL.PRD}/auth/mobile-login`,
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify(mockLoginRequest),
@@ -779,7 +788,7 @@ describe('RewardsDataService', () => {
 
       expect(result).toEqual(mockSeasonStateResponse);
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.UAT}/seasons/${mockSeasonId}/state`,
+        `${REWARDS_API_URL.PRD}/seasons/${mockSeasonId}/state`,
         {
           credentials: 'omit',
           method: 'GET',
@@ -859,6 +868,46 @@ describe('RewardsDataService', () => {
       await expect(
         service.getSeasonStatus(mockSeasonId, mockSubscriptionId),
       ).rejects.toBeInstanceOf(AuthorizationFailedError);
+    });
+
+    it('should throw SeasonNotFoundError when season is not found', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 404,
+        json: jest.fn().mockResolvedValue({
+          message: 'Season not found',
+        }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      let caughtError: unknown;
+      try {
+        await service.getSeasonStatus(mockSeasonId, mockSubscriptionId);
+      } catch (error) {
+        caughtError = error;
+      }
+
+      expect(caughtError).toBeInstanceOf(SeasonNotFoundError);
+      const seasonNotFoundError = caughtError as SeasonNotFoundError;
+      expect(seasonNotFoundError.name).toBe('SeasonNotFoundError');
+      expect(seasonNotFoundError.message).toBe(
+        'Season not found. Please try again with a different season.',
+      );
+    });
+
+    it('should detect season not found when message contains the phrase', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 404,
+        json: jest.fn().mockResolvedValue({
+          message: 'The requested Season not found in the system',
+        }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(
+        service.getSeasonStatus(mockSeasonId, mockSubscriptionId),
+      ).rejects.toBeInstanceOf(SeasonNotFoundError);
     });
 
     it('should throw error when fetch fails', async () => {
@@ -1020,7 +1069,7 @@ describe('RewardsDataService', () => {
       // Assert
       expect(result).toEqual(mockOptInStatusResponse);
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.UAT}/public/rewards/ois`,
+        `${REWARDS_API_URL.PRD}/public/rewards/ois`,
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify(mockOptInStatusRequest),
@@ -1341,7 +1390,7 @@ describe('RewardsDataService', () => {
       );
     });
 
-    it('uses UAT URL for non-production environments', async () => {
+    it('uses PRD URL for non-production environments', async () => {
       delete process.env.METAMASK_ENVIRONMENT;
       service = createService();
 
@@ -1354,11 +1403,11 @@ describe('RewardsDataService', () => {
       await service.validateReferralCode('TEST');
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining(REWARDS_API_URL.UAT),
+        expect.stringContaining(REWARDS_API_URL.PRD),
         expect.any(Object),
       );
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.UAT}/referral/validate?code=TEST`,
+        `${REWARDS_API_URL.PRD}/referral/validate?code=TEST`,
         expect.any(Object),
       );
     });

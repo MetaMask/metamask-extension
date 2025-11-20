@@ -49,7 +49,7 @@ jobs:
     with:
       release-branch: ${{ github.ref_name }}
       repository-url: ${{ github.server_url }}/${{ github.repository }}
-      platform: mobile
+      platform: extension
       github-tools-version: 36dc168896c1b496f35fc880ee8a3625b4b837ba
       previous-version-ref: null
     secrets:

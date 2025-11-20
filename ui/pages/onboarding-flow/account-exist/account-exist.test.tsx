@@ -95,12 +95,9 @@ describe('Account Exist Seedless Onboarding View', () => {
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${ONBOARDING_WELCOME_ROUTE}?from=account-exist`,
-        {
-          replace: true,
-        },
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+        replace: true,
+      });
       expect(resetOnboardingSpy).toHaveBeenCalled();
     });
   });

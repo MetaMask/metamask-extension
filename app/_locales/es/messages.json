@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Atribuciones"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "La URL de RPC de Infura ya no es compatible con Aurora."
-  },
   "authorizedPermissions": {
     "message": "Ha autorizado los siguientes permisos"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Token personalizado"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "La detección de token aún no está disponible en esta red. Importe el token de forma manual y asegúrese de que confía en él. Más información sobre $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Cualquiera puede crear un token, incluida la creación de versiones falsas de tokens existentes. Aprenda más sobre $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Asegúrese de confiar en un token antes de agregarlo. Aprenda cómo evitar $1. También puede habilitar la detección de tokens $2."
   },
   "customerSupport": {
     "message": "atención al cliente"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Deposite criptomonedas desde otra cuenta con una dirección de monedero o un código QR."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Debido a las actualizaciones del sistema Ethereum, la red de prueba Goerli se eliminará pronto."
   },
   "deprecatedNetwork": {
     "message": "Esta red está en desuso"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "La información que ha ingresado está asociada con un ID de cadena existente."
   },
-  "expandView": {
-    "message": "Expandir vista"
-  },
   "experimental": {
     "message": "Experimental"
   },
@@ -2787,9 +2772,6 @@
   "imported": {
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "en su Configuración"
   },
   "included": {
     "message": "incluido"
@@ -5238,9 +5220,6 @@
   "shieldEntryModalGetStarted": {
     "message": "Comenzar"
   },
-  "shieldEntryModalSkip": {
-    "message": "Omitir"
-  },
   "show": {
     "message": "Mostrar"
   },
@@ -6494,10 +6473,6 @@
   "switchNetwork": {
     "message": "Cambiar red"
   },
-  "switchToNetwork": {
-    "message": "Cambiar a $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Cambiar a esta cuenta"
   },
@@ -6603,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Mercado de tokens"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "estafas de tokens y riesgos de seguridad"
   },
   "tokenStandard": {
     "message": "Estándar de tokenes"

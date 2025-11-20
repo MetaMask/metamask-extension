@@ -32,7 +32,6 @@ export default class ExtensionStore implements BaseStore {
       log.error('Storage local API not available.');
       return null;
     }
-    debugger;
 
     const { local } = browser.storage;
     console.time('[ExtensionStore] Reading from local store');

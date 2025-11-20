@@ -119,7 +119,7 @@ describe('useSpenderAlerts', () => {
         currentConfirmation: mockTransaction,
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: jest.fn(),
-      });
+      } as unknown as ReturnType<typeof useConfirmContext>);
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
@@ -156,7 +156,7 @@ describe('useSpenderAlerts', () => {
         currentConfirmation: mockTransaction,
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: jest.fn(),
-      });
+      } as unknown as ReturnType<typeof useConfirmContext>);
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
@@ -187,7 +187,7 @@ describe('useSpenderAlerts', () => {
         currentConfirmation: mockTransaction,
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: jest.fn(),
-      });
+      } as unknown as ReturnType<typeof useConfirmContext>);
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
@@ -217,7 +217,7 @@ describe('useSpenderAlerts', () => {
         currentConfirmation: mockTransaction,
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: jest.fn(),
-      });
+      } as unknown as ReturnType<typeof useConfirmContext>);
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
@@ -255,7 +255,7 @@ describe('useSpenderAlerts', () => {
         currentConfirmation: mockSignatureRequest,
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: jest.fn(),
-      });
+      } as unknown as ReturnType<typeof useConfirmContext>);
       mockParseTypedDataMessage.mockReturnValue({
         primaryType: 'Permit',
         message: { spender: MOCK_SPENDER_ADDRESS },
@@ -294,7 +294,7 @@ describe('useSpenderAlerts', () => {
         currentConfirmation: mockSignatureRequest,
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: jest.fn(),
-      });
+      } as unknown as ReturnType<typeof useConfirmContext>);
       mockParseTypedDataMessage.mockReturnValue({
         primaryType: 'Permit',
         message: { spender: MOCK_SPENDER_ADDRESS },
@@ -327,7 +327,7 @@ describe('useSpenderAlerts', () => {
         currentConfirmation: mockSignatureRequest,
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: jest.fn(),
-      });
+      } as unknown as ReturnType<typeof useConfirmContext>);
       mockParseTypedDataMessage.mockReturnValue({
         primaryType: 'Order',
         message: {},

@@ -1,8 +1,36 @@
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import AccountList from './account-list';
+
+const mockTrackEvent = (event, properties) => {
+  console.log('Mock track event:', { event, properties });
+  return Promise.resolve();
+};
+
+class TrackEventProvider extends Component {
+  getChildContext() {
+    return {
+      trackEvent: mockTrackEvent,
+    };
+  }
+
+  render() {
+    return this.props.children;
+  }
+}
+
+TrackEventProvider.childContextTypes = {
+  trackEvent: PropTypes.func,
+};
+
+TrackEventProvider.propTypes = {
+  children: PropTypes.node,
+};
 
 export default {
   title: 'Pages/CreateAccount/ConnectHardware/AccountList',
+  component: AccountList,
+  decorators: [(story) => <TrackEventProvider>{story()}</TrackEventProvider>],
 
   argTypes: {
     onPathChange: {

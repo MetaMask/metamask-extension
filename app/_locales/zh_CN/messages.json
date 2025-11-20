@@ -630,9 +630,6 @@
   "attributions": {
     "message": "参与者"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Infura RPC（远程过程调用）URL 不再支持 Aurora。"
-  },
   "authorizedPermissions": {
     "message": "您已授权以下权限"
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "自定义代币"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "代币检测在此网络上尚不可用。请手动导入代币并确保您信任它。了解 $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "任何人都可以创建代币，包括创建现有代币的虚假版本。了解 $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "在导入代币之前，请确保该代币是您所信任的。了解如何避免$1。您还可以启用代币检测$2。"
   },
   "customerSupport": {
     "message": "客户支持团队"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "使用钱包地址或二维码从另一账户存入加密货币。"
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "由于以太坊系统的升级，Goerli 测试网络将很快淘汰。"
   },
   "deprecatedNetwork": {
     "message": "该网络被弃用"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "您输入的信息与现有的链 ID 相关联。"
   },
-  "expandView": {
-    "message": "展开视图"
-  },
   "experimental": {
     "message": "实验性"
   },
@@ -2787,9 +2772,6 @@
   "imported": {
     "message": "已导入",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "在设置中"
   },
   "included": {
     "message": "包括"
@@ -5238,9 +5220,6 @@
   "shieldEntryModalGetStarted": {
     "message": "开始使用"
   },
-  "shieldEntryModalSkip": {
-    "message": "跳过"
-  },
   "show": {
     "message": "显示"
   },
@@ -6494,10 +6473,6 @@
   "switchNetwork": {
     "message": "切换网络"
   },
-  "switchToNetwork": {
-    "message": "切换至$1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "切换到该账户"
   },
@@ -6603,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "代币市场"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "代币欺诈和安全风险。"
   },
   "tokenStandard": {
     "message": "代币标准"

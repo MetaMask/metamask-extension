@@ -1,5 +1,3 @@
-import { cloneDeep } from 'lodash';
-
 export const version = 0;
 
 /**
@@ -9,18 +7,26 @@ export const version = 0;
  * @param versionedData.meta - State metadata.
  * @param versionedData.meta.version - The current state version.
  * @param versionedData.data - The persisted MetaMask state, keyed by controller.
+ * @param changedKeys
  * @returns void or a Promise that resolves to void; mutate the state in place.
  */
-export function migrate(versionedData: {
-  meta: { version: number };
-  data: Record<string, unknown>;
-}, changedKeys: Set<string>): void | Promise<void> {
+export function migrate(
+  versionedData: {
+    meta: { version: number };
+    data: Record<string, unknown>;
+  },
+  changedKeys: Set<string>,
+): void | Promise<void> {
   versionedData.meta.version = version;
   transformState(versionedData.data, changedKeys);
+  return undefined;
 }
 
-function transformState(state: Record<string, unknown>, changedKeys: Set<string>): Promise<void> | void {
-  (state.ControllerKey as {newProperty: string}).newProperty = 'newValue';
+function transformState(
+  state: Record<string, unknown>,
+  changedKeys: Set<string>,
+): Promise<void> | void {
+  (state.ControllerKey as { newProperty: string }).newProperty = 'newValue';
   delete state.OldControllerKey;
   // if you add/remove/edit a new controller key, you need to track it in
   // changedKeys or your migration will not persist.

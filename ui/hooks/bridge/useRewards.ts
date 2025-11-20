@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -13,6 +13,8 @@ import {
   Hex,
 } from '@metamask/utils';
 import log from 'loglevel';
+import { debounce } from 'lodash';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getFromToken,
   getToToken,
@@ -24,6 +26,8 @@ import { useMultichainSelector } from '../useMultichainSelector';
 import {
   getRewardsHasAccountOptedIn,
   estimateRewardsPoints,
+  rewardsIsOptInSupported,
+  getRewardsCandidateSubscriptionId,
 } from '../../store/actions';
 import {
   EstimateAssetDto,
@@ -31,8 +35,11 @@ import {
   EstimatedPointsDto,
 } from '../../../shared/types/rewards';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { useRewardsContext } from '../rewards';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import {
+  selectRewardsAccountLinkedTimestamp,
+  selectRewardsEnabled,
+} from '../../ducks/rewards/selectors';
 
 /**
  *
@@ -73,6 +80,8 @@ type UseRewardsResult = {
   isLoading: boolean;
   estimatedPoints: number | null;
   hasError: boolean;
+  accountOptedIn: boolean | null;
+  rewardsAccountScope: InternalAccount | null;
 };
 
 /**
@@ -104,27 +113,136 @@ type UseRewardsParams = {
   > | null;
 };
 
-export const useRewards = ({
-  activeQuote,
-}: UseRewardsParams): UseRewardsResult => {
+type UseRewardsWithQuoteParams = {
+  quote: NonNullable<
+    NonNullable<ReturnType<typeof selectBridgeQuotes>['activeQuote']>['quote']
+  > | null;
+  fromAddress: string | null | undefined;
+  fromAddressAccount?: InternalAccount | null;
+  chainId: string | null | undefined;
+};
+
+/**
+ * A hook that accepts quote, fromAddress, and chainId as arguments
+ * and estimates rewards for the given quote.
+ *
+ * @param options - The hook parameters
+ * @param options.quote - The bridge quote to estimate rewards for
+ * @param options.fromAddress - The address sending the transaction
+ * @param options.fromAddressAccount - The account sending the transaction
+ * @param options.chainId - The chain ID for the transaction
+ * @returns An object containing rewards estimation state
+ */
+export const useRewardsWithQuote = ({
+  quote,
+  fromAddress,
+  fromAddressAccount,
+  chainId,
+}: UseRewardsWithQuoteParams): UseRewardsResult => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [estimatedPoints, setEstimatedPoints] = useState<number | null>(null);
   const [shouldShowRewardsRow, setShouldShowRewardsRow] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const prevRequestId = usePrevious(activeQuote?.requestId);
-  const fromToken = useSelector(getFromToken);
-  const toToken = useSelector(getToToken);
-  const quoteRequest = useSelector(getQuoteRequest);
-  const { rewardsEnabled } = useRewardsContext();
-  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
-  const caipChainId = currentChainId
-    ? formatChainIdToCaip(currentChainId.toString())
-    : null;
-  const selectedAccount = useSelector((state) =>
-    caipChainId
-      ? getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId)
-      : null,
+  const prevRequestId = usePrevious(quote?.requestId);
+  const [accountOptedIn, setAccountOptedIn] = useState<boolean | null>(null);
+  const rewardsEnabled = useSelector(selectRewardsEnabled);
+  const rewardsAccountLinkedTimestamp = useSelector(
+    selectRewardsAccountLinkedTimestamp,
+  );
+  // Track linked timestamp per account address to prevent triggering for accounts that weren't linked
+  const localRewardsAccountLinkedTimestamp = useRef<Map<string, number | null>>(
+    new Map(),
+  );
+  // Track the current account's linked timestamp to trigger useEffect when it changes
+  const [currentAccountLinkedTimestamp, setCurrentAccountLinkedTimestamp] =
+    useState<number | null>(null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedEstimatePoints = useCallback(
+    debounce(
+      async (
+        estimationQuoteArg:
+          | NonNullable<
+              ReturnType<typeof selectBridgeQuotes>['activeQuote']
+            >['quote']
+          | null,
+        caipAccountArg: CaipAccountId | null,
+      ) => {
+        // Skip if no active quote or missing required data
+        if (!estimationQuoteArg || !caipAccountArg) {
+          setEstimatedPoints(null);
+          setShouldShowRewardsRow(false);
+          setIsLoading(false);
+          setHasError(false);
+          return;
+        }
+
+        try {
+          // Convert source amount to atomic unit
+          const atomicSourceAmount = estimationQuoteArg.srcTokenAmount;
+
+          // Get destination amount from quote
+          const atomicDestAmount = estimationQuoteArg.destTokenAmount;
+
+          // Prepare source asset
+          const srcAsset: EstimateAssetDto = {
+            id: estimationQuoteArg.srcAsset.assetId,
+            amount: atomicSourceAmount,
+          };
+
+          // Prepare destination asset
+          const destAsset: EstimateAssetDto = {
+            id: estimationQuoteArg.destAsset.assetId,
+            amount: atomicDestAmount,
+          };
+
+          // Prepare fee asset (using MetaMask fee from quote data)
+          const feeAsset: EstimateAssetDto = {
+            id: estimationQuoteArg.feeData.metabridge.asset.assetId,
+            amount: estimationQuoteArg.feeData.metabridge.amount || '0',
+          };
+
+          const usdPricePerToken = getUsdPricePerToken(
+            estimationQuoteArg.priceData?.totalFeeAmountUsd || '0',
+            feeAsset.amount,
+            estimationQuoteArg.feeData.metabridge.asset.decimals,
+          );
+
+          const feeAssetWithUsdPrice: EstimateAssetDto = {
+            ...feeAsset,
+            ...(usdPricePerToken ? { usdPrice: usdPricePerToken } : {}),
+          };
+
+          // Create estimate request
+          const estimateRequest: EstimatePointsDto = {
+            activityType: 'SWAP',
+            account: caipAccountArg,
+            activityContext: {
+              swapContext: {
+                srcAsset,
+                destAsset,
+                feeAsset: feeAssetWithUsdPrice,
+              },
+            },
+          };
+
+          // Call rewards controller to estimate points
+          const result = (await dispatch(
+            estimateRewardsPoints(estimateRequest),
+          )) as unknown as EstimatedPointsDto;
+
+          setEstimatedPoints(result.pointsEstimate);
+        } catch (error) {
+          log.error('[useRewardsWithQuote] Error estimating points:', error);
+          setEstimatedPoints(null);
+          setHasError(true);
+        } finally {
+          setIsLoading(false);
+        }
+      },
+      750,
+    ),
+    [dispatch],
   );
 
   const estimatePoints = useCallback(
@@ -136,141 +254,182 @@ export const useRewards = ({
         | null,
     ) => {
       // Skip if no active quote or missing required data
-      if (
-        !estimationQuoteArg ||
-        !fromToken ||
-        !toToken ||
-        !selectedAccount?.address ||
-        !quoteRequest.srcTokenAmount ||
-        !currentChainId ||
-        !rewardsEnabled
-      ) {
+      if (!estimationQuoteArg || !fromAddress || !chainId || !rewardsEnabled) {
         setEstimatedPoints(null);
         setShouldShowRewardsRow(false);
+        setAccountOptedIn(null);
         setIsLoading(false);
         setHasError(false);
         return;
       }
 
-      setIsLoading(false);
-      setShouldShowRewardsRow(false);
+      setIsLoading(true);
       setHasError(false);
-      setEstimatedPoints(null);
+
+      let caipAccount: CaipAccountId | null = null;
 
       try {
+        // Check if there's a subscription first
+        const candidateSubscriptionId = (await dispatch(
+          getRewardsCandidateSubscriptionId(),
+        )) as unknown as string | null;
+
+        if (!candidateSubscriptionId) {
+          setEstimatedPoints(null);
+          setShouldShowRewardsRow(false);
+          setAccountOptedIn(null);
+          setHasError(false);
+          setIsLoading(false);
+          return;
+        }
+
         // Format account to CAIP-10
-        const caipAccount = formatAccountToCaipAccountId(
-          selectedAccount.address,
-          currentChainId.toString(),
-        );
+        caipAccount = formatAccountToCaipAccountId(fromAddress, chainId);
 
         if (!caipAccount) {
+          setEstimatedPoints(null);
+          setHasError(false);
+          setShouldShowRewardsRow(false);
+          setAccountOptedIn(null);
+          setIsLoading(false);
           return;
         }
 
         // Check if account has opted in
-        const hasOptedIn = await dispatch(
+        const hasOptedIn = (await dispatch(
           getRewardsHasAccountOptedIn(caipAccount),
-        );
+        )) as unknown as boolean;
 
-        if (!hasOptedIn) {
+        setAccountOptedIn(hasOptedIn);
+
+        // Determine if we should show the rewards row
+        // Show row if: opted in OR (not opted in AND opt-in is supported)
+        let shouldShow = hasOptedIn;
+        if (!hasOptedIn && fromAddressAccount) {
+          const isOptInSupported = (await dispatch(
+            rewardsIsOptInSupported({ account: fromAddressAccount }),
+          )) as unknown as boolean;
+          shouldShow = isOptInSupported;
+        }
+
+        setShouldShowRewardsRow(shouldShow);
+        setEstimatedPoints(null);
+        setHasError(false);
+
+        if (!shouldShow || !hasOptedIn) {
+          setIsLoading(false);
           return;
         }
 
-        setIsLoading(true);
-        setShouldShowRewardsRow(true);
-        setHasError(false);
-
-        // Convert source amount to atomic unit
-        const atomicSourceAmount = estimationQuoteArg.srcTokenAmount;
-
-        // Get destination amount from quote
-        const atomicDestAmount = estimationQuoteArg.destTokenAmount;
-
-        // Prepare source asset
-        const srcAsset: EstimateAssetDto = {
-          id: estimationQuoteArg.srcAsset.assetId,
-          amount: atomicSourceAmount,
-        };
-
-        // Prepare destination asset
-        const destAsset: EstimateAssetDto = {
-          id: estimationQuoteArg.destAsset.assetId,
-          amount: atomicDestAmount,
-        };
-
-        // Prepare fee asset (using MetaMask fee from quote data)
-        const feeAsset: EstimateAssetDto = {
-          id: estimationQuoteArg.feeData.metabridge.asset.assetId,
-          amount: estimationQuoteArg.feeData.metabridge.amount || '0',
-        };
-
-        const usdPricePerToken = getUsdPricePerToken(
-          estimationQuoteArg.priceData?.totalFeeAmountUsd || '0',
-          feeAsset.amount,
-          estimationQuoteArg.feeData.metabridge.asset.decimals,
-        );
-
-        const feeAssetWithUsdPrice: EstimateAssetDto = {
-          ...feeAsset,
-          ...(usdPricePerToken ? { usdPrice: usdPricePerToken } : {}),
-        };
-
-        // Create estimate request
-        const estimateRequest: EstimatePointsDto = {
-          activityType: 'SWAP',
-          account: caipAccount,
-          activityContext: {
-            swapContext: {
-              srcAsset,
-              destAsset,
-              feeAsset: feeAssetWithUsdPrice,
-            },
-          },
-        };
-
-        // Call rewards controller to estimate points
-        const result = (await dispatch(
-          estimateRewardsPoints(estimateRequest),
-        )) as unknown as EstimatedPointsDto;
-
-        setEstimatedPoints(result.pointsEstimate);
-      } catch (error) {
-        log.error('[useRewards] Error estimating points:', error);
-        setEstimatedPoints(null);
-        setHasError(true);
-      } finally {
+        await debouncedEstimatePoints(estimationQuoteArg, caipAccount);
+      } catch {
+        // Failed to detect opt in
         setIsLoading(false);
+        setShouldShowRewardsRow(false);
+        setEstimatedPoints(null);
+        setAccountOptedIn(null);
+        setHasError(false);
       }
     },
     [
-      fromToken,
-      toToken,
-      quoteRequest?.srcTokenAmount,
-      selectedAccount?.address,
-      currentChainId,
+      fromAddress,
+      chainId,
       rewardsEnabled,
       dispatch,
+      fromAddressAccount,
+      debouncedEstimatePoints,
     ],
   );
 
   // Estimate points when dependencies change
   useEffect(() => {
-    if (prevRequestId !== activeQuote?.requestId) {
-      estimatePoints(activeQuote);
+    if (prevRequestId !== quote?.requestId) {
+      estimatePoints(quote);
     }
   }, [
     estimatePoints,
     // Only re-estimate when quote changes (not during loading)
-    activeQuote?.requestId,
-    activeQuote,
+    quote?.requestId,
+    quote,
     prevRequestId,
   ]);
+
+  // Update the local map when the global timestamp changes for the current account
+  useEffect(() => {
+    if (fromAddress && rewardsAccountLinkedTimestamp !== null) {
+      localRewardsAccountLinkedTimestamp.current.set(
+        fromAddress,
+        rewardsAccountLinkedTimestamp,
+      );
+      setCurrentAccountLinkedTimestamp(rewardsAccountLinkedTimestamp);
+    } else if (fromAddress) {
+      // When account changes, get the stored timestamp for this account
+      const storedTimestamp =
+        localRewardsAccountLinkedTimestamp.current.get(fromAddress);
+      setCurrentAccountLinkedTimestamp(storedTimestamp ?? null);
+    } else {
+      setCurrentAccountLinkedTimestamp(null);
+    }
+  }, [rewardsAccountLinkedTimestamp, fromAddress]);
+
+  // Re-estimate points when account linked timestamp changes and account has opted in False
+  // Only trigger if the current account has a linked timestamp (was actually linked)
+  useEffect(() => {
+    if (currentAccountLinkedTimestamp !== null && accountOptedIn === false) {
+      estimatePoints(quote);
+    }
+  }, [currentAccountLinkedTimestamp, accountOptedIn, estimatePoints, quote]);
 
   return {
     shouldShowRewardsRow,
     isLoading,
     estimatedPoints,
     hasError,
+    accountOptedIn,
+    rewardsAccountScope:
+      quote && shouldShowRewardsRow
+        ? (fromAddressAccount as InternalAccount | null)
+        : null,
   };
+};
+
+/**
+ * A hook that reads data from Redux selectors and passes it to useRewardsWithQuote.
+ * Includes Bridge-specific validation checks for fromToken, toToken, and quoteRequest
+ * and passes the data to useRewardsWithQuote.
+ *
+ * @param options - The hook parameters
+ * @param options.activeQuote - The active bridge quote
+ * @returns An object containing rewards estimation state
+ */
+export const useRewards = ({
+  activeQuote,
+}: UseRewardsParams): UseRewardsResult => {
+  const fromToken = useSelector(getFromToken);
+  const toToken = useSelector(getToToken);
+  const quoteRequest = useSelector(getQuoteRequest);
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
+  const caipChainId = currentChainId
+    ? formatChainIdToCaip(currentChainId.toString())
+    : null;
+  const selectedAccount = useSelector((state) =>
+    caipChainId
+      ? getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId)
+      : null,
+  );
+
+  // Bridge-specific validation: ensure all required Bridge UI data is present
+  const hasRequiredBridgeData =
+    fromToken &&
+    toToken &&
+    quoteRequest?.srcTokenAmount &&
+    selectedAccount?.address;
+
+  // Pass null for quote if Bridge validation fails to prevent estimation
+  return useRewardsWithQuote({
+    quote: hasRequiredBridgeData ? activeQuote : null,
+    fromAddress: selectedAccount?.address,
+    fromAddressAccount: selectedAccount,
+    chainId: currentChainId?.toString(),
+  });
 };

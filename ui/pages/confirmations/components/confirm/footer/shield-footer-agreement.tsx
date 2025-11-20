@@ -18,9 +18,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
-
-// TODO: change to the correct URL
-const SHIELD_TERMS_OF_USE_URL = 'https://consensys.io/terms-of-use';
+import { SHIELD_TERMS_OF_USE_URL } from '../../../../../../shared/lib/ui-utils';
 
 const ShieldFooterAgreement = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

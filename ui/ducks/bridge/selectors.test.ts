@@ -180,14 +180,13 @@ describe('Bridge selectors', () => {
       });
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(12);
-      expect(result[0]).toStrictEqual(
-        expect.objectContaining({ chainId: FEATURED_RPCS[0].chainId }),
+      // Only FEATURED_RPCS that are explicitly allowed for bridging
+      const allowedFeaturedRpcs = FEATURED_RPCS.filter(({ chainId }) =>
+        (ALLOWED_BRIDGE_CHAIN_IDS as readonly string[]).includes(chainId),
       );
-      expect(result[1]).toStrictEqual(
-        expect.objectContaining({ chainId: FEATURED_RPCS[1].chainId }),
-      );
-      FEATURED_RPCS.forEach((rpcDefinition, idx) => {
+
+      // Ensure all allowed FEATURED_RPCS networks are present and correctly shaped
+      allowedFeaturedRpcs.forEach((rpcDefinition, idx) => {
         expect(result[idx]).toStrictEqual(
           expect.objectContaining({
             ...rpcDefinition,
@@ -223,7 +222,7 @@ describe('Bridge selectors', () => {
       };
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(4);
+      expect(result).toHaveLength(5);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }),
       );
