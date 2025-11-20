@@ -8,7 +8,7 @@ import {
   calculateBalanceChangeForAccountGroup,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
-import { CaipAssetId, TrxScope } from '@metamask/keyring-api';
+import { CaipAssetId } from '@metamask/keyring-api';
 import {
   CaipAssetType,
   CaipChainId,
@@ -29,7 +29,6 @@ import type {
   CurrencyRateState,
   BalanceChangePeriod,
   BalanceChangeResult,
-  Asset,
 } from '@metamask/assets-controllers';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
@@ -42,10 +41,6 @@ import {
 } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
-import {
-  TRON_RESOURCE_SYMBOLS_SET,
-  TronResourceSymbol,
-} from '../../shared/constants/multichain/assets';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -1007,73 +1002,59 @@ export const selectBalanceByWallet = (walletId: string) =>
     };
   });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
+const getStateForAssetSelector = ({ metamask }: any) => {
+  const initialState = {
+    accountTree: metamask.accountTree,
+    internalAccounts: metamask.internalAccounts,
+    allTokens: metamask.allTokens,
+    allIgnoredTokens: metamask.allIgnoredTokens,
+    tokenBalances: metamask.tokenBalances,
+    marketData: metamask.marketData,
+    currencyRates: metamask.currencyRates,
+    currentCurrency: metamask.currentCurrency,
+    networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
+    accountsByChainId: metamask.accountsByChainId,
+  };
+
+  let multichainState = {
+    accountsAssets: {},
+    assetsMetadata: {},
+    allIgnoredAssets: {},
+    balances: {},
+    conversionRates: {},
+  };
+
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  multichainState = {
+    accountsAssets: metamask.accountsAssets,
+    assetsMetadata: metamask.assetsMetadata,
+    allIgnoredAssets: metamask.allIgnoredAssets,
+    balances: metamask.balances,
+    conversionRates: metamask.conversionRates,
+  };
+  ///: END:ONLY_INCLUDE_IF
+
+  return {
+    ...initialState,
+    ...multichainState,
+  } as AssetListState;
+};
+
 export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
-  ({ metamask }) => {
-    const initialState = {
-      accountTree: metamask.accountTree,
-      internalAccounts: metamask.internalAccounts,
-      allTokens: metamask.allTokens,
-      allIgnoredTokens: metamask.allIgnoredTokens,
-      tokenBalances: metamask.tokenBalances,
-      marketData: metamask.marketData,
-      currencyRates: metamask.currencyRates,
-      currentCurrency: metamask.currentCurrency,
-      networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
-      accountsByChainId: metamask.accountsByChainId,
-    };
-
-    let multichainState = {
-      accountsAssets: {},
-      assetsMetadata: {},
-      allIgnoredAssets: {},
-      balances: {},
-      conversionRates: {},
-    };
-
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    multichainState = {
-      accountsAssets: metamask.accountsAssets,
-      assetsMetadata: metamask.assetsMetadata,
-      allIgnoredAssets: metamask.allIgnoredAssets,
-      balances: metamask.balances,
-      conversionRates: metamask.conversionRates,
-    };
-    ///: END:ONLY_INCLUDE_IF
-
-    return {
-      ...initialState,
-      ...multichainState,
-    };
-  },
-  (assetListState: AssetListState) => {
-    const assetsByAccountGroup =
-      selectAssetsBySelectedAccountGroup(assetListState);
-
-    // Filter Tron tokens
-    const newAssetsByAccountGroup = { ...assetsByAccountGroup };
-    Object.values(TrxScope).forEach((tronChainId) => {
-      if (!newAssetsByAccountGroup[tronChainId]) {
-        return;
-      }
-
-      newAssetsByAccountGroup[tronChainId] = newAssetsByAccountGroup[
-        tronChainId
-      ].filter((asset: Asset) => {
-        if (
-          asset.chainId.startsWith('tron:') &&
-          TRON_RESOURCE_SYMBOLS_SET.has(
-            asset.symbol?.toLowerCase() as TronResourceSymbol,
-          )
-        ) {
-          return false;
-        }
-        return true;
-      });
-    });
-
-    return newAssetsByAccountGroup;
-  },
+  getStateForAssetSelector,
+  (assetListState: AssetListState) =>
+    selectAssetsBySelectedAccountGroup(assetListState),
 );
+
+export const getAssetsBySelectedAccountGroupWithTronResources =
+  createDeepEqualSelector(
+    getStateForAssetSelector,
+    (assetListState: AssetListState) =>
+      selectAssetsBySelectedAccountGroup(assetListState, {
+        filterTronStakedTokens: false,
+      }),
+  );
 
 export const getAsset = createSelector(
   [
