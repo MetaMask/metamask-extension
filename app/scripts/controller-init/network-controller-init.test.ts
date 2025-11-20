@@ -199,24 +199,6 @@ describe('NetworkControllerInit', () => {
               },
             ],
           },
-          "0x531": {
-            "blockExplorerUrls": [
-              "https://seitrace.com",
-            ],
-            "chainId": "0x531",
-            "defaultBlockExplorerUrlIndex": 0,
-            "defaultRpcEndpointIndex": 0,
-            "name": "Sei",
-            "nativeCurrency": "SEI",
-            "rpcEndpoints": [
-              {
-                "failoverUrls": [],
-                "networkClientId": "sei-mainnet",
-                "type": "infura",
-                "url": "https://sei-mainnet.infura.io/v3/{infuraProjectId}",
-              },
-            ],
-          },
           "0x539": {
             "blockExplorerUrls": [],
             "chainId": "0x539",

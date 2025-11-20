@@ -10,7 +10,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { Confirmation } from '../../../types/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
-import * as ConfirmContext from '../../../context/confirm';
+import * as DappSwapContext from '../../../context/dapp-swap';
 import { useDappSwapComparisonRewardText } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText';
 import { DappSwapComparisonBanner } from './dapp-swap-comparison-banner';
 
@@ -127,8 +127,7 @@ describe('<DappSwapComparisonBanner />', () => {
       selectedQuoteValueDifference: 0.1,
       gasDifference: 0.01,
       tokenAmountDifference: 0.01,
-      destinationTokenSymbol: 'TEST',
-    } as ReturnType<typeof useDappSwapComparisonInfo>);
+    } as unknown as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
     expect(getByText('Market rate')).toBeInTheDocument();
     expect(getByText('Metamask Swap')).toBeInTheDocument();
@@ -153,23 +152,23 @@ describe('<DappSwapComparisonBanner />', () => {
   });
 
   it('call function to update quote swap when user clicks on Metamask Swap button', () => {
-    const mockSetQuoteSelectedForMMSwap = jest.fn();
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: mockSwapConfirmation,
-      setQuoteSelectedForMMSwap: mockSetQuoteSelectedForMMSwap,
-    } as unknown as ReturnType<typeof ConfirmContext.useConfirmContext>);
+    const mockSetQuotedSwapDisplayedInInfo = jest.fn();
+    jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
+      selectedQuote: quote as unknown as QuoteResponse,
+      setSelectedQuote: jest.fn(),
+      setQuotedSwapDisplayedInInfo: mockSetQuotedSwapDisplayedInInfo,
+    } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
     mockUseDappSwapComparisonInfo.mockReturnValue({
       selectedQuote: quote as unknown as QuoteResponse,
       selectedQuoteValueDifference: 0.1,
       gasDifference: 0.01,
       tokenAmountDifference: 0.01,
-      destinationTokenSymbol: 'TEST',
-    } as ReturnType<typeof useDappSwapComparisonInfo>);
+    } as unknown as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
     const quoteSwapButton = getByText('Metamask Swap');
     fireEvent.click(quoteSwapButton);
-    expect(mockSetQuoteSelectedForMMSwap).toHaveBeenCalledTimes(1);
+    expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenCalledTimes(1);
     expect(
       mockCaptureDappSwapComparisonDisplayProperties,
     ).toHaveBeenCalledTimes(2);
@@ -186,23 +185,23 @@ describe('<DappSwapComparisonBanner />', () => {
   });
 
   it('call function to update quote swap clicks on Market rate button', () => {
-    const mockSetQuoteSelectedForMMSwap = jest.fn();
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: mockSwapConfirmation,
-      setQuoteSelectedForMMSwap: mockSetQuoteSelectedForMMSwap,
-    } as unknown as ReturnType<typeof ConfirmContext.useConfirmContext>);
+    const mockSetQuotedSwapDisplayedInInfo = jest.fn();
+    jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
+      selectedQuote: quote as unknown as QuoteResponse,
+      setSelectedQuote: jest.fn(),
+      setQuotedSwapDisplayedInInfo: mockSetQuotedSwapDisplayedInInfo,
+    } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
     mockUseDappSwapComparisonInfo.mockReturnValue({
       selectedQuote: quote as unknown as QuoteResponse,
       selectedQuoteValueDifference: 0.1,
       gasDifference: 0.01,
       tokenAmountDifference: 0.01,
-      destinationTokenSymbol: 'TEST',
-    } as ReturnType<typeof useDappSwapComparisonInfo>);
+    } as unknown as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
     const quoteSwapButton = getByText('Market rate');
     fireEvent.click(quoteSwapButton);
-    expect(mockSetQuoteSelectedForMMSwap).toHaveBeenCalledTimes(1);
+    expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenCalledTimes(1);
     expect(
       mockCaptureDappSwapComparisonDisplayProperties,
     ).toHaveBeenCalledTimes(1);
