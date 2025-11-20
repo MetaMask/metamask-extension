@@ -489,10 +489,14 @@ export default class AdvancedTab extends PureComponent {
             onToggle={(value) => {
               setShowExtensionInFullSizeView(!value);
               this.context.trackEvent({
-                event: MetaMetricsEventName.OpenFullScreenClicked,
+                event: MetaMetricsEventName.SettingsUpdated,
                 category: MetaMetricsEventCategory.Settings,
                 properties: {
-                  enabled: !value,
+                  settings_group: 'advanced',
+                  settings_type: 'open_full_screen',
+                  old_value: value,
+                  new_value: !value,
+                  open_full_screen: !value,
                   location: 'Advanced Settings',
                 },
               });
