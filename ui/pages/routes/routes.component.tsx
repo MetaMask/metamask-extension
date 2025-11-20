@@ -967,17 +967,28 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={TOKEN_TRANSFER_ROUTE}
-            component={TokenTransferPage}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute(TokenTransferPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${TOKEN_TRANSFER_ROUTE}/:origin`}
-            component={TokenTransferPage}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{ origin: string }>(TokenTransferPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
@@ -997,10 +1008,20 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin`}
-            component={ReviewGatorPermissionsPage}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{
+              chainId: string;
+              permissionGroupName: string;
+              origin: string;
+            }>(ReviewGatorPermissionsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
