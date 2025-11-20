@@ -48,7 +48,10 @@ import { submitShieldClaim } from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
-import { TRANSACTION_SHIELD_LINK } from '../../../../helpers/constants/common';
+import {
+  FIND_TRANSACTION_HASH_LINK,
+  TRANSACTION_SHIELD_LINK,
+} from '../../../../helpers/constants/common';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import {
   SUBMIT_CLAIM_ERROR_CODES,
@@ -320,11 +323,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   );
 
   const onClickFindTransactionHash = useCallback(async () => {
-    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
+    window.open(FIND_TRANSACTION_HASH_LINK, '_blank', 'noopener, noreferrer');
     captureShieldCtaClickedEvent({
       source: ShieldCtaSourceEnum.Settings,
       ctaActionClicked: ShieldCtaActionClickedEnum.FindingTxHash,
-      redirectToUrl: TRANSACTION_SHIELD_LINK,
+      redirectToUrl: FIND_TRANSACTION_HASH_LINK,
     });
   }, [captureShieldCtaClickedEvent]);
 
