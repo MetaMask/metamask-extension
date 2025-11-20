@@ -45,15 +45,11 @@ export const BridgeTransactionSettingsModal = ({
   const t = useI18nContext();
 
   const dispatch = useDispatch();
-  const isSolanaSwap = useSelector(getIsSolanaSwap);
   /**
    * The current slippage value in the quote request
    */
   const slippage = useSelector(getSlippage);
 
-  // AUTO option should only show for Solana-to-Solana swaps
-
-  const shouldShowAutoOption = isSolanaSwap;
   /**
    * A slippage value selected by clicking on one of the hardcoded options
    */
@@ -67,6 +63,8 @@ export const BridgeTransactionSettingsModal = ({
     undefined,
   );
   const [showCustomButton, setShowCustomButton] = useState(true);
+  // AUTO option should only show for Solana-to-Solana swaps
+  const shouldShowAutoOption = useSelector(getIsSolanaSwap);
   const [isAutoSelected, setIsAutoSelected] = useState(false);
 
   // Initialize UI state when modal opens
@@ -78,6 +76,8 @@ export const BridgeTransactionSettingsModal = ({
           setSelectedSlippageOption(undefined);
           setCustomSlippage(undefined);
         }
+        // Slippage is only undefined when swapping on Solana
+        // Do nothing here to prevent displaying an inaccurate slippage value
       } else {
         setIsAutoSelected(false);
         if (HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)) {
@@ -108,7 +108,7 @@ export const BridgeTransactionSettingsModal = ({
     return null;
   };
 
-  const setCustomSlippageValue = (
+  const handleCustomSlippage = (
     event:
       | React.ClipboardEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLInputElement>,
@@ -218,16 +218,19 @@ export const BridgeTransactionSettingsModal = ({
                 type={TextFieldType.Text}
                 value={customSlippage}
                 onKeyDown={(e) => {
+                  const updatedCustomSlippage = [customSlippage, e.key]
+                    .filter(Boolean)
+                    .join('');
                   // If the resulting custom slippage is invalid, don't propagate the keypress
-                  if (!sanitizeAmountInput(customSlippage + e.key)) {
+                  if (!sanitizeAmountInput(updatedCustomSlippage)) {
                     e.preventDefault();
                   }
                 }}
                 onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
-                  setCustomSlippageValue(e, e.clipboardData.getData('text'));
+                  handleCustomSlippage(e, e.clipboardData.getData('text'));
                 }}
                 onChange={(e) => {
-                  setCustomSlippageValue(e, e.target.value);
+                  handleCustomSlippage(e, e.target.value);
                 }}
                 autoFocus={true}
                 onBlur={() => {
