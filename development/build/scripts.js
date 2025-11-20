@@ -1309,19 +1309,25 @@ function renderHtmlFile({
     .renderString(htmlTemplate, { isTest, shouldIncludeSnow })
     // these replacements are added to support the webpack build's automatic
     // compilation of html files, which the gulp-based process doesn't support.
-    .replace('./scripts/load/background.ts', './load-background.js')
+    .replace('../../scripts/load/background.ts', './load-background.js')
     .replace(
       '<script src="./load-background.js" defer></script>',
       `${scriptTags}\n    <script src="./chromereload.js" async></script>`,
     )
-    .replace('<script src="./scripts/load/ui.ts" defer></script>', scriptTags)
     .replace(
-      '<script src="./offscreen/offscreen.ts" defer></script>',
+      '<script src="../../scripts/load/ui.ts" defer></script>',
       scriptTags,
     )
-    .replace('../ui/css/index.scss', './index.css')
+    .replace(
+      '<script src="../../offscreen/offscreen.ts" defer></script>',
+      scriptTags,
+    )
+    .replace('../../../ui/css/index.scss', './index.css')
     .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js')
-    .replace('<script src="./scripts/load/bootstrap.ts" defer></script>', '');
+    .replace(
+      '<script src="../../scripts/load/bootstrap.ts" defer></script>',
+      '',
+    );
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm
