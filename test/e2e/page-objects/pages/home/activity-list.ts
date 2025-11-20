@@ -58,8 +58,18 @@ class ActivityListPage {
   private readonly pendingTransactionItems =
     '.transaction-list__pending-transactions .activity-list-item';
 
+  private readonly copyTransactionHashButton = {
+    text: 'Copy transaction ID',
+    tag: 'button',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async clickCopyTransactionHashButton(): Promise<void> {
+    console.log('Clicking copy transaction hash button');
+    await this.driver.clickElement(this.copyTransactionHashButton);
   }
 
   async openActivityTab(): Promise<void> {

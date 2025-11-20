@@ -17,11 +17,13 @@ export const sendRedesignedTransactionToAddress = async ({
   driver,
   recipientAddress,
   amount,
+  shouldGetTxHash = false,
 }: {
   driver: Driver;
   recipientAddress: string;
   amount: string;
-}): Promise<void> => {
+  shouldGetTxHash?: boolean;
+}): Promise<string> => {
   console.log(
     `Start flow to send amount ${amount} to recipient ${recipientAddress} on home screen`,
   );
@@ -39,6 +41,20 @@ export const sendRedesignedTransactionToAddress = async ({
   // confirm transaction when user lands on confirm transaction screen
   const transactionConfirmationPage = new TransactionConfirmation(driver);
   await transactionConfirmationPage.clickFooterConfirmButton();
+
+  let txHash = '';
+  if (shouldGetTxHash) {
+    const activityList = new ActivityListPage(driver);
+    await activityList.checkCompletedTxNumberDisplayedInActivity(1);
+    await activityList.clickOnActivity(1);
+    await activityList.clickCopyTransactionHashButton();
+    txHash = await driver.getClipboardContent();
+    if (!txHash) {
+      throw new Error('Failed to get transaction hash from clipboard');
+    }
+  }
+
+  return txHash;
 };
 
 /**
