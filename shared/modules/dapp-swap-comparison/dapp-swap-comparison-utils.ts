@@ -160,16 +160,6 @@ export function getBestQuote(
   };
 }
 
-export function getTokenValueFromRecord<Type>(
-  record: Record<Hex, Type>,
-  tokenAddress: Hex,
-): Type | undefined {
-  const address = Object.keys(record).find((key) => {
-    return key.toLowerCase() === tokenAddress.toLowerCase();
-  });
-  return address ? record[address as Hex] : undefined;
-}
-
 export function getBalanceChangeFromSimulationData(
   tokenAddress: Hex,
   simulationData?: SimulationData,

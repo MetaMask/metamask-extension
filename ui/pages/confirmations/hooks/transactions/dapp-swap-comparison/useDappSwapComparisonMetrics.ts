@@ -3,14 +3,13 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback } from 'react';
 
 import { useConfirmContext } from '../../../context/confirm';
+import { useDappSwapContext } from '../../../context/dapp-swap';
 import { useTransactionEventFragment } from '../../useTransactionEventFragment';
-import { useSwapCheck } from './useSwapCheck';
 
 export function useDappSwapComparisonMetrics() {
-  const { currentConfirmation, quoteSelectedForMMSwap } =
-    useConfirmContext<TransactionMeta>();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { selectedQuote } = useDappSwapContext();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
-  const { isSwapToBeCompared } = useSwapCheck();
   const { id: transactionId } = currentConfirmation ?? {};
 
   const captureDappSwapComparisonProperties = useCallback(
@@ -38,19 +37,12 @@ export function useDappSwapComparisonMetrics() {
   );
 
   const captureSwapSubmit = useCallback(() => {
-    if (!isSwapToBeCompared) {
-      return;
-    }
     captureDappSwapComparisonProperties({
       properties: {
-        swap_final_selected: quoteSelectedForMMSwap ? 'metamask' : 'dapp',
+        swap_final_selected: selectedQuote ? 'metamask' : 'dapp',
       },
     });
-  }, [
-    captureDappSwapComparisonProperties,
-    quoteSelectedForMMSwap,
-    isSwapToBeCompared,
-  ]);
+  }, [captureDappSwapComparisonProperties, selectedQuote]);
 
   const captureDappSwapComparisonLoading = useCallback(
     (commands: string) => {

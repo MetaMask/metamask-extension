@@ -302,6 +302,7 @@ env:
   - QUICKNODE_POLYGON_URL: null
   - QUICKNODE_BASE_URL: null
   - QUICKNODE_BSC_URL: null
+  - QUICKNODE_SEI_URL: null
 
   ###
   # API keys to 3rd party services
