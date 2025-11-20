@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { useNavState } from '../../contexts/navigation-state';
 import { useShieldSubscriptionContext } from '../../contexts/shield/shield-subscription';
 import {
@@ -28,7 +28,6 @@ import {
   getEditedNetwork,
   selectPendingApprovalsForNavigation,
   getShowUpdateModal,
-  getShowConnectionsRemovedModal,
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
   getPendingShieldCohort,
@@ -192,10 +191,10 @@ const mapStateToProps = (state) => {
     redirectAfterDefaultPage,
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
     isPrimarySeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
-    showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
     showShieldEntryModal: getShowShieldEntryModal(state),
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     pendingShieldCohort: getPendingShieldCohort(state),
+    isSignedIn: state.metamask.isSignedIn,
   };
 };
 
@@ -276,6 +275,6 @@ const HomeWithRouter = ({ match: _match, ...props }) => {
 };
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(HomeWithRouter);

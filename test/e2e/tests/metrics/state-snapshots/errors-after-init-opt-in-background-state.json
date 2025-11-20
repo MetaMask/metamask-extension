@@ -51,6 +51,7 @@
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
     "pendingShieldCohort": null,
+    "pendingShieldCohortTxType": null,
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
@@ -73,6 +74,7 @@
     "showShieldEntryModalOnce": "boolean",
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
+    "dappSwapComparisonData": "object",
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "networkConnectionBanner": "object",
@@ -287,6 +289,7 @@
       "tokenNetworkFilter": { "0x539": "boolean" },
       "tokenSortConfig": "object",
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
+      "useSidePanelAsDefault": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "securityAlertsEnabled": "boolean",

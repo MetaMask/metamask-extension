@@ -264,8 +264,19 @@ export const filterNonEvmTxByToken = (
     return nonEvmTransactions;
   }
 
+  const isBitcoinNetwork = tokenAddress.startsWith('bip122');
+
   const transactionForToken = (nonEvmTransactions.transactions || []).filter(
     (transaction) => {
+      const isRedeposit =
+        isBitcoinNetwork &&
+        transaction.to.length === 0 &&
+        transaction.type === KeyringTransactionType.Send;
+
+      if (isRedeposit) {
+        return true;
+      }
+
       return [...transaction.to, ...transaction.from].some(
         (item) => item.asset.type === tokenAddress,
       );
@@ -369,7 +380,8 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
   if (tokenChainIdOverride) {
     const isNonEvm =
       tokenChainIdOverride.startsWith('solana') ||
-      tokenChainIdOverride.startsWith('bip122');
+      tokenChainIdOverride.startsWith('bip122') ||
+      tokenChainIdOverride.startsWith('tron');
 
     return {
       evmChainIds: isNonEvm ? [] : [tokenChainIdOverride],

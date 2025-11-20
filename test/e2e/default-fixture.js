@@ -124,6 +124,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         hasShownMultichainAccountsIntroModal: true,
         showShieldEntryModalOnce: false,
         pendingShieldCohort: null,
+        pendingShieldCohortTxType: null,
         appActiveTab: {
           id: 1,
           title: 'E2E Test Dapp',

@@ -19,6 +19,8 @@ import {
   KeyringControllerGetStateAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import { QuoteResponse } from '@metamask/bridge-controller';
+
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -49,6 +51,10 @@ import {
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
 } from '../../../shared/lib/trust-signals';
+import {
+  DefaultSubscriptionPaymentOptions,
+  ShieldSubscriptionMetricsPropsFromUI,
+} from '../../../shared/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -124,6 +130,17 @@ export type AppStateControllerState = {
   hasShownMultichainAccountsIntroModal: boolean;
   showShieldEntryModalOnce: boolean | null;
   pendingShieldCohort: string | null;
+  pendingShieldCohortTxType: string | null;
+  defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
+  dappSwapComparisonData?: {
+    [uniqueId: string]: { quotes?: QuoteResponse[]; latency?: number };
+  };
+
+  /**
+   * The properties for the Shield subscription metrics.
+   * Since we can't access some of these properties in the background, we need to get them from the UI.
+   */
+  shieldSubscriptionMetricsProps?: ShieldSubscriptionMetricsPropsFromUI;
 
   /**
    * Whether the wallet reset is in progress.
@@ -277,8 +294,9 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   hasShownMultichainAccountsIntroModal: false,
   showShieldEntryModalOnce: null,
   pendingShieldCohort: null,
+  pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
-
+  dappSwapComparisonData: {},
   ...getInitialStateOverrides(),
 });
 
@@ -622,11 +640,35 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  pendingShieldCohortTxType: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   isWalletResetInProgress: {
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
     includeInStateLogs: true,
+  },
+  defaultSubscriptionPaymentOptions: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+  },
+  shieldSubscriptionMetricsProps: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+  },
+  dappSwapComparisonData: {
+    includeInStateLogs: false,
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
   },
 };
 
@@ -1536,9 +1578,12 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setPendingShieldCohort(cohort: string | null): void {
+  setPendingShieldCohort(cohort: string | null, txType?: string | null): void {
     this.update((state) => {
       state.pendingShieldCohort = cohort;
+      if (txType !== undefined) {
+        state.pendingShieldCohortTxType = txType;
+      }
     });
   }
 
@@ -1556,5 +1601,57 @@ export class AppStateController extends BaseController<
 
   getIsWalletResetInProgress(): boolean {
     return this.state.isWalletResetInProgress;
+  }
+
+  setDefaultSubscriptionPaymentOptions(
+    defaultSubscriptionPaymentOptions: DefaultSubscriptionPaymentOptions,
+  ): void {
+    this.update((state) => {
+      state.defaultSubscriptionPaymentOptions =
+        defaultSubscriptionPaymentOptions;
+    });
+  }
+
+  /**
+   * Update the Shield subscription metrics properties which are not accessible in the background directly.
+   *
+   * @param shieldSubscriptionMetricsProps - The Shield subscription metrics properties.
+   */
+  setShieldSubscriptionMetricsProps(
+    shieldSubscriptionMetricsProps: ShieldSubscriptionMetricsPropsFromUI,
+  ): void {
+    this.update((state) => {
+      state.shieldSubscriptionMetricsProps = shieldSubscriptionMetricsProps;
+    });
+  }
+
+  deleteDappSwapComparisonData(uniqueId: string): void {
+    this.update((state) => {
+      delete state.dappSwapComparisonData?.[uniqueId];
+      state.dappSwapComparisonData = {
+        ...state.dappSwapComparisonData,
+      };
+    });
+  }
+
+  setDappSwapComparisonData(
+    uniqueId: string,
+    info: { quotes?: QuoteResponse[]; latency?: number },
+  ): void {
+    this.update((state) => {
+      state.dappSwapComparisonData = {
+        ...state.dappSwapComparisonData,
+        [uniqueId]: info,
+      };
+    });
+  }
+
+  getDappSwapComparisonData(uniqueId: string):
+    | {
+        quotes?: QuoteResponse[];
+        latency?: number;
+      }
+    | undefined {
+    return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
   }
 }

@@ -13,6 +13,10 @@ on:
         required: false
         type: number
         default: 10
+      builds-from-run:
+        required: true
+        type: string
+        description: The run ID to get builds from
     secrets:
       EXTENSION_BENCHMARK_STATS_TOKEN:
         required: true
@@ -44,6 +48,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-test-browserify
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ inputs.builds-from-run }} # Download from whatever run the identify-builds job said.
 
       - name: Install Playwright browsers
         if: ${{ env.IS_PR_OR_MAIN }}

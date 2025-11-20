@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { merge } from 'lodash';
 import copyToClipboard from 'copy-to-clipboard';
 import mockState from '../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { flushPromises } from '../../../test/lib/timer-helpers';
 import {
   decryptMsg,
@@ -16,12 +16,14 @@ import ConfirmDecryptMessage from './confirm-decrypt-message.component';
 
 const messageIdMock = '12345';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: () => ({
-    id: messageIdMock,
-  }),
-}));
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useParams: () => ({
+      id: messageIdMock,
+    }),
+  };
+});
 
 const messageData = {
   domain: {

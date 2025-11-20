@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import {
@@ -209,7 +209,7 @@ export const AccountMenu = ({
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
   }, []);
-  const history = useHistory();
+  const navigate = useNavigate();
   const isMultichainAccountsState1Enabled = useSelector(
     getIsMultichainAccountsState1Enabled,
   );
@@ -250,8 +250,8 @@ export const AccountMenu = ({
       },
     });
     onClose();
-    history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
-  }, [trackEvent, hdEntropyIndex, onClose, history]);
+    navigate(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
+  }, [trackEvent, hdEntropyIndex, onClose, navigate]);
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
@@ -563,10 +563,13 @@ export const AccountMenu = ({
                   onClick={() => {
                     trackEvent({
                       category: MetaMetricsEventCategory.Navigation,
-                      event:
-                        MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
+                      event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
+                      properties: {
+                        status: 'started',
+                        location: 'Account Menu',
+                      },
                     });
-                    history.push(IMPORT_SRP_ROUTE);
+                    navigate(IMPORT_SRP_ROUTE);
                     onClose();
                   }}
                   data-testid="multichain-account-menu-popover-import-srp"
@@ -635,7 +638,7 @@ export const AccountMenu = ({
                       CONNECT_HARDWARE_ROUTE,
                     );
                   } else {
-                    history.push(CONNECT_HARDWARE_ROUTE);
+                    navigate(CONNECT_HARDWARE_ROUTE);
                   }
                 }}
               >
@@ -703,7 +706,7 @@ export const AccountMenu = ({
                   startIconName={IconName.Add}
                   onClick={() => {
                     onClose();
-                    history.push(
+                    navigate(
                       `/snaps/view/${encodeURIComponent(
                         INSTITUTIONAL_WALLET_SNAP_ID,
                       )}`,

@@ -72,9 +72,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
-        testSpecificMock: async (mockServer) => {
-          return mockSnapSimpleKeyringAndSite(mockServer);
-        },
+        testSpecificMock: mockSnapSimpleKeyringAndSite,
         state: 2,
       },
       async (driver: Driver) => {
