@@ -27,7 +27,6 @@ import {
   PermissionTypesWithCustom,
   Signer,
   StoredGatorPermissionSanitized,
-  extractExpiryFromPermissionContext,
 } from '@metamask/gator-permissions-controller';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
@@ -166,17 +165,30 @@ export const ReviewGatorPermissionItem = ({
    * @returns The expiration date
    */
   const getExpirationDate = useCallback((): string => {
-    const expiryTimestamp = extractExpiryFromPermissionContext(
-      permissionContext,
-      chainId,
-    );
+    // Check if rules exist in the permission response
+    if ('rules' in permissionResponse) {
+      const { rules } = permissionResponse;
 
-    if (!expiryTimestamp) {
-      return t('gatorPermissionNoExpiration');
+      if (rules && Array.isArray(rules)) {
+        const expiryRule = rules.find(
+          (rule: { type: string }) => rule.type === 'expiry',
+        );
+
+        if (
+          expiryRule &&
+          'data' in expiryRule &&
+          expiryRule.data &&
+          typeof expiryRule.data === 'object' &&
+          'timestamp' in expiryRule.data
+        ) {
+          const { timestamp } = expiryRule.data;
+          return convertTimestampToReadableDate(timestamp as number);
+        }
+      }
     }
 
-    return convertTimestampToReadableDate(expiryTimestamp);
-  }, [permissionContext, chainId, t]);
+    return t('gatorPermissionNoExpiration');
+  }, [permissionResponse, t]);
 
   /**
    * Returns the token stream permission details

@@ -29,11 +29,6 @@ jest.mock(
   }),
 );
 
-jest.mock('@metamask/gator-permissions-controller', () => ({
-  ...jest.requireActual('@metamask/gator-permissions-controller'),
-  extractExpiryFromPermissionContext: jest.fn(),
-}));
-
 describe('Permission List Item', () => {
   beforeAll(() => {
     // Set Luxon to use UTC as the default timezone for consistent test results
@@ -54,15 +49,6 @@ describe('Permission List Item', () => {
 
     describe('NATIVE token permissions', () => {
       const mockExpiryTimestamp = 1767225600; // January 1, 2026
-
-      beforeEach(() => {
-        const { extractExpiryFromPermissionContext } = jest.requireMock(
-          '@metamask/gator-permissions-controller',
-        );
-        (extractExpiryFromPermissionContext as jest.Mock).mockReturnValue(
-          mockExpiryTimestamp,
-        );
-      });
 
       const mockNativeTokenStreamPermission: StoredGatorPermissionSanitized<
         Signer,
@@ -87,6 +73,15 @@ describe('Permission List Item', () => {
           signerMeta: {
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
+          rules: [
+            {
+              type: 'expiry',
+              isAdjustmentAllowed: false,
+              data: {
+                timestamp: mockExpiryTimestamp,
+              },
+            },
+          ],
         },
         siteOrigin: 'http://localhost:8000',
       };
@@ -113,6 +108,15 @@ describe('Permission List Item', () => {
           signerMeta: {
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
+          rules: [
+            {
+              type: 'expiry',
+              isAdjustmentAllowed: false,
+              data: {
+                timestamp: mockExpiryTimestamp,
+              },
+            },
+          ],
         },
         siteOrigin: 'http://localhost:8000',
       };
@@ -239,15 +243,6 @@ describe('Permission List Item', () => {
 
       const mockExpiryTimestamp = 1767225600; // January 1, 2026
 
-      beforeEach(() => {
-        const { extractExpiryFromPermissionContext } = jest.requireMock(
-          '@metamask/gator-permissions-controller',
-        );
-        (extractExpiryFromPermissionContext as jest.Mock).mockReturnValue(
-          mockExpiryTimestamp,
-        );
-      });
-
       const mockErc20TokenPeriodicPermission: StoredGatorPermissionSanitized<
         Signer,
         Erc20TokenPeriodicPermission
@@ -271,6 +266,15 @@ describe('Permission List Item', () => {
           signerMeta: {
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
+          rules: [
+            {
+              type: 'expiry',
+              isAdjustmentAllowed: false,
+              data: {
+                timestamp: mockExpiryTimestamp,
+              },
+            },
+          ],
         },
         siteOrigin: 'http://localhost:8000',
       };
@@ -299,6 +303,15 @@ describe('Permission List Item', () => {
           signerMeta: {
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
+          rules: [
+            {
+              type: 'expiry',
+              isAdjustmentAllowed: false,
+              data: {
+                timestamp: mockExpiryTimestamp,
+              },
+            },
+          ],
         },
         siteOrigin: 'http://localhost:8000',
       };
@@ -489,11 +502,6 @@ describe('Permission List Item', () => {
       });
 
       it('renders "No expiration" when permission has no expiry', () => {
-        const { extractExpiryFromPermissionContext } = jest.requireMock(
-          '@metamask/gator-permissions-controller',
-        );
-        (extractExpiryFromPermissionContext as jest.Mock).mockReturnValue(null);
-
         const mockPermissionWithoutExpiry: StoredGatorPermissionSanitized<
           Signer,
           NativeTokenPeriodicPermission
@@ -515,6 +523,7 @@ describe('Permission List Item', () => {
             signerMeta: {
               delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
             },
+            // No rules array = no expiry
           },
           siteOrigin: 'http://localhost:8000',
         };
@@ -545,13 +554,6 @@ describe('Permission List Item', () => {
       it('renders correct expiration date when permission has expiry', () => {
         const customExpiryTimestamp = 1744588800; // April 14, 2025
 
-        const { extractExpiryFromPermissionContext } = jest.requireMock(
-          '@metamask/gator-permissions-controller',
-        );
-        (extractExpiryFromPermissionContext as jest.Mock).mockReturnValue(
-          customExpiryTimestamp,
-        );
-
         const mockPermissionWithExpiry: StoredGatorPermissionSanitized<
           Signer,
           NativeTokenPeriodicPermission
@@ -573,6 +575,15 @@ describe('Permission List Item', () => {
             signerMeta: {
               delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
             },
+            rules: [
+              {
+                type: 'expiry',
+                isAdjustmentAllowed: false,
+                data: {
+                  timestamp: customExpiryTimestamp,
+                },
+              },
+            ],
           },
           siteOrigin: 'http://localhost:8000',
         };
