@@ -282,17 +282,21 @@ export const navigateToSendRoute = (
   params?: {
     address?: string;
     chainId?: string;
+    tokenId?: string;
   },
 ) => {
   if (isSendRedesignEnabled) {
     if (params) {
       const queryParams = new URLSearchParams();
-      const { address, chainId } = params;
+      const { address, chainId, tokenId } = params;
       if (address) {
         queryParams.append('asset', address);
       }
       if (chainId) {
         queryParams.append('chainId', chainId);
+      }
+      if (tokenId) {
+        queryParams.append('tokenId', tokenId);
       }
       navigate(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
     } else {

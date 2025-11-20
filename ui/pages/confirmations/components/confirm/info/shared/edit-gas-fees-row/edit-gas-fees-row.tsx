@@ -42,7 +42,7 @@ export const EditGasFeesRow = ({
 }) => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, isQuotedSwapDisplayedInInfo } =
     useConfirmContext<TransactionMeta>();
 
   const showAdvancedDetails = useSelector(
@@ -101,12 +101,14 @@ export const EditGasFeesRow = ({
                 {t('paidByMetaMask')}
               </Text>
             )}
-            {!gasFeeToken && !isGasFeeSponsored && (
-              <EditGasIconButton
-                supportsEIP1559={supportsEIP1559}
-                setShowCustomizeGasPopover={setShowCustomizeGasPopover}
-              />
-            )}
+            {!isQuotedSwapDisplayedInInfo &&
+              !gasFeeToken &&
+              !isGasFeeSponsored && (
+                <EditGasIconButton
+                  supportsEIP1559={supportsEIP1559}
+                  setShowCustomizeGasPopover={setShowCustomizeGasPopover}
+                />
+              )}
             {showFiat && !showAdvancedDetails && !isGasFeeSponsored && (
               <FiatValue
                 fullValue={fiatFeeWith18SignificantDigits}

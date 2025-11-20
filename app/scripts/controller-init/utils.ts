@@ -37,6 +37,7 @@ type ControllerMessengerCallback = (
 ) => BaseRestrictedControllerMessenger;
 
 export type ControllersToInitialize =
+  | 'AccountTrackerController'
   | 'AuthenticationController'
   | 'CronjobController'
   | 'DeFiPositionsController'
@@ -196,7 +197,9 @@ function getControllerOrThrow<Name extends ControllerName>(
   const controller = controllersByName[name];
 
   if (!controller) {
-    throw new Error(`Controller requested before it was initialized: ${name}`);
+    throw new Error(
+      `Controller requested before it was initialized: ${String(name)}`,
+    );
   }
 
   return controller;

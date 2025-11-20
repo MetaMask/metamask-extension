@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import {
@@ -31,6 +31,7 @@ import {
   getAccountTree,
   getNormalizedGroupsMetadata,
 } from '../../../selectors/multichain-accounts/account-tree';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
@@ -47,16 +48,18 @@ import {
 } from '../../../components/multichain/pages/page';
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
+import { getAllPermittedAccountsForCurrentTab } from '../../../selectors';
 import { filterWalletsByGroupNameOrAddress } from './utils';
 
 export const AccountList = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
   const [searchPattern, setSearchPattern] = useState<string>('');
   const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
+  const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
 
   const {
     isAccountTreeSyncingInProgress,
@@ -124,7 +127,7 @@ export const AccountList = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
           />
         }
       >
@@ -163,6 +166,7 @@ export const AccountList = () => {
               selectedAccountGroups={[selectedAccountGroup]}
               isInSearchMode={Boolean(searchPattern)}
               displayWalletHeader={hasMultipleWallets}
+              showConnectionStatus={permittedAccounts.length > 0}
             />
           ) : (
             <Box

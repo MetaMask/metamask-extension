@@ -114,7 +114,7 @@ export type Preferences = {
     sortCallback: string;
   };
   useNativeCurrencyAsPrimaryCurrency: boolean;
-  useSidePanelAsDefault?: boolean; // Only available in build-experimental
+  useSidePanelAsDefault?: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -157,6 +157,7 @@ export type PreferencesControllerState = Omit<
   useCurrencyRateCheck: boolean;
   useExternalNameSources: boolean;
   useExternalServices: boolean;
+  isMultiAccountBalancesEnabled: boolean;
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
   referrals: {
@@ -186,8 +187,6 @@ export const getDefaultPreferencesControllerState =
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
     isIpfsGatewayEnabled: true,
-    // from core PreferencesController
-    isMultiAccountBalancesEnabled: true,
     knownMethodData: {},
     // Ledger transport type is deprecated. We currently only support webhid
     // on chrome, and u2f on firefox.
@@ -223,9 +222,7 @@ export const getDefaultPreferencesControllerState =
         sortCallback: 'stringNumeric',
       },
       useNativeCurrencyAsPrimaryCurrency: true,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-      useSidePanelAsDefault: true,
-      ///: END:ONLY_INCLUDE_IF
+      useSidePanelAsDefault: false,
     },
     securityAlertsEnabled: true,
     selectedAddress: '',
@@ -243,6 +240,8 @@ export const getDefaultPreferencesControllerState =
     // Whenever useExternalServices is false, certain features will be disabled.
     // The flag is true by Default, meaning the toggle is ON by default.
     useExternalServices: true,
+    // from core PreferencesController
+    isMultiAccountBalancesEnabled: true,
     useMultiAccountBalanceChecker: true,
     useNftDetection: true,
     usePhishDetect: true,
@@ -323,12 +322,6 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: false,
-    usedInUi: true,
-  },
-  isMultiAccountBalancesEnabled: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   knownMethodData: {
@@ -446,6 +439,12 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  isMultiAccountBalancesEnabled: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   useMultiAccountBalanceChecker: {
     includeInStateLogs: true,
     persist: true,
@@ -518,6 +517,11 @@ export class PreferencesController extends BaseController<
         ...defaultState.preferences,
         ...state?.preferences,
       },
+      // TODO - These two properties are the same, we only need isMultiAccountBalancesEnabled to keep it compatible with core PreferencesController
+      // At some point we should completely remove all references and methods for useMultiAccountBalanceChecker and use isMultiAccountBalancesEnabled instead.
+      isMultiAccountBalancesEnabled:
+        state?.useMultiAccountBalanceChecker ??
+        defaultState.isMultiAccountBalancesEnabled,
     };
 
     super({
@@ -579,6 +583,7 @@ export class PreferencesController extends BaseController<
   setUseMultiAccountBalanceChecker(val: boolean): void {
     this.update((state) => {
       state.useMultiAccountBalanceChecker = val;
+      state.isMultiAccountBalancesEnabled = val;
     });
   }
 
@@ -1009,6 +1014,12 @@ export class PreferencesController extends BaseController<
     });
   }
 
+  setUseSidePanelAsDefault(value: boolean): void {
+    this.update((state) => {
+      state.preferences.useSidePanelAsDefault = value;
+    });
+  }
+
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setSnapsAddSnapAccountModalDismissed(value: boolean): void {
     this.update((state) => {
@@ -1037,7 +1048,7 @@ export class PreferencesController extends BaseController<
         }
         return acc;
       },
-      { ...(lostIdentities ?? {}) },
+      { ...lostIdentities },
     );
 
     const updatedIdentities = Object.values(accounts).reduce(

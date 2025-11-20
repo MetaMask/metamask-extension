@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
 <div>
@@ -536,10 +536,10 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -555,7 +555,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -658,7 +658,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -971,10 +971,10 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -990,7 +990,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -1093,7 +1093,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -1399,7 +1399,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -1609,7 +1609,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -1649,7 +1649,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -1689,7 +1689,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -1825,7 +1825,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -1865,7 +1865,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -1905,7 +1905,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -2223,10 +2223,10 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2242,7 +2242,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -2345,7 +2345,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -2649,7 +2649,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -2799,7 +2799,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -2839,7 +2839,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -2937,7 +2937,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -3028,7 +3028,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -3345,7 +3345,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -3555,7 +3555,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -3595,7 +3595,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -3635,7 +3635,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -3771,7 +3771,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -3811,7 +3811,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -3851,7 +3851,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"

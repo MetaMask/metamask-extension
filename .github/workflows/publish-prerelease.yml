@@ -10,6 +10,10 @@ on:
         description: 'Whether the Lavamoat policy files have changed'
         required: true
         type: boolean
+      post-new-builds:
+        description: 'Whether to post new builds from CloudFront to the comment'
+        required: true
+        type: boolean
 
 jobs:
   publish-prerelease:
@@ -31,6 +35,7 @@ jobs:
       CLOUDFRONT_REPO_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
       LAVAMOAT_POLICY_CHANGED: ${{ inputs.lavamoat-policy-changed }}
+      POST_NEW_BUILDS: ${{ inputs.post-new-builds }}
     steps:
       - name: Checkout and setup high risk environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -67,12 +72,12 @@ jobs:
           echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
           echo "The merge base commit hash is '${merge_base_commit_hash}'"
 
-      - name: Page load benchmark comment
+      - name: Download page load benchmark results
         if: ${{ github.event_name == 'pull_request' }}
-        uses: ./.github/actions/page-load-benchmark-comment
+        uses: actions/download-artifact@v4
         with:
-          head-commit-hash: ${{ env.HEAD_COMMIT_HASH }}
-          pr-comment-token: ${{ secrets.PR_COMMENT_TOKEN }}
+          name: page-load-benchmark-results
+          path: test-artifacts/benchmarks
 
       - name: Publish prerelease
         if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}

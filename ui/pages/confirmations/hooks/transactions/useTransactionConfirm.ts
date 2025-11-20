@@ -5,23 +5,28 @@ import {
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { getCustomNonceValue } from '../../../../selectors';
-import { updateAndApproveTx } from '../../../../store/actions';
-import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { useConfirmContext } from '../../context/confirm';
+import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
+import { updateAndApproveTx } from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
+import { useShieldConfirm } from './useShieldConfirm';
+import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, isQuotedSwapDisplayedInInfo } =
     useConfirmContext<TransactionMeta>();
 
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
+  const { onDappSwapCompleted, updateSwapWithQuoteDetails } =
+    useDappSwapActions();
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),
@@ -73,8 +78,15 @@ export function useTransactionConfirm() {
     transactionMeta?.isGasFeeSponsored,
   ]);
 
+  const {
+    handleShieldSubscriptionApprovalTransactionAfterConfirm,
+    handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
+  } = useShieldConfirm();
+
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
+
+    updateSwapWithQuoteDetails(newTransactionMeta);
 
     if (isGaslessSupportedSTX) {
       handleSmartTransaction();
@@ -82,7 +94,19 @@ export function useTransactionConfirm() {
       handleGasless7702();
     }
 
-    await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
+    // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
+    // navigate to shield settings page first before approving transaction to wait for subscription creation there
+    handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
+    try {
+      await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
+    } catch (error) {
+      handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
+        newTransactionMeta,
+      );
+      throw error;
+    }
+
+    onDappSwapCompleted();
   }, [
     newTransactionMeta,
     customNonceValue,
@@ -91,6 +115,11 @@ export function useTransactionConfirm() {
     handleSmartTransaction,
     handleGasless7702,
     selectedGasFeeToken,
+    isQuotedSwapDisplayedInInfo,
+    handleShieldSubscriptionApprovalTransactionAfterConfirm,
+    handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
+    onDappSwapCompleted,
+    updateSwapWithQuoteDetails,
   ]);
 
   return {

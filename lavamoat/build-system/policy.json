@@ -1043,7 +1043,7 @@
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@scure/base": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
@@ -1113,7 +1113,7 @@
         "process.cwd": true
       }
     },
-    "@metamask/utils>@scure/base": {
+    "@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true

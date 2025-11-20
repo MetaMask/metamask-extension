@@ -23,6 +23,10 @@ on:
         required: true
         type: string
         description: The test command to run
+      builds-from-run:
+        required: true
+        type: string
+        description: The run ID to get builds from
       test-timeout-minutes:
         type: number
         default: 30
@@ -53,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     container:
-      image: ghcr.io/metamask/metamask-extension-e2e-image:v1.0.0
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.11.0
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -103,6 +107,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.build-artifact }}
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ inputs.builds-from-run }} # Download from whatever run the identify-builds job said.
 
       # if there is a build-command and there is no build artifact, or the specified artifact does not exist, we run the build command
       - run: ${{ inputs.build-command }}

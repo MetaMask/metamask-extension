@@ -28,7 +28,8 @@ import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficient
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currentConfirmation, isQuotedSwapDisplayedInInfo } =
+    useConfirmContext<TransactionMeta>();
   const { chainId, gasFeeTokens } = currentConfirmation;
 
   const { isSupported: isGaslessSupported, isSmartTransaction } =
@@ -93,7 +94,7 @@ export function SelectedGasFeeToken() {
           size={GasFeeTokenIconSize.Sm}
         />
         <Text>{symbol}</Text>
-        {hasGasFeeTokens && (
+        {!isQuotedSwapDisplayedInInfo && hasGasFeeTokens && (
           <Icon
             data-testid="selected-gas-fee-token-arrow"
             name={IconName.ArrowDown}

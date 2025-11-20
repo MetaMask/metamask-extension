@@ -2,7 +2,7 @@ import { CaipAssetType, Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -18,7 +18,7 @@ import { useSendType } from './useSendType';
 
 export const useSendActions = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {
     asset,
     chainId,
@@ -50,9 +50,9 @@ export const useSendActions = () => {
       const route = maxValueMode
         ? `${CONFIRM_TRANSACTION_ROUTE}?maxValueMode=${maxValueMode}`
         : CONFIRM_TRANSACTION_ROUTE;
-      history.push(route);
+      navigate(route);
     } else {
-      history.push(`${SEND_ROUTE}/${SendPages.LOADER}`);
+      navigate(`${SEND_ROUTE}/${SendPages.LOADER}`);
       await dispatch(setDefaultHomeActiveTabName('activity'));
       try {
         await sendMultichainTransactionForReview(
@@ -61,10 +61,10 @@ export const useSendActions = () => {
             fromAccountId: fromAccount?.id as string,
             toAddress: toAddress as string,
             assetId: asset.assetId as CaipAssetType,
-            amount: addLeadingZeroIfNeeded(value) as string,
+            amount: addLeadingZeroIfNeeded(value || ('0' as string)) as string,
           },
         );
-        history.push(DEFAULT_ROUTE);
+        navigate(DEFAULT_ROUTE);
       } catch (error) {
         // intentional empty catch
       }
@@ -76,7 +76,7 @@ export const useSendActions = () => {
     from,
     fromAccount,
     hexData,
-    history,
+    navigate,
     isEvmSendType,
     maxValueMode,
     to,
@@ -84,12 +84,12 @@ export const useSendActions = () => {
   ]);
 
   const handleBack = useCallback(() => {
-    history.goBack();
-  }, [history]);
+    navigate(-1);
+  }, [navigate]);
 
   const handleCancel = useCallback(() => {
-    history.push(DEFAULT_ROUTE);
-  }, [history]);
+    navigate(DEFAULT_ROUTE);
+  }, [navigate]);
 
   return { handleSubmit, handleCancel, handleBack };
 };

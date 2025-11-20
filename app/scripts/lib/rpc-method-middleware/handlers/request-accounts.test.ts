@@ -47,20 +47,6 @@ const createMockedHandler = () => {
         },
       },
     },
-    accounts: {
-      '0x01': {
-        address: '0x01',
-        balance: 'null',
-      },
-      '0x02': {
-        address: '0x02',
-        balance: 'null',
-      },
-      '0x03': {
-        address: '0x03',
-        balance: 'null',
-      },
-    },
   };
   const getCaip25PermissionFromLegacyPermissionsForOrigin = jest
     .fn()

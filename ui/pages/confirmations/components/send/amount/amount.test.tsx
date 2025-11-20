@@ -21,14 +21,11 @@ import { Amount } from './amount';
 
 const render = (
   args?: Record<string, unknown>,
-  mockSetAmountValueError = jest.fn(),
+  mockAmountError = undefined,
 ) => {
   const store = configureStore(args ?? mockState);
 
-  return renderWithProvider(
-    <Amount setAmountValueError={mockSetAmountValueError} />,
-    store,
-  );
+  return renderWithProvider(<Amount amountError={mockAmountError} />, store);
 };
 
 describe('Amount', () => {
@@ -123,6 +120,7 @@ describe('Amount', () => {
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
     expect(getByText('$ 20.00')).toBeInTheDocument();
     fireEvent.click(getByTestId('toggle-fiat-mode'));
+    expect(getByText('$ 20.00 available')).toBeInTheDocument();
     expect(getByRole('textbox')).toHaveValue('20');
     expect(getByText('USD')).toBeInTheDocument();
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
@@ -334,50 +332,5 @@ describe('Amount', () => {
 
     const { queryByText } = render();
     expect(queryByText('Max')).not.toBeInTheDocument();
-  });
-
-  it('call arg mockSetAmountValueError if amount has error', () => {
-    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: EVM_ASSET,
-      updateValue: jest.fn(),
-    } as unknown as SendContext.SendContextType);
-    jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
-      balance: '10.023',
-      rawBalanceNumeric: new Numeric('10.023', 10),
-    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
-    jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
-      conversionSupportedForAsset: true,
-      fiatCurrencySymbol: '$',
-      fiatCurrencyName: 'usd',
-      getFiatValue: () => '20',
-      getFiatDisplayValue: () => '$ 20.00',
-      getNativeValue: () => '20',
-    });
-    const mockSetAmountInputTypeFiat = jest.fn();
-    const mockSetAmountInputTypeToken = jest.fn();
-    jest
-      .spyOn(AmountSelectionMetrics, 'useAmountSelectionMetrics')
-      .mockReturnValue({
-        setAmountInputTypeFiat: mockSetAmountInputTypeFiat,
-        setAmountInputTypeToken: mockSetAmountInputTypeToken,
-      } as unknown as ReturnType<
-        typeof AmountSelectionMetrics.useAmountSelectionMetrics
-      >);
-    const mockSetAmountValueError = jest.fn();
-
-    const { getByRole, getByTestId } = render(
-      undefined,
-      mockSetAmountValueError,
-    );
-
-    expect(mockSetAmountValueError).toHaveBeenLastCalledWith(undefined);
-    fireEvent.change(getByRole('textbox'), { target: { value: 'abc' } });
-    expect(mockSetAmountValueError).toHaveBeenLastCalledWith('Invalid value');
-    fireEvent.click(getByTestId('toggle-fiat-mode'));
-    fireEvent.change(getByRole('textbox'), { target: { value: '' } });
-    expect(mockSetAmountValueError).toHaveBeenLastCalledWith(undefined);
-    fireEvent.change(getByRole('textbox'), { target: { value: 'abc' } });
-    expect(mockSetAmountValueError).toHaveBeenLastCalledWith('Invalid value');
-    expect(mockSetAmountValueError).toHaveBeenCalledTimes(4);
   });
 });

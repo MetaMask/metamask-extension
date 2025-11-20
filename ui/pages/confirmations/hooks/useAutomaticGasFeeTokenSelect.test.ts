@@ -6,6 +6,7 @@ import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { forceUpdateMetamaskState } from '../../../store/actions';
@@ -46,6 +47,12 @@ function runHook({
   return { ...result, state };
 }
 
+async function flushAsyncUpdates() {
+  await act(async () => {
+    await flushPromises();
+  });
+}
+
 describe('useAutomaticGasFeeTokenSelect', () => {
   const updateSelectedGasFeeTokenMock = jest.mocked(updateSelectedGasFeeToken);
   const forceUpdateMetamaskStateMock = jest.mocked(forceUpdateMetamaskState);
@@ -67,30 +74,55 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     });
   });
 
-  it('selects first gas fee token', () => {
-    runHook();
+  it('selects first gas fee token', async () => {
+    const { store } = runHook();
+
+    await flushAsyncUpdates();
+
+    if (!store) {
+      throw new Error('Expected store to be defined');
+    }
 
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(1);
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledWith(
       expect.any(String),
       GAS_FEE_TOKEN_MOCK.tokenAddress,
     );
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(1);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledWith(store.dispatch);
   });
 
-  it('does not select first gas fee token if gas fee token already selected', () => {
+  it('does not select first gas fee token if gas fee token already selected', async () => {
     runHook({ selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress });
+
+    await flushAsyncUpdates();
+
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
   });
 
-  it('does not select first gas fee token if no gas fee tokens', () => {
+  it('does not select first gas fee token if no gas fee tokens', async () => {
     runHook({ gasFeeTokens: [] });
+
+    await flushAsyncUpdates();
+
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
   });
 
-  it('does not select first gas fee token if not first load', () => {
-    const { rerender, state } = runHook({
+  it('selects first gas fee token on rerender when selection becomes eligible', async () => {
+    const { rerender, state, store } = runHook({
       selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
     });
+
+    if (!store) {
+      throw new Error('Expected store to be defined');
+    }
+
+    await flushAsyncUpdates();
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
 
     const transactionMeta = state.metamask
       .transactions[0] as unknown as TransactionMeta;
@@ -101,10 +133,18 @@ describe('useAutomaticGasFeeTokenSelect', () => {
 
     rerender();
 
-    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+    await flushAsyncUpdates();
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(1);
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledWith(
+      expect.any(String),
+      GAS_FEE_TOKEN_MOCK.tokenAddress,
+    );
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(1);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledWith(store.dispatch);
   });
 
-  it('does not select first gas fee token if gasless not supported', () => {
+  it('does not select first gas fee token if gasless not supported', async () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSupported: false,
       isSmartTransaction: false,
@@ -112,30 +152,81 @@ describe('useAutomaticGasFeeTokenSelect', () => {
 
     runHook();
 
+    await flushAsyncUpdates();
+
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
   });
 
-  it('does not select first gas fee token if sufficient balance', () => {
+  it('does not select first gas fee token if sufficient balance', async () => {
     useInsufficientBalanceAlertsMock.mockReturnValue([]);
 
     runHook();
 
+    await flushAsyncUpdates();
+
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
   });
 
-  it('does not select first gas fee token after firstCheck is set to false', () => {
-    const { rerender, state } = runHook();
+  it('selects first gas fee token when insufficient balance appears after first render', async () => {
+    let alerts: Alert[] = [];
+    useInsufficientBalanceAlertsMock.mockImplementation(() => alerts);
+
+    const { rerender, store } = runHook({
+      selectedGasFeeToken: undefined,
+    });
+
+    if (!store) {
+      throw new Error('Expected store to be defined');
+    }
+
+    await flushAsyncUpdates();
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
+
+    alerts = [{} as Alert];
+
+    rerender();
+
+    await flushAsyncUpdates();
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(1);
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledWith(
+      expect.any(String),
+      GAS_FEE_TOKEN_MOCK.tokenAddress,
+    );
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(1);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledWith(store.dispatch);
+  });
+
+  it('does not select first gas fee token after firstCheck is set to false', async () => {
+    const { rerender, state, store } = runHook();
+
+    if (!store) {
+      throw new Error('Expected store to be defined');
+    }
+
+    await flushAsyncUpdates();
+
     // Simulate a rerender with new state that would otherwise trigger selection
     act(() => {
       (
         state.metamask.transactions[0] as unknown as TransactionMeta
       ).selectedGasFeeToken = undefined;
     });
+
     rerender();
+
+    await flushAsyncUpdates();
+
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(1); // Only first run
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(1);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledWith(store.dispatch);
   });
 
-  it('does not select if transactionId is falsy', () => {
+  it('does not select if transactionId is falsy', async () => {
     const state = getMockConfirmStateForTransaction(
       genUnapprovedContractInteractionConfirmation({
         gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
@@ -145,15 +236,23 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     // Remove transactionId
     state.metamask.transactions = [];
     renderHookWithConfirmContextProvider(useAutomaticGasFeeTokenSelect, state);
+
+    await flushAsyncUpdates();
+
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
   });
 
-  it('does not select if gasFeeTokens is falsy', () => {
+  it('does not select if gasFeeTokens is falsy', async () => {
     runHook({ gasFeeTokens: [] });
+
+    await flushAsyncUpdates();
+
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
   });
 
-  it('does not select first gas fee token if 7702 and future native token', () => {
+  it('does not select first gas fee token if 7702 and future native token', async () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSupported: true,
       isSmartTransaction: false,
@@ -168,16 +267,19 @@ describe('useAutomaticGasFeeTokenSelect', () => {
       ],
     });
 
+    await flushAsyncUpdates();
+
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
   });
 
-  it('selects second gas fee token if 7702 and future native token', () => {
+  it('selects second gas fee token if 7702 and future native token', async () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSupported: true,
       isSmartTransaction: false,
     });
 
-    runHook({
+    const { store } = runHook({
       gasFeeTokens: [
         {
           ...GAS_FEE_TOKEN_MOCK,
@@ -187,6 +289,18 @@ describe('useAutomaticGasFeeTokenSelect', () => {
       ],
     });
 
+    if (!store) {
+      throw new Error('Expected store to be defined');
+    }
+
+    await flushAsyncUpdates();
+
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(1);
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledWith(
+      expect.any(String),
+      GAS_FEE_TOKEN_MOCK.tokenAddress,
+    );
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(1);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledWith(store.dispatch);
   });
 });

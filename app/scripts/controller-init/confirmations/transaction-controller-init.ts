@@ -13,6 +13,8 @@ import {
   SmartTransactionStatuses,
 } from '@metamask/smart-transactions-controller';
 import { Hex } from '@metamask/utils';
+import { NetworkClientId } from '@metamask/network-controller';
+import { toHex } from '@metamask/controller-utils';
 import { trace } from '../../../../shared/lib/trace';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
@@ -56,7 +58,6 @@ export const TransactionControllerInit: ControllerInitFunction<
     getFlatState,
     getPermittedAccounts,
     getTransactionMetricsRequest,
-    updateAccountBalanceForTransactionNetwork,
     persistedState,
   } = request;
 
@@ -149,6 +150,18 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
+      // Note: `#afterAdd.updateTransaction` is actually called before adding the TransactionMeta to the state
+      // Reference: https://github.com/MetaMask/core/blob/main/packages/transaction-controller/src/TransactionController.ts#L1335
+      afterAdd: async (_params: { transactionMeta: TransactionMeta }) => {
+        return {
+          updateTransaction: async (transactionMeta: TransactionMeta) => {
+            await initMessenger.call(
+              'SubscriptionService:submitSubscriptionSponsorshipIntent',
+              transactionMeta,
+            );
+          },
+        };
+      },
       afterSimulate: new EnforceSimulationHook({
         messenger: initMessenger,
       }).getAfterSimulateHook(),
@@ -198,7 +211,6 @@ export const TransactionControllerInit: ControllerInitFunction<
   addTransactionControllerListeners(
     initMessenger,
     getTransactionMetricsRequest,
-    updateAccountBalanceForTransactionNetwork,
   );
 
   const api = getApi(controller);
@@ -266,21 +278,8 @@ function getExternalPendingTransactions(
 function addTransactionControllerListeners(
   initMessenger: TransactionControllerInitMessenger,
   getTransactionMetricsRequest: () => TransactionMetricsRequest,
-  updateAccountBalanceForTransactionNetwork: (
-    transactionMeta: TransactionMeta,
-  ) => void,
 ) {
   const transactionMetricsRequest = getTransactionMetricsRequest();
-
-  initMessenger.subscribe(
-    'TransactionController:unapprovedTransactionAdded',
-    updateAccountBalanceForTransactionNetwork,
-  );
-
-  initMessenger.subscribe(
-    'TransactionController:transactionConfirmed',
-    updateAccountBalanceForTransactionNetwork,
-  );
 
   initMessenger.subscribe(
     'TransactionController:postTransactionBalanceUpdated',
@@ -361,6 +360,19 @@ function getUIState(flatState: ControllerFlatState) {
   return { metamask: flatState };
 }
 
+async function getNextNonce(
+  transactionController: TransactionController,
+  address: string,
+  networkClientId: NetworkClientId,
+): Promise<Hex> {
+  const nonceLock = await transactionController.getNonceLock(
+    address,
+    networkClientId,
+  );
+  nonceLock.releaseLock();
+  return toHex(nonceLock.nextNonce);
+}
+
 export async function publishHook({
   flatState,
   initMessenger,
@@ -388,6 +400,8 @@ export async function publishHook({
         transactionController,
       ),
       messenger: initMessenger,
+      getNextNonce: (address, networkClientId) =>
+        getNextNonce(transactionController, address, networkClientId),
     }).getHook();
 
     const result = await hook(transactionMeta, signedTx);

@@ -46,7 +46,14 @@ export const arrangeTestUtils = (
         const accounts = userStorageMockttpController.paths.get(
           USER_STORAGE_GROUPS_FEATURE_KEY,
         )?.response;
-        return accounts?.length === expectedNumber;
+        const currentCount = accounts?.length ?? 0;
+        if (currentCount !== expectedNumber) {
+          console.log(
+            `Current synced accounts: ${currentCount}, expected: ${expectedNumber}. Accounts:`,
+            JSON.stringify(accounts),
+          );
+        }
+        return currentCount === expectedNumber;
       },
       {
         timeout: BASE_TIMEOUT,

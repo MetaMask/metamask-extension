@@ -203,7 +203,10 @@ async function withAccountSnap(
       usePaymaster: Boolean(paymaster),
       dappOptions: {
         numberOfTestDapps: 1,
-        customDappPaths: [DAPP_PATH.SNAP_ACCOUNT_ABSTRACTION_KEYRING],
+        customDappPaths: [
+          DAPP_PATH.SNAP_ACCOUNT_ABSTRACTION_KEYRING,
+          DAPP_PATH.TEST_SNAPS,
+        ],
       },
       localNodeOptions: localNodeOptions || {
         hardfork: 'london',
@@ -248,7 +251,9 @@ async function withAccountSnap(
   );
 }
 
-describe('User Operations', function () {
+// Bug #37823 When sending a transaction to dApp the confirmation dialog crashes
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('User Operations', function () {
   it('from dApp transaction', async function () {
     await withAccountSnap({ title: this.test?.fullTitle() }, async (driver) => {
       const transaction = {

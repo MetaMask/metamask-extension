@@ -217,10 +217,13 @@ async function mockedSourcifyResponse(mockServer: MockttpServer) {
     .forGet(
       'https://sourcify.dev/server/files/any/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
     )
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: SOURCIFY_RESPONSE,
-    }));
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: SOURCIFY_RESPONSE,
+      };
+    });
 }
 
 async function mockTokensAndInfura(mockServer: MockttpServer) {

@@ -673,18 +673,16 @@ class FixtureBuilder {
   withPermissionControllerConnectedToMultichainTestDappWithTwoAccounts({
     scopes = ['eip155:1337'],
   }) {
-    const optionalScopes = scopes
-      .map((scope) => ({
-        [scope]: {
-          accounts: [
-            `${scope}:0x5cfe73b6021e818b776b421b1c4db2474086a7e1`,
-            `${scope}:0x09781764c08de8ca82e156bbf156a3ca217c7950`,
-          ],
-        },
-      }))
-      .reduce((acc, curr) => {
-        return { ...acc, ...curr };
-      }, {});
+    const optionalScopes = {};
+
+    for (const scope of scopes) {
+      optionalScopes[scope] = {
+        accounts: [
+          `${scope}:0x5cfe73b6021e818b776b421b1c4db2474086a7e1`,
+          `${scope}:0x09781764c08de8ca82e156bbf156a3ca217c7950`,
+        ],
+      };
+    }
 
     const subjects = {
       [DAPP_URL]: {
@@ -1753,31 +1751,15 @@ class FixtureBuilder {
 
   withTrezorAccount() {
     return this.withAccountTracker({
-      accounts: {
-        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-          balance: '0x15af1d78b58c40000',
-        },
-        '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
-          address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
-          balance: '0x100000000000000000000',
-        },
-      },
-      currentBlockGasLimit: '0x1c9c380',
       accountsByChainId: {
         '0x539': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1': {
             balance: '0x15af1d78b58c40000',
           },
-          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
-            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+          '0xF68464152d7289D7eA9a2bEC2E0035c45188223c': {
             balance: '0x100000000000000000000',
           },
         },
-      },
-      currentBlockGasLimitByChainId: {
-        '0x539': '0x1c9c380',
       },
     })
       .withAccountsController({
@@ -2018,6 +2000,14 @@ class FixtureBuilder {
       isAccountSyncingEnabled,
       isBackupAndSyncUpdateLoading,
     });
+    return this;
+  }
+
+  withRemoteFeatureFlags(remoteFeatureFlags = {}) {
+    merge(
+      this.fixture.data.RemoteFeatureFlagController.remoteFeatureFlags,
+      remoteFeatureFlags,
+    );
     return this;
   }
 

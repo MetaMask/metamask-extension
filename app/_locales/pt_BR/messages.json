@@ -697,9 +697,6 @@
   "etherscanViewOn": {
     "message": "Ver no Etherscan"
   },
-  "expandView": {
-    "message": "Expandir exibição"
-  },
   "experimental": {
     "message": "Experimental"
   },
@@ -2082,9 +2079,6 @@
   },
   "welcomeBack": {
     "message": "Bem-vindo(a) novamente!"
-  },
-  "welcomeToMetaMask": {
-    "message": "Vamos começar"
   },
   "whatsThis": {
     "message": "O que é isso?"

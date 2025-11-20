@@ -106,7 +106,7 @@ export enum HardwareAffiliateLinks {
 export enum HardwareAffiliateTutorialLinks {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  ledger = 'https://support.ledger.com/hc/en-us/articles/4404366864657-Set-up-and-use-MetaMask-to-access-your-Ledger-Ethereum-ETH-account?docs=true',
+  ledger = 'https://support.ledger.com/article/4404366864657-zd',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   gridplus = 'https://docs.gridplus.io/setup/metamask',

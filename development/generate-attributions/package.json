@@ -8,8 +8,8 @@
     "@metamask/oss-attribution-generator": "^2.0.2"
   },
   "engines": {
-    "node": ">= 20",
-    "yarn": "^4.9.1"
+    "node": ">=24.11.0",
+    "yarn": "^4.10.3"
   },
   "lavamoat": {
     "allowScripts": {

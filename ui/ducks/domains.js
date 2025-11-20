@@ -176,7 +176,7 @@ export async function fetchResolutions({ domain, chainId, state }) {
   return filteredResults;
 }
 
-export function lookupDomainName(domainName) {
+export function lookupDomainName(domainName, chainId) {
   return async (dispatch, getState) => {
     const trimmedDomainName = domainName.trim();
     let state = getState();
@@ -186,9 +186,8 @@ export function lookupDomainName(domainName) {
     await dispatch(lookupStart(trimmedDomainName));
     state = getState();
     log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
-
-    const chainId = getCurrentChainId(state);
-    const chainIdInt = parseInt(chainId, 16);
+    const finalChainId = chainId || getCurrentChainId(state);
+    const chainIdInt = parseInt(finalChainId, 16);
     const resolutions = await fetchResolutions({
       domain: trimmedDomainName,
       chainId: `eip155:${chainIdInt}`,

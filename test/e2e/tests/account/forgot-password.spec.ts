@@ -20,6 +20,8 @@ describe('Forgot password', function () {
         ignoredConsoleErrors: [
           'unable to proceed, wallet is locked',
           'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
+          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.', // issue #37498
+          'Legacy syncing failed for wallet', // issue #37053
         ],
         title: this.test?.fullTitle(),
       },
@@ -45,7 +47,7 @@ describe('Forgot password', function () {
         await resetPasswordPage.resetPassword(E2E_SRP, newPassword);
         await resetPasswordPage.waitForSeedPhraseInputToNotBeVisible();
         await homePage.headerNavbar.checkPageIsLoaded();
-
+        await driver.delay(1000); // to avoid a race condition where the wallet is not locked yet
         // Lock wallet again
         await homePage.headerNavbar.lockMetaMask();
 

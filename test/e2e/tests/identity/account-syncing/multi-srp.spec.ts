@@ -55,9 +55,7 @@ describe('Account syncing - Multiple SRPs', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        // Balance is 0 because aggregated balance has changed and doesn't display dev networks
-        // The method should be udpdated to use the new selector and we can then remove checkExpectedTokenBalanceIsDisplayed
-        await loginWithBalanceValidation(driver, undefined, undefined, '0');
+        await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
@@ -81,6 +79,10 @@ describe('Account syncing - Multiple SRPs', function () {
           prepareEventsEmittedCounter,
           waitUntilSyncedAccountsNumberEquals,
         } = arrangeTestUtils(driver, userStorageMockttpController);
+
+        // Wait for initial account sync to complete before adding a new account
+        await waitUntilSyncedAccountsNumberEquals(1);
+
         const { waitUntilEventsEmittedNumberEquals } =
           prepareEventsEmittedCounter(
             UserStorageMockttpControllerEvents.PUT_SINGLE,
@@ -90,8 +92,9 @@ describe('Account syncing - Multiple SRPs', function () {
         await accountListPage.addMultichainAccount();
 
         // Wait for sync operation to complete
-        await waitUntilSyncedAccountsNumberEquals(2);
+        // Check event first to ensure sync was attempted, then verify state
         await waitUntilEventsEmittedNumberEquals(1);
+        await waitUntilSyncedAccountsNumberEquals(2);
 
         // Verify both accounts are visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -128,7 +131,7 @@ describe('Account syncing - Multiple SRPs', function () {
 
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
-        await driver.delay(2000); // Since we'll have two potential 'Account 2's, it's difficult to wait for the new one to appear, so just wait a bit
+        await waitUntilSyncedAccountsNumberEquals(4);
 
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 2',
@@ -159,9 +162,7 @@ describe('Account syncing - Multiple SRPs', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        // Balance is 0 because aggregated balance has changed and doesn't display dev networks
-        // The method should be udpdated to use the new selector and we can then remove checkExpectedTokenBalanceIsDisplayed
-        await loginWithBalanceValidation(driver, undefined, undefined, '0');
+        await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');

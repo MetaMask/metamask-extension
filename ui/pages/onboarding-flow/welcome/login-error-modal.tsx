@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   IconColor,
@@ -29,21 +30,23 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getSocialLoginType } from '../../../selectors';
 import { LOGIN_ERROR, LoginErrorType } from './types';
 
 type LoginErrorModalProps = {
-  onClose: () => void;
+  onDone: () => void;
   loginError: LoginErrorType;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function LoginErrorModal({
-  onClose,
+  onDone,
   loginError,
 }: LoginErrorModalProps) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const socialLoginType = useSelector(getSocialLoginType);
 
   const getTitle = () => {
     if (loginError === LOGIN_ERROR.UNABLE_TO_CONNECT) {
@@ -62,6 +65,10 @@ export default function LoginErrorModal({
     if (loginError === LOGIN_ERROR.SESSION_EXPIRED) {
       return t('loginErrorSessionExpiredDescription');
     }
+    if (loginError === LOGIN_ERROR.RESET_WALLET && socialLoginType) {
+      return t('loginErrorResetWalletDescription', [socialLoginType]);
+    }
+
     return t('loginErrorGenericDescription', [
       <ButtonLink
         key="loginErrorGenericDescription"
@@ -102,10 +109,10 @@ export default function LoginErrorModal({
   };
 
   return (
-    <Modal isOpen onClose={onClose} data-testid="login-error-modal">
+    <Modal isOpen onClose={onDone} data-testid="login-error-modal">
       <ModalOverlay />
       <ModalContent alignItems={AlignItems.center}>
-        <ModalHeader onClose={onClose}>
+        <ModalHeader onClose={onDone}>
           <Box textAlign={TextAlign.Center}>
             <Icon
               name={IconName.Danger}
@@ -128,7 +135,7 @@ export default function LoginErrorModal({
               data-testid="login-error-modal-button"
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
-              onClick={onClose}
+              onClick={onDone}
               block
             >
               {getButtonText()}

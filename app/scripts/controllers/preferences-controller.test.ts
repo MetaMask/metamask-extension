@@ -389,11 +389,17 @@ describe('preferences controller', () => {
       expect(controller.state.useMultiAccountBalanceChecker).toStrictEqual(
         true,
       );
+      expect(controller.state.isMultiAccountBalancesEnabled).toStrictEqual(
+        true,
+      );
     });
 
     it('should set the setUseMultiAccountBalanceChecker property in state', () => {
       controller.setUseMultiAccountBalanceChecker(false);
       expect(controller.state.useMultiAccountBalanceChecker).toStrictEqual(
+        false,
+      );
+      expect(controller.state.isMultiAccountBalancesEnabled).toStrictEqual(
         false,
       );
     });
@@ -702,7 +708,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        useSidePanelAsDefault: true,
+        useSidePanelAsDefault: false,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -733,7 +739,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        useSidePanelAsDefault: true,
+        useSidePanelAsDefault: false,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -905,7 +911,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": true,
+            "useSidePanelAsDefault": false,
           },
           "theme": "os",
           "use4ByteResolution": true,
@@ -977,7 +983,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": true,
+            "useSidePanelAsDefault": false,
           },
           "referrals": {
             "hyperliquid": {},
@@ -1061,7 +1067,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": true,
+            "useSidePanelAsDefault": false,
           },
           "referrals": {
             "hyperliquid": {},
@@ -1145,7 +1151,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": true,
+            "useSidePanelAsDefault": false,
           },
           "referrals": {
             "hyperliquid": {},

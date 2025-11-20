@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
   AlignItems,
@@ -45,16 +45,16 @@ export const MultichainAccountsTree = ({
   onClose,
   onAccountTreeItemClick,
 }: MultichainAccountsTreeProps) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleWalletDetailsClick = useCallback(
     (walletId: string) => {
-      history.push(
+      navigate(
         WALLET_DETAILS_ROUTE.replace(':id', encodeURIComponent(walletId)),
       );
       onClose();
     },
-    [history, onClose],
+    [navigate, onClose],
   );
 
   const accountsTree = useMemo(() => {

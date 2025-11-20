@@ -52,13 +52,7 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
             >
               Secret Recovery Phrase
             </button>
-            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. 
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-alternative"
-            >
-              Don’t share it with anyone, ever.
-            </p>
-            
+            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.
              
           </span>
         </p>
@@ -344,13 +338,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
             >
               Secret Recovery Phrase
             </button>
-            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. 
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-alternative"
-            >
-              Don’t share it with anyone, ever.
-            </p>
-            
+            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.
              
           </span>
         </p>
@@ -643,13 +631,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
             >
               Secret Recovery Phrase
             </button>
-            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. 
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-alternative"
-            >
-              Don’t share it with anyone, ever.
-            </p>
-            
+            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.
              
           </span>
         </p>

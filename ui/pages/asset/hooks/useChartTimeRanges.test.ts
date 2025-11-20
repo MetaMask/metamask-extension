@@ -1,60 +1,54 @@
+import { CaipAssetType } from '@metamask/utils';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import { useChartTimeRanges } from './useChartTimeRanges';
 
 describe('useChartTimeRanges', () => {
-  describe('when the chain is EVM', () => {
-    it('returns hardcoded time ranges', () => {
-      const mockStateIsEvm = {
-        metamask: {
-          internalAccounts: {
-            accounts: {
-              '81b1ead4-334c-4921-9adf-282fde539752': {
-                id: '81b1ead4-334c-4921-9adf-282fde539752',
-                address: '0x458036e7bc0612e9b207640dc07ca7711346aae5',
-                type: 'eip155:eoa',
-              },
-            },
-            selectedAccount: '81b1ead4-334c-4921-9adf-282fde539752',
-          },
-          completedOnboarding: true,
-          historicalPrices: {},
-        },
-      };
-
+  describe('when the asset type is EVM', () => {
+    const mockState = {
+      metamask: {
+        historicalPrices: {},
+      },
+    };
+    const arrangeAct = (assetType?: CaipAssetType, currency?: string) => {
       const { result } = renderHookWithProvider(
-        () => useChartTimeRanges(),
-        mockStateIsEvm,
+        () => useChartTimeRanges(assetType, currency),
+        mockState,
       );
       const timeRanges = result.current;
+      return timeRanges;
+    };
 
+    it('returns hardcoded timeranges', () => {
+      const timeRanges = arrangeAct(
+        'eip155:1/erc20:0x6982508145454Ce325dDbE47a25d4ec3d2311933',
+        'USD',
+      );
+      expect(timeRanges).toEqual(['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P1000Y']);
+    });
+
+    it('returns hardcoded timestamps on missing asset type', () => {
+      jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+      const timeRanges = arrangeAct(undefined, 'USD');
+      expect(timeRanges).toEqual(['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P1000Y']);
+    });
+
+    it('returns hardcoded timestamps on missing currency', () => {
+      jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+      const timeRanges = arrangeAct(
+        'eip155:1/erc20:0x6982508145454Ce325dDbE47a25d4ec3d2311933',
+        undefined,
+      );
       expect(timeRanges).toEqual(['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P1000Y']);
     });
   });
 
   describe('when the chain is non-EVM', () => {
-    const mockStateNonEvm = {
-      metamask: {
-        internalAccounts: {
-          accounts: {
-            '5132883f-598e-482c-a02b-84eeaa352f5b': {
-              id: '5132883f-598e-482c-a02b-84eeaa352f5b',
-              address: '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC',
-              type: 'solana:data-account',
-            },
-          },
-          selectedAccount: '5132883f-598e-482c-a02b-84eeaa352f5b',
-        },
-        completedOnboarding: true,
-      },
-    };
-
     it('returns time ranges available in historical prices', () => {
       const address = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
       const currency = 'usd';
 
       const mockStateWithHistoricalPrices = {
         metamask: {
-          ...mockStateNonEvm.metamask,
           historicalPrices: {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
               usd: {
@@ -83,7 +77,6 @@ describe('useChartTimeRanges', () => {
 
       const mockStateWithNoHistoricalPrices = {
         metamask: {
-          ...mockStateNonEvm.metamask,
           historicalPrices: {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
               usd: {
@@ -109,7 +102,6 @@ describe('useChartTimeRanges', () => {
 
       const mockStateWithInvalidTimeRanges = {
         metamask: {
-          ...mockStateNonEvm.metamask,
           historicalPrices: {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
               usd: {
@@ -139,7 +131,6 @@ describe('useChartTimeRanges', () => {
 
       const mockStateWithUnsortedTimeRanges = {
         metamask: {
-          ...mockStateNonEvm.metamask,
           historicalPrices: {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
               usd: {

@@ -14,10 +14,7 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   AccountTracker: {
-    accounts: false,
     accountsByChainId: false,
-    currentBlockGasLimit: true,
-    currentBlockGasLimitByChainId: true,
   },
   AddressBookController: {
     addressBook: false,
@@ -95,6 +92,7 @@ export const SENTRY_BACKGROUND_STATE = {
     lastUpdatedAt: true,
     shieldEndingToastLastClickedOrClosed: true,
     shieldPausedToastLastClickedOrClosed: true,
+    isWalletResetInProgress: false,
   },
   MultichainBalancesController: {
     balances: false,
@@ -399,14 +397,11 @@ export const SENTRY_BACKGROUND_STATE = {
   },
 };
 
-const flattenedBackgroundStateMask = Object.values(
-  SENTRY_BACKGROUND_STATE,
-).reduce((partialBackgroundState, controllerState: object) => {
-  return {
-    ...partialBackgroundState,
-    ...controllerState,
-  };
-}, {});
+const flattenedBackgroundStateMask: Record<string, unknown> = {};
+
+for (const controllerState of Object.values(SENTRY_BACKGROUND_STATE)) {
+  Object.assign(flattenedBackgroundStateMask, controllerState);
+}
 
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
