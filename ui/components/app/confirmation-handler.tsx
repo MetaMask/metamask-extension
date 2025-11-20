@@ -15,6 +15,7 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
+  SEND_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   selectPendingApprovalsForNavigation,
@@ -84,6 +85,13 @@ export const ConfirmationHandler = () => {
 
   const isOnHomePage = location.pathname === DEFAULT_ROUTE;
 
+  // Routes that are valid destinations from confirmation pages and should not trigger
+  // automatic navigation back to confirmations (e.g., /send for editing transactions)
+  const isOnExcludedRoute = useMemo(
+    () => location.pathname.startsWith(SEND_ROUTE),
+    [location.pathname],
+  );
+
   const isOnConfirmationRoute = useMemo(
     () =>
       location.pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
@@ -134,15 +142,18 @@ export const ConfirmationHandler = () => {
 
   // Only navigate to confirmations if we have pending confirmations and we're not already
   // on a confirmation route or viewing a pending confirmation
+  // Exclude routes that are valid destinations from confirmation pages (e.g., /send for editing)
   const shouldNavigateToConfirmation = useMemo(
     () =>
       hasPendingConfirmations &&
       !isOnConfirmationRoute &&
-      !isViewingPendingConfirmation,
+      !isViewingPendingConfirmation &&
+      !isOnExcludedRoute,
     [
       hasPendingConfirmations,
       isOnConfirmationRoute,
       isViewingPendingConfirmation,
+      isOnExcludedRoute,
     ],
   );
 
