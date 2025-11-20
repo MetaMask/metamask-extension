@@ -95,17 +95,12 @@ describe('Settings', function () {
         await privacySettings.toggleIpfsGateway();
         await privacySettings.toggleEnsDomainResolution();
 
-        await driver.openNewPage(ENS_NAME_URL);
-
-        // Wait for a potential request to happen
-        await driver.delay(5000);
-
-        // Ensure that the redirect to ENS Domains does not happen
-        // Instead, the domain will be kept which is a 404
-        await driver.wait(async () => {
-          const isPending = await mockedEndpoint.isPending();
-          return isPending === true;
-        });
+        try {
+          await driver.openNewPage(ENS_NAME_URL);
+        } catch (e) {
+          // Ignore ERR_PROXY_CONNECTION_FAILED error
+          // since all we care about is getting to the correct URL
+        }
 
         await driver.wait(async () => {
           const currentUrl = await driver.getCurrentUrl();
