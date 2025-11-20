@@ -222,6 +222,11 @@ class AccountListPage {
     tag: 'p',
   };
 
+  private readonly syncingMessage = {
+    text: 'Syncing...',
+    tag: 'p',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -235,10 +240,7 @@ class AccountListPage {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
     }
-    await this.driver.assertElementNotPresent({
-      css: 'p',
-      text: 'Syncing...',
-    });
+    await this.driver.assertElementNotPresent(this.syncingMessage);
   }
 
   async checkPageIsLoaded(options?: {
