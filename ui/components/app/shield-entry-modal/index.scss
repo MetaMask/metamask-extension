@@ -40,6 +40,7 @@
     &__container {
       height: 252px;
       width: 346px;
+
       @include design-system.screen-sm-max {
         height: 234px;
         width: 322px;
