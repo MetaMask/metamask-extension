@@ -44,8 +44,9 @@ describe('Wallet State', function () {
 
         const outDir = path.resolve(
           process.cwd(),
-          'test-artifacts',
-          'onboarding-fixture',
+          'test',
+          'e2e',
+          'fixtures',
         );
         await fs.ensureDir(outDir);
         const outPath = path.join(outDir, 'onboarding-fixture.json');
