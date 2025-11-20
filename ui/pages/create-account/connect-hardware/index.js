@@ -314,6 +314,7 @@ class ConnectHardwareForm extends Component {
           properties: {
             hd_path: hdPath,
             device_type: capitalizeStr(device),
+            error: e.message,
           },
         });
 
