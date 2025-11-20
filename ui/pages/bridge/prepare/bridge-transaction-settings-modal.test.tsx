@@ -22,6 +22,63 @@ const TX_MODAL = {
   closeButton: 'bridge__tx-settings-modal-close-button',
 };
 
+const renderModal = (initialSlippage?: number) => {
+  const mockStore = createBridgeMockStore();
+  const store = configureStore(mockStore);
+  const renderResult = renderWithProvider(
+    <CrossChainSwap />,
+    store,
+    CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
+  );
+  store.dispatch(setSlippage(initialSlippage));
+  return { ...renderResult, store };
+};
+
+const openModal = async (getByTestId: (id: string) => HTMLElement) => {
+  await act(async () => {
+    fireEvent.click(getByTestId(TX_MODAL.refElement));
+    await waitForElementById(TX_MODAL.submitButton);
+  });
+};
+
+const interactWithCustomInput = async (
+  getByTestId: (id: string) => HTMLElement,
+  action?: (input: HTMLElement) => void | Promise<void>,
+) => {
+  await act(async () => {
+    userEvent.click(screen.getByTestId(TX_MODAL.customButton));
+    await waitForElementById(TX_MODAL.customInput);
+    const input = getByTestId(TX_MODAL.customInput);
+    if (action) {
+      await action(input);
+    }
+    fireEvent.blur(input);
+  });
+};
+
+const submitUpdate = async (getByTestId: (id: string) => HTMLElement) => {
+  await act(async () => {
+    fireEvent.click(getByTestId(TX_MODAL.submitButton));
+    await waitForElementById(TX_MODAL.refElement);
+  });
+};
+
+const expectButtonStates = (
+  autoState: string,
+  halfPercentState: string,
+  twoPercentState: string,
+  customState: string,
+  customLabel = 'Custom',
+) => {
+  expect(screen.getByText('Auto')).toHaveClass(autoState);
+  expect(screen.getByText('0.5%').parentElement).toHaveClass(halfPercentState);
+  expect(screen.getByText('2%').parentElement).toHaveClass(twoPercentState);
+  expect(screen.getByText(customLabel)).toHaveClass(customState);
+};
+
+const MUTED_CLASS = 'mm-box--background-color-background-muted';
+const DEFAULT_CLASS = 'mm-box--background-color-icon-default';
+
 describe('BridgeTransactionSettingsModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -29,260 +86,136 @@ describe('BridgeTransactionSettingsModal', () => {
   });
 
   it('should render the component, with initial state', async () => {
-    const mockStore = createBridgeMockStore();
-    const store = configureStore(mockStore);
-    const { getByTestId, baseElement } = renderWithProvider(
-      <CrossChainSwap />,
-      store,
-      CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
-    );
+    const { getByTestId, baseElement, store } = renderModal();
 
     act(() => {
       fireEvent.click(getByTestId(TX_MODAL.refElement));
     });
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
-    expect(screen.getByText('Auto')).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('0.5%').parentElement).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('2%').parentElement).toHaveClass(
-      'mm-box--background-color-icon-default',
-    );
-    expect(screen.getByText('Custom')).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
+    expectButtonStates(DEFAULT_CLASS, MUTED_CLASS, MUTED_CLASS, MUTED_CLASS);
 
     // Click and blur Custom button
-    await act(async () => {
-      userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-      await waitForElementById(TX_MODAL.customInput);
+    await interactWithCustomInput(getByTestId, () => {
       expect(baseElement.childNodes[2]).toMatchSnapshot();
-      fireEvent.blur(getByTestId(TX_MODAL.customInput));
     });
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
     expect(baseElement.childNodes[2]).toMatchSnapshot();
 
     // Change custom input to .
-    await act(async () => {
-      userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-      await waitForElementById(TX_MODAL.customInput);
-      userEvent.type(getByTestId(TX_MODAL.customInput), '.');
-      fireEvent.blur(getByTestId(TX_MODAL.customInput));
+    await interactWithCustomInput(getByTestId, (input) => {
+      userEvent.type(input, '.');
     });
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
     expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent('Custom');
 
     // Change custom input to .0
-    await act(async () => {
-      fireEvent.click(getByTestId(TX_MODAL.customButton));
-      await waitForElementById(TX_MODAL.customInput);
-      fireEvent.change(getByTestId(TX_MODAL.customInput), {
-        target: { value: '.0' },
-      });
-      fireEvent.blur(getByTestId(TX_MODAL.customInput));
+    await interactWithCustomInput(getByTestId, (input) => {
+      fireEvent.change(input, { target: { value: '.0' } });
     });
     expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent('.0');
     expect(getByTestId(TX_MODAL.submitButton)).toBeEnabled();
-    expect(store.getState().bridge.slippage).toBe(2);
+    expect(store.getState().bridge.slippage).toBe(undefined); // inital slippage
 
     // Submit and expect 0
-    await act(async () => {
-      fireEvent.click(getByTestId(TX_MODAL.submitButton));
-      await waitForElementById(TX_MODAL.refElement);
-    });
+    await submitUpdate(getByTestId);
     expect(store.getState().bridge.slippage).toBe(0);
 
     // Reopen and expect 0 Custom button
     act(() => {
       fireEvent.click(getByTestId(TX_MODAL.refElement));
     });
-    expect(screen.getByText('Auto')).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('0.5%').parentElement).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('2%').parentElement).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('0%')).toHaveClass(
-      'mm-box--background-color-icon-default',
+    expectButtonStates(
+      MUTED_CLASS,
+      MUTED_CLASS,
+      MUTED_CLASS,
+      DEFAULT_CLASS,
+      '0%',
     );
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
   });
 
   it('should render auto slippage amount', async () => {
-    const mockStore = createBridgeMockStore();
     const initialSlippage = undefined;
-    const store = configureStore(mockStore);
-    const { getByTestId } = renderWithProvider(
-      <CrossChainSwap />,
-      store,
-      CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
-    );
-    store.dispatch(setSlippage(initialSlippage));
+    const { getByTestId, store } = renderModal(initialSlippage);
 
-    await act(async () => {
-      fireEvent.click(getByTestId(TX_MODAL.refElement));
-      await waitForElementById(TX_MODAL.submitButton);
-    });
+    await openModal(getByTestId);
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
-    expect(screen.getByText('Auto')).toHaveClass(
-      'mm-box--background-color-icon-default',
-    );
-    expect(screen.getByText('0.5%').parentElement).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('2%').parentElement).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('Custom')).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
+    expectButtonStates(DEFAULT_CLASS, MUTED_CLASS, MUTED_CLASS, MUTED_CLASS);
 
     // Click and blur Custom button
-    await act(async () => {
-      userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-      await waitForElementById(TX_MODAL.customInput);
-      fireEvent.blur(getByTestId(TX_MODAL.customInput));
-    });
+    await interactWithCustomInput(getByTestId);
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
 
     // Change custom input to .
-    await act(async () => {
-      userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-      await waitForElementById(TX_MODAL.customInput);
-      userEvent.type(getByTestId(TX_MODAL.customInput), '.');
-      fireEvent.blur(getByTestId(TX_MODAL.customInput));
+    await interactWithCustomInput(getByTestId, (input) => {
+      userEvent.type(input, '.');
     });
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
     expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent('Custom');
 
     // Change custom input to .0
-    await act(async () => {
-      fireEvent.click(getByTestId(TX_MODAL.customButton));
-      await waitForElementById(TX_MODAL.customInput);
-      fireEvent.change(getByTestId(TX_MODAL.customInput), {
-        target: { value: '.0' },
-      });
-      fireEvent.blur(getByTestId(TX_MODAL.customInput));
+    await interactWithCustomInput(getByTestId, (input) => {
+      fireEvent.change(input, { target: { value: '.0' } });
     });
     expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent('.0');
     expect(getByTestId(TX_MODAL.submitButton)).toBeEnabled();
     expect(store.getState().bridge.slippage).toBe(initialSlippage);
 
     // Submit and expect 0
-    await act(async () => {
-      fireEvent.click(getByTestId(TX_MODAL.submitButton));
-      await waitForElementById(TX_MODAL.refElement);
-    });
+    await submitUpdate(getByTestId);
     expect(store.getState().bridge.slippage).toBe(0);
 
     // Reopen and expect 0 Custom button
     act(() => {
       fireEvent.click(getByTestId(TX_MODAL.refElement));
     });
-    expect(screen.getByText('Auto')).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('0.5%').parentElement).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('2%').parentElement).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('0%')).toHaveClass(
-      'mm-box--background-color-icon-default',
+    expectButtonStates(
+      MUTED_CLASS,
+      MUTED_CLASS,
+      MUTED_CLASS,
+      DEFAULT_CLASS,
+      '0%',
     );
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
   });
 
   it('should render hardcoded slippage amount (0.5)', async () => {
-    const mockStore = createBridgeMockStore();
     const initialSlippage = 0.5;
     const finalSlippage = '2';
-    const store = configureStore(mockStore);
-    const { getByTestId } = renderWithProvider(
-      <CrossChainSwap />,
-      store,
-      CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
-    );
-    store.dispatch(setSlippage(initialSlippage));
+    const { getByTestId, store } = renderModal(initialSlippage);
 
-    await act(async () => {
-      fireEvent.click(getByTestId(TX_MODAL.refElement));
-      await waitForElementById(TX_MODAL.submitButton);
-    });
+    await openModal(getByTestId);
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
-    expect(screen.getByText('Auto')).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('0.5%').parentElement).toHaveClass(
-      'mm-box--background-color-icon-default',
-    );
-    expect(screen.getByText('2%').parentElement).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('Custom')).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
+    expectButtonStates(MUTED_CLASS, DEFAULT_CLASS, MUTED_CLASS, MUTED_CLASS);
 
     // Click and blur Custom button
-    await act(async () => {
-      userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-      await waitForElementById(TX_MODAL.customInput);
-      fireEvent.blur(getByTestId(TX_MODAL.customInput));
-    });
+    await interactWithCustomInput(getByTestId);
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
 
     // Change custom input to .5
-    await act(async () => {
-      userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-      await waitForElementById(TX_MODAL.customInput);
-      userEvent.type(getByTestId(TX_MODAL.customInput), '.5');
-      fireEvent.blur(getByTestId(TX_MODAL.customInput));
+    await interactWithCustomInput(getByTestId, (input) => {
+      userEvent.type(input, '.5');
     });
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
     expect(store.getState().bridge.slippage).toBe(initialSlippage);
 
     // Change custom input to 2
-    await act(async () => {
-      fireEvent.click(getByTestId(TX_MODAL.customButton));
-      await waitForElementById(TX_MODAL.customInput);
-      fireEvent.change(getByTestId(TX_MODAL.customInput), {
-        target: { value: finalSlippage },
-      });
-      fireEvent.blur(getByTestId(TX_MODAL.customInput));
+    await interactWithCustomInput(getByTestId, (input) => {
+      fireEvent.change(input, { target: { value: finalSlippage } });
     });
     expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent(finalSlippage);
     expect(getByTestId(TX_MODAL.submitButton)).toBeEnabled();
     expect(store.getState().bridge.slippage).toBe(initialSlippage);
 
     // Submit and expect 2
-    await act(async () => {
-      fireEvent.click(getByTestId(TX_MODAL.submitButton));
-      await waitForElementById(TX_MODAL.refElement);
-    });
+    await submitUpdate(getByTestId);
     expect(store.getState().bridge.slippage).toBe(Number(finalSlippage));
 
     // Reopen and expect 2% Custom button
     act(() => {
       fireEvent.click(getByTestId(TX_MODAL.refElement));
     });
-    expect(screen.getByText('Auto')).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('0.5%').parentElement).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
-    expect(screen.getByText('2%').parentElement).toHaveClass(
-      'mm-box--background-color-icon-default',
-    );
-    expect(screen.getByText('Custom')).toHaveClass(
-      'mm-box--background-color-background-muted',
-    );
+    expectButtonStates(MUTED_CLASS, MUTED_CLASS, DEFAULT_CLASS, MUTED_CLASS);
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
 
     // Click hardcoded 0.5 and submit
@@ -292,151 +225,97 @@ describe('BridgeTransactionSettingsModal', () => {
     });
   });
 
-  // @ts-expect-error - each is a valid test function
-  it.each([
+  const VALID_VALUES = [
     ['1234', 1234],
     ['fas23.43', 23.43],
     ['fas23 ,43', 2343],
     ['23.4.3', 23.4],
     ['0.', 0],
     ['.0', 0],
-  ])(
-    'should validate pasted custom amount and enable submit button: %s',
-    async (pastedValue: string, finalSlippage: number | undefined) => {
-      const mockStore = createBridgeMockStore();
-      const initialSlippage = undefined;
-      const store = configureStore(mockStore);
-      const { getByTestId } = renderWithProvider(
-        <CrossChainSwap />,
-        store,
-        CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
+  ] as const;
+
+  const INVALID_VALUES = ['abc', '.', '', ' ', ','] as const;
+
+  const testCustomInputValidation = (
+    testName: string,
+    setValue: (input: HTMLElement, value: string) => void | Promise<void>,
+    shouldEnable: boolean,
+  ) => {
+    const action = shouldEnable ? 'enable' : 'disable';
+
+    if (shouldEnable) {
+      // @ts-expect-error - each is a valid test function
+      it.each(VALID_VALUES)(
+        `should validate ${testName} custom amount and ${action} submit button: %s`,
+        async (value: string, expectedSlippage: number | undefined) => {
+          const initialSlippage = undefined;
+          const { getByTestId, store } = renderModal(initialSlippage);
+
+          await openModal(getByTestId);
+          expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+
+          await act(async () => {
+            userEvent.click(screen.getByTestId(TX_MODAL.customButton));
+            await waitForElementById(TX_MODAL.customInput);
+            const input = getByTestId(TX_MODAL.customInput);
+            await setValue(input, value);
+            fireEvent.click(getByTestId(TX_MODAL.submitButton));
+            await waitForElementById(TX_MODAL.refElement);
+          });
+          expect(store.getState().bridge.slippage).toBe(expectedSlippage);
+        },
       );
-      store.dispatch(setSlippage(initialSlippage));
+    } else {
+      // @ts-expect-error - each is a valid test function
+      it.each(INVALID_VALUES)(
+        `should validate ${testName} custom amount and ${action} submit button: %s`,
+        async (value: string) => {
+          const initialSlippage = undefined;
+          const { getByTestId, store } = renderModal(initialSlippage);
 
-      await act(async () => {
-        fireEvent.click(getByTestId(TX_MODAL.refElement));
-        await waitForElementById(TX_MODAL.submitButton);
-      });
-      expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+          await openModal(getByTestId);
+          expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
 
-      // Paste into custom input
-      await act(async () => {
-        userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-        await waitForElementById(TX_MODAL.customInput);
-        userEvent.paste(pastedValue);
-        fireEvent.click(getByTestId(TX_MODAL.submitButton));
-        await waitForElementById(TX_MODAL.refElement);
-      });
+          await act(async () => {
+            userEvent.click(screen.getByTestId(TX_MODAL.customButton));
+            await waitForElementById(TX_MODAL.customInput);
+            const input = getByTestId(TX_MODAL.customInput);
+            await setValue(input, value);
+            expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+            fireEvent.click(getByTestId(TX_MODAL.closeButton));
+          });
+          expect(store.getState().bridge.slippage).toBe(initialSlippage);
+        },
+      );
+    }
+  };
 
-      expect(store.getState().bridge.slippage).toBe(finalSlippage);
+  testCustomInputValidation(
+    'pasted',
+    async (_input, value) => {
+      await userEvent.paste(value);
     },
+    true,
   );
-
-  // @ts-expect-error - each is a valid test function
-  it.each(['abc', '.', '', ' ', ','])(
-    'should validate pasted custom amount and disable submit button: %s',
-    async (pastedValue: string) => {
-      const mockStore = createBridgeMockStore();
-      const initialSlippage = undefined;
-      const store = configureStore(mockStore);
-      const { getByTestId } = renderWithProvider(
-        <CrossChainSwap />,
-        store,
-        CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
-      );
-      store.dispatch(setSlippage(initialSlippage));
-
-      await act(async () => {
-        fireEvent.click(getByTestId(TX_MODAL.refElement));
-        await waitForElementById(TX_MODAL.submitButton);
-      });
-      expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
-
-      // Paste into custom input
-      await act(async () => {
-        userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-        await waitForElementById(TX_MODAL.customInput);
-        userEvent.paste(pastedValue);
-        expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
-        fireEvent.click(getByTestId(TX_MODAL.closeButton));
-      });
-      expect(store.getState().bridge.slippage).toBe(initialSlippage);
+  testCustomInputValidation(
+    'pasted',
+    async (_input, value) => {
+      await userEvent.paste(value);
     },
+    false,
   );
-
-  // @ts-expect-error - each is a valid test function
-  it.each([
-    ['1234', 1234],
-    ['fas23.43', 23.43],
-    ['fas23,43', 2343],
-    ['23.4.3', 23.4],
-    ['0.', 0],
-    ['.0', 0],
-  ])(
-    'should validate typed custom amount and enable submit button: %s',
-    async (newValue: string, finalSlippage: number | undefined) => {
-      const mockStore = createBridgeMockStore();
-      const initialSlippage = undefined;
-      const store = configureStore(mockStore);
-      const { getByTestId } = renderWithProvider(
-        <CrossChainSwap />,
-        store,
-        CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
-      );
-      store.dispatch(setSlippage(initialSlippage));
-
-      await act(async () => {
-        fireEvent.click(getByTestId(TX_MODAL.refElement));
-        await waitForElementById(TX_MODAL.submitButton);
-      });
-      expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
-
-      // Paste into custom input
-      await act(async () => {
-        userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-        await waitForElementById(TX_MODAL.customInput);
-        fireEvent.change(getByTestId(TX_MODAL.customInput), {
-          target: { value: newValue },
-        });
-        fireEvent.click(getByTestId(TX_MODAL.submitButton));
-        await waitForElementById(TX_MODAL.refElement);
-      });
-
-      expect(store.getState().bridge.slippage).toBe(finalSlippage);
+  testCustomInputValidation(
+    'typed',
+    (input, value) => {
+      fireEvent.change(input, { target: { value } });
     },
+    true,
   );
-
-  // @ts-expect-error - each is a valid test function
-  it.each(['abc', '.', '', ' ', ','])(
-    'should validate typed custom amount and disable submit button: %s',
-    async (newValue: string) => {
-      const mockStore = createBridgeMockStore();
-      const initialSlippage = undefined;
-      const store = configureStore(mockStore);
-      const { getByTestId } = renderWithProvider(
-        <CrossChainSwap />,
-        store,
-        CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
-      );
-      store.dispatch(setSlippage(initialSlippage));
-
-      await act(async () => {
-        fireEvent.click(getByTestId(TX_MODAL.refElement));
-        await waitForElementById(TX_MODAL.submitButton);
-      });
-      expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
-
-      // Paste into custom input
-      await act(async () => {
-        userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-        await waitForElementById(TX_MODAL.customInput);
-        fireEvent.change(getByTestId(TX_MODAL.customInput), {
-          target: { value: newValue },
-        });
-        expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
-        fireEvent.click(getByTestId(TX_MODAL.closeButton));
-      });
-      expect(store.getState().bridge.slippage).toBe(initialSlippage);
+  testCustomInputValidation(
+    'typed',
+    (input, value) => {
+      fireEvent.change(input, { target: { value } });
     },
+    false,
   );
 });
