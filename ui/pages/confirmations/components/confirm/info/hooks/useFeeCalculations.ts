@@ -1,8 +1,10 @@
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
+import { TxData } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex, add0x } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+
 import { EtherDenomination } from '../../../../../../../shared/constants/common';
 import {
   addHexes,
@@ -12,10 +14,12 @@ import {
   multiplyHexes,
 } from '../../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { toHex } from '../../../../../../../shared/lib/delegation/utils';
 import { getCurrentCurrency } from '../../../../../../ducks/metamask/metamask';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { selectConversionRateByChainId } from '../../../../../../selectors';
+import { useDappSwapContext } from '../../../../context/dapp-swap';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
@@ -32,14 +36,24 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const currentCurrency = useSelector(getCurrentCurrency);
   const { chainId } = transactionMeta;
   const fiatFormatter = useFiatFormatter();
+  const { selectedQuote, isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 
   const conversionRate = useSelector((state) =>
     selectConversionRateByChainId(state, chainId),
   );
 
+  let quotedGasLimit;
+  if (isQuotedSwapDisplayedInInfo) {
+    quotedGasLimit = toHex(
+      ((selectedQuote?.approval as TxData)?.gasLimit ?? 0) +
+        ((selectedQuote?.trade as TxData)?.gasLimit ?? 0),
+    ) as Hex;
+  }
+
   // `gasUsed` is the gas limit actually used by the transaction in the
   // simulation environment.
   const optimizedGasLimit =
+    quotedGasLimit ||
     transactionMeta?.gasUsed ||
     // While estimating gas for the transaction we add 50% gas limit buffer.
     // With `gasLimitNoBuffer` that buffer is removed. see PR
@@ -100,6 +114,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const gasFeeEstimate = useTransactionGasFeeEstimate(
     transactionMeta,
     supportsEIP1559,
+    quotedGasLimit,
   );
 
   const { gasFeeEstimates } = useGasFeeEstimates(
