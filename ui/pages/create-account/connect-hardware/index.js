@@ -228,14 +228,6 @@ class ConnectHardwareForm extends Component {
             return account;
           });
 
-          this.context.trackEvent({
-            event:
-              MetaMetricsEventName.ConnectHardwareWalletContinueButtonClicked,
-            properties: {
-              device_type: capitalizeStr(device),
-            },
-          });
-
           this.setState({
             accounts: newAccounts,
             unlocked: true,
