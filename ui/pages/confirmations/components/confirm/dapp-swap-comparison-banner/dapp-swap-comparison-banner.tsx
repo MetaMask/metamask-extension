@@ -151,9 +151,7 @@ const DappSwapComparisonInner = () => {
   }, [captureDappSwapComparisonDisplayProperties, swapComparisonDisplayed]);
 
   useEffect(() => {
-    if (selectedQuote) {
-      setSelectedQuote(selectedQuote);
-    }
+    setSelectedQuote(selectedQuote);
   }, [selectedQuote, setSelectedQuote]);
 
   if (!swapComparisonDisplayed) {
