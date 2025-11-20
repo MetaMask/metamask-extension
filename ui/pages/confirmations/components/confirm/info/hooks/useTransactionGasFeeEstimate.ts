@@ -13,8 +13,10 @@ import { HEX_ZERO } from '../shared/constants';
 export function useTransactionGasFeeEstimate(
   transactionMeta: TransactionMeta,
   supportsEIP1559: boolean,
+  quotedGasLimit?: Hex,
 ): Hex {
-  let { gas: gasLimit, gasPrice } = transactionMeta.txParams;
+  let { gas, gasPrice } = transactionMeta.txParams;
+  let gasLimit = quotedGasLimit || gas;
 
   const { gasFeeEstimates } = useGasFeeEstimates(
     transactionMeta.networkClientId,
