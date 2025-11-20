@@ -217,6 +217,13 @@ class ConnectHardwareForm extends Component {
             this.showTemporaryAlert();
           }
 
+          this.context.trackEvent({
+            event: MetaMetricsEventName.ConnectHardwareWalletDeviceFound,
+            properties: {
+              device_type: capitalizeStr(device),
+            },
+          });
+
           // Map accounts with balances
           const newAccounts = accounts.map((account) => {
             const normalizedAddress = account.address.toLowerCase();
@@ -226,6 +233,14 @@ class ConnectHardwareForm extends Component {
               ? formatBalance(balanceValue, 6)
               : '...';
             return account;
+          });
+
+          this.context.trackEvent({
+            event:
+              MetaMetricsEventName.ConnectHardwareWalletContinueButtonClicked,
+            properties: {
+              device_type: capitalizeStr(device),
+            },
           });
 
           this.setState({

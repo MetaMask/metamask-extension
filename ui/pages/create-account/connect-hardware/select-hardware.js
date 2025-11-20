@@ -89,12 +89,6 @@ export default class SelectHardware extends Component {
 
   connect = async () => {
     const { selectedDevice } = this.state;
-    this.context.trackEvent({
-      event: MetaMetricsEventName.ConnectHardwareWalletContinueButtonClicked,
-      properties: {
-        device_type: capitalizeStr(selectedDevice),
-      },
-    });
 
     if (selectedDevice) {
       if (selectedDevice === HardwareDeviceNames.trezor && isUSBSupported) {
