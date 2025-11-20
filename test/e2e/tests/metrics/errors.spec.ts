@@ -45,6 +45,7 @@ const maskedBackgroundFields = [
   'AppStateController.fullScreenGasPollTokens',
   'AppStateController.notificationGasPollTokens',
   'AppStateController.popupGasPollTokens',
+  'NetworkController.networksMetadata',
   'CurrencyController.currencyRates.ETH.conversionDate',
   'CurrencyController.currencyRates.LineaETH.conversionDate',
   'CurrencyController.currencyRates.SepoliaETH.conversionDate',
