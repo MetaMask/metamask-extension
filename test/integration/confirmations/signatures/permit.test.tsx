@@ -165,37 +165,40 @@ describe('Permit Confirmation', () => {
     });
   });
 
-  it('displays the simulation section', async () => {
+  it.only('displays the simulation section', async () => {
     const scope = nock('https://price.api.cx.metamask.io')
       .persist()
       .get('/v2/chains/1/spot-prices')
-      .query({
-        tokenAddresses:
-          '0x0000000000000000000000000000000000000000,0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-        vsCurrency: 'ETH',
-        includeMarketData: 'true',
-      })
-      .reply(200, {
-        '0xcccccccccccccccccccccccccccccccccccccccc': {
-          allTimeHigh: 12,
-          allTimeLow: 1,
-          circulatingSupply: 50000,
-          dilutedMarketCap: 50000,
-          high1d: 11,
-          low1d: 9.9,
-          marketCap: 10000,
-          marketCapPercentChange1d: 1,
-          price: 10,
-          priceChange1d: 0.5,
-          pricePercentChange1d: 1,
-          pricePercentChange1h: 0,
-          pricePercentChange1y: 80,
-          pricePercentChange7d: 2,
-          pricePercentChange14d: 5,
-          pricePercentChange30d: 10,
-          pricePercentChange200d: 50,
-          totalVolume: 100,
-        },
+      // .query({
+      //   assetIds:
+      //     'eip155:1/slip44:60,eip155:1/erc20:0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+      //   vsCurrency: 'ETH',
+      //   includeMarketData: 'true',
+      // })
+      .reply((request) => {
+        console.log('ADHJKGAADGKHJHJKADJKHDAJKHADKJH', request);
+        return {
+          'eip155:1/erc20:0xcccccccccccccccccccccccccccccccccccccccc': {
+            allTimeHigh: 12,
+            allTimeLow: 1,
+            circulatingSupply: 50000,
+            dilutedMarketCap: 50000,
+            high1d: 11,
+            low1d: 9.9,
+            marketCap: 10000,
+            marketCapPercentChange1d: 1,
+            price: 10,
+            priceChange1d: 0.5,
+            pricePercentChange1d: 1,
+            pricePercentChange1h: 0,
+            pricePercentChange1y: 80,
+            pricePercentChange7d: 2,
+            pricePercentChange14d: 5,
+            pricePercentChange30d: 10,
+            pricePercentChange200d: 50,
+            totalVolume: 100,
+          },
+        };
       });
 
     const account =

@@ -37,10 +37,13 @@ export const mockSpotPrices = async (
 ) => {
   return mockServer
     .forGet(`${PRICE_API_URL}/v3/spot-prices`)
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: prices,
-    }));
+    .thenCallback(() => {
+      console.log('DEBUG XXXXXXXX', prices);
+      return {
+        statusCode: 200,
+        json: prices,
+      };
+    });
 };
 
 type HistoricalPricesOptions = {
