@@ -421,6 +421,12 @@
   "advancedGasPriceTitle": {
     "message": "Gas price"
   },
+  "advancedPermissionSmallCase": {
+    "message": "advanced permission"
+  },
+  "advancedPermissionsSmallCase": {
+    "message": "advanced permissions"
+  },
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
