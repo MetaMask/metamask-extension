@@ -74,7 +74,6 @@ describe('useDappSwapActions', () => {
             to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
             value: '0x0',
           },
-          layer1GasFee: '0x61077a1f',
         }),
       );
     });

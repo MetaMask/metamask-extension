@@ -296,7 +296,6 @@ export const mockBridgeQuotes = [
       gasLimit: 399863,
     },
     estimatedProcessingTimeInSeconds: 0,
-    l1GasFeesInHexWei: '0x61077a1f',
   },
   {
     quote: {

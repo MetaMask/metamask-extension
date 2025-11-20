@@ -43,15 +43,11 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   );
 
   let quotedGasLimit;
-  let quotedLayer1GasFees;
   if (isQuotedSwapDisplayedInInfo) {
     quotedGasLimit = toHex(
       ((selectedQuote?.approval as TxData)?.gasLimit ?? 0) +
         ((selectedQuote?.trade as TxData)?.gasLimit ?? 0),
     ) as Hex;
-    quotedLayer1GasFees = (
-      selectedQuote as QuoteResponse & { l1GasFeesInHexWei: Hex }
-    )?.l1GasFeesInHexWei;
   }
 
   // `gasUsed` is the gas limit actually used by the transaction in the
@@ -127,8 +123,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const estimatedBaseFee = (gasFeeEstimates as GasFeeEstimates)
     ?.estimatedBaseFee;
 
-  const layer1GasFee =
-    quotedLayer1GasFees || (transactionMeta?.layer1GasFee as Hex);
+  const layer1GasFee = transactionMeta?.layer1GasFee as Hex;
   const hasLayer1GasFee = Boolean(layer1GasFee);
 
   // L1 fee

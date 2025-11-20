@@ -235,18 +235,18 @@ describe('useFeeCalculations', () => {
       mockState,
     );
 
-    expect(result.current.estimatedFeeFiat).toBe('$0.39');
+    expect(result.current.estimatedFeeFiat).toBe('$2.89');
     expect(result.current.estimatedFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.estimatedFeeNative).toBe('0.0007');
-    expect(result.current.estimatedFeeNativeHex).toBe('0x2779962fd241f');
-    expect(result.current.l1FeeFiat).toBe('< $0.01');
-    expect(result.current.l1FeeFiatWith18SignificantDigits).toBe('0.000000905');
-    expect(result.current.l1FeeNative).toBe('0');
+    expect(result.current.estimatedFeeNative).toBe('0.0052');
+    expect(result.current.estimatedFeeNativeHex).toBe('0x12779901f5aa00');
+    expect(result.current.l1FeeFiat).toBe('$2.50');
+    expect(result.current.l1FeeFiatWith18SignificantDigits).toBe(null);
+    expect(result.current.l1FeeNative).toBe('0.0045');
     expect(result.current.l2FeeFiat).toBe('$0.39');
     expect(result.current.l2FeeFiatWith18SignificantDigits).toBe(null);
     expect(result.current.l2FeeNative).toBe('0.0007');
-    expect(result.current.maxFeeFiat).toBe('$0.74');
+    expect(result.current.maxFeeFiat).toBe('$3.24');
     expect(result.current.maxFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.maxFeeNative).toBe('0.0013');
+    expect(result.current.maxFeeNative).toBe('0.0058');
   });
 });

@@ -4,7 +4,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { QuoteResponse, TxData } from '@metamask/bridge-controller';
+import { TxData } from '@metamask/bridge-controller';
 import { toHex } from '@metamask/controller-utils';
 import { useCallback } from 'react';
 
@@ -56,12 +56,6 @@ export function useDappSwapActions() {
       }
       transactionMeta.batchTransactionsOptions = {};
       transactionMeta.nestedTransactions = undefined;
-      const layer1GasFeesInHexWei = (
-        selectedQuote as QuoteResponse & { l1GasFeesInHexWei: Hex }
-      )?.l1GasFeesInHexWei;
-      if (layer1GasFeesInHexWei) {
-        transactionMeta.layer1GasFee = layer1GasFeesInHexWei;
-      }
     },
     [selectedQuote],
   );
