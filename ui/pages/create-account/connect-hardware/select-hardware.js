@@ -763,9 +763,9 @@ export default class SelectHardware extends Component {
               onClick={() => {
                 this.trackMarketingEvent(
                   MarketingActionNames.BuyNow,
-                  QrHardwareDeviceNames.Dcent,
+                  QrHardwareDeviceNames.DCent,
                 );
-                openWindow(HardwareAffiliateLinks.Dcent);
+                openWindow(HardwareAffiliateLinks.DCent);
               }}
             >
               {this.context.t('buyNow')}
@@ -776,9 +776,9 @@ export default class SelectHardware extends Component {
               onClick={() => {
                 this.trackMarketingEvent(
                   MarketingActionNames.Tutorial,
-                  QrHardwareDeviceNames.Dcent,
+                  QrHardwareDeviceNames.DCent,
                 );
-                openWindow(HardwareAffiliateTutorialLinks.Dcent);
+                openWindow(HardwareAffiliateTutorialLinks.DCent);
               }}
             >
               {this.context.t('tutorial')}
