@@ -92,6 +92,17 @@ const DappSwapComparisonInner = () => {
     selectedQuote,
   ]);
 
+  const onTabClick = useCallback(
+    (tabKey: string) => {
+      if (tabKey === 'marketRate') {
+        updateSwapToCurrent();
+      } else if (tabKey === 'mmswap') {
+        updateSwapToSelectedQuote();
+      }
+    },
+    [updateSwapToCurrent, updateSwapToSelectedQuote],
+  );
+
   const swapComparisonDisplayed =
     dappSwapUi?.enabled &&
     (selectedQuoteValueDifference >=
@@ -122,13 +133,7 @@ const DappSwapComparisonInner = () => {
     <Box>
       <Tabs
         defaultActiveTabKey="marketRate"
-        onTabClick={(tabKey) => {
-          if (tabKey === 'marketRate') {
-            updateSwapToCurrent();
-          } else if (tabKey === 'mmswap') {
-            updateSwapToSelectedQuote();
-          }
-        }}
+        onTabClick={onTabClick}
         tabListProps={{
           className: 'dapp-swap__tabs',
         }}
