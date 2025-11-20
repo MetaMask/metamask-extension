@@ -201,13 +201,17 @@ export default function confirmAlertsReducer(
   state: ConfirmAlertsState = INIT_STATE,
   action: Action,
 ) {
+  if (action.ownerId === undefined) {
+    return state;
+  }
+
   switch (action.type) {
     case 'UPDATE_ALERTS':
       return {
         ...state,
         alerts: {
           ...state.alerts,
-          [action.ownerId ?? '']: action.alerts,
+          [action.ownerId]: action.alerts,
         },
       };
 
@@ -228,11 +232,11 @@ export default function confirmAlertsReducer(
         ...state,
         alerts: {
           ...state.alerts,
-          [action.ownerId ?? '']: [],
+          [action.ownerId]: [],
         },
         confirmed: {
           ...state.confirmed,
-          [action.ownerId ?? '']: {},
+          [action.ownerId]: {},
         },
       };
 
