@@ -130,7 +130,7 @@ describe('<DappSwapComparisonBanner />', () => {
     } as unknown as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
     expect(getByText('Market rate')).toBeInTheDocument();
-    expect(getByText('Metamask Swap')).toBeInTheDocument();
+    expect(getByText('MetaMask Swap')).toBeInTheDocument();
     expect(getByText('Save and earn with MetaMask Swaps')).toBeInTheDocument();
     expect(getByText('Save $0.02')).toBeInTheDocument();
     expect(
@@ -166,7 +166,7 @@ describe('<DappSwapComparisonBanner />', () => {
       tokenAmountDifference: 0.01,
     } as unknown as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
-    const quoteSwapButton = getByText('Metamask Swap');
+    const quoteSwapButton = getByText('MetaMask Swap');
     fireEvent.click(quoteSwapButton);
     expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenCalledTimes(1);
     expect(

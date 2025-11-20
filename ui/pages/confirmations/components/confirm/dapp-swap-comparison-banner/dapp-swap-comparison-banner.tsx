@@ -153,9 +153,9 @@ const DappSwapComparisonInner = () => {
     setSelectedQuote(selectedQuote);
   }, [selectedQuote, setSelectedQuote]);
 
-  // if (!swapComparisonDisplayed) {
-  //   return null;
-  // }
+  if (!swapComparisonDisplayed) {
+    return null;
+  }
 
   const dappTypeSelected = selectedSwapType === SwapType.Current;
 
