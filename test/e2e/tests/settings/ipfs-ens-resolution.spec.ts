@@ -80,7 +80,7 @@ describe('Settings', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: ensDomainPassthrough,
       },
-      async ({ driver, mockedEndpoint }) => {
+      async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
         // navigate to security & privacy settings screen
