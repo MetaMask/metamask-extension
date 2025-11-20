@@ -336,6 +336,7 @@
     "currentAppVersion": "string",
     "currentCurrency": "string",
     "currentExtensionPopupId": "number",
+    "dappSwapComparisonData": {},
     "currentLocale": "string",
     "currentMigrationVersion": "number",
     "database": {
@@ -1039,6 +1040,8 @@
     "seasonStatusError": "null",
     "seasonStatusLoading": "boolean",
     "rewardsEnabled": "boolean",
+    "rewardsBadgeHidden": "boolean",
+    "accountLinkedTimestamp": "null",
     "errorToast": {
       "actionText": "string",
       "description": "string",

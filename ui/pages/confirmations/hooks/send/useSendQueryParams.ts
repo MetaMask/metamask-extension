@@ -1,7 +1,10 @@
 import { Hex } from '@metamask/utils';
 import { useEffect, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useLocation, useSearchParams } from 'react-router-dom-v5-compat';
+import {
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import { SEND_ROUTE } from '../../../../helpers/constants/routes';
@@ -25,7 +28,7 @@ export const useSendQueryParams = () => {
     updateTo,
     value,
   } = useSendContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
   const nfts = useSendNfts();
@@ -83,10 +86,12 @@ export const useSendQueryParams = () => {
     if (to !== undefined && paramRecipient !== to) {
       queryParams.set('recipient', to);
     }
-    history.replace(`${SEND_ROUTE}/${subPath}?${queryParams.toString()}`);
+    navigate(`${SEND_ROUTE}/${subPath}?${queryParams.toString()}`, {
+      replace: true,
+    });
   }, [
     asset,
-    history,
+    navigate,
     hexData,
     maxValueMode,
     paramAmount,

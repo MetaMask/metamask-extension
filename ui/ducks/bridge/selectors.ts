@@ -65,7 +65,7 @@ import {
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
-import { FEATURED_RPCS } from '../../../shared/constants/network';
+import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getMultichainBalances,
   getMultichainCoinRates,
@@ -303,9 +303,17 @@ export const getFromChains = createDeepEqualSelector(
  * This matches the network filter in the activity and asset lists
  */
 export const getLastSelectedChainId = createSelector(
-  [getAllEnabledNetworksForAllNamespaces],
-  (allEnabledNetworksForAllNamespaces) => {
-    return allEnabledNetworksForAllNamespaces[0];
+  [getAllEnabledNetworksForAllNamespaces, getFromChains],
+  (allEnabledNetworksForAllNamespaces, fromChains) => {
+    // If there is no network filter, return mainnet
+    if (allEnabledNetworksForAllNamespaces.length > 1) {
+      return CHAIN_IDS.MAINNET;
+    }
+    // Find the matching bridge fromChain for the selected network filter
+    return fromChains.find(
+      ({ chainId: fromChainId }) =>
+        fromChainId === allEnabledNetworksForAllNamespaces[0],
+    )?.chainId;
   },
 );
 
@@ -879,8 +887,9 @@ export const getValidationErrors = createDeepEqualSelector(
     nativeBalance,
     fromTokenBalance,
   ) => {
-    const { gasIncluded, gasIncluded7702 } = activeQuote?.quote ?? {};
-    const isGasless = gasIncluded7702 || gasIncluded;
+    const { gasIncluded, gasIncluded7702, gasSponsored } =
+      activeQuote?.quote ?? {};
+    const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import {
   CaipAccountId,
   CaipChainId,
@@ -61,13 +61,32 @@ import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { SiteCell } from './site-cell/site-cell';
 
-export const ReviewPermissions = () => {
+type ReviewPermissionsProps = {
+  params?: { origin: string };
+  navigate?: (
+    to: string | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => void;
+};
+
+export const ReviewPermissions = ({
+  params,
+  navigate: navigateProp,
+}: ReviewPermissionsProps = {}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
-  const urlParams = useParams<{ origin: string }>();
+  const navigateHook = useNavigate();
+  const urlParamsHook = useParams<{ origin: string }>();
+
+  // Use props if provided, otherwise fall back to hooks
+  const navigate = (navigateProp || navigateHook) as NonNullable<
+    typeof navigateProp
+  >;
+  const urlParams = params || urlParamsHook;
+
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const securedOrigin = decodeURIComponent(urlParams.origin);
+
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
@@ -90,7 +109,7 @@ export const ReviewPermissions = () => {
     );
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    history.push(`${CONNECT_ROUTE}/${requestId}`);
+    navigate(`${CONNECT_ROUTE}/${requestId}`);
   };
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973

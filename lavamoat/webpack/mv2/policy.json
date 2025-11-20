@@ -618,18 +618,6 @@
         "react": true
       }
     },
-    "@lavamoat/snow": {
-      "globals": {
-        "Document.prototype": true,
-        "Node.prototype": true,
-        "SNOW": true,
-        "SNOW_WINDOW": true,
-        "URL.createObjectURL": true,
-        "URL.revokeObjectURL": true,
-        "console": true,
-        "document": true
-      }
-    },
     "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
       "packages": {
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
@@ -2029,7 +2017,8 @@
         "@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@noble/hashes": true
+        "@noble/hashes": true,
+        "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
     "@metamask/snaps-sdk": {
