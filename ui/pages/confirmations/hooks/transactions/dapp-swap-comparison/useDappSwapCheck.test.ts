@@ -5,11 +5,11 @@ import { getMockConfirmStateForTransaction } from '../../../../../../test/data/c
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Confirmation } from '../../../types/confirm';
-import { useSwapCheck } from './useSwapCheck';
+import { useDappSwapCheck } from './useDappSwapCheck';
 
 async function runHook(mockConfirmation?: Confirmation) {
   const response = renderHookWithConfirmContextProvider(
-    useSwapCheck,
+    useDappSwapCheck,
     getMockConfirmStateForTransaction(
       mockConfirmation ?? (mockSwapConfirmation as Confirmation),
     ),
@@ -22,7 +22,7 @@ async function runHook(mockConfirmation?: Confirmation) {
   return response.result.current;
 }
 
-describe('useSwapCheck', () => {
+describe('useDappSwapCheck', () => {
   it('return correct value for isSwapToBeCompared', async () => {
     const mockConfirmation = {
       ...mockSwapConfirmation,

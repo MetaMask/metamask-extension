@@ -5,11 +5,10 @@ import { getMockConfirmStateForTransaction } from '../../../../../../test/data/c
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Confirmation } from '../../../types/confirm';
-import { useDappSwapComparisonInfo } from './useDappSwapComparisonInfo';
+import * as DappSwapContext from '../../../context/dapp-swap';
 import { useDappSwapComparisonRewardText } from './useDappSwapComparisonRewardText';
 
 jest.mock('../../../../../hooks/bridge/useRewards');
-jest.mock('./useDappSwapComparisonInfo');
 
 async function runHook() {
   const response = renderHookWithConfirmContextProvider(
@@ -25,7 +24,6 @@ async function runHook() {
 }
 
 describe('useDappSwapComparisonRewardText', () => {
-  const mockUseDappSwapComparisonInfo = useDappSwapComparisonInfo as jest.Mock;
   const mockUseRewardsWithQuote = useRewardsWithQuote as jest.Mock;
 
   const mockSelectedQuote = {
@@ -34,9 +32,11 @@ describe('useDappSwapComparisonRewardText', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseDappSwapComparisonInfo.mockReturnValue({
+    jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
       selectedQuote: mockSelectedQuote,
-    });
+      setSelectedQuote: jest.fn(),
+      setQuotedSwapDisplayedInInfo: jest.fn(),
+    } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
   });
 
   it('returns null when shouldShowRewardsRow is false', async () => {
