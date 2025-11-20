@@ -16,7 +16,7 @@ export function renderWithConfirmContextProvider(
 ) {
   return renderWithProvider(
     <ConfirmContextProvider confirmationId={confirmationId}>
-      {component}
+      <DappSwapContextProvider>{component}</DappSwapContextProvider>
     </ConfirmContextProvider>,
     store,
     pathname,
