@@ -128,9 +128,8 @@ export function useDappSwapComparisonInfo() {
       );
 
       const selectedBestQuote =
-        bestFilteredQuote || dappSwapQa?.enabled
-          ? bestAvailableQuote
-          : undefined;
+        bestFilteredQuote ||
+        (dappSwapQa?.enabled ? bestAvailableQuote : undefined);
 
       return {
         bestQuote: bestAvailableQuote,
