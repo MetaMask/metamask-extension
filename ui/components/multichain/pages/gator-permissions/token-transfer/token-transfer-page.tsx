@@ -112,7 +112,7 @@ export const TokenTransferPage = ({
           data-testid="token-transfer-page-title"
         >
           {origin
-            ? `${getDisplayOrigin(origin)}: ${t('tokenTransfer')}`
+            ? `${getDisplayOrigin(origin, false)}: ${t('tokenTransfer')}`
             : t('tokenTransfer')}
         </Text>
       </Header>

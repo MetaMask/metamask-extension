@@ -46,9 +46,10 @@ export const extractNetworkName = (
  * Formats the origin for display by removing the protocol.
  *
  * @param origin - The origin string (can be encoded or decoded).
+ * @param isEncoded - Whether the origin is encoded or decoded.
  * @returns The origin without the protocol prefix.
  */
-export const getDisplayOrigin = (origin: string): string => {
-  const decoded = safeDecodeURIComponent(origin);
+export const getDisplayOrigin = (origin: string, isEncoded = true): string => {
+  const decoded = isEncoded ? safeDecodeURIComponent(origin) : origin;
   return decoded.replace(/^https?:\/\//u, '');
 };
