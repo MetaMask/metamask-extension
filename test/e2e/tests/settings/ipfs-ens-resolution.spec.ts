@@ -102,6 +102,8 @@ describe('Settings', function () {
           // since all we care about is getting to the correct URL
         }
 
+        // Ensure that the redirect to ENS Domains does not happen
+        // Instead, the domain will be kept which is a 404
         await driver.wait(async () => {
           const currentUrl = await driver.getCurrentUrl();
           return currentUrl === ENS_NAME_URL;
