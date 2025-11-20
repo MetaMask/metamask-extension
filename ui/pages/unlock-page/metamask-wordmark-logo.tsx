@@ -3,7 +3,7 @@ import { useTheme } from '../../hooks/useTheme';
 
 import MetaFoxHorizontalLogo from '../../components/ui/metafox-logo/horizontal-logo';
 
-export const MetamaskWordmarkLogo = (isPopup: boolean) => {
+export const MetamaskWordmarkLogo = ({ isPopup }: { isPopup: boolean }) => {
   const theme = useTheme();
 
   return (
