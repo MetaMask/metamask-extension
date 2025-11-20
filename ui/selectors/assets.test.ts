@@ -1019,7 +1019,7 @@ describe('getAssetsBySelectedAccountGroupWithTronResources', () => {
     },
   };
 
-  it('calls selector without filtering tron resources', () => {
+  it('calls selector with option to not filter tron resources', () => {
     const selectorMock = jest
       .mocked(selectAssetsBySelectedAccountGroup)
       .mockReturnValue({});
