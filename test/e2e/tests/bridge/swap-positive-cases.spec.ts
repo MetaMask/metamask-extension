@@ -47,10 +47,6 @@ describe('Swap tests', function (this: Suite) {
           'Unified SwapBridge Submitted',
           'Unified SwapBridge Completed',
         ];
-        console.log(
-          '====sse requestedToCompletedEvents',
-          requestedToCompletedEvents,
-        );
         requestedToCompletedEvents.forEach((e, idx) => {
           assert.ok(
             e.event === expectedEvents[idx],
@@ -115,10 +111,6 @@ describe('Swap tests', function (this: Suite) {
           'Unified SwapBridge Submitted',
           'Unified SwapBridge Completed',
         ];
-        console.log(
-          '====requestedToCompletedEvents',
-          requestedToCompletedEvents,
-        );
         requestedToCompletedEvents.forEach((e, idx) => {
           assert.ok(
             e.event === expectedEvents[idx],
