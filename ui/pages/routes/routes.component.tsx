@@ -463,7 +463,13 @@ const ShieldPlan = mmLazy(
 // End Lazy Routes
 
 const MemoizedReviewPermissionsWrapper = React.memo(
-  (props: RouteComponentProps) => (
+  (props: {
+    params?: { origin: string };
+    navigate?: (
+      to: string | number,
+      options?: { replace?: boolean; state?: Record<string, unknown> },
+    ) => void;
+  }) => (
     <State2Wrapper
       {...props}
       state1Component={ReviewPermissions}
