@@ -4,6 +4,13 @@
   box-sizing: border-box;
 }
 
+:root {
+  --width-sm: 576px;
+  --width-max: 798px;
+  --width-max-sidepanel: 490px;
+  --header-height: 68px;
+}
+
 html,
 body {
   color: var(--color-text-default);
@@ -53,12 +60,6 @@ html {
 
   html[data-theme] & {
     background: var(--color-background-alternative);
-  }
-
-  @include design-system.screen-sm-max {
-    html[data-theme] & {
-      background-color: var(--color-background-default);
-    }
   }
 }
 /* stylelint-enable */

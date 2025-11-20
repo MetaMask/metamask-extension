@@ -1,5 +1,10 @@
 on:
   workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+        description: The run ID to get builds from
     secrets:
       INFURA_PROJECT_ID:
         required: true
@@ -55,6 +60,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ inputs.builds-from-run }} # Download from whatever run the identify-builds job said.
 
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS

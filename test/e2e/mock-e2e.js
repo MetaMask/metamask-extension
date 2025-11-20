@@ -198,6 +198,7 @@ async function setupMocking(
       };
     });
 
+  // Subscriptions Eligibility
   await server
     .forGet(
       'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
@@ -205,7 +206,18 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [],
+        json: [
+          {
+            canSubscribe: false,
+            canViewEntryModal: false,
+            minBalanceUSD: 1000,
+            product: 'shield',
+            modalType: 'A',
+            cohorts: [],
+            assignedCohort: null,
+            hasAssignedCohortExpired: null,
+          },
+        ],
       };
     });
 
@@ -572,7 +584,7 @@ async function setupMocking(
   // Bridge API mocks - must be after AGGREGATOR_METADATA is defined
   // Network 1 (Mainnet)
   await server
-    .forGet('https://bridge.api.cx.metamask.io/networks/1/topAssets')
+    .forGet(`https://bridge.api.cx.metamask.io/networks/1/topAssets`)
     .thenCallback(() => {
       return {
         statusCode: 200,

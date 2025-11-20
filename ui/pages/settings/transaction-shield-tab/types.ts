@@ -18,43 +18,6 @@ export function isCardPaymentMethod(
   return paymentMethod.type === PAYMENT_TYPES.byCard;
 }
 
-export const CLAIM_STATUS = {
-  CREATED: 'created',
-  SUBMITTED: 'submitted',
-  IN_PROGRESS: 'in_progress',
-  WAITING_FOR_CUSTOMER: 'waiting_for_customer',
-  APPROVED: 'approved',
-  REJECTED: 'rejected',
-} as const;
-
-export type ClaimStatus = (typeof CLAIM_STATUS)[keyof typeof CLAIM_STATUS];
-
-export type ShieldClaimAttachment = {
-  key: string;
-  mimetype: string;
-  publicUrl: string;
-  versionId: string;
-  contentType: string;
-  originalname: string;
-};
-
-export type ShieldClaim = {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  chainId: string;
-  email: string;
-  impactedWalletAddress: string;
-  impactedTxHash: string;
-  reimbursementWalletAddress: string;
-  description: string;
-  attachments: ShieldClaimAttachment[];
-  intercomId: string;
-  status: ClaimStatus;
-  // generated label for the claim
-  claimNumber: number;
-};
-
 export const SUBMIT_CLAIM_FIELDS = {
   CHAIN_ID: 'chainId',
   EMAIL: 'email',
@@ -135,3 +98,11 @@ export type AccountSelectorWallet = {
   name: string;
   accounts: AccountSelectorAccount[];
 };
+
+export const SHIELD_ICON_ARTBOARD_NAMES = {
+  PROTECTION: 'Protection',
+  PRIORITY: 'Priority',
+} as const;
+
+export type ShieldIconArtboardName =
+  (typeof SHIELD_ICON_ARTBOARD_NAMES)[keyof typeof SHIELD_ICON_ARTBOARD_NAMES];
