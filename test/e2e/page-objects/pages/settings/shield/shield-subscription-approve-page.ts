@@ -1,4 +1,3 @@
-import { Driver } from '../../../../webdriver/driver';
 import TransactionConfirmation from '../../confirmations/redesign/transaction-confirmation';
 import { RawLocator } from '../../../common';
 
@@ -6,14 +5,8 @@ class ShieldSubscriptionApprovePage extends TransactionConfirmation {
   private readonly accountDetailsSection: RawLocator =
     '[data-testid="shield-subscription-approve__account_details_section"]';
 
-  private readonly billingDate: RawLocator =
-    '[data-testid="shield-subscription-billing_date"]';
-
   private readonly estimatedChangesSection: RawLocator =
     '[data-testid="shield-subscription-approve__estimated_changes_section"]';
-
-  private readonly freeTrialBadge: RawLocator =
-    '[data-testid="free-seven-day-trial"]';
 
   private readonly subscriptionDetailsSection: RawLocator =
     '[data-testid="shield-subscription-approve__subscription_details_section"]';

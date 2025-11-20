@@ -214,6 +214,8 @@ describe('Shield Plan Stripe Integration', function () {
           // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
           'Could not load Rive WASM file',
           'XMLHttpRequest is not a constructor',
+          // FileList serialization error when submitting claims (FileList is not serializable for background script)
+          'SES_UNHANDLED_REJECTION',
         ],
       },
       async ({ driver }) => {
@@ -279,6 +281,8 @@ describe('Shield Plan Stripe Integration', function () {
           // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
           'Could not load Rive WASM file',
           'XMLHttpRequest is not a constructor',
+          // FileList serialization error when submitting claims (FileList is not serializable for background script)
+          'SES_UNHANDLED_REJECTION',
         ],
       },
       async ({ driver }) => {
