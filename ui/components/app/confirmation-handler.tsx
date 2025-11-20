@@ -28,7 +28,10 @@ import {
   getQuotes,
 } from '../../ducks/swaps/swaps';
 import { navigateToConfirmation } from '../../pages/confirmations/hooks/useConfirmationNavigation';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+} from '../../../shared/constants/app';
 import { useNavState } from '../../contexts/navigation-state';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -54,6 +57,7 @@ export const ConfirmationHandler = () => {
 
   const windowType = getEnvironmentType();
   const isNotification = windowType === ENVIRONMENT_TYPE_NOTIFICATION;
+  const isFullscreen = windowType === ENVIRONMENT_TYPE_FULLSCREEN;
 
   // Memoize derived values to prevent unnecessary effect runs
   const haveSwapsQuotes = useMemo(
@@ -78,10 +82,11 @@ export const ConfirmationHandler = () => {
     [location.state, navState],
   );
 
-  const canRedirect = useMemo(
-    () => !isNotification && !stayOnHomePage,
-    [isNotification, stayOnHomePage],
-  );
+  const canRedirect = useMemo(() => {
+    if (stayOnHomePage || isFullscreen) return false;
+
+    return true;
+  }, [stayOnHomePage, isFullscreen]);
 
   const isOnHomePage = location.pathname === DEFAULT_ROUTE;
 
@@ -158,21 +163,21 @@ export const ConfirmationHandler = () => {
   );
 
   useEffect(() => {
-    if (isLocked || shouldSkipNetworkOperationNavigation) {
+    if (isLocked || !canRedirect || shouldSkipNetworkOperationNavigation) {
       return;
     }
 
     // Extracted from home.component.js checkStatusAndNavigate
     // Handle swap/bridge redirects first
-    if (canRedirect && showAwaitingSwapScreen) {
+    if (showAwaitingSwapScreen) {
       navigate(AWAITING_SWAP_ROUTE);
       return;
     }
-    if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
+    if (haveSwapsQuotes || swapsFetchParams) {
       navigate(PREPARE_SWAP_ROUTE);
       return;
     }
-    if (canRedirect && haveBridgeQuotes) {
+    if (haveBridgeQuotes) {
       navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       return;
     }
