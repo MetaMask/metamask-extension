@@ -590,10 +590,10 @@
     "message": "All popular networks"
   },
   "allTimeHigh": {
-    "message": "All time high"
+    "message": "All-time high"
   },
   "allTimeLow": {
-    "message": "All time low"
+    "message": "All-time low"
   },
   "allowAddRpc": {
     "message": "Add RPC"
