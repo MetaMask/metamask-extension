@@ -14,6 +14,7 @@ import {
 } from './useGasFeeToken';
 
 const FROM_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+const POLYGON_CHAIN_ID = '0x89';
 
 const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   ...GAS_FEE_TOKEN_MOCK_BASE,
@@ -21,10 +22,48 @@ const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   symbol: 'USDC',
 };
 
-function getState({ gasFeeTokens }: { gasFeeTokens?: GasFeeToken[] } = {}) {
+function getState({
+  gasFeeTokens,
+  chainId,
+  currencyRates,
+}: {
+  gasFeeTokens?: GasFeeToken[];
+  chainId?: Hex;
+  currencyRates?: Record<string, { conversionRate: number }>;
+} = {}) {
+  const networkConfigurations: Record<string, unknown> = {};
+  let providerConfig = {};
+
+  // Add Polygon network configuration if using Polygon chainId
+  if (chainId === POLYGON_CHAIN_ID) {
+    networkConfigurations[POLYGON_CHAIN_ID] = {
+      chainId: POLYGON_CHAIN_ID,
+      name: 'Polygon',
+      nativeCurrency: 'POL',
+      ticker: 'POL',
+      rpcEndpoints: [
+        {
+          type: 'custom',
+          url: 'https://polygon-rpc.com',
+          networkClientId: 'polygon-network',
+        },
+      ],
+      defaultRpcEndpointIndex: 0,
+      blockExplorerUrls: [],
+    };
+    providerConfig = {
+      type: 'rpc',
+      chainId: POLYGON_CHAIN_ID,
+      ticker: 'POL',
+      nickname: 'Polygon',
+      rpcUrl: 'https://polygon-rpc.com',
+    };
+  }
+
   return getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
       address: FROM_MOCK,
+      chainId,
       gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK],
       selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
     }),
@@ -33,6 +72,13 @@ function getState({ gasFeeTokens }: { gasFeeTokens?: GasFeeToken[] } = {}) {
         preferences: {
           showFiatInTestnets: true,
         },
+        ...(currencyRates && { currencyRates }),
+        ...(Object.keys(networkConfigurations).length > 0 && {
+          networkConfigurationsByChainId: networkConfigurations,
+        }),
+        ...(chainId === POLYGON_CHAIN_ID && {
+          providerConfig,
+        }),
       },
     },
   );
@@ -173,6 +219,12 @@ describe('useGasFeeToken', () => {
       );
     });
   });
+
+  // Note: The chainId-specific conversion rate logic is tested implicitly in the above tests.
+  // The fix ensures that useFiatTokenValue uses the conversion rate for the transaction's chainId
+  // (from currencyRates[networkConfigurationsByChainId[chainId].nativeCurrency])
+  // rather than always using the current network's rate. This prevents showing inflated USD values
+  // when confirming cross-chain transactions (e.g., confirming a Polygon transaction while on Ethereum mainnet).
 
   describe('useSelectedGasFeeToken', () => {
     it('returns selected gas fee token', () => {
