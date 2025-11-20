@@ -12,6 +12,7 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockSpotPrices } from '../tokens/utils/mocks';
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
@@ -36,6 +37,13 @@ async function mockInfura(mockServer: MockttpServer): Promise<void> {
 
 async function mockInfuraResponses(mockServer: MockttpServer): Promise<void> {
   await mockInfura(mockServer);
+  await mockSpotPrices(mockServer, {
+    'eip155:1/slip44:60': {
+      price: 1700,
+      marketCap: 382623505141,
+      pricePercentChange1d: 0,
+    },
+  });
 }
 
 describe('Settings', function () {
@@ -43,6 +51,15 @@ describe('Settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

@@ -1,4 +1,5 @@
 import { Context } from 'mocha';
+import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
 import { unlockWallet, withFixtures } from '../../helpers';
@@ -11,6 +12,7 @@ import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import TokenList from '../../page-objects/pages/token-list';
 import AssetPicker from '../../page-objects/pages/asset-picker';
+import { mockSpotPrices } from '../tokens/utils/mocks';
 
 describe('AssetPickerSendFlow', function () {
   const chainId = CHAIN_IDS.MAINNET;
@@ -30,6 +32,15 @@ describe('AssetPickerSendFlow', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         ethConversionInUsd,
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 10000,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);

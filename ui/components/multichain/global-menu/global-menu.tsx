@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
@@ -37,7 +37,6 @@ import {
   Popover,
   PopoverPosition,
   Tag,
-  Text,
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
@@ -121,7 +120,7 @@ export const GlobalMenu = ({
   const basicFunctionality = useSelector(getUseExternalServices);
   const rewardsEnabled = useSelector(selectRewardsEnabled);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const { notificationsReadCount } = useReadNotificationsCounter();
@@ -303,7 +302,7 @@ export const GlobalMenu = ({
         read_count: notificationsReadCount,
       },
     });
-    history.push(NOTIFICATIONS_ROUTE);
+    navigate(NOTIFICATIONS_ROUTE);
     closeMenu();
   };
 
@@ -410,12 +409,6 @@ export const GlobalMenu = ({
           data-testid="global-menu-expand-view"
         >
           {t('openFullScreen')}
-          <Text
-            variant={TextVariant.bodySmMedium}
-            color={TextColor.textAlternative}
-          >
-            {t('metamaskExtension')}
-          </Text>
         </MenuItem>
       )}
       {account &&

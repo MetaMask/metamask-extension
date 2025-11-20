@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { SolScope } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
@@ -80,8 +80,9 @@ jest.mock('../../../selectors', () => ({
   getIsSolanaSupportEnabled: jest.fn(() => true),
 }));
 
-jest.mock('react-router-dom', () => ({
-  useHistory: jest.fn(),
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: jest.fn(),
   useParams: jest.fn(),
 }));
 
@@ -251,7 +252,7 @@ jest.mock(
 );
 
 describe('WalletDetails', () => {
-  const mockHistory = { push: jest.fn(), goBack: jest.fn() };
+  const mockNavigate = jest.fn();
   const mockParams = { id: 'entropy:test-wallet' };
   const GROUP_ID = 'entropy:test-wallet:default' as unknown as AccountGroupId;
 
@@ -345,7 +346,7 @@ describe('WalletDetails', () => {
     );
 
   beforeEach(() => {
-    (useHistory as jest.Mock).mockReturnValue(mockHistory);
+    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
     (useParams as jest.Mock).mockReturnValue(mockParams);
     setupMocks();
     [
@@ -391,7 +392,7 @@ describe('WalletDetails', () => {
   it('navigates back when back button is clicked', () => {
     const { getByLabelText } = renderComponent();
     fireEvent.click(getByLabelText('back'));
-    expect(mockHistory.goBack).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
   describe('Add Account Button', () => {

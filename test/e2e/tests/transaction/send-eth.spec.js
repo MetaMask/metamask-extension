@@ -5,6 +5,7 @@ const {
 } = require('../../page-objects/flows/login.flow');
 const { withFixtures, WINDOW_TITLES, DAPP_URL } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { mockSpotPrices } = require('../tokens/utils/mocks');
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -231,6 +232,15 @@ describe('Send ETH', function () {
             localNodeOptions: {
               hardfork: 'muirGlacier',
             },
+            testSpecificMock: async (mockServer) => {
+              await mockSpotPrices(mockServer, {
+                'eip155:1/slip44:60': {
+                  price: 1700,
+                  marketCap: 382623505141,
+                  pricePercentChange1d: 0,
+                },
+              });
+            },
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
@@ -311,6 +321,15 @@ describe('Send ETH', function () {
               .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
             title: this.test.fullTitle(),
+            testSpecificMock: async (mockServer) => {
+              await mockSpotPrices(mockServer, {
+                'eip155:1/slip44:60': {
+                  price: 1700,
+                  marketCap: 382623505141,
+                  pricePercentChange1d: 0,
+                },
+              });
+            },
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);

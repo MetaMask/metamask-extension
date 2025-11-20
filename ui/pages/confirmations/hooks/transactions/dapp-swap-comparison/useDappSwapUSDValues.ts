@@ -11,8 +11,10 @@ import { useCallback } from 'react';
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../../helpers/utils/util';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
-import { fetchAllTokenDetails } from '../../../utils/token';
-import { getTokenValueFromRecord } from '../../../utils/dapp-swap-comparison-utils';
+import {
+  fetchAllTokenDetails,
+  getTokenValueFromRecord,
+} from '../../../utils/token';
 import { useConfirmContext } from '../../../context/confirm';
 
 export function useDappSwapUSDValues({

@@ -635,9 +635,9 @@ export const SOLANA_DEVNET_IMAGE_URL = './images/solana-devnet-logo.svg';
 export const BITCOIN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_IMAGE_URL = './images/bitcoin-testnet-logo.svg';
 export const BITCOIN_SIGNET_IMAGE_URL = './images/bitcoin-signet-logo.png';
-export const TRON_IMAGE_URL = './images/tron-logo.png';
-export const TRON_NILE_IMAGE_URL = './images/tron-logo.png';
-export const TRON_SHASTA_IMAGE_URL = './images/tron-logo.png';
+export const TRON_IMAGE_URL = './images/tron-logo.svg';
+export const TRON_NILE_IMAGE_URL = './images/tron-logo.svg';
+export const TRON_SHASTA_IMAGE_URL = './images/tron-logo.svg';
 export const XRPLEVM_TESTNET_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL =
   './images/xrplevm-native.svg';
@@ -649,7 +649,7 @@ export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
 export const KATANA_IMAGE_URL = './images/katana.svg';
 export const MONAD_IMAGE_URL = './images/monad.svg';
-export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.png';
+export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.svg';
 export const SOPHON_IMAGE_URL = './images/sophon.svg';
 export const SOPHON_TESTNET_IMAGE_URL = './images/sophon-testnet.svg';
 export const BERACHAIN_IMAGE_URL = './images/berachain.svg';
@@ -1406,6 +1406,7 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'polygon-mainnet': () => process.env.QUICKNODE_POLYGON_URL,
   'base-mainnet': () => process.env.QUICKNODE_BASE_URL,
   'bsc-mainnet': () => process.env.QUICKNODE_BSC_URL,
+  'sei-mainnet': () => process.env.QUICKNODE_SEI_URL,
 };
 
 export function getFailoverUrlsForInfuraNetwork(
@@ -1531,6 +1532,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://sei-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('sei-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],

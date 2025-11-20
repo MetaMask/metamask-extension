@@ -11,6 +11,7 @@ import {
   completeImportSRPOnboardingFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
+import { mockSpotPrices } from '../tokens/utils/mocks';
 
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   return [
@@ -38,6 +39,13 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
           json: [{ fakedata: true }],
         };
       }),
+    await mockSpotPrices(mockServer, {
+      'eip155:1/slip44:60': {
+        price: 1700,
+        marketCap: 382623505141,
+        pricePercentChange1d: 0,
+      },
+    }),
     // TODO: Enable this mock once bug #32312 is resolved: https://github.com/MetaMask/metamask-extension/issues/32312
     /*
     await mockServer
@@ -130,11 +138,21 @@ describe('MetaMask onboarding ', function () {
         await driver.delay(1000);
         for (const m of mockedEndpoint) {
           const requests = await m.getSeenRequests();
-          assert.equal(
-            requests.length,
-            1,
-            `${m} should make requests after onboarding`,
-          );
+          const mockUrl = m.toString();
+
+          // Spot-prices endpoint may be called multiple times (initial load + refresh)
+          if (mockUrl.includes('spot-prices')) {
+            assert.ok(
+              requests.length >= 1,
+              `${m} should make at least 1 request after onboarding (actual: ${requests.length})`,
+            );
+          } else {
+            assert.equal(
+              requests.length,
+              1,
+              `${m} should make requests after onboarding`,
+            );
+          }
         }
       },
     );

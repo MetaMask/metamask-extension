@@ -1,12 +1,8 @@
 import {
-  BatchTransaction,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
-import { TxData } from '@metamask/bridge-controller';
 import { cloneDeep } from 'lodash';
-import { toHex } from '@metamask/controller-utils';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -16,23 +12,21 @@ import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useG
 import { updateAndApproveTx } from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
-import { useDappSwapComparisonMetrics } from './dapp-swap-comparison/useDappSwapComparisonMetrics';
 import { useShieldConfirm } from './useShieldConfirm';
+import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const {
-    currentConfirmation: transactionMeta,
-    isQuotedSwapDisplayedInInfo,
-    quoteSelectedForMMSwap,
-  } = useConfirmContext<TransactionMeta>();
+  const { currentConfirmation: transactionMeta, isQuotedSwapDisplayedInInfo } =
+    useConfirmContext<TransactionMeta>();
 
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const { captureSwapSubmit } = useDappSwapComparisonMetrics();
+  const { onDappSwapCompleted, updateSwapWithQuoteDetails } =
+    useDappSwapActions();
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),
@@ -84,37 +78,6 @@ export function useTransactionConfirm() {
     transactionMeta?.isGasFeeSponsored,
   ]);
 
-  const updateSwapWithQuoteDetails = useCallback(() => {
-    const { value, gasLimit, data, to } =
-      quoteSelectedForMMSwap?.trade as TxData;
-    newTransactionMeta.txParams = {
-      ...newTransactionMeta.txParams,
-      value,
-      to,
-      gas: toHex(gasLimit ?? 0),
-      data,
-    };
-    if (quoteSelectedForMMSwap?.approval) {
-      const {
-        data: approvalData,
-        to: approvalTo,
-        gasLimit: approvalGasLimit,
-        value: approvalValue,
-      } = quoteSelectedForMMSwap?.approval as TxData;
-      newTransactionMeta.batchTransactions = [
-        {
-          data: approvalData as Hex,
-          to: approvalTo as Hex,
-          gas: toHex(approvalGasLimit ?? 0),
-          value: approvalValue as Hex,
-          type: TransactionType.swapApproval,
-          isAfter: false,
-        } as BatchTransaction,
-      ];
-    }
-    newTransactionMeta.nestedTransactions = undefined;
-  }, [newTransactionMeta, quoteSelectedForMMSwap]);
-
   const {
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
@@ -123,9 +86,7 @@ export function useTransactionConfirm() {
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
 
-    if (isQuotedSwapDisplayedInInfo) {
-      updateSwapWithQuoteDetails();
-    }
+    updateSwapWithQuoteDetails(newTransactionMeta);
 
     if (isGaslessSupportedSTX) {
       handleSmartTransaction();
@@ -145,7 +106,7 @@ export function useTransactionConfirm() {
       throw error;
     }
 
-    captureSwapSubmit();
+    onDappSwapCompleted();
   }, [
     newTransactionMeta,
     customNonceValue,
@@ -157,7 +118,7 @@ export function useTransactionConfirm() {
     isQuotedSwapDisplayedInInfo,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
-    captureSwapSubmit,
+    onDappSwapCompleted,
     updateSwapWithQuoteDetails,
   ]);
 

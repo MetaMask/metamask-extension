@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
-import { QuoteResponse, TxData } from '@metamask/bridge-controller';
+import { TxData } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { captureException } from '@sentry/browser';
 import { useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
-import { TokenStandAndDetails } from '../../../../../store/actions';
-import { fetchQuotes } from '../../../../../store/controller-actions/bridge-controller';
-import { useAsyncResult } from '../../../../../hooks/useAsync';
+import { captureException } from '../../../../../../shared/lib/sentry';
 import {
   getDataFromSwap,
   getBestQuote,
-  getTokenValueFromRecord,
   getBalanceChangeFromSimulationData,
-} from '../../../utils/dapp-swap-comparison-utils';
+} from '../../../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
+import { TokenStandAndDetails } from '../../../../../store/actions';
+import { ConfirmMetamaskState } from '../../../types/confirm';
+import { selectDappSwapComparisonData } from '../../../selectors/confirm';
+import { getTokenValueFromRecord } from '../../../utils/token';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonLatencyMetrics } from './useDappSwapComparisonLatencyMetrics';
 import { useDappSwapUSDValues } from './useDappSwapUSDValues';
@@ -24,6 +25,15 @@ const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
 
 export function useDappSwapComparisonInfo() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { quotes, latency: quoteResponseLatency } = useSelector(
+    (state: ConfirmMetamaskState) => {
+      return selectDappSwapComparisonData(
+        state,
+        currentConfirmation?.securityAlertResponse?.securityAlertId ?? '',
+      );
+    },
+  ) ?? { quotes: undefined };
+
   const {
     chainId,
     gasUsed,
@@ -37,12 +47,8 @@ export function useDappSwapComparisonInfo() {
   const { data, gas } = txParams ?? {};
   const {
     requestDetectionLatency,
-    quoteRequestLatency,
-    quoteResponseLatency,
     swapComparisonLatency,
     updateRequestDetectionLatency,
-    updateQuoteRequestLatency,
-    updateQuoteResponseLatency,
     updateSwapComparisonLatency,
   } = useDappSwapComparisonLatencyMetrics();
 
@@ -86,6 +92,12 @@ export function useDappSwapComparisonInfo() {
     updateRequestDetectionLatency,
   ]);
 
+  useEffect(() => {
+    if (commands) {
+      captureDappSwapComparisonLoading(commands);
+    }
+  }, [captureDappSwapComparisonLoading, commands]);
+
   const {
     fiatRates,
     getGasUSDValue,
@@ -97,35 +109,6 @@ export function useDappSwapComparisonInfo() {
     tokenAddresses: tokenAddresses as Hex[],
     destTokenAddress: quotesInput?.destTokenAddress as Hex,
   });
-
-  const { value: quotes } = useAsyncResult<
-    QuoteResponse[] | undefined
-  >(async () => {
-    try {
-      if (!quotesInput) {
-        return undefined;
-      }
-
-      captureDappSwapComparisonLoading(commands);
-
-      updateQuoteRequestLatency();
-      const startTime = new Date().getTime();
-      const quotesList = await fetchQuotes(quotesInput);
-      updateQuoteResponseLatency(startTime);
-      return quotesList;
-    } catch (error) {
-      captureException(error);
-      captureDappSwapComparisonFailed('error fetching quotes');
-      return undefined;
-    }
-  }, [
-    commands,
-    captureDappSwapComparisonFailed,
-    captureDappSwapComparisonLoading,
-    quotesInput,
-    updateQuoteResponseLatency,
-    updateQuoteRequestLatency,
-  ]);
 
   const { bestQuote, bestFilteredQuote: selectedQuote } = useMemo(() => {
     try {
@@ -225,8 +208,8 @@ export function useDappSwapComparisonInfo() {
           swap_mm_network_fee_usd: totalGasInQuote,
           swap_comparison_total_latency_ms: swapComparisonLatency,
           swap_dapp_request_detection_latency_ms: requestDetectionLatency,
-          swap_mm_quote_request_latency_ms: quoteRequestLatency,
-          swap_mm_quote_response_latency_ms: quoteResponseLatency,
+          swap_mm_quote_response_latency_ms:
+            quoteResponseLatency?.toString() ?? 'N_A',
         },
         sensitiveProperties: {
           swap_from_token_contract: srcTokenAddress,
@@ -261,7 +244,6 @@ export function useDappSwapComparisonInfo() {
     getTokenUSDValue,
     quotes,
     quotesInput,
-    quoteRequestLatency,
     quoteResponseLatency,
     requestDetectionLatency,
     updateSwapComparisonLatency,

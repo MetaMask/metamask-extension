@@ -1,6 +1,4 @@
-import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
@@ -15,7 +13,4 @@ const mapDispatchToProps = (_dispatch: MetaMaskReduxDispatch) => {
   return {};
 };
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps),
-)(BackupAndSyncTab);
+export default connect(mapStateToProps, mapDispatchToProps)(BackupAndSyncTab);
