@@ -16,7 +16,7 @@ async function start(): Promise<void> {
     return;
   }
 
-  const artifactName = JOB_NAME || 'export-onboarding-fixture';
+  const artifactName = JOB_NAME || 'e2e-fixture-validation';
   const artifactPageUrl = await getArtifactPageUrl({
     owner: OWNER,
     repository: REPOSITORY,

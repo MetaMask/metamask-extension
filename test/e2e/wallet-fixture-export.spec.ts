@@ -1,10 +1,24 @@
 import path from 'path';
-import fs from 'fs-extra';
 import { WINDOW_TITLES, withFixtures } from './helpers';
+import {
+  computeSchemaDiff,
+  formatSchemaDiff,
+  hasSchemaDifferences,
+  readFixtureFile,
+} from './fixtures/fixture-validation';
 import StartOnboardingPage from './page-objects/pages/onboarding/start-onboarding-page';
 
+const ONBOARDING_FIXTURE_PATH = path.resolve(
+  __dirname,
+  'fixtures',
+  'onboarding-fixture.json',
+);
+
 describe('Wallet State', function () {
-  it('export onboarding fixture', async function () {
+  it('matches the committed onboarding fixture schema', async function () {
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      this.skip();
+    }
     await withFixtures(
       {
         disableServerMochaToBackground: true,
@@ -19,7 +33,6 @@ describe('Wallet State', function () {
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
 
-        // wait for a non-empty persisted state
         await driver.waitUntil(
           async () => {
             const state = await driver.executeScript(
@@ -29,41 +42,24 @@ describe('Wallet State', function () {
               return false;
             }
             const dataKeys = Object.keys(state.data).filter(
-              (k) => k !== 'config',
+              (key) => key !== 'config',
             );
             return dataKeys.length > 0;
           },
           { interval: 1000, timeout: 10000 },
         );
 
-        const persistedState = await driver.executeScript(
+        const persistedState = (await driver.executeScript(
           'return window.stateHooks.getPersistedState()',
-        );
+        )) as Record<string, unknown>;
 
-        console.log('persistedState', persistedState);
+        const existingFixture = await readFixtureFile(ONBOARDING_FIXTURE_PATH);
+        const schemaDiff = computeSchemaDiff(existingFixture, persistedState);
 
-        const outDir = path.resolve(
-          process.cwd(),
-          'test',
-          'e2e',
-          'fixtures',
-        );
-        await fs.ensureDir(outDir);
-        const outPath = path.join(outDir, 'onboarding-fixture.json');
-        console.log(
-          '\n=============================================================================\n',
-        );
-        console.log('📁 WALLET FIXTURE STATE EXPORT');
-        console.log(
-          '=============================================================================\n',
-        );
-        console.log(`📂 Output directory: ${outDir}`);
-        console.log(`📄 Output file: ${outPath}`);
-        console.log(
-          '=============================================================================\n',
-        );
-
-        await fs.writeJson(outPath, persistedState, { spaces: 2 });
+        if (hasSchemaDifferences(schemaDiff)) {
+          const message = formatSchemaDiff(schemaDiff);
+          throw new Error(message);
+        }
       },
     );
   });

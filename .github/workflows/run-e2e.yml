@@ -137,12 +137,12 @@ jobs:
           name: test-runs-for-splitting
           path: test/test-results/
 
-      - name: Download onboarding fixture artifact
+      - name: e2e fixture validation
         id: download-onboarding-fixture
         continue-on-error: true
         uses: actions/download-artifact@v4
         with:
-          name: export-onboarding-fixture
+          name: e2e-fixture-validation
           path: .
 
       - name: Run E2E tests
