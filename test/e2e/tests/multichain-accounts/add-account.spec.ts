@@ -1,4 +1,3 @@
-import { Mockttp } from 'mockttp';
 import { E2E_SRP } from '../../default-fixture';
 import { WALLET_PASSWORD } from '../../helpers';
 import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
@@ -11,6 +10,7 @@ import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import { Driver } from '../../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockPriceApi } from '../tokens/utils/mocks';
 import {
   withImportedAccount,
   withMultichainAccountsDesignEnabled,
@@ -26,48 +26,6 @@ const importedAccount = {
   name: 'Imported Account 1',
   address: '0x7A46ce51fbBB29C34aea1fE9833c27b5D2781925',
 };
-
-async function mockPriceApi(mockServer: Mockttp) {
-  const spotPricesMockEth = await mockServer
-    .forGet(
-      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
-    )
-
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        '0x0000000000000000000000000000000000000000': {
-          id: 'ethereum',
-          price: 1,
-          marketCap: 112500000,
-          totalVolume: 4500000,
-          dilutedMarketCap: 120000000,
-          pricePercentChange1d: 0,
-        },
-      },
-    }));
-  const mockExchangeRates = await mockServer
-    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        eth: {
-          name: 'Ether',
-          ticker: 'eth',
-          value: 1 / 1700,
-          currencyType: 'crypto',
-        },
-        usd: {
-          name: 'US Dollar',
-          ticker: 'usd',
-          value: 1,
-          currencyType: 'fiat',
-        },
-      },
-    }));
-
-  return [spotPricesMockEth, mockExchangeRates];
-}
 
 describe('Add account', function () {
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
@@ -110,7 +68,7 @@ describe('Add account', function () {
         // Check wallet balance for both accounts
         await homePage.checkPageIsLoaded();
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
-        await homePage.checkExpectedBalanceIsDisplayed('$37,739.9');
+        await homePage.checkExpectedBalanceIsDisplayed('75,502');
         await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -118,8 +76,6 @@ describe('Add account', function () {
         );
         await accountListPage.switchToAccount(SECOND_ACCOUNT_NAME);
         await headerNavbar.checkAccountLabel(SECOND_ACCOUNT_NAME);
-        // BUG BUG
-        // await homePage.checkExpectedBalanceIsDisplayed('$4,760.00');
       },
     );
   });
