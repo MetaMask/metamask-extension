@@ -10,6 +10,7 @@ const ReactCompilerConfig = {
       '.test.',
       '.stories.',
       '.container.',
+      '/ui/index.js',
       '/__mocks__/',
       '/__snapshots__/',
       '/constants/',
