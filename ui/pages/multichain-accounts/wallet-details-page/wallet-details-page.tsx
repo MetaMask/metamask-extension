@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import {
   AccountGroupId,
@@ -45,7 +46,7 @@ import { getPreferences } from '../../../selectors';
 
 export const WalletDetailsPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { id } = useParams();
   const walletId = decodeURIComponent(id as string) as AccountWalletId;
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
@@ -59,9 +60,9 @@ export const WalletDetailsPage = () => {
 
   useEffect(() => {
     if (!wallet) {
-      history.push(ACCOUNT_LIST_PAGE_ROUTE);
+      navigate(ACCOUNT_LIST_PAGE_ROUTE);
     }
-  }, [wallet, history]);
+  }, [wallet, navigate]);
 
   const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
   const shouldShowBackupReminder = isSRPBackedUp === false;
@@ -74,7 +75,7 @@ export const WalletDetailsPage = () => {
   };
 
   const handleBack = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   const multichainAccountCells = useMemo(

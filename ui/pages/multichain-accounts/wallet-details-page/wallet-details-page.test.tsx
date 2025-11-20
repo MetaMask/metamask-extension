@@ -1,13 +1,12 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { WalletDetailsPage } from './wallet-details-page';
 
-const mockHistoryGoBack = jest.fn();
-const mockHistoryPush = jest.fn();
+const mockNavigate = jest.fn();
 
 const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
 
@@ -17,11 +16,12 @@ const mockUseParams = jest.fn().mockImplementation(() => ({
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    goBack: mockHistoryGoBack,
-    push: mockHistoryPush,
-  }),
   useParams: () => mockUseParams(),
+}));
+
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
 }));
 
 describe('WalletDetailsPage', () => {
@@ -57,13 +57,14 @@ describe('WalletDetailsPage', () => {
     expect(screen.getByText('Account 1')).toBeInTheDocument();
   });
 
-  it('calls history.goBack when back button is clicked', () => {
+  it('calls navigate(-1) when back button is clicked', () => {
     renderComponent();
 
     const backButton = screen.getByLabelText('Back');
     fireEvent.click(backButton);
 
-    expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
   });
 
   it('does not render backup reminder text when seedPhraseBackedUp is true', () => {
