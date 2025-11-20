@@ -2017,7 +2017,8 @@
         "@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@noble/hashes": true
+        "@noble/hashes": true,
+        "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
     "@metamask/snaps-sdk": {
