@@ -93,11 +93,10 @@ export function useAsyncCallback<T>(
   const [result, setResult] = useState<AsyncResult<T>>(RESULT_IDLE);
 
   // Track component mount state
-  const isMounted = useRef(false);
+  const isMounted = useRef(true);
 
   // Update ref when component unmounts
   useEffect(() => {
-    isMounted.current = true;
     return () => {
       isMounted.current = false;
     };
