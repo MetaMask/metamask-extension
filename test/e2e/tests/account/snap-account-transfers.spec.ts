@@ -15,7 +15,7 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
-import { mockEtherumSpotPrices } from '../tokens/utils/mocks';
+import { mockPriceApi } from '../tokens/utils/mocks';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 async function mockSnapSimpleKeyringAndSiteWithSpotPrices(
@@ -125,7 +125,7 @@ describe('Snap Account Transfers', function (this: Suite) {
           .build(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockSnapSimpleKeyringAndSiteWithSpotPrices(mockServer);
-          return [await mockEtherumSpotPrices(mockServer)];
+          return [await mockPriceApi(mockServer)];
         },
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
