@@ -95,7 +95,7 @@ export function createDappSwapMiddleware<
           getNetworkConfigurationByNetworkClientId(req.networkClientId) ?? {};
 
         const { data, from } = getSwapDetails(params);
-        if (data && securityAlertId) {
+        if (data && securityAlertId && chainId) {
           const { quotesInput } = getDataFromSwap(chainId as Hex, data, from);
           if (quotesInput) {
             const startTime = new Date().getTime();
