@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { migrateToSplitState } from '../../../store/actions';
 
-function MigrateToSplitStateTest() {
+const MigrateToSplitStateTest = () => {
   const dispatch = useDispatch();
 
   const handleMigrate = async () => {
@@ -13,6 +13,6 @@ function MigrateToSplitStateTest() {
       <button onClick={handleMigrate}>Migrate to Split State</button>
     </div>
   );
-}
+};
 
 export default MigrateToSplitStateTest;

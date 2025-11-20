@@ -27,6 +27,28 @@ export default class ReadOnlyNetworkStore implements BaseStore {
   }
 
   /**
+   * Sets multiple key-value pairs in the state object.
+   * Only works if the state is an object.
+   *
+   * @param pairs - Map of key-value pairs to set
+   */
+  async setKeyValues(pairs: Map<string, unknown>): Promise<void> {
+    if (!this.#initialized) {
+      await this.#initializing;
+    }
+    if (!this.#state || typeof this.#state !== 'object') {
+      throw new Error('State is not initialized or not an object');
+    }
+    for (const [key, value] of pairs.entries()) {
+      if (typeof value === 'undefined') {
+        delete this.#state[key];
+      } else {
+        this.#state[key] = value;
+      }
+    }
+  }
+
+  /**
    * Declares this store as compatible with the current browser
    */
   isSupported = true;

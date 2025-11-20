@@ -748,7 +748,6 @@ async function initialize(backup) {
   );
 
   if (persistenceManager.storageKind === 'split') {
-    debugger;
     controller.store.on(
       'stateChange',
       async ({ controllerKey, newState, _oldState, _patches }) => {
@@ -982,7 +981,7 @@ export async function loadStateFromPersistence(backup) {
   }
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
-debugger;
+
   if (persistenceManager.storageKind === 'data') {
     // write to disk
     await persistenceManager.set(versionedData.data);

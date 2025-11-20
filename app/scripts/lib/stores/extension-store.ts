@@ -34,6 +34,7 @@ export default class ExtensionStore implements BaseStore {
     }
 
     const { local } = browser.storage;
+    console.time('[ExtensionStore] Reading from local store');
     // don't fetch more than we need, incase extra stuff was put in the db
     // by testing or users playing with the db
     const response = await local.get(['manifest']);
@@ -45,15 +46,20 @@ export default class ExtensionStore implements BaseStore {
       this.manifest = new Set(keys);
       const { meta } = data;
       delete data.meta;
+      console.timeEnd('[ExtensionStore] Reading from local store');
       return {
         data,
         meta: meta as unknown as MetaData,
       };
-    } else {
-      // don't fetch more than we need, incase extra stuff was put in the db
-      // by testing or users playing with the db
-      return await local.get(['data', 'meta']);
     }
+    this.manifest.add('data');
+    this.manifest.add('meta');
+
+    // don't fetch more than we need, in case extra stuff was put in the db
+    // by testing or users playing with the db
+    const response = await local.get(['data', 'meta']);
+    console.timeEnd('[ExtensionStore] Reading from local store');
+    return response;
   }
 
   async setKeyValues(pairs: Map<string, unknown>): Promise<void> {
@@ -72,7 +78,7 @@ export default class ExtensionStore implements BaseStore {
       const isRemoving = typeof value === 'undefined';
       if (isRemoving) {
         if (!keyExists) {
-          console.warn(
+          log.warn(
             '[ExtensionStore] Trying to remove a key that does not exist in manifest:',
             key,
           );
@@ -94,14 +100,16 @@ export default class ExtensionStore implements BaseStore {
       toSet.manifest = Array.from(this.manifest);
     }
 
-    console.log(
+    console.time('[ExtensionStore] Writing to local store');
+    log.info(
       `[ExtensionStore] Writing ${Object.keys(toSet).length} keys to local store`,
     );
     await local.set(toSet);
-    console.log(
+    log.info(
       `[ExtensionStore] Removing ${toRemove.length} keys from local store`,
     );
     await local.remove(toRemove);
+    console.timeEnd('[ExtensionStore] Writing to local store');
   }
 
   /**
@@ -118,12 +126,14 @@ export default class ExtensionStore implements BaseStore {
       );
     }
     const { local } = browser.storage;
-    return await local.set({ data, meta });
+    console.time('[ExtensionStore] Overwriting local store');
+    await local.set({ data, meta });
+    console.timeEnd('[ExtensionStore] Overwriting local store');
   }
 
   /**
-   * Removes 'data' and 'meta' keys and values from  `local` extension storage
-   * area.
+   * Removes all keys contained in the manifest from the `local` extension
+   * storage area.
    */
   async reset(): Promise<void> {
     if (!this.isSupported) {
@@ -132,6 +142,6 @@ export default class ExtensionStore implements BaseStore {
       );
     }
     const { local } = browser.storage;
-    return await local.remove(['data', 'meta']);
+    return await local.remove([...this.manifest.keys()]);
   }
 }
