@@ -21,11 +21,13 @@ import {
   setOnboardingActiveStep,
   setOnboardingModalOpen,
   setOnboardingModalRendered,
+  setOnboardingReferralCode,
 } from '../../../../ducks/rewards';
 import { OnboardingStep } from '../../../../ducks/rewards/types';
 import { useTheme } from '../../../../hooks/useTheme';
 import RewardsErrorToast from '../RewardsErrorToast';
 import RewardsQRCode from '../RewardsQRCode';
+import { useAppSelector } from '../../../../store/store';
 import OnboardingIntroStep from './OnboardingIntroStep';
 import OnboardingStep1 from './OnboardingStep1';
 import OnboardingStep2 from './OnboardingStep2';
@@ -33,10 +35,13 @@ import OnboardingStep3 from './OnboardingStep3';
 import OnboardingStep4 from './OnboardingStep4';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function OnboardingModal() {
+export default function OnboardingModal({ onClose }: { onClose?: () => void }) {
   const isOpen = useSelector(selectOnboardingModalOpen);
   const onboardingStep = useSelector(selectOnboardingActiveStep);
   const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
+  const rewardActiveAccountSubscriptionId = useAppSelector(
+    (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
+  );
   const dispatch = useDispatch();
 
   const theme = useTheme();
@@ -44,14 +49,17 @@ export default function OnboardingModal() {
   const handleClose = useCallback(() => {
     dispatch(setOnboardingModalOpen(false));
     dispatch(setOnboardingActiveStep(OnboardingStep.INTRO));
-  }, [dispatch]);
+    dispatch(setOnboardingReferralCode(null));
+    onClose?.();
+  }, [dispatch, onClose]);
 
   const renderContent = useCallback(() => {
     if (
-      candidateSubscriptionId &&
-      candidateSubscriptionId !== 'error' &&
-      candidateSubscriptionId !== 'pending' &&
-      candidateSubscriptionId !== 'retry'
+      rewardActiveAccountSubscriptionId ||
+      (candidateSubscriptionId &&
+        candidateSubscriptionId !== 'error' &&
+        candidateSubscriptionId !== 'pending' &&
+        candidateSubscriptionId !== 'retry')
     ) {
       return <RewardsQRCode />;
     }
@@ -70,7 +78,11 @@ export default function OnboardingModal() {
       default:
         return <OnboardingIntroStep />;
     }
-  }, [candidateSubscriptionId, onboardingStep]);
+  }, [
+    candidateSubscriptionId,
+    onboardingStep,
+    rewardActiveAccountSubscriptionId,
+  ]);
 
   useEffect(() => {
     dispatch(setOnboardingModalRendered(true));
@@ -91,7 +103,14 @@ export default function OnboardingModal() {
           paddingTop: 0,
           paddingBottom: 0,
           style: {
-            height: '740px',
+            height:
+              rewardActiveAccountSubscriptionId ||
+              (candidateSubscriptionId &&
+                candidateSubscriptionId !== 'error' &&
+                candidateSubscriptionId !== 'pending' &&
+                candidateSubscriptionId !== 'retry')
+                ? 'auto'
+                : '740px',
             alignItems: 'center',
             justifyContent: 'center',
           },

@@ -76,6 +76,7 @@ import {
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
+  REWARDS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -116,6 +117,7 @@ import {
   getIsUnlocked,
 } from '../../ducks/metamask/metamask';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import {
@@ -1168,6 +1170,13 @@ export default function Routes() {
               includeLocation: true,
             })}
           </RouteWithLayout>
+
+          <RouteWithLayout
+            authenticated
+            path={DEFAULT_ROUTE}
+            component={Home}
+            layout={RootLayout}
+          />
         </Switch>
       </Suspense>
     );
