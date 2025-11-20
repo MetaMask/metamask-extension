@@ -28,7 +28,7 @@
     }
 
     &--inactive {
-      background: var(--color-background-subsection) url('/images/shield-membership-shadow.png') no-repeat right -10px center / 85px;
+      background-color: var(--color-background-subsection);
 
       &-light {
         background-color: var(--shield-membership-inactive-light);
