@@ -49,18 +49,15 @@ export const RewardsBadge = ({
       <Box className="flex items-center gap-1" onClick={onClick}>
         {!imageLoadError && (
           <img
-            src="./images/metamask-rewards-points.svg"
+            src={
+              useAlternativeIconColor
+                ? './images/metamask-rewards-points-alternative.svg'
+                : './images/metamask-rewards-points.svg'
+            }
             alt={t('rewardsPointsIcon')}
             width={16}
             height={16}
             onError={() => setImageLoadError(true)}
-            style={
-              useAlternativeIconColor
-                ? {
-                    filter: 'grayscale(100%)',
-                  }
-                : undefined
-            }
           />
         )}
         <Text
