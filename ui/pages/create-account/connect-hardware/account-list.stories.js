@@ -1,6 +1,11 @@
 import React from 'react';
 import AccountList from './account-list';
 
+const mockTrackEvent = (event, properties) => {
+  console.log('Mock track event:', { event, properties });
+  return Promise.resolve();
+};
+
 export default {
   title: 'Pages/CreateAccount/ConnectHardware/AccountList',
 
@@ -85,8 +90,7 @@ export default {
       },
     ],
     context: {
-      // eslint-disable-next-line no-empty-function
-      trackEvent: () => {},
+      trackEvent: mockTrackEvent,
     },
   },
 };

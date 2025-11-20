@@ -3,6 +3,11 @@ import { action } from '@storybook/addon-actions';
 import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import SelectHardware from './select-hardware';
 
+const mockTrackEvent = (event, properties) => {
+  console.log('Mock track event:', { event, properties });
+  return Promise.resolve();
+};
+
 export default {
   title: 'Pages/CreateAccount/ConnectHardware/SelectHardware',
 };
@@ -17,8 +22,7 @@ export const DefaultStory = () => {
       }
       ledgerTransportType={LedgerTransportTypes.live}
       context={{
-        // eslint-disable-next-line no-empty-function
-        trackEvent: () => {},
+        trackEvent: mockTrackEvent,
       }}
     />
   );
@@ -34,8 +38,7 @@ export const BrowserNotSupported = () => {
       connectToHardwareWallet={() => undefined}
       ledgerTransportType={LedgerTransportTypes.live}
       context={{
-        // eslint-disable-next-line no-empty-function
-        trackEvent: () => {},
+        trackEvent: mockTrackEvent,
       }}
     />
   );
