@@ -20,6 +20,7 @@ import {
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
@@ -42,8 +43,9 @@ export const EditGasFeesRow = ({
 }) => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta, isQuotedSwapDisplayedInInfo } =
+  const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,

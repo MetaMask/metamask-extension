@@ -1,6 +1,7 @@
 import React, { ReactChildren, ReactElement } from 'react';
 
 import { ConfirmContextProvider } from '../../../ui/pages/confirmations/context/confirm';
+import { DappSwapContextProvider } from '../../../ui/pages/confirmations/context/dapp-swap';
 import {
   renderHookWithProvider,
   renderWithProvider,
@@ -15,7 +16,7 @@ export function renderWithConfirmContextProvider(
 ) {
   return renderWithProvider(
     <ConfirmContextProvider confirmationId={confirmationId}>
-      {component}
+      <DappSwapContextProvider>{component}</DappSwapContextProvider>
     </ConfirmContextProvider>,
     store,
     pathname,
@@ -35,12 +36,16 @@ export function renderHookWithConfirmContextProvider(
   const contextContainer = Container
     ? ({ children }: { children: ReactChildren }) => (
         <ConfirmContextProvider confirmationId={confirmationId}>
-          <Container>{children}</Container>
+          <DappSwapContextProvider>
+            <Container>{children}</Container>
+          </DappSwapContextProvider>
         </ConfirmContextProvider>
       )
-    : ({ children }: { children: ReactChildren }) => (
+    : ({ children }: { children: ReactElement }) => (
         <ConfirmContextProvider confirmationId={confirmationId}>
-          {children as unknown as ReactElement}
+          <DappSwapContextProvider>
+            {children as ReactElement}
+          </DappSwapContextProvider>
         </ConfirmContextProvider>
       );
 
