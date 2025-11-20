@@ -2007,6 +2007,9 @@
   "deepLink_theHomePage": {
     "message": "the home page"
   },
+  "deepLink_theSettingsPage": {
+    "message": "the settings page"
+  },
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
   },
