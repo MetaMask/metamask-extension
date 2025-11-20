@@ -77,6 +77,7 @@ export const ConfirmInfoRowAddress = memo(
               preferContractSymbol
               variation={chainId}
               showFullName={showFullName}
+              className="overflow-hidden"
             />
           )
         }
