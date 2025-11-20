@@ -513,14 +513,7 @@ class AssetListPage {
 
   async checkPriceChartLoaded(assetAddress: string): Promise<void> {
     console.log(`Verify the price chart is loaded`);
-    await this.driver.waitUntil(
-      async () => {
-        return await this.driver.isElementPresentAndVisible(
-          `[data-testid="token-increase-decrease-percentage-${assetAddress}"]`,
-        );
-      },
-      { timeout: 10000, interval: 100 },
-    );
+  await driver.waitForSelector(this.tokenPercentage(assetAddress));
   }
 
   /**
