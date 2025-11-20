@@ -59,28 +59,24 @@ describe('Settings', function () {
   });
 
   it('Does not fetch ENS data for ENS Domain when ENS and IPFS switched off', async function () {
-    async function ensDomainPassthrough(
+    async function mockEnsDestination(
       mockServer: MockttpServer,
-    ): Promise<MockedEndpoint[]> {
-      // We want the browser to handle the request error
-      const ensNamePassThrough = await mockServer
-        .forGet(ENS_NAME_URL)
-        .thenPassThrough();
-      // This should never be hit, but in case it is, then we'll catch it
-      const ensDomainsPassThrough = await mockServer
-        .forGet(/https:\/\/app\.ens\.domains\/name\/.*/u)
-        .thenPassThrough();
-
-      return [ensNamePassThrough, ensDomainsPassThrough];
+    ): Promise<MockedEndpoint> {
+      return await mockServer.forGet(ENS_DESTINATION_URL).thenCallback(() => {
+        // We don't care about response, just to check if the request is made or not
+        return {
+          statusCode: 200,
+        };
+      });
     }
 
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: ensDomainPassthrough,
+        testSpecificMock: mockEnsDestination,
       },
-      async ({ driver }) => {
+      async ({ driver, mockedEndpoint }) => {
         await loginWithBalanceValidation(driver);
 
         // navigate to security & privacy settings screen
@@ -95,15 +91,18 @@ describe('Settings', function () {
         await privacySettings.toggleIpfsGateway();
         await privacySettings.toggleEnsDomainResolution();
 
-        try {
-          await driver.openNewPage(ENS_NAME_URL);
-        } catch (e) {
-          // Ignore ERR_PROXY_CONNECTION_FAILED error
-          // since all we care about is getting to the correct URL
-        }
+        await driver.openNewPage(ENS_NAME_URL);
+
+        // Wait for a potential request to happen
+        await driver.delay(5000);
 
         // Ensure that the redirect to ENS Domains does not happen
         // Instead, the domain will be kept which is a 404
+        await driver.wait(async () => {
+          const isPending = await mockedEndpoint.isPending();
+          return isPending === true;
+        });
+
         await driver.wait(async () => {
           const currentUrl = await driver.getCurrentUrl();
           return currentUrl === ENS_NAME_URL;
