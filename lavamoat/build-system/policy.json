@@ -1559,10 +1559,12 @@
       },
       "globals": {
         "Buffer": true,
+        "File": true,
         "TextDecoder": true,
         "URL": true,
         "__DEV__": true,
         "atob": true,
+        "btoa": true,
         "compile": true,
         "console": true,
         "define": true,
