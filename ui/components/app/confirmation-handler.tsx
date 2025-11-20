@@ -83,7 +83,9 @@ export const ConfirmationHandler = () => {
   );
 
   const canRedirect = useMemo(() => {
-    if (stayOnHomePage || isFullscreen) return false;
+    if (stayOnHomePage || isFullscreen) {
+      return false;
+    }
 
     return true;
   }, [stayOnHomePage, isFullscreen]);
