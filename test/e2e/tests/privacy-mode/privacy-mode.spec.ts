@@ -1,4 +1,3 @@
-import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
@@ -49,10 +48,7 @@ describe('Privacy Mode', function () {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: Mockttp) => {
-          await mockPriceApi(mockServer);
-          return mockPriceApi(mockServer);
-        },
+        testSpecificMock: mockPriceApi,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);

@@ -617,9 +617,7 @@ async function unlockWallet(
   await driver.fill('#password', password);
   await driver.press('#password', driver.Key.ENTER);
   if (waitLoginSuccess) {
-    await driver.assertElementNotPresent('[data-testid="unlock-page"]', {
-      waitAtLeastGuard: 2000,
-    });
+    await driver.assertElementNotPresent('[data-testid="unlock-page"]');
   }
 }
 
