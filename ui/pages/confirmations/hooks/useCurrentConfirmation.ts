@@ -2,7 +2,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom-v5-compat';
 import {
   ApprovalsMetaMaskState,
   getUnapprovedTransaction,
@@ -21,12 +21,14 @@ import {
  * DO NOT USE within a redesigned confirmation.
  * Instead use ConfirmContext to read the current confirmation.
  *
+ * @param providedConfirmationId - Optional confirmation ID to use instead of URL params
  * @returns The current confirmation data.
  */
-const useCurrentConfirmation = () => {
+const useCurrentConfirmation = (providedConfirmationId?: string) => {
   const { id: paramsConfirmationId } = useParams<{ id: string }>();
   const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
-  const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
+  const confirmationId =
+    providedConfirmationId ?? paramsConfirmationId ?? oldestPendingApproval?.id;
 
   const pendingApproval = useSelector((state) =>
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),

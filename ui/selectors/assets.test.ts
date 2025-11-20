@@ -1,4 +1,4 @@
-import { EthScope, SolScope } from '@metamask/keyring-api';
+import { EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { cloneDeep } from 'lodash';
@@ -956,6 +956,7 @@ describe('Balance change selectors', () => {
 
 describe('getAssetsBySelectedAccountGroup', () => {
   beforeEach(() => {
+    getAssetsBySelectedAccountGroup.clearCache();
     getAssetsBySelectedAccountGroup.memoizedResultFunc.clearCache();
   });
 
@@ -987,7 +988,346 @@ describe('getAssetsBySelectedAccountGroup', () => {
     const result = getAssetsBySelectedAccountGroup(mockState);
 
     expect(selectorMock).toHaveBeenCalledWith(mockState.metamask);
-    expect(result).toBe(selectorMockResult);
+    expect(result).toStrictEqual(selectorMockResult);
+  });
+
+  it('filters out tron staked bandwidth and energy', () => {
+    const selectorMock = jest
+      .mocked(selectAssetsBySelectedAccountGroup)
+      .mockReturnValue({
+        'tron:728126428': [
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:728126428/slip44:195',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Tron',
+            symbol: 'TRX',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 6,
+            rawBalance: '0x0',
+            balance: '0',
+            fiat: {
+              balance: 0,
+              currency: 'usd',
+              conversionRate: 0.28516,
+            },
+            chainId: 'tron:728126428',
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:728126428/slip44:195-staked-for-bandwidth',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Staked for Bandwidth',
+            symbol: 'sTRX-BANDWIDTH',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 6,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:728126428',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:728126428/slip44:195-staked-for-energy',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Staked for Energy',
+            symbol: 'sTRX-ENERGY',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 6,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:728126428',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:728126428/slip44:bandwidth',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Bandwidth',
+            symbol: 'BANDWIDTH',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 0,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:728126428',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:728126428/slip44:maximum-bandwidth',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Max Bandwidth',
+            symbol: 'MAX-BANDWIDTH',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 0,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:728126428',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:728126428/slip44:energy',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Energy',
+            symbol: 'ENERGY',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 0,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:728126428',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:728126428/slip44:maximum-energy',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Max Energy',
+            symbol: 'MAX-ENERGY',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 0,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:728126428',
+            fiat: undefined,
+          },
+        ],
+        'tron:3448148188': [
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:3448148188/slip44:195',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Tron',
+            symbol: 'TRX',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 6,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:3448148188',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:3448148188/slip44:195-staked-for-bandwidth',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Staked for Bandwidth',
+            symbol: 'sTRX-BANDWIDTH',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 6,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:3448148188',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:3448148188/slip44:195-staked-for-energy',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Staked for Energy',
+            symbol: 'sTRX-ENERGY',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 6,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:3448148188',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:3448148188/slip44:bandwidth',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Bandwidth',
+            symbol: 'BANDWIDTH',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 0,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:3448148188',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:3448148188/slip44:maximum-bandwidth',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Max Bandwidth',
+            symbol: 'MAX-BANDWIDTH',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 0,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:3448148188',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:3448148188/slip44:energy',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Energy',
+            symbol: 'ENERGY',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 0,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:3448148188',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:3448148188/slip44:maximum-energy',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Max Energy',
+            symbol: 'MAX-ENERGY',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 0,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:3448148188',
+            fiat: undefined,
+          },
+        ],
+        'tron:2494104990': [
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:2494104990/slip44:195',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Tron',
+            symbol: 'TRX',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 6,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:2494104990',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:2494104990/slip44:195-staked-for-bandwidth',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Staked for Bandwidth',
+            symbol: 'sTRX-BANDWIDTH',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 6,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:2494104990',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:2494104990/slip44:195-staked-for-energy',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Staked for Energy',
+            symbol: 'sTRX-ENERGY',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 6,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:2494104990',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:2494104990/slip44:bandwidth',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Bandwidth',
+            symbol: 'BANDWIDTH',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 0,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:2494104990',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:2494104990/slip44:maximum-bandwidth',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Max Bandwidth',
+            symbol: 'MAX-BANDWIDTH',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 0,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:2494104990',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:2494104990/slip44:energy',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Energy',
+            symbol: 'ENERGY',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 0,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:2494104990',
+            fiat: undefined,
+          },
+          {
+            accountType: 'tron:eoa',
+            assetId: 'tron:2494104990/slip44:maximum-energy',
+            isNative: true,
+            image:
+              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
+            name: 'Max Energy',
+            symbol: 'MAX-ENERGY',
+            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
+            decimals: 0,
+            rawBalance: '0x0',
+            balance: '0',
+            chainId: 'tron:2494104990',
+            fiat: undefined,
+          },
+        ],
+      });
+
+    const result = getAssetsBySelectedAccountGroup(mockState);
+
+    expect(selectorMock).toHaveBeenCalled();
+    expect(result[TrxScope.Mainnet]).toHaveLength(1);
+    expect(result[TrxScope.Nile]).toHaveLength(1);
+    expect(result[TrxScope.Shasta]).toHaveLength(1);
   });
 });
 
