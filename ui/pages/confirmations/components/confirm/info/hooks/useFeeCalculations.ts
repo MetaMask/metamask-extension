@@ -42,8 +42,8 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     selectConversionRateByChainId(state, chainId),
   );
 
-  let quotedGasLimit = undefined;
-  let quotedLayer1GasFees = undefined;
+  let quotedGasLimit;
+  let quotedLayer1GasFees;
   if (isQuotedSwapDisplayedInInfo) {
     quotedGasLimit = toHex(
       ((selectedQuote?.approval as TxData)?.gasLimit ?? 0) +

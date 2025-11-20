@@ -15,7 +15,8 @@ export function useTransactionGasFeeEstimate(
   supportsEIP1559: boolean,
   quotedGasLimit?: Hex,
 ): Hex {
-  let { gas, gasPrice } = transactionMeta.txParams;
+  const { gas } = transactionMeta.txParams;
+  let { gasPrice } = transactionMeta.txParams;
   let gasLimit = quotedGasLimit || gas;
 
   const { gasFeeEstimates } = useGasFeeEstimates(
