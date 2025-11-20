@@ -1324,9 +1324,20 @@ function renderHtmlFile({
     )
     .replace('../../../ui/css/index.scss', './index.css')
     .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js')
+    .replace('../../scripts/use-snow.js', './scripts/use-snow.js')
     .replace(
       '<script src="../../scripts/load/bootstrap.ts" defer></script>',
       '',
+    )
+    .replace('../../images/enslogo.svg', './images/enslogo.svg')
+    .replace(
+      '../../images/logo/metamask-fox.svg',
+      './images/logo/metamask-fox.svg',
+    )
+    .replace('../../images/spinner.gif', './images/spinner.gif')
+    .replace(
+      '../../vendor/trezor/usb-permissions.js',
+      './vendor/trezor/usb-permissions.js',
     );
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
