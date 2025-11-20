@@ -70,7 +70,7 @@ describe('Bridge functionality', function (this: Suite) {
     );
   });
 
-  it.only('should show message that no trade route is available if getQuote returns empty array', async function () {
+  it('should show message that no trade route is available if getQuote returns empty array', async function () {
     await withFixtures(
       getQuoteNegativeCasesFixtures(
         {

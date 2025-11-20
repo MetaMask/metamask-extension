@@ -165,7 +165,7 @@ describe('Permit Confirmation', () => {
     });
   });
 
-  it.only('displays the simulation section', async () => {
+  it('displays the simulation section', async () => {
     const scope = nock('https://price.api.cx.metamask.io')
       .persist()
       .get('/v2/chains/1/spot-prices')
