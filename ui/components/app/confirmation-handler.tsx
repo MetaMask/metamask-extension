@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   useLocation,
   useNavigate,
@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -13,6 +14,7 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
+  DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   selectPendingApprovalsForNavigation,
@@ -27,8 +29,6 @@ import {
 import { navigateToConfirmation } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { useNavState } from '../../contexts/navigation-state';
-import { ApprovalType } from '@metamask/controller-utils';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
