@@ -12,7 +12,6 @@ describe('./utils/config.ts', () => {
   // system, so we don't check for everything, just that the interface is
   // behaving
   describe('variables', () => {
-    const originalEnv = { ...process.env };
     const originalReadFileSync = fs.readFileSync;
     function mockRc(
       env: Record<string, string> = {},
@@ -36,17 +35,7 @@ describe('./utils/config.ts', () => {
         return originalReadFileSync(path, options);
       });
     }
-    afterEach(() => {
-      // Restore environment variables mutated by config.getVariables
-      Object.keys(process.env).forEach((key) => {
-        if (!(key in originalEnv)) {
-          delete process.env[key];
-        }
-      });
-      Object.assign(process.env, originalEnv);
-      // Restore any mocked methods
-      mock.restoreAll();
-    });
+    afterEach(() => mock.restoreAll());
 
     it('should return valid build variables for the default build', () => {
       const buildTypes = loadBuildTypesConfig();
