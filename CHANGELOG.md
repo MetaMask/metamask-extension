@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add generic Platform Notification support (#37709)
 - Introduced sidepanel (#37304)
 - Adds shield membership event metrics (#37767)
+- Adds new events for shield eligibility and priority support (#37822)
 - Updated text on Claims Form top details (#37770)
 - Added metrics tracking for the new Subscriptions (#37735)
 - Updated error codes for shield rule engine (#37748)
@@ -78,6 +79,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use preferred avatar in site tooltip (#37634)
 - Filter Tron Energy/Bandwidth assets on token list (#37699)
 - Updates Shield Terms of Use URL (#37769)
+- Updates Shield confirmation messages (#37829)
+- Adds `from` and `to` fields to the send confirmation view (#37906)
+- Fixes menu height overflow (#37915)
+- Fixes crash when clicking away from swap flow (#37922)
+- Fixes styling in `MultichainHoveredAddressRowsList` and `MultichainAggregatedAddressListRow` components (#37792)
+- Fixes a bug that was not copying the checksummed address (#37939)
+- Updates Predict deeplink handler (#37907)
+- Fixes `Open full screen` text (#37916)
+- Adds the support link back in unlock page (#37967)
 
 ## [13.9.0]
 
