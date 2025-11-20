@@ -325,6 +325,7 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
 
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
+  await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
