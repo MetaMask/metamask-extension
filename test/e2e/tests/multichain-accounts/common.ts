@@ -11,7 +11,7 @@ import {
 } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
 import NetworkManager from '../../page-objects/pages/network-manager';
-import { mockEtherumSpotPrices } from '../tokens/utils/mocks';
+import { mockPriceApi } from '../tokens/utils/mocks';
 
 import {
   mockMultichainAccountsFeatureFlagDisabled,
@@ -67,7 +67,7 @@ export async function withMultichainAccountsDesignEnabled(
         const additionalMocks = testSpecificMock
           ? await testSpecificMock(mockServer)
           : [];
-        return [await mockEtherumSpotPrices(mockServer), [additionalMocks]];
+        return [await mockPriceApi(mockServer), [additionalMocks]];
       },
       title,
       dappOptions,
@@ -81,7 +81,7 @@ export async function withMultichainAccountsDesignEnabled(
           driver,
           undefined,
           undefined,
-          '$42,500.00',
+          '$85,025.00',
         );
       }
       const homePage = new HomePage(driver);
