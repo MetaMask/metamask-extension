@@ -7,6 +7,7 @@ import DeepLink from '../../page-objects/pages/deep-link-page';
 import LoginPage from '../../page-objects/pages/login-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import RewardsPage from '../../page-objects/pages/rewards/rewards-page';
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
 import { BaseUrl } from '../../../../shared/constants/urls';
@@ -85,7 +86,7 @@ describe('Deep Link', function () {
       'signed without sig_params',
       'unsigned',
     ] as const,
-    ['/home', '/swap', '/INVALID'] as const,
+    ['/home', '/swap', '/INVALID', '/rewards'] as const,
     ['continue'] as const,
   ).map(([locked, signed, route, action]) => {
     return { locked, signed, route, action };
@@ -181,6 +182,9 @@ and we'll take you to the right place.`
               break;
             case '/swap':
               Page = SwapPage;
+              break;
+            case '/rewards':
+              Page = RewardsPage;
               break;
             default: {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
@@ -286,59 +290,6 @@ and we'll take you to the right place.`
 
         await driver.waitForUrl({
           url: `${BaseUrl.MetaMask}/prediction-markets`,
-        });
-      },
-    );
-  });
-
-  it('handles /rewards route redirect', async function () {
-    await withFixtures(
-      await getConfig(this.test?.fullTitle()),
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const rawUrl = `https://link.metamask.io/rewards`;
-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
-
-        // test signed flow
-        await driver.openNewURL(signedUrl);
-
-        await driver.waitForUrl({ url: `${BaseUrl.MetaMask}/rewards` });
-
-        await driver.navigate();
-        await homePage.checkPageIsLoaded();
-
-        // test unsigned flow
-        await driver.openNewURL(rawUrl);
-
-        await driver.waitForUrl({ url: `${BaseUrl.MetaMask}/rewards` });
-      },
-    );
-  });
-
-  it('handles /rewards referral route redirect', async function () {
-    await withFixtures(
-      await getConfig(this.test?.fullTitle()),
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const rawUrl = `https://link.metamask.io/rewards?referral=MIAMI5`;
-
-        // test unsigned flow
-        await driver.openNewURL(rawUrl);
-
-        await driver.waitForUrl({
-          url: `${BaseUrl.MetaMask}/rewards?referral=MIAMI5`,
         });
       },
     );
