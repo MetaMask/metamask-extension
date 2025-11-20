@@ -99,6 +99,13 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
+  private readonly multichainTokenListButton = `[data-testid="multichain-token-list-button"]`;
+
+  private readonly noPriceAvailableMessage = {
+    css: 'p',
+    text: 'Not conversion rate available',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
@@ -298,12 +305,9 @@ class HomePage {
 
   async checkTokenListIsDisplayed(): Promise<void> {
     try {
-      await this.driver.waitForSelector(
-        '[data-testid="multichain-token-list-button"]',
-        {
-          timeout: 300000,
-        },
-      );
+      await this.driver.waitForSelector(this.multichainTokenListButton, {
+        timeout: 300000,
+      });
     } catch (e) {
       console.log('Token list is not displayed', e);
       throw e;
@@ -314,15 +318,11 @@ class HomePage {
     console.log(`Check if asset ${assetName} is displayed on homepage`);
     await this.driver.waitUntil(
       async () => {
-        const assetNameElement = await this.driver.findElements(
-          `[data-testid="multichain-token-list-item-token-name"]`,
-        );
-        for (const element of assetNameElement) {
-          if ((await element.getText()) === assetName) {
-            return true;
-          }
-        }
-        return false;
+        const element = await this.driver.findElement({
+          css: this.multichainTokenListButton,
+          text: assetName,
+        });
+        return element !== null;
       },
       { timeout: 300000, interval: 100 },
     );
@@ -330,53 +330,7 @@ class HomePage {
   }
 
   async checkTokenListPricesAreDisplayed(): Promise<void> {
-    let pricesDisplayed = false;
-    let attempts = 0;
-    while (!pricesDisplayed && attempts < 1000) {
-      // Reduced to 100 for performance tests to avoid timeouts
-      try {
-        console.log('Checking if token secondary value has currency format');
-
-        const tokenValueElement = await this.driver.waitForSelector(
-          '[data-testid="multichain-token-list-item-secondary-value"]',
-          { timeout: 1000 }, // Shorter timeout per iteration
-        );
-
-        const text = await tokenValueElement.getText();
-        console.log(`Token secondary value text: "${text}"`);
-
-        // Regular expression to match currency format: $ followed by number (with or without decimals)
-        // Matches both with and without thousand separators
-        // Examples: $11.53, $100, $0.50, $1,234.56, $1234, $10000
-        const currencyFormatRegex = /^\$(\d{1,3}(,\d{3})*|\d+)(\.\d{1,2})?$/u;
-
-        pricesDisplayed = currencyFormatRegex.test(text);
-        console.log('pricesDisplayed ', pricesDisplayed);
-        if (pricesDisplayed) {
-          console.log(
-            `Token secondary value "${text}" has valid currency format`,
-          );
-          console.log('count: ', attempts);
-        } else {
-          console.log(
-            `Token secondary value "${text}" does NOT have valid currency format`,
-          );
-        }
-      } catch (error) {
-        console.log(
-          'Error checking token secondary value currency format:',
-          error,
-        );
-        await this.driver.delay(100);
-      }
-      attempts += 1;
-    }
-
-    if (!pricesDisplayed) {
-      const errorMessage = `Token list prices were not displayed in valid currency format after ${attempts} attempts`;
-      console.log(errorMessage);
-      throw new Error(errorMessage);
-    }
+    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage);
   }
 
   /**

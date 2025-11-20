@@ -217,19 +217,20 @@ class AccountListPage {
     tag: 'p',
   };
 
+  private readonly addAccountButton = {
+    text: 'Add account',
+    tag: 'p',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkListIsCompletelyLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(
-        {
-          css: 'p',
-          text: 'Add account',
-        },
-        { timeout: 30000 },
-      );
+      await this.driver.waitForSelector(this.addAccountButton, {
+        timeout: 30000,
+      });
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
