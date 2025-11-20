@@ -14,7 +14,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       .thenCallback(() => ({
         statusCode: 200,
         json: {
-          '0x0000000000000000000000000000000000000000': {
+          'eip155:1/slip44:60': {
             id: 'ethereum',
             price: 1700, // Default ETH price for swap tests
             marketCap: 382623505141,
