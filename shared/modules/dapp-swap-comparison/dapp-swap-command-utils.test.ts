@@ -12,7 +12,7 @@ describe('dapp-swap command utils', () => {
           ],
           '0x2105',
         );
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           amountMin: '0x017d36',
           quotesInput: {
             destChainId: '0x2105',
@@ -37,7 +37,7 @@ describe('dapp-swap command utils', () => {
           ],
           '0x2105',
         );
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           amountMin: '0x1935564cb7e0',
           quotesInput: {
             destChainId: '0x2105',
@@ -61,7 +61,7 @@ describe('dapp-swap command utils', () => {
           ],
           '0x2105',
         );
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           amountMin: '0x010b34',
           quotesInput: {
             destChainId: '0x2105',
@@ -85,7 +85,7 @@ describe('dapp-swap command utils', () => {
           ],
           '0x2105',
         );
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           amountMin: '0x017c8d',
           quotesInput: {
             destChainId: '0x2105',
@@ -109,7 +109,7 @@ describe('dapp-swap command utils', () => {
           ],
           '0x2105',
         );
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           amountMin: '0x1acf21e74630',
           quotesInput: {
             destChainId: '0x2105',
@@ -134,7 +134,7 @@ describe('dapp-swap command utils', () => {
           ],
           '0x2105',
         );
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           amountMin: '0x017d2a',
           quotesInput: {
             destChainId: '0x2105',
@@ -159,7 +159,7 @@ describe('dapp-swap command utils', () => {
           ],
           '0x2105',
         );
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           amountMin: '0x1932ed3c37ab',
           quotesInput: {
             destChainId: '0x2105',
@@ -184,7 +184,7 @@ describe('dapp-swap command utils', () => {
           ],
           '0x2105',
         );
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           amountMin: '0x010b04',
           quotesInput: {
             destChainId: '0x2105',
@@ -208,7 +208,7 @@ describe('dapp-swap command utils', () => {
           ],
           '0x2105',
         );
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           amountMin: '0x017c96',
           quotesInput: {
             destChainId: '0x2105',
@@ -232,7 +232,7 @@ describe('dapp-swap command utils', () => {
           ],
           '0x2105',
         );
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           amountMin: '0x19151b4a65b9',
           quotesInput: {
             destChainId: '0x2105',
@@ -334,7 +334,7 @@ describe('dapp-swap command utils', () => {
               input[2] as string[],
               '0x2105',
             ),
-          ).toThrow();
+          ).toThrow('Exact-out commands are not supported yet');
         });
       });
     });

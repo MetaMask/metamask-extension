@@ -12,7 +12,7 @@ import {
   getMockContractInteractionConfirmState,
 } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import * as ConfirmContext from '../../../../context/confirm';
+import * as DappSwapContext from '../../../../context/dapp-swap';
 import BaseTransactionInfo from './base-transaction-info';
 
 jest.mock('../../../simulation-details/useBalanceChanges', () => ({
@@ -75,10 +75,12 @@ describe('<BaseTransactionInfo />', () => {
   it('renders partially if quoted swap view is displayed in info', () => {
     const state = getMockContractInteractionConfirmState();
     const mockStore = configureMockStore(middleware)(state);
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: state.metamask.transactions[0],
+    jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
       isQuotedSwapDisplayedInInfo: true,
-    } as ReturnType<typeof ConfirmContext.useConfirmContext>);
+      selectedQuote: undefined,
+      setSelectedQuote: jest.fn(),
+      setQuotedSwapDisplayedInInfo: jest.fn(),
+    } as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
     const { getByText, queryByText } = renderWithConfirmContextProvider(
       <BaseTransactionInfo />,

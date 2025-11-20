@@ -1,5 +1,5 @@
 import React, { useCallback, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Box,
   BoxAlignItems,
@@ -84,7 +84,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   ...props
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const institutionalWalletsEnabled = useSelector(
     getManageInstitutionalWallets,
   );
@@ -160,10 +160,10 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       ) {
         global.platform.openExtensionInBrowser?.(option.route);
       } else {
-        history.push(option.route);
+        navigate(option.route);
       }
     } else {
-      history.push(option.route);
+      navigate(option.route);
     }
   };
 
@@ -208,8 +208,8 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       },
     });
     onClose();
-    history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
-  }, [trackEvent, onClose, history]);
+    navigate(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
+  }, [trackEvent, onClose, navigate]);
   ///: END:ONLY_INCLUDE_IF
 
   return (
