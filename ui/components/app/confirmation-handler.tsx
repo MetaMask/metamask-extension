@@ -27,6 +27,8 @@ import {
 import { navigateToConfirmation } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { useNavState } from '../../contexts/navigation-state';
+import { ApprovalType } from '@metamask/controller-utils';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -37,6 +39,7 @@ export const ConfirmationHandler = () => {
   const params = useParams<{ id?: string }>();
   const navState = useNavState();
   const isUnlocked = useSelector(getIsUnlocked);
+  const isLocked = !isUnlocked;
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows);
   const swapsRouteState = useSelector(getBackgroundSwapRouteState);
@@ -79,6 +82,8 @@ export const ConfirmationHandler = () => {
     [isNotification, stayOnHomePage],
   );
 
+  const isOnHomePage = location.pathname === DEFAULT_ROUTE;
+
   const isOnConfirmationRoute = useMemo(
     () =>
       location.pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
@@ -89,6 +94,7 @@ export const ConfirmationHandler = () => {
 
   const currentConfirmationId = params.id;
   const targetConfirmationId = pendingApprovals?.[0]?.id;
+
   const isViewingPendingConfirmation = useMemo(
     () =>
       Boolean(
@@ -101,8 +107,47 @@ export const ConfirmationHandler = () => {
     [currentConfirmationId, targetConfirmationId, pendingApprovals],
   );
 
+  // Check if pending approval is for network operations that are handled in dialog windows
+  const isNetworkOperationApproval = useMemo(
+    () =>
+      Boolean(
+        pendingApprovals?.[0]?.type === ApprovalType.AddEthereumChain ||
+          pendingApprovals?.[0]?.type === ApprovalType.SwitchEthereumChain,
+      ),
+    [pendingApprovals],
+  );
+
+  // Skip navigation for network operation approvals when on home page in fullscreen/popup/sidepanel windows
+  const shouldSkipNetworkOperationNavigation = useMemo(
+    () =>
+      hasPendingConfirmations &&
+      isOnHomePage &&
+      isNetworkOperationApproval &&
+      !isNotification,
+    [
+      hasPendingConfirmations,
+      isOnHomePage,
+      isNetworkOperationApproval,
+      isNotification,
+    ],
+  );
+
+  // Only navigate to confirmations if we have pending confirmations and we're not already
+  // on a confirmation route or viewing a pending confirmation
+  const shouldNavigateToConfirmation = useMemo(
+    () =>
+      hasPendingConfirmations &&
+      !isOnConfirmationRoute &&
+      !isViewingPendingConfirmation,
+    [
+      hasPendingConfirmations,
+      isOnConfirmationRoute,
+      isViewingPendingConfirmation,
+    ],
+  );
+
   useEffect(() => {
-    if (!isUnlocked) {
+    if (isLocked || shouldSkipNetworkOperationNavigation) {
       return;
     }
 
@@ -121,36 +166,29 @@ export const ConfirmationHandler = () => {
       return;
     }
 
-    // Only navigate to confirmations if we're not already on a confirmation route
-    // or viewing a pending confirmation
-    if (
-      hasPendingConfirmations &&
-      !isOnConfirmationRoute &&
-      !isViewingPendingConfirmation
-    ) {
+    if (shouldNavigateToConfirmation) {
       navigateToConfirmation(
         targetConfirmationId,
         pendingApprovals,
         Boolean(approvalFlows?.length),
         navigate,
         '', // queryString
-        location.pathname, // currentPathname for skip-navigation optimization
+        location.pathname,
       );
     }
   }, [
-    isUnlocked,
-    canRedirect,
-    showAwaitingSwapScreen,
-    haveSwapsQuotes,
-    swapsFetchParams,
-    haveBridgeQuotes,
-    hasPendingConfirmations,
-    isOnConfirmationRoute,
-    isViewingPendingConfirmation,
-    targetConfirmationId,
-    pendingApprovals,
     approvalFlows,
+    canRedirect,
+    haveBridgeQuotes,
+    haveSwapsQuotes,
+    isLocked,
     navigate,
+    pendingApprovals,
+    shouldNavigateToConfirmation,
+    shouldSkipNetworkOperationNavigation,
+    showAwaitingSwapScreen,
+    swapsFetchParams,
+    targetConfirmationId,
   ]);
 
   return null;
