@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import WalletDetails from './wallet-details.component';
-import { MemoryRouter, Route } from 'react-router-dom';
 
 // Mock the accountTree data that WalletDetails expects
 const mockAccountTree = {
@@ -41,12 +40,14 @@ const walletId = encodeURIComponent('entropy:test-entropy-wallet');
 const meta: Meta<typeof WalletDetails> = {
   title: 'Pages/MultichainAccounts/WalletDetails',
   component: WalletDetails,
+  parameters: {
+    initialEntries: [`/wallet-details/${walletId}`],
+    path: '/wallet-details/:id',
+  },
   decorators: [
     (story) => (
       <Provider store={store}>
-        <MemoryRouter initialEntries={[`/wallet-details/${walletId}`]}>
-          <Route path="/wallet-details/:id">{story()}</Route>
-        </MemoryRouter>
+        {story()}
       </Provider>
     ),
   ],

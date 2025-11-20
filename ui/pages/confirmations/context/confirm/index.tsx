@@ -26,7 +26,8 @@ export const ConfirmContext = createContext<ConfirmContextType | undefined>(
 
 export const ConfirmContextProvider: React.FC<{
   children: ReactElement;
-}> = ({ children }) => {
+  confirmationId?: string;
+}> = ({ children, confirmationId }) => {
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
   const { currentConfirmation } = useCurrentConfirmation();

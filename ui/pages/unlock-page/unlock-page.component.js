@@ -123,6 +123,10 @@ class UnlockPage extends Component {
      * Reset Wallet
      */
     resetWallet: PropTypes.func,
+    /**
+     * Indicates if the environment is a popup
+     */
+    isPopup: PropTypes.bool,
   };
 
   state = {
@@ -553,7 +557,9 @@ class UnlockPage extends Component {
               {isRehydrationFlow ? (
                 this.renderMascot()
               ) : (
-                <MetaFoxHorizontalLogo className="unlock-page__mascot-container__horizontal-logo" />
+                <MetaFoxHorizontalLogo
+                  className={`unlock-page__mascot-container__horizontal-logo ${this.props.isPopup ? 'unlock-page__mascot-container__horizontal-logo--popup' : ''}`}
+                />
               )}
               {isBeta() ? (
                 <Text
@@ -626,7 +632,7 @@ class UnlockPage extends Component {
               key="import-account"
               type="button"
               onClick={this.onForgotPasswordOrLoginWithDiffMethods}
-              marginBottom={6}
+              marginBottom={4}
               color={
                 isRehydrationFlow
                   ? TextColor.textDefault
@@ -638,38 +644,37 @@ class UnlockPage extends Component {
                 : t('forgotPassword')}
             </Button>
 
-            {isRehydrationFlow && (
-              <Text>
-                {t('needHelp', [
-                  <Button
-                    variant={ButtonVariant.Link}
-                    href={SUPPORT_LINK}
-                    type="button"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    key="need-help-link"
-                    onClick={() => {
-                      this.context.trackEvent(
-                        {
-                          category: MetaMetricsEventCategory.Navigation,
-                          event: MetaMetricsEventName.SupportLinkClicked,
-                          properties: {
-                            url: SUPPORT_LINK,
-                          },
+            <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+              {t('needHelp', [
+                <Button
+                  variant={ButtonVariant.Link}
+                  color={TextColor.primaryDefault}
+                  href={SUPPORT_LINK}
+                  type="button"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key="need-help-link"
+                  onClick={() => {
+                    this.context.trackEvent(
+                      {
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.SupportLinkClicked,
+                        properties: {
+                          url: SUPPORT_LINK,
                         },
-                        {
-                          contextPropsIntoEventProperties: [
-                            MetaMetricsContextProp.PageTitle,
-                          ],
-                        },
-                      );
-                    }}
-                  >
-                    {needHelpText}
-                  </Button>,
-                ])}
-              </Text>
-            )}
+                      },
+                      {
+                        contextPropsIntoEventProperties: [
+                          MetaMetricsContextProp.PageTitle,
+                        ],
+                      },
+                    );
+                  }}
+                >
+                  {needHelpText}
+                </Button>,
+              ])}
+            </Text>
           </Box>
         </Box>
         {!isTestEnvironment && !isRehydrationFlow && (

@@ -203,7 +203,7 @@ features:
   multichain:
   ocap-kernel:
     assets:
-      - ./{app,offscreen,shared,ui}/**/ocap-kernel/**
+      - ./{app,shared,ui}/**/ocap-kernel/**
   gator-permissions:
     assets:
       - src: ./node_modules/@metamask/permissions-kernel-snap/dist/preinstalled-snap.json

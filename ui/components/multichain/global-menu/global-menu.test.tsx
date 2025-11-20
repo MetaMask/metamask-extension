@@ -1,5 +1,6 @@
 import React from 'react';
-import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
+import { fireEvent, waitFor } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -32,7 +33,10 @@ const render = (metamaskStateChanges = {}) => {
   );
 };
 
+const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockUseNavigate,
   Link: ({
     children,
     to,
