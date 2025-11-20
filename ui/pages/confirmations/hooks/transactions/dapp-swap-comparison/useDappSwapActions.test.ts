@@ -45,6 +45,7 @@ describe('useDappSwapActions', () => {
         selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,
         setSelectedQuote: jest.fn(),
         setQuotedSwapDisplayedInInfo: jest.fn(),
+        isQuotedSwapDisplayedInInfo: true,
       } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
       const mockTransactionMeta = { txParams: {} };
@@ -73,6 +74,7 @@ describe('useDappSwapActions', () => {
             to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
             value: '0x0',
           },
+          layer1GasFee: '0x61077a1f',
         }),
       );
     });
