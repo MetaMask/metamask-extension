@@ -323,7 +323,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   );
 
   const onClickFindTransactionHash = useCallback(async () => {
-    window.open(FIND_TRANSACTION_HASH_LINK, '_blank', 'noopener, noreferrer');
+    window.open(FIND_TRANSACTION_HASH_LINK, '_blank', 'noopener,noreferrer');
     captureShieldCtaClickedEvent({
       source: ShieldCtaSourceEnum.Settings,
       ctaActionClicked: ShieldCtaActionClickedEnum.FindingTxHash,
