@@ -13,6 +13,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  getCoverageMetrics,
   getCoverageStatus,
   ShieldState,
 } from '../../../../selectors/shield/coverage';
@@ -24,6 +25,8 @@ import { isSignatureTransactionType } from '../../utils';
 import { useSignatureEventFragment } from '../useSignatureEventFragment';
 import { useTransactionEventFragment } from '../useTransactionEventFragment';
 import { ShieldCoverageAlertMessage } from './transactions/ShieldCoverageAlertMessage';
+
+const N_A = 'N/A';
 
 const getModalBodyStr = (reasonCode: string | undefined) => {
   // grouping codes with a fallthrough pattern is not allowed by the linter
@@ -169,10 +172,11 @@ const getShieldResult = (
       return 'not_covered_malicious';
     case 'unknown':
       return 'not_covered';
-    case undefined:
-    case 'not_shown':
-      return 'loading';
     default:
+      // Returns 'loading' for:
+      // - undefined: coverage check not yet initiated or in progress
+      // - 'not_shown': coverage didn't load before user confirmed
+      // - any unexpected values: fail safe to loading state
       return 'loading';
   }
 };
@@ -189,6 +193,9 @@ export function useShieldCoverageAlert(): Alert[] {
   const { id } = currentConfirmation ?? {};
   const { reasonCode, status } = useSelector((state) =>
     getCoverageStatus(state as ShieldState, id),
+  );
+  const metrics = useSelector((state) =>
+    getCoverageMetrics(state as ShieldState, id),
   );
 
   const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
@@ -221,6 +228,8 @@ export function useShieldCoverageAlert(): Alert[] {
         shield_result: getShieldResult(status),
         // eslint-disable-next-line @typescript-eslint/naming-convention
         shield_reason: modalBodyStr,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        shield_result_response_latency_ms: metrics?.latency ?? N_A,
       };
 
       if (isSignatureTransactionType(currentConfirmation)) {
@@ -237,12 +246,13 @@ export function useShieldCoverageAlert(): Alert[] {
       }
     }
   }, [
-    status,
-    modalBodyStr,
-    isEnabled,
-    isPaused,
     currentConfirmation,
     id,
+    isEnabled,
+    isPaused,
+    metrics?.latency,
+    modalBodyStr,
+    status,
     updateSignatureEventFragment,
     updateTransactionEventFragment,
   ]);
