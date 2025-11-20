@@ -4,13 +4,11 @@ import { useCallback } from 'react';
 
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionEventFragment } from '../../useTransactionEventFragment';
-import { useSwapCheck } from './useSwapCheck';
 
 export function useDappSwapComparisonMetrics() {
   const { currentConfirmation, quoteSelectedForMMSwap } =
     useConfirmContext<TransactionMeta>();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
-  const { isSwapToBeCompared } = useSwapCheck();
   const { id: transactionId } = currentConfirmation ?? {};
 
   const captureDappSwapComparisonProperties = useCallback(
@@ -38,19 +36,12 @@ export function useDappSwapComparisonMetrics() {
   );
 
   const captureSwapSubmit = useCallback(() => {
-    if (!isSwapToBeCompared) {
-      return;
-    }
     captureDappSwapComparisonProperties({
       properties: {
         swap_final_selected: quoteSelectedForMMSwap ? 'metamask' : 'dapp',
       },
     });
-  }, [
-    captureDappSwapComparisonProperties,
-    quoteSelectedForMMSwap,
-    isSwapToBeCompared,
-  ]);
+  }, [captureDappSwapComparisonProperties, quoteSelectedForMMSwap]);
 
   const captureDappSwapComparisonLoading = useCallback(
     (commands: string) => {

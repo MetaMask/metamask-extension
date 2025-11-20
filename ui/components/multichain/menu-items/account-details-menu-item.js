@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -25,7 +25,8 @@ export const AccountDetailsMenuItem = ({
   const trackEvent = useContext(MetaMetricsContext);
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const history = useHistory();
+  const navigate = useNavigate();
+
   const LABEL = t('accountDetails');
 
   const handleNavigation = useCallback(() => {
@@ -38,7 +39,7 @@ export const AccountDetailsMenuItem = ({
       },
     });
 
-    history.push(
+    navigate(
       `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}`,
     );
 
@@ -46,7 +47,7 @@ export const AccountDetailsMenuItem = ({
   }, [
     closeMenu,
     hdEntropyIndex,
-    history,
+    navigate,
     metricsLocation,
     selectedAccountGroup,
     trackEvent,

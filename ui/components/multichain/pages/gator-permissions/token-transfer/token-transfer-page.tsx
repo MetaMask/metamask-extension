@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -18,7 +18,10 @@ import {
 import { Content, Header, Page } from '../../page';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { REVIEW_GATOR_PERMISSIONS_ROUTE } from '../../../../../helpers/constants/routes';
+import {
+  PREVIOUS_ROUTE,
+  REVIEW_GATOR_PERMISSIONS_ROUTE,
+} from '../../../../../helpers/constants/routes';
 import { PermissionGroupListItem } from '../components';
 import {
   AppState,
@@ -27,13 +30,13 @@ import {
 
 export const TokenTransferPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const permissionGroupName = 'token-transfer';
   const permissionGroupMetaData = useSelector((state: AppState) =>
     getPermissionGroupMetaData(state, permissionGroupName),
   );
   const handlePermissionGroupItemClick = (chainId: Hex) => {
-    history.push(
+    navigate(
       `${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/${permissionGroupName}`,
     );
   };
@@ -69,7 +72,7 @@ export const TokenTransferPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.IconDefault}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             size={ButtonIconSize.Sm}
           />
         }

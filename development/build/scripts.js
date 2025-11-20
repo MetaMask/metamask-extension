@@ -212,7 +212,7 @@ function createScriptTasks({
             case 'content-script':
               return './app/vendor/trezor/content-script.js';
             case 'offscreen':
-              return './offscreen/scripts/offscreen.ts';
+              return './app/offscreen/offscreen.ts';
             default:
               return `./app/scripts/${label}.js`;
           }
@@ -1301,10 +1301,7 @@ function renderHtmlFile({
 
   const scriptTags = scripts.join('\n    ');
 
-  const htmlFilePath =
-    htmlName === 'offscreen'
-      ? `./offscreen/${htmlName}.html`
-      : `./app/${htmlName}.html`;
+  const htmlFilePath = `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
   const eta = new Eta({ views: './app/' });
@@ -1318,7 +1315,10 @@ function renderHtmlFile({
       `${scriptTags}\n    <script src="./chromereload.js" async></script>`,
     )
     .replace('<script src="./scripts/load/ui.ts" defer></script>', scriptTags)
-    .replace('<script src="./load-offscreen.js" defer></script>', scriptTags)
+    .replace(
+      '<script src="./offscreen/offscreen.ts" defer></script>',
+      scriptTags,
+    )
     .replace('../ui/css/index.scss', './index.css')
     .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js')
     .replace('<script src="./scripts/load/bootstrap.ts" defer></script>', '');
