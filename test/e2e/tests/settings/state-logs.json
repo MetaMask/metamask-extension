@@ -1041,6 +1041,7 @@
     "seasonStatusLoading": "boolean",
     "rewardsEnabled": "boolean",
     "rewardsBadgeHidden": "boolean",
+    "accountLinkedTimestamp": "null",
     "errorToast": {
       "actionText": "string",
       "description": "string",
