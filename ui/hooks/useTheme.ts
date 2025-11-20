@@ -21,22 +21,38 @@ export function useTheme() {
   const [theme, setTheme] = useState(settingTheme);
 
   useEffect(() => {
-    const result =
-      !settingTheme || settingTheme === ThemeType.os
-        ? document.documentElement.getAttribute('data-theme')
-        : settingTheme;
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+      .matches
+      ? ThemeType.dark
+      : ThemeType.light;
+
+    const documentTheme = document.documentElement.getAttribute('data-theme');
+
+    let resolvedTheme;
+    if (settingTheme === ThemeType.os) {
+      // When OS theme is selected, use system preference
+      resolvedTheme = systemTheme;
+    } else if (settingTheme) {
+      // When a specific theme is selected (light/dark)
+      resolvedTheme = settingTheme;
+    } else {
+      // Initial load: check document theme or fall back to system theme
+      resolvedTheme = documentTheme || systemTheme;
+    }
+
     const isValidTheme = validThemes.includes(
-      result as ThemeType.light | ThemeType.dark,
+      resolvedTheme as ThemeType.light | ThemeType.dark,
     );
 
     if (!isValidTheme) {
       console.warn(
-        `useTheme: Invalid theme resolved to "${result}". Defaulting to "${ThemeType.light}".`,
+        `useTheme: Invalid theme resolved to "${resolvedTheme}". Defaulting to "${ThemeType.light}".`,
       );
       setTheme(ThemeType.light);
+      return;
     }
 
-    setTheme(result);
+    setTheme(resolvedTheme);
   }, [settingTheme]);
 
   return theme;
