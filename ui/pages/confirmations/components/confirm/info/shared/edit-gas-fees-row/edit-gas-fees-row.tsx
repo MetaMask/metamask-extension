@@ -22,7 +22,6 @@ import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
-import { useSwapCheck } from '../../../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
@@ -43,7 +42,7 @@ export const EditGasFeesRow = ({
 }) => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, isQuotedSwapDisplayedInInfo } =
     useConfirmContext<TransactionMeta>();
 
   const showAdvancedDetails = useSelector(
@@ -59,7 +58,6 @@ export const EditGasFeesRow = ({
   const fiatValue = gasFeeToken ? gasFeeToken.amountFiat : fiatFee;
   const tokenValue = gasFeeToken ? gasFeeToken.amountFormatted : nativeFee;
   const metamaskFeeFiat = gasFeeToken?.metamaskFeeFiat;
-  const { isQuotedSwap } = useSwapCheck();
 
   const tooltip =
     gasFeeToken?.metaMaskFee && gasFeeToken.metaMaskFee !== '0x0'
@@ -103,12 +101,14 @@ export const EditGasFeesRow = ({
                 {t('paidByMetaMask')}
               </Text>
             )}
-            {!isQuotedSwap && !gasFeeToken && !isGasFeeSponsored && (
-              <EditGasIconButton
-                supportsEIP1559={supportsEIP1559}
-                setShowCustomizeGasPopover={setShowCustomizeGasPopover}
-              />
-            )}
+            {!isQuotedSwapDisplayedInInfo &&
+              !gasFeeToken &&
+              !isGasFeeSponsored && (
+                <EditGasIconButton
+                  supportsEIP1559={supportsEIP1559}
+                  setShowCustomizeGasPopover={setShowCustomizeGasPopover}
+                />
+              )}
             {showFiat && !showAdvancedDetails && !isGasFeeSponsored && (
               <FiatValue
                 fullValue={fiatFeeWith18SignificantDigits}

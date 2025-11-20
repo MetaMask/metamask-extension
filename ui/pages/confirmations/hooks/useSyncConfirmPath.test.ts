@@ -4,12 +4,17 @@ import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/p
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import useSyncConfirmPath from './useSyncConfirmPath';
 
-const mockHistoryReplace = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({ replace: mockHistoryReplace }),
-}));
+const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useParams: () => mockUseParams(),
+    useLocation: () => mockUseLocation(),
+  };
+});
 
 const STATE_MOCK = {
   ...mockState,
@@ -24,7 +29,19 @@ const STATE_MOCK = {
   },
 };
 
-describe('syncConfirmPath', () => {
+describe('useSyncConfirmPath', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // Default mock: on confirmation route with no params
+    mockUseLocation.mockReturnValue({
+      pathname: '/confirm-transaction',
+      search: '',
+      hash: '',
+      state: null,
+    });
+    mockUseParams.mockReturnValue({});
+  });
+
   it('should execute correctly', () => {
     const result = renderHookWithConfirmContextProvider(
       () => useSyncConfirmPath(unapprovedPersonalSignMsg),
@@ -34,11 +51,13 @@ describe('syncConfirmPath', () => {
   });
 
   it('should replace history route', () => {
-    mockHistoryReplace.mockClear();
     renderHookWithConfirmContextProvider(
       () => useSyncConfirmPath(unapprovedPersonalSignMsg),
       STATE_MOCK,
     );
-    expect(mockHistoryReplace).toHaveBeenCalled();
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/confirm-transaction/0050d5b0-c023-11ee-a0cb-3390a510a0ab/signature-request',
+      { replace: true },
+    );
   });
 });

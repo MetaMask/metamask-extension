@@ -14,11 +14,7 @@ import {
   setShowShieldEntryModalOnce,
   subscriptionsStartPolling,
 } from '../../store/actions';
-import {
-  getSelectedInternalAccount,
-  getUseExternalServices,
-} from '../../selectors';
-import { useAccountTotalFiatBalance } from '../../hooks/useAccountTotalFiatBalance';
+import { getUseExternalServices } from '../../selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
 import {
@@ -27,7 +23,6 @@ import {
 } from '../../selectors/subscription';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
-import { getUserBalanceCategory } from '../../../shared/modules/shield';
 import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 
@@ -61,14 +56,8 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   const hasShieldEntryModalShownOnce = useSelector(
     getHasShieldEntryModalShownOnce,
   );
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const { getSubscriptionEligibility: getShieldSubscriptionEligibility } =
     useSubscriptionEligibility(PRODUCT_TYPES.SHIELD);
-  const { totalFiatBalance } = useAccountTotalFiatBalance(
-    selectedAccount,
-    false,
-    true, // use USD conversion rate instead of the current currency
-  );
   const { captureShieldEligibilityCohortEvent } = useSubscriptionMetrics();
 
   /**
@@ -159,29 +148,15 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
           return;
         }
 
-        if (
-          !selectedAccount ||
-          !isSignedIn ||
-          !isUnlocked ||
-          hasShieldEntryModalShownOnce
-        ) {
+        if (!isSignedIn || !isUnlocked || hasShieldEntryModalShownOnce) {
           return;
         }
 
-        const balanceCategory = totalFiatBalance
-          ? getUserBalanceCategory(Number(totalFiatBalance))
-          : undefined;
-
-        const shieldEligibility = await getShieldSubscriptionEligibility({
-          balanceCategory,
-        });
+        const shieldEligibility = await getShieldSubscriptionEligibility();
 
         if (
           !shieldEligibility?.canSubscribe ||
-          !shieldEligibility.canViewEntryModal ||
-          !shieldEligibility.minBalanceUSD ||
-          !totalFiatBalance ||
-          Number(totalFiatBalance) < shieldEligibility.minBalanceUSD
+          !shieldEligibility.canViewEntryModal
         ) {
           return;
         }
@@ -265,11 +240,9 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       isMetaMaskShieldFeatureEnabled,
       isBasicFunctionalityEnabled,
       isShieldSubscriptionActive,
-      selectedAccount,
       isSignedIn,
       isUnlocked,
       hasShieldEntryModalShownOnce,
-      totalFiatBalance,
       getShieldSubscriptionEligibility,
       assignToCohort,
       captureShieldEligibilityCohortEvent,
@@ -280,7 +253,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     if (
       isMetaMaskShieldFeatureEnabled &&
       isBasicFunctionalityEnabled &&
-      selectedAccount &&
       isSignedIn &&
       isUnlocked
     ) {
@@ -290,7 +262,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   }, [
     isMetaMaskShieldFeatureEnabled,
     isSignedIn,
-    selectedAccount,
     dispatch,
     isUnlocked,
     isBasicFunctionalityEnabled,
