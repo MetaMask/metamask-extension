@@ -57,6 +57,7 @@ describe('Metamask onboarding (with social login)', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
+          .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
@@ -72,9 +73,9 @@ describe('Metamask onboarding (with social login)', function () {
         await importWalletWithSocialLoginOnboardingFlow({
           driver,
         });
-
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
