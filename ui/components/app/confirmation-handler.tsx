@@ -1,11 +1,18 @@
 import React, { useEffect, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONNECT_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   selectPendingApprovalsForNavigation,
@@ -27,6 +34,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 export const ConfirmationHandler = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const params = useParams<{ id?: string }>();
   const navState = useNavState();
   const isUnlocked = useSelector(getIsUnlocked);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
@@ -56,19 +64,47 @@ export const ConfirmationHandler = () => {
   const hasPendingConfirmations =
     pendingApprovals.length > 0 || approvalFlows?.length > 0;
 
+  // Extracted from home.component.js checkStatusAndNavigate
+  // Read stayOnHomePage from both v5 location.state and v5-compat navState
+  const stayOnHomePage = useMemo(
+    () =>
+      Boolean(
+        (location.state as { stayOnHomePage?: boolean })?.stayOnHomePage,
+      ) || Boolean(navState?.stayOnHomePage),
+    [location.state, navState],
+  );
+
+  const canRedirect = useMemo(
+    () => !isNotification && !stayOnHomePage,
+    [isNotification, stayOnHomePage],
+  );
+
+  const isOnConfirmationRoute = useMemo(
+    () =>
+      location.pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
+      location.pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
+      location.pathname.startsWith(CONNECT_ROUTE),
+    [location.pathname],
+  );
+
+  const currentConfirmationId = params.id;
+  const targetConfirmationId = pendingApprovals?.[0]?.id;
+  const isViewingPendingConfirmation = useMemo(
+    () =>
+      Boolean(
+        currentConfirmationId &&
+          targetConfirmationId &&
+          pendingApprovals.some(
+            (approval) => approval.id === currentConfirmationId,
+          ),
+      ),
+    [currentConfirmationId, targetConfirmationId, pendingApprovals],
+  );
+
   useEffect(() => {
     if (!isUnlocked) {
       return;
     }
-
-    // Extracted from home.component.js checkStatusAndNavigate
-    // Read stayOnHomePage from both v5 location.state and v5-compat navState
-    const stayOnHomePage =
-      Boolean(
-        (location.state as { stayOnHomePage?: boolean })?.stayOnHomePage,
-      ) || Boolean(navState?.stayOnHomePage);
-
-    const canRedirect = !isNotification && !stayOnHomePage;
 
     // Extracted from home.component.js checkStatusAndNavigate
     // Handle swap/bridge redirects first
@@ -85,9 +121,15 @@ export const ConfirmationHandler = () => {
       return;
     }
 
-    if (hasPendingConfirmations) {
+    // Only navigate to confirmations if we're not already on a confirmation route
+    // or viewing a pending confirmation
+    if (
+      hasPendingConfirmations &&
+      !isOnConfirmationRoute &&
+      !isViewingPendingConfirmation
+    ) {
       navigateToConfirmation(
-        pendingApprovals?.[0]?.id,
+        targetConfirmationId,
         pendingApprovals,
         Boolean(approvalFlows?.length),
         navigate,
@@ -96,20 +138,19 @@ export const ConfirmationHandler = () => {
       );
     }
   }, [
-    location.pathname,
-    location.state,
-    navState,
     isUnlocked,
+    canRedirect,
+    showAwaitingSwapScreen,
+    haveSwapsQuotes,
+    swapsFetchParams,
+    haveBridgeQuotes,
+    hasPendingConfirmations,
+    isOnConfirmationRoute,
+    isViewingPendingConfirmation,
+    targetConfirmationId,
     pendingApprovals,
     approvalFlows,
-    swapsRouteState,
-    swapsFetchParams,
-    haveSwapsQuotes,
-    haveBridgeQuotes,
-    showAwaitingSwapScreen,
-    hasPendingConfirmations,
     navigate,
-    isNotification,
   ]);
 
   return null;
