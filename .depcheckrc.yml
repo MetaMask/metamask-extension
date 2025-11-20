@@ -82,7 +82,6 @@ ignores:
   - 'path-browserify' # polyfill
   - 'nyc' # coverage
   - 'core-js-pure' # polyfills
-  - 'react-compiler-webpack'
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
   - 'babel-plugin-react-compiler'
