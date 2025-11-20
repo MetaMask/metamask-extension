@@ -38,22 +38,17 @@
 
   &-shield-illustration {
     &__container {
-      height: 200px;
-      width: 247px;
+      height: 252px;
+      width: 346px;
+      @include design-system.screen-sm-max {
+        height: 234px;
+        width: 322px;
+      }
     }
 
     &__canvas {
       height: 100%;
       width: 100%;
-    }
-  }
-
-  &-sheild-image {
-    width: 346px;
-    height: 252px;
-
-    @include design-system.screen-sm-max {
-      width: 322px;
     }
   }
 }
