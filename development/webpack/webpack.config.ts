@@ -45,7 +45,6 @@ if (args.dryRun) {
 }
 
 const context = join(__dirname, '../../app');
-const html = join(__dirname, '../../app/html');
 const nodeModules = join(__dirname, '../../node_modules');
 const isDevelopment = args.env === 'development';
 const MANIFEST_VERSION = args.manifest_version;
@@ -96,7 +95,7 @@ const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 const plugins: WebpackPluginInstance[] = [
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
-    preprocessorOptions: { useWith: false, views: html },
+    preprocessorOptions: { useWith: false },
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },

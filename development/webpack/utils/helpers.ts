@@ -80,7 +80,7 @@ export const extensionToJs = (filename: string) =>
  * that were added to it.
  */
 export function collectEntries(manifest: Manifest, appRoot: string) {
-  const htmlRoot = join(appRoot, 'html', 'page');
+  const htmlPages = join(appRoot, 'html', 'pages');
   const entry: EntryObject = {};
   /**
    * Scripts that must be self-contained and not split into chunks.
@@ -107,7 +107,7 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
 
   function addHtml(filename: string) {
     const parsedFileName = parse(filename).name;
-    entry[parsedFileName] = join(htmlRoot, filename);
+    entry[parsedFileName] = join(htmlPages, filename);
   }
 
   // add content_scripts to entries
@@ -144,7 +144,7 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     }
   }
 
-  for (const filename of readdirSync(htmlRoot)) {
+  for (const filename of readdirSync(htmlPages)) {
     // ignore non-htm/html files
     if (/\.html?$/iu.test(filename)) {
       // ignore background.html for MV2 as it was already handled above.
