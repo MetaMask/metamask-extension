@@ -24,15 +24,19 @@
     }
 
     &--active {
-      background-color: var(--color-accent03-dark);
+      background: var(--color-accent03-dark);
     }
 
     &--loading {
-      background-color: var(--color-border-muted);
+      background: var(--color-border-muted);
     }
 
     &--inactive {
-      background-color: var(--color-background-subsection);
+      background: var(--color-background-subsection);
+      background-size: 85px;
+      background-image: url('/images/shield-membership-shadow.png');
+      background-repeat: no-repeat;
+      background-position: right -10px center;
 
       &-light {
         background-color: var(--shield-membership-inactive-light);
