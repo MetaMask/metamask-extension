@@ -1301,7 +1301,7 @@ function renderHtmlFile({
 
   const scriptTags = scripts.join('\n    ');
 
-  const htmlFilePath = `./app/${htmlName}.html`;
+  const htmlFilePath = `./app/html/pages/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
   const eta = new Eta({ views: './app/' });
