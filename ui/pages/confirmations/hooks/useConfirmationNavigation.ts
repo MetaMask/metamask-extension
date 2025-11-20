@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
@@ -33,7 +33,7 @@ const CONNECT_APPROVAL_TYPES = [
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
-  const history = useHistory();
+  const navigate = useNavigate();
   const { search: queryString } = useLocation();
   const count = confirmations.length;
 
@@ -54,11 +54,12 @@ export function useConfirmationNavigation() {
         confirmationId,
         confirmations,
         Boolean(approvalFlows?.length),
-        history,
+        navigate,
         queryString,
+        undefined, // currentPathname not needed here as navigate already handles it
       );
     },
-    [confirmations, history, queryString],
+    [approvalFlows?.length, confirmations, navigate, queryString],
   );
 
   const navigateToIndex = useCallback(
@@ -96,13 +97,43 @@ export function navigateToConfirmation(
   confirmationId: string | undefined,
   confirmations: ApprovalRequest<Record<string, Json>>[],
   hasApprovalFlows: boolean,
-  history: ReturnType<typeof useHistory>,
+  navigateOrHistory:
+    | ReturnType<typeof useNavigate>
+    | { push: (path: string) => void; replace: (path: string) => void },
   queryString: string = '',
+  currentPathname?: string,
 ) {
+  // Helper function to handle both navigate (v5-compat) and history (v5) APIs
+  const navigateTo = (path: string, replace = true) => {
+    // Skip navigation if we're already on the target path (compare pathnames only)
+    if (currentPathname) {
+      // Extract pathname from path (strip query params and hash)
+      const targetPathname = path.split(/[?#]/u)[0];
+      if (currentPathname === targetPathname) {
+        return;
+      }
+    }
+
+    if (
+      'replace' in navigateOrHistory &&
+      typeof navigateOrHistory.replace === 'function'
+    ) {
+      // v5 history API
+      if (replace) {
+        navigateOrHistory.replace(path);
+      } else {
+        navigateOrHistory.push(path);
+      }
+    } else {
+      // v5-compat navigate API
+      (navigateOrHistory as ReturnType<typeof useNavigate>)(path, { replace });
+    }
+  };
+
   const hasNoConfirmations = confirmations?.length <= 0 || !confirmationId;
 
   if (hasApprovalFlows && hasNoConfirmations) {
-    history.replace(`${CONFIRMATION_V_NEXT_ROUTE}`);
+    navigateTo(`${CONFIRMATION_V_NEXT_ROUTE}`);
     return;
   }
 
@@ -121,12 +152,12 @@ export function navigateToConfirmation(
   const type = nextConfirmation.type as ApprovalType;
 
   if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
-    history.replace(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`);
+    navigateTo(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`);
     return;
   }
 
   if (isSignatureTransactionType(nextConfirmation)) {
-    history.replace(
+    navigateTo(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${SIGNATURE_REQUEST_PATH}`,
     );
     return;
@@ -137,31 +168,31 @@ export function navigateToConfirmation(
     if (queryString.length) {
       url = `${url}${queryString}`;
     }
-    history.replace(url);
+    navigateTo(url);
     return;
   }
 
   if (type === ApprovalType.AddEthereumChain) {
-    history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
+    navigateTo(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
     return;
   }
 
   if (type === ApprovalType.EthDecrypt) {
-    history.replace(
+    navigateTo(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${DECRYPT_MESSAGE_REQUEST_PATH}`,
     );
     return;
   }
 
   if (type === ApprovalType.EthGetEncryptionPublicKey) {
-    history.replace(
+    navigateTo(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
     );
     return;
   }
 
   if (CONNECT_APPROVAL_TYPES.includes(type)) {
-    history.replace(`${CONNECT_ROUTE}/${confirmationId}`);
+    navigateTo(`${CONNECT_ROUTE}/${confirmationId}`);
     return;
   }
 
@@ -170,11 +201,11 @@ export function navigateToConfirmation(
   )?.tokenId as string;
 
   if (type === ApprovalType.WatchAsset && !tokenId) {
-    history.replace(`${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`);
+    navigateTo(`${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`);
     return;
   }
 
   if (type === ApprovalType.WatchAsset && tokenId) {
-    history.replace(`${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`);
+    navigateTo(`${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`);
   }
 }

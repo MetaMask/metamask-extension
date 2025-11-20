@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -18,7 +18,10 @@ import {
 import { Content, Header, Page } from '../../page';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { REVIEW_GATOR_PERMISSIONS_ROUTE } from '../../../../../helpers/constants/routes';
+import {
+  PREVIOUS_ROUTE,
+  REVIEW_GATOR_PERMISSIONS_ROUTE,
+} from '../../../../../helpers/constants/routes';
 import { PermissionGroupListItem } from '../components';
 import {
   AppState,
@@ -27,10 +30,25 @@ import {
 } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { getDisplayOrigin, safeDecodeURIComponent } from '../helper';
 
-export const TokenTransferPage = () => {
+type TokenTransferPageProps = {
+  params?: { origin?: string };
+  navigate?: (
+    to: string | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => void;
+};
+
+export const TokenTransferPage = ({
+  params,
+  navigate: navigateProp,
+}: TokenTransferPageProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const urlParams = useParams<{ origin?: string }>();
+  const navigateHook = useNavigate();
+  const navigate = (navigateProp || navigateHook) as NonNullable<
+    typeof navigateProp
+  >;
+  const urlParamsHook = useParams<{ origin?: string }>();
+  const urlParams = params || urlParamsHook;
   const origin = urlParams.origin
     ? safeDecodeURIComponent(urlParams.origin)
     : undefined;
@@ -49,9 +67,7 @@ export const TokenTransferPage = () => {
 
   const handlePermissionGroupItemClick = (chainId: Hex) => {
     const baseRoute = `${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/${permissionGroupName}`;
-    history.push(
-      origin ? `${baseRoute}/${encodeURIComponent(origin)}` : baseRoute,
-    );
+    navigate(origin ? `${baseRoute}/${encodeURIComponent(origin)}` : baseRoute);
   };
 
   const renderPageContent = () =>
@@ -85,7 +101,7 @@ export const TokenTransferPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.IconDefault}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             size={ButtonIconSize.Sm}
           />
         }

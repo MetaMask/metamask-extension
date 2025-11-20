@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -36,18 +36,31 @@ import {
   getAggregatedGatorPermissionByChainIdAndOrigin,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { ReviewGatorPermissionItem } from '../components';
+import { PREVIOUS_ROUTE } from '../../../../../helpers/constants/routes';
 
-export const ReviewGatorPermissionsPage = () => {
+type ReviewGatorPermissionsPageProps = {
+  params?: { chainId: string; permissionGroupName: string; origin?: string };
+  navigate?: (
+    to: string | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => void;
+};
+
+export const ReviewGatorPermissionsPage = ({
+  params,
+  navigate: navigateProp,
+}: ReviewGatorPermissionsPageProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const urlParams = useParams<{
+  const navigateHook = useNavigate();
+  const navigate = navigateProp || navigateHook;
+  const urlParamsHook = useParams<{
     chainId: string;
+    permissionGroupName: string;
     origin?: string;
   }>();
-  const { chainId } = urlParams;
-  const origin = urlParams.origin
-    ? safeDecodeURIComponent(urlParams.origin)
-    : undefined;
+
+  const { chainId, origin } = params || urlParamsHook;
+  const originDecoded = origin ? safeDecodeURIComponent(origin) : undefined;
 
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -71,11 +84,11 @@ export const ReviewGatorPermissionsPage = () => {
 
   // Get permissions - filtered by origin if provided, otherwise all
   const gatorPermissions = useSelector((state: AppState) =>
-    origin
+    originDecoded
       ? getAggregatedGatorPermissionByChainIdAndOrigin(state, {
           aggregatedPermissionType: 'token-transfer',
           chainId: chainId as Hex,
-          siteOrigin: origin,
+          siteOrigin: originDecoded,
         })
       : getAggregatedGatorPermissionByChainId(state, {
           aggregatedPermissionType: 'token-transfer',
@@ -135,7 +148,7 @@ export const ReviewGatorPermissionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.IconDefault}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             size={ButtonIconSize.Sm}
           />
         }

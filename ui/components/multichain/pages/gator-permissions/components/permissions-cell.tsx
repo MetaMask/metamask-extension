@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Box,
   BoxBackgroundColor,
@@ -29,7 +29,7 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
   origin,
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const allNetworksWithPermissions = allNetworks.filter(({ chainId }) =>
@@ -58,7 +58,7 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
         paddingBottomValue={0}
         paddingTopValue={0}
         onClick={() =>
-          history.push(
+          navigate(
             origin
               ? `${TOKEN_TRANSFER_ROUTE}/${encodeURIComponent(origin)}`
               : TOKEN_TRANSFER_ROUTE,
