@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux';
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
+import { Tab, Tabs } from '../../../../../components/ui/tabs';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 import { useDappSwapComparisonMetrics } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonMetrics';
 import { useDappSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapCheck';
@@ -23,7 +24,6 @@ import { useDappSwapComparisonRewardText } from '../../../hooks/transactions/dap
 import { useDappSwapContext } from '../../../context/dapp-swap';
 import { QuoteSwapSimulationDetails } from '../../transactions/quote-swap-simulation-details/quote-swap-simulation-details';
 import { NetworkRow } from '../info/shared/network-row/network-row';
-import { Tab, Tabs } from '../../../../../components/ui/tabs';
 
 const DAPP_SWAP_THRESHOLD = 0.01;
 
