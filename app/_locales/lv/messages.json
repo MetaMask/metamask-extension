@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Skatīt kontu ar Etherscan"
   },
-  "expandView": {
-    "message": "Izvērst skatījumu"
-  },
   "failed": {
     "message": "Neizdevās"
   },

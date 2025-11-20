@@ -7,19 +7,32 @@ Disabling Stylelint's hex color rule here because the TypeScript migration dashb
     border-radius: 8px;
   }
 
-  &_highlighted-button {
+  &_rounded-button {
     border-radius: 8px;
-    width: 50%;
   }
 
   &_text-button {
-    background: linear-gradient(89.59deg, #96c33c 0.16%, #ff8a2a 105.84%);
-    background-clip: text;
-    color: transparent;
+    &:hover {
+      background-color: transparent !important;
+    }
+  }
+
+  &_mm-swap-button {
+    color: var(--color-success-default);
     width: 50%;
 
     &:hover {
-      color: transparent !important;
+      color: var(--color-success-default) !important;
+      text-decoration: none !important;
+    }
+  }
+
+  &_dapp-swap-button {
+    color: var(--color-text-default);
+    width: 50%;
+
+    &:hover {
+      color: var(--color-text-default) !important;
       text-decoration: none !important;
     }
   }
@@ -40,7 +53,6 @@ Disabling Stylelint's hex color rule here because the TypeScript migration dashb
   }
 
   &_text-save {
-    color: #c9f570;
     margin-bottom: 4px;
   }
 

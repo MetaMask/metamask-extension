@@ -122,10 +122,35 @@ class HeaderNavbar {
     await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
   }
 
-  async openPermissionsPage(): Promise<void> {
+  /**
+   * Opens the permissions page.
+   * Handles both flows:
+   * - Regular flow: Click "All Permissions" → Goes directly to Permissions Page
+   * - Gator flow (Flask): Click "All Permissions" → Gator Permissions Page → Click "Sites" → Permissions Page
+   *
+   * @param options - Optional configuration
+   * @param options.skipSitesNavigation - If true, stops at Gator Permissions Page without clicking "Sites" (only relevant for Gator flow)
+   */
+  async openPermissionsPage(options?: {
+    skipSitesNavigation?: boolean;
+  }): Promise<void> {
     console.log('Open permissions page in header navbar');
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.allPermissionsButton);
+
+    // Check if we landed on Gator Permissions Page (intermediate page for Flask builds)
+    // If so, we need to click "Sites" to get to the actual Permissions Page
+    const isGatorPermissionsPage = await this.driver
+      .findElement('[data-testid="gator-permissions-page"]')
+      .then(() => true)
+      .catch(() => false);
+
+    if (isGatorPermissionsPage && !options?.skipSitesNavigation) {
+      console.log(
+        'Detected Gator Permissions Page, clicking "Sites" to navigate to Permissions Page',
+      );
+      await this.driver.clickElement({ text: 'Sites', tag: 'p' });
+    }
   }
 
   async openSnapListPage(): Promise<void> {

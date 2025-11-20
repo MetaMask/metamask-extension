@@ -13,7 +13,8 @@ import { MetamaskNotificationsProvider } from '../contexts/metamask-notification
 import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
-import { RewardsProvider } from '../contexts/rewards';
+import { NavigationStateProvider } from '../contexts/navigation-state';
+import RiveWasmProvider from '../contexts/rive-wasm';
 import ErrorPage from './error-page/error-page.component';
 
 import Routes from './routes';
@@ -49,25 +50,27 @@ class Index extends PureComponent {
       <Provider store={store}>
         <HashRouter hashType="noslash">
           <CompatRouter>
-            <MetaMetricsProvider>
-              <LegacyMetaMetricsProvider>
-                <I18nProvider>
-                  <LegacyI18nProvider>
-                    <AssetPollingProvider>
-                      <MetamaskIdentityProvider>
-                        <MetamaskNotificationsProvider>
-                          <ShieldSubscriptionProvider>
-                            <RewardsProvider>
-                              <Routes />
-                            </RewardsProvider>
-                          </ShieldSubscriptionProvider>
-                        </MetamaskNotificationsProvider>
-                      </MetamaskIdentityProvider>
-                    </AssetPollingProvider>
-                  </LegacyI18nProvider>
-                </I18nProvider>
-              </LegacyMetaMetricsProvider>
-            </MetaMetricsProvider>
+            <NavigationStateProvider>
+              <MetaMetricsProvider>
+                <LegacyMetaMetricsProvider>
+                  <I18nProvider>
+                    <LegacyI18nProvider>
+                      <AssetPollingProvider>
+                        <MetamaskIdentityProvider>
+                          <MetamaskNotificationsProvider>
+                            <ShieldSubscriptionProvider>
+                              <RiveWasmProvider>
+                                <Routes />
+                              </RiveWasmProvider>
+                            </ShieldSubscriptionProvider>
+                          </MetamaskNotificationsProvider>
+                        </MetamaskIdentityProvider>
+                      </AssetPollingProvider>
+                    </LegacyI18nProvider>
+                  </I18nProvider>
+                </LegacyMetaMetricsProvider>
+              </MetaMetricsProvider>
+            </NavigationStateProvider>
           </CompatRouter>
         </HashRouter>
       </Provider>

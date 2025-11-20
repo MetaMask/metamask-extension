@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { PRIVATE_KEY_TWO, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { DAPP_PATH, DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
@@ -13,15 +14,39 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { sendRedesignedTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
+async function mockSnapSimpleKeyringAndSiteWithSpotPrices(
+  mockServer: Mockttp,
+  port: number = 8080,
+) {
+  const snapMocks = await mockSnapSimpleKeyringAndSite(mockServer, port);
+  const spotPricesMock = await mockServer
+    .forGet(
+      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+    )
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        '0x0000000000000000000000000000000000000000': {
+          id: 'ethereum',
+          price: 1700,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+
+  return [...snapMocks, spotPricesMock];
+}
+
 describe('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
+        fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockSnapSimpleKeyringAndSiteWithSpotPrices,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -68,7 +93,7 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
+        testSpecificMock: mockSnapSimpleKeyringAndSiteWithSpotPrices,
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
@@ -119,7 +144,7 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
+        testSpecificMock: mockSnapSimpleKeyringAndSiteWithSpotPrices,
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },

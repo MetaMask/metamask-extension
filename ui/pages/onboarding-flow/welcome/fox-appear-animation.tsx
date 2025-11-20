@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   useRive,
   useRiveFile,
@@ -7,7 +7,10 @@ import {
   Alignment,
 } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
-import { waitForWasmReady } from '../rive-wasm';
+import {
+  useRiveWasmContext,
+  useRiveWasmFile,
+} from '../../../contexts/rive-wasm';
 
 type FoxAppearAnimationProps = {
   isLoader: boolean;
@@ -21,54 +24,29 @@ export default function FoxAppearAnimation({
   skipTransition = false,
 }: FoxAppearAnimationProps) {
   const isTestEnvironment = Boolean(process.env.IN_TEST);
-  const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
-  const [buffer, setBuffer] = useState<ArrayBuffer | undefined>(undefined);
 
-  // Check if WASM is ready (initialized in parent OnboardingFlow)
+  const context = useRiveWasmContext();
+  const { isWasmReady, error: wasmError } = context;
+  const {
+    buffer,
+    error: bufferError,
+    loading: bufferLoading,
+  } = useRiveWasmFile('./images/riv_animations/fox_appear.riv');
+
   useEffect(() => {
-    if (isTestEnvironment) {
-      setIsWasmReady(true);
-      return undefined;
+    if (wasmError) {
+      console.error(
+        '[Rive - FoxAppearAnimation] Failed to load WASM:',
+        wasmError,
+      );
     }
-
-    // Wait for WASM to be ready using promise instead of polling
-    waitForWasmReady()
-      .then(() => {
-        console.log('[Rive Fox] WASM is ready');
-        setIsWasmReady(true);
-      })
-      .catch((error) => {
-        console.error('[Rive Fox] WASM failed to load:', error);
-      });
-
-    return undefined;
-  }, [isTestEnvironment]);
-
-  // Fetch the .riv file and convert to ArrayBuffer
-  useEffect(() => {
-    if (!isWasmReady || isTestEnvironment || buffer) {
-      return;
+    if (bufferError) {
+      console.error(
+        '[Rive - FoxAppearAnimation] Failed to load buffer:',
+        bufferError,
+      );
     }
-
-    fetch('./images/riv_animations/fox_appear.riv')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.arrayBuffer();
-      })
-      .then((arrayBuffer) => {
-        // Only set buffer if it has content
-        if (arrayBuffer.byteLength > 0) {
-          setBuffer(arrayBuffer);
-        } else {
-          console.warn('[Rive Fox] Empty buffer received, skipping animation');
-        }
-      })
-      .catch((error) => {
-        console.error('[Rive Fox] Failed to load .riv file:', error);
-      });
-  }, [isWasmReady, buffer, isTestEnvironment]);
+  }, [wasmError, bufferError]);
 
   // Use the buffer parameter instead of src
   const { riveFile, status } = useRiveFile({
@@ -88,7 +66,7 @@ export default function FoxAppearAnimation({
 
   // Trigger the animation start when rive is loaded and WASM is ready
   useEffect(() => {
-    if (rive && isWasmReady) {
+    if (rive && isWasmReady && !bufferLoading && buffer) {
       // Get the state machine inputs
       const inputs = rive.stateMachineInputs('FoxRaiseUp');
 
@@ -122,23 +100,17 @@ export default function FoxAppearAnimation({
         rive.play();
       }
     }
-  }, [rive, isLoader, isWasmReady, skipTransition]);
-
-  if (isTestEnvironment) {
-    return (
-      <Box
-        className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
-      >
-        {isLoader && <Box className="riv-animation__spinner" />}
-      </Box>
-    );
-  }
+  }, [rive, isLoader, isWasmReady, skipTransition, bufferLoading, buffer]);
 
   // Don't render Rive component until ready or if loading/failed
-  if (!isWasmReady || status === 'loading' || status === 'failed') {
-    if (status === 'failed') {
-      console.error('[Rive Fox] Failed to load .riv file');
-    }
+  if (
+    !isWasmReady ||
+    bufferLoading ||
+    !buffer ||
+    status === 'loading' ||
+    status === 'failed' ||
+    isTestEnvironment
+  ) {
     return (
       <Box
         className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}

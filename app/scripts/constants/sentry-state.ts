@@ -92,6 +92,7 @@ export const SENTRY_BACKGROUND_STATE = {
     lastUpdatedAt: true,
     shieldEndingToastLastClickedOrClosed: true,
     shieldPausedToastLastClickedOrClosed: true,
+    isWalletResetInProgress: false,
   },
   MultichainBalancesController: {
     balances: false,

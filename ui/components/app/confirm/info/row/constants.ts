@@ -19,6 +19,7 @@ export enum RowAlertKey {
 
 export enum AlertActionKey {
   Buy = 'buy',
+  InteractingWith = 'interactingWith',
   ShowAdvancedGasFeeModal = 'showAdvancedGasModal',
   ShowGasFeeModal = 'showGasFeeModal',
   ShowPendingConfirmation = 'showPendingConfirmation',

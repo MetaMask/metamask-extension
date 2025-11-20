@@ -48,8 +48,10 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
           style={{ maxWidth: '650px' }}
           width={BlockSize.Full}
         >
-          <Header />
-          {children}
+          <Box className="redesigned__send__sticky-header">
+            <Header />
+          </Box>
+          <Box className="redesigned__send__content-wrapper">{children}</Box>
         </Box>
       </Box>
     </Box>

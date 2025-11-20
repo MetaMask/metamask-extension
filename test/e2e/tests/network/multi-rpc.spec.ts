@@ -20,6 +20,7 @@ import {
 import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
 import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
@@ -36,6 +37,22 @@ describe('MultiRpc:', function (this: Suite) {
               id: '1694444405781',
               jsonrpc: '2.0',
               result: '0xa4b1',
+            },
+          })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(
+            /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+          )
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              '0x0000000000000000000000000000000000000000': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
             },
           })),
       ];
@@ -155,6 +172,22 @@ describe('MultiRpc:', function (this: Suite) {
               result: '0xa4b1',
             },
           })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(
+            /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+          )
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              '0x0000000000000000000000000000000000000000': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            },
+          })),
       ];
     }
     await withFixtures(
@@ -253,6 +286,22 @@ describe('MultiRpc:', function (this: Suite) {
               result: '0xa4b1',
             },
           })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(
+            /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+          )
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              '0x0000000000000000000000000000000000000000': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            },
+          })),
       ];
     }
     await withFixtures(
@@ -337,6 +386,22 @@ describe('MultiRpc:', function (this: Suite) {
               id: '1694444405781',
               jsonrpc: '2.0',
               result: '0xa4b1',
+            },
+          })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(
+            /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+          )
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              '0x0000000000000000000000000000000000000000': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
             },
           })),
       ];
@@ -431,6 +496,10 @@ describe('MultiRpc:', function (this: Suite) {
 
         // finish onboarding and check the network successfully edited message is displayed
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
