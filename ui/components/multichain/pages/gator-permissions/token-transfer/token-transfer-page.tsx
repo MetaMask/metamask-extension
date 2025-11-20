@@ -16,7 +16,10 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import { Content, Header, Page } from '../../page';
-import { BackgroundColor } from '../../../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  TextVariant as TextVariantLocal,
+} from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   PREVIOUS_ROUTE,
@@ -105,16 +108,14 @@ export const TokenTransferPage = ({
             size={ButtonIconSize.Sm}
           />
         }
+        textProps={{
+          variant: TextVariantLocal.headingMd,
+          'data-testid': 'token-transfer-page-title',
+        }}
       >
-        <Text
-          variant={TextVariant.HeadingMd}
-          textAlign={TextAlign.Center}
-          data-testid="token-transfer-page-title"
-        >
-          {origin
-            ? `${getDisplayOrigin(origin, false)}: ${t('tokenTransfer')}`
-            : t('tokenTransfer')}
-        </Text>
+        {origin
+          ? `${getDisplayOrigin(origin, false)}: ${t('tokenTransfer')}`
+          : t('tokenTransfer')}
       </Header>
       <Content padding={0}>
         {permissionGroupMetaData.length > 0 ? (
