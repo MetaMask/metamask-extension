@@ -8,7 +8,7 @@ import {
   calculateBalanceChangeForAccountGroup,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
-import { CaipAssetId } from '@metamask/keyring-api';
+import { CaipAssetId, TrxScope } from '@metamask/keyring-api';
 import {
   CaipAssetType,
   CaipChainId,
@@ -29,6 +29,7 @@ import type {
   CurrencyRateState,
   BalanceChangePeriod,
   BalanceChangeResult,
+  Asset,
 } from '@metamask/assets-controllers';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
@@ -41,6 +42,10 @@ import {
 } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
+import {
+  TRON_RESOURCE_SYMBOLS_SET,
+  TronResourceSymbol,
+} from '../../shared/constants/multichain/assets';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -1040,8 +1045,34 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
       ...multichainState,
     };
   },
-  (assetListState: AssetListState) =>
-    selectAssetsBySelectedAccountGroup(assetListState),
+  (assetListState: AssetListState) => {
+    const assetsByAccountGroup =
+      selectAssetsBySelectedAccountGroup(assetListState);
+
+    // Filter Tron tokens
+    const newAssetsByAccountGroup = { ...assetsByAccountGroup };
+    Object.values(TrxScope).forEach((tronChainId) => {
+      if (!newAssetsByAccountGroup[tronChainId]) {
+        return;
+      }
+
+      newAssetsByAccountGroup[tronChainId] = newAssetsByAccountGroup[
+        tronChainId
+      ].filter((asset: Asset) => {
+        if (
+          asset.chainId.startsWith('tron:') &&
+          TRON_RESOURCE_SYMBOLS_SET.has(
+            asset.symbol?.toLowerCase() as TronResourceSymbol,
+          )
+        ) {
+          return false;
+        }
+        return true;
+      });
+    });
+
+    return newAssetsByAccountGroup;
+  },
 );
 
 export const getAsset = createSelector(
