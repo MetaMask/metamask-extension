@@ -197,18 +197,28 @@ describe('<DappSwapComparisonBanner />', () => {
       selectedQuoteValueDifference: 0.1,
       gasDifference: 0.01,
       tokenAmountDifference: 0.01,
+      destinationTokenSymbol: 'TEST',
     } as unknown as ReturnType<typeof useDappSwapComparisonInfo>);
-    const { getByText } = render();
-    const quoteSwapButton = getByText('Market rate');
-    fireEvent.click(quoteSwapButton);
-    expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenCalledTimes(1);
+    const { getByTestId } = render();
+    const metamaskSwapTab = getByTestId('metamask-swap-tab');
+    fireEvent.click(metamaskSwapTab);
+    const marketRateTab = getByTestId('market-rate-tab');
+    fireEvent.click(marketRateTab);
+    expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenCalledTimes(2);
+    expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenNthCalledWith(1, true);
+    expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenNthCalledWith(2, false);
     expect(
       mockCaptureDappSwapComparisonDisplayProperties,
-    ).toHaveBeenCalledTimes(1);
+    ).toHaveBeenCalledTimes(2);
     expect(
       mockCaptureDappSwapComparisonDisplayProperties,
     ).toHaveBeenNthCalledWith(1, {
       swap_mm_cta_displayed: 'true',
+    });
+    expect(
+      mockCaptureDappSwapComparisonDisplayProperties,
+    ).toHaveBeenNthCalledWith(2, {
+      swap_mm_opened: 'true',
     });
   });
 

@@ -3,15 +3,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   BoxBackgroundColor,
-  BoxBorderColor,
-  Button,
   ButtonIcon,
   ButtonIconSize,
-  ButtonSize,
-  ButtonVariant,
   IconName,
   Text,
-  TextButton,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -28,6 +23,7 @@ import { useDappSwapComparisonRewardText } from '../../../hooks/transactions/dap
 import { useDappSwapContext } from '../../../context/dapp-swap';
 import { QuoteSwapSimulationDetails } from '../../transactions/quote-swap-simulation-details/quote-swap-simulation-details';
 import { NetworkRow } from '../info/shared/network-row/network-row';
+import { Tab, Tabs } from '../../../../../components/ui/tabs';
 
 const DAPP_SWAP_THRESHOLD = 0.01;
 
@@ -40,44 +36,6 @@ const enum SwapType {
   Current = 'current',
   Metamask = 'metamask',
 }
-
-const enum SwapButtonType {
-  Text = 'text',
-  ButtonType = 'button',
-}
-
-const SwapButton = ({
-  className = '',
-  type,
-  label,
-  onClick,
-}: {
-  className?: string;
-  type: SwapButtonType;
-  label: string;
-  onClick: () => void;
-}) => {
-  if (type === SwapButtonType.ButtonType) {
-    return (
-      <Button
-        className={`dapp-swap_rounded-button ${className}`}
-        size={ButtonSize.Md}
-        variant={ButtonVariant.Secondary}
-        onClick={onClick}
-      >
-        {label}
-      </Button>
-    );
-  }
-  return (
-    <TextButton
-      className={`dapp-swap_text-button ${className}`}
-      onClick={onClick}
-    >
-      {label}
-    </TextButton>
-  );
-};
 
 const DappSwapComparisonInner = () => {
   const t = useI18nContext();
@@ -162,41 +120,38 @@ const DappSwapComparisonInner = () => {
 
   return (
     <Box>
-      <Box
-        borderColor={BoxBorderColor.BorderMuted}
-        borderWidth={1}
-        className="dapp-swap_wrapper"
-        marginBottom={4}
-        marginTop={2}
-        padding={1}
+      <Tabs
+        defaultActiveTabKey="marketRate"
+        onTabClick={(tabKey) => {
+          if (tabKey === 'marketRate') {
+            updateSwapToCurrent();
+          } else if (tabKey === 'mmswap') {
+            updateSwapToSelectedQuote();
+          }
+        }}
+        tabListProps={{
+          className: 'dapp-swap__tabs',
+        }}
       >
-        <SwapButton
-          className="dapp-swap_dapp-swap-button"
-          type={
-            selectedSwapType === SwapType.Current
-              ? SwapButtonType.ButtonType
-              : SwapButtonType.Text
-          }
-          onClick={updateSwapToCurrent}
-          label={t('marketRate')}
+        <Tab
+          tabKey="marketRate"
+          name={t('marketRate')}
+          className="flex-1"
+          data-testid="market-rate-tab"
         />
-        <SwapButton
-          className="dapp-swap_mm-swap-button"
-          type={
-            selectedSwapType === SwapType.Metamask
-              ? SwapButtonType.ButtonType
-              : SwapButtonType.Text
-          }
-          onClick={updateSwapToSelectedQuote}
-          label={t('metamaskSwap')}
+        <Tab
+          tabKey="mmswap"
+          name={t('metamaskSwap')}
+          className="flex-1"
+          data-testid="metamask-swap-tab"
         />
-      </Box>
+      </Tabs>
       {showDappSwapComparisonBanner && dappTypeSelected && (
         <Box
           className="dapp-swap_callout"
-          backgroundColor={BoxBackgroundColor.BackgroundAlternative}
+          backgroundColor={BoxBackgroundColor.BackgroundSection}
           marginBottom={4}
-          padding={4}
+          padding={3}
           role="button"
           onClick={updateSwapToSelectedQuote}
         >
