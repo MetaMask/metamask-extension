@@ -327,7 +327,7 @@ class ConnectHardwareForm extends Component {
       mostRecentOverviewPage,
       unlockHardwareWalletAccounts,
       hdEntropyIndex,
-      this.props;
+    } = this.props;
     const { selectedAccounts } = this.state;
     const { trackEvent } = this.context;
 
@@ -537,6 +537,7 @@ ConnectHardwareForm.propTypes = {
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
   ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
+  hdEntropyIndex: PropTypes.number,
   keyrings: PropTypes.array.isRequired,
 };
 
