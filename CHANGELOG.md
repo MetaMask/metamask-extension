@@ -7,6 +7,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.11.0]
+
+### Added
+
+- feat: added metrics for advanced expanded view (#37969)
+- Allow add rewards account in swaps flow (#38000)
+- Change Omni Network name and logo to Nomina with native currency NOM (#37930)
+- Added a new label "no network fee" to gas fees sponsored networks (#36227)
+  Added a new label "Paid by MetaMask" to swap quotes for
+  gas fees sponsored networks
+- Fixed extra scroll on claims-form (#37931)
+- Added a dialog when user tries to disconnect from site to also show and revoke permissions granted to the site (#36776)
+- Minor UI fixes and updates for shield settings and coverage footer (#37927)
+- Fix shield modal scroll font and spacing (#37928)
+- Update shield entry modal status only when user has interacted (#37925)
+- Added hyperevm network logo and native token Added hyperevm network in additional network list (#37684)
+  Update injective logo
+- Adds "Daily resources" section to TRX token details (#37894)
+- Fixed error handling for social login `MaxKeyChainLengthExceeded` error (#37881)
+- Added a new Token Insights modal to enhance token verification accessibility (#37469)
+- Added sidepanel icon (#37777)
+- Add QrCode View to Rewards onboarding (#37959)
+
+### Fixed
+
+- Removed Sei from default networks and added QuickNode fallback RPC (#37681)
+- Remove all usage of crypto compare (#37884)
+- Detect network filter chainId correctly in order to set default Swap src token (#37985)
+- Get from address from non evm network (#37937)
+- Displays correct native asset and the right amount in the Amount row on the Confirmation page (#37710)
+- Center-aligned the image for protect wallet modal (#37968)
+- Fixed a bug in Shield Plan where payment method would not reset to card payment when switching to a plan without available (#37965)
+  tokens
+- Fixed shield entry eligible balance check (#37890)
+- Fix shield coverage alert background color remove red background (#37896)
+- Multichain site toolip (#37957)
+- Fix shield plan default payment method not work first time select (#37935)
+- Notification screen back handling (#37921)
+- Fixed `Invalid Access Token` error during the rehydrate/create with social login (#37387)
+  updated `@metamask/seedless-onboarding-controller` to
+  `v6`.
+- Fixed a rare issue where Snaps updating state rapidly would lose data (#37971)
+- Updates the logos so they appear consistently as squares (#37932)
+
+## **Related issues**
+
+- Fixed glitching effect after restarting shield plan (#37904)
+- Recipient address overflow (#37813)
+- Fix token list hover (#37863)
+- Menu icon hover color (#37880)
+- Ui issues with short window height (#37876)
+- Settings title alignment (#37879)
+- Fix token asset sorting (#37900)
+- Fix fraction digit display in shield settings billing details for card payment (#37893)
+- Fixed deep link page design inconsistencies (#37872)
+- Fix error message when trying to import an SRP with an account that is already imported via private key (#37743)
+- Change available value text to total fiat value when fiat mode is enabled (#37749)
+
 ## [13.10.0]
 
 ### Added
@@ -1217,7 +1275,8 @@ authorized by the user.` error until the user fully revoked dapp
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.10.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.11.0...HEAD
+[13.11.0]: https://github.com/MetaMask/metamask-extension/compare/v13.10.0...v13.11.0
 [13.10.0]: https://github.com/MetaMask/metamask-extension/compare/v13.9.0...v13.10.0
 [13.9.0]: https://github.com/MetaMask/metamask-extension/compare/v13.8.0...v13.9.0
 [13.8.0]: https://github.com/MetaMask/metamask-extension/compare/v13.7.0...v13.8.0
