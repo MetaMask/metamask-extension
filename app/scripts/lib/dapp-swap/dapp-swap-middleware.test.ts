@@ -17,11 +17,13 @@ const REQUEST_MOCK = {
 
 const fetchQuotes = jest.fn();
 const setSwapQuotes = jest.fn();
+const getNetworkConfigurationByNetworkClientId = jest.fn();
 
 const createMiddleware = () => {
   const middlewareFunction = createDappSwapMiddleware({
     fetchQuotes,
     setSwapQuotes,
+    getNetworkConfigurationByNetworkClientId,
   });
   return { middlewareFunction };
 };
@@ -59,7 +61,6 @@ describe('DappSwapMiddleware', () => {
         {
           data: '0x123123123',
           from: '0x12312312312312',
-          chainId: '1',
           calls: [],
         },
       ],

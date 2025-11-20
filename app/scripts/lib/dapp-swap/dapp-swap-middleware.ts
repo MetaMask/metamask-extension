@@ -6,7 +6,10 @@ import {
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@metamask/utils';
-import { NetworkClientId } from '@metamask/network-controller';
+import {
+  NetworkClientId,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
 import {
   GenericQuoteRequest,
   QuoteResponse,
@@ -25,7 +28,6 @@ export type DappSwapMiddlewareRequest<
   params: {
     data: string;
     from: string;
-    chainId: string;
     calls: { data: string; from: string }[];
   }[];
 };
@@ -42,7 +44,7 @@ const getSwapDetails = (params: DappSwapMiddlewareRequest['params']) => {
       chainId: undefined,
     };
   }
-  const { calls, chainId, data, from } = params[0];
+  const { calls, data, from } = params[0];
   let transactionData = data;
   if (calls?.length) {
     const executeSwapCall = calls?.find(({ data: trxnData }) =>
@@ -53,7 +55,6 @@ const getSwapDetails = (params: DappSwapMiddlewareRequest['params']) => {
     }
   }
   return {
-    chainId,
     data: transactionData,
     from,
   };
@@ -65,12 +66,16 @@ export function createDappSwapMiddleware<
 >({
   fetchQuotes,
   setSwapQuotes,
+  getNetworkConfigurationByNetworkClientId,
 }: {
   fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
   setSwapQuotes: (
     uniqueId: string,
     info: { quotes?: QuoteResponse[]; latency?: number },
   ) => void;
+  getNetworkConfigurationByNetworkClientId: (
+    networkClientId: NetworkClientId,
+  ) => NetworkConfiguration | undefined;
 }) {
   return async (
     req: DappSwapMiddlewareRequest<Params>,
@@ -86,7 +91,10 @@ export function createDappSwapMiddleware<
           req.method === 'wallet_sendCalls') &&
         (origin === DAPP_SWAP_COMPARISON_ORIGIN || origin === TEST_DAPP_ORIGIN)
       ) {
-        const { data, from, chainId } = getSwapDetails(params);
+        const { chainId } =
+          getNetworkConfigurationByNetworkClientId(req.networkClientId) ?? {};
+
+        const { data, from } = getSwapDetails(params);
         if (data && securityAlertId) {
           const { quotesInput } = getDataFromSwap(chainId as Hex, data, from);
           if (quotesInput) {
