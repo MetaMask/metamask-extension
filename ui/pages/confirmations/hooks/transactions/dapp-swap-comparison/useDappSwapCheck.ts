@@ -9,7 +9,7 @@ import { useConfirmContext } from '../../../context/confirm';
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
 const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
 
-export function useSwapCheck() {
+export function useDappSwapCheck() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { origin, type } = currentConfirmation ?? {
     txParams: { data: '' },

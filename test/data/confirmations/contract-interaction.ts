@@ -3,6 +3,7 @@ import {
   BatchTransactionParams,
   CHAIN_IDS,
   GasFeeToken,
+  SecurityAlertResponse,
   SimulationData,
   TransactionContainerType,
   TransactionMeta,
@@ -11,6 +12,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { QuoteResponse } from '@metamask/bridge-controller';
+
 import {
   Confirmation,
   SignatureRequestType,
@@ -251,9 +254,49 @@ export const mockSwapConfirmation = {
       },
     ],
   },
+  securityAlertResponse: {
+    securityAlertId: 'f8172040-b3d0-11f0-a882-3f99aa2e9f0c',
+  } as SecurityAlertResponse,
 };
 
 export const mockBridgeQuotes = [
+  {
+    quote: {
+      requestId:
+        '0xe00805b32ac0b8ef9a2cb1d2b18a3c3eed1a9190fdfa8e99b718df90d9070026',
+      bridgeId: 'kyberswap',
+      srcChainId: 42161,
+      destChainId: 42161,
+      aggregator: 'kyberswap',
+      aggregatorType: 'AGG',
+      srcTokenAmount: '9913',
+      destTokenAmount: '9902',
+      minDestTokenAmount: '9703',
+      walletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
+      destWalletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
+      bridges: ['kyberswap'],
+      protocols: ['kyberswap'],
+      steps: [],
+      slippage: 2,
+    },
+    approval: {
+      chainId: 42161,
+      to: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      from: '0x178239802520a9C99DCBD791f81326B70298d629',
+      value: '0x0',
+      data: '',
+      gasLimit: 63103,
+    },
+    trade: {
+      chainId: 42161,
+      to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
+      from: '0x178239802520a9C99DCBD791f81326B70298d629',
+      value: '0x0',
+      data: '',
+      gasLimit: 399863,
+    },
+    estimatedProcessingTimeInSeconds: 0,
+  },
   {
     quote: {
       requestId:
@@ -278,7 +321,7 @@ export const mockBridgeQuotes = [
       to: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
       from: '0x178239802520a9C99DCBD791f81326B70298d629',
       value: '0x0',
-      data: '0x1234567890abcdef',
+      data: '',
       gasLimit: 63109,
     },
     trade: {
@@ -286,9 +329,82 @@ export const mockBridgeQuotes = [
       to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
       from: '0x178239802520a9C99DCBD791f81326B70298d629',
       value: '0x0',
-      data: '0x1234567890abcdef',
+      data: '',
       gasLimit: 596053,
     },
     estimatedProcessingTimeInSeconds: 0,
   },
-];
+  {
+    quote: {
+      requestId:
+        '0xea157f969eb2bf91ae3f78f461788f3cc789617978e94a56326a94607674e7cf',
+      bridgeId: 'openocean',
+      srcChainId: 42161,
+      destChainId: 42161,
+      aggregator: 'openocean',
+      aggregatorType: 'AGG',
+      srcTokenAmount: '9913',
+      destTokenAmount: '10200',
+      minDestTokenAmount: '9996',
+      walletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
+      destWalletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
+      bridges: ['openocean'],
+      protocols: ['openocean'],
+      steps: [],
+      slippage: 2,
+    },
+    approval: {
+      chainId: 42161,
+      to: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      from: '0x178239802520a9C99DCBD791f81326B70298d629',
+      value: '0x0',
+      data: '',
+      gasLimit: 63109,
+    },
+    trade: {
+      chainId: 42161,
+      to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
+      from: '0x178239802520a9C99DCBD791f81326B70298d629',
+      value: '0x0',
+      data: '',
+      gasLimit: 679877,
+    },
+    estimatedProcessingTimeInSeconds: 0,
+  },
+  {
+    quote: {
+      aggregator: 'openocean',
+      requestId:
+        '0xf5fe1ea0c87b44825dfc89cc60c3398f1cf83eb49a07e491029e00cb72090ef2',
+      bridgeId: 'okx',
+      srcChainId: 42161,
+      destChainId: 42161,
+      srcTokenAmount: '9913',
+      destTokenAmount: '1004000',
+      minDestTokenAmount: '972870',
+      walletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
+      destWalletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
+      bridges: ['okx'],
+      protocols: ['okx'],
+      steps: [],
+      slippage: 2,
+    },
+    approval: {
+      chainId: 42161,
+      to: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      from: '0x178239802520a9C99DCBD791f81326B70298d629',
+      value: '0x0',
+      data: '',
+      gasLimit: 62000,
+    },
+    trade: {
+      chainId: 42161,
+      to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
+      from: '0x178239802520a9C99DCBD791f81326B70298d629',
+      value: '0x0',
+      data: '',
+      gasLimit: 80000,
+    },
+    estimatedProcessingTimeInSeconds: 0,
+  },
+] as unknown as QuoteResponse[];
