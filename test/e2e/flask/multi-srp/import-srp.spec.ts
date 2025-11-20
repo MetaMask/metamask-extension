@@ -8,13 +8,13 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import {
   SECOND_TEST_E2E_SRP,
   mockActiveNetworks,
   withMultiSrp,
 } from './common-multi-srp';
-import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 
 const TEST_SRP_WORDS_FOR_UI_TEST = [
   'ghost',

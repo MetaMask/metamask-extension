@@ -66,7 +66,7 @@
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox tsx test/e2e/run-all.ts",
     "test:e2e:firefox:dist": "SELENIUM_BROWSER=firefox tsx test/e2e/run-all.ts --dist",
     "test:e2e:firefox:flask": "SELENIUM_BROWSER=firefox tsx test/e2e/run-all.ts --build-type flask",
-    "test:e2e:single": "node test/e2e/run-e2e-test.js",
+    "test:e2e:single": "SELENIUM_BROWSER=firefox node test/e2e/run-e2e-test.js",
     "ganache:start": "./development/run-ganache.sh",
     "sentry:publish": "node ./development/sentry-publish.js",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:tsc && yarn lint:styles && yarn lint:images",

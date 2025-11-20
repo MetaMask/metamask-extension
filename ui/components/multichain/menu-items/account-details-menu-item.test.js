@@ -9,13 +9,11 @@ import { AccountDetailsMenuItem } from '.';
 
 const mockInternalAccount = getSelectedInternalAccountFromMockState(mockState);
 
-const mockHistoryPush = jest.fn();
+const mockNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
 }));
 
 jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
@@ -46,7 +44,7 @@ describe('AccountDetailsMenuItem', () => {
 
     fireEvent.click(getByTestId('account-list-menu-details'));
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(
+    expect(mockNavigate).toHaveBeenCalledWith(
       `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(
         mockInternalAccount.address,
       )}`,
