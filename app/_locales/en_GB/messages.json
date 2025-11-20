@@ -2007,9 +2007,6 @@
   "deepLink_theHomePage": {
     "message": "the home page"
   },
-  "deepLink_theSettingsPage": {
-    "message": "the settings page"
-  },
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
   },
@@ -2021,6 +2018,9 @@
   },
   "deepLink_theRewardsPage": {
     "message": "the MetaMask Rewards page"
+  },
+  "deepLink_theSettingsPage": {
+    "message": "the settings page"
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
