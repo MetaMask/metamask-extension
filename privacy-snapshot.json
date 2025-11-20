@@ -119,5 +119,7 @@
   "unresponsive-rpc.url",
   "user-storage.api.cx.metamask.io",
   "verify.walletconnect.com",
-  "www.4byte.directory"
+  "www.4byte.directory",
+  "claims.dev-api.cx.metamask.io",
+  "mock-redirect-url.com"
 ]
