@@ -185,20 +185,15 @@ export const ConfirmationHandler = () => {
     }
 
     // Exception for snap result approvals (wallet_installSnapResult) in fullscreen:
-    // allow navigation when on confirmation route if currently viewing update approval
-    // and target is result approval (e.g., navigate from update page to result page after confirming)
+    // allow navigation when on CONNECT route and target is result approval
+    // (e.g., navigate from update page to result page after confirming)
     const isSnapResultApproval = pendingApprovals.some(
       (approval) => approval.type === 'wallet_installSnapResult',
     );
-    const isViewingUpdateApproval = pendingApprovals.some(
-      (approval) =>
-        approval.id === currentConfirmationId &&
-        approval.type === 'wallet_updateSnap',
-    );
+    const isOnConnectRoute = location.pathname.startsWith(CONNECT_ROUTE);
     if (
-      isOnConfirmationRoute &&
+      isOnConnectRoute &&
       isSnapResultApproval &&
-      isViewingUpdateApproval &&
       isFullscreen &&
       currentConfirmationId !== targetConfirmationId
     ) {
@@ -220,6 +215,7 @@ export const ConfirmationHandler = () => {
     isViewingPendingConfirmation,
     isOnExcludedRoute,
     pendingApprovals,
+    location.pathname,
   ]);
 
   useEffect(() => {
