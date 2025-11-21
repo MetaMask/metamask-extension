@@ -185,14 +185,20 @@ export const ConfirmationHandler = () => {
     }
 
     // Exception for snap result approvals (wallet_installSnapResult) in fullscreen:
-    // allow navigation when on confirmation route if it's a different confirmation
-    // (e.g., navigate from update page to result page after confirming)
+    // allow navigation when on confirmation route if currently viewing update approval
+    // and target is result approval (e.g., navigate from update page to result page after confirming)
     const isSnapResultApproval = pendingApprovals.some(
       (approval) => approval.type === 'wallet_installSnapResult',
+    );
+    const isViewingUpdateApproval = pendingApprovals.some(
+      (approval) =>
+        approval.id === currentConfirmationId &&
+        approval.type === 'wallet_updateSnap',
     );
     if (
       isOnConfirmationRoute &&
       isSnapResultApproval &&
+      isViewingUpdateApproval &&
       isFullscreen &&
       currentConfirmationId !== targetConfirmationId
     ) {
