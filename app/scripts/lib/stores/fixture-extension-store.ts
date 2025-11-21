@@ -54,4 +54,11 @@ export class FixtureExtensionStore extends ExtensionStore {
     }
     return super.set(data);
   }
+
+  async reset(): Promisea<void> {
+    this.#initialized = false;
+    await super.reset();
+    this.#initializing = this.#init();
+    await this.#initializing;
+  }
 }
