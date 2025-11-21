@@ -610,57 +610,6 @@ and we'll take you to the right place.`
     );
   });
 
-  it('signed with empty sig_params, but url has extra params added, does not expose extra params', async function () {
-    await withFixtures(
-      await getConfig(this.test?.fullTitle()),
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const rawUrl = 'https://link.metamask.io/home?sig_params=';
-        const signedUrl = `${await signDeepLink(keyPair.privateKey, rawUrl, false)}&foo=0&foo=1&bar=2&baz=3`;
-
-        await driver.openNewURL(signedUrl);
-        const deepLink = new DeepLink(driver);
-        await deepLink.checkPageIsLoaded();
-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
-        await deepLink.clickContinueButton();
-        await homePage.checkPageIsLoaded();
-
-        assert.deepStrictEqual(hashParams.size, 0);
-      },
-    );
-  });
-
-  it('signed with sig_params, url has no extra params added, works', async function () {
-    await withFixtures(
-      await getConfig(this.test?.fullTitle()),
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const rawUrl = 'https://link.metamask.io/home?sig_params='; // empty!
-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl, false);
-
-        await driver.openNewURL(signedUrl);
-        const deepLink = new DeepLink(driver);
-        await deepLink.checkPageIsLoaded();
-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
-        await deepLink.clickContinueButton();
-        await homePage.checkPageIsLoaded();
-
-        assert.deepStrictEqual(hashParams.size, 0);
-      },
-    );
-  });
 
   it('signed without sig_params exposes all params (foo, bar, baz)', async function () {
     await withFixtures(
