@@ -524,7 +524,7 @@ export default function createRPCMethodTrackingMiddleware({
         // The signature was approved in MetaMask but rejected in the snap
         event = eventType.REJECTED;
         stage = STAGE.REJECTED;
-          eventProperties.status = errorMessage;
+        eventProperties.status = errorMessage;
       } else {
         event = eventType.APPROVED;
         stage = STAGE.APPROVED;
