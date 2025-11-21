@@ -4145,7 +4145,13 @@
     "message": "Read more"
   },
   "newPrivacyPolicyTitle": {
-    "message": "We’ve updated our privacy policy"
+    "message": "We've updated our privacy policy"
+  },
+  "pna25BannerActionButton": {
+    "message": "Learn more"
+  },
+  "pna25BannerTitle": {
+    "message": "We're updating MetaMetrics. We'll associate some in-app activity to on-chain data to better understand usage. You can opt out via Settings."
   },
   "newRpcUrl": {
     "message": "New RPC URL"
