@@ -15,7 +15,6 @@ import {
 } from '../../../utils/token';
 import { useConfirmContext } from '../../../context/confirm';
 
-const POLYGON_CHAIN_ID = '0x89';
 const POLYGON_NATIVE_ASSET = '0x0000000000000000000000000000000000001010';
 
 export function useDappSwapUSDValues({
