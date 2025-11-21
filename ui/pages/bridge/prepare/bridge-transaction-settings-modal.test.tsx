@@ -13,6 +13,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { waitForElementById } from '../../../../test/integration/helpers';
 import { setSlippage } from '../../../ducks/bridge/actions';
+import { sanitizeAmountInput } from '../utils/quote';
 
 const TX_MODAL = {
   refElement: 'bridge__header-settings-button',
@@ -128,17 +129,20 @@ describe('BridgeTransactionSettingsModal', () => {
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
 
     // Change custom input to .
-    await interactWithCustomInput(getByTestId, (input) => {
-      userEvent.type(input, '.');
+    await interactWithCustomInput(getByTestId, async (input) => {
+      input.focus();
+      await userEvent.keyboard('.');
     });
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
     expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent('Custom');
 
     // Change custom input to .0
-    await interactWithCustomInput(getByTestId, (input) => {
-      fireEvent.change(input, { target: { value: '.0' } });
+    await interactWithCustomInput(getByTestId, async (input) => {
+      input.focus();
+      await userEvent.keyboard('.');
+      await userEvent.keyboard('0');
     });
-    expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent('.0');
+    expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent('0');
     expect(getByTestId(TX_MODAL.submitButton)).toBeEnabled();
     expect(store.getState().bridge.slippage).toBe(initialSlippage);
 
@@ -174,17 +178,24 @@ describe('BridgeTransactionSettingsModal', () => {
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
 
     // Change custom input to .5
-    await interactWithCustomInput(getByTestId, (input) => {
-      userEvent.type(input, '.5');
+    await interactWithCustomInput(getByTestId, async (input) => {
+      input.focus();
+      await userEvent.keyboard('.');
+      await userEvent.keyboard('5');
     });
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
     expect(store.getState().bridge.slippage).toBe(initialSlippage);
 
     // Change custom input to 2
-    await interactWithCustomInput(getByTestId, (input) => {
-      fireEvent.change(input, { target: { value: finalSlippage } });
+    await interactWithCustomInput(getByTestId, async (input) => {
+      input.focus();
+      await userEvent.keyboard('{backspace}');
+      await userEvent.keyboard('{backspace}');
+      for (const char of finalSlippage) {
+        await userEvent.keyboard(char);
+      }
     });
-    expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent(finalSlippage);
+    expectButtonStates(MUTED_CLASS, MUTED_CLASS, DEFAULT_CLASS, MUTED_CLASS);
     expect(getByTestId(TX_MODAL.submitButton)).toBeEnabled();
     expect(store.getState().bridge.slippage).toBe(initialSlippage);
 
@@ -206,29 +217,47 @@ describe('BridgeTransactionSettingsModal', () => {
     });
   });
 
-  const VALID_VALUES = [
-    ['1234', 1234],
-    ['fas23.43', 23.43],
-    ['fas23 ,43', 2343],
-    ['23.4.3', 23.4],
-    ['0.', 0],
-    ['.0', 0],
-  ] as const;
+  const ACTIONS = [
+    [
+      'paste',
+      async (_input: HTMLElement, value: string) => {
+        await userEvent.paste(value);
+      },
+    ],
+    [
+      'type',
+      async (input: HTMLElement, value: string) => {
+        input.focus();
+        for (const char of value) {
+          await userEvent.keyboard(char);
+        }
+      },
+    ],
+  ];
 
-  const INVALID_VALUES = ['abc', '.', '', ' ', ','] as const;
-
-  const testCustomInputValidation = (
-    testName: string,
-    setValue: (input: HTMLElement, value: string) => void | Promise<void>,
-    shouldEnable: boolean,
-  ) => {
-    const action = shouldEnable ? 'enable' : 'disable';
-
-    if (shouldEnable) {
+  // @ts-expect-error - each is a valid test function
+  describe.each(ACTIONS)(
+    'Valid amount validation on %s input',
+    (
+      _actionName: string,
+      setValue: (input: HTMLElement, value: string) => void | Promise<void>,
+    ) => {
       // @ts-expect-error - each is a valid test function
-      it.each(VALID_VALUES)(
-        `should validate ${testName} custom amount and ${action} submit button: %s`,
-        async (value: string, expectedSlippage: number | undefined) => {
+      it.each([
+        ['1234', '1234'],
+        ['12.34', '12.34'],
+        ['fas23.43', '23.43'],
+        ['fas23 ,43', '2343'],
+        ['!23', '23'],
+        ['23.4.3', '23.43'],
+        ['23.4a,3', '23.43'],
+        ['0.', '0.'],
+        ['0.1', '0.1'],
+        ['.0', '.0'],
+        ['.05', '.05'],
+      ])(
+        `should enable submit button: %s`,
+        async (value: string, expectedDisplayValue: string) => {
           const initialSlippage = undefined;
           const { getByTestId, store } = renderModal(initialSlippage);
 
@@ -236,20 +265,34 @@ describe('BridgeTransactionSettingsModal', () => {
           expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
 
           await act(async () => {
-            userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-            await waitForElementById(TX_MODAL.customInput);
-            const input = getByTestId(TX_MODAL.customInput);
-            await setValue(input, value);
-            fireEvent.click(getByTestId(TX_MODAL.submitButton));
-            await waitForElementById(TX_MODAL.refElement);
+            await interactWithCustomInput(getByTestId, async (input) => {
+              await setValue(input, value);
+              expect(getByTestId(TX_MODAL.customInput)).toHaveDisplayValue(
+                expectedDisplayValue,
+              );
+            });
+
+            userEvent.click(getByTestId(TX_MODAL.submitButton));
+            await submitUpdate(getByTestId);
+            expect(store.getState().bridge.slippage).toBe(
+              Number(expectedDisplayValue),
+            );
           });
-          expect(store.getState().bridge.slippage).toBe(expectedSlippage);
         },
       );
-    } else {
+    },
+  );
+
+  // @ts-expect-error - each is a valid test function
+  describe.each(ACTIONS)(
+    'Invalid amount validation on %s input',
+    (
+      _actionName: string,
+      setValue: (input: HTMLElement, value: string) => void | Promise<void>,
+    ) => {
       // @ts-expect-error - each is a valid test function
-      it.each(INVALID_VALUES)(
-        `should validate ${testName} custom amount and ${action} submit button: %s`,
+      it.each(['abc', '!', '.', ' ', ', '])(
+        `should disable submit button: %s`,
         async (value: string) => {
           const initialSlippage = undefined;
           const { getByTestId, store } = renderModal(initialSlippage);
@@ -258,45 +301,18 @@ describe('BridgeTransactionSettingsModal', () => {
           expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
 
           await act(async () => {
-            userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-            await waitForElementById(TX_MODAL.customInput);
-            const input = getByTestId(TX_MODAL.customInput);
-            await setValue(input, value);
+            await interactWithCustomInput(getByTestId, async (input) => {
+              await setValue(input, value);
+              expect(getByTestId(TX_MODAL.customInput)).toHaveDisplayValue(
+                sanitizeAmountInput(value),
+              );
+            });
             expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
             fireEvent.click(getByTestId(TX_MODAL.closeButton));
           });
           expect(store.getState().bridge.slippage).toBe(initialSlippage);
         },
       );
-    }
-  };
-
-  testCustomInputValidation(
-    'pasted',
-    async (_input, value) => {
-      await userEvent.paste(value);
     },
-    true,
-  );
-  testCustomInputValidation(
-    'pasted',
-    async (_input, value) => {
-      await userEvent.paste(value);
-    },
-    false,
-  );
-  testCustomInputValidation(
-    'typed',
-    (input, value) => {
-      fireEvent.change(input, { target: { value } });
-    },
-    true,
-  );
-  testCustomInputValidation(
-    'typed',
-    (input, value) => {
-      fireEvent.change(input, { target: { value } });
-    },
-    false,
   );
 });
