@@ -16,6 +16,8 @@ import { isObject, isStrictHexString } from '@metamask/utils';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { isNativeAddress } from '@metamask/bridge-controller';
+
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
@@ -802,10 +804,14 @@ export const fetchTokenExchangeRates = async (
   chainId,
 ) => {
   try {
+    const addresses = tokenAddresses.filter(
+      (tokenAddress) => !isNativeAddress(tokenAddress),
+    );
+
     return await fetchTokenContractExchangeRates({
       tokenPricesService: new CodefiTokenPricesServiceV2(),
       nativeCurrency,
-      tokenAddresses,
+      tokenAddresses: addresses,
       chainId,
     });
   } catch (err) {
