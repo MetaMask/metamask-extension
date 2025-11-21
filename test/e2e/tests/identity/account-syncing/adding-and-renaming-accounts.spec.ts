@@ -22,6 +22,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockIdentityServices } from '../mocks';
+import { MockedDiscoveryBuilder } from '../../multichain-accounts/discovery';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Adding and Renaming Accounts', function () {
@@ -40,7 +41,9 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
   it('adds a new account and sync it across multiple phases', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
-    const sharedMockSetup = (server: Mockttp) => {
+    const sharedMockSetup = async (server: Mockttp) => {
+      mockMultichainAccountsFeatureFlagStateTwo(server);
+
       userStorageMockttpController.setupPath(
         USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
@@ -49,8 +52,11 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      mockMultichainAccountsFeatureFlagStateTwo(server);
-      return mockIdentityServices(server, userStorageMockttpController);
+      mockIdentityServices(server, userStorageMockttpController);
+
+      await MockedDiscoveryBuilder.fromDefaultSrp()
+        .doNotDiscoverAnyAccounts()
+        .mock(server);
     };
 
     // Phase 1: Add a new account and verify it syncs

@@ -11,11 +11,14 @@ import {
 } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
 
+import { E2E_SRP } from '../../default-fixture';
+import { SECOND_TEST_E2E_SRP } from '../../flask/multi-srp/common-multi-srp';
 import {
   mockMultichainAccountsFeatureFlagDisabled,
   mockMultichainAccountsFeatureFlag,
   mockMultichainAccountsFeatureFlagStateTwo,
 } from './feature-flag-mocks';
+import { MockedDiscoveryBuilder } from './discovery';
 
 export enum AccountType {
   MultiSRP = 'multi-srp',
@@ -30,37 +33,56 @@ export async function withMultichainAccountsDesignEnabled(
     accountType = AccountType.MultiSRP,
     state = 2,
     dappOptions,
+    shouldMockDiscovery = true,
+    withFixtures: withMoreFixtures,
   }: {
     title?: string;
     testSpecificMock?: (
       mockServer: Mockttp,
-    ) => Promise<MockedEndpoint | MockedEndpoint[]>;
+    ) => Promise<MockedEndpoint | MockedEndpoint[] | void>;
     accountType?: AccountType;
     state?: number;
     dappOptions?: { numberOfTestDapps?: number; customDappPaths?: string[] };
+    shouldMockDiscovery?: boolean;
+    withFixtures?: (builder: FixtureBuilder) => FixtureBuilder;
   },
   test: (driver: Driver) => Promise<void>,
 ) {
-  let fixture;
+  let fixtureBuilder = new FixtureBuilder();
+  let srps: string[] = [];
 
   switch (accountType) {
-    case AccountType.MultiSRP:
-      fixture = new FixtureBuilder().withKeyringControllerMultiSRP().build();
+    case AccountType.HardwareWallet:
+      fixtureBuilder = fixtureBuilder.withLedgerAccount();
+      srps = [E2E_SRP];
       break;
     case AccountType.SSK:
-      fixture = new FixtureBuilder().withKeyringControllerMultiSRP().build();
-      break;
-    case AccountType.HardwareWallet:
-      fixture = new FixtureBuilder().withLedgerAccount().build();
-      break;
+    case AccountType.MultiSRP:
     default:
-      fixture = new FixtureBuilder().withKeyringControllerMultiSRP().build();
+      fixtureBuilder = fixtureBuilder.withKeyringControllerMultiSRP();
+      srps = [E2E_SRP, SECOND_TEST_E2E_SRP];
   }
+
+  if (withMoreFixtures) {
+    fixtureBuilder = withMoreFixtures(fixtureBuilder);
+  }
+
+  const mockNetworkCalls = async (mockServer: Mockttp) => {
+    if (shouldMockDiscovery) {
+      for (const srp of srps) {
+        await MockedDiscoveryBuilder.from(srp)
+          .doNotDiscoverAnyAccounts()
+          .mock(mockServer);
+      }
+    }
+
+    await testSpecificMock?.(mockServer);
+  };
 
   await withFixtures(
     {
-      fixtures: fixture,
-      testSpecificMock,
+      fixtures: fixtureBuilder.build(),
+      testSpecificMock: mockNetworkCalls,
       title,
       forceBip44Version: state === 2 ? 2 : 0,
       dappOptions,

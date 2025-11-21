@@ -12,7 +12,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 
-const SOLANA_URL_REGEX_MAINNET =
+export const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
 const SOLANA_URL_REGEX_DEVNET = /^https:\/\/solana-devnet\.infura\.io\/v3\/.*/u;
 const SPOT_PRICE_API =

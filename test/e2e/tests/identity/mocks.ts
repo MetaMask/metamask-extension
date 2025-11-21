@@ -141,28 +141,16 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
   });
 }
 
-type MockInfuraAndAccountSyncOptions = {
-  accountsToMockBalances?: string[];
-};
-
-const MOCK_ETH_BALANCE = '0xde0b6b3a7640000';
-const INFURA_URL =
-  'https://mainnet.infura.io/v3/00000000000000000000000000000000';
-
 /**
  * Sets up mock responses for Infura balance checks and account syncing
  *
  * @param mockServer - The Mockttp server instance
  * @param userStorageMockttpController - Controller for user storage mocks
- * @param options - Configuration options for mocking
  */
-export async function mockInfuraAndAccountSync(
+export async function mockAccountSync(
   mockServer: Mockttp,
   userStorageMockttpController: UserStorageMockttpController,
-  options: MockInfuraAndAccountSyncOptions = {},
 ): Promise<void> {
-  const accounts = options.accountsToMockBalances ?? [];
-
   // Set up User Storage / Account Sync mock
   userStorageMockttpController.setupPath(
     USER_STORAGE_WALLETS_FEATURE_KEY,
@@ -173,27 +161,6 @@ export async function mockInfuraAndAccountSync(
     USER_STORAGE_GROUPS_FEATURE_KEY,
     mockServer,
   );
-
-  // Account Balances
-  if (accounts.length > 0) {
-    accounts.forEach((account) => {
-      mockServer
-        .forPost(INFURA_URL)
-        .always()
-        .withJsonBodyIncluding({
-          method: 'eth_getTransactionCount',
-          params: [account.toLowerCase()],
-        })
-        .thenCallback(() => ({
-          statusCode: 200,
-          json: {
-            jsonrpc: '2.0',
-            id: '1111111111111111',
-            result: MOCK_ETH_BALANCE,
-          },
-        }));
-    });
-  }
 
   mockIdentityServices(mockServer, userStorageMockttpController);
 }
