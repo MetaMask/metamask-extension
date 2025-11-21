@@ -6,16 +6,10 @@ import mockState from '../../../test/data/mock-state.json';
 import Notifications from './notifications';
 
 const mockDispatch = jest.fn();
-const mockNavigate = jest.fn();
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => mockDispatch,
-}));
-
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockNavigate,
 }));
 
 jest.mock(
@@ -56,9 +50,6 @@ const initialState = {
         },
       ],
     },
-  },
-  confirmTransaction: {
-    txData: {},
   },
 };
 
