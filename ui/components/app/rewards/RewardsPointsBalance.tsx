@@ -13,6 +13,7 @@ import {
   selectOnboardingModalRendered,
   selectRewardsBadgeHidden,
   selectRewardsEnabled,
+  selectRewardsOnboardingEnabled,
   selectSeasonStatus,
   selectSeasonStatusError,
 } from '../../../ducks/rewards/selectors';
@@ -39,6 +40,7 @@ export const RewardsPointsBalance = () => {
   const dispatch = useDispatch();
 
   const rewardsEnabled = useSelector(selectRewardsEnabled);
+  const rewardsOnboardingEnabled = useSelector(selectRewardsOnboardingEnabled);
   const rewardsBadgeHidden = useSelector(selectRewardsBadgeHidden);
   const seasonStatus = useSelector(selectSeasonStatus);
   const seasonStatusError = useSelector(selectSeasonStatusError);
@@ -100,6 +102,7 @@ export const RewardsPointsBalance = () => {
     if (
       !isTestEnv &&
       rewardsEnabled &&
+      rewardsOnboardingEnabled &&
       candidateSubscriptionId === null && // determined that it's null
       !rewardsActiveAccountSubscriptionId && // determined that it's not the active account
       !onboardingModalRendered
@@ -113,6 +116,7 @@ export const RewardsPointsBalance = () => {
     candidateSubscriptionId,
     rewardsActiveAccountSubscriptionId,
     onboardingModalRendered,
+    rewardsOnboardingEnabled,
   ]);
 
   const setHasSeenOnboardingInStorage = useCallback(async () => {
@@ -143,7 +147,7 @@ export const RewardsPointsBalance = () => {
   }
 
   if (!candidateSubscriptionId) {
-    return rewardsBadgeHidden ? null : (
+    return rewardsBadgeHidden || !rewardsOnboardingEnabled ? null : (
       <RewardsBadge
         boxClassName="gap-1 px-1.5 bg-background-muted rounded"
         formattedPoints={t('rewardsSignUp')}
