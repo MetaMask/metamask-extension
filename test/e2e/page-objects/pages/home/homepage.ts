@@ -103,7 +103,7 @@ class HomePage {
 
   private readonly noPriceAvailableMessage = {
     css: 'p',
-    text: 'Not conversion rate available',
+    text: 'No conversion rate available',
   };
 
   constructor(driver: Driver) {
