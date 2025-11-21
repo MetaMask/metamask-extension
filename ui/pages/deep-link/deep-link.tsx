@@ -19,7 +19,6 @@ import {
   Display,
   FlexDirection,
   FontWeight,
-  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
@@ -27,11 +26,7 @@ import {
 import { Text } from '../../components/component-library/text/text';
 import { Box } from '../../components/component-library/box/box';
 import { Container } from '../../components/component-library/container/container';
-import {
-  ButtonLink,
-  ContainerMaxWidth,
-  Label,
-} from '../../components/component-library';
+import { ButtonLink, Label } from '../../components/component-library';
 import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../selectors/selectors';
@@ -292,9 +287,8 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
     <Container
       display={Display.Flex}
       alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
       flexDirection={FlexDirection.Column}
-      maxWidth={ContainerMaxWidth.Md}
+      style={{ marginTop: '111px' }}
     >
       <Box
         display={Display.Flex}
@@ -304,14 +298,18 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
         backgroundColor={BackgroundColor.backgroundDefault}
         borderColor={BorderColor.borderMuted}
         borderRadius={BorderRadius.MD}
-        width={BlockSize.Full}
+        style={{ width: '446px', minHeight: '592px' }}
         paddingLeft={6}
         paddingRight={6}
         paddingTop={12}
         paddingBottom={8}
         borderWidth={1}
       >
-        <Box>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.center}
+        >
           {pageNotFoundError ? (
             <img
               className="error-404-image"
