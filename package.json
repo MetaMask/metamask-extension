@@ -683,7 +683,7 @@
     "process": "^0.11.10",
     "pumpify": "^2.0.1",
     "randomcolor": "^0.5.4",
-    "react-compiler-webpack": "0.2.1",
+    "react-compiler-webpack": "^1.0.0",
     "react-devtools": "^6.1.5",
     "react-devtools-core": "^6.1.5",
     "react-syntax-highlighter": "^15.5.0",
