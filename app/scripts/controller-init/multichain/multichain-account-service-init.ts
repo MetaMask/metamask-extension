@@ -1,12 +1,12 @@
 import {
   MultichainAccountService,
   AccountProviderWrapper,
+  SOL_ACCOUNT_PROVIDER_NAME,
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcAccountProvider,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   TrxAccountProvider,
-  SOL_ACCOUNT_PROVIDER_NAME,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain-account-service';
 import { ControllerInitFunction } from '../types';
