@@ -7012,18 +7012,8 @@
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión del monedero físico"
   },
-  "walletDetails": {
-    "message": "Detalles de la billetera"
-  },
   "walletName": {
     "message": "Nombre de la billetera"
-  },
-  "walletNotFoundDescription": {
-    "message": "No se encontró la billetera con ID $1.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "No se encontró la billetera"
   },
   "walletReadyLearn": {
     "message": "$1 puedes guardar esta frase de forma segura para nunca perder el acceso a tu dinero.",

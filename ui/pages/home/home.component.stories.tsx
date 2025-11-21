@@ -100,7 +100,6 @@ const meta: Meta<typeof Home> = {
     setBasicFunctionalityModalOpen: () => {},
     fetchBuyableChains: () => {},
     clearRedirectAfterDefaultPage: () => {},
-    setAccountDetailsAddress: () => {},
     lookupSelectedNetworks: () => {},
   },
 };

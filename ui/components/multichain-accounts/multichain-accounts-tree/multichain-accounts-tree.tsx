@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useNavigate } from 'react-router-dom-v5-compat';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
   AlignItems,
@@ -17,7 +16,6 @@ import {
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { HiddenAccountList } from '../../multichain/account-list-menu/hidden-account-list';
-import { WALLET_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import { matchesSearchPattern } from './utils';
 
 export type MultichainAccountsTreeProps = {
@@ -45,18 +43,6 @@ export const MultichainAccountsTree = ({
   onClose,
   onAccountTreeItemClick,
 }: MultichainAccountsTreeProps) => {
-  const navigate = useNavigate();
-
-  const handleWalletDetailsClick = useCallback(
-    (walletId: string) => {
-      navigate(
-        WALLET_DETAILS_ROUTE.replace(':id', encodeURIComponent(walletId)),
-      );
-      onClose();
-    },
-    [navigate, onClose],
-  );
-
   const accountsTree = useMemo(() => {
     // We keep a flag to check if there are any hidden accounts
     let hasHiddenAccounts: boolean = false;
@@ -86,7 +72,6 @@ export const MultichainAccountsTree = ({
               size={ButtonLinkSize.Sm}
               color={TextColor.primaryDefault}
               fontWeight={FontWeight.Medium}
-              onClick={() => handleWalletDetailsClick(walletId)}
               style={{
                 fontSize: '0.875rem',
               }}
@@ -190,7 +175,6 @@ export const MultichainAccountsTree = ({
     accountTreeItemProps,
     selectedAccount,
     onAccountTreeItemClick,
-    handleWalletDetailsClick,
   ]);
 
   return <>{accountsTree}</>;

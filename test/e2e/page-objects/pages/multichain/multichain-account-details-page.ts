@@ -41,6 +41,9 @@ class MultichainAccountDetailsPage {
   // Account-specific features
   private readonly showSrpButton = '[data-testid="account-show-srp-button"]';
 
+  private readonly secretRecoveryPhraseRow =
+    '[data-testid="multichain-srp-backup"]';
+
   private readonly showPrivateKeyButton =
     '[data-testid="account-show-private-key-button"]';
 
@@ -155,6 +158,24 @@ class MultichainAccountDetailsPage {
     await netoworksRow.click();
   }
 
+  async getTruncatedAccountAddressFromNetworksPage(options: {
+    accountRowIndex: number;
+  }): Promise<string> {
+    console.log(
+      'Get truncated account address from account details > networks page',
+    );
+    const { accountRowIndex } = options;
+    const accountRows = await this.driver.findElements(
+      '[data-testid="multichain-address-row-address"]',
+    );
+    if (accountRowIndex < 0 || accountRowIndex >= accountRows.length) {
+      throw new Error('Invalid account row index');
+    }
+    const accountRow = accountRows[accountRowIndex];
+    const address = await accountRow.getText();
+    return address;
+  }
+
   /**
    * Click on the private key row
    */
@@ -230,6 +251,12 @@ class MultichainAccountDetailsPage {
   async clickViewOnEtherscanButton(): Promise<void> {
     console.log('Click on the view on etherscan button');
     await this.driver.clickElement(this.viewOnEtherscanButton);
+    await this.driver.delay(largeDelayMs);
+  }
+
+  async clickSecretRecoveryPhraseRow(): Promise<void> {
+    console.log('Click on the Secret Recovery Phrase row');
+    await this.driver.clickElement(this.secretRecoveryPhraseRow);
     await this.driver.delay(largeDelayMs);
   }
 

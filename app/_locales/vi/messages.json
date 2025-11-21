@@ -7012,18 +7012,8 @@
   "walletConnectionGuide": {
     "message": "hướng dẫn của chúng tôi về cách kết nối ví cứng"
   },
-  "walletDetails": {
-    "message": "Chi tiết ví"
-  },
   "walletName": {
     "message": "Tên ví"
-  },
-  "walletNotFoundDescription": {
-    "message": "Không tìm thấy ví có ID $1.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Không tìm thấy ví"
   },
   "walletReadyLearn": {
     "message": "$1 bạn có thể lưu giữ cụm từ này ở nơi an toàn để không bao giờ mất quyền truy cập vào tiền của mình.",
