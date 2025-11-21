@@ -131,7 +131,7 @@ function getTracesSampleRate(sentryTarget) {
     if (flags.ci.branch === 'main') {
       return 0.015;
     }
-    return 0;
+    return 0.05;
   }
 
   if (METAMASK_DEBUG) {
@@ -217,7 +217,7 @@ function getSentryTarget() {
     process.env.IN_TEST &&
     (!SENTRY_DSN_DEV || !getManifestFlags().sentry?.forceEnable)
   ) {
-    return SENTRY_DSN_FAKE;
+    return SENTRY_DSN_PERFORMANCE;
   }
 
   if (METAMASK_ENVIRONMENT !== 'production') {
