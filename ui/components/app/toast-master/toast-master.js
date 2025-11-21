@@ -94,6 +94,7 @@ import {
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
+  selectShowPna25Banner,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -106,6 +107,8 @@ import {
   setShowClaimSubmitToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
+  setPna25BannerClickedOrClosed,
+  setPna25BannerDismissedDate,
 } from './utils';
 
 export function ToastMaster({ location } = {}) {
@@ -129,6 +132,7 @@ export function ToastMaster({ location } = {}) {
         )}
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
+        <Pna25Banner />
         <NftEnablementToast />
         <PermittedNetworkToast />
         <NewSrpAddedToast />
@@ -745,6 +749,38 @@ function ShieldEndingToast() {
           />
         }
         onClose={() => setShieldEndingToastLastClickedOrClosed(Date.now())}
+      />
+    )
+  );
+}
+
+function Pna25Banner() {
+  const t = useI18nContext();
+
+  const showPna25Banner = useSelector(selectShowPna25Banner);
+
+  const handleDismiss = () => {
+    setPna25BannerClickedOrClosed();
+    setPna25BannerDismissedDate(Date.now());
+  };
+
+  return (
+    showPna25Banner && (
+      <Toast
+        key="pna25-banner"
+        dataTestId="pna25-banner"
+        startAdornment={
+          <Icon name={IconName.Info} color={IconColor.infoDefault} />
+        }
+        text={t('pna25BannerTitle')}
+        actionText={t('pna25BannerActionButton')}
+        onActionClick={() => {
+          global.platform.openTab({
+            url: PRIVACY_POLICY_LINK,
+          });
+          handleDismiss();
+        }}
+        onClose={handleDismiss}
       />
     )
   );
