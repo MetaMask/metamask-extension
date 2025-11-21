@@ -1,7 +1,6 @@
 import { maskObject } from '../../../shared/modules/object.utils';
 import ExtensionPlatform from '../platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
-import ReadOnlyNetworkStore from './stores/read-only-network-store';
 import ExtensionStore from './stores/extension-store';
 import { PersistenceManager } from './stores/persistence-manager';
 
@@ -9,9 +8,7 @@ const platform = new ExtensionPlatform();
 
 // This instance of `localStore` is used by Sentry to get the persisted state
 const sentryLocalStore = new PersistenceManager({
-  localStore: process.env.IN_TEST
-    ? new ReadOnlyNetworkStore()
-    : new ExtensionStore(),
+  localStore: new ExtensionStore(),
 });
 
 /**

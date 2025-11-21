@@ -60,7 +60,6 @@ import {
   PersistenceManager,
 } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
-import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
@@ -114,14 +113,10 @@ const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-const useReadOnlyNetworkStore =
-  inTest && getManifestFlags().testing?.forceExtensionStore !== true;
-const localStore = useReadOnlyNetworkStore
-  ? new ReadOnlyNetworkStore()
-  : new ExtensionStore();
+const localStore = new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 
-const { update, requestSafeReload } = getRequestSafeReload(persistenceManager);
+const { persist, requestSafeReload } = getRequestSafeReload(persistenceManager);
 
 // Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
@@ -726,6 +721,18 @@ async function initialize(backup) {
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
 
+  /**
+   * Can be used in the UI to force a migration to "split" state storage.
+   *
+   * The mechanism will cause a full extension reload.
+   */
+  const migrateToSplitState = async () => {
+    await requestSafeReload(async () => {
+      const state = controller.store.getState();
+      return await persistenceManager.migrateToSplitState(state);
+    });
+  };
+
   setupController(
     initState,
     initLangCode,
@@ -735,9 +742,20 @@ async function initialize(backup) {
     offscreenPromise,
     preinstalledSnaps,
     cronjobControllerStorageManager,
+    migrateToSplitState,
   );
 
-  controller.store.on('update', update);
+  if (persistenceManager.storageKind === 'split') {
+    controller.store.on(
+      'stateChange',
+      async ({ controllerKey, newState, _oldState, _patches }) => {
+        persistenceManager.update(controllerKey, newState);
+        await persist();
+      },
+    );
+  } else {
+    controller.store.on('update', persist);
+  }
   controller.store.on('error', (error) => {
     log.error('MetaMask controller.store error:', error);
     sentry?.captureException(error);
@@ -929,12 +947,17 @@ export async function loadStateFromPersistence(backup) {
     });
   });
 
+  let writeAllKeysToState = false;
   if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
+    // brand new state; write all keys!
+    writeAllKeysToState = true;
     preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
   }
 
   // migrate data
-  const versionedData = await migrator.migrateData(preMigrationVersionedData);
+  const { state: versionedData, changedKeys } = await migrator.migrateData(
+    preMigrationVersionedData,
+  );
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
   } else if (!isObject(versionedData.meta)) {
@@ -946,6 +969,10 @@ export async function loadStateFromPersistence(backup) {
       `MetaMask - migrator metadata version has invalid type '${typeof versionedData
         .meta.version}'`,
     );
+  } else if (!['data', 'split'].includes(versionedData.meta.storageKind)) {
+    throw new Error(
+      `MetaMask - migrator metadata storageKind has invalid value '${versionedData.meta.storageKind}'`,
+    );
   } else if (!isObject(versionedData.data)) {
     throw new Error(
       `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
@@ -954,8 +981,50 @@ export async function loadStateFromPersistence(backup) {
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
 
-  // write to disk
-  await persistenceManager.set(versionedData.data);
+  if (persistenceManager.storageKind === 'data') {
+    const flag =
+      versionedData.data.RemoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.extensionPlatformUseSplitStateStorage;
+    const useSplitStateStorage =
+      flag &&
+      typeof flag === 'object' &&
+      'value' in flag &&
+      Boolean(flag.value) &&
+      // if we've already tried, don't try again.
+      versionedData.meta._tried !== true;
+
+    if (useSplitStateStorage) {
+      // a sigil to mark that we *tried* to migrate to split state storage
+      versionedData.meta._tried = true;
+      persistenceManager.setMetadata(versionedData.meta);
+    }
+
+    // write to disk
+    await persistenceManager.set(versionedData.data);
+
+    if (useSplitStateStorage) {
+      await persistenceManager.migrateToSplitState();
+      delete versionedData.meta._tried;
+      persistenceManager.setMetadata(versionedData.meta);
+    }
+  } else if (persistenceManager.storageKind === 'split') {
+    if (writeAllKeysToState) {
+      for (const [key, value] of Object.entries(versionedData.data)) {
+        persistenceManager.update(key, value);
+      }
+    } else {
+      // write changes only
+      for (const key of changedKeys) {
+        persistenceManager.update(key, versionedData.data[key]);
+      }
+    }
+    // write to disk
+    await persistenceManager.persist();
+  } else {
+    throw new Error(
+      `MetaMask - persistenceManager has invalid storageKind '${persistenceManager.storageKind}'`,
+    );
+  }
 
   // return just the data
   return versionedData;
@@ -1104,6 +1173,7 @@ function trackAppOpened(environment) {
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
  * @param {CronjobControllerStorageManager} cronjobControllerStorageManager - A storage manager for the CronjobController.
+ * @param {typeof migrateToSplitState} migrateToSplitState
  */
 export function setupController(
   initState,
@@ -1114,6 +1184,7 @@ export function setupController(
   offscreenPromise,
   preinstalledSnaps,
   cronjobControllerStorageManager,
+  migrateToSplitState,
 ) {
   //
   // MetaMask Controller
@@ -1144,6 +1215,7 @@ export function setupController(
     preinstalledSnaps,
     requestSafeReload,
     cronjobControllerStorageManager,
+    migrateToSplitState,
   });
 
   setupEnsIpfsResolver({
