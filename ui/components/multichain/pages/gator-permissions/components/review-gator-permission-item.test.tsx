@@ -53,31 +53,40 @@ jest.mock(
 );
 
 jest.mock(
-  '../../../../../../shared/lib/gator-permissions/gator-permissions-utils',
-  () => {
-    const actual = jest.requireActual(
-      '../../../../../../shared/lib/gator-permissions/gator-permissions-utils',
-    );
-    return {
-      ...actual,
-      getGatorPermissionTokenInfo: jest
-        .fn()
-        .mockImplementation(async ({ permissionType, permissionData }) => {
-          const isNative = permissionType.includes('native-token');
-          if (isNative) {
-            return { symbol: 'ETH', decimals: 18 };
-          }
+  '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo',
+  () => ({
+    useGatorPermissionTokenInfo: jest
+      .fn()
+      .mockImplementation((tokenAddress, _chainId, permissionType) => {
+        const isNative = permissionType?.includes('native-token');
 
-          const tokenAddress = permissionData?.tokenAddress;
-          if (tokenAddress === '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599') {
-            return { symbol: 'WBTC', decimals: 8 };
-          }
+        if (isNative) {
+          return {
+            tokenInfo: { symbol: 'ETH', decimals: 18 },
+            loading: false,
+            error: null,
+            source: 'native',
+          };
+        }
 
-          // Return loading state for unknown tokens
-          return { symbol: 'unknown', decimals: -1 };
-        }),
-    };
-  },
+        if (tokenAddress === '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599') {
+          return {
+            tokenInfo: { symbol: 'WBTC', decimals: 8 },
+            loading: false,
+            error: null,
+            source: 'cache',
+          };
+        }
+
+        // Return loading state for unknown tokens
+        return {
+          tokenInfo: { symbol: 'Unknown Token', decimals: 18 },
+          loading: true,
+          error: null,
+          source: null,
+        };
+      }),
+  }),
 );
 
 describe('Permission List Item', () => {

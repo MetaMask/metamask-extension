@@ -6,7 +6,6 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { KnownCaipNamespace, CaipChainId, hexToNumber } from '@metamask/utils';
 import {
   BoxFlexDirection,
   IconColor,
@@ -39,12 +38,7 @@ import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
-import {
-  getInternalAccountByAddress,
-  getUseExternalServices,
-} from '../../../../../selectors/selectors';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../../shared/modules/selectors/networks';
-import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
+import { getInternalAccountByAddress } from '../../../../../selectors/selectors';
 import {
   convertTimestampToReadableDate,
   getPeriodFrequencyValueTranslationKey,
@@ -56,11 +50,7 @@ import {
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
-import {
-  GatorPermissionData,
-  getGatorPermissionTokenInfo,
-  type GatorTokenInfo,
-} from '../../../../../../shared/lib/gator-permissions/gator-permissions-utils';
+import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 
 type ReviewGatorPermissionItemProps = {
   /**
@@ -119,18 +109,20 @@ export const ReviewGatorPermissionItem = ({
   const justification = permissionResponse.permission.data.justification as
     | string
     | undefined;
+  const tokenAddress = permissionResponse.permission.data.tokenAddress as
+    | string
+    | undefined;
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const allowExternalServices = useSelector(getUseExternalServices);
-  const networkConfigurationsByCaipChainId = useSelector(
-    getAllNetworkConfigurationsByCaipChainId,
-  );
   const pendingRevocations = useSelector(getPendingRevocations);
   const internalAccount = useSelector((state) =>
     getInternalAccountByAddress(state, permissionAccount),
   );
 
-  const truncatedAddress = shortenAddress(permissionAccount);
+  const truncatedAddress = useMemo(
+    () => shortenAddress(permissionAccount),
+    [permissionAccount],
+  );
   // Copy functionality with visual feedback
   const [accountText, setAccountText] = useState(truncatedAddress);
   const [addressCopied, setAddressCopied] = useState(false);
@@ -199,42 +191,12 @@ export const ReviewGatorPermissionItem = ({
     }, 1000);
   }, [permissionAccount, handleCopy, t]);
 
-  // Resolve token info (native or ERC-20) for this permission
-  const [tokenMetadata, setTokenMetadata] = useState<GatorTokenInfo>({
-    symbol: 'unknown',
-    decimals: -1,
-  });
-
-  const caipChainId: CaipChainId = `${KnownCaipNamespace.Eip155}:${hexToNumber(chainId)}`;
-  const networkConfig = networkConfigurationsByCaipChainId?.[caipChainId];
-
-  // Resolve token info (native or ERC-20) for this permission
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const info = await getGatorPermissionTokenInfo({
-        permissionType,
-        chainId,
-        networkConfig,
-        permissionData: permissionResponse.permission
-          .data as GatorPermissionData,
-        allowExternalServices,
-        getTokenStandardAndDetailsByChain,
-      });
-      if (!cancelled) {
-        setTokenMetadata(info);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    allowExternalServices,
-    permissionType,
+  // Use the hook to fetch token information (handles both native and ERC-20 tokens)
+  const { tokenInfo: tokenMetadata, loading } = useGatorPermissionTokenInfo(
+    tokenAddress,
     chainId,
-    networkConfig,
-    permissionResponse.permission.data,
-  ]);
+    permissionType,
+  );
 
   const isPendingRevocation = useMemo(() => {
     return pendingRevocations.some(
@@ -286,10 +248,9 @@ export const ReviewGatorPermissionItem = ({
       return {
         amountLabel: {
           translationKey: 'gatorPermissionsStreamingAmountLabel',
-          value:
-            decimals < 0
-              ? loadingText
-              : `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`,
+          value: loading
+            ? loadingText
+            : `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`,
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
@@ -300,24 +261,22 @@ export const ReviewGatorPermissionItem = ({
         expandedDetails: {
           initialAllowance: {
             translationKey: 'gatorPermissionsInitialAllowance',
-            value:
-              decimals < 0
-                ? loadingText
-                : `${getDecimalizedHexValue(
-                    permission.data.initialAmount || '0x0',
-                    decimals,
-                  )} ${symbol}`,
+            value: loading
+              ? loadingText
+              : `${getDecimalizedHexValue(
+                  permission.data.initialAmount || '0x0',
+                  decimals,
+                )} ${symbol}`,
             testId: 'review-gator-permission-initial-allowance',
           },
           maxAllowance: {
             translationKey: 'gatorPermissionsMaxAllowance',
-            value:
-              decimals < 0
-                ? loadingText
-                : `${getDecimalizedHexValue(
-                    permission.data.maxAmount || '0x0',
-                    decimals,
-                  )} ${symbol}`,
+            value: loading
+              ? loadingText
+              : `${getDecimalizedHexValue(
+                  permission.data.maxAmount || '0x0',
+                  decimals,
+                )} ${symbol}`,
             testId: 'review-gator-permission-max-allowance',
           },
           startDate: {
@@ -338,19 +297,18 @@ export const ReviewGatorPermissionItem = ({
           },
           streamRate: {
             translationKey: 'gatorPermissionsStreamRate',
-            value:
-              decimals < 0
-                ? loadingText
-                : `${getDecimalizedHexValue(
-                    permission.data.amountPerSecond,
-                    decimals,
-                  )} ${symbol}/sec`,
+            value: loading
+              ? loadingText
+              : `${getDecimalizedHexValue(
+                  permission.data.amountPerSecond,
+                  decimals,
+                )} ${symbol}/sec`,
             testId: 'review-gator-permission-stream-rate',
           },
         },
       };
     },
-    [tokenMetadata, loadingText, getExpirationDate],
+    [tokenMetadata, loading, loadingText, getExpirationDate],
   );
 
   /**
@@ -367,13 +325,12 @@ export const ReviewGatorPermissionItem = ({
       return {
         amountLabel: {
           translationKey: 'amount',
-          value:
-            decimals < 0
-              ? loadingText
-              : `${getDecimalizedHexValue(
-                  permission.data.periodAmount,
-                  decimals,
-                )} ${symbol}`,
+          value: loading
+            ? loadingText
+            : `${getDecimalizedHexValue(
+                permission.data.periodAmount,
+                decimals,
+              )} ${symbol}`,
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
@@ -403,7 +360,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, loadingText, getExpirationDate],
+    [tokenMetadata, loading, loadingText, getExpirationDate],
   );
 
   /**
