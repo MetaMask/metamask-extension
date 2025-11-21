@@ -45,6 +45,7 @@ describe('useDappSwapActions', () => {
         selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,
         setSelectedQuote: jest.fn(),
         setQuotedSwapDisplayedInInfo: jest.fn(),
+        isQuotedSwapDisplayedInInfo: true,
       } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
       const mockTransactionMeta = { txParams: {} };
