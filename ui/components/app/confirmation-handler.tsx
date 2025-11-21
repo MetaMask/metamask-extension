@@ -91,10 +91,12 @@ export const ConfirmationHandler = () => {
     );
   }, [pendingApprovals]);
 
-  const isSnapResultApproval = useMemo(
+  const isSnapApproval = useMemo(
     () =>
       pendingApprovals.some(
-        (approval) => approval.type === 'wallet_installSnapResult',
+        (approval) =>
+          approval.type === 'wallet_updateSnap' ||
+          approval.type === 'wallet_installSnapResult',
       ),
     [pendingApprovals],
   );
@@ -104,15 +106,17 @@ export const ConfirmationHandler = () => {
       return false;
     }
 
-    if (isFullscreen && !isSmartTransaction && isSnapResultApproval) {
+    if (isFullscreen && !isSmartTransaction && !isSnapApproval) {
       return false;
     }
 
     return true;
-  }, [stayOnHomePage, isFullscreen, isSmartTransaction, isSnapResultApproval]);
+  }, [stayOnHomePage, isFullscreen, isSmartTransaction, isSnapApproval]);
 
   const isOnHomePage = location.pathname === DEFAULT_ROUTE;
 
+  // Routes that are valid destinations from confirmation pages and should not trigger
+  // automatic navigation back to confirmations (e.g., /send for editing transactions)
   const isOnExcludedRoute = useMemo(
     () => location.pathname.startsWith(SEND_ROUTE),
     [location.pathname],
