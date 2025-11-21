@@ -48,6 +48,8 @@ describe('Permission List Item', () => {
     const mockStartTime = 1736271776; // January 7, 2025;
 
     describe('NATIVE token permissions', () => {
+      const mockExpiryTimestamp = 1767225600; // January 1, 2026
+
       const mockNativeTokenStreamPermission: StoredGatorPermissionSanitized<
         Signer,
         NativeTokenStreamPermission
@@ -71,6 +73,15 @@ describe('Permission List Item', () => {
           signerMeta: {
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
+          rules: [
+            {
+              type: 'expiry',
+              isAdjustmentAllowed: false,
+              data: {
+                timestamp: mockExpiryTimestamp,
+              },
+            },
+          ],
         },
         siteOrigin: 'http://localhost:8000',
       };
@@ -97,6 +108,15 @@ describe('Permission List Item', () => {
           signerMeta: {
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
+          rules: [
+            {
+              type: 'expiry',
+              isAdjustmentAllowed: false,
+              data: {
+                timestamp: mockExpiryTimestamp,
+              },
+            },
+          ],
         },
         siteOrigin: 'http://localhost:8000',
       };
@@ -153,11 +173,12 @@ describe('Permission List Item', () => {
         expect(startDate).toBeInTheDocument();
         expect(startDate).toHaveTextContent('01/07/2025');
 
-        // Verify expiration date is rendered
+        // Verify expiration date is rendered with correct date (January 1, 2026)
         const expirationDate = getByTestId(
           'review-gator-permission-expiration-date',
         );
         expect(expirationDate).toBeInTheDocument();
+        expect(expirationDate).toHaveTextContent('01/01/2026');
 
         // Verify network name is rendered
         const networkName = getByTestId('review-gator-permission-network-name');
@@ -200,11 +221,12 @@ describe('Permission List Item', () => {
         expect(startDate).toBeInTheDocument();
         expect(startDate).toHaveTextContent('01/07/2025');
 
-        // Verify expiration date is rendered
+        // Verify expiration date is rendered with correct date (January 1, 2026)
         const expirationDate = getByTestId(
           'review-gator-permission-expiration-date',
         );
         expect(expirationDate).toBeInTheDocument();
+        expect(expirationDate).toHaveTextContent('01/01/2026');
 
         // Verify network name is rendered
         const networkName = getByTestId('review-gator-permission-network-name');
@@ -218,6 +240,8 @@ describe('Permission List Item', () => {
        */
       const mockTokenAddress: Hex =
         '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
+
+      const mockExpiryTimestamp = 1767225600; // January 1, 2026
 
       const mockErc20TokenPeriodicPermission: StoredGatorPermissionSanitized<
         Signer,
@@ -242,6 +266,15 @@ describe('Permission List Item', () => {
           signerMeta: {
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
+          rules: [
+            {
+              type: 'expiry',
+              isAdjustmentAllowed: false,
+              data: {
+                timestamp: mockExpiryTimestamp,
+              },
+            },
+          ],
         },
         siteOrigin: 'http://localhost:8000',
       };
@@ -270,6 +303,15 @@ describe('Permission List Item', () => {
           signerMeta: {
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
+          rules: [
+            {
+              type: 'expiry',
+              isAdjustmentAllowed: false,
+              data: {
+                timestamp: mockExpiryTimestamp,
+              },
+            },
+          ],
         },
         siteOrigin: 'http://localhost:8000',
       };
@@ -326,11 +368,12 @@ describe('Permission List Item', () => {
         expect(startDate).toBeInTheDocument();
         expect(startDate).toHaveTextContent('01/07/2025');
 
-        // Verify expiration date is rendered
+        // Verify expiration date is rendered with correct date (January 1, 2026)
         const expirationDate = getByTestId(
           'review-gator-permission-expiration-date',
         );
         expect(expirationDate).toBeInTheDocument();
+        expect(expirationDate).toHaveTextContent('01/01/2026');
 
         // Verify network name is rendered
         const networkName = getByTestId('review-gator-permission-network-name');
@@ -372,6 +415,13 @@ describe('Permission List Item', () => {
         const startDate = getByTestId('review-gator-permission-start-date');
         expect(startDate).toBeInTheDocument();
         expect(startDate).toHaveTextContent('01/07/2025');
+
+        // Verify expiration date is rendered with correct date (January 1, 2026)
+        const expirationDate = getByTestId(
+          'review-gator-permission-expiration-date',
+        );
+        expect(expirationDate).toBeInTheDocument();
+        expect(expirationDate).toHaveTextContent('01/01/2026');
 
         // Verify network name is rendered
         const networkName = getByTestId('review-gator-permission-network-name');
@@ -449,6 +499,116 @@ describe('Permission List Item', () => {
         // Verify stream rate shows unknown amount
         const streamRate = getByTestId('review-gator-permission-stream-rate');
         expect(streamRate.textContent).toContain('Unknown amount');
+      });
+
+      it('renders "No expiration" when permission has no expiry', () => {
+        const mockPermissionWithoutExpiry: StoredGatorPermissionSanitized<
+          Signer,
+          NativeTokenPeriodicPermission
+        > = {
+          permissionResponse: {
+            chainId: '0x1',
+            address: mockSelectedAccountAddress,
+            permission: {
+              type: 'native-token-periodic',
+              isAdjustmentAllowed: false,
+              data: {
+                periodAmount: '0x6f05b59d3b20000',
+                periodDuration: 604800,
+                startTime: mockStartTime,
+                justification: 'Test permission without expiry',
+              },
+            },
+            context: '0x00000000',
+            signerMeta: {
+              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+            },
+            // No rules array = no expiry
+          },
+          siteOrigin: 'http://localhost:8000',
+        };
+
+        const { container, getByTestId } = renderWithProvider(
+          <ReviewGatorPermissionItem
+            networkName={mockNetworkName}
+            gatorPermission={mockPermissionWithoutExpiry}
+            onRevokeClick={() => mockOnClick()}
+          />,
+          store,
+        );
+
+        // Expand to see expiration date
+        const expandButton = container.querySelector('[aria-label="expand"]');
+        if (expandButton) {
+          fireEvent.click(expandButton);
+        }
+
+        // Verify expiration date shows "No expiration"
+        const expirationDate = getByTestId(
+          'review-gator-permission-expiration-date',
+        );
+        expect(expirationDate).toBeInTheDocument();
+        expect(expirationDate).toHaveTextContent('No expiration');
+      });
+
+      it('renders correct expiration date when permission has expiry', () => {
+        const customExpiryTimestamp = 1744588800; // April 14, 2025
+
+        const mockPermissionWithExpiry: StoredGatorPermissionSanitized<
+          Signer,
+          NativeTokenPeriodicPermission
+        > = {
+          permissionResponse: {
+            chainId: '0x1',
+            address: mockSelectedAccountAddress,
+            permission: {
+              type: 'native-token-periodic',
+              isAdjustmentAllowed: false,
+              data: {
+                periodAmount: '0x6f05b59d3b20000',
+                periodDuration: 604800,
+                startTime: mockStartTime,
+                justification: 'Test permission with expiry',
+              },
+            },
+            context: '0x00000000',
+            signerMeta: {
+              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+            },
+            rules: [
+              {
+                type: 'expiry',
+                isAdjustmentAllowed: false,
+                data: {
+                  timestamp: customExpiryTimestamp,
+                },
+              },
+            ],
+          },
+          siteOrigin: 'http://localhost:8000',
+        };
+
+        const { container, getByTestId } = renderWithProvider(
+          <ReviewGatorPermissionItem
+            networkName={mockNetworkName}
+            gatorPermission={mockPermissionWithExpiry}
+            onRevokeClick={() => mockOnClick()}
+          />,
+          store,
+        );
+
+        // Expand to see expiration date
+        const expandButton = container.querySelector('[aria-label="expand"]');
+        if (expandButton) {
+          fireEvent.click(expandButton);
+        }
+
+        // Verify expiration date shows the correct date
+        const expirationDate = getByTestId(
+          'review-gator-permission-expiration-date',
+        );
+        expect(expirationDate).toBeInTheDocument();
+        expect(expirationDate).toHaveTextContent('04/14/2025');
       });
     });
   });

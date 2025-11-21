@@ -35,10 +35,10 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   convertTimestampToReadableDate,
   getPeriodFrequencyValueTranslationKey,
-  extractExpiryToReadableDate,
-  GatorPermissionRule,
   convertAmountPerSecondToAmountPerPeriod,
   getDecimalizedHexValue,
+  extractExpiryToReadableDate,
+  GatorPermissionRule,
 } from '../../../../../../shared/lib/gator-permissions';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
@@ -104,6 +104,7 @@ export const ReviewGatorPermissionItem = ({
   onRevokeClick,
 }: ReviewGatorPermissionItemProps) => {
   const t = useI18nContext();
+
   const { permissionResponse, siteOrigin } = gatorPermission;
   const { chainId } = permissionResponse;
   const permissionType = permissionResponse.permission.type;
@@ -134,9 +135,6 @@ export const ReviewGatorPermissionItem = ({
           name: foundTokenMetadata.name || 'Unknown Token',
         };
       }
-      console.warn(
-        `Token metadata not found for address: ${tokenAddress} for chain: ${chainId}`,
-      );
       return {
         symbol: 'Unknown Token',
         decimals: null,
@@ -164,23 +162,21 @@ export const ReviewGatorPermissionItem = ({
   };
 
   /**
-   * Returns the expiration date from the rules
+   * Returns the expiration date from the permission rules
    *
-   * @param rules - The rules to extract the expiration from
    * @returns The expiration date
    */
-  const getExpirationDate = useCallback(
-    (rules: GatorPermissionRule[]): string => {
-      if (!rules) {
-        return t('gatorPermissionNoExpiration');
+  const getExpirationDate = useCallback((): string => {
+    if ('rules' in permissionResponse && permissionResponse.rules) {
+      const expiryDate = extractExpiryToReadableDate(
+        permissionResponse.rules as GatorPermissionRule[],
+      );
+      if (expiryDate) {
+        return expiryDate;
       }
-      if (rules.length === 0) {
-        return t('gatorPermissionNoExpiration');
-      }
-      return extractExpiryToReadableDate(rules);
-    },
-    [t],
-  );
+    }
+    return t('gatorPermissionNoExpiration');
+  }, [permissionResponse, t]);
 
   /**
    * Returns the token stream permission details
@@ -242,12 +238,9 @@ export const ReviewGatorPermissionItem = ({
             testId: 'review-gator-permission-start-date',
           },
 
-          // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller so we can have stronger typing
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(
-              (permission as unknown as { rules: GatorPermissionRule[] }).rules,
-            ),
+            value: getExpirationDate(),
             testId: 'review-gator-permission-expiration-date',
           },
           streamRate: {
@@ -306,12 +299,9 @@ export const ReviewGatorPermissionItem = ({
             testId: 'review-gator-permission-start-date',
           },
 
-          // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller so we can have stronger typing
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(
-              (permission as unknown as { rules: GatorPermissionRule[] }).rules,
-            ),
+            value: getExpirationDate(),
             testId: 'review-gator-permission-expiration-date',
           },
         },
