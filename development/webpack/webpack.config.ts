@@ -18,6 +18,10 @@ import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
+import {
+  defineReactCompilerLoaderOption,
+  reactCompilerLoader,
+} from 'react-compiler-webpack';
 import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
@@ -28,12 +32,13 @@ import {
   __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
+  UI_DIR_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getVariables } from './utils/config';
+import { getVariables, reactCompilerOptions } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 
@@ -318,6 +323,17 @@ const config = {
         test: /\.json(?:\.gz)?$/u,
         dependency: 'url',
         type: 'asset/resource',
+      },
+      {
+        test: /\.(?:js|mjs|jsx|ts|mts|tsx)$/u,
+        include: UI_DIR_RE,
+        exclude: NODE_MODULES_RE,
+        use: [
+          {
+            loader: reactCompilerLoader,
+            options: defineReactCompilerLoaderOption(reactCompilerOptions),
+          },
+        ],
       },
       // own typescript, and own typescript with jsx
       {
