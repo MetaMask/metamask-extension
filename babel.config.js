@@ -11,7 +11,7 @@ module.exports = function (api) {
     },
     overrides: [
       {
-        test: /\/ui\/(?:components|contexts|hooks|layouts|pages)\/.+(?!\.(?:test|stories|container))\.(m?[jt]s|[jt]sx)$/u,
+        test: /\/ui\/(?:components|contexts|hooks|layouts|pages)\/.+(?!\.(?:test|stories|container))\.(?:m?[jt]s|[jt]sx)$/u,
         exclude: /\/node_modules\//u,
         plugins: [['babel-plugin-react-compiler', { target: '17' }]],
       },
