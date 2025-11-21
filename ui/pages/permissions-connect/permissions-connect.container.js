@@ -1,6 +1,8 @@
+import React from 'react';
 import { SubjectType } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { connect } from 'react-redux';
+import { useParams, useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import {
@@ -38,12 +40,7 @@ import { getAccountGroupWithInternalAccounts } from '../../selectors/multichain-
 import PermissionApproval from './permissions-connect.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const {
-    match: {
-      params: { id: permissionsRequestId },
-    },
-    location: { pathname },
-  } = ownProps;
+  const { id: permissionsRequestId, pathname } = ownProps;
   let permissionsRequests = getPermissionsRequests(state);
   permissionsRequests = [
     ...permissionsRequests,
@@ -187,9 +184,23 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const PermissionApprovalContainer = connect(
+const ConnectedPermissionApproval = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(PermissionApproval);
+
+const PermissionApprovalContainer = () => {
+  const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  return (
+    <ConnectedPermissionApproval
+      id={id}
+      pathname={location.pathname}
+      location={location}
+      navigate={navigate}
+    />
+  );
+};
 
 export default PermissionApprovalContainer;
