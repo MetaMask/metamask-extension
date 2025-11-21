@@ -682,7 +682,7 @@ export default function Routes() {
       );
 
       if (url) {
-        history.push(url);
+        history.replace(url);
       }
     }
   }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
