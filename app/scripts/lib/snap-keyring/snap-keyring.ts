@@ -473,22 +473,27 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   ) {
     assertIsValidSnapId(snapId);
 
-    // Preinstalled Snaps can skip some confirmation dialogs and multichain wallet Snaps will
-    // skip them automatically too!
+    // Preinstalled Snaps can skip some confirmation dialogs.
     const isPreinstalled = isSnapPreinstalled(snapId);
-    const isMultichainWallet = isPreinstalled && isMultichainWalletSnap(snapId);
+
+    // Since the introduction of BIP-44, multichain wallet Snaps will skip them automatically too!
+    let skipAll = isPreinstalled && isMultichainWalletSnap(snapId);
+    // FIXME: We still rely on the old behavior in some e2e, so we do not skip them in this case.
+    if (process.env.IN_TEST) {
+      skipAll = false;
+    }
 
     // If Snap is preinstalled and does not request confirmation, skip the confirmation dialog.
     const skipConfirmationDialog =
-      isMultichainWallet || (isPreinstalled && !displayConfirmation);
+      skipAll || (isPreinstalled && !displayConfirmation);
 
     // Only pre-installed Snaps can skip the account name suggestion dialog.
     const skipAccountNameSuggestionDialog =
-      isMultichainWallet || (isPreinstalled && !displayAccountNameSuggestion);
+      skipAll || (isPreinstalled && !displayAccountNameSuggestion);
 
     // Only pre-installed Snaps can skip the account from being selected.
     const skipSetSelectedAccountStep =
-      isMultichainWallet || (isPreinstalled && !setSelectedAccount);
+      skipAll || (isPreinstalled && !setSelectedAccount);
 
     const skipApprovalFlow =
       skipConfirmationDialog && skipAccountNameSuggestionDialog;
@@ -503,7 +508,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
       // We do not set the account name suggestion if it's a multichain wallet Snap since the
       // current naming could have race conditions with other account creations, and since
       // naming is now handled by multichain account groups, we can skip this entirely.
-      accountNameSuggestion: isMultichainWallet ? '' : accountNameSuggestion,
+      accountNameSuggestion: skipAll ? '' : accountNameSuggestion,
       handleUserInput,
     });
 
