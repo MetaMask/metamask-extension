@@ -37,25 +37,8 @@ async function mockInfura(mockServer: MockttpServer): Promise<void> {
 
 async function mockInfuraResponses(mockServer: MockttpServer): Promise<void> {
   await mockInfura(mockServer);
-  // Mock spot-prices for mainnet (for aggregated balance calculation)
-  await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-    '0x0000000000000000000000000000000000000000': {
-      price: 1700,
-      marketCap: 382623505141,
-      pricePercentChange1d: 0,
-    },
-  });
-  // Mock spot-prices for localhost (where test starts)
-  await mockSpotPrices(mockServer, CHAIN_IDS.LOCALHOST, {
-    '0x0000000000000000000000000000000000000000': {
-      price: 1700,
-      marketCap: 382623505141,
-      pricePercentChange1d: 0,
-    },
-  });
-  // Mock spot-prices for Sepolia (where test switches to)
-  await mockSpotPrices(mockServer, CHAIN_IDS.SEPOLIA, {
-    '0x0000000000000000000000000000000000000000': {
+  await mockSpotPrices(mockServer, {
+    'eip155:1/slip44:60': {
       price: 1700,
       marketCap: 382623505141,
       pricePercentChange1d: 0,
@@ -69,8 +52,8 @@ describe('Settings', function () {
       {
         fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,

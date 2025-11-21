@@ -32,13 +32,11 @@ const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
 async function mockSpotPrices(mockServer: Mockttp) {
   return await mockServer
-    .forGet(
-      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
-    )
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        '0x0000000000000000000000000000000000000000': {
+        'eip155:1/slip44:60': {
           id: 'ethereum',
           price: 1700,
           marketCap: 382623505141,

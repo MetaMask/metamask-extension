@@ -46,8 +46,8 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         ethConversionInUsd: 3401, // 25 ETH × $3401 = $85,025.00
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 3401,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
