@@ -610,7 +610,6 @@ and we'll take you to the right place.`
     );
   });
 
-
   it('signed without sig_params exposes all params (foo, bar, baz)', async function () {
     await withFixtures(
       await getConfig(this.test?.fullTitle()),
