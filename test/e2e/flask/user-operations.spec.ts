@@ -1,9 +1,11 @@
 import {
   withFixtures,
   unlockWallet,
-  WINDOW_TITLES,
   convertETHToHexGwei,
+  WINDOW_TITLES,
 } from '../helpers';
+import { createDappTransaction } from '../page-objects/flows/transaction';
+import { sendRedesignedTransactionWithSnapAccount } from '../page-objects/flows/send-transaction.flow';
 import FixtureBuilder from '../fixture-builder';
 import {
   BUNDLER_URL,
@@ -223,27 +225,21 @@ async function withAccountSnap(
       bundlerServer: Bundler;
     }) => {
       await unlockWallet(driver);
-      await installExampleSnap(driver);
 
-      await setSnapConfig(driver, {
-        bundlerUrl: BUNDLER_URL,
-        entrypoint: ENTRYPOINT,
-        simpleAccountFactory: SIMPLE_ACCOUNT_FACTORY,
-        paymaster,
-      });
-
-      await createSnapAccount(
+      await setupCompleteERC4337Environment(
         driver,
-        LOCAL_NODE_PRIVATE_KEY,
-        ERC_4337_ACCOUNT_SALT,
-      );
-
-      const testDapp = new TestDapp(driver);
-      await testDapp.openTestDappPage();
-      await testDapp.connectAccount({ publicAddress: ERC_4337_ACCOUNT });
-
-      await driver.switchToWindowWithTitle(
-        WINDOW_TITLES.ExtensionInFullScreenView,
+        ERC_4337_ACCOUNT_SNAP_URL,
+        {
+          bundlerUrl: BUNDLER_URL,
+          entrypoint: ENTRYPOINT,
+          simpleAccountFactory: SIMPLE_ACCOUNT_FACTORY,
+          paymaster,
+        },
+        {
+          privateKey: LOCAL_NODE_PRIVATE_KEY,
+          salt: ERC_4337_ACCOUNT_SALT,
+        },
+        ERC_4337_ACCOUNT,
       );
 
       await testCallback(driver, bundlerServer);
@@ -256,18 +252,18 @@ async function withAccountSnap(
 describe.skip('User Operations', function () {
   it('from dApp transaction', async function () {
     await withAccountSnap({ title: this.test?.fullTitle() }, async (driver) => {
-      const transaction = {
+      await createDappTransaction(driver, {
         from: ERC_4337_ACCOUNT,
         to: LOCAL_NODE_ACCOUNT,
         value: convertETHToHexGwei(1),
         maxFeePerGas: '0x0',
         maxPriorityFeePerGas: '0x0',
-      };
-      await driver.openNewPage(
-        `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}`,
-      );
+      });
 
-      await confirmTransaction(driver);
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      const confirmation = new Confirmation(driver);
+      await confirmation.checkPageIsLoaded();
+      await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
     });
   });
 
@@ -277,18 +273,21 @@ describe.skip('User Operations', function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
+        await sendRedesignedTransactionWithSnapAccount({
+          driver,
+          recipientAddress: LOCAL_NODE_ACCOUNT,
+          amount: '1',
+          isSyncFlow: true,
+        });
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         const homePage = new HomePage(driver);
-        await homePage.startSendFlow();
-
-        const sendToPage = new SendTokenPage(driver);
-        await sendToPage.checkPageIsLoaded();
-        await sendToPage.fillRecipient(LOCAL_NODE_ACCOUNT);
-        await sendToPage.fillAmount('1');
-        await sendToPage.goToNextScreen();
-        await sendToPage.clickConfirmButton();
-
-        await openConfirmedTransaction(driver);
-        await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
+        await homePage.goToActivityList();
+        const activityListPage = new ActivityListPage(driver);
+        await activityListPage.clickConfirmedTransaction();
+        await validateTransactionDetailsWithReceipt(driver, bundlerServer);
       },
     );
   });
@@ -298,7 +297,13 @@ describe.skip('User Operations', function () {
   //     { title: this.test?.fullTitle() },
   //     async (driver, bundlerServer) => {
   //       await createSwap(driver);
-  //       await openConfirmedTransaction(driver);
+  //       await driver.switchToWindowWithTitle(
+  //         WINDOW_TITLES.ExtensionInFullScreenView,
+  //       );
+  //       const homePage = new HomePage(driver);
+  //       await homePage.goToActivityList();
+  //       const activityListPage = new ActivityListPage(driver);
+  //       await activityListPage.clickConfirmedTransaction();
   //       await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
   //     },
   //   );
@@ -321,20 +326,26 @@ describe.skip('User Operations', function () {
         ],
       },
       async (driver, bundlerServer) => {
-        const transaction = {
+        await createDappTransaction(driver, {
           from: ERC_4337_ACCOUNT,
           to: LOCAL_NODE_ACCOUNT,
           value: convertETHToHexGwei(1),
           maxFeePerGas: '0x0',
           maxPriorityFeePerGas: '0x0',
-        };
-        await driver.openNewPage(
-          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}`,
-        );
+        });
 
-        await confirmTransaction(driver);
-        await openConfirmedTransaction(driver);
-        await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const confirmation = new Confirmation(driver);
+        await confirmation.checkPageIsLoaded();
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        const activityListPage = new ActivityListPage(driver);
+        await activityListPage.clickConfirmedTransaction();
+        await validateTransactionDetailsWithReceipt(driver, bundlerServer);
       },
     );
   });
