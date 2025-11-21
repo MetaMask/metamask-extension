@@ -22,6 +22,7 @@ export const RewardsDataServiceInit: ControllerInitFunction<
   });
 
   return {
+    persistedStateKey: null,
     controller,
   };
 };
