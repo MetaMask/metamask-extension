@@ -178,15 +178,11 @@ class AssetListPage {
   }
 
   async clickOnAsset(assetName: string): Promise<void> {
-    const buttons = await this.driver.findElements(this.tokenListItem);
-    for (const button of buttons) {
-      const text = await button.getText();
-      if (text.includes(assetName)) {
-        await button.click();
-        return;
-      }
-    }
-    throw new Error(`${assetName} button not found`);
+    const buttons = await this.driver.findElement({
+      css: this.tokenListItem,
+      text: assetName,
+    });
+    await buttons.click();
   }
 
   async clickSendButton(): Promise<void> {
@@ -353,7 +349,11 @@ class AssetListPage {
     await this.driver.clickElement(this.networksToggle);
     await this.driver.waitUntil(
       async () => {
-        return Boolean(await this.driver.findElement(this.allNetworksOption));
+        return Boolean(
+          await this.driver.findElement(
+            '[data-testid="modal-header-close-button"]',
+          ),
+        );
       },
       {
         timeout: 5000,
@@ -504,6 +504,11 @@ class AssetListPage {
       },
       { timeout: 2000, interval: 100 },
     );
+  }
+
+  async checkPriceChartLoaded(assetAddress: string): Promise<void> {
+    console.log(`Verify the price chart is loaded`);
+    await this.driver.waitForSelector(this.tokenPercentage(assetAddress));
   }
 
   /**

@@ -217,8 +217,30 @@ class AccountListPage {
     tag: 'p',
   };
 
+  private readonly addAccountButton = {
+    text: 'Add account',
+    tag: 'p',
+  };
+
+  private readonly syncingMessage = {
+    text: 'Syncing...',
+    tag: 'p',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkListIsCompletelyLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.addAccountButton, {
+        timeout: 30000,
+      });
+    } catch (e) {
+      console.log('Timeout while waiting for account list to be loaded', e);
+      throw e;
+    }
+    await this.driver.assertElementNotPresent(this.syncingMessage);
   }
 
   async checkPageIsLoaded(options?: {
