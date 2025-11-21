@@ -27,7 +27,7 @@ describe('Ledger Hardware', function (this: Suite) {
         )) ?? console.error('localNodes is undefined or empty');
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('1208925.8196');
+        await homePage.checkExpectedBalanceIsDisplayed('1.21M');
         await sendRedesignedTransactionToAddress({
           driver,
           recipientAddress: RECIPIENT,
@@ -57,7 +57,7 @@ describe('Ledger Hardware', function (this: Suite) {
         )) ?? console.error('localNodes is undefined or empty');
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('1208925.8196');
+        await homePage.checkExpectedBalanceIsDisplayed('1.21M');
         await sendRedesignedTransactionToAddress({
           driver,
           recipientAddress: RECIPIENT,

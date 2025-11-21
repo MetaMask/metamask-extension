@@ -13,21 +13,19 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
-        state: 2,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Ensure that wallet information is displayed
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 2');
         await accountListPage.checkAddWalletButttonIsDisplayed();
 
-        // BUGBUG
-        // await accountListPage.checkMultichainAccountBalanceDisplayed('$42,500.00');
+        await accountListPage.checkMultichainAccountBalanceDisplayed(
+          '$85,025.00',
+        );
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList('Account 2');
@@ -41,21 +39,19 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         accountType: AccountType.HardwareWallet,
-        state: 2,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Ensure that wallet information is displayed
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
         await accountListPage.checkAddWalletButttonIsDisplayed();
 
-        // BUGBUG
-        // await accountListPage.checkMultichainAccountBalanceDisplayed('$42,500.00');
+        await accountListPage.checkMultichainAccountBalanceDisplayed(
+          '$85,025.00',
+        );
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList('Ledger 1');
@@ -72,8 +68,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
-        state: 2,
+        testSpecificMock: async (mockServer) => {
+          return mockSnapSimpleKeyringAndSite(mockServer);
+        },
       },
       async (driver: Driver) => {
         await installSnapSimpleKeyring(driver);
@@ -86,9 +83,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         );
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Ensure that wallet information is displayed
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
@@ -97,8 +92,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         );
 
         // Ensure that an SSK account within the wallet is displayed
-        // BugBug
-        // await accountListPage.checkMultichainAccountBalanceDisplayed('$42,500.00');
+        await accountListPage.checkMultichainAccountBalanceDisplayed(
+          '$85,025.00',
+        );
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList(

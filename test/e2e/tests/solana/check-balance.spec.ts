@@ -73,13 +73,12 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: false,
         mockZeroBalance: true,
         withCustomMocks: mockPrices,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.checkGetBalance('$0.00', 'USD');
+        await homePage.checkGetBalance('0', 'SOL');
       },
     );
   });
@@ -89,7 +88,6 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: false,
         mockZeroBalance: false,
         withCustomMocks: mockPrices,
       },
@@ -105,7 +103,6 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);

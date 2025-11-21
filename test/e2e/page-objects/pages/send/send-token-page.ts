@@ -5,6 +5,8 @@ import { Driver } from '../../../webdriver/driver';
 class SendTokenPage {
   private driver: Driver;
 
+  private readonly accountItem = '[data-testid="account-item"]';
+
   private readonly accountPickerButton =
     '[data-testid="send-page-account-picker"]';
 
@@ -80,6 +82,9 @@ class SendTokenPage {
 
   private readonly sendFlowBackButton = '[aria-label="Back"]';
 
+  private readonly selectAccountSelector =
+    '.multichain-account-list-item__account-name__button';
+
   private readonly tokenGasFeeDropdown =
     '[data-testid="selected-gas-fee-token-arrow"]';
 
@@ -112,6 +117,22 @@ class SendTokenPage {
       throw e;
     }
     console.log('Send token screen is loaded');
+  }
+
+  async selectAccount(accountLabel: string) {
+    console.log(`Select account ${accountLabel}`);
+    await this.driver.clickElement({
+      css: this.accountItem,
+      text: accountLabel,
+    });
+  }
+
+  async clickOnAccountSelector(accountLabel: string): Promise<void> {
+    console.log(`Click on account selector of ${accountLabel}`);
+    await this.driver.clickElement({
+      css: this.selectAccountSelector,
+      text: accountLabel,
+    });
   }
 
   async clickAssetPickerButton() {

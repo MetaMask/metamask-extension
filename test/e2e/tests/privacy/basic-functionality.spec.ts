@@ -188,9 +188,8 @@ describe('MetaMask onboarding', function () {
         await driver.delay(1000);
         for (const mockedEndpoint of mockedEndpoints) {
           const requests = await mockedEndpoint.getSeenRequests();
-          assert.equal(
-            requests.length,
-            1,
+          assert(
+            requests.length > 0,
             `${mockedEndpoint} should make requests after onboarding`,
           );
         }

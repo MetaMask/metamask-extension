@@ -33,7 +33,8 @@ describe('Create and remove Snap Account', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.checkAccountLabel('SSK Account');
+        // BUG #37591 - With BIP44 the account mame is not retained.
+        await headerNavbar.checkAccountLabel('Snap Account 1');
 
         // Navigate to account snaps list page.
         await headerNavbar.openSnapListPage();
@@ -49,7 +50,7 @@ describe('Create and remove Snap Account', function (this: Suite) {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountIsNotDisplayedInAccountList(
-          'SSK Account',
+          'Snap Account 1',
         );
       },
     );

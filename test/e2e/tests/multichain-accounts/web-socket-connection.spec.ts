@@ -2,36 +2,27 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
 import LocalWebSocketServer from '../../websocket-server';
 
-describe('Solana Web Socket', function (this: Suite) {
+describe('Multichain account Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        manifestFlags: {
-          remoteFeatureFlags: {
-            solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          },
-        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
         const headerComponent = new HeaderNavbar(driver);
         const accountListPage = new AccountListPage(driver);
-
         await headerComponent.openAccountMenu();
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Solana,
-          accountName: `Solana ${1}`,
-        });
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.addMultichainAccount();
 
         const connectionCount =
           LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
@@ -49,23 +40,15 @@ describe('Solana Web Socket', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        manifestFlags: {
-          remoteFeatureFlags: {
-            solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          },
-        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
         const headerComponent = new HeaderNavbar(driver);
         const accountListPage = new AccountListPage(driver);
-
         await headerComponent.openAccountMenu();
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Solana,
-          accountName: `Solana ${1}`,
-        });
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.addMultichainAccount();
 
         // Open a blank page to prevent browser from closing
         await driver.openNewPage('about:blank');
@@ -93,23 +76,12 @@ describe('Solana Web Socket', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        manifestFlags: {
-          remoteFeatureFlags: {
-            solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          },
-        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
         const headerComponent = new HeaderNavbar(driver);
-        const accountListPage = new AccountListPage(driver);
-
         await headerComponent.openAccountMenu();
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Solana,
-          accountName: `Solana ${1}`,
-        });
 
         // Verify that a websocket connection has been established with first window
         let connectionCount =
