@@ -18,11 +18,10 @@ export default class ShieldPlanPage {
   private readonly cryptoPaymentOption =
     '[data-testid="shield-payment-method-token-button"]';
 
-  private readonly monthlyPlanButton =
-    '[data-testid="shield-plan-monthly-button"]';
-
-  private readonly monthlyCryptoPlanButton =
-    '[data-testid="shield-plan-monthly*-button"]';
+  private readonly monthlyPlanButton = (paymentMethod: 'card' | 'crypto') =>
+    paymentMethod === 'crypto'
+      ? '[data-testid="shield-plan-monthly*-button"]'
+      : '[data-testid="shield-plan-monthly-button"]';
 
   private readonly paymentMethodButton =
     '[data-testid="shield-plan-payment-method-button"]';
@@ -72,14 +71,11 @@ export default class ShieldPlanPage {
     await this.driver.clickElement(this.annualPlanButton);
   }
 
-  async selectMonthlyPlan(): Promise<void> {
-    console.log('Selecting Monthly plan');
-    await this.driver.clickElement(this.monthlyPlanButton);
-  }
-
-  async selectMonthlyCryptoPlan(): Promise<void> {
-    console.log('Selecting Monthly crypto plan');
-    await this.driver.clickElement(this.monthlyCryptoPlanButton);
+  async selectMonthlyPlan(
+    paymentMethod: 'card' | 'crypto' = 'card',
+  ): Promise<void> {
+    console.log(`Selecting Monthly plan (${paymentMethod})`);
+    await this.driver.clickElement(this.monthlyPlanButton(paymentMethod));
   }
 
   async clickContinueButton(): Promise<void> {
@@ -114,10 +110,8 @@ export default class ShieldPlanPage {
 
     if (plan === 'annual') {
       await this.selectAnnualPlan();
-    } else if (paymentMethod === 'crypto') {
-      await this.selectMonthlyCryptoPlan();
     } else {
-      await this.selectMonthlyPlan();
+      await this.selectMonthlyPlan(paymentMethod);
     }
 
     await this.clickContinueButton();
