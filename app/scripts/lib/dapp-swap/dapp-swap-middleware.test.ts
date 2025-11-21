@@ -29,6 +29,10 @@ const createMiddleware = () => {
 };
 
 describe('DappSwapMiddleware', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('gets the network configuration for the request networkClientId', async () => {
     const { middlewareFunction } = createMiddleware();
 
@@ -48,6 +52,10 @@ describe('DappSwapMiddleware', () => {
 
   it('for correct origin, fetches quotes and sets swap quotes', async () => {
     fetchQuotes.mockReturnValueOnce(mockBridgeQuotes);
+    getNetworkConfigurationByNetworkClientId.mockReturnValueOnce({
+      chainId: '0x1',
+      rpcEndpoints: [],
+    });
     const { middlewareFunction } = createMiddleware();
 
     const req = {
