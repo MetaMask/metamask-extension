@@ -12,6 +12,7 @@ import {
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import Homepage from '../../page-objects/pages/home/homepage';
+import NetworkManager from '../../page-objects/pages/network-manager';
 import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 
 const SOLANA_URL_REGEX_MAINNET =
@@ -1586,6 +1587,7 @@ export async function withSolanaAccountSnap(
   {
     title,
     numberOfAccounts = 1,
+    withNetworkOnSolana = true,
     showNativeTokenAsMainBalance = true,
     showSnapConfirmation = false,
     mockGetTransactionSuccess,
@@ -1602,6 +1604,7 @@ export async function withSolanaAccountSnap(
     withFixtureBuilder,
   }: {
     title?: string;
+    withNetworkOnSolana?: boolean;
     showNativeTokenAsMainBalance?: boolean;
     showSnapConfirmation?: boolean;
     numberOfAccounts?: number;
@@ -1796,10 +1799,16 @@ export async function withSolanaAccountSnap(
       } else {
         await loginWithoutBalanceValidation(driver);
       }
+      if (withNetworkOnSolana) {
+        // Change network to Solana
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByNameWithWait('Solana');
+      }
       if (numberOfAccounts === 2) {
         const homepage = new Homepage(driver);
         await homepage.checkExpectedBalanceIsDisplayed();
-
         // create 2nd account
         await homepage.headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
