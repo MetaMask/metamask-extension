@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import { Hex } from '@metamask/utils';
 import { act } from '@testing-library/react';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -9,19 +10,25 @@ import * as Utils from '../../../../../helpers/utils/util';
 import * as TokenUtils from '../../../utils/token';
 import { Confirmation } from '../../../types/confirm';
 import { useDappSwapUSDValues } from './useDappSwapUSDValues';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 
-async function runHook() {
+async function runHook(
+  tokenAddresses?: Hex[],
+  mockConfirmation?: Confirmation,
+) {
   const response = renderHookWithConfirmContextProvider(
     () =>
       useDappSwapUSDValues({
-        tokenAddresses: [
+        tokenAddresses: tokenAddresses ?? [
           '0x0000000000000000000000000000000000000000',
           '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
           '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
         ],
         destTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
       }),
-    getMockConfirmStateForTransaction(mockSwapConfirmation as Confirmation),
+    getMockConfirmStateForTransaction(
+      mockConfirmation ?? (mockSwapConfirmation as Confirmation),
+    ),
   );
 
   await act(async () => {
@@ -104,5 +111,36 @@ describe('useDappSwapUSDValues', () => {
         2,
       ),
     ).toBe('0.00');
+  });
+
+  it('return correct fiat rates token on Polygon', async () => {
+    jest.spyOn(Utils, 'fetchTokenExchangeRates').mockResolvedValue({
+      '0x0000000000000000000000000000000000001010': 4052.27,
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': 0.999804,
+    });
+    jest.spyOn(TokenUtils, 'fetchAllTokenDetails').mockResolvedValue({
+      '0x0000000000000000000000000000000000000000': {
+        symbol: 'POL',
+        decimals: '18',
+      } as TokenStandAndDetails,
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': {
+        symbol: 'USDT',
+        decimals: '6',
+      } as TokenStandAndDetails,
+    });
+
+    const result = await runHook(
+      [
+        '0x0000000000000000000000000000000000000000',
+        '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+      ],
+      { ...mockSwapConfirmation, chainId: CHAIN_IDS.POLYGON } as Confirmation,
+    );
+
+    expect(result.fiatRates).toEqual({
+      '0x0000000000000000000000000000000000000000': 4052.27,
+      '0x0000000000000000000000000000000000001010': 4052.27,
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': 0.999804,
+    });
   });
 });
