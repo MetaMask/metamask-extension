@@ -6,7 +6,10 @@ import FixtureBuilder from '../../fixture-builder';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation
+} from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
 import referenceStateLogsDefinition from './state-logs.json';
@@ -97,7 +100,7 @@ describe('State logs', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         await driver.delay(10000);
 
