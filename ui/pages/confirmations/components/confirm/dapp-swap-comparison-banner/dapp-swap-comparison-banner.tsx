@@ -140,13 +140,11 @@ const DappSwapComparisonInner = () => {
       (dappSwapQa?.enabled && selectedQuote));
 
   useEffect(() => {
-    let dappSwapComparisonDisplayed = false;
     if (swapComparisonDisplayed) {
-      dappSwapComparisonDisplayed = true;
+      captureDappSwapComparisonDisplayProperties({
+        swap_mm_cta_displayed: 'true',
+      });
     }
-    captureDappSwapComparisonDisplayProperties({
-      swap_mm_cta_displayed: dappSwapComparisonDisplayed.toString(),
-    });
   }, [captureDappSwapComparisonDisplayProperties, swapComparisonDisplayed]);
 
   useEffect(() => {

@@ -6,6 +6,8 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 
 import { decodeCommandV3Path } from '../decoding';
 
+const DEFAULT_QUOTEFEE = 250;
+
 enum SwapCommands {
   V3_SWAP_EXACT_IN = '00',
   V3_SWAP_EXACT_OUT = '01',
@@ -475,6 +477,7 @@ function getGenericValues(
       destChainId: chainId,
       gasIncluded: false,
       gasIncluded7702: false,
+      fee: DEFAULT_QUOTEFEE,
     } as GenericQuoteRequest,
   };
 
