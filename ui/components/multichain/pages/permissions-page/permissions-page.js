@@ -28,6 +28,7 @@ import {
   GATOR_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
+import { getMergedConnectionsListWithGatorPermissions } from '../../../../selectors/gator-permissions/gator-permissions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
 import { ConnectionListItem } from './connection-list-item';
 
@@ -36,13 +37,17 @@ const PermissionsPage = () => {
   const navigate = useNavigate();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
-  const sitesConnectionsList = useSelector(
-    getConnectedSitesListWithNetworkInfo,
-  );
+
+  const mergedConnectionsList = useSelector((state) => {
+    if (!isGatorPermissionsRevocationFeatureEnabled()) {
+      return getConnectedSitesListWithNetworkInfo(state);
+    }
+    return getMergedConnectionsListWithGatorPermissions(state);
+  });
 
   useEffect(() => {
-    setTotalConnections(Object.keys(sitesConnectionsList).length);
-  }, [sitesConnectionsList]);
+    setTotalConnections(Object.keys(mergedConnectionsList).length);
+  }, [mergedConnectionsList]);
 
   const handleConnectionClick = (connection) => {
     const hostName = connection.origin;
@@ -100,7 +105,7 @@ const PermissionsPage = () => {
       <Content padding={0}>
         <Box ref={headerRef}></Box>
         {totalConnections > 0 ? (
-          renderConnectionsList(sitesConnectionsList)
+          renderConnectionsList(mergedConnectionsList)
         ) : (
           <Box
             data-testid="no-connections"

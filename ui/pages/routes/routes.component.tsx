@@ -787,11 +787,17 @@ export default function Routes() {
           <RouteWithLayout path={SNAPS_ROUTE} exact layout={LegacyLayout}>
             {createV5CompatRoute(SnapList, {
               wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
             })}
           </RouteWithLayout>
           <RouteWithLayout path={SNAPS_VIEW_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(SnapView, {
               wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+              includeParams: true,
+              paramsAsProps: false,
             })}
           </RouteWithLayout>
           <RouteWithLayout path={`${SEND_ROUTE}/:page?`} layout={RootLayout}>
@@ -1283,7 +1289,9 @@ export default function Routes() {
 
       {renderRoutes()}
 
-      {isUnlocked ? <Alerts navigate={createV5CompatNavigate(history)} /> : null}
+      {isUnlocked ? (
+        <Alerts navigate={createV5CompatNavigate(history)} />
+      ) : null}
       {React.createElement(
         ToastMaster as React.ComponentType<{
           location: RouteComponentProps['location'];
