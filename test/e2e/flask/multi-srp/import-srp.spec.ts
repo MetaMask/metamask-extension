@@ -51,7 +51,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       });
       await accountListPage.clickMultichainAccountMenuItem('Account details');
       const accountDetailsPage = new MultichainAccountDetailsPage(driver);
-      await accountDetailsPage.clicRevealRow();
+      await accountDetailsPage.clickRevealRow();
 
       const privacySettings = new PrivacySettings(driver);
       await privacySettings.completeRevealSrpQuiz();
