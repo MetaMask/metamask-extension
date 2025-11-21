@@ -9,6 +9,10 @@ import { SolScope, BtcScope, TrxScope } from '@metamask/keyring-api';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
 import { AssetType } from '../../shared/constants/transaction';
+import {
+  TRON_RESOURCE_SYMBOLS_SET,
+  type TronResourceSymbol,
+} from '../../shared/constants/multichain/assets';
 import type { TokenWithBalance } from '../components/app/assets/types';
 import {
   getAccountAssets,
@@ -156,6 +160,11 @@ export const useMultichainBalances = (
   const tronBalancesWithFiat = useNonEvmAssetsWithBalances(
     tronAccount?.id,
     tronAccount?.type,
+  ).filter(
+    (token) =>
+      !TRON_RESOURCE_SYMBOLS_SET.has(
+        token.symbol.toLowerCase() as TronResourceSymbol,
+      ),
   );
 
   // return TokenWithFiat sorted by fiat balance amount
