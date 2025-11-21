@@ -1007,44 +1007,47 @@ export const selectBalanceByWallet = (walletId: string) =>
     };
   });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
+const getStateForAssetSelector = ({ metamask }: any) => {
+  const initialState = {
+    accountTree: metamask.accountTree,
+    internalAccounts: metamask.internalAccounts,
+    allTokens: metamask.allTokens,
+    allIgnoredTokens: metamask.allIgnoredTokens,
+    tokenBalances: metamask.tokenBalances,
+    marketData: metamask.marketData,
+    currencyRates: metamask.currencyRates,
+    currentCurrency: metamask.currentCurrency,
+    networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
+    accountsByChainId: metamask.accountsByChainId,
+  };
+
+  let multichainState = {
+    accountsAssets: {},
+    assetsMetadata: {},
+    allIgnoredAssets: {},
+    balances: {},
+    conversionRates: {},
+  };
+
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  multichainState = {
+    accountsAssets: metamask.accountsAssets,
+    assetsMetadata: metamask.assetsMetadata,
+    allIgnoredAssets: metamask.allIgnoredAssets,
+    balances: metamask.balances,
+    conversionRates: metamask.conversionRates,
+  };
+  ///: END:ONLY_INCLUDE_IF
+
+  return {
+    ...initialState,
+    ...multichainState,
+  } as AssetListState;
+};
+
 export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
-  ({ metamask }) => {
-    const initialState = {
-      accountTree: metamask.accountTree,
-      internalAccounts: metamask.internalAccounts,
-      allTokens: metamask.allTokens,
-      allIgnoredTokens: metamask.allIgnoredTokens,
-      tokenBalances: metamask.tokenBalances,
-      marketData: metamask.marketData,
-      currencyRates: metamask.currencyRates,
-      currentCurrency: metamask.currentCurrency,
-      networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
-      accountsByChainId: metamask.accountsByChainId,
-    };
-
-    let multichainState = {
-      accountsAssets: {},
-      assetsMetadata: {},
-      allIgnoredAssets: {},
-      balances: {},
-      conversionRates: {},
-    };
-
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    multichainState = {
-      accountsAssets: metamask.accountsAssets,
-      assetsMetadata: metamask.assetsMetadata,
-      allIgnoredAssets: metamask.allIgnoredAssets,
-      balances: metamask.balances,
-      conversionRates: metamask.conversionRates,
-    };
-    ///: END:ONLY_INCLUDE_IF
-
-    return {
-      ...initialState,
-      ...multichainState,
-    };
-  },
+  getStateForAssetSelector,
   (assetListState: AssetListState) => {
     const assetsByAccountGroup =
       selectAssetsBySelectedAccountGroup(assetListState);
@@ -1074,6 +1077,13 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
     return newAssetsByAccountGroup;
   },
 );
+
+export const getAssetsBySelectedAccountGroupWithTronResources =
+  createDeepEqualSelector(
+    getStateForAssetSelector,
+    (assetListState: AssetListState) =>
+      selectAssetsBySelectedAccountGroup(assetListState),
+  );
 
 export const getAsset = createSelector(
   [
