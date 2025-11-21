@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import {
   useLocation,
   useNavigate,
@@ -27,10 +27,11 @@ import {
   getFetchParams,
   getQuotes,
 } from '../../ducks/swaps/swaps';
-import { navigateToConfirmation } from '../../pages/confirmations/hooks/useConfirmationNavigation';
+import { getConfirmationRoute } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import { useNavState } from '../../contexts/navigation-state';
 // TODO: Remove restricted import
@@ -59,6 +60,8 @@ export const ConfirmationHandler = () => {
   const isNotification = windowType === ENVIRONMENT_TYPE_NOTIFICATION;
   const isFullscreen = windowType === ENVIRONMENT_TYPE_FULLSCREEN;
 
+  const lastPathname = useRef<string | null>(null);
+
   // Memoize derived values to prevent unnecessary effect runs
   const haveSwapsQuotes = useMemo(
     () => Boolean(swapsQuotes && Object.values(swapsQuotes).length > 0),
@@ -82,13 +85,32 @@ export const ConfirmationHandler = () => {
     [location.state, navState],
   );
 
+  // Check if smart transaction status page is for dapp-initiated transaction
+  const isDappSmartTransactionStatusPage = useMemo(() => {
+    const approval = pendingApprovals?.[0];
+    if (
+      approval?.type ===
+      SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
+    ) {
+      const requestState = approval.requestState as
+        | { isDapp?: boolean }
+        | undefined;
+      return requestState?.isDapp === true;
+    }
+    return false;
+  }, [pendingApprovals]);
+
   const canRedirect = useMemo(() => {
-    if (stayOnHomePage || isFullscreen) {
+    if (stayOnHomePage) {
+      return false;
+    }
+    // Block navigation in fullscreen ONLY for dapp-initiated smart transaction status pages
+    if (isFullscreen && isDappSmartTransactionStatusPage) {
       return false;
     }
 
     return true;
-  }, [stayOnHomePage, isFullscreen]);
+  }, [stayOnHomePage, isFullscreen, isDappSmartTransactionStatusPage]);
 
   const isOnHomePage = location.pathname === DEFAULT_ROUTE;
 
@@ -166,33 +188,66 @@ export const ConfirmationHandler = () => {
 
   useEffect(() => {
     if (isLocked || !canRedirect || shouldSkipNetworkOperationNavigation) {
+      lastPathname.current = null;
       return;
     }
 
     // Extracted from home.component.js checkStatusAndNavigate
     // Handle swap/bridge redirects first
     if (showAwaitingSwapScreen) {
-      navigate(AWAITING_SWAP_ROUTE);
+      const targetPathname = AWAITING_SWAP_ROUTE;
+
+      if (location.pathname === targetPathname) {
+        return;
+      }
+
+      navigate(targetPathname);
+      lastPathname.current = targetPathname;
       return;
     }
     if (haveSwapsQuotes || swapsFetchParams) {
-      navigate(PREPARE_SWAP_ROUTE);
+      const targetPathname = PREPARE_SWAP_ROUTE;
+
+      if (location.pathname === targetPathname) {
+        return;
+      }
+
+      navigate(targetPathname);
+      lastPathname.current = targetPathname;
       return;
     }
     if (haveBridgeQuotes) {
-      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
+      const targetPathname = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+
+      if (location.pathname === targetPathname) {
+        return;
+      }
+
+      navigate(targetPathname);
+      lastPathname.current = targetPathname;
       return;
     }
 
     if (shouldNavigateToConfirmation) {
-      navigateToConfirmation(
+      const url = getConfirmationRoute(
         targetConfirmationId,
         pendingApprovals,
         Boolean(approvalFlows?.length),
-        navigate,
         '', // queryString
-        location.pathname,
       );
+
+      if (url) {
+        if (location.pathname === url) {
+          return;
+        }
+
+        navigate(url, { replace: true });
+        lastPathname.current = url;
+      } else {
+        lastPathname.current = null;
+      }
+    } else {
+      lastPathname.current = null;
     }
   }, [
     approvalFlows,
@@ -200,6 +255,7 @@ export const ConfirmationHandler = () => {
     haveBridgeQuotes,
     haveSwapsQuotes,
     isLocked,
+    location.pathname,
     navigate,
     pendingApprovals,
     shouldNavigateToConfirmation,
