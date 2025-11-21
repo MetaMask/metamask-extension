@@ -16,6 +16,15 @@ import {
   MultichainAccountListProps,
 } from './multichain-account-list';
 
+jest.mock('../../../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../../../shared/lib/trace');
+  return {
+    ...actual,
+    trace: jest.fn(),
+    endTrace: jest.fn(),
+  };
+});
+
 jest.mock('../../../selectors/multichain-accounts/account-tree', () => {
   const actual = jest.requireActual(
     '../../../selectors/multichain-accounts/account-tree',
@@ -1183,6 +1192,19 @@ describe('MultichainAccountList', () => {
       expect(
         screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Trace events', () => {
+    it('ends AccountList and ShowAccountList traces on mount', () => {
+      renderComponent();
+      const traceLib = jest.requireMock('../../../../shared/lib/trace');
+      expect(traceLib.endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({ name: traceLib.TraceName.AccountList }),
+      );
+      expect(traceLib.endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({ name: traceLib.TraceName.ShowAccountList }),
+      );
     });
   });
 });
