@@ -1,14 +1,15 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import log from 'loglevel';
-import { useSelector } from 'react-redux';
-import { submitRequestToBackground } from '../../store/background-connection';
+import { useSelector, useDispatch } from 'react-redux';
+import { getRewardsCandidateSubscriptionId } from '../../store/actions';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
-import { useAppSelector } from '../../store/store';
-import { useRewardsEnabled } from './useRewardsEnabled';
+import {
+  selectCandidateSubscriptionId,
+  selectRewardsEnabled,
+} from '../../ducks/rewards/selectors';
+import { setCandidateSubscriptionId } from '../../ducks/rewards';
 
 type UseCandidateSubscriptionIdReturn = {
-  candidateSubscriptionId: string | null;
-  candidateSubscriptionIdError: boolean;
   fetchCandidateSubscriptionId: () => Promise<void>;
 };
 
@@ -17,65 +18,53 @@ type UseCandidateSubscriptionIdReturn = {
  */
 export const useCandidateSubscriptionId =
   (): UseCandidateSubscriptionIdReturn => {
-    const [candidateSubscriptionId, setCandidateSubscriptionId] = useState<
-      string | null
-    >(null);
-    const [candidateSubscriptionIdError, setCandidateSubscriptionIdError] =
-      useState(false);
+    const dispatch = useDispatch();
+
     const isUnlocked = useSelector(getIsUnlocked);
-    const isRewardsEnabled = useRewardsEnabled();
-    const rewardsActiveAccountSubscriptionId = useAppSelector(
-      (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
-    );
-    const rewardsActiveAccountCaipAccountId = useAppSelector(
-      (state) => state.metamask.rewardsActiveAccount?.account,
-    );
-    const rewardsSubscriptions = useAppSelector(
-      (state) => state.metamask.rewardsSubscriptions,
-    );
+    const isRewardsEnabled = useSelector(selectRewardsEnabled);
+    const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
+
+    const isLoading = useRef(false);
 
     const fetchCandidateSubscriptionId = useCallback(async () => {
       try {
         if (!isRewardsEnabled) {
-          setCandidateSubscriptionId(null);
-          setCandidateSubscriptionIdError(false);
+          dispatch(setCandidateSubscriptionId(null));
           return;
         }
-        const candidateId = await submitRequestToBackground<string>(
-          'getCandidateSubscriptionId',
-          [],
-        );
-        setCandidateSubscriptionId(candidateId);
-        setCandidateSubscriptionIdError(false);
+        if (isLoading.current) {
+          return;
+        }
+        isLoading.current = true;
+
+        const candidateId = (await dispatch(
+          getRewardsCandidateSubscriptionId(),
+        )) as unknown as string | null;
+        dispatch(setCandidateSubscriptionId(candidateId));
       } catch (error) {
         log.error(
           '[useCandidateSubscriptionId] Error fetching candidate subscription ID:',
           error,
         );
-        setCandidateSubscriptionIdError(true);
+        dispatch(setCandidateSubscriptionId('error'));
+      } finally {
+        isLoading.current = false;
       }
-    }, [isRewardsEnabled]);
+    }, [isRewardsEnabled, dispatch]);
 
     useEffect(() => {
-      if (
-        isUnlocked &&
-        rewardsActiveAccountCaipAccountId &&
-        (!candidateSubscriptionId ||
-          rewardsActiveAccountSubscriptionId !== candidateSubscriptionId)
-      ) {
+      if (candidateSubscriptionId === 'retry') {
         fetchCandidateSubscriptionId();
       }
-    }, [
-      isUnlocked,
-      fetchCandidateSubscriptionId,
-      rewardsActiveAccountCaipAccountId,
-      rewardsActiveAccountSubscriptionId,
-      candidateSubscriptionId,
-      rewardsSubscriptions,
-    ]);
+    }, [candidateSubscriptionId, fetchCandidateSubscriptionId]);
+
+    useEffect(() => {
+      if (isUnlocked) {
+        fetchCandidateSubscriptionId();
+      }
+    }, [fetchCandidateSubscriptionId, isUnlocked]);
+
     return {
-      candidateSubscriptionId,
-      candidateSubscriptionIdError,
       fetchCandidateSubscriptionId,
     };
   };

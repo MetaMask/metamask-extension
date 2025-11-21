@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   useRive,
   useRiveFile,
@@ -9,8 +9,10 @@ import {
 import { Box } from '@metamask/design-system-react';
 import { useTheme } from '../../../hooks/useTheme';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { waitForWasmReady } from '../rive-wasm';
-import riv from '../../../../app/riv_animations/metamask_wordmark.riv';
+import {
+  useRiveWasmContext,
+  useRiveWasmFile,
+} from '../../../contexts/rive-wasm';
 
 type MetamaskWordMarkAnimationProps = {
   setIsAnimationComplete: (isAnimationComplete: boolean) => void;
@@ -28,62 +30,30 @@ export default function MetamaskWordMarkAnimation({
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const theme = useTheme();
   const isTestEnvironment = Boolean(process.env.IN_TEST);
-  const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
-  const [buffer, setBuffer] = useState<ArrayBuffer | undefined>(undefined);
+  const context = useRiveWasmContext();
+  const { isWasmReady, error: wasmError, setIsAnimationCompleted } = context;
+  const {
+    buffer,
+    error: bufferError,
+    loading: bufferLoading,
+  } = useRiveWasmFile('./images/riv_animations/metamask_wordmark.riv');
 
-  // Check if WASM is ready (initialized in parent OnboardingFlow)
   useEffect(() => {
-    if (isTestEnvironment) {
-      setIsWasmReady(true);
+    if (wasmError) {
+      console.error(
+        '[Rive - MetamaskWordMarkAnimation] Failed to load WASM:',
+        wasmError,
+      );
       setIsAnimationComplete(true);
-      return undefined;
     }
-
-    // Wait for WASM to be ready using promise instead of polling
-    waitForWasmReady()
-      .then(() => {
-        console.log('[Rive] WASM is ready');
-        setIsWasmReady(true);
-      })
-      .catch((error) => {
-        console.error('[Rive] WASM failed to load:', error);
-        // Set animation as complete on error
-        if (!isAnimationComplete) {
-          setIsAnimationComplete(true);
-        }
-      });
-
-    return undefined;
-  }, [isAnimationComplete, isTestEnvironment, setIsAnimationComplete]);
-
-  // Fetch the .riv file and convert to ArrayBuffer
-  useEffect(() => {
-    if (!isWasmReady || isTestEnvironment || buffer) {
-      return;
+    if (bufferError) {
+      console.error(
+        '[Rive - MetamaskWordMarkAnimation] Failed to load buffer:',
+        bufferError,
+      );
+      setIsAnimationComplete(true);
     }
-
-    fetch('./images/riv_animations/metamask_wordmark.riv')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.arrayBuffer();
-      })
-      .then((arrayBuffer) => {
-        // Only set buffer if it has content
-        if (arrayBuffer.byteLength > 0) {
-          setBuffer(arrayBuffer);
-        } else {
-          console.warn('[Rive] Empty buffer received, skipping animation');
-          setIsAnimationComplete(true);
-        }
-      })
-      .catch((error) => {
-        console.error('[Rive] Failed to load .riv file:', error);
-        // Set animation as complete on error
-        setIsAnimationComplete(true);
-      });
-  }, [isWasmReady, buffer, setIsAnimationComplete, isTestEnvironment]);
+  }, [wasmError, bufferError, setIsAnimationComplete]);
 
   // Use the buffer parameter instead of src
   const { riveFile, status } = useRiveFile({
@@ -120,7 +90,7 @@ export default function MetamaskWordMarkAnimation({
 
   // Trigger the animation start when rive is loaded and WASM is ready
   useEffect(() => {
-    if (rive && isWasmReady) {
+    if (rive && isWasmReady && !bufferLoading && buffer) {
       // Get the state machine inputs
       const inputs = rive.stateMachineInputs('WordmarkBuildUp');
 
@@ -152,42 +122,29 @@ export default function MetamaskWordMarkAnimation({
     return () => {
       if (animationTimeoutRef.current) {
         clearTimeout(animationTimeoutRef.current);
+        setIsAnimationCompleted('MetamaskWordMarkAnimation', true);
       }
     };
-  }, [rive, theme, isWasmReady, skipTransition]);
-
-  // In test environments, skip animation entirely and show buttons immediately
-  // This prevents any Rive initialization and CDN network requests
-  useEffect(() => {
-    if (isTestEnvironment) {
-      console.log('Test environment detected, skipping Rive animation');
-      setIsAnimationComplete(true);
-    }
-  }, [isTestEnvironment, setIsAnimationComplete]);
-
-  // Fallback: Ensure animation completes even if Rive fails to load
-  // This handles e2e test scenarios where WASM may be blocked
-  useEffect(() => {
-    if (!isTestEnvironment && !isAnimationComplete) {
-      const fallbackTimeout = setTimeout(() => {
-        console.log('Animation fallback timeout triggered');
-        setIsAnimationComplete(true);
-      }, 3000); // 3 second fallback timeout
-
-      return () => clearTimeout(fallbackTimeout);
-    }
-    return undefined;
-  }, [isAnimationComplete, isTestEnvironment, setIsAnimationComplete]);
+  }, [
+    rive,
+    theme,
+    isWasmReady,
+    skipTransition,
+    bufferLoading,
+    buffer,
+    setIsAnimationCompleted,
+  ]);
 
   // Don't render Rive component until ready or if loading/failed
   if (
     !isWasmReady ||
+    bufferLoading ||
+    !buffer ||
     isTestEnvironment ||
     status === 'loading' ||
     status === 'failed'
   ) {
     if (status === 'failed') {
-      console.error('[Rive] Failed to load .riv file');
       // Trigger animation complete to show the UI
       if (!isAnimationComplete) {
         setIsAnimationComplete(true);

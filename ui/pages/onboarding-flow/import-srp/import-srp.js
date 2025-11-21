@@ -39,6 +39,7 @@ import {
   resetOnboarding,
 } from '../../../store/actions';
 import SrpInputForm from '../../srp-input-form';
+import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 
 const hasUpperCase = (draftSrp) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -54,12 +55,13 @@ export default function ImportSRP({
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const t = useI18nContext();
   const currentKeyring = useSelector(getCurrentKeyring);
+  const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
 
   useEffect(() => {
-    if (currentKeyring) {
+    if (currentKeyring && !isWalletResetInProgress) {
       navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
     }
-  }, [currentKeyring, navigate]);
+  }, [currentKeyring, navigate, isWalletResetInProgress]);
   const trackEvent = useContext(MetaMetricsContext);
 
   const onBack = async (e) => {

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
@@ -56,11 +56,13 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import {
   forceUpdateMetamaskState,
+  getIsSeedlessOnboardingUserAuthenticated,
   resetOnboarding,
   setDataCollectionForMarketing,
   setMarketingConsent,
 } from '../../../store/actions';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
@@ -83,6 +85,7 @@ export default function CreatePassword({
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
+  const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const isParticipateInMetaMetricsSet = useSelector(
@@ -103,8 +106,21 @@ export default function CreatePassword({
     analyticsIframeQuery,
   )}`;
 
+  const validateSocialLoginAuthenticatedState = useCallback(async () => {
+    const isSeedlessOnboardingUserAuthenticated = await dispatch(
+      getIsSeedlessOnboardingUserAuthenticated(),
+    );
+    if (!isSeedlessOnboardingUserAuthenticated) {
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    }
+  }, [dispatch, navigate]);
+
   useEffect(() => {
-    if (currentKeyring && !newAccountCreationInProgress) {
+    if (
+      currentKeyring &&
+      !newAccountCreationInProgress &&
+      !isWalletResetInProgress
+    ) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport
@@ -141,7 +157,18 @@ export default function CreatePassword({
     newAccountCreationInProgress,
     secretRecoveryPhrase,
     isParticipateInMetaMetricsSet,
+    isWalletResetInProgress,
   ]);
+
+  useEffect(() => {
+    // validate social login authenticated state on mount
+    // before user attempts to create a new wallet
+    (async () => {
+      if (isSocialLoginFlow) {
+        await validateSocialLoginAuthenticatedState();
+      }
+    })();
+  }, [isSocialLoginFlow, validateSocialLoginAuthenticatedState]);
 
   const handleLearnMoreClick = (event) => {
     event.stopPropagation();

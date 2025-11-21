@@ -43,7 +43,7 @@ export function isConfirmTransactionRoute(pathname) {
   );
 }
 
-function getThemeFromRawTheme(theme) {
+export function getThemeFromRawTheme(theme) {
   if (theme === ThemeType.os) {
     if (window?.matchMedia('(prefers-color-scheme: dark)')?.matches) {
       return ThemeType.dark;
@@ -392,4 +392,34 @@ export function getRelativeLocationForNestedRoutes(location, basePath) {
     ...location,
     pathname: relativePathname,
   };
+}
+
+/**
+ * Extracts the transaction ID from a URL pathname.
+ *
+ * @param {string} pathname - The URL pathname (e.g., '/confirm-transaction/123?query=foo').
+ * @param {string} baseRoute - The base route to match against (e.g., '/confirm-transaction/').
+ * @returns {string | null} The transaction ID if found, otherwise null.
+ * @example
+ * extractIdFromPathname('/confirm-transaction/abc123', '/confirm-transaction/') // 'abc123'
+ * extractIdFromPathname('/confirm-transaction/abc123?foo=bar', '/confirm-transaction/') // 'abc123'
+ * extractIdFromPathname('/confirm-transaction/abc123#hash', '/confirm-transaction/') // 'abc123'
+ * extractIdFromPathname('/other-route', '/confirm-transaction/') // null
+ */
+export function extractIdFromPathname(pathname, baseRoute) {
+  if (!pathname || !baseRoute || !pathname.includes(baseRoute)) {
+    return null;
+  }
+
+  // Get the part after the base route
+  const afterRoute = pathname.split(baseRoute)[1];
+
+  if (!afterRoute) {
+    return null;
+  }
+
+  // Extract the ID by getting everything before any query params or hash
+  const id = afterRoute.split(/[/?#]/u)[0];
+
+  return id || null;
 }

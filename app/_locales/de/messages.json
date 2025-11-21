@@ -630,9 +630,6 @@
   "attributions": {
     "message": "Zuschreibungen"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Die Infura RPC URL unterstützt Aurora nicht mehr."
-  },
   "authorizedPermissions": {
     "message": "Sie haben die folgenden Genehmigungen autorisiert."
   },
@@ -1630,14 +1627,8 @@
   "customToken": {
     "message": "Benutzerdefiniertes Token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Die Token-Erkennung ist in diesem Netzwerk noch nicht verfügbar. Bitte importieren Sie das Token manuell und stellen Sie sicher, dass Sie ihm vertrauen. Erfahren Sie mehr über $1."
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Jeder kann einen Token erstellen, auch gefälschte Versionen von bestehenden Token. Erfahren Sie mehr über $1."
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Stellen Sie sicher, dass Sie einem Token vertrauen, bevor Sie es importieren. Erfahren Sie, wie Sie 1$ vermeiden und die Token-Erkennung $2 aktivieren können."
   },
   "customerSupport": {
     "message": "Kundensupport"
@@ -1827,9 +1818,6 @@
   },
   "depositCrypto": {
     "message": "Zahlen Sie Krypto von einem anderen Konto über eine Wallet-Adresse oder einen QR-Code ein."
-  },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Aufgrund von Aktualisierungen des Ethereum-Systems wird das Goerli-Testnetzwerk bald eingestellt."
   },
   "deprecatedNetwork": {
     "message": "Dieses Netzwerk ist veraltet"
@@ -2336,9 +2324,6 @@
   "existingChainId": {
     "message": "Die von Ihnen eingegebenen Informationen sind mit einer bestehenden Chain-ID verknüpft."
   },
-  "expandView": {
-    "message": "Ansicht erweitern"
-  },
   "experimental": {
     "message": "Experimentell"
   },
@@ -2787,9 +2772,6 @@
   "imported": {
     "message": "Importiert",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "in Ihren Einstellungen"
   },
   "included": {
     "message": "einschließlich"
@@ -5103,10 +5085,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Dies ist Ihre $1. Notieren Sie sie in der richtigen Reihenfolge und bewahren Sie sie sicher auf. Wenn jemand Ihre geheime Wiederherstellungsphrase hat, kann er auf Ihre Wallet zugreifen. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Geben Sie sie niemals an Dritte weiter."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Speichern Sie Ihre geheime Wiederherstellungsphrase"
@@ -5240,9 +5219,6 @@
   },
   "shieldEntryModalGetStarted": {
     "message": "Erste Schritte"
-  },
-  "shieldEntryModalSkip": {
-    "message": "Überspringen"
   },
   "show": {
     "message": "Zeigen"
@@ -6497,10 +6473,6 @@
   "switchNetwork": {
     "message": "Netzwerk wechseln"
   },
-  "switchToNetwork": {
-    "message": "Zu $1 wechseln",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Zu diesem Konto wechseln"
   },
@@ -6606,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Token-Marktplatz"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "Token-Betrügereien und Sicherheitsrisiken"
   },
   "tokenStandard": {
     "message": "Token-Standard"
@@ -7060,24 +7029,11 @@
     "message": "$1 Sie können diese Phrase sicher aufbewahren, damit Sie nie den Zugriff auf Ihr Geld verlieren.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Sie können Ihre Wallets sichern oder Ihre geheime Wiederherstellungsphrase unter Einstellungen > Sicherheit und Passwort anzeigen."
-  },
   "walletReadyLoseSrp": {
     "message": "Wenn Sie Ihre geheime Wiederherstellungsphrase verlieren, können Sie Ihre Wallet nicht mehr verwenden."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Mit dieser geheimen Wiederherstellungsphrase können Sie den Zugriff wiedererlangen, wenn Sie Ihr Passwort vergessen oder den Zugriff auf Ihre Anmeldung verlieren."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Wenn Sie Ihre geheime Wiederherstellungsphrase nicht sichern, verlieren Sie bei einem Zugriffsverlust der App oder einem Gerätewechsel auch den Zugriff auf Ihr Guthaben."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Sie können sich jederzeit mit Ihrem $1-Konto und -Passwort bei Ihrer Wallet anmelden.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Wenn Sie Ihr Passwort vergessen, können Sie nicht auf Ihre Wallet zugreifen."
   },
   "wantToAddThisNetwork": {
     "message": "Möchten Sie dieses Netzwerk hinzufügen?"
@@ -7183,8 +7139,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Bewahren Sie Ihre geheime Wiederherstellungsphrase sicher auf!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Wir erinnern Sie später"
   }
 }

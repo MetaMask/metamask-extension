@@ -21,6 +21,8 @@ buildTypes:
       - multi-srp
       - multichain
       - bitcoin
+      - bitcoin-swaps
+      - tron
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -30,9 +32,9 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.2/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - IS_SIDEPANEL: false
+      - IS_SIDEPANEL: true
       # for seedless onboarding (social login)
       - GOOGLE_PROD_CLIENT_ID
       - APPLE_PROD_CLIENT_ID
@@ -53,6 +55,7 @@ buildTypes:
       - bitcoin
       - bitcoin-swaps
       - multi-srp
+      - tron
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
@@ -63,9 +66,9 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.2/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - IS_SIDEPANEL: false
+      - IS_SIDEPANEL: true
       # for seedless onboarding (social login)
       - GOOGLE_BETA_CLIENT_ID
       - APPLE_BETA_CLIENT_ID
@@ -88,6 +91,7 @@ buildTypes:
       - multichain
       - bitcoin
       - bitcoin-swaps
+      - tron
     env:
       - INFURA_EXPERIMENTAL_PROJECT_ID
       - SEGMENT_EXPERIMENTAL_WRITE_KEY
@@ -95,10 +99,9 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_EXPERIMENTAL_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - IS_SIDEPANEL: true
-      - METAMASK_SHIELD_ENABLED: true
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.2/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       # for seedless onboarding (social login)
       - GOOGLE_EXPERIMENTAL_CLIENT_ID
@@ -117,6 +120,7 @@ buildTypes:
       - build-flask
       - keyring-snaps
       - bitcoin
+      - tron
       - multi-srp
       - multichain
       - gator-permissions
@@ -126,20 +130,21 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.2/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
       - SUPPORT_LINK: https://support.metamask.io/
       - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
-      - IS_SIDEPANEL: false
+      - IS_SIDEPANEL: true
       # for seedless onboarding (social login)
       - GOOGLE_FLASK_CLIENT_ID
       - APPLE_FLASK_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
       - GATOR_PERMISSIONS_ENABLED: true
+      - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
@@ -186,6 +191,10 @@ features:
     assets:
       - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/bitcoin-wallet-snap.json
+  tron:
+    assets:
+      - src: ./node_modules/@metamask/tron-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/tron-wallet-snap.json
   multi-srp:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
@@ -194,7 +203,7 @@ features:
   multichain:
   ocap-kernel:
     assets:
-      - ./{app,offscreen,shared,ui}/**/ocap-kernel/**
+      - ./{app,shared,ui}/**/ocap-kernel/**
   gator-permissions:
     assets:
       - src: ./node_modules/@metamask/permissions-kernel-snap/dist/preinstalled-snap.json
@@ -293,6 +302,7 @@ env:
   - QUICKNODE_POLYGON_URL: null
   - QUICKNODE_BASE_URL: null
   - QUICKNODE_BSC_URL: null
+  - QUICKNODE_SEI_URL: null
 
   ###
   # API keys to 3rd party services
@@ -443,12 +453,10 @@ env:
   - APPLE_CLIENT_ID_UAT: ''
 
   # Metamask Shield
-  - METAMASK_SHIELD_ENABLED: 'false'
+  - METAMASK_SHIELD_ENABLED: 'true'
 
   # Snaps
+  - AUTO_UPDATE_PREINSTALLED_SNAPS: 'true'
   # This should only be used for local testing, and should not be enabled in any
   # production builds (including beta and Flask).
   - FORCE_PREINSTALLED_SNAPS: 'false'
-
-  # Enable dapp swap shield implementation
-  - DAPP_SWAP_SHIELD_ENABLED: false

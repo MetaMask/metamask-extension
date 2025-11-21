@@ -44,15 +44,8 @@ if (args.dryRun) {
   exit(0);
 }
 
-// #region short circuit for unsupported build configurations
-if (args.manifest_version === 3) {
-  throw new Error(
-    "The webpack build doesn't support manifest_version version 3 yet. So sorry.",
-  );
-}
-// #endregion short circuit for unsupported build configurations
-
 const context = join(__dirname, '../../app');
+const nodeModules = join(__dirname, '../../node_modules');
 const isDevelopment = args.env === 'development';
 const MANIFEST_VERSION = args.manifest_version;
 const manifestPath = join(context, `manifest/v${MANIFEST_VERSION}/_base.json`);
@@ -105,10 +98,7 @@ const plugins: WebpackPluginInstance[] = [
     preprocessorOptions: { useWith: false },
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
-    data: {
-      isTest: args.test,
-      shouldIncludeSnow: args.snow,
-    },
+    data: { isTest: args.test },
     preload: [
       {
         attributes: { as: 'font', crossorigin: true },
@@ -170,6 +160,27 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // snaps MV3 needs the offscreen document
+      ...(MANIFEST_VERSION === 3
+        ? [
+            {
+              from: join(
+                nodeModules,
+                '@metamask/snaps-execution-environments',
+                'dist/webpack/iframe/index.html',
+              ),
+              to: 'snaps/index.html',
+            },
+            {
+              from: join(
+                nodeModules,
+                '@metamask/snaps-execution-environments',
+                'dist/webpack/iframe/bundle.js',
+              ),
+              to: 'snaps/bundle.js',
+            },
+          ]
+        : []),
     ],
   }),
 ];

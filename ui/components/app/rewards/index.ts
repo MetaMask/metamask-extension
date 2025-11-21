@@ -1,1 +1,0 @@
-export { RewardsPointsBalance } from './RewardsPointsBalance';

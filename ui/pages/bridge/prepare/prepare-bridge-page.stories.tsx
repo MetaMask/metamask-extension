@@ -1,11 +1,12 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import configureStore from '../../../store/store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 
 import CrossChainSwap from '../index';
-import { MemoryRouter } from 'react-router-dom';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -23,13 +24,22 @@ const storybook = {
   component: CrossChainSwap,
 };
 
+// Navigate to the correct route on mount
+const RouteNavigator = ({ to, children }) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    navigate(to, { replace: true });
+  }, [navigate, to]);
+
+  return children;
+};
+
 const Wrapper = ({ children }) => (
   <div style={{ width: '400px', height: '600px' }}>
-    <MemoryRouter
-      initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}
-    >
+    <RouteNavigator to={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}>
       {children}
-    </MemoryRouter>
+    </RouteNavigator>
   </div>
 );
 
@@ -69,7 +79,7 @@ const mockBridgeSlice = {
   fromTokenInputValue: '1',
 };
 export const DefaultStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 DefaultStory.storyName = 'Default';
 DefaultStory.decorators = [
@@ -119,7 +129,7 @@ DefaultStory.decorators = [
 ];
 
 export const LoadingStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 LoadingStory.storyName = 'Loading Quotes';
 LoadingStory.decorators = [
@@ -170,7 +180,7 @@ LoadingStory.decorators = [
 ];
 
 export const NoQuotesStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 NoQuotesStory.storyName = 'No Quotes';
 NoQuotesStory.decorators = [
@@ -225,7 +235,7 @@ NoQuotesStory.decorators = [
 ];
 
 export const QuotesFetchedStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 QuotesFetchedStory.storyName = 'Quotes Available';
 QuotesFetchedStory.decorators = [
@@ -280,7 +290,7 @@ const mockHardwareAccount = createMockInternalAccount({
   keyringType: KeyringTypes.ledger,
 });
 export const AlertsPresentStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 AlertsPresentStory.storyName = 'Alerts present';
 AlertsPresentStory.decorators = [

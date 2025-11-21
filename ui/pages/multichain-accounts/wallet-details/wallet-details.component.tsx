@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { useSelector, useDispatch } from 'react-redux';
 import { AccountWalletId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
@@ -7,6 +7,9 @@ import {
   SolScope,
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcScope,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  TrxScope,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 import {
@@ -55,6 +58,7 @@ import {
 import {
   ACCOUNT_DETAILS_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
@@ -67,11 +71,17 @@ type AccountBalance = {
   [key: string]: string | number;
 };
 
-const WalletDetails = () => {
+type WalletDetailsProps = {
+  params?: { id: string };
+};
+
+const WalletDetails = ({ params: propsParams }: WalletDetailsProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const hookParams = useParams();
+
+  const { id } = propsParams || hookParams;
   const decodedId = decodeURIComponent(id as string);
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
   const seedPhraseBackedUp = useSelector(getIsPrimarySeedPhraseBackedUp);
@@ -85,6 +95,9 @@ const WalletDetails = () => {
   const solanaClient = useMultichainWalletSnapClient(WalletClientType.Solana);
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const bitcoinClient = useMultichainWalletSnapClient(WalletClientType.Bitcoin);
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  const tronClient = useMultichainWalletSnapClient(WalletClientType.Tron);
   ///: END:ONLY_INCLUDE_IF
 
   const totalBalance = useMemo(
@@ -107,11 +120,11 @@ const WalletDetails = () => {
 
   const handleAccountClick = (account: { id: string; address: string }) => {
     dispatch(setAccountDetailsAddress(account.address));
-    history.push(`${ACCOUNT_DETAILS_ROUTE}/${account.address}`);
+    navigate(`${ACCOUNT_DETAILS_ROUTE}/${account.address}`);
   };
 
   const handleBack = () => {
-    history.goBack();
+    navigate(PREVIOUS_ROUTE);
   };
 
   if (!wallet) {
@@ -192,6 +205,11 @@ const WalletDetails = () => {
         client = bitcoinClient;
       }
       ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
+      else if (clientType === WalletClientType.Tron) {
+        client = tronClient;
+      }
+      ///: END:ONLY_INCLUDE_IF
       else {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -242,6 +260,14 @@ const WalletDetails = () => {
       success = await handleCreateSnapAccount(
         WalletClientType.Bitcoin,
         BtcScope.Mainnet as CaipChainId,
+      );
+    }
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(tron)
+    else if (accountType === WalletClientType.Tron) {
+      success = await handleCreateSnapAccount(
+        WalletClientType.Tron,
+        TrxScope.Mainnet as CaipChainId,
       );
     }
     ///: END:ONLY_INCLUDE_IF
@@ -336,7 +362,7 @@ const WalletDetails = () => {
               onClick={() => {
                 if (shouldShowBackupReminder) {
                   const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
-                  history.push(backUpSRPRoute);
+                  navigate(backUpSRPRoute);
                 } else {
                   setSrpQuizModalVisible(true);
                 }

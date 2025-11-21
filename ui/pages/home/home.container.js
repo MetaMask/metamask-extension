@@ -2,6 +2,8 @@ import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { useNavState } from '../../contexts/navigation-state';
+import { useShieldSubscriptionContext } from '../../contexts/shield/shield-subscription';
 import {
   activeTabHasPermissions,
   getUseExternalServices,
@@ -26,9 +28,9 @@ import {
   getEditedNetwork,
   selectPendingApprovalsForNavigation,
   getShowUpdateModal,
-  getShowConnectionsRemovedModal,
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
+  getPendingShieldCohort,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -51,6 +53,7 @@ import {
   setEditedNetwork,
   setAccountDetailsAddress,
   lookupSelectedNetworks,
+  setPendingShieldCohort,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -63,6 +66,10 @@ import {
 } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { fetchBuyableChains } from '../../ducks/ramps';
+import {
+  selectRewardsEnabled,
+  selectRewardsOnboardingEnabled,
+} from '../../ducks/rewards/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -188,9 +195,12 @@ const mapStateToProps = (state) => {
     redirectAfterDefaultPage,
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
     isPrimarySeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
-    showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
     showShieldEntryModal: getShowShieldEntryModal(state),
     isSocialLoginFlow: getIsSocialLoginFlow(state),
+    pendingShieldCohort: getPendingShieldCohort(state),
+    isSignedIn: state.metamask.isSignedIn,
+    rewardsEnabled: selectRewardsEnabled(state),
+    rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
   };
 };
 
@@ -248,14 +258,26 @@ const mapDispatchToProps = (dispatch) => {
     setAccountDetailsAddress: (address) =>
       dispatch(setAccountDetailsAddress(address)),
     lookupSelectedNetworks: () => dispatch(lookupSelectedNetworks()),
+    setPendingShieldCohort: (cohort) =>
+      dispatch(setPendingShieldCohort(cohort)),
   };
 };
 
 // Strip unused 'match' prop from withRouter
 // It causes cascading, unnecessary re-renders
+// Also inject navState from NavigationStateContext for v5-compat navigation
 // eslint-disable-next-line react/prop-types
 const HomeWithRouter = ({ match: _match, ...props }) => {
-  return <Home {...props} />;
+  const navState = useNavState();
+  const { evaluateCohortEligibility } = useShieldSubscriptionContext();
+
+  return (
+    <Home
+      {...props}
+      navState={navState}
+      evaluateCohortEligibility={evaluateCohortEligibility}
+    />
+  );
 };
 
 export default compose(
