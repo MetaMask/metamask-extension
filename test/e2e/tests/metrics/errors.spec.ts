@@ -803,6 +803,12 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
           await new LoginPage(driver).checkPageIsLoaded();
+
+          // Brick persistence to help simulate not initializing
+          await driver.executeScript(
+            `chrome.storage.local.get = () => { throw new Error("Failure") }`,
+          );
+
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryAppState = undefined',
