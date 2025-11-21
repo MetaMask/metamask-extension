@@ -326,7 +326,7 @@ const config = {
         type: 'asset/resource',
       },
       {
-        test: /(?!\.(test|stories|container))\.(?:m?[jt]s|[jt]sx)$/u,
+        test: /(?!\.(?:test|stories|container))\.(?:m?[jt]s|[jt]sx)$/u,
         include: UI_DIR_RE,
         exclude: NODE_MODULES_RE,
         use: [
