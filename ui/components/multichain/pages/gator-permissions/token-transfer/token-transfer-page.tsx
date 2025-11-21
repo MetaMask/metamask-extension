@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -16,7 +16,10 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import { Content, Header, Page } from '../../page';
-import { BackgroundColor } from '../../../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  TextVariant as TextVariantLocal,
+} from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   PREVIOUS_ROUTE,
@@ -26,19 +29,48 @@ import { PermissionGroupListItem } from '../components';
 import {
   AppState,
   getPermissionGroupMetaData,
+  getPermissionGroupMetaDataByOrigin,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
+import { getDisplayOrigin, safeDecodeURIComponent } from '../helper';
 
-export const TokenTransferPage = () => {
+type TokenTransferPageProps = {
+  params?: { origin?: string };
+  navigate?: (
+    to: string | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => void;
+};
+
+export const TokenTransferPage = ({
+  params,
+  navigate: navigateProp,
+}: TokenTransferPageProps = {}) => {
   const t = useI18nContext();
-  const navigate = useNavigate();
+  const navigateHook = useNavigate();
+  const navigate = (navigateProp || navigateHook) as NonNullable<
+    typeof navigateProp
+  >;
+  const urlParamsHook = useParams<{ origin?: string }>();
+  const urlParams = params || urlParamsHook;
+  const origin = urlParams.origin
+    ? safeDecodeURIComponent(urlParams.origin)
+    : undefined;
+
   const permissionGroupName = 'token-transfer';
+
+  // Get permissions - filtered by origin if provided, otherwise all
   const permissionGroupMetaData = useSelector((state: AppState) =>
-    getPermissionGroupMetaData(state, permissionGroupName),
+    origin
+      ? getPermissionGroupMetaDataByOrigin(state, {
+          permissionGroupName,
+          siteOrigin: origin,
+        })
+      : getPermissionGroupMetaData(state, permissionGroupName),
   );
+
   const handlePermissionGroupItemClick = (chainId: Hex) => {
-    navigate(
-      `${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/${permissionGroupName}`,
-    );
+    const baseRoute = `${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/${permissionGroupName}`;
+    navigate(origin ? `${baseRoute}/${encodeURIComponent(origin)}` : baseRoute);
   };
 
   const renderPageContent = () =>
@@ -76,14 +108,14 @@ export const TokenTransferPage = () => {
             size={ButtonIconSize.Sm}
           />
         }
+        textProps={{
+          variant: TextVariantLocal.headingMd,
+          'data-testid': 'token-transfer-page-title',
+        }}
       >
-        <Text
-          variant={TextVariant.HeadingMd}
-          textAlign={TextAlign.Center}
-          data-testid="token-transfer-page-title"
-        >
-          {t('tokenTransfer')}
-        </Text>
+        {origin
+          ? `${getDisplayOrigin(origin, false)}: ${t('tokenTransfer')}`
+          : t('tokenTransfer')}
       </Header>
       <Content padding={0}>
         {permissionGroupMetaData.length > 0 ? (

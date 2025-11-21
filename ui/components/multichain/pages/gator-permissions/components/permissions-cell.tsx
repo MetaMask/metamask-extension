@@ -17,6 +17,7 @@ type PermissionsCellProps = {
   totalCount: number;
   chainIds: string[];
   paddingTop?: BoxSpacing;
+  origin?: string;
 };
 
 export const PermissionsCell: React.FC<PermissionsCellProps> = ({
@@ -25,6 +26,7 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
   totalCount,
   chainIds,
   paddingTop,
+  origin,
 }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -55,7 +57,13 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
         countMessage={totalCount === 1 ? t('tokenCount') : t('tokensCount')}
         paddingBottomValue={0}
         paddingTopValue={0}
-        onClick={() => navigate(TOKEN_TRANSFER_ROUTE)}
+        onClick={() =>
+          navigate(
+            origin
+              ? `${TOKEN_TRANSFER_ROUTE}/${encodeURIComponent(origin)}`
+              : TOKEN_TRANSFER_ROUTE,
+          )
+        }
       />
     </Box>
   );
