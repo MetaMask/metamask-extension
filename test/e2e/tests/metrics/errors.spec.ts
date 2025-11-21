@@ -145,7 +145,6 @@ async function matchesSnapshot({
   update?: boolean;
 }): Promise<void> {
   const snapshotPath = resolve(__dirname, `./state-snapshots/${snapshot}.json`);
-  console.log('snapshotPath', snapshotPath);
   const rawSnapshotData = await fs.readFile(snapshotPath, {
     encoding: 'utf-8',
   });
@@ -1152,7 +1151,6 @@ describe('Sentry errors', function () {
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
-          console.log('mockJsonBody', mockJsonBody);
           const { extensionId, installType } = mockJsonBody.extra;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
