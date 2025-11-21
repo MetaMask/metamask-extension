@@ -167,10 +167,9 @@ class MultichainAccountDetailsPage {
   /**
    * Click on reveal SRP button
    */
-  async clicRevealRow(): Promise<void> {
-    console.log('Click on the private key row');
-    const revealSrpRow = await this.driver.findElement(this.exportSrpButton);
-    await revealSrpRow.click();
+  async clickRevealRow(): Promise<void> {
+    console.log('Click on reveal SRP button');
+    await this.driver.clickElement(this.exportSrpButton);
   }
 
   /**

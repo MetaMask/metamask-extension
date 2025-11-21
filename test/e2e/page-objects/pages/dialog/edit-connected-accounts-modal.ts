@@ -33,6 +33,11 @@ class EditConnectedAccountsModal {
     testId: 'connect-more-accounts-button',
   };
 
+  private readonly newlyCreateAccount = {
+    css: 'p',
+    text: 'Account 2',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -56,11 +61,8 @@ class EditConnectedAccountsModal {
   async addNewAccount(): Promise<void> {
     console.log('Add  account');
     await this.driver.clickElement(this.addNewAccountButton);
-    const createdAccount = await this.driver.waitForSelector({
-      css: 'p',
-      text: 'Account 2',
-    });
-    await createdAccount.click();
+    await this.driver.waitForSelector(this.newlyCreateAccount);
+    await this.driver.clickElement(this.newlyCreateAccount);
     await this.clickOnConnect();
   }
 
