@@ -1,6 +1,11 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
 import {
   BoxFlexDirection,
   IconColor,
@@ -32,6 +37,8 @@ import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
+import { getInternalAccountByAddress } from '../../../../../selectors/selectors';
 import {
   convertTimestampToReadableDate,
   getPeriodFrequencyValueTranslationKey,
@@ -42,18 +49,8 @@ import {
 } from '../../../../../../shared/lib/gator-permissions';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
-import {
-  getNativeTokenInfo,
-  selectERC20TokensByChain,
-} from '../../../../../selectors/selectors';
-import { getTokenMetadata } from '../../../../../helpers/utils/token-util';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
-
-type TokenMetadata = {
-  symbol: string;
-  decimals: number | null;
-  name: string;
-};
+import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 
 type ReviewGatorPermissionItemProps = {
   /**
@@ -109,46 +106,96 @@ export const ReviewGatorPermissionItem = ({
   const permissionType = permissionResponse.permission.type;
   const permissionContext = permissionResponse.context;
   const permissionAccount = permissionResponse.address || '0x';
+  const justification = permissionResponse.permission.data.justification as
+    | string
+    | undefined;
   const tokenAddress = permissionResponse.permission.data.tokenAddress as
-    | Hex
+    | string
     | undefined;
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const tokensByChain = useSelector(selectERC20TokensByChain);
-  const nativeTokenMetadata = useSelector((state) =>
-    getNativeTokenInfo(state, chainId),
-  ) as TokenMetadata;
   const pendingRevocations = useSelector(getPendingRevocations);
+  const internalAccount = useSelector((state) =>
+    getInternalAccountByAddress(state, permissionAccount),
+  );
 
-  const tokenMetadata: TokenMetadata = useMemo(() => {
-    if (tokenAddress) {
-      const tokenListForChain = tokensByChain?.[chainId]?.data || {};
-      const foundTokenMetadata = getTokenMetadata(
-        tokenAddress,
-        tokenListForChain,
-      );
-      if (foundTokenMetadata) {
-        return {
-          symbol: foundTokenMetadata.symbol || 'Unknown Token',
-          decimals: foundTokenMetadata.decimals || 18,
-          name: foundTokenMetadata.name || 'Unknown Token',
-        };
+  const truncatedAddress = useMemo(
+    () => shortenAddress(permissionAccount),
+    [permissionAccount],
+  );
+  // Copy functionality with visual feedback
+  const [accountText, setAccountText] = useState(truncatedAddress);
+  const [addressCopied, setAddressCopied] = useState(false);
+  const [copyIcon, setCopyIcon] = useState(IconName.Copy);
+  const [copyMessage, setCopyMessage] = useState(accountText);
+
+  const timeoutRef = useRef<number | null>(null);
+  const accountTextRef = useRef(accountText);
+  const mountedRef = useRef(true);
+  const [, handleCopy] = useCopyToClipboard();
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    accountTextRef.current = accountText;
+  }, [accountText]);
+
+  // Cleanup timeout when component unmounts and track mounted state
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
-      console.warn(
-        `Token metadata not found for address: ${tokenAddress} for chain: ${chainId}`,
-      );
-      return {
-        symbol: 'Unknown Token',
-        decimals: null,
-        name: 'Unknown Token',
-      };
-    }
-    return {
-      symbol: nativeTokenMetadata.symbol,
-      decimals: nativeTokenMetadata.decimals,
-      name: nativeTokenMetadata.name,
     };
-  }, [tokensByChain, chainId, tokenAddress, nativeTokenMetadata]);
+  }, []);
+
+  useEffect(() => {
+    if (internalAccount?.metadata?.name) {
+      setAccountText(internalAccount.metadata.name);
+    } else {
+      setAccountText(truncatedAddress);
+    }
+  }, [internalAccount, truncatedAddress]);
+
+  // Update copy message when account changes
+  useEffect(() => {
+    setCopyMessage(accountText);
+  }, [accountText]);
+
+  // Handle copy button click
+  const handleCopyClick = useCallback(() => {
+    // Clear existing timeout if clicking multiple times
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    setAddressCopied(true);
+    handleCopy(permissionAccount);
+    setCopyMessage(t('addressCopied'));
+    setCopyIcon(IconName.CopySuccess);
+
+    // Reset state after 1 second
+    // Use ref to get the latest accountText value, avoiding stale closure
+    timeoutRef.current = window.setTimeout(() => {
+      // Only update state if component is still mounted
+      if (mountedRef.current) {
+        setCopyMessage(accountTextRef.current);
+        setCopyIcon(IconName.Copy);
+        setAddressCopied(false);
+      }
+      timeoutRef.current = null;
+    }, 1000);
+  }, [permissionAccount, handleCopy, t]);
+
+  // Use the hook to fetch token information (handles both native and ERC-20 tokens)
+  const { tokenInfo: tokenMetadata, loading } = useGatorPermissionTokenInfo(
+    tokenAddress,
+    chainId,
+    permissionType,
+  );
 
   const isPendingRevocation = useMemo(() => {
     return pendingRevocations.some(
@@ -200,10 +247,9 @@ export const ReviewGatorPermissionItem = ({
       return {
         amountLabel: {
           translationKey: 'gatorPermissionsStreamingAmountLabel',
-          value:
-            decimals === null
-              ? t('gatorPermissionUnknownTokenAmount')
-              : `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`,
+          value: loading
+            ? t('gatorPermissionUnknownTokenAmount')
+            : `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`,
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
@@ -214,24 +260,22 @@ export const ReviewGatorPermissionItem = ({
         expandedDetails: {
           initialAllowance: {
             translationKey: 'gatorPermissionsInitialAllowance',
-            value:
-              decimals === null
-                ? t('gatorPermissionUnknownTokenAmount')
-                : `${getDecimalizedHexValue(
-                    permission.data.initialAmount || '0x0',
-                    decimals,
-                  )} ${symbol}`,
+            value: loading
+              ? t('gatorPermissionUnknownTokenAmount')
+              : `${getDecimalizedHexValue(
+                  permission.data.initialAmount || '0x0',
+                  decimals,
+                )} ${symbol}`,
             testId: 'review-gator-permission-initial-allowance',
           },
           maxAllowance: {
             translationKey: 'gatorPermissionsMaxAllowance',
-            value:
-              decimals === null
-                ? t('gatorPermissionUnknownTokenAmount')
-                : `${getDecimalizedHexValue(
-                    permission.data.maxAmount || '0x0',
-                    decimals,
-                  )} ${symbol}`,
+            value: loading
+              ? t('gatorPermissionUnknownTokenAmount')
+              : `${getDecimalizedHexValue(
+                  permission.data.maxAmount || '0x0',
+                  decimals,
+                )} ${symbol}`,
             testId: 'review-gator-permission-max-allowance',
           },
           startDate: {
@@ -252,19 +296,18 @@ export const ReviewGatorPermissionItem = ({
           },
           streamRate: {
             translationKey: 'gatorPermissionsStreamRate',
-            value:
-              decimals === null
-                ? t('gatorPermissionUnknownTokenAmount')
-                : `${getDecimalizedHexValue(
-                    permission.data.amountPerSecond,
-                    decimals,
-                  )} ${symbol}/sec`,
+            value: loading
+              ? t('gatorPermissionUnknownTokenAmount')
+              : `${getDecimalizedHexValue(
+                  permission.data.amountPerSecond,
+                  decimals,
+                )} ${symbol}/sec`,
             testId: 'review-gator-permission-stream-rate',
           },
         },
       };
     },
-    [tokenMetadata, t, getExpirationDate],
+    [tokenMetadata, loading, t, getExpirationDate],
   );
 
   /**
@@ -281,13 +324,12 @@ export const ReviewGatorPermissionItem = ({
       return {
         amountLabel: {
           translationKey: 'amount',
-          value:
-            decimals === null
-              ? t('gatorPermissionUnknownTokenAmount')
-              : `${getDecimalizedHexValue(
-                  permission.data.periodAmount,
-                  decimals,
-                )} ${symbol}`,
+          value: loading
+            ? t('gatorPermissionUnknownTokenAmount')
+            : `${getDecimalizedHexValue(
+                permission.data.periodAmount,
+                decimals,
+              )} ${symbol}`,
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
@@ -317,7 +359,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, t, getExpirationDate],
+    [tokenMetadata, loading, t, getExpirationDate],
   );
 
   /**
@@ -480,10 +522,27 @@ export const ReviewGatorPermissionItem = ({
             <PreferredAvatar address={permissionAccount} />
             <Text
               variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
+              color={
+                addressCopied
+                  ? TextColor.SuccessDefault
+                  : TextColor.TextAlternative
+              }
+              data-testid="review-gator-permission-account-name"
             >
-              {shortenAddress(permissionAccount)}
+              {copyMessage}
             </Text>
+            <ButtonIcon
+              iconName={copyIcon}
+              color={
+                addressCopied ? IconColor.SuccessDefault : IconColor.IconMuted
+              }
+              size={ButtonIconSize.Sm}
+              onClick={handleCopyClick}
+              ariaLabel={
+                addressCopied ? t('copiedExclamation') : t('copyToClipboard')
+              }
+              data-testid="review-gator-permission-copy-address"
+            />
           </Box>
         </Box>
       </Box>
@@ -519,6 +578,40 @@ export const ReviewGatorPermissionItem = ({
 
         {isExpanded && (
           <>
+            {/* Justification row */}
+            {justification && (
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                style={{ flex: '1', alignSelf: 'center' }}
+                gap={4}
+                marginTop={2}
+              >
+                <Text
+                  textAlign={TextAlign.Left}
+                  color={TextColor.TextAlternative}
+                  variant={TextVariant.BodyMd}
+                >
+                  Justification
+                </Text>
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.End}
+                  style={{ flex: '1', alignSelf: 'center' }}
+                  gap={2}
+                >
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.TextAlternative}
+                    textAlign={TextAlign.Right}
+                    data-testid="review-gator-permission-justification"
+                  >
+                    {justification}
+                  </Text>
+                </Box>
+              </Box>
+            )}
+
             {/* Network name row */}
             <Box
               flexDirection={BoxFlexDirection.Row}
