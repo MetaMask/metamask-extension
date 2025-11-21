@@ -114,9 +114,9 @@ const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-const localStore = inTest
-  ? new FixtureExtensionStore()
-  : new ExtensionStore();
+const useFixtureStore =
+  inTest && getManifestFlags().testing?.forceExtensionStore !== true;
+const localStore = useFixtureStore ? new FixtureExtensionStore() : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 
 const { update, requestSafeReload } = getRequestSafeReload(persistenceManager);
