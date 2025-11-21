@@ -562,9 +562,9 @@ describe('Permission List Item', () => {
 
         expect(getByTestId('review-gator-permission-item')).toBeInTheDocument();
 
-        // Verify that when token metadata is loading (decimals < 0), it shows loading text
+        // Verify that when token metadata is loading, it shows "Unknown amount"
         const amountLabel = getByTestId('review-gator-permission-amount-label');
-        expect(amountLabel.textContent).toContain('Loading');
+        expect(amountLabel.textContent).toContain('Unknown amount');
 
         // Expand to see more details
         const expandButton = container.querySelector('[aria-label="expand"]');
@@ -572,21 +572,21 @@ describe('Permission List Item', () => {
           fireEvent.click(expandButton);
         }
 
-        // Verify initial allowance shows loading text
+        // Verify initial allowance shows "Unknown amount"
         const initialAllowance = getByTestId(
           'review-gator-permission-initial-allowance',
         );
-        expect(initialAllowance.textContent).toContain('Loading');
+        expect(initialAllowance.textContent).toContain('Unknown amount');
 
-        // Verify max allowance shows loading text
+        // Verify max allowance shows "Unknown amount"
         const maxAllowance = getByTestId(
           'review-gator-permission-max-allowance',
         );
-        expect(maxAllowance.textContent).toContain('Loading');
+        expect(maxAllowance.textContent).toContain('Unknown amount');
 
-        // Verify stream rate shows loading text
+        // Verify stream rate shows "Unknown amount"
         const streamRate = getByTestId('review-gator-permission-stream-rate');
-        expect(streamRate.textContent).toContain('Loading');
+        expect(streamRate.textContent).toContain('Unknown amount');
       });
     });
   });

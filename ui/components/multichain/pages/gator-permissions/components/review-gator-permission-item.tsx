@@ -133,7 +133,6 @@ export const ReviewGatorPermissionItem = ({
   const accountTextRef = useRef(accountText);
   const mountedRef = useRef(true);
   const [, handleCopy] = useCopyToClipboard();
-  const loadingText = t('loading');
 
   // Keep ref in sync with state
   useEffect(() => {
@@ -249,7 +248,7 @@ export const ReviewGatorPermissionItem = ({
         amountLabel: {
           translationKey: 'gatorPermissionsStreamingAmountLabel',
           value: loading
-            ? loadingText
+            ? t('gatorPermissionUnknownTokenAmount')
             : `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`,
           testId: 'review-gator-permission-amount-label',
         },
@@ -262,7 +261,7 @@ export const ReviewGatorPermissionItem = ({
           initialAllowance: {
             translationKey: 'gatorPermissionsInitialAllowance',
             value: loading
-              ? loadingText
+              ? t('gatorPermissionUnknownTokenAmount')
               : `${getDecimalizedHexValue(
                   permission.data.initialAmount || '0x0',
                   decimals,
@@ -272,7 +271,7 @@ export const ReviewGatorPermissionItem = ({
           maxAllowance: {
             translationKey: 'gatorPermissionsMaxAllowance',
             value: loading
-              ? loadingText
+              ? t('gatorPermissionUnknownTokenAmount')
               : `${getDecimalizedHexValue(
                   permission.data.maxAmount || '0x0',
                   decimals,
@@ -298,7 +297,7 @@ export const ReviewGatorPermissionItem = ({
           streamRate: {
             translationKey: 'gatorPermissionsStreamRate',
             value: loading
-              ? loadingText
+              ? t('gatorPermissionUnknownTokenAmount')
               : `${getDecimalizedHexValue(
                   permission.data.amountPerSecond,
                   decimals,
@@ -308,7 +307,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, loading, loadingText, getExpirationDate],
+    [tokenMetadata, loading, t, getExpirationDate],
   );
 
   /**
@@ -326,7 +325,7 @@ export const ReviewGatorPermissionItem = ({
         amountLabel: {
           translationKey: 'amount',
           value: loading
-            ? loadingText
+            ? t('gatorPermissionUnknownTokenAmount')
             : `${getDecimalizedHexValue(
                 permission.data.periodAmount,
                 decimals,
@@ -360,7 +359,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, loading, loadingText, getExpirationDate],
+    [tokenMetadata, loading, t, getExpirationDate],
   );
 
   /**

@@ -248,7 +248,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
             data-testid="review-gator-permission-amount-label"
           >
-            Loading...
+            Unknown amount
           </p>
         </div>
       </div>
