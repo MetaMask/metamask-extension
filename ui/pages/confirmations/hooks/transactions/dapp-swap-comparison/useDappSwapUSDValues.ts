@@ -33,8 +33,7 @@ export function useDappSwapUSDValues({
   >(() => {
     const nativeAddress = getNativeTokenAddress(chainId);
     const addresses = tokenAddresses.filter(
-      (tokenAddress) =>
-        nativeAddress !== tokenAddress && !isNativeAddress(tokenAddress),
+      (tokenAddress) => nativeAddress !== tokenAddress,
     );
     return fetchTokenExchangeRates('usd', addresses as Hex[], chainId);
   }, [chainId, tokenAddresses?.length]);
