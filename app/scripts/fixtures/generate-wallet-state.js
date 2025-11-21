@@ -2,10 +2,12 @@ import { Messenger } from '@metamask/messenger';
 import { KeyringController } from '@metamask/keyring-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { cloneDeep } from 'lodash';
+import { v4 as uuid } from 'uuid';
+import { sha256FromString } from 'ethereumjs-util';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { WALLET_PASSWORD } from '../../../test/e2e/constants';
-import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
+import { defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { normalizeSafeAddress } from '../lib/multichain/address';
@@ -34,18 +36,24 @@ export async function generateWalletState(withState, fromTest) {
   if (withState) {
     FIXTURES_CONFIG = withState;
   }
+  // This SRP has 30 accounts each with a Solana account
+  const TEST_SRP =
+    'stock grab suspect keep column cover plate grape assault patrol pistol wire';
 
-  const { vault, accounts } = await generateVaultAndAccount(
-    process.env.TEST_SRP || E2E_SRP,
+  const { entropy, accounts } = await generateVaultAndAccount(
+    TEST_SRP,
     fromTest ? WALLET_PASSWORD : process.env.PASSWORD,
   );
 
   fixtureBuilder
-    .withAccountsController(generateAccountsControllerState(accounts))
+    .withAccountsController(generateAccountsControllerState(entropy, accounts))
+    .withAccountTreeController(
+      generateAccountTreeControllerState(entropy, accounts),
+    )
     .withAddressBookController(generateAddressBookControllerState())
     .withAnnouncementController(generateAnnouncementControllerState())
     .withAppStateController(FIXTURES_APP_STATE)
-    .withKeyringController(generateKeyringControllerState(vault))
+    .withKeyringThirtyAccounts()
     .withNetworkController(generateNetworkControllerState())
     .withNotificationServicesController(
       generateNotificationControllerState(accounts[0]),
@@ -93,39 +101,27 @@ async function generateVaultAndAccount(encodedSeedPhrase, password) {
 
   const accounts = [];
   const account = krCtrl.state.keyrings[0].accounts[0];
+  const entropy = krCtrl.state.keyrings[0].metadata.id;
   accounts.push(account);
 
   for (let i = 1; i < FIXTURES_CONFIG.withAccounts; i++) {
     const newAccount = await krCtrl.addNewAccount(i);
     accounts.push(newAccount);
   }
+
   const { vault } = krCtrl.state;
 
-  return { vault, accounts };
-}
-
-/**
- * Generates the state for the KeyringController.
- *
- * @param {object} vault - The vault object.
- * @returns {object} The generated KeyringController state.
- */
-function generateKeyringControllerState(vault) {
-  console.log('Generating KeyringController state');
-
-  return {
-    ...defaultFixture().data.KeyringController,
-    vault,
-  };
+  return { vault, accounts, entropy };
 }
 
 /**
  * Generates the state for the AccountsController.
  *
+ * @param {string} entropy - The entropy id.
  * @param {Array<string>} accounts - The account addresses.
  * @returns {object} The generated AccountsController state.
  */
-function generateAccountsControllerState(accounts) {
+function generateAccountsControllerState(entropy, accounts) {
   console.log('Generating AccountsController state');
   const internalAccounts = {
     selectedAccount: 'account-id',
@@ -133,9 +129,12 @@ function generateAccountsControllerState(accounts) {
   };
 
   accounts.forEach((account, index) => {
-    internalAccounts.accounts[`acount-id-${index}`] = {
-      selectedAccount: 'account-id',
-      id: 'account-id',
+    const accountId = uuid({
+      random: sha256FromString(account).subarray(0, 16),
+    });
+
+    internalAccounts.accounts[accountId] = {
+      id: accountId,
       address: account,
       metadata: {
         name: `Account ${index + 1}`,
@@ -144,7 +143,17 @@ function generateAccountsControllerState(accounts) {
           type: 'HD Key Tree',
         },
       },
-      options: {},
+      options: {
+        entropySource: entropy,
+        derivationPath: `m/44'/60'/0'/0/${index}`,
+        groupIndex: index,
+        entropy: {
+          type: 'mnemonic',
+          id: entropy,
+          derivationPath: `m/44'/60'/0'/0/${index}`,
+          groupIndex: index,
+        },
+      },
       methods: [
         'personal_sign',
         'eth_signTransaction',
@@ -153,10 +162,62 @@ function generateAccountsControllerState(accounts) {
         'eth_signTypedData_v4',
       ],
       type: 'eip155:eoa',
+      scopes: ['eip155:0'],
     };
   });
+
   return {
     internalAccounts,
+  };
+}
+
+/**
+ * Generates the state for the AccountTreeController.
+ *
+ * @param {string} entropy - The entropy id.
+ * @param {Array<string>} accounts - The account addresses.
+ * @returns {object} The generated AccountTreeController state.
+ */
+function generateAccountTreeControllerState(entropy, accounts) {
+  console.log('Generating AccountTreeController state');
+  const accountTree = {
+    selectedAccountGroup: `entropy:${entropy}/0`,
+    wallets: {
+      [`entropy:${entropy}`]: {
+        type: 'entropy',
+        id: `entropy:${entropy}`,
+        metadata: {
+          name: 'Wallet 1',
+          entropy: {
+            id: entropy,
+          },
+        },
+        status: 'ready',
+        groups: {},
+      },
+    },
+  };
+
+  accounts.forEach((account, index) => {
+    accountTree.wallets[`entropy:${entropy}`].groups[
+      `entropy:${entropy}/${index}`
+    ] = {
+      type: 'multichain-account',
+      id: `entropy:${entropy}/${index}`,
+      metadata: {
+        name: `Account ${index + 1}`,
+        pinned: false,
+        hidden: false,
+        entropy: {
+          groupIndex: index,
+        },
+      },
+      accounts: [account],
+    };
+  });
+
+  return {
+    accountTree,
   };
 }
 
