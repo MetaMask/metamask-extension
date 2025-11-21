@@ -2765,9 +2765,6 @@
     "message": "Fund your wallet",
     "description": "Title for the balance empty state component encouraging users to add funds"
   },
-  "fundingMethod": {
-    "message": "Funding method"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -7876,12 +7873,6 @@
   },
   "time": {
     "message": "Time"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Tips for using a wallet"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Adding tokens unlocks more ways to use web3."
   },
   "to": {
     "message": "To"
