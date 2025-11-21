@@ -12,7 +12,12 @@ import React, {
   useContext,
 } from 'react';
 import PropTypes from 'prop-types';
-import { matchPath, useLocation } from 'react-router-dom-v5-compat';
+// NOTE: Mixed v5/v5-compat imports during router migration
+// - useLocation from v5: Works with the v5 HashRouter to detect navigation changes
+// - matchPath from v5-compat: Provides v6 API (reversed args, pattern.path structure)
+// When v6 migration is complete, change both imports to: import { useLocation, matchPath } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { matchPath } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import { omit } from 'lodash';
