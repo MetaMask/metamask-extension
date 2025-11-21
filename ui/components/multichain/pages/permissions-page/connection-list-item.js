@@ -124,12 +124,23 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               color={TextColor.textAlternative}
               variant={TextVariant.bodyMd}
             >
-              {accountsToShow}{' '}
-              {accountsToShow === 1
-                ? t('accountSmallCase')
-                : t('accountsSmallCase')}
-              •&nbsp;
-              {permittedChains.length} {t('networksSmallCase')}
+              {accountsToShow === 0 && permittedChains.length === 0 ? (
+                <>
+                  {connection.advancedPermissionsCount}{' '}
+                  {connection.advancedPermissionsCount === 1
+                    ? t('advancedPermissionSmallCase')
+                    : t('advancedPermissionsSmallCase')}
+                </>
+              ) : (
+                <>
+                  {accountsToShow}{' '}
+                  {accountsToShow === 1
+                    ? t('accountSmallCase')
+                    : t('accountsSmallCase')}
+                  •&nbsp;
+                  {permittedChains.length} {t('networksSmallCase')}
+                </>
+              )}
             </Text>
           </Box>
         )}

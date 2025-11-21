@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
-import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Header, Page } from '../page';
 import {
   ButtonIcon,
@@ -31,10 +30,10 @@ import {
   TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { useGatorPermissions } from '../../../../hooks/gator-permissions/useGatorPermissions';
-import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
 import {
   AppState,
   getAggregatedGatorPermissionsCountAcrossAllChains,
+  getTotalUniqueSitesCount,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionListItem } from './components/permission-list-item';
 
@@ -42,15 +41,10 @@ export const GatorPermissionsPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const headerRef = useRef<HTMLSpanElement>(null);
-  const sitesConnectionsList = useSelector(
-    getConnectedSitesListWithNetworkInfo,
-  );
   const totalGatorPermissions = useSelector((state: AppState) =>
     getAggregatedGatorPermissionsCountAcrossAllChains(state, 'token-transfer'),
   );
-  const totalSitesConnections = Object.keys(sitesConnectionsList).filter(
-    (site) => !isSnapId(site),
-  ).length;
+  const totalSitesConnections = useSelector(getTotalUniqueSitesCount);
   const totalPermissions = totalGatorPermissions + totalSitesConnections;
 
   // Hook uses cache-first strategy: returns cached data immediately if available,
