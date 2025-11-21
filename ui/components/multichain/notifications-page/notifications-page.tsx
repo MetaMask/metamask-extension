@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { Box } from '../../component-library';
 import {
   AlignItems,
@@ -18,7 +18,7 @@ export type NotificationsPageProps = {
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsPage({ children }: NotificationsPageProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <div className="main-container" data-testid="notifications-page">
@@ -30,10 +30,7 @@ export function NotificationsPage({ children }: NotificationsPageProps) {
         data-testid="app-header-logo"
         justifyContent={JustifyContent.center}
       >
-        <MetafoxLogo
-          unsetIconHeight
-          onClick={() => history.push(DEFAULT_ROUTE)}
-        />
+        <MetafoxLogo unsetIconHeight onClick={() => navigate(DEFAULT_ROUTE)} />
       </Box>
       <Page>{children}</Page>
     </div>

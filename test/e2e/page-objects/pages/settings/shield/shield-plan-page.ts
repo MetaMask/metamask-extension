@@ -7,6 +7,8 @@ export default class ShieldPlanPage {
   private readonly annualPlanButton =
     '[data-testid="shield-plan-annual-button"]';
 
+  private readonly backButton = '[data-testid="shield-plan-back-button"]';
+
   private readonly continueButton =
     '[data-testid="shield-plan-continue-button"]';
 
@@ -46,6 +48,11 @@ export default class ShieldPlanPage {
     console.log('Shield plan page is loaded');
   }
 
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking back button on Shield plan page');
+    await this.driver.clickElement(this.backButton);
+  }
+
   async selectAnnualPlan(): Promise<void> {
     console.log('Selecting Annual plan');
     await this.driver.clickElement(this.annualPlanButton);
@@ -59,5 +66,28 @@ export default class ShieldPlanPage {
   async clickContinueButton(): Promise<void> {
     console.log('Clicking Continue button to start Stripe checkout');
     await this.driver.clickElement(this.continueButton);
+  }
+
+  /**
+   * Complete the shield plan subscription flow
+   * Selects a plan, clicks continue, and handles window switching after checkout opens
+   *
+   * @param plan - The subscription plan to select ('annual' or 'monthly')
+   */
+  async completeShieldPlanSubscriptionFlow(
+    plan: 'annual' | 'monthly',
+  ): Promise<void> {
+    console.log(`Completing shield plan subscription flow for ${plan} plan`);
+    await this.checkPageIsLoaded();
+
+    if (plan === 'annual') {
+      await this.selectAnnualPlan();
+    } else {
+      await this.selectMonthlyPlan();
+    }
+
+    await this.clickContinueButton();
+
+    console.log(`Shield plan subscription flow completed for ${plan} plan`);
   }
 }

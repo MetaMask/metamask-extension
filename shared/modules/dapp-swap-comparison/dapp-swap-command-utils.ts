@@ -4,7 +4,7 @@ import { Hex } from '@metamask/utils';
 import { Interface, Result } from '@ethersproject/abi';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 
-import { decodeCommandV3Path } from '../../../../shared/modules/decoding';
+import { decodeCommandV3Path } from '../decoding';
 
 enum SwapCommands {
   V3_SWAP_EXACT_IN = '00',
