@@ -1,16 +1,14 @@
 import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import {
-  getNativeAssetForChainId,
-  isNativeAddress,
-} from '@metamask/bridge-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback } from 'react';
 
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../../helpers/utils/util';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
+import { isNativeAddress } from '../../../../../helpers/utils/token-insights';
 import {
   fetchAllTokenDetails,
   getTokenValueFromRecord,
@@ -33,8 +31,10 @@ export function useDappSwapUSDValues({
   const { value: fiatRates, pending: fiatRatesPending } = useAsyncResult<
     Record<Hex, number | undefined>
   >(() => {
+    const nativeAsset = getNativeAssetForChainId(chainId);
     const addresses = tokenAddresses.filter(
-      (tokenAddress) => !isNativeAddress(tokenAddress),
+      (tokenAddress) =>
+        tokenAddress !== nativeAsset?.address || !isNativeAddress(tokenAddress),
     );
     return fetchTokenExchangeRates('usd', addresses as Hex[], chainId);
   }, [chainId, tokenAddresses?.length]);
