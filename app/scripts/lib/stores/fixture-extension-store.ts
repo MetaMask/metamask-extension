@@ -22,7 +22,8 @@ export class FixtureExtensionStore extends ExtensionStore {
       const response = await fetchWithTimeout(FIXTURE_SERVER_URL);
 
       if (response.ok) {
-        this.#state = await response.json();
+        const state = await response.json();
+        await super.set(state);
       } else {
         log.debug(
           `Received response with a status of ${response.status} ${response.statusText}`,
