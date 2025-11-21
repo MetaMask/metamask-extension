@@ -64,6 +64,7 @@ export enum QrHardwareDeviceNames {
   DCent = 'DCent',
   Ngrave = 'Ngrave',
   ImToken = 'imToken',
+  KShell = 'Keycard Shell',
 }
 
 export enum HardwareTransportStates {

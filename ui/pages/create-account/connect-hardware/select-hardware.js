@@ -903,10 +903,10 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn-first"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.trackMarketingEvent({
-                  category: MarketingActionNames.BuyNow,
-                  event: 'Clicked Keycard Shell Buy Now',
-                });
+                this.trackMarketingEvent(
+                  MarketingActionNames.BuyNow,
+                  QrHardwareDeviceNames.KShell,
+                );
                 openWindow(HardwareAffiliateLinks.KShell);
               }}
             >
@@ -916,10 +916,10 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.trackMarketingEvent({
-                  category: MarketingActionNames.Tutorial,
-                  event: 'Clicked Keycard Shell Tutorial',
-                });
+                this.trackMarketingEvent(
+                  MarketingActionNames.Tutorial,
+                  QrHardwareDeviceNames.KShell,
+                );
                 openWindow(HardwareAffiliateTutorialLinks.KShell);
               }}
             >
