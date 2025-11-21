@@ -383,6 +383,7 @@ async function mockFeatureFlags(
 async function mockSwapETHtoMUSD(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getQuoteStream/u)
+    .once()
     .withQuery({
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
@@ -398,6 +399,7 @@ async function mockUSDCtoDAI(mockServer: Mockttp, sseEnabled?: boolean) {
   if (sseEnabled) {
     return await mockServer
       .forGet(/getQuoteStream/u)
+      .once()
       .withQuery({
         srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         destTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
@@ -848,10 +850,6 @@ export const getBridgeFixtures = (
         await mockETHtoETH(mockServer),
         await mockETHtoUSDC(mockServer),
         await mockDAItoETH(mockServer),
-        await mockSwapETHtoMUSD(mockServer),
-        await mockSwapETHtoMUSD(mockServer),
-        await mockSwapETHtoMUSD(mockServer),
-        await mockSwapETHtoMUSD(mockServer),
         await mockSwapETHtoMUSD(mockServer),
         await mockUSDCtoDAI(mockServer, featureFlags.sse?.enabled),
         await mockFeatureFlags(mockServer, featureFlags),
