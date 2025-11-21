@@ -53,6 +53,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import ShieldIllustrationAnimation from './shield-illustration-animation';
 
 const ShieldEntryModal = ({
   skipEventSubmission = false,
@@ -221,11 +222,10 @@ const ShieldEntryModal = ({
               ? t('shieldEntryModalSubtitleA', ['$10,000'])
               : t('shieldEntryModalSubtitleB', ['$10,000'])}
           </Text>
-          <Box className="shield-entry-modal-sheild-image flex-1 flex items-center justify-center">
-            <img
-              src="/images/transaction-shield-modal.png"
-              alt="Shield Entry Illustration"
-              className="mx-auto h-full w-full object-contain"
+          <Box className="flex-1 flex items-center justify-center">
+            <ShieldIllustrationAnimation
+              containerClassName="shield-entry-modal-shield-illustration__container"
+              canvasClassName="shield-entry-modal-shield-illustration__canvas"
             />
           </Box>
         </ModalBody>

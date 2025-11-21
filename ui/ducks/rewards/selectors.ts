@@ -61,6 +61,29 @@ export const selectRewardsEnabled = createSelector(
   },
 );
 
+export const selectRewardsOnboardingEnabled = createSelector(
+  getRemoteFeatureFlags,
+  getUseExternalServices,
+  (remoteFeatureFlags, useExternalServices): boolean => {
+    const rewardsFeatureFlag = remoteFeatureFlags?.rewardsOnboardingEnabled as
+      | VersionGatedFeatureFlag
+      | boolean
+      | undefined;
+
+    const resolveFlag = (flag: unknown): boolean => {
+      if (typeof flag === 'boolean') {
+        return flag;
+      }
+      return Boolean(
+        validatedVersionGatedFeatureFlag(flag as VersionGatedFeatureFlag),
+      );
+    };
+
+    const featureFlagEnabled = resolveFlag(rewardsFeatureFlag);
+    return featureFlagEnabled && Boolean(useExternalServices);
+  },
+);
+
 export const selectErrorToast = (state: MetaMaskReduxState) =>
   state.rewards.errorToast;
 
