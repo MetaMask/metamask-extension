@@ -171,20 +171,16 @@ export const ConfirmationHandler = () => {
   );
 
   // Only navigate to confirmations if we have pending confirmations and we're not already
-  // on a confirmation route or viewing a pending confirmation
+  // viewing a pending confirmation
+  // Allow navigation even when on a confirmation route if we're viewing a different confirmation
+  // (e.g., navigate to result page after confirming update)
   // Exclude routes that are valid destinations from confirmation pages (e.g., /send for editing)
   const shouldNavigateToConfirmation = useMemo(
     () =>
       hasPendingConfirmations &&
-      !isOnConfirmationRoute &&
       !isViewingPendingConfirmation &&
       !isOnExcludedRoute,
-    [
-      hasPendingConfirmations,
-      isOnConfirmationRoute,
-      isViewingPendingConfirmation,
-      isOnExcludedRoute,
-    ],
+    [hasPendingConfirmations, isViewingPendingConfirmation, isOnExcludedRoute],
   );
 
   useEffect(() => {
