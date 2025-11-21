@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipAssetId } from '@metamask/keyring-api';
 import { isTronResource } from '../../../../shared/lib/asset-utils';
-import { getAssetsBySelectedAccountGroup } from '../../../selectors/assets';
+import { getAssetsBySelectedAccountGroupWithTronResources } from '../../../selectors/assets';
 import { getMultichainBalances } from '../../../selectors/multichain';
 import { TRON_RESOURCE } from '../../../../shared/constants/multichain/assets';
 
@@ -28,7 +28,9 @@ export const useTronResources = (
   energy: TronResource;
   bandwidth: TronResource;
 } => {
-  const accountGroupAssets = useSelector(getAssetsBySelectedAccountGroup);
+  const accountGroupAssets = useSelector(
+    getAssetsBySelectedAccountGroupWithTronResources,
+  );
   const multichainBalances = useSelector(getMultichainBalances);
 
   return useMemo(() => {
