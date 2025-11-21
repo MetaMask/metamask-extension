@@ -91,10 +91,21 @@ export const ConfirmationHandler = () => {
     );
   }, [pendingApprovals]);
 
-  const isSnapResultApproval = useMemo(
+  const isOnConfirmationRoute = useMemo(
+    () =>
+      location.pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
+      location.pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
+      location.pathname.startsWith(CONNECT_ROUTE),
+    [location.pathname],
+  );
+
+  const isSnapApproval = useMemo(
     () =>
       pendingApprovals.some(
-        (approval) => approval.type === 'wallet_installSnapResult',
+        (approval) =>
+          approval.type === 'wallet_updateSnap' ||
+          approval.type === 'wallet_installSnap' ||
+          approval.type === 'wallet_installSnapResult',
       ),
     [pendingApprovals],
   );
@@ -104,25 +115,18 @@ export const ConfirmationHandler = () => {
       return false;
     }
 
-    if (isFullscreen && !isSmartTransaction && isSnapResultApproval) {
+    // In fullscreen, allow smart transactions and snap approvals to navigate
+    if (isFullscreen && !isSmartTransaction && !isSnapApproval) {
       return false;
     }
 
     return true;
-  }, [stayOnHomePage, isFullscreen, isSmartTransaction, isSnapResultApproval]);
+  }, [stayOnHomePage, isFullscreen, isSmartTransaction, isSnapApproval]);
 
   const isOnHomePage = location.pathname === DEFAULT_ROUTE;
 
   const isOnExcludedRoute = useMemo(
     () => location.pathname.startsWith(SEND_ROUTE),
-    [location.pathname],
-  );
-
-  const isOnConfirmationRoute = useMemo(
-    () =>
-      location.pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
-      location.pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
-      location.pathname.startsWith(CONNECT_ROUTE),
     [location.pathname],
   );
 
