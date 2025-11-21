@@ -50,14 +50,16 @@ export function useConfirmationNavigation() {
 
   const navigateToId = useCallback(
     (confirmationId?: string) => {
-      navigateToConfirmation(
+      const url = getNavigateToConfirmation(
         confirmationId,
         confirmations,
         Boolean(approvalFlows?.length),
-        navigate,
         queryString,
-        undefined, // currentPathname not needed here as navigate already handles it
       );
+
+      if (url) {
+        navigate(url);
+      }
     },
     [approvalFlows?.length, confirmations, navigate, queryString],
   );
@@ -93,52 +95,20 @@ export function useConfirmationNavigation() {
   };
 }
 
-export function navigateToConfirmation(
+export function getNavigateToConfirmation(
   confirmationId: string | undefined,
   confirmations: ApprovalRequest<Record<string, Json>>[],
   hasApprovalFlows: boolean,
-  navigateOrHistory:
-    | ReturnType<typeof useNavigate>
-    | { push: (path: string) => void; replace: (path: string) => void },
   queryString: string = '',
-  currentPathname?: string,
 ) {
-  // Helper function to handle both navigate (v5-compat) and history (v5) APIs
-  const navigateTo = (path: string, replace = true) => {
-    // Skip navigation if we're already on the target path (compare pathnames only)
-    if (currentPathname) {
-      // Extract pathname from path (strip query params and hash)
-      const targetPathname = path.split(/[?#]/u)[0];
-      if (currentPathname === targetPathname) {
-        return;
-      }
-    }
-
-    if (
-      'replace' in navigateOrHistory &&
-      typeof navigateOrHistory.replace === 'function'
-    ) {
-      // v5 history API
-      if (replace) {
-        navigateOrHistory.replace(path);
-      } else {
-        navigateOrHistory.push(path);
-      }
-    } else {
-      // v5-compat navigate API
-      (navigateOrHistory as ReturnType<typeof useNavigate>)(path, { replace });
-    }
-  };
-
   const hasNoConfirmations = confirmations?.length <= 0 || !confirmationId;
 
   if (hasApprovalFlows && hasNoConfirmations) {
-    navigateTo(`${CONFIRMATION_V_NEXT_ROUTE}`);
-    return;
+    return CONFIRMATION_V_NEXT_ROUTE;
   }
 
   if (hasNoConfirmations) {
-    return;
+    return '';
   }
 
   const nextConfirmation = confirmations.find(
@@ -146,54 +116,40 @@ export function navigateToConfirmation(
   );
 
   if (!nextConfirmation) {
-    return;
+    return '';
   }
 
   const type = nextConfirmation.type as ApprovalType;
 
   if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
-    navigateTo(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`);
-    return;
+    return `${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`;
   }
 
   if (isSignatureTransactionType(nextConfirmation)) {
-    navigateTo(
-      `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${SIGNATURE_REQUEST_PATH}`,
-    );
-    return;
+    return `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${SIGNATURE_REQUEST_PATH}`;
   }
-
   if (type === ApprovalType.Transaction) {
     let url = `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`;
     if (queryString.length) {
       url = `${url}${queryString}`;
     }
-    navigateTo(url);
-    return;
+    return url;
   }
 
   if (type === ApprovalType.AddEthereumChain) {
-    navigateTo(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
-    return;
+    return `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`;
   }
 
   if (type === ApprovalType.EthDecrypt) {
-    navigateTo(
-      `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${DECRYPT_MESSAGE_REQUEST_PATH}`,
-    );
-    return;
+    return `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${DECRYPT_MESSAGE_REQUEST_PATH}`;
   }
 
   if (type === ApprovalType.EthGetEncryptionPublicKey) {
-    navigateTo(
-      `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
-    );
-    return;
+    return `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`;
   }
 
   if (CONNECT_APPROVAL_TYPES.includes(type)) {
-    navigateTo(`${CONNECT_ROUTE}/${confirmationId}`);
-    return;
+    return `${CONNECT_ROUTE}/${confirmationId}`;
   }
 
   const tokenId = (
@@ -201,11 +157,12 @@ export function navigateToConfirmation(
   )?.tokenId as string;
 
   if (type === ApprovalType.WatchAsset && !tokenId) {
-    navigateTo(`${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`);
-    return;
+    return CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE;
   }
 
   if (type === ApprovalType.WatchAsset && tokenId) {
-    navigateTo(`${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`);
+    return CONFIRM_ADD_SUGGESTED_NFT_ROUTE;
   }
+
+  return '';
 }
