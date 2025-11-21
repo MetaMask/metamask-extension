@@ -47,9 +47,8 @@ describe('Snap Account Transfers', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('85,025.00', 'USD');
         await homePage.checkPageIsLoaded();
 
         await installSnapSimpleKeyring(driver);

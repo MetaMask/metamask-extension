@@ -90,6 +90,8 @@ export async function withMultichainAccountsDesignEnabled(
       const networkManager = new NetworkManager(driver);
       await networkManager.openNetworkManager();
       await networkManager.selectNetworkByNameWithWait('Ethereum');
+      // intended delay to allow for network requests to complete
+      await driver.delay(1000);
       await headerNavbar.openAccountMenu();
 
       await test(driver);
