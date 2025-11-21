@@ -150,21 +150,20 @@
     "networkName": "string",
     "state": "string"
   },
-  "logs": [],
   "metamask": {
     "accountGroupsMetadata": {
-      "entropy:01KA0MT07W98B2G9474CFDC6VM/0": {
-        "hidden": {
-          "lastUpdatedAt": "number",
-          "value": "boolean"
-        },
+      "entropy:01K98E0QDS4HYMTRJ5WHZ73ZWJ/0": {
         "name": {
-          "lastUpdatedAt": "number",
-          "value": "string"
+          "value": "string",
+          "lastUpdatedAt": "number"
         },
         "pinned": {
-          "lastUpdatedAt": "number",
-          "value": "boolean"
+          "value": "boolean",
+          "lastUpdatedAt": "number"
+        },
+        "hidden": {
+          "value": "boolean",
+          "lastUpdatedAt": "number"
         }
       }
     },
@@ -237,35 +236,39 @@
       }
     },
     "accountTree": {
-      "selectedAccountGroup": "string",
       "wallets": {
-        "entropy:01KA0MT07W98B2G9474CFDC6VM": {
-          "groups": {
-            "entropy:01KA0MT07W98B2G9474CFDC6VM/0": {
-              "accounts": ["string"],
-              "id": "string",
-              "metadata": {
-                "entropy": {
-                  "groupIndex": "number"
-                },
-                "hidden": "boolean",
-                "name": "string",
-                "pinned": "boolean"
-              },
-              "type": "string"
-            }
-          },
+        "entropy:01K98E0QDS4HYMTRJ5WHZ73ZWJ": {
+          "type": "string",
           "id": "string",
           "metadata": {
+            "name": "string",
             "entropy": {
               "id": "string"
-            },
-            "name": "string"
+            }
           },
           "status": "string",
-          "type": "string"
+          "groups": {
+            "entropy:01K98E0QDS4HYMTRJ5WHZ73ZWJ/0": {
+              "type": "string",
+              "id": "string",
+              "metadata": {
+                "name": "string",
+                "pinned": "boolean",
+                "hidden": "boolean",
+                "entropy": {
+                  "groupIndex": "number"
+                }
+              },
+              "accounts": [
+                "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4",
+                "dcf615fa-115e-4b45-af18-2df686fffde2",
+                "3c62fe60-6f00-4227-86f4-33d0b1f4c39e"
+              ]
+            }
+          }
         }
-      }
+      },
+      "selectedAccountGroup": "string"
     },
     "accountWalletsMetadata": {},
     "activeQrCodeScanRequest": "null",
@@ -313,14 +316,18 @@
     "canTrackWalletFundsObtained": "boolean",
     "claims": [],
     "claimsConfigurations": {
-      "supportedNetworks": ["string"],
+      "supportedNetworks": [
+        "string"
+      ],
       "validSubmissionWindowDays": "number"
     },
     "completedOnboarding": "boolean",
     "connectedStatusPopoverHasBeenShown": "boolean",
     "conversionRates": {},
     "coverageResults": {},
-    "cryptocurrencies": ["string"],
+    "cryptocurrencies": [
+      "string"
+    ],
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
@@ -472,7 +479,9 @@
     "firstTimeFlowType": "string",
     "forgottenPassword": "boolean",
     "fragments": {},
-    "fullScreenGasPollTokens": ["string"],
+    "fullScreenGasPollTokens": [
+      "string"
+    ],
     "gasEstimateType": "string",
     "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
@@ -486,8 +495,18 @@
     "identities": {
       "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
         "address": "string",
-        "lastSelected": "number",
-        "name": "string"
+        "name": "string",
+        "lastSelected": "number"
+      },
+      "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252": {
+        "address": "string",
+        "name": "string",
+        "lastSelected": "number"
+      },
+      "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
+        "address": "string",
+        "name": "string",
+        "lastSelected": "number"
       }
     },
     "ignoredNfts": [],
@@ -496,30 +515,103 @@
     "internalAccounts": {
       "accounts": {
         "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4": {
-          "address": "string",
           "id": "string",
+          "address": "string",
+          "options": {
+            "entropySource": "string",
+            "derivationPath": "string",
+            "groupIndex": "number",
+            "entropy": {
+              "type": "string",
+              "id": "string",
+              "derivationPath": "string",
+              "groupIndex": "number"
+            }
+          },
+          "methods": [
+            "string"
+          ],
+          "scopes": [
+            "string"
+          ],
+          "type": "string",
           "metadata": {
+            "name": "string",
+            "importTime": "number",
+            "lastSelected": "number",
+            "keyring": {
+              "type": "string"
+            }
+          }
+        },
+        "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": {
+          "type": "string",
+          "scopes": [
+            "string"
+          ],
+          "id": "string",
+          "address": "string",
+          "options": {
+            "entropySource": "string",
+            "exportable": "boolean",
+            "entropy": {
+              "type": "string",
+              "id": "string",
+              "derivationPath": "string",
+              "groupIndex": "number"
+            }
+          },
+          "methods": [
+            "string"
+          ],
+          "metadata": {
+            "name": "string",
             "importTime": "number",
             "keyring": {
               "type": "string"
             },
-            "lastSelected": "number",
-            "name": "string"
-          },
-          "methods": ["string"],
-          "options": {
-            "derivationPath": "string",
-            "entropy": {
-              "derivationPath": "string",
-              "groupIndex": "number",
+            "snap": {
               "id": "string",
+              "name": "string",
+              "enabled": "boolean"
+            },
+            "lastSelected": "number"
+          }
+        },
+        "dcf615fa-115e-4b45-af18-2df686fffde2": {
+          "type": "string",
+          "id": "string",
+          "address": "string",
+          "options": {
+            "entropySource": "string",
+            "derivationPath": "string",
+            "index": "number",
+            "entropy": {
+              "type": "string",
+              "id": "string",
+              "groupIndex": "number",
+              "derivationPath": "string"
+            }
+          },
+          "methods": [
+            "string"
+          ],
+          "scopes": [
+            "string"
+          ],
+          "metadata": {
+            "name": "string",
+            "importTime": "number",
+            "keyring": {
               "type": "string"
             },
-            "entropySource": "string",
-            "groupIndex": "number"
-          },
-          "scopes": ["string"],
-          "type": "string"
+            "snap": {
+              "id": "string",
+              "name": "string",
+              "enabled": "boolean"
+            },
+            "lastSelected": "number"
+          }
         }
       },
       "selectedAccount": "string"
@@ -554,7 +646,9 @@
     "isWalletResetInProgress": "boolean",
     "keyrings": [
       {
-        "accounts": ["string"],
+        "accounts": [
+          "string"
+        ],
         "metadata": {
           "id": "string",
           "name": "string"
@@ -574,8 +668,18 @@
     "lostIdentities": {
       "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
         "address": "string",
-        "lastSelected": "number",
-        "name": "string"
+        "name": "string",
+        "lastSelected": "number"
+      },
+      "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252": {
+        "address": "string",
+        "name": "string",
+        "lastSelected": "number"
+      },
+      "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
+        "address": "string",
+        "name": "string",
+        "lastSelected": "number"
       }
     },
     "manageInstitutionalWallets": "boolean",
@@ -781,11 +885,10 @@
       "hyperliquid": {}
     },
     "remoteFeatureFlags": {
-      "feature1": "boolean",
-      "feature2": "boolean",
-      "feature3": {
-        "name": "string",
-        "value": "string"
+      "enableMultichainAccountsState2": {
+        "enabled": "boolean",
+        "featureVersion": "string",
+        "minimumVersion": "string"
       },
       "sendRedesign": {
         "enabled": "boolean"
@@ -900,7 +1003,9 @@
     },
     "subjects": {},
     "submitHistory": [],
-    "subscriptionAccountsSeen": ["string"],
+    "subscriptionAccountsSeen": [
+      "string"
+    ],
     "subscriptions": [],
     "surveyLinkLastClickedOrClosed": "null",
     "swapsState": {
@@ -948,7 +1053,9 @@
         "data": {
           "0x0d8775f648430679a709e98d2b0cb6250d2887ef": {
             "address": "string",
-            "aggregators": ["string"],
+            "aggregators": [
+              "string"
+            ],
             "decimals": "number",
             "iconUrl": "string",
             "name": "string",
@@ -957,7 +1064,9 @@
           },
           "0x6b175474e89094c44da98b954eedeac495271d0f": {
             "address": "string",
-            "aggregators": ["string"],
+            "aggregators": [
+              "string"
+            ],
             "decimals": "number",
             "erc20Permit": "boolean",
             "fees": {
@@ -1110,5 +1219,6 @@
   "unconnectedAccount": {
     "state": "string"
   },
-  "version": "string"
+  "version": "string",
+  "logs": []
 }
