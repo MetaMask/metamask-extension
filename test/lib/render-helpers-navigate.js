@@ -9,10 +9,7 @@ import { CompatRouter } from 'react-router-dom-v5-compat';
 import PropTypes from 'prop-types';
 import configureStore from '../../ui/store/store';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
-import {
-  MetaMetricsProvider,
-  LegacyMetaMetricsProvider,
-} from '../../ui/contexts/metametrics';
+import { LegacyMetaMetricsProvider } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
 import { setupInitialStore } from '../../ui';
@@ -50,11 +47,7 @@ function createProviderWrapper(store, pathname = '/') {
         <CompatRouter>
           <I18nProvider currentLocale="en" current={en} en={en}>
             <LegacyI18nProvider>
-              <MetaMetricsProvider>
-                <LegacyMetaMetricsProvider>
-                  {children}
-                </LegacyMetaMetricsProvider>
-              </MetaMetricsProvider>
+              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
             </LegacyI18nProvider>
           </I18nProvider>
         </CompatRouter>
