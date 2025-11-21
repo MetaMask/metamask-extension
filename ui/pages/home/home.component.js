@@ -66,7 +66,7 @@ import {
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain';
 import { setEditedNetwork } from '../../store/actions';
-import { getNavigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
+import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
@@ -248,7 +248,7 @@ export default class Home extends PureComponent {
     } else if (canRedirect && haveBridgeQuotes) {
       history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
-      const url = getNavigateToConfirmation(
+      const url = getConfirmationRoute(
         pendingApprovals?.[0]?.id,
         pendingApprovals,
         hasApprovalFlows,
@@ -256,7 +256,7 @@ export default class Home extends PureComponent {
       );
 
       if (url) {
-        history.push(url);
+        history.replace(url);
       }
     }
   }

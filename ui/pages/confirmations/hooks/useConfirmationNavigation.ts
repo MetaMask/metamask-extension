@@ -50,7 +50,7 @@ export function useConfirmationNavigation() {
 
   const navigateToId = useCallback(
     (confirmationId?: string) => {
-      const url = getNavigateToConfirmation(
+      const url = getConfirmationRoute(
         confirmationId,
         confirmations,
         Boolean(approvalFlows?.length),
@@ -58,7 +58,7 @@ export function useConfirmationNavigation() {
       );
 
       if (url) {
-        navigate(url);
+        navigate(url, { replace: true });
       }
     },
     [approvalFlows?.length, confirmations, navigate, queryString],
@@ -95,7 +95,7 @@ export function useConfirmationNavigation() {
   };
 }
 
-export function getNavigateToConfirmation(
+export function getConfirmationRoute(
   confirmationId: string | undefined,
   confirmations: ApprovalRequest<Record<string, Json>>[],
   hasApprovalFlows: boolean,

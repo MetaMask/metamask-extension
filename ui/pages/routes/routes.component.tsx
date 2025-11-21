@@ -116,7 +116,7 @@ import {
 } from '../../ducks/metamask/metamask';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { getNavigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
+import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -674,7 +674,7 @@ export default function Routes() {
       isUnlocked &&
       (pendingApprovals.length > 0 || approvalFlows?.length > 0)
     ) {
-      const url = getNavigateToConfirmation(
+      const url = getConfirmationRoute(
         pendingApprovals[0]?.id,
         pendingApprovals,
         Boolean(approvalFlows?.length),
