@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -10,11 +10,18 @@ import {
   IconSize,
   IconColor,
   TextAlign,
+  Button,
+  ButtonSize,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { Claim, ClaimStatusEnum } from '@metamask/claims-controller';
+import { useSelector } from 'react-redux';
 import LoadingScreen from '../../../../components/ui/loading-screen';
-import { Tag } from '../../../../components/component-library';
+import {
+  BannerAlertSeverity,
+  BannerAlert,
+  Tag,
+} from '../../../../components/component-library';
 import {
   BackgroundColor,
   BorderRadius,
@@ -24,6 +31,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
+import { getLatestShieldSubscription } from '../../../../selectors/subscription';
 
 const CLAIM_STATUS_MAP: Record<
   ClaimStatusEnum,
@@ -70,6 +78,14 @@ const ClaimsList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { pendingClaims, historyClaims, isLoading } = useClaims();
+  const latestShieldSubscription = useSelector(getLatestShieldSubscription);
+  const isShieldSubscriptionEligibleForSupport = useMemo(() => {
+    return latestShieldSubscription?.isEligibleForSupport ?? false;
+  }, [latestShieldSubscription]);
+
+  const handleSubmitClaim = useCallback(() => {
+    navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
+  }, [navigate]);
 
   const claimItem = useCallback(
     (claim: Claim) => {
@@ -130,6 +146,18 @@ const ClaimsList = () => {
 
   return (
     <Box className="claims-list-page w-full" data-testid="claims-list-page">
+      {isShieldSubscriptionEligibleForSupport && (
+        <Box className="p-4">
+          <Button
+            data-testid="submit-claim-button"
+            size={ButtonSize.Lg}
+            onClick={handleSubmitClaim}
+            className="w-full"
+          >
+            {t('shieldTxMembershipSubmitCase')}
+          </Button>
+        </Box>
+      )}
       {pendingClaims.length > 0 && (
         <Box className="pt-4 px-4 pb-0">
           <Text
@@ -139,6 +167,14 @@ const ClaimsList = () => {
           >
             {t('shieldClaimsPendingTitle')}
           </Text>
+          {pendingClaims.length > 0 && (
+            <BannerAlert
+              severity={BannerAlertSeverity.Info}
+              title={t('shieldClaimsPendingAlertTitle')}
+              description={t('shieldClaimsPendingAlertDescription')}
+              className="mb-2"
+            />
+          )}
           <Box className="flex flex-col gap-2">
             {pendingClaims.map((claim) => claimItem(claim))}
           </Box>

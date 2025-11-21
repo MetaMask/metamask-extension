@@ -73,6 +73,7 @@ const ROUTES_TO_I18N_KEYS = {
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: 'shieldClaim',
   [TRANSACTION_SHIELD_CLAIM_ROUTES.BASE]: 'shieldClaimsListTitle',
+  [TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL]: 'shieldClaimsDetailTitle',
   [TRANSACTION_SHIELD_ROUTE]: 'shieldTx',
 };
 
@@ -136,7 +137,7 @@ const mapStateToProps = (state, ownProps) => {
 
   // If pathname is `TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE` rename the tab title to "Claim details"
   if (pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL)) {
-    pathnameI18nKey = 'shieldClaimsListTitle';
+    pathnameI18nKey = 'shieldClaimsDetailTitle';
   }
 
   let backRoute = SETTINGS_ROUTE;
@@ -150,12 +151,10 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = NETWORKS_ROUTE;
   } else if (isRevealSrpListPage || isPasswordChangePage) {
     backRoute = SECURITY_ROUTE;
-  } else if (isShieldClaimNewPage) {
-    backRoute = TRANSACTION_SHIELD_ROUTE;
-  } else if (isShieldClaimViewPage) {
+  } else if (isShieldClaimNewPage || isShieldClaimViewPage) {
     backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.BASE;
   } else if (isShieldClaimBasePage) {
-    backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL;
+    backRoute = TRANSACTION_SHIELD_ROUTE;
   }
 
   const addressName = getAddressBookEntryOrAccountName(

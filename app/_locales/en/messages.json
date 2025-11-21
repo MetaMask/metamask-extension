@@ -6190,18 +6190,18 @@
   "shieldClaimWalletOwnershipValidationFailed": {
     "message": "Wallet ownership validation failed."
   },
+  "shieldClaimsDetailTitle": {
+    "message": "Claim Details"
+  },
   "shieldClaimsHistoryTitle": {
     "message": "CLAIM HISTORY"
   },
   "shieldClaimsListTitle": {
-    "message": "Claim details"
+    "message": "Claims Management"
   },
   "shieldClaimsNumber": {
     "message": "Claim #$1",
     "description": "The $1 is the claim number"
-  },
-  "shieldClaimsPendingAlertActionButtonLabel": {
-    "message": "View claims"
   },
   "shieldClaimsPendingAlertDescription": {
     "message": "Your claims is being reviewed by our team. We will notify you when it has been approved by email."
@@ -6510,6 +6510,9 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"
+  },
+  "shieldTxMembershipViewClaims": {
+    "message": "Manage claims"
   },
   "shieldTxMembershipViewFullBenefits": {
     "message": "View full benefits"
