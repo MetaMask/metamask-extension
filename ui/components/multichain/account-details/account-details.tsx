@@ -51,9 +51,13 @@ import { AccountDetailsKey } from './account-details-key';
 
 type AccountDetailsProps = {
   address: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigate?: (
-    to: string | number,
-    options?: { replace?: boolean; state?: Record<string, unknown> },
+    to: any,
+    options?: {
+      replace?: boolean;
+      state?: Record<string, unknown>;
+    },
   ) => void;
 };
 

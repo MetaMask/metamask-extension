@@ -863,11 +863,17 @@ export default function Routes() {
             })}
           </Route>
           <Route path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}>
-            {createV5CompatRoute<{ id?: string }>(ConfirmationPage, {
-              wrapper: AuthenticatedV5Compat,
-              includeParams: true,
-              paramsAsProps: false,
-            })}
+            {(props: RouteComponentProps<{ id?: string }>) => {
+              const renderFn = createV5CompatRoute<{ id?: string }>(
+                ConfirmationPage,
+                {
+                  wrapper: AuthenticatedV5Compat,
+                  includeParams: true,
+                  paramsAsProps: false,
+                },
+              );
+              return renderFn(props);
+            }}
           </Route>
           <RouteWithLayout
             authenticated

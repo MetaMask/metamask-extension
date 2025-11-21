@@ -174,9 +174,8 @@ const ConfirmTransaction = ({
         dispatch(getContractMethodData(data, use4ByteResolution));
       }
     } else if (prevTransactionId && !transactionId && !totalUnapproved) {
-      dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
-        navigate(DEFAULT_ROUTE, { replace: true });
-      });
+      dispatch(setDefaultHomeActiveTabName('activity'));
+      navigate(DEFAULT_ROUTE, { replace: true });
     } else if (
       prevTransactionId &&
       transactionId &&
