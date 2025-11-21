@@ -1,31 +1,5 @@
 const path = require('path');
 
-const ReactCompilerConfig = {
-  target: '17',
-  sources: (filename) => {
-    if (!filename.includes('/ui/')) {
-      return false;
-    }
-    const excludePatterns = [
-      '.test.',
-      '.stories.',
-      '.container.',
-      '/ui/index.js',
-      '/__mocks__/',
-      '/__snapshots__/',
-      '/constants/',
-      '/helpers/',
-      '/ducks/',
-      '/selectors/',
-      '/store/',
-    ];
-    if (excludePatterns.some((pattern) => filename.includes(pattern))) {
-      return false;
-    }
-    return true;
-  },
-};
-
 module.exports = function (api) {
   api.cache(false);
   return {
@@ -35,8 +9,14 @@ module.exports = function (api) {
     targets: {
       browsers: ['chrome >= 89', 'firefox >= 89'],
     },
+    overrides: [
+      {
+        test: /\/ui\/(?:components|contexts|hooks|layouts|pages)\/.+(?!\.(?:test|stories|container))\.(m?[jt]s|[jt]sx)$/u,
+        exclude: /\/node_modules\//u,
+        plugins: [['babel-plugin-react-compiler', { target: '17' }]],
+      },
+    ],
     plugins: [
-      ['babel-plugin-react-compiler', ReactCompilerConfig],
       // `browserify` is old and busted, and doesn't support `??=` (and other
       // logical assignment operators). This plugin lets us target es2020-level
       // browsers (except we do still end up with transpiled logical assignment
