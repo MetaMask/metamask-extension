@@ -12,6 +12,7 @@ import {
   getMockContractInteractionConfirmState,
 } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import * as ConfirmContext from '../../../../context/confirm';
 import BaseTransactionInfo from './base-transaction-info';
 
 jest.mock('../../../simulation-details/useBalanceChanges', () => ({
@@ -69,5 +70,25 @@ describe('<BaseTransactionInfo />', () => {
       mockStore,
     );
     expect(container).toMatchSnapshot();
+  });
+
+  it('renders partially if quoted swap view is displayed in info', () => {
+    const state = getMockContractInteractionConfirmState();
+    const mockStore = configureMockStore(middleware)(state);
+    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: state.metamask.transactions[0],
+      isQuotedSwapDisplayedInInfo: true,
+    } as ReturnType<typeof ConfirmContext.useConfirmContext>);
+
+    const { getByText, queryByText } = renderWithConfirmContextProvider(
+      <BaseTransactionInfo />,
+      mockStore,
+    );
+    expect(getByText('Network fee')).toBeInTheDocument();
+    expect(getByText('Speed')).toBeInTheDocument();
+    expect(queryByText('Origin')).toBeNull();
+    expect(queryByText('Amount')).toBeNull();
+    expect(queryByText('Token')).toBeNull();
+    expect(queryByText('Gas fee')).toBeNull();
   });
 });

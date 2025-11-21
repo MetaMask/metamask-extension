@@ -68,10 +68,6 @@ export default class ShieldClaimPage {
     console.log('Shield Claim page is loaded');
   }
 
-  /**
-   * Check if the Shield Claim page is loaded in view mode
-   * (submit button is not present in view mode)
-   */
   async checkPageIsLoadedInViewMode(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
       this.pageContainer,
@@ -80,43 +76,21 @@ export default class ShieldClaimPage {
     console.log('Shield Claim page is loaded in view mode');
   }
 
-  /**
-   * Select an account from the AccountSelector modal
-   *
-   * @param accountName - The name of the account to select
-   */
   async selectImpactedWalletName(accountName: string): Promise<void> {
     console.log(`Selecting impacted wallet address: ${accountName}`);
-    // Click the account selector button to open the modal
     await this.driver.clickElement(this.accountSelectorButton);
 
-    // Click the account with the specified name
     await this.driver.clickElement(this.accountSelectorItemByName(accountName));
 
     console.log(`Account ${accountName} selected`);
   }
 
-  /**
-   * Select a network from the NetworkSelector modal
-   *
-   * @param chainId - The chain ID to select (e.g., '0x1' for Mainnet)
-   */
   async selectNetwork(chainId: string): Promise<void> {
     console.log(`Selecting network with chain ID: ${chainId}`);
-    // Click the network selector button to open the modal
     await this.driver.clickElement(this.networkSelectorButton);
-
-    // Click the network with the specified chain ID
     await this.driver.clickElement(this.networkListItem(chainId));
-
-    console.log(`Network with chain ID ${chainId} selected`);
   }
 
-  /**
-   * Fill in the email field
-   *
-   * @param email - The email address to fill
-   */
   async fillEmail(email: string): Promise<void> {
     console.log(`Filling email: ${email}`);
     await this.driver.fill(this.emailInput, email);
@@ -160,22 +134,10 @@ export default class ShieldClaimPage {
     await this.driver.clickElement(this.submitButton);
   }
 
-  /**
-   * Check if success toast message is displayed
-   */
   async checkSuccessMessageDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.claimSuccessToast);
   }
 
-  /**
-   * Verify claim data is displayed correctly in view mode
-   *
-   * @param claimData - The claim data to verify
-   * @param claimData.email - The email address to verify
-   * @param claimData.reimbursementWalletAddress - The reimbursement wallet address to verify
-   * @param claimData.impactedTxHash - The impacted transaction hash to verify
-   * @param claimData.description - The description to verify
-   */
   async verifyClaimData(claimData: {
     email: string;
     reimbursementWalletAddress: string;
@@ -209,7 +171,7 @@ export default class ShieldClaimPage {
       `Impacted transaction hash verified: ${claimData.impactedTxHash}`,
     );
 
-    // Verify description - using css and value pattern
+    // Verify description - using css and text pattern
     await this.driver.waitForSelector({
       css: this.descriptionTextarea,
       text: claimData.description,

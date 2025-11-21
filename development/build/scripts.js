@@ -758,7 +758,6 @@ function createFactoredBuild({
               applyLavaMoat,
               scripts,
             });
-            ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
             renderHtmlFile({
               htmlName: 'sidepanel',
               browserPlatforms,
@@ -766,7 +765,6 @@ function createFactoredBuild({
               shouldIncludeSnow,
               scripts,
             });
-            ///: END:ONLY_INCLUDE_IF
             renderHtmlFile({
               htmlName: 'notification',
               browserPlatforms,

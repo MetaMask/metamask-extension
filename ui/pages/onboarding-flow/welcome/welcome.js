@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import log from 'loglevel';
 import { Box } from '../../../components/component-library';
 import {
   ONBOARDING_COMPLETION_ROUTE,
@@ -41,7 +40,10 @@ import {
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import {
+  isUserCancelledLoginError,
+  OAuthErrorMessages,
+} from '../../../../shared/modules/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
   AlignItems,
@@ -192,6 +194,7 @@ export default function OnboardingWelcome() {
             socialConnectionType,
             bufferedTrace,
             bufferedEndTrace,
+            trackEvent,
           ),
         );
         bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
@@ -205,6 +208,7 @@ export default function OnboardingWelcome() {
       onboardingParentContext,
       bufferedTrace,
       bufferedEndTrace,
+      trackEvent,
     ],
   );
 
@@ -214,7 +218,7 @@ export default function OnboardingWelcome() {
         error instanceof Error ? error.message : 'Unknown error';
 
       // Map raw OAuth error messages to UI modal-friendly constants
-      if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+      if (isUserCancelledLoginError(error)) {
         setLoginError(null);
         return;
       }
@@ -354,9 +358,7 @@ export default function OnboardingWelcome() {
   );
 
   const handleLoginError = useCallback((error) => {
-    log.error('handleLoginError::error', error);
-    const errorMessage = error.message;
-    if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+    if (isUserCancelledLoginError(error)) {
       setLoginError(null);
     } else {
       setLoginError(LOGIN_ERROR.GENERIC);

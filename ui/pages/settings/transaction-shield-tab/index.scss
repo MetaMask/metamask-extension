@@ -1,32 +1,4 @@
 .transaction-shield-page {
-  &__membership {
-    background-size: 85px;
-    height: 85px;
-
-    .transaction-shield-page__membership-text {
-      color: var(--color-accent03-light);
-    }
-
-    &--active {
-      background: url('/images/shield-membership-active.png') no-repeat right -10px center;
-      background-color: var(--color-accent03-dark);
-    }
-
-    &--loading {
-      background: var(--color-border-muted);
-    }
-
-    &--inactive {
-      background: url('/images/shield-membership-inactive.png') no-repeat right -10px center;
-      background-color: var(--color-background-subsection);
-
-      .transaction-shield-page__membership-text {
-        color: var(--color-text-default);
-      }
-    }
-  }
-
-
   &__row {
     margin-bottom: 1px;
 
@@ -42,6 +14,38 @@
     }
   }
 
+  &__membership {
+    background-size: 85px;
+    height: 85px;
+    background-image: url('/images/shield-membership-shadow.png');
+    background-repeat: no-repeat;
+    background-position: right -10px center;
+
+    .transaction-shield-page__membership-text {
+      color: var(--color-accent03-light);
+    }
+
+    &--active {
+      background-color: var(--color-accent03-dark);
+    }
+
+    &--loading {
+      background: var(--color-border-muted);
+    }
+
+    &--inactive {
+      background-color: var(--color-background-subsection);
+
+      &-light {
+        background-color: var(--shield-membership-inactive-light);
+      }
+
+      .transaction-shield-page__membership-text {
+        color: var(--color-text-default);
+      }
+    }
+  }
+
   .warning-button:hover {
     color: var(--color-warning-default);
   }
@@ -51,6 +55,30 @@
 
     @include design-system.screen-sm-max {
       margin-inline: -16px;
+    }
+  }
+
+  &-shield-illustration {
+    &__container {
+      height: 85px;
+      width: 85px;
+    }
+
+    &__canvas {
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  &-shield-icon {
+    &__container {
+      height: 32px;
+      width: 32px;
+    }
+
+    &__canvas {
+      height: 100%;
+      width: 100%;
     }
   }
 }

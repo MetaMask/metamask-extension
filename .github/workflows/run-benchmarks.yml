@@ -1,5 +1,10 @@
 on:
   workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+        description: The run ID to get builds from
     secrets:
       INFURA_PROJECT_ID:
         required: true
@@ -8,15 +13,20 @@ env:
   COMMANDS: |
     {
       standardHome: 'yarn tsx test/e2e/benchmarks/benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-standardHome.json --retries 2',
-      powerUserHome: 'yarn tsx test/e2e/benchmarks/benchmark.ts --persona powerUser --browserLoads 4 --pageLoads 4 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2',
+      powerUserHome: 'yarn tsx test/e2e/benchmarks/benchmark.ts --persona powerUser --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2',
       userActions: 'yarn tsx test/e2e/benchmarks/user-actions-benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
     }
 
 jobs:
   benchmarks:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     timeout-minutes: 30
+    container:
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.11.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
@@ -26,7 +36,7 @@ jobs:
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
-      HEADLESS: true
+      HEADLESS: false
       ARTIFACT_NAME: build-test-${{ matrix.buildType }}
       OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
@@ -55,6 +65,15 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ inputs.builds-from-run }} # Download from whatever run the identify-builds job said.
+
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      # TODO: Pre-install this in the container image
+      - name: Install AWS CLI (needed in the container)
+        run: sudo apt-get update && sudo apt-get install python3-pip && sudo pip install awscli --break-system-packages
 
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS

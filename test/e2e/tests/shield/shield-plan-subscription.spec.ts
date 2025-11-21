@@ -7,7 +7,6 @@ import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan
 import HomePage from '../../page-objects/pages/home/homepage';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import {
   BASE_SHIELD_SUBSCRIPTION,
@@ -98,6 +97,12 @@ async function mockSubscriptionApiCalls(
         };
       }),
 
+    // Mock checkout session URL to redirect to success URL
+    await mockServer.forGet(MOCK_CHECKOUT_SESSION_URL).thenCallback(() => ({
+      statusCode: 302,
+      headers: { Location: 'https://mock-redirect-url.com' },
+    })),
+
     // Using .always() to ensure this overrides global mocks
     await mockServer
       .forGet(
@@ -110,11 +115,34 @@ async function mockSubscriptionApiCalls(
           canViewEntryModal: true,
           minBalanceUSD: 1000,
           product: 'shield',
+          modalType: 'A',
+          cohorts: [
+            {
+              cohort: 'wallet_home',
+              eligible: true,
+              eligibilityRate: 1.0,
+            },
+            {
+              cohort: 'post_tx',
+              eligible: true,
+              eligibilityRate: 1.0,
+            },
+          ],
+          assignedCohort: null,
+          hasAssignedCohortExpired: null,
         },
       ]),
     await mockServer
       .forPost('https://subscription.dev-api.cx.metamask.io/v1/user-events')
       .thenJson(200, SHIELD_USER_EVENTS_RESPONSE),
+
+    // Mock cohort assignment endpoint - required for entry modal to show
+    await mockServer
+      .forPost('https://subscription.dev-api.cx.metamask.io/v1/cohorts/assign')
+      .thenJson(200, {
+        cohort: 'wallet_home',
+        expiresAt: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days from now
+      }),
   ];
 }
 
@@ -126,6 +154,11 @@ describe('Shield Subscription Tests', function () {
           fixtures: createShieldFixture().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: mockSubscriptionApiCalls,
+          ignoredConsoleErrors: [
+            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+            'Could not load Rive WASM file',
+            'XMLHttpRequest is not a constructor',
+          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -150,6 +183,11 @@ describe('Shield Subscription Tests', function () {
           fixtures: createShieldFixture().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: mockSubscriptionApiCalls,
+          ignoredConsoleErrors: [
+            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+            'Could not load Rive WASM file',
+            'XMLHttpRequest is not a constructor',
+          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -176,22 +214,30 @@ describe('Shield Subscription Tests', function () {
           fixtures: createShieldFixture().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: mockSubscriptionApiCalls,
+          ignoredConsoleErrors: [
+            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+            'Could not load Rive WASM file',
+            'XMLHttpRequest is not a constructor',
+          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalSkip();
+          await homePage.clickOnShieldEntryModalGetStarted();
 
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openSettingsPage();
+          const shieldPlanPage = new ShieldPlanPage(driver);
+          await shieldPlanPage.checkPageIsLoaded();
+          await shieldPlanPage.clickBackButton();
 
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToTransactionShieldPage();
 
-          const shieldPlanPage = new ShieldPlanPage(driver);
+          await homePage.checkShieldEntryModalIsDisplayed();
+          await homePage.clickOnShieldEntryModalGetStarted();
+
           await shieldPlanPage.completeShieldPlanSubscriptionFlow('annual');
 
           const shieldDetailPage = new ShieldDetailPage(driver);
@@ -206,22 +252,28 @@ describe('Shield Subscription Tests', function () {
           fixtures: createShieldFixture().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: mockSubscriptionApiCalls,
+          ignoredConsoleErrors: [
+            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+            'Could not load Rive WASM file',
+            'XMLHttpRequest is not a constructor',
+          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalSkip();
+          await homePage.clickOnShieldEntryModalGetStarted();
 
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openSettingsPage();
+          const shieldPlanPage = new ShieldPlanPage(driver);
+          await shieldPlanPage.checkPageIsLoaded();
+          await shieldPlanPage.clickBackButton();
 
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToTransactionShieldPage();
 
-          const shieldPlanPage = new ShieldPlanPage(driver);
+          await homePage.clickOnShieldEntryModalGetStarted();
           await shieldPlanPage.completeShieldPlanSubscriptionFlow('monthly');
 
           const shieldDetailPage = new ShieldDetailPage(driver);

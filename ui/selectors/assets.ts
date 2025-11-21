@@ -111,7 +111,7 @@ export function getAssetsMetadata(state: AssetsState) {
  * @returns An object containing all ignored assets.
  */
 export function getAllIgnoredAssets(state: AssetsState) {
-  return state.metamask.allIgnoredAssets;
+  return state.metamask.allIgnoredAssets ?? EMPTY_OBJECT;
 }
 
 /**
@@ -558,6 +558,10 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
     multichainBalances: ReturnType<typeof getMultichainBalances>,
     nativeAssetType: ReturnType<typeof getMultichainNativeAssetType>,
   ) => {
+    if (!selectedAccountAddress) {
+      return zeroBalanceAssetFallback;
+    }
+
     const balances = multichainBalances?.[selectedAccountAddress.id];
 
     if (!nativeAssetType || !balances?.[nativeAssetType]) {

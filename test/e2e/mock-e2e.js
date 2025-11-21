@@ -79,6 +79,10 @@ const blocklistedHosts = [
   'sei-mainnet.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
+  'cdn.jsdelivr.net',
+  'unpkg.com',
+  'mock-redirect-url.com',
+  'claims.dev-api.cx.metamask.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
@@ -184,12 +188,8 @@ async function setupMocking(
 
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
-  // Test-specific mocks registered above will take precedence since they're registered first
-  // To ensure test-specific mocks override global mocks, use .always() in test-specific mocks
 
   // Subscriptions Polling Get Subscriptions
-  // Global mock - will only be used if test-specific mock doesn't match
-  // Test-specific mocks should use .always() to ensure they take precedence
   await server
     .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
     .thenCallback(() => {
@@ -203,8 +203,6 @@ async function setupMocking(
     });
 
   // Subscriptions Eligibility
-  // Global mock - will only be used if test-specific mock doesn't match
-  // Test-specific mocks should use .always() to ensure they take precedence
   await server
     .forGet(
       'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
@@ -212,7 +210,18 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [],
+        json: [
+          {
+            canSubscribe: false,
+            canViewEntryModal: false,
+            minBalanceUSD: 1000,
+            product: 'shield',
+            modalType: 'A',
+            cohorts: [],
+            assignedCohort: null,
+            hasAssignedCohortExpired: null,
+          },
+        ],
       };
     });
 
@@ -579,7 +588,7 @@ async function setupMocking(
   // Bridge API mocks - must be after AGGREGATOR_METADATA is defined
   // Network 1 (Mainnet)
   await server
-    .forGet('https://bridge.api.cx.metamask.io/networks/1/topAssets')
+    .forGet(`https://bridge.api.cx.metamask.io/networks/1/topAssets`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -1307,9 +1316,17 @@ async function setupMocking(
       return;
     }
 
+    // Exclude browser API requests, portfolio requests, and test-only domains from privacy report
+    const isTestOnlyDomain =
+      request.headers.host === 'cdn.jsdelivr.net' ||
+      request.headers.host === 'unpkg.com' ||
+      request.headers.host === 'mock-redirect-url.com' ||
+      request.headers.host === 'claims.dev-api.cx.metamask.io';
+
     if (
       request.headers.host.match(browserAPIRequestDomains) === null &&
-      !portfolioRequestsMatcher(request)
+      !portfolioRequestsMatcher(request) &&
+      !isTestOnlyDomain
     ) {
       privacyReport.add(request.headers.host);
     }

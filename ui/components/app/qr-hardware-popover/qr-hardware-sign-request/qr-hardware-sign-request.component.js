@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { completeQrCodeScan } from '../../../../store/actions';
@@ -8,6 +8,11 @@ import Reader from './reader';
 const QRHardwareSignRequest = ({ request, handleCancel, setErrorTitle }) => {
   const dispatch = useDispatch();
   const [status, setStatus] = useState('play');
+
+  // Reset to 'play' mode when a new transaction request comes in
+  useEffect(() => {
+    setStatus('play');
+  }, [request.requestId]);
 
   const toRead = useCallback(() => setStatus('read'), []);
 

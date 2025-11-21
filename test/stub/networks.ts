@@ -7,7 +7,7 @@ import {
 import { type MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { Hex } from '@metamask/utils';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import {
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
@@ -88,6 +88,12 @@ export const mockMultichainNetworkState =
           chainId: SolScope.Mainnet,
           name: 'Solana',
           nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
+          isEvm: false,
+        },
+        [TrxScope.Mainnet]: {
+          chainId: TrxScope.Mainnet,
+          name: 'Tron',
+          nativeCurrency: `${TrxScope.Mainnet}/slip44:195`,
           isEvm: false,
         },
       },

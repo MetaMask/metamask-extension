@@ -1,13 +1,23 @@
 import { useMemo } from 'react';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
-import { getIsShieldSubscriptionActive } from '../../../../../shared/lib/shield';
+import {
+  getIsShieldSubscriptionActive,
+  getIsShieldSubscriptionPaused,
+} from '../../../../../shared/lib/shield';
 
 export const useEnableShieldCoverageChecks = () => {
   const { subscriptions } = useUserSubscriptions();
 
-  const hasUserSubscribedToShield = useMemo(() => {
+  const isShieldSubscriptionActive = useMemo(() => {
     return getIsShieldSubscriptionActive(subscriptions);
   }, [subscriptions]);
 
-  return hasUserSubscribedToShield;
+  const isShieldSubscriptionPaused = useMemo(() => {
+    return getIsShieldSubscriptionPaused(subscriptions);
+  }, [subscriptions]);
+
+  return {
+    isEnabled: isShieldSubscriptionActive,
+    isPaused: isShieldSubscriptionPaused,
+  };
 };

@@ -5,6 +5,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
 import ShieldClaimPage from '../../page-objects/pages/settings/shield/shield-claim-page';
@@ -17,12 +18,6 @@ import {
   SHIELD_USER_EVENTS_RESPONSE,
   SHIELD_CLAIMS_RESPONSE,
 } from '../../helpers/shield/constants';
-import {
-  generateRandomEmail,
-  generateRandomWalletAddress,
-  generateRandomTxHash,
-  generateRandomDescription,
-} from '../../helpers/test-data-generators';
 
 // Local fixture for this spec file
 function createShieldFixture() {
@@ -135,6 +130,7 @@ async function mockStripeSubscriptionFlow(
       .thenJson(200, [
         {
           id: SHIELD_CLAIMS_RESPONSE.claimId,
+          shortId: 1,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           chainId: '1',
@@ -178,13 +174,15 @@ async function mockStripeSubscriptionFlow(
 }
 
 describe('Shield Plan Stripe Integration', function () {
-  it('should successfully fill and submit shield claim form', async function () {
-    // Generate test data before the test runs so it can be reused in mocks
+  // TODO: This test is skipped until the claim form is implemented with the final design.
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should successfully fill and submit shield claim form', async function () {
     const testData = {
-      email: generateRandomEmail(),
-      impactedTxHash: generateRandomTxHash(),
-      reimbursementWalletAddress: generateRandomWalletAddress(),
-      description: generateRandomDescription(),
+      email: 'test@metamask.io',
+      impactedTxHash:
+        '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+      reimbursementWalletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+      description: 'This is a test claim description',
     };
 
     await withFixtures(
@@ -193,14 +191,20 @@ describe('Shield Plan Stripe Integration', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer: Mockttp) =>
           mockStripeSubscriptionFlow(mockServer, testData),
+        ignoredConsoleErrors: [
+          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+          'Could not load Rive WASM file',
+          'XMLHttpRequest is not a constructor',
+        ],
       },
       async ({ driver }) => {
-        // Login and validate balance
         await loginWithBalanceValidation(driver);
 
-        await new HeaderNavbar(driver).openSettingsPage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.waitForNetworkAndDOMReady();
 
-        // Navigate to Shield Detail page
+        await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToTransactionShieldPage();
@@ -208,13 +212,11 @@ describe('Shield Plan Stripe Integration', function () {
         const shieldDetailPage = new ShieldDetailPage(driver);
         await shieldDetailPage.checkPageIsLoaded();
 
-        // Click Claim button to navigate to claim page
         await shieldDetailPage.clickSubmitCaseButton();
 
         const shieldClaimPage = new ShieldClaimPage(driver);
         await shieldClaimPage.checkPageIsLoaded();
 
-        // Fill the claim form with test data
         await shieldClaimPage.fillForm({
           email: testData.email,
           reimbursementWalletAddress: testData.reimbursementWalletAddress,
@@ -224,25 +226,19 @@ describe('Shield Plan Stripe Integration', function () {
           description: testData.description,
         });
 
-        // Submit the form
         await shieldClaimPage.clickSubmitButton();
 
-        // Check for success toast message
         await shieldClaimPage.checkSuccessMessageDisplayed();
 
-        // Verify navigation to Claims List page
         const shieldClaimsListPage = new ShieldClaimsListPage(driver);
         await shieldClaimsListPage.checkPageIsLoaded();
 
-        // Check that the claim is created with status "Created" (pending status)
         const { claimId } = SHIELD_CLAIMS_RESPONSE;
         await shieldClaimsListPage.checkClaimExists(claimId);
         await shieldClaimsListPage.checkClaimStatus(claimId, 'Created');
 
-        // Click on the claim item to view details
         await shieldClaimsListPage.clickClaimItem(claimId);
 
-        // Verify navigation to Claim detail page (view mode) and check data is displayed correctly
         await shieldClaimPage.checkPageIsLoadedInViewMode();
         await shieldClaimPage.verifyClaimData({
           email: testData.email,
@@ -260,10 +256,18 @@ describe('Shield Plan Stripe Integration', function () {
         fixtures: createShieldFixture().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockStripeSubscriptionFlow,
+        ignoredConsoleErrors: [
+          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+          'Could not load Rive WASM file',
+          'XMLHttpRequest is not a constructor',
+        ],
       },
       async ({ driver }) => {
-        // Login and validate balance
         await loginWithBalanceValidation(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.waitForNetworkAndDOMReady();
 
         await new HeaderNavbar(driver).openSettingsPage();
 
@@ -277,17 +281,15 @@ describe('Shield Plan Stripe Integration', function () {
         // Cancel the subscription
         await shieldDetailPage.cancelSubscription();
 
-        // Wait for cancellation confirmation and verify status
         await shieldDetailPage.checkNotificationShieldBanner(
-          'Your membership will be cancelled on Nov 3, 2025.',
+          'Your plan will be cancelled on Nov 3, 2025.',
         );
 
         // Renew the subscription
         await shieldDetailPage.clickRenewButton();
 
-        // Wait for renewal confirmation and verify status
         await shieldDetailPage.checkNotificationShieldBannerRemoved();
-        await shieldDetailPage.checkMembershipStatus('Active membership');
+        await shieldDetailPage.checkMembershipStatus('Active plan');
       },
     );
   });

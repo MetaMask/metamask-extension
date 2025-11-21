@@ -7,6 +7,8 @@ export default class ShieldPlanPage {
   private readonly annualPlanButton =
     '[data-testid="shield-plan-annual-button"]';
 
+  private readonly backButton = '[data-testid="shield-plan-back-button"]';
+
   private readonly continueButton =
     '[data-testid="shield-plan-continue-button"]';
 
@@ -46,6 +48,11 @@ export default class ShieldPlanPage {
     console.log('Shield plan page is loaded');
   }
 
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking back button on Shield plan page');
+    await this.driver.clickElement(this.backButton);
+  }
+
   async selectAnnualPlan(): Promise<void> {
     console.log('Selecting Annual plan');
     await this.driver.clickElement(this.annualPlanButton);
@@ -80,12 +87,6 @@ export default class ShieldPlanPage {
     }
 
     await this.clickContinueButton();
-
-    // Wait for checkout tab to open and switch to it
-    await this.driver.waitUntilXWindowHandles(2);
-
-    // Switch back to the main MetaMask window
-    await this.driver.switchToWindowWithTitle('MetaMask');
 
     console.log(`Shield plan subscription flow completed for ${plan} plan`);
   }
