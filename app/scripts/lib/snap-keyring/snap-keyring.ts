@@ -20,7 +20,10 @@ import { IconName } from '../../../../ui/components/component-library/icon';
 import MetaMetricsController from '../../controllers/metametrics-controller';
 import { getUniqueAccountName } from '../../../../shared/lib/accounts';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
-import { getSnapName } from '../../../../shared/lib/accounts/snaps';
+import {
+  getSnapName,
+  isMultichainWalletSnap,
+} from '../../../../shared/lib/accounts/snaps';
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
@@ -470,17 +473,27 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   ) {
     assertIsValidSnapId(snapId);
 
+    // Preinstalled Snaps can skip some confirmation dialogs.
+    const isPreinstalled = isSnapPreinstalled(snapId);
+
+    // Since the introduction of BIP-44, multichain wallet Snaps will skip them automatically too!
+    let skipAll = isPreinstalled && isMultichainWalletSnap(snapId);
+    // FIXME: We still rely on the old behavior in some e2e, so we do not skip them in this case.
+    if (process.env.IN_TEST) {
+      skipAll = false;
+    }
+
     // If Snap is preinstalled and does not request confirmation, skip the confirmation dialog.
     const skipConfirmationDialog =
-      isSnapPreinstalled(snapId) && !displayConfirmation;
+      skipAll || (isPreinstalled && !displayConfirmation);
 
     // Only pre-installed Snaps can skip the account name suggestion dialog.
     const skipAccountNameSuggestionDialog =
-      isSnapPreinstalled(snapId) && !displayAccountNameSuggestion;
+      skipAll || (isPreinstalled && !displayAccountNameSuggestion);
 
     // Only pre-installed Snaps can skip the account from being selected.
     const skipSetSelectedAccountStep =
-      isSnapPreinstalled(snapId) && !setSelectedAccount;
+      skipAll || (isPreinstalled && !setSelectedAccount);
 
     const skipApprovalFlow =
       skipConfirmationDialog && skipAccountNameSuggestionDialog;
@@ -492,7 +505,10 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
       skipConfirmationDialog,
       skipAccountNameSuggestionDialog,
       skipApprovalFlow,
-      accountNameSuggestion,
+      // We do not set the account name suggestion if it's a multichain wallet Snap since the
+      // current naming could have race conditions with other account creations, and since
+      // naming is now handled by multichain account groups, we can skip this entirely.
+      accountNameSuggestion: skipAll ? '' : accountNameSuggestion,
       handleUserInput,
     });
 
