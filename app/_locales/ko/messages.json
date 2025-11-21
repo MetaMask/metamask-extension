@@ -2921,6 +2921,9 @@
     "message": "JSON 파일",
     "description": "format for importing an account"
   },
+  "keycardShell": {
+    "message": "Keycard Shell"
+  },
   "keyringAccountName": {
     "message": "계정 이름"
   },
