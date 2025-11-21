@@ -33,7 +33,7 @@ import OnboardingStep3 from './OnboardingStep3';
 import OnboardingStep4 from './OnboardingStep4';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function OnboardingModal() {
+export default function OnboardingModal({ onClose }: { onClose?: () => void }) {
   const isOpen = useSelector(selectOnboardingModalOpen);
   const onboardingStep = useSelector(selectOnboardingActiveStep);
   const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
@@ -44,7 +44,8 @@ export default function OnboardingModal() {
   const handleClose = useCallback(() => {
     dispatch(setOnboardingModalOpen(false));
     dispatch(setOnboardingActiveStep(OnboardingStep.INTRO));
-  }, [dispatch]);
+    onClose?.();
+  }, [dispatch, onClose]);
 
   const renderContent = useCallback(() => {
     if (

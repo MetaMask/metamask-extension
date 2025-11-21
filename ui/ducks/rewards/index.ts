@@ -11,6 +11,7 @@ export type RewardsState = {
   onboardingModalOpen: boolean;
   onboardingActiveStep: OnboardingStep;
   onboardingModalRendered: boolean;
+  onboardingReferralCode: string | null;
 
   // Geolocation state
   geoLocation: string | null;
@@ -39,6 +40,7 @@ export const initialState: RewardsState = {
   onboardingModalOpen: false,
   onboardingActiveStep: OnboardingStep.INTRO,
   onboardingModalRendered: true,
+  onboardingReferralCode: '',
 
   geoLocation: null,
   optinAllowedForGeo: null,
@@ -89,6 +91,13 @@ const rewardsSlice = createSlice({
 
     setOnboardingModalRendered: (state, action: PayloadAction<boolean>) => {
       state.onboardingModalRendered = action.payload;
+    },
+
+    setOnboardingReferralCode: (
+      state,
+      action: PayloadAction<string | null>,
+    ) => {
+      state.onboardingReferralCode = action.payload;
     },
 
     setRewardsGeoMetadata: (
@@ -179,6 +188,7 @@ export const {
   setOnboardingModalOpen,
   setOnboardingActiveStep,
   setOnboardingModalRendered,
+  setOnboardingReferralCode,
   setCandidateSubscriptionId,
   setSeasonStatusLoading,
   setSeasonStatus,
