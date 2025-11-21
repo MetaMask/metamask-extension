@@ -31,10 +31,10 @@ jest.mock('webextension-polyfill', () => {
     }
   }
 
-  return ({
+  return {
     runtime: { lastError: null },
     storage: { local: new MockBrowserStorage() },
-  })
+  };
 });
 
 /**
