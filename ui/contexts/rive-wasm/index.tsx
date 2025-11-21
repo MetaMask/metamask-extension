@@ -8,7 +8,11 @@ import { useAsyncResult } from '../../hooks/useAsync';
 
 // WASM file URL - the file is copied to dist/chrome/images/ by the build process
 // We don't import it as a module to avoid browserify resolution issues
-const RIVE_WASM_URL = './images/riv_animations/rive.wasm';
+const RIVE_WASM_URL = new URL(
+  '@rive-app/canvas/rive.wasm',
+  // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS
+  import.meta.url,
+);
 const isTestEnvironment = Boolean(process.env.IN_TEST);
 
 export const useRiveWasmReady = () => {
@@ -23,16 +27,7 @@ export const useRiveWasmReady = () => {
       setIsWasmReady(true);
       return true;
     }
-    const response = await fetch(RIVE_WASM_URL);
-    if (!response.ok) {
-      throw new Error(
-        `HTTP error! status while fetching rive.wasm: ${response.status}`,
-      );
-    }
-    const arrayBuffer = await response.arrayBuffer();
-    (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
-      arrayBuffer;
-    RuntimeLoader.setWasmUrl('should not fetch wasm'); // easier to debug if something goes wrong
+    RuntimeLoader.setWasmUrl(RIVE_WASM_URL.href);
 
     // Preload the WASM
     await RuntimeLoader.awaitInstance();
