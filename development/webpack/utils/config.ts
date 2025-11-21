@@ -192,23 +192,4 @@ function loadConfigVars(
 }
 export const reactCompilerOptions = {
   target: '17',
-  sources: (filename) => {
-    const excludePatterns = [
-      '.test.',
-      '.stories.',
-      '.container.',
-      '/ui/index.js',
-      '/__mocks__/',
-      '/__snapshots__/',
-      '/constants/',
-      '/helpers/',
-      '/ducks/',
-      '/selectors/',
-      '/store/',
-    ];
-    if (excludePatterns.some((pattern) => filename.includes(pattern))) {
-      return false;
-    }
-    return true;
-  },
 } as const satisfies ReactCompilerLoaderOption;
