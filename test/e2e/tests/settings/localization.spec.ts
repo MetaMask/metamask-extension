@@ -37,6 +37,12 @@ async function mockPhpConversion(mockServer: Mockttp) {
         return {
           statusCode: 200,
           json: {
+            eth: {
+              name: 'Ether',
+              ticker: 'eth',
+              value: 1,
+              currencyType: 'crypto',
+            },
             usd: {
               name: 'US Dollar',
               ticker: 'usd',
@@ -74,7 +80,7 @@ async function mockPhpConversion(mockServer: Mockttp) {
           json: {
             '0x0000000000000000000000000000000000000000': {
               id: 'ethereum',
-              price: 2500, // 1 ETH = 2,500 USD
+              price: 1,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
@@ -98,6 +104,7 @@ describe('Localization', function () {
               showNativeTokenAsMainBalance: false,
             },
           })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         testSpecificMock: mockPhpConversion,
         title: this.test?.fullTitle(),
@@ -106,7 +113,9 @@ describe('Localization', function () {
         await loginWithoutBalanceValidation(driver);
 
         // After the removal of displaying secondary currency in coin-overview.tsx, we will test localization on main balance with showNativeTokenAsMainBalance = false
-        await new HomePage(driver).checkExpectedBalanceIsDisplayed('₱0.00');
+        await new HomePage(driver).checkExpectedBalanceIsDisplayed(
+          '₱2,500,000.00',
+        );
       },
     );
   });
