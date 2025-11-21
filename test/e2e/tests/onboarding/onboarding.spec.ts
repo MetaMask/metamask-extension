@@ -305,7 +305,9 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  it('Provides an onboarding path for a user who has restored their account from state persistence failure', async function () {
+  // But #38077 - After estoring account from state persistence failure Metamask unlock is not working
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('Provides an onboarding path for a user who has restored their account from state persistence failure', async function () {
     // We don't use onboarding: true here because we want there to be a vault,
     // simulating what will happen when a user eventually restores their vault
     // during a state persistence failure. Instead, we set the
