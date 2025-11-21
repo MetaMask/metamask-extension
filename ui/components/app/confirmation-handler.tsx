@@ -172,25 +172,38 @@ export const ConfirmationHandler = () => {
 
   // Only navigate to confirmations if we have pending confirmations and we're not already
   // on a confirmation route or viewing a pending confirmation
-  // Exception: Allow navigation when on a confirmation route if target confirmation is different
-  // (e.g., navigate to result page after confirming update from fullscreen)
+  // Exception: For snap approvals, allow navigation when on confirmation route if it's a different confirmation
+  // (e.g., navigate from update page to result page after confirming in fullscreen)
   // Exclude routes that are valid destinations from confirmation pages (e.g., /send for editing)
-  const shouldNavigateToConfirmation = useMemo(
-    () =>
-      hasPendingConfirmations &&
-      (!isOnConfirmationRoute ||
-        currentConfirmationId !== targetConfirmationId) &&
-      !isViewingPendingConfirmation &&
-      !isOnExcludedRoute,
-    [
-      hasPendingConfirmations,
-      isOnConfirmationRoute,
-      currentConfirmationId,
-      targetConfirmationId,
-      isViewingPendingConfirmation,
-      isOnExcludedRoute,
-    ],
-  );
+  const shouldNavigateToConfirmation = useMemo(() => {
+    if (
+      !hasPendingConfirmations ||
+      isViewingPendingConfirmation ||
+      isOnExcludedRoute
+    ) {
+      return false;
+    }
+
+    // For snap approvals, allow navigation even when on confirmation route if it's a different confirmation
+    if (isOnConfirmationRoute && isSnapApproval) {
+      return currentConfirmationId !== targetConfirmationId;
+    }
+
+    // For other confirmations, prevent navigation when already on confirmation route
+    if (isOnConfirmationRoute) {
+      return false;
+    }
+
+    return true;
+  }, [
+    hasPendingConfirmations,
+    isOnConfirmationRoute,
+    isSnapApproval,
+    currentConfirmationId,
+    targetConfirmationId,
+    isViewingPendingConfirmation,
+    isOnExcludedRoute,
+  ]);
 
   useEffect(() => {
     if (isLocked || !canRedirect || shouldSkipNetworkOperationNavigation) {
