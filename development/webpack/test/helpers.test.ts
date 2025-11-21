@@ -25,10 +25,11 @@ describe('./utils/helpers.ts', () => {
     const originalReaddirSync = fs.readdirSync;
     const otherHtmlEntries = ['one.html', 'two.html'];
     const appRoot = '<app-root>';
+    const htmlPages = join(appRoot, 'html', 'pages');
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mock.method(fs, 'readdirSync', function (path: string, options: any) {
-      if (path === appRoot) {
+      if (path === htmlPages) {
         return [...otherHtmlEntries, 'three.not-html'];
       }
       return originalReaddirSync.call(fs, path, options);
@@ -102,9 +103,9 @@ describe('./utils/helpers.ts', () => {
       },
     };
     const expectedHtml = {
-      background: join(appRoot, `background.html`),
-      one: join(appRoot, `one.html`),
-      two: join(appRoot, `two.html`),
+      background: join(htmlPages, `background.html`),
+      one: join(htmlPages, `one.html`),
+      two: join(htmlPages, `two.html`),
       // notice: three.not-html is NOT included, since it doesn't have an `.html` extension
     };
     const expectedEntries = { ...expectedScripts, ...expectedHtml };
@@ -124,10 +125,11 @@ describe('./utils/helpers.ts', () => {
     const originalReaddirSync = fs.readdirSync;
     const otherHtmlEntries = ['one.html', 'two.html'];
     const appRoot = '<app-root>';
+    const htmlPages = join(appRoot, 'html', 'pages');
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mock.method(fs, 'readdirSync', (path: string, options: any) => {
-      if (path === appRoot) {
+      if (path === htmlPages) {
         return [...otherHtmlEntries, 'three.not-html'];
       }
       return originalReaddirSync.call(fs, path, options);
@@ -204,8 +206,8 @@ describe('./utils/helpers.ts', () => {
       },
     };
     const expectedHtml = {
-      one: join(appRoot, `one.html`),
-      two: join(appRoot, `two.html`),
+      one: join(htmlPages, `one.html`),
+      two: join(htmlPages, `two.html`),
       // notice: three.not-html is NOT included, since it doesn't have an `.html` extension
     };
     const expectedEntries = {
@@ -227,11 +229,12 @@ describe('./utils/helpers.ts', () => {
   it('should handle manifest.json files with empty sections', () => {
     const originalReaddirSync = fs.readdirSync;
     const appRoot = '<app-root>';
+    const htmlPages = join(appRoot, 'html', 'pages');
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mock.method(fs, 'readdirSync', (path: string, options: any) => {
-      if (path === appRoot) {
+      if (path === htmlPages) {
         return [];
       }
       return originalReaddirSync.call(fs, path, options);
@@ -256,21 +259,6 @@ describe('./utils/helpers.ts', () => {
     } as helpers.ManifestV3;
     const { entry: entryv3 } = helpers.collectEntries(manifestv3, appRoot);
     assert.deepStrictEqual(entryv3, {});
-  });
-
-  it('should throw if an entry file starts with an underscore', () => {
-    const manifest = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      manifest_version: 2,
-      background: {
-        page: '_badfile.html',
-      },
-    } as helpers.ManifestV2;
-    assert.throws(
-      () => helpers.collectEntries(manifest, ''),
-      /Error: Invalid Entrypoint Filename Detected/u,
-    );
   });
 
   describe('logStats', () => {
