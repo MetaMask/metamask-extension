@@ -147,8 +147,8 @@ describe('Settings', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
-          await mockInfuraResponses(mockServer);
           await mockPriceApi(mockServer);
+          await mockInfuraResponses(mockServer);
         },
       },
       async ({ driver }) => {
