@@ -24,7 +24,9 @@ const RELEASE = getSentryRelease(
 );
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
-const SENTRY_DSN_PERFORMANCE = process.env.SENTRY_DSN_PERFORMANCE;
+const SENTRY_DSN_PERFORMANCE =
+  process.env.SENTRY_DSN_PERFORMANCE ||
+  'https://17e6db85bd66517e7c828d36f53e2f26@sentry.io/4510302346608640';
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
