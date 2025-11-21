@@ -13,14 +13,19 @@ export const useDappSwapComparisonRewardText = (): {
   const { selectedQuote } = useDappSwapContext();
   const t = useI18nContext();
 
-  const { shouldShowRewardsRow, isLoading, estimatedPoints, hasError } =
-    useRewardsWithQuote({
-      quote: selectedQuote?.quote ?? null,
-      fromAddress: transactionMeta?.txParams?.from ?? '',
-      chainId: transactionMeta?.chainId ?? '',
-    });
+  const {
+    shouldShowRewardsRow,
+    isLoading,
+    estimatedPoints,
+    hasError,
+    accountOptedIn,
+  } = useRewardsWithQuote({
+    quote: selectedQuote?.quote ?? null,
+    fromAddress: transactionMeta?.txParams?.from ?? '',
+    chainId: transactionMeta?.chainId ?? '',
+  });
 
-  if (!shouldShowRewardsRow || hasError || isLoading) {
+  if (!shouldShowRewardsRow || hasError || isLoading || !accountOptedIn) {
     return null;
   }
 

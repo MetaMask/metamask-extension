@@ -117,8 +117,12 @@ describe('OnboardingIntroStep', () => {
     (useDispatch as jest.Mock).mockReturnValue(dispatchMock);
     // Ensure useSelector calls the provided selector function without using any
     (useSelector as jest.Mock).mockImplementation(
-      (selector: (state: unknown) => unknown) => selector({} as unknown),
+      (selector: (state: unknown) => unknown) =>
+        // Provide a minimal state shape with metamask.theme to satisfy getTheme
+        selector({ metamask: { theme: 'light' } } as unknown),
     );
+    // Ensure document has a data-theme attribute for useTheme resolution
+    document.documentElement.setAttribute('data-theme', 'light');
     // Default: no active subscription id
     (useAppSelector as jest.Mock).mockReturnValue(undefined);
     // Default geo metadata hook with a retry function
