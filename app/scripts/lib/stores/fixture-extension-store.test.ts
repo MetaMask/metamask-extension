@@ -1,6 +1,7 @@
 import log from 'loglevel';
 import nock from 'nock';
-import ReadOnlyNetworkStore from './read-only-network-store';
+import browser from 'webextension-polyfill';
+import { FixtureExtensionStore } from './fixture-extension-store';
 
 const FIXTURE_SERVER_HOST = 'localhost';
 const FIXTURE_SERVER_PORT = 12345;
@@ -13,15 +14,28 @@ const DEFAULT_INITIAL_STATE = {
 
 const MOCK_STATE = { data: { config: { foo: 'bar' } }, meta: { version: 1 } };
 
-/**
- * Initiatilizes a ReadOnlyNetworkStore for testing
- *
- * @returns store - a ReadOnlyNetworkStore
- */
-function setupReadOnlyNetworkStore() {
-  const store = new ReadOnlyNetworkStore();
-  return store;
-}
+jest.mock('webextension-polyfill', () => {
+  class MockBrowserStorage {
+    #state: unknown = null;
+
+    async get() {
+      return this.#state;
+    }
+
+    async set(value: unknown) {
+      this.#state = value;
+    }
+
+    async clear() {
+      this.#state = null;
+    }
+  }
+
+  return {
+    runtime: { lastError: null },
+    storage: { local: new MockBrowserStorage() },
+  };
+});
 
 /**
  * Create a Nock scope for the fixture server response.
@@ -43,16 +57,16 @@ function setMockFixtureServerReply(
   mockFixtureServerInterceptor().reply(200, state);
 }
 
-describe('ReadOnlyNetworkStore', () => {
-  beforeEach(() => {
-    jest.resetModules();
+describe('FixtureExtensionStore', () => {
+  beforeEach(async () => {
+    await browser.storage.local.clear();
     nock.cleanAll();
   });
 
   describe('constructor', () => {
     it('loads state from the network if fetch is successful and response is ok', async () => {
       setMockFixtureServerReply(MOCK_STATE);
-      const store = setupReadOnlyNetworkStore();
+      const store = new FixtureExtensionStore();
 
       const result = await store.get();
 
@@ -64,7 +78,7 @@ describe('ReadOnlyNetworkStore', () => {
         .spyOn(log, 'debug')
         .mockImplementation(() => undefined);
       mockFixtureServerInterceptor().reply(400);
-      const store = setupReadOnlyNetworkStore();
+      const store = new FixtureExtensionStore();
 
       const result = await store.get();
 
@@ -79,7 +93,7 @@ describe('ReadOnlyNetworkStore', () => {
       const logDebugSpy = jest
         .spyOn(log, 'debug')
         .mockImplementation(() => undefined);
-      const store = setupReadOnlyNetworkStore();
+      const store = new FixtureExtensionStore();
 
       const result = await store.get();
 
@@ -91,18 +105,9 @@ describe('ReadOnlyNetworkStore', () => {
   });
 
   describe('get', () => {
-    it('returns null if #state is null', async () => {
-      mockFixtureServerInterceptor().reply(200);
-      const store = setupReadOnlyNetworkStore();
-
-      const result = await store.get();
-
-      expect(result).toBe(null);
-    });
-
-    it('returns null if state is null', async () => {
+    it('returns fixture state after waiting for init', async () => {
       setMockFixtureServerReply(MOCK_STATE);
-      const store = setupReadOnlyNetworkStore();
+      const store = new FixtureExtensionStore();
 
       const result = await store.get();
 
@@ -111,17 +116,8 @@ describe('ReadOnlyNetworkStore', () => {
   });
 
   describe('set', () => {
-    it('throws if not passed a state parameter', async () => {
-      const store = setupReadOnlyNetworkStore();
-
-      await expect(
-        // @ts-expect-error Intentionally passing incorrect type
-        store.set(undefined),
-      ).rejects.toThrow('MetaMask - updated state is missing');
-    });
-
     it('sets the state', async () => {
-      const store = setupReadOnlyNetworkStore();
+      const store = new FixtureExtensionStore();
 
       await store.set({
         data: { appState: { test: true } },

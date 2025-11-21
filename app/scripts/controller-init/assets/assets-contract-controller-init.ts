@@ -27,5 +27,6 @@ export const AssetsContractControllerInit: ControllerInitFunction<
   return {
     controller,
     memStateKey: null,
+    persistedStateKey: null,
   };
 };
