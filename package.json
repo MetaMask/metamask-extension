@@ -253,7 +253,8 @@
     "@metamask/network-controller@npm:^25.0.0": "npm:@metamask-previews/network-controller@26.0.0-preview-e3eb8eca",
     "@metamask/json-rpc-engine@npm:^10.0.0": "npm:@metamask-previews/json-rpc-engine@10.2.0-preview-e3eb8eca",
     "@metamask/json-rpc-engine@npm:^10.0.3": "npm:@metamask-previews/json-rpc-engine@10.2.0-preview-e3eb8eca",
-    "@metamask/json-rpc-engine@npm:^10.1.1": "npm:@metamask-previews/json-rpc-engine@10.2.0-preview-e3eb8eca"
+    "@metamask/json-rpc-engine@npm:^10.1.1": "npm:@metamask-previews/json-rpc-engine@10.2.0-preview-e3eb8eca",
+    "@metamask/json-rpc-engine@npm:^10.2.0": "npm:@metamask-previews/json-rpc-engine@10.2.0-preview-e3eb8eca"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",

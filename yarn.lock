@@ -6828,20 +6828,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^10.2.0":
-  version: 10.2.0
-  resolution: "@metamask/json-rpc-engine@npm:10.2.0"
-  dependencies:
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^11.8.1"
-    "@types/deep-freeze-strict": "npm:^1.1.0"
-    deep-freeze-strict: "npm:^1.1.1"
-    klona: "npm:^2.0.6"
-  checksum: 10/c4d588ee2a27c5cd3b4634dbafebebb193092364e1eec2bf1fef2bd2f2352ab7fa59758067ab53440d8d93b812270bdf2c0e508640614b51e5d06d68a76a37c1
-  languageName: node
-  linkType: hard
-
 "@metamask/json-rpc-engine@npm:^7.1.1":
   version: 7.3.3
   resolution: "@metamask/json-rpc-engine@npm:7.3.3"
