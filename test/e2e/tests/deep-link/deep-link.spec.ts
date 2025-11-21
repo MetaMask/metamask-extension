@@ -7,6 +7,7 @@ import DeepLink from '../../page-objects/pages/deep-link-page';
 import LoginPage from '../../page-objects/pages/login-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
 import { BaseUrl } from '../../../../shared/constants/urls';
@@ -85,7 +86,7 @@ describe('Deep Link', function () {
       'signed without sig_params',
       'unsigned',
     ] as const,
-    ['/home', '/swap', '/INVALID'] as const,
+    ['/home', '/swap', '/INVALID', '/settings'] as const,
     ['continue'] as const,
   ).map(([locked, signed, route, action]) => {
     return { locked, signed, route, action };
@@ -178,6 +179,9 @@ and we'll take you to the right place.`
             case '/home':
             case '/INVALID':
               Page = HomePage;
+              break;
+            case '/settings':
+              Page = SettingsPage;
               break;
             case '/swap':
               Page = SwapPage;
