@@ -356,6 +356,13 @@ function getOptions(
       group: toOrange('Security:'),
       type: 'boolean',
     },
+    reactCompilerVerbose: {
+      array: false,
+      default: false,
+      description: 'Enables/disables React Compiler verbose mode',
+      group: toOrange('Developer assistance:'),
+      type: 'boolean',
+    },
 
     dryRun: {
       array: false,
