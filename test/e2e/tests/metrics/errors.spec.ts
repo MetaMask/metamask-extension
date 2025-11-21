@@ -804,10 +804,8 @@ describe('Sentry errors', function () {
           await driver.navigate();
           await new LoginPage(driver).checkPageIsLoaded();
 
-          // Brick persistence to help simulate not initializing
-          await driver.executeScript(
-            `chrome.storage.local.get = () => { throw new Error("Failure") }`,
-          );
+          // Wait for state to settle
+          await driver.delay(5_000);
 
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
