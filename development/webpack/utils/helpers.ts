@@ -54,12 +54,12 @@ export const TREZOR_MODULE_RE = new RegExp(
 );
 
 /**
- * Regular expression to match React files in the `ui/` directory
+ * Regular expression to match React files in the top-level `ui/` directory
  * Uses a platform-specific path separator: `/` on Unix-like systems and `\` on
  * Windows.
  */
 export const UI_DIR_RE = new RegExp(
-  `.*${slash}ui${slash}(components|contexts|hooks|layouts|pages)${slash}.*$`,
+  `${join(__dirname, '../../../').replaceAll(sep, slash)}ui${slash}(components|contexts|hooks|layouts|pages)${slash}.*$`,
   'u',
 );
 
