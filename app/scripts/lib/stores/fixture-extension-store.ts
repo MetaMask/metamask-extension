@@ -1,5 +1,7 @@
+import log from 'loglevel';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import ExtensionStore from './extension-store';
+import type { MetaMaskStorageStructure } from './base-store';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -55,7 +57,7 @@ export class FixtureExtensionStore extends ExtensionStore {
     return super.set(data);
   }
 
-  async reset(): Promisea<void> {
+  async reset(): Promise<void> {
     this.#initialized = false;
     await super.reset();
     this.#initializing = this.#init();
