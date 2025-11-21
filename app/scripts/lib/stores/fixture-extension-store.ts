@@ -9,6 +9,9 @@ const FIXTURE_SERVER_HOST = 'localhost';
 const FIXTURE_SERVER_PORT = 12345;
 const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}/state.json`;
 
+/**
+ * Derived class of ExtensionStore that initializes the store using the fixture server.
+ */
 export class FixtureExtensionStore extends ExtensionStore {
   #initialized: boolean = false;
 
