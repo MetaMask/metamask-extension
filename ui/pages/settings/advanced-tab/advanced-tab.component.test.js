@@ -14,6 +14,7 @@ const mockSetStxPrefEnabled = jest.fn();
 const mockSetManageInstitutionalWallets = jest.fn();
 const mockSetDismissSmartAccountSuggestionEnabled = jest.fn();
 const mockSetUseSmartAccount = jest.fn();
+const mockSetShowExtensionInFullSizeView = jest.fn();
 const mockDisplayErrorInSettings = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {
@@ -27,6 +28,7 @@ jest.mock('../../../store/actions.ts', () => {
     setDismissSmartAccountSuggestionEnabled: () =>
       mockSetDismissSmartAccountSuggestionEnabled,
     setSmartAccountOptIn: () => mockSetUseSmartAccount,
+    setShowExtensionInFullSizeView: () => mockSetShowExtensionInFullSizeView,
   };
 });
 
@@ -124,6 +126,21 @@ describe('AdvancedTab Component', () => {
     fireEvent.click(testNetworkToggle);
 
     expect(mockSetShowTestNetworks).toHaveBeenCalled();
+  });
+
+  it('should toggle show extension in full size view', () => {
+    const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+
+    const fullSizeViewSection = queryByTestId(
+      'advanced-setting-show-extension-in-full-size-view',
+    );
+    const fullSizeViewToggle = fullSizeViewSection.querySelector(
+      'input[type="checkbox"]',
+    );
+
+    fireEvent.click(fullSizeViewToggle);
+
+    expect(mockSetShowExtensionInFullSizeView).toHaveBeenCalled();
   });
 
   it('should toggle manage institutional wallets', () => {

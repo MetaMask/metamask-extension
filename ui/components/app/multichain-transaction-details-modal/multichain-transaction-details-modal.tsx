@@ -5,6 +5,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/keyring-api';
+import { useSelector } from 'react-redux';
 import {
   Display,
   FlexDirection,
@@ -48,6 +49,10 @@ import {
 } from '../../../hooks/useMultichainTransactionDisplay';
 import { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 import {
+  getInternalAccountsObject,
+  isNonEvmAccount,
+} from '../../../selectors/accounts';
+import {
   formatTimestamp,
   getTransactionUrl,
   getAddressUrl,
@@ -84,6 +89,12 @@ export function MultichainTransactionDetailsModal({
     timestamp,
     id,
   } = useMultichainTransactionDisplay(transaction, networkConfig);
+
+  const internalAccountsById = useSelector(getInternalAccountsObject);
+  const txInternalAccount = internalAccountsById?.[transaction.account];
+  const nonEvmSenderAddress = isNonEvmAccount(txInternalAccount)
+    ? txInternalAccount?.address
+    : undefined;
 
   const getStatusColor = (txStatus: string) => {
     switch (txStatus?.toLowerCase()) {
@@ -286,9 +297,12 @@ export function MultichainTransactionDetailsModal({
             gap={4}
           >
             {/* From */}
-            {type === TransactionType.Send
-              ? accountComponent(t('from'), userAddress)
-              : accountComponent(t('from'), from?.address)}
+            {accountComponent(
+              t('from'),
+              type === TransactionType.Send
+                ? nonEvmSenderAddress || userAddress
+                : from?.address,
+            )}
 
             {/* Amounts per token */}
             <>

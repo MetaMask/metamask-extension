@@ -13,7 +13,7 @@ import {
   importSRPOnboardingFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
-import { mockEmptyPrices } from '../tokens/utils/mocks';
+import { mockEmptyPrices, mockSpotPrices } from '../tokens/utils/mocks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   UserStorageMockttpController,
@@ -54,17 +54,13 @@ async function mockApis(
           json: [{ fakedata: true }],
         };
       }),
-    await mockServer
-      .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-      .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            fakedata: 0,
-          },
-        };
-      }),
+    await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+      '0x0000000000000000000000000000000000000000': {
+        price: 1700,
+        marketCap: 382623505141,
+        pricePercentChange1d: 0,
+      },
+    }),
     await mockServer
       .forGet(
         'https://nft.api.cx.metamask.io/users/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/tokens',
@@ -106,6 +102,13 @@ describe('MetaMask onboarding', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            sendRedesign: {
+              enabled: false,
+            },
+          },
+        },
         testSpecificMock: (server: Mockttp) =>
           mockApis(
             server,

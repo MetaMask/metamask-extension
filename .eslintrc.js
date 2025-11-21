@@ -114,7 +114,6 @@ module.exports = {
         'shared/**/*.js',
         'shared/**/*.ts',
         'ui/**/*.js',
-        'offscreen/**/*.ts',
         '**/*.test.js',
         'test/lib/**/*.js',
         'test/mocks/**/*.js',
@@ -377,7 +376,7 @@ module.exports = {
         'react/prop-types': 'off',
         'react/no-children-prop': 'off',
         'react/jsx-key': 'warn', // TODO - increase this into 'error' level
-        'react-hooks/rules-of-hooks': 'warn', // TODO - increase this into 'error' level
+        'react-hooks/rules-of-hooks': 'error',
       },
       settings: {
         react: {

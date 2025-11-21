@@ -3,19 +3,19 @@ import { fireEvent } from '@testing-library/react';
 import { CaipChainId, Hex } from '@metamask/utils';
 import { BoxSpacing } from '@metamask/design-system-react';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../../selectors/selectors.types';
 import { PermissionsCell } from './permissions-cell';
 
-const mockPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('PermissionsCell', () => {
   const store = configureStore({
@@ -142,7 +142,9 @@ describe('PermissionsCell', () => {
     const listItem = getByTestId('permissions-cell-connection-list-item');
     fireEvent.click(listItem);
 
-    expect(mockPush).toHaveBeenCalledWith('/gator-permissions/token-transfer');
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/gator-permissions/token-transfer',
+    );
   });
 
   it('returns null when totalCount is 0', () => {

@@ -83,7 +83,9 @@ describe('Check balance', function (this: Suite) {
       },
     );
   });
-  it('For a non 0 balance account - USD balance', async function () {
+  // BUG #37824 With BIP44 turned on mocking Solana network responses no longer works
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('For a non 0 balance account - USD balance', async function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
@@ -97,7 +99,9 @@ describe('Check balance', function (this: Suite) {
       },
     );
   });
-  it('For a non 0 balance account - SOL balance', async function () {
+  // BUG #37824 With BIP44 turned on mocking Solana network responses no longer works
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('For a non 0 balance account - SOL balance', async function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),

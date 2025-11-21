@@ -1,5 +1,5 @@
 import React, { useCallback, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Box,
   BoxAlignItems,
@@ -51,6 +51,7 @@ import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  type MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
@@ -74,6 +75,7 @@ type WalletOption = {
   titleKey: string;
   iconName: IconName;
   route: string;
+  metricsEvent?: MetaMetricsEventPayload;
 };
 
 export const AddWalletModal: React.FC<AddWalletModalProps> = ({
@@ -82,7 +84,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   ...props
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const institutionalWalletsEnabled = useSelector(
     getManageInstitutionalWallets,
   );
@@ -112,6 +114,10 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       titleKey: 'addAHardwareWallet',
       iconName: IconName.Hardware,
       route: CONNECT_HARDWARE_ROUTE,
+      metricsEvent: {
+        event: MetaMetricsEventName.AddHardwareWalletClicked,
+        category: MetaMetricsEventCategory.Navigation,
+      },
     },
     ...(institutionalWalletsEnabled
       ? [
@@ -129,6 +135,10 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
 
   const handleOptionClick = (option: WalletOption) => {
     onClose?.();
+
+    if (option.metricsEvent) {
+      trackEvent(option.metricsEvent);
+    }
 
     if (option.id === 'import-wallet') {
       // Track the event for the selected option.
@@ -150,10 +160,10 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       ) {
         global.platform.openExtensionInBrowser?.(option.route);
       } else {
-        history.push(option.route);
+        navigate(option.route);
       }
     } else {
-      history.push(option.route);
+      navigate(option.route);
     }
   };
 
@@ -198,8 +208,8 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       },
     });
     onClose();
-    history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
-  }, [trackEvent, onClose, history]);
+    navigate(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
+  }, [trackEvent, onClose, navigate]);
   ///: END:ONLY_INCLUDE_IF
 
   return (

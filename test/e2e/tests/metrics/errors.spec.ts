@@ -5,7 +5,7 @@ import { get, has, set, unset, cloneDeep } from 'lodash';
 import { Browser } from 'selenium-webdriver';
 import prettier from 'prettier';
 import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
-import { Mockttp } from 'mockttp';
+import { Mockttp, MockttpServer } from 'mockttp';
 import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures, sentryRegEx } from '../../helpers';
@@ -13,6 +13,7 @@ import { PAGES } from '../../webdriver/driver';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import LoginPage from '../../page-objects/pages/login-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockSpotPrices } from '../tokens/utils/mocks';
 
 /**
  * Derive a UI state field from a background state field.
@@ -211,6 +212,7 @@ describe('Sentry errors', function () {
   async function mockSentryMigratorError(mockServer: Mockttp) {
     return await mockServer
       .forPost(sentryRegEx)
+      .withBodyIncluding('{"type":"event"')
       .withBodyIncluding(migrationError)
       .thenCallback(() => {
         return {
@@ -259,7 +261,44 @@ describe('Sentry errors', function () {
             meta: undefined,
           },
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryMigratorError,
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, '0x539', {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+            await mockServer
+              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+              .withQuery({ baseCurrency: 'usd' })
+              .thenCallback(() => {
+                return {
+                  statusCode: 200,
+                  json: {
+                    usd: {
+                      name: 'US Dollar',
+                      ticker: 'usd',
+                      value: 1,
+                      currencyType: 'fiat',
+                    },
+                    eth: {
+                      name: 'Ether',
+                      ticker: 'eth',
+                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
+                      currencyType: 'crypto',
+                    },
+                    mon: {
+                      name: 'Monad',
+                      ticker: 'mon',
+                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
+                      currencyType: 'crypto',
+                    },
+                  },
+                };
+              });
+            return await mockSentryMigratorError(mockServer);
+          },
           manifestFlags: {
             sentry: { forceEnable: false },
           },
@@ -290,7 +329,44 @@ describe('Sentry errors', function () {
             })
             .build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryTestError,
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, '0x539', {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+            await mockServer
+              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+              .withQuery({ baseCurrency: 'usd' })
+              .thenCallback(() => {
+                return {
+                  statusCode: 200,
+                  json: {
+                    usd: {
+                      name: 'US Dollar',
+                      ticker: 'usd',
+                      value: 1,
+                      currencyType: 'fiat',
+                    },
+                    eth: {
+                      name: 'Ether',
+                      ticker: 'eth',
+                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
+                      currencyType: 'crypto',
+                    },
+                    mon: {
+                      name: 'Monad',
+                      ticker: 'mon',
+                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
+                      currencyType: 'crypto',
+                    },
+                  },
+                };
+              });
+            return await mockSentryTestError(mockServer);
+          },
           manifestFlags: {
             sentry: { forceEnable: false },
           },
@@ -331,7 +407,44 @@ describe('Sentry errors', function () {
             meta: undefined,
           },
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryMigratorError,
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, '0x539', {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+            await mockServer
+              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+              .withQuery({ baseCurrency: 'usd' })
+              .thenCallback(() => {
+                return {
+                  statusCode: 200,
+                  json: {
+                    usd: {
+                      name: 'US Dollar',
+                      ticker: 'usd',
+                      value: 1,
+                      currencyType: 'fiat',
+                    },
+                    eth: {
+                      name: 'Ether',
+                      ticker: 'eth',
+                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
+                      currencyType: 'crypto',
+                    },
+                    mon: {
+                      name: 'Monad',
+                      ticker: 'mon',
+                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
+                      currencyType: 'crypto',
+                    },
+                  },
+                };
+              });
+            return await mockSentryMigratorError(mockServer);
+          },
           manifestFlags: {
             sentry: { forceEnable: false },
           },
@@ -377,7 +490,44 @@ describe('Sentry errors', function () {
             meta: undefined,
           },
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryMigratorError,
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, '0x539', {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+            await mockServer
+              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+              .withQuery({ baseCurrency: 'usd' })
+              .thenCallback(() => {
+                return {
+                  statusCode: 200,
+                  json: {
+                    usd: {
+                      name: 'US Dollar',
+                      ticker: 'usd',
+                      value: 1,
+                      currencyType: 'fiat',
+                    },
+                    eth: {
+                      name: 'Ether',
+                      ticker: 'eth',
+                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
+                      currencyType: 'crypto',
+                    },
+                    mon: {
+                      name: 'Monad',
+                      ticker: 'mon',
+                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
+                      currencyType: 'crypto',
+                    },
+                  },
+                };
+              });
+            return await mockSentryMigratorError(mockServer);
+          },
           manifestFlags: {
             sentry: { forceEnable: false },
           },
@@ -439,7 +589,44 @@ describe('Sentry errors', function () {
               .build(),
           },
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryInvariantMigrationError,
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, '0x539', {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+            await mockServer
+              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+              .withQuery({ baseCurrency: 'usd' })
+              .thenCallback(() => {
+                return {
+                  statusCode: 200,
+                  json: {
+                    usd: {
+                      name: 'US Dollar',
+                      ticker: 'usd',
+                      value: 1,
+                      currencyType: 'fiat',
+                    },
+                    eth: {
+                      name: 'Ether',
+                      ticker: 'eth',
+                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
+                      currencyType: 'crypto',
+                    },
+                    mon: {
+                      name: 'Monad',
+                      ticker: 'mon',
+                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
+                      currencyType: 'crypto',
+                    },
+                  },
+                };
+              });
+            return await mockSentryInvariantMigrationError(mockServer);
+          },
           manifestFlags: {
             sentry: { forceEnable: false },
           },
@@ -488,7 +675,44 @@ describe('Sentry errors', function () {
             })
             .build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryTestError,
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, '0x539', {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+            await mockServer
+              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+              .withQuery({ baseCurrency: 'usd' })
+              .thenCallback(() => {
+                return {
+                  statusCode: 200,
+                  json: {
+                    usd: {
+                      name: 'US Dollar',
+                      ticker: 'usd',
+                      value: 1,
+                      currencyType: 'fiat',
+                    },
+                    eth: {
+                      name: 'Ether',
+                      ticker: 'eth',
+                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
+                      currencyType: 'crypto',
+                    },
+                    mon: {
+                      name: 'Monad',
+                      ticker: 'mon',
+                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
+                      currencyType: 'crypto',
+                    },
+                  },
+                };
+              });
+            return await mockSentryTestError(mockServer);
+          },
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -533,7 +757,44 @@ describe('Sentry errors', function () {
             })
             .build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryTestError,
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, '0x539', {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+            await mockServer
+              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+              .withQuery({ baseCurrency: 'usd' })
+              .thenCallback(() => {
+                return {
+                  statusCode: 200,
+                  json: {
+                    usd: {
+                      name: 'US Dollar',
+                      ticker: 'usd',
+                      value: 1,
+                      currencyType: 'fiat',
+                    },
+                    eth: {
+                      name: 'Ether',
+                      ticker: 'eth',
+                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
+                      currencyType: 'crypto',
+                    },
+                    mon: {
+                      name: 'Monad',
+                      ticker: 'mon',
+                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
+                      currencyType: 'crypto',
+                    },
+                  },
+                };
+              });
+            return await mockSentryTestError(mockServer);
+          },
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -597,7 +858,44 @@ describe('Sentry errors', function () {
             })
             .build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryTestError,
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, '0x539', {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+            await mockServer
+              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+              .withQuery({ baseCurrency: 'usd' })
+              .thenCallback(() => {
+                return {
+                  statusCode: 200,
+                  json: {
+                    usd: {
+                      name: 'US Dollar',
+                      ticker: 'usd',
+                      value: 1,
+                      currencyType: 'fiat',
+                    },
+                    eth: {
+                      name: 'Ether',
+                      ticker: 'eth',
+                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
+                      currencyType: 'crypto',
+                    },
+                    mon: {
+                      name: 'Monad',
+                      ticker: 'mon',
+                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
+                      currencyType: 'crypto',
+                    },
+                  },
+                };
+              });
+            return await mockSentryTestError(mockServer);
+          },
           manifestFlags: {
             sentry: { forceEnable: false },
           },
@@ -632,7 +930,44 @@ describe('Sentry errors', function () {
             })
             .build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryTestError,
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, '0x539', {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+            await mockServer
+              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+              .withQuery({ baseCurrency: 'usd' })
+              .thenCallback(() => {
+                return {
+                  statusCode: 200,
+                  json: {
+                    usd: {
+                      name: 'US Dollar',
+                      ticker: 'usd',
+                      value: 1,
+                      currencyType: 'fiat',
+                    },
+                    eth: {
+                      name: 'Ether',
+                      ticker: 'eth',
+                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
+                      currencyType: 'crypto',
+                    },
+                    mon: {
+                      name: 'Monad',
+                      ticker: 'mon',
+                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
+                      currencyType: 'crypto',
+                    },
+                  },
+                };
+              });
+            return await mockSentryTestError(mockServer);
+          },
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -667,7 +1002,44 @@ describe('Sentry errors', function () {
             })
             .build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryTestError,
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, '0x539', {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+            await mockServer
+              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+              .withQuery({ baseCurrency: 'usd' })
+              .thenCallback(() => {
+                return {
+                  statusCode: 200,
+                  json: {
+                    usd: {
+                      name: 'US Dollar',
+                      ticker: 'usd',
+                      value: 1,
+                      currencyType: 'fiat',
+                    },
+                    eth: {
+                      name: 'Ether',
+                      ticker: 'eth',
+                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
+                      currencyType: 'crypto',
+                    },
+                    mon: {
+                      name: 'Monad',
+                      ticker: 'mon',
+                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
+                      currencyType: 'crypto',
+                    },
+                  },
+                };
+              });
+            return await mockSentryTestError(mockServer);
+          },
           manifestFlags: {
             sentry: { forceEnable: false },
           },
@@ -716,7 +1088,44 @@ describe('Sentry errors', function () {
             })
             .build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryTestError,
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, '0x539', {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+            await mockServer
+              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+              .withQuery({ baseCurrency: 'usd' })
+              .thenCallback(() => {
+                return {
+                  statusCode: 200,
+                  json: {
+                    usd: {
+                      name: 'US Dollar',
+                      ticker: 'usd',
+                      value: 1,
+                      currencyType: 'fiat',
+                    },
+                    eth: {
+                      name: 'Ether',
+                      ticker: 'eth',
+                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
+                      currencyType: 'crypto',
+                    },
+                    mon: {
+                      name: 'Monad',
+                      ticker: 'mon',
+                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
+                      currencyType: 'crypto',
+                    },
+                  },
+                };
+              });
+            return await mockSentryTestError(mockServer);
+          },
           manifestFlags: {
             sentry: { forceEnable: false },
           },
@@ -779,7 +1188,44 @@ describe('Sentry errors', function () {
             })
             .build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryTestError,
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, '0x539', {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+            await mockServer
+              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+              .withQuery({ baseCurrency: 'usd' })
+              .thenCallback(() => {
+                return {
+                  statusCode: 200,
+                  json: {
+                    usd: {
+                      name: 'US Dollar',
+                      ticker: 'usd',
+                      value: 1,
+                      currencyType: 'fiat',
+                    },
+                    eth: {
+                      name: 'Ether',
+                      ticker: 'eth',
+                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
+                      currencyType: 'crypto',
+                    },
+                    mon: {
+                      name: 'Monad',
+                      ticker: 'mon',
+                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
+                      currencyType: 'crypto',
+                    },
+                  },
+                };
+              });
+            return await mockSentryTestError(mockServer);
+          },
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -822,7 +1268,44 @@ describe('Sentry errors', function () {
             })
             .build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: mockSentryTestError,
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, '0x539', {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+            await mockServer
+              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+              .withQuery({ baseCurrency: 'usd' })
+              .thenCallback(() => {
+                return {
+                  statusCode: 200,
+                  json: {
+                    usd: {
+                      name: 'US Dollar',
+                      ticker: 'usd',
+                      value: 1,
+                      currencyType: 'fiat',
+                    },
+                    eth: {
+                      name: 'Ether',
+                      ticker: 'eth',
+                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
+                      currencyType: 'crypto',
+                    },
+                    mon: {
+                      name: 'Monad',
+                      ticker: 'mon',
+                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
+                      currencyType: 'crypto',
+                    },
+                  },
+                };
+              });
+            return await mockSentryTestError(mockServer);
+          },
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
             sentry: { forceEnable: false },

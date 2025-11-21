@@ -32,7 +32,7 @@ async function runHook() {
 }
 
 describe('useDappSwapUSDValues', () => {
-  it('updateTransactionEventFragment with all values', async () => {
+  it('return correct USD values for tokens and destination token', async () => {
     jest.spyOn(Utils, 'fetchTokenExchangeRates').mockResolvedValue({
       '0x0000000000000000000000000000000000000000': 4052.27,
       '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': 0.999804,
@@ -97,5 +97,12 @@ describe('useDappSwapUSDValues', () => {
       '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': 0.999804,
       '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798': 1,
     });
+    expect(
+      result.getTokenUSDValue(
+        '1',
+        '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798',
+        2,
+      ),
+    ).toBe('0.00');
   });
 });

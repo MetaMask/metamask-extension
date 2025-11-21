@@ -25,7 +25,7 @@ export const useShieldConfirm = () => {
         return;
       }
 
-      navigate(`${TRANSACTION_SHIELD_ROUTE}/?waitForSubscriptionCreation=true`);
+      navigate(`${TRANSACTION_SHIELD_ROUTE}?waitForSubscriptionCreation=true`);
     },
     [navigate],
   );

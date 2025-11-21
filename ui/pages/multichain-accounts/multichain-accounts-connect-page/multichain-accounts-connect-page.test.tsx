@@ -12,7 +12,7 @@ import {
   AccountGroupType,
   AccountGroupId,
 } from '@metamask/account-api';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { createMockMultichainAccountsState } from '../../../selectors/multichain-accounts/test-utils';

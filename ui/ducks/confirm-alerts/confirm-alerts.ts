@@ -116,6 +116,11 @@ export type Alert = {
   showArrow?: boolean;
 
   /**
+   * The background color of the alert details.
+   */
+  alertDetailsBackgroundColor?: BackgroundColor;
+
+  /**
    * The custom button text for acknowledging the alert in modal.
    */
   customAcknowledgeButtonText?: string;

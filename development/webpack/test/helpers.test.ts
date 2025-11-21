@@ -193,7 +193,7 @@ describe('./utils/helpers.ts', () => {
         import: join(appRoot, `vendor/trezor/content-script.js`),
       },
       'background.js': {
-        chunkLoading: false,
+        chunkLoading: 'import-scripts',
         filename: 'background.js',
         import: join(appRoot, `background.js`),
       },

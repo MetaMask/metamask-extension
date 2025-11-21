@@ -13,7 +13,7 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { AccountListMenu } from '.';
 
 const mockGetEnvironmentType = jest.fn();

@@ -33,6 +33,7 @@ export const TokenBalancesControllerInit: ControllerInitFunction<
         ? (featureFlagForAccountApiBalances as `0x${string}`[])
         : [];
     },
+    platform: 'extension',
   });
 
   return {

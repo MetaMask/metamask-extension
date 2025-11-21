@@ -77,7 +77,6 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import Name from '../../../components/app/name';
-import ShieldIllustrationAnimation from '../../../components/app/shield-entry-modal/shield-illustration-animation';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
   ShieldCtaActionClickedEnum,
@@ -90,6 +89,7 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { getTheme } from '../../../selectors';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
+import ShieldBannerAnimation from './shield-banner-animation';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -345,7 +345,9 @@ const TransactionShield = () => {
         {showSkeletonLoader ? (
           <Skeleton width="30%" height={24} />
         ) : (
-          <Text variant={TextVariant.bodyMdMedium}>{value}</Text>
+          <Text variant={TextVariant.bodyMdMedium} className="flex-shrink-0">
+            {value}
+          </Text>
         )}
       </Box>
     );
@@ -750,9 +752,9 @@ const TransactionShield = () => {
             )}
           </Box>
           {!showSkeletonLoader && (
-            <ShieldIllustrationAnimation
-              containerClassName="transaction-shield-page-shield-illustration__container"
-              canvasClassName="transaction-shield-page-shield-illustration__canvas"
+            <ShieldBannerAnimation
+              containerClassName="transaction-shield-page-shield-banner__container"
+              canvasClassName="transaction-shield-page-shield-banner__canvas"
             />
           )}
         </Box>
@@ -882,7 +884,8 @@ const TransactionShield = () => {
                       getProductPrice(productInfo as Product),
                       productInfo?.currency.toUpperCase(),
                       {
-                        maximumFractionDigits: 0,
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 0,
                       },
                     )} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`,
                 'shield-detail-charges',

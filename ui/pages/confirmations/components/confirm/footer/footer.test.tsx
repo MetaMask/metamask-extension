@@ -95,9 +95,15 @@ jest.mock('../../../hooks/useConfirmSendNavigation', () => ({
   })),
 }));
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  useNavigate: jest.fn(),
-}));
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
 
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
@@ -142,6 +148,12 @@ describe('ConfirmFooter', () => {
       isGaslessLoading: false,
     });
 
+    mockUseLocation.mockReturnValue({
+      pathname: '/confirm-transaction',
+      search: '',
+      hash: '',
+      state: null,
+    });
     useUserSubscriptionsMock.mockReturnValue({
       trialedProducts: [],
       loading: false,
@@ -182,7 +194,7 @@ describe('ConfirmFooter', () => {
         currentConfirmation: signatureRequestSIWE,
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: () => undefined,
-      });
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
       const mockStateSIWE =
         getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
       const { getByText } = render(mockStateSIWE);
@@ -215,7 +227,7 @@ describe('ConfirmFooter', () => {
         },
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: () => undefined,
-      });
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
       const mockState2 = {
         ...getMockContractInteractionConfirmState(),
@@ -246,7 +258,7 @@ describe('ConfirmFooter', () => {
         currentConfirmation: genUnapprovedContractInteractionConfirmation(),
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: () => undefined,
-      });
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
       const mockStateTypedSign = getMockContractInteractionConfirmState();
       const { getByText } = render(mockStateTypedSign);
 
@@ -565,7 +577,7 @@ describe('ConfirmFooter', () => {
             currentConfirmation: contractInteractionConfirmation,
             isScrollToBottomCompleted: true,
             setIsScrollToBottomCompleted: () => undefined,
-          });
+          } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
           const { getByText } = render(
             mockStateWithContractInteractionConfirmation,
           );

@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
@@ -63,12 +64,18 @@ import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
 
-const ConfirmAddSuggestedNFT = () => {
+const ConfirmAddSuggestedNFT = ({
+  navigate: routeNavigate,
+  location: routeLocation,
+} = {}) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const hookNavigate = useNavigate();
+  const hookLocation = useLocation();
+  // Use navigate/location from props (v5 route) if available, otherwise fall back to hooks (v6)
+  const navigate = routeNavigate || hookNavigate;
+  const location = routeLocation || hookLocation;
 
-  const location = useLocation();
   const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
 
   const classNames = classnames('confirm-add-suggested-nft page-container', {
@@ -126,8 +133,8 @@ const ConfirmAddSuggestedNFT = () => {
         });
       }),
     );
-    history.push(mostRecentOverviewPage);
-  }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedNfts]);
+    navigate(mostRecentOverviewPage);
+  }, [dispatch, navigate, trackEvent, mostRecentOverviewPage, suggestedNfts]);
 
   const handleCancelNftClick = useCallback(async () => {
     await Promise.all(
@@ -140,17 +147,17 @@ const ConfirmAddSuggestedNFT = () => {
         );
       }),
     );
-    history.push(mostRecentOverviewPage);
-  }, [dispatch, history, mostRecentOverviewPage, suggestedNfts]);
+    navigate(mostRecentOverviewPage);
+  }, [dispatch, navigate, mostRecentOverviewPage, suggestedNfts]);
 
   useEffect(() => {
     const goBackIfNoSuggestedNftsOnFirstRender = () => {
       if (!suggestedNfts.length) {
-        history.push(mostRecentOverviewPage);
+        navigate(mostRecentOverviewPage);
       }
     };
     goBackIfNoSuggestedNftsOnFirstRender();
-  }, [history, mostRecentOverviewPage, suggestedNfts]);
+  }, [navigate, mostRecentOverviewPage, suggestedNfts]);
 
   let origin;
   let link;
@@ -453,6 +460,17 @@ const ConfirmAddSuggestedNFT = () => {
       />
     </Box>
   );
+};
+
+ConfirmAddSuggestedNFT.propTypes = {
+  navigate: PropTypes.func,
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+    search: PropTypes.string,
+    hash: PropTypes.string,
+    state: PropTypes.object,
+    key: PropTypes.string,
+  }),
 };
 
 export default ConfirmAddSuggestedNFT;

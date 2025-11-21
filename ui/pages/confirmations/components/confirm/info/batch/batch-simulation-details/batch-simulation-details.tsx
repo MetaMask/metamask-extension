@@ -17,7 +17,6 @@ import { EditSpendingCapModal } from '../../approve/edit-spending-cap-modal/edit
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
-import { useSwapCheck } from '../../../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -25,7 +24,6 @@ import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
 export function BatchSimulationDetails() {
   const t = useI18nContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
-  const { isQuotedSwap } = useSwapCheck();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -80,7 +78,7 @@ export function BatchSimulationDetails() {
   if (
     transactionMeta?.type === TransactionType.revokeDelegation ||
     isUpgradeOnly ||
-    isQuotedSwap
+    !transactionMeta?.txParams
   ) {
     return null;
   }

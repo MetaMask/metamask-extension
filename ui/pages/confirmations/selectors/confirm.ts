@@ -1,4 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { QuoteResponse } from '@metamask/bridge-controller';
 
 import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
@@ -61,4 +62,11 @@ export function selectEnforcedSimulationsSlippage(
     state.metamask.enforcedSimulationsSlippageForTransactions[transactionId] ??
     state.metamask.enforcedSimulationsSlippage
   );
+}
+
+export function selectDappSwapComparisonData(
+  state: ConfirmMetamaskState,
+  transactionId: string,
+): { quotes?: QuoteResponse[]; latency?: number } | undefined {
+  return state.metamask.dappSwapComparisonData?.[transactionId] ?? undefined;
 }

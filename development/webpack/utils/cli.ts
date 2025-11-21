@@ -277,7 +277,7 @@ function getOptions(
       alias: 'v',
       array: false,
       choices: [2, 3] as Manifest['manifest_version'][],
-      default: 2 as Manifest['manifest_version'],
+      default: 3 as Manifest['manifest_version'],
       description: "Changes manifest.json format to the given version's schema",
       group: toOrange('Build options:'),
       type: 'number',

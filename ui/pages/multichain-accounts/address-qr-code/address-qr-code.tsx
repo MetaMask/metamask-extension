@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { parseCaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import {
   Page,
   Header,
@@ -20,6 +20,7 @@ import {
   BackgroundColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import QrCodeView from '../../../components/ui/qr-code-view';
 import { getInternalAccountByAddress } from '../../../selectors';
 import { getMultichainNetwork } from '../../../selectors/multichain';
@@ -33,10 +34,18 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getAccountTypeCategory } from '../account-details';
 
-export const AddressQRCode = () => {
+type AddressQRCodeProps = {
+  params?: { address: string };
+};
+
+export const AddressQRCode = ({
+  params: propsParams,
+}: AddressQRCodeProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const { address } = useParams();
+  const navigate = useNavigate();
+  const hookParams = useParams();
+
+  const { address } = propsParams || hookParams;
   const trackEvent = useContext(MetaMetricsContext);
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
@@ -90,7 +99,7 @@ export const AddressQRCode = () => {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
           />
         }
       >

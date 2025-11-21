@@ -284,6 +284,20 @@ export const mockSwapsApi =
           json: quotes,
         };
       });
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            '0x0000000000000000000000000000000000000000': {
+              price: 3010,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          },
+        };
+      });
   };
 
 export const getSwapSendFixtures = (

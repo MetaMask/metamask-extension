@@ -70,8 +70,7 @@
     "showPasswordChangeToast": null,
     "showCopyAddressToast": "boolean",
     "showClaimSubmitToast": null,
-    "showSupportDataConsentModal": "boolean",
-    "showConnectionsRemovedModal": "boolean"
+    "showSupportDataConsentModal": "boolean"
   },
   "bridge": "object",
   "confirmAlerts": "object",
@@ -176,6 +175,7 @@
     "showShieldEntryModalOnce": "boolean",
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
+    "dappSwapComparisonData": "object",
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "networkConnectionBanner": "object",
@@ -429,6 +429,7 @@
     "srpSessionData": "object"
   },
   "ramps": "object",
+  "rewards": "object",
   "send": "object",
   "smartAccounts": "object",
   "swaps": "object",

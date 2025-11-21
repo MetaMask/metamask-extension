@@ -12,6 +12,7 @@ import {
   BridgeClientId,
   type BridgeAsset,
   getNativeAssetForChainId,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type {
   TokenListMap,
@@ -53,10 +54,9 @@ const buildTokenData = (
   // Only tokens on the active chain are processed here here
   const sharedFields = {
     ...token,
-    chainId:
-      isSolanaChainId(chainId) || isBitcoinChainId(chainId)
-        ? formatChainIdToCaip(chainId)
-        : formatChainIdToHex(chainId),
+    chainId: isNonEvmChainId(chainId)
+      ? formatChainIdToCaip(chainId)
+      : formatChainIdToHex(chainId),
     assetId:
       'assetId' in token
         ? token.assetId
@@ -65,8 +65,7 @@ const buildTokenData = (
 
   if (isNativeAddress(token.address)) {
     // Use MULTICHAIN_TOKEN_IMAGE_MAP for non-EVM chains
-    const isNonEvm = isSolanaChainId(chainId) || isBitcoinChainId(chainId);
-    const image = isNonEvm
+    const image = isNonEvmChainId(chainId)
       ? MULTICHAIN_TOKEN_IMAGE_MAP[
           sharedFields.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
         ]

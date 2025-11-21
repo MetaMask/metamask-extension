@@ -97,7 +97,15 @@ describe('Account syncing - Accounts with Balances', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withRemoteFeatureFlags({
+            enableMultichainAccountsState2: {
+              enabled: true,
+              featureVersion: '2',
+              minimumVersion: '13.5.0',
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase2MockSetup,
       },

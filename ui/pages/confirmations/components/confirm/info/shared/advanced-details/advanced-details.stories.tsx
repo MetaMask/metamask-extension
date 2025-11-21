@@ -5,6 +5,7 @@ import { getMockContractInteractionConfirmState } from '../../../../../../../../
 import configureStore from '../../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { AdvancedDetails } from './advanced-details';
+import { DappSwapContextProvider } from '../../../../../context/dapp-swap';
 
 const store = configureStore(getMockContractInteractionConfirmState());
 
@@ -14,7 +15,9 @@ const Story = {
   decorators: [
     (story: () => Meta<typeof AdvancedDetails>) => (
       <Provider store={store}>
-        <ConfirmContextProvider>{story()}</ConfirmContextProvider>
+        <ConfirmContextProvider>
+          <DappSwapContextProvider>{story()}</DappSwapContextProvider>
+        </ConfirmContextProvider>
       </Provider>
     ),
   ],

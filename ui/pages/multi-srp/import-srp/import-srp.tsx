@@ -81,7 +81,14 @@ export const ImportSrp = () => {
       navigate(DEFAULT_ROUTE);
       dispatch(setShowNewSrpAddedToast(true));
     } catch (error) {
-      setSrpError(t('srpAlreadyImportedError'));
+      switch ((error as Error)?.message) {
+        case 'KeyringController - The account you are trying to import is a duplicate':
+          setSrpError(t('srpImportDuplicateAccountError'));
+          break;
+        default:
+          setSrpError(t('srpAlreadyImportedError'));
+          break;
+      }
     }
   }
 

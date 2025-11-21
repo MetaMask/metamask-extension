@@ -22,6 +22,7 @@ buildTypes:
       - multichain
       - bitcoin
       - bitcoin-swaps
+      - tron
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -202,7 +203,7 @@ features:
   multichain:
   ocap-kernel:
     assets:
-      - ./{app,offscreen,shared,ui}/**/ocap-kernel/**
+      - ./{app,shared,ui}/**/ocap-kernel/**
   gator-permissions:
     assets:
       - src: ./node_modules/@metamask/permissions-kernel-snap/dist/preinstalled-snap.json
@@ -301,6 +302,7 @@ env:
   - QUICKNODE_POLYGON_URL: null
   - QUICKNODE_BASE_URL: null
   - QUICKNODE_BSC_URL: null
+  - QUICKNODE_SEI_URL: null
 
   ###
   # API keys to 3rd party services

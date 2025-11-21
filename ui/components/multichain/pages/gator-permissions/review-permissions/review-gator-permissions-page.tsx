@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -31,11 +31,30 @@ import {
   getAggregatedGatorPermissionByChainId,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { ReviewGatorPermissionItem } from '../components';
+import { PREVIOUS_ROUTE } from '../../../../../helpers/constants/routes';
 
-export const ReviewGatorPermissionsPage = () => {
+type ReviewGatorPermissionsPageProps = {
+  params?: { chainId: string; permissionGroupName: string };
+  navigate?: (
+    to: string | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => void;
+};
+
+export const ReviewGatorPermissionsPage = ({
+  params,
+  navigate: navigateProp,
+}: ReviewGatorPermissionsPageProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const { chainId } = useParams();
+  const navigateHook = useNavigate();
+  const urlParamsHook = useParams<{
+    chainId: string;
+    permissionGroupName: string;
+  }>();
+
+  // Use props if provided, otherwise fall back to hooks
+  const navigate = navigateProp || navigateHook;
+  const { chainId } = params || urlParamsHook;
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -118,7 +137,7 @@ export const ReviewGatorPermissionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.IconDefault}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             size={ButtonIconSize.Sm}
           />
         }

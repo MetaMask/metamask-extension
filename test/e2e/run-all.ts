@@ -95,6 +95,10 @@ async function main(): Promise<void> {
             description: `run json-rpc specific e2e tests`,
             type: 'boolean',
           })
+          .option('dist', {
+            description: `run e2e tests for production-like builds`,
+            type: 'boolean',
+          })
           .option('multi-provider', {
             description: `run multi injected provider e2e tests`,
             type: 'boolean',
@@ -128,6 +132,7 @@ async function main(): Promise<void> {
   const {
     browser,
     debug,
+    dist,
     retries,
     rpc,
     buildType,
@@ -137,6 +142,7 @@ async function main(): Promise<void> {
   } = argv as {
     browser?: 'chrome' | 'firefox';
     debug?: boolean;
+    dist?: boolean;
     retries?: number;
     rpc?: boolean;
     buildType?: string;
@@ -161,6 +167,9 @@ async function main(): Promise<void> {
       ...(await getTestPathsForTestDir(path.join(__dirname, 'flask'))),
       ...featureTestsOnMain,
     ];
+  } else if (dist) {
+    const testDir = path.join(__dirname, 'dist');
+    testPaths = await getTestPathsForTestDir(testDir);
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);

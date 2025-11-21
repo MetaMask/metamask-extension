@@ -34,27 +34,6 @@ export const CurrencyRateControllerInit: ControllerInitFunction<
     tokenPricesService: new CodefiTokenPricesServiceV2(),
   });
 
-  // TODO: This logic should be ported to `CurrencyRateController` directly.
-  const originalFetchMultiExchangeRate =
-    // @ts-expect-error: Accessing private method.
-    controller.fetchMultiExchangeRate.bind(controller);
-
-  // @ts-expect-error: Accessing private method.
-  controller.fetchMultiExchangeRate = (...args) => {
-    const { useCurrencyRateCheck } = initMessenger.call(
-      'PreferencesController:getState',
-    );
-
-    if (useCurrencyRateCheck) {
-      return originalFetchMultiExchangeRate(...args);
-    }
-
-    return {
-      conversionRate: null,
-      usdConversionRate: null,
-    };
-  };
-
   return {
     memStateKey: 'CurrencyController',
     persistedStateKey: 'CurrencyController',

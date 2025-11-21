@@ -38,6 +38,10 @@ export const RouteWithLayout = ({
   authenticated,
   ...routeProps
 }: Props) => {
+  // Exclude function children from deps to prevent re-memoization when render functions change reference
+  // This is safe because render functions from createV5CompatRoute don't close over changing values
+  const childrenDep = typeof children === 'function' ? null : children;
+
   const WrappedComponent = useMemo(() => {
     if (Component) {
       return (props: RouteComponentProps) => (
@@ -51,7 +55,8 @@ export const RouteWithLayout = ({
         {typeof children === 'function' ? children(props) : children}
       </Layout>
     );
-  }, [Layout, Component, children]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Layout, Component, childrenDep]);
 
   if (authenticated) {
     return <Authenticated {...routeProps} component={WrappedComponent} />;

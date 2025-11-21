@@ -2,27 +2,39 @@ import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { AccountGroupType } from '@metamask/account-api';
 import { CaipAccountId } from '@metamask/utils';
-import { renderWithProvider } from '../../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import * as actions from '../../../../store/actions';
 import * as hooks from '../../../../hooks/useAccountGroupsForPermissions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
-import { getPermissionMetaDataByOrigin } from '../../../../selectors/gator-permissions/gator-permissions';
+import {
+  getTokenTransferPermissionsByOrigin,
+  getPermissionMetaDataByOrigin,
+} from '../../../../selectors/gator-permissions/gator-permissions';
 import { MultichainReviewPermissions } from './multichain-review-permissions-page';
 
-jest.mock('react-router-dom', () => ({
-  useHistory: () => ({
-    push: jest.fn(),
-  }),
-  useParams: () => ({ origin: 'https%3A//test.dapp' }),
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useParams: () => ({ origin: 'https%3A//test.dapp' }),
+    useLocation: () => ({
+      pathname: '/test',
+      search: '',
+      hash: '',
+      state: null,
+    }),
+    matchPath: jest.fn(() => null),
+  };
+});
+
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => jest.fn(),
   useLocation: () => ({ pathname: '/test', search: '', hash: '', state: null }),
-  matchPath: jest.fn(() => null),
-  withRouter: (Component: React.ComponentType<unknown>) => Component,
-  MemoryRouter: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
 }));
 
 jest.mock('../../../../hooks/useAccountGroupsForPermissions', () => ({
@@ -50,6 +62,7 @@ jest.mock('../../../../../shared/modules/environment');
 
 jest.mock('../../../../selectors/gator-permissions/gator-permissions', () => ({
   getPermissionMetaDataByOrigin: jest.fn(),
+  getTokenTransferPermissionsByOrigin: jest.fn(),
 }));
 
 const mockAccountGroups = [
@@ -150,7 +163,9 @@ describe('MultichainReviewPermissions', () => {
     jest
       .mocked(isGatorPermissionsRevocationFeatureEnabled)
       .mockReturnValue(false);
+    jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
   });
+
   it('renders summary page when no account groups are connected', () => {
     const { getByTestId } = render();
 
@@ -371,61 +386,70 @@ describe('MultichainReviewPermissions', () => {
       ).toBeInTheDocument();
     });
   });
+});
 
-  describe('gator permissions', () => {
-    it('renders gator permissions cell when feature is enabled and there are permissions', () => {
-      jest
-        .mocked(isGatorPermissionsRevocationFeatureEnabled)
-        .mockReturnValue(true);
+describe('gator permissions', () => {
+  it('renders gator permissions cell when feature is enabled and there are permissions', () => {
+    jest
+      .mocked(isGatorPermissionsRevocationFeatureEnabled)
+      .mockReturnValue(true);
 
-      jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
-        tokenTransfer: {
-          count: 2,
-          chains: ['0x1'],
-        },
-      });
-
-      const { getByTestId } = render();
-
-      expect(getByTestId(TEST_IDS.GATOR_PERMISSIONS_CELL)).toBeInTheDocument();
+    jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
+      tokenTransfer: {
+        count: 2,
+        chains: ['0x1'],
+      },
     });
 
-    it('should not render gator permissions cell when feature is disabled and there are permissions', () => {
-      jest
-        .mocked(isGatorPermissionsRevocationFeatureEnabled)
-        .mockReturnValue(false);
+    jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
 
-      jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
-        tokenTransfer: {
-          count: 2,
-          chains: ['0x1'],
-        },
-      });
+    const { getAllByTestId } = render();
 
-      const { queryByTestId } = render();
+    const gatorPermissionsCells = getAllByTestId(
+      TEST_IDS.GATOR_PERMISSIONS_CELL,
+    );
+    expect(gatorPermissionsCells.length).toBeGreaterThan(0);
+  });
 
-      expect(
-        queryByTestId(TEST_IDS.GATOR_PERMISSIONS_CELL),
-      ).not.toBeInTheDocument();
+  it('should not render gator permissions cell when feature is disabled and there are permissions', () => {
+    jest
+      .mocked(isGatorPermissionsRevocationFeatureEnabled)
+      .mockReturnValue(false);
+
+    jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
+      tokenTransfer: {
+        count: 2,
+        chains: ['0x1'],
+      },
     });
 
-    it('should not render gator permissions cell when feature is enabled and there are no permissions', () => {
-      jest
-        .mocked(isGatorPermissionsRevocationFeatureEnabled)
-        .mockReturnValue(true);
+    jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
 
-      jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
-        tokenTransfer: {
-          count: 0,
-          chains: [],
-        },
-      });
+    const { queryByTestId } = render();
 
-      const { queryByTestId } = render();
+    expect(
+      queryByTestId(TEST_IDS.GATOR_PERMISSIONS_CELL),
+    ).not.toBeInTheDocument();
+  });
 
-      expect(
-        queryByTestId(TEST_IDS.GATOR_PERMISSIONS_CELL),
-      ).not.toBeInTheDocument();
+  it('should not render gator permissions cell when feature is enabled and there are no permissions', () => {
+    jest
+      .mocked(isGatorPermissionsRevocationFeatureEnabled)
+      .mockReturnValue(true);
+
+    jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
+      tokenTransfer: {
+        count: 0,
+        chains: [],
+      },
     });
+
+    jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
+
+    const { queryByTestId } = render();
+
+    expect(
+      queryByTestId(TEST_IDS.GATOR_PERMISSIONS_CELL),
+    ).not.toBeInTheDocument();
   });
 });

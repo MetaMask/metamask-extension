@@ -58,7 +58,10 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constan
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import { getNativeTokenName } from '../../../../ducks/bridge/utils';
+import {
+  getNativeTokenName,
+  isTronEnergyOrBandwidthResource,
+} from '../../../../ducks/bridge/utils';
 import {
   getMultichainConversionRate,
   getMultichainCurrencyImage,
@@ -328,6 +331,10 @@ export function AssetPickerModal({
 
       // Yield multichain tokens with balances
       for (const token of multichainTokensWithBalance) {
+        // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
+        if (isTronEnergyOrBandwidthResource(token.chainId, token.symbol)) {
+          continue;
+        }
         if (shouldAddToken(token.symbol, token.address, token.chainId)) {
           yield token.isNative
             ? {
@@ -376,6 +383,10 @@ export function AssetPickerModal({
       }
 
       for (const token of allDetectedTokens) {
+        // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
+        if (isTronEnergyOrBandwidthResource(currentChainId, token.symbol)) {
+          continue;
+        }
         if (shouldAddToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }

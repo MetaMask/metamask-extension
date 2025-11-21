@@ -17,6 +17,7 @@ import {
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
   resetWallet,
+  getIsSeedlessOnboardingUserAuthenticated,
 } from '../../store/actions';
 import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
@@ -45,6 +46,8 @@ const mapDispatchToProps = (dispatch) => {
     checkIsSeedlessPasswordOutdated: () =>
       dispatch(checkIsSeedlessPasswordOutdated()),
     resetWallet: () => dispatch(resetWallet()),
+    getIsSeedlessOnboardingUserAuthenticated: () =>
+      dispatch(getIsSeedlessOnboardingUserAuthenticated()),
   };
 };
 

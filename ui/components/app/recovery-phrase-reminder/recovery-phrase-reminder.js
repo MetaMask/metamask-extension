@@ -11,6 +11,7 @@ import {
   Display,
   FlexDirection,
   BlockSize,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_REVEAL_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -62,15 +63,18 @@ export default function RecoveryPhraseReminder({ onConfirm }) {
           </Box>
         </ModalHeader>
         <ModalBody>
-          <Box width={BlockSize.Full} textAlign={TextAlign.Center}>
+          <Box
+            width={BlockSize.Full}
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            marginBottom={2}
+          >
             <img
               src="images/forgot-password-lock.png"
-              width={154}
-              height={154}
+              width={100}
+              height={100}
               alt={t('recoveryPhraseReminderTitle')}
-              style={{
-                alignSelf: 'center',
-              }}
             />
           </Box>
           <Text>{t('recoveryPhraseReminderSubText')}</Text>
