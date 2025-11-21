@@ -33497,7 +33497,7 @@ __metadata:
     react-beautiful-dnd: "npm:^13.1.1"
     react-chartjs-2: "npm:^5.2.0"
     react-compiler-runtime: "npm:^1.0.0"
-    react-compiler-webpack: "npm:0.2.1"
+    react-compiler-webpack: "npm:^1.0.0"
     react-devtools: "npm:^6.1.5"
     react-devtools-core: "npm:^6.1.5"
     react-dom: "npm:^17.0.2"
@@ -37662,16 +37662,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-compiler-webpack@npm:0.2.1":
-  version: 0.2.1
-  resolution: "react-compiler-webpack@npm:0.2.1"
+"react-compiler-webpack@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "react-compiler-webpack@npm:1.0.0"
   dependencies:
-    "@babel/core": "npm:^7.28.4"
+    "@babel/core": "npm:^7.28.5"
     "@babel/plugin-syntax-jsx": "npm:^7.27.1"
     "@babel/plugin-syntax-typescript": "npm:^7.27.1"
   peerDependencies:
     babel-plugin-react-compiler: "*"
-  checksum: 10/5571abebe68334969f3a40c6c21a4a6c3d8ba8a63c91348eac1209624e58e5b373609677244bbbd7480a094517c1b15f75d54400a91914728d74c9194d76775a
+  checksum: 10/00f07cbfa1568628ea593fbbb577645dac73baa682462ace681de610c9a4800039ddd33fbc751260fa1a36a114ddc4a6ffb48c9b84aab9298ae9b3db6ba0b7ed
   languageName: node
   linkType: hard
 
