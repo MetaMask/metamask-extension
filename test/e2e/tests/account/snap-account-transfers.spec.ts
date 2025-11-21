@@ -63,7 +63,7 @@ describe('Snap Account Transfers', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        // BUGBUG With BIP44 the account mame is not retained.
+        // BUG #37591 - Account created with snap using BIP44 with a custom name defaults to Snap Account 1
         await headerNavbar.checkAccountLabel('Snap Account 1');
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
@@ -122,7 +122,7 @@ describe('Snap Account Transfers', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        // BUGBUG With BIP44 the account mame is not retained.
+        // BUG #37591 - Account created with snap using BIP44 with a custom name defaults to Snap Account 1
         await headerNavbar.checkAccountLabel('Snap Account 1');
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
@@ -176,7 +176,7 @@ describe('Snap Account Transfers', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        // BUGBUG With BIP44 the account mame is not retained.
+        // BUG #37591 - Account created with snap using BIP44 with a custom name defaults to Snap Account 1
         await headerNavbar.checkAccountLabel('Snap Account 1');
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
