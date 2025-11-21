@@ -8,6 +8,7 @@ import {
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
 import { setCandidateSubscriptionId } from '../../ducks/rewards';
+import { useAppSelector } from '../../store/store';
 
 type UseCandidateSubscriptionIdReturn = {
   fetchCandidateSubscriptionId: () => Promise<void>;
@@ -23,6 +24,9 @@ export const useCandidateSubscriptionId =
     const isUnlocked = useSelector(getIsUnlocked);
     const isRewardsEnabled = useSelector(selectRewardsEnabled);
     const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
+    const rewardsActiveAccountSubscriptionId = useAppSelector(
+      (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
+    );
 
     const isLoading = useRef(false);
 
@@ -30,6 +34,13 @@ export const useCandidateSubscriptionId =
       try {
         if (!isRewardsEnabled) {
           dispatch(setCandidateSubscriptionId(null));
+          return;
+        }
+        if (rewardsActiveAccountSubscriptionId) {
+          isLoading.current = false;
+          dispatch(
+            setCandidateSubscriptionId(rewardsActiveAccountSubscriptionId),
+          );
           return;
         }
         if (isLoading.current) {
@@ -50,7 +61,7 @@ export const useCandidateSubscriptionId =
       } finally {
         isLoading.current = false;
       }
-    }, [isRewardsEnabled, dispatch]);
+    }, [isRewardsEnabled, dispatch, rewardsActiveAccountSubscriptionId]);
 
     useEffect(() => {
       if (candidateSubscriptionId === 'retry') {

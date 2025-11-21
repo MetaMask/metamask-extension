@@ -173,6 +173,7 @@ const OnboardingStep4: React.FC = () => {
         className="w-full my-2"
         disabled={isDisabled}
         isDisabled={isDisabled}
+        isLoading={optinLoading}
       >
         {t('rewardsOnboardingStepOptIn')}
       </Button>
@@ -243,10 +244,12 @@ const OnboardingStep4: React.FC = () => {
 
       {/* Error Section */}
       {optinError && (
-        <RewardsErrorBanner
-          title={t('rewardsOnboardingStep4OptInError')}
-          description={optinError}
-        />
+        <Box className="pt-4">
+          <RewardsErrorBanner
+            title={t('rewardsOnboardingStep4OptInError')}
+            description={optinError}
+          />
+        </Box>
       )}
 
       {/* Title Section */}

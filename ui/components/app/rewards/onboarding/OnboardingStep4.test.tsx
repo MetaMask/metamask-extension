@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Ref } from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { ButtonProps } from '@metamask/design-system-react';
 
 import OnboardingStep4 from './OnboardingStep4';
 import {
@@ -11,6 +12,50 @@ import {
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(() => (key: string) => key),
 }));
+
+// Partially mock the design-system Button to expose props for assertions
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  const ReactLib = jest.requireActual('react');
+
+  const MockButton = ReactLib.forwardRef(
+    (
+      {
+        children,
+        isLoading,
+        isDisabled,
+        variant,
+        size,
+        className,
+        onClick,
+        ...rest
+      }: ButtonProps,
+      ref: Ref<HTMLButtonElement>,
+    ) => (
+      <button
+        {...rest}
+        data-testid="opt-in-button"
+        data-variant={variant}
+        data-size={size}
+        data-loading={isLoading ? 'true' : 'false'}
+        data-disabled={isDisabled ? 'true' : 'false'}
+        disabled={isDisabled}
+        ref={ref}
+        onClick={onClick}
+        className={className}
+      >
+        {children}
+      </button>
+    ),
+  );
+
+  return {
+    ...actual,
+    Button: MockButton,
+    ButtonVariant: actual.ButtonVariant,
+    ButtonSize: actual.ButtonSize,
+  };
+});
 
 jest.mock('../../../../hooks/rewards/useOptIn', () => ({
   useOptIn: jest.fn(),

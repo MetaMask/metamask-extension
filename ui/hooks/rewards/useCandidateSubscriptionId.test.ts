@@ -97,7 +97,56 @@ describe('useCandidateSubscriptionId', () => {
       });
     });
 
-    it('fetches when unlocked and candidate id is missing or mismatched', async () => {
+    it('uses rewardsActiveAccountSubscriptionId when available instead of fetching', async () => {
+      const { store } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: true,
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'active-sub-id',
+            },
+            rewardsSubscriptions: {},
+          },
+        },
+      );
+
+      await waitFor(() => {
+        expect(getRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
+        const rewardsState = store?.getState().rewards;
+        expect(rewardsState?.candidateSubscriptionId).toBe('active-sub-id');
+      });
+    });
+
+    it('fetches when unlocked and rewardsActiveAccountSubscriptionId is null', async () => {
+      (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
+        () => async () => 'new-sub-id',
+      );
+
+      const { store } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: true,
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
+            rewardsActiveAccount: null,
+            rewardsSubscriptions: {},
+          },
+        },
+      );
+
+      await waitFor(() => {
+        expect(getRewardsCandidateSubscriptionId).toHaveBeenCalled();
+        const rewardsState = store?.getState().rewards;
+        expect(rewardsState?.candidateSubscriptionId).toBe('new-sub-id');
+      });
+    });
+
+    it('fetches when unlocked and rewardsActiveAccount has null subscriptionId', async () => {
       (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
         () => async () => 'new-sub-id',
       );
@@ -111,7 +160,7 @@ describe('useCandidateSubscriptionId', () => {
             remoteFeatureFlags: { rewardsEnabled: true },
             rewardsActiveAccount: {
               account: 'eip155:1:0x123',
-              subscriptionId: 'different-sub-id',
+              subscriptionId: null,
             },
             rewardsSubscriptions: {},
           },
@@ -153,6 +202,32 @@ describe('useCandidateSubscriptionId', () => {
       const rewardsState = store?.getState().rewards;
       expect(rewardsState?.candidateSubscriptionId).toBe('abc-id');
     });
+    it('uses rewardsActiveAccountSubscriptionId when available and does not fetch', async () => {
+      const { result, store } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: false, // prevent useEffect auto-fetch
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
+            rewardsActiveAccount: {
+              account: 'eip155:1:0xabc',
+              subscriptionId: 'active-sub-id',
+            },
+            rewardsSubscriptions: {},
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.fetchCandidateSubscriptionId();
+      });
+
+      expect(getRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
+      const rewardsState = store?.getState().rewards;
+      expect(rewardsState?.candidateSubscriptionId).toBe('active-sub-id');
+    });
+
     it('sets to null and does not call action when rewards disabled', async () => {
       const { result, store } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
