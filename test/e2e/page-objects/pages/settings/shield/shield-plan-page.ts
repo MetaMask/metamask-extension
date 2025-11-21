@@ -9,11 +9,24 @@ export default class ShieldPlanPage {
 
   private readonly backButton = '[data-testid="shield-plan-back-button"]';
 
+  private readonly cardPaymentOption =
+    '[data-testid="shield-payment-method-card-button"]';
+
   private readonly continueButton =
     '[data-testid="shield-plan-continue-button"]';
 
-  private readonly monthlyPlanButton =
-    '[data-testid="shield-plan-monthly-button"]';
+  private readonly cryptoPaymentOption =
+    '[data-testid="shield-payment-method-token-button"]';
+
+  private readonly monthlyPlanButton = (paymentMethod: 'card' | 'crypto') =>
+    paymentMethod === 'crypto'
+      ? '[data-testid="shield-plan-monthly*-button"]'
+      : '[data-testid="shield-plan-monthly-button"]';
+
+  private readonly paymentMethodButton =
+    '[data-testid="shield-plan-payment-method-button"]';
+
+  private readonly paymentModal = '[data-testid="shield-payment-modal"]';
 
   private readonly shieldPlanPageAnnualPlan = {
     text: 'Annual',
@@ -58,9 +71,11 @@ export default class ShieldPlanPage {
     await this.driver.clickElement(this.annualPlanButton);
   }
 
-  async selectMonthlyPlan(): Promise<void> {
-    console.log('Selecting Monthly plan');
-    await this.driver.clickElement(this.monthlyPlanButton);
+  async selectMonthlyPlan(
+    paymentMethod: 'card' | 'crypto' = 'card',
+  ): Promise<void> {
+    console.log(`Selecting Monthly plan (${paymentMethod})`);
+    await this.driver.clickElement(this.monthlyPlanButton(paymentMethod));
   }
 
   async clickContinueButton(): Promise<void> {
@@ -68,26 +83,37 @@ export default class ShieldPlanPage {
     await this.driver.clickElement(this.continueButton);
   }
 
-  /**
-   * Complete the shield plan subscription flow
-   * Selects a plan, clicks continue, and handles window switching after checkout opens
-   *
-   * @param plan - The subscription plan to select ('annual' or 'monthly')
-   */
+  async selectCryptoPaymentMethod(): Promise<void> {
+    console.log('Selecting crypto payment method');
+    await this.driver.clickElement(this.paymentMethodButton);
+    await this.driver.waitForSelector(this.paymentModal);
+    await this.driver.clickElement(this.cryptoPaymentOption);
+    await this.driver.assertElementNotPresent(this.paymentModal);
+  }
+
+  async selectCardPaymentMethod(): Promise<void> {
+    console.log('Selecting card payment method');
+    await this.driver.clickElement(this.paymentMethodButton);
+    await this.driver.waitForSelector(this.paymentModal);
+    await this.driver.clickElement(this.cardPaymentOption);
+    await this.driver.assertElementNotPresent(this.paymentModal);
+  }
+
   async completeShieldPlanSubscriptionFlow(
     plan: 'annual' | 'monthly',
+    paymentMethod: 'card' | 'crypto',
   ): Promise<void> {
-    console.log(`Completing shield plan subscription flow for ${plan} plan`);
+    console.log(
+      `Completing shield plan subscription flow with ${paymentMethod} payment for ${plan} plan`,
+    );
     await this.checkPageIsLoaded();
 
     if (plan === 'annual') {
       await this.selectAnnualPlan();
     } else {
-      await this.selectMonthlyPlan();
+      await this.selectMonthlyPlan(paymentMethod);
     }
 
     await this.clickContinueButton();
-
-    console.log(`Shield plan subscription flow completed for ${plan} plan`);
   }
 }

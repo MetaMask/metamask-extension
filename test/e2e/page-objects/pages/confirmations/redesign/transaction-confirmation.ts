@@ -85,6 +85,11 @@ class TransactionConfirmation extends Confirmation {
     text: tEn('review') as string,
   };
 
+  private readonly shieldFooterCoverageIndicator = (status: string) => ({
+    css: '[data-alert-key="shieldFooterCoverageIndicator"]',
+    text: status,
+  });
+
   private readonly simulationDetailsLayout: RawLocator =
     '[data-testid="simulation-details-layout"]';
 
@@ -520,6 +525,20 @@ class TransactionConfirmation extends Confirmation {
           this.clickScrollToBottomButton();
         }
       }),
+    );
+  }
+
+  async checkShieldCoverageIsCovered(): Promise<void> {
+    console.log('Checking if shield coverage indicator shows "Covered"');
+    await this.driver.waitForSelector(
+      this.shieldFooterCoverageIndicator(tEn('shieldCovered') as string),
+    );
+  }
+
+  async checkShieldCoverageIsNotCovered(): Promise<void> {
+    console.log('Checking if shield coverage indicator shows "Not covered"');
+    await this.driver.waitForSelector(
+      this.shieldFooterCoverageIndicator(tEn('shieldNotCovered') as string),
     );
   }
 }
