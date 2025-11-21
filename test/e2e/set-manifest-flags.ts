@@ -27,6 +27,8 @@ function parseIntOrUndefined(value: string | undefined): number | undefined {
 
 // Alter the manifest with CI environment variables and custom flags
 export async function setManifestFlags(flags: ManifestFlags = {}) {
+  console.log('process.env', JSON.stringify(process.env, null, 2));
+
   if (process.env.CI) {
     flags.ci = {
       enabled: true,
@@ -36,6 +38,8 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
       matrixIndex: parseIntOrUndefined(process.env.MATRIX_INDEX),
       prNumber: parseIntOrUndefined(process.env.PR_NUMBER),
     };
+
+    console.log('cicici', JSON.stringify(flags.ci, null, 2));
 
     const additionalManifestFlags = await fetchManifestFlagsFromPRAndGit();
     merge(flags, additionalManifestFlags);

@@ -131,6 +131,8 @@ jobs:
           name: test-runs-for-splitting
           path: test/test-results/
 
+      - run: printenv
+
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         run: ${{ inputs.test-command }} --retries 1
