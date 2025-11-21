@@ -52,9 +52,9 @@ import {
   RESTORE_VAULT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
-  AWAITING_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
+  // AWAITING_SWAP_ROUTE,
+  // PREPARE_SWAP_ROUTE,
+  // CROSS_CHAIN_SWAP_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
@@ -66,7 +66,7 @@ import {
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain';
 import { setEditedNetwork } from '../../store/actions';
-import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
+// import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
@@ -116,7 +116,7 @@ export default class Home extends PureComponent {
     showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
-    isSidepanel: PropTypes.bool.isRequired,
+    // isSidepanel: PropTypes.bool.isRequired,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
@@ -159,7 +159,7 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     clearEditedNetwork: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
+    // hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
@@ -181,82 +181,86 @@ export default class Home extends PureComponent {
   state = {
     canShowBlockageNotification: true,
     notificationClosing: false,
-    redirecting: false,
+    // redirecting: false, // REMOVED: ConfirmationHandler now handles navigation
   };
 
   constructor(props) {
     super(props);
 
-    const {
-      attemptCloseNotificationPopup,
-      haveSwapsQuotes,
-      haveBridgeQuotes,
-      isNotification,
-      pendingApprovals,
-      showAwaitingSwapScreen,
-      swapsFetchParams,
-      location,
-      navState,
-    } = this.props;
-    // Read stayOnHomePage from both v5 location.state and v5-compat navState
-    const stayOnHomePage =
-      Boolean(location?.state?.stayOnHomePage) ||
-      Boolean(navState?.stayOnHomePage);
+    // REMOVED: Navigation logic moved to ConfirmationHandler
+    // const {
+    //   attemptCloseNotificationPopup,
+    //   haveSwapsQuotes,
+    //   haveBridgeQuotes,
+    //   isNotification,
+    //   pendingApprovals,
+    //   showAwaitingSwapScreen,
+    //   swapsFetchParams,
+    //   location,
+    //   navState,
+    // } = this.props;
+    // const stayOnHomePage =
+    //   Boolean(location?.state?.stayOnHomePage) ||
+    //   Boolean(navState?.stayOnHomePage);
 
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
-      attemptCloseNotificationPopup();
-    } else if (
-      pendingApprovals.length ||
-      (!isNotification &&
-        !stayOnHomePage &&
-        (showAwaitingSwapScreen ||
-          haveSwapsQuotes ||
-          swapsFetchParams ||
-          haveBridgeQuotes))
-    ) {
-      this.state.redirecting = true;
+      props.attemptCloseNotificationPopup();
     }
+
+    // REMOVED: Navigation logic moved to ConfirmationHandler
+    // } else if (
+    //   pendingApprovals.length ||
+    //   (!isNotification &&
+    //     !stayOnHomePage &&
+    //     (showAwaitingSwapScreen ||
+    //       haveSwapsQuotes ||
+    //       swapsFetchParams ||
+    //       haveBridgeQuotes))
+    // ) {
+    //   this.state.redirecting = true;
+    // }
   }
 
-  checkStatusAndNavigate() {
-    const {
-      history,
-      isNotification,
-      haveSwapsQuotes,
-      haveBridgeQuotes,
-      showAwaitingSwapScreen,
-      swapsFetchParams,
-      location,
-      pendingApprovals,
-      hasApprovalFlows,
-      navState,
-    } = this.props;
-    // Read stayOnHomePage from both v5 location.state and v5-compat navState
-    const stayOnHomePage =
-      Boolean(location?.state?.stayOnHomePage) ||
-      Boolean(navState?.stayOnHomePage);
+  // MOVED TO ConfirmationHandler - this logic now runs globally
+  // checkStatusAndNavigate() {
+  //   const {
+  //     history,
+  //     isNotification,
+  //     haveSwapsQuotes,
+  //     haveBridgeQuotes,
+  //     showAwaitingSwapScreen,
+  //     swapsFetchParams,
+  //     location,
+  //     pendingApprovals,
+  //     hasApprovalFlows,
+  //     navState,
+  //   } = this.props;
+  //   // Read stayOnHomePage from both v5 location.state and v5-compat navState
+  //   const stayOnHomePage =
+  //     Boolean(location?.state?.stayOnHomePage) ||
+  //     Boolean(navState?.stayOnHomePage);
 
-    const canRedirect = !isNotification && !stayOnHomePage;
-    if (canRedirect && showAwaitingSwapScreen) {
-      history.push(AWAITING_SWAP_ROUTE);
-    } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
-      history.push(PREPARE_SWAP_ROUTE);
-    } else if (canRedirect && haveBridgeQuotes) {
-      history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
-    } else if (pendingApprovals.length || hasApprovalFlows) {
-      const url = getConfirmationRoute(
-        pendingApprovals?.[0]?.id,
-        pendingApprovals,
-        hasApprovalFlows,
-        '', // queryString
-      );
+  //   const canRedirect = !isNotification && !stayOnHomePage;
+  //   if (canRedirect && showAwaitingSwapScreen) {
+  //     history.push(AWAITING_SWAP_ROUTE);
+  //   } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
+  //     history.push(PREPARE_SWAP_ROUTE);
+  //   } else if (canRedirect && haveBridgeQuotes) {
+  //     history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
+  //   } else if (pendingApprovals.length || hasApprovalFlows) {
+  //     const url = getConfirmationRoute(
+  //       pendingApprovals?.[0]?.id,
+  //       pendingApprovals,
+  //       hasApprovalFlows,
+  //       '', // queryString
+  //     );
 
-      if (url) {
-        history.replace(url);
-      }
-    }
-  }
+  //     if (url) {
+  //       history.replace(url);
+  //     }
+  //   }
+  // }
 
   checkRedirectAfterDefaultPage() {
     const {
@@ -281,7 +285,7 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    this.checkStatusAndNavigate();
+    // this.checkStatusAndNavigate();
 
     this.props.fetchBuyableChains();
 
@@ -307,12 +311,12 @@ export default class Home extends PureComponent {
   componentDidUpdate(_prevProps, prevState) {
     const {
       attemptCloseNotificationPopup,
-      isNotification,
-      hasAllowedPopupRedirectApprovals,
+      // isNotification,
+      // hasAllowedPopupRedirectApprovals,
       newNetworkAddedConfigurationId,
       setActiveNetwork,
       clearNewNetworkAdded,
-      isSidepanel,
+      // isSidepanel,
       pendingShieldCohort,
       evaluateCohortEligibility,
       setPendingShieldCohort,
@@ -334,13 +338,14 @@ export default class Home extends PureComponent {
 
     if (notificationClosing && !prevState.notificationClosing) {
       attemptCloseNotificationPopup();
-    } else if (
-      isNotification ||
-      hasAllowedPopupRedirectApprovals ||
-      isSidepanel
-    ) {
-      this.checkStatusAndNavigate();
     }
+    // else if (
+    //   isNotification ||
+    //   hasAllowedPopupRedirectApprovals ||
+    //   isSidepanel
+    // ) {
+    //   this.checkStatusAndNavigate();
+    // }
 
     // Check for pending Shield cohort evaluation if user is signed in
     if (pendingShieldCohort && evaluateCohortEligibility && isSignedIn) {
@@ -872,9 +877,39 @@ export default class Home extends PureComponent {
       isSocialLoginFlow,
     } = this.props;
 
+    const {
+      pendingApprovals,
+      hasApprovalFlows,
+      haveSwapsQuotes,
+      swapsFetchParams,
+      haveBridgeQuotes,
+      showAwaitingSwapScreen,
+      isNotification,
+      location,
+      navState,
+    } = this.props;
+
+    // Read stayOnHomePage from both v5 location.state and v5-compat navState
+    const stayOnHomePage =
+      Boolean(location?.state?.stayOnHomePage) ||
+      Boolean(navState?.stayOnHomePage);
+
+    // Don't render Home content when there are pending approvals/swaps
+    // to prevent crashes from incomplete state
+    // ConfirmationHandler will handle the navigation
+    const shouldNotRenderContent =
+      pendingApprovals.length ||
+      hasApprovalFlows ||
+      (!isNotification &&
+        !stayOnHomePage &&
+        (showAwaitingSwapScreen ||
+          haveSwapsQuotes ||
+          swapsFetchParams ||
+          haveBridgeQuotes));
+
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
-    } else if (this.state.notificationClosing || this.state.redirecting) {
+    } else if (this.state.notificationClosing || shouldNotRenderContent) {
       return null;
     }
 
