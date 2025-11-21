@@ -1,4 +1,8 @@
-import { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import {
+  QuoteMetadata,
+  QuoteResponse,
+  QuoteWarning,
+} from '@metamask/bridge-controller';
 import { BridgeStatusAction } from '@metamask/bridge-status-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -23,21 +27,33 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
  * @param accountAddress
  * @param quote
  * @param isStxSupportedInClient
+ * @param isLoading
+ * @param warnings
  * @returns
  */
 export const submitBridgeTx = (
   accountAddress: string,
   quote: QuoteResponse & QuoteMetadata,
   isStxSupportedInClient: boolean,
+  isLoading: boolean,
+  warnings: QuoteWarning[],
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     return dispatch(
       callBridgeStatusControllerMethod<
-        [string, QuoteResponse & QuoteMetadata, boolean]
+        [
+          string,
+          QuoteResponse & QuoteMetadata,
+          boolean,
+          boolean,
+          QuoteWarning[],
+        ]
       >(BridgeStatusAction.SUBMIT_TX, [
         accountAddress,
         quote,
         isStxSupportedInClient,
+        isLoading,
+        warnings,
       ]),
     );
   };

@@ -15,7 +15,6 @@ import {
   formatChainIdToCaip,
   isNonEvmChainId,
   isValidQuoteRequest,
-  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
   isNativeAddress,
   UnifiedSwapBridgeEventName,
@@ -214,7 +213,6 @@ const PrepareBridgePage = ({
     isLoading,
     // This quote may be older than the refresh rate, but we keep it for display purposes
     activeQuote: unvalidatedQuote,
-    quotesRefreshCount,
   } = useSelector(getBridgeQuotes);
 
   const isQuoteExpired = useSelector((state) =>
@@ -258,7 +256,6 @@ const PrepareBridgePage = ({
 
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
   const {
-    isEstimatedReturnLow,
     isNoQuotesAvailable,
     isInsufficientGasForQuote,
     isInsufficientBalance,
@@ -305,10 +302,6 @@ const PrepareBridgePage = ({
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
-  // Resets the banner visibility when the estimated return is low
-  const [isLowReturnBannerOpen, setIsLowReturnBannerOpen] = useState(true);
-  useEffect(() => setIsLowReturnBannerOpen(true), [quotesRefreshCount]);
-
   // Resets the banner visibility when new alerts found
   const [isTokenAlertBannerOpen, setIsTokenAlertBannerOpen] = useState(true);
   useEffect(() => setIsTokenAlertBannerOpen(true), [tokenAlert]);
@@ -342,9 +335,7 @@ const PrepareBridgePage = ({
       return;
     }
     if (
-      isEstimatedReturnLow ||
       isInsufficientGasForQuote ||
-      isLowReturnBannerOpen ||
       tokenAlert ||
       txAlert ||
       isUsingHardwareWallet
@@ -355,9 +346,7 @@ const PrepareBridgePage = ({
       });
     }
   }, [
-    isEstimatedReturnLow,
     isInsufficientGasForQuote,
-    isLowReturnBannerOpen,
     tokenAlert,
     txAlert,
     isUsingHardwareWallet,
@@ -921,17 +910,6 @@ const PrepareBridgePage = ({
               actionButtonOnClick={() => openBuyCryptoInPdapp()}
             />
           )}
-        {isEstimatedReturnLow && isLowReturnBannerOpen && activeQuote && (
-          <BannerAlert
-            title={t('lowEstimatedReturnTooltipTitle')}
-            severity={BannerAlertSeverity.Warning}
-            description={t('lowEstimatedReturnTooltipMessage', [
-              BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE * 100,
-            ])}
-            textAlign={TextAlign.Left}
-            onClose={() => setIsLowReturnBannerOpen(false)}
-          />
-        )}
         <div ref={alertBannersRef} />
       </Column>
 

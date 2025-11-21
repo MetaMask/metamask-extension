@@ -12,8 +12,10 @@ import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import {
+  getBridgeQuotes,
   getFromAccount,
   getIsStxEnabled,
+  getWarningLabels,
 } from '../../../ducks/bridge/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
 import { useSafeNavigation } from '../../../hooks/useSafeNavigation';
@@ -59,6 +61,8 @@ export default function useSubmitBridgeTransaction() {
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
   const fromAccount = useSelector(getFromAccount);
+  const { isLoading } = useSelector(getBridgeQuotes);
+  const warnings = useSelector(getWarningLabels);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -80,7 +84,13 @@ export default function useSubmitBridgeTransaction() {
       if (isNonEvmSource) {
         // Submit the transaction first, THEN navigate
         await dispatch(
-          submitBridgeTx(fromAccount.address, quoteResponse, false),
+          submitBridgeTx(
+            fromAccount.address,
+            quoteResponse,
+            false,
+            isLoading,
+            warnings,
+          ),
         );
         await dispatch(setDefaultHomeActiveTabName('activity'));
         navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
@@ -92,6 +102,8 @@ export default function useSubmitBridgeTransaction() {
           fromAccount.address,
           quoteResponse,
           smartTransactionsEnabled,
+          isLoading,
+          warnings,
         ),
       );
     } catch (e) {

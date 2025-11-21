@@ -842,7 +842,7 @@
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/phishing-controller": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -909,7 +909,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/multichain-network-controller": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -929,7 +929,7 @@
       "packages": {
         "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/bridge-status-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
@@ -1326,7 +1326,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/assets-controllers>@metamask/polling-controller": true,
         "bn.js": true,
         "uuid": true
       }
@@ -1535,6 +1535,19 @@
         "lodash": true
       }
     },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/keyring-api": true,
+        "@metamask/network-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "lodash": true
+      }
+    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -1682,7 +1695,31 @@
         "punycode": true
       }
     },
+    "@metamask/assets-controllers>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
     "@metamask/bridge-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -1884,7 +1921,7 @@
         "ethers>@ethersproject/transactions": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "fast-json-patch": true,
@@ -2015,7 +2052,7 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
@@ -2080,7 +2117,7 @@
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,

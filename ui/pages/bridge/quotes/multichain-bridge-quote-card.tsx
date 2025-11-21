@@ -25,6 +25,7 @@ import {
   getQuoteRequest,
   getIsToOrFromNonEvm,
   getIsStxEnabled,
+  getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -89,6 +90,7 @@ export const MultichainBridgeQuoteCard = ({
   const slippage = useSelector(getSlippage);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
+  const { isEstimatedReturnLow } = useSelector(getValidationErrors);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
@@ -291,7 +293,11 @@ export const MultichainBridgeQuoteCard = ({
               <Row gap={1} data-testid="network-fees-included">
                 <Text
                   variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                  color={
+                    isEstimatedReturnLow
+                      ? TextColor.warningDefault
+                      : TextColor.textAlternative
+                  }
                   style={{ textDecoration: 'line-through' }}
                 >
                   {activeQuote.includedTxFees?.valueInCurrency
@@ -306,7 +312,11 @@ export const MultichainBridgeQuoteCard = ({
                 </Text>
                 <Text
                   variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                  color={
+                    isEstimatedReturnLow
+                      ? TextColor.warningDefault
+                      : TextColor.textAlternative
+                  }
                 >
                   {t('swapGasFeesIncluded')}
                 </Text>
@@ -315,7 +325,11 @@ export const MultichainBridgeQuoteCard = ({
             {!gasSponsored && !activeQuote.quote.gasIncluded && (
               <Text
                 variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
+                color={
+                  isEstimatedReturnLow
+                    ? TextColor.warningDefault
+                    : TextColor.textAlternative
+                }
                 data-testid="network-fees"
               >
                 {formatNetworkFee(
