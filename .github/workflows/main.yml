@@ -269,6 +269,20 @@ jobs:
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
+  export-onboarding-fixture:
+    name: Export onboarding fixture
+    needs:
+      - build-dist-browserify
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: export-onboarding-fixture
+      build-artifact: build-dist-browserify
+      test-command: yarn test:e2e:single test/e2e/wallet-fixture-export.spec.ts --browser chrome
+      test-artifacts-path: test-artifacts/onboarding-fixture
+      comment-fixture: true
+    secrets:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+
   run-tests:
     name: Run tests
     needs:
@@ -340,6 +354,7 @@ jobs:
       - build-test-webpack
       - build-dist-browserify
       - build-test-flask-browserify
+      - export-onboarding-fixture
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
     with:
@@ -356,6 +371,7 @@ jobs:
       - build-test-mv2-browserify
       - build-test-mv2-webpack
       - build-test-flask-mv2-browserify
+      - export-onboarding-fixture
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
     with:
