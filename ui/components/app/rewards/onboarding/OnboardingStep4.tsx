@@ -12,9 +12,10 @@ import {
   IconName,
   IconSize,
   Text,
+  TextButton,
+  TextButtonSize,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Link } from '@material-ui/core';
 import {
   ModalBody,
   TextField,
@@ -206,13 +207,21 @@ const OnboardingStep4: React.FC = () => {
             className="text-alternative text-center"
           >
             {t('rewardsOnboardingStep4LegalDisclaimer1')}{' '}
-            <Link className="text-primary-default" onClick={openTermsOfUse}>
+            <TextButton
+              size={TextButtonSize.BodySm}
+              className="text-primary-default"
+              onClick={openTermsOfUse}
+            >
               {t('rewardsOnboardingStep4LegalDisclaimer2')}
-            </Link>
+            </TextButton>
             {t('rewardsOnboardingStep4LegalDisclaimer3')}{' '}
-            <Link className="text-primary-default" onClick={openLearnMore}>
+            <TextButton
+              size={TextButtonSize.BodySm}
+              className="text-primary-default"
+              onClick={openLearnMore}
+            >
               {t('rewardsOnboardingStep4LegalDisclaimer4')}
-            </Link>
+            </TextButton>
             .{' '}
           </Text>
         </Box>
