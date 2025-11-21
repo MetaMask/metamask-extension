@@ -14,6 +14,7 @@ import {
   SHIELD_PRICING_DATA,
   SHIELD_USER_EVENTS_RESPONSE,
 } from '../../helpers/shield/constants';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 // Local fixture for this spec file
 function createShieldFixture() {
@@ -231,6 +232,11 @@ describe('Shield Subscription Tests', function () {
           await shieldPlanPage.checkPageIsLoaded();
           await shieldPlanPage.clickBackButton();
 
+          // redirects to homepage
+          await homePage.checkPageIsLoaded();
+
+          // navigate to settings page
+          await new HeaderNavbar(driver).openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToTransactionShieldPage();
@@ -269,6 +275,11 @@ describe('Shield Subscription Tests', function () {
           await shieldPlanPage.checkPageIsLoaded();
           await shieldPlanPage.clickBackButton();
 
+          // redirects to homepage
+          await homePage.checkPageIsLoaded();
+
+          // navigate to settings page
+          await new HeaderNavbar(driver).openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToTransactionShieldPage();
