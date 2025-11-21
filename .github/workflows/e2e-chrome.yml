@@ -16,6 +16,9 @@ on:
       INFURA_PROJECT_ID:
         required: false
 
+env:
+  SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
+
 jobs:
   test-e2e-chrome-browserify:
     uses: ./.github/workflows/run-e2e.yml
