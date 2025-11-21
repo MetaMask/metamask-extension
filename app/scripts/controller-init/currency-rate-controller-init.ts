@@ -30,7 +30,6 @@ export const CurrencyRateControllerInit: ControllerInitFunction<
     // @ts-expect-error - Messenger type mismatch due to missing controller actions/events and dependency version mismatch
     messenger: controllerMessenger,
     includeUsdRate: true,
-    interval: 5000,
     useExternalServices: () =>
       initMessenger.call('PreferencesController:getState').useExternalServices,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
