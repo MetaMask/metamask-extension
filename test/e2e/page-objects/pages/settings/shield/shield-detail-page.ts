@@ -4,6 +4,16 @@ import { Driver } from '../../../../webdriver/driver';
 export default class ShieldDetailPage {
   private readonly driver: Driver;
 
+  // Page identification
+  private readonly pageTitle = {
+    text: 'Transaction Shield',
+    tag: 'h4',
+  };
+
+  // Main page container
+  private readonly pageContainer = '[data-testid="transaction-shield-page"]';
+
+  // Locators (alphabetically ordered)
   private readonly addFundsModal = '[data-testid="add-funds-modal"]';
 
   private readonly billingAccount =
@@ -57,19 +67,12 @@ export default class ShieldDetailPage {
     text,
   });
 
-  private readonly pageContainer = '[data-testid="transaction-shield-page"]';
-
-  private readonly pageTitle = {
-    text: 'Transaction Shield',
-    tag: 'h4',
-  };
+  private readonly pausedTag = '[data-testid="shield-detail-paused-tag"]';
 
   private readonly paymentMethodElement = (text: string) => ({
     css: '[data-testid="shield-detail-payment-method"]',
     text,
   });
-
-  private readonly pausedTag = '[data-testid="shield-detail-paused-tag"]';
 
   private readonly renewButton =
     '[data-testid="shield-tx-membership-uncancel-button"]';
@@ -266,39 +269,5 @@ export default class ShieldDetailPage {
   async checkNotificationShieldBannerRemoved(): Promise<void> {
     console.log('Checking notification shield banner is removed');
     await this.driver.assertElementNotPresent(this.notificationShieldBanner);
-  }
-
-  async validateShieldDetailPage(options?: {
-    customerId?: string;
-    membershipStatus?: string;
-    nextBillingDate?: string;
-    charges?: string;
-    paymentMethod?: string;
-    expectTrialTag?: boolean;
-  }): Promise<void> {
-    const {
-      customerId = 'test_customer_id',
-      membershipStatus = 'Active plan',
-      nextBillingDate = 'Nov 3',
-      charges = '$80',
-      paymentMethod = 'Visa',
-      expectTrialTag = true,
-    } = options || {};
-
-    await this.checkPageIsLoaded();
-
-    await this.checkCustomerId(customerId);
-
-    if (expectTrialTag) {
-      await this.checkTrialTagDisplayed();
-    }
-
-    await this.checkMembershipStatus(membershipStatus);
-
-    await this.checkNextBillingDate(nextBillingDate);
-
-    await this.checkCharges(charges);
-
-    await this.checkPaymentMethod(paymentMethod);
   }
 }
