@@ -8,6 +8,8 @@ on:
     secrets:
       INFURA_PROJECT_ID:
         required: true
+      SENTRY_DSN_PERFORMANCE:
+        required: true
 
 env:
   COMMANDS: |
@@ -40,6 +42,7 @@ jobs:
       ARTIFACT_NAME: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-${{ matrix.buildType }}
       OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SENTRY_DSN_PERFORMANCE: ${{ secrets.SENTRY_DSN_PERFORMANCE }}
     continue-on-error: true
     steps:
       - name: Checkout and setup environment

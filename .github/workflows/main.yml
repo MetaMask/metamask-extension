@@ -268,6 +268,7 @@ jobs:
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SENTRY_DSN_PERFORMANCE: ${{ secrets.SENTRY_DSN_PERFORMANCE }}
 
   run-tests:
     name: Run tests
@@ -376,6 +377,7 @@ jobs:
       TS_MIGRATION_DASHBOARD_TOKEN: ${{ secrets.TS_MIGRATION_DASHBOARD_TOKEN }}
 
   build-source-map-explorer:
+    if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     needs:
       - identify-builds
       - prep-deps

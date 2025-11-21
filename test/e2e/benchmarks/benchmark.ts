@@ -40,7 +40,14 @@ async function measurePageStandard(
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
-      title: 'benchmark-pageload',
+      title: 'measurePageStandard',
+      manifestFlags: {
+        sentry: {
+          forceEnable: true,
+          dsnType: 'performance',
+          tracesSampleRate: 1.0,
+        },
+      },
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
       await unlockWallet(driver);
@@ -78,6 +85,11 @@ async function measurePagePowerUser(
         testing: {
           disableSync: true,
           infuraProjectId: process.env.INFURA_PROJECT_ID,
+        },
+        sentry: {
+          forceEnable: true,
+          dsnType: 'performance',
+          tracesSampleRate: 1.0,
         },
       },
       useMockingPassThrough: true,
@@ -270,6 +282,8 @@ async function main(): Promise<void> {
           type: 'string',
         }),
   ) as unknown as { argv: BenchmarkArguments };
+
+  console.log('SENTRY_DSN_PERFORMANCE:', process.env.SENTRY_DSN_PERFORMANCE);
 
   const { pages, browserLoads, pageLoads, out, retries, persona } = argv;
 

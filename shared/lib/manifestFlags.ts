@@ -60,6 +60,10 @@ export type ManifestFlags = {
      * Force enable Sentry (this is typically set by individual E2E tests in spec files)
      */
     forceEnable?: boolean;
+    /**
+     * The DSN type to use for Sentry initialization
+     */
+    dsnType?: string;
   };
   /**
    * Feature flags to control business logic behavior

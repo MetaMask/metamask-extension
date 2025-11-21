@@ -24,6 +24,7 @@ const RELEASE = getSentryRelease(
 );
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
+const SENTRY_DSN_PERFORMANCE = process.env.SENTRY_DSN_PERFORMANCE;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
@@ -205,6 +206,13 @@ function getSentryEnvironment() {
 }
 
 function getSentryTarget() {
+  if (
+    getManifestFlags().sentry?.dsnType === 'performance' &&
+    SENTRY_DSN_PERFORMANCE
+  ) {
+    return SENTRY_DSN_PERFORMANCE;
+  }
+
   if (
     process.env.IN_TEST &&
     (!SENTRY_DSN_DEV || !getManifestFlags().sentry?.forceEnable)
