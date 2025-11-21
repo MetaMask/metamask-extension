@@ -1,7 +1,6 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { parse } from 'dotenv';
-import type { ReactCompilerLoaderOption } from 'react-compiler-webpack';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
 import type { Variables } from '../../lib/variables';
 import type { BuildTypesConfig, BuildType } from '../../lib/build-type';
@@ -192,6 +191,3 @@ function loadConfigVars(
 
   return definitions;
 }
-export const reactCompilerOptions = {
-  target: '17',
-} as const satisfies ReactCompilerLoaderOption;

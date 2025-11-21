@@ -18,10 +18,6 @@ import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
-import {
-  defineReactCompilerLoaderOption,
-  reactCompilerLoader,
-} from 'react-compiler-webpack';
 import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
@@ -38,7 +34,11 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getVariables, reactCompilerOptions } from './utils/config';
+import {
+  getReactCompilerLoader,
+  getReactCompilerLogger,
+} from './utils/loaders/reactCompilerLoader';
+import { getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 
@@ -216,6 +216,18 @@ if (args.progress) {
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
 }
+
+if (args.reactCompilerVerbose) {
+  plugins.push({
+    apply(compiler) {
+      compiler.hooks.done.tap('ReactCompilerStatsPlugin', () => {
+        const logger = getReactCompilerLogger();
+        logger.logSummary();
+      });
+    },
+  } as WebpackPluginInstance);
+}
+
 // #endregion plugins
 
 const swcConfig = { args, browsersListQuery, isDevelopment };
@@ -223,6 +235,10 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+const reactCompilerLoader = getReactCompilerLoader(
+  '17',
+  args.reactCompilerVerbose,
+);
 
 const config = {
   entry,
@@ -328,12 +344,7 @@ const config = {
       {
         test: /(?!\.(?:test|stories|container))\.(?:m?[jt]s|[jt]sx)$/u,
         include: UI_DIR_RE,
-        use: [
-          {
-            loader: reactCompilerLoader,
-            options: defineReactCompilerLoaderOption(reactCompilerOptions),
-          },
-        ],
+        use: [reactCompilerLoader],
       },
       // own typescript, and own typescript with jsx
       {
