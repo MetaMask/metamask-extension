@@ -54,12 +54,12 @@ export default function SnapInstall({
     useScrollRequired([requestState]);
 
   const onCancel = useCallback(
-    () => rejectSnapInstall(request.metadata.id),
+    () => rejectSnapInstall(request?.metadata?.id),
     [request, rejectSnapInstall],
   );
 
   const onSubmit = useCallback(
-    () => approveSnapInstall(request.metadata.id),
+    () => approveSnapInstall(request?.metadata?.id),
     [request, approveSnapInstall],
   );
 

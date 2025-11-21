@@ -118,7 +118,6 @@ export function useGatorPermissions(
     };
     // Note: cachedData is intentionally excluded from dependencies to prevent infinite loop
     // when fetchAndUpdateGatorPermissions updates the Redux store
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, refreshInBackground]);
 
   return {

@@ -5,7 +5,7 @@ import { getSnapRoute } from '../../helpers/utils/util';
 
 const useSnapNavigation = () => {
   const navigate = useNavigate();
-  const useSnapNavigate = useCallback(
+  const handleSnapNavigate = useCallback(
     (url: string) => {
       let path;
       const linkData = parseMetaMaskUrl(url);
@@ -20,9 +20,9 @@ const useSnapNavigation = () => {
   );
   return useMemo(
     () => ({
-      useSnapNavigate,
+      handleSnapNavigate,
     }),
-    [useSnapNavigate],
+    [handleSnapNavigate],
   );
 };
 

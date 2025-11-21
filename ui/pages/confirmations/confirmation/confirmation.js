@@ -34,7 +34,7 @@ import {
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
   getSnapsMetadata,
   getHideSnapBranding,
 } from '../../../selectors';
@@ -238,7 +238,7 @@ export default function ConfirmationPage({
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    getUseSafeChainsListValidation,
   );
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,

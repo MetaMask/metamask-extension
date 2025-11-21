@@ -1,3 +1,5 @@
+'use no memo';
+
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import React from 'react';

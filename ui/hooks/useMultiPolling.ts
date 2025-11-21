@@ -17,19 +17,34 @@ const useMultiPolling = <PollingInput>(
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const pollingTokens = useRef<Map<string, string>>(new Map());
 
+  const prevPollingInputStringified = useRef<string | null>(null);
+  const hasPollingInputChanged =
+    JSON.stringify(usePollingOptions.input) !==
+    prevPollingInputStringified.current;
+
+  const isMounted = useRef(false);
   useEffect(() => {
-    if (!completedOnboarding) {
-      // don't start polling if no selected account or onboarding is not completed yet
-      return;
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!completedOnboarding || !hasPollingInputChanged) {
+      // don't start polling if no selected account, or onboarding is incomplete, or polling inputs haven't changed
+      return () => undefined;
     }
 
     // start new polls
     for (const input of usePollingOptions.input) {
       const key = JSON.stringify(input);
       if (!pollingTokens.current.has(key)) {
-        usePollingOptions
-          .startPolling(input)
-          .then((token) => pollingTokens.current.set(key, token));
+        usePollingOptions.startPolling(input).then((token) => {
+          if (isMounted.current) {
+            pollingTokens.current.set(key, token);
+          }
+        });
       }
     }
 
@@ -44,19 +59,19 @@ const useMultiPolling = <PollingInput>(
         pollingTokens.current.delete(inputKey);
       }
     }
-  }, [
-    completedOnboarding,
-    usePollingOptions.input && JSON.stringify(usePollingOptions.input),
-  ]);
 
-  // stop all polling on dismount
-  useEffect(() => {
+    prevPollingInputStringified.current = JSON.stringify(
+      usePollingOptions.input,
+    );
+
+    // stop all polling on dismount
     return () => {
       for (const token of pollingTokens.current.values()) {
         usePollingOptions.stopPollingByPollingToken(token);
       }
+      prevPollingInputStringified.current = null;
     };
-  }, []);
+  }, [usePollingOptions, hasPollingInputChanged, completedOnboarding]);
 };
 
 export default useMultiPolling;
