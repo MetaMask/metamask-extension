@@ -396,11 +396,11 @@ export const getPermissionMetaDataByOrigin = createSelector(
 );
 
 /**
- * Get all token transfer permissions for a specific site origin.
+ * Get all token transfer permissions for a specific site origin, sorted by start time.
  *
  * @param _state - The current state
  * @param siteOrigin - The site origin to filter by (e.g., 'https://example.com')
- * @returns Array of all token transfer permissions for the site origin
+ * @returns Array of all token transfer permissions for the site origin, sorted by start time (oldest first)
  * @example
  * const permissions = getTokenTransferPermissionsByOrigin(state, 'https://example.com');
  *
@@ -418,13 +418,15 @@ export const getTokenTransferPermissionsByOrigin = createSelector(
     gatorPermissionsMap,
     siteOrigin,
   ): StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>[] => {
-    return TOKEN_TRANSFER_PERMISSION_TYPES.flatMap((permissionType) =>
-      filterPermissionsByOriginAndType(
-        gatorPermissionsMap,
-        siteOrigin,
-        permissionType,
-      ),
+    const allPermissions = TOKEN_TRANSFER_PERMISSION_TYPES.flatMap(
+      (permissionType) =>
+        filterPermissionsByOriginAndType(
+          gatorPermissionsMap,
+          siteOrigin,
+          permissionType,
+        ),
     );
+    return sortGatorPermissionsByStartTime(allPermissions);
   },
 );
 
