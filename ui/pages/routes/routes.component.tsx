@@ -11,6 +11,7 @@ import {
   useHistory,
   useLocation,
 } from 'react-router-dom';
+import type { To } from 'react-router-dom-v5-compat';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
@@ -169,13 +170,13 @@ import {
 } from './utils';
 
 // V5-compat navigate function type for bridging v5 routes with v5-compat components
-type V5CompatNavigate = (
-  to: string | number,
-  options?: {
-    replace?: boolean;
-    state?: Record<string, unknown>;
-  },
-) => void;
+type V5CompatNavigate = {
+  (
+    to: To,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ): void;
+  (delta: number): void;
+};
 
 /**
  * Creates a v5-compat navigate function from v5 history
@@ -186,15 +187,18 @@ type V5CompatNavigate = (
 const createV5CompatNavigate = (
   history: RouteComponentProps['history'],
 ): V5CompatNavigate => {
-  return (to, options = {}) => {
+  return ((
+    to: To | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => {
     if (typeof to === 'number') {
       history.go(to);
-    } else if (options.replace) {
-      history.replace(to, options.state);
+    } else if (options?.replace) {
+      history.replace(to as string, options.state);
     } else {
-      history.push(to, options.state);
+      history.push(to as string, options?.state);
     }
-  };
+  }) as V5CompatNavigate;
 };
 
 /**
@@ -692,12 +696,11 @@ export default function Routes() {
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
         <Switch>
-          <RouteWithLayout path={ONBOARDING_ROUTE} layout={LegacyLayout}>
-            {createV5CompatRoute(OnboardingFlow, {
-              includeNavigate: true,
-              includeLocation: true,
-            })}
-          </RouteWithLayout>
+          <RouteWithLayout
+            path={ONBOARDING_ROUTE}
+            component={OnboardingFlow}
+            layout={LegacyLayout}
+          />
           <RouteWithLayout
             path={LOCK_ROUTE}
             component={Lock}
@@ -863,11 +866,17 @@ export default function Routes() {
             })}
           </Route>
           <Route path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}>
-            {createV5CompatRoute<{ id?: string }>(ConfirmationPage, {
-              wrapper: AuthenticatedV5Compat,
-              includeParams: true,
-              paramsAsProps: false,
-            })}
+            {(props: RouteComponentProps<{ id?: string }>) => {
+              const renderFn = createV5CompatRoute<{ id?: string }>(
+                ConfirmationPage,
+                {
+                  wrapper: AuthenticatedV5Compat,
+                  includeParams: true,
+                  paramsAsProps: false,
+                },
+              );
+              return renderFn(props);
+            }}
           </Route>
           <RouteWithLayout
             authenticated
@@ -1136,12 +1145,13 @@ export default function Routes() {
             component={ShieldPlan}
             layout={LegacyLayout}
           />
-          <RouteWithLayout
-            authenticated
-            path={DEFAULT_ROUTE}
-            component={Home}
-            layout={RootLayout}
-          />
+          <RouteWithLayout path={DEFAULT_ROUTE} layout={RootLayout}>
+            {createV5CompatRoute(Home, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
         </Switch>
       </Suspense>
     );

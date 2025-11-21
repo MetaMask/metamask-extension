@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-commonjs */
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import type { NavigateFunction } from 'react-router-dom-v5-compat';
+import type { To } from 'react-router-dom-v5-compat';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -64,7 +64,13 @@ export type SRPQuizProps = {
   isOpen: boolean;
   onClose: () => void;
   closeAfterCompleting?: boolean;
-  navigate: NavigateFunction;
+  navigate: {
+    (
+      to: To,
+      options?: { replace?: boolean; state?: Record<string, unknown> },
+    ): void;
+    (delta: number): void;
+  };
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Navigate, Routes, Route } from 'react-router-dom-v5-compat';
+import { Navigate } from 'react-router-dom-v5-compat';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
@@ -929,18 +929,28 @@ export default class Home extends PureComponent {
       !showShieldEntryModal &&
       !showRecoveryPhrase;
 
+    const { location } = this.props;
+
+    // Handle connected routes
+    if (location?.pathname === CONNECTED_ROUTE) {
+      return (
+        <ScrollContainer className="main-container main-container--has-shadow">
+          <ConnectedSites navigate={this.props.navigate} />
+        </ScrollContainer>
+      );
+    }
+
+    if (location?.pathname === CONNECTED_ACCOUNTS_ROUTE) {
+      return (
+        <ScrollContainer className="main-container main-container--has-shadow">
+          <ConnectedAccounts navigate={this.props.navigate} />
+        </ScrollContainer>
+      );
+    }
+
+    // Render normal home content
     return (
       <ScrollContainer className="main-container main-container--has-shadow">
-        <Routes>
-          <Route
-            path={CONNECTED_ROUTE}
-            element={<ConnectedSites navigate={this.props.navigate} />}
-          />
-          <Route
-            path={CONNECTED_ACCOUNTS_ROUTE}
-            element={<ConnectedAccounts navigate={this.props.navigate} />}
-          />
-        </Routes>
         <div className="home__container">
           {dataCollectionForMarketing === null &&
           participateInMetaMetrics === true

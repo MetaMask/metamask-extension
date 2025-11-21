@@ -3,6 +3,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import { AvatarAccountSize } from '@metamask/design-system-react';
+import type { To } from 'react-router-dom-v5-compat';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -51,10 +52,13 @@ import { AccountDetailsKey } from './account-details-key';
 
 type AccountDetailsProps = {
   address: string;
-  navigate?: (
-    to: string | number,
-    options?: { replace?: boolean; state?: Record<string, unknown> },
-  ) => void;
+  navigate?: {
+    (
+      to: To,
+      options?: { replace?: boolean; state?: Record<string, unknown> },
+    ): void;
+    (delta: number): void;
+  };
 };
 
 export const AccountDetails = ({ address, navigate }: AccountDetailsProps) => {
