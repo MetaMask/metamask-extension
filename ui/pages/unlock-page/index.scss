@@ -24,12 +24,12 @@
     }
 
     &__horizontal-logo {
-      margin-bottom: 60px;
+      margin-bottom: 24px;
       width: 180px;
       height: 180px;
 
-      @include design-system.screen-md-max {
-        margin-bottom: 48px;
+      &--popup {
+        margin-bottom: 0;
       }
     }
 

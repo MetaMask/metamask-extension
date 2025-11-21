@@ -6,7 +6,10 @@ import thunk from 'redux-thunk';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import * as traceModule from '../../../../shared/lib/trace';
 import { MultichainAccountDetailsPage } from './multichain-account-details-page';
 
@@ -24,19 +27,17 @@ jest.mock('../../../../shared/lib/trace', () => ({
   trace: jest.fn(),
 }));
 
-const mockHistoryPush = jest.fn();
-const mockHistoryGoBack = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-    goBack: mockHistoryGoBack,
-  }),
-  useParams: () => ({
-    id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
-  }),
-}));
+const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useParams: () => mockUseParams(),
+    useLocation: () => mockUseLocation(),
+  };
+});
 
 const mockDispatch = jest.fn();
 
@@ -48,14 +49,19 @@ jest.mock('react-redux', () => {
   };
 });
 
-const reactRouterDom = jest.requireMock('react-router-dom');
-
 describe('MultichainAccountDetailsPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    reactRouterDom.useParams = () => ({
+    mockUseParams.mockReturnValue({
       id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+    });
+
+    mockUseLocation.mockReturnValue({
+      pathname: '/test',
+      search: '',
+      hash: '',
+      state: null,
     });
   });
 
@@ -94,23 +100,23 @@ describe('MultichainAccountDetailsPage', () => {
     expect(screen.getByText(/10 addresses/iu)).toBeInTheDocument();
   });
 
-  it('calls history.goBack when back button is clicked', () => {
+  it('calls navigate when back button is clicked', () => {
     renderComponent();
 
     const backButton = screen.getByTestId(backButtonTestId);
     fireEvent.click(backButton);
 
-    expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
-  it('calls history.push with wallet route when wallet row is clicked', () => {
+  it('calls navigate with wallet route when wallet row is clicked', () => {
     renderComponent();
 
     const walletRow = screen.getByTestId(accountDetailsRowWalletTestId);
     fireEvent.click(walletRow);
 
-    expect(mockHistoryPush).toHaveBeenCalledTimes(1);
-    expect(mockHistoryPush).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ`,
     );
   });
@@ -122,7 +128,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('does not render remove account section for Snap wallet type', () => {
-    reactRouterDom.useParams = () => ({
+    mockUseParams.mockReturnValue({
       id: 'snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d',
     });
 
@@ -132,7 +138,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('renders remove account section for Keyring wallet type', () => {
-    reactRouterDom.useParams = () => ({
+    mockUseParams.mockReturnValue({
       id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
     });
 
@@ -166,10 +172,9 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('opens account remove modal when remove account action button is clicked', () => {
-    reactRouterDom.useParams = () => ({
+    mockUseParams.mockReturnValue({
       id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
     });
-
     renderComponent();
 
     const removeAccountActionButton = screen.getByTestId(
@@ -181,7 +186,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('closes account remove modal when close button is clicked', () => {
-    reactRouterDom.useParams = () => ({
+    mockUseParams.mockReturnValue({
       id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
     });
 
@@ -201,10 +206,9 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('calls removeAccount action when remove account button is clicked', () => {
-    reactRouterDom.useParams = () => ({
+    mockUseParams.mockReturnValue({
       id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
     });
-
     renderComponent();
 
     const removeAccountActionButton = screen.getByTestId(

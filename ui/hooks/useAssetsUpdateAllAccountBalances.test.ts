@@ -130,7 +130,7 @@ describe('useAssetsUpdateAllAccountBalances', () => {
     expect(mockDispatch).toHaveBeenCalledTimes(1);
     expect(mockUpdateBalancesFoAccounts).toHaveBeenCalledWith(
       initialChainIds,
-      true,
+      false,
     );
 
     // Update chain IDs and rerender
@@ -140,7 +140,7 @@ describe('useAssetsUpdateAllAccountBalances', () => {
     expect(mockDispatch).toHaveBeenCalledTimes(2);
     expect(mockUpdateBalancesFoAccounts).toHaveBeenCalledWith(
       updatedChainIds,
-      true,
+      false,
     );
   });
 

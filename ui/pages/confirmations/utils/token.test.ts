@@ -7,6 +7,7 @@ import {
   fetchAllErc20Decimals,
   fetchAllTokenDetails,
   fetchErc20Decimals,
+  getTokenValueFromRecord,
 } from './token';
 
 const MOCK_ADDRESS = '0x514910771af9ca656af840dff83e8264ecf986ca';
@@ -114,5 +115,31 @@ describe('calculateTokenAmount', () => {
     expect(calculateTokenAmount('0xB1A2BC2EC50000', 10, 16, 2)).toEqual(
       new BigNumber('10000000'),
     );
+  });
+});
+
+describe('getTokenValueFromRecord', () => {
+  it('returns the correct value for token address', () => {
+    const result = getTokenValueFromRecord(
+      {
+        '0xaf88d065e77c8cc2239327c5edb3a432268e5831': 6,
+        '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9': 6,
+        '0x0000000000000000000000000000000000000000': 18,
+      },
+      '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+    );
+    expect(result).toEqual(6);
+  });
+
+  it('returns undefined if record is not found', () => {
+    const result = getTokenValueFromRecord(
+      {
+        '0xaf88d065e77c8cc2239327c5edb3a432268e5831': 6,
+        '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9': 6,
+        '0x0000000000000000000000000000000000000000': 18,
+      },
+      '0x123',
+    );
+    expect(result).toEqual(undefined);
   });
 });

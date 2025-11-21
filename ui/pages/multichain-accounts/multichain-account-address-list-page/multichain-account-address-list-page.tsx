@@ -1,6 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import {
+  useNavigate,
+  useLocation,
+  useParams,
+} from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import {
@@ -22,16 +26,34 @@ import { MultichainAddressRowsList } from '../../../components/multichain-accoun
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import { AddressQRCodeModal } from '../../../components/multichain-accounts/address-qr-code-modal/address-qr-code-modal';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import {
   AddressListQueryParams,
   AddressListSource,
 } from './multichain-account-address-list-page.types';
 
-export const MultichainAccountAddressListPage = () => {
+type MultichainAccountAddressListPageProps = {
+  params?: { accountGroupId: string };
+  location?: {
+    pathname: string;
+    search: string;
+    hash: string;
+    state: unknown;
+    key: string;
+  };
+};
+
+export const MultichainAccountAddressListPage = ({
+  params: propsParams,
+  location: propsLocation,
+}: MultichainAccountAddressListPageProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const location = useLocation();
-  const { accountGroupId } = useParams<{ accountGroupId: string }>();
+  const navigate = useNavigate();
+  const hookLocation = useLocation();
+  const hookParams = useParams<{ accountGroupId: string }>();
+
+  const location = propsLocation || hookLocation;
+  const { accountGroupId } = propsParams || hookParams;
 
   const decodedAccountGroupId = accountGroupId
     ? (decodeURIComponent(accountGroupId) as AccountGroupId)
@@ -95,7 +117,7 @@ export const MultichainAccountAddressListPage = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             data-testid="multichain-account-address-list-page-back-button"
           />
         }
