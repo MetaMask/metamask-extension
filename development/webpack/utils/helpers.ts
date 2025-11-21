@@ -59,7 +59,7 @@ export const TREZOR_MODULE_RE = new RegExp(
  * Windows.
  */
 export const UI_DIR_RE = new RegExp(
-  `${join(__dirname, '../../../').replaceAll(sep, slash)}ui${slash}(components|contexts|hooks|layouts|pages)${slash}.*$`,
+  `${join(__dirname, '../../../').replaceAll(sep, slash)}ui${slash}(?:components|contexts|hooks|layouts|pages)${slash}.*$`,
   'u',
 );
 
