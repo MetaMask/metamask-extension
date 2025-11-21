@@ -1,0 +1,48 @@
+diff --git a/dist/TokenBalancesController.cjs b/dist/TokenBalancesController.cjs
+index 24c2b2d22d3678352fd2ea4932181f3f11ffe41a..e63d3bcd80d68391d713394ec7f340b80fd8b79d 100644
+--- a/dist/TokenBalancesController.cjs
++++ b/dist/TokenBalancesController.cjs
+@@ -527,14 +527,16 @@ class TokenBalancesController extends (0, polling_controller_1.StaticIntervalPol
+             }
+             // Update with actual fetched balances only if the value has changed
+             aggregated.forEach(({ success, value, account, token, chainId }) => {
+-                var _a, _b, _c;
++                var _a, _b;
+                 if (success && value !== undefined) {
++                    // Ensure all accounts we add/update are in lower-case
++                    const lowerCaseAccount = account.toLowerCase();
+                     const newBalance = (0, controller_utils_1.toHex)(value);
+                     const tokenAddress = checksum(token);
+-                    const currentBalance = d.tokenBalances[account]?.[chainId]?.[tokenAddress];
++                    const currentBalance = d.tokenBalances[lowerCaseAccount]?.[chainId]?.[tokenAddress];
+                     // Only update if the balance has actually changed
+                     if (currentBalance !== newBalance) {
+-                        ((_c = ((_a = d.tokenBalances)[_b = account] ?? (_a[_b] = {})))[chainId] ?? (_c[chainId] = {}))[tokenAddress] = newBalance;
++                        ((_b = ((_a = d.tokenBalances)[lowerCaseAccount] ?? (_a[lowerCaseAccount] = {})))[chainId] ?? (_b[chainId] = {}))[tokenAddress] = newBalance;
+                     }
+                 }
+             });
+diff --git a/dist/TokenBalancesController.mjs b/dist/TokenBalancesController.mjs
+index 420934fb16ed6151b5b80fb7be04f81352b4aaf4..d735379adcaf77cbd46b4659f9bfd32046abebdf 100644
+--- a/dist/TokenBalancesController.mjs
++++ b/dist/TokenBalancesController.mjs
+@@ -523,14 +523,16 @@ export class TokenBalancesController extends StaticIntervalPollingController() {
+             }
+             // Update with actual fetched balances only if the value has changed
+             aggregated.forEach(({ success, value, account, token, chainId }) => {
+-                var _a, _b, _c;
++                var _a, _b;
+                 if (success && value !== undefined) {
++                    // Ensure all accounts we add/update are in lower-case
++                    const lowerCaseAccount = account.toLowerCase();
+                     const newBalance = toHex(value);
+                     const tokenAddress = checksum(token);
+-                    const currentBalance = d.tokenBalances[account]?.[chainId]?.[tokenAddress];
++                    const currentBalance = d.tokenBalances[lowerCaseAccount]?.[chainId]?.[tokenAddress];
+                     // Only update if the balance has actually changed
+                     if (currentBalance !== newBalance) {
+-                        ((_c = ((_a = d.tokenBalances)[_b = account] ?? (_a[_b] = {})))[chainId] ?? (_c[chainId] = {}))[tokenAddress] = newBalance;
++                        ((_b = ((_a = d.tokenBalances)[lowerCaseAccount] ?? (_a[lowerCaseAccount] = {})))[chainId] ?? (_b[chainId] = {}))[tokenAddress] = newBalance;
+                     }
+                 }
+             });
