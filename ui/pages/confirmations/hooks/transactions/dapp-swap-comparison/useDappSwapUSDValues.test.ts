@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { act } from '@testing-library/react';
 
@@ -10,7 +11,6 @@ import * as Utils from '../../../../../helpers/utils/util';
 import * as TokenUtils from '../../../utils/token';
 import { Confirmation } from '../../../types/confirm';
 import { useDappSwapUSDValues } from './useDappSwapUSDValues';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 
 async function runHook(
   tokenAddresses?: Hex[],
