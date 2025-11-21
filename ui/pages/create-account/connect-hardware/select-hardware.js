@@ -904,7 +904,7 @@ export default class SelectHardware extends Component {
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
                 this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
+                  category: MarketingActionNames.BuyNow,
                   event: 'Clicked Keycard Shell Buy Now',
                 });
                 openWindow(HardwareAffiliateLinks.KShell);
@@ -917,7 +917,7 @@ export default class SelectHardware extends Component {
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
                 this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
+                  category: MarketingActionNames.Tutorial,
                   event: 'Clicked Keycard Shell Tutorial',
                 });
                 openWindow(HardwareAffiliateTutorialLinks.KShell);
