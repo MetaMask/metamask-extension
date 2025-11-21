@@ -148,6 +148,7 @@
     "networkName": "string",
     "state": "string"
   },
+  "logs": [],
   "metamask": {
     "accountGroupsMetadata": {
       "entropy:01K98E0QDS4HYMTRJ5WHZ73ZWJ/0": {
@@ -315,18 +316,14 @@
     "canTrackWalletFundsObtained": "boolean",
     "claims": [],
     "claimsConfigurations": {
-      "supportedNetworks": [
-        "string"
-      ],
+      "supportedNetworks": ["string"],
       "validSubmissionWindowDays": "number"
     },
     "completedOnboarding": "boolean",
     "connectedStatusPopoverHasBeenShown": "boolean",
     "conversionRates": {},
     "coverageResults": {},
-    "cryptocurrencies": [
-      "string"
-    ],
+    "cryptocurrencies": ["string"],
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
@@ -479,9 +476,7 @@
     "firstTimeFlowType": "string",
     "forgottenPassword": "boolean",
     "fragments": {},
-    "fullScreenGasPollTokens": [
-      "string"
-    ],
+    "fullScreenGasPollTokens": ["string"],
     "gasEstimateType": "string",
     "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
@@ -529,12 +524,8 @@
               "groupIndex": "number"
             }
           },
-          "methods": [
-            "string"
-          ],
-          "scopes": [
-            "string"
-          ],
+          "methods": ["string"],
+          "scopes": ["string"],
           "type": "string",
           "metadata": {
             "name": "string",
@@ -547,9 +538,7 @@
         },
         "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": {
           "type": "string",
-          "scopes": [
-            "string"
-          ],
+          "scopes": ["string"],
           "id": "string",
           "address": "string",
           "options": {
@@ -562,9 +551,7 @@
               "groupIndex": "number"
             }
           },
-          "methods": [
-            "string"
-          ],
+          "methods": ["string"],
           "metadata": {
             "name": "string",
             "importTime": "number",
@@ -594,12 +581,8 @@
               "derivationPath": "string"
             }
           },
-          "methods": [
-            "string"
-          ],
-          "scopes": [
-            "string"
-          ],
+          "methods": ["string"],
+          "scopes": ["string"],
           "metadata": {
             "name": "string",
             "importTime": "number",
@@ -647,9 +630,7 @@
     "isWalletResetInProgress": "boolean",
     "keyrings": [
       {
-        "accounts": [
-          "string"
-        ],
+        "accounts": ["string"],
         "metadata": {
           "id": "string",
           "name": "string"
@@ -1011,9 +992,7 @@
     },
     "subjects": {},
     "submitHistory": [],
-    "subscriptionAccountsSeen": [
-      "string"
-    ],
+    "subscriptionAccountsSeen": ["string"],
     "subscriptions": [],
     "surveyLinkLastClickedOrClosed": "null",
     "swapsState": {
@@ -1078,9 +1057,7 @@
         "data": {
           "0x0d8775f648430679a709e98d2b0cb6250d2887ef": {
             "address": "string",
-            "aggregators": [
-              "string"
-            ],
+            "aggregators": ["string"],
             "decimals": "number",
             "iconUrl": "string",
             "name": "string",
@@ -1089,9 +1066,7 @@
           },
           "0x6b175474e89094c44da98b954eedeac495271d0f": {
             "address": "string",
-            "aggregators": [
-              "string"
-            ],
+            "aggregators": ["string"],
             "decimals": "number",
             "erc20Permit": "boolean",
             "fees": {
@@ -1244,6 +1219,5 @@
   "unconnectedAccount": {
     "state": "string"
   },
-  "version": "string",
-  "logs": []
+  "version": "string"
 }

@@ -15,6 +15,7 @@ import AddressListModal from '../../page-objects/pages/multichain/address-list-m
 
 // Skipping these tests temporarily until BIP44 is turned on using FF
 // if mock the FF response to turn on BIP44 then when the extension is reset the mocks will be lost
+// BUG #38080 - Reactivate vault corruption test after BIP44 is turned on with FF
 // eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
@@ -268,7 +269,6 @@ describe.skip('Vault Corruption', function () {
 
     const addressListModal = new AddressListModal(driver);
     await addressListModal.clickQRbutton();
-    await driver.delay(1000);
 
     const accountAddressModal = new AccountAddressModal(driver);
     const accountAddress = await accountAddressModal.getAccountAddress();
