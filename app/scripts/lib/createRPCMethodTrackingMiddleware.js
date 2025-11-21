@@ -512,12 +512,19 @@ export default function createRPCMethodTrackingMiddleware({
 
       const errorMessage = getErrorMessage(res.error);
 
-      if (res.error) {
+      if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
         stage = STAGE.REJECTED;
-        if (res.error.code !== errorCodes.provider.userRejectedRequest) {
+      } else if (
+        res.error?.code === errorCodes.rpc.internal &&
+        [errorMessage, res.error.message].includes(
+          'Request rejected by user or snap.',
+        )
+      ) {
+        // The signature was approved in MetaMask but rejected in the snap
+        event = eventType.REJECTED;
+        stage = STAGE.REJECTED;
           eventProperties.status = errorMessage;
-        }
       } else {
         event = eventType.APPROVED;
         stage = STAGE.APPROVED;
