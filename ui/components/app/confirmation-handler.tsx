@@ -172,20 +172,45 @@ export const ConfirmationHandler = () => {
 
   // Only navigate to confirmations if we have pending confirmations and we're not already
   // on a confirmation route or viewing a pending confirmation
+  // Exception: For snap approvals in fullscreen, allow navigation when on confirmation route
+  // if it's a different confirmation (e.g., navigate from update page to result page)
   // Exclude routes that are valid destinations from confirmation pages (e.g., /send for editing)
-  const shouldNavigateToConfirmation = useMemo(
-    () =>
-      hasPendingConfirmations &&
-      !isOnConfirmationRoute &&
-      !isViewingPendingConfirmation &&
-      !isOnExcludedRoute,
-    [
-      hasPendingConfirmations,
-      isOnConfirmationRoute,
-      isViewingPendingConfirmation,
-      isOnExcludedRoute,
-    ],
-  );
+  const shouldNavigateToConfirmation = useMemo(() => {
+    if (
+      !hasPendingConfirmations ||
+      isViewingPendingConfirmation ||
+      isOnExcludedRoute
+    ) {
+      return false;
+    }
+
+    // Exception for snap approvals in fullscreen: allow navigation when on confirmation route
+    // if it's a different confirmation (update -> result)
+    if (
+      isOnConfirmationRoute &&
+      isSnapApproval &&
+      isFullscreen &&
+      currentConfirmationId !== targetConfirmationId
+    ) {
+      return true;
+    }
+
+    // For all other cases, prevent navigation when already on confirmation route
+    if (isOnConfirmationRoute) {
+      return false;
+    }
+
+    return true;
+  }, [
+    hasPendingConfirmations,
+    isOnConfirmationRoute,
+    isSnapApproval,
+    isFullscreen,
+    currentConfirmationId,
+    targetConfirmationId,
+    isViewingPendingConfirmation,
+    isOnExcludedRoute,
+  ]);
 
   useEffect(() => {
     if (isLocked || !canRedirect || shouldSkipNetworkOperationNavigation) {
