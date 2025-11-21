@@ -88,10 +88,10 @@ export function createDappSwapMiddleware<
       ) {
         const { data, from, chainId } = getSwapDetails(params);
         if (data && securityAlertId) {
-          const { quotesInput } = getDataFromSwap(chainId as Hex, data, from);
+          const { quotesInput } = getDataFromSwap(chainId as Hex, data);
           if (quotesInput) {
             const startTime = new Date().getTime();
-            fetchQuotes(quotesInput)
+            fetchQuotes({ ...quotesInput, walletAddress: from })
               .then((quotes) => {
                 const endTime = new Date().getTime();
                 const latency = endTime - startTime;
