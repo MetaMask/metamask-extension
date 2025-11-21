@@ -3,15 +3,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   BoxBackgroundColor,
-  BoxBorderColor,
-  Button,
   ButtonIcon,
   ButtonIconSize,
-  ButtonSize,
-  ButtonVariant,
   IconName,
   Text,
-  TextButton,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -21,6 +16,7 @@ import { useSelector } from 'react-redux';
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
+import { Tab, Tabs } from '../../../../../components/ui/tabs';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 import { useDappSwapComparisonMetrics } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonMetrics';
 import { useDappSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapCheck';
@@ -41,43 +37,35 @@ const enum SwapType {
   Metamask = 'metamask',
 }
 
-const enum SwapButtonType {
-  Text = 'text',
-  ButtonType = 'button',
-}
+// Swaps tabs are memoized to prevent animation jitter in MMSwap tab
+const SwapTabs = React.memo(
+  ({ onTabClick }: { onTabClick: (key: string) => void }) => {
+    const t = useI18nContext();
 
-const SwapButton = ({
-  className = '',
-  type,
-  label,
-  onClick,
-}: {
-  className?: string;
-  type: SwapButtonType;
-  label: string;
-  onClick: () => void;
-}) => {
-  if (type === SwapButtonType.ButtonType) {
     return (
-      <Button
-        className={`dapp-swap_rounded-button ${className}`}
-        size={ButtonSize.Md}
-        variant={ButtonVariant.Secondary}
-        onClick={onClick}
+      <Tabs
+        defaultActiveTabKey="marketRate"
+        onTabClick={onTabClick}
+        tabListProps={{
+          className: 'dapp-swap__tabs',
+        }}
       >
-        {label}
-      </Button>
+        <Tab
+          tabKey="marketRate"
+          name={t('marketRate')}
+          className="flex-1"
+          data-testid="market-rate-tab"
+        />
+        <Tab
+          tabKey="mmswap"
+          name={t('metamaskSwap')}
+          className="flex-1 animate-mm-swap-text"
+          data-testid="metamask-swap-tab"
+        />
+      </Tabs>
     );
-  }
-  return (
-    <TextButton
-      className={`dapp-swap_text-button ${className}`}
-      onClick={onClick}
-    >
-      {label}
-    </TextButton>
-  );
-};
+  },
+);
 
 const DappSwapComparisonInner = () => {
   const t = useI18nContext();
@@ -134,6 +122,17 @@ const DappSwapComparisonInner = () => {
     selectedQuote,
   ]);
 
+  const onTabClick = useCallback(
+    (tabKey: string) => {
+      if (tabKey === 'marketRate') {
+        updateSwapToCurrent();
+      } else if (tabKey === 'mmswap') {
+        updateSwapToSelectedQuote();
+      }
+    },
+    [updateSwapToCurrent, updateSwapToSelectedQuote],
+  );
+
   const swapComparisonDisplayed =
     dappSwapUi?.enabled &&
     (selectedQuoteValueDifference >=
@@ -162,41 +161,13 @@ const DappSwapComparisonInner = () => {
 
   return (
     <Box>
-      <Box
-        borderColor={BoxBorderColor.BorderMuted}
-        borderWidth={1}
-        className="dapp-swap_wrapper"
-        marginBottom={4}
-        marginTop={2}
-        padding={1}
-      >
-        <SwapButton
-          className="dapp-swap_dapp-swap-button"
-          type={
-            selectedSwapType === SwapType.Current
-              ? SwapButtonType.ButtonType
-              : SwapButtonType.Text
-          }
-          onClick={updateSwapToCurrent}
-          label={t('marketRate')}
-        />
-        <SwapButton
-          className="dapp-swap_mm-swap-button"
-          type={
-            selectedSwapType === SwapType.Metamask
-              ? SwapButtonType.ButtonType
-              : SwapButtonType.Text
-          }
-          onClick={updateSwapToSelectedQuote}
-          label={t('metamaskSwap')}
-        />
-      </Box>
+      <SwapTabs onTabClick={onTabClick} />
       {showDappSwapComparisonBanner && dappTypeSelected && (
         <Box
           className="dapp-swap_callout"
-          backgroundColor={BoxBackgroundColor.BackgroundAlternative}
+          backgroundColor={BoxBackgroundColor.BackgroundSection}
           marginBottom={4}
-          padding={4}
+          padding={3}
           role="button"
           onClick={updateSwapToSelectedQuote}
         >

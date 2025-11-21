@@ -86,6 +86,7 @@ const cache = args.cache
         // `buildDependencies`
         config: [
           __filename,
+          join(context, '../.metamaskprodrc'),
           join(context, '../.metamaskrc'),
           join(context, '../builds.yml'),
           browsersListPath,

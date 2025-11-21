@@ -27,11 +27,15 @@ jest.mock('../store/actions', () => ({
 
 describe('useModalProps', () => {
   it('should return modal props and hideModal function', () => {
-    renderHook(() => {
-      const { props, hideModal } = useModalProps();
-
-      expect(props).toStrictEqual(MOCK_PROPS);
-      expect(hideModal).toStrictEqual(expect.any(Function));
+    const {
+      result: {
+        current: { props, hideModal },
+      },
+    } = renderHook(() => {
+      return useModalProps();
     });
+
+    expect(props).toStrictEqual(MOCK_PROPS);
+    expect(hideModal).toStrictEqual(expect.any(Function));
   });
 });

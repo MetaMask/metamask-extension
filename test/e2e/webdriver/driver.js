@@ -226,16 +226,6 @@ class Driver {
     if (typeof locator === 'string') {
       // If locator is a string we assume its a css selector
       return By.css(locator);
-    } else if (locator.css && locator.value) {
-      // Providing both css and value props will use xpath to look for an element
-      // matching the CSS selector with a specific value attribute.
-      const quotedValue = quoteXPathText(locator.value);
-      const baseXpath = cssToXPath.parse(locator.css).toXPath();
-      // Handle both cases: XPaths with predicates ending in ']' and simple XPaths without predicates
-      const xpath = baseXpath.endsWith(']')
-        ? baseXpath.replace(/\]$/u, ` and @value=${quotedValue}]`)
-        : `${baseXpath}[@value=${quotedValue}]`;
-      return By.xpath(xpath);
     } else if (locator.value) {
       // For backwards compatibility, checking if the locator has a value prop
       // tells us this is a Selenium locator

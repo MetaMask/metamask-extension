@@ -78,7 +78,7 @@ export const useAssetMetadata = (
       return undefined;
     }
     return undefined;
-  }, [shouldFetchMetadata, searchQuery]);
+  }, [shouldFetchMetadata, searchQuery, chainId, allowExternalServices]);
 
   return assetMetadata;
 };
