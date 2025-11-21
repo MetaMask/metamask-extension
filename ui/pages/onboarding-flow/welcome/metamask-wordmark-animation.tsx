@@ -29,7 +29,6 @@ export default function MetamaskWordMarkAnimation({
 }: MetamaskWordMarkAnimationProps) {
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const theme = useTheme();
-  const isTestEnvironment = Boolean(process.env.IN_TEST);
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError, setIsAnimationCompleted } = context;
   const {
@@ -140,7 +139,6 @@ export default function MetamaskWordMarkAnimation({
     !isWasmReady ||
     bufferLoading ||
     !buffer ||
-    isTestEnvironment ||
     status === 'loading' ||
     status === 'failed'
   ) {
