@@ -159,8 +159,6 @@ describe('Send ETH', function () {
             contractAddress,
           );
 
-          await driver.delay(1000);
-
           const inputAmount = await driver.findElement(
             'input[placeholder="0"]',
           );

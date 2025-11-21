@@ -96,7 +96,7 @@ async function confirmTx(): Promise<number> {
       );
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(
-          '[data-testid="activity-list-item-action"]',
+          '.transaction-status-label--confirmed',
         );
         return confirmedTxes.length === 1;
       }, 10000);

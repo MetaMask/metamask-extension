@@ -8,7 +8,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import {
   loginWithBalanceValidation,
-  loginWithoutBalanceValidation
+  loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
