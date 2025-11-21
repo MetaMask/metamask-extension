@@ -145,6 +145,7 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
             iconName={IconName.Setting}
             size={ButtonIconSize.Sm}
             ariaLabel={t('settings')}
+            data-testid="bridge__header-settings-button"
             onClick={() => {
               setIsSettingsModalOpen(true);
             }}
