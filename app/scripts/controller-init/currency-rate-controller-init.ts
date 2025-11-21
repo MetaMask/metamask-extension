@@ -29,7 +29,6 @@ export const CurrencyRateControllerInit: ControllerInitFunction<
     state: persistedState.CurrencyController,
     messenger: controllerMessenger,
     includeUsdRate: true,
-    interval: 5000,
     useExternalServices: () =>
       initMessenger.call('PreferencesController:getState').useExternalServices,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
