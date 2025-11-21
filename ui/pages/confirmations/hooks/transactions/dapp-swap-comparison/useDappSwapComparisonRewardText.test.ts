@@ -45,6 +45,7 @@ describe('useDappSwapComparisonRewardText', () => {
       isLoading: false,
       estimatedPoints: 1500,
       hasError: false,
+      accountOptedIn: null,
     });
 
     const result = await runHook();
@@ -58,6 +59,7 @@ describe('useDappSwapComparisonRewardText', () => {
       isLoading: false,
       estimatedPoints: 1500,
       hasError: true,
+      accountOptedIn: null,
     });
 
     const result = await runHook();
@@ -71,6 +73,7 @@ describe('useDappSwapComparisonRewardText', () => {
       isLoading: true,
       estimatedPoints: 1500,
       hasError: false,
+      accountOptedIn: null,
     });
 
     const result = await runHook();
@@ -84,6 +87,7 @@ describe('useDappSwapComparisonRewardText', () => {
       isLoading: false,
       estimatedPoints: 1500,
       hasError: false,
+      accountOptedIn: true,
     });
 
     const result = await runHook();
@@ -100,6 +104,21 @@ describe('useDappSwapComparisonRewardText', () => {
       isLoading: false,
       estimatedPoints: null,
       hasError: false,
+      accountOptedIn: null,
+    });
+
+    const result = await runHook();
+
+    expect(result).toBeNull();
+  });
+
+  it('returns null when accountOptedIn is false', async () => {
+    mockUseRewardsWithQuote.mockReturnValue({
+      shouldShowRewardsRow: true,
+      isLoading: false,
+      estimatedPoints: 1500,
+      hasError: false,
+      accountOptedIn: false,
     });
 
     const result = await runHook();
@@ -113,6 +132,7 @@ describe('useDappSwapComparisonRewardText', () => {
       isLoading: false,
       estimatedPoints: 2000,
       hasError: false,
+      accountOptedIn: true,
     });
 
     await runHook();
