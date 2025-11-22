@@ -47,24 +47,23 @@ export function getLatestSubscriptionStatus(
 }
 
 export function getUserAccountType(
-  account: InternalAccount,
+  account: InternalAccount | null,
 ): ShieldUserAccountTypeEnum {
-  if (account.type === 'eip155:eoa') {
+  if (account?.type === 'eip155:eoa') {
     return ShieldUserAccountTypeEnum.EOA;
-  } else if (account.type === 'eip155:erc4337') {
+  } else if (account?.type === 'eip155:erc4337') {
     return ShieldUserAccountTypeEnum.ERC4337;
   }
-  // Shield is currently only supported for EVM accounts, so this should never happen
-  throw new Error('Unsupported account type');
+  return ShieldUserAccountTypeEnum.OTHER;
 }
 
 export function getUserAccountCategory(
-  account: InternalAccount,
+  account: InternalAccount | null,
   keyringsMetadata: KeyringObject[],
 ): ShieldUserAccountCategoryEnum {
-  const entropySource = account.options?.entropySource;
+  const entropySource = account?.options?.entropySource;
   const isHdKeyringAccount =
-    account.metadata.keyring.type === KeyringType.hdKeyTree;
+    account?.metadata?.keyring?.type === KeyringType.hdKeyTree;
 
   if (entropySource && isHdKeyringAccount) {
     const keyringIndex = keyringsMetadata.findIndex(
@@ -105,7 +104,7 @@ export function getUserBalanceCategory(balanceInUSD: number): BalanceCategory {
 }
 
 export function getUserAccountTypeAndCategory(
-  account: InternalAccount,
+  account: InternalAccount | null,
   keyringsMetadata: KeyringObject[],
 ) {
   const userAccountType = getUserAccountType(account);
@@ -129,7 +128,7 @@ export function getUserAccountTypeAndCategory(
  * @returns The common tracking props.
  */
 export function getShieldCommonTrackingProps(
-  account: InternalAccount,
+  account: InternalAccount | null,
   keyringsMetadata: KeyringObject[],
   balanceInUSD: number,
 ) {

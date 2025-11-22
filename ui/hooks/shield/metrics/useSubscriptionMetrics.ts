@@ -5,12 +5,13 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getMetaMaskHdKeyrings, getSelectedAccount } from '../../../selectors';
+import { getMetaMaskHdKeyrings } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../useAccountTotalFiatBalance';
 import { getShieldCommonTrackingProps } from '../../../../shared/modules/shield';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
 import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import {
   CaptureShieldClaimSubmissionEventParams,
   CaptureShieldCryptoConfirmationEventParams,
@@ -36,7 +37,11 @@ import {
 export const useSubscriptionMetrics = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const trackEvent = useContext(MetaMetricsContext);
-  const selectedAccount = useSelector(getSelectedAccount);
+  const evmInternalAccount = useSelector((state) =>
+    // Account address will be the same for all EVM accounts
+    getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
+  );
+  const selectedAccount = evmInternalAccount;
   const hdKeyingsMetadata = useSelector(getMetaMaskHdKeyrings);
   const { totalFiatBalance } = useAccountTotalFiatBalance(
     selectedAccount,
