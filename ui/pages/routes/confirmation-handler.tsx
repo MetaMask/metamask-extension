@@ -85,8 +85,8 @@ export const ConfirmationHandler = () => {
   // Ported from home.component - componentDidMount/componentDidUpdate
   useEffect(() => {
     // In fullscreen, skip navigation for dapp confirmations (they open in Dialog windows)
-    // but allow wallet-initiated snap flows
-    if (isFullscreen && !hasWalletInitiatedSnapApproval) {
+    // but allow wallet-initiated snap flows and approval flows (e.g., smart transactions)
+    if (isFullscreen && !hasWalletInitiatedSnapApproval && !hasApprovalFlows) {
       return;
     }
 
