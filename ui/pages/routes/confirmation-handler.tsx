@@ -75,6 +75,7 @@ export const ConfirmationHandler = () => {
 
   const canRedirect = !isNotification && !stayOnHomePage;
 
+  // Snap flows that *should* navigate in fullscreen, based on E2E specs
   const hasWalletInitiatedSnapApproval = pendingApprovals.some(
     (approval) =>
       approval.type === 'wallet_installSnap' ||
@@ -86,10 +87,22 @@ export const ConfirmationHandler = () => {
       approval.type === 'snap_manageAccounts:showNameSnapAccount',
   );
 
+  // Snap flows that *should not* navigate in fullscreen, based on E2E specs
+  const hasDappSmartTransactionStatus = pendingApprovals.some(
+    (approval) =>
+      approval.type === 'smartTransaction:showSmartTransactionStatusPage' &&
+      approval.origin !== 'metamask' &&
+      approval.origin !== 'MetaMask',
+  );
+
   // Ported from home.component - componentDidMount/componentDidUpdate
   useEffect(() => {
+    if (isFullscreen && hasDappSmartTransactionStatus) {
+      return;
+    }
+
     // In fullscreen, skip navigation for dapp confirmations (they open in Dialog windows)
-    // but allow wallet-initiated snap flows and approval flows (e.g., smart transactions)
+    // but allow wallet-initiated flows and approval flows
     if (isFullscreen && !hasWalletInitiatedSnapApproval && !hasApprovalFlows) {
       return;
     }
@@ -120,6 +133,7 @@ export const ConfirmationHandler = () => {
   }, [
     pathname,
     hasWalletInitiatedSnapApproval,
+    hasDappSmartTransactionStatus,
     isNotification,
     isPopup,
     isFullscreen,
