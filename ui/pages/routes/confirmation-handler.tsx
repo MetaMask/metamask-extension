@@ -15,6 +15,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_FULLSCREEN,
 } from '../../../shared/constants/app';
 import {
   getApprovalFlows,
@@ -36,6 +37,7 @@ export const ConfirmationHandler = () => {
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
+  const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
   // const isSidepanel = envType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   const swapsRouteState = useSelector(getBackgroundSwapRouteState);
@@ -75,9 +77,10 @@ export const ConfirmationHandler = () => {
 
   // Ported from home.component - componentDidMount/componentDidUpdate
   useEffect(() => {
-    // Only run this navigation logic in popup or notification windows.
-    // In fullscreen, dapp confirmations open in Dialog windows - don't navigate to them.
-    if (!isPopup && !isNotification) {
+    // In fullscreen mode (home.html), don't auto-navigate to confirmations.
+    // Dapp confirmations should open in Dialog popup windows instead.
+    // Allow navigation in popup, notification, sidepanel, and background/test environments.
+    if (isFullscreen) {
       return;
     }
 
@@ -106,8 +109,9 @@ export const ConfirmationHandler = () => {
     }
   }, [
     pathname,
-    isNotification,
-    isPopup,
+    // isNotification,
+    // isPopup,
+    isFullscreen,
     canRedirect,
     showAwaitingSwapScreen,
     haveSwapsQuotes,
