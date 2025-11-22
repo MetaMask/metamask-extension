@@ -79,7 +79,11 @@ export const ConfirmationHandler = () => {
     (approval) =>
       approval.type === 'wallet_installSnap' ||
       approval.type === 'wallet_updateSnap' ||
-      approval.type === 'wallet_installSnapResult',
+      approval.type === 'wallet_installSnapResult' ||
+      approval.type === 'snap_manageAccounts:showSnapAccountRedirect' ||
+      approval.type === 'snap_manageAccounts:confirmAccountCreation' ||
+      approval.type === 'snap_manageAccounts:confirmAccountRemoval' ||
+      approval.type === 'snap_manageAccounts:showNameSnapAccount',
   );
 
   // Ported from home.component - componentDidMount/componentDidUpdate
