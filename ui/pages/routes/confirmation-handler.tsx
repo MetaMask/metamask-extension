@@ -75,12 +75,18 @@ export const ConfirmationHandler = () => {
 
   const canRedirect = !isNotification && !stayOnHomePage;
 
+  const hasWalletInitiatedSnapApproval = pendingApprovals.some(
+    (approval) =>
+      approval.type === 'wallet_installSnap' ||
+      approval.type === 'wallet_updateSnap' ||
+      approval.type === 'wallet_installSnapResult',
+  );
+
   // Ported from home.component - componentDidMount/componentDidUpdate
   useEffect(() => {
-    // In fullscreen mode (home.html), don't auto-navigate to confirmations.
-    // Dapp confirmations should open in Dialog popup windows instead.
-    // Allow navigation in popup, notification, sidepanel, and background/test environments.
-    if (isFullscreen) {
+    // In fullscreen, skip navigation for dapp confirmations (they open in Dialog windows)
+    // but allow wallet-initiated snap flows
+    if (isFullscreen && !hasWalletInitiatedSnapApproval) {
       return;
     }
 
@@ -109,8 +115,9 @@ export const ConfirmationHandler = () => {
     }
   }, [
     pathname,
-    // isNotification,
-    // isPopup,
+    hasWalletInitiatedSnapApproval,
+    isNotification,
+    isPopup,
     isFullscreen,
     canRedirect,
     showAwaitingSwapScreen,
