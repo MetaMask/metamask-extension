@@ -115,7 +115,7 @@ export default class Home extends PureComponent {
     showMultiRpcModal: PropTypes.bool.isRequired,
     showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
-    isNotification: PropTypes.bool.isRequired,
+    // isNotification: PropTypes.bool.isRequired,
     // isSidepanel: PropTypes.bool.isRequired,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
@@ -123,19 +123,19 @@ export default class Home extends PureComponent {
     defaultHomeActiveTabName: PropTypes.string,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     onTabClick: PropTypes.func.isRequired,
-    haveSwapsQuotes: PropTypes.bool.isRequired,
-    showAwaitingSwapScreen: PropTypes.bool.isRequired,
-    haveBridgeQuotes: PropTypes.bool.isRequired,
+    // haveSwapsQuotes: PropTypes.bool.isRequired,
+    // showAwaitingSwapScreen: PropTypes.bool.isRequired,
+    // haveBridgeQuotes: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
-    swapsFetchParams: PropTypes.object,
-    location: PropTypes.object,
+    // swapsFetchParams: PropTypes.object,
+    // location: PropTypes.object,
     shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
-    pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
-    hasApprovalFlows: PropTypes.bool.isRequired,
+    // pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
+    // hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
@@ -171,7 +171,7 @@ export default class Home extends PureComponent {
     showShieldEntryModal: PropTypes.bool,
     isSocialLoginFlow: PropTypes.bool,
     lookupSelectedNetworks: PropTypes.func.isRequired,
-    navState: PropTypes.object,
+    // navState: PropTypes.object,
     evaluateCohortEligibility: PropTypes.func,
     pendingShieldCohort: PropTypes.string,
     setPendingShieldCohort: PropTypes.func,
@@ -187,27 +187,25 @@ export default class Home extends PureComponent {
   constructor(props) {
     super(props);
 
-    // REMOVED: Navigation logic moved to ConfirmationHandler
-    // const {
-    //   attemptCloseNotificationPopup,
-    //   haveSwapsQuotes,
-    //   haveBridgeQuotes,
-    //   isNotification,
-    //   pendingApprovals,
-    //   showAwaitingSwapScreen,
-    //   swapsFetchParams,
-    //   location,
-    //   navState,
-    // } = this.props;
+    const {
+      attemptCloseNotificationPopup,
+      //   haveSwapsQuotes,
+      //   haveBridgeQuotes,
+      //   isNotification,
+      //   pendingApprovals,
+      //   showAwaitingSwapScreen,
+      //   swapsFetchParams,
+      //   location,
+      //   navState,
+    } = this.props;
     // const stayOnHomePage =
     //   Boolean(location?.state?.stayOnHomePage) ||
     //   Boolean(navState?.stayOnHomePage);
 
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
-      props.attemptCloseNotificationPopup();
+      attemptCloseNotificationPopup();
     }
-
     // REMOVED: Navigation logic moved to ConfirmationHandler
     // } else if (
     //   pendingApprovals.length ||
@@ -877,39 +875,9 @@ export default class Home extends PureComponent {
       isSocialLoginFlow,
     } = this.props;
 
-    const {
-      pendingApprovals,
-      hasApprovalFlows,
-      haveSwapsQuotes,
-      swapsFetchParams,
-      haveBridgeQuotes,
-      showAwaitingSwapScreen,
-      isNotification,
-      location,
-      navState,
-    } = this.props;
-
-    // Read stayOnHomePage from both v5 location.state and v5-compat navState
-    const stayOnHomePage =
-      Boolean(location?.state?.stayOnHomePage) ||
-      Boolean(navState?.stayOnHomePage);
-
-    // Don't render Home content when there are pending approvals/swaps
-    // to prevent crashes from incomplete state
-    // ConfirmationHandler will handle the navigation
-    const shouldNotRenderContent =
-      pendingApprovals.length ||
-      hasApprovalFlows ||
-      (!isNotification &&
-        !stayOnHomePage &&
-        (showAwaitingSwapScreen ||
-          haveSwapsQuotes ||
-          swapsFetchParams ||
-          haveBridgeQuotes));
-
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
-    } else if (this.state.notificationClosing || shouldNotRenderContent) {
+    } else if (this.state.notificationClosing) {
       return null;
     }
 
