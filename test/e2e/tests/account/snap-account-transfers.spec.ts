@@ -10,10 +10,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
@@ -107,9 +104,8 @@ describe('Snap Account Transfers', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('85,025.00', 'USD');
         await homePage.checkPageIsLoaded();
 
         await installSnapSimpleKeyring(driver, false);
