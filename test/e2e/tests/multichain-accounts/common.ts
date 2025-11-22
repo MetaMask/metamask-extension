@@ -10,7 +10,6 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
-import NetworkManager from '../../page-objects/pages/network-manager';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
 import {
