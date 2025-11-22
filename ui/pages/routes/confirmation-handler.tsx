@@ -12,7 +12,10 @@ import {
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../shared/constants/app';
 import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
@@ -27,10 +30,11 @@ import { useNavState } from '../../contexts/navigation-state';
 export const ConfirmationHandler = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { pathname } = location;
   const navState = useNavState();
 
   const envType = getEnvironmentType();
-  // const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
+  const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
   // const isSidepanel = envType === ENVIRONMENT_TYPE_SIDEPANEL;
 
@@ -66,12 +70,19 @@ export const ConfirmationHandler = () => {
       Boolean(navState?.stayOnHomePage),
     [location.state, navState],
   );
+
   const canRedirect = !isNotification && !stayOnHomePage;
 
   // Ported from home.component - componentDidMount/componentDidUpdate
   useEffect(() => {
+    // Only run this navigation logic in popup or notification windows.
+    // In fullscreen, dapp confirmations open in Dialog windows - don't navigate to them.
+    if (!isPopup && !isNotification) {
+      return;
+    }
+
     // Only run when on home/default page (for now)
-    if (location.pathname !== DEFAULT_ROUTE) {
+    if (pathname !== DEFAULT_ROUTE) {
       return;
     }
 
@@ -94,7 +105,9 @@ export const ConfirmationHandler = () => {
       }
     }
   }, [
-    location.pathname,
+    pathname,
+    isNotification,
+    isPopup,
     canRedirect,
     showAwaitingSwapScreen,
     haveSwapsQuotes,
