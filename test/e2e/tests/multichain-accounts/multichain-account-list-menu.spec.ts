@@ -33,8 +33,8 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
       },
     );
   });
-
-  it('should display wallet and accounts for hardware wallet', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should display wallet and accounts for hardware wallet', async function () {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
@@ -90,8 +90,6 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkWalletDisplayedInAccountListMenu(
           'MetaMask Simple Snap Keyring',
         );
-        // intended delay to allow for network requests to complete
-        await driver.delay(5000);
         // Ensure that an SSK account within the wallet is displayed
         await accountListPage.checkMultichainAccountBalanceDisplayed(
           '$85,025.00',

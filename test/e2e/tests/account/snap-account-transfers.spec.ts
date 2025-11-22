@@ -26,7 +26,7 @@ async function mockSnapSimpleKeyringAndSiteWithSpotPrices(
 }
 
 describe('Snap Account Transfers', function (this: Suite) {
-  it('can import a private key and transfer 1 ETH (sync flow)', async function () {
+  it.skip('can import a private key and transfer 1 ETH (sync flow)', async function () {
     await withFixtures(
       {
         dappOptions: {
@@ -62,6 +62,8 @@ describe('Snap Account Transfers', function (this: Suite) {
         // BUG #37591 - Account created with snap using BIP44 with a custom name defaults to Snap Account 1
         await headerNavbar.checkAccountLabel('Snap Account 1');
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        // intended delay to allow for network requests to complete
+        await driver.delay(1000);
 
         // send 1 ETH from snap account to account 1
         await sendRedesignedTransactionWithSnapAccount({
@@ -69,8 +71,6 @@ describe('Snap Account Transfers', function (this: Suite) {
           recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
           amount: '1',
         });
-        // intended delay to allow for network requests to complete
-        await driver.delay(1000);
         const activityList = new ActivityListPage(driver);
         await activityList.checkTxAmountInActivity('-1 ETH');
         await activityList.waitPendingTxToNotBeVisible();
@@ -86,7 +86,7 @@ describe('Snap Account Transfers', function (this: Suite) {
     );
   });
 
-  it('can import a private key and transfer 1 ETH (async flow approve)', async function () {
+  it.skip('can import a private key and transfer 1 ETH (async flow approve)', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

@@ -87,9 +87,6 @@ export async function withMultichainAccountsDesignEnabled(
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();
       const headerNavbar = new HeaderNavbar(driver);
-      const networkManager = new NetworkManager(driver);
-      await networkManager.openNetworkManager();
-      await networkManager.selectNetworkByNameWithWait('Ethereum');
       await headerNavbar.openAccountMenu();
 
       await test(driver);
