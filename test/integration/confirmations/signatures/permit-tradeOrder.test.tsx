@@ -67,9 +67,11 @@ describe('Permit Trade Order Tests', () => {
   it('renders trade order signature with correct titles', async () => {
     await renderTradeOrderSignature();
 
-    expect(
-      await screen.findByText(tEn('confirmTitleSignature') as string),
-    ).toBeInTheDocument();
+    const confirmationTitle = await screen.findByTestId('confirm-title');
+    expect(confirmationTitle).toHaveTextContent(
+      tEn('confirmTitleSignature') as string,
+    );
+
     expect(
       await screen.findByText(tEn('confirmTitleDescSign') as string),
     ).toBeInTheDocument();

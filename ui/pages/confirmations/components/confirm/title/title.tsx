@@ -308,6 +308,7 @@ const ConfirmTitle: React.FC = memo(() => {
           paddingTop={4}
           paddingBottom={2}
           textAlign={TextAlign.Center}
+          data-testid="confirm-title"
         >
           {title}
         </Text>
