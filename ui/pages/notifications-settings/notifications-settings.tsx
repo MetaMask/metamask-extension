@@ -2,7 +2,10 @@ import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
+import {
+  NOTIFICATIONS_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   Box,
   IconName,
@@ -97,7 +100,7 @@ export default function NotificationsSettings() {
               // Use browser history for natural back navigation
               // Fallback to notifications route if no history exists
               if (window.history.length > 1) {
-                navigate(-1);
+                navigate(PREVIOUS_ROUTE);
               } else {
                 navigate(NOTIFICATIONS_ROUTE);
               }
@@ -120,7 +123,7 @@ export default function NotificationsSettings() {
           borderColor={BorderColor.borderMuted}
           width={BlockSize.Full}
           style={{ height: '1px', borderBottomWidth: 0 }}
-        ></Box>
+        />
 
         {isMetamaskNotificationsEnabled && (
           <>

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  act,
-} from '@testing-library/react';
-import { Provider } from 'react-redux';
+import { screen, fireEvent, waitFor, act } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -16,6 +9,7 @@ import {
   toAccountWalletId,
 } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import {
   getInternalAccountListSpreadByScopesByGroupId,
@@ -26,14 +20,13 @@ import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-rows-hovered-list';
 
 const mockStore = configureStore([]);
-const mockPush = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
   ...jest.requireActual('../../../selectors/multichain-accounts/account-tree'),
@@ -325,12 +318,11 @@ const createMockBalance = (
 
 const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
   const store = mockStore(createMockState());
-  return render(
-    <Provider store={store}>
-      <MultichainHoveredAddressRowsList groupId={groupId}>
-        <div data-testid="hover-trigger">Hover Me</div>
-      </MultichainHoveredAddressRowsList>
-    </Provider>,
+  return renderWithProvider(
+    <MultichainHoveredAddressRowsList groupId={groupId}>
+      <div data-testid="hover-trigger">Hover Me</div>
+    </MultichainHoveredAddressRowsList>,
+    store,
   );
 };
 
@@ -700,7 +692,7 @@ describe('MultichainHoveredAddressRowsList', () => {
 
       fireEvent.click(viewAllButton);
 
-      expect(mockPush).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(GROUP_ID_MOCK)}`,
       );
     });
@@ -740,7 +732,7 @@ describe('MultichainHoveredAddressRowsList', () => {
 
       fireEvent.click(viewAllButton);
 
-      expect(mockPush).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(SPECIAL_GROUP_ID)}`,
       );
     });

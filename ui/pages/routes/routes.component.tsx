@@ -692,11 +692,12 @@ export default function Routes() {
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
         <Switch>
-          <RouteWithLayout
-            path={ONBOARDING_ROUTE}
-            component={OnboardingFlow}
-            layout={LegacyLayout}
-          />
+          <RouteWithLayout path={ONBOARDING_ROUTE} layout={LegacyLayout}>
+            {createV5CompatRoute(OnboardingFlow, {
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             path={LOCK_ROUTE}
             component={Lock}
@@ -783,19 +784,22 @@ export default function Routes() {
             component={Notifications}
             layout={RootLayout}
           />
-          <RouteWithLayout
-            authenticated
-            path={SNAPS_ROUTE}
-            component={SnapList}
-            exact
-            layout={LegacyLayout}
-          />
-          <RouteWithLayout
-            authenticated
-            path={SNAPS_VIEW_ROUTE}
-            component={SnapView}
-            layout={LegacyLayout}
-          />
+          <RouteWithLayout path={SNAPS_ROUTE} exact layout={LegacyLayout}>
+            {createV5CompatRoute(SnapList, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout path={SNAPS_VIEW_ROUTE} layout={LegacyLayout}>
+            {createV5CompatRoute(SnapView, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout path={`${SEND_ROUTE}/:page?`} layout={RootLayout}>
             {createV5CompatRoute<{ page?: string }>(SendPage, {
               wrapper: AuthenticatedV5Compat,
@@ -859,11 +863,17 @@ export default function Routes() {
             })}
           </Route>
           <Route path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}>
-            {createV5CompatRoute<{ id?: string }>(ConfirmationPage, {
-              wrapper: AuthenticatedV5Compat,
-              includeParams: true,
-              paramsAsProps: false,
-            })}
+            {(props: RouteComponentProps<{ id?: string }>) => {
+              const renderFn = createV5CompatRoute<{ id?: string }>(
+                ConfirmationPage,
+                {
+                  wrapper: AuthenticatedV5Compat,
+                  includeParams: true,
+                  paramsAsProps: false,
+                },
+              );
+              return renderFn(props);
+            }}
           </Route>
           <RouteWithLayout
             authenticated
@@ -1162,7 +1172,12 @@ export default function Routes() {
     if (!accountDetailsAddress || isMultichainAccountsState1Enabled) {
       return null;
     }
-    return <AccountDetails address={accountDetailsAddress} />;
+    return (
+      <AccountDetails
+        address={accountDetailsAddress}
+        navigate={createV5CompatNavigate(history)}
+      />
+    );
   };
 
   const loadMessage = loadingMessage
@@ -1280,7 +1295,9 @@ export default function Routes() {
 
       {renderRoutes()}
 
-      {isUnlocked ? <Alerts history={history} /> : null}
+      {isUnlocked ? (
+        <Alerts navigate={createV5CompatNavigate(history)} />
+      ) : null}
       {React.createElement(
         ToastMaster as React.ComponentType<{
           location: RouteComponentProps['location'];

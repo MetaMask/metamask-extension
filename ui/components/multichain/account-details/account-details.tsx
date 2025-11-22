@@ -49,9 +49,19 @@ import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
 
-type AccountDetailsProps = { address: string };
+type AccountDetailsProps = {
+  address: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  navigate?: (
+    to: any,
+    options?: {
+      replace?: boolean;
+      state?: Record<string, unknown>;
+    },
+  ) => void;
+};
 
-export const AccountDetails = ({ address }: AccountDetailsProps) => {
+export const AccountDetails = ({ address, navigate }: AccountDetailsProps) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -219,7 +229,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
         }}
         holdToRevealType="PrivateKey"
       />
-      {displayExportSrpQuiz && (
+      {displayExportSrpQuiz && navigate && (
         <SRPQuiz
           keyringId={keyringId}
           isOpen={srpQuizModalVisible}
@@ -228,6 +238,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
             onClose();
           }}
           closeAfterCompleting
+          navigate={navigate}
         />
       )}
     </>

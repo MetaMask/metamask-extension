@@ -449,6 +449,7 @@ const WalletDetails = ({ params: propsParams }: WalletDetailsProps = {}) => {
           isOpen={srpQuizModalVisible}
           onClose={() => setSrpQuizModalVisible(false)}
           closeAfterCompleting
+          navigate={navigate}
         />
       )}
       {isModalOpen && (

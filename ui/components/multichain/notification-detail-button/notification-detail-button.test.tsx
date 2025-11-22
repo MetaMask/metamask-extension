@@ -6,16 +6,6 @@ import {
   NotificationDetailButtonProps,
 } from './notification-detail-button';
 
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
-  return {
-    ...original,
-    useHistory: () => ({
-      push: jest.fn(),
-    }),
-  };
-});
-
 describe('NotificationDetailButton', () => {
   const defaultProps: NotificationDetailButtonProps = {
     variant: ButtonVariant.Primary,

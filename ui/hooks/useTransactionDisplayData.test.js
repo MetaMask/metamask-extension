@@ -1,11 +1,6 @@
-import React from 'react';
 import * as reactRedux from 'react-redux';
-import { Provider } from 'react-redux';
-import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
-import { MemoryRouter } from 'react-router-dom';
 import mockState from '../../test/data/mock-state.json';
-import configureStore from '../store/store';
 import transactions from '../../test/data/transaction-data.json';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -16,6 +11,7 @@ import { createMockInternalAccount } from '../../test/jest/mocks';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import * as i18nhooks from './useI18nContext';
 import * as useTokenFiatAmountHooks from './useTokenFiatAmount';
 import { useTransactionDisplayData } from './useTransactionDisplayData';
@@ -131,29 +127,36 @@ const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
   snapOptions: undefined,
 });
 
-const renderHookWithRouter = (cb, tokenAddress) => {
-  const initialEntries = [
-    tokenAddress ? `${ASSET_ROUTE}/${tokenAddress}` : DEFAULT_ROUTE,
-  ];
-
-  const defaultState = {
-    ...mockState,
-    metamask: {
-      ...mockState.metamask,
-      completeOnboarding: true,
-      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-      currentCurrency: 'ETH',
-      useCurrencyRateCheck: false, // to force getShouldShowFiat to return false
-      preferences: {
-        getShowFiatInTestnets: false,
+const getMockState = () => ({
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    completeOnboarding: true,
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+    currentCurrency: 'ETH',
+    useCurrencyRateCheck: false, // to force getShouldShowFiat to return false
+    preferences: {
+      getShowFiatInTestnets: false,
+    },
+    allNfts: [],
+    internalAccounts: {
+      accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
+      selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
+    },
+    allTokens: {
+      [CHAIN_IDS.MAINNET]: {
+        [ADDRESS_MOCK]: [
+          {
+            address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+            symbol: 'ABC',
+            decimals: 18,
+          },
+        ],
       },
-      allNfts: [],
-      internalAccounts: {
-        accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
-        selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
-      },
-      allTokens: {
-        [CHAIN_IDS.MAINNET]: {
+    },
+    allDetectedTokens: {
+      [CHAIN_IDS.MAINNET]: [
+        {
           [ADDRESS_MOCK]: [
             {
               address: '0xabca64466f257793eaa52fcfff5066894b76a149',
@@ -162,41 +165,21 @@ const renderHookWithRouter = (cb, tokenAddress) => {
             },
           ],
         },
-      },
-      allDetectedTokens: {
-        [CHAIN_IDS.MAINNET]: [
-          {
-            [ADDRESS_MOCK]: [
-              {
-                address: '0xabca64466f257793eaa52fcfff5066894b76a149',
-                symbol: 'ABC',
-                decimals: 18,
-              },
-            ],
-          },
-        ],
-      },
-      tokensChainsCache: {
-        '0x4': {
-          data: {
-            '0xabca64466f257793eaa52fcfff5066894b76a149': {
-              address: '0xabca64466f257793eaa52fcfff5066894b76a149',
-              symbol: 'ABC',
-              decimals: 18,
-            },
+      ],
+    },
+    tokensChainsCache: {
+      '0x4': {
+        data: {
+          '0xabca64466f257793eaa52fcfff5066894b76a149': {
+            address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+            symbol: 'ABC',
+            decimals: 18,
           },
         },
       },
     },
-  };
-
-  const wrapper = ({ children }) => (
-    <MemoryRouter initialEntries={initialEntries}>
-      <Provider store={configureStore(defaultState)}>{children}</Provider>
-    </MemoryRouter>
-  );
-  return renderHook(cb, { wrapper });
-};
+  },
+});
 
 describe('useTransactionDisplayData', () => {
   const dispatch = sinon.spy();
@@ -223,19 +206,24 @@ describe('useTransactionDisplayData', () => {
       const expected = expectedResults[idx];
       const tokenAddress =
         transactionGroup.primaryTransaction?.destinationTokenAddress;
+      const pathname = tokenAddress
+        ? `${ASSET_ROUTE}/${tokenAddress}`
+        : DEFAULT_ROUTE;
 
       it(`should return a title of ${expected.title}`, () => {
-        const { result } = renderHookWithRouter(
+        const { result } = renderHookWithProvider(
           () => useTransactionDisplayData(transactionGroup),
-          tokenAddress,
+          getMockState(),
+          pathname,
         );
         expect(result.current.title).toStrictEqual(expected.title);
       });
 
       it(`should return a primaryCurrency of ${expected.primaryCurrency}`, () => {
-        const { result } = renderHookWithRouter(
+        const { result } = renderHookWithProvider(
           () => useTransactionDisplayData(transactionGroup),
-          tokenAddress,
+          getMockState(),
+          pathname,
         );
         expect(result.current.primaryCurrency).toStrictEqual(
           expected.primaryCurrency,
@@ -243,9 +231,10 @@ describe('useTransactionDisplayData', () => {
       });
 
       it(`should return a secondaryCurrency of ${expected.secondaryCurrency} for ${transactionGroup.primaryTransaction.type}`, () => {
-        const { result } = renderHookWithRouter(
+        const { result } = renderHookWithProvider(
           () => useTransactionDisplayData(transactionGroup),
-          tokenAddress,
+          getMockState(),
+          pathname,
         );
         expect(result.current.secondaryCurrency).toStrictEqual(
           expected.secondaryCurrency,
@@ -253,9 +242,10 @@ describe('useTransactionDisplayData', () => {
       });
 
       it(`should return a recipientAddress of ${expected.recipientAddress}`, () => {
-        const { result } = renderHookWithRouter(
+        const { result } = renderHookWithProvider(
           () => useTransactionDisplayData(transactionGroup),
-          tokenAddress,
+          getMockState(),
+          pathname,
         );
         expect(result.current.recipientAddress).toStrictEqual(
           expected.recipientAddress,
@@ -265,8 +255,10 @@ describe('useTransactionDisplayData', () => {
   });
 
   it('should return an appropriate object', () => {
-    const { result } = renderHookWithRouter(() =>
-      useTransactionDisplayData(transactions[0]),
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(transactions[0]),
+      getMockState(),
+      DEFAULT_ROUTE,
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
   });

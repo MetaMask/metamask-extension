@@ -32,7 +32,7 @@ import { getMergedConnectionsListWithGatorPermissions } from '../../../../select
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
 import { ConnectionListItem } from './connection-list-item';
 
-export const PermissionsPage = () => {
+const PermissionsPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const headerRef = useRef();
@@ -137,3 +137,5 @@ export const PermissionsPage = () => {
     </Page>
   );
 };
+
+export default PermissionsPage;

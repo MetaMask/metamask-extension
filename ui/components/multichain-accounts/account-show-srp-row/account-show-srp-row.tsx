@@ -80,6 +80,7 @@ export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
           isOpen={srpQuizModalVisible}
           onClose={() => setSrpQuizModalVisible(false)}
           closeAfterCompleting
+          navigate={navigate}
         />
       ) : null}
     </>

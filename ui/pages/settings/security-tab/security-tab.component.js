@@ -298,6 +298,7 @@ export default class SecurityTab extends PureComponent {
             <SRPQuiz
               isOpen={this.state.srpQuizModalVisible}
               onClose={this.hideSrpQuizModal}
+              navigate={this.props.navigate}
             />
           )}
         </div>
