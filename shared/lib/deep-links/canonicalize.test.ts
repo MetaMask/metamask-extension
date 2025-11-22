@@ -82,4 +82,36 @@ describe('canonicalize', () => {
     expect(original.searchParams.get(SIG_PARAM)).toBe('abc');
     expect(original.searchParams.get(SIG_PARAMS_PARAM)).toBe('a,b');
   });
+
+  it('removes all params when `sig_params` is present but empty (no params signed)', () => {
+    const url = new URL(
+      `https://example.com/path?a=2&b=1&${SIG_PARAM}=abc&${SIG_PARAMS_PARAM}`,
+    );
+    // No a or b params should be included, only sig_params= should remain
+    expect(canonicalize(url)).toBe('https://example.com/path?sig_params=');
+  });
+
+  it('removes all params when `sig_params=` is present but empty (no params signed)', () => {
+    const url = new URL(
+      `https://example.com/path?a=2&b=1&${SIG_PARAM}=abc&${SIG_PARAMS_PARAM}=`,
+    );
+    // No a or b params should be included,  only sig_params= should remain
+    expect(canonicalize(url)).toBe('https://example.com/path?sig_params=');
+  });
+
+  it('treats URLs with `sig_params` (when no other params are included) as valid sig_params', () => {
+    const url = new URL(
+      `https://example.com/path?${SIG_PARAM}=abc&${SIG_PARAMS_PARAM}`,
+    );
+    // No params were included, but sig_params should still remain
+    expect(canonicalize(url)).toBe('https://example.com/path?sig_params=');
+  });
+
+  it('treats URLs with `sig_params=` (when no other params are included) as valid sig_params', () => {
+    const url = new URL(
+      `https://example.com/path?${SIG_PARAM}=abc&${SIG_PARAMS_PARAM}=`,
+    );
+    // No params were included, but sig_params should still remain
+    expect(canonicalize(url)).toBe('https://example.com/path?sig_params=');
+  });
 });
