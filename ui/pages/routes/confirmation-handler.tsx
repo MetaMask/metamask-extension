@@ -82,7 +82,8 @@ export const ConfirmationHandler = () => {
       pathname === '/confirm-add-suggested-token' ||
       pathname === '/confirm-add-suggested-nft';
 
-    const isOnModalPage = pathname === '/account-list';
+    const isOnModalPage =
+      pathname === '/account-list' || pathname.startsWith('/snaps');
 
     return isOnConfirmationPage || isOnModalPage;
   }, [pathname]);
