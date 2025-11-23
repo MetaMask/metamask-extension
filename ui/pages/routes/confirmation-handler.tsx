@@ -6,7 +6,6 @@ import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 // eslint-disable-next-line import/no-restricted-paths
@@ -75,6 +74,19 @@ export const ConfirmationHandler = () => {
       approval.origin !== 'MetaMask',
   );
 
+  const shouldSkipRedirect = useMemo(() => {
+    const isOnConfirmationPage =
+      pathname.startsWith('/confirm-transaction/') ||
+      pathname.startsWith('/confirm/') ||
+      pathname.startsWith('/connect/') ||
+      pathname === '/confirm-add-suggested-token' ||
+      pathname === '/confirm-add-suggested-nft';
+
+    const isOnModalPage = pathname === '/account-list';
+
+    return isOnConfirmationPage || isOnModalPage;
+  }, [pathname]);
+
   // Ported from home.component - componentDidMount/componentDidUpdate
   useEffect(() => {
     if (isFullscreen && hasDappSmartTransactionStatus) {
@@ -87,8 +99,7 @@ export const ConfirmationHandler = () => {
       return;
     }
 
-    // Only run when on home/default page (for now)
-    if (pathname !== DEFAULT_ROUTE) {
+    if (shouldSkipRedirect) {
       return;
     }
 
@@ -123,6 +134,7 @@ export const ConfirmationHandler = () => {
     navigate,
     pathname,
     pendingApprovals,
+    shouldSkipRedirect,
     showAwaitingSwapScreen,
     swapsFetchParams,
   ]);
