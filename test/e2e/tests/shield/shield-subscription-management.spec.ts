@@ -57,11 +57,6 @@ describe('Shield Plan Stripe Integration', function () {
             isActiveUser: true,
           });
         },
-        ignoredConsoleErrors: [
-          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-          'Could not load Rive WASM file',
-          'XMLHttpRequest is not a constructor',
-        ],
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -125,11 +120,6 @@ describe('Shield Plan Stripe Integration', function () {
           const shieldMockttpService = new ShieldMockttpService();
           return shieldMockttpService.setup(server, { isActiveUser: true });
         },
-        ignoredConsoleErrors: [
-          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-          'Could not load Rive WASM file',
-          'XMLHttpRequest is not a constructor',
-        ],
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);

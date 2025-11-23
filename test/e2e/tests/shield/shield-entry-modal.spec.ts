@@ -42,11 +42,6 @@ describe('Shield Entry Modal', function () {
           const shieldMockttpService = new ShieldMockttpService();
           return shieldMockttpService.setup(server);
         },
-        ignoredConsoleErrors: [
-          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-          'Could not load Rive WASM file',
-          'XMLHttpRequest is not a constructor',
-        ],
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
