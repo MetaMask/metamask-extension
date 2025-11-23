@@ -105,15 +105,21 @@ export function getReactCompilerLogger(): ReactCompilerLogger {
  *
  * @param target - The target version of the React Compiler.
  * @param verbose - Whether to enable verbose mode.
+ * @param debug - The debug level to use.
+ * - 'all': Fail build on and display debug information for all compilation errors.
+ * - 'critical': Fail build on and display debug information only for critical compilation errors.
+ * - 'none': Prevent build from failing.
  * @returns The React Compiler loader object with the loader and configured options.
  */
 export const getReactCompilerLoader = (
   target: ReactCompilerLoaderOption['target'],
   verbose: boolean,
+  debug: 'all' | 'critical' | undefined,
 ) => {
   const reactCompilerOptions = {
     target,
     logger: verbose ? (reactCompilerLogger as Logger) : undefined,
+    panicThreshold: debug ? `${debug}_errors` : 'none',
   } as const satisfies ReactCompilerLoaderOption;
 
   return {

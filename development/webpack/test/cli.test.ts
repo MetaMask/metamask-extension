@@ -26,6 +26,7 @@ describe('./utils/cli.ts', () => {
     generatePolicy: false,
     snow: false,
     reactCompilerVerbose: false,
+    reactCompilerDebug: undefined,
     dryRun: false,
     stats: false,
   };
