@@ -82,7 +82,6 @@ const blocklistedHosts = [
   'cdn.jsdelivr.net',
   'unpkg.com',
   'mock-redirect-url.com',
-  'claims.dev-api.cx.metamask.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
@@ -1335,8 +1334,7 @@ async function setupMocking(
     const isTestOnlyDomain =
       request.headers.host === 'cdn.jsdelivr.net' ||
       request.headers.host === 'unpkg.com' ||
-      request.headers.host === 'mock-redirect-url.com' ||
-      request.headers.host === 'claims.dev-api.cx.metamask.io';
+      request.headers.host === 'mock-redirect-url.com';
 
     if (
       request.headers.host.match(browserAPIRequestDomains) === null &&
