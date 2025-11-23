@@ -168,6 +168,8 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
   });
 
   beforeEach(() => {
+    process.env = { ...originalEnv };
+
     mockStartShieldSubscriptionWithCard.mockResolvedValue({
       checkoutSessionUrl: mockCheckoutSessionUrl,
     });
@@ -218,6 +220,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    process.env = { ...originalEnv };
   });
 
   it('should start the subscription with card', async () => {
@@ -241,8 +244,6 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
     expect(mockPlatform.openTab).toHaveBeenCalledWith({
       url: mockCheckoutSessionUrl,
     });
-
-    process.env.IN_TEST = originalEnv.IN_TEST;
   });
 });
 
