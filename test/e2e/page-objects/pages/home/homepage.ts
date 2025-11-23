@@ -99,6 +99,9 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
+  private readonly emptyBalance =
+    '[data-testid="coin-overview-balance-empty-state"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
@@ -294,6 +297,11 @@ class HomePage {
     console.log(
       `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
     );
+  }
+
+  async checkBalanceEmptyStateIsDisplayed(): Promise<void> {
+    console.log('Check balance empty state is displayed on homepage');
+    await this.driver.waitForSelector(this.emptyBalance);
   }
 
   /**
