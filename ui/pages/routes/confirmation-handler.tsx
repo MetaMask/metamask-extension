@@ -86,8 +86,19 @@ export const ConfirmationHandler = () => {
       approval.type === 'snap_manageAccounts:showNameSnapAccount',
   );
 
+  const hasDappSmartTransactionStatus = pendingApprovals.some(
+    (approval) =>
+      approval.type === 'smartTransaction:showSmartTransactionStatusPage' &&
+      approval.origin !== 'metamask' &&
+      approval.origin !== 'MetaMask',
+  );
+
   // Ported from home.component - componentDidMount/componentDidUpdate
   useEffect(() => {
+    if (isFullscreen && hasDappSmartTransactionStatus) {
+      return;
+    }
+
     // In fullscreen, skip navigation for dapp confirmations (they open in Dialog windows)
     // but allow wallet-initiated snap flows and approval flows (e.g., smart transactions)
     if (isFullscreen && !hasWalletInitiatedSnapApproval && !hasApprovalFlows) {
@@ -119,6 +130,7 @@ export const ConfirmationHandler = () => {
     }
   }, [
     pathname,
+    hasDappSmartTransactionStatus,
     hasWalletInitiatedSnapApproval,
     isNotification,
     isPopup,
