@@ -359,9 +359,19 @@ function getOptions(
     reactCompilerVerbose: {
       array: false,
       default: false,
-      description: 'Enables/disables React Compiler verbose mode',
+      description:
+        'Enables/disables React Compiler verbose mode and statistics',
       group: toOrange('Developer assistance:'),
       type: 'boolean',
+    },
+    reactCompilerDebug: {
+      array: false,
+      choices: ['all', 'critical'],
+      default: undefined,
+      description:
+        'Sets React Compiler panic threshold that fails the build for all errors or critical errors only',
+      group: toOrange('Developer assistance:'),
+      type: 'string',
     },
 
     dryRun: {

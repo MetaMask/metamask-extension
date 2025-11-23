@@ -238,6 +238,7 @@ const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 const reactCompilerLoader = getReactCompilerLoader(
   '17',
   args.reactCompilerVerbose,
+  args.reactCompilerDebug,
 );
 
 const config = {
