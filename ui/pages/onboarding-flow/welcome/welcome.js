@@ -83,7 +83,6 @@ export default function OnboardingWelcome() {
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
-  const isTestEnvironment = Boolean(process.env.IN_TEST);
 
   const { animationCompleted } = useRiveWasmContext();
   const shouldSkipAnimation = Boolean(
@@ -92,7 +91,7 @@ export default function OnboardingWelcome() {
 
   // In test environments or when returning from another page, skip animations
   const [isAnimationComplete, setIsAnimationComplete] = useState(
-    isTestEnvironment || shouldSkipAnimation,
+    shouldSkipAnimation || false,
   );
 
   const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
@@ -424,7 +423,7 @@ export default function OnboardingWelcome() {
       width={BlockSize.Full}
       className="welcome-container"
     >
-      {!isLoggingIn && !isTestEnvironment && (
+      {!isLoggingIn && (
         <Suspense fallback={<Box />}>
           <MetaMaskWordMarkAnimation
             setIsAnimationComplete={setIsAnimationComplete}
@@ -442,7 +441,7 @@ export default function OnboardingWelcome() {
             skipTransition={shouldSkipAnimation}
           />
 
-          {!isTestEnvironment && isAnimationComplete && (
+          {isAnimationComplete && (
             <Suspense fallback={<Box />}>
               <FoxAppearAnimation skipTransition={shouldSkipAnimation} />
             </Suspense>
@@ -457,7 +456,7 @@ export default function OnboardingWelcome() {
         </>
       )}
 
-      {!isTestEnvironment && isLoggingIn && (
+      {isLoggingIn && (
         <Suspense fallback={<Box />}>
           <FoxAppearAnimation isLoader />
         </Suspense>
