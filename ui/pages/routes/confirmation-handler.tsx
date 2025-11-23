@@ -78,6 +78,7 @@ export const ConfirmationHandler = () => {
     const isOnConfirmationPage =
       pathname.startsWith('/confirm-transaction/') ||
       pathname.startsWith('/confirm/') ||
+      pathname.startsWith('/confirmation/') ||
       pathname.startsWith('/connect/') ||
       pathname === '/confirm-add-suggested-token' ||
       pathname === '/confirm-add-suggested-nft';
