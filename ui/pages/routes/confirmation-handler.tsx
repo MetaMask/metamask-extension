@@ -85,7 +85,9 @@ export const ConfirmationHandler = () => {
     const isOnModalPage =
       pathname === '/account-list' || pathname.startsWith('/snaps');
 
-    return isOnConfirmationPage || isOnModalPage;
+    const isOnUnlockPage = pathname === '/unlock';
+
+    return isOnConfirmationPage || isOnModalPage || isOnUnlockPage;
   }, [pathname]);
 
   // Ported from home.component - componentDidMount/componentDidUpdate
