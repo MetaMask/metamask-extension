@@ -32,6 +32,7 @@ class ReactCompilerLogger {
     if (filename === null) {
       return;
     }
+    const { options: errorDetails } = event.detail ?? {};
     switch (event.kind) {
       case 'CompileSuccess':
         this.compiledCount++;
@@ -43,7 +44,9 @@ class ReactCompilerLogger {
         this.skippedFiles.push(filename);
         break;
       case 'CompileError':
-        if (event.detail?.options?.category === 'Todo') {
+        // This error is thrown for syntax that is not yet supported by the React Compiler.
+        // We count these separately as "unsupported" errors, since there's no actionable fix we can apply.
+        if (errorDetails?.category === 'Todo') {
           this.todoCount++;
           this.todoFiles.push(filename);
           break;
@@ -51,11 +54,10 @@ class ReactCompilerLogger {
         this.errorCount++;
         this.errorFiles.push(filename);
         console.error(
-          `❌ React Compiler error in ${filename}: ${JSON.stringify(event.detail?.options) || 'Unknown error'}`,
+          `❌ React Compiler error in ${filename}: ${errorDetails ? JSON.stringify(errorDetails) : 'Unknown error'}`,
         );
         break;
       default:
-        // Ignore other event types
         break;
     }
   }
@@ -89,16 +91,22 @@ class ReactCompilerLogger {
   }
 }
 
-// Create a singleton logger instance
 const reactCompilerLogger = new ReactCompilerLogger();
 
 /**
- * Get the React Compiler logger instance for accessing statistics
+ * Get the React Compiler logger singleton instance to access statistics.
  */
 export function getReactCompilerLogger(): ReactCompilerLogger {
   return reactCompilerLogger;
 }
 
+/**
+ * Get the React Compiler loader.
+ *
+ * @param target - The target version of the React Compiler.
+ * @param verbose - Whether to enable verbose mode.
+ * @returns The React Compiler loader object with the loader and configured options.
+ */
 export const getReactCompilerLoader = (
   target: ReactCompilerLoaderOption['target'],
   verbose: boolean,
