@@ -64,7 +64,6 @@ describe('Shield Plan Stripe Integration', function () {
         ],
       },
       async ({ driver }) => {
-        await driver.delay(5_000);
         await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
