@@ -157,6 +157,8 @@ const subscriptionService = new SubscriptionService({
   platform: mockPlatform,
   webAuthenticator: mockWebAuthenticator,
 });
+// Mock environment variables
+const originalEnv = process.env;
 
 describe('SubscriptionService - startSubscriptionWithCard', () => {
   const MOCK_STATE = createSwapsMockStore().metamask;
@@ -219,6 +221,8 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
   });
 
   it('should start the subscription with card', async () => {
+    delete process.env.IN_TEST; // unset IN_TEST environment variable
+
     await subscriptionService.startSubscriptionWithCard({
       products: [PRODUCT_TYPES.SHIELD],
       isTrialRequested: false,
@@ -237,6 +241,8 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
     expect(mockPlatform.openTab).toHaveBeenCalledWith({
       url: mockCheckoutSessionUrl,
     });
+
+    process.env.IN_TEST = originalEnv.IN_TEST;
   });
 });
 

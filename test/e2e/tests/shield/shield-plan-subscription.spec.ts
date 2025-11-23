@@ -1,19 +1,11 @@
 import { Mockttp } from 'mockttp';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import {
-  BASE_SHIELD_SUBSCRIPTION,
-  MOCK_CHECKOUT_SESSION_URL,
-  SHIELD_PRICING_DATA,
-  SHIELD_USER_EVENTS_RESPONSE,
-} from '../../helpers/shield/constants';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
 
 // Local fixture for this spec file
