@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = function (api) {
   api.cache(false);
+  const slash = `\\${path.sep}`;
   return {
     parserOpts: {
       strictMode: true,
@@ -11,7 +12,10 @@ module.exports = function (api) {
     },
     overrides: [
       {
-        test: /\/ui\/(?:components|contexts|hooks|layouts|pages)\/.+(?!\.(?:test|stories|container))\.(?:m?[jt]s|[jt]sx)$/u,
+        test: new RegExp(
+          `^${path.join(__dirname, 'ui')}${slash}(?:components|contexts|hooks|layouts|pages)${slash}.+(?!\\.(?:test|stories|container))\\.(?:m?[jt]s|[jt]sx)$`,
+          'u',
+        ),
         exclude: /\/node_modules\//u,
         plugins: [['babel-plugin-react-compiler', { target: '17' }]],
       },
