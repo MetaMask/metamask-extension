@@ -44,8 +44,6 @@ function createShieldFixture() {
 }
 
 describe('Shield Plan Stripe Integration', function () {
-  // TODO: This test is skipped until the claim form is implemented with the final design.
-  // eslint-disable-next-line mocha/no-skipped-tests
   it('should successfully fill and submit shield claim form', async function () {
     await withFixtures(
       {

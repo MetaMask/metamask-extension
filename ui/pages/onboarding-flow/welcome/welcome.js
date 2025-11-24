@@ -90,9 +90,8 @@ export default function OnboardingWelcome() {
   );
 
   // In test environments or when returning from another page, skip animations
-  const [isAnimationComplete, setIsAnimationComplete] = useState(
-    shouldSkipAnimation || false,
-  );
+  const [isAnimationComplete, setIsAnimationComplete] =
+    useState(shouldSkipAnimation);
 
   const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
   // Don't allow users to come back to this screen after they
