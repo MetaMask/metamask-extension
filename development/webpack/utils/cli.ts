@@ -366,10 +366,10 @@ function getOptions(
     },
     reactCompilerDebug: {
       array: false,
-      choices: ['all', 'critical'],
-      default: undefined,
+      choices: ['all', 'critical', 'none'],
+      default: 'none',
       description:
-        'Sets React Compiler panic threshold that fails the build for all errors or critical errors only',
+        'Sets React Compiler panic threshold that fails the build for all errors or critical errors only. If `none`, the build will not fail.',
       group: toOrange('Developer assistance:'),
       type: 'string',
     },
