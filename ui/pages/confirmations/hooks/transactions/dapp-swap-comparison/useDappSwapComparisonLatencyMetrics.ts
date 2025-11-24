@@ -3,9 +3,9 @@ import { useCallback, useMemo, useRef } from 'react';
 const N_A = 'N/A';
 
 export function useDappSwapComparisonLatencyMetrics() {
-  const uiInitializedTime = useRef<number>(0);
-  const requestDetectionLatency = useRef(0);
-  const swapComparisonLatency = useRef(0);
+  const uiInitializedTime = useRef<number>();
+  const requestDetectionLatency = useRef<number>();
+  const swapComparisonLatency = useRef<number>();
 
   // using useMemo here as it is the first hook to be executed
   useMemo(() => {
@@ -13,19 +13,19 @@ export function useDappSwapComparisonLatencyMetrics() {
   }, []);
 
   const updateRequestDetectionLatency = useCallback(() => {
-    if (requestDetectionLatency.current) {
+    if (requestDetectionLatency.current !== undefined) {
       return;
     }
     requestDetectionLatency.current =
-      new Date().getTime() - uiInitializedTime.current;
+      new Date().getTime() - (uiInitializedTime.current ?? 0);
   }, []);
 
   const updateSwapComparisonLatency = useCallback(() => {
-    if (swapComparisonLatency.current) {
+    if (swapComparisonLatency.current !== undefined) {
       return swapComparisonLatency.current.toString();
     }
     swapComparisonLatency.current =
-      new Date().getTime() - uiInitializedTime.current;
+      new Date().getTime() - (uiInitializedTime.current ?? 0);
     return swapComparisonLatency.current.toString();
   }, []);
 
