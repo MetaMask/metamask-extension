@@ -33,6 +33,7 @@ export type DappSwapMiddlewareRequest<
 const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
 const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
+const DEFAULT_QUOTEFEE = 250;
 
 const getSwapDetails = (params: DappSwapMiddlewareRequest['params']) => {
   if (!params?.length) {
@@ -65,18 +66,26 @@ export function createDappSwapMiddleware<
 >({
   fetchQuotes,
   setSwapQuotes,
+  dappSwapMetricsFlag,
 }: {
   fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
   setSwapQuotes: (
     uniqueId: string,
     info: { quotes?: QuoteResponse[]; latency?: number },
   ) => void;
+  //eslint-disable-next-line @typescript-eslint/naming-convention
+  dappSwapMetricsFlag: { enabled: boolean; bridge_quote_fees: number };
 }) {
   return async (
     req: DappSwapMiddlewareRequest<Params>,
     _res: JsonRpcResponse<Result>,
     next: () => void,
   ) => {
+    const { enabled: dappSwapEnabled, bridge_quote_fees: bridgeQuoteFees } =
+      dappSwapMetricsFlag;
+    if (!dappSwapEnabled) {
+      return next();
+    }
     try {
       const { securityAlertResponse, params, origin } = req;
       const { securityAlertId } = securityAlertResponse ?? {};
@@ -91,7 +100,11 @@ export function createDappSwapMiddleware<
           const { quotesInput } = getDataFromSwap(chainId as Hex, data);
           if (quotesInput) {
             const startTime = new Date().getTime();
-            fetchQuotes({ ...quotesInput, walletAddress: from })
+            fetchQuotes({
+              ...quotesInput,
+              walletAddress: from,
+              fee: bridgeQuoteFees ?? DEFAULT_QUOTEFEE,
+            })
               .then((quotes) => {
                 const endTime = new Date().getTime();
                 const latency = endTime - startTime;

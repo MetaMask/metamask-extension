@@ -17,7 +17,6 @@ describe('dapp-swap command utils', () => {
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0xfde4c96c8593536e31f229ea8f37b2ada2699bb2',
-            fee: 250,
             gasIncluded: false,
             gasIncluded7702: false,
             srcChainId: '0x2105',
@@ -43,7 +42,6 @@ describe('dapp-swap command utils', () => {
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0x0000000000000000000000000000000000000000',
-            fee: 250,
             gasIncluded: false,
             gasIncluded7702: false,
             srcChainId: '0x2105',
@@ -68,7 +66,6 @@ describe('dapp-swap command utils', () => {
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-            fee: 250,
             gasIncluded: false,
             gasIncluded7702: false,
             srcChainId: '0x2105',
@@ -93,7 +90,6 @@ describe('dapp-swap command utils', () => {
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0xfde4c96c8593536e31f229ea8f37b2ada2699bb2',
-            fee: 250,
             gasIncluded: false,
             gasIncluded7702: false,
             srcChainId: '0x2105',
@@ -118,7 +114,6 @@ describe('dapp-swap command utils', () => {
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0x0000000000000000000000000000000000000000',
-            fee: 250,
             gasIncluded: false,
             gasIncluded7702: false,
             srcChainId: '0x2105',
@@ -144,7 +139,6 @@ describe('dapp-swap command utils', () => {
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0xfde4c96c8593536e31f229ea8f37b2ada2699bb2',
-            fee: 250,
             gasIncluded: false,
             gasIncluded7702: false,
             srcChainId: '0x2105',
@@ -170,7 +164,6 @@ describe('dapp-swap command utils', () => {
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0x0000000000000000000000000000000000000000',
-            fee: 250,
             gasIncluded: false,
             gasIncluded7702: false,
             srcChainId: '0x2105',
@@ -196,7 +189,6 @@ describe('dapp-swap command utils', () => {
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-            fee: 250,
             gasIncluded: false,
             gasIncluded7702: false,
             srcChainId: '0x2105',
@@ -221,7 +213,6 @@ describe('dapp-swap command utils', () => {
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0xfde4c96c8593536e31f229ea8f37b2ada2699bb2',
-            fee: 250,
             gasIncluded: false,
             gasIncluded7702: false,
             srcChainId: '0x2105',
@@ -246,7 +237,6 @@ describe('dapp-swap command utils', () => {
           quotesInput: {
             destChainId: '0x2105',
             destTokenAddress: '0x0000000000000000000000000000000000000000',
-            fee: 250,
             gasIncluded: false,
             gasIncluded7702: false,
             srcChainId: '0x2105',

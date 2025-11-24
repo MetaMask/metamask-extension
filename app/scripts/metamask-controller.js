@@ -7059,6 +7059,9 @@ export default class MetamaskController extends EventEmitter {
         setSwapQuotes: this.appStateController.setDappSwapComparisonData.bind(
           this.appStateController,
         ),
+        dappSwapMetricsFlag:
+          this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+            ?.dappSwapMetrics,
       }),
     );
 
