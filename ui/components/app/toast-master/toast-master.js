@@ -11,6 +11,7 @@ import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
   SURVEY_LINK,
+  METAMETRICS_SETTINGS_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
   BorderColor,
@@ -759,9 +760,9 @@ function Pna25Banner() {
   const showPna25Banner = useSelector(selectShowPna25Banner);
 
   const handleLearnMore = () => {
-    // Open privacy policy link and acknowledge
+    // Open MetaMetrics settings help page and acknowledge
     global.platform.openTab({
-      url: PRIVACY_POLICY_LINK,
+      url: METAMETRICS_SETTINGS_LINK,
     });
     setPna25Acknowledged(true);
   };
