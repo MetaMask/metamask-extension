@@ -261,10 +261,9 @@ export function selectShowPna25Banner(state: Pick<State, 'metamask'>): boolean {
     return false; // User hasn't completed onboarding yet
   }
 
-  // extension-ux-pna25 is a boolean flag
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const remoteFeatureFlags = getRemoteFeatureFlags(state as any);
-  const isPna25Enabled = Boolean(remoteFeatureFlags?.['extension-ux-pna25']);
+  const isPna25Enabled = remoteFeatureFlags?.extensionUxPna25;
 
   // Check all conditions
   if (!isPna25Enabled) {
