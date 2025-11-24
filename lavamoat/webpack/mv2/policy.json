@@ -2996,7 +2996,7 @@
     },
     "string.prototype.matchall>es-abstract>array-buffer-byte-length": {
       "packages": {
-        "string.prototype.matchall>call-bind": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>es-abstract>is-array-buffer": true
       }
     },
@@ -3353,14 +3353,14 @@
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>get-intrinsic": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true,
         "string.prototype.matchall>call-bind>set-function-length": true
       }
     },
     "@lavamoat/webpack>json-stable-stringify>call-bound": {
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
-        "string.prototype.matchall>get-intrinsic": true
+        "eslint-plugin-react>array-includes>get-intrinsic": true
       }
     },
     "@ngraveio/bc-ur>cbor-sync": {
@@ -3641,12 +3641,12 @@
         "string.prototype.matchall>es-abstract>array-buffer-byte-length": true,
         "string.prototype.matchall>call-bind": true,
         "@metamask/eth-token-tracker>deep-equal>es-get-iterator": true,
-        "string.prototype.matchall>get-intrinsic": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true,
         "browserify>util>is-arguments": true,
         "string.prototype.matchall>es-abstract>is-array-buffer": true,
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
         "string.prototype.matchall>es-abstract>is-regex": true,
-        "string.prototype.matchall>es-abstract>is-shared-array-buffer": true,
+        "@metamask/eth-token-tracker>deep-equal>is-shared-array-buffer": true,
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "@ngraveio/bc-ur>assert>object-is": true,
         "@lavamoat/webpack>json-stable-stringify>object-keys": true,
@@ -3717,15 +3717,15 @@
       },
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>get-intrinsic": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true,
         "string.prototype.matchall>has-symbols": true,
         "browserify>util>is-arguments": true,
         "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-map": true,
-        "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-set": true,
+        "eslint-plugin-react>array-includes>es-abstract>is-set": true,
         "eslint-plugin-react>array-includes>is-string": true,
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "process": true,
-        "@metamask/eth-token-tracker>deep-equal>es-get-iterator>stop-iteration-iterator": true
+        "eslint-plugin-react>array-includes>es-abstract>stop-iteration-iterator": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": {
@@ -3978,7 +3978,7 @@
         "define": true
       }
     },
-    "string.prototype.matchall>get-intrinsic": {
+    "eslint-plugin-react>array-includes>get-intrinsic": {
       "globals": {
         "AggregateError": true,
         "FinalizationRegistry": true,
@@ -3986,16 +3986,19 @@
         "WeakRef": true
       },
       "packages": {
+        "eslint-plugin-react>array-includes>get-intrinsic>async-function": true,
+        "eslint-plugin-react>array-includes>get-intrinsic>async-generator-function": true,
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
-        "string.prototype.matchall>es-abstract>es-object-atoms": true,
+        "eslint-plugin-react>array-includes>es-object-atoms": true,
         "browserify>has>function-bind": true,
+        "eslint-plugin-react>array-includes>get-intrinsic>generator-function": true,
         "string.prototype.matchall>get-intrinsic>get-proto": true,
         "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>has-symbols": true,
         "axios>form-data>hasown": true,
-        "string.prototype.matchall>get-intrinsic>math-intrinsics": true
+        "eslint-plugin-react>array-includes>math-intrinsics": true
       }
     },
     "remote-redux-devtools>redux-devtools-core>get-params": {
@@ -4006,7 +4009,7 @@
     "string.prototype.matchall>get-intrinsic>get-proto": {
       "packages": {
         "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": true,
-        "string.prototype.matchall>es-abstract>es-object-atoms": true
+        "eslint-plugin-react>array-includes>es-object-atoms": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk": {
@@ -4054,7 +4057,7 @@
         "string.prototype.matchall>call-bind>es-define-property": true
       }
     },
-    "koa>is-generator-function>has-tostringtag": {
+    "axios>form-data>es-set-tostringtag>has-tostringtag": {
       "packages": {
         "string.prototype.matchall>has-symbols": true
       }
@@ -4166,7 +4169,7 @@
         "eth-ens-namehash>idna-uts46-hx>punycode": true
       }
     },
-    "string.prototype.matchall>internal-slot": {
+    "eslint-plugin-react>array-includes>es-abstract>internal-slot": {
       "packages": {
         "string.prototype.matchall>es-abstract>es-errors": true,
         "axios>form-data>hasown": true,
@@ -4176,13 +4179,14 @@
     "browserify>util>is-arguments": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "koa>is-generator-function>has-tostringtag": true
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "string.prototype.matchall>es-abstract>is-array-buffer": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>get-intrinsic": true
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true
       }
     },
     "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-bigint": {
@@ -4192,8 +4196,8 @@
     },
     "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-boolean-object": {
       "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "koa>is-generator-function>has-tostringtag": true
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "string.prototype.matchall>es-abstract>is-callable": {
@@ -4203,12 +4207,13 @@
     },
     "@metamask/eth-token-tracker>deep-equal>is-date-object": {
       "packages": {
-        "koa>is-generator-function>has-tostringtag": true
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
-    "koa>is-generator-function": {
+    "browserify>util>is-generator-function": {
       "packages": {
-        "koa>is-generator-function>has-tostringtag": true
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "@material-ui/core>@material-ui/styles>jss>is-in-browser": {
@@ -4224,28 +4229,34 @@
     },
     "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-number-object": {
       "packages": {
-        "koa>is-generator-function>has-tostringtag": true
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "string.prototype.matchall>es-abstract>is-regex": {
       "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "koa>is-generator-function>has-tostringtag": true
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "string.prototype.matchall>es-abstract>gopd": true,
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true,
+        "axios>form-data>hasown": true
       }
     },
-    "string.prototype.matchall>es-abstract>is-shared-array-buffer": {
+    "@metamask/eth-token-tracker>deep-equal>is-shared-array-buffer": {
       "packages": {
-        "string.prototype.matchall>call-bind": true
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true
       }
     },
     "eslint-plugin-react>array-includes>is-string": {
       "packages": {
-        "koa>is-generator-function>has-tostringtag": true
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
-    "string.prototype.matchall>es-abstract>es-to-primitive>is-symbol": {
+    "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-symbol": {
       "packages": {
-        "string.prototype.matchall>has-symbols": true
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "string.prototype.matchall>has-symbols": true,
+        "eslint-plugin-react>array-includes>es-abstract>safe-regex-test": true
       }
     },
     "browserify>util>is-typed-array": {
@@ -4255,8 +4266,8 @@
     },
     "@metamask/eth-token-tracker>deep-equal>which-collection>is-weakset": {
       "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>get-intrinsic": true
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>borc>iso-url": {
@@ -4587,7 +4598,7 @@
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
-    "string.prototype.matchall>es-abstract>object-inspect": {
+    "string.prototype.matchall>side-channel>object-inspect": {
       "globals": {
         "HTMLElement": true,
         "WeakRef": true
@@ -4602,7 +4613,9 @@
     "gulp>vinyl-fs>object.assign": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>define-properties": true,
+        "eslint-plugin-react>array-includes>es-object-atoms": true,
         "string.prototype.matchall>has-symbols": true,
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
@@ -5542,6 +5555,13 @@
         "buffer": true
       }
     },
+    "eslint-plugin-react>array-includes>es-abstract>safe-regex-test": {
+      "packages": {
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
+        "string.prototype.matchall>es-abstract>is-regex": true
+      }
+    },
     "remote-redux-devtools>socketcluster-client>sc-channel": {
       "packages": {
         "remote-redux-devtools>socketcluster-client>sc-channel>component-emitter": true
@@ -5591,7 +5611,7 @@
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
-        "string.prototype.matchall>get-intrinsic": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>es-abstract>has-property-descriptors": true
       }
@@ -5623,30 +5643,30 @@
     "string.prototype.matchall>side-channel>side-channel-list": {
       "packages": {
         "string.prototype.matchall>es-abstract>es-errors": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true
+        "string.prototype.matchall>side-channel>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-map": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
-        "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true
+        "eslint-plugin-react>array-includes>get-intrinsic": true,
+        "string.prototype.matchall>side-channel>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
-        "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true,
+        "string.prototype.matchall>side-channel>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-map": true
       }
     },
     "string.prototype.matchall>side-channel": {
       "packages": {
         "string.prototype.matchall>es-abstract>es-errors": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true,
+        "string.prototype.matchall>side-channel>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-list": true,
         "string.prototype.matchall>side-channel>side-channel-map": true,
         "string.prototype.matchall>side-channel>side-channel-weakmap": true
@@ -5687,12 +5707,13 @@
         "remote-redux-devtools>socketcluster-client>uuid": true
       }
     },
-    "@metamask/eth-token-tracker>deep-equal>es-get-iterator>stop-iteration-iterator": {
+    "eslint-plugin-react>array-includes>es-abstract>stop-iteration-iterator": {
       "globals": {
         "StopIteration": true
       },
       "packages": {
-        "string.prototype.matchall>internal-slot": true
+        "string.prototype.matchall>es-abstract>es-errors": true,
+        "eslint-plugin-react>array-includes>es-abstract>internal-slot": true
       }
     },
     "stream-browserify": {
@@ -5901,7 +5922,7 @@
       "packages": {
         "pumpify>inherits": true,
         "browserify>util>is-arguments": true,
-        "koa>is-generator-function": true,
+        "browserify>util>is-generator-function": true,
         "browserify>util>is-typed-array": true,
         "process": true,
         "browserify>util>which-typed-array": true
@@ -6003,13 +6024,13 @@
         "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-boolean-object": true,
         "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-number-object": true,
         "eslint-plugin-react>array-includes>is-string": true,
-        "string.prototype.matchall>es-abstract>es-to-primitive>is-symbol": true
+        "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-symbol": true
       }
     },
     "@metamask/eth-token-tracker>deep-equal>which-collection": {
       "packages": {
         "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-map": true,
-        "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-set": true,
+        "eslint-plugin-react>array-includes>es-abstract>is-set": true,
         "@metamask/eth-token-tracker>deep-equal>which-collection>is-weakmap": true,
         "@metamask/eth-token-tracker>deep-equal>which-collection>is-weakset": true
       }
@@ -6022,7 +6043,7 @@
         "browserify>util>which-typed-array>for-each": true,
         "string.prototype.matchall>get-intrinsic>get-proto": true,
         "string.prototype.matchall>es-abstract>gopd": true,
-        "koa>is-generator-function>has-tostringtag": true
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     }
   }
