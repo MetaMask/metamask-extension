@@ -114,12 +114,12 @@ export function getReactCompilerLogger(): ReactCompilerLogger {
 export const getReactCompilerLoader = (
   target: ReactCompilerLoaderOption['target'],
   verbose: boolean,
-  debug: 'all' | 'critical' | undefined,
+  debug: 'all' | 'critical' | 'none',
 ) => {
   const reactCompilerOptions = {
     target,
     logger: verbose ? (reactCompilerLogger as Logger) : undefined,
-    panicThreshold: debug ? `${debug}_errors` : 'none',
+    panicThreshold: debug === 'none' ? debug : `${debug}_errors`,
   } as const satisfies ReactCompilerLoaderOption;
 
   return {
