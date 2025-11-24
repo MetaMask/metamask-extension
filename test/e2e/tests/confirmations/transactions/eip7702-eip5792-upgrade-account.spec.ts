@@ -12,7 +12,9 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { mockEip7702FeatureFlag } from '../helpers';
 
-describe('Upgrade Account', function (this: Suite) {
+// Skipping these tests becasue on BIP44 EIP-7702 not supported on chain: 0x539
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Upgrade Account', function (this: Suite) {
   it('an EOA account can be upgraded when triggering a batch tx from a dapp in an odd chain id', async function () {
     await withFixtures(
       {

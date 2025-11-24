@@ -28,7 +28,6 @@ import {
   getEditedNetwork,
   selectPendingApprovalsForNavigation,
   getShowUpdateModal,
-  getShowConnectionsRemovedModal,
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
   getPendingShieldCohort,
@@ -67,6 +66,10 @@ import {
 } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { fetchBuyableChains } from '../../ducks/ramps';
+import {
+  selectRewardsEnabled,
+  selectRewardsOnboardingEnabled,
+} from '../../ducks/rewards/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -192,11 +195,12 @@ const mapStateToProps = (state) => {
     redirectAfterDefaultPage,
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
     isPrimarySeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
-    showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
     showShieldEntryModal: getShowShieldEntryModal(state),
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     pendingShieldCohort: getPendingShieldCohort(state),
     isSignedIn: state.metamask.isSignedIn,
+    rewardsEnabled: selectRewardsEnabled(state),
+    rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
   };
 };
 

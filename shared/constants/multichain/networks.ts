@@ -120,8 +120,8 @@ export const SOLANA_TESTNET_IMAGE_URL = './images/solana-testnet-logo.svg';
 export const SOLANA_DEVNET_IMAGE_URL = './images/solana-devnet-logo.svg';
 
 export const TRON_TOKEN_IMAGE_URL = './images/tron-logo.svg';
-export const TRON_NILE_TOKEN_IMAGE_URL = './images/tron-nile-logo.svg';
-export const TRON_SHASTA_TOKEN_IMAGE_URL = './images/tron-shasta-logo.svg';
+export const TRON_NILE_TOKEN_IMAGE_URL = './images/tron-logo-testnet.svg';
+export const TRON_SHASTA_TOKEN_IMAGE_URL = './images/tron-logo-testnet.svg';
 
 export const BITCOIN_BLOCK_EXPLORER_URL = 'https://mempool.space';
 export const BITCOIN_SIGNET_BLOCK_EXPLORER_URL = 'https://mutinynet.com';
