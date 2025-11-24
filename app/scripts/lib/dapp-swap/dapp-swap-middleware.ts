@@ -81,12 +81,12 @@ export function createDappSwapMiddleware<
     _res: JsonRpcResponse<Result>,
     next: () => void,
   ) => {
-    const { enabled: dappSwapEnabled, bridge_quote_fees: bridgeQuoteFees } =
-      dappSwapMetricsFlag;
-    if (!dappSwapEnabled) {
-      return next();
-    }
     try {
+      const { enabled: dappSwapEnabled, bridge_quote_fees: bridgeQuoteFees } =
+        dappSwapMetricsFlag;
+      if (!dappSwapEnabled) {
+        return next();
+      }
       const { securityAlertResponse, params, origin } = req;
       const { securityAlertId } = securityAlertResponse ?? {};
 
