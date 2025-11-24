@@ -9,17 +9,16 @@ import { useAsyncResult } from '../../hooks/useAsync';
 // WASM file URL - the file is copied to dist/chrome/images/ by the build process
 // We don't import it as a module to avoid browserify resolution issues
 const RIVE_WASM_URL = './images/riv_animations/rive.wasm';
-const isTestEnvironment = Boolean(process.env.IN_TEST);
 
 export const useRiveWasmReady = () => {
-  const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
+  const [isWasmReady, setIsWasmReady] = useState(false);
 
   const result = useAsyncResult(async () => {
     if (isWasmReady) {
       return true;
     }
 
-    if (isTestEnvironment || typeof RuntimeLoader === 'undefined') {
+    if (typeof RuntimeLoader === 'undefined') {
       setIsWasmReady(true);
       return true;
     }

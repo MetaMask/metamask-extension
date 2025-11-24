@@ -69,6 +69,7 @@ import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
+import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -175,6 +176,8 @@ export default class Home extends PureComponent {
     pendingShieldCohort: PropTypes.string,
     setPendingShieldCohort: PropTypes.func,
     isSignedIn: PropTypes.bool,
+    rewardsEnabled: PropTypes.bool,
+    rewardsOnboardingEnabled: PropTypes.bool,
   };
 
   state = {
@@ -858,6 +861,8 @@ export default class Home extends PureComponent {
       isPrimarySeedPhraseBackedUp,
       showShieldEntryModal,
       isSocialLoginFlow,
+      rewardsEnabled,
+      rewardsOnboardingEnabled,
     } = this.props;
 
     if (forgottenPassword) {
@@ -896,6 +901,23 @@ export default class Home extends PureComponent {
       showTermsOfUsePopup &&
       !isSocialLoginFlow;
 
+    const showRecoveryPhrase =
+      !showWhatsNew &&
+      showRecoveryPhraseReminder &&
+      !isPrimarySeedPhraseBackedUp;
+
+    const showRewardsModal =
+      rewardsEnabled &&
+      rewardsOnboardingEnabled &&
+      canSeeModals &&
+      !showTermsOfUse &&
+      !showWhatsNew &&
+      !showMultiRpcEditModal &&
+      !displayUpdateModal &&
+      !isSeedlessPasswordOutdated &&
+      !showShieldEntryModal &&
+      !showRecoveryPhrase;
+
     return (
       <ScrollContainer className="main-container main-container--has-shadow">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -913,9 +935,7 @@ export default class Home extends PureComponent {
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {displayUpdateModal && <UpdateModal />}
           {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
-          {!showWhatsNew &&
-          showRecoveryPhraseReminder &&
-          !isPrimarySeedPhraseBackedUp ? (
+          {showRecoveryPhrase ? (
             <RecoveryPhraseReminder
               onConfirm={this.onRecoveryPhraseReminderClose}
             />
@@ -924,6 +944,7 @@ export default class Home extends PureComponent {
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
           {showShieldEntryModal && <ShieldEntryModal />}
+          {showRewardsModal && <RewardsOnboardingModal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}

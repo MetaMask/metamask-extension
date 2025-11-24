@@ -11,31 +11,22 @@ import {
   useRiveWasmContext,
   useRiveWasmFile,
 } from '../../../contexts/rive-wasm';
-import { SHIELD_ICON_ARTBOARD_NAMES, ShieldIconArtboardName } from './types';
 
-const ARTBOARD_FILE_MAP = {
-  [SHIELD_ICON_ARTBOARD_NAMES.PROTECTION]: 'shield_icon_protection.riv',
-  [SHIELD_ICON_ARTBOARD_NAMES.PRIORITY]: 'shield_icon_priority.riv',
-};
-
-const ShieldSubscriptionIconAnimation = ({
-  artboardName,
+const ShieldBannerAnimation = ({
   containerClassName,
   canvasClassName,
 }: {
-  artboardName: ShieldIconArtboardName;
   containerClassName?: string;
   canvasClassName?: string;
 }) => {
+  const isTestEnvironment = Boolean(process.env.IN_TEST);
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError } = context;
   const {
     buffer,
     error: bufferError,
     loading: bufferLoading,
-  } = useRiveWasmFile(
-    `./images/riv_animations/${ARTBOARD_FILE_MAP[artboardName]}`,
-  );
+  } = useRiveWasmFile('./images/riv_animations/shield_banner.riv');
 
   useEffect(() => {
     if (wasmError) {
@@ -56,7 +47,7 @@ const ShieldSubscriptionIconAnimation = ({
   // but we control when to actually render the component
   const { rive, RiveComponent } = useRive({
     riveFile: riveFile ?? undefined,
-    stateMachines: riveFile ? 'Animate' : undefined,
+    stateMachines: riveFile ? 'shield_banner_illustration' : undefined,
     autoplay: false,
     layout: new Layout({
       fit: Fit.Contain,
@@ -67,7 +58,7 @@ const ShieldSubscriptionIconAnimation = ({
   // Trigger the animation start when rive is loaded
   useEffect(() => {
     if (rive && isWasmReady && !bufferLoading && buffer) {
-      const inputs = rive.stateMachineInputs('Animate');
+      const inputs = rive.stateMachineInputs('shield_banner_illustration');
       if (inputs) {
         const startTrigger = inputs.find((input) => input.name === 'Start');
         if (startTrigger) {
@@ -76,7 +67,6 @@ const ShieldSubscriptionIconAnimation = ({
         rive.play();
       }
     }
-
     return () => {
       if (rive) {
         rive.stop();
@@ -90,6 +80,7 @@ const ShieldSubscriptionIconAnimation = ({
     bufferLoading ||
     !buffer ||
     status === 'loading' ||
+    isTestEnvironment ||
     status === 'failed'
   ) {
     return <Box className={containerClassName}></Box>;
@@ -102,4 +93,4 @@ const ShieldSubscriptionIconAnimation = ({
   );
 };
 
-export default ShieldSubscriptionIconAnimation;
+export default ShieldBannerAnimation;
