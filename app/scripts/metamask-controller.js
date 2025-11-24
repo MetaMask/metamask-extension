@@ -8123,6 +8123,9 @@ export default class MetamaskController extends EventEmitter {
           return 'unknown';
         }
       },
+      getFeatureFlags: () => {
+        return this.remoteFeatureFlagController?.state?.remoteFeatureFlags;
+      },
     };
 
     const snapAndHardwareMessenger = new Messenger({

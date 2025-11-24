@@ -165,6 +165,11 @@ export const handleTransactionFailed = async (
     extraParams.error = transactionEventPayload.error;
   }
 
+  extraParams.hash = getTransactionHash(
+    transactionMetricsRequest,
+    transactionEventPayload,
+  );
+
   await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.finalized,
     extraParams,
@@ -215,6 +220,12 @@ export const handleTransactionConfirmed = async (
   if (txReceipt?.status === '0x0') {
     extraParams.status = METRICS_STATUS_FAILED;
   }
+
+  extraParams.hash = getTransactionHash(
+    transactionMetricsRequest,
+    transactionEventPayload,
+  );
+
   await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.finalized,
     extraParams,
@@ -243,6 +254,10 @@ export const handleTransactionDropped = async (
 
   const extraParams = {
     dropped: true,
+    hash: getTransactionHash(
+      transactionMetricsRequest,
+      transactionEventPayload,
+    ),
   };
 
   await createUpdateFinalizeTransactionEventFragment({
@@ -1409,4 +1424,24 @@ function determineTransactionTypeAndContractInteraction(
     transactionType: TransactionType.simpleSend,
     isContractInteraction: false,
   };
+}
+
+function getTransactionHash(
+  transactionMetricsRequest: TransactionMetricsRequest,
+  transactionEventPayload:
+    | TransactionMetaEventPayload
+    | TransactionEventPayload,
+) {
+  const isExtensionUxPna25Enabled =
+    transactionMetricsRequest.getFeatureFlags()?.extensionUxPna25;
+
+  // There will be an extra condition to check if user already seen the "privacy notice update" toast
+  if (isExtensionUxPna25Enabled) {
+    return (
+      (transactionEventPayload as TransactionMetaEventPayload).hash ||
+      (transactionEventPayload as TransactionEventPayload).transactionMeta.hash
+    );
+  }
+
+  return undefined;
 }
