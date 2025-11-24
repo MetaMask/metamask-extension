@@ -178,7 +178,7 @@ describe('Dapp viewed Event', function () {
         // events are original dapp viewed, new dapp viewed when refresh, and permission approved
         const dappViewedEventProperties = events[1].properties;
         assert.equal(dappViewedEventProperties.is_first_visit, false);
-        assert.equal(dappViewedEventProperties.number_of_accounts, 3);
+        assert.equal(dappViewedEventProperties.number_of_accounts, 1);
         assert.equal(dappViewedEventProperties.number_of_accounts_connected, 1);
       },
     );
@@ -221,7 +221,7 @@ describe('Dapp viewed Event', function () {
         // events are original dapp viewed, navigate to dapp, new dapp viewed when refresh, new dapp viewed when navigate and permission approved
         const dappViewedEventProperties = events[1].properties;
         assert.equal(dappViewedEventProperties.is_first_visit, false);
-        assert.equal(dappViewedEventProperties.number_of_accounts, 3);
+        assert.equal(dappViewedEventProperties.number_of_accounts, 1);
         assert.equal(dappViewedEventProperties.number_of_accounts_connected, 1);
       },
     );
@@ -266,7 +266,7 @@ describe('Dapp viewed Event', function () {
         // events are original dapp viewed, navigate to dapp, new dapp viewed when refresh, new dapp viewed when navigate and permission approved
         const dappViewedEventProperties = events[2].properties;
         assert.equal(dappViewedEventProperties.is_first_visit, false);
-        assert.equal(dappViewedEventProperties.number_of_accounts, 3);
+        assert.equal(dappViewedEventProperties.number_of_accounts, 1);
         assert.equal(dappViewedEventProperties.number_of_accounts_connected, 1);
       },
     );
