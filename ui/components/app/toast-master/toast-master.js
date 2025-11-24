@@ -107,8 +107,7 @@ import {
   setShowClaimSubmitToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
-  setPna25BannerClickedOrClosed,
-  setPna25BannerDismissedDate,
+  setPna25Acknowledged,
 } from './utils';
 
 export function ToastMaster({ location } = {}) {
@@ -759,9 +758,17 @@ function Pna25Banner() {
 
   const showPna25Banner = useSelector(selectShowPna25Banner);
 
-  const handleDismiss = () => {
-    setPna25BannerClickedOrClosed();
-    setPna25BannerDismissedDate(Date.now());
+  const handleLearnMore = () => {
+    // Open privacy policy link and acknowledge
+    global.platform.openTab({
+      url: PRIVACY_POLICY_LINK,
+    });
+    setPna25Acknowledged(true);
+  };
+
+  const handleClose = () => {
+    // Just acknowledge without opening link
+    setPna25Acknowledged(true);
   };
 
   return (
@@ -774,13 +781,8 @@ function Pna25Banner() {
         }
         text={t('pna25BannerTitle')}
         actionText={t('pna25BannerActionButton')}
-        onActionClick={() => {
-          global.platform.openTab({
-            url: PRIVACY_POLICY_LINK,
-          });
-          handleDismiss();
-        }}
-        onClose={handleDismiss}
+        onActionClick={handleLearnMore}
+        onClose={handleClose}
       />
     )
   );

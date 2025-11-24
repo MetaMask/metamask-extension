@@ -103,6 +103,7 @@ export type AppStateControllerState = {
   newPrivacyPolicyToastShownDate: number | null;
   pna25BannerClickedOrClosed: boolean | null;
   pna25BannerDismissedDate: number | null;
+  pna25Acknowledged: boolean | null;
   nftsDetectionNoticeDismissed: boolean;
   nftsDropdownState: Json;
   notificationGasPollTokens: string[];
@@ -273,6 +274,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   newPrivacyPolicyToastShownDate: null,
   pna25BannerClickedOrClosed: null,
   pna25BannerDismissedDate: null,
+  pna25Acknowledged: null,
   nftsDetectionNoticeDismissed: false,
   notificationGasPollTokens: [],
   onboardingDate: null,
@@ -477,6 +479,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   pna25BannerDismissedDate: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  pna25Acknowledged: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -899,6 +907,12 @@ export class AppStateController extends BaseController<
   setPna25BannerDismissedDate(time: number): void {
     this.update((state) => {
       state.pna25BannerDismissedDate = time;
+    });
+  }
+
+  setPna25Acknowledged(acknowledged: boolean): void {
+    this.update((state) => {
+      state.pna25Acknowledged = acknowledged;
     });
   }
 

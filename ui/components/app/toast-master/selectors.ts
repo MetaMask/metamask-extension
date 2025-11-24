@@ -48,9 +48,9 @@ type State = {
       | 'surveyLinkLastClickedOrClosed'
       | 'shieldEndingToastLastClickedOrClosed'
       | 'shieldPausedToastLastClickedOrClosed'
-      | 'pna25BannerClickedOrClosed'
       | 'participateInMetaMetrics'
       | 'remoteFeatureFlags'
+      | 'pna25Acknowledged'
     >
   >;
 };
@@ -241,48 +241,37 @@ export function selectShowShieldEndingToast(
 
 /**
  * Determines if the PNA25 banner should be shown based on:
- * - LaunchDarkly feature flag (extension-ux-pna25) is enabled
+ * - LaunchDarkly feature flag (extension-ux-pna25) is enabled (boolean)
  * - User has opted into metrics (participateInMetaMetrics === true)
- * - User onboarded before the PNA25 release date
- * - User hasn't dismissed the banner
+ * - User hasn't acknowledged the new feature yet (pna25Acknowledged !== true)
  *
- * @param state - The application state containing PNA25 banner data.
- * @returns Object with showPna25Banner boolean and pna25BannerShownDate
+ * @param state - The application state containing the banner data.
+ * @returns Boolean indicating whether to show the banner
  */
 export function selectShowPna25Banner(state: Pick<State, 'metamask'>): boolean {
-  const {
-    pna25BannerClickedOrClosed,
-    onboardingDate,
-    participateInMetaMetrics,
-  } = state.metamask || {};
+  const { participateInMetaMetrics, pna25Acknowledged } = state.metamask || {};
 
   // Get the feature flag from LaunchDarkly
+  // extension-ux-pna25 is now a boolean, not a timestamp
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const remoteFeatureFlags = getRemoteFeatureFlags(state as any);
-  const pna25Timestamp = remoteFeatureFlags?.['extension-ux-pna25'];
-
-  const currentDate = Date.now();
+  const isMetametricsOnchainDataEnabled = Boolean(
+    remoteFeatureFlags?.['extension-ux-pna25'],
+  );
 
   // Check all conditions
-  if (!pna25Timestamp || typeof pna25Timestamp !== 'number') {
-    return false; // LD flag not set or invalid
+  if (!isMetametricsOnchainDataEnabled) {
+    return false; // LD flag not enabled
   }
 
   if (participateInMetaMetrics !== true) {
     return false; // User hasn't opted into metrics
   }
 
-  if (pna25BannerClickedOrClosed) {
-    return false; // User already dismissed banner
+  if (pna25Acknowledged === true) {
+    return false; // User already acknowledged
   }
 
-  if (currentDate < pna25Timestamp) {
-    return false; // PNA25 date hasn't passed yet
-  }
-
-  if (!onboardingDate || onboardingDate >= pna25Timestamp) {
-    return false; // User onboarded after PNA25 or no onboarding date
-  }
-
+  // Show banner if user opted in before but hasn't acknowledged the new policy
   return true;
 }

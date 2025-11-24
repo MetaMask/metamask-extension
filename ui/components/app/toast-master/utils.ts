@@ -118,10 +118,6 @@ export function setShieldEndingToastLastClickedOrClosed(time: number) {
   ]);
 }
 
-export function setPna25BannerClickedOrClosed() {
-  submitRequestToBackgroundAndCatch('setPna25BannerClickedOrClosed');
-}
-
-export function setPna25BannerDismissedDate(time: number) {
-  submitRequestToBackgroundAndCatch('setPna25BannerDismissedDate', [time]);
+export function setPna25Acknowledged(acknowledged: boolean) {
+  submitRequestToBackgroundAndCatch('setPna25Acknowledged', [acknowledged]);
 }

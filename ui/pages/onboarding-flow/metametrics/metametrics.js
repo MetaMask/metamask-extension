@@ -29,6 +29,7 @@ import {
   getIsParticipateInMetaMetricsSet,
   getParticipateInMetaMetrics,
 } from '../../../selectors';
+import { getRemoteFeatureFlags } from '../../../selectors/remote-feature-flags';
 
 import {
   MetaMetricsEventCategory,
@@ -50,6 +51,7 @@ import {
 } from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { submitRequestToBackgroundAndCatch } from '../../../components/app/toast-master/utils';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
@@ -65,6 +67,13 @@ export default function OnboardingMetametrics() {
   );
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
+  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
+
+  // Check if the MetaMetrics on-chain data collection feature is enabled
+  // extension-ux-pna25 is now a boolean, not a timestamp
+  const isMetametricsOnchainDataEnabled = Boolean(
+    remoteFeatureFlags?.['extension-ux-pna25'],
+  );
 
   const [
     isParticipateInMetaMetricsChecked,
@@ -118,6 +127,14 @@ export default function OnboardingMetametrics() {
         );
         dispatch(setParticipateInMetaMetrics(true));
 
+        // If LD flag is enabled, set pna25Acknowledged to true
+        // This means they saw the updated policy during onboarding
+        if (isMetametricsOnchainDataEnabled) {
+          await submitRequestToBackgroundAndCatch('setPna25Acknowledged', [
+            true,
+          ]);
+        }
+
         await trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.AppInstalled,
@@ -134,6 +151,13 @@ export default function OnboardingMetametrics() {
       } else {
         dispatch(setParticipateInMetaMetrics(false));
         dispatch(setDataCollectionForMarketing(false));
+
+        // If user opts out, set to false (no need to show banner later)
+        if (isMetametricsOnchainDataEnabled) {
+          await submitRequestToBackgroundAndCatch('setPna25Acknowledged', [
+            false,
+          ]);
+        }
       }
     } catch (error) {
       log.error('onConfirm::error', error);
@@ -229,7 +253,9 @@ export default function OnboardingMetametrics() {
           color={TextColor.textAlternative}
           textAlign={TextAlign.Left}
         >
-          {t('onboardingMetametricCheckboxDescriptionOne')}
+          {isMetametricsOnchainDataEnabled
+            ? t('onboardingMetametricCheckboxDescriptionOneUpdated')
+            : t('onboardingMetametricCheckboxDescriptionOne')}
         </Text>
       </Box>
 
