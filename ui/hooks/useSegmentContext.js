@@ -20,19 +20,18 @@ export function useSegmentContext() {
 
   // Try to match the current location against each path
   // Note: v5-compat matchPath uses v6 signature (pattern first, pathname second)
-  const match = paths.reduce(
-    (found, path) =>
-      found ||
-      matchPath(
-        {
-          path,
-          end: true,
-          caseSensitive: false,
-        },
-        location.pathname,
-      ),
-    null,
-  );
+  let match;
+  paths.find((path) => {
+    match = matchPath(
+      {
+        path,
+        end: true,
+        caseSensitive: false,
+      },
+      location.pathname,
+    );
+    return match;
+  });
 
   const txData = useSelector(txDataSelector) || {};
   const confirmTransactionOrigin = txData.origin;
