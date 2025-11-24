@@ -10,12 +10,14 @@ on:
 jobs:
   needs-e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       needs-e2e: ${{ steps.determine.outputs.NEEDS_E2E }}
     env:
       # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
       # For a `push` event, the head commit hash is `github.sha`.
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,7 +29,7 @@ jobs:
         id: skip-tag
         run: |
           echo "SKIP=false" >> "$GITHUB_OUTPUT"
-          if [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "merge_group" ]]; then
+          if [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "merge_group" ]] || [[ "$BRANCH" == trigger-ci-* ]]; then
             if git show --format='%B' --no-patch "${HEAD_COMMIT_HASH}" | grep --fixed-strings --quiet '[skip-e2e]'; then
               echo "SKIP=true" >> "$GITHUB_OUTPUT"
               echo "-> SKIP=true due to [skip-e2e] tag in last commit message"
@@ -49,10 +51,10 @@ jobs:
           # Default to running E2E tests
           echo "NEEDS_E2E=true" >> "$GITHUB_OUTPUT"
 
-          # Only consider skipping for PRs and merge-queue events
-          if [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "merge_group" ]]; then
+          # Only consider skipping for PRs, merge-queue events, or trigger-ci-* branches
+          if [[ "${{ steps.skip-tag.outputs.SKIP }}" == "true" ]] || [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "merge_group" ]]; then
 
-            # Skip if [skip e2e] tag found
+            # Skip if [skip-e2e] tag found
             if [[ "${{ steps.skip-tag.outputs.SKIP }}" == "true" ]]; then
               echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
               echo "-> Skipping E2E tests due to 'skip-e2e' tag"
@@ -74,6 +76,7 @@ jobs:
     needs:
       - needs-e2e
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       OWNER: ${{ github.repository_owner }}
@@ -86,7 +89,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Get changed files with git diff
         run: yarn tsx .github/scripts/git-diff-default-branch.ts

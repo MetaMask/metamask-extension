@@ -59,7 +59,7 @@ export class SignUpPage {
     this.confirmSecretBtn = page.locator(
       'button:has-text("Confirm Secret Recovery Phrase")',
     );
-    this.metametricsBtn = page.getByTestId('metametrics-no-thanks');
+    this.metametricsBtn = page.getByTestId('metametrics-i-agree');
     this.agreeBtn = page.locator('button:has-text("I agree")');
     this.createPasswordBtn = page.getByTestId('create-password-wallet');
     this.noThanksBtn = page.locator('button:has-text("No thanks")');

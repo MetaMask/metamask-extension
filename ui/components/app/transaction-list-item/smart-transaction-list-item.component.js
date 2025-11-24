@@ -18,7 +18,6 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   BadgeWrapper,
-  BadgeWrapperAnchorElementShape,
   Box,
 } from '../../component-library';
 import {
@@ -36,14 +35,8 @@ export default function SmartTransactionListItem({
   const dispatch = useDispatch();
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const {
-    title,
-    category,
-    primaryCurrency,
-    recipientAddress,
-    isPending,
-    senderAddress,
-  } = useTransactionDisplayData(transactionGroup);
+  const { title, category, primaryCurrency, recipientAddress, isPending } =
+    useTransactionDisplayData(transactionGroup);
   const currentChain = useSelector(getCurrentNetwork);
 
   const { time, status } = smartTransaction;
@@ -60,6 +53,8 @@ export default function SmartTransactionListItem({
   const toggleShowDetails = useCallback(() => {
     setShowDetails((prev) => !prev);
   }, []);
+  const senderAddress = transactionGroup.initialTransaction.txParams?.from;
+
   return (
     <>
       <ActivityListItem
@@ -68,7 +63,6 @@ export default function SmartTransactionListItem({
         onClick={toggleShowDetails}
         icon={
           <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
             display={Display.Block}
             badge={
               <AvatarNetwork
@@ -78,6 +72,7 @@ export default function SmartTransactionListItem({
                 name={currentChain?.nickname}
                 src={currentChain?.rpcPrefs?.imageUrl}
                 borderColor={BackgroundColor.backgroundDefault}
+                borderWidth={2}
               />
             }
           >

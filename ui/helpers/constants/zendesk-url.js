@@ -30,12 +30,12 @@ const ZENDESK_URLS = {
     'https://support.ledger.com/hc/en-us/articles/10371387758493-MetaMask-Firefox-Ledger-Integration-Issue?support=true',
   LEGACY_WEB3:
     'https://support.metamask.io/third-party-platforms-and-dapps/metamask-legacy-web3/',
-  NFT_TOKENS:
-    'https://support.metamask.io/nfts/nft-tokens-in-your-metamask-wallet/',
   PASSWORD_ARTICLE:
     'https://support.metamask.io/configure/wallet/passwords-and-metamask/',
   PASSWORD_AND_SRP_ARTICLE:
     'https://support.metamask.io/getting-started/user-guide-secret-recovery-phrase-password-and-private-keys/',
+  PRIVATE_KEY_GUIDE:
+    'https://support.metamask.io/start/user-guide-secret-recovery-phrase-password-and-private-keys/#private-keys',
   PASSWORD_RESET:
     'https://support.metamask.io/configure/wallet/how-can-i-reset-my-password/',
   RESET_ADD_MISSING_ACCOUNT:

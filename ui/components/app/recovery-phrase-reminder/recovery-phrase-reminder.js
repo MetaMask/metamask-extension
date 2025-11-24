@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // Helpers
 import {
@@ -11,6 +11,7 @@ import {
   Display,
   FlexDirection,
   BlockSize,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_REVEAL_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -33,11 +34,11 @@ import {
 
 export default function RecoveryPhraseReminder({ onConfirm }) {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleBackUp = () => {
     const backUpSRPRoute = `${ONBOARDING_REVEAL_SRP_ROUTE}/?isFromReminder=true`;
-    history.push(backUpSRPRoute);
+    navigate(backUpSRPRoute);
   };
 
   return (
@@ -62,15 +63,18 @@ export default function RecoveryPhraseReminder({ onConfirm }) {
           </Box>
         </ModalHeader>
         <ModalBody>
-          <Box width={BlockSize.Full} textAlign={TextAlign.Center}>
+          <Box
+            width={BlockSize.Full}
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            marginBottom={2}
+          >
             <img
               src="images/forgot-password-lock.png"
-              width={154}
-              height={154}
+              width={100}
+              height={100}
               alt={t('recoveryPhraseReminderTitle')}
-              style={{
-                alignSelf: 'center',
-              }}
             />
           </Box>
           <Text>{t('recoveryPhraseReminderSubText')}</Text>

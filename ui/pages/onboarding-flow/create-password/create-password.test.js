@@ -1,14 +1,17 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import initializedMockState from '../../../../test/data/mock-send-state.json';
 import {
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import * as Actions from '../../../store/actions';
 import CreatePassword from './create-password';
 
 const mockUseNavigate = jest.fn();
@@ -39,11 +42,11 @@ describe('Onboarding Create Password', () => {
 
   describe('Initialized State Conditionals with keyrings and firstTimeFlowType', () => {
     it('should route to secure your wallet when keyring is present but not imported first time flow type', () => {
-      const mockStore = configureMockStore()(initializedMockState);
+      const mockStore = configureMockStore([thunk])(initializedMockState);
 
       renderWithProvider(<CreatePassword />, mockStore);
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+        ONBOARDING_REVIEW_SRP_ROUTE,
         { replace: true },
       );
     });
@@ -57,7 +60,7 @@ describe('Onboarding Create Password', () => {
           participateInMetaMetrics: null,
         },
       };
-      const mockStore = configureMockStore()(importFirstTimeFlowState);
+      const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
 
       renderWithProvider(<CreatePassword />, mockStore);
       expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
@@ -74,7 +77,7 @@ describe('Onboarding Create Password', () => {
           participateInMetaMetrics: true,
         },
       };
-      const mockStore = configureMockStore()(importFirstTimeFlowState);
+      const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
       renderWithProvider(<CreatePassword />, mockStore);
 
       expect(mockUseNavigate).toHaveBeenCalledWith(
@@ -86,7 +89,7 @@ describe('Onboarding Create Password', () => {
 
   describe('Render', () => {
     it('should match snapshot', () => {
-      const mockStore = configureMockStore()(mockState);
+      const mockStore = configureMockStore([thunk])(mockState);
       const { container } = renderWithProvider(<CreatePassword />, mockStore);
 
       expect(container).toMatchSnapshot();
@@ -95,7 +98,7 @@ describe('Onboarding Create Password', () => {
 
   describe('Password Validation Checks', () => {
     it('should show password as text when click Show under password', () => {
-      const mockStore = configureMockStore()(mockState);
+      const mockStore = configureMockStore([thunk])(mockState);
       const { queryByTestId } = renderWithProvider(
         <CreatePassword />,
         mockStore,
@@ -118,7 +121,7 @@ describe('Onboarding Create Password', () => {
     });
 
     it('should disable create new account button and show short password error with password length of 7', () => {
-      const mockStore = configureMockStore()(mockState);
+      const mockStore = configureMockStore([thunk])(mockState);
       const { queryByTestId } = renderWithProvider(
         <CreatePassword createNewAccount={mockCreateNewAccount} />,
         mockStore,
@@ -145,7 +148,7 @@ describe('Onboarding Create Password', () => {
     });
 
     it('should show mismatch password error', () => {
-      const mockStore = configureMockStore()(mockState);
+      const mockStore = configureMockStore([thunk])(mockState);
       const { queryByTestId, queryByText } = renderWithProvider(
         <CreatePassword createNewAccount={mockCreateNewAccount} />,
         mockStore,
@@ -184,7 +187,7 @@ describe('Onboarding Create Password', () => {
     });
 
     it('should not create new wallet without terms checked when its social login flow', () => {
-      const mockStore = configureMockStore()(mockState);
+      const mockStore = configureMockStore([thunk])(mockState);
       const { queryByTestId } = renderWithProvider(
         <CreatePassword createNewAccount={mockCreateNewAccount} />,
         mockStore,
@@ -223,7 +226,7 @@ describe('Onboarding Create Password', () => {
     });
 
     it('should create new wallet without marketing checked when its social login flow', () => {
-      const mockStore = configureMockStore()({
+      const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
           ...mockState.metamask,
@@ -270,7 +273,7 @@ describe('Onboarding Create Password', () => {
 
   describe('Create New Account', () => {
     it('should create new account with correct passwords and terms checked', async () => {
-      const mockStore = configureMockStore()({
+      const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
           ...mockState.metamask,
@@ -316,7 +319,7 @@ describe('Onboarding Create Password', () => {
 
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith(
-          ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+          ONBOARDING_REVIEW_SRP_ROUTE,
           {
             replace: true,
           },
@@ -335,7 +338,7 @@ describe('Onboarding Create Password', () => {
     };
 
     it('should import wallet', async () => {
-      const mockStore = configureMockStore()(importMockState);
+      const mockStore = configureMockStore([thunk])(importMockState);
 
       const props = {
         importWithRecoveryPhrase: jest.fn().mockResolvedValue(),
@@ -396,7 +399,7 @@ describe('Onboarding Create Password', () => {
           participateInMetaMetrics: true,
         },
       };
-      const mockStore = configureMockStore()(state);
+      const mockStore = configureMockStore([thunk])(state);
       const { queryByTestId } = renderWithProvider(
         <CreatePassword />,
         mockStore,
@@ -418,6 +421,30 @@ describe('Onboarding Create Password', () => {
         mockStore,
       );
       expect(queryByTestId('create-password-iframe')).not.toBeInTheDocument();
+    });
+  });
+
+  it('should redirect to onboarding welcome page when seedless onboarding user is not authenticated', async () => {
+    const mockGetIsSeedlessOnboardingUserAuthenticated = jest
+      .spyOn(Actions, 'getIsSeedlessOnboardingUserAuthenticated')
+      .mockReturnValueOnce(jest.fn().mockResolvedValue(false));
+    const mockStore = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        firstTimeFlowType: FirstTimeFlowType.socialCreate,
+      },
+    });
+    renderWithProvider(
+      <CreatePassword createNewAccount={mockCreateNewAccount} />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(mockGetIsSeedlessOnboardingUserAuthenticated).toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+        replace: true,
+      });
     });
   });
 });

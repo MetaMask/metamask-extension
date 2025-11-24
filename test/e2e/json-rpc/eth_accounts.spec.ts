@@ -8,7 +8,7 @@ describe('eth_accounts', function () {
   it('returns permitted eth accounts when wallet is unlocked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesControllerAdditionalAccountIdentities()
@@ -43,7 +43,7 @@ describe('eth_accounts', function () {
   it('returns permitted eth accounts when wallet is locked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesControllerAdditionalAccountIdentities()

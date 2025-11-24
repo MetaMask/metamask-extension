@@ -226,9 +226,6 @@
   "etherscanView": {
     "message": "መለያውን በ Etherscan ላይ ይመልከቱ"
   },
-  "expandView": {
-    "message": "እይታን ዘርጋ"
-  },
   "failed": {
     "message": "አልተሳካም"
   },
@@ -604,9 +601,6 @@
   },
   "supportCenter": {
     "message": "የድጋፍ መስጫ ማዕከላችንን ይጎብኙ"
-  },
-  "switchNetworks": {
-    "message": "አውታረ መረቦችን ቀያይር"
   },
   "symbol": {
     "message": "ምልክት"

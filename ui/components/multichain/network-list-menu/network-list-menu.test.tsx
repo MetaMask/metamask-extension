@@ -12,6 +12,8 @@ import {
   LINEA_MAINNET_DISPLAY_NAME,
   BNB_DISPLAY_NAME,
   LINEA_SEPOLIA_DISPLAY_NAME,
+  MONAD_DISPLAY_NAME,
+  MONAD_TESTNET_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -25,11 +27,9 @@ const mockUpdateCustomNonce = jest.fn();
 const mockSetNextNonce = jest.fn();
 const mockSetTokenNetworkFilter = jest.fn();
 const mockDetectNfts = jest.fn();
-const mockEnableAllPopularNetworks = jest.fn();
-const mockEnableSingleNetwork = jest.fn();
-const mockSetEnabledNetworksMultichain = jest.fn();
 const mockAddPermittedChain = jest.fn();
 const mockShowPermittedNetworkToast = jest.fn();
+const mockSetEnabledNetworks = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => {
@@ -72,20 +72,9 @@ jest.mock('../../../store/actions.ts', () => ({
     mockShowPermittedNetworkToast();
     return { type: 'MOCK_SHOW_PERMITTED_NETWORK_TOAST' };
   },
-}));
-
-jest.mock('../../../store/controller-actions/network-order-controller', () => ({
-  enableAllPopularNetworks: () => {
-    mockEnableAllPopularNetworks();
-    return { type: 'ENABLE_ALL_POPULAR_NETWORKS' };
-  },
-  enableSingleNetwork: () => {
-    mockEnableSingleNetwork();
-    return { type: 'ENABLE_SINGLE_NETWORKS' };
-  },
-  setEnabledNetworksMultichain: () => {
-    mockSetEnabledNetworksMultichain();
-    return { type: 'SET_ENABLED_NETWORKS_MULTICHAIN' };
+  setEnabledNetworks: () => {
+    mockSetEnabledNetworks();
+    return { type: 'SET_ENABLED_NETWORKS' };
   },
 }));
 
@@ -113,7 +102,7 @@ const render = ({
   isAddingNewNetwork = false,
   isAccessedFromDappConnectedSitePopover = false,
   editedNetwork = undefined,
-  neNetworkDiscoverButton = { '0x531': true, '0xe708': true },
+  neNetworkDiscoverButton = { '0x531': true, '0xe708': true, '0x8f': true },
 }: TestRenderProps = {}) => {
   const state = {
     appState: {
@@ -202,6 +191,32 @@ const render = ({
             },
           ],
         },
+        '0x8f': {
+          nativeCurrency: 'MON',
+          chainId: '0x8f',
+          name: MONAD_DISPLAY_NAME,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
+              networkClientId: 'monad',
+            },
+          ],
+        },
+        '0x279f': {
+          nativeCurrency: 'MON',
+          chainId: '0x279f',
+          name: MONAD_TESTNET_DISPLAY_NAME,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
+              networkClientId: NETWORK_TYPES.MONAD_TESTNET,
+            },
+          ],
+        },
       },
       isUnlocked,
       selectedNetworkClientId: NETWORK_TYPES.MAINNET,
@@ -210,6 +225,7 @@ const render = ({
         tokenNetworkFilter: {
           [CHAIN_IDS.MAINNET]: true,
           [CHAIN_IDS.LINEA_MAINNET]: true,
+          [CHAIN_IDS.MONAD]: true,
         },
       },
       domains: {
@@ -313,18 +329,18 @@ describe('NetworkListMenu', () => {
       origin: 'https://app.metamask.io',
     });
 
-    // Contains Mainnet, Linea Mainnet and the two custom networks
+    // Contains Mainnet, Linea, Monad and the two custom networks
     const networkItems = document.querySelectorAll(
       '.multichain-network-list-item',
     );
-    expect(networkItems).toHaveLength(4);
+    expect(networkItems).toHaveLength(5); // 5 EVM networks (Bitcoin/Solana disabled in test environment)
 
     const selectedNodes = document.querySelectorAll(
       '.multichain-network-list-item--selected',
     );
     expect(selectedNodes).toHaveLength(1);
 
-    expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
+    expect(queryByText('Ethereum')).toBeInTheDocument();
   });
 
   it('narrows down search results', () => {
@@ -356,7 +372,7 @@ describe('NetworkListMenu', () => {
     ).toHaveLength(0);
   });
 
-  it('enables the "Discover" for Linea Mainnet button when the Feature Flag `neNetworkDiscoverButton` is true for Linea and the network is supported', () => {
+  it('enables the "Discover" for Linea button when the Feature Flag `neNetworkDiscoverButton` is true for Linea and the network is supported', () => {
     const { queryByTestId, getByTestId } = render({
       neNetworkDiscoverButton: {
         '0xe708': true,
@@ -564,16 +580,16 @@ describe('NetworkListMenu', () => {
       const { queryByText, getByPlaceholderText } = render();
 
       // Now "Arbitrum" should be in the document if PopularNetworkList is rendered
-      expect(queryByText('Arbitrum One')).toBeInTheDocument();
+      expect(queryByText('Arbitrum')).toBeInTheDocument();
 
       // Simulate typing "Optimism" into the search box
       const searchBox = getByPlaceholderText('Search');
       fireEvent.focus(searchBox);
-      fireEvent.change(searchBox, { target: { value: 'OP Mainnet' } });
+      fireEvent.change(searchBox, { target: { value: 'OP' } });
 
       // "Optimism" should be visible, but "Arbitrum" should not
-      expect(queryByText('OP Mainnet')).toBeInTheDocument();
-      expect(queryByText('Arbitrum One')).not.toBeInTheDocument();
+      expect(queryByText('OP')).toBeInTheDocument();
+      expect(queryByText('Arbitrum')).not.toBeInTheDocument();
     });
 
     it('should filter testNets when ENABLE_NETWORK_UI_REDESIGN is true', async () => {
@@ -621,7 +637,7 @@ describe('NetworkListMenu', () => {
 
       const searchBox = getByPlaceholderText('Search');
       fireEvent.focus(searchBox);
-      fireEvent.change(searchBox, { target: { value: 'Main' } });
+      fireEvent.change(searchBox, { target: { value: 'Ethereum' } });
 
       // Search should still work
       expect(queryByText(MAINNET_DISPLAY_NAME)).toBeInTheDocument();

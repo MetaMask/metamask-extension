@@ -20,6 +20,9 @@ buildTypes:
       - keyring-snaps
       - multi-srp
       - multichain
+      - bitcoin
+      - bitcoin-swaps
+      - tron
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -29,8 +32,9 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      - IS_SIDEPANEL: true
       # for seedless onboarding (social login)
       - GOOGLE_PROD_CLIENT_ID
       - APPLE_PROD_CLIENT_ID
@@ -51,6 +55,7 @@ buildTypes:
       - bitcoin
       - bitcoin-swaps
       - multi-srp
+      - tron
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
@@ -61,8 +66,9 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      - IS_SIDEPANEL: true
       # for seedless onboarding (social login)
       - GOOGLE_BETA_CLIENT_ID
       - APPLE_BETA_CLIENT_ID
@@ -77,7 +83,34 @@ buildTypes:
 
   experimental:
     id: 12
-    extends: main
+    features:
+      - build-experimental
+      - build-main
+      - keyring-snaps
+      - multi-srp
+      - multichain
+      - bitcoin
+      - bitcoin-swaps
+      - tron
+    env:
+      - INFURA_EXPERIMENTAL_PROJECT_ID
+      - SEGMENT_EXPERIMENTAL_WRITE_KEY
+      - INFURA_ENV_KEY_REF: INFURA_EXPERIMENTAL_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_EXPERIMENTAL_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - IS_SIDEPANEL: true
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      # for seedless onboarding (social login)
+      - GOOGLE_EXPERIMENTAL_CLIENT_ID
+      - APPLE_EXPERIMENTAL_CLIENT_ID
+      - GOOGLE_CLIENT_ID_REF: GOOGLE_EXPERIMENTAL_CLIENT_ID
+      - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
+    isPrerelease: true
+    manifestOverrides: app/build-types/experimental/manifest
+    buildNameOverride: MetaMask Experimental
 
   flask:
     id: 15
@@ -87,26 +120,31 @@ buildTypes:
       - build-flask
       - keyring-snaps
       - bitcoin
+      - tron
       - multi-srp
       - multichain
+      - gator-permissions
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
       - SUPPORT_LINK: https://support.metamask.io/
       - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
+      - IS_SIDEPANEL: true
       # for seedless onboarding (social login)
       - GOOGLE_FLASK_CLIENT_ID
       - APPLE_FLASK_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
+      - GATOR_PERMISSIONS_ENABLED: true
+      - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
@@ -153,6 +191,10 @@ features:
     assets:
       - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/bitcoin-wallet-snap.json
+  tron:
+    assets:
+      - src: ./node_modules/@metamask/tron-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/tron-wallet-snap.json
   multi-srp:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
@@ -161,7 +203,17 @@ features:
   multichain:
   ocap-kernel:
     assets:
-      - ./{app,offscreen,shared,ui}/**/ocap-kernel/**
+      - ./{app,shared,ui}/**/ocap-kernel/**
+  gator-permissions:
+    assets:
+      - src: ./node_modules/@metamask/permissions-kernel-snap/dist/preinstalled-snap.json
+        dest: snaps/permissions-kernel-snap.json
+      - src: ./node_modules/@metamask/gator-permissions-snap/dist/preinstalled-snap.json
+        dest: snaps/gator-permissions-snap.json
+  build-experimental:
+    assets:
+      - src: ./node_modules/@metamask/account-watcher/dist/preinstalled-snap.json
+        dest: snaps/account-watcher.json
 
 # Env variables that are required for all types of builds
 #
@@ -211,6 +263,11 @@ env:
   - INFURA_STORYBOOK_PROJECT_ID
 
   ###
+  # Core Backend Services
+  ###
+  - MM_BACKEND_WEBSOCKET_URL: wss://gateway.api.cx.metamask.io/v1
+
+  ###
   # Notifications Feature
   ###
   - AUTH_API: https://authentication.api.cx.metamask.io
@@ -245,6 +302,7 @@ env:
   - QUICKNODE_POLYGON_URL: null
   - QUICKNODE_BASE_URL: null
   - QUICKNODE_BSC_URL: null
+  - QUICKNODE_SEI_URL: null
 
   ###
   # API keys to 3rd party services
@@ -330,6 +388,7 @@ env:
   - GATOR_PERMISSIONS_ENABLED: false
   - PERMISSIONS_KERNEL_SNAP_ID: 'npm:@metamask/permissions-kernel-snap'
   - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: 'npm:@metamask/gator-permissions-snap'
+  - GATOR_PERMISSIONS_REVOCATION_ENABLED: false
 
   ###
   # Meta variables
@@ -394,17 +453,10 @@ env:
   - APPLE_CLIENT_ID_UAT: ''
 
   # Metamask Shield
-  - METAMASK_SHIELD_ENABLED: 'false'
-
-  # URL of Shield gateway
-  - SHIELD_GATEWAY_URL: 'https://shield-gateway.dev-api.cx.metamask.io'
-  # URL of Shield rule engine
-  - SHIELD_RULE_ENGINE_URL: 'https://shield-rule-engine.dev-api.cx.metamask.io'
+  - METAMASK_SHIELD_ENABLED: 'true'
 
   # Snaps
+  - AUTO_UPDATE_PREINSTALLED_SNAPS: 'true'
   # This should only be used for local testing, and should not be enabled in any
   # production builds (including beta and Flask).
   - FORCE_PREINSTALLED_SNAPS: 'false'
-
-  # Enable new send implementation
-  - SEND_REDESIGN_ENABLED: false

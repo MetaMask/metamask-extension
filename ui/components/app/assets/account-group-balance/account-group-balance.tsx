@@ -1,66 +1,129 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
+import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import {
+  getMultichainNativeTokenBalance,
+  selectBalanceBySelectedAccountGroup,
+} from '../../../../selectors/assets';
 
 import {
   AlignItems,
   Display,
   FlexWrap,
-  IconColor,
-  JustifyContent,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { Box, SensitiveText } from '../../../component-library';
 import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  SensitiveText,
-  IconName,
-} from '../../../component-library';
-import { getPreferences } from '../../../../selectors';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import Spinner from '../../../ui/spinner';
-import { formatWithThreshold } from '../util/formatWithThreshold';
+  getEnabledNetworksByNamespace,
+  getPreferences,
+  selectAnyEnabledNetworksAreAvailable,
+} from '../../../../selectors';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Skeleton } from '../../../component-library/skeleton';
+import { isZeroAmount } from '../../../../helpers/utils/number-utils';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { getMultichainNativeCurrency } from '../../../../selectors/multichain';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import { hexWEIToDecETH } from '../../../../../shared/modules/conversion.utils';
 
-type AccountGroupBalanceProps = {
+export type AccountGroupBalanceProps = {
   classPrefix: string;
   balanceIsCached: boolean;
   handleSensitiveToggle: () => void;
+  balance: string;
+  chainId: CaipChainId | Hex;
 };
 
 export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   classPrefix,
   balanceIsCached,
   handleSensitiveToggle,
+  balance,
+  chainId,
 }) => {
-  const { privacyMode } = useSelector(getPreferences);
-  const locale = useSelector(getIntlLocale);
-  const t = useI18nContext();
+  const { privacyMode, showNativeTokenAsMainBalance } =
+    useSelector(getPreferences);
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+  const { formatCurrency, formatTokenQuantity } = useFormatters();
 
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const fallbackCurrency = useSelector(getCurrentCurrency);
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
+  );
 
-  if (!selectedGroupBalance) {
-    return <Spinner className="loading-overlay__spinner" />;
+  const caipChainId = isCaipChainId(chainId)
+    ? chainId
+    : formatChainIdToCaip(chainId);
+  const selectedAccount = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
+  );
+
+  const multichainNativeTokenBalance = useSelector((state) =>
+    getMultichainNativeTokenBalance(state, selectedAccount),
+  );
+
+  const isEvm = isEvmChainId(chainId);
+
+  const showNativeTokenAsMain = Boolean(
+    showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1,
+  );
+
+  const nativeCurrency = useMultichainSelector(
+    getMultichainNativeCurrency,
+    selectedAccount,
+  );
+
+  let formattedNativeBalance = null;
+  if (showNativeTokenAsMain) {
+    if (isEvm) {
+      const decimalBalance = parseFloat(hexWEIToDecETH(balance));
+
+      formattedNativeBalance = formatTokenQuantity(
+        decimalBalance,
+        nativeCurrency,
+      );
+    } else {
+      formattedNativeBalance = formatTokenQuantity(
+        Number(multichainNativeTokenBalance.amount),
+        nativeCurrency,
+      );
+    }
   }
 
-  const total = selectedGroupBalance.totalBalanceInUserCurrency;
-  const currency = selectedGroupBalance.userCurrency ?? fallbackCurrency;
+  const total = selectedGroupBalance?.totalBalanceInUserCurrency;
+  const currency = selectedGroupBalance
+    ? (selectedGroupBalance.userCurrency ?? fallbackCurrency)
+    : undefined;
 
-  if (typeof total !== 'number' || !currency) {
-    return <Spinner className="loading-overlay__spinner" />;
-  }
-
-  const formattedFiatDisplay = formatWithThreshold(total, 0.0, locale, {
-    style: 'currency',
-    currency: currency.toUpperCase(),
-  });
+  const formattedTotal = useMemo(() => {
+    if (showNativeTokenAsMain) {
+      return formattedNativeBalance;
+    }
+    if (total === undefined) {
+      return null;
+    }
+    return formatCurrency(total, currency);
+  }, [
+    showNativeTokenAsMain,
+    total,
+    formatCurrency,
+    currency,
+    formattedNativeBalance,
+  ]);
 
   return (
-    <>
+    <Skeleton
+      isLoading={
+        !anyEnabledNetworksAreAvailable &&
+        (isZeroAmount(total) || currency === undefined)
+      }
+      marginBottom={1}
+    >
       <Box
         className={classnames(`${classPrefix}-overview__primary-balance`, {
           [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
@@ -75,29 +138,14 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
           variant={TextVariant.inherit}
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
-        >
-          {formattedFiatDisplay}
-        </SensitiveText>
-        <SensitiveText
-          marginInlineStart={privacyMode ? 0 : 1}
-          variant={TextVariant.inherit}
-          isHidden={privacyMode}
-        >
-          {currency.toUpperCase()}
-        </SensitiveText>
-
-        <ButtonIcon
-          color={IconColor.iconAlternative}
-          marginLeft={2}
-          size={ButtonIconSize.Md}
           onClick={handleSensitiveToggle}
-          iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
-          justifyContent={JustifyContent.center}
-          ariaLabel={t('hideSentitiveInfo')}
-          data-testid="sensitive-toggle"
-        />
+          className="cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+        >
+          {/* We should always show something but the check is just to appease TypeScript */}
+          {formattedTotal}
+        </SensitiveText>
       </Box>
-    </>
+    </Skeleton>
   );
 };
 

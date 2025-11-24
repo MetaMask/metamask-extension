@@ -189,12 +189,14 @@ describe('useDisplayName', () => {
       contractDisplayName: undefined,
       hasPetname: false,
       image: undefined,
+      isAccount: false,
       name: null,
       displayState: TrustSignalDisplayState.Unknown,
       icon: {
         name: IconName.Question,
         color: undefined,
       },
+      subtitle: null,
     });
   });
 
@@ -216,9 +218,11 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: true,
         image: undefined,
+        isAccount: false,
         name: PETNAME_MOCK,
         displayState: TrustSignalDisplayState.Petname,
         icon: null,
+        subtitle: null,
       });
     });
   });
@@ -247,9 +251,11 @@ describe('useDisplayName', () => {
         contractDisplayName: ERC20_TOKEN_NAME_MOCK,
         hasPetname: false,
         image: ERC20_IMAGE_MOCK,
+        isAccount: false,
         name: ERC20_TOKEN_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
+        subtitle: null,
       });
     });
 
@@ -277,9 +283,11 @@ describe('useDisplayName', () => {
         contractDisplayName: SYMBOL_MOCK,
         hasPetname: false,
         image: ERC20_IMAGE_MOCK,
+        isAccount: false,
         name: SYMBOL_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
+        subtitle: null,
       });
     });
 
@@ -307,12 +315,14 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: false,
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
           name: IconName.Question,
           color: undefined,
         },
+        subtitle: null,
       });
     });
   });
@@ -339,9 +349,11 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: false,
         name: FIRST_PARTY_CONTRACT_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
+        subtitle: null,
       });
     });
 
@@ -363,12 +375,14 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: false,
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
           name: IconName.Question,
           color: undefined,
         },
+        subtitle: null,
       });
     });
   });
@@ -391,9 +405,11 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: false,
         name: WATCHED_NFT_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
+        subtitle: null,
       });
     });
 
@@ -414,12 +430,14 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: false,
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
           name: IconName.Question,
           color: undefined,
         },
+        subtitle: null,
       });
     });
   });
@@ -442,9 +460,11 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: NFT_IMAGE_MOCK,
+        isAccount: false,
         name: NFT_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
+        subtitle: null,
       });
     });
 
@@ -465,12 +485,14 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: false,
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
           name: IconName.Question,
           color: undefined,
         },
+        subtitle: null,
       });
     });
 
@@ -491,12 +513,14 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: false,
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
           name: IconName.Question,
           color: undefined,
         },
+        subtitle: null,
       });
     });
   });
@@ -519,9 +543,11 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: false,
         name: ENS_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
+        subtitle: null,
       });
     });
 
@@ -542,12 +568,14 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: false,
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
           name: IconName.Question,
           color: undefined,
         },
+        subtitle: null,
       });
     });
   });
@@ -584,9 +612,11 @@ describe('useDisplayName', () => {
         contractDisplayName: ERC20_TOKEN_NAME_MOCK,
         hasPetname: true,
         image: NFT_IMAGE_MOCK,
+        isAccount: false,
         name: PETNAME_MOCK,
         displayState: TrustSignalDisplayState.Petname,
         icon: null,
+        subtitle: null,
       });
     });
 
@@ -620,9 +650,11 @@ describe('useDisplayName', () => {
         contractDisplayName: ERC20_TOKEN_NAME_MOCK,
         hasPetname: false,
         image: NFT_IMAGE_MOCK,
+        isAccount: false,
         name: FIRST_PARTY_CONTRACT_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
+        subtitle: null,
       });
     });
 
@@ -651,9 +683,11 @@ describe('useDisplayName', () => {
         contractDisplayName: ERC20_TOKEN_NAME_MOCK,
         hasPetname: false,
         image: NFT_IMAGE_MOCK,
+        isAccount: false,
         name: NFT_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
+        subtitle: null,
       });
     });
 
@@ -681,9 +715,11 @@ describe('useDisplayName', () => {
         contractDisplayName: ERC20_TOKEN_NAME_MOCK,
         hasPetname: false,
         image: ERC20_IMAGE_MOCK,
+        isAccount: false,
         name: ERC20_TOKEN_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
+        subtitle: null,
       });
     });
   });
@@ -720,12 +756,14 @@ describe('useDisplayName', () => {
         contractDisplayName: ERC20_TOKEN_NAME_MOCK,
         hasPetname: true,
         image: ERC20_IMAGE_MOCK,
+        isAccount: false,
         name: PETNAME_MOCK,
         displayState: TrustSignalDisplayState.Malicious,
         icon: {
           name: IconName.Danger,
           color: IconColor.errorDefault,
         },
+        subtitle: null,
       });
     });
 
@@ -751,12 +789,14 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: false,
         name: 'Verified',
         displayState: TrustSignalDisplayState.Verified,
         icon: {
           name: IconName.VerifiedFilled,
           color: IconColor.infoDefault,
         },
+        subtitle: null,
       });
     });
 
@@ -782,9 +822,11 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: false,
         name: 'Warning',
         displayState: TrustSignalDisplayState.Warning,
         icon: null,
+        subtitle: null,
       });
     });
 
@@ -818,9 +860,11 @@ describe('useDisplayName', () => {
         contractDisplayName: ERC20_TOKEN_NAME_MOCK,
         hasPetname: false,
         image: ERC20_IMAGE_MOCK,
+        isAccount: false,
         name: ERC20_TOKEN_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
+        subtitle: null,
       });
     });
   });
@@ -852,9 +896,11 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: true,
         image: undefined,
+        isAccount: true,
         name: GROUP_NAME_MOCK,
         displayState: TrustSignalDisplayState.Petname,
         icon: null,
+        subtitle: null,
       });
     });
 
@@ -883,9 +929,11 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: true,
         image: undefined,
+        isAccount: false,
         name: PETNAME_MOCK,
         displayState: TrustSignalDisplayState.Petname,
         icon: null,
+        subtitle: null,
       });
     });
 
@@ -918,9 +966,11 @@ describe('useDisplayName', () => {
         contractDisplayName: ERC20_TOKEN_NAME_MOCK,
         hasPetname: false,
         image: ERC20_IMAGE_MOCK,
+        isAccount: false,
         name: ERC20_TOKEN_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
+        subtitle: null,
       });
     });
 
@@ -945,12 +995,14 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: false,
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
           name: IconName.Question,
           color: undefined,
         },
+        subtitle: null,
       });
     });
 
@@ -972,12 +1024,14 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: false,
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
           name: IconName.Question,
           color: undefined,
         },
+        subtitle: null,
       });
     });
 
@@ -1000,12 +1054,14 @@ describe('useDisplayName', () => {
         contractDisplayName: undefined,
         hasPetname: false,
         image: undefined,
+        isAccount: true,
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
           name: IconName.Question,
           color: undefined,
         },
+        subtitle: null,
       });
     });
   });

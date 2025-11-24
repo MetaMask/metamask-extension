@@ -83,7 +83,7 @@ const EnforceToggle = ({
           onToggle={() => onChange?.(!enabled)}
         />
       </Box>
-      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
+      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
         {t('simulationSettingsModalEnforceToggleDescription')}
       </Text>
     </Section>
@@ -111,7 +111,7 @@ const Slippage = ({
         value={slippage}
         endAccessory={'%'}
       />
-      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
+      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
         {t('simulationSettingsModalEnforceSlippageDescription')}
       </Text>
     </Section>

@@ -19,7 +19,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
     it('Successfully speeds up a pending transaction', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -57,6 +57,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           const activityListPage = new ActivityListPage(driver);
           await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
 
+          await activityListPage.checkSpeedUpInlineButtonIsPresent();
           await activityListPage.clickTransactionListItem();
           await activityListPage.clickSpeedUpTransaction();
           await activityListPage.clickConfirmTransactionReplacement();
@@ -74,7 +75,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
     it('Successfully cancels a pending transaction', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),

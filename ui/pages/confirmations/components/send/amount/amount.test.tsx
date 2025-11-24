@@ -19,10 +19,13 @@ import * as SendType from '../../../hooks/send/useSendType';
 import * as SendContext from '../../../context/send';
 import { Amount } from './amount';
 
-const render = (args?: Record<string, unknown>) => {
+const render = (
+  args?: Record<string, unknown>,
+  mockAmountError = undefined,
+) => {
   const store = configureStore(args ?? mockState);
 
-  return renderWithProvider(<Amount />, store);
+  return renderWithProvider(<Amount amountError={mockAmountError} />, store);
 };
 
 describe('Amount', () => {
@@ -56,7 +59,8 @@ describe('Amount', () => {
     } as unknown as SendContext.SendContextType);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       conversionSupportedForAsset: true,
-      fiatCurrencySymbol: 'USD',
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
@@ -80,7 +84,8 @@ describe('Amount', () => {
     } as unknown as SendContext.SendContextType);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       conversionSupportedForAsset: true,
-      fiatCurrencySymbol: 'USD',
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
@@ -104,7 +109,8 @@ describe('Amount', () => {
     } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       conversionSupportedForAsset: true,
-      fiatCurrencySymbol: 'USD',
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
@@ -112,11 +118,13 @@ describe('Amount', () => {
     const { getByRole, getByTestId, getByText } = render();
 
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
-    expect(getByText('~$ 20.00')).toBeInTheDocument();
+    expect(getByText('$ 20.00')).toBeInTheDocument();
     fireEvent.click(getByTestId('toggle-fiat-mode'));
+    expect(getByText('$ 20.00 available')).toBeInTheDocument();
     expect(getByRole('textbox')).toHaveValue('20');
+    expect(getByText('USD')).toBeInTheDocument();
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
-    expect(getByText('~0 NEU')).toBeInTheDocument();
+    expect(getByText('0 NEU')).toBeInTheDocument();
   });
 
   it('capture metrics when when fiatmode is toggled', () => {
@@ -130,7 +138,8 @@ describe('Amount', () => {
     } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       conversionSupportedForAsset: true,
-      fiatCurrencySymbol: 'USD',
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
@@ -166,7 +175,8 @@ describe('Amount', () => {
     } as unknown as SendContext.SendContextType);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       conversionSupportedForAsset: true,
-      fiatCurrencySymbol: 'USD',
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
@@ -185,7 +195,8 @@ describe('Amount', () => {
     } as unknown as SendContext.SendContextType);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       conversionSupportedForAsset: true,
-      fiatCurrencySymbol: 'USD',
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
@@ -246,7 +257,8 @@ describe('Amount', () => {
     } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       conversionSupportedForAsset: true,
-      fiatCurrencySymbol: 'USD',
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
@@ -266,7 +278,8 @@ describe('Amount', () => {
     } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       conversionSupportedForAsset: false,
-      fiatCurrencySymbol: 'USD',
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
@@ -286,7 +299,8 @@ describe('Amount', () => {
     } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       conversionSupportedForAsset: false,
-      fiatCurrencySymbol: 'USD',
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
@@ -309,7 +323,8 @@ describe('Amount', () => {
     } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       conversionSupportedForAsset: true,
-      fiatCurrencySymbol: 'USD',
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',

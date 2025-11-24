@@ -1,6 +1,9 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { MultichainAccountAvatarGroup } from './multichain-avatar-group';
+import {
+  MultichainAvatarGroup,
+  MultichainAvatarGroupType,
+} from './multichain-avatar-group';
 
 // Reusable avatar data for consistency across stories
 const mockAvatar1 = {
@@ -30,7 +33,7 @@ const mockAvatar5 = {
 
 export default {
   title: 'Components/MultichainAccounts/MultichainAccountAvatarGroup',
-  component: MultichainAccountAvatarGroup,
+  component: MultichainAvatarGroup,
   parameters: {
     docs: {
       description: {
@@ -54,9 +57,9 @@ export default {
         'Array of member objects with avatarValue and optional symbol',
     },
   },
-} as Meta<typeof MultichainAccountAvatarGroup>;
+} as Meta<typeof MultichainAvatarGroup>;
 
-const Template: StoryFn<typeof MultichainAccountAvatarGroup> = (args) => (
+const Template: StoryFn<typeof MultichainAvatarGroup> = (args) => (
   <div
     style={{
       width: '300px',
@@ -70,7 +73,7 @@ const Template: StoryFn<typeof MultichainAccountAvatarGroup> = (args) => (
       backgroundColor: '#f5f5f5',
     }}
   >
-    <MultichainAccountAvatarGroup {...args} />
+    <MultichainAvatarGroup {...args} />
   </div>
 );
 
@@ -87,6 +90,7 @@ WithLimit.args = {
 
 export const ManyMembers = Template.bind({});
 ManyMembers.args = {
+  type: MultichainAvatarGroupType.ACCOUNT,
   members: Array.from({ length: 10 }, (_, index) => ({
     avatarValue: `0x${index.toString().padStart(40, '0')}`,
     symbol: `TOKEN${index}`,
@@ -101,6 +105,7 @@ SingleMember.args = {
 
 export const NoSymbols = Template.bind({});
 NoSymbols.args = {
+  type: MultichainAvatarGroupType.ACCOUNT,
   members: [
     { avatarValue: mockAvatar1.avatarValue },
     { avatarValue: mockAvatar2.avatarValue },
@@ -115,12 +120,14 @@ EmptyGroup.args = {
 
 export const WithCustomClassName = Template.bind({});
 WithCustomClassName.args = {
+  type: MultichainAvatarGroupType.ACCOUNT,
   members: [mockAvatar1, mockAvatar2, mockAvatar3],
   className: 'custom-avatar-group-class',
 };
 
 export const HighLimit = Template.bind({});
 HighLimit.args = {
+  type: MultichainAvatarGroupType.ACCOUNT,
   members: [mockAvatar1, mockAvatar2, mockAvatar3],
   limit: 10,
 };

@@ -59,7 +59,9 @@ export default function AccountExist() {
     // reset onboarding flow
     await dispatch(resetOnboarding());
     await forceUpdateMetamaskState(dispatch);
-    navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    navigate(ONBOARDING_WELCOME_ROUTE, {
+      replace: true,
+    });
   };
 
   const onDone = async () => {
@@ -87,6 +89,11 @@ export default function AccountExist() {
       navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
     }
     if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+      // Track page view event for account already exists page
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.AccountAlreadyExistsPageViewed,
+      });
       bufferedTrace?.({
         name: TraceName.OnboardingNewSocialAccountExists,
         op: TraceOperation.OnboardingUserJourney,
@@ -106,6 +113,7 @@ export default function AccountExist() {
     onboardingParentContext,
     bufferedTrace,
     bufferedEndTrace,
+    trackEvent,
   ]);
 
   return (

@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerGetStateAction,
   NetworkControllerGetNetworkClientByIdAction,
@@ -9,11 +9,15 @@ import {
   AccountsControllerGetAccountAction,
   AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
-import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 import {
   TokensControllerGetStateAction,
   TokensControllerStateChangeEvent,
 } from '@metamask/assets-controllers';
+import {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../../../controllers/preferences-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | TokensControllerGetStateAction
@@ -40,22 +44,71 @@ export type TokenRatesControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getTokenRatesControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'TokenRatesController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'TokenRatesController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'TokenRatesController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'TokensController:getState',
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
       'AccountsController:getAccount',
       'AccountsController:getSelectedAccount',
     ],
-    allowedEvents: [
+    events: [
       'NetworkController:stateChange',
       'AccountsController:selectedEvmAccountChange',
       'PreferencesController:stateChange',
       'TokensController:stateChange',
     ],
   });
+  return controllerMessenger;
+}
+
+type AllowedInitializationActions = PreferencesControllerGetStateAction;
+
+type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
+
+export type TokenRatesControllerInitMessenger = ReturnType<
+  typeof getTokenRatesControllerInitMessenger
+>;
+
+/**
+ * Get a restricted messenger for the token rates controller initialization.
+ * This is scoped to the actions and events that the initialization is allowed
+ * to handle.
+ *
+ * @param messenger - The controller messenger to restrict.
+ * @returns The restricted controller messenger.
+ */
+export function getTokenRatesControllerInitMessenger(
+  messenger: RootMessenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
+) {
+  const controllerInitMessenger = new Messenger<
+    'TokenRatesControllerInit',
+    AllowedInitializationActions,
+    AllowedInitializationEvents,
+    typeof messenger
+  >({
+    namespace: 'TokenRatesControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['PreferencesController:getState'],
+    events: ['PreferencesController:stateChange'],
+  });
+  return controllerInitMessenger;
 }

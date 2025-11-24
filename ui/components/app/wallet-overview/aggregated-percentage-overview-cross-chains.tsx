@@ -10,13 +10,14 @@ import {
   getPreferences,
   getMarketData,
   getChainIdsToPoll,
+  selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
-import { useFormatters } from '../../../helpers/formatters';
+import { useFormatters } from '../../../hooks/useFormatters';
 import {
   Display,
   TextColor,
@@ -27,8 +28,14 @@ import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { TokenWithBalance } from '../assets/types';
+import { Skeleton } from '../../component-library/skeleton';
+import { isZeroAmount } from '../../../helpers/utils/number-utils';
 
-export const AggregatedPercentageOverviewCrossChains = () => {
+export const AggregatedPercentageOverviewCrossChains = ({
+  trailingChild,
+}: {
+  trailingChild: () => JSX.Element | null;
+}) => {
   const { formatCurrencyCompact } = useFormatters();
   const fiatCurrency = useSelector(getCurrentCurrency);
   const { privacyMode } = useSelector(getPreferences);
@@ -50,6 +57,9 @@ export const AggregatedPercentageOverviewCrossChains = () => {
   } = useAccountTotalCrossChainFiatBalance(
     selectedAccount,
     formattedTokensWithBalancesPerChain,
+  );
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
   );
 
   const getPerChainTotalFiat1dAgo = (
@@ -148,28 +158,36 @@ export const AggregatedPercentageOverviewCrossChains = () => {
   }
 
   return (
-    <Box display={Display.Flex} className="gap-1">
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-value-change"
-        style={{ whiteSpace: 'pre' }}
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {formattedAmountChangeCrossChains}
-      </SensitiveText>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-percentage-change"
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {formattedPercentChangeCrossChains}
-      </SensitiveText>
-    </Box>
+    <Skeleton
+      isLoading={
+        !anyEnabledNetworksAreAvailable &&
+        isZeroAmount(formattedAmountChangeCrossChains)
+      }
+    >
+      <Box display={Display.Flex} className="gap-1">
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-value-change"
+          style={{ whiteSpace: 'pre' }}
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {formattedAmountChangeCrossChains}
+        </SensitiveText>
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-percentage-change"
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {formattedPercentChangeCrossChains}
+        </SensitiveText>
+      </Box>
+      {trailingChild()}
+    </Skeleton>
   );
 };

@@ -4,6 +4,7 @@ import {
   AlignItems,
   Display,
   JustifyContent,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import {
   Box,
@@ -33,7 +34,7 @@ export const Header = () => {
         onClick={goToPreviousPage}
         size={ButtonIconSize.Sm}
       />
-      <Text>{t('send')}</Text>
+      <Text variant={TextVariant.headingSm}>{t('send')}</Text>
     </Box>
   );
 };

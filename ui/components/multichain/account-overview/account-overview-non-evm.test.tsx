@@ -9,14 +9,17 @@ import {
   AccountOverviewNonEvmProps,
 } from './account-overview-non-evm';
 
-jest.mock('../../../store/actions', () => ({
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
-  setTokenNetworkFilter: jest.fn(),
-  updateSlides: jest.fn(),
-  removeSlide: jest.fn(),
-  addImportedTokens: jest.fn(),
-}));
+jest.mock('../../../store/actions', () => {
+  return {
+    ...jest.requireActual('../../../store/actions'),
+    tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+    tokenBalancesStopPollingByPollingToken: jest.fn(),
+    setTokenNetworkFilter: jest.fn(),
+    updateSlides: jest.fn(),
+    removeSlide: jest.fn(),
+    addImportedTokens: jest.fn(),
+  };
+});
 
 // Mock the dispatch function
 const mockDispatch = jest.fn();
@@ -69,13 +72,13 @@ describe('AccountOverviewBtc', () => {
     expect(queryByTestId('account-overview__defi-tab')).not.toBeInTheDocument();
   });
 
-  it('does not show tokens links', () => {
+  it('shows tokens links', () => {
     const { queryByTestId } = render();
 
     expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
     const button = queryByTestId('asset-list-control-bar-action-button');
     expect(button).toBeInTheDocument(); // Verify the button is present
-    expect(button).toBeDisabled(); // Verify the button is disabled
+    expect(button).toBeEnabled(); // Verify the button is enabled
     // TODO: This one might be required, but we do not really handle tokens for BTC yet...
     expect(queryByTestId('refresh-list-button')).not.toBeInTheDocument();
   });

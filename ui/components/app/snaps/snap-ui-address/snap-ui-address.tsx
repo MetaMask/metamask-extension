@@ -4,6 +4,7 @@ import {
   isHexString,
   parseCaipAccountId,
 } from '@metamask/utils';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import { Box, Text } from '../../../component-library';
 import {
   AlignItems,
@@ -20,7 +21,7 @@ export type SnapUIAddressProps = {
   // The address must be a CAIP-10 string.
   address: string;
   // This is not currently exposed to Snaps.
-  avatarSize?: 'xs' | 'sm' | 'md' | 'lg';
+  avatarSize?: AvatarAccountSize;
   truncate?: boolean;
   displayName?: boolean;
   avatar?: boolean;
@@ -28,7 +29,7 @@ export type SnapUIAddressProps = {
 
 export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
   address,
-  avatarSize = 'md',
+  avatarSize,
   truncate = true,
   displayName = false,
   avatar = true,

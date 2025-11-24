@@ -2,10 +2,11 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
-import { withFixtures } from '../helpers';
+import { withFixtures, WINDOW_TITLES } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockBip44Snap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 
 const publicKeyBip44 =
   '"0x86debb44fb3a984d93f326131d4c1db0bc39644f1a67b673b3ab45941a1cea6a385981755185ac4594b6521e4d1e08d1"';
@@ -20,6 +21,9 @@ describe('Test Snap bip-44', function () {
   it('can pop up bip-44 snap and get private key result', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
         testSpecificMock: mockBip44Snap,
         title: this.test?.fullTitle(),
@@ -58,7 +62,7 @@ describe('Test Snap bip-44', function () {
         );
 
         // Select entropy source SRP 1, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
+        await testSnaps.selectEntropySource(
           'bip44EntropyDropDown',
           'SRP 1 (primary)',
         );
@@ -71,10 +75,8 @@ describe('Test Snap bip-44', function () {
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
-          'bip44EntropyDropDown',
-          'SRP 2',
-        );
+        await testSnaps.selectEntropySource('bip44EntropyDropDown', 'SRP 2');
+
         await testSnaps.fillMessage('messageBip44Input', 'foo bar');
         await testSnaps.clickButton('signBip44MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
@@ -84,16 +86,15 @@ describe('Test Snap bip-44', function () {
         );
 
         // Select an invalid (non-existent) entropy source, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
-          'bip44EntropyDropDown',
-          'Invalid',
-        );
+        await testSnaps.selectEntropySource('bip44EntropyDropDown', 'Invalid');
+
         await testSnaps.fillMessage('messageBip44Input', 'foo bar');
         await testSnaps.clickButton('signBip44MessageButton');
-        await driver.waitForAlert(
-          'Entropy source with ID "invalid" not found.',
-        );
-        await driver.closeAlertPopup();
+
+        await driver.waitForBrowserAlert({
+          text: 'Entropy source with ID "invalid" not found.',
+          windowTitle: WINDOW_TITLES.TestSnaps,
+        });
       },
     );
   });

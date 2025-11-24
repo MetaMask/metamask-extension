@@ -27,7 +27,9 @@ function generateNonce(): string {
   return crypto.randomUUID();
 }
 
-function getIdentityAPI(): typeof chrome.identity | typeof browser.identity {
+export function getIdentityAPI():
+  | typeof chrome.identity
+  | typeof browser.identity {
   // if chrome.identity API is available, we will use it
   // note that, in firefox, chrome.identity is available
   // but only some of the methods are supported

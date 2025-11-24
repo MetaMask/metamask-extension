@@ -9,10 +9,7 @@
           "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
             "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
             "type": "multichain-account",
-            "accounts": [
-              "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3",
-              "07c2cfec-36c9-46c4-8115-3836d3ac9047"
-            ],
+            "accounts": ["51737ecb-beb4-4a2b-bcab-c99d0f587a33"],
             "metadata": {
               "name": "Account 1",
               "entropy": {
@@ -32,7 +29,7 @@
       }
     }
   },
-  "accounts": { "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189": {} },
+  "accountsAssets": {},
   "accountsByChainId": {},
   "addSnapAccountEnabled": false,
   "addressBook": {
@@ -50,6 +47,7 @@
   "advancedGasFee": {},
   "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
   "allDetectedTokens": {},
+  "allIgnoredAssets": {},
   "allIgnoredTokens": {},
   "allNftContracts": {},
   "allNfts": {},
@@ -91,6 +89,7 @@
     "33": { "id": 33, "date": "2024-04-09", "isShown": false }
   },
   "approvalFlows": [],
+  "assetsMetadata": {},
   "browserEnvironment": { "os": "mac", "browser": "firefox" },
   "completedOnboarding": false,
   "confirmationExchangeRates": {},
@@ -105,8 +104,6 @@
     }
   },
   "currentAppVersion": "11.14.4-flask.0",
-  "currentBlockGasLimit": "",
-  "currentBlockGasLimitByChainId": {},
   "currentCurrency": "usd",
   "currentExtensionPopupId": 1715943310719,
   "currentLocale": "en",
@@ -189,7 +186,10 @@
   "keyrings": [
     {
       "type": "HD Key Tree",
-      "accounts": ["0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189"]
+      "accounts": ["0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189"],
+      "metadata": {
+        "id": "test-keyring-id"
+      }
     }
   ],
   "knownMethodData": {},
@@ -244,6 +244,9 @@
       "name": "Sepolia",
       "nativeCurrency": "SepoliaETH"
     }
+  },
+  "networkConnectionBanner": {
+    "status": "unknown"
   },
   "networksMetadata": { "sepolia": { "status": "unknown", "EIPS": {} } },
   "networksWithTransactionActivity": {
@@ -321,6 +324,8 @@
   "selectedAddress": "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
+  "shieldEndingToastLastClickedOrClosed": null,
+  "shieldPausedToastLastClickedOrClosed": null,
   "showAccountBanner": true,
   "showBetaHeader": false,
   "showNetworkBanner": true,

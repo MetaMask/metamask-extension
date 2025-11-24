@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Hex } from '@metamask/utils';
+import { formatChainIdToHex } from '@metamask/bridge-controller';
 import { isSendBundleSupported } from '../../../store/actions';
+import { isNonEvmChain } from '../../../ducks/bridge/utils';
 
 type Chain = {
   chainId: string;
@@ -29,9 +30,14 @@ export function useIsSendBundleSupported(
         return;
       }
 
+      if (isNonEvmChain(fromChain.chainId)) {
+        setIsSendBundleSupportedForChain(false);
+        return;
+      }
+
       try {
         const isSupported = await isSendBundleSupported(
-          fromChain.chainId as Hex,
+          formatChainIdToHex(fromChain.chainId),
         );
 
         if (!isCancelled) {

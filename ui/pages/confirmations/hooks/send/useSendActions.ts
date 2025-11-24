@@ -2,13 +2,14 @@ import { CaipAssetType, Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
+import { setDefaultHomeActiveTabName } from '../../../../store/actions';
 import { SendPages } from '../../constants/send';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
 import { addLeadingZeroIfNeeded, submitEvmTransaction } from '../../utils/send';
@@ -17,12 +18,13 @@ import { useSendType } from './useSendType';
 
 export const useSendActions = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {
     asset,
     chainId,
     from,
     fromAccount,
+    hexData,
     maxValueMode,
     toResolved: to,
     value,
@@ -40,6 +42,7 @@ export const useSendActions = () => {
           asset,
           chainId: chainId as Hex,
           from: from as Hex,
+          hexData: hexData as Hex,
           to: toAddress as Hex,
           value: value as string,
         }),
@@ -47,15 +50,24 @@ export const useSendActions = () => {
       const route = maxValueMode
         ? `${CONFIRM_TRANSACTION_ROUTE}?maxValueMode=${maxValueMode}`
         : CONFIRM_TRANSACTION_ROUTE;
-      history.push(route);
+      navigate(route);
     } else {
-      history.push(`${SEND_ROUTE}/${SendPages.LOADER}`);
-      await sendMultichainTransactionForReview(fromAccount as InternalAccount, {
-        fromAccountId: fromAccount?.id as string,
-        toAddress: toAddress as string,
-        assetId: asset.assetId as CaipAssetType,
-        amount: addLeadingZeroIfNeeded(value) as string,
-      });
+      navigate(`${SEND_ROUTE}/${SendPages.LOADER}`);
+      await dispatch(setDefaultHomeActiveTabName('activity'));
+      try {
+        await sendMultichainTransactionForReview(
+          fromAccount as InternalAccount,
+          {
+            fromAccountId: fromAccount?.id as string,
+            toAddress: toAddress as string,
+            assetId: asset.assetId as CaipAssetType,
+            amount: addLeadingZeroIfNeeded(value || ('0' as string)) as string,
+          },
+        );
+        navigate(DEFAULT_ROUTE);
+      } catch (error) {
+        // intentional empty catch
+      }
     }
   }, [
     asset,
@@ -63,7 +75,8 @@ export const useSendActions = () => {
     dispatch,
     from,
     fromAccount,
-    history,
+    hexData,
+    navigate,
     isEvmSendType,
     maxValueMode,
     to,
@@ -71,12 +84,12 @@ export const useSendActions = () => {
   ]);
 
   const handleBack = useCallback(() => {
-    history.goBack();
-  }, [history]);
+    navigate(-1);
+  }, [navigate]);
 
   const handleCancel = useCallback(() => {
-    history.push(DEFAULT_ROUTE);
-  }, [history]);
+    navigate(DEFAULT_ROUTE);
+  }, [navigate]);
 
   return { handleSubmit, handleCancel, handleBack };
 };

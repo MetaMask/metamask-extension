@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Peržiūrėti paskyrą „Etherscan“ programoje"
   },
-  "expandView": {
-    "message": "Išskleisti rodinį"
-  },
   "failed": {
     "message": "Nepavyko"
   },
@@ -619,9 +616,6 @@
   },
   "supportCenter": {
     "message": "Apsilankykite mūsų pagalbos centre"
-  },
-  "switchNetworks": {
-    "message": "Perjungti tinklus"
   },
   "symbol": {
     "message": "Simbolis"

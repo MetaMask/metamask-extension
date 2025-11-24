@@ -67,6 +67,13 @@ describe('Token Details', function () {
       marketCap: 12,
     };
 
+    const expectedPrice = formatCurrency(
+      `${marketData.price * ethConversionInUsd}`,
+      'USD',
+    );
+
+    const expectedMarketCap = '$120.00K';
+
     await withFixtures(
       {
         ...fixtures,
@@ -74,6 +81,11 @@ describe('Token Details', function () {
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, chainId, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 10000,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
             [tokenAddress.toLowerCase()]: marketData,
           }),
           await mockHistoricalPrices(mockServer, {
@@ -105,14 +117,6 @@ describe('Token Details', function () {
           tokenAddress,
         );
 
-        const expectedPrice = formatCurrency(
-          `${marketData.price * ethConversionInUsd}`,
-          'USD',
-        );
-        const expectedMarketCap = `${
-          marketData.marketCap * ethConversionInUsd
-        }.00`;
-
         await assetListPage.checkTokenPriceAndMarketCap(
           expectedPrice,
           expectedMarketCap,
@@ -128,6 +132,15 @@ describe('Token Details', function () {
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => [
+          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          }),
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);

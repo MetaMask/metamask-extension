@@ -277,7 +277,7 @@ function getOptions(
       alias: 'v',
       array: false,
       choices: [2, 3] as Manifest['manifest_version'][],
-      default: 2 as Manifest['manifest_version'],
+      default: 3 as Manifest['manifest_version'],
       description: "Changes manifest.json format to the given version's schema",
       group: toOrange('Build options:'),
       type: 'number',
@@ -330,12 +330,20 @@ function getOptions(
       group: toOrange('Security:'),
       type: 'boolean',
     },
-    lockdown: {
-      alias: 'k',
+    lavamoatDebug: {
+      alias: 'u',
       array: false,
-      default: isProduction,
-      defaultDescription: prodDefaultDesc,
-      description: 'Enable/disable runtime hardening (also see --snow)',
+      default: false,
+      description:
+        'Enables/disables LavaMoat debug mode (ignored if `lavamoat` is not enabled)',
+      group: toOrange('Security:'),
+      type: 'boolean',
+    },
+    generatePolicy: {
+      alias: 'g',
+      array: false,
+      default: false,
+      description: 'Generate the LavaMoat policy',
       group: toOrange('Security:'),
       type: 'boolean',
     },
@@ -381,9 +389,10 @@ Watch: ${args.watch}
 Cache: ${args.cache}
 Progress: ${args.progress}
 Zip: ${args.zip}
-Snow: ${args.snow}
 LavaMoat: ${args.lavamoat}
-Lockdown: ${args.lockdown}
+LavaMoat debug: ${args.lavamoatDebug}
+Generate policy: ${args.generatePolicy}
+Snow: ${args.snow}
 Sentry: ${args.sentry}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}

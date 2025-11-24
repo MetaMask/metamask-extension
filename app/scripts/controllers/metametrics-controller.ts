@@ -35,8 +35,9 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
+  StateMetadata,
 } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import type { Json } from '@metamask/utils';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { AddressBookControllerState } from '@metamask/address-book-controller';
@@ -205,72 +206,66 @@ export type MetaMaskState = {
  * using the `persist` flag; and if they can be sent to Sentry or not, using
  * the `anonymous` flag.
  */
-const controllerMetadata = {
+const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
   metaMetricsId: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   participateInMetaMetrics: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   latestNonAnonymousEventTimestamp: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   fragments: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   eventsBeforeMetricsOptIn: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: false,
   },
   tracesBeforeMetricsOptIn: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: false,
   },
   traits: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: false,
   },
   dataCollectionForMarketing: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   marketingCampaignCookieId: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: false,
   },
   segmentApiCalls: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: false,
-  },
-  isSocialLoginFlowEnabledForMetrics: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
   },
 };
 
@@ -306,7 +301,6 @@ export type MetaMetricsControllerState = {
       payload: SegmentEventPayload;
     }
   >;
-  isSocialLoginFlowEnabledForMetrics: boolean;
 };
 
 /**
@@ -393,12 +387,10 @@ export type AllowedEvents =
 /**
  * Messenger type for the {@link MetaMetricsController}.
  */
-export type MetaMetricsControllerMessenger = RestrictedMessenger<
+export type MetaMetricsControllerMessenger = Messenger<
   typeof controllerName,
   MetaMetricsControllerActions | AllowedActions,
-  MetaMetricsControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  MetaMetricsControllerEvents | AllowedEvents
 >;
 
 type CaptureException = typeof captureException | ((err: unknown) => void);
@@ -428,7 +420,6 @@ export const getDefaultMetaMetricsControllerState =
     traits: {},
     fragments: {},
     segmentApiCalls: {},
-    isSocialLoginFlowEnabledForMetrics: false,
   });
 
 export default class MetaMetricsController extends BaseController<
@@ -491,7 +482,7 @@ export default class MetaMetricsController extends BaseController<
       }
     };
     this.chainId = this.#getCurrentChainId();
-    const preferencesControllerState = this.messagingSystem.call(
+    const preferencesControllerState = this.messenger.call(
       'PreferencesController:getState',
     );
     this.locale = preferencesControllerState.currentLocale.replace('_', '-');
@@ -500,51 +491,51 @@ export default class MetaMetricsController extends BaseController<
     this.#extension = extension;
     this.#environment = environment;
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:trackEvent',
       this.trackEvent.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:getMetaMetricsId',
       this.getMetaMetricsId.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:createEventFragment',
       this.createEventFragment.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:getEventFragmentById',
       this.getEventFragmentById.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:updateEventFragment',
       this.updateEventFragment.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:deleteEventFragment',
       this.deleteEventFragment.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:finalizeEventFragment',
       this.finalizeEventFragment.bind(this),
     );
 
     const abandonedFragments = omitBy(state.fragments, 'persist');
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'PreferencesController:stateChange',
       ({ currentLocale }) => {
         this.locale = currentLocale?.replace('_', '-');
       },
     );
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'NetworkController:networkDidChange',
       ({ selectedNetworkClientId }) => {
         this.chainId = this.#getCurrentChainId(selectedNetworkClientId);
@@ -622,24 +613,14 @@ export default class MetaMetricsController extends BaseController<
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       networkClientId ||
-      this.messagingSystem.call('NetworkController:getState')
-        .selectedNetworkClientId;
+      this.messenger.call('NetworkController:getState').selectedNetworkClientId;
     const {
       configuration: { chainId },
-    } = this.messagingSystem.call(
+    } = this.messenger.call(
       'NetworkController:getNetworkClientById',
       selectedNetworkClientId,
     );
     return chainId;
-  }
-
-  setIsSocialLoginFlowEnabledForMetrics(
-    isSocialLoginFlowEnabledForMetrics: boolean,
-  ): void {
-    this.update((state) => {
-      state.isSocialLoginFlowEnabledForMetrics =
-        isSocialLoginFlowEnabledForMetrics;
-    });
   }
 
   finalizeAbandonedFragments(): void {
@@ -887,7 +868,6 @@ export default class MetaMetricsController extends BaseController<
    */
   identify(userTraits: Partial<MetaMetricsUserTraits>): void {
     const { metaMetricsId, participateInMetaMetrics } = this.state;
-
     if (!participateInMetaMetrics || !metaMetricsId || !userTraits) {
       return;
     }
@@ -1328,6 +1308,7 @@ export default class MetaMetricsController extends BaseController<
       page,
       referrer,
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
+      timestamp,
     } = rawPayload;
 
     let chainId;
@@ -1371,6 +1352,7 @@ export default class MetaMetricsController extends BaseController<
         environment_type: environmentType,
       },
       context: this.#buildContext(referrer, page),
+      timestamp,
     };
   }
 
@@ -1489,27 +1471,21 @@ export default class MetaMetricsController extends BaseController<
   #buildValidTraits(
     userTraits: Partial<MetaMetricsUserTraits>,
   ): MetaMetricsUserTraits {
-    return Object.entries(userTraits).reduce(
-      (validTraits: MetaMetricsUserTraits, [key, value]) => {
-        if (this.#isValidTraitDate(value)) {
-          return {
-            ...validTraits,
-            [key]: value.toISOString(),
-          };
-        } else if (this.#isValidTrait(value)) {
-          return {
-            ...validTraits,
-            [key]: value,
-          };
-        }
+    const validTraits: Record<string, string> = {};
 
+    for (const [key, value] of Object.entries(userTraits)) {
+      if (this.#isValidTraitDate(value)) {
+        validTraits[key] = value.toISOString();
+      } else if (this.#isValidTrait(value)) {
+        (validTraits as Record<string, typeof value>)[key] = value;
+      } else {
         console.warn(
           `MetaMetricsController: "${key}" value is not a valid trait type`,
         );
-        return validTraits;
-      },
-      {},
-    );
+      }
+    }
+
+    return validTraits;
   }
 
   /**
@@ -1733,8 +1709,8 @@ export default class MetaMetricsController extends BaseController<
   ): void {
     const {
       metaMetricsId,
-      participateInMetaMetrics,
       latestNonAnonymousEventTimestamp,
+      participateInMetaMetrics,
     } = this.state;
     if (!participateInMetaMetrics || !metaMetricsId) {
       return;

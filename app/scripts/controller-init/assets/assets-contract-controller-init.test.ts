@@ -1,9 +1,20 @@
-import { Messenger } from '@metamask/base-controller';
+import {
+  ActionConstraint,
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { AssetsContractController } from '@metamask/assets-controllers';
-import { buildControllerInitRequestMock } from '../test/utils';
+import {
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetStateAction,
+} from '@metamask/network-controller';
+import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
+  AssetsContractControllerInitMessenger,
   AssetsContractControllerMessenger,
+  getAssetsContractControllerInitMessenger,
   getAssetsContractControllerMessenger,
 } from '../messengers/assets';
 import { AssetsContractControllerInit } from './assets-contract-controller-init';
@@ -11,16 +22,50 @@ import { AssetsContractControllerInit } from './assets-contract-controller-init'
 jest.mock('@metamask/assets-controllers');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<AssetsContractControllerMessenger>
+  ControllerInitRequest<
+    AssetsContractControllerMessenger,
+    AssetsContractControllerInitMessenger
+  >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = new Messenger<
+    MockAnyNamespace,
+    | NetworkControllerGetNetworkClientByIdAction
+    | NetworkControllerGetStateAction
+    | ActionConstraint,
+    never
+  >({ namespace: MOCK_ANY_NAMESPACE });
+
+  baseControllerMessenger.registerActionHandler(
+    'NetworkController:getNetworkClientById',
+    // @ts-expect-error: Partial mock.
+    (id: string) => {
+      if (id === 'mainnet') {
+        return {
+          configuration: { chainId: CHAIN_ID_MOCK },
+        };
+      }
+
+      throw new Error('Unknown network client ID');
+    },
+  );
+
+  baseControllerMessenger.registerActionHandler(
+    'NetworkController:getState',
+    () => ({
+      selectedNetworkClientId: 'mainnet',
+      networkConfigurationsByChainId: {},
+      networksMetadata: {},
+    }),
+  );
 
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getAssetsContractControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: undefined,
+    initMessenger: getAssetsContractControllerInitMessenger(
+      baseControllerMessenger,
+    ),
   };
 }
 

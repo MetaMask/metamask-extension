@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Переглянути обліковий запис на Etherscan"
   },
-  "expandView": {
-    "message": "Розгорнути подання"
-  },
   "failed": {
     "message": "Помилка"
   },
@@ -619,9 +616,6 @@
   },
   "supportCenter": {
     "message": "Відвідайте наш центр підтримки"
-  },
-  "switchNetworks": {
-    "message": "Переключити мережі"
   },
   "symbol": {
     "message": "Символ"

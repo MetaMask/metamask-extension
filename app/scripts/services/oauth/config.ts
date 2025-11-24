@@ -145,7 +145,7 @@ export function loadOAuthConfig(): OAuthConfig {
   const buildType = process.env.METAMASK_BUILD_TYPE;
 
   let buildTypeEnv = BuildTypeEnv.DevMain;
-  if (buildType === 'main') {
+  if (buildType === 'main' || buildType === 'experimental') {
     if (isDevOrTestBuild()) {
       buildTypeEnv = BuildTypeEnv.DevMain;
     } else if (isProductionBuild() || isReleaseCandidateBuild()) {

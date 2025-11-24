@@ -9,11 +9,11 @@ import {
   OriginalRequest,
 } from '@metamask/message-manager';
 import type {
-  EncryptionPublicKeyManagerMessenger,
   EncryptionPublicKeyManagerState,
   EncryptionPublicKeyManagerUnapprovedMessageAddedEvent,
 } from '@metamask/message-manager';
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
+import { BaseController, StateMetadata } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import { Patch } from 'immer';
 import {
   AcceptRequest,
@@ -25,20 +25,19 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
 const controllerName = 'EncryptionPublicKeyController';
-const managerName = 'EncryptionPublicKeyManager';
 const methodNameGetEncryptionPublicKey = 'eth_getEncryptionPublicKey';
 
-const stateMetadata = {
+const stateMetadata: StateMetadata<EncryptionPublicKeyControllerState> = {
   unapprovedEncryptionPublicKeyMsgs: {
     includeInStateLogs: true,
     persist: false,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   unapprovedEncryptionPublicKeyMsgCount: {
     includeInStateLogs: true,
     persist: false,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
 };
@@ -87,18 +86,16 @@ type EncryptionPublicKeyManagerStateChange = {
   payload: [EncryptionPublicKeyManagerState, Patch[]];
 };
 
-type AllowedActions = AddApprovalRequest | AcceptRequest | RejectRequest;
+export type AllowedActions = AddApprovalRequest | AcceptRequest | RejectRequest;
 
-type AllowedEvents =
+export type AllowedEvents =
   | EncryptionPublicKeyManagerStateChange
   | EncryptionPublicKeyManagerUnapprovedMessageAddedEvent;
 
-export type EncryptionPublicKeyControllerMessenger = RestrictedMessenger<
+export type EncryptionPublicKeyControllerMessenger = Messenger<
   typeof controllerName,
   EncryptionPublicKeyControllerActions | AllowedActions,
-  EncryptionPublicKeyControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  EncryptionPublicKeyControllerEvents | AllowedEvents
 >;
 
 export type EncryptionPublicKeyControllerOptions = {
@@ -113,7 +110,7 @@ export type EncryptionPublicKeyControllerOptions = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metricsEvent: (payload: any, options?: any) => void;
-  managerMessenger: EncryptionPublicKeyManagerMessenger;
+  manager: EncryptionPublicKeyManager;
 };
 
 /**
@@ -147,11 +144,11 @@ export default class EncryptionPublicKeyController extends BaseController<
    * @param options.getAccountKeyringType - Callback to get the keyring type.
    * @param options.getState - Callback to retrieve all user state.
    * @param options.metricsEvent - A function for emitting a metric event.
-   * @param options.managerMessenger
+   * @param options.manager - A reference to the encryption public key manager.
    */
   constructor({
     messenger,
-    managerMessenger,
+    manager,
     getEncryptionPublicKey,
     getAccountKeyringType,
     getState,
@@ -168,13 +165,10 @@ export default class EncryptionPublicKeyController extends BaseController<
     this._getAccountKeyringType = getAccountKeyringType;
     this._getState = getState;
     this._metricsEvent = metricsEvent;
-    this._encryptionPublicKeyManager = new EncryptionPublicKeyManager({
-      additionalFinishStatuses: ['received'],
-      messenger: managerMessenger,
-    });
+    this._encryptionPublicKeyManager = manager;
 
-    this.messagingSystem.subscribe(
-      `${managerName}:unapprovedMessage`,
+    this.messenger.subscribe(
+      'EncryptionPublicKeyManager:unapprovedMessage',
       this._requestApproval.bind(this),
     );
 
@@ -359,7 +353,7 @@ export default class EncryptionPublicKeyController extends BaseController<
     ) => void,
   ) {
     controllerMessenger.subscribe(
-      `${managerName}:stateChange`,
+      'EncryptionPublicKeyManager:stateChange',
       (state: MessageManagerState<AbstractMessage>) => {
         const newMessages = this._migrateMessages(
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -407,7 +401,7 @@ export default class EncryptionPublicKeyController extends BaseController<
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const origin = msgParams.origin || ORIGIN_METAMASK;
 
-    this.messagingSystem
+    this.messenger
       .call(
         'ApprovalController:addRequest',
         {
@@ -423,11 +417,11 @@ export default class EncryptionPublicKeyController extends BaseController<
   }
 
   private _acceptApproval(messageId: string) {
-    this.messagingSystem.call('ApprovalController:acceptRequest', messageId);
+    this.messenger.call('ApprovalController:acceptRequest', messageId);
   }
 
   private _rejectApproval(messageId: string) {
-    this.messagingSystem.call(
+    this.messenger.call(
       'ApprovalController:rejectRequest',
       messageId,
       'Cancel',

@@ -2,15 +2,20 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_CONFIRM_SRP_ROUTE,
+  REVEAL_SRP_LIST_ROUTE,
+} from '../../../helpers/constants/routes';
 import RecoveryPhrase from './review-recovery-phrase';
 
 const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
   };
 });
 
@@ -37,8 +42,11 @@ const mockStore = configureMockStore()({
 });
 
 describe('Review Recovery Phrase Component', () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({
+      search: '',
+    });
   });
 
   const TEST_SEED =
@@ -105,11 +113,14 @@ describe('Review Recovery Phrase Component', () => {
   });
 
   it('should route to url with reminder parameter', () => {
+    mockUseLocation.mockReturnValue({
+      search: '?isFromReminder=true',
+    });
+
     const isReminderParam = '?isFromReminder=true';
     const { queryByTestId } = renderWithProvider(
       <RecoveryPhrase {...props} />,
       mockStore,
-      isReminderParam,
     );
 
     const revealRecoveryPhraseButton = queryByTestId('recovery-phrase-reveal');
@@ -123,6 +134,40 @@ describe('Review Recovery Phrase Component', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith({
       pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
       search: isReminderParam,
+    });
+  });
+
+  it('renders match snapshot when isFromReminder and isFromSettingsSecurity are present in the search params', () => {
+    mockUseLocation.mockReturnValue({
+      search: '?isFromReminder=true&isFromSettingsSecurity=true',
+    });
+
+    const { container } = renderWithProvider(
+      <RecoveryPhrase {...props} />,
+      mockStore,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('onClose should navigate to reveal srp list route', () => {
+    mockUseLocation.mockReturnValue({
+      search: '?isFromReminder=true&isFromSettingsSecurity=true',
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <RecoveryPhrase {...props} />,
+      mockStore,
+    );
+
+    const closeButton = getByTestId(
+      'reveal-recovery-phrase-review-close-button',
+    );
+
+    fireEvent.click(closeButton);
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE, {
+      replace: true,
     });
   });
 });

@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { isCrossChain } from '@metamask/bridge-controller';
 import {
   Button,
   ButtonLink,
@@ -100,13 +99,7 @@ export const BridgeCTAButton = ({
     }
 
     if (isTxSubmittable || isTxAlertPresent) {
-      return activeQuote &&
-        isCrossChain(
-          activeQuote.quote.srcChainId,
-          activeQuote.quote.destChainId,
-        )
-        ? 'bridge'
-        : 'swap';
+      return 'swap';
     }
 
     return 'swapSelectToken';
@@ -137,7 +130,7 @@ export const BridgeCTAButton = ({
   return activeQuote && !secondaryButtonLabel ? (
     <Button
       width={BlockSize.Full}
-      size={activeQuote ? ButtonSize.Md : ButtonSize.Lg}
+      size={ButtonSize.Lg}
       variant={ButtonVariant.Primary}
       data-testid="bridge-cta-button"
       style={{ boxShadow: 'none' }}
@@ -157,6 +150,8 @@ export const BridgeCTAButton = ({
       }}
       loading={isSubmitting}
       disabled={
+        // Disable submission until all quotes have been fetched
+        isLoading ||
         !isTxSubmittable ||
         isTxAlertPresent ||
         isQuoteExpired ||
@@ -175,7 +170,7 @@ export const BridgeCTAButton = ({
       <Text
         variant={TextVariant.bodyMd}
         textAlign={TextAlign.Center}
-        color={TextColor.textAlternativeSoft}
+        color={TextColor.textAlternative}
       >
         {label ? t(label) : ''}
       </Text>

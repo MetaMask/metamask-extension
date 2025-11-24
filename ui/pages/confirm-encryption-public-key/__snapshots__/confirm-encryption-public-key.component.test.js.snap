@@ -67,7 +67,7 @@ exports[`ConfirmDecryptMessage Component should match snapshot when preference i
                         <rect
                           fill="#F2BE02"
                           height="18"
-                          transform="translate(3.0840328880287724 -2.9223901886104127) rotate(387.1 9 9)"
+                          transform="translate(3.08403288802877 -2.92239018861041) rotate(387.1 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -75,7 +75,7 @@ exports[`ConfirmDecryptMessage Component should match snapshot when preference i
                         <rect
                           fill="#01778E"
                           height="18"
-                          transform="translate(-1.465568967274283 9.396341018731759) rotate(227.4 9 9)"
+                          transform="translate(-1.46556896727428 9.39634101873176) rotate(227.4 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -83,7 +83,7 @@ exports[`ConfirmDecryptMessage Component should match snapshot when preference i
                         <rect
                           fill="#C81435"
                           height="18"
-                          transform="translate(10.107951098008673 -7.083365091692127) rotate(422.3 9 9)"
+                          transform="translate(10.10795109800867 -7.08336509169213) rotate(422.3 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -134,7 +134,7 @@ exports[`ConfirmDecryptMessage Component should match snapshot when preference i
           class="request-encryption-public-key__request-icon"
         >
           <div
-            class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-[10px] h-10 w-10"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-[10px] h-10 w-10"
           >
             <div
               class="flex [&>div]:!rounded-none"
@@ -151,7 +151,7 @@ exports[`ConfirmDecryptMessage Component should match snapshot when preference i
                   <rect
                     fill="#F2BE02"
                     height="40"
-                    transform="translate(6.853406417841717 -6.49420041913425) rotate(387.1 20 20)"
+                    transform="translate(6.85340641784172 -6.49420041913425) rotate(387.1 20.00000000000000 20.00000000000000)"
                     width="40"
                     x="0"
                     y="0"
@@ -159,7 +159,7 @@ exports[`ConfirmDecryptMessage Component should match snapshot when preference i
                   <rect
                     fill="#01778E"
                     height="40"
-                    transform="translate(-3.2568199272761853 20.88075781940391) rotate(227.4 20 20)"
+                    transform="translate(-3.25681992727619 20.88075781940391) rotate(227.4 20.00000000000000 20.00000000000000)"
                     width="40"
                     x="0"
                     y="0"
@@ -167,7 +167,7 @@ exports[`ConfirmDecryptMessage Component should match snapshot when preference i
                   <rect
                     fill="#C81435"
                     height="40"
-                    transform="translate(22.462113551130386 -15.740811314871396) rotate(422.3 20 20)"
+                    transform="translate(22.46211355113039 -15.74081131487140) rotate(422.3 20.00000000000000 20.00000000000000)"
                     width="40"
                     x="0"
                     y="0"

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Hex } from '@metamask/utils';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
 import { useBatchAuthorizationRequests } from '../../../pages/confirmations/hooks/useBatchAuthorizationRequests';
@@ -37,7 +37,7 @@ export const SmartContractAccountToggle = ({
 }: SmartContractAccountToggleProps) => {
   const { name, isSupported, upgradeContractAddress, chainIdHex } =
     networkConfig;
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const unconfirmedTransactions = useSelector(
     unconfirmedTransactionsListSelector,
@@ -137,7 +137,7 @@ export const SmartContractAccountToggle = ({
         dispatch(setRedirectAfterDefaultPage({ path: redirectPath, address }));
       }
 
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${latestTransaction.id}`);
+      navigate(`${CONFIRM_TRANSACTION_ROUTE}/${latestTransaction.id}`);
       return true;
     }
     return false;
@@ -145,7 +145,7 @@ export const SmartContractAccountToggle = ({
     unconfirmedTransactions,
     address,
     chainIdHex,
-    history,
+    navigate,
     returnToPage,
     dispatch,
   ]);
@@ -222,7 +222,7 @@ export const SmartContractAccountToggle = ({
     <Box
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
-      marginTop={2}
+      marginTop={4}
     >
       <Text
         variant={TextVariant.bodyMdMedium}

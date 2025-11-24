@@ -3,26 +3,26 @@
 exports[`SmartContractAccountToggleSection Disabled State Handling disables all toggles when requests are pending 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--width-full mm-box--background-color-background-alternative"
+    class="mm-box mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--width-full mm-box--background-color-background-section"
     style="border-radius: 8px;"
   >
     <div
-      class="mm-box"
+      class="mm-box mm-box--padding-right-2"
     >
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
       >
-        Enable smart contract account
+        Use smart account
       </p>
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
       >
-        You can enable smart account features on supported networks.
+        Unlock faster transactions, lower network fees, and added security on supported networks.
          
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           rel="noopener noreferrer"
-          style="font-size: 14px; line-height: 20px; vertical-align: baseline;"
+          style="height: 22px; font-size: 14px; line-height: 22px; vertical-align: baseline;"
           target="_blank"
         >
           Learn more
@@ -36,7 +36,7 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
         class="mm-box"
       >
         <div
-          class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
+          class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--justify-content-space-between"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
@@ -51,7 +51,7 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(139, 153, 255);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(68, 89, 255);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -86,7 +86,7 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
           </label>
         </div>
         <div
-          class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
+          class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--justify-content-space-between"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
@@ -101,7 +101,7 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(75, 80, 92);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(183, 187, 200);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -144,26 +144,26 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
 exports[`SmartContractAccountToggleSection Learn More Button opens Zendesk article when clicked 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--width-full mm-box--background-color-background-alternative"
+    class="mm-box mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--width-full mm-box--background-color-background-section"
     style="border-radius: 8px;"
   >
     <div
-      class="mm-box"
+      class="mm-box mm-box--padding-right-2"
     >
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
       >
-        Enable smart contract account
+        Use smart account
       </p>
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
       >
-        You can enable smart account features on supported networks.
+        Unlock faster transactions, lower network fees, and added security on supported networks.
          
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           rel="noopener noreferrer"
-          style="font-size: 14px; line-height: 20px; vertical-align: baseline;"
+          style="height: 22px; font-size: 14px; line-height: 22px; vertical-align: baseline;"
           target="_blank"
         >
           Learn more
@@ -184,26 +184,26 @@ exports[`SmartContractAccountToggleSection Learn More Button opens Zendesk artic
 exports[`SmartContractAccountToggleSection Loading State shows loading spinner while fetching networks 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--width-full mm-box--background-color-background-alternative"
+    class="mm-box mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--width-full mm-box--background-color-background-section"
     style="border-radius: 8px;"
   >
     <div
-      class="mm-box"
+      class="mm-box mm-box--padding-right-2"
     >
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
       >
-        Enable smart contract account
+        Use smart account
       </p>
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
       >
-        You can enable smart account features on supported networks.
+        Unlock faster transactions, lower network fees, and added security on supported networks.
          
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           rel="noopener noreferrer"
-          style="font-size: 14px; line-height: 20px; vertical-align: baseline;"
+          style="height: 22px; font-size: 14px; line-height: 22px; vertical-align: baseline;"
           target="_blank"
         >
           Learn more
@@ -265,26 +265,26 @@ exports[`SmartContractAccountToggleSection Loading State shows loading spinner w
 exports[`SmartContractAccountToggleSection Network Integration displays toggle for each available network 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--width-full mm-box--background-color-background-alternative"
+    class="mm-box mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--width-full mm-box--background-color-background-section"
     style="border-radius: 8px;"
   >
     <div
-      class="mm-box"
+      class="mm-box mm-box--padding-right-2"
     >
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
       >
-        Enable smart contract account
+        Use smart account
       </p>
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
       >
-        You can enable smart account features on supported networks.
+        Unlock faster transactions, lower network fees, and added security on supported networks.
          
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           rel="noopener noreferrer"
-          style="font-size: 14px; line-height: 20px; vertical-align: baseline;"
+          style="height: 22px; font-size: 14px; line-height: 22px; vertical-align: baseline;"
           target="_blank"
         >
           Learn more
@@ -298,7 +298,7 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
         class="mm-box"
       >
         <div
-          class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
+          class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--justify-content-space-between"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
@@ -313,7 +313,7 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(139, 153, 255);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(68, 89, 255);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -348,7 +348,7 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
           </label>
         </div>
         <div
-          class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
+          class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--justify-content-space-between"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
@@ -363,7 +363,7 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(75, 80, 92);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(183, 187, 200);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"

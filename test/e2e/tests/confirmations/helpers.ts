@@ -37,7 +37,7 @@ export function withTransactionEnvelopeTypeFixtures(
   };
   return withFixtures(
     {
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       driverOptions: { timeOut: 20000 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
@@ -69,7 +69,7 @@ export function withSignatureFixtures(
 ) {
   return withFixtures(
     {
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       driverOptions: { timeOut: 20000 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
@@ -603,7 +603,26 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
+            {
+              sendRedesign: {
+                enabled: false,
+              },
+            },
           ],
+        };
+      }),
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          },
         };
       }),
   ];
@@ -630,6 +649,11 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
           json: [
             {
               assetsDefiPositionsEnabled: true,
+            },
+            {
+              sendRedesign: {
+                enabled: false,
+              },
             },
           ],
         };

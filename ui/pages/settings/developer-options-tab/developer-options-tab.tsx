@@ -19,7 +19,7 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { ONBOARDING_SECURE_YOUR_WALLET_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
@@ -80,7 +80,7 @@ const DeveloperOptionsTab = () => {
     await dispatch(resetOnboarding());
     setHasResetOnboarding(true);
 
-    const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
+    const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
     if (isPopup) {

@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Преглед на акаунта в Etherscan"
   },
-  "expandView": {
-    "message": "Разгъване на изглед"
-  },
   "failed": {
     "message": "Неуспешно"
   },
@@ -619,9 +616,6 @@
   },
   "supportCenter": {
     "message": "Посетете нашия център за поддръжка"
-  },
-  "switchNetworks": {
-    "message": "Превключване на мрежи"
   },
   "symbol": {
     "message": "Символ"

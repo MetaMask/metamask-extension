@@ -1,23 +1,22 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 import { AccountShowSrpRow } from './account-show-srp-row';
 
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
 const middleware = [thunk];
 const mockStore = configureMockStore(middleware);
-
-const mockPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockPush,
-  }),
-}));
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
@@ -57,7 +56,7 @@ const createMockState = (
 
 describe('AccountShowSrpRow', () => {
   beforeEach(() => {
-    mockPush.mockClear();
+    jest.clearAllMocks();
   });
 
   describe('Component Rendering', () => {
@@ -66,9 +65,7 @@ describe('AccountShowSrpRow', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
@@ -94,12 +91,7 @@ describe('AccountShowSrpRow', () => {
         },
       };
 
-      renderWithProvider(
-        <MemoryRouter>
-          <AccountShowSrpRow account={account} />
-        </MemoryRouter>,
-        store,
-      );
+      renderWithProvider(<AccountShowSrpRow account={account} />, store);
 
       expect(screen.getByText('secretRecoveryPhrase')).toBeInTheDocument();
       expect(screen.getByText('backup')).toBeInTheDocument();
@@ -111,9 +103,7 @@ describe('AccountShowSrpRow', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
@@ -142,9 +132,7 @@ describe('AccountShowSrpRow', () => {
       };
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowSrpRow account={accountWithSecondKeyring} />
-        </MemoryRouter>,
+        <AccountShowSrpRow account={accountWithSecondKeyring} />,
         store,
       );
 
@@ -173,19 +161,14 @@ describe('AccountShowSrpRow', () => {
         },
       };
 
-      renderWithProvider(
-        <MemoryRouter>
-          <AccountShowSrpRow account={account} />
-        </MemoryRouter>,
-        store,
-      );
+      renderWithProvider(<AccountShowSrpRow account={account} />, store);
 
       const row = screen.getByText('secretRecoveryPhrase').closest('div');
       if (row) {
         fireEvent.click(row);
       }
 
-      expect(mockPush).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`,
       );
     });
@@ -193,11 +176,8 @@ describe('AccountShowSrpRow', () => {
     it('should open SRP quiz modal when clicked and seed phrase is backed up', () => {
       const state = createMockState(true);
       const store = mockStore(state);
-
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
@@ -207,7 +187,7 @@ describe('AccountShowSrpRow', () => {
       }
 
       expect(screen.getByTestId('srp-quiz-modal')).toBeInTheDocument();
-      expect(mockPush).not.toHaveBeenCalled();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
     });
   });
 
@@ -217,9 +197,7 @@ describe('AccountShowSrpRow', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
@@ -247,9 +225,7 @@ describe('AccountShowSrpRow', () => {
       };
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowSrpRow account={accountWithSnapKeyring} />
-        </MemoryRouter>,
+        <AccountShowSrpRow account={accountWithSnapKeyring} />,
         store,
       );
 

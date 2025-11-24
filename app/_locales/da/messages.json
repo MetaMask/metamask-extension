@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Se konto på Etherscan"
   },
-  "expandView": {
-    "message": "Udvis Visning"
-  },
   "failed": {
     "message": "Mislykkedes"
   },
@@ -601,9 +598,6 @@
   },
   "supportCenter": {
     "message": "Besøg vores supportcenter"
-  },
-  "switchNetworks": {
-    "message": "Skift Netværk"
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbolet skal være mindst 11 tegn."

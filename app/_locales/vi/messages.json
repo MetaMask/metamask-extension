@@ -101,14 +101,19 @@
   "accountDetails": {
     "message": "Chi tiết tài khoản"
   },
-  "accountIdenticon": {
-    "message": "Biểu tượng nhận dạng tài khoản"
+  "accountDetailsSrpBackUpMessage": {
+    "message": "Sao lưu",
+    "description": "Text used to describe action for SRP backup. Used on multichain account details."
   },
   "accountIsntConnectedToastText": {
     "message": "$1 không được kết nối với $2"
   },
   "accountName": {
     "message": "Tên tài khoản"
+  },
+  "accountNameAlreadyInUse": {
+    "message": "Tên này đã được sử dụng.",
+    "description": "Error help text used under the input field for renaming multichain account when user tries to use existing name."
   },
   "accountNameDuplicate": {
     "message": "Tên tài khoản này đã tồn tại",
@@ -136,6 +141,9 @@
   },
   "accountSelectionRequired": {
     "message": "Bạn cần chọn một tài khoản!"
+  },
+  "accountSmallCase": {
+    "message": "tài khoản"
   },
   "accountTypeNotSupported": {
     "message": "Loại tài khoản không được hỗ trợ"
@@ -166,6 +174,9 @@
   },
   "addACustomNetwork": {
     "message": "Thêm mạng tùy chỉnh"
+  },
+  "addAHardwareWallet": {
+    "message": "Thêm ví cứng"
   },
   "addANetwork": {
     "message": "Thêm mạng"
@@ -305,11 +316,11 @@
   "addUrl": {
     "message": "Thêm URL"
   },
+  "addWallet": {
+    "message": "Thêm ví"
+  },
   "addingAccount": {
     "message": "Thêm tài khoản"
-  },
-  "addingCustomNetwork": {
-    "message": "Thêm mạng"
   },
   "additionalNetworks": {
     "message": "Mạng bổ sung"
@@ -319,6 +330,10 @@
   },
   "addressCopied": {
     "message": "Đã sao chép địa chỉ"
+  },
+  "addressLabel": {
+    "message": "địa chỉ",
+    "description": "Label for address count (single address). Used on multichain account details page."
   },
   "addressMismatch": {
     "message": "Địa chỉ trang web không khớp"
@@ -334,6 +349,10 @@
   "addresses": {
     "message": "Địa chỉ",
     "description": "Multichain account menu item for linking to addresses page"
+  },
+  "addressesLabel": {
+    "message": "địa chỉ",
+    "description": "Label for address count (multiple addresses). Used on multichain account details page."
   },
   "advanced": {
     "message": "Nâng cao"
@@ -404,9 +423,6 @@
   },
   "alertMessageAddressMismatchWarning": {
     "message": "Kẻ tấn công đôi khi bắt chước các trang web bằng cách thực hiện những thay đổi nhỏ trong địa chỉ trang web. Đảm bảo bạn đang tương tác với trang web dự định trước khi tiếp tục."
-  },
-  "alertMessageAddressTrustSignal": {
-    "message": "Nếu bạn xác nhận yêu cầu này, bạn có thể sẽ mất tài sản vào tay kẻ lừa đảo."
   },
   "alertMessageChangeInSimulationResults": {
     "message": "Các thay đổi ước tính cho giao dịch này đã được cập nhật. Hãy xem xét kỹ trước khi tiếp tục."
@@ -503,6 +519,9 @@
   },
   "allPermissions": {
     "message": "Tất cả các quyền"
+  },
+  "allPopularNetworks": {
+    "message": "Tất cả mạng phổ biến"
   },
   "allTimeHigh": {
     "message": "Cao nhất lịch sử"
@@ -611,9 +630,6 @@
   "attributions": {
     "message": "Ghi nhận đóng góp"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "URL Infura RPC không còn hỗ trợ Aurora nữa."
-  },
   "authorizedPermissions": {
     "message": "Bạn đã cấp các quyền sau đây"
   },
@@ -629,6 +645,9 @@
   },
   "autoLockTimeLimitDescription": {
     "message": "Đặt khoảng thời gian không hoạt động tính bằng phút trước khi MetaMask khóa."
+  },
+  "available": {
+    "message": "khả dụng"
   },
   "average": {
     "message": "Trung bình"
@@ -737,18 +756,11 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Đây là một phiên bản beta. Vui lòng báo cáo lỗi $1"
-  },
   "betaMetamaskVersion": {
     "message": "Phiên bản MetaMask Beta"
   },
   "betaTerms": {
     "message": "Điều khoản sử dụng phiên bản Beta"
-  },
-  "billionAbbreviation": {
-    "message": "Tỷ",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "Tài khoản",
@@ -846,12 +858,6 @@
     "message": "Phê duyệt $1 cho cầu nối",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Bạn đang cho phép truy cập vào số tiền cụ thể, $1 $2. Hợp đồng sẽ không truy cập thêm bất kỳ khoản tiền nào khác."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Bạn sẽ cần cho phép truy cập vào $1 $2 để thực hiện cầu nối, sau đó hãy phê duyệt việc thực hiện cầu nối sang $2. Điều này sẽ yêu cầu hai lần xác nhận riêng biệt."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Đã sao chép liên kết trình khám phá khối!"
   },
@@ -886,9 +892,6 @@
   "bridgeFetchNewQuotes": {
     "message": "Tìm nạp báo giá mới?"
   },
-  "bridgeFrom": {
-    "message": "Cầu nối từ"
-  },
   "bridgeFromTo": {
     "message": "Cầu nối $1 $2 sang $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -898,12 +901,6 @@
   },
   "bridgeNetCost": {
     "message": "Chi phí ròng"
-  },
-  "bridgePriceImpact": {
-    "message": "Tác động giá"
-  },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Tác động giá phản ánh cách lệnh hoán đổi của bạn ảnh hưởng đến giá thị trường của tài sản. Tác động giá phụ thuộc vào kích thước giao dịch và tính thanh khoản có sẵn trong nhóm. MetaMask không ảnh hưởng hoặc kiểm soát tác động giá."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Tác động giá"
@@ -1134,6 +1131,9 @@
   },
   "clearActivityDescription": {
     "message": "Thao tác này sẽ đặt lại số nonce của tài khoản và xóa dữ liệu khỏi thẻ hoạt động trong ví của bạn. Chỉ có tài khoản và mạng hiện tại bị ảnh hưởng. Số dư và các giao dịch đến của bạn sẽ không thay đổi."
+  },
+  "clearFilters": {
+    "message": "Xóa bộ lọc"
   },
   "click": {
     "message": "Nhấp"
@@ -1428,17 +1428,11 @@
   "connectingTo": {
     "message": "Đang kết nối với $1"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "\"$1\" đang được loại bỏ dần và có thể không hoạt động. Vui lòng thử một mạng khác."
-  },
   "connectingToGoerli": {
     "message": "Đang kết nối với mạng thử nghiệm Goerli"
   },
   "connectingToLineaGoerli": {
     "message": "Đang kết nối với mạng thử nghiệm Linea Goerli"
-  },
-  "connectingToLineaMainnet": {
-    "message": "Đang kết nối với mạng chính thức của Linea"
   },
   "connectingToLineaSepolia": {
     "message": "Đang kết nối với mạng thử nghiệm Linea Sepolia"
@@ -1529,6 +1523,14 @@
   "create": {
     "message": "Tạo"
   },
+  "createMultichainAccountButton": {
+    "message": "Tạo tài khoản",
+    "description": "Name of a button used on multichain account related pages for triggering the account creation process."
+  },
+  "createMultichainAccountButtonLoading": {
+    "message": "Đang tạo tài khoản...",
+    "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
+  },
   "createNewAccountHeader": {
     "message": "Tạo tài khoản mới"
   },
@@ -1540,9 +1542,6 @@
   },
   "createPasswordDetails": {
     "message": "Chỉ mở khóa MetaMask trên thiết bị này."
-  },
-  "createPasswordDetailsSocial": {
-    "message": "Sử dụng mật khẩu này để khôi phục ví trên mọi thiết bị."
   },
   "createSnapAccountDescription": {
     "message": "$1 muốn thêm một tài khoản mới vào MetaMask."
@@ -1594,9 +1593,6 @@
     "message": "Mạng hiện tại",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "Đường dẫn URL RPC hiện tại cho mạng này không còn được dùng nữa."
-  },
   "currentTitle": {
     "message": "Hiện tại:"
   },
@@ -1631,14 +1627,8 @@
   "customToken": {
     "message": "Token tùy chỉnh"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Tính năng phát hiện token hiện chưa khả dụng trong mạng này. Vui lòng nhập token theo cách thủ công và đảm bảo bạn tin tưởng. Tìm hiểu về $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Bất kỳ ai cũng có thể tạo token, bao gồm cả việc tạo phiên bản giả mạo của token hiện có. Tìm hiểu về $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Đảm bảo bạn tin tưởng token trước khi nhập token đó. Tìm hiểu cách phòng tránh $1. Bạn cũng có thể bật tính năng phát hiện token $2."
   },
   "customerSupport": {
     "message": "hỗ trợ khách hàng"
@@ -1677,9 +1667,6 @@
   },
   "dataCollectionForMarketing": {
     "message": "Thu thập dữ liệu cho mục đích tiếp thị"
-  },
-  "dataCollectionForMarketingDescription": {
-    "message": "Chúng tôi sẽ sử dụng MetaMetrics để tìm hiểu cách bạn tương tác với các thông tin tiếp thị. Chúng tôi có thể chia sẻ tin tức liên quan (chẳng hạn như tính năng sản phẩm và các tài liệu khác)."
   },
   "dataCollectionWarningPopoverButton": {
     "message": "Đồng ý"
@@ -1832,9 +1819,6 @@
   "depositCrypto": {
     "message": "Nạp tiền mã hóa từ tài khoản khác bằng địa chỉ ví hoặc mã QR."
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Do các cập nhật của hệ thống Ethereum, mạng thử nghiệm Goerli sẽ sớm được loại bỏ dần."
-  },
   "deprecatedNetwork": {
     "message": "Mạng này đã ngừng sử dụng"
   },
@@ -1957,9 +1941,6 @@
   },
   "downArrow": {
     "message": "mũi tên xuống"
-  },
-  "downloadAppDescription": {
-    "message": "Mang MetaMask theo bạn mọi lúc mọi nơi với ứng dụng di động. Ngoài ra, hãy bật Face ID để duy trì quyền truy cập, ngay cả khi bạn quên mật khẩu."
   },
   "downloadAppTitle": {
     "message": "Quét mã QR và tải ứng dụng xuống"
@@ -2343,9 +2324,6 @@
   "existingChainId": {
     "message": "Thông tin bạn đã nhập được liên kết với một ID chuỗi hiện có."
   },
-  "expandView": {
-    "message": "Chế độ xem mở rộng"
-  },
   "experimental": {
     "message": "Thử nghiệm"
   },
@@ -2469,10 +2447,6 @@
   },
   "from": {
     "message": "Từ"
-  },
-  "fromAddress": {
-    "message": "Từ: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "fromTokenLists": {
     "message": "Từ danh sách token: $1"
@@ -2749,6 +2723,9 @@
     "message": "$1 về cách hoạt động của các khóa đã nhập",
     "description": "$1 is a link to learn more about imported keys"
   },
+  "importAnAccount": {
+    "message": "Nhập tài khoản"
+  },
   "importNFT": {
     "message": "Nhập NFT"
   },
@@ -2761,32 +2738,11 @@
   "importNFTTokenIdToolTip": {
     "message": "ID của NFT là một mã nhận dạng duy nhất vì không có hai NFT nào giống hệt nhau. Một lần nữa, trên OpenSea, mã số này nằm bên dưới mục \"Chi tiết\". Hãy ghi chú lại hoặc sao chép vào bộ nhớ đệm."
   },
-  "importNWordSRP": {
-    "message": "Tôi có cụm từ khôi phục gồm $1 từ",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Khóa riêng tư"
   },
-  "importSRPDescription": {
-    "message": "Nhập ví hiện có bằng cụm từ khôi phục gồm 12 hoặc 24 từ của bạn."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Cụm từ khôi phục bí mật gồm 12 hoặc 24 từ"
-  },
-  "importSRPWordError": {
-    "message": "Từ $1 không đúng hoặc sai chính tả.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Từ $1 và $2 không đúng hoặc sai chính tả.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Nhập Cụm từ khôi phục bí mật"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Đã xảy ra lỗi không xác định."
   },
   "importSelectedTokens": {
     "message": "Nhập các token đã chọn?"
@@ -2806,15 +2762,8 @@
   "importTokensError": {
     "message": "Chúng tôi không thể nhập token. Vui lòng thử lại sau."
   },
-  "importWallet": {
-    "message": "Nhập ví"
-  },
   "importWalletOrAccountHeader": {
     "message": "Nhập ví hoặc tài khoản"
-  },
-  "importWalletSuccess": {
-    "message": "Cụm từ khôi phục bí mật $1 đã được nhập",
-    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "Nhập $1",
@@ -2823,9 +2772,6 @@
   "imported": {
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "trong phần Cài đặt"
   },
   "included": {
     "message": "đã bao gồm"
@@ -2865,6 +2811,9 @@
   },
   "insufficientFundsForGas": {
     "message": "Không đủ tiền thanh toán phí gas"
+  },
+  "insufficientFundsSend": {
+    "message": "Không đủ tiền"
   },
   "insufficientLockedLiquidityDescription": {
     "message": "Việc thiếu tính thanh khoản bị khóa hoặc đốt hợp lý khiến token dễ bị rút thanh khoản đột ngột, có thể gây bất ổn thị trường."
@@ -2942,6 +2891,9 @@
   },
   "invalidSeedPhraseNotFound": {
     "message": "Không tìm thấy Cụm từ khôi phục bí mật."
+  },
+  "invalidValue": {
+    "message": "Giá trị không hợp lệ"
   },
   "ipfsGateway": {
     "message": "Cổng IPFS"
@@ -3133,9 +3085,6 @@
   "lineaGoerli": {
     "message": "Mạng thử nghiệm Linea Goerli"
   },
-  "lineaMainnet": {
-    "message": "Mạng chính thức của Linea"
-  },
   "lineaSepolia": {
     "message": "Mạng thử nghiệm Linea Sepolia"
   },
@@ -3322,10 +3271,6 @@
   "metrics": {
     "message": "Chỉ số"
   },
-  "millionAbbreviation": {
-    "message": "Triệu",
-    "description": "Shortened form of 'million'"
-  },
   "mismatchedChainLinkText": {
     "message": "xác minh thông tin về mạng",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3366,8 +3311,54 @@
   "moreQuotes": {
     "message": "Thêm báo giá"
   },
+  "multichainAccountAddressCopied": {
+    "message": "Đã sao chép địa chỉ",
+    "description": "Message displayed when the multichain account address is copied to clipboard"
+  },
+  "multichainAccountIntroLearnMore": {
+    "message": "Tìm hiểu thêm",
+    "description": "Button text to learn more about multichain accounts"
+  },
+  "multichainAccountIntroSameAddressDescription": {
+    "message": "Chúng tôi đã nhóm các tài khoản của bạn, vì vậy bạn có thể tiếp tục sử dụng MetaMask như trước đây. Tiền của bạn vẫn an toàn và không thay đổi.",
+    "description": "Description explaining that accounts have been merged"
+  },
+  "multichainAccountIntroSameAddressTitle": {
+    "message": "Cùng một địa chỉ, nhiều mạng hơn",
+    "description": "Title for the second section of the multichain account intro modal"
+  },
+  "multichainAccountIntroSettingUp": {
+    "message": "Đang thiết lập tài khoản của bạn...",
+    "description": "Loading text shown while setting up multichain accounts"
+  },
+  "multichainAccountIntroViewAccounts": {
+    "message": "Xem tài khoản",
+    "description": "Button text to view accounts from the intro modal"
+  },
+  "multichainAccountIntroWhatDescription": {
+    "message": "Tài khoản đa chuỗi là tài khoản có địa chỉ trên nhiều mạng khác nhau, được MetaMask hỗ trợ. Giờ đây bạn có thể sử dụng Ethereum, Solana và nhiều mạng khác mà không cần chuyển tài khoản.",
+    "description": "Description explaining what multichain accounts are"
+  },
+  "multichainAccountIntroWhatTitle": {
+    "message": "Tài khoản đa chuỗi là gì?",
+    "description": "Title for the first section of the multichain account intro modal"
+  },
+  "multichainAccountPrivateKeyCopied": {
+    "message": "Đã sao chép khóa riêng tư",
+    "description": "Message displayed when the multichain account private key is copied to clipboard"
+  },
+  "multichainAccountsIntroductionModalTitle": {
+    "message": "Giới thiệu về tài khoản đa chuỗi",
+    "description": "Title for the multichain accounts introduction modal."
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Bạn đang thêm mạng này vào MetaMask và cấp cho trang web này quyền sử dụng mạng này."
+  },
+  "multichainQuoteCardRateExplanation": {
+    "message": "Mức tỷ giá tốt nhất chúng tôi tìm được từ các nhà cung cấp, đã bao gồm phí nhà cung cấp và phí $1% của MetaMask."
+  },
+  "multichainQuoteCardRateLabel": {
+    "message": "Tỷ giá"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 muốn sử dụng $2 Snap",
@@ -3406,10 +3397,6 @@
     "message": "Trước đây bạn đã thêm biệt danh cho địa chỉ này rồi. Bạn có thể chỉnh sửa hoặc xem các biệt danh được đề xuất khác.",
     "description": "Instruction text in name component modal when value is saved."
   },
-  "nameInstructionsWarning": {
-    "message": "Địa chỉ này đã được xác định là đáng ngờ. Nếu bạn tin tưởng tác giả này, hãy đặt tên hiển thị cá nhân để nhận diện tác giả đó trong tương lai.",
-    "description": "Instruction text in name component modal when address has warning signals."
-  },
   "nameLabel": {
     "message": "Biệt danh",
     "description": "Label above name input field in name component modal."
@@ -3437,10 +3424,6 @@
   "nameModalTitleVerified": {
     "message": "Địa chỉ đã xác minh",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Địa chỉ đáng ngờ",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Được đề xuất bởi $1",
@@ -3563,9 +3546,6 @@
   "networkNameLinea": {
     "message": "Linea"
   },
-  "networkNameOpMainnet": {
-    "message": "OP Mainnet"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3601,9 +3581,11 @@
     "message": "Phí gas tương đối $1 so với 72 giờ qua.",
     "description": "$1 is networks stability value - stable, low, high"
   },
-  "networkSwitchConnectionError": {
-    "message": "Chúng tôi không thể kết nối với $1",
-    "description": "$1 represents the network name"
+  "networkTabCustom": {
+    "message": "Tùy chỉnh"
+  },
+  "networkTabPopular": {
+    "message": "Phổ biến"
   },
   "networkURL": {
     "message": "URL mạng"
@@ -3732,9 +3714,6 @@
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
   },
-  "noActivity": {
-    "message": "Chưa có hoạt động nào"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask không được kết nối với trang web này"
   },
@@ -3744,17 +3723,11 @@
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
   },
-  "noDeFiPositions": {
-    "message": "Không tìm thấy điều bạn đang tìm kiếm?"
-  },
   "noDomainResolution": {
     "message": "Không có nội dung phân giải cho tên miền được cung cấp."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap và hầu hết các ví cứng sẽ không hoạt động với phiên bản trình duyệt hiện tại của bạn."
-  },
-  "noNFTs": {
-    "message": "Chưa có NFT"
   },
   "noNetworksAvailable": {
     "message": "Không có mạng nào khả dụng"
@@ -3770,12 +3743,6 @@
   },
   "noSnaps": {
     "message": "Bạn chưa cài đặt bất kỳ Snap nào."
-  },
-  "noThanks": {
-    "message": "Không, cảm ơn"
-  },
-  "noTransactions": {
-    "message": "Bạn không có giao dịch nào"
   },
   "noWebcamFound": {
     "message": "Không tìm thấy webcam trên máy tính của bạn. Vui lòng thử lại."
@@ -4054,52 +4021,15 @@
   "onboardingImportWallet": {
     "message": "Tôi đã có ví"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Tôi đồng ý"
-  },
-  "onboardingMetametricsDescription": {
-    "message": "Chúng tôi muốn thu thập dữ liệu sử dụng và chẩn đoán cơ bản để cải thiện MetaMask. Hoạt động thu thập này sẽ luôn:"
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Chúng tôi sẽ thông báo cho bạn nếu chúng tôi có kế hoạch sử dụng dữ liệu này cho mục đích khác. Bạn có thể xem lại $1 bất kỳ lúc nào (chúng tôi không bao giờ bán dữ liệu mà bạn cung cấp ở đây).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Chính sách quyền riêng tư"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Chỉ lưu trữ các lượt nhấp và lượt xem trên ứng dụng, các thông tin khác (chẳng hạn như địa chỉ công khai của bạn) sẽ không được lưu trữ.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Riêng tư:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Chúng tôi tạm thời sử dụng địa chỉ IP của bạn để xác định vị trí chung (chẳng hạn như quốc gia hoặc khu vực của bạn), nhưng dữ liệu này sẽ không bao giờ được lưu trữ.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Chung:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Bạn có thể chọn chia sẻ hoặc xóa dữ liệu sử dụng của mình trong phần cài đặt bất kỳ lúc nào.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Không bắt buộc:"
+  "onboardingLoginFooterTermsOfUse": {
+    "message": "Điều khoản sử dụng"
   },
   "onboardingMetametricsTitle": {
     "message": "Giúp chúng tôi cải thiện MetaMask"
   },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Chúng tôi sẽ sử dụng dữ liệu này để tìm hiểu cách bạn tương tác với các thông tin tiếp thị. Chúng tôi có thể chia sẻ tin tức liên quan (chẳng hạn như tính năng sản phẩm)."
-  },
   "onboardingOptionIcon": {
     "message": "Biểu tượng $1",
     "description": "$1 is the icon name"
-  },
-  "onboardingOptionTitle": {
-    "message": "Chọn một tùy chọn để tiếp tục"
   },
   "onboardingPinExtensionAltLaunch": {
     "message": "Khởi chạy tiện ích mở rộng"
@@ -4136,14 +4066,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Xóa tất cả"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Ẩn tất cả"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Thêm dấu cách giữa mỗi từ và đảm bảo không có ai đang nhìn."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Hiển thị tất cả"
   },
   "onekey": {
     "message": "OneKey"
@@ -4220,12 +4144,6 @@
   },
   "passwordChangedRecentlyDescription": {
     "message": "Nhập mật khẩu mới của bạn để tiếp tục đăng nhập vào MetaMask."
-  },
-  "passwordNotLongEnough": {
-    "message": "Mật khẩu phải có ít nhất 8 ký tự"
-  },
-  "passwordTermsWarning": {
-    "message": "Nếu tôi quên mật khẩu này, MetaMask không thể đặt lại mật khẩu cho tôi."
   },
   "passwordTermsWarningSocial": {
     "message": "Nếu tôi quên mật khẩu này, tôi sẽ mất quyền truy cập vào ví vĩnh viễn. MetaMask không thể đặt lại mật khẩu cho tôi."
@@ -4630,6 +4548,10 @@
   "privateKeyWarning": {
     "message": "Cảnh báo: Tuyệt đối không để lộ khóa này. Bất kỳ ai có khóa riêng tư cũng có thể đánh cắp tài sản được lưu giữ trong tài khoản của bạn."
   },
+  "privateKeys": {
+    "message": "Khóa riêng tư",
+    "description": "Private keys row label on multichain account details page."
+  },
   "privateNetwork": {
     "message": "Mạng riêng"
   },
@@ -4642,14 +4564,23 @@
   "proposedApprovalLimit": {
     "message": "Giới hạn chấp thuận đề xuất"
   },
-  "protocolNotSupported": {
-    "message": "Chúng tôi có thể chưa hỗ trợ giao thức của bạn."
-  },
   "provide": {
     "message": "Cung cấp"
   },
   "publicAddress": {
     "message": "Địa chỉ công khai"
+  },
+  "pushNotificationLimitOrderFilledTitle": {
+    "message": "Lệnh giới hạn đã khớp"
+  },
+  "pushNotificationPositionLiquidatedTitle": {
+    "message": "Vị thế đã bị thanh lý"
+  },
+  "pushNotificationStopLossTriggeredTitle": {
+    "message": "Đã kích hoạt cắt lỗ"
+  },
+  "pushNotificationTakeProfitTriggeredTitle": {
+    "message": "Đã kích hoạt chốt lời"
   },
   "pushPlatformNotificationsFundsReceivedDescription": {
     "message": "Bạn đã nhận được $1 $2"
@@ -4738,9 +4669,6 @@
   "rank": {
     "message": "Xếp hạng"
   },
-  "rateIncludesMMFee": {
-    "message": "Tỷ giá bao gồm phí $1%"
-  },
   "reAddAccounts": {
     "message": "thêm lại bất kỳ tài khoản nào khác"
   },
@@ -4759,11 +4687,12 @@
   "received": {
     "message": "Đã nhận"
   },
+  "receivingAddress": {
+    "message": "Địa chỉ nhận",
+    "description": "Page title when viewing addresses for receiving funds"
+  },
   "recipientAddressPlaceholderNew": {
     "message": "Nhập địa chỉ công khai (0x) hoặc tên miền"
-  },
-  "recommendedGasLabel": {
-    "message": "Được đề xuất"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Sao lưu ngay"
@@ -4948,8 +4877,9 @@
   "reusedTokenNameWarning": {
     "message": "Một token trong đây sử dụng lại ký hiệu của một token khác mà bạn thấy, điều này có thể gây nhầm lẫn hoặc mang tính lừa dối."
   },
-  "revealSecretRecoveryPhrase": {
-    "message": "Cụm từ khôi phục bí mật"
+  "revealMultichainPrivateKeysBannerTitle": {
+    "message": "Không chia sẻ khóa riêng tư của bạn",
+    "description": "Title for the banner warning users not to share their private key"
   },
   "revealSeedWords": {
     "message": "Hiện Cụm từ khôi phục bí mật"
@@ -5055,6 +4985,10 @@
   "searchTokensByNameOrAddress": {
     "message": "Tìm kiếm token theo tên hoặc địa chỉ"
   },
+  "searchYourAccounts": {
+    "message": "Tìm kiếm tài khoản của bạn",
+    "description": "Placeholder in a searchbar. Used on multichain account list page."
+  },
   "secretRecoveryPhrase": {
     "message": "Cụm từ khôi phục bí mật"
   },
@@ -5065,18 +4999,8 @@
   "secureWallet": {
     "message": "Ví an toàn"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Bắt đầu"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Nhắc tôi sau"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Đây là cách duy nhất để khôi phục ví nếu bạn bị khóa ứng dụng hoặc đổi thiết bị mới."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Đừng mạo hiểm mất tiền của bạn. Hãy bảo vệ ví bằng cách lưu $1 ở nơi bạn tin tưởng.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Bảo mật"
@@ -5156,18 +5080,12 @@
   "seeDetails": {
     "message": "Xem chi tiết"
   },
-  "seedPhraseIntroTitle": {
-    "message": "Bảo mật cho ví của bạn"
-  },
   "seedPhraseReq": {
     "message": "Cụm từ khôi phục bí mật gồm 12, 15, 18, 21 hoặc 24 từ"
   },
   "seedPhraseReviewDetails": {
     "message": "Đây là $1 của bạn. Hãy ghi lại theo đúng thứ tự và cất giữ ở nơi an toàn. Nếu ai đó có Cụm từ khôi phục bí mật của bạn, họ có thể truy cập vào ví của bạn. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Không bao giờ chia sẻ với bất kỳ ai."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Lưu Cụm từ khôi phục bí mật của bạn"
@@ -5283,6 +5201,10 @@
     "message": "Chấp thuận $1 không có hạn mức chi tiêu",
     "description": "The token symbol that is being approved"
   },
+  "setUp": {
+    "message": "Thiết lập",
+    "description": "Action label for Smart Accounts. Used on multichain details page."
+  },
   "settingAddSnapAccount": {
     "message": "Thêm tài khoản Snap"
   },
@@ -5294,6 +5216,9 @@
   },
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Yêu cầu chữ ký và giao dịch"
+  },
+  "shieldEntryModalGetStarted": {
+    "message": "Bắt đầu"
   },
   "show": {
     "message": "Hiển thị"
@@ -5449,6 +5374,9 @@
   "singleNetwork": {
     "message": "1 mạng"
   },
+  "sites": {
+    "message": "Trang web"
+  },
   "siweIssued": {
     "message": "Đã phát hành"
   },
@@ -5464,18 +5392,6 @@
   "siweURI": {
     "message": "URL"
   },
-  "skipAccountSecurity": {
-    "message": "Bỏ qua bảo mật tài khoản?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Nếu bạn làm mất Cụm từ khôi phục bí mật này, bạn sẽ không thể truy cập ví này."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Bảo mật ngay"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Bỏ qua"
-  },
   "skipDeepLinkInterstitial": {
     "message": "Không hiển thị màn hình xen giữa khi mở liên kết sâu"
   },
@@ -5490,6 +5406,9 @@
   },
   "slippageEditAriaLabel": {
     "message": "Chỉnh sửa mức trượt giá"
+  },
+  "smartAccount": {
+    "message": "Tài khoản thông minh"
   },
   "smartAccountAccept": {
     "message": "Sử dụng tài khoản thông minh"
@@ -5842,9 +5761,6 @@
   "spendingCaps": {
     "message": "Hạn mức chi tiêu"
   },
-  "srpDesignImageAlt": {
-    "message": "Ảnh kho lưu trữ Cụm từ khôi phục bí mật"
-  },
   "srpDetailsDescription": {
     "message": "Cụm từ khôi phục bí mật, còn được gọi là cụm từ khôi phục hoặc thông tin gợi nhớ, là một tập hợp các từ cho phép bạn truy cập và kiểm soát ví tiền mã hóa của mình. Để chuyển ví sang MetaMask, bạn cần cụm từ này."
   },
@@ -6061,10 +5977,6 @@
   "step2LedgerWalletMsg": {
     "message": "Cắm trực tiếp Ledger vào máy tính của bạn, sau đó mở khóa và mở ứng dụng Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Bước $1/$2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Vẫn nhận được thông báo này?"
@@ -6561,13 +6473,6 @@
   "switchNetwork": {
     "message": "Chuyển mạng"
   },
-  "switchNetworks": {
-    "message": "Chuyển mạng"
-  },
-  "switchToNetwork": {
-    "message": "Chuyển sang $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Chuyển sang tài khoản này"
   },
@@ -6635,10 +6540,6 @@
   "to": {
     "message": "Đến"
   },
-  "toAddress": {
-    "message": "Đến: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
   "toggleDecodeDescription": {
     "message": "Chúng tôi sử dụng các dịch vụ 4byte.directory và Sourcify để giải mã và hiển thị dữ liệu giao dịch dễ đọc hơn. Điều này giúp bạn hiểu rõ kết quả của các giao dịch đang chờ xử lý và đã thực hiện, nhưng có thể dẫn đến việc địa chỉ IP của bạn được chia sẻ."
   },
@@ -6677,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Thị trường token"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "rủi ro về bảo mật và lừa đảo token"
   },
   "tokenStandard": {
     "message": "Tiêu chuẩn token"
@@ -6813,10 +6711,6 @@
   "transferRequest": {
     "message": "Yêu cầu chuyển tiền"
   },
-  "trillionAbbreviation": {
-    "message": "Nghìn Tỷ",
-    "description": "Shortened form of 'trillion'"
-  },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Chúng tôi đang gặp sự cố khi kết nối với Ledger của bạn. $1",
     "description": "$1 is a link to the wallet connection guide;"
@@ -6931,6 +6825,10 @@
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Quá nhiều lần thử. Vui lòng thử lại sau "
+  },
+  "unlockToReveal": {
+    "message": "Mở khóa để hiển thị",
+    "description": "Label used for Private Keys row on multichain account details page."
   },
   "unpin": {
     "message": "Bỏ ghim"
@@ -7131,24 +7029,11 @@
     "message": "$1 bạn có thể lưu giữ cụm từ này ở nơi an toàn để không bao giờ mất quyền truy cập vào tiền của mình.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Bạn có thể sao lưu ví hoặc xem Cụm từ khôi phục bí mật trong phần Cài đặt > Bảo mật & Mật khẩu."
-  },
   "walletReadyLoseSrp": {
     "message": "Nếu làm mất Cụm từ khôi phục bí mật, bạn sẽ không thể sử dụng ví của mình."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Cụm từ khôi phục bí mật này có thể giúp bạn lấy lại quyền truy cập nếu bạn quên mật khẩu hoặc mất quyền đăng nhập."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Nếu bạn không sao lưu Cụm từ khôi phục bí mật, bạn sẽ mất quyền truy cập vào tiền của mình nếu bị khóa ứng dụng hoặc đổi thiết bị mới."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Bạn có thể đăng nhập vào ví bất cứ lúc nào bằng tài khoản và mật khẩu $1 của mình.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Nếu bạn quên mật khẩu, bạn sẽ không thể truy cập vào ví."
   },
   "wantToAddThisNetwork": {
     "message": "Bạn muốn thêm mạng này?"
@@ -7192,23 +7077,18 @@
   "welcomeBack": {
     "message": "Chào mừng bạn trở lại"
   },
-  "welcomeToMetaMask": {
-    "message": "Bắt đầu nào"
-  },
   "whatsThis": {
     "message": "Đây là gì?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Thao tác này sẽ phê duyệt $1 để thực hiện cầu nối."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Thao tác này sẽ phê duyệt $1 để thực hiện hoán đổi."
   },
   "withdrawing": {
     "message": "Đang rút tiền"
   },
   "wrongNetworkName": {
     "message": "Theo hồ sơ của chúng tôi, tên mạng có thể không khớp chính xác với ID chuỗi này."
+  },
+  "wrongPassword": {
+    "message": "Sai mật khẩu",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "yes": {
     "message": "Có"
@@ -7259,8 +7139,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Lưu giữ Cụm từ khôi phục bí mật của bạn ở nơi an toàn!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Chúng tôi sẽ nhắc bạn sau"
   }
 }

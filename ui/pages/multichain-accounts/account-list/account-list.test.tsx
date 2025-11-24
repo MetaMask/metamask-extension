@@ -1,21 +1,33 @@
 import React from 'react';
-import { screen, fireEvent, within } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
+import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import mockState from '../../../../test/data/mock-state.json';
 import { AccountList } from './account-list';
 
-const mockHistoryGoBack = jest.fn();
-const mockHistoryPush = jest.fn();
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    goBack: mockHistoryGoBack,
-    push: mockHistoryPush,
-  }),
+jest.mock('../../../hooks/accounts/useAccountsOperationsLoadingStates', () => ({
+  useAccountsOperationsLoadingStates: jest.fn(),
 }));
+const mockUseAccountsOperationsLoadingStates =
+  useAccountsOperationsLoadingStates as jest.MockedFunction<
+    typeof useAccountsOperationsLoadingStates
+  >;
+
+mockUseAccountsOperationsLoadingStates.mockReturnValue({
+  isAccountTreeSyncingInProgress: false,
+  areAnyOperationsLoading: false,
+  loadingMessage: undefined,
+});
 
 const searchContainerTestId = 'multichain-account-list-search';
 const searchClearButtonTestId = 'text-field-search-clear-button';
@@ -28,6 +40,7 @@ describe('AccountList', () => {
 
   const renderComponent = () => {
     const store = configureStore({
+      activeTab: { origin: 'https://example.com' },
       metamask: {
         ...mockState.metamask,
       },
@@ -51,13 +64,13 @@ describe('AccountList', () => {
     expect(screen.getByText('Account 2')).toBeInTheDocument();
   });
 
-  it('calls history.goBack when back button is clicked', () => {
+  it('calls navigate when back button is clicked', () => {
     renderComponent();
 
     const backButton = screen.getByLabelText('Back');
     fireEvent.click(backButton);
 
-    expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('opens the add wallet modal when the add wallet button is clicked', () => {
@@ -154,5 +167,93 @@ describe('AccountList', () => {
 
     expect(screen.queryByText('Account 1')).not.toBeInTheDocument();
     expect(screen.getByText('Account 2')).toBeInTheDocument();
+  });
+
+  describe('Loading States Integration', () => {
+    it('shows syncing message when account syncing is in progress', () => {
+      mockUseAccountsOperationsLoadingStates.mockReturnValue({
+        isAccountTreeSyncingInProgress: true,
+        areAnyOperationsLoading: true,
+        loadingMessage: 'Syncing...',
+      });
+
+      const { getAllByText } = renderComponent();
+
+      expect(getAllByText('Syncing...')[0]).toBeInTheDocument();
+    });
+
+    it('prioritizes syncing message over local loading', async () => {
+      mockUseAccountsOperationsLoadingStates.mockReturnValue({
+        isAccountTreeSyncingInProgress: true,
+        areAnyOperationsLoading: true,
+        loadingMessage: 'Syncing...',
+      });
+
+      const { getAllByText } = renderComponent();
+
+      fireEvent.click(getAllByText('Syncing...')[0]);
+
+      // Should still show syncing message, not creating account message
+      expect(getAllByText('Syncing...')[0]).toBeInTheDocument();
+    });
+
+    it('shows spinner when any loading state is active', async () => {
+      mockUseAccountsOperationsLoadingStates.mockReturnValue({
+        isAccountTreeSyncingInProgress: true,
+        areAnyOperationsLoading: true,
+        loadingMessage: 'Syncing...',
+      });
+
+      const { getAllByText } = renderComponent();
+
+      // When account syncing is in progress, should show spinner
+      expect(getAllByText('Syncing...').length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('shows default add wallet text when no loading states are active', () => {
+      mockUseAccountsOperationsLoadingStates.mockReturnValue({
+        isAccountTreeSyncingInProgress: false,
+        areAnyOperationsLoading: false,
+        loadingMessage: '',
+      });
+      const { getAllByText } = renderComponent();
+
+      expect(getAllByText('Add wallet').length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('handles loading state transitions correctly', () => {
+      // Start with no loading
+      mockUseAccountsOperationsLoadingStates.mockReturnValue({
+        isAccountTreeSyncingInProgress: false,
+        areAnyOperationsLoading: false,
+        loadingMessage: undefined,
+      });
+
+      const { getAllByText, rerender } = renderComponent();
+
+      expect(getAllByText('Add wallet').length).toBeGreaterThanOrEqual(1);
+
+      // Simulate account syncing starting
+      mockUseAccountsOperationsLoadingStates.mockReturnValue({
+        isAccountTreeSyncingInProgress: true,
+        areAnyOperationsLoading: true,
+        loadingMessage: 'Syncing...',
+      });
+
+      rerender(<AccountList />);
+
+      expect(getAllByText('Syncing...').length).toBeGreaterThanOrEqual(1);
+
+      // Simulate syncing completing
+      mockUseAccountsOperationsLoadingStates.mockReturnValue({
+        isAccountTreeSyncingInProgress: false,
+        areAnyOperationsLoading: false,
+        loadingMessage: undefined,
+      });
+
+      rerender(<AccountList />);
+
+      expect(getAllByText('Add wallet').length).toBeGreaterThanOrEqual(1);
+    });
   });
 });

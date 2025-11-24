@@ -5,6 +5,7 @@ export const EVM_ASSET = {
   metadata: {},
   symbol: 'NEU',
   decimals: 0,
+  rawBalanceHex: '0x5',
 };
 
 export const EVM_NATIVE_ASSET = {
@@ -15,10 +16,11 @@ export const EVM_NATIVE_ASSET = {
   iconUrl: '',
   name: 'Ether',
   symbol: 'ETH',
+  isNative: true,
+  rawBalanceHex: '0x5',
 };
 
 export const SOLANA_NATIVE_ASSET = {
-  address: '0x0000000000000000000000000000000000000000',
   assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
   aggregators: [],
   balance: '400',
@@ -82,4 +84,27 @@ export const MOCK_NFT721 = {
   tokenId: '17',
   tokenURI:
     'https://dweb.link/ipfs/QmQD4h1Dkkn75ZKSFXDtmW6kehpCkckStRazCdUgp7m9g1',
+};
+
+export const BITCOIN_ASSET = {
+  type: 'bip122:p2wpkh',
+  assetId: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+  isNative: true,
+  image: './images/bitcoin-logo.svg',
+  name: 'Bitcoin',
+  symbol: 'BTC',
+  accountId: '80c14733-13cc-4966-bf1a-6212a6409c22',
+  decimals: 8,
+  rawBalance: '0x5dc0',
+  balance: '0.00024',
+  fiat: {
+    balance: 29.33352,
+    currency: 'usd',
+    conversionRate: 122223,
+  },
+  chainId: 'bip122:000000000019d6689c085ae165831e93',
+  networkImage: './images/bitcoin-logo.svg',
+  networkName: 'Bitcoin',
+  shortenedBalance: '0.00024',
+  standard: 'native',
 };

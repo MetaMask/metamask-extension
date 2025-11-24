@@ -33,6 +33,8 @@ import {
   getAccountGroupsByAddress,
   getInternalAccountListSpreadByScopesByGroupId,
   getIconSeedAddressByAccountGroupId,
+  getIconSeedAddressesByAccountGroups,
+  getNormalizedGroupsMetadata,
 } from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
 import {
@@ -544,6 +546,38 @@ describe('Multichain Accounts Selectors', () => {
     });
   });
 
+  describe('getNormalizedGroupsMetadata', () => {
+    it('returns the normalized groups metadata', () => {
+      const result = getNormalizedGroupsMetadata(typedMockState);
+
+      expect(result).toStrictEqual({
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+          name: 'account 1',
+          accounts: [
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+          ],
+        },
+        'entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0': {
+          name: 'account 2',
+          accounts: ['0xeb9e64b93097bc15f01f13eae97015c57ab64823'],
+        },
+        'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
+          name: 'ledger account 1',
+          accounts: ['0xc42edfcc21ed14dda456aa0756c153f7985d8813'],
+        },
+        'snap:local:custody:test/0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
+          name: 'another snap account 1',
+          accounts: ['0xca8f1f0245530118d0cf14a06b01daf8f76cf281'],
+        },
+        'snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d': {
+          name: 'snap account 1',
+          accounts: ['0xb552685e3d2790efd64a175b00d51f02cdafee5d'],
+        },
+      });
+    });
+  });
+
   describe('getWalletIdAndNameByAccountAddress', () => {
     it('returns the wallet ID and name for an account', () => {
       const result = getWalletIdAndNameByAccountAddress(
@@ -684,6 +718,33 @@ describe('Multichain Accounts Selectors', () => {
       const result = getMultichainAccountGroupById(
         typedMockState,
         invalidGroupId,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when accountId is null', () => {
+      const result = getMultichainAccountGroupById(
+        typedMockState,
+        null as unknown as AccountGroupId,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when accountId is undefined', () => {
+      const result = getMultichainAccountGroupById(
+        typedMockState,
+        undefined as unknown as AccountGroupId,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when accountId is an empty string', () => {
+      const result = getMultichainAccountGroupById(
+        typedMockState,
+        '' as unknown as AccountGroupId,
       );
 
       expect(result).toBeUndefined();
@@ -1301,15 +1362,174 @@ describe('Multichain Accounts Selectors', () => {
       expect(result).toBe(ACCOUNT_3_ADDRESS);
     });
 
-    it('throws error when no group ID is found', () => {
-      expect(() =>
-        getIconSeedAddressByAccountGroupId(
-          typedMockState,
-          'nonExistentGroupId' as AccountGroupId,
-        ),
-      ).toThrow(
-        'Error in getIconSeedAddressByAccountGroupId: No accounts found in the specified group',
+    it('returns empty when no group ID is found', () => {
+      const result = getIconSeedAddressByAccountGroupId(
+        typedMockState,
+        'nonExistentGroupId' as AccountGroupId,
       );
+
+      expect(result).toBe('');
+    });
+  });
+
+  describe('getIconSeedAddressesByAccountGroups', () => {
+    it('returns seed addresses for multiple valid account groups', () => {
+      const mockAccountGroups = [
+        {
+          id: ENTROPY_GROUP_1_ID as AccountGroupId,
+          type: AccountGroupType.MultichainAccount,
+          metadata: { name: 'Account 1', pinned: false, hidden: false },
+          accounts: [],
+          walletName: 'Test Wallet',
+          walletId: ENTROPY_WALLET_1_ID as AccountWalletId,
+        },
+        {
+          id: ENTROPY_GROUP_2_ID as AccountGroupId,
+          type: AccountGroupType.MultichainAccount,
+          metadata: { name: 'Account 2', pinned: false, hidden: false },
+          accounts: [],
+          walletName: 'Test Wallet 2',
+          walletId: 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8' as AccountWalletId,
+        },
+      ];
+
+      const result = getIconSeedAddressesByAccountGroups(
+        typedMockState,
+        mockAccountGroups,
+      );
+
+      expect(result).toEqual({
+        [ENTROPY_GROUP_1_ID]: ACCOUNT_1_ADDRESS,
+        [ENTROPY_GROUP_2_ID]: ACCOUNT_3_ADDRESS,
+      });
+    });
+
+    it('returns empty object when no account groups provided', () => {
+      const result = getIconSeedAddressesByAccountGroups(typedMockState, []);
+
+      expect(result).toEqual({});
+    });
+
+    it('handles groups with no valid accounts by returning empty strings', () => {
+      const mockAccountGroups = [
+        {
+          id: ENTROPY_GROUP_1_ID as AccountGroupId,
+          type: AccountGroupType.MultichainAccount,
+          metadata: { name: 'Valid Account', pinned: false, hidden: false },
+          accounts: [],
+          walletName: 'Test Wallet',
+          walletId: ENTROPY_WALLET_1_ID as AccountWalletId,
+        },
+        {
+          id: 'entropy:nonexistent/0' as AccountGroupId,
+          type: AccountGroupType.MultichainAccount,
+          metadata: { name: 'Invalid Account', pinned: false, hidden: false },
+          accounts: [],
+          walletName: 'Invalid Wallet',
+          walletId: 'entropy:nonexistent' as AccountWalletId,
+        },
+        {
+          id: ENTROPY_GROUP_2_ID as AccountGroupId,
+          type: AccountGroupType.MultichainAccount,
+          metadata: {
+            name: 'Another Valid Account',
+            pinned: false,
+            hidden: false,
+          },
+          accounts: [],
+          walletName: 'Test Wallet 2',
+          walletId: 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8' as AccountWalletId,
+        },
+      ];
+
+      const result = getIconSeedAddressesByAccountGroups(
+        typedMockState,
+        mockAccountGroups,
+      );
+
+      expect(result).toEqual({
+        [ENTROPY_GROUP_1_ID]: ACCOUNT_1_ADDRESS,
+        [ENTROPY_GROUP_2_ID]: ACCOUNT_3_ADDRESS,
+        'entropy:nonexistent/0': '',
+      });
+      // entropy:nonexistent/0 should have empty string
+      expect(result).toHaveProperty('entropy:nonexistent/0', '');
+    });
+
+    it('returns empty strings when all account groups are invalid', () => {
+      const mockAccountGroups = [
+        {
+          id: 'entropy:invalid1/0' as AccountGroupId,
+          type: AccountGroupType.MultichainAccount,
+          metadata: { name: 'Invalid 1', pinned: false, hidden: false },
+          accounts: [],
+          walletName: 'Invalid Wallet 1',
+          walletId: 'entropy:invalid1' as AccountWalletId,
+        },
+        {
+          id: 'entropy:invalid2/0' as AccountGroupId,
+          type: AccountGroupType.MultichainAccount,
+          metadata: { name: 'Invalid 2', pinned: false, hidden: false },
+          accounts: [],
+          walletName: 'Invalid Wallet 2',
+          walletId: 'entropy:invalid2' as AccountWalletId,
+        },
+      ];
+
+      const result = getIconSeedAddressesByAccountGroups(
+        typedMockState,
+        mockAccountGroups,
+      );
+
+      expect(result).toEqual({
+        'entropy:invalid1/0': '',
+        'entropy:invalid2/0': '',
+      });
+    });
+
+    it('handles single account group correctly', () => {
+      const mockAccountGroups = [
+        {
+          id: LEDGER_GROUP_ID as AccountGroupId,
+          type: AccountGroupType.SingleAccount,
+          metadata: { name: 'Ledger Account', pinned: false, hidden: false },
+          accounts: [],
+          walletName: 'Ledger Hardware',
+          walletId: 'keyring:Ledger Hardware' as AccountWalletId,
+        },
+      ];
+
+      const result = getIconSeedAddressesByAccountGroups(
+        typedMockState,
+        mockAccountGroups,
+      );
+
+      expect(result).toHaveProperty(LEDGER_GROUP_ID);
+      expect(typeof result[LEDGER_GROUP_ID]).toBe('string');
+      expect(result[LEDGER_GROUP_ID]).toMatch(/^0x[a-fA-F0-9]{40}$/u); // Valid Ethereum address
+    });
+
+    it('works with empty state gracefully', () => {
+      const emptyState = createEmptyState();
+      const mockAccountGroups = [
+        {
+          id: 'keyring:some/0x123' as AccountGroupId,
+          type: AccountGroupType.SingleAccount,
+          metadata: { name: 'Some Account', pinned: false, hidden: false },
+          accounts: [],
+          walletName: 'Some Wallet',
+          walletId: 'keyring:some' as AccountWalletId,
+        },
+      ];
+
+      const result = getIconSeedAddressesByAccountGroups(
+        emptyState,
+        mockAccountGroups,
+      );
+
+      expect(result).toEqual({
+        'keyring:some/0x123': '',
+      });
     });
   });
 });

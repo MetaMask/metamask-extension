@@ -13,7 +13,7 @@ import { Checkbox } from './checkbox';
 import { Box } from '../box';
 
 export default {
-  title: 'Components/ComponentLibrary/Checkbox',
+  title: 'Components/ComponentLibrary/Checkbox (deprecated)',
   component: Checkbox,
   parameters: {
     docs: {

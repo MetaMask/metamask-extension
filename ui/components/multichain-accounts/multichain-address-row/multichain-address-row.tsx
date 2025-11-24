@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   AlignItems,
   BlockSize,
@@ -24,8 +25,9 @@ import {
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
-type CopyParams = {
+export type CopyParams = {
   /**
    * Message to display when the copy callback is executed
    */
@@ -43,6 +45,7 @@ type QrParams = {
   callback: (
     address: string,
     networkName: string,
+    chainId: CaipChainId,
     networkImageSrc?: string,
   ) => void;
 };
@@ -82,6 +85,7 @@ export const MultichainAddressRow = ({
   qrActionParams,
   className = '',
 }: MultichainAddressRowProps) => {
+  const t = useI18nContext();
   const networkImageSrc = getImageForChainId(
     chainId.startsWith(KnownCaipNamespace.Eip155)
       ? convertCaipToHexChainId(chainId as CaipChainId)
@@ -91,6 +95,7 @@ export const MultichainAddressRow = ({
   const truncatedAddress = shortenAddress(address); // Shorten address for display
   const [subText, setSubText] = useState(truncatedAddress); // Message below the network name
   const [copyIcon, setCopyIcon] = useState(IconName.Copy); // Default copy icon state
+  const [addressCopied, setAddressCopied] = useState(false);
 
   // Track timeout ID for managing `setTimeout`
   const timeoutRef = useRef<number | null>(null);
@@ -117,6 +122,8 @@ export const MultichainAddressRow = ({
       clearTimeout(timeoutRef.current);
     }
 
+    setAddressCopied(true);
+
     // Trigger copy callback and update UI state
     copyActionParams.callback();
     setSubText(copyActionParams.message);
@@ -127,12 +134,18 @@ export const MultichainAddressRow = ({
       setSubText(truncatedAddress);
       setCopyIcon(IconName.Copy);
       timeoutRef.current = null; // Clear the reference after timeout resolves
+      setAddressCopied(false);
     }, 1000);
   };
 
   // Handle "QR Code" button click
   const handleQrClick = () => {
-    qrActionParams?.callback(address, networkName, networkImageSrc);
+    qrActionParams?.callback(
+      address,
+      networkName,
+      formatChainIdToCaip(chainId),
+      networkImageSrc,
+    );
   };
 
   return (
@@ -141,11 +154,14 @@ export const MultichainAddressRow = ({
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
-      paddingTop={4}
-      paddingBottom={4}
+      padding={4}
       gap={4}
       data-testid="multichain-address-row"
-      backgroundColor={BackgroundColor.backgroundDefault}
+      backgroundColor={
+        addressCopied
+          ? BackgroundColor.successMuted
+          : BackgroundColor.backgroundDefault
+      }
     >
       <AvatarNetwork
         size={AvatarNetworkSize.Md}
@@ -158,7 +174,7 @@ export const MultichainAddressRow = ({
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexStart}
-        style={{ flex: 1, minWidth: 0 }} // Ensure text shrinks properly
+        style={{ flex: 1, minWidth: 0 }} // Ensure the text shrinks properly
       >
         <Text
           variant={TextVariant.bodyMdMedium}
@@ -171,19 +187,23 @@ export const MultichainAddressRow = ({
         </Text>
         <Text
           variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
+          color={
+            addressCopied ? TextColor.successDefault : TextColor.textAlternative
+          }
           data-testid="multichain-address-row-address"
         >
-          {subText} {/* Dynamically updating subText */}
+          {subText}
         </Text>
       </Box>
-      <Box display={Display.Flex} alignItems={AlignItems.center} gap={4}>
+      <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
         <ButtonIcon
           iconName={copyIcon}
           size={ButtonIconSize.Md}
-          onClick={handleCopyClick} // Trigger copy logic
-          ariaLabel="Copy address"
-          color={IconColor.iconDefault}
+          onClick={handleCopyClick}
+          ariaLabel={t('copyAddressShort')}
+          color={
+            addressCopied ? IconColor.successDefault : IconColor.iconDefault
+          }
           data-testid="multichain-address-row-copy-button"
         />
         {qrActionParams ? (

@@ -1,23 +1,15 @@
-import { CaipAssetType, Hex } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
-import { isAddress as isEvmAddress } from 'ethers/lib/utils';
-import { isNativeAddress } from '@metamask/bridge-controller';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
-import { getAssetsRates } from '../../../../selectors/assets';
-import {
-  getCrossChainTokenExchangeRates,
-  getCurrencyRates,
-} from '../../../../selectors';
+import { getCrossChainTokenExchangeRates } from '../../../../selectors';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import { getMultichainCurrentCurrency } from '../../../../selectors/multichain';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { Asset } from '../../types/send';
 import { convertedCurrency, formatToFixedDecimals } from '../../utils/send';
 import { useSendContext } from '../../context/send';
-import { useSendType } from './useSendType';
 
 type ConversionArgs = {
   asset?: Asset;
@@ -39,7 +31,7 @@ const getFiatDisplayValueFn = ({
   currentCurrency,
 }: ConversionArgs) => {
   if (!amount) {
-    return '0.00';
+    return `${getCurrencySymbol(currentCurrency)}0.00`;
   }
   const amt = amount
     ? formatToFixedDecimals(
@@ -48,7 +40,7 @@ const getFiatDisplayValueFn = ({
         false,
       )
     : '0.00';
-  return `${getCurrencySymbol(currentCurrency)} ${amt}`;
+  return `${getCurrencySymbol(currentCurrency)}${amt}`;
 };
 
 const getNativeValueFn = ({
@@ -69,27 +61,15 @@ const getNativeValueFn = ({
 };
 
 export const useCurrencyConversions = () => {
-  const { asset, chainId, fromAccount } = useSendContext();
+  const { asset, fromAccount } = useSendContext();
   const currentCurrency = useMultichainSelector(
     getMultichainCurrentCurrency,
     fromAccount,
   );
-  const currencyRates = useSelector(getCurrencyRates);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const { isEvmSendType } = useSendType();
-  const conversionRateEvm = useMemo((): number => {
-    if (!isEvmSendType) {
-      return 0;
-    }
-    const { nativeCurrency } = allNetworks[chainId as Hex];
-    return currencyRates[nativeCurrency]?.conversionRate ?? 0;
-  }, [allNetworks, asset, chainId, currencyRates, isEvmSendType]);
 
   const contractExchangeRates = useSelector(
     getCrossChainTokenExchangeRates,
   ) as Record<Hex, Record<Hex, number>>;
-
-  const multichainAssetsRates = useSelector(getAssetsRates);
 
   const exchangeRate = useMemo(() => {
     if (!asset) {
@@ -114,19 +94,8 @@ export const useCurrencyConversions = () => {
     ) {
       return 0;
     }
-    if ((asset as Asset)?.fiat?.conversionRate) {
-      return ((asset as Asset)?.fiat?.conversionRate ?? 0) * exchangeRate;
-    }
-    if (isEvmAddress(assetAddress)) {
-      if (isNativeAddress(asset?.address)) {
-        return conversionRateEvm;
-      }
-      return conversionRateEvm * exchangeRate;
-    }
-    return parseFloat(
-      multichainAssetsRates[assetAddress as CaipAssetType]?.rate ?? 0,
-    );
-  }, [asset, conversionRateEvm, exchangeRate, multichainAssetsRates]);
+    return ((asset as Asset)?.fiat?.conversionRate ?? 0) * exchangeRate;
+  }, [asset, exchangeRate]);
 
   const getFiatValue = useCallback(
     (amount: string) =>
@@ -163,6 +132,7 @@ export const useCurrencyConversions = () => {
       asset?.standard !== ERC1155 &&
       asset?.standard !== ERC721,
     fiatCurrencySymbol: getCurrencySymbol(currentCurrency),
+    fiatCurrencyName: currentCurrency,
     getFiatValue,
     getFiatDisplayValue,
     getNativeValue,

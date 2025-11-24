@@ -1,7 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { WebSocket } from 'ws';
 import LocalWebSocketServer from './websocket-server';
-import { WebSocketMessageMock } from './tests/solana/mocks/websocketDefaultMocks';
+import {
+  WebSocketMessageMock,
+  DEFAULT_SOLANA_WS_MOCKS,
+} from './tests/solana/mocks/websocketDefaultMocks';
 
 /**
  * Sets up Solana WebSocket mocks with configurable message handlers
@@ -14,6 +17,11 @@ export async function setupSolanaWebsocketMocks(
   const localWebSocketServer = LocalWebSocketServer.getServerInstance();
   const wsServer = localWebSocketServer.getServer();
 
+  const mergedMocks: WebSocketMessageMock[] = [
+    ...mocks,
+    ...DEFAULT_SOLANA_WS_MOCKS,
+  ];
+
   // Add Solana-specific message handlers to the existing server
   wsServer.on('connection', (socket: WebSocket) => {
     console.log('Client connected to the local WebSocket server');
@@ -24,7 +32,7 @@ export async function setupSolanaWebsocketMocks(
       console.log('Message received from client:', message);
 
       // Check each mock configuration
-      for (const mock of mocks) {
+      for (const mock of mergedMocks) {
         const includes = Array.isArray(mock.messageIncludes)
           ? mock.messageIncludes
           : [mock.messageIncludes];

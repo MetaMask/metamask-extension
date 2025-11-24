@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "Se o problema persistir, inicie o MetaMask novamente.",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "O carregamento está demorando mais que o normal.",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Erro"
   },
@@ -93,14 +101,19 @@
   "accountDetails": {
     "message": "Detalhes da conta"
   },
-  "accountIdenticon": {
-    "message": "Identicon da conta"
+  "accountDetailsSrpBackUpMessage": {
+    "message": "Fazer backup",
+    "description": "Text used to describe action for SRP backup. Used on multichain account details."
   },
   "accountIsntConnectedToastText": {
     "message": "$1 não está conectado a $2"
   },
   "accountName": {
     "message": "Nome da conta"
+  },
+  "accountNameAlreadyInUse": {
+    "message": "Esse nome já está sendo usado",
+    "description": "Error help text used under the input field for renaming multichain account when user tries to use existing name."
   },
   "accountNameDuplicate": {
     "message": "Esse nome de conta já existe",
@@ -128,6 +141,9 @@
   },
   "accountSelectionRequired": {
     "message": "Você precisa selecionar uma conta!"
+  },
+  "accountSmallCase": {
+    "message": "conta"
   },
   "accountTypeNotSupported": {
     "message": "Tipo de conta não compatível"
@@ -158,6 +174,9 @@
   },
   "addACustomNetwork": {
     "message": "Adicionar uma rede personalizada"
+  },
+  "addAHardwareWallet": {
+    "message": "Adicionar uma carteira de hardware"
   },
   "addANetwork": {
     "message": "Adicionar uma rede"
@@ -297,11 +316,11 @@
   "addUrl": {
     "message": "Adicionar URL"
   },
+  "addWallet": {
+    "message": "Adicionar carteira"
+  },
   "addingAccount": {
     "message": "Adicionando conta"
-  },
-  "addingCustomNetwork": {
-    "message": "Adicionar rede"
   },
   "additionalNetworks": {
     "message": "Redes adicionais"
@@ -311,6 +330,10 @@
   },
   "addressCopied": {
     "message": "Endereço copiado"
+  },
+  "addressLabel": {
+    "message": "endereço",
+    "description": "Label for address count (single address). Used on multichain account details page."
   },
   "addressMismatch": {
     "message": "Divergência no endereço do site"
@@ -322,6 +345,14 @@
   "addressMismatchPunycode": {
     "message": "Versão Punycode: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addresses": {
+    "message": "Endereços",
+    "description": "Multichain account menu item for linking to addresses page"
+  },
+  "addressesLabel": {
+    "message": "endereços",
+    "description": "Label for address count (multiple addresses). Used on multichain account details page."
   },
   "advanced": {
     "message": "Avançado"
@@ -392,9 +423,6 @@
   },
   "alertMessageAddressMismatchWarning": {
     "message": "Golpistas às vezes imitam os sites fazendo pequenas alterações em seus endereços. Certifique-se de estar interagindo com o site correto antes de continuar."
-  },
-  "alertMessageAddressTrustSignal": {
-    "message": "Se você confirmar essa solicitação, provavelmente perderá seus ativos para um golpista."
   },
   "alertMessageChangeInSimulationResults": {
     "message": "As mudanças estimadas para esta transação foram atualizadas. Revise-as com atenção antes de prosseguir."
@@ -491,6 +519,9 @@
   },
   "allPermissions": {
     "message": "Todas as permissões"
+  },
+  "allPopularNetworks": {
+    "message": "Todas as redes populares"
   },
   "allTimeHigh": {
     "message": "Alta histórica"
@@ -599,9 +630,6 @@
   "attributions": {
     "message": "Atribuições"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "A URL de RPC (Chamadas de Procedimento Remoto) da Infura não suporta mais Aurora."
-  },
   "authorizedPermissions": {
     "message": "Você concedeu as seguintes permissões"
   },
@@ -617,6 +645,9 @@
   },
   "autoLockTimeLimitDescription": {
     "message": "Defina o tempo ocioso, em minutos, antes de a MetaMask ser bloqueada."
+  },
+  "available": {
+    "message": "disponível"
   },
   "average": {
     "message": "Média"
@@ -725,18 +756,11 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Esta é uma versão beta. Pedimos que relatem os bugs $1"
-  },
   "betaMetamaskVersion": {
     "message": "Versão Beta da MetaMask"
   },
   "betaTerms": {
     "message": "Termos de uso do Beta"
-  },
-  "billionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "Conta",
@@ -834,12 +858,6 @@
     "message": "Aprovar $1 para fazer ponte",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Você está permitindo acesso ao valor especificado, $1 $2. O contrato não acessará nenhum fundo adicional."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Será necessário que você permita acesso a $1 $2 para fazer a ponte e em seguida, aprovar a ponte de $2. Isso exigirá duas confirmações separadas."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Link do explorador de blocos copiado!"
   },
@@ -874,9 +892,6 @@
   "bridgeFetchNewQuotes": {
     "message": "Buscar um novo?"
   },
-  "bridgeFrom": {
-    "message": "Realizar ponte de"
-  },
   "bridgeFromTo": {
     "message": "Realizar ponte de $1 $2 para $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -886,6 +901,12 @@
   },
   "bridgeNetCost": {
     "message": "Custo líquido"
+  },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "Impacto no preço"
+  },
+  "bridgePriceImpactWarningTitle": {
+    "message": "Aviso de impacto no preço"
   },
   "bridgeQuoteExpired": {
     "message": "O prazo da sua cotação esgotou."
@@ -1110,6 +1131,9 @@
   },
   "clearActivityDescription": {
     "message": "Isso redefinirá o nonce da conta e apagará os dados da aba de atividades em sua carteira. Somente a conta e rede atuais serão afetadas. Seus saldos e transações recebidas não mudarão."
+  },
+  "clearFilters": {
+    "message": "Limpar filtros"
   },
   "click": {
     "message": "Clique"
@@ -1404,17 +1428,11 @@
   "connectingTo": {
     "message": "Conectando a $1"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "'$1' está sendo descontinuada e poderá não funcionar. Tente outra rede."
-  },
   "connectingToGoerli": {
     "message": "Conectando à rede de teste Goerli"
   },
   "connectingToLineaGoerli": {
     "message": "Conectando à rede de teste Linea Goerli"
-  },
-  "connectingToLineaMainnet": {
-    "message": "Conectando-se à Mainnet do Linea"
   },
   "connectingToLineaSepolia": {
     "message": "Conectando à rede de teste Linea Sepolia"
@@ -1505,6 +1523,14 @@
   "create": {
     "message": "Criar"
   },
+  "createMultichainAccountButton": {
+    "message": "Criar conta",
+    "description": "Name of a button used on multichain account related pages for triggering the account creation process."
+  },
+  "createMultichainAccountButtonLoading": {
+    "message": "Criando conta...",
+    "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
+  },
   "createNewAccountHeader": {
     "message": "Crie uma conta"
   },
@@ -1516,9 +1542,6 @@
   },
   "createPasswordDetails": {
     "message": "Desbloqueia a MetaMask somente neste dispositivo."
-  },
-  "createPasswordDetailsSocial": {
-    "message": "Use isso para recuperação de carteira em todos os dispositivos."
   },
   "createSnapAccountDescription": {
     "message": "$1 quer adicionar uma nova conta à MetaMask."
@@ -1570,9 +1593,6 @@
     "message": "Rede atual",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "O atual URL da RPC para essa rede foi descontinuado."
-  },
   "currentTitle": {
     "message": "Atual:"
   },
@@ -1607,14 +1627,8 @@
   "customToken": {
     "message": "Token personalizado"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "A detecção de tokens ainda não está disponível nesta rede. Por favor, importe o token manualmente e certifique-se de que ele é confiável. Saiba mais sobre $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Qualquer pessoa pode criar um token, inclusive versões falsas de tokens existentes. Saiba mais sobre $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Certifique-se de que confia no token antes de importá-lo. Saiba como evitar $1. Você também pode ativar a detecção de tokens $2."
   },
   "customerSupport": {
     "message": "suporte ao cliente"
@@ -1653,9 +1667,6 @@
   },
   "dataCollectionForMarketing": {
     "message": "Coleta de dados para marketing"
-  },
-  "dataCollectionForMarketingDescription": {
-    "message": "Usaremos o MetaMetrics para saber como você interage com nossas comunicações de marketing. Poderemos compartilhar novidades relevantes (como recursos de produtos e outros materiais)."
   },
   "dataCollectionWarningPopoverButton": {
     "message": "OK"
@@ -1808,9 +1819,6 @@
   "depositCrypto": {
     "message": "Deposite criptomoedas de outra conta com um endereço de carteira ou código QR."
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Devido a atualizações no sistema Ethereum, a rede de teste Goerli será descontinuada em breve."
-  },
   "deprecatedNetwork": {
     "message": "Essa rede foi descontinuada"
   },
@@ -1933,6 +1941,9 @@
   },
   "downArrow": {
     "message": "seta para baixo"
+  },
+  "downloadAppTitle": {
+    "message": "Leia o QR code e baixe o aplicativo"
   },
   "downloadGoogleChrome": {
     "message": "Baixar o Google Chrome"
@@ -2313,9 +2324,6 @@
   "existingChainId": {
     "message": "As informações que você inseriu estão associadas a um ID de cadeia existente."
   },
-  "expandView": {
-    "message": "Expandir exibição"
-  },
   "experimental": {
     "message": "Experimental"
   },
@@ -2439,10 +2447,6 @@
   },
   "from": {
     "message": "De"
-  },
-  "fromAddress": {
-    "message": "De: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "fromTokenLists": {
     "message": "Das listas de tokens: $1"
@@ -2719,6 +2723,9 @@
     "message": "$1 sobre como funcionam as chaves importadas",
     "description": "$1 is a link to learn more about imported keys"
   },
+  "importAnAccount": {
+    "message": "Importar uma conta"
+  },
   "importNFT": {
     "message": "Importar NFT"
   },
@@ -2731,32 +2738,11 @@
   "importNFTTokenIdToolTip": {
     "message": "O ID de um NFT é um identificador único, pois não há dois NFTs iguais. Novamente, na OpenSea, esse número se encontra em \"Detalhes\". Anote-o ou copie-o para sua área de transferência."
   },
-  "importNWordSRP": {
-    "message": "Tenho uma Frase de Recuperação de $1 palavra(s)",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Chave privada"
   },
-  "importSRPDescription": {
-    "message": "Importe uma carteira existente com sua Frase de Recuperação Secreta de 12 ou 24 palavras."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Frases de Recuperação Secretas contêm 12 ou 24 palavras"
-  },
-  "importSRPWordError": {
-    "message": "A palavra $1 está incorreta ou contém erros de ortografia.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Palavras $1 e $2 estão incorretas ou contêm erros de ortografia.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Importar Frase de Recuperação Secreta"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Ocorreu um erro desconhecido."
   },
   "importSelectedTokens": {
     "message": "Importar tokens selecionados?"
@@ -2776,15 +2762,8 @@
   "importTokensError": {
     "message": "Não foi possível importar os tokens. Volte a tentar mais tarde."
   },
-  "importWallet": {
-    "message": "Importar carteira"
-  },
   "importWalletOrAccountHeader": {
     "message": "Importe uma carteira ou conta"
-  },
-  "importWalletSuccess": {
-    "message": "Frase de Recuperação Secreta $1 importada",
-    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "Importar $1",
@@ -2793,9 +2772,6 @@
   "imported": {
     "message": "Importada",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "em suas Configurações"
   },
   "included": {
     "message": "incluída"
@@ -2835,6 +2811,9 @@
   },
   "insufficientFundsForGas": {
     "message": "Fundos insuficientes para o gás"
+  },
+  "insufficientFundsSend": {
+    "message": "Fundos insuficientes"
   },
   "insufficientLockedLiquidityDescription": {
     "message": "Quando não se faz o bloqueio ou queima adequada de tokens de liquidez, o token se torna vulnerável a saques repentinos de liquidez, potencialmente causando instabilidade no mercado."
@@ -2912,6 +2891,9 @@
   },
   "invalidSeedPhraseNotFound": {
     "message": "Frase de Recuperação Secreta não encontrada."
+  },
+  "invalidValue": {
+    "message": "Valor inválido"
   },
   "ipfsGateway": {
     "message": "Gateway IPFS"
@@ -3103,9 +3085,6 @@
   "lineaGoerli": {
     "message": "Rede de teste Linea Goerli"
   },
-  "lineaMainnet": {
-    "message": "Mainnet do Linea"
-  },
   "lineaSepolia": {
     "message": "Rede de teste Linea Sepolia"
   },
@@ -3292,10 +3271,6 @@
   "metrics": {
     "message": "Métricas"
   },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
-  },
   "mismatchedChainLinkText": {
     "message": "verifique os detalhes da rede",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3336,8 +3311,54 @@
   "moreQuotes": {
     "message": "Mais cotações"
   },
+  "multichainAccountAddressCopied": {
+    "message": "Endereço copiado",
+    "description": "Message displayed when the multichain account address is copied to clipboard"
+  },
+  "multichainAccountIntroLearnMore": {
+    "message": "Saiba mais",
+    "description": "Button text to learn more about multichain accounts"
+  },
+  "multichainAccountIntroSameAddressDescription": {
+    "message": "Unificamos suas contas, mas você pode continuar usando a MetaMask como antes. Seus fundos estão seguros e inalterados",
+    "description": "Description explaining that accounts have been merged"
+  },
+  "multichainAccountIntroSameAddressTitle": {
+    "message": "Mesmo endereço, mais redes",
+    "description": "Title for the second section of the multichain account intro modal"
+  },
+  "multichainAccountIntroSettingUp": {
+    "message": "Configurando suas contas...",
+    "description": "Loading text shown while setting up multichain accounts"
+  },
+  "multichainAccountIntroViewAccounts": {
+    "message": "Visualizar contas",
+    "description": "Button text to view accounts from the intro modal"
+  },
+  "multichainAccountIntroWhatDescription": {
+    "message": "Uma conta multichain é uma conta com endereços em várias redes, compatível com a MetaMask. Agora você pode usar Ethereum, Solana e outras redes sem precisar trocar de conta.",
+    "description": "Description explaining what multichain accounts are"
+  },
+  "multichainAccountIntroWhatTitle": {
+    "message": "O que são contas multichain?",
+    "description": "Title for the first section of the multichain account intro modal"
+  },
+  "multichainAccountPrivateKeyCopied": {
+    "message": "Chave privada copiada",
+    "description": "Message displayed when the multichain account private key is copied to clipboard"
+  },
+  "multichainAccountsIntroductionModalTitle": {
+    "message": "Apresentando as contas multichain",
+    "description": "Title for the multichain accounts introduction modal."
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Você está adicionando esta rede à MetaMask e dando a este site permissão para usá-la."
+  },
+  "multichainQuoteCardRateExplanation": {
+    "message": "A melhor taxa que encontramos entre os provedores, já incluindo as taxas do provedor e uma taxa de $1% da MetaMask."
+  },
+  "multichainQuoteCardRateLabel": {
+    "message": "Taxa"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 quer usar Snaps de $2",
@@ -3376,10 +3397,6 @@
     "message": "Você já adicionou um apelido para esse endereço. Você pode editá-lo ou ver outros apelidos sugeridos.",
     "description": "Instruction text in name component modal when value is saved."
   },
-  "nameInstructionsWarning": {
-    "message": "Este conteúdo foi identificado como suspeito. Se você confia neste autor, defina um nome de exibição personalizado para reconhecê-lo nas próximas vezes.",
-    "description": "Instruction text in name component modal when address has warning signals."
-  },
   "nameLabel": {
     "message": "Apelido",
     "description": "Label above name input field in name component modal."
@@ -3407,10 +3424,6 @@
   "nameModalTitleVerified": {
     "message": "Endereço verificado",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Endereço suspeito",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Proposto por $1",
@@ -3533,9 +3546,6 @@
   "networkNameLinea": {
     "message": "Linea"
   },
-  "networkNameOpMainnet": {
-    "message": "Mainnet da OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3571,9 +3581,11 @@
     "message": "As taxas de gás estão $1 em relação às últimas 72 horas.",
     "description": "$1 is networks stability value - stable, low, high"
   },
-  "networkSwitchConnectionError": {
-    "message": "Não podemos conectar a $1",
-    "description": "$1 represents the network name"
+  "networkTabCustom": {
+    "message": "Personalizado"
+  },
+  "networkTabPopular": {
+    "message": "Populares"
   },
   "networkURL": {
     "message": "URL da rede"
@@ -3702,9 +3714,6 @@
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a pesquisa efetuada"
   },
-  "noActivity": {
-    "message": "Nenhuma atividade ainda"
-  },
   "noConnectedAccountTitle": {
     "message": "A MetaMask não está conectada a este site"
   },
@@ -3714,17 +3723,11 @@
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
   },
-  "noDeFiPositions": {
-    "message": "Não consegue encontrar o que procura?"
-  },
   "noDomainResolution": {
     "message": "Nenhuma resolução fornecida para o domínio."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, e a maioria das carteiras de hardware, não funcionarão com a versão atual do navegador."
-  },
-  "noNFTs": {
-    "message": "Nenhum NFT até agora"
   },
   "noNetworksAvailable": {
     "message": "Nenhuma rede disponível"
@@ -3740,12 +3743,6 @@
   },
   "noSnaps": {
     "message": "Você não tem nenhum snap instalado."
-  },
-  "noThanks": {
-    "message": "Não, obrigado"
-  },
-  "noTransactions": {
-    "message": "Você não tem transações"
   },
   "noWebcamFound": {
     "message": "A webcam do seu computador não foi encontrada. Tente novamente."
@@ -4024,52 +4021,15 @@
   "onboardingImportWallet": {
     "message": "Tenho uma carteira existente"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Concordo"
-  },
-  "onboardingMetametricsDescription": {
-    "message": "Gostaríamos de coletar dados básicos de uso e diagnóstico para aprimorar a MetaMask. Serão sempre os seguintes:"
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Você será informado se planejarmos usar esses dados para outros fins. Você pode consultar nossos $1 a qualquer momento (nunca vendemos os dados que você nos fornece aqui).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Política de Privacidade"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Cliques e visualizações no aplicativo são armazenados, mas outros dados (como seu endereço público) não são.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Privadas:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Usamos temporariamente seu endereço IP para detectar uma localização geral (como seu país ou região), mas ele nunca é armazenado.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Gerais:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Você decide se deseja compartilhar ou excluir seus dados de uso por meio das configurações quando quiser.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Opcionais:"
+  "onboardingLoginFooterTermsOfUse": {
+    "message": "Termos de uso"
   },
   "onboardingMetametricsTitle": {
     "message": "Ajude-nos a melhorar a MetaMask"
   },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Usaremos esses dados para saber como você interage com nossas comunicações de marketing. Podemos compartilhar novidades relevantes (como recursos de produtos)."
-  },
   "onboardingOptionIcon": {
     "message": "Ícone $1",
     "description": "$1 is the icon name"
-  },
-  "onboardingOptionTitle": {
-    "message": "Escolha uma opção para continuar"
   },
   "onboardingPinExtensionAltLaunch": {
     "message": "Iniciar extensão"
@@ -4106,14 +4066,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Limpar tudo"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Ocultar tudo"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Adicione um espaço entre cada palavra e certifique-se de que ninguém esteja olhando."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Mostrar tudo"
   },
   "onekey": {
     "message": "OneKey"
@@ -4190,12 +4144,6 @@
   },
   "passwordChangedRecentlyDescription": {
     "message": "Insira sua nova senha para permanecer conectado à MetaMask."
-  },
-  "passwordNotLongEnough": {
-    "message": "A senha deve ter pelo menos 8 caracteres"
-  },
-  "passwordTermsWarning": {
-    "message": "Se eu esquecer essa senha, a MetaMask não conseguirá redefini-la para mim."
   },
   "passwordTermsWarningSocial": {
     "message": "Se eu esquecer essa senha, perderei o acesso à minha carteira permanentemente. A MetaMask não consegue redefini-la para mim."
@@ -4525,6 +4473,10 @@
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Insira o endereço de contrato do token."
   },
+  "pin": {
+    "message": "Fixar",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "Fixar ao topo"
   },
@@ -4596,6 +4548,10 @@
   "privateKeyWarning": {
     "message": "Atenção: jamais revele essa chave. Qualquer pessoa com acesso às suas chaves privadas poderá roubar os ativos de sua conta."
   },
+  "privateKeys": {
+    "message": "Chaves privadas",
+    "description": "Private keys row label on multichain account details page."
+  },
   "privateNetwork": {
     "message": "Rede privada"
   },
@@ -4608,14 +4564,23 @@
   "proposedApprovalLimit": {
     "message": "Limite de aprovação proposto"
   },
-  "protocolNotSupported": {
-    "message": "Talvez ainda não tenhamos suporte ao seu protocolo."
-  },
   "provide": {
     "message": "Fornecer"
   },
   "publicAddress": {
     "message": "Endereço público"
+  },
+  "pushNotificationLimitOrderFilledTitle": {
+    "message": "Ordem limitada executada"
+  },
+  "pushNotificationPositionLiquidatedTitle": {
+    "message": "Posição liquidada"
+  },
+  "pushNotificationStopLossTriggeredTitle": {
+    "message": "Stop loss acionado"
+  },
+  "pushNotificationTakeProfitTriggeredTitle": {
+    "message": "Take profit acionado"
   },
   "pushPlatformNotificationsFundsReceivedDescription": {
     "message": "Você recebeu $1 $2"
@@ -4704,9 +4669,6 @@
   "rank": {
     "message": "Classificação"
   },
-  "rateIncludesMMFee": {
-    "message": "A cotação inclui taxa de $1%"
-  },
   "reAddAccounts": {
     "message": "readicione outras contas"
   },
@@ -4725,11 +4687,12 @@
   "received": {
     "message": "Recebido"
   },
+  "receivingAddress": {
+    "message": "Endereço de recebimento",
+    "description": "Page title when viewing addresses for receiving funds"
+  },
   "recipientAddressPlaceholderNew": {
     "message": "Insira o endereço público (0x) ou nome de domínio"
-  },
-  "recommendedGasLabel": {
-    "message": "Recomendado"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Fazer backup agora"
@@ -4817,6 +4780,10 @@
   },
   "removeSnapDescription": {
     "message": "Essa ação excluirá o snap, os dados dele e revogará as permissões concedidas."
+  },
+  "rename": {
+    "message": "Renomear",
+    "description": "Multichain account menu item for triggering account rename action modal"
   },
   "replace": {
     "message": "substituir"
@@ -4910,8 +4877,9 @@
   "reusedTokenNameWarning": {
     "message": "Um token aqui reutiliza um símbolo de outro token que você acompanha; isso pode causar confusão ou induzir a erros."
   },
-  "revealSecretRecoveryPhrase": {
-    "message": "Frase de Recuperação Secreta"
+  "revealMultichainPrivateKeysBannerTitle": {
+    "message": "Nunca compartilhe sua chave privada",
+    "description": "Title for the banner warning users not to share their private key"
   },
   "revealSeedWords": {
     "message": "Revelar Frase de Recuperação Secreta"
@@ -5017,6 +4985,10 @@
   "searchTokensByNameOrAddress": {
     "message": "Pesquisar tokens por nome ou endereço"
   },
+  "searchYourAccounts": {
+    "message": "Pesquise suas contas",
+    "description": "Placeholder in a searchbar. Used on multichain account list page."
+  },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"
   },
@@ -5027,18 +4999,8 @@
   "secureWallet": {
     "message": "Carteira segura"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Começar"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Lembrar-me mais tarde"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Essa é a única maneira de recuperar sua carteira se não conseguir entrar no app ou se passar a usar um novo dispositivo."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Não corra o risco de perder seus valores. Proteja sua carteira guardando sua $1 em um lugar em que você confia.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Segurança"
@@ -5118,18 +5080,12 @@
   "seeDetails": {
     "message": "Ver detalhes"
   },
-  "seedPhraseIntroTitle": {
-    "message": "Proteja sua carteira"
-  },
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
   },
   "seedPhraseReviewDetails": {
     "message": "Esta é a sua $1. Anote-a na ordem correta e guarde-a em um lugar seguro. Se alguém tiver sua Frase de Recuperação Secreta, poderá acessar sua carteira. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Não a compartilhe com ninguém, nunca."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Salve sua Frase de Recuperação Secreta"
@@ -5245,6 +5201,10 @@
     "message": "Aprovar $1 sem limite de gastos",
     "description": "The token symbol that is being approved"
   },
+  "setUp": {
+    "message": "Configurar",
+    "description": "Action label for Smart Accounts. Used on multichain details page."
+  },
   "settingAddSnapAccount": {
     "message": "Adicionar Snap da conta"
   },
@@ -5256,6 +5216,9 @@
   },
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Solicitações de assinaturas e transações"
+  },
+  "shieldEntryModalGetStarted": {
+    "message": "Começar"
   },
   "show": {
     "message": "Exibir"
@@ -5411,6 +5374,9 @@
   "singleNetwork": {
     "message": "1 rede"
   },
+  "sites": {
+    "message": "Sites"
+  },
   "siweIssued": {
     "message": "Emitido"
   },
@@ -5426,23 +5392,23 @@
   "siweURI": {
     "message": "URL"
   },
-  "skipAccountSecurity": {
-    "message": "Pular a segurança da conta?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Se você perder esta Frase de Recuperação Secreta, não poderá acessar esta carteira."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Proteger agora"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Ignorar"
-  },
   "skipDeepLinkInterstitial": {
     "message": "Não mostrar tela intersticial ao abrir links profundos"
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Ativar esta opção fará com que a tela intersticial seja ignorada ao abrir links profundos (deep links) na MetaMask. Um link profundo é um link como https://link.metamask.io/home, que abre a MetaMask automaticamente. Esses links podem ser ocultados ou manipulados por terceiros. A tela intersticial existe para proteger você contra o acesso acidental a páginas dentro da MetaMask que possam exibir informações sensíveis, como suas contas, tokens, histórico, saldos ou configurações. Essa configuração se aplica apenas a links assinados pela própria MetaMask."
+  },
+  "slippage": {
+    "message": "Slippage"
+  },
+  "slippageAuto": {
+    "message": "Automático"
+  },
+  "slippageEditAriaLabel": {
+    "message": "Editar slippage"
+  },
+  "smartAccount": {
+    "message": "Conta inteligente"
   },
   "smartAccountAccept": {
     "message": "Usar conta inteligente"
@@ -5795,9 +5761,6 @@
   "spendingCaps": {
     "message": "Limites de gastos"
   },
-  "srpDesignImageAlt": {
-    "message": "Imagem do cofre da FRS"
-  },
   "srpDetailsDescription": {
     "message": "Uma Frase de Recuperação Secreta, também chamada de frase-semente ou mnemônica, é um conjunto de palavras que permite acessar e controlar sua carteira de criptoativos. Para transferir sua carteira para a MetaMask, você precisará desta frase."
   },
@@ -6014,10 +5977,6 @@
   "step2LedgerWalletMsg": {
     "message": "Conecte sua Ledger diretamente ao seu computador, depois a desbloqueie e abra o app do Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Etapa $1 de $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Ainda está recebendo essa mensagem?"
@@ -6514,13 +6473,6 @@
   "switchNetwork": {
     "message": "Alternar rede"
   },
-  "switchNetworks": {
-    "message": "Alternar redes"
-  },
-  "switchToNetwork": {
-    "message": "Alternar para $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Alternar para esta conta"
   },
@@ -6588,10 +6540,6 @@
   "to": {
     "message": "Para"
   },
-  "toAddress": {
-    "message": "Para: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
   "toggleDecodeDescription": {
     "message": "Usamos os serviços do 4byte.directory e do Sourcify para decodificar e exibir dados de transações de forma mais legível. Isso ajuda você a entender o resultado de transações pendentes e passadas, mas pode resultar em compartilhamento do seu endereço IP."
   },
@@ -6630,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "Marketplace de tokens"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "golpes e riscos de segurança envolvendo tokens"
   },
   "tokenStandard": {
     "message": "Padrão de token"
@@ -6766,10 +6711,6 @@
   "transferRequest": {
     "message": "Solicitação de transferência"
   },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
-  },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Estamos com problemas para conectar o seu Ledger. $1",
     "description": "$1 is a link to the wallet connection guide;"
@@ -6884,6 +6825,10 @@
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Excesso de tentativas. Tente de novo em "
+  },
+  "unlockToReveal": {
+    "message": "Desbloqueie para revelar",
+    "description": "Label used for Private Keys row on multichain account details page."
   },
   "unpin": {
     "message": "Desafixar"
@@ -7084,24 +7029,11 @@
     "message": "$1 você pode guardar esta frase em segurança para nunca perder o acesso ao seu dinheiro.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Você pode fazer backup de suas carteiras ou ver sua Frase de Recuperação Secreta em Configurações > Segurança e Senha."
-  },
   "walletReadyLoseSrp": {
     "message": "Se perder sua Frase de Recuperação Secreta, você não poderá usar sua carteira."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Esta Frase de Recuperação Secreta pode te ajudar a recuperar o acesso se você esquecer sua senha ou perder o acesso ao seu login."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Se não fizer backup da sua Frase de Recuperação Secreta, você perderá o acesso aos seus valores se não conseguir entrar no app ou se passar a usar um novo dispositivo."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Você pode fazer login em sua carteira quando quiser com sua conta $1 e a respectiva senha.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Se você esquecer sua senha, não será possível acessar sua carteira."
   },
   "wantToAddThisNetwork": {
     "message": "Desejar adicionar esta rede?"
@@ -7145,23 +7077,18 @@
   "welcomeBack": {
     "message": "Boas-vindas de volta"
   },
-  "welcomeToMetaMask": {
-    "message": "Vamos começar"
-  },
   "whatsThis": {
     "message": "O que é isso?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Isso aprovará $1 para realização de ponte."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Isso aprovará $1 para fazer a troca."
   },
   "withdrawing": {
     "message": "Sacando"
   },
   "wrongNetworkName": {
     "message": "De acordo com os nossos registros, o nome da rede pode não corresponder a esta ID de cadeia."
+  },
+  "wrongPassword": {
+    "message": "Senha incorreta",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "yes": {
     "message": "Sim"
@@ -7212,8 +7139,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Mantenha sua Frase de Recuperação Secreta segura!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Lembraremos você mais tarde"
   }
 }

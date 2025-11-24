@@ -11,7 +11,7 @@ describe('Revoke Permissions', function () {
   it('should disconnect when click on Disconnect button in connections page', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

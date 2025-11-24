@@ -36,8 +36,6 @@ const initialState = {
   useBlockie: false,
   featureFlags: {},
   currentLocale: '',
-  currentBlockGasLimit: '',
-  currentBlockGasLimitByChainId: {},
   preferences: {
     autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
     showExtensionInFullSizeView: false,
@@ -61,7 +59,7 @@ const initialState = {
     },
   },
   throttledOrigins: {},
-  isSocialLoginFlowEnabledForMetrics: false,
+  isSeedlessOnboardingUserAuthenticated: false,
 };
 
 /**
@@ -146,16 +144,19 @@ export default function reduceMetamask(state = initialState, action) {
         ...metamaskState,
         dataCollectionForMarketing: action.value,
       };
-    case actionConstants.SET_IS_SOCIAL_LOGIN_FLOW_ENABLED_FOR_METRICS:
-      return {
-        ...metamaskState,
-        isSocialLoginFlowEnabledForMetrics: action.value,
-      };
 
     case actionConstants.COMPLETE_ONBOARDING: {
       return {
         ...metamaskState,
         completedOnboarding: true,
+      };
+    }
+
+    case actionConstants.COMPLETE_ONBOARDING_WITH_SIDEPANEL: {
+      return {
+        ...metamaskState,
+        completedOnboarding: true,
+        openedWithSidepanel: true,
       };
     }
 
@@ -168,6 +169,9 @@ export default function reduceMetamask(state = initialState, action) {
         isUnlocked: false,
         onboardingTabs: {},
         seedPhraseBackedUp: null,
+        // reset metametrics optin status
+        participateInMetaMetrics: null,
+        metaMetricsId: null,
       };
     }
 
@@ -187,6 +191,8 @@ export default function reduceMetamask(state = initialState, action) {
         socialLoginEmail: undefined,
         authConnection: undefined,
         nodeAuthTokens: undefined,
+        passwordOutdatedCache: undefined,
+        isSeedlessOnboardingUserAuthenticated: false,
       };
     }
 
@@ -301,10 +307,6 @@ export const getNftContracts = (state) => {
   const { chainId } = getProviderConfig(state);
   return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
-
-export function getBlockGasLimit(state) {
-  return state.metamask.currentBlockGasLimit;
-}
 
 export function getNativeCurrency(state) {
   return getProviderConfig(state).ticker;
@@ -526,6 +528,16 @@ export function getIsInitialized(state) {
   return state.metamask.isInitialized;
 }
 
+/**
+ * This function checks if the wallet is currently being reset.
+ *
+ * @param {object} state
+ * @returns {boolean}
+ */
+export function getIsWalletResetInProgress(state) {
+  return state.metamask.isWalletResetInProgress;
+}
+
 export function getIsUnlocked(state) {
   return state.metamask.isUnlocked;
 }
@@ -617,6 +629,12 @@ export function doesUserHaveALedgerAccount(state) {
   });
 }
 
+/**
+ * Select the current fiat currency code (ISO 4217 like 'USD').
+ *
+ * @param {object} state - Redux state
+ * @returns {string} The current fiat currency code
+ */
 export function getCurrentCurrency(state) {
   return state.metamask.currentCurrency;
 }

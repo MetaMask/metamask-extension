@@ -152,7 +152,7 @@ describe('Network Manager', function (this: Suite) {
   it('should preserve existing enabled networks when adding a network via dapp', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withEnabledNetworks({
@@ -193,15 +193,15 @@ describe('Network Manager', function (this: Suite) {
           method: 'wallet_addEthereumChain',
           params: [
             {
-              chainId: '0x89', // Polygon mainnet
-              chainName: 'Polygon Mainnet',
+              chainId: '0xa86a', // avalanche mainnet
+              chainName: 'Avalanche',
               nativeCurrency: {
-                name: 'MATIC',
-                symbol: 'MATIC',
+                name: 'AVAX',
+                symbol: 'AVAX',
                 decimals: 18,
               },
               rpcUrls: ['http://localhost:8546'],
-              blockExplorerUrls: ['https://polygonscan.com'],
+              blockExplorerUrls: ['https://snowtrace.io'],
             },
           ],
         });
@@ -213,7 +213,7 @@ describe('Network Manager', function (this: Suite) {
         // Approve the network addition
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
-        await addNetworkConfirmation.checkPageIsLoaded('Polygon Mainnet');
+        await addNetworkConfirmation.checkPageIsLoaded('Avalanche');
         await addNetworkConfirmation.approveAddNetwork();
 
         // Switch back to MetaMask to verify preservation
@@ -229,7 +229,7 @@ describe('Network Manager', function (this: Suite) {
         await networkManager.checkTabIsSelected('Popular');
 
         // New network is selected (we do not keep both networks on, as UI does only supports single or all popular networks)
-        await networkManager.checkNetworkIsSelected(NetworkId.POLYGON);
+        await networkManager.checkNetworkIsSelected(NetworkId.AVALANCHE);
       },
     );
   });
@@ -237,12 +237,12 @@ describe('Network Manager', function (this: Suite) {
   it('should deselect all networks when adding a custom network via dapp', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withEnabledNetworks({
             eip155: {
-              '0x1': true, // Start with only Ethereum Mainnet
+              '0x1': true, // Start with only Ethereum
             },
           })
           .build(),

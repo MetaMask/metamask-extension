@@ -1,12 +1,14 @@
 import { Suite } from 'mocha';
 import { Driver } from '../webdriver/driver';
-import { withFixtures } from '../helpers';
+import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
+import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockGetEntropySnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 
 const publicKeyGenerated =
   '"0x9341785782b512c86235612365f1076b16731ed9473beb4d0804c30b7fcc3a055aa7103b02dc64014d923220712dfbef023ddcf6327b313ea2dfd4d83dc5a53e1c5e7f4e10bce49830eded302294054df8a7a46e5b6cb3e50eec564ecba17941"';
@@ -19,6 +21,9 @@ describe('Test Snap getEntropy', function (this: Suite) {
   it('can use snap_getEntropy inside a snap', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
         testSpecificMock: mockGetEntropySnap,
         title: this.test?.fullTitle(),
@@ -45,7 +50,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
         );
 
         // Select entropy source SRP 1, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
+        await testSnaps.selectEntropySource(
           'getEntropyDropDown',
           'SRP 1 (primary)',
         );
@@ -58,10 +63,8 @@ describe('Test Snap getEntropy', function (this: Suite) {
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
-          'getEntropyDropDown',
-          'SRP 2',
-        );
+        await testSnaps.selectEntropySource('getEntropyDropDown', 'SRP 2');
+
         await testSnaps.scrollAndClickButton('signEntropyMessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.checkMessageResultSpan(
@@ -70,16 +73,18 @@ describe('Test Snap getEntropy', function (this: Suite) {
         );
 
         // Select entropy source invalid, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
-          'getEntropyDropDown',
-          'Invalid',
-        );
+        await testSnaps.selectEntropySource('getEntropyDropDown', 'Invalid');
+
         await testSnaps.scrollAndClickButton('signEntropyMessageButton');
-        await switchAndApproveDialogSwitchToTestSnap(driver);
-        await driver.waitForAlert(
-          'Entropy source with ID "invalid" not found.',
-        );
-        await driver.closeAlertPopup();
+
+        const snapInstall = new SnapInstall(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await snapInstall.clickApproveButton();
+
+        await driver.waitForBrowserAlert({
+          text: 'Entropy source with ID "invalid" not found.',
+          windowTitle: WINDOW_TITLES.TestSnaps,
+        });
       },
     );
   });

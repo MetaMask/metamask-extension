@@ -5,6 +5,7 @@ ignores:
   #
 
   - '@lavamoat/snow'
+  - '@lavamoat/webpack'
   - '@lavamoat/allow-scripts'
   - '@babel/runtime'
   - '@fortawesome/fontawesome-free'
@@ -27,6 +28,9 @@ ignores:
   - '@metamask/test-dapp'
   - '@metamask/test-dapp-multichain'
   - '@metamask/test-dapp-solana'
+  - '@metamask/snap-simple-keyring-site'
+  - '@metamask/snap-account-abstraction-keyring-site'
+  - '@metamask/test-snaps'
   - '@metamask/design-tokens' # Only imported in index.css
   - '@tsconfig/node22' # required dynamically by TS, used in tsconfig.json
   - '@sentry/cli' # invoked as `sentry-cli`
@@ -81,8 +85,6 @@ ignores:
   - '@babel/plugin-transform-logical-assignment-operators'
   # used in image optimization script
   - 'sharp'
-  - 'imagemin'
-  - 'imagemin-gifsicle'
   # trezor
   - 'ts-mixer'
   - '@testing-library/dom'
@@ -95,7 +97,10 @@ ignores:
   - '@metamask/account-watcher'
   - '@metamask/bitcoin-wallet-snap'
   - '@metamask/solana-wallet-snap'
+  - '@metamask/tron-wallet-snap'
   - '@metamask/institutional-wallet-snap'
+  - '@metamask/gator-permissions-snap'
+  - '@metamask/permissions-kernel-snap'
 
 # files depcheck should not parse
 ignorePatterns:

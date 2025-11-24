@@ -1,13 +1,11 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  WINDOW_TITLES,
-  openDapp,
   unlockWallet,
   withFixtures,
   getEventPayloads,
-  switchToNotificationWindow,
 } = require('../../helpers');
+const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 const { MOCK_META_METRICS_ID } = require('./constants');
 
@@ -257,7 +255,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
   it.skip('should capture metrics when security alerts is shown', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
@@ -275,13 +273,13 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
 
         // Click TestDapp button for transaction
         await driver.clickElement('#maliciousApprovalButton');
 
         // Wait for confirmation pop-up
-        await switchToNotificationWindow(driver, 3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Wait for confirmation pop-up to close
         await driver.clickElement({ text: 'Reject', tag: 'button' });
@@ -296,7 +294,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
         await driver.clickElement('#maliciousPermit');
 
         // Wait for confirmation pop-up
-        await switchToNotificationWindow(driver, 3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Wait for confirmation pop-up to close
         await driver.clickElement({ text: 'Reject', tag: 'button' });

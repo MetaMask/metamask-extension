@@ -699,7 +699,7 @@ describe('Selectors', () => {
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
-      expect(currentNetwork.nickname).toBe('Ethereum Mainnet');
+      expect(currentNetwork.nickname).toBe('Ethereum');
     });
   });
 
@@ -3013,5 +3013,27 @@ describe('getUrlScanCacheResult', () => {
       },
       timestamp: 1234567890,
     });
+  });
+});
+
+describe('getGasFeesSponsoredNetworkEnabled', () => {
+  it('returns the gasFeesSponsoredNetwork flag value for different scenarios', () => {
+    const gasFeesSponsoredNetwork = {
+      '0x1': true,
+      '0x2': false,
+    };
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: {
+          gasFeesSponsoredNetwork,
+        },
+      },
+    };
+    const result = selectors.getGasFeesSponsoredNetworkEnabled(state);
+    expect(result).toStrictEqual(gasFeesSponsoredNetwork);
+    expect(result['0x1']).toBe(true);
+    expect(result['0x2']).toBe(false);
   });
 });

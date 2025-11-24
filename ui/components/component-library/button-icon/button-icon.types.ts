@@ -2,6 +2,9 @@ import { IconName, IconProps } from '../icon';
 import { IconColor } from '../../../helpers/constants/design-system';
 import { PolymorphicComponentPropWithRef, StyleUtilityProps } from '../box';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum ButtonIconSize {
   Sm = 'sm',
   Md = 'md',

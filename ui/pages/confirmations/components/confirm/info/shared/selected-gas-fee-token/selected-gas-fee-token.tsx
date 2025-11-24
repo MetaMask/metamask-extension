@@ -17,6 +17,7 @@ import {
   Display,
 } from '../../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import { GasFeeTokenModal } from '../gas-fee-token-modal';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
@@ -29,6 +30,7 @@ import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficient
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
   const { chainId, gasFeeTokens } = currentConfirmation;
 
   const { isSupported: isGaslessSupported, isSmartTransaction } =
@@ -43,6 +45,7 @@ export function SelectedGasFeeToken() {
   const supportsFutureNative = hasInsufficientNative && isSmartTransaction;
 
   const hasGasFeeTokens =
+    !isQuotedSwapDisplayedInInfo &&
     isGaslessSupported &&
     Boolean(gasFeeTokens?.length) &&
     (!hasOnlyFutureNativeToken || supportsFutureNative);
@@ -71,15 +74,21 @@ export function SelectedGasFeeToken() {
       <Box
         data-testid="selected-gas-fee-token"
         onClick={handleClick}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        backgroundColor={
+          hasGasFeeTokens
+            ? BackgroundColor.backgroundMuted
+            : BackgroundColor.transparent
+        }
         borderRadius={BorderRadius.pill}
         display={Display.InlineFlex}
         alignItems={AlignItems.center}
         paddingInlineStart={1}
+        marginLeft={1}
         gap={1}
         style={{
           cursor: hasGasFeeTokens ? 'pointer' : 'default',
           paddingInlineEnd: '6px',
+          padding: hasGasFeeTokens ? '4px 8px' : '0px',
         }}
       >
         <GasFeeTokenIcon

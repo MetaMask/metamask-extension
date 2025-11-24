@@ -4,7 +4,7 @@ import { userEvent } from '@testing-library/user-event';
 import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { shortenAddress } from '../../../helpers/utils/util';
 import {
   clearAccountDetails,

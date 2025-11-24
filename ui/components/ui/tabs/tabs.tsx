@@ -1,21 +1,21 @@
 import React, { useState, useMemo } from 'react';
-import classnames from 'classnames';
-import { Box } from '../../component-library';
 import {
-  BackgroundColor,
-  Display,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
+  Box,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  twMerge,
+} from '@metamask/design-system-react';
 import { TabsProps, TabChild } from './tabs.types';
 
 export const Tabs = <TKey extends string = string>({
   defaultActiveTabKey,
   onTabClick,
   children,
-  tabsClassName = '',
   subHeader = null,
   tabListProps = {},
   tabContentProps = {},
+  className = '',
   ...props
 }: TabsProps<TKey>) => {
   // Helper function to get valid children, filtering out null/undefined/false values
@@ -57,14 +57,12 @@ export const Tabs = <TKey extends string = string>({
 
     return validChildren.map((child, index) => {
       const { tabKey } = child.props;
-      const isSingleTab = numberOfTabs === 1;
 
       return React.cloneElement(child, {
         ...child.props,
         onClick: (idx: number) => handleTabClick(idx, tabKey),
         tabIndex: index,
         isActive: numberOfTabs > 1 && index === activeTabIndex,
-        isSingleTab,
         key: tabKey,
       });
     });
@@ -86,27 +84,19 @@ export const Tabs = <TKey extends string = string>({
   };
 
   return (
-    <Box className="tabs" {...props}>
+    <Box className={twMerge('tabs', 'transform-gpu', className)} {...props}>
       <Box
-        as="ul"
-        display={Display.Flex}
-        justifyContent={JustifyContent.flexStart}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        gap={0}
+        role="tablist"
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Start}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        gap={4}
         {...tabListProps}
-        className={classnames(
-          'tabs__list',
-          tabsClassName,
-          tabListProps.className || '',
-        )}
       >
         {renderTabs()}
       </Box>
       {subHeader}
-      <Box
-        {...tabContentProps}
-        className={classnames('tabs__content', tabContentProps.className || '')}
-      >
+      <Box role="tabpanel" {...tabContentProps}>
         {renderActiveTabContent()}
       </Box>
     </Box>

@@ -34,7 +34,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -363,7 +363,7 @@ describe('Defi positions list', () => {
     expect(stakingPosition).toHaveTextContent('Staked');
     expect(stakingPosition.parentElement).toHaveTextContent('Wrapped Ether');
     expect(stakingPosition.parentElement).toHaveTextContent(
-      '2.10267 Wrapped Ether',
+      '2.103 Wrapped Ether',
     );
     expect(stakingPosition.parentElement).toHaveTextContent('$6,522.67');
 
@@ -378,7 +378,6 @@ describe('Defi positions list', () => {
               MetaMetricsEventName.DeFiDetailsOpened,
         );
 
-      console.log(JSON.stringify(metricsEvents));
       expect(metricsEvents).toHaveLength(2);
     });
 

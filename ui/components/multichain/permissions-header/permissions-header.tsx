@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   AlignItems,
   BackgroundColor,
@@ -23,6 +23,7 @@ import {
 import { Header } from '../pages/page';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
 export const PermissionsHeader = ({
   securedOrigin,
@@ -32,21 +33,23 @@ export const PermissionsHeader = ({
   connectedSubjectsMetadata?: { name: string; iconUrl: string };
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <Header
+      textProps={{
+        variant: TextVariant.headingSm,
+      }}
       backgroundColor={BackgroundColor.backgroundDefault}
       startAccessory={
         <ButtonIcon
+          size={ButtonIconSize.Md}
           ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
           className="connections-header__start-accessory"
           color={IconColor.iconDefault}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onClick={() => (history as any).goBack()}
-          size={ButtonIconSize.Sm}
+          onClick={() => navigate(PREVIOUS_ROUTE)}
+          data-testid="back-button"
         />
       }
     >
@@ -72,7 +75,7 @@ export const PermissionsHeader = ({
         )}
         <Text
           as="span"
-          variant={TextVariant.headingMd}
+          variant={TextVariant.headingSm}
           textAlign={TextAlign.Center}
           ellipsis
         >

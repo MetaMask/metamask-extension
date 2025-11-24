@@ -232,9 +232,6 @@
   "etherscanView": {
     "message": "Pogledajte račun na Etherscan-u"
   },
-  "expandView": {
-    "message": "Proširite prikaz"
-  },
   "failed": {
     "message": "Neuspešno"
   },
@@ -610,9 +607,6 @@
   },
   "supportCenter": {
     "message": "Posetite naš centar za podršku"
-  },
-  "switchNetworks": {
-    "message": "Prebacivanje mreže"
   },
   "symbol": {
     "message": "Simbol"

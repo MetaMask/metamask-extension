@@ -112,7 +112,7 @@ export default function RevealRecoveryPhrase({
             onClick={returnToPreviousPage}
             ariaLabel={t('back')}
           />
-          <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
+          <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {t('revealSecretRecoveryPhrase')}
           </Text>
           <ButtonIcon

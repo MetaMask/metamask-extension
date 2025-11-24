@@ -20,15 +20,22 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
-import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useBalance } from '../../../hooks/send/useBalance';
 import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversions';
 import { useMaxAmount } from '../../../hooks/send/useMaxAmount';
 import { useSendContext } from '../../../context/send';
 import { useSendType } from '../../../hooks/send/useSendType';
-import { formatToFixedDecimals, getFractionLength } from '../../../utils/send';
+import {
+  formatToFixedDecimals,
+  getFractionLength,
+  isValidPositiveNumericString,
+} from '../../../utils/send';
 
-export const Amount = () => {
+export const Amount = ({
+  amountError,
+}: {
+  amountError: string | undefined;
+}) => {
   const t = useI18nContext();
   const { asset, updateValue, value } = useSendContext();
   const [amount, setAmount] = useState(value ?? '');
@@ -36,6 +43,7 @@ export const Amount = () => {
   const [fiatMode, setFiatMode] = useState(false);
   const {
     conversionSupportedForAsset,
+    fiatCurrencyName,
     getFiatValue,
     getFiatDisplayValue,
     getNativeValue,
@@ -56,7 +64,6 @@ export const Amount = () => {
         : getFiatDisplayValue(amount),
     [amount, fiatMode, getFiatDisplayValue, value],
   );
-  const { amountError } = useAmountValidation();
 
   const onChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,12 +85,14 @@ export const Amount = () => {
     const newFiatMode = !fiatMode;
     setFiatMode(newFiatMode);
     if (newFiatMode) {
-      if (amount !== undefined) {
+      if (amount !== undefined && isValidPositiveNumericString(amount)) {
         setAmount(getFiatValue(amount));
       }
       setAmountInputTypeFiat();
     } else {
-      setAmount(value ?? '');
+      if (!value || isValidPositiveNumericString(value)) {
+        setAmount(value ?? '');
+      }
       setAmountInputTypeToken();
     }
   }, [
@@ -112,6 +121,12 @@ export const Amount = () => {
     updateValue,
   ]);
 
+  const balanceDisplayValue = useMemo(() => {
+    return fiatMode
+      ? `${getFiatDisplayValue(String(balance))} ${t('available')}`
+      : `${balance} ${asset?.symbol} ${t('available')}`;
+  }, [fiatMode, getFiatDisplayValue, balance, asset?.symbol, t]);
+
   if (asset?.standard === ERC721) {
     return null;
   }
@@ -126,9 +141,13 @@ export const Amount = () => {
         onChange={onChange}
         onPaste={setAmountInputMethodPasted}
         onInput={setAmountInputMethodManual}
+        placeholder="0"
         value={amount}
         endAccessory={
-          <div>
+          <Box display={Display.Flex}>
+            <Text>
+              {fiatMode ? fiatCurrencyName?.toUpperCase() : asset?.symbol}
+            </Text>
             {conversionSupportedForAsset && (
               <ButtonIcon
                 ariaLabel="toggle fiat mode"
@@ -138,10 +157,11 @@ export const Amount = () => {
                 data-testid="toggle-fiat-mode"
               />
             )}
-          </div>
+          </Box>
         }
         width={BlockSize.Full}
         size={TextFieldSize.Lg}
+        paddingRight={3}
       />
       <Box
         display={Display.Flex}
@@ -155,15 +175,15 @@ export const Amount = () => {
           variant={TextVariant.bodySm}
         >
           {amountError ||
-            (conversionSupportedForAsset ? `~${alternateDisplayValue}` : '')}
+            (conversionSupportedForAsset ? alternateDisplayValue : '')}
         </Text>
         <Box display={Display.Flex}>
           <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
-            {balance} {asset?.symbol} {t('available')}
+            {balanceDisplayValue}
           </Text>
           {!isNonEvmNativeSendType && (
             <ButtonLink
-              marginLeft={1}
+              marginLeft={2}
               onClick={updateToMax}
               variant={TextVariant.bodySm}
             >

@@ -4,33 +4,56 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountGroupId } from '@metamask/account-api';
+import { CaipChainId } from '@metamask/utils';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MultichainAddressRowsList } from './multichain-address-rows-list';
 
+jest.mock('@metamask/bridge-controller', () => ({
+  ...jest.requireActual('@metamask/bridge-controller'),
+  formatChainIdToCaip: jest.fn(),
+}));
+
+const mockFormatChainIdToCaip = formatChainIdToCaip as jest.Mock;
 const mockStore = configureStore([]);
 
 const WALLET_ID_MOCK = 'entropy:01K437Z7EJ0VCMFDE9TQKRV60A';
 
 const GROUP_ID_MOCK = `${WALLET_ID_MOCK}/0`;
 
-const ACCOUNT_ONE_ID_MOCK = 'account-one-id';
-const ACCOUNT_TWO_ID_MOCK = 'account-two-id';
+const ACCOUNT_EVM_ID_MOCK = 'account-evm-id';
+const ACCOUNT_BITCOIN_ID_MOCK = 'account-bitcoin-id';
+const ACCOUNT_SOLANA_ID_MOCK = 'account-solana-id';
+const ACCOUNT_TRON_ID_MOCK = 'account-tron-id';
 
 const INTERNAL_ACCOUNTS_MOCK: Record<string, InternalAccount> = {
-  [ACCOUNT_ONE_ID_MOCK]: {
-    id: ACCOUNT_ONE_ID_MOCK,
+  [ACCOUNT_EVM_ID_MOCK]: {
+    id: ACCOUNT_EVM_ID_MOCK,
     address: '0x1234567890abcdef1234567890abcdef12345678',
     metadata: {
-      name: 'Ethereum Account',
+      name: 'EVM Account',
       importTime: Date.now(),
       keyring: { type: 'HD Key Tree' },
     },
     options: {},
     methods: [],
     type: 'eip155:eoa',
-    scopes: ['eip155:0'],
+    scopes: ['eip155:0'], // EOA account - will be spread across all EVM networks
   },
-  [ACCOUNT_TWO_ID_MOCK]: {
-    id: ACCOUNT_TWO_ID_MOCK,
+  [ACCOUNT_BITCOIN_ID_MOCK]: {
+    id: ACCOUNT_BITCOIN_ID_MOCK,
+    address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+    metadata: {
+      name: 'Bitcoin Account',
+      importTime: Date.now(),
+      keyring: { type: 'Snap Keyring' },
+    },
+    options: {},
+    methods: [],
+    type: 'bip122:p2wpkh',
+    scopes: ['bip122:000000000019d6689c085ae165831e93'],
+  },
+  [ACCOUNT_SOLANA_ID_MOCK]: {
+    id: ACCOUNT_SOLANA_ID_MOCK,
     address: 'DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy',
     metadata: {
       name: 'Solana Account',
@@ -41,6 +64,19 @@ const INTERNAL_ACCOUNTS_MOCK: Record<string, InternalAccount> = {
     methods: [],
     type: 'solana:data-account',
     scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+  },
+  [ACCOUNT_TRON_ID_MOCK]: {
+    id: ACCOUNT_TRON_ID_MOCK,
+    address: 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9',
+    metadata: {
+      name: 'Tron Account',
+      importTime: Date.now(),
+      keyring: { type: 'Snap Keyring' },
+    },
+    options: {},
+    methods: [],
+    type: 'tron:eoa',
+    scopes: ['tron:0x2b6653dc'],
   },
 };
 
@@ -55,7 +91,12 @@ const ACCOUNT_TREE_MOCK = {
           type: 'multichain-account',
           id: GROUP_ID_MOCK,
           metadata: {},
-          accounts: [ACCOUNT_ONE_ID_MOCK, ACCOUNT_TWO_ID_MOCK],
+          accounts: [
+            ACCOUNT_EVM_ID_MOCK,
+            ACCOUNT_BITCOIN_ID_MOCK,
+            ACCOUNT_SOLANA_ID_MOCK,
+            ACCOUNT_TRON_ID_MOCK,
+          ],
         },
       },
     },
@@ -67,14 +108,14 @@ const createMockState = () => ({
     completedOnboarding: true,
     internalAccounts: {
       accounts: INTERNAL_ACCOUNTS_MOCK,
-      selectedAccount: ACCOUNT_ONE_ID_MOCK,
+      selectedAccount: ACCOUNT_EVM_ID_MOCK,
     },
     accountTree: ACCOUNT_TREE_MOCK,
     // EVM network configurations
     networkConfigurationsByChainId: {
       '0x1': {
         chainId: '0x1',
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -88,7 +129,7 @@ const createMockState = () => ({
       },
       '0x89': {
         chainId: '0x89',
-        name: 'Polygon Mainnet',
+        name: 'Polygon',
         nativeCurrency: 'MATIC',
         rpcEndpoints: [
           {
@@ -102,7 +143,7 @@ const createMockState = () => ({
       },
       '0xa4b1': {
         chainId: '0xa4b1',
-        name: 'Arbitrum One',
+        name: 'Arbitrum',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -128,21 +169,85 @@ const createMockState = () => ({
         defaultRpcEndpointIndex: 0,
         blockExplorerUrls: ['https://sepolia.etherscan.io'],
       },
+      '0xe708': {
+        chainId: '0xe708',
+        name: 'Linea',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            networkClientId: 'linea-mainnet',
+            url: 'https://linea-mainnet.infura.io/v3/',
+            type: 'custom',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: ['https://lineascan.build'],
+      },
     },
     // Multichain network configurations (includes non-EVM)
     multichainNetworkConfigurationsByChainId: {
+      // EVM networks in CAIP format
+      'eip155:1': {
+        chainId: 'eip155:1',
+        name: 'Ethereum',
+        isEvm: true,
+        nativeCurrency: 'ETH',
+      },
+      'eip155:137': {
+        chainId: 'eip155:137',
+        name: 'Polygon',
+        isEvm: true,
+        nativeCurrency: 'MATIC',
+      },
+      'eip155:42161': {
+        chainId: 'eip155:42161',
+        name: 'Arbitrum',
+        isEvm: true,
+        nativeCurrency: 'ETH',
+      },
+      'eip155:11155111': {
+        chainId: 'eip155:11155111',
+        name: 'Sepolia',
+        isEvm: true,
+        nativeCurrency: 'ETH',
+      },
+      'eip155:59144': {
+        chainId: 'eip155:59144',
+        name: 'Linea',
+        isEvm: true,
+        nativeCurrency: 'ETH',
+      },
+      'eip155:5': {
+        chainId: 'eip155:5',
+        name: 'Goerli',
+        isEvm: true,
+        nativeCurrency: 'ETH',
+      },
+      // Non-EVM networks
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
         chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         name: 'Solana',
         isEvm: false,
         nativeCurrency: 'SOL',
       },
+      'bip122:000000000019d6689c085ae165831e93': {
+        chainId: 'bip122:000000000019d6689c085ae165831e93',
+        name: 'Bitcoin',
+        isEvm: false,
+        nativeCurrency: 'BTC',
+      },
+      'tron:0x2b6653dc': {
+        chainId: 'tron:0x2b6653dc',
+        name: 'Tron',
+        isEvm: false,
+        nativeCurrency: 'TRX',
+      },
     },
     // Current provider config for EVM
     providerConfig: {
       chainId: '0x1',
       type: 'mainnet',
-      nickname: 'Ethereum Mainnet',
+      nickname: 'Ethereum',
     },
     // Multichain controller state
     isEvmSelected: true,
@@ -160,9 +265,16 @@ const createMockState = () => ({
         '0x89': true,
         '0xa4b1': true,
         '0xaa36a7': true,
+        '0xe708': true,
       },
       solana: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+      },
+      bip122: {
+        '000000000019d6689c085ae165831e93': true,
+      },
+      tron: {
+        '0x2b6653dc': true,
       },
     },
   },
@@ -173,6 +285,7 @@ const renderComponent = (
   onQrClick: (
     address: string,
     networkName: string,
+    chainId: CaipChainId,
     networkImageSrc?: string,
   ) => void = jest.fn(),
 ) => {
@@ -266,20 +379,203 @@ describe('MultichainAddressRowsList', () => {
   });
 
   it('passes onQrClick callback to child components', () => {
+    // Mock the formatChainIdToCaip function to return the expected CAIP format
+    mockFormatChainIdToCaip.mockReturnValue('eip155:1');
+
     const mockOnQrClick = jest.fn();
     renderComponent(GROUP_ID_MOCK, mockOnQrClick);
 
     const qrButtons = screen.getAllByTestId('multichain-address-row-qr-button');
     expect(qrButtons.length).toBeGreaterThan(0);
 
-    // Click the first QR button (Ethereum account)
     fireEvent.click(qrButtons[0]);
 
     expect(mockOnQrClick).toHaveBeenCalledTimes(1);
-    expect(mockOnQrClick).toHaveBeenCalledWith(
-      '0x1234567890abcdef1234567890abcdef12345678',
-      'Ethereum Mainnet',
-      './images/eth_logo.svg',
-    );
+    // The first button should be for Ethereum network
+    const firstCallArgs = mockOnQrClick.mock.calls[0];
+    expect(firstCallArgs[1]).toBe('Ethereum'); // Network name
+    expect(firstCallArgs[2]).toBe('eip155:1'); // Chain ID
+    expect(firstCallArgs[3]).toBe('./images/eth_logo.svg'); // Image source
+  });
+
+  describe('Priority network sorting', () => {
+    it('displays priority networks first in the correct order', () => {
+      renderComponent();
+
+      const networkNames = screen.getAllByTestId(
+        'multichain-address-row-network-name',
+      );
+      const networkNamesText = networkNames.map((el) => el.textContent);
+
+      const ethereumIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Ethereum'),
+      );
+      const bitcoinIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Bitcoin'),
+      );
+      const solanaIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Solana'),
+      );
+      const tronIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Tron'),
+      );
+      const lineaIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Linea'),
+      );
+
+      expect(ethereumIndex).toBe(0);
+
+      if (bitcoinIndex !== -1) {
+        expect(bitcoinIndex).toBeGreaterThan(ethereumIndex);
+      }
+      if (solanaIndex !== -1 && bitcoinIndex !== -1) {
+        expect(solanaIndex).toBeGreaterThan(bitcoinIndex);
+      }
+      if (tronIndex !== -1 && solanaIndex !== -1) {
+        expect(tronIndex).toBeGreaterThan(solanaIndex);
+      }
+      if (lineaIndex !== -1) {
+        expect(lineaIndex).toBeGreaterThan(0);
+      }
+    });
+
+    it('displays non-priority networks after priority networks', () => {
+      renderComponent();
+
+      const networkNames = screen.getAllByTestId(
+        'multichain-address-row-network-name',
+      );
+
+      // Non-priority networks (Polygon, Arbitrum) should appear after priority networks
+      const networkNamesText = networkNames.map((el) => el.textContent);
+
+      const polygonIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Polygon'),
+      );
+      const arbitrumIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Arbitrum'),
+      );
+      const lineaIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Linea'),
+      );
+
+      expect(polygonIndex).toBeGreaterThan(lineaIndex);
+      expect(arbitrumIndex).toBeGreaterThan(lineaIndex);
+    });
+
+    it('maintains priority order when searching', () => {
+      renderComponent();
+
+      const searchInput = screen
+        .getByTestId('multichain-address-rows-list-search')
+        .querySelector('input') as HTMLInputElement;
+
+      fireEvent.change(searchInput, { target: { value: 'e' } });
+
+      const networkNames = screen.getAllByTestId(
+        'multichain-address-row-network-name',
+      );
+      const networkNamesText = networkNames.map((el) => el.textContent);
+
+      const ethereumIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Ethereum'),
+      );
+      const lineaIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Linea'),
+      );
+
+      expect(ethereumIndex).toBe(0);
+      expect(lineaIndex).toBeGreaterThan(ethereumIndex);
+    });
+
+    it('filters correctly while maintaining priority order', () => {
+      renderComponent();
+
+      const searchInput = screen
+        .getByTestId('multichain-address-rows-list-search')
+        .querySelector('input') as HTMLInputElement;
+
+      // Search for "bit" which should match Bitcoin
+      fireEvent.change(searchInput, { target: { value: 'bit' } });
+
+      // Check if we have any results
+      const addressRows = screen.queryAllByTestId('multichain-address-row');
+
+      if (addressRows.length > 0) {
+        const networkNames = screen.getAllByTestId(
+          'multichain-address-row-network-name',
+        );
+        const networkNamesText = networkNames.map((el) => el.textContent);
+
+        // Bitcoin should be in the results if it exists
+        const hasBitcoin = networkNamesText.some((name) =>
+          name?.toLowerCase().includes('bitcoin'),
+        );
+        expect(hasBitcoin).toBe(true);
+      } else {
+        // If no results, check that the empty message is shown
+        expect(
+          screen.getByTestId('multichain-address-rows-list-empty-message'),
+        ).toBeInTheDocument();
+      }
+    });
+
+    it('returns all networks in priority order when search is cleared', () => {
+      renderComponent();
+
+      const searchInput = screen
+        .getByTestId('multichain-address-rows-list-search')
+        .querySelector('input') as HTMLInputElement;
+
+      fireEvent.change(searchInput, { target: { value: 'Ethereum' } });
+      const filteredRows = screen.queryAllByTestId('multichain-address-row');
+      expect(filteredRows.length).toBeGreaterThan(0);
+
+      fireEvent.click(screen.getByTestId('text-field-search-clear-button'));
+
+      const networkNames = screen.getAllByTestId(
+        'multichain-address-row-network-name',
+      );
+
+      expect(networkNames.length).toBeGreaterThan(0);
+
+      const networkNamesText = networkNames.map((el) => el.textContent);
+
+      // Check that priority networks appear first
+      const ethereumIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Ethereum'),
+      );
+      const bitcoinIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Bitcoin'),
+      );
+      const solanaIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Solana'),
+      );
+      const tronIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Tron'),
+      );
+      const lineaIndex = networkNamesText.findIndex((name) =>
+        name?.includes('Linea'),
+      );
+
+      // Ethereum should be first if it exists
+      if (ethereumIndex !== -1) {
+        expect(ethereumIndex).toBe(0);
+      }
+
+      // Check relative ordering for networks that exist
+      if (bitcoinIndex !== -1 && ethereumIndex !== -1) {
+        expect(bitcoinIndex).toBeGreaterThan(ethereumIndex);
+      }
+      if (solanaIndex !== -1 && bitcoinIndex !== -1) {
+        expect(solanaIndex).toBeGreaterThan(bitcoinIndex);
+      }
+      if (tronIndex !== -1 && solanaIndex !== -1) {
+        expect(tronIndex).toBeGreaterThan(solanaIndex);
+      }
+      if (lineaIndex !== -1 && ethereumIndex !== -1) {
+        expect(lineaIndex).toBeGreaterThan(ethereumIndex);
+      }
+    });
   });
 });

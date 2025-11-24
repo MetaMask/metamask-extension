@@ -13,7 +13,10 @@ import { SelectButton } from './select-button';
 import { AvatarBase, AvatarBaseSize } from '../avatar-base';
 import { SelectWrapper } from '../select-wrapper';
 import { Box } from '../box';
-import { AvatarAccount, AvatarAccountSize } from '../avatar-account';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 import { SelectOption } from '../select-option';
 
 export default {

@@ -23,8 +23,8 @@ import {
   IconSize,
 } from '../../component-library';
 import {
+  getAllPermittedAccounts,
   getOriginOfCurrentTab,
-  getPermittedAccountsByOrigin,
   getSubjectMetadata,
 } from '../../../selectors';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
@@ -38,12 +38,13 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
   const referenceElement = useRef(null);
 
   const subjectMetadata = useSelector(getSubjectMetadata);
-  const connectedOrigin = useSelector(getOriginOfCurrentTab);
-  const permittedAccountsByOrigin = useSelector(getPermittedAccountsByOrigin);
+  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const permittedAccountsByOrigin = useSelector((state) =>
+    getAllPermittedAccounts(state, activeTabOrigin),
+  );
   const dappActiveNetwork = useSelector(getDappActiveNetwork);
-  const currentTabHasNoAccounts =
-    !permittedAccountsByOrigin[connectedOrigin]?.length;
-  const connectedSubjectsMetadata = subjectMetadata[connectedOrigin];
+  const currentTabHasNoAccounts = !permittedAccountsByOrigin?.length;
+  const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
 
   // Get network image URL for the badge
   const getNetworkImageSrc = () => {
@@ -107,7 +108,7 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
           isConnected={status === STATUS_CONNECTED}
           onClick={onClick}
           onClose={() => setShowPopover(false)}
-          connectedOrigin={connectedOrigin}
+          connectedOrigin={activeTabOrigin}
         />
       )}
     </>

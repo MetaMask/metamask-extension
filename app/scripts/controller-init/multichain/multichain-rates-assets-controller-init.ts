@@ -17,6 +17,7 @@ export const MultichainAssetsRatesControllerInit: ControllerInitFunction<
   const controller = new MultichainAssetsRatesController({
     messenger: controllerMessenger,
     state: persistedState.MultichainAssetsRatesController,
+    interval: 1000 * 60 * 3, // 3 mins
   });
 
   return {

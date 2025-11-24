@@ -2,19 +2,21 @@ import React from 'react';
 import { flatten } from 'lodash';
 import { useSelector } from 'react-redux';
 import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+} from '@metamask/design-system-react';
+import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
   Modal,
   Box,
   Text,
-  AvatarAccount,
   ModalFooter,
   Button,
   IconName,
   ButtonVariant,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   ModalBody,
   ButtonSize,
 } from '../../component-library';

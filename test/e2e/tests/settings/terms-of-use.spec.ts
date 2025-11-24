@@ -18,6 +18,10 @@ describe('Terms of use', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
+
+        // Delay click to mitigate flakiness
+        await driver.delay(1_000);
+
         // accept updated terms of use
         const updateTermsOfUseModal = new TermsOfUseUpdateModal(driver);
         await updateTermsOfUseModal.checkPageIsLoaded();

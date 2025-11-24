@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import {
   SmartTransaction,
   SmartTransactionStatuses,
-} from '@metamask/smart-transactions-controller/dist/types';
+} from '@metamask/smart-transactions-controller';
 
 import { fireEvent } from '@testing-library/react';
 import {

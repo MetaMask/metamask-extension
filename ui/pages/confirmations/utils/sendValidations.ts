@@ -3,12 +3,14 @@
 // @ts-ignore
 import { confusables } from 'unicode-confusables';
 
-import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
 import {
-  findNetworkClientIdByChainId,
-  getERC721AssetSymbol,
-} from '../../../store/actions';
+  isBtcMainnetAddress,
+  isSolanaAddress,
+  isTronAddress,
+} from '../../../../shared/lib/multichain/accounts';
+import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 import { RecipientValidationResult } from '../types/send';
+import { LOWER_CASED_BURN_ADDRESSES } from '../constants/token';
 
 export const findConfusablesInRecipient = (
   address: string,
@@ -44,20 +46,15 @@ export const findConfusablesInRecipient = (
 
     return {
       confusableCharacters,
-      warning: 'confusingDomain',
     };
   }
   return {};
 };
 
-const LOWER_CASED_BURN_ADDRESSES = [
-  '0x0000000000000000000000000000000000000000',
-  '0x000000000000000000000000000000000000dead',
-];
-
 export const validateEvmHexAddress = async (
   address: string,
   chainId?: string,
+  assetAddress?: string,
 ) => {
   if (LOWER_CASED_BURN_ADDRESSES.includes(address.toLowerCase())) {
     return {
@@ -65,16 +62,23 @@ export const validateEvmHexAddress = async (
     };
   }
 
+  if (address?.toLowerCase() === assetAddress?.toLowerCase()) {
+    return {
+      error: 'contractAddressError',
+    };
+  }
+
   if (chainId) {
-    const networkClientId = await findNetworkClientIdByChainId(chainId);
-    if (networkClientId) {
-      const symbol = await getERC721AssetSymbol(address, networkClientId);
-      if (symbol) {
-        // Contract address detected
-        return {
-          error: 'invalidAddress',
-        };
-      }
+    const tokenDetails = await getTokenStandardAndDetailsByChain(
+      address,
+      undefined,
+      undefined,
+      chainId,
+    );
+    if (tokenDetails?.standard) {
+      return {
+        error: 'tokenContractError',
+      };
     }
   }
 
@@ -95,6 +99,26 @@ export const validateSolanaAddress = (address: string) => {
   }
 
   if (!isSolanaAddress(address)) {
+    return {
+      error: 'invalidAddress',
+    };
+  }
+
+  return {};
+};
+
+export const validateBtcAddress = (address: string) => {
+  if (!isBtcMainnetAddress(address)) {
+    return {
+      error: 'invalidAddress',
+    };
+  }
+
+  return {};
+};
+
+export const validateTronAddress = (address: string) => {
+  if (!isTronAddress(address)) {
     return {
       error: 'invalidAddress',
     };

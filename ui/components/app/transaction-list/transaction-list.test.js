@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -309,7 +309,7 @@ describe('TransactionList', () => {
             blockExplorerUrls: [],
             chainId: '0xe708',
             defaultRpcEndpointIndex: 0,
-            name: 'Linea Mainnet',
+            name: 'Linea',
             nativeCurrency: 'ETH',
             rpcEndpoints: [
               {
@@ -332,9 +332,7 @@ describe('TransactionList', () => {
       store,
     );
     expect(
-      queryByText(
-        'Please switch to Linea Mainnet network to view transactions',
-      ),
+      queryByText('Please switch to Linea network to view transactions'),
     ).toBeNull();
   });
 

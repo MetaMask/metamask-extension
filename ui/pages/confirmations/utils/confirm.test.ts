@@ -13,6 +13,7 @@ import {
   parseSanitizeTypedDataMessage,
   isValidASCIIURL,
   toPunycodeURL,
+  stripProtocol,
 } from './confirm';
 
 const typedDataMsg =
@@ -128,6 +129,18 @@ describe('confirm util', () => {
       );
       expect(toPunycodeURL('https://www.google.com')).toStrictEqual(
         'https://www.google.com',
+      );
+    });
+  });
+
+  describe('stripUrlProtocol', () => {
+    it('removes https protocol from URL', () => {
+      expect(stripProtocol('https://example.com')).toStrictEqual('example.com');
+    });
+
+    it('removes http protocol from URL', () => {
+      expect(stripProtocol('http://localhost:8545')).toStrictEqual(
+        'localhost:8545',
       );
     });
   });

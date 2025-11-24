@@ -1,6 +1,8 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { SolScope } from '@metamask/keyring-api';
+import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -22,7 +24,7 @@ jest.mock('react-redux', () => ({
 const mockNetworkConfigurations = {
   '0x1': {
     chainId: '0x1',
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     rpcEndpoints: [
       {
         url: 'https://mainnet.infura.io/v3/123',
@@ -52,7 +54,7 @@ const mockNetworkConfigurations = {
   },
   '0xa4b1': {
     chainId: '0xa4b1',
-    name: 'Arbitrum One',
+    name: 'Arbitrum',
     rpcEndpoints: [
       {
         url: 'https://arbitrum-mainnet.infura.io/v3/123',
@@ -125,7 +127,9 @@ describe('NetworkManager Component', () => {
     return renderWithProvider(<NetworkManager />, store);
   };
 
-  const renderNetworkManagerWithNonEvmNetworkSelected = () => {
+  const renderNetworkManagerWithNonEvmNetworkSelected = (stateOverrides?: {
+    enabledNetworkMap?: NetworkEnablementControllerState['enabledNetworkMap'];
+  }) => {
     const store = configureStore({
       ...mockState,
       metamask: {
@@ -141,10 +145,10 @@ describe('NetworkManager Component', () => {
               'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
           },
         },
-      },
-      enabledNetworkMap: {
-        solana: {
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+        enabledNetworkMap: stateOverrides?.enabledNetworkMap ?? {
+          solana: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+          },
         },
       },
       internalAccounts: {
@@ -178,15 +182,28 @@ describe('NetworkManager Component', () => {
 
     // Verify default tab content is rendered
     expect(screen.getByText('All popular networks')).toBeInTheDocument();
-    expect(screen.getByText('Arbitrum One')).toBeInTheDocument();
+    expect(screen.getByText('Arbitrum')).toBeInTheDocument();
     expect(screen.getByText('Optimism')).toBeInTheDocument();
     expect(screen.getByText('Avalanche')).toBeInTheDocument();
     expect(screen.getByText('Base')).toBeInTheDocument();
   });
 
-  it('should not render select all button when non-EVM network is selected', () => {
+  it('should render popular networks tab when non-EVM popular network is selected', () => {
     renderNetworkManagerWithNonEvmNetworkSelected();
+    expect(screen.queryByText('All popular networks')).toBeInTheDocument();
+  });
+
+  it('should render custom networks tab when non-EVM devnet is selected', () => {
+    renderNetworkManagerWithNonEvmNetworkSelected({
+      enabledNetworkMap: {
+        solana: {
+          [SolScope.Devnet]: true,
+        },
+      },
+    });
+
     expect(screen.queryByText('All popular networks')).not.toBeInTheDocument();
+    expect(screen.queryByText('Add custom network')).toBeInTheDocument();
   });
 
   it('switches tab when tab is clicked', () => {

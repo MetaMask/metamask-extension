@@ -1,5 +1,9 @@
 import { EventEmitter } from 'events';
 import { CompletedRequest, Mockttp } from 'mockttp';
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { MOCK_SRP_E2E_IDENTIFIER_BASE_KEY } from '../../../tests/identity/mocks';
 
@@ -19,14 +23,12 @@ export const pathRegexps = {
     `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.addressBook}`,
     'u',
   ),
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  multichain_accounts_wallets: new RegExp(
-    `${baseUrl}/multichain_accounts_wallets`,
+  [USER_STORAGE_WALLETS_FEATURE_KEY]: new RegExp(
+    `${baseUrl}/${USER_STORAGE_WALLETS_FEATURE_KEY}`,
     'u',
   ),
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  multichain_accounts_groups: new RegExp(
-    `${baseUrl}/multichain_accounts_groups`,
+  [USER_STORAGE_GROUPS_FEATURE_KEY]: new RegExp(
+    `${baseUrl}/${USER_STORAGE_GROUPS_FEATURE_KEY}`,
     'u',
   ),
 };

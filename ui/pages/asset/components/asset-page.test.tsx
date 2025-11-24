@@ -8,7 +8,7 @@ import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
@@ -199,6 +199,7 @@ describe('AssetPage', () => {
         },
       ],
       accountsAssets: {},
+      useExternalServices: true,
     },
   };
 
@@ -361,17 +362,17 @@ describe('AssetPage', () => {
     );
   });
 
-  it('should show the Bridge button if chain id is supported', async () => {
+  it('should show the Swap button if chain id is supported', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       store,
     );
-    const bridgeButton = queryByTestId('token-overview-bridge');
-    expect(bridgeButton).toBeInTheDocument();
-    expect(bridgeButton).not.toBeDisabled();
+    const swapButton = queryByTestId('token-overview-swap');
+    expect(swapButton).toBeInTheDocument();
+    expect(swapButton).not.toBeDisabled();
   });
 
-  it('should not render Bridge button on testnet chains', async () => {
+  it('should render Swap button on testnet chains', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -382,9 +383,9 @@ describe('AssetPage', () => {
         },
       }),
     );
-    // bridge button is hidden on unified and testnet chains.
-    const bridgeButton = queryByTestId('token-overview-bridge');
-    expect(bridgeButton).toBeNull();
+    const swapButton = queryByTestId('token-overview-swap');
+    expect(swapButton).toBeInTheDocument();
+    expect(swapButton).not.toBeDisabled();
   });
 
   it('should render the network name', async () => {
@@ -403,6 +404,7 @@ describe('AssetPage', () => {
     const { container } = renderWithProvider(
       <AssetPage asset={native} optionsButton={null} />,
       store,
+      '/0x1',
     );
     const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
     dynamicImages.forEach((img) => {
@@ -482,6 +484,7 @@ describe('AssetPage', () => {
           },
         },
       }),
+      '/0x1/0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55',
     );
 
     // Verify chart is rendered
@@ -492,9 +495,7 @@ describe('AssetPage', () => {
 
     // Verify market data is rendered
     const marketCapElement = queryByTestId('asset-market-cap');
-    expect(marketCapElement).toHaveTextContent(
-      `${marketCap * mockStore.metamask.currencyRates.ETH.conversionRate}`,
-    );
+    expect(marketCapElement).toHaveTextContent('$56.09K');
 
     const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
     dynamicImages.forEach((img) => {

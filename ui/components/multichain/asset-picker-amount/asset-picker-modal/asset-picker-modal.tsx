@@ -58,7 +58,10 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constan
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import { getNativeTokenName } from '../../../../ducks/bridge/utils';
+import {
+  getNativeTokenName,
+  isTronEnergyOrBandwidthResource,
+} from '../../../../ducks/bridge/utils';
 import {
   getMultichainConversionRate,
   getMultichainCurrencyImage,
@@ -72,6 +75,8 @@ import {
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { Numeric } from '../../../../../shared/modules/Numeric';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+
 import { useAssetMetadata } from './hooks/useAssetMetadata';
 import type {
   ERC20Asset,
@@ -119,6 +124,8 @@ type AssetPickerModalProps = {
   >;
   isTokenListLoading?: boolean;
   autoFocus: boolean;
+  isDestinationToken?: boolean;
+  hideSearch?: boolean;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
@@ -149,6 +156,8 @@ export function AssetPickerModal({
   isMultiselectEnabled,
   selectedChainIds,
   autoFocus,
+  isDestinationToken = false,
+  hideSearch = false,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -322,6 +331,10 @@ export function AssetPickerModal({
 
       // Yield multichain tokens with balances
       for (const token of multichainTokensWithBalance) {
+        // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
+        if (isTronEnergyOrBandwidthResource(token.chainId, token.symbol)) {
+          continue;
+        }
         if (shouldAddToken(token.symbol, token.address, token.chainId)) {
           yield token.isNative
             ? {
@@ -370,6 +383,10 @@ export function AssetPickerModal({
       }
 
       for (const token of allDetectedTokens) {
+        // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
+        if (isTronEnergyOrBandwidthResource(currentChainId, token.symbol)) {
+          continue;
+        }
         if (shouldAddToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
@@ -377,7 +394,7 @@ export function AssetPickerModal({
 
       // Return early when SOLANA is selected since blocked and top tokens are not available
       // All available solana tokens are in the multichainTokensWithBalance results
-      if (selectedNetwork?.chainId === MultichainNetworks.SOLANA) {
+      if (!isEvmChainId(selectedNetwork?.chainId)) {
         return;
       }
 
@@ -680,15 +697,17 @@ export function AssetPickerModal({
           ) : (
             <AssetPickerModalTabs {...tabProps}>
               <React.Fragment key={TabName.TOKENS}>
-                <Search
-                  searchQuery={searchQuery}
-                  onChange={(value) => {
-                    // Cancel previous asset metadata fetch
-                    abortControllerRef.current?.abort();
-                    setSearchQuery(() => value);
-                  }}
-                  autoFocus={autoFocus}
-                />
+                {!hideSearch && (
+                  <Search
+                    searchQuery={searchQuery}
+                    onChange={(value) => {
+                      // Cancel previous asset metadata fetch
+                      abortControllerRef.current?.abort();
+                      setSearchQuery(() => value);
+                    }}
+                    autoFocus={autoFocus}
+                  />
+                )}
                 <AssetList
                   network={network}
                   handleAssetChange={handleAssetChange}
@@ -700,6 +719,7 @@ export function AssetPickerModal({
                     isTitleNetworkName: false,
                     isTitleHidden: false,
                   }}
+                  isDestinationToken={isDestinationToken}
                 />
               </React.Fragment>
               <AssetPickerModalNftTab

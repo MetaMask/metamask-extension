@@ -9,6 +9,7 @@ jobs:
     name: Determine whether this issue comment was on a pull request from a fork
     if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-attributions') }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
     steps:
@@ -23,6 +24,7 @@ jobs:
   react-to-comment:
     name: React to the comment
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
@@ -45,6 +47,7 @@ jobs:
   prepare:
     name: Prepare dependencies
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
@@ -63,7 +66,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
@@ -71,6 +74,7 @@ jobs:
   update-attributions:
     name: Update Attributions
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - prepare
       - is-fork-pull-request
@@ -89,7 +93,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
       - name: Generate Attributions
         run: yarn attributions:generate
       - name: Cache attributions file
@@ -101,6 +105,7 @@ jobs:
   commit-updated-attributions:
     name: Commit the updated Attributions
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - prepare
       - is-fork-pull-request
@@ -158,6 +163,7 @@ jobs:
   check-status:
     name: Check whether the attributions update succeeded
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - commit-updated-attributions
       - is-fork-pull-request
@@ -174,6 +180,7 @@ jobs:
     name: Comment about the attributions update failure
     if: ${{ !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - is-fork-pull-request
       - check-status

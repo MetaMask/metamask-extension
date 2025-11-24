@@ -18,7 +18,7 @@ import {
   MultichainNetworks,
 } from '../../../shared/constants/multichain/networks';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
-import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
+import { selectBridgeHistoryForAccountGroup } from '../../ducks/bridge-status/selectors';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../useMultichainTransactionDisplay';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 
@@ -108,7 +108,7 @@ export default function useSolanaBridgeTransactionMapping(
       }
     | undefined,
 ): MixedTransactionsData | undefined {
-  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
+  const bridgeHistory = useSelector(selectBridgeHistoryForAccountGroup);
 
   // Store original transactions by ID for quick status lookup later
   const originalTxMap = useMemo(() => {

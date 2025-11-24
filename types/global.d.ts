@@ -17,13 +17,14 @@ import {
   EthereumSignTypedDataTypes,
 } from '@trezor/connect-web';
 import type { Provider } from '@metamask/network-controller';
-import * as Browser from 'webextension-polyfill';
+import type { Browser } from 'webextension-polyfill';
 import {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from '../shared/constants/offscreen-communication';
 import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 import type ExtensionPlatform from '../app/scripts/platforms/extension';
+import type { ExtensionLazyListener } from '../app/scripts/lib/extension-lazy-listener/extension-lazy-listener';
 
 declare class MessageSender {
   documentId?: string;
@@ -278,13 +279,11 @@ type StateHooks = {
   throwTestError?: (msg?: string) => void;
   captureTestError?: (msg?: string) => Promise<void>;
   captureBackgroundError?: (msg?: string) => Promise<void>;
+
   /**
-   * This is set in `app-init.js` to communicate why MetaMask installed or
-   * updated. It is handled in `background.js`.
+   * This is initialized by the service worker in MV3. It is handled in `background.js`.
    */
-  onInstalledListener?: Promise<{
-    reason: chrome.runtime.InstalledDetails;
-  }>;
+  lazyListener?: ExtensionLazyListener<typeof globalThis.chrome>;
 };
 
 export declare global {

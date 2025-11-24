@@ -248,18 +248,6 @@
         flex: 0 0 40%;
         max-width: 197px;
       }
-
-      .tab-bar__tab {
-        @include design-system.screen-sm-min {
-          max-height: 50px;
-        }
-
-        &__caret {
-          @include design-system.screen-sm-min {
-            display: none;
-          }
-        }
-      }
     }
 
     &__modules {
@@ -364,7 +352,13 @@
 
   &__button {
     cursor: pointer;
+
+    &-defaut-settings {
+      width: 100%;
+      max-width: 100%;
+    }
   }
+
 
   &__copy-icon {
     padding-left: 4px;
@@ -403,7 +397,9 @@
 
         &__modules {
           @include design-system.screen-sm-max {
-            display: block;
+            display: flex;
+            flex-flow: column;
+            overflow-y: auto;
           }
         }
       }
@@ -416,6 +412,144 @@
 
     [dir='rtl'] & {
       justify-content: flex-end;
+    }
+  }
+}
+
+// Sidepanel-specific styles: apply popup layout regardless of viewport width
+.settings-page--sidepanel {
+  .settings-page__header__title-container {
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 0.5fr 3fr 0.5fr;
+    gap: 16px;
+    grid-template-areas:
+      'back title close'
+      'search search search';
+
+    &__back-button {
+      grid-area: back;
+    }
+
+    &__title {
+      grid-area: title;
+      text-align: center;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    &__close-button {
+      grid-area: close;
+    }
+
+    &__search {
+      grid-area: search;
+    }
+
+    &__metamask-logo {
+      grid-area: back;
+    }
+
+    &--hide-search {
+      grid-template-rows: 1fr;
+      grid-template-areas: 'back title close';
+    }
+  }
+
+  // Force display for back button, close button, and logo in sidepanel
+  .settings-page__header__title-container__back-button,
+  .settings-page__header__title-container__close-button,
+  .settings-page__header__title-container__metamask-logo {
+    display: flex !important;
+  }
+
+  // Hide app-header logo container in sidepanel settings
+  .settings-page__header .app-header__logo-container {
+    display: none;
+  }
+
+  .settings-page__header__search__list__item__section-multiple-lines {
+    margin-left: 10px;
+  }
+
+  .settings-page__subheader,
+  .settings-page__subheader--link {
+    display: none;
+  }
+
+  .settings-page__sub-header {
+    height: 69px;
+    position: relative;
+    text-align: center;
+  }
+
+  .settings-page__sub-header-text {
+    @include design-system.H5;
+
+    width: 100%;
+  }
+
+  .settings-page__content {
+    &__tabs {
+      max-width: 100vw;
+      flex: 1 1 auto;
+
+      .tab-bar__tab {
+        @include design-system.screen-sm-min {
+          @include design-system.H4;
+
+          max-height: none;
+        }
+
+        &__selected-indicator {
+          display: none;
+        }
+
+        &__caret {
+          display: block;
+        }
+
+        &__content {
+          &__title {
+            @include design-system.screen-sm-min {
+              @include design-system.H4;
+            }
+          }
+        }
+
+        &--active {
+          @include design-system.screen-sm-min {
+            background-color: unset;
+          }
+        }
+      }
+    }
+
+    &__modules {
+      display: none;
+    }
+  }
+
+  .settings-page__content-row {
+    flex-wrap: wrap;
+  }
+
+  .settings-page__content-item {
+    height: initial;
+  }
+
+  .settings-page__content-item-col {
+    max-width: 100%;
+  }
+
+  &.settings-page--selected {
+    .settings-page__content__tabs {
+      display: none;
+    }
+
+    .settings-page__content__modules {
+      display: flex;
+      flex-flow: column;
     }
   }
 }

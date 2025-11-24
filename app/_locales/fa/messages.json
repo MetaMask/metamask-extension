@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "حساب را در Etherscan ببینید"
   },
-  "expandView": {
-    "message": "توسعه ساحه دید"
-  },
   "failed": {
     "message": "ناموفق شد"
   },
@@ -619,9 +616,6 @@
   },
   "supportCenter": {
     "message": "از مرکز حمایت ما دیدن نمایید"
-  },
-  "switchNetworks": {
-    "message": "تغییر شبکه ها"
   },
   "symbol": {
     "message": "سمبول"

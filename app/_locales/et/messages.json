@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Vaadake kontot Etherscanil"
   },
-  "expandView": {
-    "message": "Laienda vaadet"
-  },
   "failed": {
     "message": "Nurjus"
   },
@@ -613,9 +610,6 @@
   },
   "supportCenter": {
     "message": "Külastage meie tugikeskust"
-  },
-  "switchNetworks": {
-    "message": "Vaheta võrku"
   },
   "symbol": {
     "message": "Sümbol"

@@ -24,7 +24,10 @@ import { ButtonIcon } from '../button-icon';
 
 import README from './README.mdx';
 import { Icon, IconName, IconSize } from '../icon';
-import { AvatarAccount, AvatarAccountSize } from '../avatar-account';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 import { Button } from '../button';
 
 export default {

@@ -5,8 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { addHexPrefix } from 'ethereumjs-util';
-import { isNativeAddress } from '@metamask/bridge-controller';
-import { useHistory } from 'react-router-dom';
+import { NavigateFunction } from 'react-router-dom-v5-compat';
 
 import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
 import {
@@ -99,9 +98,10 @@ export function formatToFixedDecimals(
   decimalsToShow: string | number = 5,
   trimTrailingZerosEnabled = true,
 ) {
-  if (!value) {
+  if (!value || !isValidPositiveNumericString(value)) {
     return '0';
   }
+
   const val = new Numeric(value, 10);
   if (val.isZero()) {
     return '0';
@@ -136,6 +136,7 @@ export function formatToFixedDecimals(
 export const prepareEVMTransaction = (
   asset: Asset,
   transactionParams: TransactionParams,
+  hexData: Hex = '0x',
 ) => {
   const { from, to, value } = transactionParams;
   const trxnParams: TransactionParams = { from };
@@ -145,8 +146,8 @@ export const prepareEVMTransaction = (
     : fromTokenMinimalUnits(value ?? '0', asset.decimals);
 
   // Native token
-  if (isNativeAddress(asset.address)) {
-    trxnParams.data = '0x';
+  if (asset.isNative) {
+    trxnParams.data = hexData;
     trxnParams.to = to;
     trxnParams.value = tokenValue;
     return trxnParams;
@@ -192,20 +193,22 @@ export const submitEvmTransaction = async ({
   asset,
   chainId,
   from,
+  hexData,
   to,
   value,
 }: {
   asset: Asset;
   chainId: Hex;
   from: Hex;
+  hexData?: Hex;
   to: Hex;
   value: string;
 }) => {
-  const trxnParams = prepareEVMTransaction(asset, { from, to, value });
+  const trxnParams = prepareEVMTransaction(asset, { from, to, value }, hexData);
   const networkClientId = await findNetworkClientIdByChainId(chainId);
 
   let transactionType;
-  if (isNativeAddress(asset.address ?? asset.assetId)) {
+  if (asset.isNative) {
     transactionType = TransactionType.simpleSend;
   } else if (asset.standard === ERC20) {
     transactionType = TransactionType.tokenMethodTransfer;
@@ -241,8 +244,19 @@ export const getLayer1GasFees = async ({
   })) as Hex | undefined;
 };
 
-export function isDecimal(value: string) {
-  return Number.isFinite(parseFloat(value)) && !Number.isNaN(parseFloat(value));
+export function isValidPositiveNumericString(str: string) {
+  const decimalRegex = /^(\d+(\.\d+)?|\.\d+)$/u;
+
+  if (!decimalRegex.test(str)) {
+    return false;
+  }
+
+  try {
+    const num = new Numeric(str, 10);
+    return num.greaterThanOrEqualTo(new Numeric('0', 10));
+  } catch (err) {
+    return false;
+  }
 }
 
 export function convertedCurrency(
@@ -250,7 +264,7 @@ export function convertedCurrency(
   conversionRate?: number,
   decimals?: string | number,
 ) {
-  if (!isDecimal(value) || parseFloat(value) < 0) {
+  if (!isValidPositiveNumericString(value)) {
     return undefined;
   }
 
@@ -263,29 +277,33 @@ export function convertedCurrency(
 }
 
 export const navigateToSendRoute = (
-  history: ReturnType<typeof useHistory>,
+  navigate: NavigateFunction,
   isSendRedesignEnabled: boolean,
   params?: {
     address?: string;
     chainId?: string;
+    tokenId?: string;
   },
 ) => {
   if (isSendRedesignEnabled) {
     if (params) {
       const queryParams = new URLSearchParams();
-      const { address, chainId } = params;
+      const { address, chainId, tokenId } = params;
       if (address) {
         queryParams.append('asset', address);
       }
       if (chainId) {
         queryParams.append('chainId', chainId);
       }
-      history.push(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
+      if (tokenId) {
+        queryParams.append('tokenId', tokenId);
+      }
+      navigate(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
     } else {
-      history.push(`${SEND_ROUTE}/asset`);
+      navigate(`${SEND_ROUTE}/asset`);
     }
   } else {
-    history.push(SEND_ROUTE);
+    navigate(SEND_ROUTE);
   }
 };
 

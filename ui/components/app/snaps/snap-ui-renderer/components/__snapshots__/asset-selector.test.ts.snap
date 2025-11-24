@@ -78,9 +78,7 @@ exports[`SnapUIAssetSelector renders an asset selector 1`] = `
                   <p
                     class="mm-box mm-text mm-text--body-sm-medium mm-box--color-text-default"
                   >
-                    1
-                     
-                    SOL
+                    1 SOL
                   </p>
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
@@ -190,9 +188,7 @@ exports[`SnapUIAssetSelector renders inside a field 1`] = `
                   <p
                     class="mm-box mm-text mm-text--body-sm-medium mm-box--color-text-default"
                   >
-                    1
-                     
-                    SOL
+                    1 SOL
                   </p>
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"

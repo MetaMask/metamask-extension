@@ -130,9 +130,8 @@ exports[`AssetPage should render a native asset 1`] = `
           </span>
         </button>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-          data-testid="token-overview-button-swap"
-          disabled=""
+          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+          data-testid="coin-overview-swap"
         >
           <span
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -146,25 +145,6 @@ exports[`AssetPage should render a native asset 1`] = `
               style="margin-top: -4px;"
             >
               Swap
-            </span>
-          </span>
-        </button>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-          data-testid="coin-overview-bridge"
-        >
-          <span
-            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/bridge.svg');"
-            />
-            <span
-              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
-              style="margin-top: -4px;"
-            >
-              Bridge
             </span>
           </span>
         </button>
@@ -222,7 +202,7 @@ exports[`AssetPage should render a native asset 1`] = `
         <a
           class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
           data-testid="multichain-token-list-button"
-          style="height: 62px; cursor: auto; background-color: transparent; transition: background-color 0.2s ease-in-out;"
+          style="height: 62px;"
         >
           <div
             class="mm-box mm-badge-wrapper mm-box--margin-right-4 mm-box--display-inline-block"
@@ -259,14 +239,18 @@ exports[`AssetPage should render a native asset 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="mm-box mm-box--display-flex"
+                class="flex flex-row min-w-0"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="multichain-token-list-item-token-name"
+                <div
+                  class="flex flex-row gap-2 min-w-0"
                 >
-                  TEST
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                    data-testid="multichain-token-list-item-token-name"
+                  >
+                    TEST
+                  </p>
+                </div>
                 <button
                   class="mm-box mm-box--padding-inline-0 mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--gap-1 mm-box--background-color-transparent"
                   data-testid="staking-entrypoint-0x1"
@@ -302,10 +286,6 @@ exports[`AssetPage should render a native asset 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-success-default"
-                  style="mask-image: url('./images/icons/triangle-up.svg');"
-                />
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
                   data-testid="token-increase-decrease-percentage-0x0000000000000000000000000000000000000000"
@@ -315,9 +295,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                 data-testid="multichain-token-list-item-value"
               >
-                0
-                 
-                TEST
+                0 TEST
               </p>
             </div>
           </div>
@@ -365,7 +343,7 @@ exports[`AssetPage should render a native asset 1`] = `
                       src="./images/eth_logo.svg"
                     />
                   </div>
-                  Ethereum Mainnet
+                  Ethereum
                 </p>
               </p>
             </div>
@@ -405,49 +383,66 @@ exports[`AssetPage should render a native asset 1`] = `
             Your activity
           </h4>
           <div
-            class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
-          >
-            <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
-            >
-              <h4
-                class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
-              >
-                Tips for using a wallet
-              </h4>
-              <button
-                aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-inverse mm-box--background-color-transparent mm-box--rounded-lg"
-                data-testid="ramp-card-close-btn"
-              >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/close.svg');"
-                />
-              </button>
-            </div>
-            <p
-              class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
-            >
-              Adding tokens unlocks more ways to use web3.
-            </p>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
-            >
-              Token marketplace
-            </button>
-          </div>
-          <div
             class="mm-box transaction-list"
           >
             <div
-              class="mm-box nfts-tab__link mm-box--margin-top-12 mm-box--margin-bottom-12 mm-box--padding-top-6 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-text--text-align-center mm-box--color-text-alternative"
+              <div
+                class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
               >
-                No activity yet
+                <h4
+                  class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
+                >
+                  Tips for using a wallet
+                </h4>
+                <button
+                  aria-label="Close"
+                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-inverse mm-box--background-color-transparent mm-box--rounded-lg"
+                  data-testid="ramp-card-close-btn"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/close.svg');"
+                  />
+                </button>
+              </div>
+              <p
+                class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
+              >
+                Adding tokens unlocks more ways to use web3.
               </p>
+              <button
+                class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+              >
+                Token marketplace
+              </button>
+            </div>
+            <div
+              class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
+              data-testid="activity-tab-empty-state"
+            >
+              <img
+                alt="Activity"
+                height="72"
+                src="./images/empty-state-activity-light.png"
+                width="72"
+              />
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+              >
+                Nothing to see yet. Swap your first token today.
+              </p>
+              <button
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                role="button"
+              >
+                <span
+                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Swap tokens
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -610,6 +605,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         </button>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+          data-testid="token-overview-swap"
         >
           <span
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -623,25 +619,6 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               style="margin-top: -4px;"
             >
               Swap
-            </span>
-          </span>
-        </button>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-          data-testid="token-overview-bridge"
-        >
-          <span
-            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/bridge.svg');"
-            />
-            <span
-              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
-              style="margin-top: -4px;"
-            >
-              Bridge
             </span>
           </span>
         </button>
@@ -661,7 +638,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         <a
           class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
           data-testid="multichain-token-list-button"
-          style="height: 62px; cursor: auto; background-color: transparent; transition: background-color 0.2s ease-in-out;"
+          style="height: 62px;"
         >
           <div
             class="mm-box mm-badge-wrapper mm-box--margin-right-4 mm-box--display-inline-block"
@@ -694,14 +671,18 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="mm-box mm-box--display-flex"
+                class="flex flex-row min-w-0"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="multichain-token-list-item-token-name"
+                <div
+                  class="flex flex-row gap-2 min-w-0"
                 >
-                  TEST
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                    data-testid="multichain-token-list-item-token-name"
+                  >
+                    TEST
+                  </p>
+                </div>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
@@ -717,10 +698,6 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-success-default"
-                  style="mask-image: url('./images/icons/triangle-up.svg');"
-                />
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
                   data-testid="token-increase-decrease-percentage-0x309375769E79382beFDEc5bdab51063AeBDC4936"
@@ -730,9 +707,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                 data-testid="multichain-token-list-item-value"
               >
-                0
-                 
-                TEST
+                0 TEST
               </p>
             </div>
           </div>
@@ -780,7 +755,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                       src="./images/eth_logo.svg"
                     />
                   </div>
-                  Ethereum Mainnet
+                  Ethereum
                 </p>
               </p>
             </div>
@@ -888,49 +863,66 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             Your activity
           </h4>
           <div
-            class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
-          >
-            <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
-            >
-              <h4
-                class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
-              >
-                Tips for using a wallet
-              </h4>
-              <button
-                aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-inverse mm-box--background-color-transparent mm-box--rounded-lg"
-                data-testid="ramp-card-close-btn"
-              >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/close.svg');"
-                />
-              </button>
-            </div>
-            <p
-              class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
-            >
-              Adding tokens unlocks more ways to use web3.
-            </p>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
-            >
-              Token marketplace
-            </button>
-          </div>
-          <div
             class="mm-box transaction-list"
           >
             <div
-              class="mm-box nfts-tab__link mm-box--margin-top-12 mm-box--margin-bottom-12 mm-box--padding-top-6 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-text--text-align-center mm-box--color-text-alternative"
+              <div
+                class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
               >
-                No activity yet
+                <h4
+                  class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
+                >
+                  Tips for using a wallet
+                </h4>
+                <button
+                  aria-label="Close"
+                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-inverse mm-box--background-color-transparent mm-box--rounded-lg"
+                  data-testid="ramp-card-close-btn"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/close.svg');"
+                  />
+                </button>
+              </div>
+              <p
+                class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
+              >
+                Adding tokens unlocks more ways to use web3.
               </p>
+              <button
+                class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+              >
+                Token marketplace
+              </button>
+            </div>
+            <div
+              class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
+              data-testid="activity-tab-empty-state"
+            >
+              <img
+                alt="Activity"
+                height="72"
+                src="./images/empty-state-activity-light.png"
+                width="72"
+              />
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+              >
+                Nothing to see yet. Swap your first token today.
+              </p>
+              <button
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                role="button"
+              >
+                <span
+                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Swap tokens
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -1090,6 +1082,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         </button>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+          data-testid="token-overview-swap"
         >
           <span
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -1103,25 +1096,6 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               style="margin-top: -4px;"
             >
               Swap
-            </span>
-          </span>
-        </button>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-          data-testid="token-overview-bridge"
-        >
-          <span
-            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/bridge.svg');"
-            />
-            <span
-              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
-              style="margin-top: -4px;"
-            >
-              Bridge
             </span>
           </span>
         </button>
@@ -1141,7 +1115,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         <a
           class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
           data-testid="multichain-token-list-button"
-          style="height: 62px; cursor: auto; background-color: transparent; transition: background-color 0.2s ease-in-out;"
+          style="height: 62px;"
         >
           <div
             class="mm-box mm-badge-wrapper mm-box--margin-right-4 mm-box--display-inline-block"
@@ -1174,14 +1148,18 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="mm-box mm-box--display-flex"
+                class="flex flex-row min-w-0"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="multichain-token-list-item-token-name"
+                <div
+                  class="flex flex-row gap-2 min-w-0"
                 >
-                  TEST
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                    data-testid="multichain-token-list-item-token-name"
+                  >
+                    TEST
+                  </p>
+                </div>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
@@ -1197,10 +1175,6 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-success-default"
-                  style="mask-image: url('./images/icons/triangle-up.svg');"
-                />
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
                   data-testid="token-increase-decrease-percentage-0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55"
@@ -1210,9 +1184,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                 data-testid="multichain-token-list-item-value"
               >
-                0
-                 
-                TEST
+                0 TEST
               </p>
             </div>
           </div>
@@ -1260,7 +1232,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                       src="./images/eth_logo.svg"
                     />
                   </div>
-                  Ethereum Mainnet
+                  Ethereum
                 </p>
               </p>
             </div>
@@ -1382,7 +1354,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
                 data-testid="asset-market-cap"
               >
-                56088.00
+                $56.09K
               </p>
             </div>
           </div>
@@ -1400,49 +1372,66 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             Your activity
           </h4>
           <div
-            class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
-          >
-            <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
-            >
-              <h4
-                class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
-              >
-                Tips for using a wallet
-              </h4>
-              <button
-                aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-inverse mm-box--background-color-transparent mm-box--rounded-lg"
-                data-testid="ramp-card-close-btn"
-              >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/close.svg');"
-                />
-              </button>
-            </div>
-            <p
-              class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
-            >
-              Adding tokens unlocks more ways to use web3.
-            </p>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
-            >
-              Token marketplace
-            </button>
-          </div>
-          <div
             class="mm-box transaction-list"
           >
             <div
-              class="mm-box nfts-tab__link mm-box--margin-top-12 mm-box--margin-bottom-12 mm-box--padding-top-6 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-text--text-align-center mm-box--color-text-alternative"
+              <div
+                class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
               >
-                No activity yet
+                <h4
+                  class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
+                >
+                  Tips for using a wallet
+                </h4>
+                <button
+                  aria-label="Close"
+                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-inverse mm-box--background-color-transparent mm-box--rounded-lg"
+                  data-testid="ramp-card-close-btn"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/close.svg');"
+                  />
+                </button>
+              </div>
+              <p
+                class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
+              >
+                Adding tokens unlocks more ways to use web3.
               </p>
+              <button
+                class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+              >
+                Token marketplace
+              </button>
+            </div>
+            <div
+              class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
+              data-testid="activity-tab-empty-state"
+            >
+              <img
+                alt="Activity"
+                height="72"
+                src="./images/empty-state-activity-light.png"
+                width="72"
+              />
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+              >
+                Nothing to see yet. Swap your first token today.
+              </p>
+              <button
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                role="button"
+              >
+                <span
+                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Swap tokens
+                </span>
+              </button>
             </div>
           </div>
         </div>

@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { getTokenStandardAndDetails } from '../../../../store/actions';
+import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import { memoizedGetTokenStandardAndDetails } from '../../utils/token';
 import { selectConversionRateByChainId } from '../../../../selectors';
@@ -31,14 +31,15 @@ jest.mock('../../../../helpers/utils/util', () => ({
 }));
 
 jest.mock('../../../../store/actions', () => ({
-  getTokenStandardAndDetails: jest.fn(),
+  getTokenStandardAndDetailsByChain: jest.fn(),
 }));
 
 const mockSelectConversionRateByChainId = jest.mocked(
   selectConversionRateByChainId,
 );
 
-const mockGetTokenStandardAndDetails = getTokenStandardAndDetails as jest.Mock;
+const mockGetTokenStandardAndDetailsByChain =
+  getTokenStandardAndDetailsByChain as jest.Mock;
 const mockFetchTokenExchangeRates = fetchTokenExchangeRates as jest.Mock;
 
 const ETH_TO_FIAT_RATE = 3;
@@ -77,7 +78,7 @@ const PENDING_PROMISE = () =>
 describe('useBalanceChanges', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetTokenStandardAndDetails.mockImplementation((address: Hex) => {
+    mockGetTokenStandardAndDetailsByChain.mockImplementation((address: Hex) => {
       const decimalMap: Record<Hex, number | string> = {
         [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_DECIMALS_1_MOCK,
         [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_DECIMALS_2_MOCK,
@@ -124,7 +125,7 @@ describe('useBalanceChanges', () => {
     });
 
     it('returns pending=true while fetching token decimals', async () => {
-      mockGetTokenStandardAndDetails.mockImplementation(PENDING_PROMISE);
+      mockGetTokenStandardAndDetailsByChain.mockImplementation(PENDING_PROMISE);
       const simulationData: SimulationData = {
         nativeBalanceChange: undefined,
         tokenBalanceChanges: [

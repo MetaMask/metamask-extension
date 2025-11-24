@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Review Recovery Phrase Component should match snapshot 1`] = `
+exports[`Review Recovery Phrase Component renders match snapshot when isFromReminder and isFromSettingsSecurity are present in the search params 1`] = `
 <div>
   <div
     class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full"
@@ -10,32 +10,33 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
       class="mm-box"
     >
       <div
-        class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-flex-start mm-box--width-full"
+        class="mm-box recovery-phrase__header mm-box--margin-bottom-4 mm-box--display-grid mm-box--gap-3 mm-box--align-items-center mm-box--width-full"
       >
         <button
           aria-label="Back"
           class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-          data-testid="review-srp-back-button"
+          data-testid="reveal-recovery-phrase-review-back-button"
         >
           <span
             class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-left.svg');"
           />
         </button>
-      </div>
-      <div
-        class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-flex-start mm-box--width-full"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+        <h4
+          class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
         >
-          Step 2 of 3
-        </p>
-        <h2
-          class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+          Save Secret Recovery Phrase
+        </h4>
+        <button
+          aria-label="Close"
+          class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="reveal-recovery-phrase-review-close-button"
         >
-          Save your Secret Recovery Phrase
-        </h2>
+          <span
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/close.svg');"
+          />
+        </button>
       </div>
       <div
         class="mm-box mm-box--margin-bottom-6"
@@ -51,13 +52,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
             >
               Secret Recovery Phrase
             </button>
-            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. 
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-alternative"
-            >
-              Don’t share it with anyone, ever.
-            </p>
-            
+            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.
              
           </span>
         </p>
@@ -75,7 +70,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
             data-testid="recovery-phrase-chips"
           >
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-0"
             >
               <p
@@ -91,7 +86,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-1"
             >
               <p
@@ -107,7 +102,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-2"
             >
               <p
@@ -123,7 +118,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-3"
             >
               <p
@@ -139,7 +134,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-4"
             >
               <p
@@ -155,7 +150,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-5"
             >
               <p
@@ -171,7 +166,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-6"
             >
               <p
@@ -187,7 +182,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-7"
             >
               <p
@@ -203,7 +198,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-8"
             >
               <p
@@ -219,7 +214,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-9"
             >
               <p
@@ -235,7 +230,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-10"
             >
               <p
@@ -251,7 +246,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-11"
             >
               <p
@@ -297,7 +292,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--width-full"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
     >
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled recovery-phrase__footer--button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
@@ -311,7 +306,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
 </div>
 `;
 
-exports[`Review Recovery Phrase Component should match snapshot after reveal recovery button is clicked 1`] = `
+exports[`Review Recovery Phrase Component should match snapshot 1`] = `
 <div>
   <div
     class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full"
@@ -323,25 +318,6 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
       <div
         class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-flex-start mm-box--width-full"
       >
-        <button
-          aria-label="Back"
-          class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-          data-testid="review-srp-back-button"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
-        </button>
-      </div>
-      <div
-        class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-flex-start mm-box--width-full"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-        >
-          Step 2 of 3
-        </p>
         <h2
           class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
         >
@@ -362,13 +338,300 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
             >
               Secret Recovery Phrase
             </button>
-            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. 
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-alternative"
+            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.
+             
+          </span>
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+      >
+        <div
+          class="mm-box recovery-phrase__secret mm-box--padding-4 mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
+        >
+          <div
+            class="mm-box recovery-phrase__chips recovery-phrase__chips--hidden mm-box--display-grid mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+            data-quiz-words="[]"
+            data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
+            data-testid="recovery-phrase-chips"
+          >
+            <div
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-0"
             >
-              Don’t share it with anyone, ever.
-            </p>
-            
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                1
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                candy
+              </p>
+            </div>
+            <div
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-1"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                2
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                maple
+              </p>
+            </div>
+            <div
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-2"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                3
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                cake
+              </p>
+            </div>
+            <div
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-3"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                4
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                sugar
+              </p>
+            </div>
+            <div
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-4"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                5
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                pudding
+              </p>
+            </div>
+            <div
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-5"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                6
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                cream
+              </p>
+            </div>
+            <div
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-6"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                7
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                honey
+              </p>
+            </div>
+            <div
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-7"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                8
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                rich
+              </p>
+            </div>
+            <div
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-8"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                9
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                smooth
+              </p>
+            </div>
+            <div
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-9"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                10
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                crumble
+              </p>
+            </div>
+            <div
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-10"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                11
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                sweet
+              </p>
+            </div>
+            <div
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-11"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                12
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                treat
+              </p>
+            </div>
+          </div>
+          <div
+            class="mm-box recovery-phrase__secret-blocker-container mm-box--width-full mm-box--height-full"
+          >
+            <div
+              class="mm-box recovery-phrase__secret-blocker mm-box--padding-top-2 mm-box--padding-bottom-9 mm-box--padding-inline-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--rounded-sm"
+            />
+            <button
+              class="mm-box recovery-phrase__secret-blocker-text mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+              data-testid="recovery-phrase-reveal"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
+                style="mask-image: url('./images/icons/eye-slash.svg');"
+              />
+              <p
+                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+              >
+                Tap to reveal
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+              >
+                Make sure no one is watching your screen.
+              </p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled recovery-phrase__footer--button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+        data-testid="recovery-phrase-continue"
+        disabled=""
+      >
+        Continue
+      </button>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent"
+        data-testid="recovery-phrase-remind-later"
+        type="button"
+      >
+        Remind me later
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Review Recovery Phrase Component should match snapshot after reveal recovery button is clicked 1`] = `
+<div>
+  <div
+    class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full"
+    data-testid="recovery-phrase"
+  >
+    <div
+      class="mm-box"
+    >
+      <div
+        class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-flex-start mm-box--width-full"
+      >
+        <h2
+          class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+        >
+          Save your Secret Recovery Phrase
+        </h2>
+      </div>
+      <div
+        class="mm-box mm-box--margin-bottom-6"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
+        >
+          <span>
+             
+            This is your 
+            <button
+              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            >
+              Secret Recovery Phrase
+            </button>
+            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. Don’t share it with anyone, ever.
              
           </span>
         </p>
@@ -386,7 +649,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
             data-testid="recovery-phrase-chips"
           >
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-0"
             >
               <p
@@ -402,7 +665,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-1"
             >
               <p
@@ -418,7 +681,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-2"
             >
               <p
@@ -434,7 +697,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-3"
             >
               <p
@@ -450,7 +713,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-4"
             >
               <p
@@ -466,7 +729,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-5"
             >
               <p
@@ -482,7 +745,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-6"
             >
               <p
@@ -498,7 +761,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-7"
             >
               <p
@@ -514,7 +777,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-8"
             >
               <p
@@ -530,7 +793,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-9"
             >
               <p
@@ -546,7 +809,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-10"
             >
               <p
@@ -562,7 +825,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               </p>
             </div>
             <div
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-11"
             >
               <p
@@ -582,13 +845,20 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
       </div>
     </div>
     <div
-      class="mm-box mm-box--width-full"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
     >
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg recovery-phrase__footer--button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
         data-testid="recovery-phrase-continue"
       >
         Continue
+      </button>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent"
+        data-testid="recovery-phrase-remind-later"
+        type="button"
+      >
+        Remind me later
       </button>
     </div>
   </div>

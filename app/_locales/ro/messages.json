@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Vizualizare cont pe Etherscan"
   },
-  "expandView": {
-    "message": "Extindeți vizualizarea"
-  },
   "failed": {
     "message": "Eșuat"
   },
@@ -610,9 +607,6 @@
   },
   "supportCenter": {
     "message": "Accesați centrul de asistență"
-  },
-  "switchNetworks": {
-    "message": "Schimbați rețelele"
   },
   "symbol": {
     "message": "Simbol"

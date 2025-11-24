@@ -1,44 +1,40 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import { CaipAccountId, parseCaipAccountId } from '@metamask/utils';
-import BlockieIdenticon from '../../../ui/identicon/blockieIdenticon';
-import Jazzicon from '../../../ui/jazzicon';
-import { getUseBlockie } from '../../../../selectors';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { PreferredAvatar } from '../../preferred-avatar';
+import { getIsMultichainAccountsState2Enabled } from '../../../../selectors/multichain-accounts';
+import { getAccountGroupsByAddress } from '../../../../selectors/multichain-accounts/account-tree';
+import { MultichainAccountsState } from '../../../../selectors/multichain-accounts/account-tree.types';
 
-export const DIAMETERS: Record<string, number> = {
-  xs: 16,
-  sm: 24,
-  md: 32,
-  lg: 40,
-};
-
-export type SnapUIAvatarProps = {
+type SnapUIAvatarProps = {
   // The address must be a CAIP-10 string.
   address: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg';
+  size?: AvatarAccountSize;
 };
 
 export const SnapUIAvatar: React.FunctionComponent<SnapUIAvatarProps> = ({
-  address,
-  size = 'md',
+  address: caipAddress,
+  size,
 }) => {
-  const parsed = useMemo(() => {
-    return parseCaipAccountId(address as CaipAccountId);
-  }, [address]);
-  const useBlockie = useSelector(getUseBlockie);
+  const { address } = useMemo(() => {
+    return parseCaipAccountId(caipAddress as CaipAccountId);
+  }, [caipAddress]);
 
-  return useBlockie ? (
-    <BlockieIdenticon
-      address={parsed.address}
-      diameter={DIAMETERS[size]}
-      borderRadius="50%"
-    />
-  ) : (
-    <Jazzicon
-      namespace={parsed.chain.namespace}
-      address={parsed.address}
-      diameter={DIAMETERS[size]}
-      style={{ display: 'flex' }}
-    />
+  const useAccountGroups = useSelector(getIsMultichainAccountsState2Enabled);
+
+  const accountGroups = useSelector((state: MultichainAccountsState) =>
+    getAccountGroupsByAddress(state, [address]),
   );
+
+  const accountGroupAddress = accountGroups[0]?.accounts.find((account) =>
+    isEvmAccountType(account.type),
+  )?.address;
+
+  // Display the account group address if it exists as the default.
+  const displayAddress =
+    useAccountGroups && accountGroupAddress ? accountGroupAddress : caipAddress;
+
+  return <PreferredAvatar address={displayAddress} size={size} />;
 };

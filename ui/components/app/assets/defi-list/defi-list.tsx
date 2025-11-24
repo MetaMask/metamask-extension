@@ -19,7 +19,7 @@ import PulseLoader from '../../../ui/pulse-loader';
 import { Box } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import { useFormatters } from '../../../../helpers/formatters';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { extractUniqueIconAndSymbols } from '../util/extractIconAndSymbol';
 import { getDefiPositions } from '../../../../selectors/assets';
 import { DeFiProtocolPosition } from '../types';
@@ -85,6 +85,7 @@ export default function DefiList({ onClick }: DefiListProps) {
           marketValue: formatCurrencyWithMinThreshold(marketValue, 'USD'),
           chainId: chainId as Hex,
           iconGroup,
+          tokenFiatAmount: marketValue,
         };
       }),
     );
@@ -145,10 +146,7 @@ export default function DefiList({ onClick }: DefiListProps) {
           );
         })
       ) : (
-        <DeFiEmptyStateMessage
-          primaryText={t('noDeFiPositions')}
-          secondaryText={t('protocolNotSupported')}
-        />
+        <DeFiEmptyStateMessage />
       )}
     </>
   );

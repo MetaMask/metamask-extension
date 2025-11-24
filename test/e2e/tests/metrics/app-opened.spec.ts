@@ -74,7 +74,7 @@ describe('App Opened metric', function () {
   it('should send AppOpened metric when dapp opens MetaMask', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({

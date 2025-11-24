@@ -1,10 +1,15 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
+import {
+  type INotification,
+  TRIGGER_TYPES,
+  NOTIFICATION_API_TRIGGER_TYPES_SET,
+} from '@metamask/notification-services-controller/notification-services';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   IconName,
+  IconSize,
   ButtonIcon,
   ButtonIconSize,
   Box,
@@ -32,11 +37,6 @@ import {
 import { deleteExpiredNotifications } from '../../store/actions';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
-
-export type Notification = NotificationServicesController.Types.INotification;
-
-const { TRIGGER_TYPES, TRIGGER_TYPES_WALLET_SET } =
-  NotificationServicesController.Constants;
 
 // NOTE - these 2 data sources are combined in our controller.
 // FUTURE - we could separate these data sources into separate methods.
@@ -111,7 +111,7 @@ const useCombinedNotifications = () => {
 
 export const filterNotifications = (
   activeTab: TAB_KEYS,
-  notifications: Notification[],
+  notifications: INotification[],
 ) => {
   if (activeTab === TAB_KEYS.ALL) {
     return notifications;
@@ -120,7 +120,7 @@ export const filterNotifications = (
   if (activeTab === TAB_KEYS.WALLET) {
     return notifications.filter(
       (notification) =>
-        TRIGGER_TYPES_WALLET_SET.has(notification.type) ||
+        NOTIFICATION_API_TRIGGER_TYPES_SET.has(notification.type) ||
         notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
     );
   }
@@ -166,7 +166,7 @@ export default function Notifications() {
           <ButtonIcon
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             onClick={() => {
               navigate(DEFAULT_ROUTE);
             }}
@@ -177,7 +177,10 @@ export default function Notifications() {
           <ButtonIcon
             ariaLabel="Notifications Settings"
             iconName={IconName.Setting}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
+            iconProps={{
+              size: IconSize.Lg,
+            }}
             onClick={() => {
               navigate(NOTIFICATIONS_SETTINGS_ROUTE);
             }}
@@ -193,18 +196,14 @@ export default function Notifications() {
           <Tabs
             defaultActiveTabKey={activeTab}
             onTabClick={(tab: string) => setActiveTab(tab as TAB_KEYS)}
-            tabsClassName="notifications__tabs"
+            tabListProps={{ className: 'px-4' }}
           >
             <Tab
-              activeClassName="notifications__tab--active"
-              className="notifications__tab"
               data-testid={TAB_KEYS.ALL}
               name={t('all')}
               tabKey={TAB_KEYS.ALL}
             />
             <Tab
-              activeClassName="notifications__tab--active"
-              className="notifications__tab"
               data-testid={TAB_KEYS.WALLET}
               name={
                 <Box
@@ -220,8 +219,6 @@ export default function Notifications() {
               tabKey={TAB_KEYS.WALLET}
             ></Tab>
             <Tab
-              activeClassName="notifications__tab--active"
-              className="notifications__tab"
               data-testid={TAB_KEYS.WEB3}
               name={t('web3')}
               tabKey={TAB_KEYS.WEB3}

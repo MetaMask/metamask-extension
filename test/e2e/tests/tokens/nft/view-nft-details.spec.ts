@@ -14,7 +14,7 @@ describe('View NFT details', function () {
   it('user should be able to view ERC721 NFT details', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         smartContract,
         title: this.test?.fullTitle(),

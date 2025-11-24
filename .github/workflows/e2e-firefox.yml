@@ -1,14 +1,24 @@
-# This workflow is meant to better structure the main.yaml one for redability reasons.
+# This workflow is meant to better structure the main.yaml one for readability reasons.
 # It is not meant to be a reusable workflow.
 
 name: E2E Firefox
 
 on:
   workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+        description: The run ID to get builds from
+    secrets:
+      INFURA_PROJECT_ID:
+        required: false
 
 jobs:
   test-e2e-firefox-browserify:
     uses: ./.github/workflows/run-e2e.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
@@ -19,6 +29,26 @@ jobs:
       build-artifact: build-test-mv2-browserify
       build-command: yarn build:test:mv2
       test-command: yarn test:e2e:firefox
+      builds-from-run: ${{ inputs.builds-from-run }}
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-firefox-webpack:
+    uses: ./.github/workflows/run-e2e.yml
+    if: ${{ github.event_name != 'merge_group' }}
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    strategy:
+      fail-fast: ${{ github.event_name == 'merge_group' }}
+      matrix:
+        index:
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    with:
+      test-suite-name: test-e2e-firefox-webpack
+      build-artifact: build-test-mv2-webpack
+      build-command: yarn build:test:webpack:mv2
+      test-command: yarn test:e2e:firefox
+      builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
@@ -33,14 +63,17 @@ jobs:
       build-artifact: build-test-flask-mv2-browserify
       build-command: yarn build:test:flask:mv2
       test-command: yarn test:e2e:firefox:flask
+      builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
   test-e2e-firefox-report:
     needs:
       - test-e2e-firefox-browserify
+      - test-e2e-firefox-webpack
       - test-e2e-firefox-flask
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     if: ${{ !cancelled() }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -56,7 +89,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Download test results
         uses: actions/download-artifact@v4

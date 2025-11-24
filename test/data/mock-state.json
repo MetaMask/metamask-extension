@@ -492,7 +492,7 @@
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
         "lastUpdatedAt": 1738689643708,
-        "name": "Binance Smart Chain",
+        "name": "BNB Chain",
         "nativeCurrency": "BNB",
         "rpcEndpoints": [
           {
@@ -508,7 +508,7 @@
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
         "lastUpdatedAt": 1738689655105,
-        "name": "Polygon Mainnet",
+        "name": "Polygon",
         "nativeCurrency": "POL",
         "rpcEndpoints": [
           {
@@ -524,7 +524,7 @@
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
         "lastUpdatedAt": 1738689624782,
-        "name": "Arbitrum One",
+        "name": "Arbitrum",
         "nativeCurrency": "ETH",
         "rpcEndpoints": [
           {
@@ -941,59 +941,27 @@
     },
     "accountsByChainId": {
       "0x5": {
-        "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-          "balance": "0x346ba7725f412cbfdb",
-          "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+        "0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc": {
+          "balance": "0x346ba7725f412cbfdb"
         },
-        "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
-          "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+        "0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B": {
           "balance": "0x0"
         },
-        "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
-          "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+        "0xc42EDfCC21eD14dDA456AA0756C153F7985D8813": {
           "balance": "0x0"
         },
-        "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
-          "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+        "0xeB9e64B93097bc15F01F13eae97015c57ab64823": {
           "balance": "0x0"
         },
         "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
-          "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
           "balance": "0x0"
         },
-        "0xb552685e3d2790efd64a175b00d51f02cdafee5d": {
-          "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
+        "0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D": {
           "balance": "0x0"
         }
       }
     },
     "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-    "accounts": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "balance": "0x346ba7725f412cbfdb",
-        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
-      },
-      "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
-        "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
-        "balance": "0x0"
-      },
-      "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
-        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-        "balance": "0x0"
-      },
-      "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
-        "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
-        "balance": "0x0"
-      },
-      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
-        "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
-        "balance": "0x0"
-      },
-      "0xb552685e3d2790efd64a175b00d51f02cdafee5d": {
-        "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
-        "balance": "0x0"
-      }
-    },
     "tokens": [
       {
         "address": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
@@ -2339,14 +2307,24 @@
     "txHistory": {},
     "throttledOrigins": {},
     "delegations": {},
-    "accountsAssets": {}
+    "accountsAssets": {},
+    "assetsMetadata": {},
+    "allIgnoredAssets": {},
+    "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
+    "isGatorPermissionsEnabled": false,
+    "isFetchingGatorPermissions": false,
+    "isUpdatingGatorPermissions": false,
+    "networkConnectionBanner": {
+      "status": "unknown"
+    },
+    "coverageResults": {}
   },
   "ramps": {
     "buyableChains": [
       {
         "active": true,
         "chainId": 1,
-        "chainName": "Ethereum Mainnet",
+        "chainName": "Ethereum",
         "shortName": "Ethereum",
         "nativeTokenSupported": true
       },
@@ -2367,7 +2345,7 @@
       {
         "active": true,
         "chainId": 56,
-        "chainName": "BNB Chain Mainnet",
+        "chainName": "BNB Chain",
         "shortName": "BNB Chain",
         "nativeTokenSupported": true
       },
@@ -2381,7 +2359,7 @@
       {
         "active": true,
         "chainId": 137,
-        "chainName": "Polygon Mainnet",
+        "chainName": "Polygon",
         "shortName": "Polygon",
         "nativeTokenSupported": true
       },
@@ -2395,7 +2373,7 @@
       {
         "active": true,
         "chainId": 324,
-        "chainName": "zkSync Era Mainnet",
+        "chainName": "zkSync Era",
         "shortName": "zkSync Era",
         "nativeTokenSupported": true
       },
@@ -2423,7 +2401,7 @@
       {
         "active": true,
         "chainId": 8453,
-        "chainName": "Base Mainnet",
+        "chainName": "Base",
         "shortName": "Base",
         "nativeTokenSupported": true
       },

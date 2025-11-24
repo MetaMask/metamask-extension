@@ -8,7 +8,13 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { Hex, isStrictHexString } from '@metamask/utils';
+import {
+  Hex,
+  isStrictHexString,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
@@ -21,8 +27,12 @@ import {
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
+  getSelectedMultichainNetworkChainId,
 } from '../../../../../selectors/multichain/networks';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import {
+  getAllNetworkConfigurationsByCaipChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../../shared/modules/selectors/networks';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -76,7 +86,10 @@ import {
   showModal,
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
-import { getMultichainNetwork } from '../../../../../selectors/multichain';
+import {
+  getMultichainIsEvm,
+  getMultichainNetwork,
+} from '../../../../../selectors/multichain';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
@@ -102,12 +115,14 @@ const AssetListControlBar = ({
   const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const allCaipNetworks = useSelector(getAllNetworkConfigurationsByCaipChainId);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
   const isMainnet = useSelector(getIsMainnet);
   const isLineaMainnet = useSelector(getIsLineaMainnet);
   const allChainIds = useSelector(getAllChainsToPoll);
+  const isEvm = useSelector(getMultichainIsEvm);
 
   const { collections } = useNftsCollections();
 
@@ -126,6 +141,11 @@ const AssetListControlBar = ({
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
+
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -258,12 +278,8 @@ const AssetListControlBar = ({
   };
 
   const handleRefresh = () => {
-    dispatch(detectTokens());
+    dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
     closePopover();
-    trackEvent({
-      category: MetaMetricsEventCategory.Tokens,
-      event: MetaMetricsEventName.TokenListRefreshed,
-    });
   };
 
   const onEnableAutoDetect = () => {
@@ -306,6 +322,14 @@ const AssetListControlBar = ({
         : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
     }
 
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      namespace !== KnownCaipNamespace.Eip155 &&
+      Object.keys(enabledNetworksByNamespace).length > 1
+    ) {
+      return currentMultichainNetwork.network.nickname ?? t('currentNetwork');
+    }
+
     // > 1 network selected, show "all networks"
     if (
       isGlobalNetworkSelectorRemoved &&
@@ -313,6 +337,7 @@ const AssetListControlBar = ({
     ) {
       return t('allNetworks');
     }
+
     if (
       isGlobalNetworkSelectorRemoved &&
       Object.keys(enabledNetworksByNamespace).length === 0
@@ -337,6 +362,7 @@ const AssetListControlBar = ({
     currentMultichainNetwork?.nickname,
     t,
     allNetworks,
+    namespace,
   ]);
 
   const networkButtonTextEnabledAccountState2 = useMemo(() => {
@@ -345,21 +371,22 @@ const AssetListControlBar = ({
       Object.keys(allEnabledNetworksForAllNamespaces).length === 1
     ) {
       const chainId = allEnabledNetworksForAllNamespaces[0];
-      return isStrictHexString(chainId)
-        ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
-        : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
+      const caipChainId = isStrictHexString(chainId)
+        ? toEvmCaipChainId(chainId)
+        : chainId;
+      return allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
     }
 
     // > 1 network selected, show "all networks"
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(allEnabledNetworksForAllNamespaces).length > 1
+      allEnabledNetworksForAllNamespaces.length > 1
     ) {
       return t('allPopularNetworks');
     }
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(allEnabledNetworksForAllNamespaces).length === 0
+      allEnabledNetworksForAllNamespaces.length === 0
     ) {
       return t('noNetworksSelected');
     }
@@ -374,13 +401,12 @@ const AssetListControlBar = ({
 
     return t('popularNetworks');
   }, [
+    allEnabledNetworksForAllNamespaces,
     isTokenNetworkFilterEqualCurrentNetwork,
     currentMultichainNetwork.isEvmNetwork,
-    currentMultichainNetwork.network.nickname,
     currentMultichainNetwork?.nickname,
     t,
-    allNetworks,
-    allEnabledNetworksForAllNamespaces,
+    allCaipNetworks,
   ]);
 
   const singleNetworkIconUrl = useMemo(() => {
@@ -388,7 +414,7 @@ const AssetListControlBar = ({
       return undefined;
     }
 
-    const chainIds = Object.keys(enabledNetworksByNamespace);
+    const chainIds = allEnabledNetworksForAllNamespaces;
 
     if (chainIds.length !== 1) {
       return undefined;
@@ -396,7 +422,7 @@ const AssetListControlBar = ({
 
     const singleEnabledChainId = chainIds[0];
     return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[singleEnabledChainId];
-  }, [enabledNetworksByNamespace]);
+  }, [allEnabledNetworksForAllNamespaces]);
 
   return (
     <Box
@@ -433,7 +459,7 @@ const AssetListControlBar = ({
               <AvatarNetwork
                 name={currentMultichainNetwork.nickname}
                 src={singleNetworkIconUrl}
-                size={AvatarNetworkSize.Sm}
+                size={AvatarNetworkSize.Xs}
                 borderWidth={0}
               />
             )}
@@ -470,16 +496,39 @@ const AssetListControlBar = ({
             </Tooltip>
           )}
 
-          {showImportTokenButton && (
-            <ImportControl
-              showTokensLinks={showTokensLinks}
-              onClick={
-                showTokensLinks
-                  ? toggleImportTokensPopover
-                  : toggleImportNftPopover
-              }
-            />
-          )}
+          {showImportTokenButton &&
+            (isEvm ? (
+              <ImportControl
+                showTokensLinks={showTokensLinks}
+                onClick={
+                  showTokensLinks
+                    ? toggleImportTokensPopover
+                    : toggleImportNftPopover
+                }
+              />
+            ) : (
+              <Tooltip
+                title={t('importTokensCamelCase')}
+                position="bottom"
+                distance={20}
+              >
+                <ButtonBase
+                  data-testid="importTokens-button"
+                  className="asset-list-control-bar__button"
+                  onClick={handleTokenImportModal}
+                  size={ButtonBaseSize.Sm}
+                  startIconName={IconName.Add}
+                  startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
+                  backgroundColor={
+                    isTokenSortPopoverOpen
+                      ? BackgroundColor.backgroundPressed
+                      : BackgroundColor.backgroundDefault
+                  }
+                  color={TextColor.textDefault}
+                  marginRight={isFullScreen ? 2 : null}
+                />
+              </Tooltip>
+            ))}
         </Box>
       </Box>
 

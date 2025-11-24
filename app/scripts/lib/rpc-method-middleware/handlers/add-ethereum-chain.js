@@ -4,6 +4,7 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { cloneDeep } from 'lodash';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { FEATURED_RPCS } from '../../../../../shared/constants/network';
 import {
   validateAddEthereumChainParams,
   switchChain,
@@ -24,7 +25,6 @@ const addEthereumChain = {
     rejectApprovalRequestsForOrigin: true,
     setTokenNetworkFilter: true,
     setEnabledNetworks: true,
-    setEnabledNetworksMultichain: true,
     getEnabledNetworks: true,
   },
 };
@@ -48,7 +48,6 @@ async function addEthereumChainHandler(
     rejectApprovalRequestsForOrigin,
     setTokenNetworkFilter,
     setEnabledNetworks,
-    setEnabledNetworksMultichain,
     getEnabledNetworks,
   },
 ) {
@@ -136,9 +135,6 @@ async function addEthereumChainHandler(
           rpcIndex = clonedNetwork.rpcEndpoints.length - 1;
         }
 
-        // The provided rpc endpoint becomes the default
-        clonedNetwork.defaultRpcEndpointIndex = rpcIndex;
-
         if (firstValidBlockExplorerUrl) {
           // If a block explorer was provided and it doesn't exist, add a new one
           if (blockExplorerIndex === -1) {
@@ -165,6 +161,13 @@ async function addEthereumChainHandler(
         );
       } else {
         // A network for this chain id does not exist, so add a new network
+
+        // If a featured RPC endpoint exists for this chain, include it and keep it as default
+        const featured = FEATURED_RPCS.find((f) => f.chainId === chainId);
+        const featuredEndpoint = featured
+          ? featured.rpcEndpoints[featured.defaultRpcEndpointIndex]
+          : undefined;
+
         updatedNetwork = await addNetwork({
           blockExplorerUrls: firstValidBlockExplorerUrl
             ? [firstValidBlockExplorerUrl]
@@ -173,10 +176,12 @@ async function addEthereumChainHandler(
             ? 0
             : undefined,
           chainId,
+          // Keep featured (if present) as the first and default endpoint
           defaultRpcEndpointIndex: 0,
           name: chainName,
           nativeCurrency: ticker,
           rpcEndpoints: [
+            ...(featuredEndpoint ? [featuredEndpoint] : []),
             {
               url: firstValidRPCUrl,
               name: chainName,
@@ -190,8 +195,16 @@ async function addEthereumChainHandler(
     }
   }
 
-  const { networkClientId } =
-    updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
+  const existingNetworkClientId =
+    existingNetwork?.rpcEndpoints?.[existingNetwork.defaultRpcEndpointIndex]
+      ?.networkClientId;
+
+  const updatedNetworkClientId =
+    updatedNetwork?.rpcEndpoints?.[updatedNetwork.defaultRpcEndpointIndex]
+      ?.networkClientId;
+
+  // Determines the specific RPC endpoint to use
+  const networkClientId = existingNetworkClientId ?? updatedNetworkClientId;
 
   return switchChain(res, end, chainId, networkClientId, {
     isAddFlow: true,
@@ -202,7 +215,6 @@ async function addEthereumChainHandler(
     rejectApprovalRequestsForOrigin,
     setTokenNetworkFilter,
     setEnabledNetworks,
-    setEnabledNetworksMultichain,
     getEnabledNetworks,
   });
 }

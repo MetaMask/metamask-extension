@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { Tooltip } from 'react-tippy';
 import { useSelector } from 'react-redux';
 import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   BorderStyle,
@@ -15,26 +19,20 @@ import {
 import { AvatarType } from '../../../avatar-group/avatar-group.types';
 import { AvatarGroup } from '../../..';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
   Text,
 } from '../../../../component-library';
-import { getUseBlockie } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
+import { getAvatarType } from '../../../../app/preferred-avatar/preferred-avatar';
 
 export const SiteCellTooltip = ({ accounts, networks }) => {
   const t = useI18nContext();
   const AVATAR_GROUP_LIMIT = 4;
   const TOOLTIP_LIMIT = 4;
-  const useBlockie = useSelector(getUseBlockie);
-  const avatarAccountVariant = useBlockie
-    ? AvatarAccountVariant.Blockies
-    : AvatarAccountVariant.Jazzicon;
+  const avatarAccountVariant = useSelector(getAvatarType);
 
   const avatarAccountsData = accounts?.map((account) => ({
     avatarValue: account.address,

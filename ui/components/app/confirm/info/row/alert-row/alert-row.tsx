@@ -1,28 +1,33 @@
 import React, { useState } from 'react';
 import {
+  JustifyContent,
   Severity,
   TextColor,
 } from '../../../../../../helpers/constants/design-system';
-import InlineAlert from '../../../../alert-system/inline-alert/inline-alert';
 import useAlerts from '../../../../../../hooks/useAlerts';
+import { Box } from '../../../../../component-library';
+import { useAlertMetrics } from '../../../../alert-system/contexts/alertMetricsContext';
+import InlineAlert from '../../../../alert-system/inline-alert/inline-alert';
+import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowProps,
   ConfirmInfoRowVariant,
 } from '../row';
-import { Box } from '../../../../../component-library';
-import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
-import { useAlertMetrics } from '../../../../alert-system/contexts/alertMetricsContext';
+import { Skeleton } from '../../../../../component-library/skeleton';
 
 export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
   ownerId: string;
   /** Determines whether to display the row only when an alert is present. */
   isShownWithAlertsOnly?: boolean;
+  /** Show skeleton loader if alert is not yet loaded. */
+  showAlertLoader?: boolean;
 };
 
 export function getAlertTextColors(
   variant?: ConfirmInfoRowVariant | Severity,
+  defaultColor?: TextColor,
 ): TextColor {
   switch (variant) {
     case ConfirmInfoRowVariant.Critical:
@@ -33,7 +38,7 @@ export function getAlertTextColors(
       return TextColor.warningDefault;
     case ConfirmInfoRowVariant.Default:
     default:
-      return TextColor.textDefault;
+      return defaultColor ?? TextColor.textDefault;
   }
 }
 
@@ -42,14 +47,22 @@ export const ConfirmInfoAlertRow = ({
   ownerId,
   variant,
   isShownWithAlertsOnly = false,
+  showAlertLoader = false,
   ...rowProperties
 }: ConfirmInfoAlertRowProps) => {
   const { trackInlineAlertClicked } = useAlertMetrics();
   const { getFieldAlerts } = useAlerts(ownerId);
   const fieldAlerts = getFieldAlerts(alertKey);
   const hasFieldAlert = fieldAlerts.length > 0;
-  const selectedAlertSeverity = fieldAlerts[0]?.severity;
-  const selectedAlertKey = fieldAlerts[0]?.key;
+  const selectedAlert = fieldAlerts[0];
+  const selectedAlertSeverity = selectedAlert?.severity;
+  const selectedAlertKey = selectedAlert?.key;
+  const selectedAlertShowArrow = selectedAlert?.showArrow;
+  const selectedAlertInlineAlertText = selectedAlert?.inlineAlertText;
+  const selectedAlertIsOpenModalOnClick =
+    selectedAlert?.isOpenModalOnClick ?? true;
+  const selectedAlertHideFromAlertNavigation =
+    selectedAlert?.hideFromAlertNavigation ?? false;
 
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
 
@@ -62,25 +75,70 @@ export const ConfirmInfoAlertRow = ({
     trackInlineAlertClicked(selectedAlertKey);
   };
 
+  const onClickHandler =
+    hasFieldAlert && selectedAlertIsOpenModalOnClick
+      ? handleInlineAlertClick
+      : undefined;
   const confirmInfoRowProps = {
     ...rowProperties,
     style: { background: 'transparent', ...rowProperties.style },
-    color: getAlertTextColors(variant ?? selectedAlertSeverity),
+    color: getAlertTextColors(
+      variant ?? selectedAlertSeverity,
+      rowProperties?.color,
+    ),
     variant,
+    onClick: onClickHandler,
+    labelChildrenStyleOverride: rowProperties.labelChildren
+      ? { justifyContent: JustifyContent.center }
+      : {},
   };
 
   if (isShownWithAlertsOnly && !hasFieldAlert) {
     return null;
   }
 
+  const inlineAlertLoader = showAlertLoader ? (
+    <Box marginLeft={1} className="flex-grow justify-items-end">
+      <Skeleton width="50%" height={26} />
+    </Box>
+  ) : null;
+
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
       <InlineAlert
-        onClick={handleInlineAlertClick}
+        alertKey={alertKey}
         severity={selectedAlertSeverity}
+        showArrow={Boolean(
+          selectedAlertShowArrow && selectedAlertInlineAlertText,
+        )}
+        textOverride={selectedAlertInlineAlertText || ''}
+        onClick={onClickHandler}
+        iconName={selectedAlert?.iconName}
+        iconColor={selectedAlert?.iconColor}
+        iconRight={selectedAlert?.inlineAlertIconRight}
+        pill={selectedAlert?.inlineAlertTextPill}
+        backgroundColor={selectedAlert?.inlineAlertTextBackgroundColor}
       />
     </Box>
-  ) : null;
+  ) : (
+    inlineAlertLoader
+  );
+
+  let confirmInfoRow: React.ReactNode;
+  if (confirmInfoRowProps.labelChildren) {
+    confirmInfoRow = (
+      <ConfirmInfoRow
+        {...rowProperties}
+        labelChildren={rowProperties.labelChildren}
+      >
+        {inlineAlert}
+      </ConfirmInfoRow>
+    );
+  } else {
+    confirmInfoRow = (
+      <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />
+    );
+  }
 
   return (
     <>
@@ -91,10 +149,10 @@ export const ConfirmInfoAlertRow = ({
           onFinalAcknowledgeClick={handleModalClose}
           onClose={handleModalClose}
           showCloseIcon={false}
-          skipAlertNavigation={true}
+          skipAlertNavigation={selectedAlertHideFromAlertNavigation}
         />
       )}
-      <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />
+      {confirmInfoRow}
     </>
   );
 };

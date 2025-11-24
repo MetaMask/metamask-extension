@@ -1,17 +1,21 @@
 import { Mockttp } from 'mockttp';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures, unlockWallet } from '../../../helpers';
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
+import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
-import { ACCOUNT_TYPE } from '../../../constants';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
+import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Multiple SRPs', function () {
@@ -19,7 +23,7 @@ describe('Account syncing - Multiple SRPs', function () {
 
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
   const SECOND_ACCOUNT_NAME = 'Account 2';
-  const SRP_2_FIRST_ACCOUNT = 'Account 3';
+  const SRP_2_FIRST_ACCOUNT = 'Account 1';
   const SRP_2_SECOND_ACCOUNT = 'My Fourth Account';
 
   /**
@@ -27,16 +31,19 @@ describe('Account syncing - Multiple SRPs', function () {
    * Phase 1: Starting with the default account, add a second account to the first SRP, import a second SRP which automatically creates a third account, then manually create a fourth account on the second SRP with a custom name.
    * Phase 2: Login to a fresh app instance and verify all accounts from both SRPs persist and are visible after importing the second SRP.
    */
-  // TODO: Re-write this test when multichain account syncing has been merged
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should add accounts across multiple SRPs and sync them', async function () {
+  it('adds accounts across multiple SRPs and sync them', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
       userStorageMockttpController.setupPath(
-        USER_STORAGE_FEATURE_NAMES.accounts,
+        USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
       );
+      userStorageMockttpController.setupPath(
+        USER_STORAGE_WALLETS_FEATURE_KEY,
+        server,
+      );
+      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
@@ -48,14 +55,19 @@ describe('Account syncing - Multiple SRPs', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
 
         // Verify default account is visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -67,23 +79,24 @@ describe('Account syncing - Multiple SRPs', function () {
           prepareEventsEmittedCounter,
           waitUntilSyncedAccountsNumberEquals,
         } = arrangeTestUtils(driver, userStorageMockttpController);
+
+        // Wait for initial account sync to complete before adding a new account
+        await waitUntilSyncedAccountsNumberEquals(1);
+
         const { waitUntilEventsEmittedNumberEquals } =
           prepareEventsEmittedCounter(
             UserStorageMockttpControllerEvents.PUT_SINGLE,
           );
 
         // Add a second account to the first SRP
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
-        });
+        await accountListPage.addMultichainAccount();
 
         // Wait for sync operation to complete
-        await waitUntilSyncedAccountsNumberEquals(2);
+        // Check event first to ensure sync was attempted, then verify state
         await waitUntilEventsEmittedNumberEquals(1);
+        await waitUntilSyncedAccountsNumberEquals(2);
 
-        // Reopen account menu to verify both accounts are visible
-        await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
+        // Verify both accounts are visible
         await accountListPage.checkAccountDisplayedInAccountList(
           DEFAULT_ACCOUNT_NAME,
         );
@@ -91,39 +104,53 @@ describe('Account syncing - Multiple SRPs', function () {
           SECOND_ACCOUNT_NAME,
         );
 
-        await accountListPage.closeAccountModal();
-
         // Import second SRP (this will automatically create the third account)
-        await header.openAccountMenu();
         await accountListPage.startImportSecretPhrase(
           IDENTITY_TEAM_SEED_PHRASE_2,
+          {
+            isMultichainAccountsState2Enabled: true,
+          },
         );
+
+        // Importing an SRP can be long, so we add a bit of extra time here
+        await driver.delay(10000);
 
         // Wait for the import to complete and sync
         await waitUntilSyncedAccountsNumberEquals(3);
 
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
         // Add a fourth account with custom name to the second SRP
         await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
-
-        // Add account with custom name to specific SRP
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
-          accountName: SRP_2_SECOND_ACCOUNT,
-          srpIndex: 2, // Second SRP
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
         });
 
+        // Add account with custom name to specific SRP
+        await accountListPage.addMultichainAccount({
+          srpIndex: 1, // Second SRP
+        });
+
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+
+        await waitUntilSyncedAccountsNumberEquals(4);
+
+        await accountListPage.openMultichainAccountMenu({
+          accountLabel: 'Account 2',
+          srpIndex: 1,
+        });
+        await accountListPage.clickMultichainAccountMenuItem('Rename');
+        await accountListPage.changeMultichainAccountLabel(
+          SRP_2_SECOND_ACCOUNT,
+        );
+
+        await waitUntilSyncedAccountsNumberEquals(4);
+        await waitUntilEventsEmittedNumberEquals(5);
+
         // Verify all accounts are visible
-        await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           SRP_2_SECOND_ACCOUNT,
         );
 
-        await accountListPage.closeAccountModal();
+        await accountListPage.closeMultichainAccountsPage();
       },
     );
 
@@ -135,25 +162,31 @@ describe('Account syncing - Multiple SRPs', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
-
+        await loginWithBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
+
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+        // await driver.delay(2000); // Wait for potential sync to complete
 
         // Import the second SRP to get access to all accounts
         await header.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.startImportSecretPhrase(
           IDENTITY_TEAM_SEED_PHRASE_2,
+          {
+            isMultichainAccountsState2Enabled: true,
+          },
         );
 
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
+        // Importing an SRP can be long, so we add a bit of extra time here
+        await driver.delay(10000);
 
         // Verify all accounts from both SRPs are visible
         await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
-
         const visibleAccounts = [
           DEFAULT_ACCOUNT_NAME,
           SECOND_ACCOUNT_NAME,
@@ -166,10 +199,7 @@ describe('Account syncing - Multiple SRPs', function () {
         }
 
         // Verify we have exactly 4 accounts
-        await accountListPage.checkNumberOfAvailableAccounts(
-          4,
-          ACCOUNT_TYPE.Ethereum,
-        );
+        await accountListPage.checkNumberOfAvailableAccounts(4);
       },
     );
   });

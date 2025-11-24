@@ -43,6 +43,8 @@ export const VERIFYING_PAYMASTER = '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7';
 
 /* Default local node ETH balance in decimal when first login */
 export const DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC = '25';
+/* Default local node USD balance in format for when first login */
+export const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,000.00';
 
 /* Dapp host addresses and URL*/
 export const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
@@ -50,6 +52,43 @@ export const DAPP_ONE_ADDRESS = '127.0.0.1:8081';
 export const DAPP_URL_LOCALHOST = 'http://localhost:8080';
 export const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 export const DAPP_ONE_URL = `http://${DAPP_ONE_ADDRESS}`;
+export const DAPP_TWO_URL = 'http://127.0.0.1:8082';
+
+// Common base segments for resolving local test dapps from this file's location
+const NODE_MODULES_BASE = ['..', '..', 'node_modules'] as const;
+const METAMASK_SCOPE = '@metamask';
+
+// Helper to build MetaMask-scoped package paths
+const mm = (pkg: string, ...rest: string[]): readonly string[] => [
+  ...NODE_MODULES_BASE,
+  METAMASK_SCOPE,
+  pkg,
+  ...rest,
+];
+
+/** Mapping of dapp keys to relative path segments from this repo's test root */
+export const DAPP_PATHS: Readonly<Record<string, readonly string[]>> =
+  Object.freeze({
+    'snap-simple-keyring-site': mm('snap-simple-keyring-site', 'public'),
+    'snap-account-abstraction-keyring': mm(
+      'snap-account-abstraction-keyring-site',
+      'public',
+    ),
+    'test-dapp': mm('test-dapp', 'dist'),
+    'test-dapp-multichain': mm('test-dapp-multichain', 'build'),
+    'test-dapp-solana': mm('test-dapp-solana', 'dist'),
+    'test-snaps': mm('test-snaps', 'dist'),
+  });
+
+// Canonical dapp path keys to be used in tests
+export const DAPP_PATH = Object.freeze({
+  TEST_DAPP: 'test-dapp',
+  TEST_DAPP_MULTICHAIN: 'test-dapp-multichain',
+  TEST_DAPP_SOLANA: 'test-dapp-solana',
+  TEST_SNAPS: 'test-snaps',
+  SNAP_SIMPLE_KEYRING_SITE: 'snap-simple-keyring-site',
+  SNAP_ACCOUNT_ABSTRACTION_KEYRING: 'snap-account-abstraction-keyring',
+} as const);
 
 /* Default BTC address created using test SRP */
 export const DEFAULT_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
@@ -107,6 +146,9 @@ export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
     name: 'groupC',
     value: 'valueC',
   },
+  sendRedesign: {
+    enabled: false,
+  },
 };
 
 /* Mock customized remote feature flags response*/
@@ -129,3 +171,36 @@ export const MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS =
   '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 /* Mock Apple account used in Social login flow e2e tests*/
 export const MOCK_APPLE_ACCOUNT = 'e2e-user-mock@appleid.com';
+
+/* Test seed phrases used in onboarding flows */
+export const TEST_SEED_PHRASE =
+  'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
+export const TEST_SEED_PHRASE_TWO =
+  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
+
+/* Test private keys and accounts used by local nodes */
+export const PRIVATE_KEY =
+  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+export const PRIVATE_KEY_TWO =
+  '0xf444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
+
+/* Frequently used test accounts */
+export const ACCOUNT_1 = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
+export const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
+
+/* Window titles */
+export const WINDOW_TITLES = Object.freeze({
+  ExtensionInFullScreenView: 'MetaMask',
+  ExtensionUpdating: 'MetaMask Updating',
+  InstalledExtensions: 'Extensions',
+  Dialog: 'MetaMask Dialog',
+  Phishing: 'MetaMask Phishing Detection',
+  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
+  SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
+  TestDApp: 'E2E Test Dapp',
+  TestDappSendIndividualRequest: 'E2E Test Dapp - Send Individual Request',
+  MultichainTestDApp: 'Multichain Test Dapp',
+  SolanaTestDApp: 'Solana Test Dapp',
+  TestSnaps: 'Test Snaps',
+  ERC4337Snap: 'Account Abstraction Snap',
+});

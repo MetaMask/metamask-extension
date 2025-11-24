@@ -33,9 +33,10 @@ import usePolling from './usePolling';
  * the returned gas estimate for validity on the current network.
  *
  * @param _networkClientId - The optional network client ID to get gas fee estimates for. Defaults to the currently selected network.
+ * @param enabled - Whether to enable gas fee estimation polling. Defaults to true.
  * @returns {GasEstimates} GasEstimates object
  */
-export function useGasFeeEstimates(_networkClientId) {
+export function useGasFeeEstimates(_networkClientId, enabled = true) {
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
   const networkClientId = _networkClientId ?? selectedNetworkClientId;
 
@@ -59,6 +60,12 @@ export function useGasFeeEstimates(_networkClientId) {
   );
 
   useEffect(() => {
+    if (!enabled) {
+      return () => {
+        // No cleanup needed when disabled
+      };
+    }
+
     let isMounted = true;
     getNetworkConfigurationByNetworkClientId(networkClientId).then(
       (networkConfig) => {
@@ -71,13 +78,14 @@ export function useGasFeeEstimates(_networkClientId) {
     return () => {
       isMounted = false;
     };
-  }, [networkClientId]);
+  }, [networkClientId, enabled]);
 
   usePolling({
     startPolling: (input) =>
       gasFeeStartPollingByNetworkClientId(input.networkClientId),
     stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
     input: { networkClientId },
+    enabled,
   });
 
   return {

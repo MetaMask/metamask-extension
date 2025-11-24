@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import {
   Box,
   BoxFlexDirection,
@@ -15,11 +15,20 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SmartContractAccountToggleSection } from '../../../components/multichain-accounts/smart-contract-account-toggle-section';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
-export const SmartAccountPage = () => {
+type SmartAccountPageProps = {
+  params?: { address: string };
+};
+
+export const SmartAccountPage = ({
+  params: propsParams,
+}: SmartAccountPageProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const { address } = useParams<{ address: string }>();
+  const navigate = useNavigate();
+  const hookParams = useParams<{ address: string }>();
+
+  const { address } = propsParams || hookParams;
 
   const decodedAddress = address ? decodeURIComponent(address) : null;
 
@@ -31,14 +40,14 @@ export const SmartAccountPage = () => {
     <Page className="max-w-[600px]">
       <Header
         textProps={{
-          variant: TextVariant.headingMd,
+          variant: TextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             data-testid="smart-account-page-back-button"
           />
         }

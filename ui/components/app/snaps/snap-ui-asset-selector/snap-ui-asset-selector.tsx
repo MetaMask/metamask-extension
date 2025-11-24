@@ -92,9 +92,7 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
       textAlign={TextAlign.End}
       className="snap-ui-renderer__asset-selector-option__balance"
     >
-      <Text variant={TextVariant.bodySmMedium}>
-        {balance} {symbol}
-      </Text>
+      <Text variant={TextVariant.bodySmMedium}>{balance}</Text>
       <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
         {fiat}
       </Text>

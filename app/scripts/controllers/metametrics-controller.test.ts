@@ -12,7 +12,12 @@ import {
 } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
-import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { merge } from 'lodash';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
@@ -811,6 +816,40 @@ describe('MetaMetricsController', function () {
             userId: TEST_META_METRICS_ID,
             messageId: Utils.generateRandomId(),
             timestamp: new Date(),
+          },
+          spy.mock.calls[0][1],
+        );
+      });
+    });
+
+    it('should use custom timestamp when provided in event payload', async function () {
+      await withController(({ controller }) => {
+        const spy = jest.spyOn(segmentMock, 'track');
+        const customTimestamp = '2024-01-15T00:00:00.000Z';
+        controller.trackEvent({
+          event: 'Fake Event',
+          category: 'Unit Test',
+          timestamp: customTimestamp,
+          properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: '1',
+          },
+        });
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith(
+          {
+            event: 'Fake Event',
+            properties: {
+              ...DEFAULT_EVENT_PROPERTIES,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: '1',
+            },
+            context: DEFAULT_TEST_CONTEXT,
+            userId: TEST_META_METRICS_ID,
+            messageId: Utils.generateRandomId(),
+            timestamp: new Date(customTimestamp),
           },
           spy.mock.calls[0][1],
         );
@@ -2065,11 +2104,10 @@ describe('MetaMetricsController', function () {
             deriveStateFromMetadata(
               controller.state,
               controller.metadata,
-              'anonymous',
+              'includeInDebugSnapshot',
             ),
           ).toMatchInlineSnapshot(`
             {
-              "isSocialLoginFlowEnabledForMetrics": false,
               "latestNonAnonymousEventTimestamp": 0,
               "marketingCampaignCookieId": null,
               "metaMetricsId": "0xabc",
@@ -2097,7 +2135,6 @@ describe('MetaMetricsController', function () {
               "dataCollectionForMarketing": null,
               "eventsBeforeMetricsOptIn": [],
               "fragments": {},
-              "isSocialLoginFlowEnabledForMetrics": false,
               "latestNonAnonymousEventTimestamp": 0,
               "marketingCampaignCookieId": null,
               "metaMetricsId": "0xabc",
@@ -2128,7 +2165,6 @@ describe('MetaMetricsController', function () {
               "dataCollectionForMarketing": null,
               "eventsBeforeMetricsOptIn": [],
               "fragments": {},
-              "isSocialLoginFlowEnabledForMetrics": false,
               "latestNonAnonymousEventTimestamp": 0,
               "marketingCampaignCookieId": null,
               "metaMetricsId": "0xabc",
@@ -2158,7 +2194,6 @@ describe('MetaMetricsController', function () {
             {
               "dataCollectionForMarketing": null,
               "fragments": {},
-              "isSocialLoginFlowEnabledForMetrics": false,
               "latestNonAnonymousEventTimestamp": 0,
               "metaMetricsId": "0xabc",
               "participateInMetaMetrics": true,
@@ -2169,6 +2204,8 @@ describe('MetaMetricsController', function () {
     });
   });
 });
+
+type RootMessenger = Messenger<MockAnyNamespace, AllowedActions, AllowedEvents>;
 
 type WithControllerOptions = {
   currentLocale?: string;
@@ -2215,7 +2252,9 @@ async function withController<ReturnValue>(
         },
       },
     } = rest;
-    const messenger = new Messenger<AllowedActions, AllowedEvents>();
+    const messenger: RootMessenger = new Messenger({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
 
     messenger.registerActionHandler(
       'PreferencesController:getState',
@@ -2242,21 +2281,32 @@ async function withController<ReturnValue>(
       }),
     );
 
+    const metaMetricsControllerMessenger = new Messenger<
+      'MetaMetricsController',
+      AllowedActions,
+      AllowedEvents,
+      RootMessenger
+    >({
+      namespace: 'MetaMetricsController',
+      parent: messenger,
+    });
+    messenger.delegate({
+      messenger: metaMetricsControllerMessenger,
+      actions: [
+        'PreferencesController:getState',
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+      ],
+      events: [
+        'PreferencesController:stateChange',
+        'NetworkController:networkDidChange',
+      ],
+    });
+
     return fn({
       controller: new MetaMetricsController({
         segment: segmentMock,
-        messenger: messenger.getRestricted({
-          name: 'MetaMetricsController',
-          allowedActions: [
-            'PreferencesController:getState',
-            'NetworkController:getState',
-            'NetworkController:getNetworkClientById',
-          ],
-          allowedEvents: [
-            'PreferencesController:stateChange',
-            'NetworkController:networkDidChange',
-          ],
-        }),
+        messenger: metaMetricsControllerMessenger,
         version: '0.0.1',
         environment: 'test',
         extension: MOCK_EXTENSION,

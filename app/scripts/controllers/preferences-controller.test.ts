@@ -1,26 +1,30 @@
 /**
  * @jest-environment node
  */
-import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
-import { AccountsController } from '@metamask/accounts-controller';
-import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
-import type { MultichainNetworkControllerNetworkDidChangeEvent } from '@metamask/multichain-network-controller';
-import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
-  SnapKeyringAccountAssetListUpdatedEvent,
-  SnapKeyringAccountBalancesUpdatedEvent,
-  SnapKeyringAccountTransactionsUpdatedEvent,
-} from '@metamask/eth-snap-keyring';
+  AccountsController,
+  AccountsControllerMessenger,
+} from '@metamask/accounts-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
+import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
 import type {
-  AllowedActions,
-  AllowedEvents,
   PreferencesControllerMessenger,
   PreferencesControllerState,
 } from './preferences-controller';
-import { PreferencesController } from './preferences-controller';
+import {
+  PreferencesController,
+  ReferralStatus,
+} from './preferences-controller';
 
 const NETWORK_CONFIGURATION_DATA = mockNetworkState(
   {
@@ -45,27 +49,28 @@ const setupController = ({
   state?: Partial<PreferencesControllerState>;
 } = {}) => {
   const messenger = new Messenger<
-    AllowedActions,
-    | AllowedEvents
-    | KeyringControllerStateChangeEvent
-    | SnapControllerStateChangeEvent
-    | SnapKeyringAccountAssetListUpdatedEvent
-    | SnapKeyringAccountBalancesUpdatedEvent
-    | SnapKeyringAccountTransactionsUpdatedEvent
-    | MultichainNetworkControllerNetworkDidChangeEvent
-  >();
+    MockAnyNamespace,
+    | MessengerActions<PreferencesControllerMessenger>
+    | MessengerActions<AccountsControllerMessenger>,
+    | MessengerEvents<PreferencesControllerMessenger>
+    | MessengerEvents<AccountsControllerMessenger>
+  >({ namespace: MOCK_ANY_NAMESPACE });
   const preferencesControllerMessenger: PreferencesControllerMessenger =
-    messenger.getRestricted({
-      name: 'PreferencesController',
-      allowedActions: [
-        'AccountsController:getAccountByAddress',
-        'AccountsController:setAccountName',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:setSelectedAccount',
-        'NetworkController:getState',
-      ],
-      allowedEvents: ['AccountsController:stateChange'],
+    new Messenger({
+      namespace: 'PreferencesController',
+      parent: messenger,
     });
+  messenger.delegate({
+    messenger: preferencesControllerMessenger,
+    actions: [
+      'AccountsController:getAccountByAddress',
+      'AccountsController:setAccountName',
+      'AccountsController:getSelectedAccount',
+      'AccountsController:setSelectedAccount',
+      'NetworkController:getState',
+    ],
+    events: ['AccountsController:stateChange'],
+  });
 
   messenger.registerActionHandler(
     'NetworkController:getState',
@@ -78,9 +83,18 @@ const setupController = ({
     state,
   });
 
-  const accountsControllerMessenger = messenger.getRestricted({
-    name: 'AccountsController',
-    allowedEvents: [
+  const accountsControllerMessenger = new Messenger<
+    'AccountsController',
+    MessengerActions<AccountsControllerMessenger>,
+    MessengerEvents<AccountsControllerMessenger>,
+    typeof messenger
+  >({
+    namespace: 'AccountsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: accountsControllerMessenger,
+    events: [
       'KeyringController:stateChange',
       'SnapController:stateChange',
       'SnapKeyring:accountAssetListUpdated',
@@ -88,7 +102,6 @@ const setupController = ({
       'SnapKeyring:accountTransactionsUpdated',
       'MultichainNetworkController:networkDidChange',
     ],
-    allowedActions: [],
   });
   const mockAccountsControllerState = {
     internalAccounts: {
@@ -109,6 +122,29 @@ const setupController = ({
 };
 
 describe('preferences controller', () => {
+  describe('initialization and merging', () => {
+    it('defaults avatarType to maskicon', () => {
+      const { controller } = setupController({});
+      expect(controller.state.preferences.avatarType).toBe('maskicon');
+    });
+
+    it('preserves existing avatarType', () => {
+      const { controller } = setupController({});
+      const defaultPreferences = controller.state.preferences;
+
+      const { controller: mergedController } = setupController({
+        state: {
+          preferences: {
+            ...defaultPreferences,
+            avatarType: 'jazzicon',
+          },
+        },
+      });
+
+      expect(mergedController.state.preferences.avatarType).toBe('jazzicon');
+    });
+  });
+
   describe('useBlockie', () => {
     it('defaults useBlockie to false', () => {
       const { controller } = setupController({});
@@ -353,11 +389,17 @@ describe('preferences controller', () => {
       expect(controller.state.useMultiAccountBalanceChecker).toStrictEqual(
         true,
       );
+      expect(controller.state.isMultiAccountBalancesEnabled).toStrictEqual(
+        true,
+      );
     });
 
     it('should set the setUseMultiAccountBalanceChecker property in state', () => {
       controller.setUseMultiAccountBalanceChecker(false);
       expect(controller.state.useMultiAccountBalanceChecker).toStrictEqual(
+        false,
+      );
+      expect(controller.state.isMultiAccountBalancesEnabled).toStrictEqual(
         false,
       );
     });
@@ -523,7 +565,6 @@ describe('preferences controller', () => {
     });
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   describe('setUseExternalNameSources', () => {
     const { controller } = setupController({});
     it('should default to true', () => {
@@ -535,7 +576,6 @@ describe('preferences controller', () => {
       expect(controller.state.useExternalNameSources).toStrictEqual(false);
     });
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('setUseTransactionSimulations', () => {
     const { controller } = setupController({});
@@ -668,6 +708,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        useSidePanelAsDefault: false,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -698,6 +739,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        useSidePanelAsDefault: false,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -830,7 +872,7 @@ describe('preferences controller', () => {
         deriveStateFromMetadata(
           controller.state,
           controller.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`
         {
@@ -869,28 +911,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-          },
-          "showIncomingTransactions": {
-            "0x1": true,
-            "0x13881": true,
-            "0x38": true,
-            "0x5": true,
-            "0x504": true,
-            "0x505": true,
-            "0x507": true,
-            "0x61": true,
-            "0x64": true,
-            "0x89": true,
-            "0xa": true,
-            "0xa869": true,
-            "0xa86a": true,
-            "0xaa36a7": true,
-            "0xaa37dc": true,
-            "0xe704": true,
-            "0xe705": true,
-            "0xe708": true,
-            "0xfa": true,
-            "0xfa2": true,
+            "useSidePanelAsDefault": false,
           },
           "theme": "os",
           "use4ByteResolution": true,
@@ -962,31 +983,13 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": false,
+          },
+          "referrals": {
+            "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
-          "showIncomingTransactions": {
-            "0x1": true,
-            "0x13881": true,
-            "0x38": true,
-            "0x5": true,
-            "0x504": true,
-            "0x505": true,
-            "0x507": true,
-            "0x61": true,
-            "0x64": true,
-            "0x89": true,
-            "0xa": true,
-            "0xa869": true,
-            "0xa86a": true,
-            "0xaa36a7": true,
-            "0xaa37dc": true,
-            "0xe704": true,
-            "0xe705": true,
-            "0xe708": true,
-            "0xfa": true,
-            "0xfa2": true,
-          },
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
@@ -1064,31 +1067,13 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": false,
+          },
+          "referrals": {
+            "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
-          "showIncomingTransactions": {
-            "0x1": true,
-            "0x13881": true,
-            "0x38": true,
-            "0x5": true,
-            "0x504": true,
-            "0x505": true,
-            "0x507": true,
-            "0x61": true,
-            "0x64": true,
-            "0x89": true,
-            "0xa": true,
-            "0xa869": true,
-            "0xa86a": true,
-            "0xaa36a7": true,
-            "0xaa37dc": true,
-            "0xe704": true,
-            "0xe705": true,
-            "0xe708": true,
-            "0xfa": true,
-            "0xfa2": true,
-          },
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
@@ -1166,31 +1151,13 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": false,
+          },
+          "referrals": {
+            "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
-          "showIncomingTransactions": {
-            "0x1": true,
-            "0x13881": true,
-            "0x38": true,
-            "0x5": true,
-            "0x504": true,
-            "0x505": true,
-            "0x507": true,
-            "0x61": true,
-            "0x64": true,
-            "0x89": true,
-            "0xa": true,
-            "0xa869": true,
-            "0xa86a": true,
-            "0xaa36a7": true,
-            "0xaa37dc": true,
-            "0xe704": true,
-            "0xe705": true,
-            "0xe708": true,
-            "0xfa": true,
-            "0xfa2": true,
-          },
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
@@ -1210,6 +1177,215 @@ describe('preferences controller', () => {
           "watchEthereumAccountEnabled": false,
         }
       `);
+    });
+  });
+
+  describe('Hyperliquid referral methods', () => {
+    describe('addReferralApprovedAccount', () => {
+      const { controller } = setupController({});
+
+      it('adds an account with approved status', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralApprovedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+      });
+
+      it('overwrites existing account status', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralDeclinedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Declined);
+
+        controller.addReferralApprovedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+      });
+
+      it('adds multiple unique accounts', () => {
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
+
+        controller.addReferralApprovedAccount(testAccount1);
+        controller.addReferralApprovedAccount(testAccount2);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount1],
+        ).toStrictEqual(ReferralStatus.Approved);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount2],
+        ).toStrictEqual(ReferralStatus.Approved);
+      });
+    });
+
+    describe('addReferralPassedAccount', () => {
+      const { controller } = setupController({});
+
+      it('adds account with passed status', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralPassedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Passed);
+      });
+
+      it('overwrites existing account status', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralApprovedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+
+        controller.addReferralPassedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Passed);
+      });
+    });
+
+    describe('addReferralDeclinedAccount', () => {
+      const { controller } = setupController({});
+
+      it('adds account with declined status', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralDeclinedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Declined);
+      });
+
+      it('overwrites existing account status', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralPassedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Passed);
+
+        controller.addReferralDeclinedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Declined);
+      });
+    });
+
+    describe('removeReferralDeclinedAccount', () => {
+      it('removes the specified account from referrals completely', () => {
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              hyperliquid: {
+                [testAccount1]: ReferralStatus.Declined,
+                [testAccount2]: ReferralStatus.Declined,
+              },
+            },
+          },
+        });
+
+        controller.removeReferralDeclinedAccount(testAccount1);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount1],
+        ).toBeUndefined();
+        expect(
+          controller.state.referrals.hyperliquid[testAccount2],
+        ).toStrictEqual(ReferralStatus.Declined);
+      });
+
+      it('handles removing non-existent account gracefully', () => {
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              hyperliquid: {
+                [testAccount1]: ReferralStatus.Declined,
+              },
+            },
+          },
+        });
+
+        controller.removeReferralDeclinedAccount(testAccount2);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount1],
+        ).toStrictEqual(ReferralStatus.Declined);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount2],
+        ).toBeUndefined();
+      });
+    });
+
+    describe('setAccountsReferralApproved', () => {
+      it('sets all accounts to approved status', () => {
+        const { controller } = setupController({});
+        const testAccounts = ['0x123', '0x456'] as Hex[];
+
+        controller.setAccountsReferralApproved(testAccounts);
+        expect(controller.state.referrals.hyperliquid['0x123']).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+        expect(controller.state.referrals.hyperliquid['0x456']).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+      });
+
+      it('overwrites existing account statuses', () => {
+        const existingAccount = '0x123';
+        const newAccount = '0x456';
+        const accountsToApprove = [existingAccount, newAccount] as Hex[];
+
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              hyperliquid: {
+                [existingAccount]: ReferralStatus.Declined,
+              },
+            },
+          },
+        });
+
+        controller.setAccountsReferralApproved(accountsToApprove);
+        expect(
+          controller.state.referrals.hyperliquid[existingAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+        expect(
+          controller.state.referrals.hyperliquid[newAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+      });
+
+      it('handles empty array input gracefully', () => {
+        const existingAccount = '0x123';
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              hyperliquid: {
+                [existingAccount]: ReferralStatus.Approved,
+              },
+            },
+          },
+        });
+
+        controller.setAccountsReferralApproved([]);
+        expect(
+          controller.state.referrals.hyperliquid[existingAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+      });
+    });
+
+    describe('referral state defaults', () => {
+      it('initializes with empty referral record', () => {
+        const { controller } = setupController({});
+
+        expect(controller.state.referrals.hyperliquid).toStrictEqual({});
+      });
     });
   });
 });

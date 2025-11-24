@@ -150,6 +150,42 @@ export const unapprovedTypedSignMsgV4 = {
   },
 } as SignatureRequestType;
 
+export const unapprovedTypedSignMsgV4WithPermission = {
+  id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
+  chainId: CHAIN_IDS.GOERLI,
+  status: 'unapproved',
+  time: new Date().getTime(),
+  chainid: '0x5',
+  type: TransactionType.signTypedData,
+  securityProviderResponse: null,
+  msgParams: {
+    from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    data: JSON.stringify(rawMessageV4),
+    origin: 'https://metamask.github.io',
+    requestId: 123456789,
+    signatureMethod: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+  },
+  decodedPermission: {
+    expiry: 123456789,
+    origin: 'https://metamask.github.io',
+    permission: {
+      type: 'native-token-stream',
+      data: {
+        initialAmount: '0x1234',
+        maxAmount: '0x1234',
+        amountPerSecond: '0x1234',
+        startTime: 123456789,
+      },
+      justification: 'The reason for the permission',
+    },
+    chainId: '0x1',
+    signer: {
+      type: 'account',
+      data: { address: '0xCdD6132d1a6efA06bce1A89b0fEa6b08304A3829' },
+    },
+  },
+} as SignatureRequestType;
+
 export const orderSignatureMsg = {
   id: 'e5249ae0-4b6b-11ef-831f-65b48eb489ec',
   chainId: CHAIN_IDS.GOERLI,

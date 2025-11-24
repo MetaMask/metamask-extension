@@ -41,6 +41,14 @@ class HeaderNavbar {
 
   private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
 
+  private readonly connectionMenu = '[data-testid="connection-menu"]';
+
+  private readonly connectedSitePopoverNetworkButton =
+    '[data-testid="connected-site-popover-network-button"]';
+
+  private readonly networkOption = (networkId: string) =>
+    `[data-testid="${networkId}"]`;
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -65,6 +73,7 @@ class HeaderNavbar {
   async lockMetaMask(): Promise<void> {
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
+    await this.driver.waitForSelector('[data-testid="unlock-password"]');
   }
 
   async openAccountMenu(): Promise<void> {
@@ -113,10 +122,35 @@ class HeaderNavbar {
     await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
   }
 
-  async openPermissionsPage(): Promise<void> {
+  /**
+   * Opens the permissions page.
+   * Handles both flows:
+   * - Regular flow: Click "All Permissions" → Goes directly to Permissions Page
+   * - Gator flow (Flask): Click "All Permissions" → Gator Permissions Page → Click "Sites" → Permissions Page
+   *
+   * @param options - Optional configuration
+   * @param options.skipSitesNavigation - If true, stops at Gator Permissions Page without clicking "Sites" (only relevant for Gator flow)
+   */
+  async openPermissionsPage(options?: {
+    skipSitesNavigation?: boolean;
+  }): Promise<void> {
     console.log('Open permissions page in header navbar');
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.allPermissionsButton);
+
+    // Check if we landed on Gator Permissions Page (intermediate page for Flask builds)
+    // If so, we need to click "Sites" to get to the actual Permissions Page
+    const isGatorPermissionsPage = await this.driver
+      .findElement('[data-testid="gator-permissions-page"]')
+      .then(() => true)
+      .catch(() => false);
+
+    if (isGatorPermissionsPage && !options?.skipSitesNavigation) {
+      console.log(
+        'Detected Gator Permissions Page, clicking "Sites" to navigate to Permissions Page',
+      );
+      await this.driver.clickElement({ text: 'Sites', tag: 'p' });
+    }
   }
 
   async openSnapListPage(): Promise<void> {
@@ -193,6 +227,32 @@ class HeaderNavbar {
       css: this.accountMenuButton,
       text: expectedLabel,
     });
+  }
+
+  /**
+   * Open the connection menu
+   */
+  async openConnectionMenu(): Promise<void> {
+    console.log('Opening connection menu');
+    await this.driver.clickElement(this.connectionMenu);
+  }
+
+  /**
+   * Click the connected site popover network button
+   */
+  async clickConnectedSitePopoverNetworkButton(): Promise<void> {
+    console.log('Clicking connected site popover network button');
+    await this.driver.clickElement(this.connectedSitePopoverNetworkButton);
+  }
+
+  /**
+   * Select a network from the network options
+   *
+   * @param networkId - The id of the network to select.
+   */
+  async selectNetwork(networkId: string): Promise<void> {
+    console.log(`Selecting network ${networkId}`);
+    await this.driver.clickElement(this.networkOption(networkId));
   }
 }
 

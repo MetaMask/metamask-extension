@@ -23,6 +23,7 @@ import {
 
 import { isEqual } from 'lodash';
 import { Tooltip } from 'react-tippy';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPermissions,
@@ -458,7 +459,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       className="main-container connect-page"
       backgroundColor={BackgroundColor.backgroundDefault}
     >
-      <Header paddingTop={8} paddingBottom={0}>
+      <Header paddingTop={8} paddingBottom={4}>
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
@@ -542,20 +543,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs
-          onTabClick={() => null}
-          backgroundColor={BackgroundColor.transparent}
-          justifyContent={JustifyContent.center}
-          defaultActiveTabKey="accounts"
-          tabListProps={{
-            backgroundColor: BackgroundColor.transparent,
-          }}
-        >
+        <Tabs defaultActiveTabKey="accounts">
           <Tab
             name={t('accounts')}
             tabKey="accounts"
-            width={BlockSize.Full}
             data-testid="accounts-tab"
+            className="flex-1"
           >
             <Box marginTop={4}>
               <Box
@@ -654,13 +647,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           <Tab
             name={t('permissions')}
             tabKey="permissions"
-            width={BlockSize.Full}
             data-testid="permissions-tab"
             disabled={
               promptToCreateSolanaAccount &&
               !solanaAccountExistsInWallet &&
               selectedAccounts.length === 0
             }
+            className="flex-1"
           >
             <Box marginTop={4}>
               <SiteCell

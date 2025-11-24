@@ -1,10 +1,15 @@
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import { SubscriptionUserEvent } from '@metamask/subscription-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -238,7 +243,13 @@ describe('Actions', () => {
     });
 
     it('should return true if the password is outdated', async () => {
-      const store = mockStore();
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
 
       const checkIsSeedlessPasswordOutdated =
         background.checkIsSeedlessPasswordOutdated.resolves(true);
@@ -253,7 +264,13 @@ describe('Actions', () => {
     });
 
     it('should return false if the password is not outdated', async () => {
-      const store = mockStore();
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
 
       const checkIsSeedlessPasswordOutdated =
         background.checkIsSeedlessPasswordOutdated.resolves(false);
@@ -268,7 +285,13 @@ describe('Actions', () => {
     });
 
     it('should not throw an error if the checkIsSeedlessPasswordOutdated fails', async () => {
-      const store = mockStore();
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
 
       const checkIsSeedlessPasswordOutdated =
         background.checkIsSeedlessPasswordOutdated.rejects(new Error('error'));
@@ -3058,12 +3081,12 @@ describe('Actions', () => {
       await store.dispatch(actions.deleteAccountSyncingDataFromUserStorage());
       expect(
         deleteAccountSyncingDataFromUserStorageStub.calledWith(
-          'multichain_accounts_groups',
+          USER_STORAGE_GROUPS_FEATURE_KEY,
         ),
       ).toBe(true);
       expect(
         deleteAccountSyncingDataFromUserStorageStub.calledWith(
-          'multichain_accounts_wallets',
+          USER_STORAGE_WALLETS_FEATURE_KEY,
         ),
       ).toBe(true);
     });
@@ -3162,6 +3185,756 @@ describe('Actions', () => {
       await store.dispatch(actions.setSmartTransactionsRefreshInterval(null));
 
       expect(background.setStatusRefreshInterval.called).toBe(false);
+    });
+  });
+
+  describe('#validateRewardsReferralCode', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls background with provided code and returns true', async () => {
+      const store = mockStore();
+
+      background = {
+        validateRewardsReferralCode: sinon.stub().resolves(true),
+      };
+      setBackgroundConnection(background);
+
+      const code = 'ABCDEF';
+      const result = await store.dispatch(
+        actions.validateRewardsReferralCode(code),
+      );
+
+      expect(background.validateRewardsReferralCode.calledWith(code)).toBe(
+        true,
+      );
+      expect(result).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('returns false when background reports invalid code', async () => {
+      const store = mockStore();
+
+      background = {
+        validateRewardsReferralCode: sinon.stub().resolves(false),
+      };
+      setBackgroundConnection(background);
+
+      const code = 'INVALID';
+      const result = await store.dispatch(
+        actions.validateRewardsReferralCode(code),
+      );
+
+      expect(background.validateRewardsReferralCode.calledWith(code)).toBe(
+        true,
+      );
+      expect(result).toBe(false);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('propagates errors from background without dispatching actions', async () => {
+      const store = mockStore();
+
+      background = {
+        validateRewardsReferralCode: sinon
+          .stub()
+          .rejects(new Error('network error')),
+      };
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(actions.validateRewardsReferralCode('ABCDEF')),
+      ).rejects.toThrow('network error');
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('#getRewardsGeoMetadata', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls background and returns metadata', async () => {
+      const store = mockStore();
+
+      const metadata = { geoLocation: 'US', optinAllowedForGeo: true };
+      background = {
+        getRewardsGeoMetadata: sinon.stub().resolves(metadata),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(actions.getRewardsGeoMetadata());
+
+      expect(background.getRewardsGeoMetadata.calledOnce).toBe(true);
+      expect(result).toStrictEqual(metadata);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('returns null when background resolves null', async () => {
+      const store = mockStore();
+
+      background = {
+        getRewardsGeoMetadata: sinon.stub().resolves(null),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(actions.getRewardsGeoMetadata());
+
+      expect(background.getRewardsGeoMetadata.calledOnce).toBe(true);
+      expect(result).toBeNull();
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('propagates errors from background', async () => {
+      const store = mockStore();
+
+      background = {
+        getRewardsGeoMetadata: sinon.stub().rejects(new Error('fetch error')),
+      };
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(actions.getRewardsGeoMetadata()),
+      ).rejects.toThrow('fetch error');
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('#estimateRewardsPoints', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls background with request and returns estimated points', async () => {
+      const store = mockStore();
+
+      const request = {
+        activityType: 'SWAP',
+        account: 'eip155:1:0x0000000000000000000000000000000000000000',
+        activityContext: {
+          swapContext: {
+            srcAsset: {
+              id: 'eip155:1/slip44:60',
+              amount: '1000000000000000000',
+            },
+            destAsset: {
+              id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              amount: '4500000000',
+            },
+            feeAsset: { id: 'eip155:1/slip44:60', amount: '5000000000000000' },
+          },
+        },
+      };
+      const response = { pointsEstimate: 123, bonusBips: 200 };
+
+      background = {
+        estimateRewardsPoints: sinon.stub().resolves(response),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.estimateRewardsPoints(request),
+      );
+
+      expect(background.estimateRewardsPoints.calledWith(request)).toBe(true);
+      expect(result).toStrictEqual(response);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('propagates errors from background', async () => {
+      const store = mockStore();
+      const request = {
+        activityType: 'SWAP',
+        account: 'eip155:1:0x0000000000000000000000000000000000000000',
+        activityContext: {
+          swapContext: {
+            srcAsset: {
+              id: 'eip155:1/slip44:60',
+              amount: '1000000000000000000',
+            },
+            destAsset: {
+              id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              amount: '4500000000',
+            },
+            feeAsset: { id: 'eip155:1/slip44:60', amount: '5000000000000000' },
+          },
+        },
+      };
+
+      background = {
+        estimateRewardsPoints: sinon
+          .stub()
+          .rejects(new Error('estimate error')),
+      };
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(actions.estimateRewardsPoints(request)),
+      ).rejects.toThrow('estimate error');
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('#rewardsOptIn', () => {
+    const mockAccounts = [
+      {
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        address: '0xFirstAddress',
+        metadata: {
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: ETH_EOA_METHODS,
+        type: EthAccountType.Eoa,
+      },
+    ];
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls background with referral code and returns subscription id', async () => {
+      const store = mockStore();
+
+      background = {
+        rewardsOptIn: sinon.stub().resolves('sub_123'),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.rewardsOptIn({
+          accounts: mockAccounts,
+          referralCode: 'ABCDEF',
+        }),
+      );
+
+      expect(background.rewardsOptIn.calledWith(mockAccounts, 'ABCDEF')).toBe(
+        true,
+      );
+      expect(result).toStrictEqual('sub_123');
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('calls background without referral code and returns null', async () => {
+      const store = mockStore();
+
+      background = {
+        rewardsOptIn: sinon.stub().resolves(null),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.rewardsOptIn({ accounts: mockAccounts }),
+      );
+
+      expect(background.rewardsOptIn.calledWith(mockAccounts, undefined)).toBe(
+        true,
+      );
+      expect(result).toBeNull();
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('propagates errors from background', async () => {
+      const store = mockStore();
+
+      background = {
+        rewardsOptIn: sinon.stub().rejects(new Error('opt-in failed')),
+      };
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(actions.rewardsOptIn({ accounts: mockAccounts })),
+      ).rejects.toThrow('opt-in failed');
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('#rewardsIsOptInSupported', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls background with account and returns true', async () => {
+      const store = mockStore();
+
+      const account = {
+        id: 'acc-1',
+        address: '0x0000000000000000000000000000000000000001',
+        metadata: { name: 'Test Account' },
+      };
+
+      background = {
+        rewardsIsOptInSupported: sinon.stub().resolves(true),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.rewardsIsOptInSupported({ account }),
+      );
+
+      expect(background.rewardsIsOptInSupported.calledWith(account)).toBe(true);
+      expect(result).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('calls background with account and returns false', async () => {
+      const store = mockStore();
+
+      const account = {
+        id: 'acc-2',
+        address: '0x0000000000000000000000000000000000000002',
+        metadata: { name: 'Second Account' },
+      };
+
+      background = {
+        rewardsIsOptInSupported: sinon.stub().resolves(false),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.rewardsIsOptInSupported({ account }),
+      );
+
+      expect(background.rewardsIsOptInSupported.calledWith(account)).toBe(true);
+      expect(result).toBe(false);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('propagates errors from background without dispatching actions', async () => {
+      const store = mockStore();
+
+      const account = {
+        id: 'acc-error',
+        address: '0x0000000000000000000000000000000000000003',
+        metadata: { name: 'Error Account' },
+      };
+
+      background = {
+        rewardsIsOptInSupported: sinon.stub().rejects(new Error('unsupported')),
+      };
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(actions.rewardsIsOptInSupported({ account })),
+      ).rejects.toThrow('unsupported');
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('#rewardsGetOptInStatus', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls background with params and returns status DTO', async () => {
+      const store = mockStore();
+
+      const params = {
+        addresses: [
+          '0xDE37C32E8dbD1CD325B8023a00550a5beA97eF13',
+          '0xDE37C32E8dbD1CD325B8023a00550a5beA97eF14',
+          '0xDE37C32E8dbD1CD325B8023a00550a5beA97eF15',
+        ],
+      };
+
+      const response = {
+        ois: [true, false, true],
+        sids: ['sub_123', null, 'sub_789'],
+      };
+
+      background = {
+        rewardsGetOptInStatus: sinon.stub().resolves(response),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.rewardsGetOptInStatus(params),
+      );
+
+      expect(background.rewardsGetOptInStatus.calledWith(params)).toBe(true);
+      expect(result).toStrictEqual(response);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('propagates errors from background without dispatching actions', async () => {
+      const store = mockStore();
+
+      const params = {
+        addresses: ['0x0000000000000000000000000000000000000000'],
+      };
+
+      background = {
+        rewardsGetOptInStatus: sinon.stub().rejects(new Error('status error')),
+      };
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(actions.rewardsGetOptInStatus(params)),
+      ).rejects.toThrow('status error');
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('#rewardsLinkAccountsToSubscriptionCandidate', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls background with accounts and returns link results', async () => {
+      const store = mockStore();
+
+      const accounts = [
+        {
+          id: 'acc-1',
+          address: '0x0000000000000000000000000000000000000001',
+          metadata: { name: 'Account One' },
+        },
+        {
+          id: 'acc-2',
+          address: '0x0000000000000000000000000000000000000002',
+          metadata: { name: 'Account Two' },
+        },
+      ];
+
+      const response = [
+        { account: accounts[0], success: true },
+        { account: accounts[1], success: false },
+      ];
+
+      background = {
+        rewardsLinkAccountsToSubscriptionCandidate: sinon
+          .stub()
+          .resolves(response),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.rewardsLinkAccountsToSubscriptionCandidate(accounts),
+      );
+
+      expect(
+        background.rewardsLinkAccountsToSubscriptionCandidate.calledWith(
+          accounts,
+        ),
+      ).toBe(true);
+      expect(result).toStrictEqual(response);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('propagates errors from background without dispatching actions', async () => {
+      const store = mockStore();
+
+      const accounts = [
+        {
+          id: 'acc-err',
+          address: '0x0000000000000000000000000000000000000003',
+          metadata: { name: 'Error Account' },
+        },
+      ];
+
+      background = {
+        rewardsLinkAccountsToSubscriptionCandidate: sinon
+          .stub()
+          .rejects(new Error('link error')),
+      };
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(
+          actions.rewardsLinkAccountsToSubscriptionCandidate(accounts),
+        ),
+      ).rejects.toThrow('link error');
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('#getRewardsSeasonStatus', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls background with subscriptionId and seasonId and returns season status', async () => {
+      const store = mockStore();
+
+      const subscriptionId = 'sub_123';
+      const seasonId = 'season_1';
+
+      const seasonTier = {
+        id: 'tier1',
+        name: 'Tier 1',
+        pointsNeeded: 100,
+        image: { lightModeUrl: 'light.png', darkModeUrl: 'dark.png' },
+        levelNumber: '1',
+        rewards: [],
+      };
+
+      const response = {
+        season: {
+          id: seasonId,
+          name: 'Season 1',
+          startDate: 1,
+          endDate: 2,
+          tiers: [seasonTier],
+          lastFetched: 123456,
+        },
+        balance: { total: 42, updatedAt: 999 },
+        tier: {
+          currentTier: seasonTier,
+          nextTier: null,
+          nextTierPointsNeeded: null,
+        },
+        lastFetched: 123456,
+      };
+
+      background = {
+        getRewardsSeasonStatus: sinon.stub().resolves(response),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.getRewardsSeasonStatus(subscriptionId, seasonId),
+      );
+
+      expect(
+        background.getRewardsSeasonStatus.calledWith(subscriptionId, seasonId),
+      ).toBe(true);
+      expect(result).toStrictEqual(response);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('propagates errors from background without dispatching actions', async () => {
+      const store = mockStore();
+
+      const subscriptionId = 'sub_err';
+      const seasonId = 'season_err';
+
+      background = {
+        getRewardsSeasonStatus: sinon
+          .stub()
+          .rejects(new Error('season status error')),
+      };
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(
+          actions.getRewardsSeasonStatus(subscriptionId, seasonId),
+        ),
+      ).rejects.toThrow('season status error');
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('#getRewardsSeasonMetadata', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls background without type and returns season metadata', async () => {
+      const store = mockStore();
+
+      const response = {
+        id: 'season_1',
+        name: 'Season 1',
+        startDate: 1,
+        endDate: 2,
+        tiers: [],
+        lastFetched: 111,
+      };
+
+      background = {
+        getRewardsSeasonMetadata: sinon.stub().resolves(response),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(actions.getRewardsSeasonMetadata());
+
+      expect(background.getRewardsSeasonMetadata.calledOnce).toBe(true);
+      expect(result).toStrictEqual(response);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it("calls background with type 'current' and returns season metadata", async () => {
+      const store = mockStore();
+
+      const response = {
+        id: 'season_current',
+        name: 'Season Current',
+        startDate: 10,
+        endDate: 20,
+        tiers: [],
+        lastFetched: 222,
+      };
+
+      background = {
+        getRewardsSeasonMetadata: sinon.stub().resolves(response),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.getRewardsSeasonMetadata('current'),
+      );
+
+      expect(background.getRewardsSeasonMetadata.calledWith('current')).toBe(
+        true,
+      );
+      expect(result).toStrictEqual(response);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it("calls background with type 'next' and returns season metadata", async () => {
+      const store = mockStore();
+
+      const response = {
+        id: 'season_next',
+        name: 'Season Next',
+        startDate: 30,
+        endDate: 40,
+        tiers: [],
+        lastFetched: 333,
+      };
+
+      background = {
+        getRewardsSeasonMetadata: sinon.stub().resolves(response),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.getRewardsSeasonMetadata('next'),
+      );
+
+      expect(background.getRewardsSeasonMetadata.calledWith('next')).toBe(true);
+      expect(result).toStrictEqual(response);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('propagates errors from background without dispatching actions', async () => {
+      const store = mockStore();
+
+      background = {
+        getRewardsSeasonMetadata: sinon
+          .stub()
+          .rejects(new Error('metadata error')),
+      };
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(actions.getRewardsSeasonMetadata()),
+      ).rejects.toThrow('metadata error');
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('#getRewardsSeasonStatus (edge cases)', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('returns season status when season has no tiers', async () => {
+      const store = mockStore();
+
+      const subscriptionId = 'sub_empty_tiers';
+      const seasonId = 'season_empty';
+
+      const response = {
+        season: {
+          id: seasonId,
+          name: 'Empty Season',
+          startDate: 1,
+          endDate: 2,
+          tiers: [],
+          lastFetched: 333,
+        },
+        balance: { total: 0, updatedAt: 444 },
+        tier: {
+          currentTier: {
+            id: 'tier0',
+            name: 'Tier 0',
+            pointsNeeded: 0,
+            image: { lightModeUrl: '', darkModeUrl: '' },
+            levelNumber: '0',
+            rewards: [],
+          },
+          nextTier: null,
+          nextTierPointsNeeded: null,
+        },
+        lastFetched: 333,
+      };
+
+      background = {
+        getRewardsSeasonStatus: sinon.stub().resolves(response),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.getRewardsSeasonStatus(subscriptionId, seasonId),
+      );
+
+      expect(
+        background.getRewardsSeasonStatus.calledWith(subscriptionId, seasonId),
+      ).toBe(true);
+      expect(result).toStrictEqual(response);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+
+    it('returns season status when nextTier is present', async () => {
+      const store = mockStore();
+
+      const subscriptionId = 'sub_next_tier';
+      const seasonId = 'season_next';
+
+      const tier1 = {
+        id: 'tier1',
+        name: 'Tier 1',
+        pointsNeeded: 100,
+        image: { lightModeUrl: '', darkModeUrl: '' },
+        levelNumber: '1',
+        rewards: [],
+      };
+      const tier2 = {
+        id: 'tier2',
+        name: 'Tier 2',
+        pointsNeeded: 200,
+        image: { lightModeUrl: '', darkModeUrl: '' },
+        levelNumber: '2',
+        rewards: [],
+      };
+
+      const response = {
+        season: {
+          id: seasonId,
+          name: 'Season Next',
+          startDate: 5,
+          endDate: 15,
+          tiers: [tier1, tier2],
+          lastFetched: 555,
+        },
+        balance: { total: 150, updatedAt: 666 },
+        tier: {
+          currentTier: tier1,
+          nextTier: tier2,
+          nextTierPointsNeeded: 50,
+        },
+        lastFetched: 555,
+      };
+
+      background = {
+        getRewardsSeasonStatus: sinon.stub().resolves(response),
+      };
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.getRewardsSeasonStatus(subscriptionId, seasonId),
+      );
+
+      expect(
+        background.getRewardsSeasonStatus.calledWith(subscriptionId, seasonId),
+      ).toBe(true);
+      expect(result).toStrictEqual(response);
+      expect(store.getActions()).toStrictEqual([]);
     });
   });
 
@@ -3326,6 +4099,62 @@ describe('Actions', () => {
       }
 
       expect(background.syncSeedPhrases.calledOnceWith()).toBe(true);
+    });
+  });
+
+  describe('submitSubscriptionUserEvents', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls submitSubscriptionUserEvents in the background', async () => {
+      const store = mockStore();
+      const submitSubscriptionUserEventsStub = sinon.stub().resolves();
+      background.getApi.returns({
+        submitSubscriptionUserEvents: submitSubscriptionUserEventsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.submitSubscriptionUserEvents({
+          event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        }),
+      );
+
+      expect(
+        submitSubscriptionUserEventsStub.calledOnceWith({
+          event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        }),
+      ).toBe(true);
+    });
+
+    it('handles error when submitSubscriptionUserEvents fails', async () => {
+      const errorMessage = 'Failed to submit subscription user events';
+      const store = mockStore();
+      const submitSubscriptionUserEventsStub = sinon
+        .stub()
+        .rejects(new Error(errorMessage));
+      background.getApi.returns({
+        submitSubscriptionUserEvents: submitSubscriptionUserEventsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'DISPLAY_WARNING', payload: errorMessage },
+      ];
+
+      await store.dispatch(
+        actions.submitSubscriptionUserEvents({
+          event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        }),
+      );
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(
+        submitSubscriptionUserEventsStub.calledOnceWith({
+          event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        }),
+      ).toBe(true);
     });
   });
 });

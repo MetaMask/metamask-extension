@@ -40,6 +40,7 @@ import {
   MultichainAccountGroupToScopesMap,
   MultichainAccountsState,
   AccountGroupObjectWithWalletNameAndId,
+  NormalizedGroupMetadata,
 } from './account-tree.types';
 import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
 
@@ -194,6 +195,38 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
 );
 
 /**
+ * Retrieve the normalized groups metadata.
+ *
+ * @param accountTree - Account tree state.
+ * @param internalAccountsObject - The internal accounts object.
+ * @returns The normalized group metadata.
+ */
+export const getNormalizedGroupsMetadata = createDeepEqualSelector(
+  getAccountTree,
+  getInternalAccountsObject,
+  (
+    accountTree: AccountTreeState,
+    internalAccountsObject: Record<AccountId, InternalAccount>,
+  ) => {
+    const { wallets } = accountTree;
+    const result: Record<AccountGroupId, NormalizedGroupMetadata> = {};
+    for (const wallet of Object.values(wallets)) {
+      for (const group of Object.values(wallet.groups)) {
+        result[group.id] = {
+          name: group.metadata?.name?.toLowerCase() ?? '',
+          accounts: group.accounts.map((accountId: AccountId) => {
+            return (
+              internalAccountsObject[accountId]?.address.toLowerCase() ?? ''
+            );
+          }),
+        };
+      }
+    }
+    return result;
+  },
+);
+
+/**
  * This selector is a temporary solution to avoid a regression in the account order UI while Multichain Accounts V2 is not completed.
  * It takes the ordered accounts from the MetaMask state and combines them with the account tree data
  * bypassing the respective groups inside a wallet and just adding all accounts inside the first group.
@@ -280,6 +313,10 @@ export const getMultichainAccountGroupById = createDeepEqualSelector(
   getAccountTree,
   (_, accountId: AccountGroupId) => accountId,
   (accountTree: AccountTreeState, accountId: AccountGroupId) => {
+    if (!accountId) {
+      return undefined;
+    }
+
     const { wallets } = accountTree;
 
     const walletId = extractWalletIdFromGroupId(accountId);
@@ -825,9 +862,7 @@ export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
   [getInternalAccountsFromGroupById],
   (accounts: InternalAccount[]): string => {
     if (!accounts || accounts.length === 0) {
-      throw new Error(
-        'Error in getIconSeedAddressByAccountGroupId: No accounts found in the specified group',
-      );
+      return '';
     }
 
     for (const account of accounts) {
@@ -841,3 +876,33 @@ export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
     return accounts[0].address;
   },
 );
+
+/**
+ * Get the seed addresses for multiple account groups at once.
+ * This is more efficient than calling getIconSeedAddressByAccountGroupId multiple times.
+ *
+ * @param state - Redux state.
+ * @param accountGroups - Array of account groups to get seed addresses for.
+ * @returns Object mapping account group IDs to their seed addresses.
+ */
+export const getIconSeedAddressesByAccountGroups = (
+  state: MultichainAccountsState,
+  accountGroups: AccountGroupWithInternalAccounts[],
+): Record<AccountGroupId, string> => {
+  const seedAddresses: Record<AccountGroupId, string> = {};
+
+  accountGroups.forEach((accountGroup) => {
+    try {
+      const seedAddress = getIconSeedAddressByAccountGroupId(
+        state,
+        accountGroup.id,
+      );
+      seedAddresses[accountGroup.id] = seedAddress;
+    } catch (error) {
+      // don't throw and show empty string as seed address.
+      seedAddresses[accountGroup.id] = '';
+    }
+  });
+
+  return seedAddresses;
+};

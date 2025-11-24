@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,9 +17,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -55,11 +56,13 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import {
   forceUpdateMetamaskState,
+  getIsSeedlessOnboardingUserAuthenticated,
   resetOnboarding,
+  setDataCollectionForMarketing,
   setMarketingConsent,
 } from '../../../store/actions';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
@@ -80,10 +83,9 @@ export default function CreatePassword({
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
     trackEvent;
   const currentKeyring = useSelector(getCurrentKeyring);
-  const isSeedlessOnboardingFeatureEnabled =
-    getIsSeedlessOnboardingFeatureEnabled();
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
+  const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const isParticipateInMetaMetricsSet = useSelector(
@@ -104,26 +106,43 @@ export default function CreatePassword({
     analyticsIframeQuery,
   )}`;
 
+  const validateSocialLoginAuthenticatedState = useCallback(async () => {
+    const isSeedlessOnboardingUserAuthenticated = await dispatch(
+      getIsSeedlessOnboardingUserAuthenticated(),
+    );
+    if (!isSeedlessOnboardingUserAuthenticated) {
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    }
+  }, [dispatch, navigate]);
+
   useEffect(() => {
-    if (currentKeyring && !newAccountCreationInProgress) {
+    if (
+      currentKeyring &&
+      !newAccountCreationInProgress &&
+      !isWalletResetInProgress
+    ) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
-        navigate(
-          isParticipateInMetaMetricsSet
-            ? ONBOARDING_COMPLETION_ROUTE
-            : ONBOARDING_METAMETRICS,
-          { replace: true },
-        );
-      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        if (isFirefox) {
+        if (
+          !isFirefox &&
+          firstTimeFlowType === FirstTimeFlowType.socialImport
+        ) {
+          // we don't display the metametrics screen for social login flows if the user is not on firefox
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
-          navigate(ONBOARDING_METAMETRICS, { replace: true });
+          navigate(
+            isParticipateInMetaMetricsSet
+              ? ONBOARDING_COMPLETION_ROUTE
+              : ONBOARDING_METAMETRICS,
+            { replace: true },
+          );
         }
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
-        navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
+        navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
       }
     } else if (
       firstTimeFlowType === FirstTimeFlowType.import &&
@@ -138,7 +157,18 @@ export default function CreatePassword({
     newAccountCreationInProgress,
     secretRecoveryPhrase,
     isParticipateInMetaMetricsSet,
+    isWalletResetInProgress,
   ]);
+
+  useEffect(() => {
+    // validate social login authenticated state on mount
+    // before user attempts to create a new wallet
+    (async () => {
+      if (isSocialLoginFlow) {
+        await validateSocialLoginAuthenticatedState();
+      }
+    })();
+  }, [isSocialLoginFlow, validateSocialLoginAuthenticatedState]);
 
   const handleLearnMoreClick = (event) => {
     event.stopPropagation();
@@ -194,7 +224,7 @@ export default function CreatePassword({
       },
     });
 
-    if (isFirefox) {
+    if (isFirefox || isSocialLoginFlow) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_METAMETRICS, { replace: true });
@@ -247,14 +277,14 @@ export default function CreatePassword({
         ),
       },
     });
-
-    if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
+    if (isSocialLoginFlow) {
       if (termsChecked) {
-        await dispatch(setMarketingConsent(true));
+        dispatch(setMarketingConsent(true));
+        dispatch(setDataCollectionForMarketing(true));
       }
-      navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+      navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
     } else {
-      navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
+      navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
     }
   };
 
@@ -271,13 +301,17 @@ export default function CreatePassword({
 
   const handleBackClick = async (event) => {
     event.preventDefault();
-    // reset onboarding flow
-    await dispatch(resetOnboarding());
-    await forceUpdateMetamaskState(dispatch);
 
-    firstTimeFlowType === FirstTimeFlowType.import
-      ? navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE, { replace: true })
-      : navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    if (firstTimeFlowType === FirstTimeFlowType.import) {
+      // for SRP import flow, we will just navigate back to the import SRP page
+      navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE, { replace: true });
+    } else {
+      // reset onboarding flow
+      await dispatch(resetOnboarding());
+      await forceUpdateMetamaskState(dispatch);
+
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    }
   };
 
   const handlePasswordSetupError = (error) => {
@@ -346,6 +380,7 @@ export default function CreatePassword({
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
       height={BlockSize.Full}
+      width={BlockSize.Full}
       gap={4}
       as="form"
       className="create-password"
@@ -373,17 +408,6 @@ export default function CreatePassword({
           marginBottom={4}
           width={BlockSize.Full}
         >
-          {!isSocialLoginFlow && (
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-            >
-              {t('stepOf', [
-                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
-                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
-              ])}
-            </Text>
-          )}
           <Text variant={TextVariant.headingLg} as="h2">
             {t('createPassword')}
           </Text>
@@ -415,17 +439,11 @@ export default function CreatePassword({
         <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
         <Box
           className="create-password__terms-container"
-          alignItems={
-            isSocialLoginFlow ? AlignItems.center : AlignItems.flexStart
-          }
+          alignItems={AlignItems.center}
           justifyContent={JustifyContent.spaceBetween}
           marginTop={6}
-          backgroundColor={
-            isSocialLoginFlow
-              ? BackgroundColor.backgroundMuted
-              : BackgroundColor.backgroundDefault
-          }
-          padding={isSocialLoginFlow ? 3 : 0}
+          backgroundColor={BackgroundColor.backgroundMuted}
+          padding={3}
           borderRadius={BorderRadius.LG}
         >
           <Checkbox
@@ -437,8 +455,13 @@ export default function CreatePassword({
             }}
             label={
               <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
-                {checkboxLabel} &nbsp;
-                {!isSocialLoginFlow && createPasswordLink}
+                {checkboxLabel}
+                {!isSocialLoginFlow && (
+                  <>
+                    <br />
+                    {createPasswordLink}
+                  </>
+                )}
               </Text>
             }
           />

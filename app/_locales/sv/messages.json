@@ -229,9 +229,6 @@
   "etherscanView": {
     "message": "Visa konto på Etherscan"
   },
-  "expandView": {
-    "message": "Expandera vy"
-  },
   "failed": {
     "message": "Misslyckades"
   },
@@ -607,9 +604,6 @@
   },
   "supportCenter": {
     "message": "Besök vårt supportcenter"
-  },
-  "switchNetworks": {
-    "message": "Växla nätverk"
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbolen måste vara 11 tecken eller färre."

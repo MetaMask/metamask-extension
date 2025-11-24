@@ -11,27 +11,34 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
   args?: T,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground(bridgeAction, args);
+    const result = await submitRequestToBackground(bridgeAction, args);
     await forceUpdateMetamaskState(dispatch);
+    return result;
   };
 };
 
 /**
  * Submit a solana bridge or swap transaction using the bridge status controller
  *
+ * @param accountAddress
  * @param quote
  * @param isStxSupportedInClient
  * @returns
  */
 export const submitBridgeTx = (
+  accountAddress: string,
   quote: QuoteResponse & QuoteMetadata,
   isStxSupportedInClient: boolean,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     return dispatch(
       callBridgeStatusControllerMethod<
-        [QuoteResponse & QuoteMetadata, boolean]
-      >(BridgeStatusAction.SUBMIT_TX, [quote, isStxSupportedInClient]),
+        [string, QuoteResponse & QuoteMetadata, boolean]
+      >(BridgeStatusAction.SUBMIT_TX, [
+        accountAddress,
+        quote,
+        isStxSupportedInClient,
+      ]),
     );
   };
 };

@@ -37,6 +37,7 @@ export const Content = ({
       flexDirection={FlexDirection.Column}
       width={BlockSize.Full}
       padding={4}
+      paddingTop={0}
       height={BlockSize.Full}
       className={classnames('multichain-page-content', className)}
       style={styles}

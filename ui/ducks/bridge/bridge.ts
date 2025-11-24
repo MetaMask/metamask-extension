@@ -1,19 +1,20 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   SortOrder,
-  BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
   getNativeAssetForChainId,
   calcLatestSrcBalance,
-  isSolanaChainId,
+  isNonEvmChainId,
   isCrossChain,
   formatChainIdToHex,
   type GenericQuoteRequest,
   type QuoteResponse,
+  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { endTrace, TraceName } from '../../../shared/lib/trace';
+import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
 
@@ -30,7 +31,7 @@ const initialState: BridgeState = {
   sortOrder: SortOrder.COST_ASC,
   selectedQuote: null,
   wasTxDeclined: false,
-  slippage: BRIDGE_DEFAULT_SLIPPAGE,
+  slippage: SlippageValue.BridgeDefault,
   txAlert: null,
 };
 
@@ -63,7 +64,7 @@ const getBalanceAmount = async ({
   tokenAddress: string;
   chainId: GenericQuoteRequest['srcChainId'];
 }) => {
-  if (isSolanaChainId(chainId) || !selectedAddress) {
+  if (isNonEvmChainId(chainId) || !selectedAddress) {
     return null;
   }
   return (
@@ -109,9 +110,20 @@ const bridgeSlice = createSlice({
       if (
         state.fromToken?.assetId &&
         state.toToken?.assetId &&
-        state.fromToken.assetId.toLowerCase() ===
-          state.toToken.assetId.toLowerCase()
+        // TODO: determine if this is necessary.
+        state.fromToken.assetId?.toLowerCase() ===
+          state.toToken.assetId?.toLowerCase()
       ) {
+        state.toToken = null;
+      }
+      // if new fromToken is BTC, and toToken is BTC, unset toChain and toToken
+      if (
+        state.fromToken?.chainId &&
+        isBitcoinChainId(state.fromToken.chainId) &&
+        state.toChainId &&
+        isBitcoinChainId(state.toChainId)
+      ) {
+        state.toChainId = null;
         state.toToken = null;
       }
     },

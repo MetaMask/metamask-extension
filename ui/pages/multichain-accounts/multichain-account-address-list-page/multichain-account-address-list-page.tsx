@@ -1,7 +1,12 @@
 import React, { useState, useCallback } from 'react';
 
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import {
+  useNavigate,
+  useLocation,
+  useParams,
+} from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
+import { CaipChainId } from '@metamask/utils';
 import {
   Box,
   BoxFlexDirection,
@@ -20,16 +25,34 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAddressRowsList } from '../../../components/multichain-accounts/multichain-address-rows-list';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import { AddressQRCodeModal } from '../../../components/multichain-accounts/address-qr-code-modal/address-qr-code-modal';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import {
   AddressListQueryParams,
   AddressListSource,
 } from './multichain-account-address-list-page.types';
 
-export const MultichainAccountAddressListPage = () => {
+type MultichainAccountAddressListPageProps = {
+  params?: { accountGroupId: string };
+  location?: {
+    pathname: string;
+    search: string;
+    hash: string;
+    state: unknown;
+    key: string;
+  };
+};
+
+export const MultichainAccountAddressListPage = ({
+  params: propsParams,
+  location: propsLocation,
+}: MultichainAccountAddressListPageProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const location = useLocation();
-  const { accountGroupId } = useParams<{ accountGroupId: string }>();
+  const navigate = useNavigate();
+  const hookLocation = useLocation();
+  const hookParams = useParams<{ accountGroupId: string }>();
+
+  const location = propsLocation || hookLocation;
+  const { accountGroupId } = propsParams || hookParams;
 
   const decodedAccountGroupId = accountGroupId
     ? (decodeURIComponent(accountGroupId) as AccountGroupId)
@@ -55,13 +78,19 @@ export const MultichainAccountAddressListPage = () => {
   const [selectedQRData, setSelectedQRData] = useState<{
     address: string;
     networkName: string;
+    chainId: CaipChainId;
     networkImageSrc?: string;
   } | null>(null);
 
   // QR Modal handlers
   const handleShowQR = useCallback(
-    (address: string, networkName: string, networkImageSrc?: string) => {
-      setSelectedQRData({ address, networkName, networkImageSrc });
+    (
+      address: string,
+      networkName: string,
+      chainId: CaipChainId,
+      networkImageSrc?: string,
+    ) => {
+      setSelectedQRData({ address, networkName, chainId, networkImageSrc });
       setIsQRModalOpen(true);
     },
     [],
@@ -76,21 +105,21 @@ export const MultichainAccountAddressListPage = () => {
     <Page className="max-w-[600px]">
       <Header
         textProps={{
-          variant: TextVariant.headingMd,
+          variant: TextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             data-testid="multichain-account-address-list-page-back-button"
           />
         }
       >
         {pageTitle}
       </Header>
-      <Content>
+      <Content padding={0}>
         <Box flexDirection={BoxFlexDirection.Column}>
           {decodedAccountGroupId ? (
             <MultichainAddressRowsList
@@ -109,6 +138,7 @@ export const MultichainAccountAddressListPage = () => {
           address={selectedQRData.address}
           accountName={accountGroup?.metadata?.name || t('account')}
           networkName={selectedQRData.networkName}
+          chainId={selectedQRData.chainId}
           networkImageSrc={selectedQRData.networkImageSrc}
         />
       )}

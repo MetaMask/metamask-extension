@@ -37,6 +37,8 @@ jest.mock('../../shared/modules/selectors/networks', () => ({
   getSelectedNetworkClientId: jest.fn(),
   getNetworkConfigurationsByChainId: jest.fn(),
   getCurrentChainId: jest.fn(),
+  selectDefaultNetworkClientIdsByChainId: jest.fn(),
+  getNetworksMetadata: jest.fn(),
 }));
 
 const mockGetCurrencyRates = jest.mocked(getCurrencyRates);
@@ -87,7 +89,7 @@ const mockNetworkConfigs = () => ({
     chainId: '0x1',
     defaultBlockExplorerUrlIndex: 0,
     defaultRpcEndpointIndex: 0,
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     nativeCurrency: 'ETH',
     rpcEndpoints: [
       {

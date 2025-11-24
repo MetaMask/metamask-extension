@@ -179,7 +179,7 @@ export default function RecoveryPhraseChips({
                 borderColor={
                   isTargetIndex
                     ? BorderColor.primaryDefault
-                    : BorderColor.borderMuted
+                    : BorderColor.borderDefault
                 }
                 borderWidth={isTargetIndex ? 2 : 1}
                 borderRadius={BorderRadius.LG}
@@ -312,6 +312,8 @@ export default function RecoveryPhraseChips({
                 variant={ButtonVariant.Secondary}
                 borderRadius={BorderRadius.LG}
                 block
+                borderColor={BorderColor.primaryDefault}
+                color={TextColor.primaryDefault}
                 onClick={() => {
                   addQuizWord(quizWord.word, actualIdxInSrp);
                 }}

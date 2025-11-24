@@ -19,9 +19,21 @@ export const TokenBalancesControllerInit: ControllerInitFunction<
     // the preferences controller state.
     messenger: controllerMessenger,
     state: persistedState.TokenBalancesController,
-    useAccountsAPI: false,
     queryMultipleAccounts: useMultiAccountBalanceChecker,
     interval: 30_000,
+    allowExternalServices: () =>
+      initMessenger.call('PreferencesController:getState').useExternalServices,
+    accountsApiChainIds: () => {
+      const state = initMessenger.call('RemoteFeatureFlagController:getState');
+
+      const featureFlagForAccountApiBalances =
+        state?.remoteFeatureFlags?.assetsAccountApiBalances;
+
+      return Array.isArray(featureFlagForAccountApiBalances)
+        ? (featureFlagForAccountApiBalances as `0x${string}`[])
+        : [];
+    },
+    platform: 'extension',
   });
 
   return {

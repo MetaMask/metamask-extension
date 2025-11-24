@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom-v5-compat';
 import {
-  BridgeAppState,
   UnifiedSwapBridgeEventName,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
@@ -12,6 +12,7 @@ import {
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { resetBackgroundSwapsState } from '../../store/actions';
 import {
@@ -20,7 +21,6 @@ import {
   IconName,
 } from '../../components/component-library';
 import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
-import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -39,25 +39,34 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
-import {
-  getBridgeQuotes,
-  getIsUnifiedUIEnabled,
-} from '../../ducks/bridge/selectors';
+import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
+import { useSafeNavigation } from '../../hooks/useSafeNavigation';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
-import { useIsMultichainSwap } from './hooks/useIsMultichainSwap';
 
-const CrossChainSwap = () => {
+type CrossChainSwapProps = {
+  location?: {
+    search?: string;
+  };
+};
+
+const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
   const t = useContext(I18nContext);
 
   // Load swaps feature flags so that we can use smart transactions
   useSwapsFeatureFlags();
   useBridging();
 
-  const history = useHistory();
+  const { navigate } = useSafeNavigation();
   const dispatch = useDispatch();
+
+  const { search } = location ?? {};
+
+  const isFromTransactionShield = new URLSearchParams(search || '').get(
+    'isFromTransactionShield',
+  );
 
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
@@ -65,12 +74,14 @@ const CrossChainSwap = () => {
     await dispatch(resetBridgeState());
   };
 
-  const isSwap = useIsMultichainSwap();
-  const chainId = useSelector(getMultichainCurrentChainId);
-  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
-    getIsUnifiedUIEnabled(state, chainId),
-  );
   const { activeQuote } = useSelector(getBridgeQuotes);
+
+  // Get chain information to determine if we need gas estimates
+  const fromChain = useSelector(getFromChain);
+
+  // Only fetch gas estimates if the source chain is EVM (not Solana, Bitcoin, or Tron)
+  const shouldFetchGasEstimates =
+    fromChain?.chainId && !isNonEvmChainId(fromChain.chainId);
 
   useEffect(() => {
     dispatch(
@@ -93,8 +104,8 @@ const CrossChainSwap = () => {
     };
   }, []);
 
-  // Needed for refreshing gas estimates
-  useGasFeeEstimates(selectedNetworkClientId);
+  // Needed for refreshing gas estimates (only for EVM chains)
+  useGasFeeEstimates(selectedNetworkClientId, shouldFetchGasEstimates);
   // Needed for fetching exchange rates for tokens that have not been imported
   useBridgeExchangeRates();
   // Emits events related to quote-fetching
@@ -104,10 +115,11 @@ const CrossChainSwap = () => {
 
   const redirectToDefaultRoute = async () => {
     await resetControllerAndInputStates();
-    history.push({
-      pathname: DEFAULT_ROUTE,
-      state: { stayOnHomePage: true },
-    });
+    if (isFromTransactionShield) {
+      navigate(TRANSACTION_SHIELD_ROUTE);
+    } else {
+      navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+    }
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
   };
@@ -139,30 +151,40 @@ const CrossChainSwap = () => {
           />
         }
       >
-        {isSwap || isUnifiedUIEnabled ? t('swap') : t('bridge')}
+        {t('swap')}
       </Header>
       <Content padding={0}>
-        <Switch>
-          <Route path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}>
-            <BridgeTransactionSettingsModal
-              isOpen={isSettingsModalOpen}
-              onClose={() => {
-                setIsSettingsModalOpen(false);
-              }}
-            />
-            <PrepareBridgePage
-              onOpenSettings={() => setIsSettingsModalOpen(true)}
-            />
-          </Route>
-          <Route path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}>
-            <Content>
-              <AwaitingSignatures />
-            </Content>
-            <Footer>
-              <AwaitingSignaturesCancelButton />
-            </Footer>
-          </Route>
-        </Switch>
+        <Routes>
+          <Route
+            path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
+            element={
+              <>
+                <BridgeTransactionSettingsModal
+                  isOpen={isSettingsModalOpen}
+                  onClose={() => {
+                    setIsSettingsModalOpen(false);
+                  }}
+                />
+                <PrepareBridgePage
+                  onOpenSettings={() => setIsSettingsModalOpen(true)}
+                />
+              </>
+            }
+          />
+          <Route
+            path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}
+            element={
+              <>
+                <Content>
+                  <AwaitingSignatures />
+                </Content>
+                <Footer>
+                  <AwaitingSignaturesCancelButton />
+                </Footer>
+              </>
+            }
+          />
+        </Routes>
       </Content>
     </Page>
   );

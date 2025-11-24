@@ -1,8 +1,9 @@
 import { Suite } from 'mocha';
 import { Browser } from 'selenium-webdriver';
+import { Mockttp } from 'mockttp';
 import { Anvil } from '../../seeder/anvil';
 import { withFixtures } from '../../helpers';
-import { WALLET_PASSWORD } from '../../constants';
+import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -12,15 +13,36 @@ import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboardi
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import TestDappSendEthWithPrivateKey from '../../page-objects/pages/test-dapp-send-eth-with-private-key';
+import { handleSidepanelPostOnboarding } from '../../page-objects/flows/onboarding.flow';
+
+async function mockSpotPrices(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(
+      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+    )
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        '0x0000000000000000000000000000000000000000': {
+          id: 'ethereum',
+          price: 1700,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+}
 
 describe('Incremental Security', function (this: Suite) {
   it('Back up Secret Recovery Phrase from backup reminder', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: {
+          customDappPaths: ['./send-eth-with-private-key-test'],
+        },
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        testSpecificMock: mockSpotPrices,
         title: this.test?.fullTitle(),
-        dappPath: 'send-eth-with-private-key-test',
       },
       async ({
         driver,
@@ -39,7 +61,7 @@ describe('Incremental Security', function (this: Suite) {
         // skip collect metametrics
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.clickNoThanksButton();
+          await onboardingMetricsPage.skipMetricAndContinue();
         }
 
         // agree to terms of use and start onboarding
@@ -60,7 +82,7 @@ describe('Incremental Security', function (this: Suite) {
         // skip collect metametrics
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.clickNoThanksButton();
+          await onboardingMetricsPage.skipMetricAndContinue();
         }
 
         // complete onboarding and pin extension
@@ -68,27 +90,32 @@ describe('Incremental Security', function (this: Suite) {
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
         // copy the wallet address
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.clickBackupRemindMeLaterButton();
         await homePage.headerNavbar.clickAddressCopyButton();
 
         // switched to Dapp and send eth to the current account
-        const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
         const testDapp = new TestDappSendEthWithPrivateKey(driver);
         await testDapp.openTestDappSendEthWithPrivateKey();
         await testDapp.checkPageIsLoaded();
         await testDapp.pasteAddressAndSendEthWithPrivateKey();
 
         // switch back to extension and check the balance is updated
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('1');
+        // to update balance faster and avoid timeout error
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed('3,400.00', '$');
 
         // backup reminder is displayed and it directs user to the backup SRP page
         await homePage.goToBackupSRPPage();
-        await secureWalletPage.checkPageIsLoaded();
 
         // reveal and confirm the Secret Recovery Phrase on backup SRP page
         await secureWalletPage.revealAndConfirmSRP(WALLET_PASSWORD);
@@ -100,7 +127,7 @@ describe('Incremental Security', function (this: Suite) {
 
         // check the balance is correct after revealing and confirming the SRP
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('1');
+        await homePage.checkExpectedBalanceIsDisplayed('3,400.00', '$');
 
         // check backup reminder is not displayed on homepage
         await homePage.checkBackupReminderIsNotDisplayed();

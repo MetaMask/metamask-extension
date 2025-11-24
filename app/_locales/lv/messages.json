@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Skatīt kontu ar Etherscan"
   },
-  "expandView": {
-    "message": "Izvērst skatījumu"
-  },
   "failed": {
     "message": "Neizdevās"
   },
@@ -619,9 +616,6 @@
   },
   "supportCenter": {
     "message": "Apmeklējiet mūsu Atbalsta centru"
-  },
-  "switchNetworks": {
-    "message": "Mainīt tīklus"
   },
   "symbol": {
     "message": "Simbols"

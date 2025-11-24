@@ -34,6 +34,10 @@ class AdvancedSettings {
     tag: 'button',
   };
 
+  private readonly hexDataToggle = {
+    testId: 'advanced-setting-hex-data',
+  };
+
   private readonly showConversionOnTestnetsToggle =
     '.show-fiat-on-testnets-toggle';
 
@@ -109,6 +113,11 @@ class AdvancedSettings {
         },
       );
     }
+  }
+
+  async toggleOnHexData(): Promise<void> {
+    console.log('Toggling on hex data in advanced settings');
+    await this.driver.clickElement(this.hexDataToggle);
   }
 
   async toggleShowConversionOnTestnets(): Promise<void> {

@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { openDapp, unlockWallet, WINDOW_TITLES } from '../../../helpers';
+import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockPermitDecoding,
@@ -89,7 +89,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
         await unlockWallet(driver);
-        await openDapp(driver);
+        await testDapp.openTestDappPage();
         await testDapp.clickPermit();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 

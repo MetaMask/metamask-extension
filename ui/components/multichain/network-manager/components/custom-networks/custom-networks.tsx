@@ -1,7 +1,7 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
   convertCaipToHexChainId,
@@ -42,7 +42,7 @@ import { hideModal } from '../../../../../store/actions';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const [, evmNetworks] = useSelector(
@@ -86,12 +86,20 @@ export const CustomNetworks = React.memo(() => {
   // Renders a network in the network list
   const generateMultichainNetworkListItem = useCallback(
     (network: MultichainNetworkConfiguration) => {
-      const hexChainId = convertCaipToHexChainId(network.chainId);
-      const isEnabled = Object.keys(enabledNetworksByNamespace).includes(
-        hexChainId,
-      );
+      const convertedChainId = network.isEvm
+        ? convertCaipToHexChainId(network.chainId)
+        : // keep CAIP for non‑EVM
+          network.chainId;
 
-      const { onDelete, onEdit, onRpcSelect } = getItemCallbacks(network);
+      const isEnabled = Boolean(enabledNetworksByNamespace[convertedChainId]);
+
+      const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
+        getItemCallbacks(network);
+
+      const rpcEndpoint =
+        network.isEvm && hasMultiRpcOptions(network)
+          ? getRpcDataByChainId(network.chainId, evmNetworks).defaultRpcEndpoint
+          : undefined;
 
       return (
         <NetworkListItem
@@ -100,15 +108,11 @@ export const CustomNetworks = React.memo(() => {
           name={network.name}
           iconSrc={getNetworkIcon(network)}
           iconSize={AvatarNetworkSize.Md}
-          rpcEndpoint={
-            hasMultiRpcOptions(network)
-              ? getRpcDataByChainId(network.chainId, evmNetworks)
-                  .defaultRpcEndpoint
-              : undefined
-          }
+          rpcEndpoint={rpcEndpoint}
           onClick={() => handleNetworkClick(network.chainId)}
           onDeleteClick={onDelete}
           onEditClick={onEdit}
+          onDiscoverClick={onDiscoverClick}
           selected={isEnabled}
           onRpcEndpointClick={onRpcSelect}
           disabled={!isNetworkEnabled(network)}
@@ -162,7 +166,7 @@ export const CustomNetworks = React.memo(() => {
   const renderedTestNetworks = useMemo(() => {
     const filteredTestNetworks = orderedTestNetworks.filter((network) => {
       // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected || isMultichainAccountsFeatureEnabled) {
+      if (isEvmNetworkSelected) {
         return network.isEvm;
       }
       // If non-EVM network is selected, only show non-EVM networks
@@ -176,7 +180,6 @@ export const CustomNetworks = React.memo(() => {
     orderedTestNetworks,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
-    isMultichainAccountsFeatureEnabled,
   ]);
 
   // Memoize the padding value to prevent unnecessary re-renders
@@ -187,8 +190,8 @@ export const CustomNetworks = React.memo(() => {
 
   // Memoize the add button click handler
   const handleAddNetworkClick = useCallback(() => {
-    history.push('/add');
-  }, [history]);
+    navigate('/add');
+  }, [navigate]);
 
   return (
     <>

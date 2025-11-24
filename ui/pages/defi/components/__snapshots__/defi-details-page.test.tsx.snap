@@ -60,7 +60,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
       class="mm-box mm-box--padding-bottom-4 mm-box--padding-left-4"
     >
       <span
-        class="mm-box mm-text mm-box--color-text-alternative-soft mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        class="mm-box mm-text mm-box--color-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         data-testid="defi-details-page-market-value"
       >
         $20,000.00
@@ -81,7 +81,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
           class="mm-box"
         >
           <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative-soft"
+            class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative"
             data-testid="defi-details-list-stake-position"
           >
             Staked
@@ -92,7 +92,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
             <a
               class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
               data-testid="multichain-token-list-button"
-              style="height: 62px; cursor: auto; background-color: transparent; transition: background-color 0.2s ease-in-out;"
+              style="height: 62px;"
             >
               <div
                 class="mm-box mm-badge-wrapper mm-box--margin-right-4 mm-box--display-inline-block"
@@ -129,26 +129,17 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
                 >
                   <div
-                    class="mm-box mm-box--display-flex"
+                    class="flex flex-row min-w-0"
                   >
                     <div
-                      class="token-cell-title--ellipsis"
+                      class="flex flex-row gap-2 min-w-0"
                     >
-                      <div
-                        aria-describedby="tippy-tooltip-1"
-                        class=""
-                        data-original-title="null"
-                        data-tooltipped=""
-                        style="display: inline;"
-                        tabindex="0"
+                      <p
+                        class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                        data-testid="multichain-token-list-item-token-name"
                       >
-                        <span
-                          class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
-                          data-testid="multichain-token-list-item-token-name"
-                        >
-                          Liquid staked Ether 2.0
-                        </span>
-                      </div>
+                        Liquid staked Ether 2.0
+                      </p>
                     </div>
                   </div>
                   <p
@@ -165,10 +156,6 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
                   <div
                     class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-success-default"
-                      style="mask-image: url('./images/icons/triangle-up.svg');"
-                    />
                     <p
                       class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
                       data-testid="token-increase-decrease-percentage-0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84"
@@ -178,9 +165,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
                     class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                     data-testid="multichain-token-list-item-value"
                   >
-                    10
-                     
-                    Liquid staked Ether 2.0
+                    10 Liquid staked Ether 2.0
                   </p>
                 </div>
               </div>

@@ -2,13 +2,15 @@ import { randomUUID } from 'crypto';
 import { ApprovalType } from '@metamask/controller-utils';
 import { act, fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
-import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
+import { SimulationTokenStandard } from '@metamask/transaction-controller';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
-import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
-import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
+import {
+  getUnapprovedApproveTransaction,
+  getUnapprovedContractInteractionTransaction,
+} from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -16,17 +18,7 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   callBackgroundMethod: jest.fn(),
 }));
 
-jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
-  ...jest.requireActual(
-    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
-  ),
-  useAssetDetails: jest.fn().mockResolvedValue({
-    decimals: '4',
-  }),
-}));
-
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
-const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -42,30 +34,60 @@ const getMetaMaskStateWithUnapprovedApproveTransaction = (
     preferences: {
       ...mockMetaMaskState.preferences,
     },
+    tokenScanCache: {
+      '0xaa36a7:0x1111111111111111111111111111111111111111': {
+        data: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: 'Malicious',
+        },
+        timestamp: 1715136000000,
+      },
+      '0xaa36a7:0x2222222222222222222222222222222222222222': {
+        data: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: 'Warning',
+        },
+        timestamp: 1715136000000,
+      },
+      '0xaa36a7:0x3333333333333333333333333333333333333333': {
+        data: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: 'Benign',
+        },
+        timestamp: 1715136000000,
+      },
+      '0xaa36a7:0x4444444444444444444444444444444444444444': {
+        data: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: 'Verified',
+        },
+        timestamp: 1715136000000,
+      },
+    },
     urlScanCache: {
       'malicious-site.com': {
-        result: {
+        data: {
           domainName: 'malicious-site.com',
           recommendedAction: 'BLOCK',
         },
         timestamp: 1715136000000,
       },
       'suspicious-site.com': {
-        result: {
+        data: {
           domainName: 'suspicious-site.com',
           recommendedAction: 'WARN',
         },
         timestamp: 1715136000000,
       },
       'verified-site.com': {
-        result: {
+        data: {
           domainName: 'verified-site.com',
           recommendedAction: 'VERIFIED',
         },
         timestamp: 1715136000000,
       },
       'safe-site.com': {
-        result: {
+        data: {
           domainName: 'safe-site.com',
           recommendedAction: 'NONE',
         },
@@ -106,38 +128,156 @@ const getMetaMaskStateWithUnapprovedApproveTransaction = (
   };
 };
 
+const getMetaMaskStateWithUnapprovedContractInteractionTransaction = (
+  accountAddress: string,
+) => {
+  return {
+    ...mockMetaMaskState,
+    preferences: {
+      ...mockMetaMaskState.preferences,
+    },
+    tokenScanCache: {
+      '0xaa36a7:0x1111111111111111111111111111111111111111': {
+        data: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: 'Malicious',
+        },
+        timestamp: 1715136000000,
+      },
+      '0xaa36a7:0x2222222222222222222222222222222222222222': {
+        data: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: 'Warning',
+        },
+        timestamp: 1715136000000,
+      },
+      '0xaa36a7:0x3333333333333333333333333333333333333333': {
+        data: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: 'Benign',
+        },
+        timestamp: 1715136000000,
+      },
+      '0xaa36a7:0x4444444444444444444444444444444444444444': {
+        data: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: 'Verified',
+        },
+        timestamp: 1715136000000,
+      },
+    },
+    urlScanCache: {
+      'malicious-site.com': {
+        data: {
+          domainName: 'malicious-site.com',
+          recommendedAction: 'BLOCK',
+        },
+        timestamp: 1715136000000,
+      },
+      'suspicious-site.com': {
+        data: {
+          domainName: 'suspicious-site.com',
+          recommendedAction: 'WARN',
+        },
+        timestamp: 1715136000000,
+      },
+      'verified-site.com': {
+        data: {
+          domainName: 'verified-site.com',
+          recommendedAction: 'VERIFIED',
+        },
+        timestamp: 1715136000000,
+      },
+      'safe-site.com': {
+        data: {
+          domainName: 'safe-site.com',
+          recommendedAction: 'NONE',
+        },
+        timestamp: 1715136000000,
+      },
+    },
+    pendingApprovals: {
+      [pendingTransactionId]: {
+        id: pendingTransactionId,
+        origin: 'origin',
+        time: pendingTransactionTime,
+        type: ApprovalType.Transaction,
+        requestData: {
+          txId: pendingTransactionId,
+        },
+        requestState: null,
+        expectsResult: false,
+      },
+    },
+    pendingApprovalCount: 1,
+    knownMethodData: {
+      '0x3b4b1381': {
+        name: 'Mint NFTs',
+        params: [
+          {
+            type: 'uint256',
+          },
+        ],
+      },
+    },
+    transactions: [
+      getUnapprovedContractInteractionTransaction(
+        accountAddress,
+        pendingTransactionId,
+        pendingTransactionTime,
+      ),
+    ],
+  };
+};
+
 const setupSubmitRequestToBackgroundMocks = (
   mockRequests?: Record<string, unknown>,
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
 
+const addTokenBalanceChangesToTransaction = (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transaction: any,
+  tokenAddresses: string[],
+) => {
+  return {
+    ...transaction,
+    simulationData: {
+      tokenBalanceChanges: tokenAddresses.map((address) => ({
+        address: address.toLowerCase(),
+        standard: SimulationTokenStandard.erc20,
+        isDecrease: false,
+        difference: '1000000000000000000',
+      })),
+    },
+  };
+};
+
 describe('Contract Interaction Confirmation Alerts', () => {
   beforeAll(() => {
-    const { provider } = createTestProviderTools({
-      networkId: 'sepolia',
-      chainId: '0xaa36a7',
-    });
+    global.ethereumProvider = {
+      request: jest.fn(),
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.ethereumProvider = provider as any;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
   });
 
   beforeEach(() => {
     jest.resetAllMocks();
-    setupSubmitRequestToBackgroundMocks();
+    setupSubmitRequestToBackgroundMocks({
+      getTokenStandardAndDetailsByChain: {
+        decimals: '4',
+      },
+    });
     const APPROVE_NFT_HEX_SIG = '0x095ea7b3';
     mock4byte(APPROVE_NFT_HEX_SIG);
-    mockedAssetDetails.mockImplementation(() => ({
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      decimals: '4' as any,
-    }));
   });
 
   afterEach(() => {
@@ -670,6 +810,188 @@ describe('Contract Interaction Confirmation Alerts', () => {
       fireEvent.click(alerts[0]);
       const alertTexts = screen.queryAllByText(/malicious|suspicious/iu);
       expect(alertTexts).toHaveLength(0);
+    }
+  });
+
+  it('displays the alert for malicious token trust signals', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedContractInteractionTransaction(
+        account.address,
+      );
+
+    const transactionWithMaliciousToken = addTokenBalanceChangesToTransaction(
+      mockedMetaMaskState.transactions[0],
+      ['0x1111111111111111111111111111111111111111'], // Malicious token from tokenScanCache
+    );
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedMetaMaskState,
+          transactions: [transactionWithMaliciousToken],
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    fireEvent.click(await screen.findByTestId('inline-alert'));
+
+    expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toHaveTextContent(
+      // This should match the i18n key 'alertMessageTokenTrustSignalMalicious'
+      /token.*malicious|malicious.*token/iu,
+    );
+  });
+
+  it('displays the alert for warning token trust signals', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedContractInteractionTransaction(
+        account.address,
+      );
+
+    const transactionWithWarningToken = addTokenBalanceChangesToTransaction(
+      mockedMetaMaskState.transactions[0],
+      ['0x2222222222222222222222222222222222222222'], // Warning token from tokenScanCache
+    );
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedMetaMaskState,
+          transactions: [transactionWithWarningToken],
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    fireEvent.click(await screen.findByTestId('inline-alert'));
+
+    expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toHaveTextContent(
+      // This should match the i18n key 'alertMessageTokenTrustSignalWarning'
+      'This token shows strong signs of malicious behavior. Continuing may result in loss of funds.',
+    );
+  });
+
+  it('does not display token trust signal alert for benign tokens', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedContractInteractionTransaction(
+        account.address,
+      );
+
+    const transactionWithBenignToken = addTokenBalanceChangesToTransaction(
+      mockedMetaMaskState.transactions[0],
+      ['0x3333333333333333333333333333333333333333'], // Benign token from tokenScanCache
+    );
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedMetaMaskState,
+          transactions: [transactionWithBenignToken],
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    // Should not have any token trust signal alerts for benign tokens
+    const alerts = screen.queryAllByTestId('inline-alert');
+    if (alerts.length > 0) {
+      fireEvent.click(alerts[0]);
+      const alertTexts = screen.queryAllByText(
+        /token.*malicious|malicious.*token|token.*suspicious|suspicious.*token/iu,
+      );
+      expect(alertTexts).toHaveLength(0);
+    }
+  });
+
+  it('displays multiple alerts including token trust signals', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedContractInteractionTransaction(
+        account.address,
+      );
+
+    const transaction = mockedMetaMaskState.transactions[0];
+
+    // Add malicious token and gas fee warning
+    const transactionWithMultipleIssues = addTokenBalanceChangesToTransaction(
+      transaction,
+      ['0x1111111111111111111111111111111111111111'], // Malicious token
+    );
+    transactionWithMultipleIssues.defaultGasEstimates.estimateType = 'low';
+    transactionWithMultipleIssues.userFeeLevel = 'low';
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedMetaMaskState,
+          transactions: [transactionWithMultipleIssues],
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    // Should have multiple inline alerts
+    const alerts = await screen.findAllByTestId('inline-alert');
+    expect(alerts.length).toBeGreaterThanOrEqual(2);
+
+    // Click on the first alert to open modal
+    fireEvent.click(alerts[0]);
+
+    expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
+
+    // Check that we can navigate between alerts
+    const alertContent = await screen.findByTestId(
+      'alert-modal__selected-alert',
+    );
+    const initialText = alertContent.textContent;
+
+    // Navigate to next alert if possible
+    const nextButton = screen.queryByTestId('alert-modal-next-button');
+    if (nextButton) {
+      fireEvent.click(nextButton);
+      const newAlertContent = await screen.findByTestId(
+        'alert-modal__selected-alert',
+      );
+      expect(newAlertContent.textContent).not.toBe(initialText);
     }
   });
 });

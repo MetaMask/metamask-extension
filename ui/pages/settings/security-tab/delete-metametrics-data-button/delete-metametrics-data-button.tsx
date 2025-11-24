@@ -13,6 +13,7 @@ import {
   Text,
 } from '../../../../components/component-library';
 import {
+  BlockSize,
   Display,
   FlexDirection,
   TextVariant,
@@ -35,7 +36,9 @@ import { DeleteRegulationStatus } from '../../../../../shared/constants/metametr
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 type DeleteMetaMetricsDataButtonProps<C extends React.ElementType> =
-  PolymorphicComponentPropWithRef<C>;
+  PolymorphicComponentPropWithRef<C> & {
+    defaultPrivacySettings?: boolean;
+  };
 
 type DeleteMetaMetricsDataButtonComponent = <
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -51,7 +54,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
     // eslint-disable-next-line @typescript-eslint/naming-convention
     <C extends React.ElementType = 'div'>(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      { ...props }: DeleteMetaMetricsDataButtonProps<C>,
+      { defaultPrivacySettings, ...props }: DeleteMetaMetricsDataButtonProps<C>,
       ref: PolymorphicRef<C>,
     ) => {
       const t = useI18nContext();
@@ -119,7 +122,9 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
                   : t('deleteMetaMetricsDataDescription', [privacyPolicyLink])}
               </div>
             </div>
-            <div className="settings-page__content-item-col">
+            <div
+              className={`settings-page__content-item-col ${defaultPrivacySettings ? 'settings-page__button-defaut-settings' : ''}`}
+            >
               {Boolean(!metaMetricsId) && (
                 <Box display={Display.InlineFlex}>
                   <Icon name={IconName.Info} size={IconSize.Sm} />
@@ -135,6 +140,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
               <ButtonPrimary
                 data-testid="delete-metametrics-data-button"
                 className="settings-page__button"
+                width={BlockSize.Full}
                 onClick={() => {
                   dispatch(openDeleteMetaMetricsDataModal());
                 }}

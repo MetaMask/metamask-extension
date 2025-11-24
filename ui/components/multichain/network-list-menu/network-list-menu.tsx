@@ -48,6 +48,7 @@ import {
   addPermittedChain,
   setTokenNetworkFilter,
   detectNfts,
+  setEnabledNetworks,
 } from '../../../store/actions';
 import {
   FEATURED_RPCS,
@@ -70,7 +71,6 @@ import {
   getSelectedMultichainNetworkChainId,
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
-  getEnabledNetworksByNamespace,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -113,10 +113,6 @@ import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import {
-  enableAllPopularNetworks,
-  enableSingleNetwork,
-} from '../../../store/controller-actions/network-order-controller';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -162,7 +158,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const showTestnets = useSelector(getShowTestNetworks);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);
@@ -189,8 +184,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     getMultichainNetworkConfigurationsByChainId,
   );
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
-  const { chainId: editingChainId, editCompleted } =
-    useSelector(getEditedNetwork) ?? {};
+  const {
+    chainId: editingChainId,
+    editCompleted,
+    trackRpcUpdateFromBanner,
+  } = useSelector(getEditedNetwork) ?? {};
   const permittedChainIds = useSelector((state) =>
     getPermittedEVMChainsForSelectedTab(state, selectedTabOrigin),
   );
@@ -387,11 +385,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         dispatch(setTokenNetworkFilter(allOpts));
       }
 
-      if (Object.keys(enabledNetworksByNamespace).length === 1) {
-        dispatch(enableSingleNetwork(hexChainId));
-      } else {
-        dispatch(enableAllPopularNetworks());
-      }
+      dispatch(setEnabledNetworks(hexChainId));
     } finally {
       dispatch(toggleNetworkMenu());
     }
@@ -401,6 +395,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     if (hasAnyAccountsInNetwork(chainId)) {
       dispatch(toggleNetworkMenu());
       dispatch(setActiveNetwork(chainId));
+
+      dispatch(setEnabledNetworks(chainId));
+
       return;
     }
 
@@ -693,13 +690,15 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                     value={showTestnets || currentlyOnTestnet}
                     disabled={currentlyOnTestnet}
                     onToggle={(value: boolean) => {
-                      dispatch(setShowTestNetworks(!value));
-                      if (!value) {
-                        trackEvent({
-                          event: MetaMetricsEventName.TestNetworksDisplayed,
-                          category: MetaMetricsEventCategory.Network,
-                        });
-                      }
+                      const newVal = !value;
+                      dispatch(setShowTestNetworks(newVal));
+                      trackEvent({
+                        event: MetaMetricsEventName.TestNetworksDisplayed,
+                        category: MetaMetricsEventCategory.Network,
+                        properties: {
+                          value: newVal,
+                        },
+                      });
                     }}
                   />
                 </Box>
@@ -739,6 +738,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         <NetworksForm
           networkFormState={networkFormState}
           existingNetwork={editedNetwork}
+          trackRpcUpdateFromBanner={trackRpcUpdateFromBanner}
           onRpcAdd={() => setActionMode(ACTION_MODE.ADD_RPC)}
           onBlockExplorerAdd={() => setActionMode(ACTION_MODE.ADD_EXPLORER_URL)}
         />

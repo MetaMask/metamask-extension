@@ -3,6 +3,7 @@
 exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransaction executes bridge transaction 1`] = `
 [
   [
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     {
       "adjustedReturn": {
         "usd": "12",
@@ -149,6 +150,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
 exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransaction executes bridge transaction with no approval 1`] = `
 [
   [
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     {
       "adjustedReturn": {
         "usd": "12",

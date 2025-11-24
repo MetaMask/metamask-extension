@@ -229,9 +229,6 @@
   "etherscanView": {
     "message": "Prohlédněte si účet na Etherscan"
   },
-  "expandView": {
-    "message": "Rozbaliť zobrazenie"
-  },
   "failed": {
     "message": "Neúspěšné"
   },
@@ -591,9 +588,6 @@
   },
   "supportCenter": {
     "message": "Navštivte naše centrum podpory"
-  },
-  "switchNetworks": {
-    "message": "Prepnúť siete"
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol musí být mezi 0 a 12 znaky."

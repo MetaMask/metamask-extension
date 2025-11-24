@@ -1,21 +1,20 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
 
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../../fixture-builder');
-const {
-  withFixtures,
-  openDapp,
-  unlockWallet,
-  WINDOW_TITLES,
-} = require('../../../helpers');
+const { withFixtures, WINDOW_TITLES } = require('../../../helpers');
 
 describe('dApp Request Gas Limit', function () {
   it('should update the gas limit in the activity list after submitting a request with custom gas (lower than 21000)', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -29,11 +28,10 @@ describe('dApp Request Gas Limit', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
-        await openDapp(driver);
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         const hardCodedGasLimit = '20502';
 
@@ -53,12 +51,13 @@ describe('dApp Request Gas Limit', function () {
         );
 
         // Click on Activity tab
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
 
         // Wait for the transaction to appear and click on it
-        await driver.clickElement('[data-testid="activity-list-item"]');
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkFailedTxNumberDisplayedInActivity(1);
+        await activityList.clickTransactionListItem();
 
         // Now on transaction details page, find and verify the gas limit
         const rows = await driver.findElements(
@@ -78,7 +77,7 @@ describe('dApp Request Gas Limit', function () {
   it('should update the gas limit in the activity list after submitting a request with custom gas limit (lower than 21000)', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -92,11 +91,10 @@ describe('dApp Request Gas Limit', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
-        await openDapp(driver);
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         const hardCodedGasLimit = '20502';
 
@@ -116,12 +114,13 @@ describe('dApp Request Gas Limit', function () {
         );
 
         // Click on Activity tab
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
 
         // Wait for the transaction to appear and click on it
-        await driver.clickElement('[data-testid="activity-list-item"]');
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkFailedTxNumberDisplayedInActivity(1);
+        await activityList.clickTransactionListItem();
 
         // Now on transaction details page, find and verify the gas limit
         const rows = await driver.findElements(
@@ -141,7 +140,7 @@ describe('dApp Request Gas Limit', function () {
   it('should update the gas limit in the activity list after submitting a request with custom gas (above estimated gas limit)', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -155,11 +154,10 @@ describe('dApp Request Gas Limit', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
-        await openDapp(driver);
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         const hardCodedGasLimit = '42000';
 
@@ -179,12 +177,13 @@ describe('dApp Request Gas Limit', function () {
         );
 
         // Click on Activity tab
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
 
         // Wait for the transaction to appear and click on it
-        await driver.clickElement('[data-testid="activity-list-item"]');
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.clickTransactionListItem();
 
         // Now on transaction details page, find and verify the gas limit
         const rows = await driver.findElements(
@@ -204,7 +203,7 @@ describe('dApp Request Gas Limit', function () {
   it('should update the gas limit in the activity list after submitting a request with custom gas limit (above estimated gas limit)', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -218,11 +217,10 @@ describe('dApp Request Gas Limit', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
-        await openDapp(driver);
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         const hardCodedGasLimit = '42000';
 
@@ -242,12 +240,13 @@ describe('dApp Request Gas Limit', function () {
         );
 
         // Click on Activity tab
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
 
         // Wait for the transaction to appear and click on it
-        await driver.clickElement('[data-testid="activity-list-item"]');
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.clickTransactionListItem();
 
         // Now on transaction details page, find and verify the gas limit
         const rows = await driver.findElements(

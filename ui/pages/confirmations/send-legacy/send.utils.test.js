@@ -3,6 +3,7 @@ import { encode } from '@metamask/abi-utils';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import {
   generateERC20TransferData,
+  generateERC20ApprovalData,
   isBalanceSufficient,
   isTokenBalanceSufficient,
   ellipsify,
@@ -50,6 +51,40 @@ describe('send utils', () => {
           sendToken: { address: '0x0' },
         }),
       ).toStrictEqual('0xa9059cbb');
+    });
+  });
+
+  describe('generateERC20ApprovalData()', () => {
+    it('should return undefined if not passed a spender address', () => {
+      expect(
+        generateERC20ApprovalData({
+          spenderAddress: null,
+          amount: '0xa',
+        }),
+      ).toBeUndefined();
+    });
+
+    it('should call abi-utils.encode with the correct params', () => {
+      encode.mockClear();
+      generateERC20ApprovalData({
+        spenderAddress: 'mockAddress',
+        amount: 'ab',
+      });
+      expect(encode.mock.calls[0].toString()).toStrictEqual(
+        [
+          ['address', 'uint256'],
+          ['0xmockAddress', '0xab'],
+        ].toString(),
+      );
+    });
+
+    it('should return encoded token approval data', () => {
+      expect(
+        generateERC20ApprovalData({
+          spenderAddress: 'mockAddress',
+          amount: '0xa',
+        }),
+      ).toStrictEqual('0x095ea7b3');
     });
   });
 

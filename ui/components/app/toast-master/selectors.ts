@@ -1,6 +1,9 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
+import {
+  getAllScopesFromCaip25CaveatValue,
+  isInternalAccountInPermittedAccountIds,
+} from '@metamask/chain-agnostic-permission';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {
@@ -10,10 +13,18 @@ import {
 } from '../../../helpers/constants/survey';
 import {
   getAllPermittedAccountsForCurrentTab,
+  getOriginOfCurrentTab,
+  getPermissions,
   isSolanaAccount,
 } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
-import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
+import {
+  PasswordChangeToastType,
+  ClaimSubmitToastType,
+} from '../../../../shared/constants/app-state';
+import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
+import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
+import { supportsChainIds } from '../../../hooks/useAccountGroupsForPermissions';
 import { getIsPrivacyToastRecent } from './utils';
 
 type State = {
@@ -24,6 +35,7 @@ type State = {
       | 'showNewSrpAddedToast'
       | 'showPasswordChangeToast'
       | 'showCopyAddressToast'
+      | 'showClaimSubmitToast'
     >
   >;
   metamask: Partial<
@@ -33,6 +45,8 @@ type State = {
       | 'newPrivacyPolicyToastShownDate'
       | 'onboardingDate'
       | 'surveyLinkLastClickedOrClosed'
+      | 'shieldEndingToastLastClickedOrClosed'
+      | 'shieldPausedToastLastClickedOrClosed'
     >
   >;
 };
@@ -117,6 +131,40 @@ export function selectShowConnectAccountToast(
   return showConnectAccountToast;
 }
 
+// If there is more than one connected account to activeTabOrigin,
+// *BUT* the current account is not one of them, show the banner
+export function selectShowConnectAccountGroupToast(
+  state: State & Pick<MetaMaskReduxState, 'activeTab'>,
+  accountGroup: AccountGroupWithInternalAccounts,
+): boolean {
+  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
+  const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
+  const activeTabOrigin = getOriginOfCurrentTab(state);
+  const existingPermissions = getPermissions(state, activeTabOrigin);
+  const existingCaip25CaveatValue = existingPermissions
+    ? getCaip25CaveatValueFromPermissions(existingPermissions)
+    : null;
+  const existingChainIds = existingCaip25CaveatValue
+    ? getAllScopesFromCaip25CaveatValue(existingCaip25CaveatValue)
+    : [];
+
+  const isAccountSupported = supportsChainIds(accountGroup, existingChainIds);
+
+  const isConnected = accountGroup.accounts.some((account) => {
+    return isInternalAccountInPermittedAccountIds(account, connectedAccounts);
+  });
+
+  const showConnectAccountToast =
+    allowShowAccountSetting &&
+    accountGroup &&
+    isAccountSupported &&
+    state.activeTab.origin &&
+    connectedAccounts.length > 0 &&
+    !isConnected;
+
+  return showConnectAccountToast;
+}
+
 /**
  * Retrieves user preference to see the "New SRP Added" toast
  *
@@ -149,4 +197,40 @@ export function selectShowCopyAddressToast(
   state: Pick<State, 'appState'>,
 ): boolean {
   return Boolean(state.appState.showCopyAddressToast);
+}
+
+/**
+ * Retrieves the state for the "Claim Submit" toast
+ *
+ * @param state - Redux state object.
+ * @returns ClaimSubmitToastType or null
+ */
+export function selectClaimSubmitToast(
+  state: Pick<State, 'appState'>,
+): ClaimSubmitToastType | null {
+  return state.appState.showClaimSubmitToast || null;
+}
+
+/**
+ * Retrieves user preference to see the "Shield Payment Declined" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowShieldPausedToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  return !state.metamask.shieldPausedToastLastClickedOrClosed;
+}
+
+/**
+ * Retrieves user preference to see the "Shield Coverage Ending" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowShieldEndingToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  return !state.metamask.shieldEndingToastLastClickedOrClosed;
 }

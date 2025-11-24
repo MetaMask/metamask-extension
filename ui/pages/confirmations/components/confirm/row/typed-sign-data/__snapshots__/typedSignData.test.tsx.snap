@@ -162,13 +162,13 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                   >
                     <div
-                      class="mm-box mm-box--display-flex"
+                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                     >
                       <div
                         class="name name__clickable name__missing"
                       >
                         <span
-                          class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                          class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                           style="mask-image: url('./images/icons/question.svg');"
                         />
                         <p
@@ -202,13 +202,13 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                   >
                     <div
-                      class="mm-box mm-box--display-flex"
+                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                     >
                       <div
                         class="name name__clickable name__missing"
                       >
                         <span
-                          class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                          class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                           style="mask-image: url('./images/icons/question.svg');"
                         />
                         <p
@@ -242,13 +242,13 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                   >
                     <div
-                      class="mm-box mm-box--display-flex"
+                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                     >
                       <div
                         class="name name__clickable name__missing"
                       >
                         <span
-                          class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                          class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                           style="mask-image: url('./images/icons/question.svg');"
                         />
                         <p
@@ -378,13 +378,13 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
                           >
                             <span
-                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                               style="mask-image: url('./images/icons/question.svg');"
                             />
                             <p
@@ -418,13 +418,13 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
                           >
                             <span
-                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                               style="mask-image: url('./images/icons/question.svg');"
                             />
                             <p
@@ -458,13 +458,13 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
                           >
                             <span
-                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                               style="mask-image: url('./images/icons/question.svg');"
                             />
                             <p

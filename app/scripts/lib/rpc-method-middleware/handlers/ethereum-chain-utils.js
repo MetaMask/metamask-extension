@@ -271,14 +271,14 @@ export async function switchChain(
         );
         const existingChainIds = Object.keys(existingEnabledNetworks);
         if (!existingChainIds.includes(chainId)) {
-          setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
+          setEnabledNetworks(chainId);
         }
       } else {
         const { namespace } = parseCaipChainId(chainId);
         const existingEnabledNetworks = getEnabledNetworks(namespace);
         const existingChainIds = Object.keys(existingEnabledNetworks);
         if (!existingChainIds.includes(chainId)) {
-          setEnabledNetworks([chainId], namespace);
+          setEnabledNetworks(chainId);
         }
       }
     }

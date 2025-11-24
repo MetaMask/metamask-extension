@@ -87,7 +87,7 @@ const t = (key) => {
     case 'networks':
       return 'Networks';
     case 'mainnet':
-      return 'Ethereum Mainnet';
+      return 'Ethereum';
     case 'goerli':
       return 'Goerli test network';
     case 'sepolia':
@@ -150,7 +150,7 @@ const t = (key) => {
 describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
-      const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 5;
+      const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 6;
       const NUM_OF_HIDDEN_SETTINGS = 1;
 
       expect(getSettingsRoutes()).toHaveLength(

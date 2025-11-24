@@ -1,3 +1,4 @@
+import React from 'react';
 import { waitFor } from '@testing-library/react';
 import nock from 'nock';
 import mockMetaMaskState from '../data/onboarding-completion-route.json';
@@ -10,7 +11,6 @@ import {
 import {
   clickElementById,
   createMockImplementation,
-  waitForElementById,
   waitForElementByText,
 } from '../helpers';
 
@@ -23,6 +23,33 @@ jest.mock('../../../ui/store/background-connection', () => ({
 jest.mock('../../../ui/ducks/bridge/actions', () => ({
   ...jest.requireActual('../../../ui/ducks/bridge/actions'),
 }));
+
+jest.mock(
+  '../../../ui/pages/onboarding-flow/welcome/fox-appear-animation',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => <div data-testid="fox-appear-animation" />,
+  }),
+);
+
+jest.mock(
+  '../../../ui/pages/onboarding-flow/welcome/metamask-wordmark-animation',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => <div data-testid="metamask-wordmark-animation" />,
+  }),
+);
+
+jest.mock(
+  '../../../ui/pages/onboarding-flow/creation-successful/wallet-ready-animation',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => <div data-testid="wallet-ready-animation" />,
+  }),
+);
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
@@ -72,15 +99,6 @@ describe('Wallet Created Events', () => {
 
     await waitForElementByText('Your wallet is ready!');
     await clickElementById('onboarding-complete-done');
-
-    await waitForElementByText('Scan QR code and download the app');
-    await clickElementById('download-app-continue');
-
-    await waitForElementById('pin-extension-next');
-    await clickElementById('pin-extension-next');
-
-    await waitForElementById('pin-extension-done');
-    await clickElementById('pin-extension-done');
 
     // Verify both completeOnboarding and ExtensionPinned event are called
     let completeOnboardingCall;

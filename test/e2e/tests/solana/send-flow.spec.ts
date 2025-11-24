@@ -9,9 +9,9 @@ import { withSolanaAccountSnap } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 
-// Investigate why this test is flaky https://consensyssoftware.atlassian.net/browse/MMQA-549
+// BUG #37824 - With BIP44 turned on mocking Solana network responses no longer works
 // eslint-disable-next-line mocha/no-skipped-tests
-describe('Send flow', function (this: Suite) {
+describe.skip('Send flow', function (this: Suite) {
   it('with some field validation', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -84,11 +84,6 @@ describe('Send flow', function (this: Suite) {
           await homePage.checkIfSwapButtonIsClickable(),
           true,
           'Swap button is not enabled and it should',
-        );
-        assert.equal(
-          await homePage.checkIfBridgeButtonIsClickable(),
-          true,
-          'Bridge button is not enabled and it should',
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
@@ -216,11 +211,6 @@ describe('Send flow', function (this: Suite) {
           await homePage.checkIfSwapButtonIsClickable(),
           true,
           'Swap button is not enabled and it should',
-        );
-        assert.equal(
-          await homePage.checkIfBridgeButtonIsClickable(),
-          true,
-          'Bridge button is not enabled and it should',
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);

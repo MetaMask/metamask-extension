@@ -13,6 +13,7 @@ import {
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   Box,
   FormTextField,
@@ -83,7 +84,10 @@ const MatchedAccountInfo: FunctionComponent<MatchedAccountInfoProps> = ({
       }}
     >
       {displayAvatar && (
-        <SnapUIAvatar address={`${chainId}:${value}`} size="sm" />
+        <SnapUIAvatar
+          address={`${chainId}:${value}`}
+          size={AvatarAccountSize.Sm}
+        />
       )}
       <Box
         display={Display.Flex}
@@ -255,6 +259,7 @@ export const SnapUIAddressInput: FunctionComponent<
       value={value}
       onChange={handleChange}
       label={label}
+      labelProps={{ marginBottom: 0 }}
       disabled={disabled}
       error={Boolean(error)}
       size={FormTextFieldSize.Lg}
@@ -264,7 +269,10 @@ export const SnapUIAddressInput: FunctionComponent<
       }}
       startAccessory={
         displayAvatar && value && isCaipAccountId(`${chainId}:${value}`) ? (
-          <SnapUIAvatar address={`${chainId}:${value}`} size="sm" />
+          <SnapUIAvatar
+            address={`${chainId}:${value}`}
+            size={AvatarAccountSize.Sm}
+          />
         ) : null
       }
       endAccessory={

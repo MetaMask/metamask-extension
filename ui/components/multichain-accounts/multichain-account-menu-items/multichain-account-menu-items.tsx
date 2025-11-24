@@ -38,6 +38,7 @@ export const MultichainAccountMenuItems = ({
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}
             onClick={item.onClick}
+            aria-label={t(item.textKey)}
           >
             <Text
               fontWeight={FontWeight.Medium}

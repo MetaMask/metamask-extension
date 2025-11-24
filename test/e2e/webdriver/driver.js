@@ -3,6 +3,7 @@ const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
 const {
   By,
+  Browser,
   Condition,
   Key,
   until,
@@ -26,6 +27,7 @@ const PAGES = {
   NOTIFICATION: 'notification',
   OFFSCREEN: 'offscreen',
   POPUP: 'popup',
+  SIDEPANEL: 'sidepanel',
 };
 
 /**
@@ -224,6 +226,16 @@ class Driver {
     if (typeof locator === 'string') {
       // If locator is a string we assume its a css selector
       return By.css(locator);
+    } else if (locator.css && locator.value) {
+      // Providing both css and value props will use xpath to look for an element
+      // matching the CSS selector with a specific value attribute.
+      const quotedValue = quoteXPathText(locator.value);
+      const baseXpath = cssToXPath.parse(locator.css).toXPath();
+      // Handle both cases: XPaths with predicates ending in ']' and simple XPaths without predicates
+      const xpath = baseXpath.endsWith(']')
+        ? baseXpath.replace(/\]$/u, ` and @value=${quotedValue}]`)
+        : `${baseXpath}[@value=${quotedValue}]`;
+      return By.xpath(xpath);
     } else if (locator.value) {
       // For backwards compatibility, checking if the locator has a value prop
       // tells us this is a Selenium locator
@@ -282,17 +294,46 @@ class Driver {
    * This method is particularly useful for automating interactions with text fields,
    * such as username or password inputs, search boxes, or any editable text areas.
    *
-   * @param {string | object} rawLocator - element locator
-   * @param {string} input - The value to fill the element with.
+   * @param {string | object} rawLocator - Element locator
+   * @param {string} input - The value to fill the element with
+   * @param {object} [options] - Optional configuration
+   * @param {number} [options.retries] - Number of attempts, Defaults to 0
    * @returns {Promise<WebElement>} Promise resolving to the filled element
    * @example <caption>Example to fill address in the send transaction screen</caption>
    *          await driver.fill(
    *                'input[data-testid="ens-input"]',
    *                '0xc427D562164062a23a5cFf596A4a3208e72Acd28');
    */
-  async fill(rawLocator, input) {
+  async fill(rawLocator, input, { retries = 0 } = {}) {
     const element = await this.findElement(rawLocator);
-    await element.fill(input);
+
+    // No verification/retry path (default behavior)
+    if (retries === 0) {
+      await element.fill(input);
+      return element;
+    }
+
+    // Verify + retry path
+    for (let attempt = 0; attempt < retries; attempt++) {
+      await element.fill(input);
+      try {
+        await this.waitUntil(
+          async () => (await element.getAttribute('value')) === input,
+          { interval: 50, timeout: 1000 },
+        );
+        return element;
+      } catch (_) {
+        // retry if attempts remain
+      }
+    }
+
+    const current = await element.getAttribute('value');
+    if (current !== input) {
+      throw new Error(
+        `Failed to set exact value after ${retries}. Expected '${input}', got '${current}'.`,
+      );
+    }
+
     return element;
   }
 
@@ -775,7 +816,7 @@ class Driver {
    * @param rawLocator - The locator used to identify the element to be clicked
    * @param timeout - The maximum time in ms to wait for the element to disappear after clicking.
    */
-  async clickElementAndWaitToDisappear(rawLocator, timeout = 2000) {
+  async clickElementAndWaitToDisappear(rawLocator, timeout = 3000) {
     const element = await this.findClickableElement(rawLocator);
     await element.click();
     await element.waitForElementState('hidden', timeout);
@@ -943,6 +984,9 @@ class Driver {
   /**
    * Checks if an element that matches the given locator is present on the page.
    *
+   * @deprecated This method should not be used because it can lead to race conditions
+   * when the element takes some ms to disappear. Instead use assertElementNotPresent
+   * which is a more robust method with customizable guard to avoid this problem.
    * @param {string | object} rawLocator - Element locator
    * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element is present.
    */
@@ -1000,7 +1044,6 @@ class Driver {
    * Navigates to the specified page within a browser session.
    *
    * @param {string} [page] - its optional parameter to specify the page you want to navigate.
-   * Defaults to home if no other page is specified.
    * @param {object} [options] - optional parameter to specify additional options.
    * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait for the controllers to be loaded.
    * Defaults to true.
@@ -1197,32 +1240,6 @@ class Driver {
     throw new Error(
       `${errorMessages.waitUntilXWindowHandlesTimeout}. Expected: ${x}, Actual: ${windowHandles.length}`,
     );
-  }
-
-  /**
-   * Switches to a specific window tab using its ID and waits for the title to match the expectedTitle.
-   *
-   * @param {int} handleId - unique ID for the tab whose title is needed.
-   * @param {string} expectedTitle - the title we are expecting.
-   * @returns nothing on success.
-   * @throws {Error} Throws an error if the window title is incorrect.
-   */
-  async switchToHandleAndWaitForTitleToBe(handleId, expectedTitle) {
-    await this.driver.switchTo().window(handleId);
-
-    let currentTitle = await this.driver.getTitle();
-
-    // Wait 25 x 200ms = 5 seconds for the title to be set properly
-    for (let i = 0; i < 25 && currentTitle !== expectedTitle; i++) {
-      await this.driver.sleep(200);
-      currentTitle = await this.driver.getTitle();
-    }
-
-    if (currentTitle !== expectedTitle) {
-      throw new Error(
-        `switchToHandleAndWaitForTitleToBe got title ${currentTitle} instead of ${expectedTitle}`,
-      );
-    }
   }
 
   /**
@@ -1443,24 +1460,82 @@ class Driver {
   }
 
   /**
-   * Get the text of the alert popup that is currently open in the browser
-   * session.
+   * Wait for a browser alert to appear and verify its text. Automatically detects
+   * whether a window switch is needed by comparing current window with target window.
+   * If they match, uses normal alert waiting. If different, attempts window switching
+   * but handles the case where Selenium fails to switch to a window with an active alert (throws UnexpectedAlertOpenError)
    *
-   * @param text - The text of the alert popup.
-   * @param options - Options for the function.
-   * @param options.timeout - The maximum time to wait for the alert to be
-   * present.
-   * @returns {Promise<string>} The text of the alert popup.
+   * @param {object} options - Required options for the function.
+   * @param {string} options.text - The expected text of the alert popup.
+   * @param {string} options.windowTitle - The target window title where the alert should appear.
+   * @param {number} [options.timeout] - The maximum time to wait for the alert to be present.
+   * @returns {Promise<void>} Promise that resolves when alert is found and verified.
    */
-  async waitForAlert(text, { timeout = this.timeout } = {}) {
-    await this.driver.wait(until.alertIsPresent(), timeout);
-    const alert = await this.driver.switchTo().alert();
-    const alertText = await alert.getText();
+  async waitForBrowserAlert({ text, windowTitle, timeout = this.timeout }) {
+    const currentTitle = await this.driver.getTitle();
+    if (currentTitle === windowTitle) {
+      await this.driver.wait(until.alertIsPresent(), timeout);
+      const alert = await this.driver.switchTo().alert();
+      const alertText = await alert.getText();
 
-    if (text && alertText !== text) {
-      throw new Error(
-        `Expected alert text to be "${text}", but got "${alertText}".`,
-      );
+      if (alertText !== text) {
+        throw new Error(
+          `Expected alert text to be "${text}", but got "${alertText}".`,
+        );
+      }
+    } else {
+      await this.driver.wait(async () => {
+        try {
+          await this.switchToWindowWithTitle(windowTitle);
+          // If window switch succeeds, alert hasn't appeared yet - keep waiting
+          return false;
+        } catch (error) {
+          if (
+            error.name === 'UnexpectedAlertOpenError' ||
+            (error.message &&
+              error.message.includes('unexpected alert open')) ||
+            (error.message &&
+              error.message.includes('Unexpected alert dialog detected'))
+          ) {
+            if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+              // Firefox doesn't include alert text in error message
+              try {
+                const alert = await this.driver.switchTo().alert();
+                const alertText = await alert.getText();
+                if (alertText !== text) {
+                  throw new Error(
+                    `Expected alert text to be "${text}", but got "${alertText}".`,
+                  );
+                }
+                return true;
+              } catch (alertError) {
+                console.warn(
+                  `Could not access alert directly. Expected: "${text}". Error: ${alertError.message}`,
+                );
+                return true;
+              }
+            } else {
+              const alertTextMatch = error.message.match(
+                /Alert text\s*:\s*(.+?)(?:\s*\}|$)/u,
+              );
+              if (alertTextMatch) {
+                const alertText = alertTextMatch[1].trim();
+                if (alertText !== text) {
+                  throw new Error(
+                    `Expected alert text to be "${text}", but got "${alertText}".`,
+                  );
+                }
+                return true;
+              }
+              throw new Error(
+                `Could not extract alert text from UnexpectedAlertOpenError. Full error message: "${error.message}"`,
+              );
+            }
+          } else {
+            throw error;
+          }
+        }
+      }, timeout);
     }
   }
 
@@ -1471,27 +1546,6 @@ class Driver {
    */
   async closeAlertPopup() {
     return await this.driver.switchTo().alert().accept();
-  }
-
-  /**
-   * Closes all windows except those in the given list of exceptions
-   *
-   * @param {Array<string>} exceptions - The list of window handle exceptions
-   * @param {Array} [windowHandles] - The full list of window handles
-   * @returns {Promise<void>}
-   */
-  async closeAllWindowHandlesExcept(exceptions, windowHandles) {
-    // eslint-disable-next-line no-param-reassign
-    windowHandles = windowHandles || (await this.driver.getAllWindowHandles());
-
-    for (const handle of windowHandles) {
-      if (!exceptions.includes(handle)) {
-        await this.driver.switchTo().window(handle);
-        await this.delay(1000);
-        await this.driver.close();
-        await this.delay(1000);
-      }
-    }
   }
 
   // Error handling

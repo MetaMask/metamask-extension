@@ -1,5 +1,7 @@
 import React from 'react';
 import { AvatarAccountSize } from '@metamask/design-system-react';
+import { KeyringAccountType } from '@metamask/keyring-api';
+
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -12,6 +14,8 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { type Recipient as RecipientType } from '../../../hooks/send/useRecipients';
 import { shortenAddress } from '../../../../../helpers/utils/util';
+import { accountTypeLabel } from '../../../constants/network';
+import { AccountTypeLabel } from '../account-type-label';
 
 export const Recipient = ({
   isAccount,
@@ -24,10 +28,12 @@ export const Recipient = ({
   recipient: RecipientType;
   onClick: (recipient: RecipientType) => void;
 }) => {
-  const { address } = recipient;
+  const { address, seedIcon } = recipient;
   const recipientName = isAccount
     ? recipient.accountGroupName
     : recipient.contactName;
+  const typeLabel =
+    accountTypeLabel[recipient.accountType as KeyringAccountType];
 
   return (
     <Box
@@ -48,18 +54,28 @@ export const Recipient = ({
       onClick={() => onClick(recipient)}
     >
       <PreferredAvatar
-        address={address}
+        address={seedIcon ?? address}
         size={AvatarAccountSize.Lg}
         data-testid="avatar"
       />
-      <Box>
-        <Text variant={TextVariant.bodyMdMedium}>{recipientName}</Text>
-        <Text
-          variant={TextVariant.bodySmMedium}
-          color={TextColor.textAlternative}
-        >
-          {shortenAddress(address)}
+      <Box className="send-recipient__content">
+        <Text variant={TextVariant.bodyMdMedium} ellipsis>
+          {recipientName}
         </Text>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+        >
+          <Text
+            variant={TextVariant.bodySmMedium}
+            color={TextColor.textAlternative}
+            marginRight={2}
+          >
+            {shortenAddress(address)}
+          </Text>
+          <AccountTypeLabel label={typeLabel} />
+        </Box>
       </Box>
     </Box>
   );

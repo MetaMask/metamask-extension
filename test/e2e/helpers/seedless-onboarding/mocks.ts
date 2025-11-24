@@ -30,6 +30,7 @@ import {
   MockKeyShareData,
   MockJwtPrivateKey,
   NewMockPwdEncryptionKeyAfterPasswordChange,
+  MockAuthPubKey2,
 } from './data';
 
 function generateMockJwtToken(userId: string) {
@@ -163,13 +164,35 @@ export class OAuthMockttpService {
 
   #latestAuthPubKey: string = MockAuthPubKey;
 
+  #numbOfRequestTokensCalls: number = 0;
+
   mockAuthServerToken(overrides?: {
     statusCode?: number;
     json?: Record<string, unknown>;
     userEmail?: string;
+    passwordOutdated?: boolean;
+    throwAuthenticationErrorAtUnlock?: boolean;
   }) {
     const userEmail = overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
     const idToken = generateMockJwtToken(userEmail);
+
+    // keep track of the number of request tokens calls
+    this.#numbOfRequestTokensCalls += 1;
+
+    if (
+      // on the second call, (assuming it's for unlock) we throw an authentication error when passwordOutdated & throwAuthenticationErrorAtUnlock are true
+      this.#numbOfRequestTokensCalls === 2 &&
+      overrides?.throwAuthenticationErrorAtUnlock &&
+      overrides?.passwordOutdated
+    ) {
+      return {
+        statusCode: 500,
+        json: {
+          message: 'Internal server error',
+        },
+      };
+    }
+
     return {
       statusCode: 200,
       json: {
@@ -201,9 +224,16 @@ export class OAuthMockttpService {
    * @param overrides - The overrides for the mock response.
    * @param overrides.statusCode - The status code for the mock response.
    * @param overrides.userEmail - The email of the user to mock. If not provided, random generated email will be used.
+   * @param overrides.passwordOutdated - Whether the password is outdated. If not provided, false will be used.
+   * @param overrides.throwAuthenticationErrorAtUnlock - Whether to throw an authentication error at unlock. If not provided, false will be used.
    * @returns The mock response for the Request Token endpoint.
    */
-  onPostToken(overrides?: { statusCode?: number; userEmail?: string }) {
+  onPostToken(overrides?: {
+    statusCode?: number;
+    userEmail?: string;
+    passwordOutdated?: boolean;
+    throwAuthenticationErrorAtUnlock?: boolean;
+  }) {
     return this.mockAuthServerToken(overrides);
   }
 
@@ -359,12 +389,14 @@ export class OAuthMockttpService {
    * @param options - The options for the mock server.
    * @param options.userEmail - The email of the user to mock. If not provided, random generated email will be used.
    * @param options.passwordOutdated - Whether the password is outdated. If not provided, false will be used.
+   * @param options.throwAuthenticationErrorAtUnlock - Whether to throw an authentication error at unlock. If not provided, false will be used.
    */
   async setup(
     server: Mockttp,
     options?: {
       userEmail?: string;
       passwordOutdated?: boolean;
+      throwAuthenticationErrorAtUnlock?: boolean;
     },
   ) {
     server
@@ -379,6 +411,29 @@ export class OAuthMockttpService {
       .always()
       .thenCallback(() => {
         return this.onPostRevokeToken();
+      });
+
+    server
+      .forGet(AuthServer.GetMarketingOptInStatus)
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            is_opt_in: true,
+          },
+        };
+      });
+    server
+      .forPost(AuthServer.GetMarketingOptInStatus)
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            is_opt_in: true,
+          },
+        };
       });
 
     server
@@ -407,12 +462,14 @@ export class OAuthMockttpService {
    * @param options - The options for the mock responses.
    * @param options.userEmail - The email of the user to mock. If not provided, random generated email will be used.
    * @param options.passwordOutdated - Whether the password is outdated. If not provided, false will be used.
+   * @param options.throwAuthenticationErrorAtUnlock - Whether to throw an authentication error at unlock. If not provided, false will be used.
    */
   async #handleToprfMockResponses(
     request: CompletedRequest,
     options?: {
       userEmail?: string;
       passwordOutdated?: boolean;
+      throwAuthenticationErrorAtUnlock?: boolean;
     },
   ) {
     const nodeIndex = this.#extractNodeIndexFromUrl(request.url);
@@ -456,15 +513,20 @@ export class OAuthMockttpService {
         },
       };
     } else if (method === 'TOPRFGetPubKeyRequest') {
+      let pubKey = this.#latestAuthPubKey;
+      if (options?.throwAuthenticationErrorAtUnlock) {
+        // To throw the authentication error at unlock, we need to enforce the password outdated with different pub key
+        pubKey = MockAuthPubKey2;
+      } else if (options?.passwordOutdated) {
+        pubKey = MockAuthPubKey;
+      }
       return {
         statusCode: 200,
         json: {
           id: 1,
           jsonrpc: '2.0',
           result: {
-            pub_key: options?.passwordOutdated
-              ? MockAuthPubKey
-              : this.#latestAuthPubKey,
+            pub_key: pubKey,
             key_index: 1,
             node_index: nodeIndex,
           },

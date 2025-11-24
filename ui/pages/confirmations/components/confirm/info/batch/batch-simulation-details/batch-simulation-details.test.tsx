@@ -295,4 +295,15 @@ describe('BatchSimulationDetails', () => {
     const { container } = render(upgradeAccountConfirmationOnly);
     expect(container.firstChild).toBeNull();
   });
+
+  it('does not render SimulationDetails and EditSpendingCapModal while approvePending is true', () => {
+    useBatchApproveBalanceChangesMock.mockReturnValue({
+      pending: true,
+      value: [BALANCE_CHANGE_ERC20_MOCK],
+    });
+    const { queryByText, queryByTestId } = render();
+    expect(queryByText('Edit spending cap')).toBeNull();
+    expect(queryByTestId('balance-change-edit')).toBeNull();
+    expect(queryByText('You approve')).toBeNull();
+  });
 });

@@ -14,7 +14,7 @@
   },
   "author": "https://metamask.io",
   "background": {
-    "service_worker": "scripts/app-init.js"
+    "service_worker": "service-worker.ts"
   },
   "commands": {
     "_execute_browser_action": {
@@ -38,14 +38,15 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": [
-        "scripts/disable-console.js",
-        "scripts/lockdown-install.js",
-        "scripts/lockdown-run.js",
-        "scripts/lockdown-more.js",
-        "scripts/contentscript.js"
-      ],
+      "js": ["scripts/contentscript.js"],
       "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": ["scripts/inpage.js"],
+      "run_at": "document_start",
+      "world": "MAIN",
       "all_frames": true
     },
     {
@@ -86,7 +87,9 @@
     "unlimitedStorage",
     "webRequest",
     "offscreen",
-    "identity"
+    "identity",
+    "sidePanel",
+    "contextMenus"
   ],
   "sandbox": {
     "pages": ["snaps/index.html"]

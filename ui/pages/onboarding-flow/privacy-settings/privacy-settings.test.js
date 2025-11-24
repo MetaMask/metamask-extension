@@ -7,6 +7,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN } from '../../../store/actionConstants';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import PrivacySettings from './privacy-settings';
 
 const mockOpenBasicFunctionalityModal = jest.fn().mockImplementation(() => {
@@ -145,6 +146,26 @@ describe('Privacy Settings Onboarding View', () => {
 
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
     expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
+  });
+
+  describe('Social Login Flow', () => {
+    it('should update the default settings for social login', async () => {
+      const updatedMockStore = configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const { getByText } = renderWithProvider(
+        <PrivacySettings />,
+        updatedMockStore,
+      );
+
+      // Default Settings - Security & privacy category
+      const itemCategorySecurityPrivacy = getByText('Security & privacy');
+      expect(itemCategorySecurityPrivacy).toBeInTheDocument();
+    });
   });
 
   describe('IPFS', () => {

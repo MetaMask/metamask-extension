@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { useModalProps } from '../../../../../hooks/useModalProps';
 import {
@@ -47,7 +47,7 @@ export const turnOnBackupAndSyncModalTestIds = {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function TurnOnBackupAndSyncModal() {
   const { hideModal } = useModalProps();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -89,7 +89,7 @@ export function TurnOnBackupAndSyncModal() {
         showModal({
           name: CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
           enableBackupAndSync: async () => {
-            history.push(BACKUPANDSYNC_ROUTE);
+            navigate(BACKUPANDSYNC_ROUTE);
             await setIsBackupAndSyncFeatureEnabled(
               BACKUPANDSYNC_FEATURES.main,
               true,
@@ -102,7 +102,7 @@ export function TurnOnBackupAndSyncModal() {
     if (!isBackupAndSyncEnabled) {
       await setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, true);
     }
-    history.push(BACKUPANDSYNC_ROUTE);
+    navigate(BACKUPANDSYNC_ROUTE);
     hideModal();
   };
 

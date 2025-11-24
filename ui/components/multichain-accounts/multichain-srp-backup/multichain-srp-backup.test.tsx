@@ -1,21 +1,21 @@
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainSrpBackup } from './multichain-srp-backup';
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
-
 const srpBackupRowTestId = 'multichain-srp-backup';
 const srpQuizHeaderTestId = 'srp-quiz-header';
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('MultichainSrpBackup', () => {
   const renderComponent = (props = {}) => {
@@ -62,7 +62,7 @@ describe('MultichainSrpBackup', () => {
 
     fireEvent.click(screen.getByTestId(srpBackupRowTestId));
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`,
     );
   });
@@ -79,7 +79,7 @@ describe('MultichainSrpBackup', () => {
       expect(screen.getByText('Security quiz')).toBeInTheDocument();
     });
 
-    expect(mockHistoryPush).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('closes SRP quiz modal when close button is clicked', async () => {

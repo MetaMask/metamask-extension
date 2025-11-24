@@ -9,7 +9,16 @@ fi
 
 git config --global user.name "MetaMask Bot"
 git config --global user.email metamaskbot@users.noreply.github.com
-version=$(git show -s --format='%s' HEAD | grep -Eo 'v[0-9]+\.[0-9]+\.[0-9]+')
+rawVersion=$(git show -s --format='%s' HEAD | grep -Eo 'release/[0-9]+\.[0-9]+\.[0-9]+' | sed 's|release/||')
+version="v${rawVersion}"
+
+# Validate that the version was successfully extracted
+if [[ -z "${rawVersion}" ]]; then
+    echo "::error:: Failed to extract version from commit message. Ensure it follows the 'release/x.y.z' format."
+    exit 1
+fi
+
+echo "Version extracted: ${version}"
 
 git clone "https://${FIREFOX_BUNDLE_SCRIPT_TOKEN}@github.com/MetaMask/firefox-bundle-script.git"
 cd firefox-bundle-script

@@ -1,14 +1,12 @@
 const { strict: assert } = require('assert');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const {
-  withFixtures,
-  openDapp,
-  logInWithBalanceValidation,
-  openActionMenuAndStartSendFlow,
-  editGasFeeForm,
-  WINDOW_TITLES,
-} = require('../../helpers');
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
+const { withFixtures, WINDOW_TITLES, DAPP_URL } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { CHAIN_IDS } = require('../../../../shared/constants/network');
+const { mockSpotPrices } = require('../tokens/utils/mocks');
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -26,10 +24,10 @@ describe('Send ETH', function () {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
         },
-        async ({ driver, localNodes }) => {
-          await logInWithBalanceValidation(driver, localNodes[0]);
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
 
-          await openActionMenuAndStartSendFlow(driver);
+          await driver.clickElement('[data-testid="eth-overview-send"]');
 
           await driver.fill(
             'input[placeholder="Enter public address (0x) or domain name"]',
@@ -100,9 +98,9 @@ describe('Send ETH', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await logInWithBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
-          await openActionMenuAndStartSendFlow(driver);
+          await driver.clickElement('[data-testid="eth-overview-send"]');
           await driver.fill(
             'input[placeholder="Enter public address (0x) or domain name"]',
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -153,7 +151,7 @@ describe('Send ETH', function () {
         async ({ driver, contractRegistry, localNodes }) => {
           const contractAddress =
             await contractRegistry.getContractAddress(smartContract);
-          await logInWithBalanceValidation(driver, localNodes[0]);
+          await loginWithBalanceValidation(driver, localNodes[0]);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
           await driver.fill(
@@ -200,9 +198,9 @@ describe('Send ETH', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await logInWithBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
-          await openActionMenuAndStartSendFlow(driver);
+          await driver.clickElement('[data-testid="eth-overview-send"]');
           // choose to scan via QR code
           await driver.clickElement('[data-testid="ens-qr-scan-button"]');
           await driver.findVisibleElement('[data-testid="qr-scanner-modal"]');
@@ -226,7 +224,7 @@ describe('Send ETH', function () {
       it('should display the correct gas price on the legacy transaction', async function () {
         await withFixtures(
           {
-            dapp: true,
+            dappOptions: { numberOfTestDapps: 1 },
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .withPreferencesController(PREFERENCES_STATE_MOCK)
@@ -235,12 +233,21 @@ describe('Send ETH', function () {
             localNodeOptions: {
               hardfork: 'muirGlacier',
             },
+            testSpecificMock: async (mockServer) => {
+              await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+                '0x0000000000000000000000000000000000000000': {
+                  price: 1700,
+                  marketCap: 382623505141,
+                  pricePercentChange1d: 0,
+                },
+              });
+            },
           },
           async ({ driver }) => {
-            await logInWithBalanceValidation(driver);
+            await loginWithBalanceValidation(driver);
 
             // initiates a send from the dapp
-            await openDapp(driver);
+            await driver.openNewPage(DAPP_URL);
             await driver.clickElement({ text: 'Send', tag: 'button' });
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -256,7 +263,14 @@ describe('Send ETH', function () {
               text: 'Edit priority',
               tag: 'header',
             });
-            await editGasFeeForm(driver, '21000', '100');
+
+            // Edit priority gas fee form
+            const inputs = await driver.findElements('input[type="number"]');
+            const gasLimitInput = inputs[0];
+            const gasPriceInput = inputs[1];
+            await gasLimitInput.fill('21000');
+            await gasPriceInput.fill('100');
+            await driver.clickElement({ text: 'Save', tag: 'button' });
             await driver.findElement({
               css: '[data-testid="first-gas-field"]',
               text: '0.0021',
@@ -302,18 +316,27 @@ describe('Send ETH', function () {
       it('should display correct gas values for EIP-1559 transaction', async function () {
         await withFixtures(
           {
-            dapp: true,
+            dappOptions: { numberOfTestDapps: 1 },
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
             title: this.test.fullTitle(),
+            testSpecificMock: async (mockServer) => {
+              await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+                '0x0000000000000000000000000000000000000000': {
+                  price: 1700,
+                  marketCap: 382623505141,
+                  pricePercentChange1d: 0,
+                },
+              });
+            },
           },
           async ({ driver }) => {
-            await logInWithBalanceValidation(driver);
+            await loginWithBalanceValidation(driver);
 
             // initiates a transaction from the dapp
-            await openDapp(driver);
+            await driver.openNewPage(DAPP_URL);
             await driver.clickElement({
               text: 'Create Token',
               tag: 'button',
@@ -414,9 +437,9 @@ describe('Send ETH', function () {
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
-            await logInWithBalanceValidation(driver);
+            await loginWithBalanceValidation(driver);
 
-            await openActionMenuAndStartSendFlow(driver);
+            await driver.clickElement('[data-testid="eth-overview-send"]');
 
             await driver.fill(
               'input[placeholder="Enter public address (0x) or domain name"]',
@@ -433,8 +456,6 @@ describe('Send ETH', function () {
               tag: 'button',
             });
             await driver.clickElement({ text: 'Continue', tag: 'button' });
-
-            await driver.clickElement('[data-testid="recipient-address"]');
 
             const recipientAddress = await driver.findElements({
               text: '0xc427D...Acd28',

@@ -39,10 +39,15 @@ describe('Bridge tests', function (this: Suite) {
 
         const homePage = new HomePage(driver);
 
-        await bridgeTransaction(driver, quote, 2);
+        await bridgeTransaction({
+          driver,
+          quote,
+          expectedTransactionsCount: 2,
+          expectedDestAmount: '0.0157',
+        });
 
         // Start the flow again
-        await homePage.startBridgeFlow();
+        await homePage.startSwapFlow();
 
         const bridgePage = new BridgeQuotePage(driver);
         await bridgePage.enterBridgeQuote(quote);
@@ -110,8 +115,8 @@ describe('Bridge tests', function (this: Suite) {
          */
 
         assert(
-          swapBridgeInputChanged.length === 20,
-          'Should have at least 20 input change events',
+          swapBridgeInputChanged.length === 18,
+          `Should have 18 input change events, but got ${swapBridgeInputChanged.length}`,
         );
 
         const swapBridgeInputChangedKeys = new Set(

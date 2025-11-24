@@ -3,6 +3,10 @@ import { fireEvent } from '@testing-library/react';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
+import {
+  BNB_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+} from '../../../../shared/constants/network';
 import { AccountNetworkIndicator } from '.';
 
 const MOCK_SCOPES = ['eip155:0', 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'];
@@ -39,8 +43,8 @@ describe('AccountNetworkIndicator', () => {
       fireEvent.mouseEnter(tooltipTrigger);
       expect(tooltipTrigger.getAttribute('aria-describedby')).not.toBeNull();
 
-      expect(getByText('Polygon Mainnet')).toBeInTheDocument();
-      expect(getByText('Binance Smart Chain')).toBeInTheDocument();
+      expect(getByText(POLYGON_DISPLAY_NAME)).toBeInTheDocument();
+      expect(getByText(BNB_DISPLAY_NAME)).toBeInTheDocument();
     }
   });
 });

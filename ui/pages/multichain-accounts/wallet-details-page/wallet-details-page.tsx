@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import {
   AccountGroupId,
@@ -12,6 +12,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  SensitiveText,
   Text,
 } from '../../../components/component-library';
 import {
@@ -31,7 +32,10 @@ import {
 } from '../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
-import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACCOUNT_LIST_PAGE_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
 import { AddMultichainAccount } from '../../../components/multichain-accounts/add-multichain-account';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
@@ -40,11 +44,20 @@ import {
   useSingleWalletAccountsBalanceCallback,
   useSingleWalletDisplayBalance,
 } from '../../../hooks/multichain-accounts/useWalletBalance';
+import { getPreferences } from '../../../selectors';
 
-export const WalletDetailsPage = () => {
+type WalletDetailsPageProps = {
+  params?: { id: string };
+};
+
+export const WalletDetailsPage = ({
+  params: propsParams,
+}: WalletDetailsPageProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const { id } = useParams();
+  const navigate = useNavigate();
+  const hookParams = useParams();
+
+  const { id } = propsParams || hookParams;
   const walletId = decodeURIComponent(id as string) as AccountWalletId;
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
   const wallet = walletsWithAccounts[walletId as AccountWalletId];
@@ -53,12 +66,13 @@ export const WalletDetailsPage = () => {
 
   const walletTotalBalance = useSingleWalletDisplayBalance(walletId);
   const walletAccountBalance = useSingleWalletAccountsBalanceCallback(walletId);
+  const { privacyMode } = useSelector(getPreferences);
 
   useEffect(() => {
     if (!wallet) {
-      history.push(ACCOUNT_LIST_PAGE_ROUTE);
+      navigate(ACCOUNT_LIST_PAGE_ROUTE);
     }
-  }, [wallet, history]);
+  }, [wallet, navigate]);
 
   const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
   const shouldShowBackupReminder = isSRPBackedUp === false;
@@ -71,7 +85,7 @@ export const WalletDetailsPage = () => {
   };
 
   const handleBack = () => {
-    history.goBack();
+    navigate(PREVIOUS_ROUTE);
   };
 
   const multichainAccountCells = useMemo(
@@ -83,16 +97,21 @@ export const WalletDetailsPage = () => {
           accountName={group.metadata.name}
           balance={walletAccountBalance(group.id) ?? ''}
           disableHoverEffect={true}
+          privacyMode={privacyMode}
         />
       )),
-    [multichainAccounts, walletAccountBalance],
+    [multichainAccounts, privacyMode, walletAccountBalance],
   );
+
+  const walletDetailsTitle = useMemo(() => {
+    return `${wallet?.metadata.name} / ${t('accounts')}`;
+  }, [wallet?.metadata.name, t]);
 
   return (
     <Page className="multichain-wallet-details-page">
       <Header
         textProps={{
-          variant: TextVariant.headingMd,
+          variant: TextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
@@ -104,7 +123,7 @@ export const WalletDetailsPage = () => {
           />
         }
       >
-        {wallet?.metadata.name}
+        {walletDetailsTitle}
       </Header>
       <Content>
         <Box
@@ -144,12 +163,14 @@ export const WalletDetailsPage = () => {
             >
               {t('balance')}
             </Text>
-            <Text
+            <SensitiveText
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textAlternative}
+              isHidden={privacyMode}
+              ellipsis
             >
               {walletTotalBalance ?? '$ n/a'}
-            </Text>
+            </SensitiveText>
           </Box>
           {isEntropyWallet ? (
             <MultichainSrpBackup

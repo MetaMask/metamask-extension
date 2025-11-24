@@ -120,6 +120,7 @@ describe('useGasFeeEstimates', () => {
       startPolling: expect.any(Function),
       stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
       input: { networkClientId: 'selectedNetworkClientId' },
+      enabled: true,
     });
   });
 
@@ -132,6 +133,7 @@ describe('useGasFeeEstimates', () => {
       startPolling: expect.any(Function),
       stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
       input: { networkClientId: 'networkClientId1' },
+      enabled: true,
     });
   });
 
@@ -298,6 +300,19 @@ describe('useGasFeeEstimates', () => {
       gasFeeEstimates,
       gasEstimateType: GasEstimateTypes.feeMarket,
       isGasEstimatesLoading: true,
+    });
+  });
+
+  it('does not poll when enabled is false', async () => {
+    useSelector.mockImplementation(generateUseSelectorRouter());
+    await act(async () => {
+      renderHook(() => useGasFeeEstimates('networkClientId1', false));
+    });
+    expect(usePolling).toHaveBeenCalledWith({
+      startPolling: expect.any(Function),
+      stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
+      input: { networkClientId: 'networkClientId1' },
+      enabled: false,
     });
   });
 });

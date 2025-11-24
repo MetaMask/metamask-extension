@@ -7,6 +7,8 @@ import React, {
 } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import { CaipChainId } from '@metamask/utils';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -35,6 +37,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
+import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors';
+import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 
 const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
   Object.values(IconName).includes(iconSrc as IconName);
@@ -96,6 +100,43 @@ export const NetworkListItem = ({
     setNetworkListItemMenuElement(ref);
   };
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
+
+  // This selector provides the indication if the "Gas sponsored" label
+  // is enabled based on the remote feature flag.
+  const isGasFeesSponsoredNetworkEnabled = useSelector(
+    getGasFeesSponsoredNetworkEnabled,
+  );
+
+  // Check if a network has gas sponsorship enabled
+  const isNetworkGasSponsored = useCallback(
+    (networkChainId: string | undefined): boolean => {
+      if (!networkChainId) {
+        return false;
+      }
+
+      // Convert chainId to hex if it's in CAIP format, otherwise use as-is
+      let hexChainId: string;
+      try {
+        // Check if it's in CAIP format (contains ':')
+        if (networkChainId.includes(':')) {
+          hexChainId = convertCaipToHexChainId(networkChainId as CaipChainId);
+        } else {
+          // Already in hex format
+          hexChainId = networkChainId;
+        }
+      } catch (error) {
+        // If conversion fails, use the original chainId
+        hexChainId = networkChainId;
+      }
+
+      return Boolean(
+        isGasFeesSponsoredNetworkEnabled?.[
+          hexChainId as keyof typeof isGasFeesSponsoredNetworkEnabled
+        ],
+      );
+    },
+    [isGasFeesSponsoredNetworkEnabled],
+  );
 
   const renderButton = useCallback(() => {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -210,6 +251,11 @@ export const NetworkListItem = ({
             </Text>
           </Tooltip>
         </Box>
+        {isNetworkGasSponsored(chainId) && (
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            {t('noNetworkFee')}
+          </Text>
+        )}
         {rpcEndpoint && (
           <Box
             className="multichain-network-list-item__rpc-endpoint"
