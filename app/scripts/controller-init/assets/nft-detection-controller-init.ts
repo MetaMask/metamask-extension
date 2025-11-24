@@ -29,5 +29,6 @@ export const NftDetectionControllerInit: ControllerInitFunction<
 
   return {
     controller,
+    persistedStateKey: null,
   };
 };

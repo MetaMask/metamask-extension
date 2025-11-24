@@ -86,14 +86,17 @@ export class SubscriptionService {
       },
     )) as { redirectUrl: string };
 
-    await this.#openAndWaitForTabToClose({
-      url: checkoutSessionUrl,
-      successUrl: redirectUrl,
-    });
+    // skipping redirect and open new tab in test environment
+    if (!process.env.IN_TEST) {
+      await this.#openAndWaitForTabToClose({
+        url: checkoutSessionUrl,
+        successUrl: redirectUrl,
+      });
 
-    if (!currentTabId) {
-      // open extension browser shield settings if open from pop up (no current tab)
-      this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+      if (!currentTabId) {
+        // open extension browser shield settings if open from pop up (no current tab)
+        this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+      }
     }
 
     const subscriptions = await this.#messenger.call(
@@ -138,17 +141,20 @@ export class SubscriptionService {
         },
       );
 
-      await this.#openAndWaitForTabToClose({
-        url: checkoutSessionUrl,
-        successUrl: redirectUrl,
-      });
+      // skipping redirect and open new tab in test environment
+      if (!process.env.IN_TEST) {
+        await this.#openAndWaitForTabToClose({
+          url: checkoutSessionUrl,
+          successUrl: redirectUrl,
+        });
 
-      if (!currentTabId) {
-        // open extension browser shield settings if open from pop up (no current tab)
-        this.#platform.openExtensionInBrowser(
-          // need `waitForSubscriptionCreation` param to wait for subscription creation happen in the background and not redirect to the shield plan page immediately
-          '/settings/transaction-shield/?waitForSubscriptionCreation=true',
-        );
+        if (!currentTabId) {
+          // open extension browser shield settings if open from pop up (no current tab)
+          this.#platform.openExtensionInBrowser(
+            // need `waitForSubscriptionCreation` param to wait for subscription creation happen in the background and not redirect to the shield plan page immediately
+            '/settings/transaction-shield?waitForSubscriptionCreation=true',
+          );
+        }
       }
 
       const subscriptions = await this.#messenger.call(

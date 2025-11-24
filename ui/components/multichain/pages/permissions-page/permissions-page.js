@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Header, Page } from '../page';
@@ -28,27 +28,32 @@ import {
   GATOR_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
+import { getMergedConnectionsListWithGatorPermissions } from '../../../../selectors/gator-permissions/gator-permissions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
 import { ConnectionListItem } from './connection-list-item';
 
 export const PermissionsPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
-  const sitesConnectionsList = useSelector(
-    getConnectedSitesListWithNetworkInfo,
-  );
+
+  const mergedConnectionsList = useSelector((state) => {
+    if (!isGatorPermissionsRevocationFeatureEnabled()) {
+      return getConnectedSitesListWithNetworkInfo(state);
+    }
+    return getMergedConnectionsListWithGatorPermissions(state);
+  });
 
   useEffect(() => {
-    setTotalConnections(Object.keys(sitesConnectionsList).length);
-  }, [sitesConnectionsList]);
+    setTotalConnections(Object.keys(mergedConnectionsList).length);
+  }, [mergedConnectionsList]);
 
   const handleConnectionClick = (connection) => {
     const hostName = connection.origin;
     const safeEncodedHost = encodeURIComponent(hostName);
 
-    history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+    navigate(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
   };
 
   const renderConnectionsList = (connectionList) =>
@@ -75,7 +80,7 @@ export const PermissionsPage = () => {
             className="connections-header__start-accessory"
             color={Color.iconDefault}
             onClick={() =>
-              history.push(
+              navigate(
                 isGatorPermissionsRevocationFeatureEnabled()
                   ? GATOR_PERMISSIONS
                   : DEFAULT_ROUTE,
@@ -100,7 +105,7 @@ export const PermissionsPage = () => {
       <Content padding={0}>
         <Box ref={headerRef}></Box>
         {totalConnections > 0 ? (
-          renderConnectionsList(sitesConnectionsList)
+          renderConnectionsList(mergedConnectionsList)
         ) : (
           <Box
             data-testid="no-connections"

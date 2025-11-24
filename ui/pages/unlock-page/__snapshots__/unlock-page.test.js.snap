@@ -16,7 +16,7 @@ exports[`Unlock Page should match snapshot 1`] = `
           class="mm-box unlock-page__mascot-container mm-box--margin-bottom-0"
         >
           <svg
-            class="unlock-page__mascot-container__horizontal-logo"
+            class="unlock-page__mascot-container__horizontal-logo "
             fill="none"
             height="30"
             viewBox="0 0 696 344"
@@ -58,14 +58,36 @@ exports[`Unlock Page should match snapshot 1`] = `
           Unlock
         </button>
         <button
-          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-bottom-6 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-bottom-4 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="unlock-forgot-password-button"
           type="button"
         >
           Forgot password?
         </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          <span>
+             
+            Need help? Contact 
+            <a
+              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              href="https://support.metamask.io"
+              rel="noopener noreferrer"
+              target="_blank"
+              type="button"
+            >
+              MetaMask support
+            </a>
+            
+             
+          </span>
+        </p>
       </div>
     </form>
+    <div
+      class="mm-box"
+    />
   </div>
 </div>
 `;
