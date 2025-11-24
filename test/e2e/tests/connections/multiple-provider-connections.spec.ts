@@ -358,7 +358,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(1);
-        await sitePermissionPage.checkConnectedNetworksNumber(12);
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
