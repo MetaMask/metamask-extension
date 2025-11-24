@@ -180,6 +180,8 @@ describe('BridgeTransactionSettingsModal', () => {
     // Change custom input to .5
     await interactWithCustomInput(getByTestId, async (input) => {
       input.focus();
+      await userEvent.keyboard('{backspace}');
+      await userEvent.keyboard('{backspace}');
       await userEvent.keyboard('.');
       await userEvent.keyboard('5');
     });

@@ -50,13 +50,8 @@ export const BridgeTransactionSettingsModal = ({
    */
   const slippage = useSelector(getSlippage);
 
-  /**
-   * The custom slippage value typed or pasted by the user
-   */
-  const [customSlippage, setCustomSlippage] = useState<string | undefined>(
-    undefined,
-  );
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [inputValue, setInputValue] = useState<string>('');
 
   /**
    * AUTO option should only show for Solana-to-Solana swaps
@@ -71,11 +66,13 @@ export const BridgeTransactionSettingsModal = ({
   useEffect(() => {
     if (isOpen) {
       setSlippageValue(slippage);
+      setInputValue('');
+      setShowCustomInput(false);
     }
   }, [slippage, shouldShowAutoOption, isOpen]);
 
   const getNotificationConfig = () => {
-    if (!slippageValue) {
+    if (slippageValue === undefined) {
       return null;
     }
 
@@ -91,8 +88,8 @@ export const BridgeTransactionSettingsModal = ({
   };
 
   /**
-   * Sets input field's display value (customSlippage).
-   * When the input field blurs, slippageValue is updated to customSlippage's value.
+   * Handles input field changes.
+   * When the input field blurs, slippageValue is updated to the input's value.
    * The `bridge.slippage` state is only updated when the user clicks the Submit button
    *
    * @param event - The event that triggered the change
@@ -108,7 +105,7 @@ export const BridgeTransactionSettingsModal = ({
     event.preventDefault();
     event.stopPropagation();
     const sanitizedValue = sanitizeAmountInput(value, false);
-    setCustomSlippage(sanitizedValue || undefined);
+    setInputValue(sanitizedValue);
   };
 
   const isCustomSlippage = !(
@@ -188,6 +185,7 @@ export const BridgeTransactionSettingsModal = ({
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
                   e.stopPropagation();
+                  setInputValue(slippageValue?.toString() || '');
                   setShowCustomInput(true);
                 }}
               >
@@ -201,15 +199,13 @@ export const BridgeTransactionSettingsModal = ({
                 testId="bridge__tx-settings-modal-custom-input"
                 borderRadius={BorderRadius.XL}
                 type={TextFieldType.Text}
-                value={customSlippage}
+                value={inputValue}
                 onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
                   handleCustomSlippage(e, e.clipboardData.getData('text'));
                 }}
                 onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                   // Only allows digits and decimal points
-                  if (sanitizeAmountInput(e.key)) {
-                    handleCustomSlippage(e, (customSlippage ?? '') + e.key);
-                  } else if (e.key.length === 1) {
+                  if (!sanitizeAmountInput(e.key) && e.key.length === 1) {
                     e.preventDefault();
                     e.stopPropagation();
                   }
@@ -221,12 +217,11 @@ export const BridgeTransactionSettingsModal = ({
                 onBlur={() => {
                   // If the user clicks outside the input, show the custom button
                   setShowCustomInput(false);
-                  const newSlippage = Number(customSlippage);
-                  if (isNaN(newSlippage)) {
-                    setCustomSlippage(undefined);
-                  } else {
+                  const newSlippage = Number(inputValue);
+                  if (!isNaN(newSlippage) && inputValue.length > 0) {
                     setSlippageValue(newSlippage);
                   }
+                  setInputValue('');
                 }}
                 onFocus={() => {
                   setShowCustomInput(true);
@@ -255,9 +250,10 @@ export const BridgeTransactionSettingsModal = ({
             data-testid="bridge__tx-settings-modal-submit-button"
             disabled={
               // Disable Submit if there is no change in slippage value
-              slippageValue === slippage &&
-              // Disable Submit until the custom slippage is a number
-              (showCustomInput ? isNaN(Number(customSlippage)) : true)
+              slippageValue === slippage ||
+              // Disable Submit if custom input is shown and value is invalid
+              (showCustomInput &&
+                (isNaN(Number(inputValue)) || inputValue === ''))
             }
             onClick={() => {
               dispatch(setSlippage(slippageValue));
