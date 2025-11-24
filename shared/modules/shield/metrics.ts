@@ -140,6 +140,17 @@ export function getShieldCommonTrackingProps(
   };
 }
 
+export function getShieldMarketingTrackingProps(
+  marketingUtmParams?: Record<string, string>,
+) {
+  const marketingProps: Record<string, Json> = {};
+  Object.entries(marketingUtmParams || {}).forEach(([key, value]) => {
+    marketingProps[`marketing_${key}`] = value;
+  });
+
+  return marketingProps;
+}
+
 /**
  * Get the tracking props for the subscription request for the Shield metrics.
  *
@@ -190,12 +201,11 @@ export function getSubscriptionRequestTrackingProps(
     getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
 
   return {
-    ...(shieldSubscriptionMetricsProps?.marketingUtmParams || {}),
+    ...getShieldMarketingTrackingProps(
+      shieldSubscriptionMetricsProps?.marketingUtmParams,
+    ),
     source:
       shieldSubscriptionMetricsProps?.source || EntryModalSourceEnum.Settings,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    marketing_utm_id: shieldSubscriptionMetricsProps?.marketingUtmId || null,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     multi_chain_balance_category: getUserBalanceCategory(

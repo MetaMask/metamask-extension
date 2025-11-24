@@ -1,6 +1,7 @@
 import {
   getBillingCyclesForMetrics,
   getBillingIntervalForMetrics,
+  getShieldMarketingTrackingProps,
   getUserBalanceCategory,
 } from '../../../../shared/modules/shield';
 import {
@@ -24,7 +25,7 @@ export function formatDefaultShieldSubscriptionRequestEventProps(
   const billingCycles = getBillingCyclesForMetrics(params.billingInterval);
 
   return {
-    ...(params.marketingUtmParams || {}),
+    ...getShieldMarketingTrackingProps(params.marketingUtmParams),
     source: params.source,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -131,7 +132,7 @@ export function formatCaptureShieldCtaClickedEventProps(
   params: CaptureShieldCtaClickedEventParams,
 ) {
   return {
-    ...(params.marketingUtmParams || {}),
+    ...getShieldMarketingTrackingProps(params.marketingUtmParams),
     source: params.source,
     page: params.redirectToPage,
     url: params.redirectToUrl,

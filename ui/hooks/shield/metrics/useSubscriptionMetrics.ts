@@ -7,7 +7,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getMetaMaskHdKeyrings } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../useAccountTotalFiatBalance';
-import { getShieldCommonTrackingProps } from '../../../../shared/modules/shield';
+import {
+  getShieldCommonTrackingProps,
+  getShieldMarketingTrackingProps,
+} from '../../../../shared/modules/shield';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
 import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
@@ -55,7 +58,6 @@ export const useSubscriptionMetrics = () => {
    * Since some of the properties are not accessible in the background directly, we need to set them from the UI.
    *
    * @param props - The Shield subscription metrics properties.
-   * @param props.marketingUtmId - The UTM ID used if source is marketing campaign.
    * @param props.source - The source of the Shield subscription metrics.
    */
   const setShieldSubscriptionMetricsPropsToBackground = useCallback(
@@ -118,7 +120,7 @@ export const useSubscriptionMetrics = () => {
         category: MetaMetricsEventCategory.Shield,
         properties: {
           ...commonTrackingProps,
-          ...(params.marketingUtmParams || {}),
+          ...getShieldMarketingTrackingProps(params.marketingUtmParams),
           source: params.source,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
