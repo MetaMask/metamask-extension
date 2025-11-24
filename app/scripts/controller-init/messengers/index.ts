@@ -402,6 +402,8 @@ export {
   getUserOperationControllerMessenger,
   getUserOperationControllerInitMessenger,
 } from './user-operation-controller-messenger';
+export { getUserProfileControllerMessenger } from './user-profile-controller-messenger';
+export { getUserProfileServiceMessenger } from './user-profile-service-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AccountOrderController: {
