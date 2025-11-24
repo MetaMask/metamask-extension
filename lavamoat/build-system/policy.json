@@ -2520,7 +2520,7 @@
         "stylelint>postcss-html>htmlparser2>domelementtype": true
       }
     },
-    "koa>is-generator-function>get-proto>dunder-proto": {
+    "eslint-plugin-react>es-iterator-helpers>has-proto>dunder-proto": {
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>es-errors": true,
@@ -2620,7 +2620,7 @@
         "eslint-plugin-react>array-includes>is-string": true,
         "eslint-plugin-react>array-includes>math-intrinsics": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
-        "koa>is-generator-function>safe-regex-test": true,
+        "string.prototype.matchall>es-abstract>safe-regex-test": true,
         "string.prototype.matchall>es-abstract>set-proto": true,
         "string.prototype.matchall>es-abstract>string.prototype.trim": true
       }
@@ -2654,7 +2654,7 @@
       "packages": {
         "string.prototype.matchall>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
-        "koa>is-generator-function>has-tostringtag": true,
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true,
         "eslint-plugin-react>hasown": true
       }
     },
@@ -3552,17 +3552,17 @@
         "string.prototype.matchall>es-errors": true,
         "string.prototype.matchall>es-object-atoms": true,
         "browserify>has>function-bind": true,
-        "koa>is-generator-function>generator-function": true,
-        "koa>is-generator-function>get-proto": true,
+        "string.prototype.matchall>get-intrinsic>generator-function": true,
+        "string.prototype.matchall>es-abstract>get-proto": true,
         "string.prototype.matchall>gopd": true,
         "string.prototype.matchall>has-symbols": true,
         "eslint-plugin-react>hasown": true,
         "eslint-plugin-react>array-includes>math-intrinsics": true
       }
     },
-    "koa>is-generator-function>get-proto": {
+    "string.prototype.matchall>es-abstract>get-proto": {
       "packages": {
-        "koa>is-generator-function>get-proto>dunder-proto": true,
+        "eslint-plugin-react>es-iterator-helpers>has-proto>dunder-proto": true,
         "string.prototype.matchall>es-object-atoms": true
       }
     },
@@ -3929,7 +3929,7 @@
         "string.prototype.matchall>call-bind>es-define-property": true
       }
     },
-    "koa>is-generator-function>has-tostringtag": {
+    "axios>form-data>es-set-tostringtag>has-tostringtag": {
       "packages": {
         "string.prototype.matchall>has-symbols": true
       }
@@ -4144,7 +4144,7 @@
     "@metamask/eth-token-tracker>deep-equal>is-date-object": {
       "packages": {
         "string.prototype.matchall>call-bound": true,
-        "koa>is-generator-function>has-tostringtag": true
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor": {
@@ -4248,7 +4248,7 @@
       "packages": {
         "string.prototype.matchall>call-bound": true,
         "string.prototype.matchall>gopd": true,
-        "koa>is-generator-function>has-tostringtag": true,
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true,
         "eslint-plugin-react>hasown": true
       }
     },
@@ -4260,14 +4260,14 @@
     "eslint-plugin-react>array-includes>is-string": {
       "packages": {
         "string.prototype.matchall>call-bound": true,
-        "koa>is-generator-function>has-tostringtag": true
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "string.prototype.matchall>es-abstract>es-to-primitive>is-symbol": {
       "packages": {
         "string.prototype.matchall>call-bound": true,
         "string.prototype.matchall>has-symbols": true,
-        "koa>is-generator-function>safe-regex-test": true
+        "string.prototype.matchall>es-abstract>safe-regex-test": true
       }
     },
     "gulp>gulp-cli>replace-homedir>is-absolute>is-relative>is-unc-path": {
@@ -4318,7 +4318,7 @@
         "string.prototype.matchall>define-properties>define-data-property": true,
         "string.prototype.matchall>es-object-atoms": true,
         "string.prototype.matchall>get-intrinsic": true,
-        "koa>is-generator-function>get-proto": true,
+        "string.prototype.matchall>es-abstract>get-proto": true,
         "string.prototype.matchall>has-symbols": true,
         "string.prototype.matchall>set-function-name": true
       }
@@ -6619,7 +6619,7 @@
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-errors": true,
-        "koa>is-generator-function>get-proto": true,
+        "string.prototype.matchall>es-abstract>get-proto": true,
         "string.prototype.matchall>gopd": true,
         "string.prototype.matchall>set-function-name": true
       }
@@ -7070,7 +7070,7 @@
         "buffer": true
       }
     },
-    "koa>is-generator-function>safe-regex-test": {
+    "string.prototype.matchall>es-abstract>safe-regex-test": {
       "packages": {
         "string.prototype.matchall>call-bound": true,
         "string.prototype.matchall>es-errors": true,
@@ -7229,7 +7229,7 @@
     },
     "string.prototype.matchall>es-abstract>set-proto": {
       "packages": {
-        "koa>is-generator-function>get-proto>dunder-proto": true,
+        "eslint-plugin-react>es-iterator-helpers>has-proto>dunder-proto": true,
         "string.prototype.matchall>es-errors": true,
         "string.prototype.matchall>es-object-atoms": true
       }
