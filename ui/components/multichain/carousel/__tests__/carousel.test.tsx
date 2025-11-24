@@ -75,11 +75,11 @@ describe('Carousel', () => {
     expect(screen.getByText('Test description 1')).toBeInTheDocument();
   });
 
-  it('renders empty state when no slides', () => {
-    render(<Carousel {...defaultProps} slides={[]} />);
+  it('returns null when no slides (initial load)', () => {
+    const { container } = render(<Carousel {...defaultProps} slides={[]} />);
 
-    // Should show empty state message
-    expect(screen.getByText('carouselAllCaughtUp')).toBeInTheDocument();
+    // Should not render anything when there are no slides initially
+    expect(container.firstChild).toBeNull();
   });
 
   it('shows loading state when loading', () => {

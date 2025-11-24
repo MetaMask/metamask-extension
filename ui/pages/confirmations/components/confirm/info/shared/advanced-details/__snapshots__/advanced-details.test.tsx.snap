@@ -5,7 +5,7 @@ exports[`<AdvancedDetails /> does not render component when the state property i
 exports[`<AdvancedDetails /> renders component when the prop override is passed 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="advanced-details-nonce-section"
   >
     <div
@@ -33,7 +33,7 @@ exports[`<AdvancedDetails /> renders component when the prop override is passed 
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -65,7 +65,7 @@ exports[`<AdvancedDetails /> renders component when the prop override is passed 
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="advanced-details-data-section"
   >
     <div
@@ -136,7 +136,7 @@ exports[`<AdvancedDetails /> renders component when the prop override is passed 
 exports[`<AdvancedDetails /> renders component when the state property is true 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="advanced-details-nonce-section"
   >
     <div
@@ -164,7 +164,7 @@ exports[`<AdvancedDetails /> renders component when the state property is true 1
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -196,7 +196,7 @@ exports[`<AdvancedDetails /> renders component when the state property is true 1
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="advanced-details-data-section"
   >
     <div

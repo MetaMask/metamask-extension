@@ -31,6 +31,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -54,10 +55,14 @@ import MetafoxLogo from '../../components/ui/metafox-logo';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
+import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -70,7 +75,8 @@ import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
-import { TransactionShield } from './transaction-shield-tab';
+import ClaimsArea from './transaction-shield-tab/claims-area';
+import TransactionShield from './transaction-shield-tab';
 
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
@@ -90,11 +96,9 @@ class SettingsPage extends PureComponent {
     addNewNetwork: PropTypes.bool,
     addressName: PropTypes.string,
     backRoute: PropTypes.string,
-    breadCrumbTextKey: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
-    initialBreadCrumbKey: PropTypes.string,
-    initialBreadCrumbRoute: PropTypes.string,
+    hasSubscribedToShield: PropTypes.bool,
     isAddressEntryPage: PropTypes.bool,
     isMetaMaskShieldFeatureEnabled: PropTypes.bool,
     isPasswordChangePage: PropTypes.bool,
@@ -106,6 +110,7 @@ class SettingsPage extends PureComponent {
     navigate: PropTypes.func.isRequired,
     pathnameI18nKey: PropTypes.string,
     settingsPageSnaps: PropTypes.array,
+    shouldShowShieldEntryModal: PropTypes.bool,
     snapSettingsTitle: PropTypes.string,
     toggleNetworkMenu: PropTypes.func.isRequired,
     useExternalServices: PropTypes.bool,
@@ -120,10 +125,25 @@ class SettingsPage extends PureComponent {
     lastFetchedConversionDate: null,
     searchResults: [],
     searchText: '',
+    showShieldEntryModal: false,
   };
 
   componentDidMount() {
     this.handleConversionDate();
+
+    if (this.props.shouldShowShieldEntryModal) {
+      // if user has subscribed to shield, navigate to shield page
+      // otherwise, show shield entry modal
+      if (this.props.hasSubscribedToShield) {
+        // componentDidMount is rendered after useEffect() so we need setTimeout to ensure the navigation work
+        // TODO: use navigate normally when refactor ot use functional component
+        setTimeout(() => {
+          this.props.navigate(TRANSACTION_SHIELD_ROUTE);
+        });
+      } else {
+        this.setState({ showShieldEntryModal: true });
+      }
+    }
   }
 
   componentDidUpdate() {
@@ -160,7 +180,11 @@ class SettingsPage extends PureComponent {
     } = this.props;
 
     const { t } = this.context;
-    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    const environmentType = getEnvironmentType();
+    const isPopup =
+      environmentType === ENVIRONMENT_TYPE_POPUP ||
+      environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+    const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
     const isSearchHidden =
       isRevealSrpListPage || isPasswordChangePage || isTransactionShieldPage;
 
@@ -170,15 +194,18 @@ class SettingsPage extends PureComponent {
           'main-container main-container--has-shadow settings-page',
           {
             'settings-page--selected': currentPath !== SETTINGS_ROUTE,
+            'settings-page--sidepanel': isSidepanel,
           },
         )}
       >
+        {this.state.showShieldEntryModal && (
+          <ShieldEntryModal
+            skipEventSubmission
+            onClose={() => this.setState({ showShieldEntryModal: false })}
+          />
+        )}
         {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
-        <Box
-          className="settings-page__header"
-          padding={4}
-          paddingBottom={[2, 4]}
-        >
+        <Box className="settings-page__header" padding={4} paddingBottom={2}>
           <div
             className={classnames('settings-page__header__title-container', {
               'settings-page__header__title-container--hide-search':
@@ -202,7 +229,7 @@ class SettingsPage extends PureComponent {
                     color={Color.iconDefault}
                     onClick={() => navigate(backRoute)}
                     display={[Display.Flex, Display.None]}
-                    size={ButtonIconSize.Sm}
+                    size={ButtonIconSize.Md}
                   />
                 )}
               </>
@@ -220,7 +247,7 @@ class SettingsPage extends PureComponent {
                   navigate(mostRecentOverviewPage);
                 }
               }}
-              size={ButtonIconSize.Sm}
+              size={ButtonIconSize.Md}
               marginLeft="auto"
             />
           </div>
@@ -312,10 +339,8 @@ class SettingsPage extends PureComponent {
       isAddressEntryPage,
       pathnameI18nKey,
       addressName,
-      initialBreadCrumbRoute,
-      breadCrumbTextKey,
+      backRoute,
       navigate,
-      initialBreadCrumbKey,
     } = this.props;
     let subheaderText;
 
@@ -323,11 +348,12 @@ class SettingsPage extends PureComponent {
       subheaderText = t('settings');
     } else if (isAddressEntryPage) {
       subheaderText = t('contacts');
-    } else if (initialBreadCrumbKey) {
-      subheaderText = t(initialBreadCrumbKey);
     } else {
       subheaderText = t(pathnameI18nKey || 'general');
     }
+
+    // Show back button only on inner pages of the settings page
+    const showBackButton = backRoute !== SETTINGS_ROUTE;
 
     return (
       !currentPath.startsWith(NETWORKS_ROUTE) && (
@@ -340,23 +366,15 @@ class SettingsPage extends PureComponent {
           flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
         >
-          <Text
-            className={classnames({
-              'settings-page__subheader--link': initialBreadCrumbRoute,
-            })}
-            variant={TextVariant.headingSm}
-            onClick={() =>
-              initialBreadCrumbRoute && navigate(initialBreadCrumbRoute)
-            }
-          >
-            {subheaderText}
-          </Text>
-          {breadCrumbTextKey && (
-            <div className="settings-page__subheader--break">
-              <span>{' > '}</span>
-              {t(breadCrumbTextKey)}
-            </div>
+          {showBackButton && (
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              onClick={() => navigate(backRoute)}
+              marginRight={2}
+              size={ButtonIconSize.Md}
+            />
           )}
+          <Text variant={TextVariant.headingSm}>{subheaderText}</Text>
           {isAddressEntryPage && (
             <div className="settings-page__subheader--break">
               <span>{' > '}</span>
@@ -375,6 +393,7 @@ class SettingsPage extends PureComponent {
       useExternalServices,
       settingsPageSnaps,
       isMetaMaskShieldFeatureEnabled,
+      hasSubscribedToShield,
     } = this.props;
     const { t } = this.context;
 
@@ -439,7 +458,7 @@ class SettingsPage extends PureComponent {
       });
     }
 
-    if (isMetaMaskShieldFeatureEnabled) {
+    if (isMetaMaskShieldFeatureEnabled && useExternalServices) {
       tabs.splice(-4, 0, {
         content: t('shieldTx'),
         icon: <Icon name={IconName.ShieldLock} />,
@@ -470,11 +489,15 @@ class SettingsPage extends PureComponent {
           }
           return matchPath(key, currentPath);
         }}
-        onSelect={(key) =>
+        onSelect={(key) => {
+          if (key === TRANSACTION_SHIELD_ROUTE && !hasSubscribedToShield) {
+            this.setState({ showShieldEntryModal: true });
+            return;
+          }
           navigate(key, {
             state: { fromPage: currentPath },
-          })
-        }
+          });
+        }}
       />
     );
   }
@@ -527,6 +550,10 @@ class SettingsPage extends PureComponent {
         <Route
           path={TRANSACTION_SHIELD_ROUTE}
           element={<TransactionShield />}
+        />
+        <Route
+          path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}/*`}
+          element={<ClaimsArea />}
         />
         <Route path={EXPERIMENTAL_ROUTE} element={<ExperimentalTab />} />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||

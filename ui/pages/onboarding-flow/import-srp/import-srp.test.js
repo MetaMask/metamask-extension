@@ -1,10 +1,15 @@
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { userEvent } from '@testing-library/user-event';
+import thunk from 'redux-thunk';
 import initializedMockState from '../../../../test/data/mock-state.json';
-import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../../helpers/constants/routes';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import * as Actions from '../../../store/actions';
 import ImportSrp from './import-srp';
 
 const mockUseNavigate = jest.fn();
@@ -21,7 +26,9 @@ const TEST_SEED =
 
 describe('Import SRP', () => {
   const mockState = {
+    ...initializedMockState,
     metamask: {
+      ...initializedMockState.metamask,
       internalAccounts: {
         accounts: {},
         selectedAccount: '',
@@ -118,5 +125,29 @@ describe('Import SRP', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(
       ONBOARDING_CREATE_PASSWORD_ROUTE,
     );
+  });
+
+  it('should reset onboarding flow when back button is clicked', async () => {
+    const resetOnboardingSpy = jest
+      .spyOn(Actions, 'resetOnboarding')
+      .mockReturnValue(jest.fn().mockResolvedValueOnce(null));
+
+    const mockStore = configureMockStore([thunk])(mockState);
+    const mockSubmitSecretRecoveryPhrase = jest.fn();
+
+    const { queryByTestId } = renderWithProvider(
+      <ImportSrp submitSecretRecoveryPhrase={mockSubmitSecretRecoveryPhrase} />,
+      mockStore,
+    );
+
+    const backBtn = queryByTestId('import-srp-back-button');
+    fireEvent.click(backBtn);
+
+    await waitFor(() => {
+      expect(resetOnboardingSpy).toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+        replace: true,
+      });
+    });
   });
 });

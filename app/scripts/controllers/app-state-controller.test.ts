@@ -1,4 +1,11 @@
-import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { Browser } from 'webextension-polyfill';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -7,18 +14,19 @@ import {
 } from '../../../shared/constants/app';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import { MINUTE } from '../../../shared/constants/time';
-import {
-  AllowedActions,
-  AllowedEvents,
-  AppStateController,
-} from './app-state-controller';
+import { AppStateController } from './app-state-controller';
 import type {
-  AppStateControllerActions,
-  AppStateControllerEvents,
+  AppStateControllerMessenger,
   AppStateControllerOptions,
   AppStateControllerState,
 } from './app-state-controller';
 import type { PreferencesControllerState } from './preferences-controller';
+
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<AppStateControllerMessenger>,
+  MessengerEvents<AppStateControllerMessenger>
+>;
 
 jest.mock('webextension-polyfill');
 
@@ -71,8 +79,8 @@ describe('AppStateController', () => {
 
   describe('getUnlockPromise', () => {
     it('waits for unlock if the extension is locked', async () => {
-      await withController(async ({ controller, controllerMessenger }) => {
-        controllerMessenger.registerActionHandler(
+      await withController(async ({ controller, messenger }) => {
+        messenger.registerActionHandler(
           'KeyringController:getState',
           jest.fn().mockReturnValue({ isUnlocked: false }),
         );
@@ -85,8 +93,8 @@ describe('AppStateController', () => {
     });
 
     it('resolves immediately if the extension is already unlocked', async () => {
-      await withController(async ({ controller, controllerMessenger }) => {
-        controllerMessenger.registerActionHandler(
+      await withController(async ({ controller, messenger }) => {
+        messenger.registerActionHandler(
           'KeyringController:getState',
           jest.fn().mockReturnValue({ isUnlocked: true }),
         );
@@ -98,17 +106,14 @@ describe('AppStateController', () => {
     });
 
     it('publishes an unlock change event when isUnlocked is set to false', async () => {
-      await withController(async ({ controller, controllerMessenger }) => {
-        controllerMessenger.registerActionHandler(
+      await withController(async ({ controller, messenger }) => {
+        messenger.registerActionHandler(
           'KeyringController:getState',
           jest.fn().mockReturnValue({ isUnlocked: false }),
         );
 
         const unlockChangeSpy = jest.fn();
-        controllerMessenger.subscribe(
-          'AppStateController:unlockChange',
-          unlockChangeSpy,
-        );
+        messenger.subscribe('AppStateController:unlockChange', unlockChangeSpy);
         const unlockPromise = controller.getUnlockPromise(false);
 
         const timeoutPromise = new Promise((resolve) =>
@@ -127,8 +132,8 @@ describe('AppStateController', () => {
       const addRequestMock = jest.fn().mockResolvedValue(undefined);
       await withController(
         { addRequestMock },
-        async ({ controller, controllerMessenger }) => {
-          controllerMessenger.registerActionHandler(
+        async ({ controller, messenger }) => {
+          messenger.registerActionHandler(
             'KeyringController:getState',
             jest.fn().mockReturnValue({ isUnlocked: false }),
           );
@@ -154,14 +159,14 @@ describe('AppStateController', () => {
         {
           addRequestMock,
         },
-        ({ controller, controllerMessenger }) => {
-          controllerMessenger.registerActionHandler(
+        ({ controller, messenger }) => {
+          messenger.registerActionHandler(
             'KeyringController:getState',
             jest.fn().mockReturnValue({ isUnlocked: false }),
           );
 
           const unlockChangeSpy = jest.fn();
-          controllerMessenger.subscribe(
+          messenger.subscribe(
             'AppStateController:unlockChange',
             unlockChangeSpy,
           );
@@ -230,9 +235,9 @@ describe('AppStateController', () => {
 
   describe('setLastActiveTime', () => {
     it('sets the timer if timeoutMinutes is set', async () => {
-      await withController(({ controller, controllerMessenger }) => {
+      await withController(({ controller, messenger }) => {
         const timeout = Date.now();
-        controllerMessenger.publish(
+        messenger.publish(
           'PreferencesController:stateChange',
           {
             preferences: { autoLockTimeLimit: timeout },
@@ -479,6 +484,32 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setShieldPausedToastLastClickedOrClosed', () => {
+    it('set the shieldPausedToastLastClickedOrClosed time', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
+        controller.setShieldPausedToastLastClickedOrClosed(mockParams);
+
+        expect(
+          controller.state.shieldPausedToastLastClickedOrClosed,
+        ).toStrictEqual(mockParams);
+      });
+    });
+  });
+
+  describe('setShieldEndingToastLastClickedOrClosed', () => {
+    it('set the shieldEndingToastLastClickedOrClosed time', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
+        controller.setShieldEndingToastLastClickedOrClosed(mockParams);
+
+        expect(
+          controller.state.shieldEndingToastLastClickedOrClosed,
+        ).toStrictEqual(mockParams);
+      });
+    });
+  });
+
   describe('isUpdateAvailable', () => {
     it('defaults to false', async () => {
       await withController(({ controller }) => {
@@ -548,10 +579,10 @@ describe('AppStateController', () => {
 
   describe('onPreferencesStateChange', () => {
     it('should update the timeoutMinutes with the autoLockTimeLimit', async () => {
-      await withController(({ controller, controllerMessenger }) => {
+      await withController(({ controller, messenger }) => {
         const timeout = Date.now();
 
-        controllerMessenger.publish(
+        messenger.publish(
           'PreferencesController:stateChange',
           {
             preferences: { autoLockTimeLimit: timeout },
@@ -567,9 +598,9 @@ describe('AppStateController', () => {
   describe('isManifestV3', () => {
     it('creates alarm when isManifestV3 is true', async () => {
       mockIsManifestV3.mockReturnValue(true);
-      await withController(({ controller, controllerMessenger }) => {
+      await withController(({ controller, messenger }) => {
         const timeout = Date.now();
-        controllerMessenger.publish(
+        messenger.publish(
           'PreferencesController:stateChange',
           {
             preferences: { autoLockTimeLimit: timeout },
@@ -680,6 +711,22 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setCanTrackWalletFundsObtained', () => {
+    it('updates the canTrackWalletFundsObtained state with a boolean value', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
+
+        controller.setCanTrackWalletFundsObtained(false);
+
+        expect(controller.state.canTrackWalletFundsObtained).toBe(false);
+
+        controller.setCanTrackWalletFundsObtained(true);
+
+        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
+      });
+    });
+  });
+
   describe('metadata', () => {
     it('includes expected state in debug snapshots', async () => {
       await withController(
@@ -704,13 +751,15 @@ describe('AppStateController', () => {
             deriveStateFromMetadata(
               controller.state,
               controller.metadata,
-              'anonymous',
+              'includeInDebugSnapshot',
             ),
           ).toMatchInlineSnapshot(`
             {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
+              "appActiveTab": undefined,
               "browserEnvironment": {},
+              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
@@ -724,6 +773,7 @@ describe('AppStateController', () => {
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
@@ -731,6 +781,7 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastUpdatedAt": null,
+              "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
@@ -739,15 +790,20 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingShieldCohort": null,
+              "pendingShieldCohortTxType": null,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
+              "shieldEndingToastLastClickedOrClosed": null,
+              "shieldPausedToastLastClickedOrClosed": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
               "showNetworkBanner": true,
               "showPermissionsTour": true,
+              "showShieldEntryModalOnce": null,
               "showTestnetMessageInDropdown": true,
               "signatureSecurityAlertResponses": {},
               "slides": [],
@@ -792,7 +848,9 @@ describe('AppStateController', () => {
           ).toMatchInlineSnapshot(`
             {
               "addressSecurityAlertResponses": {},
+              "appActiveTab": undefined,
               "browserEnvironment": {},
+              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
@@ -806,6 +864,7 @@ describe('AppStateController', () => {
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
@@ -813,6 +872,7 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastUpdatedAt": null,
+              "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
@@ -821,15 +881,20 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingShieldCohort": null,
+              "pendingShieldCohortTxType": null,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
+              "shieldEndingToastLastClickedOrClosed": null,
+              "shieldPausedToastLastClickedOrClosed": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
               "showNetworkBanner": true,
               "showPermissionsTour": true,
+              "showShieldEntryModalOnce": null,
               "showTestnetMessageInDropdown": true,
               "signatureSecurityAlertResponses": {},
               "slides": [],
@@ -874,6 +939,7 @@ describe('AppStateController', () => {
           ).toMatchInlineSnapshot(`
             {
               "browserEnvironment": {},
+              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "defaultHomeActiveTabName": null,
               "enableEnforcedSimulations": true,
@@ -881,6 +947,7 @@ describe('AppStateController', () => {
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
@@ -888,20 +955,25 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastUpdatedAt": null,
+              "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDetectionNoticeDismissed": false,
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingShieldCohortTxType": null,
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
+              "shieldEndingToastLastClickedOrClosed": null,
+              "shieldPausedToastLastClickedOrClosed": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
               "showNetworkBanner": true,
               "showPermissionsTour": true,
+              "showShieldEntryModalOnce": null,
               "showTestnetMessageInDropdown": true,
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
@@ -945,6 +1017,7 @@ describe('AppStateController', () => {
             {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
+              "appActiveTab": undefined,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
@@ -958,6 +1031,7 @@ describe('AppStateController', () => {
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
@@ -965,22 +1039,31 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastUpdatedAt": null,
+              "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "networkConnectionBanner": {
+                "status": "unknown",
+              },
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDropdownState": {},
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingShieldCohort": null,
+              "pendingShieldCohortTxType": null,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
+              "shieldEndingToastLastClickedOrClosed": null,
+              "shieldPausedToastLastClickedOrClosed": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
               "showNetworkBanner": true,
               "showPermissionsTour": true,
+              "showShieldEntryModalOnce": null,
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
@@ -1004,13 +1087,10 @@ type WithControllerOptions = {
 
 type WithControllerCallback<ReturnValue> = ({
   controller,
-  controllerMessenger,
+  messenger,
 }: {
   controller: AppStateController;
-  controllerMessenger: Messenger<
-    AppStateControllerActions | AllowedActions,
-    AppStateControllerEvents | AllowedEvents
-  >;
+  messenger: RootMessenger;
 }) => ReturnValue;
 
 type WithControllerArgs<ReturnValue> =
@@ -1023,25 +1103,30 @@ async function withController<ReturnValue>(
   const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
   const { addRequestMock, state, options = {} } = rest;
 
-  const controllerMessenger = new Messenger<
-    AppStateControllerActions | AllowedActions,
-    AppStateControllerEvents | AllowedEvents
-  >();
-  const appStateMessenger = controllerMessenger.getRestricted({
-    name: 'AppStateController',
-    allowedActions: [
+  const rootMessenger: RootMessenger = new Messenger({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
+  const appStateMessenger = new Messenger<
+    'AppStateController',
+    MessengerActions<AppStateControllerMessenger>,
+    MessengerEvents<AppStateControllerMessenger>,
+    RootMessenger
+  >({
+    namespace: 'AppStateController',
+    parent: rootMessenger,
+  });
+  rootMessenger.delegate({
+    messenger: appStateMessenger,
+    actions: [
       'ApprovalController:addRequest',
       'ApprovalController:acceptRequest',
       'KeyringController:getState',
       'PreferencesController:getState',
     ],
-    allowedEvents: [
-      'PreferencesController:stateChange',
-      'KeyringController:unlock',
-    ],
+    events: ['PreferencesController:stateChange', 'KeyringController:unlock'],
   });
 
-  controllerMessenger.registerActionHandler(
+  rootMessenger.registerActionHandler(
     'PreferencesController:getState',
     jest.fn().mockReturnValue({
       preferences: {
@@ -1050,7 +1135,7 @@ async function withController<ReturnValue>(
     }),
   );
 
-  controllerMessenger.registerActionHandler(
+  rootMessenger.registerActionHandler(
     'ApprovalController:addRequest',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -1065,6 +1150,6 @@ async function withController<ReturnValue>(
       state,
       ...options,
     }),
-    controllerMessenger,
+    messenger: rootMessenger,
   });
 }

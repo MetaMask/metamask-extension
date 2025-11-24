@@ -1,6 +1,6 @@
 import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
 import { Hex, hexToNumber } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
@@ -203,6 +203,10 @@ export const CHAIN_IDS = {
   ACALA_TESTNET: '0x253',
   KARURA: '0x2ae',
   HEMI: '0xa867',
+  PLASMA: '0x2611',
+  LUKSO: '0x2a',
+  INJECTIVE: '0x6f0',
+  MONAD: '0x8f',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -281,8 +285,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
-// `DEPRECATED_NETWORKS` and optionally add network specific logic to
-// `ui/components/ui/deprecated-networks/deprecated-networks.js`.
+// `DEPRECATED_NETWORKS`
 export const DEPRECATED_NETWORKS = [
   CHAIN_IDS.GOERLI,
   CHAIN_IDS.ARBITRUM_GOERLI,
@@ -346,6 +349,7 @@ export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
 export const SEI_DISPLAY_NAME = 'Sei';
 export const KATANA_DISPLAY_NAME = 'Katana';
+export const MONAD_DISPLAY_NAME = 'Monad';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
 export const SOPHON_DISPLAY_NAME = 'Sophon';
 export const SOPHON_TESTNET_DISPLAY_NAME = 'Sophon Testnet';
@@ -361,6 +365,9 @@ export const ACALA_DISPLAY_NAME = 'Acala';
 export const ACALA_TESTNET_DISPLAY_NAME = 'Acala Testnet';
 export const KARURA_DISPLAY_NAME = 'Karura';
 export const HEMI_DISPLAY_NAME = 'Hemi';
+export const PLASMA_DISPLAY_NAME = 'Plasma';
+export const LUKSO_DISPLAY_NAME = 'Lukso';
+export const INJECTIVE_DISPLAY_NAME = 'Injective';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -429,6 +436,7 @@ export const CURRENCY_SYMBOLS = {
   FLOW: 'FLOW',
   SEI: 'SEI',
   KATANA: 'ETH',
+  MONAD: 'MON',
   SOPHON: 'SOPH',
   BERACHAIN: 'BERA',
   EDUCHAIN: 'EDU',
@@ -441,6 +449,9 @@ export const CURRENCY_SYMBOLS = {
   ACALA: 'ACA',
   KARURA: 'KAR',
   HEMI: 'ETH',
+  PLASMA: 'XPL',
+  LUKSO: 'LYX',
+  INJECTIVE: 'INJ',
 } as const;
 
 // Non-EVM currency symbols
@@ -616,9 +627,14 @@ export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
 export const MEGAETH_MAINNET_IMAGE_URL = './images/MegaETH-logo-mainnet.png';
 export const SOLANA_IMAGE_URL = './images/solana-logo.svg';
+export const SOLANA_TESTNET_IMAGE_URL = './images/solana-testnet-logo.svg';
+export const SOLANA_DEVNET_IMAGE_URL = './images/solana-devnet-logo.svg';
 export const BITCOIN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_IMAGE_URL = './images/bitcoin-testnet-logo.svg';
 export const BITCOIN_SIGNET_IMAGE_URL = './images/bitcoin-signet-logo.png';
+export const TRON_IMAGE_URL = './images/tron-logo.svg';
+export const TRON_NILE_IMAGE_URL = './images/tron-logo.svg';
+export const TRON_SHASTA_IMAGE_URL = './images/tron-logo.svg';
 export const XRPLEVM_TESTNET_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL =
   './images/xrplevm-native.svg';
@@ -629,6 +645,7 @@ export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
 export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
 export const KATANA_IMAGE_URL = './images/katana.svg';
+export const MONAD_IMAGE_URL = './images/monad.svg';
 export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.png';
 export const SOPHON_IMAGE_URL = './images/sophon.svg';
 export const SOPHON_TESTNET_IMAGE_URL = './images/sophon-testnet.svg';
@@ -651,6 +668,12 @@ export const ACALA_TOKEN_IMAGE_URL = './images/acala-token.svg';
 export const KARURA_IMAGE_URL = './images/karura.svg';
 export const KARURA_TOKEN_IMAGE_URL = './images/karura-token.svg';
 export const HEMI_IMAGE_URL = './images/hemi.svg';
+export const PLASMA_IMAGE_URL = './images/plasma.svg';
+export const PLASMA_NATIVE_TOKEN_IMAGE_URL = './images/plasma-native.svg';
+export const LUKSO_IMAGE_URL = './images/lukso.svg';
+export const LUKSO_NATIVE_TOKEN_IMAGE_URL = './images/lukso-native.svg';
+export const INJECTIVE_IMAGE_URL = './images/injective.svg';
+export const INJECTIVE_NATIVE_TOKEN_IMAGE_URL = './images/injective-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -799,6 +822,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.APECHAIN_MAINNET]: APECHAIN_DISPLAY_NAME,
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.SEI]: SEI_DISPLAY_NAME,
+  [CHAIN_IDS.MONAD]: MONAD_DISPLAY_NAME,
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_DISPLAY_NAME,
   [CHAIN_IDS.OMNI]: OMNI_DISPLAY_NAME,
   [CHAIN_IDS.XDC]: XDC_DISPLAY_NAME,
@@ -808,6 +832,9 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.KARURA]: KARURA_DISPLAY_NAME,
   [CHAIN_IDS.HEMI]: HEMI_DISPLAY_NAME,
+  [CHAIN_IDS.PLASMA]: PLASMA_DISPLAY_NAME,
+  [CHAIN_IDS.LUKSO]: LUKSO_DISPLAY_NAME,
+  [CHAIN_IDS.INJECTIVE]: INJECTIVE_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -952,6 +979,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.APECHAIN_MAINNET]: CURRENCY_SYMBOLS.APECHAIN,
   [CHAIN_IDS.APECHAIN_TESTNET]: CURRENCY_SYMBOLS.APECHAIN,
   [CHAIN_IDS.SEI]: CURRENCY_SYMBOLS.SEI,
+  [CHAIN_IDS.MONAD]: CURRENCY_SYMBOLS.MONAD,
   [CHAIN_IDS.ABSTRACT]: CURRENCY_SYMBOLS.ABSTRACT,
   [CHAIN_IDS.OMNI]: CURRENCY_SYMBOLS.OMNI,
   [CHAIN_IDS.XDC]: CURRENCY_SYMBOLS.XDC,
@@ -961,6 +989,9 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.ACALA_TESTNET]: CURRENCY_SYMBOLS.ACALA,
   [CHAIN_IDS.KARURA]: CURRENCY_SYMBOLS.KARURA,
   [CHAIN_IDS.HEMI]: CURRENCY_SYMBOLS.HEMI,
+  [CHAIN_IDS.PLASMA]: CURRENCY_SYMBOLS.PLASMA,
+  [CHAIN_IDS.LUKSO]: CURRENCY_SYMBOLS.LUKSO,
+  [CHAIN_IDS.INJECTIVE]: CURRENCY_SYMBOLS.INJECTIVE,
 } as const;
 
 /**
@@ -1103,15 +1134,21 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
+  [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
+  [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
   [MultichainNetworks.BITCOIN]: BITCOIN_IMAGE_URL,
   [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_IMAGE_URL,
   [MultichainNetworks.BITCOIN_SIGNET]: BITCOIN_SIGNET_IMAGE_URL,
+  [MultichainNetworks.TRON]: TRON_IMAGE_URL,
+  [MultichainNetworks.TRON_NILE]: TRON_NILE_IMAGE_URL,
+  [MultichainNetworks.TRON_SHASTA]: TRON_SHASTA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRPLEVM_TESTNET_IMAGE_URL,
   [CHAIN_IDS.LENS]: LENS_IMAGE_URL,
   [CHAIN_IDS.PLUME]: PLUME_IMAGE_URL,
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
   [CHAIN_IDS.KATANA]: KATANA_IMAGE_URL,
+  [CHAIN_IDS.MONAD]: MONAD_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
   [CHAIN_IDS.SOPHON]: SOPHON_IMAGE_URL,
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_IMAGE_URL,
@@ -1128,6 +1165,9 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_IMAGE_URL,
   [CHAIN_IDS.HEMI]: HEMI_IMAGE_URL,
+  [CHAIN_IDS.PLASMA]: PLASMA_IMAGE_URL,
+  [CHAIN_IDS.LUKSO]: LUKSO_IMAGE_URL,
+  [CHAIN_IDS.INJECTIVE]: INJECTIVE_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1159,6 +1199,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_IMAGE_URL,
   [CHAIN_IDS.NUMBERS]: NUMBERS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.SEI]: SEI_IMAGE_URL,
+  [CHAIN_IDS.MONAD]: MONAD_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
   [CHAIN_IDS.MOONRIVER]: MOONRIVER_TOKEN_IMAGE_URL,
@@ -1206,6 +1247,15 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.HEMI]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.PLASMA]: PLASMA_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.LUKSO]: LUKSO_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.INJECTIVE]: INJECTIVE_NATIVE_TOKEN_IMAGE_URL,
+  [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
+  [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
+  [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
+  [MultichainNetworks.BITCOIN]: BITCOIN_IMAGE_URL,
+  [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_IMAGE_URL,
+  [MultichainNetworks.BITCOIN_SIGNET]: BITCOIN_SIGNET_IMAGE_URL,
 } as const;
 
 /**
@@ -1217,6 +1267,7 @@ export const CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP: Record<
 > = {
   [CHAIN_IDS.LINEA_MAINNET]: 'https://app.metamask.io/explore/networks/linea',
   [CHAIN_IDS.SEI]: 'https://app.metamask.io/explore/networks/sei',
+  [CHAIN_IDS.MONAD]: 'https://app.metamask.io/explore/networks/monad',
   [MultichainNetworks.SOLANA]:
     'https://app.metamask.io/explore/networks/solana',
 } as const;
@@ -1478,6 +1529,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     defaultBlockExplorerUrlIndex: 0,
   },
   {
+    chainId: CHAIN_IDS.MONAD,
+    name: MONAD_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.MONAD,
+    rpcEndpoints: [
+      {
+        url: `https://monad-mainnet.infura.io/v3/${infuraProjectId}`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://monadscan.com/'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
     chainId: CHAIN_IDS.BASE,
     name: BASE_DISPLAY_NAME,
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
@@ -1501,8 +1566,8 @@ export const FEATURED_NETWORK_CHAIN_IDS = [
 
 export const FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN = [
   SolScope.Mainnet,
-  SolScope.Devnet,
   BtcScope.Mainnet,
+  TrxScope.Mainnet,
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];
@@ -1606,3 +1671,14 @@ export const TEST_NETWORK_IDS = [
   CHAIN_IDS.MEGAETH_TESTNET,
   CHAIN_IDS.MONAD_TESTNET,
 ];
+
+// default minimum number of `occurrences` per token
+export const MINIMUM_TOKEN_OCCURRENCES = 2;
+
+/**
+ * A map of chain IDs to the minimum number of occurrences.
+ */
+export const TOKEN_OCCURRENCES_MAP: Partial<Record<ChainId, number>> = {
+  // MONAD has very low amount of occurences for tokens, using default value leaves us with just MON
+  [CHAIN_IDS.MONAD]: 1,
+};

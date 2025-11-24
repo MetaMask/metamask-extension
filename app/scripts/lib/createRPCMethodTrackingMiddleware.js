@@ -240,7 +240,7 @@ function isMultichainRequestMethod(method) {
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {Function} opts.getHardwareTypeForMetric
- * @param {RestrictedMessenger} opts.snapAndHardwareMessenger
+ * @param {Messenger} opts.snapAndHardwareMessenger
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
  * @param {number} [opts.globalRateLimitMaxAmount] - max number of method calls that should
@@ -535,6 +535,20 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       CUSTOM_PROPERTIES_MAP[invokedMethod]?.(req, res, stage, eventProperties);
+
+      if (eventType.REQUESTED === MetaMetricsEventName.SignatureRequested) {
+        // get the snap and hardware info again in case we were not able to during the initial request
+        // because the KeyringController was locked
+        const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
+          getAccountType,
+          getDeviceModel,
+          getHardwareTypeForMetric,
+          snapAndHardwareMessenger,
+        );
+
+        // merge the snapAndHardwareInfo into eventProperties
+        Object.assign(eventProperties, snapAndHardwareInfo);
+      }
 
       let blockaidMetricProps = {};
       if (SIGNING_METHODS.includes(invokedMethod)) {

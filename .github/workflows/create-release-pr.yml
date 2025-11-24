@@ -26,6 +26,7 @@ jobs:
   resolve-bases:
     # Determines if the release is hotfix or not based on semver. Then sets the appropriate base branches for the checkout and release PR.
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       checkout_base: ${{ steps.out.outputs.checkout_base }}
       release_base: ${{ steps.out.outputs.release_base }}
@@ -57,6 +58,7 @@ jobs:
   resolve-previous-ref:
     needs: resolve-bases
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       previous_ref: ${{ steps.out.outputs.previous_ref }}
     steps:
@@ -67,21 +69,21 @@ jobs:
         shell: bash
         env:
           SEMVER: ${{ inputs.semver-version }}
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           .github/scripts/resolve-previous-ref.sh
 
   create-release-pr:
     needs: [resolve-bases, resolve-previous-ref]
     name: Create Release Pull Request using Github Tools
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@6c47e935b9de693c70db009fc2e4e1dd0df4e71e
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@6a04e4d0c8c25680a7543cfcd2e2fb7125b6759c
     with:
       platform: extension
       checkout-base-branch: ${{ needs.resolve-bases.outputs.checkout_base }}
       release-pr-base-branch: ${{ needs.resolve-bases.outputs.release_base }}
       semver-version: ${{ inputs.semver-version }}
       previous-version-ref: ${{ needs.resolve-previous-ref.outputs.previous_ref }}
-      github-tools-version: 6c47e935b9de693c70db009fc2e4e1dd0df4e71e
+      github-tools-version: 6a04e4d0c8c25680a7543cfcd2e2fb7125b6759c
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
       # If called from auto-create-release-pr use the PR_TOKEN passed in as an input, if called manually use github secret token values

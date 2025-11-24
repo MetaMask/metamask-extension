@@ -47,7 +47,7 @@ describe('Permissions Approved Event', function (this: Suite) {
   it('Successfully tracked when connecting to dapp', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-fd20',

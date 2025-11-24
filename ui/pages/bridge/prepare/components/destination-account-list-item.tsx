@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   formatChainIdToHex,
-  isSolanaChainId,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import {
   Icon,
@@ -92,11 +92,11 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   } else {
     const chainIdInHexOrCaip =
       toChain?.chainId &&
-      (isSolanaChainId(toChain?.chainId)
+      (isNonEvmChainId(toChain?.chainId)
         ? toChain.chainId
         : formatChainIdToHex(toChain?.chainId));
     balanceToTranslate = chainIdInHexOrCaip
-      ? balanceByChainId[chainIdInHexOrCaip]?.toString()
+      ? (balanceByChainId[chainIdInHexOrCaip]?.toString() ?? '0')
       : '0';
   }
 
@@ -150,7 +150,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
         </Row>
         <Text
           variant={TextVariant.bodySm}
-          color={TextColor.textAlternativeSoft}
+          color={TextColor.textAlternative}
           data-testid="account-list-address"
         >
           {shortenAddress(normalizeSafeAddress(account.address))}
@@ -176,7 +176,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
           <AvatarNetwork
             src={
               CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                toChain?.chainId && !isSolanaChainId(toChain?.chainId)
+                toChain?.chainId && !isNonEvmChainId(toChain?.chainId)
                   ? formatChainIdToHex(toChain?.chainId)
                   : (toChain?.chainId ?? '')
               ]

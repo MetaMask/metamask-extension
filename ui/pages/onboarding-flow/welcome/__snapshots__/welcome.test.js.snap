@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Welcome Page render matches snapshot 1`] = `
+<div>
+  <div
+    class="mm-box welcome-container mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full"
+  >
+    <div
+      class="mm-box welcome-login"
+      data-testid="get-started"
+      style="opacity: 1; transform: translateY(0) scale(1); transition: opacity 0.6s ease-out, transform 0.6s ease-out;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+          data-testid="onboarding-create-wallet"
+        >
+          Create a new wallet
+        </button>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+          data-testid="onboarding-import-wallet"
+          data-theme="dark"
+        >
+          I have an existing wallet
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

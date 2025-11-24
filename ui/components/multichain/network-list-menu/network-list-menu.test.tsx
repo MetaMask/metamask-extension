@@ -12,6 +12,8 @@ import {
   LINEA_MAINNET_DISPLAY_NAME,
   BNB_DISPLAY_NAME,
   LINEA_SEPOLIA_DISPLAY_NAME,
+  MONAD_DISPLAY_NAME,
+  MONAD_TESTNET_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -100,7 +102,7 @@ const render = ({
   isAddingNewNetwork = false,
   isAccessedFromDappConnectedSitePopover = false,
   editedNetwork = undefined,
-  neNetworkDiscoverButton = { '0x531': true, '0xe708': true },
+  neNetworkDiscoverButton = { '0x531': true, '0xe708': true, '0x8f': true },
 }: TestRenderProps = {}) => {
   const state = {
     appState: {
@@ -189,6 +191,32 @@ const render = ({
             },
           ],
         },
+        '0x8f': {
+          nativeCurrency: 'MON',
+          chainId: '0x8f',
+          name: MONAD_DISPLAY_NAME,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
+              networkClientId: 'monad',
+            },
+          ],
+        },
+        '0x279f': {
+          nativeCurrency: 'MON',
+          chainId: '0x279f',
+          name: MONAD_TESTNET_DISPLAY_NAME,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
+              networkClientId: NETWORK_TYPES.MONAD_TESTNET,
+            },
+          ],
+        },
       },
       isUnlocked,
       selectedNetworkClientId: NETWORK_TYPES.MAINNET,
@@ -197,6 +225,7 @@ const render = ({
         tokenNetworkFilter: {
           [CHAIN_IDS.MAINNET]: true,
           [CHAIN_IDS.LINEA_MAINNET]: true,
+          [CHAIN_IDS.MONAD]: true,
         },
       },
       domains: {
@@ -300,11 +329,11 @@ describe('NetworkListMenu', () => {
       origin: 'https://app.metamask.io',
     });
 
-    // Contains Mainnet, Linea and the two custom networks
+    // Contains Mainnet, Linea, Monad and the two custom networks
     const networkItems = document.querySelectorAll(
       '.multichain-network-list-item',
     );
-    expect(networkItems).toHaveLength(4);
+    expect(networkItems).toHaveLength(5); // 5 EVM networks (Bitcoin/Solana disabled in test environment)
 
     const selectedNodes = document.querySelectorAll(
       '.multichain-network-list-item--selected',

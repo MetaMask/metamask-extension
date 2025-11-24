@@ -116,7 +116,9 @@ describe('EncryptionPublicKeyController', () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metricsEvent: metricsEventMock as any,
-      managerMessenger: managerMessengerMock,
+      manager: new EncryptionPublicKeyManager({
+        messenger: managerMessengerMock,
+      }),
     } as EncryptionPublicKeyControllerOptions);
   });
 
@@ -365,7 +367,7 @@ describe('EncryptionPublicKeyController', () => {
         deriveStateFromMetadata(
           encryptionPublicKeyController.state,
           encryptionPublicKeyController.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`{}`);
     });

@@ -28,7 +28,7 @@ describe('BFCache', function () {
   it('has a working provider stream when a dapp is restored from BFCache', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
       },

@@ -18,6 +18,9 @@ import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmount
 import { useSendActions } from '../../../hooks/send/useSendActions';
 import { useSendContext } from '../../../context/send';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
+import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
+import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
+import { useSendType } from '../../../hooks/send/useSendType';
 import { SendHero } from '../../UI/send-hero';
 import { Amount } from '../amount/amount';
 import { Recipient } from '../recipient';
@@ -25,23 +28,40 @@ import { HexData } from '../hex-data';
 
 export const AmountRecipient = () => {
   const t = useI18nContext();
-  const [amountValueError, setAmountValueError] = useState<string>();
   const [hexDataError, setHexDataError] = useState<string>();
   const { asset, toResolved } = useSendContext();
+  const { amountError, validateNonEvmAmountAsync } = useAmountValidation();
+  const { isNonEvmSendType } = useSendType();
   const { handleSubmit } = useSendActions();
   const { captureAmountSelected } = useAmountSelectionMetrics();
-  const { recipientError } = useRecipientValidation();
+  const { captureRecipientSelected } = useRecipientSelectionMetrics();
+  const recipientValidationResult = useRecipientValidation();
 
   const hasError =
-    Boolean(amountValueError) ||
-    Boolean(recipientError) ||
+    Boolean(amountError) ||
+    Boolean(recipientValidationResult.recipientError) ||
     Boolean(hexDataError);
   const isDisabled = hasError || !toResolved;
 
-  const onClick = useCallback(() => {
+  const onClick = useCallback(async () => {
+    if (isNonEvmSendType) {
+      // Non EVM flows need an extra validation because "value" can be empty dependent on the blockchain (e.g it's fine for Solana but not for Bitcoin)
+      // Hence we do a call for `validateNonEvmAmountAsync` here to raise UI validation errors if exists
+      const nonEvmAmountError = await validateNonEvmAmountAsync();
+      if (nonEvmAmountError) {
+        return;
+      }
+    }
     handleSubmit();
     captureAmountSelected();
-  }, [captureAmountSelected, handleSubmit]);
+    captureRecipientSelected();
+  }, [
+    captureAmountSelected,
+    captureRecipientSelected,
+    handleSubmit,
+    isNonEvmSendType,
+    validateNonEvmAmountAsync,
+  ]);
 
   if (!asset) {
     return <LoadingScreen />;
@@ -54,12 +74,12 @@ export const AmountRecipient = () => {
       justifyContent={JustifyContent.spaceBetween}
       paddingLeft={4}
       paddingRight={4}
-      style={{ flex: 1 }}
+      style={{ flex: 1, height: '100%' }}
     >
       <Box>
         <SendHero asset={asset as Asset} />
-        <Recipient />
-        <Amount setAmountValueError={setAmountValueError} />
+        <Recipient recipientValidationResult={recipientValidationResult} />
+        <Amount amountError={amountError} />
         <HexData setHexDataError={setHexDataError} />
       </Box>
       <Button
@@ -71,7 +91,7 @@ export const AmountRecipient = () => {
         }
         marginBottom={4}
       >
-        {amountValueError ?? hexDataError ?? t('continue')}
+        {amountError ?? hexDataError ?? t('continue')}
       </Button>
     </Box>
   );

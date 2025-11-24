@@ -37,6 +37,8 @@ jest.mock('../../shared/modules/selectors/networks', () => ({
   getSelectedNetworkClientId: jest.fn(),
   getNetworkConfigurationsByChainId: jest.fn(),
   getCurrentChainId: jest.fn(),
+  selectDefaultNetworkClientIdsByChainId: jest.fn(),
+  getNetworksMetadata: jest.fn(),
 }));
 
 const mockGetCurrencyRates = jest.mocked(getCurrencyRates);

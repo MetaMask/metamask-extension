@@ -1,92 +1,108 @@
-import { AddressResolution } from '@metamask/snaps-sdk';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
+import {
+  isSolanaAddress,
+  isBtcMainnetAddress,
+  isTronAddress,
+} from '../../../../../shared/lib/multichain/accounts';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { isValidDomainName } from '../../../../helpers/utils/util';
-import { useAsyncResult } from '../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useSnapNameResolution } from '../../../../hooks/snaps/useSnapNameResolution';
 import { RecipientValidationResult } from '../../types/send';
 import {
-  findConfusablesInRecipient,
+  validateBtcAddress,
   validateEvmHexAddress,
   validateSolanaAddress,
+  validateTronAddress,
 } from '../../utils/sendValidations';
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
+import { useNameValidation } from './useNameValidation';
 
+// Avoid creating multiple instance of this hook in send flow,
+// as ens validation is very expensive operation. And result can slow-down
+// and result in bugs if multiple instances are created.
 export const useRecipientValidation = () => {
   const t = useI18nContext();
-  const { chainId, to } = useSendContext();
-  const { isEvmSendType, isSolanaSendType } = useSendType();
-  const { results, loading } = useSnapNameResolution({
-    chainId: chainId ? formatChainIdToCaip(chainId) : '',
-    domain: to ?? '',
-  });
-  const prevResolved = useRef<AddressResolution | undefined>();
+  const { asset, chainId, to } = useSendContext();
+  const { isBitcoinSendType, isEvmSendType, isSolanaSendType, isTronSendType } =
+    useSendType();
+  const { validateName } = useNameValidation();
+  const [result, setResult] = useState<RecipientValidationResult>({});
+  const prevAddressValidated = useRef<string>();
+  const unmountedRef = useRef(false);
 
-  const validateRecipient =
-    useCallback(async (): Promise<RecipientValidationResult> => {
-      if (!to) {
+  useEffect(() => {
+    return () => {
+      unmountedRef.current = true;
+    };
+  }, []);
+
+  const validateRecipient = useCallback(
+    async (toAddress): Promise<RecipientValidationResult> => {
+      if (!toAddress || !chainId) {
         return {};
       }
 
-      if (isEvmSendType && isValidHexAddress(to)) {
-        return {
-          ...(await validateEvmHexAddress(to, chainId)),
-          toAddressValidated: to,
-        };
+      if (isEvmSendType && isValidHexAddress(toAddress)) {
+        return await validateEvmHexAddress(toAddress, chainId, asset?.address);
       }
 
-      if (isSolanaSendType && isSolanaAddress(to)) {
-        return { ...validateSolanaAddress(to), toAddressValidated: to };
+      if (isSolanaSendType && isSolanaAddress(toAddress)) {
+        return validateSolanaAddress(toAddress);
       }
 
-      if (isValidDomainName(to)) {
-        const resolvedLookup = results?.[0]?.resolvedAddress;
-        if (loading) {
-          if (prevResolved.current?.domainName === to) {
-            return {
-              resolvedLookup: prevResolved.current.resolvedAddress,
-              ...findConfusablesInRecipient(to),
-              toAddressValidated: to,
-            };
-          }
-          return { loading: true };
-        }
-        if (results?.length) {
-          prevResolved.current = results?.[0];
-          return {
-            resolvedLookup,
-            ...findConfusablesInRecipient(to),
-            toAddressValidated: to,
-          };
-        }
-        return {
-          error: 'ensUnknownError',
-          toAddressValidated: to,
-        };
+      if (isBitcoinSendType && isBtcMainnetAddress(toAddress)) {
+        return validateBtcAddress(toAddress);
+      }
+
+      if (isTronSendType && isTronAddress(toAddress)) {
+        return validateTronAddress(toAddress);
+      }
+
+      if (isValidDomainName(toAddress)) {
+        return await validateName(chainId, toAddress);
       }
 
       return {
         error: 'invalidAddress',
-        toAddressValidated: to,
       };
-    }, [chainId, isEvmSendType, isSolanaSendType, loading, results, to]);
-
-  const { value: result, pending } = useAsyncResult<RecipientValidationResult>(
-    async () => validateRecipient(),
-    [validateRecipient],
+    },
+    [
+      asset,
+      chainId,
+      isBitcoinSendType,
+      isEvmSendType,
+      isSolanaSendType,
+      isTronSendType,
+      validateName,
+    ],
   );
+
+  useEffect(() => {
+    if (prevAddressValidated.current === to) {
+      return;
+    }
+
+    (async () => {
+      prevAddressValidated.current = to;
+      const validationResult = await validateRecipient(to);
+
+      if (!unmountedRef.current && prevAddressValidated.current === to) {
+        setResult({
+          ...validationResult,
+          toAddressValidated: to,
+        });
+      }
+    })();
+  }, [setResult, to, validateRecipient]);
 
   return {
     recipientConfusableCharacters: result?.confusableCharacters,
     recipientError: result?.error ? t(result?.error) : undefined,
     recipientResolvedLookup: result?.resolvedLookup,
-    toAddressValidated: result?.toAddressValidated,
-    recipientValidationLoading: result?.loading ?? pending,
     recipientWarning: result?.warning ? t(result?.warning) : undefined,
+    resolutionProtocol: result?.protocol,
+    toAddressValidated: result?.toAddressValidated,
   };
 };

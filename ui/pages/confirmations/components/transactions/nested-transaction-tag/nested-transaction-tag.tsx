@@ -42,8 +42,8 @@ export function NestedTransactionTag() {
           paddingRight={2}
           display={Display.InlineFlex}
           backgroundColor={BackgroundColor.backgroundMuted}
-          color={TextColor.textAlternativeSoft}
-          labelProps={{ color: TextColor.textAlternativeSoft }}
+          color={TextColor.textAlternative}
+          labelProps={{ color: TextColor.textAlternative }}
         />
       </Tooltip>
     </Box>

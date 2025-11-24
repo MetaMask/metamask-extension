@@ -14,14 +14,20 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  TextVariant,
+  AlignItems,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainPrivateKeyList } from '../../../components/multichain-accounts/multichain-private-key-list';
 import {
   BannerAlert,
   BannerAlertSeverity,
+  ButtonLink,
+  ButtonLinkSize,
 } from '../../../components/component-library';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export const MultichainAccountPrivateKeyListPage = () => {
   const t = useI18nContext();
@@ -42,6 +48,22 @@ export const MultichainAccountPrivateKeyListPage = () => {
   const accountGroupName = useMemo(() => {
     return account ? account.metadata.name : t('account');
   }, [account, t]);
+
+  const learnMoreLink = (
+    <ButtonLink
+      size={ButtonLinkSize.Inherit}
+      textProps={{
+        variant: TextVariant.bodyMd,
+        alignItems: AlignItems.flexStart,
+      }}
+      as="a"
+      href={ZENDESK_URLS.PRIVATE_KEY_GUIDE}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {t('learnMoreUpperCase')}
+    </ButtonLink>
+  );
 
   return (
     <Page className="max-w-[600px]">
@@ -65,11 +87,12 @@ export const MultichainAccountPrivateKeyListPage = () => {
         <BannerAlert
           data-testid="backup-state-banner-alert"
           title={t('revealMultichainPrivateKeysBannerTitle')}
-          description={t('revealMultichainPrivateKeysBannerDescription')}
           paddingTop={2}
           paddingBottom={2}
           severity={BannerAlertSeverity.Danger}
-        />
+        >
+          {t('revealMultichainPrivateKeysBannerDescription', [learnMoreLink])}
+        </BannerAlert>
         <Box flexDirection={BoxFlexDirection.Column}>
           {decodedAccountGroupId ? (
             <MultichainPrivateKeyList

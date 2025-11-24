@@ -17,7 +17,7 @@ describe('Send NFTs', function () {
   it('user should not be able to view ERC721 NFTs in send flow when on wrong network', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPreferencesController({
             preferences: {
@@ -58,7 +58,7 @@ describe('Send NFTs', function () {
   it('user should only be able to view ERC721 NFTs on send flow that belong on selected network', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         smartContract,
         title: this.test?.fullTitle(),

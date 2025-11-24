@@ -5,14 +5,13 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
-import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useSendContext } from '../../../context/send';
 import { useRecipients } from '../../../hooks/send/useRecipients';
+import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { Recipient } from './recipient';
 
 jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../hooks/send/metrics/useRecipientSelectionMetrics');
-jest.mock('../../../hooks/send/useRecipientValidation');
 jest.mock('../../../context/send');
 jest.mock('../../../hooks/send/useRecipients');
 jest.mock('../recipient-list', () => ({
@@ -44,7 +43,6 @@ describe('Recipient', () => {
   const mockUseRecipientSelectionMetrics = jest.mocked(
     useRecipientSelectionMetrics,
   );
-  const mockUseRecipientValidation = jest.mocked(useRecipientValidation);
   const mockUseSendContext = jest.mocked(useSendContext);
   const mockUseRecipients = jest.mocked(useRecipients);
 
@@ -67,8 +65,21 @@ describe('Recipient', () => {
     },
   ];
 
-  const renderComponent = () => {
-    return renderWithProvider(<Recipient />, mockStore);
+  const renderComponent = (args = {}) => {
+    return renderWithProvider(
+      <Recipient
+        recipientValidationResult={
+          {
+            recipientConfusableCharacters: [],
+            recipientError: null,
+            recipientWarning: null,
+            recipientResolvedLookup: undefined,
+          } as unknown as ReturnType<typeof useRecipientValidation>
+        }
+        {...args}
+      />,
+      mockStore,
+    );
   };
 
   beforeEach(() => {
@@ -81,12 +92,6 @@ describe('Recipient', () => {
       setRecipientInputMethodSelectAccount:
         mockSetRecipientInputMethodSelectAccount,
     } as unknown as ReturnType<typeof useRecipientSelectionMetrics>);
-    mockUseRecipientValidation.mockReturnValue({
-      recipientConfusableCharacters: [],
-      recipientError: null,
-      recipientWarning: null,
-      recipientResolvedLookup: null,
-    } as unknown as ReturnType<typeof useRecipientValidation>);
     mockUseSendContext.mockReturnValue({
       to: '',
       updateTo: mockUpdateTo,
@@ -177,36 +182,6 @@ describe('Recipient', () => {
     expect(queryByText('SELECTRECIPIENT')).not.toBeInTheDocument();
   });
 
-  it('captures metrics on input blur when to value exists', () => {
-    mockUseSendContext.mockReturnValue({
-      to: '0x1234567890abcdef',
-      updateTo: mockUpdateTo,
-      updateToResolved: jest.fn(),
-    } as unknown as ReturnType<typeof useSendContext>);
-
-    const { getByRole } = renderComponent();
-    const input = getByRole('textbox');
-
-    fireEvent.blur(input);
-
-    expect(mockCaptureRecipientSelected).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not capture metrics on input blur when to value is empty', () => {
-    mockUseSendContext.mockReturnValue({
-      to: '',
-      updateTo: mockUpdateTo,
-      updateToResolved: jest.fn(),
-    } as unknown as ReturnType<typeof useSendContext>);
-
-    const { getByRole } = renderComponent();
-    const input = getByRole('textbox');
-
-    fireEvent.blur(input);
-
-    expect(mockCaptureRecipientSelected).not.toHaveBeenCalled();
-  });
-
   it('blurs input when opening modal', () => {
     mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId, getByRole } = renderComponent();
@@ -221,14 +196,18 @@ describe('Recipient', () => {
     expect(document.activeElement).not.toBe(input);
   });
 
-  it('renders clear button when to value exists', () => {
+  it('renders clear button when to has no error', () => {
     mockUseSendContext.mockReturnValue({
       to: '0x1234567890abcdef',
       updateTo: mockUpdateTo,
       updateToResolved: jest.fn(),
     } as unknown as ReturnType<typeof useSendContext>);
 
-    const { getByTestId } = renderComponent();
+    const { getByTestId } = renderComponent({
+      recipientValidationResult: {
+        toAddressValidated: '0x1234567890abcdef',
+      },
+    });
 
     expect(getByTestId('clear-recipient-btn')).toBeInTheDocument();
   });
@@ -240,7 +219,11 @@ describe('Recipient', () => {
       updateToResolved: jest.fn(),
     } as unknown as ReturnType<typeof useSendContext>);
 
-    const { getByTestId } = renderComponent();
+    const { getByTestId } = renderComponent({
+      recipientValidationResult: {
+        toAddressValidated: '0x1234567890abcdef',
+      },
+    });
 
     fireEvent.click(getByTestId('clear-recipient-btn'));
 
@@ -265,6 +248,7 @@ describe('Recipient', () => {
       expect(mockUpdateTo).toHaveBeenCalledWith(
         '0x1234567890abcdef1234567890abcdef12345678',
       );
+      expect(mockSetRecipientInputMethodSelectAccount).toHaveBeenCalled();
     });
   });
 });

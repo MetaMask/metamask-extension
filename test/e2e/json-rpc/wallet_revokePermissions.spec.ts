@@ -9,7 +9,7 @@ describe('Revoke Dapp Permissions', function () {
   it('should revoke "eth_accounts" and "endowment:permitted-chains" when the dapp revokes permissions for just "eth_accounts"', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
           .build(),
@@ -70,7 +70,7 @@ describe('Revoke Dapp Permissions', function () {
   it('should revoke "eth_accounts" and "endowment:permitted-chains" when the dapp revokes permissions for just "endowment:permitted-chains"', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
           .build(),
@@ -129,7 +129,7 @@ describe('Revoke Dapp Permissions', function () {
   it('should revoke "eth_accounts" and "endowment:permitted-chains" when the dapp revokes permissions for "eth_accounts" and "endowment:permitted-chains"', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
           .build(),
@@ -192,7 +192,7 @@ describe('Revoke Dapp Permissions', function () {
     it('rejects the pending confirmations as permissions are revoked for the network', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
             .build(),

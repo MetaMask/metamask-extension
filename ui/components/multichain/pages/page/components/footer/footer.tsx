@@ -19,6 +19,10 @@ interface FooterProps extends StyleUtilityProps {
    * Additional CSS class provided to the footer
    */
   className?: string;
+  /**
+   * Additional CSS style provided to the footer
+   */
+  style?: React.CSSProperties;
 }
 
 export const Footer = ({ children, className = '', ...props }: FooterProps) => {

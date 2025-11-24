@@ -159,7 +159,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 title="$100,000.00"
               >
                 <span
-                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                   data-testid="account-value-and-suffix"
                 >
                   $100,000.00
@@ -214,7 +214,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="mm-box mm-box--flex-direction-row"
         >
           <div
-            class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-tag mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-section mm-box--rounded-sm"
             data-testid="account-list-item-tag-b7893c59-e376-4cc0-93ad-05ddaab574a6-Native SegWit"
           >
             <p
@@ -392,13 +392,13 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 title="0.006 ETH"
               >
                 <span
-                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                   data-testid="account-value-and-suffix"
                 >
                   0.006
                 </span>
                 <span
-                  class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                  class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                 >
                   ETH
                 </span>

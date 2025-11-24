@@ -4,9 +4,9 @@ import { getUrlScanCacheResult } from '../selectors/selectors';
 import { TrustSignalDisplayState, TrustSignalResult } from './useTrustSignals';
 
 type UrlScanCacheResult = {
-  result: {
-    domainName: string;
-    recommendedAction: string; // 'NONE', 'WARN', 'BLOCK'
+  data: {
+    hostname?: string;
+    recommendedAction: string;
   };
   timestamp: number;
 };
@@ -14,7 +14,7 @@ type UrlScanCacheResult = {
 function getTrustState(
   cachedResult: UrlScanCacheResult | undefined,
 ): TrustSignalDisplayState {
-  const recommendedAction = cachedResult?.result?.recommendedAction;
+  const recommendedAction = cachedResult?.data?.recommendedAction;
 
   if (!recommendedAction) {
     return TrustSignalDisplayState.Unknown;

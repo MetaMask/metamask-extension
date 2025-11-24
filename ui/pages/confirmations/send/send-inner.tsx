@@ -7,6 +7,7 @@ import {
   JustifyContent,
   FlexDirection,
   Display,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../../components/component-library';
 import { AmountRecipient } from '../components/send/amount-recipient';
@@ -21,7 +22,7 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box
       alignItems={AlignItems.center}
-      backgroundColor={BackgroundColor.backgroundAlternative}
+      backgroundColor={BackgroundColor.backgroundDefault}
       className="redesigned__send__container"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
@@ -31,12 +32,13 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
       width={BlockSize.Full}
     >
       <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={BackgroundColor.backgroundSection}
         className="redesigned__send__wrapper"
         display={Display.Flex}
         height={BlockSize.Full}
         justifyContent={JustifyContent.center}
         width={BlockSize.Full}
+        borderRadius={BorderRadius.LG}
       >
         <Box
           className="redesigned__send__content"
@@ -46,8 +48,10 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
           style={{ maxWidth: '650px' }}
           width={BlockSize.Full}
         >
-          <Header />
-          {children}
+          <Box className="redesigned__send__sticky-header">
+            <Header />
+          </Box>
+          <Box className="redesigned__send__content-wrapper">{children}</Box>
         </Box>
       </Box>
     </Box>

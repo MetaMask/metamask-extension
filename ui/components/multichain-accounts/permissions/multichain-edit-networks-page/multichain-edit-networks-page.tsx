@@ -102,8 +102,9 @@ export const MultichainEditNetworksPage: React.FC<
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Header
-        paddingTop={8}
-        paddingBottom={0}
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
         startAccessory={
           <ButtonIcon
             size={ButtonIconSize.Md}
@@ -113,9 +114,6 @@ export const MultichainEditNetworksPage: React.FC<
             data-testid="back-button"
           />
         }
-        textProps={{
-          variant: TextVariant.headingSm,
-        }}
       >
         {t('editNetworksTitle')}
       </Header>

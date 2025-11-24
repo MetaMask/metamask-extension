@@ -8,7 +8,7 @@ import type { AccountGroupWithInternalAccounts } from '../../../ui/selectors/mul
 
 import {
   anyScopesMatch,
-  getCaip25AccountFromAccountGroupAndScope,
+  getCaip25AccountIdsFromAccountGroupAndScope,
   scopeMatches,
 } from './scope-utils';
 
@@ -355,12 +355,12 @@ describe('scope-utils', () => {
     });
   });
 
-  describe('getCaip25AccountFromAccountGroupAndScope', () => {
+  describe('getCaip25AccountIdsFromAccountGroupAndScope', () => {
     const mockAccountGroups = mockFactory.createMockAccountGroups();
 
     it('should return CAIP-25 account IDs for EIP-155 wildcard scope', () => {
       const scopes = mockFactory.createMockScopes.eip155Wildcard;
-      const result = getCaip25AccountFromAccountGroupAndScope(
+      const result = getCaip25AccountIdsFromAccountGroupAndScope(
         mockAccountGroups,
         scopes,
       );
@@ -373,7 +373,7 @@ describe('scope-utils', () => {
 
     it('should return CAIP-25 account IDs for specific EIP-155 chain', () => {
       const scopes = mockFactory.createMockScopes.eip155Specific;
-      const result = getCaip25AccountFromAccountGroupAndScope(
+      const result = getCaip25AccountIdsFromAccountGroupAndScope(
         mockAccountGroups,
         scopes,
       );
@@ -389,7 +389,7 @@ describe('scope-utils', () => {
 
     it('should return CAIP-25 account IDs for non-EIP-155 namespaces', () => {
       const scopes = mockFactory.createMockScopes.solanaMainnet;
-      const result = getCaip25AccountFromAccountGroupAndScope(
+      const result = getCaip25AccountIdsFromAccountGroupAndScope(
         mockAccountGroups,
         scopes,
       );
@@ -402,7 +402,7 @@ describe('scope-utils', () => {
 
     it('should handle multiple scopes and return unique CAIP-25 account IDs', () => {
       const scopes = mockFactory.createMockScopes.multiple;
-      const result = getCaip25AccountFromAccountGroupAndScope(
+      const result = getCaip25AccountIdsFromAccountGroupAndScope(
         mockAccountGroups,
         scopes,
       );
@@ -417,13 +417,13 @@ describe('scope-utils', () => {
 
     it('should handle empty account groups', () => {
       const scopes = mockFactory.createMockScopes.eip155Wildcard;
-      const result = getCaip25AccountFromAccountGroupAndScope([], scopes);
+      const result = getCaip25AccountIdsFromAccountGroupAndScope([], scopes);
 
       expect(result).toStrictEqual([]);
     });
 
     it('should handle empty scopes', () => {
-      const result = getCaip25AccountFromAccountGroupAndScope(
+      const result = getCaip25AccountIdsFromAccountGroupAndScope(
         mockAccountGroups,
         mockFactory.createMockScopes.empty,
       );
@@ -433,7 +433,7 @@ describe('scope-utils', () => {
 
     it('should handle invalid chain IDs gracefully', () => {
       const scopes = mockFactory.createMockScopes.invalid;
-      const result = getCaip25AccountFromAccountGroupAndScope(
+      const result = getCaip25AccountIdsFromAccountGroupAndScope(
         mockAccountGroups,
         scopes,
       );
@@ -446,7 +446,7 @@ describe('scope-utils', () => {
         mockFactory.createMockAccountGroupsWithEmptyScopes();
 
       const scopes = mockFactory.createMockScopes.eip155Wildcard;
-      const result = getCaip25AccountFromAccountGroupAndScope(
+      const result = getCaip25AccountIdsFromAccountGroupAndScope(
         accountGroupsWithEmptyScopes,
         scopes,
       );
@@ -459,7 +459,7 @@ describe('scope-utils', () => {
         mockFactory.createMockAccountGroupsWithUndefinedScopes();
 
       const scopes = mockFactory.createMockScopes.eip155Wildcard;
-      const result = getCaip25AccountFromAccountGroupAndScope(
+      const result = getCaip25AccountIdsFromAccountGroupAndScope(
         accountGroupsWithUndefinedScopes,
         scopes,
       );
@@ -469,7 +469,7 @@ describe('scope-utils', () => {
 
     it('should handle mixed valid and invalid chain IDs', () => {
       const scopes = mockFactory.createMockScopes.mixed;
-      const result = getCaip25AccountFromAccountGroupAndScope(
+      const result = getCaip25AccountIdsFromAccountGroupAndScope(
         mockAccountGroups,
         scopes,
       );
@@ -487,7 +487,7 @@ describe('scope-utils', () => {
         mockFactory.createMockAccountGroupsWithMultipleScopes();
 
       const scopes = mockFactory.createMockScopes.multipleSolana;
-      const result = getCaip25AccountFromAccountGroupAndScope(
+      const result = getCaip25AccountIdsFromAccountGroupAndScope(
         accountGroupsWithMultipleScopes,
         scopes,
       );
@@ -502,7 +502,7 @@ describe('scope-utils', () => {
     describe('EIP-155 direct scope matching (bug fix tests)', () => {
       it('should include accounts with direct EIP-155 chain ID scope when requesting that specific chain', () => {
         const scopes = mockFactory.createMockScopes.eip155Specific; // eip155:1
-        const result = getCaip25AccountFromAccountGroupAndScope(
+        const result = getCaip25AccountIdsFromAccountGroupAndScope(
           mockAccountGroups,
           scopes,
         );
@@ -522,7 +522,7 @@ describe('scope-utils', () => {
 
       it('should include accounts with direct EIP-155 chain ID scope for Polygon (eip155:137)', () => {
         const scopes = mockFactory.createMockScopes.eip155Specific137; // eip155:137
-        const result = getCaip25AccountFromAccountGroupAndScope(
+        const result = getCaip25AccountIdsFromAccountGroupAndScope(
           mockAccountGroups,
           scopes,
         );
@@ -573,7 +573,7 @@ describe('scope-utils', () => {
         ];
 
         const scopes = mockFactory.createMockScopes.eip155Specific; // eip155:1
-        const result = getCaip25AccountFromAccountGroupAndScope(
+        const result = getCaip25AccountIdsFromAccountGroupAndScope(
           testAccountGroups,
           scopes,
         );
@@ -592,7 +592,7 @@ describe('scope-utils', () => {
           'solana:mainnet',
         ] as CaipChainId[];
 
-        const result = getCaip25AccountFromAccountGroupAndScope(
+        const result = getCaip25AccountIdsFromAccountGroupAndScope(
           mockAccountGroups,
           mixedScopes,
         );

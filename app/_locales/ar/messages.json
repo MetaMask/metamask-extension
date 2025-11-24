@@ -239,9 +239,6 @@
   "etherscanView": {
     "message": "عرض الحساب على Etherscan"
   },
-  "expandView": {
-    "message": "توسيع العرض"
-  },
   "failed": {
     "message": "فشل"
   },
@@ -620,9 +617,6 @@
   },
   "supportCenter": {
     "message": "تفضل بزيارة مركز الدعم الخاص بنا"
-  },
-  "switchNetworks": {
-    "message": "تبديل الشبكات"
   },
   "symbol": {
     "message": "رمز"

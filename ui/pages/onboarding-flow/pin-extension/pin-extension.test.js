@@ -7,16 +7,14 @@ import {
   setCompletedOnboarding,
   toggleExternalServices,
 } from '../../../store/actions';
-import {
-  DEFAULT_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import PinExtension from './pin-extension';
 
 jest.mock('../../../store/actions', () => ({
   toggleExternalServices: jest.fn(),
   setCompletedOnboarding: jest.fn(),
+  setCompletedOnboardingWithSidepanel: jest.fn(),
 }));
 
 const mockPromises = [];
@@ -40,6 +38,11 @@ jest.mock('react-router-dom-v5-compat', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
+
+// Mock the useSidePanelEnabled hook to control sidepanel feature flag
+jest.mock('../../../hooks/useSidePanelEnabled', () => ({
+  useSidePanelEnabled: jest.fn(() => false),
+}));
 
 describe('Creation Successful Onboarding View', () => {
   afterEach(() => {
@@ -93,7 +96,7 @@ describe('Creation Successful Onboarding View', () => {
   };
 
   describe('When the "Done" button is clicked', () => {
-    it('should call toggleExternalServices, setCompletedOnboarding and signIn when the "Done" button is clicked', async () => {
+    it('should call toggleExternalServices and setCompletedOnboarding when the "Done" button is clicked', async () => {
       const store = arrangeMocks();
 
       const { getByText } = renderWithProvider(<PinExtension />, store);
@@ -104,8 +107,6 @@ describe('Creation Successful Onboarding View', () => {
       await Promise.all(mockPromises);
       expect(toggleExternalServices).toHaveBeenCalledTimes(1);
       expect(setCompletedOnboarding).toHaveBeenCalledTimes(1);
-      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
-      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
 

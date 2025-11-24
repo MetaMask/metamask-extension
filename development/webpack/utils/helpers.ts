@@ -80,6 +80,7 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     // Snow shouldn't be chunked
     'snow.prod',
     'use-snow',
+    'bootstrap',
   ]);
 
   function addManifestScript(filename?: string) {

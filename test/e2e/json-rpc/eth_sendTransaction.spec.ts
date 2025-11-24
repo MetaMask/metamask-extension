@@ -13,7 +13,7 @@ describe('eth_sendTransaction', function () {
   it('confirms a new transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -64,7 +64,7 @@ describe('eth_sendTransaction', function () {
   it('rejects a new transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -124,7 +124,7 @@ describe('eth_sendTransaction', function () {
   it('prompts for unlock when the wallet is locked and the requesting origin has permission for the account specified in the "from" parameter', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

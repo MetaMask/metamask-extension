@@ -9,7 +9,7 @@ exports[`DeFiDetailsPage renders defi details list 1`] = `
       class="mm-box"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative-soft"
+        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative"
         data-testid="defi-details-list-supply-position"
       >
         Supplied
@@ -57,14 +57,18 @@ exports[`DeFiDetailsPage renders defi details list 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="mm-box mm-box--display-flex"
+                class="flex flex-row min-w-0"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="multichain-token-list-item-token-name"
+                <div
+                  class="flex flex-row gap-2 min-w-0"
                 >
-                  Ethereum
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                    data-testid="multichain-token-list-item-token-name"
+                  >
+                    Ethereum
+                  </p>
+                </div>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
@@ -89,9 +93,7 @@ exports[`DeFiDetailsPage renders defi details list 1`] = `
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                 data-testid="multichain-token-list-item-value"
               >
-                500
-                 
-                Ethereum
+                500 Ethereum
               </p>
             </div>
           </div>
@@ -102,7 +104,7 @@ exports[`DeFiDetailsPage renders defi details list 1`] = `
       class="mm-box"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative-soft"
+        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative"
         data-testid="defi-details-list-supply-position"
       >
         Reward
@@ -150,14 +152,18 @@ exports[`DeFiDetailsPage renders defi details list 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="mm-box mm-box--display-flex"
+                class="flex flex-row min-w-0"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="multichain-token-list-item-token-name"
+                <div
+                  class="flex flex-row gap-2 min-w-0"
                 >
-                  Ethereum
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                    data-testid="multichain-token-list-item-token-name"
+                  >
+                    Ethereum
+                  </p>
+                </div>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
@@ -182,9 +188,7 @@ exports[`DeFiDetailsPage renders defi details list 1`] = `
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                 data-testid="multichain-token-list-item-value"
               >
-                500
-                 
-                Ethereum
+                500 Ethereum
               </p>
             </div>
           </div>

@@ -7,6 +7,7 @@ jobs:
   validate-lavamoat-policy-build:
     name: Validate LavaMoat build policy
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -23,6 +24,8 @@ jobs:
           APPLE_PROD_CLIENT_ID: 00000000000
           GOOGLE_BETA_CLIENT_ID: 00000000000
           APPLE_BETA_CLIENT_ID: 00000000000
+          GOOGLE_EXPERIMENTAL_CLIENT_ID: 00000000000
+          APPLE_EXPERIMENTAL_CLIENT_ID: 00000000000
           GOOGLE_FLASK_CLIENT_ID: 00000000000
           APPLE_FLASK_CLIENT_ID: 00000000000
 
@@ -36,6 +39,7 @@ jobs:
   validate-lavamoat-policy-webapp:
     name: Validate LavaMoat webapp policy
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       matrix:
         build-type: [main, beta, experimental, flask]
@@ -55,8 +59,37 @@ jobs:
           APPLE_PROD_CLIENT_ID: 00000000000
           GOOGLE_BETA_CLIENT_ID: 00000000000
           APPLE_BETA_CLIENT_ID: 00000000000
+          GOOGLE_EXPERIMENTAL_CLIENT_ID: 00000000000
+          APPLE_EXPERIMENTAL_CLIENT_ID: 00000000000
           GOOGLE_FLASK_CLIENT_ID: 00000000000
           APPLE_FLASK_CLIENT_ID: 00000000000
+
+      - name: Check working tree
+        run: |
+          if ! git diff --exit-code; then
+              echo "::error::Working tree dirty."
+              exit 1
+          fi
+
+  validate-lavamoat-policy-webpack:
+    name: Validate LavaMoat webpack policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          use-yarn-hydrate: true
+
+      - name: Validate LavaMoat webpack policy
+        run: yarn webpack --env production --no-cache --generatePolicy
+        env:
+          INFURA_PROD_PROJECT_ID: 00000000000
+          SEGMENT_PROD_WRITE_KEY: 00000000000
+          GOOGLE_PROD_CLIENT_ID: 00000000000
+          APPLE_PROD_CLIENT_ID: 00000000000
 
       - name: Check working tree
         run: |

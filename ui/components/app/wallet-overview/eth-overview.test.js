@@ -5,7 +5,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthMethod, BtcScope } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import useMultiPolling from '../../../hooks/useMultiPolling';
@@ -172,7 +172,7 @@ describe('EthOverview', () => {
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
   const ETH_OVERVIEW_RECEIVE = 'eth-overview-receive';
-  // const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
+  const ETH_OVERVIEW_SWAP = 'eth-overview-swap';
   const ETH_OVERVIEW_SEND = 'eth-overview-send';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
 
@@ -256,7 +256,7 @@ describe('EthOverview', () => {
       expect(queryByText('*')).not.toBeInTheDocument();
     });
 
-    it('should have the Bridge button enabled if chain id is part of supported chains', () => {
+    it('should have the Swap button enabled if chain id is part of supported chains', () => {
       const mockedAvalancheStore = {
         ...mockStore,
         metamask: {
@@ -275,7 +275,7 @@ describe('EthOverview', () => {
         <EthOverview />,
         mockedStore,
       );
-      const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
+      const bridgeButton = queryByTestId(ETH_OVERVIEW_SWAP);
       expect(bridgeButton).toBeInTheDocument();
       expect(bridgeButton).toBeEnabled();
       expect(bridgeButton.parentElement).not.toHaveAttribute(
@@ -445,8 +445,7 @@ describe('EthOverview', () => {
   describe('Disabled buttons when an account cannot sign transactions', () => {
     const buttonTestCases = [
       { testId: ETH_OVERVIEW_SEND, buttonText: 'Send' },
-      // { testId: ETH_OVERVIEW_SWAP, buttonText: 'Swap' },
-      { testId: ETH_OVERVIEW_BRIDGE, buttonText: 'Bridge' },
+      { testId: ETH_OVERVIEW_SWAP, buttonText: 'Swap' },
     ];
 
     it.each(buttonTestCases)(
@@ -525,7 +524,7 @@ describe('EthOverview', () => {
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith(
       {
-        event: MetaMetricsEventName.NavSendButtonClicked,
+        event: MetaMetricsEventName.SendStarted,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
           account_type: mockEvmAccount1.type,

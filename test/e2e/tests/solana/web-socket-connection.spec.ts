@@ -17,7 +17,7 @@ describe('Solana Web Socket', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            addSolanaAccount: true,
+            solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
           },
         },
       },
@@ -37,8 +37,8 @@ describe('Solana Web Socket', function (this: Suite) {
           LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
-          2,
-          `Expected 2 websocket connections, but found ${connectionCount}`,
+          1,
+          `Expected 1 websocket connections, but found ${connectionCount}`,
         );
       },
     );
@@ -51,7 +51,7 @@ describe('Solana Web Socket', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            addSolanaAccount: true,
+            solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
           },
         },
       },
@@ -81,8 +81,8 @@ describe('Solana Web Socket', function (this: Suite) {
           LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           activeWebSocketConnections,
-          2,
-          `Expected 2 websocket connections after closing MetaMask, but found ${activeWebSocketConnections}`,
+          1,
+          `Expected 1 websocket connections after closing MetaMask, but found ${activeWebSocketConnections}`,
         );
       },
     );
@@ -95,7 +95,7 @@ describe('Solana Web Socket', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            addSolanaAccount: true,
+            solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
           },
         },
       },
@@ -116,8 +116,8 @@ describe('Solana Web Socket', function (this: Suite) {
           LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
-          2,
-          `Expected 2 websocket connection with first MM window, but found ${connectionCount}`,
+          1,
+          `Expected 1 websocket connection with first MM window, but found ${connectionCount}`,
         );
 
         // Open a blank page to prevent browser from closing
@@ -133,8 +133,8 @@ describe('Solana Web Socket', function (this: Suite) {
           LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
-          2,
-          `Expected 2 websocket connection with two MM windows, but found ${connectionCount}`,
+          1,
+          `Expected 1 websocket connection with two MM windows, but found ${connectionCount}`,
         );
 
         // Close the first MetaMask window
@@ -147,8 +147,8 @@ describe('Solana Web Socket', function (this: Suite) {
           LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
-          2,
-          `Expected 2 websocket connection after closing first MM window, but found ${connectionCount}`,
+          1,
+          `Expected 1 websocket connection after closing first MM window, but found ${connectionCount}`,
         );
 
         // Close the second MetaMask window
@@ -163,8 +163,8 @@ describe('Solana Web Socket', function (this: Suite) {
           LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
         assert.equal(
           activeWebSocketConnections,
-          2,
-          `Expected 2 websocket connections after closing all MM windows, but found ${activeWebSocketConnections}`,
+          1,
+          `Expected 1 websocket connections after closing all MM windows, but found ${activeWebSocketConnections}`,
         );
 
         // The websocket close grace period is 5 minutes, we can't wait for this long to check if it's closed

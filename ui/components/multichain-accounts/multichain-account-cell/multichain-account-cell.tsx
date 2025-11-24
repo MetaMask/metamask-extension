@@ -2,8 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
-import { Box, Text } from '../../component-library';
-import { PreferredAvatar } from '../../app/preferred-avatar';
+import { Box, SensitiveText, Text } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -14,10 +13,16 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { ConnectedStatus } from '../../multichain/connected-status/connected-status';
+import {
+  STATUS_CONNECTED,
+  STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
+} from '../../../helpers/constants/connected-sites';
 
 export type MultichainAccountCellProps = {
   accountId: AccountGroupId;
-  accountName: string;
+  accountName: string | React.ReactNode;
+  accountNameString?: string; // Optional string version for accessibility labels
   onClick?: (accountGroupId: AccountGroupId) => void;
   balance: string;
   startAccessory?: React.ReactNode;
@@ -25,11 +30,16 @@ export type MultichainAccountCellProps = {
   selected?: boolean;
   walletName?: string;
   disableHoverEffect?: boolean;
+  connectionStatus?:
+    | typeof STATUS_CONNECTED
+    | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
+  privacyMode?: boolean;
 };
 
 export const MultichainAccountCell = ({
   accountId,
   accountName,
+  accountNameString,
   onClick,
   balance,
   startAccessory,
@@ -37,8 +47,15 @@ export const MultichainAccountCell = ({
   selected = false,
   walletName,
   disableHoverEffect = false,
+  connectionStatus,
+  privacyMode = false,
 }: MultichainAccountCellProps) => {
   const handleClick = () => onClick?.(accountId);
+
+  // Use accountNameString for aria-label, or fallback to accountName if it's a string
+  const ariaLabelName =
+    accountNameString ||
+    (typeof accountName === 'string' ? accountName : 'Account');
   const seedAddressIcon = useSelector((state) =>
     getIconSeedAddressByAccountGroupId(state, accountId),
   );
@@ -91,7 +108,11 @@ export const MultichainAccountCell = ({
           borderColor={BorderColor.transparent}
           borderRadius={BorderRadius.XL}
         >
-          <PreferredAvatar address={seedAddressIcon} />
+          <ConnectedStatus
+            address={seedAddressIcon}
+            isActive={connectionStatus === STATUS_CONNECTED}
+            showConnectedStatus={Boolean(connectionStatus)}
+          />
         </Box>
         <Box style={{ overflow: 'hidden' }}>
           {/* Prevent overflow of account name by long account names */}
@@ -122,21 +143,23 @@ export const MultichainAccountCell = ({
         justifyContent={JustifyContent.center}
         style={{ flexShrink: 0 }}
       >
-        <Text
+        <SensitiveText
           className="multichain-account-cell__account-balance"
           data-testid="balance-display"
           variant={TextVariant.bodyMdMedium}
           marginRight={2}
+          isHidden={privacyMode}
+          ellipsis
         >
           {balance}
-        </Text>
+        </SensitiveText>
         <Box
           className="multichain-account-cell__end_accessory"
           display={Display.Flex}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.flexEnd}
           data-testid="multichain-account-cell-end-accessory"
-          aria-label={`${accountName} options`}
+          aria-label={`${ariaLabelName} options`}
         >
           {endAccessory}
         </Box>

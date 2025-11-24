@@ -49,10 +49,10 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -275,13 +275,13 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                           title="0 ETH"
                         >
                           <span
-                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                             data-testid="account-value-and-suffix"
                           >
                             0
                           </span>
                           <span
-                            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                           >
                             ETH
                           </span>

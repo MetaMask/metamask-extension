@@ -24,7 +24,6 @@ import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MultichainAccountListMenu } from '.';
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockGetEnvironmentType = jest.fn();
 const mockGenerateNewHdKeyring = jest.fn();
 const mockDetectNfts = jest.fn();
@@ -33,7 +32,6 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => () => mockGetEnvironmentType(),
 }));
-///: END:ONLY_INCLUDE_IF
 
 jest.mock('../../../store/actions', () => {
   return {
@@ -66,7 +64,7 @@ const MOCK_STATE: TestState = {
       ...asAccountTree(mockDefaultState.metamask.accountTree),
     },
     remoteFeatureFlags: {
-      addBitcoinAccount: true,
+      bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
     },
     permissionHistory: {
       'https://test.dapp': {

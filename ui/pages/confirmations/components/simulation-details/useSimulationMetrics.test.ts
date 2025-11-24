@@ -58,6 +58,7 @@ const DISPLAY_NAME_UNKNOWN_MOCK = {
   hasPetname: false,
   name: null,
   displayState: TrustSignalDisplayState.Unknown,
+  isAccount: false,
 };
 
 const DISPLAY_NAME_DEFAULT_MOCK = {
@@ -72,6 +73,7 @@ const DISPLAY_NAME_SAVED_MOCK = {
   name: 'testName',
   contractDisplayName: SYMBOL_MOCK,
   displayState: TrustSignalDisplayState.Unknown,
+  isAccount: false,
 };
 
 describe('useSimulationMetrics', () => {

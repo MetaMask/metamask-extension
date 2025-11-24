@@ -117,6 +117,7 @@ export default class SecurityTab extends PureComponent {
     socialLoginType: PropTypes.string,
     setMarketingConsent: PropTypes.func,
     getMarketingConsent: PropTypes.func,
+    hasActiveShieldSubscription: PropTypes.bool,
   };
 
   state = {
@@ -170,15 +171,7 @@ export default class SecurityTab extends PureComponent {
     }
   }
 
-  toggleSetting(value, eventName, eventAction, toggleMethod) {
-    this.context.trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: eventName,
-      properties: {
-        action: eventAction,
-        legacy_event: true,
-      },
-    });
+  toggleSetting(value, toggleMethod) {
     toggleMethod(!value);
   }
 
@@ -355,7 +348,7 @@ export default class SecurityTab extends PureComponent {
 
   renderSecurityAlertsToggle() {
     const { t } = this.context;
-    const { securityAlertsEnabled } = this.props;
+    const { securityAlertsEnabled, hasActiveShieldSubscription } = this.props;
 
     return (
       <>
@@ -396,6 +389,7 @@ export default class SecurityTab extends PureComponent {
                 onToggle={this.toggleSecurityAlert.bind(this)}
                 offLabel={t('off')}
                 onLabel={t('on')}
+                disabled={hasActiveShieldSubscription}
               />
             </div>
           </Box>
@@ -406,7 +400,8 @@ export default class SecurityTab extends PureComponent {
 
   renderPhishingDetectionToggle() {
     const { t } = this.context;
-    const { usePhishDetect, setUsePhishDetect } = this.props;
+    const { usePhishDetect, setUsePhishDetect, hasActiveShieldSubscription } =
+      this.props;
 
     return (
       <Box
@@ -430,9 +425,12 @@ export default class SecurityTab extends PureComponent {
         >
           <ToggleButton
             value={usePhishDetect}
-            onToggle={(value) => setUsePhishDetect(!value)}
+            onToggle={(value) => {
+              setUsePhishDetect(!value);
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
+            disabled={hasActiveShieldSubscription}
           />
         </div>
       </Box>
@@ -843,12 +841,7 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={useTokenDetection}
             onToggle={(value) => {
-              this.toggleSetting(
-                value,
-                MetaMetricsEventName.KeyAutoDetectTokens,
-                MetaMetricsEventName.KeyAutoDetectTokens,
-                setUseTokenDetection,
-              );
+              this.toggleSetting(value, setUseTokenDetection);
             }}
             offLabel={t('off')}
             onLabel={t('on')}
@@ -886,12 +879,7 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={useMultiAccountBalanceChecker}
             onToggle={(value) => {
-              this.toggleSetting(
-                value,
-                MetaMetricsEventName.KeyBatchAccountBalanceRequests,
-                MetaMetricsEventName.KeyBatchAccountBalanceRequests,
-                setUseMultiAccountBalanceChecker,
-              );
+              this.toggleSetting(value, setUseMultiAccountBalanceChecker);
             }}
             offLabel={t('off')}
             onLabel={t('on')}
@@ -1104,8 +1092,11 @@ export default class SecurityTab extends PureComponent {
 
   renderSimulationsToggle() {
     const { t } = this.context;
-    const { useTransactionSimulations, setUseTransactionSimulations } =
-      this.props;
+    const {
+      useTransactionSimulations,
+      setUseTransactionSimulations,
+      hasActiveShieldSubscription,
+    } = this.props;
 
     return (
       <Box
@@ -1138,9 +1129,12 @@ export default class SecurityTab extends PureComponent {
         >
           <ToggleButton
             value={useTransactionSimulations}
-            onToggle={(value) => setUseTransactionSimulations(!value)}
+            onToggle={(value) => {
+              setUseTransactionSimulations(!value);
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
+            disabled={hasActiveShieldSubscription}
           />
         </div>
       </Box>

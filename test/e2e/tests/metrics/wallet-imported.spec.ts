@@ -1,17 +1,43 @@
 import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
-import { getEventPayloads, withFixtures } from '../../helpers';
+import {
+  getEventPayloads,
+  withFixtures,
+  assertInAnyOrder,
+} from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { mockSegment } from './mocks/segment';
 
 describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
-    const eventsToMock = [
-      'Wallet Import Started',
+    // We need to distinguish between browsers, because routes differ (MetaMetrics screen)
+    const eventsChrome = [
+      'App Opened',
+      'App Installed',
+      'App Installed',
+      'SRP Backup Confirmed',
+      'Wallet Import Attempted',
       'Wallet Imported',
       'Wallet Setup Completed',
     ];
+
+    const eventsFirefox = [
+      'App Opened',
+      'App Installed',
+      'App Installed',
+      'App Installed',
+      'Analytics Preference Selected',
+      'Wallet Import Started',
+      'SRP Backup Confirmed',
+      'Wallet Import Attempted',
+      'Wallet Imported',
+      'Wallet Setup Completed',
+    ];
+    const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+    const expectedEvents = isFirefox ? eventsFirefox : eventsChrome;
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
@@ -21,7 +47,7 @@ describe('Wallet Created Events - Imported Account', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
-          return await mockSegment(server, eventsToMock);
+          return await mockSegment(server, expectedEvents);
         },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
@@ -32,81 +58,151 @@ describe('Wallet Created Events - Imported Account', function () {
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 
-        // Filter events to only include expected ones and remove duplicates as
-        // events are currently being restructured
-        const filteredEvents = events.filter((event) =>
-          eventsToMock.includes(event.event),
+        // Only include track events not identify events
+        const trackEvents = events.filter(
+          (e: { type?: string }) => e.type === 'track',
         );
 
-        const uniqueEvents = [];
-        const seenEventTypes = new Set();
+        const eventTypes = trackEvents.map(
+          (event: { event: string }) => event.event,
+        );
+        expectedEvents.forEach((expectedEvent) => {
+          assert(
+            eventTypes.includes(expectedEvent),
+            `Expected event type '${expectedEvent}' not found in events: ${eventTypes.join(', ')}`,
+          );
+        });
 
-        for (const event of filteredEvents) {
-          if (!seenEventTypes.has(event.event)) {
-            uniqueEvents.push(event);
-            seenEventTypes.add(event.event);
-          }
+        assert.equal(trackEvents.length, expectedEvents.length);
+
+        const appInstallBackground = [
+          [
+            (req: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              properties: {
+                category: string;
+                locale: string;
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                chain_id: string;
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                environment_type: string;
+              };
+            }) =>
+              req.properties.category === 'App' &&
+              req.properties.locale === 'en' &&
+              req.properties.chain_id === '0x1' &&
+              req.properties.environment_type === 'background',
+          ],
+        ];
+        assertInAnyOrder(trackEvents, appInstallBackground);
+
+        const appInstallFullscreen = [
+          [
+            (req: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              properties: {
+                category: string;
+                locale: string;
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                chain_id: string;
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                environment_type: string;
+              };
+            }) =>
+              req.properties.category === 'App' &&
+              req.properties.locale === 'en' &&
+              req.properties.chain_id === '0x1' &&
+              req.properties.environment_type === 'fullscreen',
+          ],
+        ];
+        assertInAnyOrder(trackEvents, appInstallFullscreen);
+
+        // Assert SRP Backup Confirmed or App Installed event (depending on browser)
+        const fourthEventAssertion = [
+          [
+            (req: {
+              properties: {
+                category: string;
+                locale: string;
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                chain_id: string;
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                environment_type: string;
+              };
+            }) =>
+              req.properties.category === 'Onboarding' &&
+              req.properties.locale === 'en' &&
+              req.properties.chain_id === '0x1' &&
+              req.properties.environment_type === 'fullscreen',
+          ],
+        ];
+        assertInAnyOrder(trackEvents, fourthEventAssertion);
+
+        if (isFirefox) {
+          // Assert Analytics Preference Selected event
+          const analyticsPreferenceAssertion = [
+            [
+              (req: {
+                properties: {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  is_metrics_opted_in: boolean;
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  has_marketing_consent: boolean;
+                  location: string;
+                  category: string;
+                  locale: string;
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  chain_id: string;
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  environment_type: string;
+                };
+              }) =>
+                req.properties.is_metrics_opted_in === true &&
+                req.properties.has_marketing_consent === false &&
+                req.properties.location === 'onboarding_metametrics' &&
+                req.properties.category === 'Onboarding' &&
+                req.properties.locale === 'en' &&
+                req.properties.chain_id === '0x1' &&
+                req.properties.environment_type === 'fullscreen',
+            ],
+          ];
+          assertInAnyOrder(trackEvents, analyticsPreferenceAssertion);
+        } else {
+          // Assert Wallet Import Attempted event
+          const walletImportAttemptedAssertion = [
+            [
+              (req: {
+                properties: {
+                  category: string;
+                  locale: string;
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  chain_id: string;
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  environment_type: string;
+                };
+              }) =>
+                req.properties.category === 'Onboarding' &&
+                req.properties.locale === 'en' &&
+                req.properties.chain_id === '0x1' &&
+                req.properties.environment_type === 'fullscreen',
+            ],
+          ];
+          assertInAnyOrder(trackEvents, walletImportAttemptedAssertion);
         }
-
-        assert.equal(uniqueEvents.length, eventsToMock.length);
-
-        const firstEvent = uniqueEvents.find(
-          (e) => e.event === eventsToMock[0],
-        );
-        const secondEvent = uniqueEvents.find(
-          (e) => e.event === eventsToMock[1],
-        );
-        const thirdEvent = uniqueEvents.find(
-          (e) => e.event === eventsToMock[2],
-        );
-
-        assert.deepStrictEqual(firstEvent.properties, {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'imported',
-          category: 'Onboarding',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x539',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'fullscreen',
-        });
-
-        assert.deepStrictEqual(secondEvent.properties, {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          biometrics_enabled: false,
-          category: 'Onboarding',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x539',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'fullscreen',
-        });
-
-        assert.deepStrictEqual(thirdEvent.properties, {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          wallet_setup_type: 'import',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_wallet: false,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'imported',
-          category: 'Onboarding',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x539',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'fullscreen',
-        });
       },
     );
   });

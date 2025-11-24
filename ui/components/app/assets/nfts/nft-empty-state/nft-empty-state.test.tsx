@@ -1,24 +1,19 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
+import * as actions from '../../../../../store/actions';
 import { NftEmptyState } from './nft-empty-state';
 
-// Mock global platform
-const mockOpenTab = jest.fn();
-
-// @ts-expect-error mocking platform
-global.platform = {
-  openTab: mockOpenTab,
-};
-
 describe('NftEmptyState', () => {
-  const mockStore = configureMockStore([]);
+  const mockStore = configureMockStore([thunk]);
+  let store: ReturnType<typeof mockStore>;
 
   const renderComponent = (props = {}, stateOverride = {}) => {
-    const store = mockStore({ ...mockState, ...stateOverride });
+    store = mockStore({ ...mockState, ...stateOverride });
     return renderWithProvider(<NftEmptyState {...props} />, store);
   };
 
@@ -40,10 +35,10 @@ describe('NftEmptyState', () => {
     ).toBeInTheDocument();
   });
 
-  it('should render discover button', () => {
+  it('should render import button', () => {
     renderComponent();
     expect(
-      screen.getByRole('button', { name: 'Discover NFTs' }),
+      screen.getByRole('button', { name: 'Import NFT' }),
     ).toBeInTheDocument();
   });
 
@@ -55,15 +50,16 @@ describe('NftEmptyState', () => {
     expect(emptyState).toHaveClass(customClassName);
   });
 
-  it('should call openTab when discover button is clicked', () => {
+  it('should dispatch showImportNftsModal when import button is clicked', () => {
+    const showImportNftsModalSpy = jest.spyOn(actions, 'showImportNftsModal');
     renderComponent();
 
-    const discoverButton = screen.getByRole('button', {
-      name: 'Discover NFTs',
+    const importButton = screen.getByRole('button', {
+      name: 'Import NFT',
     });
-    fireEvent.click(discoverButton);
+    fireEvent.click(importButton);
 
-    expect(mockOpenTab).toHaveBeenCalledTimes(1);
+    expect(showImportNftsModalSpy).toHaveBeenCalledWith({});
   });
 
   it('should render light theme icon by default', () => {

@@ -36,7 +36,7 @@ exports[`ConfirmInfoRow should match snapshot when copy is enabled 1`] = `
   >
     <button
       aria-label="copy-button"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
       style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
     >
       <span

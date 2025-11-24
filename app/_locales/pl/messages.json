@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Zobacz konto na Etherscan"
   },
-  "expandView": {
-    "message": "Rozwiń widok"
-  },
   "failed": {
     "message": "Nie udało się"
   },
@@ -613,9 +610,6 @@
   },
   "supportCenter": {
     "message": "Odwiedź nasze Centrum Pomocy"
-  },
-  "switchNetworks": {
-    "message": "Zmień sieci"
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol musi mieć maksymalnie 11 znaków."

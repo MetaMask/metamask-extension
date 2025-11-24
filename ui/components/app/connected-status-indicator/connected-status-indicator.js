@@ -26,7 +26,6 @@ import {
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
-
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupInternalAccounts = useSelector((state) =>
     getInternalAccountsFromGroupById(state, selectedAccountGroupId),

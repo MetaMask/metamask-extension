@@ -3,28 +3,14 @@ import { Driver } from '../../../webdriver/driver';
 class OnboardingCompletePage {
   private driver: Driver;
 
-  private readonly installCompleteMessage = {
-    text: 'Installation is complete!',
-    tag: 'h2',
-  };
-
   private readonly onboardingCompleteDoneButton =
     '[data-testid="onboarding-complete-done"]';
 
   private readonly downloadAppContinueButton =
     '[data-testid="download-app-continue"]';
 
-  private readonly pinExtensionDoneButton =
-    '[data-testid="pin-extension-done"]';
-
-  private readonly pinExtensionMessage = {
-    text: 'Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations.',
-    tag: 'p',
-  };
-
   private readonly walletReadyMessage = {
     text: 'Your wallet is ready!',
-    tag: 'h2',
   };
 
   private readonly keepSrpSafeMessage = {
@@ -82,9 +68,10 @@ class OnboardingCompletePage {
   }
 
   async clickCreateWalletDoneButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.onboardingCompleteDoneButton,
-    );
+    // With sidepanel enabled, clicking done opens a new window instead of
+    // navigating in the current window, so the button doesn't "disappear"
+    // We just click it without waiting for it to disappear
+    await this.driver.clickElement(this.onboardingCompleteDoneButton);
   }
 
   async displayDownloadAppPageAndContinue(): Promise<void> {
@@ -94,20 +81,9 @@ class OnboardingCompletePage {
     );
   }
 
-  async completeOnboarding(isSocialImportFlow: boolean = false): Promise<void> {
+  async completeOnboarding(): Promise<void> {
     console.log('Complete onboarding');
-    if (!isSocialImportFlow) {
-      await this.clickCreateWalletDoneButton();
-    }
-
-    await this.displayDownloadAppPageAndContinue();
-
-    await this.driver.waitForSelector(this.installCompleteMessage);
-    await this.driver.waitForSelector(this.pinExtensionMessage);
-
-    await this.driver.clickElementAndWaitToDisappear(
-      this.pinExtensionDoneButton,
-    );
+    await this.clickCreateWalletDoneButton();
   }
 
   async completeBackup(): Promise<void> {

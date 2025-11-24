@@ -232,9 +232,6 @@
   "etherscanView": {
     "message": "Veure compte a Etherscan"
   },
-  "expandView": {
-    "message": "Eixamplar Vista"
-  },
   "failed": {
     "message": "Fallit"
   },
@@ -604,9 +601,6 @@
   },
   "supportCenter": {
     "message": "Visita el nostre Centre de Suport"
-  },
-  "switchNetworks": {
-    "message": "Intercanviar Xarxes"
   },
   "symbol": {
     "message": "Símbol"

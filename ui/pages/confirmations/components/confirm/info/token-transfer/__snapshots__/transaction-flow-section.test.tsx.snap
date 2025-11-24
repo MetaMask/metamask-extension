@@ -3,11 +3,11 @@
 exports[`<TransactionFlowSection /> renders correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__transaction-flow"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
+      class="mm-box mm-box--padding-bottom-1 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
     >
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -27,7 +27,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-top-1"
+          class="mm-box mm-box--margin-top-2"
           data-testid="sender-address"
         >
           <div
@@ -54,7 +54,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
         </div>
       </div>
       <span
-        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-muted"
+        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
         style="mask-image: url('./images/icons/arrow-right.svg');"
       />
       <div
@@ -75,7 +75,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-top-1"
+          class="mm-box mm-box--margin-top-2"
           data-testid="recipient-address"
         >
           <div

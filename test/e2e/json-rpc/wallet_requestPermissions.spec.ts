@@ -10,7 +10,7 @@ describe('wallet_requestPermissions', function () {
   it('executes a request permissions on eth_accounts event', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.title,
       },

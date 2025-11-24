@@ -697,9 +697,6 @@
   "etherscanViewOn": {
     "message": "Ver en Etherscan"
   },
-  "expandView": {
-    "message": "Expandir vista"
-  },
   "experimental": {
     "message": "Experimental"
   },
@@ -750,10 +747,6 @@
   },
   "from": {
     "message": "De"
-  },
-  "fromAddress": {
-    "message": "De: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "gas": {
     "message": "Gas"
@@ -1447,9 +1440,6 @@
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
   },
-  "seedPhraseIntroTitle": {
-    "message": "Proteger su cartera"
-  },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
   },
@@ -1528,12 +1518,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
-  },
-  "skipAccountSecurity": {
-    "message": "¿Omitir la seguridad de la cuenta?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Entiendo que hasta que no haga una copia de seguridad de mi frase secreta de recuperación, puedo perder mis cuentas y todos los activos asociados."
   },
   "somethingWentWrong": {
     "message": "Lo lamentamos, se produjo un error."
@@ -1874,9 +1858,6 @@
   "switchNetwork": {
     "message": "Cambiar red"
   },
-  "switchNetworks": {
-    "message": "Cambiar redes"
-  },
   "switchToThisAccount": {
     "message": "Cambiar a esta cuenta"
   },
@@ -1903,10 +1884,6 @@
   },
   "to": {
     "message": "Para"
-  },
-  "toAddress": {
-    "message": "Para: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "token": {
     "message": "Token"
@@ -2102,9 +2079,6 @@
   },
   "welcomeBack": {
     "message": "¡Bienvenido de nuevo!"
-  },
-  "welcomeToMetaMask": {
-    "message": "Comencemos"
   },
   "whatsThis": {
     "message": "¿Qué es esto?"

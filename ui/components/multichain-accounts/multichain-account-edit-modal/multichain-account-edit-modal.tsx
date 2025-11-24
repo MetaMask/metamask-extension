@@ -57,6 +57,15 @@ export const MultichainAccountEditModal = ({
     }
   }, [accountName, currentAccountName, accountGroupId, dispatch, onClose, t]);
 
+  const handleKeyDown = useCallback(
+    async (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' && accountName.trim()) {
+        await handleSave();
+      }
+    },
+    [accountName, handleSave],
+  );
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -77,6 +86,7 @@ export const MultichainAccountEditModal = ({
                 data-testid="account-name-input"
                 value={accountName}
                 onChange={(e) => setAccountName(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder={currentAccountName}
                 error={showErrorMessage}
                 helpText={helpText}

@@ -97,7 +97,9 @@ export const AssetList = ({
         <Text
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textAlternative}
-          margin={4}
+          marginInline={4}
+          marginTop={2}
+          marginBottom={2}
         >
           NFTs
         </Text>

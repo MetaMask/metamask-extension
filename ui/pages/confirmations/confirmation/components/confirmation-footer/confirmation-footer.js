@@ -14,7 +14,6 @@ export default function ConfirmationFooter({
   onCancel,
   submitText,
   cancelText,
-  loadingText,
   alerts,
   loading,
   submitAlerts,
@@ -43,6 +42,7 @@ export default function ConfirmationFooter({
           {onSubmit && submitText ? (
             <Button
               block
+              loading={Boolean(loading)}
               data-testid="confirmation-submit-button"
               disabled={Boolean(loading)}
               onClick={hasAlerts ? showAlertsModal : onSubmit}
@@ -52,7 +52,7 @@ export default function ConfirmationFooter({
               startIconName={hasAlerts ? IconName.Info : undefined}
               size={ButtonSize.Lg}
             >
-              {loading ? loadingText : submitText}
+              {submitText}
             </Button>
           ) : null}
         </div>
@@ -67,7 +67,6 @@ ConfirmationFooter.propTypes = {
   cancelText: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
   submitText: PropTypes.string.isRequired,
-  loadingText: PropTypes.string,
   loading: PropTypes.bool,
   submitAlerts: PropTypes.node,
   style: PropTypes.object,

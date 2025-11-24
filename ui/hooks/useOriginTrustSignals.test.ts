@@ -43,8 +43,8 @@ describe('useOriginTrustSignals', () => {
 
   it('returns malicious state when recommendedAction is Block', () => {
     getUrlScanCacheResultMock.mockReturnValue({
-      result: {
-        domainName: DOMAIN_NAME_MOCK,
+      data: {
+        hostname: DOMAIN_NAME_MOCK,
         recommendedAction: RecommendedAction.Block,
       },
       timestamp: TIMESTAMP_MOCK,
@@ -64,8 +64,8 @@ describe('useOriginTrustSignals', () => {
 
   it('returns warning state when recommendedAction is Warn', () => {
     getUrlScanCacheResultMock.mockReturnValue({
-      result: {
-        domainName: DOMAIN_NAME_MOCK,
+      data: {
+        hostname: DOMAIN_NAME_MOCK,
         recommendedAction: RecommendedAction.Warn,
       },
       timestamp: TIMESTAMP_MOCK,
@@ -81,8 +81,8 @@ describe('useOriginTrustSignals', () => {
 
   it('returns verified state when recommendedAction is Verified', () => {
     getUrlScanCacheResultMock.mockReturnValue({
-      result: {
-        domainName: DOMAIN_NAME_MOCK,
+      data: {
+        hostname: DOMAIN_NAME_MOCK,
         recommendedAction: RecommendedAction.Verified,
       },
       timestamp: TIMESTAMP_MOCK,
@@ -98,8 +98,8 @@ describe('useOriginTrustSignals', () => {
 
   it('returns unknown state when recommendedAction is None', () => {
     getUrlScanCacheResultMock.mockReturnValue({
-      result: {
-        domainName: DOMAIN_NAME_MOCK,
+      data: {
+        hostname: DOMAIN_NAME_MOCK,
         recommendedAction: RecommendedAction.None,
       },
       timestamp: TIMESTAMP_MOCK,
@@ -115,8 +115,8 @@ describe('useOriginTrustSignals', () => {
 
   it('returns unknown state when cache result has no recommendedAction', () => {
     getUrlScanCacheResultMock.mockReturnValue({
-      result: {
-        domainName: DOMAIN_NAME_MOCK,
+      data: {
+        hostname: DOMAIN_NAME_MOCK,
         recommendedAction: undefined,
       },
       timestamp: TIMESTAMP_MOCK,
@@ -132,8 +132,8 @@ describe('useOriginTrustSignals', () => {
 
   it('returns unknown state for unrecognized recommendedAction', () => {
     getUrlScanCacheResultMock.mockReturnValue({
-      result: {
-        domainName: DOMAIN_NAME_MOCK,
+      data: {
+        hostname: DOMAIN_NAME_MOCK,
         recommendedAction: 'UNKNOWN_ACTION',
       },
       timestamp: TIMESTAMP_MOCK,

@@ -4,6 +4,7 @@ import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import {
   Display,
@@ -52,9 +53,8 @@ import {
 } from '../multichain-transaction-details-modal/helpers';
 import { formatBlockExplorerTransactionUrl } from '../../../../shared/lib/multichain/networks';
 import {
-  MULTICHAIN_PROVIDER_CONFIGS,
-  MultichainNetworks,
-  SOLANA_TOKEN_IMAGE_URL,
+  MULTICHAIN_NETWORK_TO_NICKNAME,
+  MULTICHAIN_TOKEN_IMAGE_MAP,
   MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
 } from '../../../../shared/constants/multichain/networks';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
@@ -109,11 +109,10 @@ const MultichainBridgeTransactionDetailsModal = ({
 
     try {
       const caipChainId = formatChainIdToCaip(chainId);
-      const isSolana = caipChainId === MultichainNetworks.SOLANA;
 
       let blockExplorerUrl = '';
 
-      if (isSolana) {
+      if (isNonEvmChainId(chainId)) {
         const blockExplorerUrls =
           MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
         if (blockExplorerUrls) {
@@ -179,17 +178,25 @@ const MultichainBridgeTransactionDetailsModal = ({
     nonEvmTransaction: transaction,
   });
 
+  // Get source network info from chain ID
+  const sourceNetworkNickname = srcNetwork?.chainId
+    ? MULTICHAIN_NETWORK_TO_NICKNAME[srcNetwork.chainId]
+    : undefined;
+  const sourceNetworkImage = srcNetwork?.chainId
+    ? MULTICHAIN_TOKEN_IMAGE_MAP[srcNetwork.chainId]
+    : undefined;
+
   return (
     <Modal
       onClose={onClose}
-      data-testid="solana-bridge-transaction-details-modal"
+      data-testid="multichain-bridge-transaction-details-modal"
       isOpen
       isClosedOnOutsideClick
       isClosedOnEscapeKey
     >
       <ModalOverlay />
       <ModalContent
-        className="solana-bridge-transaction-details-modal"
+        className="multichain-bridge-transaction-details-modal"
         modalDialogProps={{
           display: Display.Flex,
           flexDirection: FlexDirection.Column,
@@ -213,7 +220,7 @@ const MultichainBridgeTransactionDetailsModal = ({
         </Box>
         {/* Scrollable Content Section */}
         <Box
-          className="solana-bridge-transaction-details-modal__content"
+          className="multichain-bridge-transaction-details-modal__content"
           style={{ overflow: 'auto', flex: '1' }}
         >
           {/* Status Section */}
@@ -355,19 +362,13 @@ const MultichainBridgeTransactionDetailsModal = ({
                 >
                   <AvatarNetwork
                     size={AvatarNetworkSize.Sm}
-                    className="solana-bridge-transaction-details-modal__network-badge"
-                    name={
-                      MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA]
-                        .nickname
-                    }
-                    src={SOLANA_TOKEN_IMAGE_URL}
+                    className="multichain-bridge-transaction-details-modal__network-badge"
+                    name={sourceNetworkNickname ?? ''}
+                    src={sourceNetworkImage ?? ''}
                     borderColor={BorderColor.backgroundDefault}
                   />
                   <Text variant={TextVariant.bodyMd}>
-                    {
-                      MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA]
-                        .nickname
-                    }
+                    {sourceNetworkNickname}
                   </Text>
                 </Box>
               </Box>
@@ -391,7 +392,7 @@ const MultichainBridgeTransactionDetailsModal = ({
                 >
                   <AvatarNetwork
                     size={AvatarNetworkSize.Sm}
-                    className="solana-bridge-transaction-details-modal__network-badge"
+                    className="multichain-bridge-transaction-details-modal__network-badge"
                     name={
                       destNetwork?.chainId
                         ? (NETWORK_TO_SHORT_NETWORK_NAME_MAP[
@@ -449,6 +450,16 @@ const MultichainBridgeTransactionDetailsModal = ({
                           : assetData.amount;
                         return `${displayAmount} ${assetData.unit}`;
                       }
+
+                      // Fallback to quote data when transaction.from is empty (e.g., BTC transactions)
+                      if (quote?.srcTokenAmount && quote?.srcAsset?.symbol) {
+                        const formattedAmount = formatDestTokenAmount(
+                          quote.srcTokenAmount,
+                          quote.srcAsset.decimals,
+                        );
+                        return `${formattedAmount} ${quote.srcAsset.symbol}`;
+                      }
+
                       return '';
                     })()}
                   </Text>

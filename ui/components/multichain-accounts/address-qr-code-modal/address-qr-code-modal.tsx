@@ -94,7 +94,7 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
 
   // Get block explorer info from network configuration
   const explorerInfo = getBlockExplorerInfo(
-    t as (key: string, ...args: string[]) => string,
+    t as (key: string, args: string[]) => string,
     address,
     { networkName, chainId },
   );
@@ -186,6 +186,7 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
                 variant={TextVariant.BodyMd}
                 fontWeight={FontWeight.Medium}
                 className="break-all max-w-64"
+                data-testid="account-address"
               >
                 <Text asChild>
                   <span>{addressStart}</span>
@@ -214,6 +215,7 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
                 size={ButtonSize.Lg}
                 isFullWidth
                 onClick={handleExplorerNavigation}
+                data-testid="view-address-on-etherscan"
               >
                 {explorerInfo.buttonText}
               </Button>

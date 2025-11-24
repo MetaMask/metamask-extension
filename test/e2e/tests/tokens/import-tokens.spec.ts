@@ -133,8 +133,46 @@ async function mockTokens(mockServer: Mockttp) {
   ];
 }
 
+async function mockPolygonBridgeApi(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forGet('https://bridge.api.cx.metamask.io/networks/137/topAssets')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [
+          {
+            address: '0x0000000000000000000000000000000000000000',
+            symbol: 'POL',
+          },
+          {
+            address: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+            symbol: 'USDT',
+          },
+        ],
+      })),
+    await mockServer
+      .forGet('https://bridge.api.cx.metamask.io/networks/137/tokens')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
+    await mockServer
+      .forGet(
+        'https://bridge.api.cx.metamask.io/networks/137/aggregatorMetadata',
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {},
+      })),
+  ];
+}
+
 async function mockTokensAndPrices(mockServer: Mockttp) {
-  return [await mockPriceFetch(mockServer), ...(await mockTokens(mockServer))];
+  return [
+    await mockPriceFetch(mockServer),
+    ...(await mockTokens(mockServer)),
+    ...(await mockPolygonBridgeApi(mockServer)),
+  ];
 }
 describe('Import flow', function () {
   it('allows importing multiple tokens from search', async function () {
@@ -180,6 +218,11 @@ describe('Import flow', function () {
                     symbol: 'CHANGE',
                     address: '0x7051faed0775f664a0286af4f75ef5ed74e02754',
                   },
+                  '0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+                    name: 'Chai',
+                    symbol: 'CHAI',
+                    address: '0x06af07097c9eeb7fd685c692751d5c66db49c215',
+                  },
                 },
               },
             },
@@ -210,81 +253,6 @@ describe('Import flow', function () {
         // TODO: add back this check once we figure out why tokens name displayed when running the test locally is changex but on CI it is ChangeX
         // await tokenList.checkTokenExistsInList('Changex');
         await tokenList.checkTokenExistsInList('Chai');
-      },
-    );
-  });
-
-  it('allows importing multiple tokens from search across chains', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withNetworkControllerOnPolygon()
-          .withEnabledNetworks({
-            eip155: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.POLYGON]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-              [CHAIN_IDS.BASE]: true,
-            },
-          })
-          .withTokensController({
-            tokenList: [],
-            tokensChainsCache: {
-              '0x1': {
-                data: {
-                  '0x0a0e3bfd5a8ce610e735d4469bc1b3b130402267': {
-                    name: 'Entropy',
-                    aggregators: ['Lifi', 'Coinmarketcap', 'Rango'],
-                    address: '0x0a0e3bfd5a8ce610e735d4469bc1b3b130402267',
-                    decimals: 18,
-                    iconUrl:
-                      'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a0e3bfd5a8ce610e735d4469bc1b3b130402267.png',
-                    occurrences: 3,
-                    symbol: 'ERP',
-                  },
-                },
-              },
-              '0x89': {
-                data: {
-                  '0xc2132D05D31c914a87C6611C10748AEb04B58e8F': {
-                    name: 'USDT',
-                    aggregators: ['Lifi', 'Coinmarketcap', 'Rango'],
-                    address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
-                    decimals: 6,
-                    iconUrl:
-                      'https://static.cx.metamask.io/api/v1/tokenIcons/137/0xc2132D05D31c914a87C6611C10748AEb04B58e8F.png',
-                    occurrences: 3,
-                    symbol: 'USDT',
-                  },
-                },
-              },
-            },
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockTokensAndPrices,
-      },
-      async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const assetListPage = new AssetListPage(driver);
-
-        await assetListPage.importMultipleTokensBySearch(['ERP', 'USDT']);
-
-        const tokenList = new AssetListPage(driver);
-
-        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
-        // ERC20 Tokens: Polygon USDT, Polygon ERP
-        await tokenList.checkTokenItemNumber(6);
-
-        await tokenList.checkTokenExistsInList('Ether');
-        await tokenList.checkTokenExistsInList('ERP');
-        await tokenList.checkTokenExistsInList('USDT');
-        await tokenList.checkTokenExistsInList('POL');
       },
     );
   });

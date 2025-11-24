@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "問題が解決しない場合は、MetaMaskを再起動してください。",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "読み込みに通常より時間がかかっています。",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "エラー"
   },
@@ -93,14 +101,19 @@
   "accountDetails": {
     "message": "アカウントの詳細"
   },
-  "accountIdenticon": {
-    "message": "アカウントのアイデンティコン"
+  "accountDetailsSrpBackUpMessage": {
+    "message": "バックアップ",
+    "description": "Text used to describe action for SRP backup. Used on multichain account details."
   },
   "accountIsntConnectedToastText": {
     "message": "$1は$2に接続されていません"
   },
   "accountName": {
     "message": "アカウント名"
+  },
+  "accountNameAlreadyInUse": {
+    "message": "この名前はすでに使用されています。",
+    "description": "Error help text used under the input field for renaming multichain account when user tries to use existing name."
   },
   "accountNameDuplicate": {
     "message": "このアカウント名は既に存在します",
@@ -128,6 +141,9 @@
   },
   "accountSelectionRequired": {
     "message": "アカウントを選択する必要があります！"
+  },
+  "accountSmallCase": {
+    "message": "アカウント"
   },
   "accountTypeNotSupported": {
     "message": "アカウントタイプがサポートされていません"
@@ -158,6 +174,9 @@
   },
   "addACustomNetwork": {
     "message": "カスタムネットワークを追加"
+  },
+  "addAHardwareWallet": {
+    "message": "ハードウェアウォレットを追加"
   },
   "addANetwork": {
     "message": "ネットワークを追加"
@@ -297,11 +316,11 @@
   "addUrl": {
     "message": "URLを追加"
   },
+  "addWallet": {
+    "message": "ウォレットを追加"
+  },
   "addingAccount": {
     "message": "アカウントの追加"
-  },
-  "addingCustomNetwork": {
-    "message": "ネットワークを追加中"
   },
   "additionalNetworks": {
     "message": "他のネットワーク"
@@ -311,6 +330,10 @@
   },
   "addressCopied": {
     "message": "アドレスをコピーしました"
+  },
+  "addressLabel": {
+    "message": "アドレス",
+    "description": "Label for address count (single address). Used on multichain account details page."
   },
   "addressMismatch": {
     "message": "サイトアドレスの不一致"
@@ -322,6 +345,14 @@
   "addressMismatchPunycode": {
     "message": "Punycodeバージョン: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addresses": {
+    "message": "アドレス",
+    "description": "Multichain account menu item for linking to addresses page"
+  },
+  "addressesLabel": {
+    "message": "アドレス",
+    "description": "Label for address count (multiple addresses). Used on multichain account details page."
   },
   "advanced": {
     "message": "高度な設定"
@@ -392,9 +423,6 @@
   },
   "alertMessageAddressMismatchWarning": {
     "message": "攻撃者は、サイトのアドレスに若干の変更を加えてサイトを模倣することがあります。続行する前に、意図したサイトとやり取りしていることを確認してください。"
-  },
-  "alertMessageAddressTrustSignal": {
-    "message": "この要求を承認した場合、詐欺師に資産を奪われてしまう可能性が高いでしょう。"
   },
   "alertMessageChangeInSimulationResults": {
     "message": "このトランザクションの推定増減額が更新されました。先に進む前によく確認してください。"
@@ -491,6 +519,9 @@
   },
   "allPermissions": {
     "message": "すべてのアクセス許可"
+  },
+  "allPopularNetworks": {
+    "message": "すべての人気のネットワーク"
   },
   "allTimeHigh": {
     "message": "最高記録"
@@ -599,9 +630,6 @@
   "attributions": {
     "message": "属性"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Infura RPC URLでAuroraがサポートされなくなりました。"
-  },
   "authorizedPermissions": {
     "message": "以下の権限を承認しました"
   },
@@ -617,6 +645,9 @@
   },
   "autoLockTimeLimitDescription": {
     "message": "MetaMaskがロックされるまでのアイドル時間を分単位で設定します。"
+  },
+  "available": {
+    "message": "使用可能"
   },
   "average": {
     "message": "平均"
@@ -731,10 +762,6 @@
   "betaTerms": {
     "message": "ベータ版利用規約"
   },
-  "billionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'billion'"
-  },
   "blockExplorerAccountAction": {
     "message": "アカウント",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -831,12 +858,6 @@
     "message": "$1のブリッジを承認",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "指定された金額、$1 $2へのアクセスを許可しようとしています。このコントラクトはそれ以上の資金にはアクセスしません。"
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "ブリッジ用に$1 $2へのアクセスを許可し、$2へのブリッジを承認する必要があります。これには2回の別々の承認が必要です。"
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "ブロックエクスプローラーのリンクをコピーしました！"
   },
@@ -871,9 +892,6 @@
   "bridgeFetchNewQuotes": {
     "message": "新しいものを取得しますか？"
   },
-  "bridgeFrom": {
-    "message": "ブリッジ元:"
-  },
   "bridgeFromTo": {
     "message": "$1 $2を$3にブリッジ",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -883,6 +901,12 @@
   },
   "bridgeNetCost": {
     "message": "純コスト"
+  },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "プライスインパクト"
+  },
+  "bridgePriceImpactWarningTitle": {
+    "message": "プライスインパクトに関する警告"
   },
   "bridgeQuoteExpired": {
     "message": "クォートがタイムアウトしました。"
@@ -1107,6 +1131,9 @@
   },
   "clearActivityDescription": {
     "message": "これによりアカウントのナンスがリセットされ、ウォレットのアクティビティタブからデータが消去されます。現在のアカウントとネットワークだけが影響を受けます。残高と受信トランザクションへの変更はありません。"
+  },
+  "clearFilters": {
+    "message": "フィルターを消去"
   },
   "click": {
     "message": "クリックして"
@@ -1401,17 +1428,11 @@
   "connectingTo": {
     "message": "$1に接続中"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "「$1」は段階的に廃止されており、機能しない可能性があります。別のネットワークをお試しください。"
-  },
   "connectingToGoerli": {
     "message": "Goerliテストネットワークに接続中"
   },
   "connectingToLineaGoerli": {
     "message": "Linea Goerliテストネットワークに接続中"
-  },
-  "connectingToLineaMainnet": {
-    "message": "Lineaメインネットに接続中"
   },
   "connectingToLineaSepolia": {
     "message": "Linea Sepoliaテストネットワークに接続中"
@@ -1502,6 +1523,14 @@
   "create": {
     "message": "作成"
   },
+  "createMultichainAccountButton": {
+    "message": "アカウントを作成",
+    "description": "Name of a button used on multichain account related pages for triggering the account creation process."
+  },
+  "createMultichainAccountButtonLoading": {
+    "message": "アカウントを作成中...",
+    "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
+  },
   "createNewAccountHeader": {
     "message": "新しいアカウントの作成"
   },
@@ -1513,9 +1542,6 @@
   },
   "createPasswordDetails": {
     "message": "このデバイスでのみMetaMaskのロックが解除されます。"
-  },
-  "createPasswordDetailsSocial": {
-    "message": "こちらを使用して、すべてのデバイスでウォレットを復元できます。"
   },
   "createSnapAccountDescription": {
     "message": "$1がMetaMaskへの新しいアカウントの追加を要求しています。"
@@ -1567,9 +1593,6 @@
     "message": "現在のネットワーク",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "このネットワークの現在のRPC URLは非推奨となりました。"
-  },
   "currentTitle": {
     "message": "現在:"
   },
@@ -1604,14 +1627,8 @@
   "customToken": {
     "message": "カスタムトークン"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "このネットワークではまだトークンの検出を利用できません。トークンを手動でインポートし、信頼できることを確認してください。$1の詳細をご覧ください"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "手動でトークンをインポートする前に、信頼できることを確認してください。$1の詳細をご覧ください。"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "インポートする前にトークンが信頼できることを確認してください。$1を避ける方法の詳細をご覧ください。また、$2トークンの検出を有効にすることもできます。"
   },
   "customerSupport": {
     "message": "カスタマーサポート"
@@ -1650,9 +1667,6 @@
   },
   "dataCollectionForMarketing": {
     "message": "マーケティング目的のデータ収集"
-  },
-  "dataCollectionForMarketingDescription": {
-    "message": "当社はMetaMetricsを使用して、ユーザーによる当社のマーケティングコミュニケーションとのインタラクションを把握します。また、関連ニュースをお伝えする場合もあります (製品の機能、その他資料など)。"
   },
   "dataCollectionWarningPopoverButton": {
     "message": "OK"
@@ -1805,9 +1819,6 @@
   "depositCrypto": {
     "message": "ウォレットアドレスまたはQRコードを使った別のアカウントからの仮想通貨のデポジット"
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "イーサリアムシステムのアップデートに伴い、Goerliテストネットワークはまもなく段階的に廃止される予定です。"
-  },
   "deprecatedNetwork": {
     "message": "このネットワークはサポートされなくなりました"
   },
@@ -1930,6 +1941,9 @@
   },
   "downArrow": {
     "message": "下矢印"
+  },
+  "downloadAppTitle": {
+    "message": "QRコードをスキャンしてアプリをダウンロード"
   },
   "downloadGoogleChrome": {
     "message": "Google Chromeをダウンロード"
@@ -2310,9 +2324,6 @@
   "existingChainId": {
     "message": "入力された情報は、既存のチェーンIDと関連付けられています。"
   },
-  "expandView": {
-    "message": "ビューを展開"
-  },
   "experimental": {
     "message": "試験運用"
   },
@@ -2436,10 +2447,6 @@
   },
   "from": {
     "message": "移動元"
-  },
-  "fromAddress": {
-    "message": "移動元: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "fromTokenLists": {
     "message": "トークンリストから: $1"
@@ -2716,6 +2723,9 @@
     "message": "インポートされた鍵の仕組みについては、$1",
     "description": "$1 is a link to learn more about imported keys"
   },
+  "importAnAccount": {
+    "message": "アカウントのインポート"
+  },
   "importNFT": {
     "message": "NFTをインポート"
   },
@@ -2728,32 +2738,11 @@
   "importNFTTokenIdToolTip": {
     "message": "NFTのIDは一意の識別子で、同じNFTは2つとして存在しません。前述の通り、OpenSeaではこの番号は「詳細」に表示されます。このIDを書き留めるか、クリップボードにコピーしてください。"
   },
-  "importNWordSRP": {
-    "message": "$1単語のリカバリーフレーズがあります",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "秘密鍵"
   },
-  "importSRPDescription": {
-    "message": "12単語または24単語のシークレットリカバリーフレーズを使用して、既存のウォレットをインポートします。"
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "シークレットリカバリーフレーズは、12単語または24単語で構成されています"
-  },
-  "importSRPWordError": {
-    "message": "単語「$1」が正しくないか、スペルが違います。",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "単語「$1」と「$2」が正しくないか、スペルが違います。",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズをインポート"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "不明なエラーが発生しました。"
   },
   "importSelectedTokens": {
     "message": "選択したトークンをインポートしますか？"
@@ -2773,15 +2762,8 @@
   "importTokensError": {
     "message": "トークンをインポートできませんでした。後ほど再度お試しください。"
   },
-  "importWallet": {
-    "message": "ウォレットをインポート"
-  },
   "importWalletOrAccountHeader": {
     "message": "ウォレットまたはアカウントのインポート"
-  },
-  "importWalletSuccess": {
-    "message": "シークレットリカバリーフレーズ$1がインポートされました",
-    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "$1をインポート",
@@ -2790,9 +2772,6 @@
   "imported": {
     "message": "インポート済み",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "設定で"
   },
   "included": {
     "message": "含む"
@@ -2832,6 +2811,9 @@
   },
   "insufficientFundsForGas": {
     "message": "ガス代が足りません"
+  },
+  "insufficientFundsSend": {
+    "message": "資金不足"
   },
   "insufficientLockedLiquidityDescription": {
     "message": "流動性が十分にロックまたはバーンされていないと、トークンの流動性が突然低下しやすくなり、市場が不安定になる可能性があります。"
@@ -2909,6 +2891,9 @@
   },
   "invalidSeedPhraseNotFound": {
     "message": "シークレットリカバリーフレーズが見つかりません。"
+  },
+  "invalidValue": {
+    "message": "無効な値"
   },
   "ipfsGateway": {
     "message": "IPFSゲートウェイ"
@@ -3100,9 +3085,6 @@
   "lineaGoerli": {
     "message": "Linea Goerliテストネットワーク"
   },
-  "lineaMainnet": {
-    "message": "Lineaメインネット"
-  },
   "lineaSepolia": {
     "message": "Linea Sepoliaテストネットワーク"
   },
@@ -3289,10 +3271,6 @@
   "metrics": {
     "message": "メトリクス"
   },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
-  },
   "mismatchedChainLinkText": {
     "message": "ネットワークの詳細の確認",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3333,8 +3311,54 @@
   "moreQuotes": {
     "message": "他のクォート"
   },
+  "multichainAccountAddressCopied": {
+    "message": "アドレスをコピーしました",
+    "description": "Message displayed when the multichain account address is copied to clipboard"
+  },
+  "multichainAccountIntroLearnMore": {
+    "message": "詳細",
+    "description": "Button text to learn more about multichain accounts"
+  },
+  "multichainAccountIntroSameAddressDescription": {
+    "message": "アカウントをグループ化しましたので、これまでどおりMetaMaskをご利用ください。資金は安全に保護され、変更はありません。",
+    "description": "Description explaining that accounts have been merged"
+  },
+  "multichainAccountIntroSameAddressTitle": {
+    "message": "同じアドレスで複数のネットワークに対応",
+    "description": "Title for the second section of the multichain account intro modal"
+  },
+  "multichainAccountIntroSettingUp": {
+    "message": "アカウントを設定しています...",
+    "description": "Loading text shown while setting up multichain accounts"
+  },
+  "multichainAccountIntroViewAccounts": {
+    "message": "アカウントを表示",
+    "description": "Button text to view accounts from the intro modal"
+  },
+  "multichainAccountIntroWhatDescription": {
+    "message": "マルチチェーンアカウントとは、MetaMaskが対応している複数のネットワークのアドレスを持つアカウントのことです。これにより、アカウントを切り替えることなくイーサリアムやSolanaなどを利用できます。",
+    "description": "Description explaining what multichain accounts are"
+  },
+  "multichainAccountIntroWhatTitle": {
+    "message": "マルチチェーンアカウントとは？",
+    "description": "Title for the first section of the multichain account intro modal"
+  },
+  "multichainAccountPrivateKeyCopied": {
+    "message": "秘密鍵をコピーしました",
+    "description": "Message displayed when the multichain account private key is copied to clipboard"
+  },
+  "multichainAccountsIntroductionModalTitle": {
+    "message": "マルチチェーンアカウントのご紹介",
+    "description": "Title for the multichain accounts introduction modal."
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "このネットワークをMetaMaskに追加し、サイトがそれを使用することを許可しようとしています。"
+  },
+  "multichainQuoteCardRateExplanation": {
+    "message": "プロバイダーから取得した最良のレート（プロバイダー手数料と$1%のMetaMask手数料込み）。"
+  },
+  "multichainQuoteCardRateLabel": {
+    "message": "レート"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1が$2 Snapの使用を求めています",
@@ -3373,10 +3397,6 @@
     "message": "以前このアドレスのニックネームを追加しています。編集するか、他のニックネームの提案を参照できます。",
     "description": "Instruction text in name component modal when value is saved."
   },
-  "nameInstructionsWarning": {
-    "message": "このアドレスは疑わしいと判断されました。この作者を信頼する場合は、今後このアドレスを特定できるように、個別の表示名を設定してください。",
-    "description": "Instruction text in name component modal when address has warning signals."
-  },
   "nameLabel": {
     "message": "ニックネーム",
     "description": "Label above name input field in name component modal."
@@ -3404,10 +3424,6 @@
   "nameModalTitleVerified": {
     "message": "検証済みのアドレス",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "疑わしいアドレス",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "提案元: $1",
@@ -3530,9 +3546,6 @@
   "networkNameLinea": {
     "message": "Linea"
   },
-  "networkNameOpMainnet": {
-    "message": "OPメインネット"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3568,9 +3581,11 @@
     "message": "ガス代は過去72時間と比較して$1です。",
     "description": "$1 is networks stability value - stable, low, high"
   },
-  "networkSwitchConnectionError": {
-    "message": "$1に接続できません",
-    "description": "$1 represents the network name"
+  "networkTabCustom": {
+    "message": "カスタム"
+  },
+  "networkTabPopular": {
+    "message": "人気"
   },
   "networkURL": {
     "message": "ネットワークURL"
@@ -3728,9 +3743,6 @@
   },
   "noSnaps": {
     "message": "snapがインストールされていません"
-  },
-  "noThanks": {
-    "message": "結構です"
   },
   "noWebcamFound": {
     "message": "お使いのコンピューターのWebカメラが見つかりませんでした。もう一度お試しください。"
@@ -4009,52 +4021,15 @@
   "onboardingImportWallet": {
     "message": "既存のウォレットがあります"
   },
-  "onboardingMetametricsAgree": {
-    "message": "同意します"
-  },
-  "onboardingMetametricsDescription": {
-    "message": "MetaMaskの改善のため、基本的な利用状況や診断データの収集にご協力ください。収集される情報は常に次のように制限されます:"
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "このデータを他の目的で利用する場合は、事前にお知らせいたします。当社の$1はいつでもご確認いただけます（ここで提供されたデータを当社が販売することは絶対にありません）。",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "プライバシー ポリシー"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 アプリのクリック数や表示回数は保存されますが、その他の詳細 (ユーザーのパブリックアドレスなど) は保存されません。",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "非公開:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 大まかな位置情報（国や地域など）の検出にユーザーのIPアドレスが一時的に使用されますが、保存されることはありません。",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "一般:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 使用状況データを共有するか削除するかは、設定でいつでも指定できます。",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "任意:"
+  "onboardingLoginFooterTermsOfUse": {
+    "message": "利用規約"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"
   },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "このデータは、ユーザーによる当社のマーケティングコミュニケーションとのインタラクションを把握するために使用されます。また、関連ニュースをお伝えする場合もあります (製品の機能など)。"
-  },
   "onboardingOptionIcon": {
     "message": "$1アイコン",
     "description": "$1 is the icon name"
-  },
-  "onboardingOptionTitle": {
-    "message": "オプションを1つ選択して続行します"
   },
   "onboardingPinExtensionAltLaunch": {
     "message": "拡張機能を起動する"
@@ -4091,14 +4066,8 @@
   "onboardingSrpInputClearAll": {
     "message": "すべて消去"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "すべて非表示"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "各単語の間に半角スペースを追加して、誰にも見られていないことを確認してください。"
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "すべて表示"
   },
   "onekey": {
     "message": "OneKey"
@@ -4175,12 +4144,6 @@
   },
   "passwordChangedRecentlyDescription": {
     "message": "MetaMaskでのログイン状態を維持するには、新しいパスワードを入力してください。"
-  },
-  "passwordNotLongEnough": {
-    "message": "パスワードは8文字以上でなければなりません"
-  },
-  "passwordTermsWarning": {
-    "message": "このパスワードを忘れた場合、MetaMask側でリセットすることはできません。"
   },
   "passwordTermsWarningSocial": {
     "message": "このパスワードを忘れると、ウォレットに永久にアクセスできなくなります。MetaMask側ではパスワードをリセットできません。"
@@ -4510,6 +4473,10 @@
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
   },
+  "pin": {
+    "message": "ピン留め",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "最上部にピン留め"
   },
@@ -4581,6 +4548,10 @@
   "privateKeyWarning": {
     "message": "警告: この鍵は絶対に公開しないでください。秘密鍵を持つ人は誰でも、アカウントに保持されているアセットを盗むことができます。"
   },
+  "privateKeys": {
+    "message": "秘密鍵",
+    "description": "Private keys row label on multichain account details page."
+  },
   "privateNetwork": {
     "message": "プライベートネットワーク"
   },
@@ -4598,6 +4569,18 @@
   },
   "publicAddress": {
     "message": "パブリックアドレス"
+  },
+  "pushNotificationLimitOrderFilledTitle": {
+    "message": "リミット注文が約定しました"
+  },
+  "pushNotificationPositionLiquidatedTitle": {
+    "message": "ポジションが清算されました"
+  },
+  "pushNotificationStopLossTriggeredTitle": {
+    "message": "ストップロスがトリガーされました"
+  },
+  "pushNotificationTakeProfitTriggeredTitle": {
+    "message": "利益確定がトリガーされました"
   },
   "pushPlatformNotificationsFundsReceivedDescription": {
     "message": "$1 $2を受け取りました"
@@ -4686,9 +4669,6 @@
   "rank": {
     "message": "ランク"
   },
-  "rateIncludesMMFee": {
-    "message": "レートには$1%の手数料が含まれています"
-  },
   "reAddAccounts": {
     "message": "他のアカウントを再度追加"
   },
@@ -4706,6 +4686,10 @@
   },
   "received": {
     "message": "受け取りました"
+  },
+  "receivingAddress": {
+    "message": "受取人のアドレス",
+    "description": "Page title when viewing addresses for receiving funds"
   },
   "recipientAddressPlaceholderNew": {
     "message": "パブリックアドレス (0x) またはドメイン名を入力してください"
@@ -4796,6 +4780,10 @@
   },
   "removeSnapDescription": {
     "message": "この操作により、snapとそのデータが削除され、与えられたアクセス許可が取り消されます。"
+  },
+  "rename": {
+    "message": "名前の変更",
+    "description": "Multichain account menu item for triggering account rename action modal"
   },
   "replace": {
     "message": "置き換え"
@@ -4889,8 +4877,9 @@
   "reusedTokenNameWarning": {
     "message": "ここのトークンは、監視する別のトークンのシンボルを再使用します。これは混乱を招いたり紛らわしい場合があります。"
   },
-  "revealSecretRecoveryPhrase": {
-    "message": "シークレットリカバリーフレーズ"
+  "revealMultichainPrivateKeysBannerTitle": {
+    "message": "秘密鍵は誰にも教えないでください",
+    "description": "Title for the banner warning users not to share their private key"
   },
   "revealSeedWords": {
     "message": "シークレットリカバリーフレーズを確認"
@@ -4996,6 +4985,10 @@
   "searchTokensByNameOrAddress": {
     "message": "トークンを名前またはアドレスで検索する"
   },
+  "searchYourAccounts": {
+    "message": "アカウントを検索",
+    "description": "Placeholder in a searchbar. Used on multichain account list page."
+  },
   "secretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズ"
   },
@@ -5006,18 +4999,8 @@
   "secureWallet": {
     "message": "安全なウォレット"
   },
-  "secureWalletGetStartedButton": {
-    "message": "開始"
-  },
   "secureWalletRemindLaterButton": {
     "message": "後で通知する"
-  },
-  "secureWalletWalletRecover": {
-    "message": "これは、アプリにログインできなくなったり、新しいデバイスに変えたりした場合に、ウォレットを復元する唯一の手段となります。"
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "資金を失うリスクを回避しましょう。$1を信頼できる場所に保管して、ウォレットを保護しましょう。",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "セキュリティ"
@@ -5097,18 +5080,12 @@
   "seeDetails": {
     "message": "詳細を表示"
   },
-  "seedPhraseIntroTitle": {
-    "message": "ウォレットの保護"
-  },
   "seedPhraseReq": {
     "message": "シークレットリカバリーフレーズは、12、15、18、21、24語で構成されます"
   },
   "seedPhraseReviewDetails": {
     "message": "これがお客様の$1です。正しい順番で書き留め、安全に保管してください。誰かがシークレットリカバリーフレーズを入手した場合、ウォレットへのアクセスが可能となってしまいます。$2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "絶対に誰にも教えないでください。"
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "シークレットリカバリーフレーズを保管してください"
@@ -5224,6 +5201,10 @@
     "message": "使用限度額なしで$1を承認",
     "description": "The token symbol that is being approved"
   },
+  "setUp": {
+    "message": "設定",
+    "description": "Action label for Smart Accounts. Used on multichain details page."
+  },
   "settingAddSnapAccount": {
     "message": "snapアカウントを追加"
   },
@@ -5235,6 +5216,9 @@
   },
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "署名およびトランザクション要求"
+  },
+  "shieldEntryModalGetStarted": {
+    "message": "利用を開始する"
   },
   "show": {
     "message": "表示"
@@ -5390,6 +5374,9 @@
   "singleNetwork": {
     "message": "1つのネットワーク"
   },
+  "sites": {
+    "message": "サイト"
+  },
   "siweIssued": {
     "message": "発行済み"
   },
@@ -5405,23 +5392,23 @@
   "siweURI": {
     "message": "URL"
   },
-  "skipAccountSecurity": {
-    "message": "アカウントのセキュリティをスキップしますか？"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "このシークレットリカバリーフレーズを忘れた場合、このウォレットにアクセスできなくなります。"
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "今すぐセキュリティを高める"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "スキップ"
-  },
   "skipDeepLinkInterstitial": {
     "message": "ディープリンクを開く際にインタースティシャル画面を表示しない"
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "このオプションを有効にすると、MetaMaskでディープリンクを開く際に表示されるインタースティシャル画面がスキップされます。「ディープリンク」とは、https://link.metamask.io/homeなど、MetaMaskが開くようになっているリンクのことです。これらのリンクは、第三者によって偽装されている場合があります。インタースティシャル画面は、MetaMask内でユーザーのアカウント、トークン、履歴、残高、設定、その他機微情報に該当する可能性のある情報を表示する恐れのあるページを誤って開かないように、ユーザーを保護するものです。この設定は、MetaMaskによって署名されたリンクにのみ適用されます。"
+  },
+  "slippage": {
+    "message": "スリッページ"
+  },
+  "slippageAuto": {
+    "message": "自動"
+  },
+  "slippageEditAriaLabel": {
+    "message": "スリッページの編集"
+  },
+  "smartAccount": {
+    "message": "スマートアカウント"
   },
   "smartAccountAccept": {
     "message": "スマートアカウントを使用"
@@ -5774,9 +5761,6 @@
   "spendingCaps": {
     "message": "使用上限"
   },
-  "srpDesignImageAlt": {
-    "message": "SRPヴォールトの画像"
-  },
   "srpDetailsDescription": {
     "message": "シークレットリカバリーフレーズとは、暗号資産ウォレットへのアクセスや管理を可能にする一連の単語のことで、シードフレーズまたはニーモニックとも呼ばれます。お持ちのウォレットをMetaMaskに移行するには、このフレーズが必要です。"
   },
@@ -5993,10 +5977,6 @@
   "step2LedgerWalletMsg": {
     "message": "コンピューターにLedgerを直接接続します。Ledgerのロックを解除し、イーサリアムアプリを開きます。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "ステップ$1/$2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "まだこのメッセージが表示されますか？"
@@ -6493,13 +6473,6 @@
   "switchNetwork": {
     "message": "ネットワークを切り替える"
   },
-  "switchNetworks": {
-    "message": "ネットワークを切り替える"
-  },
-  "switchToNetwork": {
-    "message": "$1に切り替える",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "このアカウントに切り替える"
   },
@@ -6567,10 +6540,6 @@
   "to": {
     "message": "移動先"
   },
-  "toAddress": {
-    "message": "移動先: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
   "toggleDecodeDescription": {
     "message": "当社は4byte.directoryとSourcifyサービスを使用してトランザクションデータを解読し、より読みやすい形で表示しています。これにより、保留中および過去のトランザクションの結果を理解しやすくなりますが、IPアドレスが共有される可能性があります。"
   },
@@ -6609,9 +6578,6 @@
   },
   "tokenMarketplace": {
     "message": "トークンマーケットプレイス"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "トークン関連の詐欺やセキュリティのリスク"
   },
   "tokenStandard": {
     "message": "トークン規格"
@@ -6745,10 +6711,6 @@
   "transferRequest": {
     "message": "送金要求"
   },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
-  },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Ledgerの接続に問題が発生しました。$1",
     "description": "$1 is a link to the wallet connection guide;"
@@ -6863,6 +6825,10 @@
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "試行回数の上限に達しました。再試行できるまであと"
+  },
+  "unlockToReveal": {
+    "message": "ロックを解除して確認",
+    "description": "Label used for Private Keys row on multichain account details page."
   },
   "unpin": {
     "message": "ピン留めを解除"
@@ -7063,24 +7029,11 @@
     "message": "$1 ご自身の資金にアクセスできなくなることを防ぐため、このフレーズは安全に保管しましょう。",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "ウォレットのバックアップやシークレットリカバリーフレーズの確認は、「設定」>「セキュリティとパスワード」から行うことができます。"
-  },
   "walletReadyLoseSrp": {
     "message": "シークレットリカバリーフレーズを忘れた場合、ウォレットにアクセスできなくなります。"
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "このシークレットリカバリーフレーズは、パスワードを忘れた場合やログイン情報にアクセスできなくなった場合に、アクセスを回復するのに役立ちます。"
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "シークレットリカバリーフレーズをバックアップしなかった場合、アプリにログインできなくなったり、新しいデバイスに変えたりした際に、資金にアクセスできなくなります。"
-  },
-  "walletReadySocialDetails1": {
-    "message": "ウォレットには、$1のアカウントとパスワードを使っていつでもログインすることができます。",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "パスワードを忘れた場合、ウォレットにアクセスできなくなります。"
   },
   "wantToAddThisNetwork": {
     "message": "このネットワークを追加しますか？"
@@ -7124,23 +7077,18 @@
   "welcomeBack": {
     "message": "お帰りなさい"
   },
-  "welcomeToMetaMask": {
-    "message": "始めましょう"
-  },
   "whatsThis": {
     "message": "これは何ですか？"
-  },
-  "willApproveAmountForBridging": {
-    "message": "これによりブリッジ用に$1が承認されます。"
-  },
-  "willApproveAmountForSwapping": {
-    "message": "これにより、スワップ用に$1が承認されます。"
   },
   "withdrawing": {
     "message": "引き出し中"
   },
   "wrongNetworkName": {
     "message": "弊社の記録によると、ネットワーク名がこのチェーンIDと正しく一致していない可能性があります。"
+  },
+  "wrongPassword": {
+    "message": "パスワードが正しくありません",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "yes": {
     "message": "はい"
@@ -7191,8 +7139,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "シークレットリカバリーフレーズは安全に保管してください。"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "後ほどお知らせします"
   }
 }

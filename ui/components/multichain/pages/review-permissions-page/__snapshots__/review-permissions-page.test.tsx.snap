@@ -19,10 +19,11 @@ exports[`ReviewPermissions should render correctly 1`] = `
         >
           <button
             aria-label="Back"
-            class="mm-box mm-button-icon mm-button-icon--size-sm connections-header__start-accessory mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            class="mm-box mm-button-icon mm-button-icon--size-md connections-header__start-accessory mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            data-testid="back-button"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/arrow-left.svg');"
             />
           </button>
@@ -30,8 +31,8 @@ exports[`ReviewPermissions should render correctly 1`] = `
         <div
           class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
+          <h4
+            class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
               class="mm-box connections-header__title mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
@@ -41,10 +42,10 @@ exports[`ReviewPermissions should render correctly 1`] = `
                 style="mask-image: url('./images/icons/global.svg');"
               />
               <span
-                class="mm-box mm-text mm-text--heading-md mm-text--ellipsis mm-text--text-align-center mm-box--color-text-default"
+                class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--color-text-default"
               />
             </div>
-          </p>
+          </h4>
         </div>
       </div>
       <div

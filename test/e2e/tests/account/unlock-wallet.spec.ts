@@ -9,7 +9,6 @@ import LoginPage from '../../page-objects/pages/login-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
-import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import { importWalletWithSocialLoginOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
@@ -22,6 +21,7 @@ describe('Unlock wallet - ', function () {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
       },
       async ({
         driver,
@@ -47,6 +47,7 @@ describe('Unlock wallet - ', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
@@ -61,10 +62,6 @@ describe('Unlock wallet - ', function () {
         await importWalletWithSocialLoginOnboardingFlow({
           driver,
         });
-
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        const isSocialImportFlow = true;
-        await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

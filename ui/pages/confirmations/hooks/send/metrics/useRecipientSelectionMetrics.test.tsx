@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React, { ReactChildren } from 'react';
 import mockTestState from '../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
@@ -116,20 +117,21 @@ describe('useRecipientSelectionMetrics', () => {
 
       await result.current.captureRecipientSelected();
 
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: 'Send',
-        event: 'Send Recipient Selected',
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'EOA',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id_caip: undefined,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          input_method: 'manual',
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        {
+          category: 'Send',
+          event: 'Send Recipient Selected',
+          properties: {
+            account_type: 'EOA',
+            chain_id: '0x1',
+            chain_id_caip: 'eip155:1',
+            input_method: 'manual',
+          },
         },
-      });
+        {
+          excludeMetaMetricsId: false,
+        },
+      );
     });
   });
 

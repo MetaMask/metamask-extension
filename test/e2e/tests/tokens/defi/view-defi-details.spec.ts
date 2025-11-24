@@ -16,7 +16,7 @@ describe('View DeFi details', function () {
   it('user should be able to view Aave Positions details', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withEnabledNetworks({
             eip155: {
@@ -65,7 +65,7 @@ describe('View DeFi details', function () {
 
         // check first underlying position in AaveV3
         await defiDetailsTab.checkTokenName('Tether USD');
-        await defiDetailsTab.checkTokenBalanceWithName('0.30011 Tether USD');
+        await defiDetailsTab.checkTokenBalanceWithName('0.300 Tether USD');
         await defiDetailsTab.checkTokenMarketValue('$0.30');
 
         // check second underlying position in AaveV3

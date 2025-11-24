@@ -17,8 +17,9 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
   isNativeAddress,
-  isSolanaChainId,
+  isNonEvmChainId,
   formatChainIdToHex,
+  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
@@ -29,6 +30,32 @@ import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/brid
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { TokenPayload, BridgeToken } from './types';
+
+// Re-export isNonEvmChainId from bridge-controller for backward compatibility
+export { isNonEvmChainId as isNonEvmChain } from '@metamask/bridge-controller';
+
+// Re-export isTronChainId from confirmations utils for consistency
+export { isTronChainId } from '../../pages/confirmations/utils/network';
+
+/**
+ * Checks if a token is a Tron Energy or Bandwidth resource (not tradeable assets)
+ *
+ * @param chainId - The chain ID to check
+ * @param symbol - The token symbol to check
+ * @returns true if the token is a Tron Energy/Bandwidth resource
+ */
+export const isTronEnergyOrBandwidthResource = (
+  chainId: ChainId | Hex | CaipChainId | string | undefined,
+  symbol: string | undefined,
+): boolean => {
+  return (
+    Boolean(chainId?.toString().includes('tron:')) &&
+    Boolean(
+      symbol?.toUpperCase().includes('ENERGY') ||
+        symbol?.toUpperCase().includes('BANDWIDTH'),
+    )
+  );
+};
 
 /**
  * Safely gets the native token name for a given chainId.
@@ -73,6 +100,30 @@ export const getHexMaxGasLimit = (gasLimit: number) => {
     10,
   ).toPrefixedHexString() as Hex;
 };
+/**
+ * Converts basis points (BPS) to percentage
+ * 1 BPS = 0.01%
+ *
+ * @param bps - The value in basis points (e.g., "87.5" or 87.5)
+ * @returns The percentage value as a string (e.g., "0.875")
+ */
+export const bpsToPercentage = (
+  bps: string | number | undefined,
+): string | undefined => {
+  if (bps === undefined || bps === null) {
+    return undefined;
+  }
+
+  const bpsValue = typeof bps === 'string' ? parseFloat(bps) : bps;
+
+  if (isNaN(bpsValue)) {
+    return undefined;
+  }
+
+  // BPS to percentage: divide by 100
+  return (bpsValue / 100).toString();
+};
+
 export const getTxGasEstimates = async ({
   networkAndAccountSupports1559,
   networkGasFeeEstimates,
@@ -225,9 +276,11 @@ const getTokenImage = (payload: TokenPayload['payload']) => {
   const caipChainId = formatChainIdToCaip(chainId);
   // If the token is native, return the SVG image asset
   if (isNativeAddress(address)) {
-    if (isSolanaChainId(chainId)) {
+    // Non-EVM chains (Solana, Bitcoin) use MULTICHAIN_TOKEN_IMAGE_MAP
+    if (isNonEvmChainId(chainId)) {
       return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
     }
+    // EVM chains use CHAIN_ID_TOKEN_IMAGE_MAP
     return CHAIN_ID_TOKEN_IMAGE_MAP[
       formatChainIdToHex(chainId) as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
     ];
@@ -277,12 +330,20 @@ const createBridgeTokenPayload = (
 
 export const getDefaultToToken = (
   targetChainId: CaipChainId,
-  fromToken: Pick<NonNullable<TokenPayload['payload']>, 'address'>,
+  fromToken: Pick<NonNullable<TokenPayload['payload']>, 'address' | 'chainId'>,
 ) => {
   const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[targetChainId];
 
   if (commonPair) {
-    // If source is native token, default to USDC on same chain
+    // If bridging from Bitcoin, default to native mainnet token (ETH) instead of common pair token
+    if (fromToken.chainId && isBitcoinChainId(fromToken.chainId)) {
+      const nativeAsset = getNativeAssetForChainId(targetChainId);
+      if (nativeAsset) {
+        return createBridgeTokenPayload(nativeAsset, targetChainId);
+      }
+    }
+
+    // If source is native token, default to common pair token on destination chain
     if (isNativeAddress(fromToken.address)) {
       return createBridgeTokenPayload(commonPair, targetChainId);
     }

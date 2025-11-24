@@ -14,6 +14,8 @@ class LoginPage {
 
   private resetPasswordModalButton: string;
 
+  private resetWalletButton: string;
+
   private incorrectPasswordMessage: { css: string; text: string };
 
   constructor(driver: Driver) {
@@ -33,12 +35,13 @@ class LoginPage {
       css: '[data-testid="unlock-page-help-text"]',
       text: 'Password is incorrect. Please try again.',
     };
+
+    this.resetWalletButton = '[data-testid="login-error-modal-button"]';
   }
 
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.welcomeBackMessage,
         this.passwordInput,
         this.unlockButton,
       ]);
@@ -76,6 +79,13 @@ class LoginPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.resetPasswordModalButton,
     );
+  }
+
+  async resetWallet(): Promise<void> {
+    console.log(
+      'Resetting wallet due to unrecoverable error in social login unlock',
+    );
+    await this.driver.clickElementAndWaitToDisappear(this.resetWalletButton);
   }
 }
 

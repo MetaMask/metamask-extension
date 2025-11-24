@@ -51,10 +51,10 @@ exports[`NameDetails renders proposed names 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -71,7 +71,7 @@ exports[`NameDetails renders proposed names 1`] = `
                 class="name name__saved"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -308,10 +308,10 @@ exports[`NameDetails renders when no address value is passed 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -328,7 +328,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                 class="name name__missing"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -528,10 +528,10 @@ exports[`NameDetails renders with no saved name 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -548,7 +548,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                 class="name name__missing"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -750,10 +750,10 @@ exports[`NameDetails renders with recognized name 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -770,7 +770,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                 class="name name__recognized_unsaved"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -972,10 +972,10 @@ exports[`NameDetails renders with saved name 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -992,7 +992,7 @@ exports[`NameDetails renders with saved name 1`] = `
                 class="name name__saved"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"

@@ -15,6 +15,36 @@ import LoginPage from '../pages/login-page';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 
 /**
+ * Helper function to handle post-onboarding navigation for sidepanel builds.
+ * When sidepanel is enabled, clicking "Done" doesn't navigate the current window,
+ * so we need to manually navigate to home.html.
+ * Note: Sidepanel is only supported on Chrome-based browsers, not Firefox.
+ *
+ * @param driver - The WebDriver instance
+ */
+export const handleSidepanelPostOnboarding = async (
+  driver: Driver,
+): Promise<void> => {
+  // Check if sidepanel is enabled via build configuration
+  // AND we're not running on Firefox (which doesn't support sidepanel)
+  const isSidepanelEnabled =
+    process.env.IS_SIDEPANEL === 'true' &&
+    process.env.SELENIUM_BROWSER !== Browser.FIREFOX;
+
+  if (isSidepanelEnabled) {
+    // Give the onboarding completion time to process (needed for sidepanel)
+    await driver.delay(2000);
+
+    // Navigate directly to home page in current window
+    // With sidepanel enabled, this ensures we load home page in the test window
+    await driver.driver.get(`${driver.extensionUrl}/home.html`);
+
+    // Wait for the home page to fully load
+    await driver.waitForSelector('[data-testid="account-menu-icon"]');
+  }
+};
+
+/**
  * Navigate to the onboarding welcome login page
  *
  * @param options - The options object.
@@ -93,16 +123,6 @@ export const createNewWalletWithSocialLoginOnboardingFlow = async ({
   await onboardingPasswordPage.checkPageIsLoaded();
 
   await onboardingPasswordPage.createWalletPassword(password);
-
-  // give a short delay to ensure that account synchronization is completed
-  await driver.delay(500);
-
-  // if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-  //   await onboardingMetricsFlow(driver, {
-  //     participateInMetaMetrics: true,
-  //     dataCollectionForMarketing: true,
-  //   });
-  // }
 };
 
 /**
@@ -273,11 +293,18 @@ export async function onboardingMetricsFlow(
     await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
     await onboardingMetricsPage.validateDataCollectionForMarketingIsChecked();
   }
+
+  // The participate in MetaMetrics checkbox defaults to checked.
+  // - If opting in (true): do not click; just validate it's checked.
+  // - If opting out (false): click once to uncheck and validate it's unchecked.
   if (participateInMetaMetrics) {
-    await onboardingMetricsPage.clickIAgreeButton();
+    await onboardingMetricsPage.validateParticipateInMetaMetricsIsChecked();
   } else {
-    await onboardingMetricsPage.clickNoThanksButton();
+    await onboardingMetricsPage.clickParticipateInMetaMetricsCheckbox();
+    await onboardingMetricsPage.validateParticipateInMetaMetricsIsUnchecked();
   }
+
+  await onboardingMetricsPage.clickOnContinueButton();
 }
 
 /**
@@ -376,7 +403,10 @@ export const completeCreateNewWalletOnboardingFlow = async ({
   if (!skipSRPBackup) {
     await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
   }
+
   await onboardingCompletePage.completeOnboarding();
+
+  await handleSidepanelPostOnboarding(driver);
 };
 
 /**
@@ -419,7 +449,11 @@ export const completeImportSRPOnboardingFlow = async ({
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.checkPageIsLoaded();
   await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+
   await onboardingCompletePage.completeOnboarding();
+
+  // Handle sidepanel navigation if needed
+  await handleSidepanelPostOnboarding(driver);
 };
 
 /**
@@ -470,7 +504,10 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
 
   await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
   await onboardingCompletePage.checkPageIsLoaded();
+
   await onboardingCompletePage.completeOnboarding();
+
+  await handleSidepanelPostOnboarding(driver);
 };
 
 /**
@@ -506,10 +543,13 @@ export const completeVaultRecoveryOnboardingFlow = async ({
   // finish up onboarding screens
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.checkPageIsLoaded();
+
   await onboardingCompletePage.completeOnboarding();
 
+  await handleSidepanelPostOnboarding(driver);
+
   const homePage = new HomePage(driver);
-  homePage.checkPageIsLoaded();
+  await homePage.checkPageIsLoaded();
 
   // Because our state was reset, and the flow skips the welcome screen, we now
   // need to accept the terms of use again

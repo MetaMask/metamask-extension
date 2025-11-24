@@ -1,5 +1,7 @@
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
+export const SSE_RESPONSE_HEADER = { 'Content-Type': 'text/event-stream' };
+
 export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
   minimumVersion: string;
 } = {
@@ -8,9 +10,36 @@ export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
   maxRefreshCount: 5,
   support: true,
   chains: {
-    '1': { isActiveSrc: true, isActiveDest: true },
-    '42161': { isActiveSrc: true, isActiveDest: true },
-    '59144': { isActiveSrc: true, isActiveDest: true },
+    '1': {
+      isActiveSrc: true,
+      isActiveDest: true,
+      isSingleSwapBridgeButtonEnabled: true,
+    },
+    '42161': {
+      isActiveSrc: true,
+      isActiveDest: true,
+      isSingleSwapBridgeButtonEnabled: true,
+    },
+    '59144': {
+      isActiveSrc: true,
+      isActiveDest: true,
+      isSingleSwapBridgeButtonEnabled: true,
+    },
+    '8453': {
+      isActiveSrc: true,
+      isActiveDest: true,
+      isSingleSwapBridgeButtonEnabled: true,
+    },
+  },
+};
+
+export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {
+  minimumVersion: string;
+} = {
+  ...DEFAULT_BRIDGE_FEATURE_FLAGS,
+  sse: {
+    enabled: true,
+    minimumVersion: '13.2.0',
   },
 };
 

@@ -22,3 +22,27 @@ export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
 export const isGatorPermissionsFeatureEnabled = (): boolean => {
   return process.env.GATOR_PERMISSIONS_ENABLED?.toString() === 'true';
 };
+
+export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
+  return (
+    process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED?.toString() === 'true'
+  );
+};
+
+export const getIsSidePanelFeatureEnabled = (): boolean => {
+  // First check if build supports sidepanel
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+    return false;
+  }
+
+  // In browser context, check if the API exists (Firefox doesn't have it)
+  if (
+    typeof window !== 'undefined' &&
+    typeof chrome !== 'undefined' &&
+    !chrome.sidePanel
+  ) {
+    return false;
+  }
+
+  return true;
+};

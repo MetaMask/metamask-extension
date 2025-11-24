@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { SolAccountType } from '@metamask/keyring-api';
 import {
@@ -34,6 +34,16 @@ export const Carousel = React.forwardRef(
     });
 
     const selectedAccount = useSelector(getSelectedAccount);
+    const emptyStateTimeoutRef = useRef<NodeJS.Timeout>();
+
+    // Cleanup timeout on unmount
+    useEffect(() => {
+      return () => {
+        if (emptyStateTimeoutRef.current) {
+          clearTimeout(emptyStateTimeoutRef.current);
+        }
+      };
+    }, []);
 
     // Filter visible slides
     const visibleSlides = slides
@@ -58,6 +68,18 @@ export const Carousel = React.forwardRef(
       onSlideRemove: (slideId: string, isLastSlide: boolean) => {
         if (onSlideClose) {
           onSlideClose(slideId, isLastSlide);
+        }
+
+        // If this was the last slide, trigger empty state after animation
+        if (isLastSlide && onEmptyState) {
+          // Clear any existing timeout first
+          if (emptyStateTimeoutRef.current) {
+            clearTimeout(emptyStateTimeoutRef.current);
+          }
+
+          emptyStateTimeoutRef.current = setTimeout(() => {
+            onEmptyState();
+          }, 300); // Wait for slide exit animation to complete
         }
       },
       isTransitioning: state.isTransitioning,
@@ -141,44 +163,9 @@ export const Carousel = React.forwardRef(
       );
     }
 
-    // When no slides, show empty state as current card (but only trigger fold once)
+    // When no slides, don't show anything - let the wrapper handle this case
     if (visibleSlides.length === 0) {
-      return (
-        <Box
-          className={`carousel-container ${className}`}
-          ref={ref}
-          {...(props as BoxProps<'div'>)}
-        >
-          <div className="carousel-cards-wrapper">
-            <TransitionGroup>
-              <CSSTransitionComponent
-                key="empty-state-as-current"
-                timeout={300}
-                classNames="card"
-                appear={true}
-                onEntered={() => {
-                  // Only trigger empty state once
-                  if (state.hasTriggeredEmptyState) {
-                    return;
-                  }
-
-                  setState((prev) => ({
-                    ...prev,
-                    hasTriggeredEmptyState: true,
-                  }));
-                  setTimeout(() => {
-                    if (onEmptyState) {
-                      onEmptyState();
-                    }
-                  }, 1000); // Exactly 1 second after empty state card is fully visible
-                }}
-              >
-                <StackCardEmpty isBackground={false} />
-              </CSSTransitionComponent>
-            </TransitionGroup>
-          </div>
-        </Box>
-      );
+      return null;
     }
 
     return (

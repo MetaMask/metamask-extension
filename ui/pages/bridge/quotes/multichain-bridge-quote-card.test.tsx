@@ -94,7 +94,7 @@ describe('MultichainBridgeQuoteCard', () => {
       configureStore(mockStore),
     );
 
-    expect(queryByText('Includes 0.875% MM fee.')).not.toBeInTheDocument();
+    expect(queryByText(/Includes.*MM fee\./u)).not.toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -134,6 +134,7 @@ describe('MultichainBridgeQuoteCard', () => {
               metabridge: {
                 ...quote.quote.feeData.metabridge,
                 amount: '1000000000000000000',
+                quoteBpsFee: 87.5,
               },
             },
           },

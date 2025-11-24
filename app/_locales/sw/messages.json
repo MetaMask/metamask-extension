@@ -229,9 +229,6 @@
   "etherscanView": {
     "message": "Tazama akaunti kwenye Etherscan"
   },
-  "expandView": {
-    "message": "Panua Mwonekano"
-  },
   "failed": {
     "message": "Imeshindwa"
   },
@@ -601,9 +598,6 @@
   },
   "supportCenter": {
     "message": "Tembelea Kituo chetu cha Usaidizi"
-  },
-  "switchNetworks": {
-    "message": "Badilisha mitandao"
   },
   "symbol": {
     "message": "Ishara"

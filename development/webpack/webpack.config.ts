@@ -20,7 +20,6 @@ import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
-import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
 import {
   type Manifest,
   collectEntries,
@@ -46,9 +45,6 @@ if (args.dryRun) {
 }
 
 // #region short circuit for unsupported build configurations
-if (args.lavamoat) {
-  throw new Error("The webpack build doesn't support LavaMoat yet. So sorry.");
-}
 if (args.manifest_version === 3) {
   throw new Error(
     "The webpack build doesn't support manifest_version version 3 yet. So sorry.",
@@ -104,12 +100,10 @@ const cache = args.cache
 // #region plugins
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 const plugins: WebpackPluginInstance[] = [
-  new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }),
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
     preprocessorOptions: { useWith: false },
     minify: args.minify,
-    integrity: 'auto',
     test: /\.html$/u, // default is eta/html, we only want html
     data: {
       isTest: args.test,
@@ -176,9 +170,26 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // Copy rive.wasm for Rive animations
+      {
+        from: join(context, '../node_modules/@rive-app/canvas/rive.wasm'),
+        to: 'images/riv_animations/rive.wasm',
+      },
     ],
   }),
 ];
+// MV2 requires self-injection
+if (MANIFEST_VERSION === 2) {
+  const { SelfInjectPlugin } = require('./utils/plugins/SelfInjectPlugin');
+  plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
+}
+if (args.lavamoat) {
+  const {
+    lavamoatPlugin,
+    lavamoatUnsafeLayerPlugin,
+  } = require('./utils/plugins/LavamoatPlugin');
+  plugins.push(lavamoatPlugin(args), lavamoatUnsafeLayerPlugin);
+}
 // enable React Refresh in 'development' mode when `watch` is enabled
 if (__HMR_READY__ && isDevelopment && args.watch) {
   const ReactRefreshWebpackPlugin: typeof ReactRefreshPluginType = require('@pmmmwh/react-refresh-webpack-plugin');
@@ -212,8 +223,6 @@ const config = {
   devtool: args.devtool === 'none' ? false : args.devtool,
   output: {
     wasmLoading: 'fetch',
-    // required for `integrity` to work in the browser
-    crossOriginLoading: 'anonymous',
     // filenames for *initial* files (essentially JS entry points)
     filename: '[name].[contenthash].js',
     path: join(context, '..', 'dist'),
@@ -393,9 +402,9 @@ const config = {
           codeFenceLoader,
         ],
       },
-      // images, fonts, wasm, etc.
+      // images, fonts, wasm, riv etc.
       {
-        test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm)$/u,
+        test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm|riv)$/u,
         type: 'asset/resource',
         generator: { filename: 'assets/[name].[contenthash][ext]' },
       },
@@ -468,6 +477,9 @@ const config = {
     aggregateTimeout: 5, // ms
     ignored: NODE_MODULES_RE, // avoid `fs.inotify.max_user_watches` issues
   },
+  ignoreWarnings: [
+    /the following module ids can't be controlled by policy and must be ignored at runtime/u,
+  ],
 } as const satisfies Configuration;
 
 export default config;

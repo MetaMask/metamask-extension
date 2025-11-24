@@ -533,11 +533,7 @@ module.exports = {
      * `process.exit` to exit).
      */
     {
-      files: [
-        'development/**/*.js',
-        'test/e2e/benchmark.js',
-        'test/helpers/setup-helper.js',
-      ],
+      files: ['development/**/*.js', 'test/helpers/setup-helper.js'],
       rules: {
         'node/no-process-exit': 'off',
         'node/shebang': 'off',

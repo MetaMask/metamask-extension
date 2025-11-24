@@ -14,6 +14,7 @@ import {
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
@@ -28,7 +29,10 @@ import {
   getEnabledNetworksByNamespace,
   getSelectedMultichainNetworkChainId,
 } from '../../../../../selectors/multichain/networks';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import {
+  getAllNetworkConfigurationsByCaipChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../../shared/modules/selectors/networks';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -82,7 +86,10 @@ import {
   showModal,
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
-import { getMultichainNetwork } from '../../../../../selectors/multichain';
+import {
+  getMultichainIsEvm,
+  getMultichainNetwork,
+} from '../../../../../selectors/multichain';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
@@ -108,12 +115,14 @@ const AssetListControlBar = ({
   const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const allCaipNetworks = useSelector(getAllNetworkConfigurationsByCaipChainId);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
   const isMainnet = useSelector(getIsMainnet);
   const isLineaMainnet = useSelector(getIsLineaMainnet);
   const allChainIds = useSelector(getAllChainsToPoll);
+  const isEvm = useSelector(getMultichainIsEvm);
 
   const { collections } = useNftsCollections();
 
@@ -269,12 +278,8 @@ const AssetListControlBar = ({
   };
 
   const handleRefresh = () => {
-    dispatch(detectTokens());
+    dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
     closePopover();
-    trackEvent({
-      category: MetaMetricsEventCategory.Tokens,
-      event: MetaMetricsEventName.TokenListRefreshed,
-    });
   };
 
   const onEnableAutoDetect = () => {
@@ -366,9 +371,10 @@ const AssetListControlBar = ({
       Object.keys(allEnabledNetworksForAllNamespaces).length === 1
     ) {
       const chainId = allEnabledNetworksForAllNamespaces[0];
-      return isStrictHexString(chainId)
-        ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
-        : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
+      const caipChainId = isStrictHexString(chainId)
+        ? toEvmCaipChainId(chainId)
+        : chainId;
+      return allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
     }
 
     // > 1 network selected, show "all networks"
@@ -395,13 +401,12 @@ const AssetListControlBar = ({
 
     return t('popularNetworks');
   }, [
+    allEnabledNetworksForAllNamespaces,
     isTokenNetworkFilterEqualCurrentNetwork,
     currentMultichainNetwork.isEvmNetwork,
-    currentMultichainNetwork.network.nickname,
     currentMultichainNetwork?.nickname,
     t,
-    allNetworks,
-    allEnabledNetworksForAllNamespaces,
+    allCaipNetworks,
   ]);
 
   const singleNetworkIconUrl = useMemo(() => {
@@ -491,16 +496,39 @@ const AssetListControlBar = ({
             </Tooltip>
           )}
 
-          {showImportTokenButton && (
-            <ImportControl
-              showTokensLinks={showTokensLinks}
-              onClick={
-                showTokensLinks
-                  ? toggleImportTokensPopover
-                  : toggleImportNftPopover
-              }
-            />
-          )}
+          {showImportTokenButton &&
+            (isEvm ? (
+              <ImportControl
+                showTokensLinks={showTokensLinks}
+                onClick={
+                  showTokensLinks
+                    ? toggleImportTokensPopover
+                    : toggleImportNftPopover
+                }
+              />
+            ) : (
+              <Tooltip
+                title={t('importTokensCamelCase')}
+                position="bottom"
+                distance={20}
+              >
+                <ButtonBase
+                  data-testid="importTokens-button"
+                  className="asset-list-control-bar__button"
+                  onClick={handleTokenImportModal}
+                  size={ButtonBaseSize.Sm}
+                  startIconName={IconName.Add}
+                  startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
+                  backgroundColor={
+                    isTokenSortPopoverOpen
+                      ? BackgroundColor.backgroundPressed
+                      : BackgroundColor.backgroundDefault
+                  }
+                  color={TextColor.textDefault}
+                  marginRight={isFullScreen ? 2 : null}
+                />
+              </Tooltip>
+            ))}
         </Box>
       </Box>
 

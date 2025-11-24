@@ -20,7 +20,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import { getOriginOfCurrentTab, getAllDomains } from '../../../selectors';
+import { getAllDomains, getOriginOfCurrentTab } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
@@ -44,6 +44,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const siteName = getURLHost(activeTabOrigin);
+
   const allDomains = useSelector(getAllDomains);
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
@@ -85,9 +86,10 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
     <Popover
       referenceElement={referenceElement?.current}
       isOpen={isOpen}
-      style={{ width: '256px' }}
+      style={{ width: '260px' }}
       onClickOutside={onClose}
       data-testid="connected-site-popover"
+      paddingTop={3}
       paddingLeft={0}
       paddingRight={0}
       offset={[8, 8]}
@@ -158,7 +160,10 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
         </Box>
         {!isConnected && (
           <Box paddingLeft={4} paddingRight={4} paddingTop={2}>
-            <Text variant={TextVariant.bodyMd}>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
               {t('connectionPopoverDescription')}
             </Text>
             <ButtonLink
@@ -170,7 +175,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
             </ButtonLink>
           </Box>
         )}
-        <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+        <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
           <ButtonSecondary
             block
             onClick={() => {

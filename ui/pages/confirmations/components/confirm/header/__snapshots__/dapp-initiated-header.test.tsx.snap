@@ -3,14 +3,14 @@
 exports[`<DAppInitiatedHeader /> should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-3 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
+    class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-inline-3 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
     style="z-index: 2; position: relative;"
   >
-    <h3
-      class="mm-box mm-text mm-text--heading-md mm-box--color-inherit"
+    <h4
+      class="mm-box mm-text mm-text--heading-sm mm-box--color-inherit"
     >
       Transfer request
-    </h3>
+    </h4>
     <div
       class="mm-box mm-box--padding-right-3"
       style="margin-left: auto; position: absolute; right: 0px;"

@@ -24,25 +24,41 @@ import {
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
   onboardingMetricsFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
 async function tokensMock(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(
-      `https://nft.api.cx.metamask.io/users/${IMPORTED_SRP_ACCOUNT_1.toLowerCase()}/tokens`,
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          tokens: [],
-          continuation: null,
-        },
-      };
-    });
+  return [
+    await mockServer
+      .forGet(
+        `https://nft.api.cx.metamask.io/users/${IMPORTED_SRP_ACCOUNT_1.toLowerCase()}/tokens`,
+      )
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            tokens: [],
+            continuation: null,
+          },
+        };
+      }),
+    await mockServer
+      .forGet('https://min-api.cryptocompare.com/data/pricemulti')
+      .withQuery({ fsyms: 'ELY', tsyms: 'usd' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            ELY: {
+              USD: 1700,
+            },
+          },
+        };
+      }),
+  ];
 }
 
 describe('MetaMask onboarding', function () {
@@ -74,6 +90,9 @@ describe('MetaMask onboarding', function () {
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -109,7 +128,10 @@ describe('MetaMask onboarding', function () {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          '$',
+        );
       },
     );
   });
@@ -128,7 +150,7 @@ describe('MetaMask onboarding', function () {
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.checkPageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
+          await onboardingMetricsPage.skipMetricAndContinue();
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
@@ -161,7 +183,7 @@ describe('MetaMask onboarding', function () {
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.checkPageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
+          await onboardingMetricsPage.skipMetricAndContinue();
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
@@ -237,17 +259,15 @@ describe('MetaMask onboarding', function () {
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromSendFlow(driver, networkName);
-        await homePage.checkAddNetworkMessageIsDisplayed(networkName);
 
-        // Check the correct balance for the custom network is displayed
-        if (localNodes[1] && Array.isArray(localNodes)) {
-          await homePage.checkExpectedBalanceIsDisplayed('10');
-        } else {
-          throw new Error('Custom network server not available');
-        }
+        // Fiat value should be displayed as we mock the price and that is not a 'test network'
+        await homePage.checkExpectedBalanceIsDisplayed('17,000.00', '$');
+        await homePage.checkAddNetworkMessageIsDisplayed(networkName);
       },
     );
   });
@@ -274,6 +294,9 @@ describe('MetaMask onboarding', function () {
 
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -308,7 +331,7 @@ describe('MetaMask onboarding', function () {
         // First screen we should be on is MetaMetrics
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
         await onboardingMetricsPage.checkPageIsLoaded();
-        await onboardingMetricsPage.clickNoThanksButton();
+        await onboardingMetricsPage.skipMetricAndContinue();
 
         // Next screen should be Secure your wallet screen
         const secureWalletPage = new SecureWalletPage(driver);

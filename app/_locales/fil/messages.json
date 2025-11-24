@@ -208,9 +208,6 @@
   "etherscanView": {
     "message": "Tingnan ang account sa Etherscan"
   },
-  "expandView": {
-    "message": "I-expand ang View"
-  },
   "failed": {
     "message": "Nabigo"
   },
@@ -544,9 +541,6 @@
   },
   "supportCenter": {
     "message": "Bisitahin ang aming Support Center"
-  },
-  "switchNetworks": {
-    "message": "Lumipat ng Network"
   },
   "symbol": {
     "message": "Simbolo"

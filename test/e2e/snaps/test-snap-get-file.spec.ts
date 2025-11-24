@@ -5,6 +5,7 @@ import FixtureBuilder from '../fixture-builder';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockGetFileSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 
 const jsonTextValidation = '"foo": "bar"';
 const base64TextFile = '"ewogICJmb28iOiAiYmFyIgp9Cg=="';
@@ -14,6 +15,9 @@ describe('Test Snap Get File', function () {
   it('test snap_getFile functionality', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockGetFileSnap,
         title: this.test?.fullTitle(),

@@ -36,7 +36,6 @@ import { shortenString } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import {
   MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
   MultichainNetworks,
@@ -129,8 +128,6 @@ export const BridgeInputGroup = ({
       inputRef.current = null;
     };
   }, []);
-
-  const isSwap = useIsMultichainSwap();
 
   const handleAddressClick = () => {
     if (token && selectedChainId) {
@@ -256,7 +253,7 @@ export const BridgeInputGroup = ({
                 fontWeight={FontWeight.Normal}
                 style={{ whiteSpace: 'nowrap' }}
               >
-                {isSwap ? t('swapSwapTo') : t('bridgeTo')}
+                {t('swapSwapTo')}
               </Button>
             ) : (
               <BridgeAssetPickerButton
@@ -278,7 +275,7 @@ export const BridgeInputGroup = ({
           color={
             isAmountReadOnly && isEstimatedReturnLow
               ? TextColor.warningDefault
-              : TextColor.textAlternativeSoft
+              : TextColor.textAlternative
           }
           textAlign={TextAlign.End}
           ellipsis
@@ -296,7 +293,7 @@ export const BridgeInputGroup = ({
             color={
               isInsufficientBalance
                 ? TextColor.errorDefault
-                : TextColor.textAlternativeSoft
+                : TextColor.textAlternative
             }
             style={{
               cursor: 'default',
@@ -322,7 +319,7 @@ export const BridgeInputGroup = ({
               display={Display.Flex}
               gap={1}
               variant={TextVariant.bodyMd}
-              color={TextColor.textAlternativeSoft}
+              color={TextColor.textAlternative}
               onClick={() => {
                 handleAddressClick();
               }}

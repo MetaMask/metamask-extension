@@ -13,7 +13,7 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
   it(`Sends a contract deployment type 0 transaction (Legacy)`, async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -53,7 +53,7 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
   it(`Sends a contract deployment type 2 transaction (EIP1559)`, async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

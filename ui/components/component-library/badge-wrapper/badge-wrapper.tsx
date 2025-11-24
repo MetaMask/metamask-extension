@@ -11,6 +11,9 @@ import {
   BadgeWrapperComponent,
 } from './badge-wrapper.types';
 
+/**
+ * @deprecated Please update your code to use `BadgeWrapper` from `@metamask/design-system-react`
+ */
 export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

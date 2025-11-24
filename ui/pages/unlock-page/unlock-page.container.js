@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { compose } from 'redux';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -15,9 +16,12 @@ import {
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
+  resetWallet,
 } from '../../store/actions';
 import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
+import { useNavState } from '../../contexts/navigation-state';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -40,6 +44,7 @@ const mapDispatchToProps = (dispatch) => {
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
     checkIsSeedlessPasswordOutdated: () =>
       dispatch(checkIsSeedlessPasswordOutdated()),
+    resetWallet: () => dispatch(resetWallet()),
   };
 };
 
@@ -50,15 +55,16 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restDispatchProps
   } = dispatchProps;
   const {
-    history,
+    navigate,
     onSubmit: ownPropsSubmit,
     location,
+    navState,
     ...restOwnProps
   } = ownProps;
 
   const onImport = async () => {
     await propsMarkPasswordForgotten();
-    history.push(RESTORE_VAULT_ROUTE);
+    navigate(RESTORE_VAULT_ROUTE);
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
       global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
@@ -69,11 +75,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     await propsTryUnlockMetamask(password);
     // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
     let redirectTo = DEFAULT_ROUTE;
-    if (location.state?.from?.pathname) {
-      const search = location.state.from.search || '';
-      redirectTo = location.state.from.pathname + search;
+    // Read from both v5 location.state and v5-compat navState
+    const fromLocation = location.state?.from || navState?.from;
+    if (fromLocation?.pathname) {
+      const search = fromLocation.search || '';
+      redirectTo = fromLocation.pathname + search;
     }
-    history.push(redirectTo);
+    navigate(redirectTo);
   };
 
   return {
@@ -82,12 +90,36 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restOwnProps,
     onRestore: onImport,
     onSubmit: ownPropsSubmit || onSubmit,
-    history,
+    navigate,
     location,
+    navState,
   };
 };
 
-export default compose(
-  withRouter,
+const UnlockPageConnected = compose(
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
 )(UnlockPage);
+
+/**
+ * Inject navState from NavigationStateContext for v5-compat navigation.
+ * This wrapper ensures the unlock page can read navigation state from both
+ * v5 location.state and v5-compat NavigationStateContext.
+ *
+ * @param {object} props - Component props (navigate, location from route)
+ * @returns {React.ReactElement} UnlockPage with navState injected
+ */
+const UnlockPageWithNavState = (props) => {
+  const navState = useNavState();
+  return <UnlockPageConnected {...props} navState={navState} />;
+};
+
+UnlockPageWithNavState.propTypes = {
+  navigate: PropTypes.func.isRequired,
+  location: PropTypes.object.isRequired,
+};
+
+// Export the connected component for Storybook/testing
+export { UnlockPageConnected };
+
+export default UnlockPageWithNavState;

@@ -5,7 +5,7 @@ exports[`<SetApprovalForAllInfo /> does not render component when no transaction
 exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__simulation_section"
   >
     <div
@@ -33,7 +33,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -107,16 +107,16 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__approve-details"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="confirmation__approve-spender"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -136,7 +136,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="confirmation__approve-spender-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -199,7 +199,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="transaction-details-origin-row-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -219,7 +219,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="gas-fee-section"
   >
     <div
@@ -228,7 +228,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="edit-gas-fees-row"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center; margin-bottom: 2px;"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
@@ -251,7 +251,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                   data-testid="edit-gas-fees-row-tooltip"
                   style="mask-image: url('./images/icons/question.svg');"
                 />
@@ -282,7 +282,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
             $0.08
           </p>
           <div
-            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
             data-testid="selected-gas-fee-token"
             style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
@@ -307,12 +307,17 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
       <div
         class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-          data-testid="gas-fee-token-fee"
+        <div
+          class="mm-box"
+          style="margin-top: 0px;"
         >
-           
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
+            data-testid="gas-fee-token-fee"
+          >
+             
+          </p>
+        </div>
       </div>
     </div>
     <div
@@ -337,10 +342,10 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
+          class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-2 mm-box--color-text-alternative"
           >
             🦊 Market
           </p>

@@ -3,7 +3,7 @@
 exports[`ActivityListItem should match snapshot with no props 1`] = `
 <div>
   <div
-    class="mm-box activity-list-item activity-list-item--single-content-row mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
+    class="mm-box activity-list-item activity-list-item--single-content-row mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
     tabindex="0"
   >
     <div
@@ -33,12 +33,12 @@ exports[`ActivityListItem should match snapshot with no props 1`] = `
 exports[`ActivityListItem should match snapshot with props 1`] = `
 <div>
   <div
-    class="mm-box activity-list-item list-item-test mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
+    class="mm-box activity-list-item list-item-test mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
     data-testid="test-id"
     tabindex="0"
   >
     <p
-      class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--width-full mm-box--color-text-default"
+      class="mm-box mm-text mm-text--body-md-medium mm-box--display-flex mm-box--width-full mm-box--color-text-default"
     >
       <p>
         Content rendered at the top
@@ -72,7 +72,7 @@ exports[`ActivityListItem should match snapshot with props 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-text mm-text--body-sm-medium mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
           >
             <p>
               I am a list item

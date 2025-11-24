@@ -48,6 +48,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
   const { state: trustSignalDisplayState } = useTrustSignal(
     addressToCheck || '',
     NameType.ETHEREUM_ADDRESS,
+    currentConfirmation?.chainId,
   );
 
   return useMemo(() => {
@@ -63,7 +64,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'trustSignalMalicious',
-        message: t('alertMessageAddressTrustSignal'),
+        message: t('alertMessageAddressTrustSignalMalicious'),
         reason: t('nameModalTitleMalicious'),
         severity: Severity.Danger,
       });

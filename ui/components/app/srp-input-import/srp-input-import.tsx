@@ -14,13 +14,13 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  AlignItems,
   BackgroundColor,
   BlockSize,
   BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
+  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
@@ -44,25 +44,53 @@ type ListOfTextFieldRefs = {
 
 type SrpInputImportProps = {
   onChange: (srp: string) => void;
+  onClearCallback?: () => void;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function SrpInputImport({ onChange }: SrpInputImportProps) {
+export default function SrpInputImport({
+  onChange,
+  onClearCallback,
+}: SrpInputImportProps) {
   const t = useI18nContext();
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
-  const [showAll, setShowAll] = useState(false);
-  const [misSpelledWords, setMisSpelledWords] = useState<string[]>([]);
+  const [misSpelledWords, setMisSpelledWords] = useState<DraftSrp[]>([]);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
 
+  const checkForInvalidWords = useCallback(
+    (srp?: DraftSrp[]) => {
+      const draftSrpToCheck = srp ?? draftSrp;
+      draftSrpToCheck.forEach((word) => {
+        const isInWordlist = wordlist.includes(word.word);
+        const alreadyInMisspelled = misSpelledWords.some(
+          (w) => w.id === word.id,
+        );
+        if (isInWordlist && alreadyInMisspelled) {
+          setMisSpelledWords((prev) => prev.filter((w) => w.id !== word.id));
+        } else if (!isInWordlist && !alreadyInMisspelled && word.word !== '') {
+          setMisSpelledWords((prev) => [...prev, word]);
+        }
+      });
+    },
+    [draftSrp, misSpelledWords],
+  );
+
   const initializeSrp = () => {
+    const firstWordId = uuidv4();
     setDraftSrp([
-      { word: firstWord, id: uuidv4(), active: false },
+      { word: firstWord, id: firstWordId, active: false },
       { word: '', id: uuidv4(), active: true },
     ]);
     setFirstWord('');
+    if (!wordlist.includes(firstWord)) {
+      setMisSpelledWords((prev) => [
+        ...prev,
+        { word: firstWord, id: firstWordId, active: false },
+      ]);
+    }
   };
 
   const onSrpPaste = (rawSrp: string) => {
@@ -87,6 +115,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
       });
     }
 
+    checkForInvalidWords(newDraftSrp);
     setDraftSrp(newDraftSrp);
   };
 
@@ -100,12 +129,17 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
 
   const handleChange = useCallback(
     (id: string, value: string) => {
+      if (value === ' ') {
+        return;
+      }
+
       const newDraftSrp = [...draftSrp];
       const targetIndex = newDraftSrp.findIndex((word) => word.id === id);
       newDraftSrp[targetIndex] = { ...newDraftSrp[targetIndex], word: value };
       setDraftSrp(setWordActive(newDraftSrp, id));
+      onClearCallback?.();
     },
-    [draftSrp],
+    [draftSrp, onClearCallback],
   );
 
   const nextWord = useCallback(
@@ -114,6 +148,10 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
         (word) => word.id === currentWordId,
       );
       const isLastWord = currentWordIndex === draftSrp.length - 1;
+
+      if (isLastWord) {
+        checkForInvalidWords();
+      }
 
       if (
         (SRP_LENGTHS.includes(draftSrp.length) &&
@@ -143,12 +181,18 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
       // set next word to active
       setDraftSrp(setWordActive(draftSrp, draftSrp[currentWordIndex + 1].id));
     },
-    [draftSrp],
+    [checkForInvalidWords, draftSrp],
   );
 
   const deleteWord = useCallback(
     (wordId: string) => {
       const currentWordIndex = draftSrp.findIndex((word) => word.id === wordId);
+
+      const updatedMisSpelledWords = misSpelledWords.filter(
+        (word) => word.id !== wordId,
+      );
+      setMisSpelledWords(updatedMisSpelledWords);
+
       const previousWordId = draftSrp[currentWordIndex - 1]?.id;
       const newDraftSrp = [...draftSrp];
       newDraftSrp.splice(currentWordIndex, 1);
@@ -159,7 +203,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
         setDraftSrp([]);
       }
     },
-    [draftSrp],
+    [draftSrp, misSpelledWords],
   );
 
   const handleOnKeyDown = (ev: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -220,6 +264,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
   };
 
   const onTriggerPaste = async () => {
+    setMisSpelledWords([]);
     if (getBrowserName() === PLATFORM_FIREFOX) {
       await requestPermissionAndTriggerPasteFireFox();
       return;
@@ -246,170 +291,149 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
       srpRefs.current[activeWord.id]?.focus();
     }
 
-    const wordsNotInWordList = draftSrp
-      .filter((word) => word.word !== '' && !wordlist.includes(word.word))
-      .map((word) => word.word);
-    setMisSpelledWords(wordsNotInWordList);
-
     // if srp length is valid and no empty word trigger onChange
     if (
       SRP_LENGTHS.includes(draftSrp.length) &&
-      !draftSrp.some((word) => word.word.length === 0) &&
-      wordsNotInWordList.length === 0
+      !draftSrp.some((word) => word.word.length === 0)
     ) {
-      const stringSrp = draftSrp.map((word) => word.word).join(' ');
-      onChange(stringSrp);
+      const hasInvalidWords = draftSrp.some(
+        (word) => word.word !== '' && !wordlist.includes(word.word),
+      );
+
+      if (hasInvalidWords) {
+        onChange('');
+      } else {
+        const stringSrp = draftSrp.map((word) => word.word).join(' ');
+        onChange(stringSrp);
+      }
     } else {
       onChange('');
     }
   }, [draftSrp, onChange]);
 
+  const misSpelledWordsList = useCallback(
+    () => misSpelledWords.map((word) => word.word),
+    [misSpelledWords],
+  );
+
   return (
     <>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        backgroundColor={BackgroundColor.backgroundSection}
-        borderRadius={BorderRadius.SM}
-        className="srp-input-import__container"
-      >
-        {draftSrp.length > 0 ? (
-          <Box padding={4} style={{ flex: 1 }}>
-            <Box
-              display={Display.Grid}
-              className="srp-input-import__words-list"
-              gap={2}
-            >
-              {draftSrp.map((word, index) => {
-                const displayAsText =
-                  showAll &&
-                  !(word.active || misSpelledWords.includes(word.word));
-
-                return displayAsText ? (
-                  <Box
-                    data-testid={`import-srp__srp-word-${index}`}
-                    className="srp-input-import__text"
-                    as="button"
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
-                    backgroundColor={BackgroundColor.backgroundDefault}
-                    borderColor={BorderColor.borderMuted}
-                    borderRadius={BorderRadius.LG}
-                    paddingInline={2}
-                    paddingTop={1}
-                    paddingBottom={1}
-                    gap={1}
-                    onClick={() => {
-                      onWordFocus(word.id);
-                    }}
-                  >
-                    <Text
-                      color={TextColor.textAlternative}
-                      textAlign={TextAlign.Left}
-                      className="srp-input-import__word-index"
-                    >
-                      {index + 1}.
-                    </Text>
-                    <Text>{word.word}</Text>
-                  </Box>
-                ) : (
-                  <TextField
-                    inputProps={{
-                      ref: (el) => {
-                        if (el) {
-                          srpRefs.current[word.id] = el;
-                        }
-                      },
-                    }}
-                    testId={`import-srp__srp-word-${index}`}
-                    key={word.id}
-                    error={misSpelledWords.includes(word.word)}
-                    value={word.word}
-                    type={
-                      word.active ||
-                      showAll ||
-                      misSpelledWords.includes(word.word)
-                        ? TextFieldType.Text
-                        : TextFieldType.Password
-                    }
-                    startAccessory={
-                      <Text
-                        color={TextColor.textAlternative}
-                        textAlign={TextAlign.Left}
-                        className="srp-input-import__word-index"
-                      >
-                        {index + 1}.
-                      </Text>
-                    }
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleChange(word.id, e.target.value)
-                    }
-                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        nextWord(word.id);
-                      }
-                      if (e.key === 'Backspace' && word.word.length === 0) {
-                        e.preventDefault();
-                        deleteWord(word.id);
-                      }
-                    }}
-                    onFocus={() => {
-                      onWordFocus(word.id);
-                    }}
-                    onBlur={() => {
-                      setWordInactive(word.id);
-                    }}
-                  />
-                );
-              })}
-            </Box>
-          </Box>
-        ) : (
-          <Box
-            padding={4}
-            className="srp-input-import__srp-note"
-            style={{ flex: 1 }}
-          >
-            <Textarea
-              data-testid="srp-input-import__srp-note"
-              borderColor={BorderColor.transparent}
-              backgroundColor={BackgroundColor.transparent}
-              width={BlockSize.Full}
-              placeholder={t('onboardingSrpInputPlaceholder')}
-              rows={7}
-              resize={TextareaResize.None}
-              value={firstWord}
-              paddingTop={0}
-              paddingBottom={0}
-              paddingLeft={0}
-              paddingRight={0}
-              onChange={(e) => setFirstWord(e.target.value)}
-              onKeyDown={handleOnKeyDown}
-              onPaste={handleOnPaste}
-            />
-          </Box>
-        )}
-
+      <Box>
         <Box
-          display={Display.Grid}
-          gap={0}
-          className="srp-input-import__actions"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          backgroundColor={BackgroundColor.backgroundSection}
+          borderRadius={BorderRadius.LG}
+          className="srp-input-import__container"
         >
-          <Button
-            variant={ButtonVariant.Link}
-            onClick={() => setShowAll(!showAll)}
-          >
-            {showAll
-              ? t('onboardingSrpInputHideAll')
-              : t('onboardingSrpInputShowAll')}
-          </Button>
+          {draftSrp.length > 0 ? (
+            <Box padding={4} style={{ flex: 1 }}>
+              <Box
+                display={Display.Grid}
+                className="srp-input-import__words-list"
+                gap={2}
+              >
+                {draftSrp.map((word, index) => {
+                  return (
+                    <TextField
+                      inputProps={{
+                        ref: (el) => {
+                          if (el) {
+                            srpRefs.current[word.id] = el;
+                          }
+                        },
+                      }}
+                      testId={`import-srp__srp-word-${index}`}
+                      key={word.id}
+                      error={
+                        !word.active &&
+                        misSpelledWordsList().includes(word.word)
+                      }
+                      value={word.word}
+                      type={
+                        word.active || misSpelledWordsList().includes(word.word)
+                          ? TextFieldType.Text
+                          : TextFieldType.Password
+                      }
+                      startAccessory={
+                        <Text
+                          color={TextColor.textAlternative}
+                          textAlign={TextAlign.Left}
+                          className="srp-input-import__word-index"
+                        >
+                          {index + 1}.
+                        </Text>
+                      }
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleChange(word.id, e.target.value)
+                      }
+                      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          if (word.word.trim() !== '') {
+                            nextWord(word.id);
+                          }
+                        } else if (
+                          e.key === 'Backspace' &&
+                          word.word.length === 0
+                        ) {
+                          e.preventDefault();
+                          deleteWord(word.id);
+                        }
+                      }}
+                      onFocus={() => {
+                        onWordFocus(word.id);
+                      }}
+                      onBlur={() => {
+                        setWordInactive(word.id);
+                        checkForInvalidWords();
+                      }}
+                    />
+                  );
+                })}
+              </Box>
+            </Box>
+          ) : (
+            <Box
+              padding={4}
+              className="srp-input-import__srp-note"
+              style={{ flex: 1 }}
+              borderRadius={BorderRadius.LG}
+            >
+              <Textarea
+                data-testid="srp-input-import__srp-note"
+                borderColor={BorderColor.transparent}
+                backgroundColor={BackgroundColor.transparent}
+                width={BlockSize.Full}
+                placeholder={t('onboardingSrpInputPlaceholder')}
+                rows={7}
+                resize={TextareaResize.None}
+                value={firstWord}
+                paddingTop={0}
+                paddingBottom={0}
+                paddingLeft={0}
+                paddingRight={0}
+                onChange={(e) => setFirstWord(e.target.value)}
+                onKeyDown={handleOnKeyDown}
+                onPaste={handleOnPaste}
+                autoFocus
+              />
+            </Box>
+          )}
+        </Box>
+        <Box
+          display={Display.Flex}
+          className="srp-input-import__actions"
+          justifyContent={JustifyContent.flexEnd}
+          paddingRight={2}
+        >
           {draftSrp.length > 0 ? (
             <Button
               variant={ButtonVariant.Link}
               onClick={async () => {
-                setShowAll(false);
                 setDraftSrp([]);
+                setMisSpelledWords([]);
+                onClearCallback?.();
               }}
             >
               {t('onboardingSrpInputClearAll')}

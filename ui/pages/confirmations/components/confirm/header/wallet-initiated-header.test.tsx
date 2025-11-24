@@ -20,6 +20,11 @@ jest.mock('../../../hooks/useRedesignedSendFlow', () => ({
   useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
 }));
 
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => jest.fn(),
+}));
+
 describe('<WalletInitiatedHeader />', () => {
   it('should match snapshot', () => {
     const { container } = render();

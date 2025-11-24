@@ -123,13 +123,13 @@ describe('Editing Confirm Transaction', function () {
   it('should use dapp suggested estimates for transaction coming from dapp', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
-        dapp: true,
       },
       async ({ driver }) => {
         // login to extension

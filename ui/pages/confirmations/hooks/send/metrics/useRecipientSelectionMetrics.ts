@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { useCallback, useContext } from 'react';
 
 import {
@@ -36,20 +37,23 @@ export const useRecipientSelectionMetrics = () => {
   }, [setRecipientInputMethod]);
 
   const captureRecipientSelected = useCallback(async () => {
-    trackEvent({
-      event: MetaMetricsEventName.SendRecipientSelected,
-      category: MetaMetricsEventCategory.Send,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        input_method: recipientInputMethod,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: isEvmSendType ? chainId : undefined,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id_caip: isEvmSendType ? undefined : chainId,
+    trackEvent(
+      {
+        event: MetaMetricsEventName.SendRecipientSelected,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          account_type: accountType,
+          input_method: recipientInputMethod,
+          chain_id: chainId,
+          chain_id_caip: isEvmSendType
+            ? `eip155:${parseInt(chainId as string, 16)}`
+            : chainId,
+        },
       },
-    });
+      {
+        excludeMetaMetricsId: false,
+      },
+    );
   }, [accountType, chainId, isEvmSendType, recipientInputMethod, trackEvent]);
 
   return {

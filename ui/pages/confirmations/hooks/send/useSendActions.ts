@@ -9,6 +9,7 @@ import {
   DEFAULT_ROUTE,
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
+import { setDefaultHomeActiveTabName } from '../../../../store/actions';
 import { SendPages } from '../../constants/send';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
 import { addLeadingZeroIfNeeded, submitEvmTransaction } from '../../utils/send';
@@ -52,12 +53,21 @@ export const useSendActions = () => {
       history.push(route);
     } else {
       history.push(`${SEND_ROUTE}/${SendPages.LOADER}`);
-      await sendMultichainTransactionForReview(fromAccount as InternalAccount, {
-        fromAccountId: fromAccount?.id as string,
-        toAddress: toAddress as string,
-        assetId: asset.assetId as CaipAssetType,
-        amount: addLeadingZeroIfNeeded(value) as string,
-      });
+      await dispatch(setDefaultHomeActiveTabName('activity'));
+      try {
+        await sendMultichainTransactionForReview(
+          fromAccount as InternalAccount,
+          {
+            fromAccountId: fromAccount?.id as string,
+            toAddress: toAddress as string,
+            assetId: asset.assetId as CaipAssetType,
+            amount: addLeadingZeroIfNeeded(value || ('0' as string)) as string,
+          },
+        );
+        history.push(DEFAULT_ROUTE);
+      } catch (error) {
+        // intentional empty catch
+      }
     }
   }, [
     asset,

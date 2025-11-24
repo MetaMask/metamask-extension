@@ -8,21 +8,29 @@ import {
   initializeDomainSlice,
   lookupDomainName,
 } from '../../../ducks/domains';
-import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
+import {
+  isSolanaAddress,
+  isBtcMainnetAddress,
+  isBtcTestnetAddress,
+  isTronAddress,
+} from '../../../../shared/lib/multichain/accounts';
 import { getInternalAccountByAddress } from '../../../selectors/selectors';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { shortenString } from '../../../helpers/utils/util';
 
 type UseExternalAccountResolutionProps = {
   searchQuery: string;
   isDestinationSolana: boolean;
+  isDestinationBitcoin?: boolean;
+  isDestinationTron?: boolean;
 };
 
 export const useExternalAccountResolution = ({
   searchQuery,
   isDestinationSolana,
+  isDestinationBitcoin = false,
+  isDestinationTron = false,
 }: UseExternalAccountResolutionProps): ExternalDestinationAccount | null => {
   const dispatch = useDispatch();
-  const t = useI18nContext();
 
   const domainResolutionsFromStore = useSelector(getDomainResolutions);
 
@@ -31,18 +39,53 @@ export const useExternalAccountResolution = ({
     if (!trimmedQuery) {
       return null;
     }
-    if (
-      isDestinationSolana
-        ? isSolanaAddress(trimmedQuery)
-        : isEthAddress(trimmedQuery)
-    ) {
+    // Check for Bitcoin addresses
+    if (isDestinationBitcoin) {
+      if (
+        isBtcMainnetAddress(trimmedQuery) ||
+        isBtcTestnetAddress(trimmedQuery)
+      ) {
+        return trimmedQuery;
+      }
+      return null;
+    }
+
+    // Check for Solana addresses
+    if (isDestinationSolana) {
+      if (isSolanaAddress(trimmedQuery)) {
+        return trimmedQuery;
+      }
+      return null;
+    }
+
+    // Check for Tron addresses
+    if (isDestinationTron) {
+      if (isTronAddress(trimmedQuery)) {
+        return trimmedQuery;
+      }
+      return null;
+    }
+
+    // Default to checking for Ethereum addresses
+    if (isEthAddress(trimmedQuery)) {
       return trimmedQuery;
     }
+
     return null;
-  }, [trimmedQuery, isDestinationSolana]);
+  }, [
+    trimmedQuery,
+    isDestinationSolana,
+    isDestinationBitcoin,
+    isDestinationTron,
+  ]);
 
   const validEnsName =
-    !isDestinationSolana && trimmedQuery.endsWith('.eth') ? trimmedQuery : null;
+    !isDestinationSolana &&
+    !isDestinationBitcoin &&
+    !isDestinationTron &&
+    trimmedQuery.endsWith('.eth')
+      ? trimmedQuery
+      : null;
 
   // Lookup ENS name when we detect a valid ENS name
   useEffect(() => {
@@ -68,7 +111,14 @@ export const useExternalAccountResolution = ({
       address: resolvedAddress,
       isExternal: true,
       type: 'any:account' as const,
-      displayName: validEnsName ?? t('externalAccount'),
+      displayName:
+        validEnsName ??
+        shortenString(resolvedAddress, {
+          truncatedCharLimit: 15,
+          truncatedStartChars: 7,
+          truncatedEndChars: 5,
+          skipCharacterInEnd: false,
+        }),
     };
   }, [validEnsName, resolvedAddress, internalAccount]);
 };

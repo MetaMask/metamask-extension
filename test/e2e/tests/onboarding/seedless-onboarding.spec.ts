@@ -7,6 +7,7 @@ import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import {
   createNewWalletWithSocialLoginOnboardingFlow,
   importWalletWithSocialLoginOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -35,9 +36,13 @@ describe('Metamask onboarding (with social login)', function () {
         });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -63,10 +68,6 @@ describe('Metamask onboarding (with social login)', function () {
         await importWalletWithSocialLoginOnboardingFlow({
           driver,
         });
-
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        const isSocialImportFlow = true;
-        await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

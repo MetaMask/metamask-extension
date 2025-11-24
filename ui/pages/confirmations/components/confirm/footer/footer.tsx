@@ -1,6 +1,10 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
@@ -21,15 +25,24 @@ import {
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
+import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEnableShieldCoverageChecks';
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import {
+  isAddEthereumChainType,
+  useAddEthereumChain,
+} from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
+import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import OriginThrottleModal from './origin-throttle-modal';
+import ShieldFooterAgreement from './shield-footer-agreement';
+import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
 
 export type OnCancelHandler = ({
   location,
@@ -81,6 +94,8 @@ const ConfirmButton = ({
 }) => {
   const t = useI18nContext();
 
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+
   const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
 
@@ -103,6 +118,9 @@ const ConfirmButton = ({
   const handleOpenConfirmModal = useCallback(() => {
     setConfirmModalVisible(true);
   }, []);
+
+  const { trialedProducts } = useUserSubscriptions();
+  const isShieldTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
 
   return (
     <>
@@ -142,17 +160,50 @@ const ConfirmButton = ({
           onClick={onSubmit}
           size={ButtonSize.Lg}
         >
-          {t('confirm')}
+          {currentConfirmation?.type ===
+          TransactionType.shieldSubscriptionApprove
+            ? t(
+                isShieldTrialed
+                  ? 'shieldStartNowCTA'
+                  : 'shieldStartNowCTAWithTrial',
+              )
+            : t('confirm')}
         </Button>
       )}
     </>
   );
 };
 
+const CancelButton = ({
+  handleFooterCancel,
+}: {
+  handleFooterCancel: () => void;
+}) => {
+  const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+
+  if (currentConfirmation?.type === TransactionType.shieldSubscriptionApprove) {
+    return null;
+  }
+
+  return (
+    <Button
+      block
+      data-testid="confirm-footer-cancel-button"
+      onClick={handleFooterCancel}
+      size={ButtonSize.Lg}
+      variant={ButtonVariant.Secondary}
+    >
+      {t('cancel')}
+    </Button>
+  );
+};
+
 const Footer = () => {
   const dispatch = useDispatch();
-  const t = useI18nContext();
   const { onTransactionConfirm } = useTransactionConfirm();
+  const { navigateNext } = useConfirmationNavigation();
+  const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
@@ -174,6 +225,10 @@ const Footer = () => {
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
+  const isTransactionConfirmation = isCorrectDeveloperTransactionType(
+    currentConfirmation?.type,
+  );
+  const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
@@ -185,21 +240,25 @@ const Footer = () => {
       return;
     }
 
-    const isTransactionConfirmation = isCorrectDeveloperTransactionType(
-      currentConfirmation?.type,
-    );
-
-    if (isTransactionConfirmation) {
+    if (isAddEthereumChain) {
+      onAddEthereumChain();
+    } else if (isTransactionConfirmation) {
       onTransactionConfirm();
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
+
+    navigateNext(currentConfirmation.id);
     resetTransactionState();
   }, [
     currentConfirmation,
     dispatch,
+    isTransactionConfirmation,
+    navigateNext,
     onTransactionConfirm,
     resetTransactionState,
+    isAddEthereumChain,
+    onAddEthereumChain,
   ]);
 
   const handleFooterCancel = useCallback(() => {
@@ -208,35 +267,44 @@ const Footer = () => {
       return;
     }
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
-  }, [onCancel, shouldThrottleOrigin]);
+
+    navigateNext(currentConfirmation.id);
+  }, [navigateNext, onCancel, shouldThrottleOrigin, currentConfirmation]);
+
+  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
+  const isShowShieldFooterCoverageIndicator = isEnabled || isPaused;
 
   return (
-    <PageFooter
-      className="confirm-footer_page-footer"
-      flexDirection={FlexDirection.Column}
-    >
-      <OriginThrottleModal
-        isOpen={showOriginThrottleModal}
-        onConfirmationCancel={onCancel}
-      />
-      <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
-        <Button
-          block
-          data-testid="confirm-footer-cancel-button"
-          onClick={handleFooterCancel}
-          size={ButtonSize.Lg}
-          variant={ButtonVariant.Secondary}
-        >
-          {t('cancel')}
-        </Button>
-        <ConfirmButton
-          alertOwnerId={currentConfirmation?.id}
-          onSubmit={() => onSubmit()}
-          disabled={isConfirmDisabled}
-          onCancel={onCancel}
+    <>
+      <ShieldFooterCoverageIndicator />
+      <PageFooter
+        className="confirm-footer_page-footer"
+        flexDirection={FlexDirection.Column}
+        // box shadow to match the original var(--shadow-size-md) on the footer,
+        // but only applied to the bottom of the box, so it doesn't overlap with
+        // the shield footer coverage indicator
+        style={
+          isShowShieldFooterCoverageIndicator
+            ? { boxShadow: '0 4px 16px -8px var(--color-shadow-default)' }
+            : undefined
+        }
+      >
+        <OriginThrottleModal
+          isOpen={showOriginThrottleModal}
+          onConfirmationCancel={onCancel}
         />
-      </Box>
-    </PageFooter>
+        <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
+          <CancelButton handleFooterCancel={handleFooterCancel} />
+          <ConfirmButton
+            alertOwnerId={currentConfirmation?.id}
+            onSubmit={onSubmit}
+            disabled={isConfirmDisabled}
+            onCancel={onCancel}
+          />
+        </Box>
+        <ShieldFooterAgreement />
+      </PageFooter>
+    </>
   );
 };
 

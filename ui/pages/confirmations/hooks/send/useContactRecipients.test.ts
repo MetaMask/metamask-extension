@@ -1,14 +1,19 @@
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
-import { isSolanaChainId } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as selectors from '../../../../selectors';
+import * as SendContext from '../../context/send';
 import { useContactRecipients } from './useContactRecipients';
 import * as useSendTypeModule from './useSendType';
 import { useSendType } from './useSendType';
 
 jest.mock('./useSendType');
 jest.mock('../../../../selectors');
+jest.mock('./useAccountAddressSeedIconMap', () => ({
+  useAccountAddressSeedIconMap: jest.fn().mockReturnValue({
+    accountAddressSeedIconMap: new Map(),
+  }),
+}));
 jest.mock('ethers/lib/utils');
 jest.mock('@metamask/bridge-controller');
 
@@ -18,7 +23,6 @@ const mockGetCompleteAddressBook = jest.spyOn(
   'getCompleteAddressBook',
 );
 const mockIsEvmAddress = jest.mocked(isEvmAddress);
-const mockIsSolanaChainId = jest.mocked(isSolanaChainId);
 
 describe('useContactRecipients', () => {
   const mockAddressBookEntries = [
@@ -44,7 +48,10 @@ describe('useContactRecipients', () => {
     mockGetCompleteAddressBook.mockReturnValue(mockAddressBookEntries);
   });
 
-  it('returns EVM contacts when isEvmSendType is true', () => {
+  it('returns EVM contacts filtered by chainId when isEvmSendType is true', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      chainId: '0x1',
+    } as unknown as SendContext.SendContextType);
     mockUseSendType.mockReturnValue({
       isEvmSendType: true,
       isSolanaSendType: false,
@@ -60,38 +67,17 @@ describe('useContactRecipients', () => {
       {
         address: '0x1234567890abcdef1234567890abcdef12345678',
         contactName: 'John Doe',
-      },
-      {
-        address: '0xabcdef1234567890abcdef1234567890abcdef12',
-        contactName: 'Bob Wilson',
+        isContact: true,
+        seedIcon: undefined,
       },
     ]);
   });
 
-  it('returns Solana contacts when isSolanaSendType is true', () => {
-    mockUseSendType.mockReturnValue({
-      isEvmSendType: false,
-      isSolanaSendType: true,
-    } as unknown as ReturnType<typeof useSendType>);
-    mockIsSolanaChainId.mockImplementation((chainId) => chainId === 'sol:101');
-
-    const { result } = renderHookWithProvider(
-      () => useContactRecipients(),
-      mockState,
-    );
-
-    expect(result.current).toEqual([
-      {
-        address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
-        contactName: 'Jane Smith',
-      },
-    ]);
-  });
-
-  it('returns empty array when neither EVM nor Solana send type', () => {
+  it('returns empty array when isEvmSendType is false', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: false,
       isSolanaSendType: false,
+      isBitcoinSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     const { result } = renderHookWithProvider(
@@ -118,6 +104,9 @@ describe('useContactRecipients', () => {
   });
 
   it('filters out non-EVM addresses when isEvmSendType is true', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      chainId: '0x1',
+    } as unknown as SendContext.SendContextType);
     mockUseSendType.mockReturnValue({
       isEvmSendType: true,
       isSolanaSendType: false,
@@ -135,23 +124,9 @@ describe('useContactRecipients', () => {
       {
         address: '0x1234567890abcdef1234567890abcdef12345678',
         contactName: 'John Doe',
+        isContact: true,
       },
     ]);
-  });
-
-  it('filters out non-Solana chain contacts when isSolanaSendType is true', () => {
-    mockUseSendType.mockReturnValue({
-      isEvmSendType: false,
-      isSolanaSendType: true,
-    } as unknown as ReturnType<typeof useSendType>);
-    mockIsSolanaChainId.mockReturnValue(false);
-
-    const { result } = renderHookWithProvider(
-      () => useContactRecipients(),
-      mockState,
-    );
-
-    expect(result.current).toEqual([]);
   });
 
   it('calls useSendType hook', () => {

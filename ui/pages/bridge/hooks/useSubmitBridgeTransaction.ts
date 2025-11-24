@@ -1,7 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { createProjectLogger } from '@metamask/utils';
-import { isSolanaChainId } from '@metamask/bridge-controller';
+import { isNonEvmChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -18,11 +16,10 @@ import {
   getIsStxEnabled,
 } from '../../../ducks/bridge/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
+import { useSafeNavigation } from '../../../hooks/useSafeNavigation';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
-
-const debugLog = createProjectLogger('bridge');
 
 export const isAllowanceResetError = (error: unknown): boolean => {
   const errorMessage = (error as Error).message ?? '';
@@ -55,7 +52,7 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 };
 
 export default function useSubmitBridgeTransaction() {
-  const history = useHistory();
+  const { navigate } = useSafeNavigation();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
@@ -72,49 +69,45 @@ export default function useSubmitBridgeTransaction() {
       );
     }
     if (hardwareWalletUsed) {
-      history.push(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
     }
 
     // Execute transaction(s)
     try {
-      if (isSolanaChainId(quoteResponse.quote.srcChainId)) {
-        await dispatch(setDefaultHomeActiveTabName('activity'));
-        history.push({
-          pathname: DEFAULT_ROUTE,
-          state: { stayOnHomePage: true },
-        });
+      // Handle non-EVM source chains (Solana, Bitcoin, Tron)
+      const isNonEvmSource = isNonEvmChainId(quoteResponse.quote.srcChainId);
+
+      if (isNonEvmSource) {
+        // Submit the transaction first, THEN navigate
         await dispatch(
           submitBridgeTx(fromAccount.address, quoteResponse, false),
         );
+        await dispatch(setDefaultHomeActiveTabName('activity'));
+        navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
         return;
       }
+
       await dispatch(
-        await submitBridgeTx(
+        submitBridgeTx(
           fromAccount.address,
           quoteResponse,
-          isSolanaChainId(quoteResponse.quote.srcChainId)
-            ? false
-            : smartTransactionsEnabled,
+          smartTransactionsEnabled,
         ),
       );
     } catch (e) {
-      debugLog('Bridge transaction failed', e);
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
+        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       } else {
         await dispatch(setDefaultHomeActiveTabName('activity'));
-        history.push(DEFAULT_ROUTE);
+        navigate(DEFAULT_ROUTE);
       }
       return;
     }
     // Route user to activity tab on Home page
     await dispatch(setDefaultHomeActiveTabName('activity'));
-    history.push({
-      pathname: DEFAULT_ROUTE,
-      state: { stayOnHomePage: true },
-    });
+    navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
   };
 
   return {

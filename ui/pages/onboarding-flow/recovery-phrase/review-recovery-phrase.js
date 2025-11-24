@@ -1,11 +1,14 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_CONFIRM_SRP_ROUTE,
+  ONBOARDING_METAMETRICS,
   ONBOARDING_REVEAL_SRP_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  REVEAL_SRP_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   Text,
@@ -25,24 +28,33 @@ import {
   BlockSize,
   TextColor,
   IconColor,
-  FontWeight,
   Display,
   FlexDirection,
   AlignItems,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex, getFirstTimeFlowType } from '../../../selectors';
 import SRPDetailsModal from '../../../components/app/srp-details-modal';
+import { setSeedPhraseBackedUp } from '../../../store/actions';
+import { TraceName } from '../../../../shared/lib/trace';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const navigate = useNavigate();
   const t = useI18nContext();
   const { search } = useLocation();
+  const dispatch = useDispatch();
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedEndTrace } = trackEvent;
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
@@ -73,8 +85,6 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
     }
   }, [navigate, secretRecoveryPhrase, nextRouteQueryString]);
 
-  const trackEvent = useContext(MetaMetricsContext);
-
   const handleContinue = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -101,6 +111,51 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
     setShowSrpDetailsModal(true);
   }, [trackEvent]);
 
+  const handleRemindLater = useCallback(async () => {
+    await dispatch(setSeedPhraseBackedUp(false));
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: hdEntropyIndex,
+      },
+    });
+    bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
+    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
+
+    if (
+      getBrowserName() === PLATFORM_FIREFOX ||
+      firstTimeFlowType === FirstTimeFlowType.restore
+    ) {
+      navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+    } else {
+      navigate(ONBOARDING_METAMETRICS, { replace: true });
+    }
+  }, [
+    bufferedEndTrace,
+    dispatch,
+    firstTimeFlowType,
+    hdEntropyIndex,
+    navigate,
+    trackEvent,
+  ]);
+
+  const handleBack = useCallback(() => {
+    navigate(
+      `${ONBOARDING_REVEAL_SRP_ROUTE}${
+        nextRouteQueryString ? `?${nextRouteQueryString}` : ''
+      }`,
+      { replace: true },
+    );
+  }, [navigate, nextRouteQueryString]);
+
+  const onClose = useCallback(() => {
+    navigate(REVEAL_SRP_LIST_ROUTE, { replace: true });
+  }, [navigate]);
+
   return (
     <Box
       display={Display.Flex}
@@ -116,37 +171,46 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         {showSrpDetailsModal && (
           <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
         )}
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            color={IconColor.iconDefault}
-            size={ButtonIconSize.Md}
-            data-testid="review-srp-back-button"
-            onClick={() => navigate(-1)}
-            ariaLabel={t('back')}
-          />
-        </Box>
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
-          {!isFromReminder && (
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-            >
-              {t('stepOf', [2, 3])}
+        {isFromReminder && isFromSettingsSecurity ? (
+          <Box
+            className="recovery-phrase__header"
+            display={Display.Grid}
+            alignItems={AlignItems.center}
+            gap={3}
+            marginBottom={4}
+            width={BlockSize.Full}
+          >
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              color={IconColor.iconDefault}
+              size={ButtonIconSize.Md}
+              data-testid="reveal-recovery-phrase-review-back-button"
+              onClick={handleBack}
+              ariaLabel={t('back')}
+            />
+            <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+              {t('seedPhraseReviewTitleSettings')}
             </Text>
-          )}
-          <Text variant={TextVariant.headingLg} as="h2">
-            {t('seedPhraseReviewTitle')}
-          </Text>
-        </Box>
+            <ButtonIcon
+              iconName={IconName.Close}
+              color={IconColor.iconDefault}
+              size={ButtonIconSize.Md}
+              data-testid="reveal-recovery-phrase-review-close-button"
+              onClick={onClose}
+              ariaLabel={t('close')}
+            />
+          </Box>
+        ) : (
+          <Box
+            justifyContent={JustifyContent.flexStart}
+            marginBottom={4}
+            width={BlockSize.Full}
+          >
+            <Text variant={TextVariant.headingLg} as="h2">
+              {t('seedPhraseReviewTitle')}
+            </Text>
+          </Box>
+        )}
         <Box marginBottom={6}>
           <Text
             variant={TextVariant.bodyMd}
@@ -161,13 +225,6 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               >
                 {t('secretRecoveryPhrase')}
               </ButtonLink>,
-              <Text
-                key="seedPhraseReviewDetails2"
-                fontWeight={FontWeight.Medium}
-                color={TextColor.textAlternative}
-              >
-                {t('seedPhraseReviewDetails2')}
-              </Text>,
             ])}
           </Text>
         </Box>
@@ -187,7 +244,12 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
           }}
         />
       </Box>
-      <Box width={BlockSize.Full}>
+      <Box
+        width={BlockSize.Full}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={2}
+      >
         <Button
           width={BlockSize.Full}
           variant={ButtonVariant.Primary}
@@ -199,6 +261,18 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         >
           {t('continue')}
         </Button>
+        {!isFromReminder && (
+          <Button
+            width={BlockSize.Full}
+            variant={ButtonVariant.Link}
+            size={ButtonSize.Lg}
+            onClick={handleRemindLater}
+            type="button"
+            data-testid="recovery-phrase-remind-later"
+          >
+            {t('secureWalletRemindLaterButton')}
+          </Button>
+        )}
       </Box>
     </Box>
   );
