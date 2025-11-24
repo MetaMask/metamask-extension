@@ -648,46 +648,6 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
-  // Navigate to confirmations when there are pending approvals and user is on asset details page
-  // This behavior is only enabled in sidepanel to avoid interfering with popup/extension flows
-  // useEffect(() => {
-  //   const windowType = getEnvironmentType();
-
-  //   // Only run this navigation logic in sidepanel
-  //   if (windowType !== ENVIRONMENT_TYPE_SIDEPANEL) {
-  //     return;
-  //   }
-
-  //   // Only navigate to confirmations when user is on an asset details page
-  //   const isOnAssetDetailsPage = location.pathname.startsWith(ASSET_ROUTE);
-
-  //   // Network operations (addEthereumChain, switchEthereumChain) have their own UI
-  //   // and shouldn't trigger auto-navigation
-  //   const hasNonNavigableApprovals = pendingApprovals.some(
-  //     (approval) =>
-  //       approval.type === 'wallet_addEthereumChain' ||
-  //       approval.type === 'wallet_switchEthereumChain',
-  //   );
-
-  //   if (
-  //     isOnAssetDetailsPage &&
-  //     !hasNonNavigableApprovals &&
-  //     isUnlocked &&
-  //     (pendingApprovals.length > 0 || approvalFlows?.length > 0)
-  //   ) {
-  //     const url = getConfirmationRoute(
-  //       pendingApprovals[0]?.id,
-  //       pendingApprovals,
-  //       Boolean(approvalFlows?.length),
-  //       '', // queryString
-  //     );
-
-  //     if (url) {
-  //       history.push(url);
-  //     }
-  //   }
-  // }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
-
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
 
