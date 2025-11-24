@@ -6,7 +6,6 @@ import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 // eslint-disable-next-line import/no-restricted-paths
@@ -27,6 +26,18 @@ import {
   getShowAwaitingSwapScreen,
 } from '../../ducks/swaps/swaps';
 import { useNavState } from '../../contexts/navigation-state';
+
+const EXEMPTED_ROUTES = [
+  '/account-list',
+  '/snaps',
+  '/unlock',
+  '/connect/',
+  '/confirmation/',
+  '/confirm/',
+  '/confirm-transaction/',
+  '/confirm-add-suggested-token',
+  '/confirm-add-suggested-nft',
+];
 
 export const ConfirmationHandler = () => {
   const navigate = useNavigate();
@@ -53,6 +64,14 @@ export const ConfirmationHandler = () => {
       Boolean(navState?.stayOnHomePage),
     [location.state, navState],
   );
+
+  const notApplicable = useMemo(() => {
+    const isExemptedRoute = EXEMPTED_ROUTES.some(
+      (route) => pathname.startsWith(route) || pathname === route,
+    );
+
+    return isExemptedRoute;
+  }, [pathname]);
 
   const canRedirect = !isNotification && !stayOnHomePage;
 
@@ -86,8 +105,7 @@ export const ConfirmationHandler = () => {
       return;
     }
 
-    // Only run when on home/default page (for now)
-    if (pathname !== DEFAULT_ROUTE) {
+    if (notApplicable) {
       return;
     }
 
@@ -120,6 +138,7 @@ export const ConfirmationHandler = () => {
     isNotification,
     isPopup,
     navigate,
+    notApplicable,
     pathname,
     pendingApprovals,
     showAwaitingSwapScreen,
