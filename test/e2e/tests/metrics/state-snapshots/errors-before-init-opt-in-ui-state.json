@@ -262,7 +262,6 @@
       "ensResolutionsByAddress": "object"
     },
     "ApprovalController": {},
-    "InstitutionalSnapController": "object",
     "SnapsRegistry": {
       "database": "object",
       "lastUpdated": "number",
@@ -276,7 +275,6 @@
     "SnapInsightsController": {},
     "SnapInterfaceController": { "interfaces": "object" },
     "PPOMController": { "storageMetadata": {} },
-    "NftDetectionController": "object",
     "AccountTreeController": {
       "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
       "accountGroupsMetadata": "object",
