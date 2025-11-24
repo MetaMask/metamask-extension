@@ -538,7 +538,7 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/account-api": true,
-        "@metamask/assets-controllers>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/utils": true,
         "bn.js": true,
@@ -619,24 +619,6 @@
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "bn.js": true,
-        "buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "lodash": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
         "bn.js": true,
         "buffer": true,
         "cockatiel": true,
