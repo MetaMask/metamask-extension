@@ -1,11 +1,18 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { Driver } from '../../webdriver/driver';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
+import FixtureBuilder from '../../fixture-builder';
 import { DAPP_PATH } from '../../constants';
-import { WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { mockPriceApi } from '../tokens/utils/mocks';
 import { AccountType, withMultichainAccountsDesignEnabled } from './common';
 
 describe('Multichain Accounts - Account tree', function (this: Suite) {
@@ -33,14 +40,33 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
       },
     );
   });
-
   it('should display wallet and accounts for hardware wallet', async function () {
-    await withMultichainAccountsDesignEnabled(
+    await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilder()
+          .withLedgerAccount()
+          .withShowFiatTestnetEnabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withConversionRateEnabled()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .build(),
         title: this.test?.fullTitle(),
-        accountType: AccountType.HardwareWallet,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockSnapSimpleKeyringAndSite(mockServer);
+          return [await mockPriceApi(mockServer)];
+        },
       },
-      async (driver: Driver) => {
+      async ({ driver, localNodes }) => {
+        (await localNodes?.[0]?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          '0x15af1d78b58c40000',
+        )) ?? console.error('localNodes is undefined or empty');
+        await loginWithBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
@@ -90,7 +116,6 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkWalletDisplayedInAccountListMenu(
           'MetaMask Simple Snap Keyring',
         );
-
         // Ensure that an SSK account within the wallet is displayed
         await accountListPage.checkMultichainAccountBalanceDisplayed(
           '$85,025.00',
