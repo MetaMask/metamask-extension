@@ -252,15 +252,13 @@ export function selectShowPna25Banner(state: Pick<State, 'metamask'>): boolean {
   const { participateInMetaMetrics, pna25Acknowledged } = state.metamask || {};
 
   // Get the feature flag from LaunchDarkly
-  // extension-ux-pna25 is now a boolean, not a timestamp
+  // extension-ux-pna25 is a boolean flag
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const remoteFeatureFlags = getRemoteFeatureFlags(state as any);
-  const isMetametricsOnchainDataEnabled = Boolean(
-    remoteFeatureFlags?.['extension-ux-pna25'],
-  );
+  const isPna25Enabled = Boolean(remoteFeatureFlags?.['extension-ux-pna25']);
 
   // Check all conditions
-  if (!isMetametricsOnchainDataEnabled) {
+  if (!isPna25Enabled) {
     return false; // LD flag not enabled
   }
 

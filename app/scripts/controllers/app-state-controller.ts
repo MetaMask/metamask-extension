@@ -101,8 +101,6 @@ export type AppStateControllerState = {
   networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
-  pna25BannerClickedOrClosed: boolean | null;
-  pna25BannerDismissedDate: number | null;
   pna25Acknowledged: boolean | null;
   nftsDetectionNoticeDismissed: boolean;
   nftsDropdownState: Json;
@@ -272,8 +270,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   lastViewedUserSurvey: null,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
-  pna25BannerClickedOrClosed: null,
-  pna25BannerDismissedDate: null,
   pna25Acknowledged: null,
   nftsDetectionNoticeDismissed: false,
   notificationGasPollTokens: [],
@@ -467,18 +463,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   newPrivacyPolicyToastShownDate: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  pna25BannerClickedOrClosed: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  pna25BannerDismissedDate: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -895,18 +879,6 @@ export class AppStateController extends BaseController<
   setNewPrivacyPolicyToastShownDate(time: number): void {
     this.update((state) => {
       state.newPrivacyPolicyToastShownDate = time;
-    });
-  }
-
-  setPna25BannerClickedOrClosed(): void {
-    this.update((state) => {
-      state.pna25BannerClickedOrClosed = true;
-    });
-  }
-
-  setPna25BannerDismissedDate(time: number): void {
-    this.update((state) => {
-      state.pna25BannerDismissedDate = time;
     });
   }
 

@@ -69,11 +69,9 @@ export default function OnboardingMetametrics() {
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
 
-  // Check if the MetaMetrics on-chain data collection feature is enabled
-  // extension-ux-pna25 is now a boolean, not a timestamp
-  const isMetametricsOnchainDataEnabled = Boolean(
-    remoteFeatureFlags?.['extension-ux-pna25'],
-  );
+  // Check if the PNA25 feature is enabled
+  // extension-ux-pna25 is a boolean LaunchDarkly flag
+  const isPna25Enabled = Boolean(remoteFeatureFlags?.['extension-ux-pna25']);
 
   const [
     isParticipateInMetaMetricsChecked,
@@ -129,7 +127,7 @@ export default function OnboardingMetametrics() {
 
         // If LD flag is enabled, set pna25Acknowledged to true
         // This means they saw the updated policy during onboarding
-        if (isMetametricsOnchainDataEnabled) {
+        if (isPna25Enabled) {
           await submitRequestToBackgroundAndCatch('setPna25Acknowledged', [
             true,
           ]);
@@ -153,7 +151,7 @@ export default function OnboardingMetametrics() {
         dispatch(setDataCollectionForMarketing(false));
 
         // If user opts out, set to false (no need to show banner later)
-        if (isMetametricsOnchainDataEnabled) {
+        if (isPna25Enabled) {
           await submitRequestToBackgroundAndCatch('setPna25Acknowledged', [
             false,
           ]);
@@ -253,7 +251,7 @@ export default function OnboardingMetametrics() {
           color={TextColor.textAlternative}
           textAlign={TextAlign.Left}
         >
-          {isMetametricsOnchainDataEnabled
+          {isPna25Enabled
             ? t('onboardingMetametricCheckboxDescriptionOneUpdated')
             : t('onboardingMetametricCheckboxDescriptionOne')}
         </Text>
