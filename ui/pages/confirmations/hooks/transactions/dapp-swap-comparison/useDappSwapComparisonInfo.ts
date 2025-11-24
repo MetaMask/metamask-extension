@@ -80,7 +80,7 @@ export function useDappSwapComparisonInfo() {
       return result;
     } catch (error) {
       captureException(error);
-      captureDappSwapComparisonFailed('error parsing swap data');
+      captureDappSwapComparisonFailed((error as Error).toString());
       return {
         commands: '',
         quotesInput: undefined,
