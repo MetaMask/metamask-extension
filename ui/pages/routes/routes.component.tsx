@@ -169,7 +169,22 @@ import {
   setTheme,
 } from './utils';
 
-// V5-compat navigate function type for bridging v5 routes with v5-compat components
+/**
+ * V5-to-v5-compat navigation function that bridges react-router-dom v5 history
+ * with v5-compat components expecting the newer navigate API.
+ *
+ * Supports two call signatures:
+ * - Navigate to a route: `navigate(path, options)`
+ * - Navigate in history: `navigate(delta)` (e.g., -1 to go back)
+ *
+ * @example
+ * // Navigate to a new route
+ * navigate('/settings', { replace: true });
+ *
+ * @example
+ * // Go back in history
+ * navigate(-1);
+ */
 type V5CompatNavigate = {
   (
     to: To,
@@ -187,7 +202,7 @@ type V5CompatNavigate = {
 const createV5CompatNavigate = (
   history: RouteComponentProps['history'],
 ): V5CompatNavigate => {
-  return ((
+  return (
     to: To | number,
     options?: { replace?: boolean; state?: Record<string, unknown> },
   ) => {
@@ -198,7 +213,7 @@ const createV5CompatNavigate = (
     } else {
       history.push(to as string, options?.state);
     }
-  }) as V5CompatNavigate;
+  };
 };
 
 /**
