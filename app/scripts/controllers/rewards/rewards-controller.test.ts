@@ -716,6 +716,176 @@ describe('RewardsController', () => {
         },
       );
     });
+
+    it('should set candidateAt to INITIAL_DEVICE_SUBSCRIPTION_CANDIDATE_AT when no existing subscriptions', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const subscriptionWithoutCandidateAt: SubscriptionDto = {
+            ...MOCK_SUBSCRIPTION,
+            candidateAt: undefined,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: subscriptionWithoutCandidateAt,
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            MOCK_INTERNAL_ACCOUNT,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          const storedSubscription =
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID];
+          expect(storedSubscription?.candidateAt).toBe(
+            '2025-10-27T00:00:00.000Z',
+          );
+        },
+      );
+    });
+
+    it('should set candidateAt to current date when existing subscriptions are present', async () => {
+      const existingSubscriptionId = 'existing_sub_123';
+      const existingSubscription: SubscriptionDto = {
+        id: existingSubscriptionId,
+        referralCode: 'REF456',
+        accounts: [],
+        createdAt: new Date().toISOString(),
+        candidateAt: new Date().toISOString(),
+      };
+
+      await withController(
+        {
+          isDisabled: false,
+          state: {
+            rewardsSubscriptions: {
+              [existingSubscriptionId]: existingSubscription,
+            },
+          },
+        },
+        async ({ controller, mockMessengerCall }) => {
+          const subscriptionWithoutCandidateAt: SubscriptionDto = {
+            ...MOCK_SUBSCRIPTION,
+            candidateAt: undefined,
+          };
+
+          const beforeAuth = Date.now();
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: subscriptionWithoutCandidateAt,
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            MOCK_INTERNAL_ACCOUNT,
+            true,
+            false,
+          );
+
+          const afterAuth = Date.now();
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          const storedSubscription =
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID];
+          expect(storedSubscription?.candidateAt).toBeDefined();
+          const candidateAtTime = new Date(
+            storedSubscription?.candidateAt as string,
+          ).getTime();
+          expect(candidateAtTime).toBeGreaterThanOrEqual(beforeAuth);
+          expect(candidateAtTime).toBeLessThanOrEqual(afterAuth);
+        },
+      );
+    });
+
+    it('should not set candidateAt when subscription already has candidateAt in state', async () => {
+      const existingCandidateAt = '2024-01-01T00:00:00.000Z';
+      const existingSubscription: SubscriptionDto = {
+        ...MOCK_SUBSCRIPTION,
+        candidateAt: existingCandidateAt,
+      };
+
+      await withController(
+        {
+          isDisabled: false,
+          state: {
+            rewardsSubscriptions: {
+              [MOCK_SUBSCRIPTION_ID]: existingSubscription,
+            },
+          },
+        },
+        async ({ controller, mockMessengerCall }) => {
+          const subscriptionWithCandidateAt: SubscriptionDto = {
+            ...MOCK_SUBSCRIPTION,
+            candidateAt: '2024-06-01T00:00:00.000Z',
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: subscriptionWithCandidateAt,
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            MOCK_INTERNAL_ACCOUNT,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          const storedSubscription =
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID];
+          // When state already has candidateAt, the code doesn't modify the subscription object's candidateAt
+          // The subscription object from login response is stored as-is
+          expect(storedSubscription?.candidateAt).toBe(
+            '2024-06-01T00:00:00.000Z',
+          );
+        },
+      );
+    });
   });
 
   describe('getHasAccountOptedIn', () => {
@@ -1266,6 +1436,146 @@ describe('RewardsController', () => {
             hasOptedIn: true,
             subscriptionId: MOCK_SUBSCRIPTION_ID,
           });
+        },
+      );
+    });
+
+    it('should set candidateAt to INITIAL_DEVICE_SUBSCRIPTION_CANDIDATE_AT when no existing subscriptions', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const subscriptionWithoutCandidateAt: SubscriptionDto = {
+            ...MOCK_SUBSCRIPTION,
+            candidateAt: undefined,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: subscriptionWithoutCandidateAt,
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.optIn([MOCK_INTERNAL_ACCOUNT]);
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          const storedSubscription =
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID];
+          expect(storedSubscription?.candidateAt).toBe(
+            '2025-10-27T00:00:00.000Z',
+          );
+        },
+      );
+    });
+
+    it('should set candidateAt to current date when existing subscriptions are present', async () => {
+      const existingSubscriptionId = 'existing_sub_123';
+      const existingSubscription: SubscriptionDto = {
+        id: existingSubscriptionId,
+        referralCode: 'REF456',
+        accounts: [],
+        createdAt: new Date().toISOString(),
+        candidateAt: new Date().toISOString(),
+      };
+
+      await withController(
+        {
+          isDisabled: false,
+          state: {
+            rewardsSubscriptions: {
+              [existingSubscriptionId]: existingSubscription,
+            },
+          },
+        },
+        async ({ controller, mockMessengerCall }) => {
+          const subscriptionWithoutCandidateAt: SubscriptionDto = {
+            ...MOCK_SUBSCRIPTION,
+            candidateAt: undefined,
+          };
+
+          const beforeOptIn = Date.now();
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: subscriptionWithoutCandidateAt,
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.optIn([MOCK_INTERNAL_ACCOUNT]);
+
+          const afterOptIn = Date.now();
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          const storedSubscription =
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID];
+          expect(storedSubscription?.candidateAt).toBeDefined();
+          const candidateAtTime = new Date(
+            storedSubscription?.candidateAt as string,
+          ).getTime();
+          expect(candidateAtTime).toBeGreaterThanOrEqual(beforeOptIn);
+          expect(candidateAtTime).toBeLessThanOrEqual(afterOptIn);
+        },
+      );
+    });
+
+    it('should not set candidateAt when subscription already has candidateAt in state', async () => {
+      const existingCandidateAt = '2024-01-01T00:00:00.000Z';
+      const existingSubscription: SubscriptionDto = {
+        ...MOCK_SUBSCRIPTION,
+        candidateAt: existingCandidateAt,
+      };
+
+      await withController(
+        {
+          isDisabled: false,
+          state: {
+            rewardsSubscriptions: {
+              [MOCK_SUBSCRIPTION_ID]: existingSubscription,
+            },
+          },
+        },
+        async ({ controller, mockMessengerCall }) => {
+          const subscriptionWithCandidateAt: SubscriptionDto = {
+            ...MOCK_SUBSCRIPTION,
+            candidateAt: '2024-06-01T00:00:00.000Z',
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: subscriptionWithCandidateAt,
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.optIn([MOCK_INTERNAL_ACCOUNT]);
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          const storedSubscription =
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID];
+          // When state already has candidateAt, the code doesn't modify the subscription object's candidateAt
+          // The subscription object from opt-in response is stored as-is
+          expect(storedSubscription?.candidateAt).toBe(
+            '2024-06-01T00:00:00.000Z',
+          );
         },
       );
     });

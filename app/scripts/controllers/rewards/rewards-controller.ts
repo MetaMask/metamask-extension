@@ -877,11 +877,13 @@ export class RewardsController extends BaseController<
         }
 
         if (subscription) {
-          const candidateAt =
-            Object.keys(state.rewardsSubscriptions ?? {}).length > 0
-              ? new Date()
-              : INITIAL_DEVICE_SUBSCRIPTION_CANDIDATE_AT;
-          subscription.candidateAt = candidateAt.toISOString();
+          if (!state.rewardsSubscriptions[subscription.id]?.candidateAt) {
+            const candidateAt =
+              Object.keys(state.rewardsSubscriptions ?? {}).length > 0
+                ? new Date()
+                : INITIAL_DEVICE_SUBSCRIPTION_CANDIDATE_AT;
+            subscription.candidateAt = candidateAt.toISOString();
+          }
           state.rewardsSubscriptions[subscription.id] = subscription;
         }
       });
@@ -1531,11 +1533,16 @@ export class RewardsController extends BaseController<
       }
 
       state.rewardsAccounts[caipAccount] = accountState;
-      const candidateAt =
-        Object.keys(state.rewardsSubscriptions ?? {}).length > 0
-          ? new Date()
-          : INITIAL_DEVICE_SUBSCRIPTION_CANDIDATE_AT;
-      optinResponse.subscription.candidateAt = candidateAt.toISOString();
+      if (
+        optinResponse?.subscription?.id &&
+        !state.rewardsSubscriptions[optinResponse.subscription.id]?.candidateAt
+      ) {
+        const candidateAt =
+          Object.keys(state.rewardsSubscriptions ?? {}).length > 0
+            ? new Date()
+            : INITIAL_DEVICE_SUBSCRIPTION_CANDIDATE_AT;
+        optinResponse.subscription.candidateAt = candidateAt.toISOString();
+      }
       state.rewardsSubscriptions[optinResponse.subscription.id] =
         optinResponse.subscription;
     });
