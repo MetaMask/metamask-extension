@@ -411,6 +411,8 @@ LavaMoat debug: ${args.lavamoatDebug}
 Generate policy: ${args.generatePolicy}
 Snow: ${args.snow}
 Sentry: ${args.sentry}
+React Compiler verbose: ${args.reactCompilerVerbose}
+React Compiler debug: ${args.reactCompilerDebug}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}
