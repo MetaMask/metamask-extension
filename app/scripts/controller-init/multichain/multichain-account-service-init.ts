@@ -49,7 +49,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
       backOffMs: 1000,
     },
     createAccounts: {
-      timeoutMs: 3000,
+      timeoutMs: 6000,
     },
   };
 
