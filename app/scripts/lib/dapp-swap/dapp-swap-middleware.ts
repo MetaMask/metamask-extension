@@ -73,7 +73,7 @@ export function createDappSwapMiddleware<
     uniqueId: string,
     info: { quotes?: QuoteResponse[]; latency?: number },
   ) => void;
-  //eslint-disable-next-line @typescript-eslint/naming-convention
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   dappSwapMetricsFlag: { enabled: boolean; bridge_quote_fees: number };
 }) {
   return async (
@@ -82,7 +82,7 @@ export function createDappSwapMiddleware<
     next: () => void,
   ) => {
     try {
-      //eslint-disable-next-line @typescript-eslint/naming-convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const { enabled: dappSwapEnabled, bridge_quote_fees: bridgeQuoteFees } =
         dappSwapMetricsFlag;
       if (!dappSwapEnabled) {
