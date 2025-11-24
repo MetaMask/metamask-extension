@@ -1,0 +1,302 @@
+import React, { useCallback, useMemo, useState } from 'react';
+import {
+  PAYMENT_TYPES,
+  PaymentType,
+  PricingResponse,
+  PRODUCT_TYPES,
+  Subscription,
+  SubscriptionCryptoPaymentMethod,
+} from '@metamask/subscription-controller';
+import { NameType } from '@metamask/name-controller';
+import {
+  Box,
+  ButtonLink,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../components/component-library';
+import {
+  IconColor,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  useAvailableTokenBalances,
+  useSubscriptionProductPlans,
+  useSubscriptionPaymentMethods,
+  TokenWithApprovalAmount,
+} from '../../../hooks/subscription/useSubscriptionPricing';
+import Name from '../../../components/app/name';
+import Tooltip from '../../../components/ui/tooltip';
+import { ShieldPaymentModal } from '../../shield-plan/shield-payment-modal';
+import {
+  getIsShieldSubscriptionEndingSoon,
+  getIsShieldSubscriptionPaused,
+} from '../../../../shared/lib/shield';
+import { isCryptoPaymentMethod } from './types';
+
+type PaymentMethodRowProps = {
+  displayedShieldSubscription?: Subscription;
+  subscriptionPricing?: PricingResponse;
+  onPaymentMethodChange: (
+    paymentType: PaymentType,
+    token?: TokenWithApprovalAmount,
+  ) => void;
+  showSkeletonLoader: boolean;
+  isPaused?: boolean;
+  isUnexpectedErrorCryptoPayment?: boolean;
+  handlePaymentError: () => void;
+};
+
+export const PaymentMethodRow = ({
+  displayedShieldSubscription,
+  subscriptionPricing,
+  onPaymentMethodChange,
+  showSkeletonLoader,
+  isPaused,
+  isUnexpectedErrorCryptoPayment,
+  handlePaymentError,
+}: PaymentMethodRowProps) => {
+  const t = useI18nContext();
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  // Derive isCryptoPayment from subscription
+  const isCryptoPayment = useMemo(() => {
+    return (
+      displayedShieldSubscription?.paymentMethod &&
+      isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
+    );
+  }, [displayedShieldSubscription]);
+
+  // Derive isSubscriptionEndingSoon from subscription
+  const isSubscriptionEndingSoon = useMemo(() => {
+    if (!displayedShieldSubscription) {
+      return false;
+    }
+    return getIsShieldSubscriptionEndingSoon(displayedShieldSubscription);
+  }, [displayedShieldSubscription]);
+
+  // Derive cryptoPaymentMethod from subscriptionPricing
+  const cryptoPaymentMethod = useSubscriptionPaymentMethods(
+    PAYMENT_TYPES.byCrypto,
+    subscriptionPricing,
+  );
+
+  // Get product price for current subscription interval
+  const pricingPlans = useSubscriptionProductPlans(
+    PRODUCT_TYPES.SHIELD,
+    subscriptionPricing,
+  );
+
+  const selectedProductPrice = useMemo(() => {
+    if (!displayedShieldSubscription || !pricingPlans) {
+      return undefined;
+    }
+    return pricingPlans.find(
+      (plan) => plan.interval === displayedShieldSubscription.interval,
+    );
+  }, [pricingPlans, displayedShieldSubscription]);
+
+  // Get available token balances
+  const { availableTokenBalances } = useAvailableTokenBalances({
+    paymentChains: cryptoPaymentMethod?.chains,
+    price: selectedProductPrice,
+    productType: PRODUCT_TYPES.SHIELD,
+  });
+
+  const hasAvailableToken = availableTokenBalances.length > 0;
+
+  // Compute tokensSupported
+  const tokensSupported = useMemo(() => {
+    const chainsAndTokensSupported = cryptoPaymentMethod?.chains ?? [];
+    return [
+      ...new Set(
+        chainsAndTokensSupported.flatMap((chain) =>
+          chain.tokens.map((token) => token.symbol),
+        ),
+      ),
+    ] as string[];
+  }, [cryptoPaymentMethod?.chains]);
+
+  // Derive selectedPaymentMethod from subscription
+  const selectedPaymentMethod = useMemo<PaymentType>(() => {
+    if (!displayedShieldSubscription) {
+      return PAYMENT_TYPES.byCard;
+    }
+    return displayedShieldSubscription.paymentMethod.type;
+  }, [displayedShieldSubscription]);
+
+  // Derive selectedToken from subscription or first available
+  const selectedToken = useMemo<TokenWithApprovalAmount | undefined>(() => {
+    if (!displayedShieldSubscription) {
+      return availableTokenBalances[0];
+    }
+
+    if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
+      const tokenInfo = (
+        displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod
+      ).crypto;
+      const token = availableTokenBalances.find(
+        (at) =>
+          at.symbol === tokenInfo.tokenSymbol &&
+          at.chainId === tokenInfo.chainId,
+      );
+      return token || availableTokenBalances[0];
+    }
+
+    return availableTokenBalances[0];
+  }, [displayedShieldSubscription, availableTokenBalances]);
+
+  const handleClose = useCallback(() => {
+    setShowPaymentModal(false);
+  }, []);
+
+  const handlePaymentMethodChangeInternal = useCallback(
+    (newPaymentMethod: PaymentType) => {
+      onPaymentMethodChange(newPaymentMethod, selectedToken);
+    },
+    [onPaymentMethodChange, selectedToken],
+  );
+
+  const handleTokenChange = useCallback(
+    (token: TokenWithApprovalAmount) => {
+      onPaymentMethodChange(PAYMENT_TYPES.byCrypto, token);
+      setShowPaymentModal(false);
+    },
+    [onPaymentMethodChange],
+  );
+
+  const handleClick = useCallback(() => {
+    // Don't open modal if paused with error (use existing error handler)
+    if (isPaused && !isUnexpectedErrorCryptoPayment) {
+      return;
+    }
+    // Don't open modal if subscription ending soon (use existing error handler)
+    if (isSubscriptionEndingSoon) {
+      return;
+    }
+    setShowPaymentModal(true);
+  }, [isPaused, isUnexpectedErrorCryptoPayment, isSubscriptionEndingSoon]);
+
+  const paymentMethodDisplay = useMemo(() => {
+    if (!displayedShieldSubscription) {
+      return '';
+    }
+    if (isPaused && !isUnexpectedErrorCryptoPayment) {
+      let tooltipText = '';
+      let buttonText = '';
+      if (isCryptoPayment) {
+        tooltipText = 'shieldTxMembershipErrorPausedCryptoTooltip';
+        buttonText = 'shieldTxMembershipErrorInsufficientToken';
+      } else {
+        // card payment error case
+        tooltipText = 'shieldTxMembershipErrorPausedCardTooltip';
+        buttonText = 'shieldTxMembershipErrorUpdateCard';
+      }
+
+      return (
+        <Tooltip position="top" title={t(tooltipText)}>
+          <ButtonLink
+            startIconName={IconName.Danger}
+            startIconProps={{
+              size: IconSize.Md,
+            }}
+            onClick={handlePaymentError}
+            danger
+          >
+            {t(buttonText, [
+              isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod)
+                ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
+                : '',
+            ])}
+          </ButtonLink>
+        </Tooltip>
+      );
+    }
+    if (isSubscriptionEndingSoon && displayedShieldSubscription) {
+      return (
+        <ButtonLink
+          className="warning-button"
+          startIconName={IconName.Danger}
+          startIconProps={{
+            size: IconSize.Md,
+            color: IconColor.warningDefault,
+          }}
+          color={TextColor.warningDefault}
+          onClick={handlePaymentError}
+        >
+          {isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
+            ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
+            : ''}
+        </ButtonLink>
+      );
+    }
+
+    if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
+      const tokenInfo = displayedShieldSubscription.paymentMethod.crypto;
+      const tokenAddress = cryptoPaymentMethod?.chains
+        ?.find((chain) => chain.chainId === tokenInfo.chainId)
+        ?.tokens.find(
+          (token) => token.symbol === tokenInfo.tokenSymbol,
+        )?.address;
+
+      if (!tokenAddress) {
+        return tokenInfo.tokenSymbol;
+      }
+      return (
+        <Name
+          value={tokenAddress}
+          type={NameType.ETHEREUM_ADDRESS}
+          preferContractSymbol
+          variation={tokenInfo.chainId}
+          fallbackName={tokenInfo.tokenSymbol}
+        />
+      );
+    }
+
+    return `${displayedShieldSubscription.paymentMethod.card.brand.charAt(0).toUpperCase() + displayedShieldSubscription.paymentMethod.card.brand.slice(1)} - ${displayedShieldSubscription.paymentMethod.card.last4}`;
+  }, [
+    displayedShieldSubscription,
+    isPaused,
+    isUnexpectedErrorCryptoPayment,
+    isCryptoPayment,
+    isSubscriptionEndingSoon,
+    t,
+    handlePaymentError,
+    cryptoPaymentMethod,
+  ]);
+
+  if (showSkeletonLoader) {
+    return <Text variant={TextVariant.bodyMdMedium}>-</Text>;
+  }
+
+  // For error states, return the error button (not clickable for modal)
+  if (
+    (isPaused && !isUnexpectedErrorCryptoPayment) ||
+    isSubscriptionEndingSoon
+  ) {
+    return <>{paymentMethodDisplay}</>;
+  }
+
+  // For normal states, make it clickable
+  return (
+    <>
+      <Box as="button" onClick={handleClick}>
+        {paymentMethodDisplay}
+      </Box>
+      <ShieldPaymentModal
+        isOpen={showPaymentModal}
+        onClose={handleClose}
+        selectedPaymentMethod={selectedPaymentMethod}
+        setSelectedPaymentMethod={handlePaymentMethodChangeInternal}
+        availableTokenBalances={availableTokenBalances}
+        selectedToken={selectedToken}
+        onAssetChange={handleTokenChange}
+        hasStableTokenWithBalance={hasAvailableToken}
+        tokensSupported={tokensSupported}
+      />
+    </>
+  );
+};
