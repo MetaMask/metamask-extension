@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { Box } from '@metamask/design-system-react';
+import { useLocation } from 'react-router-dom';
 import LoadingIndicator from '../../components/ui/loading-indicator';
 import {
   selectRewardsEnabled,
@@ -13,16 +13,23 @@ import {
   setOnboardingReferralCode,
 } from '../../ducks/rewards';
 
-const RewardsPage: React.FC = () => {
+type RewardsPageProps = {
+  navigate: (to: string, options?: { replace?: boolean }) => void;
+  location: Location;
+};
+
+const RewardsPage: React.FC<RewardsPageProps> = ({ navigate, location }) => {
   const rewardsEnabled = useSelector(selectRewardsEnabled);
+  const hookLocation = useLocation();
   const rewardsOnboardingEnabled = useSelector(selectRewardsOnboardingEnabled);
-  const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (rewardsEnabled && rewardsOnboardingEnabled) {
-      const params = new URLSearchParams(location.search);
+      const localLocation = location ?? hookLocation;
+      const params = localLocation
+        ? new URLSearchParams(localLocation.search)
+        : new URLSearchParams();
       const referral = params.get('referral');
       if (referral && referral.length > 0) {
         dispatch(setOnboardingReferralCode(referral));
@@ -34,7 +41,14 @@ const RewardsPage: React.FC = () => {
     }
 
     navigate(DEFAULT_ROUTE, { replace: true });
-  }, [navigate, dispatch, rewardsEnabled, rewardsOnboardingEnabled]);
+  }, [
+    navigate,
+    dispatch,
+    rewardsEnabled,
+    rewardsOnboardingEnabled,
+    location,
+    hookLocation,
+  ]);
 
   return (
     <Box className="flex justify-center items-center flex-1">

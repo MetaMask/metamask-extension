@@ -11,6 +11,7 @@ import RewardsPage from '../../page-objects/pages/rewards/rewards-page';
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
 import { BaseUrl } from '../../../../shared/constants/urls';
+import { REWARDS_ROUTE } from '../../../../ui/helpers/constants/routes';
 import type { Anvil } from '../../seeder/anvil';
 import type { Ganache } from '../../seeder/ganache';
 import {
@@ -86,7 +87,7 @@ describe('Deep Link', function () {
       'signed without sig_params',
       'unsigned',
     ] as const,
-    ['/home', '/swap', '/INVALID', '/rewards'] as const,
+    ['/home', '/swap', '/INVALID', REWARDS_ROUTE] as const,
     ['continue'] as const,
   ).map(([locked, signed, route, action]) => {
     return { locked, signed, route, action };
@@ -183,7 +184,7 @@ and we'll take you to the right place.`
             case '/swap':
               Page = SwapPage;
               break;
-            case '/rewards':
+            case REWARDS_ROUTE:
               Page = RewardsPage;
               break;
             default: {

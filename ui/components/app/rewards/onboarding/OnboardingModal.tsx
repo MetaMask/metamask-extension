@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Modal,
@@ -46,6 +46,15 @@ export default function OnboardingModal({ onClose }: { onClose?: () => void }) {
 
   const theme = useTheme();
 
+  const isValidCandidateSubscriptionId = useMemo(
+    () =>
+      candidateSubscriptionId &&
+      candidateSubscriptionId !== 'error' &&
+      candidateSubscriptionId !== 'pending' &&
+      candidateSubscriptionId !== 'retry',
+    [candidateSubscriptionId],
+  );
+
   const handleClose = useCallback(() => {
     dispatch(setOnboardingModalOpen(false));
     dispatch(setOnboardingActiveStep(OnboardingStep.INTRO));
@@ -54,13 +63,7 @@ export default function OnboardingModal({ onClose }: { onClose?: () => void }) {
   }, [dispatch, onClose]);
 
   const renderContent = useCallback(() => {
-    if (
-      rewardActiveAccountSubscriptionId ||
-      (candidateSubscriptionId &&
-        candidateSubscriptionId !== 'error' &&
-        candidateSubscriptionId !== 'pending' &&
-        candidateSubscriptionId !== 'retry')
-    ) {
+    if (rewardActiveAccountSubscriptionId || isValidCandidateSubscriptionId) {
       return <RewardsQRCode />;
     }
 
@@ -79,7 +82,7 @@ export default function OnboardingModal({ onClose }: { onClose?: () => void }) {
         return <OnboardingIntroStep />;
     }
   }, [
-    candidateSubscriptionId,
+    isValidCandidateSubscriptionId,
     onboardingStep,
     rewardActiveAccountSubscriptionId,
   ]);
@@ -105,10 +108,7 @@ export default function OnboardingModal({ onClose }: { onClose?: () => void }) {
           style: {
             height:
               rewardActiveAccountSubscriptionId ||
-              (candidateSubscriptionId &&
-                candidateSubscriptionId !== 'error' &&
-                candidateSubscriptionId !== 'pending' &&
-                candidateSubscriptionId !== 'retry')
+              isValidCandidateSubscriptionId
                 ? 'auto'
                 : '740px',
             alignItems: 'center',
