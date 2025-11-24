@@ -10,7 +10,6 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
-import NetworkManager from '../../page-objects/pages/network-manager';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
 import {
@@ -87,11 +86,6 @@ export async function withMultichainAccountsDesignEnabled(
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();
       const headerNavbar = new HeaderNavbar(driver);
-      const networkManager = new NetworkManager(driver);
-      await networkManager.openNetworkManager();
-      await networkManager.selectNetworkByNameWithWait('Ethereum');
-      // intended delay to allow for network requests to complete
-      await driver.delay(1000);
       await headerNavbar.openAccountMenu();
 
       await test(driver);
