@@ -653,7 +653,7 @@
     "jsdom": "^16.7.0",
     "json-schema-to-ts": "^3.0.1",
     "jsonwebtoken": "^9.0.2",
-    "koa": "^2.7.0",
+    "koa": "^3.1.1",
     "lavamoat": "^10.0.0",
     "lavamoat-viz": "^7.0.5",
     "level": "^8.0.1",
