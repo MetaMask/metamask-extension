@@ -108,6 +108,8 @@ export default function OnboardingWelcome() {
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
+    let isMounted = true;
+
     if (
       currentKeyring &&
       !newAccountCreationInProgress &&
@@ -132,7 +134,7 @@ export default function OnboardingWelcome() {
       (async () => {
         const isUserAuthenticatedWithSocialLogin =
           await getIsUserAuthenticatedWithSocialLogin();
-        if (isUserAuthenticatedWithSocialLogin) {
+        if (isMounted && isUserAuthenticatedWithSocialLogin) {
           if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
             navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
           } else {
@@ -141,6 +143,10 @@ export default function OnboardingWelcome() {
         }
       })();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [
     currentKeyring,
     navigate,
@@ -273,7 +279,6 @@ export default function OnboardingWelcome() {
     async (socialConnectionType) => {
       setIsLoggingIn(true);
       setNewAccountCreationInProgress(true);
-      await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
 
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
@@ -300,8 +305,10 @@ export default function OnboardingWelcome() {
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext.current,
           });
+          await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
           navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
         } else {
+          await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
           navigate(ONBOARDING_ACCOUNT_EXIST, { replace: true });
         }
       } catch (error) {
@@ -324,8 +331,6 @@ export default function OnboardingWelcome() {
   const onSocialLoginImportClick = useCallback(
     async (socialConnectionType) => {
       setIsLoggingIn(true);
-      dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
-
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletImportStarted,
@@ -347,6 +352,7 @@ export default function OnboardingWelcome() {
         });
 
         if (isNewUser) {
+          await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
           navigate(ONBOARDING_ACCOUNT_NOT_FOUND);
         } else {
           bufferedTrace?.({
@@ -354,6 +360,7 @@ export default function OnboardingWelcome() {
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext.current,
           });
+          await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
           navigate(ONBOARDING_UNLOCK_ROUTE);
         }
       } catch (error) {
@@ -363,13 +370,13 @@ export default function OnboardingWelcome() {
       }
     },
     [
-      dispatch,
       handleSocialLogin,
       trackEvent,
       navigate,
       onboardingParentContext,
       handleSocialLoginError,
       bufferedTrace,
+      dispatch,
     ],
   );
 
