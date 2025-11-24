@@ -91,7 +91,6 @@ const ShieldIconAnimation = ({
   severity?: AlertSeverity;
   playAnimation?: boolean;
 }) => {
-  const isTestEnvironment = Boolean(process.env.IN_TEST);
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError } = context;
   const {
@@ -173,7 +172,6 @@ const ShieldIconAnimation = ({
     bufferLoading ||
     !buffer ||
     status === 'loading' ||
-    isTestEnvironment ||
     status === 'failed'
   ) {
     return <Box className="riv-animation__shield-icon-container"></Box>;

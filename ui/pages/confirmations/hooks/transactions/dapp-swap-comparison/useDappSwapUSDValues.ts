@@ -1,18 +1,18 @@
 import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import {
-  getNativeAssetForChainId,
-  isNativeAddress,
-} from '@metamask/bridge-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback } from 'react';
 
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../../helpers/utils/util';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
-import { fetchAllTokenDetails } from '../../../utils/token';
-import { getTokenValueFromRecord } from '../../../utils/dapp-swap-comparison-utils';
+import { isNativeAddress } from '../../../../../helpers/utils/token-insights';
+import {
+  fetchAllTokenDetails,
+  getTokenValueFromRecord,
+} from '../../../utils/token';
 import { useConfirmContext } from '../../../context/confirm';
 
 const POLYGON_NATIVE_ASSET = '0x0000000000000000000000000000000000001010';
@@ -66,7 +66,7 @@ export function useDappSwapUSDValues({
   }, [chainId, tokenAddresses?.length]);
 
   const getTokenUSDValue = useCallback(
-    (tokenAmount: string, tokenAddress: Hex) => {
+    (tokenAmount: string, tokenAddress: Hex, decimalsToDisplay?: number) => {
       if (!tokenDetails || !fiatRates) {
         return '0';
       }
@@ -85,20 +85,26 @@ export function useDappSwapUSDValues({
       const conversionRate = new BigNumber(
         getTokenValueFromRecord(fiatRates, tokenAddress) ?? 0,
       );
-      return new BigNumber(tokenAmount ?? 0)
+      const value = new BigNumber(tokenAmount ?? 0)
         .dividedBy(decimals)
-        .times(conversionRate)
-        .toString(10);
+        .times(conversionRate);
+      return decimalsToDisplay
+        ? value.toFixed(decimalsToDisplay)
+        : value.toString(10);
     },
     [fiatRates, tokenDetails],
   );
 
   const getDestinationTokenUSDValue = useCallback(
-    (tokenAmount: string) => {
+    (tokenAmount: string, decimalsToDisplay?: number) => {
       if (!destTokenAddress) {
         return '0';
       }
-      return getTokenUSDValue(tokenAmount, destTokenAddress as Hex);
+      return getTokenUSDValue(
+        tokenAmount,
+        destTokenAddress as Hex,
+        decimalsToDisplay,
+      );
     },
     [getTokenUSDValue, destTokenAddress],
   );
