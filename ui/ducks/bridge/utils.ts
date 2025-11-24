@@ -53,7 +53,7 @@ export const isTronEnergyOrBandwidthResource = (
   symbol: string | undefined,
 ): boolean => {
   return (
-    Boolean(chainId?.toString().includes('tron:')) &&
+    Boolean(chainId?.toString()?.includes('tron:')) &&
     TRON_RESOURCE_SYMBOLS_SET.has(symbol?.toLowerCase() as TronResourceSymbol)
   );
 };
