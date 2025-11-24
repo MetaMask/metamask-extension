@@ -780,7 +780,7 @@ function Pna25Banner() {
           <Icon name={IconName.Info} color={IconColor.infoDefault} />
         }
         text={t('pna25BannerTitle')}
-        actionText={t('pna25BannerActionButton')}
+        actionText={t('learnMoreUpperCase')}
         onActionClick={handleLearnMore}
         onClose={handleClose}
       />
