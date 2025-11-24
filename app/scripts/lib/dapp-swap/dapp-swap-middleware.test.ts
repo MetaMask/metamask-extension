@@ -22,6 +22,10 @@ const createMiddleware = () => {
   const middlewareFunction = createDappSwapMiddleware({
     fetchQuotes,
     setSwapQuotes,
+    dappSwapMetricsFlag: {
+      enabled: true,
+      bridge_quote_fees: 250,
+    },
   });
   return { middlewareFunction };
 };
