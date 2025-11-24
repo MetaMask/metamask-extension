@@ -1,6 +1,7 @@
 import {
   MultichainAccountService,
   AccountProviderWrapper,
+  SOL_ACCOUNT_PROVIDER_NAME,
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcAccountProvider,
   ///: END:ONLY_INCLUDE_IF
@@ -36,17 +37,33 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   MultichainAccountServiceMessenger,
   MultichainAccountServiceInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
+  const snapAccountProviderConfig = {
+    // READ THIS CAREFULLY:
+    // We are using 1 to prevent any concurrent `keyring_createAccount` requests. This ensures
+    // we prevent any desync between Snap's accounts and Metamask's accounts.
+    maxConcurrency: 1,
+    // Re-use the default config for the rest:
+    discovery: {
+      timeoutMs: 2000,
+      maxAttempts: 3,
+      backOffMs: 1000,
+    },
+    createAccounts: {
+      timeoutMs: 3000,
+    },
+  };
+
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const btcProvider = new AccountProviderWrapper(
     controllerMessenger,
-    new BtcAccountProvider(controllerMessenger),
+    new BtcAccountProvider(controllerMessenger, snapAccountProviderConfig),
   );
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   const trxProvider = new AccountProviderWrapper(
     controllerMessenger,
-    new TrxAccountProvider(controllerMessenger),
+    new TrxAccountProvider(controllerMessenger, snapAccountProviderConfig),
   );
   ///: END:ONLY_INCLUDE_IF
 
@@ -60,6 +77,9 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
       trxProvider,
       ///: END:ONLY_INCLUDE_IF
     ],
+    providerConfigs: {
+      [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
+    },
   });
 
   const preferencesState = initMessenger.call('PreferencesController:getState');
