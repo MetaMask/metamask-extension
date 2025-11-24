@@ -1657,27 +1657,65 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
-// Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
-// and when the feature flag is enabled
-if (
-  browser.contextMenus &&
-  browser.sidePanel &&
-  process.env.IS_SIDEPANEL?.toString() === 'true'
-) {
-  browser.runtime.onInstalled.addListener(() => {
-    browser.contextMenus.create({
-      id: 'openSidePanel',
-      title: 'MetaMask Sidepanel',
-      contexts: ['all'],
-    });
-  });
-  browser.contextMenus.onClicked.addListener((info, tab) => {
-    if (info.menuItemId === 'openSidePanel') {
-      // This will open the panel in all the pages on the current window.
-      browser.sidePanel.open({ windowId: tab.windowId });
+
+const initSidePanelContextMenu = async () => {
+  // Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
+  // and when the build-time feature flag is enabled
+  if (
+    !browser.contextMenus ||
+    !browser.sidePanel ||
+    process.env.IS_SIDEPANEL?.toString() !== 'true'
+  ) {
+    return;
+  }
+
+  try {
+    await isInitialized;
+
+    const sidepanelEnabled =
+      controller?.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.extensionUxSidepanel;
+
+    // Only register context menu if remote feature flag is not explicitly disabled
+    // (undefined or true means enabled, false means disabled)
+    if (sidepanelEnabled === false) {
+      return;
     }
-  });
-}
+
+    browser.runtime.onInstalled.addListener(() => {
+      browser.contextMenus.create({
+        id: 'openSidePanel',
+        title: 'MetaMask Sidepanel',
+        contexts: ['all'],
+      });
+    });
+
+    browser.contextMenus.onClicked.addListener((info, tab) => {
+      if (info.menuItemId === 'openSidePanel') {
+        // This will open the panel in all the pages on the current window.
+        browser.sidePanel.open({ windowId: tab.windowId });
+      }
+    });
+
+    // Listen for remote feature flag changes
+    controller?.controllerMessenger?.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (state) => {
+        const updatedSidepanelFlag =
+          state?.remoteFeatureFlags?.extensionUxSidepanel;
+        if (updatedSidepanelFlag === false) {
+          browser.contextMenus?.remove('openSidePanel').catch(() => {
+            // Ignore errors if context menu doesn't exist
+          });
+        }
+      },
+    );
+  } catch (error) {
+    console.error('Error initializing sidepanel context menu:', error);
+  }
+};
+
+initSidePanelContextMenu();
 
 /**
  * Trigger actions that should happen only when an update is available
