@@ -15,6 +15,7 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import { MockedDiscoveryBuilder } from '../../multichain-accounts/discovery';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Unsupported Account types', function () {
@@ -36,7 +37,9 @@ describe('Account syncing - Unsupported Account types', function () {
   it('does not sync imported accounts and exclude them when logging into a fresh app instance', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
-    const sharedMockSetup = (server: Mockttp) => {
+    const sharedMockSetup = async (server: Mockttp) => {
+      mockMultichainAccountsFeatureFlagStateTwo(server);
+
       userStorageMockttpController.setupPath(
         USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
@@ -45,8 +48,11 @@ describe('Account syncing - Unsupported Account types', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      mockMultichainAccountsFeatureFlagStateTwo(server);
-      return mockIdentityServices(server, userStorageMockttpController);
+      mockIdentityServices(server, userStorageMockttpController);
+
+      await MockedDiscoveryBuilder.fromDefaultSrp()
+        .doNotDiscoverAnyAccounts()
+        .mock(server);
     };
 
     // Phase 1: Create regular accounts and import a private key account

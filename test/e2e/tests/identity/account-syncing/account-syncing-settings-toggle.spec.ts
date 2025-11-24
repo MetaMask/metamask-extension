@@ -16,6 +16,7 @@ import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-a
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockIdentityServices } from '../mocks';
+import { MockedDiscoveryBuilder } from '../../multichain-accounts/discovery';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Settings Toggle', function () {
@@ -32,7 +33,9 @@ describe('Account syncing - Settings Toggle', function () {
   it('syncs new accounts when account sync is enabled and exclude accounts created when sync is disabled', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
-    const sharedMockSetup = (server: Mockttp) => {
+    const sharedMockSetup = async (server: Mockttp) => {
+      mockMultichainAccountsFeatureFlagStateTwo(server);
+
       userStorageMockttpController.setupPath(
         USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
@@ -41,8 +44,11 @@ describe('Account syncing - Settings Toggle', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      mockMultichainAccountsFeatureFlagStateTwo(server);
-      return mockIdentityServices(server, userStorageMockttpController);
+      mockIdentityServices(server, userStorageMockttpController);
+
+      await MockedDiscoveryBuilder.fromDefaultSrp()
+        .doNotDiscoverAnyAccounts()
+        .mock(server);
     };
 
     // Phase 1: Initial setup and account creation with sync enabled
@@ -123,7 +129,7 @@ describe('Account syncing - Settings Toggle', function () {
       },
     );
 
-    // Phase 3: Fresh app instance to verify sync persistence
+    // Phase 2: Fresh app instance to verify sync persistence
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
