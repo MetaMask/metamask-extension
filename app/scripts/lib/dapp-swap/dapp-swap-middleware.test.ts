@@ -22,6 +22,7 @@ const createMiddleware = () => {
     setSwapQuotes,
     dappSwapMetricsFlag: {
       enabled: true,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       bridge_quote_fees: 250,
     },
   });
