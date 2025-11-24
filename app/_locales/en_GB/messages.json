@@ -1426,7 +1426,7 @@
     "message": "Now"
   },
   "confirmInfoSwitchingTo": {
-    "message": "Switching to"
+    "message": "Switching To"
   },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
@@ -1707,7 +1707,7 @@
     "message": "CoolWallet"
   },
   "copiedExclamation": {
-    "message": "Copied"
+    "message": "Copied."
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
@@ -3389,7 +3389,7 @@
     "message": "Learn more"
   },
   "learnMoreUpperCaseWithDot": {
-    "message": "Learn more."
+    "message": "Learn more"
   },
   "learnScamRisk": {
     "message": "scams and security risks."
