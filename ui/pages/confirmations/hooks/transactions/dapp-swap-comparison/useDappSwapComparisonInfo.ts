@@ -63,18 +63,20 @@ export function useDappSwapComparisonInfo() {
 
   const { commands, quotesInput, amountMin, tokenAddresses } = useMemo(() => {
     try {
-      updateRequestDetectionLatency();
       let transactionData = data;
       if (nestedTransactions?.length) {
         transactionData = nestedTransactions?.find(({ data: trxnData }) =>
           trxnData?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
         )?.data;
       }
-      return getDataFromSwap(
+      const result = getDataFromSwap(
         chainId,
         transactionData,
         txParams?.from as string,
       );
+      console.log('-----------inside getDataFromSwap', result);
+      updateRequestDetectionLatency();
+      return result;
     } catch (error) {
       captureException(error);
       captureDappSwapComparisonFailed('error parsing swap data');
