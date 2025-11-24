@@ -200,6 +200,8 @@ import {
   getClaimsControllerMessenger,
 } from './claims/claims-controller-messenger';
 import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
+import { getUserProfileControllerMessenger } from './user-profile-controller-messenger';
+import { getUserProfileServiceMessenger } from './user-profile-service-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -751,5 +753,13 @@ export const CONTROLLER_MESSENGERS = {
   NetworkEnablementController: {
     getMessenger: getNetworkEnablementControllerMessenger,
     getInitMessenger: getNetworkEnablementControllerInitMessenger,
+  },
+  UserProfileController: {
+    getMessenger: getUserProfileControllerMessenger,
+    getInitMessenger: noop,
+  },
+  UserProfileService: {
+    getMessenger: getUserProfileServiceMessenger,
+    getInitMessenger: noop,
   },
 } as const;
