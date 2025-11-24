@@ -383,6 +383,10 @@ export function AssetPickerModal({
       }
 
       for (const token of allDetectedTokens) {
+        // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
+        if (isTronEnergyOrBandwidthResource(currentChainId, token.symbol)) {
+          continue;
+        }
         if (shouldAddToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
