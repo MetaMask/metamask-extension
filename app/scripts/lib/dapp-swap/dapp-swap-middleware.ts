@@ -87,6 +87,7 @@ export function createDappSwapMiddleware<
         dappSwapMetricsFlag;
       if (!dappSwapEnabled) {
         next();
+        return;
       }
       const { securityAlertResponse, params, origin } = req;
       const { securityAlertId } = securityAlertResponse ?? {};
