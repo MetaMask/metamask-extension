@@ -10,7 +10,14 @@ import {
   Signer,
 } from '@metamask/gator-permissions-controller';
 import { Hex } from '@metamask/utils';
+import { isSnapId } from '@metamask/snaps-utils';
+import { SubjectType } from '@metamask/permission-controller';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import {
+  getConnectedSitesListWithNetworkInfo,
+  getTargetSubjectMetadata,
+} from '../selectors';
+import { getURLHostName } from '../../helpers/utils/util';
 
 export type AppState = {
   metamask: GatorPermissionsControllerState;
@@ -30,6 +37,21 @@ export type MetDataByPermissionTypeGroup = Record<
     chains: Hex[];
   }
 >;
+
+export type ConnectionInfo = {
+  addresses: string[];
+  addressToNameMap?: Record<string, string>;
+  origin: string;
+  name: string;
+  iconUrl: string | null;
+  subjectType: SubjectType;
+  networkIconUrl: string;
+  networkName: string;
+  extensionId: string | null;
+  svgIcon?: string;
+  version?: string;
+  advancedPermissionsCount?: number;
+};
 
 const TOKEN_TRANSFER_PERMISSION_TYPES: SupportedGatorPermissionType[] = [
   'native-token-stream',
@@ -351,6 +373,170 @@ export const getTokenTransferPermissionsByOrigin = createSelector(
         permissionType,
       ),
     );
+  },
+);
+
+/**
+ * Get unique site origins from token transfer gator permissions.
+ *
+ * @param state - The current state
+ * @returns Array of unique site origins that have token transfer gator permissions
+ * @example
+ * const siteOrigins = getUniqueSiteOriginsFromTokenTransferPermissions(state);
+ *
+ * // ['https://example.com', 'https://another-site.com']
+ */
+export const getUniqueSiteOriginsFromTokenTransferPermissions = createSelector(
+  [getGatorPermissionsMap],
+  (gatorPermissionsMap): string[] => {
+    const siteOrigins = TOKEN_TRANSFER_PERMISSION_TYPES.flatMap(
+      (permissionType) => {
+        const permissionsByChain = gatorPermissionsMap[permissionType];
+        if (!permissionsByChain) {
+          return [];
+        }
+
+        // Get all permissions across all chains for this permission type
+        return Object.values(permissionsByChain).flat();
+      },
+    ).map((permission) => permission.siteOrigin);
+
+    return [...new Set(siteOrigins)];
+  },
+);
+
+/**
+ * Get the count of gator permissions per site origin.
+ *
+ * @param state - The current state
+ * @returns Map of site origin to permission count
+ * @example
+ * const permissionCounts = getGatorPermissionCountsBySiteOrigin(state);
+ *
+ * // Map { 'https://example.com' => 3, 'https://another-site.com' => 1 }
+ */
+export const getGatorPermissionCountsBySiteOrigin = createSelector(
+  [getGatorPermissionsMap],
+  (gatorPermissionsMap): Map<string, number> => {
+    const sitePermissionCounts = new Map<string, number>();
+
+    const allPermissions = Object.values(gatorPermissionsMap).flatMap(
+      (permissionTypeMap) =>
+        Object.values(permissionTypeMap).flatMap((permissions) => permissions),
+    );
+
+    allPermissions.forEach(
+      (
+        permission: StoredGatorPermissionSanitized<
+          Signer,
+          PermissionTypesWithCustom
+        >,
+      ) => {
+        if (permission?.siteOrigin) {
+          const currentCount =
+            sitePermissionCounts.get(permission.siteOrigin) || 0;
+          sitePermissionCounts.set(permission.siteOrigin, currentCount + 1);
+        }
+      },
+    );
+
+    return sitePermissionCounts;
+  },
+);
+
+/**
+ * Get the total count of unique sites (combining traditional connections and gator permissions).
+ *
+ * @param state - The current state
+ * @returns Total number of unique sites
+ * @example
+ * const totalSites = getTotalUniqueSitesCount(state);
+ *
+ * // 5 (sites with connections or gator permissions, excluding snaps)
+ */
+export const getTotalUniqueSitesCount = createSelector(
+  [
+    getConnectedSitesListWithNetworkInfo,
+    getUniqueSiteOriginsFromTokenTransferPermissions,
+  ],
+  (sitesConnectionsList, gatorPermissionSiteOrigins): number => {
+    // Get unique site origins from site connections (excluding snaps)
+    const connectedSiteOrigins = Object.keys(sitesConnectionsList).filter(
+      (site) => !isSnapId(site),
+    );
+
+    // Combine both lists and get unique sites
+    const allUniqueSites = new Set([
+      ...connectedSiteOrigins,
+      ...gatorPermissionSiteOrigins,
+    ]);
+
+    return allUniqueSites.size;
+  },
+);
+
+/**
+ * Get merged connections list that includes sites with both traditional connections
+ * and gator permissions. Sites with only gator permissions will have minimal connection data.
+ *
+ * @param state - The current state
+ * @returns Merged connections list object
+ * @example
+ * const connections = getMergedConnectionsListWithGatorPermissions(state);
+ *
+ * // {
+ * //   'https://example.com': {
+ * //     addresses: ['0x123'],
+ * //     origin: 'https://example.com',
+ * //     name: 'Example Site',
+ * //     advancedPermissionsCount: 3,
+ * //     ...
+ * //   },
+ * //   'https://gator-only.com': {
+ * //     addresses: [],
+ * //     origin: 'https://gator-only.com',
+ * //     name: 'Gator Only Site',
+ * //     advancedPermissionsCount: 2,
+ * //     ...
+ * //   }
+ * // }
+ */
+export const getMergedConnectionsListWithGatorPermissions = createSelector(
+  [
+    getConnectedSitesListWithNetworkInfo,
+    getGatorPermissionCountsBySiteOrigin,
+    (state: AppState) => state,
+  ],
+  (sitesConnectionsList, gatorPermissionCounts, state) => {
+    const mergedConnections: Record<string, ConnectionInfo> = {
+      ...sitesConnectionsList,
+    };
+
+    gatorPermissionCounts.forEach((permissionCount, siteOrigin) => {
+      if (mergedConnections[siteOrigin]) {
+        // Site exists in both connections and gator permissions - add count
+        mergedConnections[siteOrigin] = {
+          ...mergedConnections[siteOrigin],
+          advancedPermissionsCount: permissionCount,
+        };
+      } else {
+        // Site only has gator permissions - create minimal entry
+        const subjectMetadata = getTargetSubjectMetadata(state, siteOrigin);
+        mergedConnections[siteOrigin] = {
+          addresses: [],
+          origin: siteOrigin,
+          name: subjectMetadata?.name || getURLHostName(siteOrigin),
+          iconUrl: subjectMetadata?.iconUrl || null,
+          subjectType: SubjectType.Website,
+          networkIconUrl: '',
+          networkName: '',
+          extensionId: null,
+          advancedPermissionsCount: permissionCount,
+        };
+      }
+    });
+
+    return mergedConnections;
   },
 );
 
