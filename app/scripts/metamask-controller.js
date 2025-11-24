@@ -7071,6 +7071,10 @@ export default class MetamaskController extends EventEmitter {
         setSwapQuotes: this.appStateController.setDappSwapComparisonData.bind(
           this.appStateController,
         ),
+        getNetworkConfigurationByNetworkClientId:
+          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+            this.networkController,
+          ),
       }),
     );
 
