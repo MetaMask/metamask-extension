@@ -195,7 +195,7 @@ and we'll take you to the right place.`
           // check that the page we want has been loaded!
           const page = new Page(driver);
           console.log('Checking if target page is loaded');
-          page.checkPageIsLoaded();
+          await page.checkPageIsLoaded();
         },
       );
     });
