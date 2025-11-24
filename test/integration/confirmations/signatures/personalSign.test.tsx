@@ -186,7 +186,8 @@ describe('PersonalSign Confirmation', () => {
       });
     });
 
-    expect(await screen.findByText('Signature request')).toBeInTheDocument();
+    const confirmationTitle = await screen.findByTestId('confirm-title');
+    expect(confirmationTitle).toHaveTextContent('Signature request');
     expect(
       await screen.findByText('Review request details before you confirm.'),
     ).toBeInTheDocument();

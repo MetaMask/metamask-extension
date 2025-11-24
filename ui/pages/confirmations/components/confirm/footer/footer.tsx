@@ -5,7 +5,6 @@ import {
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
-import { useHistory } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
@@ -23,7 +22,6 @@ import {
   FlexDirection,
   Severity,
 } from '../../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
@@ -203,7 +201,6 @@ const CancelButton = ({
 
 const Footer = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const { onTransactionConfirm } = useTransactionConfirm();
   const { navigateNext } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
@@ -245,7 +242,7 @@ const Footer = () => {
 
     if (isAddEthereumChain) {
       await onAddEthereumChain();
-      history.push(DEFAULT_ROUTE);
+      // ConfirmationContainer will auto-hide when no more pending confirmations
     } else if (isTransactionConfirmation) {
       await onTransactionConfirm();
       navigateNext(currentConfirmation.id);
@@ -258,7 +255,6 @@ const Footer = () => {
   }, [
     currentConfirmation,
     dispatch,
-    history,
     isTransactionConfirmation,
     isAddEthereumChain,
     navigateNext,
@@ -273,20 +269,26 @@ const Footer = () => {
       return;
     }
 
-    await onCancel({ location: MetaMetricsEventLocation.Confirmation });
-
-    if (isAddEthereumChain) {
-      history.push(DEFAULT_ROUTE);
-    } else {
+    // Navigate immediately for responsive UI (if not AddEthereumChain)
+    // This makes the popup feel responsive even while cancel is processing
+    if (!isAddEthereumChain) {
       navigateNext(currentConfirmation.id);
     }
+
+    // Fire and forget - don't block UI on async cancel action
+    // The ConfirmationContainer will auto-hide when no more pending confirmations
+    onCancel({ location: MetaMetricsEventLocation.Confirmation }).catch(
+      (error) => {
+        // Silently handle errors - user has already moved on
+        console.error('Error canceling confirmation:', error);
+      },
+    );
   }, [
     navigateNext,
     onCancel,
     shouldThrottleOrigin,
     currentConfirmation,
     isAddEthereumChain,
-    history,
   ]);
 
   const { isEnabled, isPaused } = useEnableShieldCoverageChecks();

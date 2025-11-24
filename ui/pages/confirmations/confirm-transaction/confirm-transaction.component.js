@@ -22,7 +22,6 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getSendTo } from '../../../ducks/send';
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   DEFAULT_ROUTE,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
@@ -54,20 +53,13 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 import { TraceName } from '../../../../shared/lib/trace';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
-const ConfirmTransaction = ({
-  params: routeParams,
-  location: routeLocation,
-} = {}) => {
+const ConfirmTransaction = ({ params: routeParams } = {}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const urlParams = useParams();
-  const hookLocation = useLocation();
-
   // Use params from props (v5 route) if available, otherwise fall back to useParams (v6)
   const { id: paramsTransactionId } = routeParams || urlParams;
-
-  // Use location from props (v5 route) if available, otherwise fall back to useLocation (v6)
-  const location = routeLocation || hookLocation;
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
@@ -90,8 +82,12 @@ const ConfirmTransaction = ({
   const [transaction, setTransaction] = useState(getTransaction);
 
   const use4ByteResolution = useSelector(use4ByteResolutionSelector);
-  // Pass the transaction ID from route params so useCurrentConfirmation can find the approval
-  const { currentConfirmation } = useCurrentConfirmation(paramsTransactionId);
+  // Get the actual transaction ID being rendered (from getTransaction fallback)
+  // This handles cases where route params point to a signed/submitted transaction but we're rendering the unapproved one
+  const actualTransactionId =
+    transaction?.id ||
+    (totalUnapproved ? unconfirmedTxsSorted[0]?.id : paramsTransactionId);
+  const { currentConfirmation } = useCurrentConfirmation(actualTransactionId);
 
   useEffect(() => {
     const tx = getTransaction();
@@ -202,7 +198,12 @@ const ConfirmTransaction = ({
   // It takes care to render <Confirm /> component for confirmations of type Personal Sign.
   // Once we migrate all confirmations to new designs we can get rid of this code
   // and render <Confirm /> component for all confirmation requests.
-  if (currentConfirmation) {
+  // Skip currentConfirmation check for decrypt/encryption routes as they have their own components
+  const isDecryptOrEncryptionRoute =
+    location.pathname?.includes(DECRYPT_MESSAGE_REQUEST_PATH) ||
+    location.pathname?.includes(ENCRYPTION_PUBLIC_KEY_REQUEST_PATH);
+  
+  if (currentConfirmation && !isDecryptOrEncryptionRoute) {
     return <Confirm confirmationId={paramsTransactionId} />;
   }
 
@@ -212,15 +213,17 @@ const ConfirmTransaction = ({
   // Show routes when state.confirmTransaction has been set and when either the ID in the params
   // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
   // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
+
+  // Note: Nested routes are relative to the parent route, so we only need the suffix paths
   if (isValidTransactionId) {
     return (
-      <Routes location={location}>
+      <Routes>
         <Route
-          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
+          path={DECRYPT_MESSAGE_REQUEST_PATH}
           element={<ConfirmDecryptMessage />}
         />
         <Route
-          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
+          path={ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}
           element={<ConfirmEncryptionPublicKey />}
         />
         <Route path="*" element={<ConfirmTransactionSwitch />} />

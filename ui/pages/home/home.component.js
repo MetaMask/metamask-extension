@@ -66,7 +66,6 @@ import {
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain';
 import { setEditedNetwork } from '../../store/actions';
-import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
@@ -135,8 +134,6 @@ export default class Home extends PureComponent {
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
-    pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
-    hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
@@ -195,7 +192,6 @@ export default class Home extends PureComponent {
       haveSwapsQuotes,
       haveBridgeQuotes,
       isNotification,
-      pendingApprovals,
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
@@ -210,13 +206,12 @@ export default class Home extends PureComponent {
       this.state.notificationClosing = true;
       attemptCloseNotificationPopup();
     } else if (
-      pendingApprovals.length ||
-      (!isNotification &&
-        !stayOnHomePage &&
-        (showAwaitingSwapScreen ||
-          haveSwapsQuotes ||
-          swapsFetchParams ||
-          haveBridgeQuotes))
+      !isNotification &&
+      !stayOnHomePage &&
+      (showAwaitingSwapScreen ||
+        haveSwapsQuotes ||
+        swapsFetchParams ||
+        haveBridgeQuotes)
     ) {
       this.state.redirecting = true;
     }
@@ -231,8 +226,6 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
-      pendingApprovals,
-      hasApprovalFlows,
       navState,
     } = this.props;
     // Read stayOnHomePage from both v5 location.state and v5-compat navState
@@ -247,16 +240,8 @@ export default class Home extends PureComponent {
       history.push(PREPARE_SWAP_ROUTE);
     } else if (canRedirect && haveBridgeQuotes) {
       history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
-    } else if (pendingApprovals.length || hasApprovalFlows) {
-      navigateToConfirmation(
-        pendingApprovals?.[0]?.id,
-        pendingApprovals,
-        hasApprovalFlows,
-        history,
-        '', // queryString
-        location.pathname, // currentPathname for skip-navigation optimization
-      );
     }
+    // Confirmation navigation is handled by ConfirmationContainer in index.js
   }
 
   checkRedirectAfterDefaultPage() {

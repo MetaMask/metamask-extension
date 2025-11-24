@@ -67,9 +67,10 @@ describe('Permit Seaport Tests', () => {
   it('renders seaport signature', async () => {
     await renderSeaportSignature();
 
-    expect(
-      await screen.findByText(tEn('confirmTitleSignature') as string),
-    ).toBeInTheDocument();
+    const confirmationTitle = await screen.findByTestId('confirm-title');
+    expect(confirmationTitle).toHaveTextContent(
+      tEn('confirmTitleSignature') as string,
+    );
     expect(
       await screen.findByText(tEn('confirmTitleDescSign') as string),
     ).toBeInTheDocument();
