@@ -12,7 +12,6 @@ export async function checkAccountAddressDisplayedInAccountList(
   type: string,
   count: number,
 ): Promise<void> {
-  console.log(`Check that account address is displayed in account list`);
   const addresses =
     type === 'QR' ? KNOWN_QR_ACCOUNTS : KNOWN_PUBLIC_KEY_ADDRESSES;
   const accountListPage = new AccountListPage(driver);
