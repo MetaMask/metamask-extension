@@ -64,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed deep link page design inconsistencies (#37872)
 - Fix error message when trying to import an SRP with an account that is already imported via private key (#37743)
 - Change available value text to total fiat value when fiat mode is enabled (#37749)
+
 ## [13.10.1]
 
 ### Fixed
