@@ -74,7 +74,9 @@ export function useDappSwapComparisonInfo() {
         transactionData,
         txParams?.from as string,
       );
-      updateRequestDetectionLatency();
+      if (result.quotesInput) {
+        updateRequestDetectionLatency();
+      }
       return result;
     } catch (error) {
       captureException(error);
