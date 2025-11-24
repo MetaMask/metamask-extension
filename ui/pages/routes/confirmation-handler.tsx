@@ -70,8 +70,18 @@ export const ConfirmationHandler = () => {
       (route) => pathname.startsWith(route) || pathname === route,
     );
 
-    return isExemptedRoute;
-  }, [pathname]);
+    // Flows that *should not* navigate in fullscreen, based on E2E specs
+    const isExemptedApproval =
+      isFullscreen &&
+      pendingApprovals.some(
+        (approval) =>
+          approval.type === 'smartTransaction:showSmartTransactionStatusPage' &&
+          approval.origin !== 'metamask' &&
+          approval.origin !== 'MetaMask',
+      );
+
+    return isExemptedRoute || isExemptedApproval;
+  }, [pathname, pendingApprovals, isFullscreen]);
 
   const canRedirect = !isNotification && !stayOnHomePage;
 
@@ -87,25 +97,13 @@ export const ConfirmationHandler = () => {
       approval.type === 'snap_manageAccounts:showNameSnapAccount',
   );
 
-  // Flows that *should not* navigate in fullscreen, based on E2E specs
-  const hasDappSmartTransactionStatus = pendingApprovals.some(
-    (approval) =>
-      approval.type === 'smartTransaction:showSmartTransactionStatusPage' &&
-      approval.origin !== 'metamask' &&
-      approval.origin !== 'MetaMask',
-  );
-
   // Ported from home.component - checkStatusAndNavigate()
   useEffect(() => {
-    if (isFullscreen && hasDappSmartTransactionStatus) {
+    if (notApplicable) {
       return;
     }
 
     if (isFullscreen && !hasWalletInitiatedSnapApproval && !hasApprovalFlows) {
-      return;
-    }
-
-    if (notApplicable) {
       return;
     }
 
@@ -130,7 +128,6 @@ export const ConfirmationHandler = () => {
   }, [
     canRedirect,
     hasBridgeQuotes,
-    hasDappSmartTransactionStatus,
     hasApprovalFlows,
     hasSwapsQuotes,
     hasWalletInitiatedSnapApproval,
