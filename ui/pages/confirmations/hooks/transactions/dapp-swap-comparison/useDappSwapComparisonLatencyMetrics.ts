@@ -31,9 +31,9 @@ export function useDappSwapComparisonLatencyMetrics() {
 
   return {
     requestDetectionLatency: (
-      requestDetectionLatency.current || N_A
+      requestDetectionLatency.current ?? N_A
     ).toString(),
-    swapComparisonLatency: (swapComparisonLatency.current || N_A).toString(),
+    swapComparisonLatency: (swapComparisonLatency.current ?? N_A).toString(),
     updateRequestDetectionLatency,
     updateSwapComparisonLatency,
   };
