@@ -20,14 +20,14 @@ const setSwapQuotes = jest.fn();
 
 const createMiddleware = (
   args: {
-    //eslint-disable-next-line @typescript-eslint/naming-convention
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     dappSwapMetricsFlag?: { enabled: boolean; bridge_quote_fees: number };
   } = {},
 ) => {
   const middlewareFunction = createDappSwapMiddleware({
     fetchQuotes,
     setSwapQuotes,
-    //eslint-disable-next-line @typescript-eslint/naming-convention
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     dappSwapMetricsFlag: { enabled: true, bridge_quote_fees: 250 },
     ...args,
   });
@@ -55,7 +55,7 @@ describe('DappSwapMiddleware', () => {
   it('does not fetch quotes if dapp swap is not enabled', async () => {
     fetchQuotes.mockReturnValueOnce(mockBridgeQuotes);
     const { middlewareFunction } = createMiddleware({
-      //eslint-disable-next-line @typescript-eslint/naming-convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       dappSwapMetricsFlag: { enabled: false, bridge_quote_fees: 250 },
     });
 

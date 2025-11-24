@@ -86,7 +86,7 @@ export function createDappSwapMiddleware<
       const { enabled: dappSwapEnabled, bridge_quote_fees: bridgeQuoteFees } =
         dappSwapMetricsFlag;
       if (!dappSwapEnabled) {
-        return next();
+        next();
       }
       const { securityAlertResponse, params, origin } = req;
       const { securityAlertId } = securityAlertResponse ?? {};
