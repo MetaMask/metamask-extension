@@ -1,98 +1,11 @@
 import { Mockttp } from 'mockttp';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
-
-async function mockSubscriptionApiCalls(
-  mockServer: Mockttp,
-  overrides?: {
-    mockNotEligible?: boolean;
-  },
-) {
-  const userStorageMockttpController = new UserStorageMockttpController();
-  userStorageMockttpController.setupPath(
-    USER_STORAGE_FEATURE_NAMES.accounts,
-    mockServer,
-  );
-  return [
-    await mockServer
-      .forGet('https://subscription.dev-api.cx.metamask.io/v1/pricing')
-      .thenJson(200, {
-        products: [
-          {
-            name: 'shield',
-            prices: [
-              {
-                interval: 'month',
-                unitAmount: 800,
-                unitDecimals: 2,
-                currency: 'usd',
-                trialPeriodDays: 14,
-                minBillingCycles: 12,
-              },
-              {
-                interval: 'year',
-                unitAmount: 8000,
-                unitDecimals: 2,
-                currency: 'usd',
-                trialPeriodDays: 14,
-                minBillingCycles: 1,
-              },
-            ],
-          },
-        ],
-        paymentMethods: [
-          {
-            type: 'card',
-          },
-        ],
-      }),
-    await mockServer
-      .forGet(
-        'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
-      )
-      .always()
-      .thenJson(200, [
-        {
-          canSubscribe: !overrides?.mockNotEligible,
-          canViewEntryModal: true,
-          minBalanceUSD: 1000,
-          product: 'shield',
-          modalType: 'A',
-          cohorts: [
-            {
-              cohort: 'wallet_home',
-              eligible: true,
-              eligibilityRate: 1.0,
-            },
-            {
-              cohort: 'post_tx',
-              eligible: true,
-              eligibilityRate: 1.0,
-            },
-          ],
-          assignedCohort: null,
-          hasAssignedCohortExpired: null,
-        },
-      ]),
-    await mockServer
-      .forPost('https://subscription.dev-api.cx.metamask.io/v1/user-events')
-      .thenJson(200, {
-        status: 'success',
-      }),
-    await mockServer
-      .forPost('https://subscription.dev-api.cx.metamask.io/v1/cohorts/assign')
-      .thenJson(200, {
-        cohort: 'wallet_home',
-        expiresAt: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days from now
-      }),
-  ];
-}
+import { ShieldMockttpService } from '../../helpers/shield/mocks';
 
 describe('Shield Entry Modal', function () {
   it('should show the shield entry modal if user does not have a shield subscription and has a balance greater than the minimum fiat balance threshold', async function () {
@@ -125,12 +38,10 @@ describe('Shield Entry Modal', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSubscriptionApiCalls,
-        ignoredConsoleErrors: [
-          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-          'Could not load Rive WASM file',
-          'XMLHttpRequest is not a constructor',
-        ],
+        testSpecificMock: (server: Mockttp) => {
+          const shieldMockttpService = new ShieldMockttpService();
+          return shieldMockttpService.setup(server);
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -151,7 +62,10 @@ describe('Shield Entry Modal', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSubscriptionApiCalls,
+        testSpecificMock: (server: Mockttp) => {
+          const shieldMockttpService = new ShieldMockttpService();
+          return shieldMockttpService.setup(server);
+        },
       },
       async ({ driver }) => {
         await completeCreateNewWalletOnboardingFlow({
@@ -182,7 +96,10 @@ describe('Shield Entry Modal', function () {
           useExternalServices: false,
         },
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSubscriptionApiCalls,
+        testSpecificMock: (server: Mockttp) => {
+          const shieldMockttpService = new ShieldMockttpService();
+          return shieldMockttpService.setup(server);
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -226,8 +143,10 @@ describe('Shield Entry Modal', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) =>
-          mockSubscriptionApiCalls(server, { mockNotEligible: true }),
+        testSpecificMock: (server: Mockttp) => {
+          const shieldMockttpService = new ShieldMockttpService();
+          return shieldMockttpService.setup(server, { mockNotEligible: true });
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
