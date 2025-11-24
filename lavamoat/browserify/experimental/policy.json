@@ -2091,6 +2091,17 @@
         "uuid": true
       }
     },
+    "@metamask/user-profile-controller": {
+      "globals": {
+        "URL": true,
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/eth-qr-keyring>async-mutex": true
+      }
+    },
     "@metamask/utils": {
       "globals": {
         "TextDecoder": true,
