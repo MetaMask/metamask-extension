@@ -351,6 +351,7 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
                 as="div"
                 data-testid="deep-link-description"
                 paddingBottom={12}
+                height={BlockSize.Full}
               >
                 <Text
                   key="description"
