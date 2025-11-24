@@ -74,7 +74,6 @@ export function useDappSwapComparisonInfo() {
         transactionData,
         txParams?.from as string,
       );
-      console.log('-----------inside getDataFromSwap', result);
       updateRequestDetectionLatency();
       return result;
     } catch (error) {
