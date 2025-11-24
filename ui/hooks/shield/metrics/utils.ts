@@ -24,10 +24,8 @@ export function formatDefaultShieldSubscriptionRequestEventProps(
   const billingCycles = getBillingCyclesForMetrics(params.billingInterval);
 
   return {
+    ...(params.marketingUtmParams || {}),
     source: params.source,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    marketing_utm_id: params.marketingUtmId,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     post_transaction_type: params.postTransactionType,
@@ -133,15 +131,13 @@ export function formatCaptureShieldCtaClickedEventProps(
   params: CaptureShieldCtaClickedEventParams,
 ) {
   return {
+    ...(params.marketingUtmParams || {}),
     source: params.source,
     page: params.redirectToPage,
     url: params.redirectToUrl,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     cta_action_clicked: params.ctaActionClicked,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    marketing_utm_id: params.marketingUtmId,
   };
 }
 

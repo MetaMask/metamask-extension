@@ -60,12 +60,12 @@ export const useSubscriptionMetrics = () => {
    */
   const setShieldSubscriptionMetricsPropsToBackground = useCallback(
     async (props: {
-      marketingUtmId?: string;
+      marketingUtmParams?: Record<string, string>;
       source: EntryModalSourceEnum;
     }) => {
       await dispatch(
         setShieldSubscriptionMetricsProps({
-          marketingUtmId: props.marketingUtmId,
+          marketingUtmParams: props.marketingUtmParams,
           source: props.source,
           userBalanceInUSD: Number(totalFiatBalance),
         }),
@@ -118,6 +118,7 @@ export const useSubscriptionMetrics = () => {
         category: MetaMetricsEventCategory.Shield,
         properties: {
           ...commonTrackingProps,
+          ...(params.marketingUtmParams || {}),
           source: params.source,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -125,9 +126,6 @@ export const useSubscriptionMetrics = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           modal_cta_action_clicked: params.modalCtaActionClicked,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          marketing_utm_id: params.marketingUtmId,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           post_transaction_type: params.postTransactionType,

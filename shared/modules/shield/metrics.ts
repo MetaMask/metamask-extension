@@ -190,6 +190,7 @@ export function getSubscriptionRequestTrackingProps(
     getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
 
   return {
+    ...(shieldSubscriptionMetricsProps?.marketingUtmParams || {}),
     source:
       shieldSubscriptionMetricsProps?.source || EntryModalSourceEnum.Settings,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -239,4 +240,23 @@ export function getSubscriptionRequestTrackingProps(
     // eslint-disable-next-line @typescript-eslint/naming-convention
     is_trial: !isTrialed,
   };
+}
+
+/**
+ * Get the marketing UTM parameters for the Shield metrics from the url search parameters.
+ *
+ * @param search - The search parameters.
+ * @returns The marketing UTM parameters.
+ */
+export function getShieldMarketingUtmParamsForMetrics(search: string) {
+  const searchParams = new URLSearchParams(search);
+
+  const marketingUtmParams: Record<string, string> = {};
+
+  searchParams.forEach((value, key) => {
+    if (key.startsWith('utm_')) {
+      marketingUtmParams[key] = value;
+    }
+  });
+  return marketingUtmParams;
 }
