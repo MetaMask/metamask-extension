@@ -5224,7 +5224,7 @@ export default class MetamaskController extends EventEmitter {
     if (this.isMultichainAccountsFeatureState2Enabled()) {
       const resyncAndAlignAccounts = async () => {
         // READ THIS CAREFULLY:
-        // There is is/was a bug with Snap accounts that can be desynchronized (Solana). To
+        // There is/was a bug with Snap accounts that can be desynchronized (Solana). To
         // automatically "fix" this corrupted state, we run this method which will re-sync
         // MetaMask accounts and Snap accounts upon login.
         // BUG: https://github.com/MetaMask/metamask-extension/issues/37228
