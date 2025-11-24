@@ -23,7 +23,7 @@ import {
   getCurrentKeyring,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
-  getIsSocialLoginUserAuthenticated,
+  getIsSocialLoginFlow,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -31,6 +31,7 @@ import {
   setFirstTimeFlowType,
   startOAuthLogin,
   setParticipateInMetaMetrics,
+  getIsSeedlessOnboardingUserAuthenticated,
 } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
@@ -72,9 +73,7 @@ export default function OnboardingWelcome() {
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
-  const isUserAuthenticatedWithSocialLogin = useSelector(
-    getIsSocialLoginUserAuthenticated,
-  );
+  const isSocialLoginFLow = useSelector(getIsSocialLoginFlow);
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
@@ -94,6 +93,18 @@ export default function OnboardingWelcome() {
     useState(shouldSkipAnimation);
 
   const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
+
+  const getIsUserAuthenticatedWithSocialLogin = useCallback(async () => {
+    if (!isSocialLoginFLow) {
+      return true;
+    }
+
+    const isSeedlessOnboardingUserAuthenticated = await dispatch(
+      getIsSeedlessOnboardingUserAuthenticated(),
+    );
+    return isSeedlessOnboardingUserAuthenticated;
+  }, [dispatch, isSocialLoginFLow]);
+
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
@@ -117,12 +128,18 @@ export default function OnboardingWelcome() {
       } else {
         navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
       }
-    } else if (isUserAuthenticatedWithSocialLogin) {
-      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
-      } else {
-        navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
-      }
+    } else if (isSocialLoginFLow) {
+      (async () => {
+        const isUserAuthenticatedWithSocialLogin =
+          await getIsUserAuthenticatedWithSocialLogin();
+        if (isUserAuthenticatedWithSocialLogin) {
+          if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+            navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
+          } else {
+            navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
+          }
+        }
+      })();
     }
   }, [
     currentKeyring,
@@ -130,9 +147,10 @@ export default function OnboardingWelcome() {
     firstTimeFlowType,
     newAccountCreationInProgress,
     isParticipateInMetaMetricsSet,
-    isUserAuthenticatedWithSocialLogin,
+    getIsUserAuthenticatedWithSocialLogin,
     isFireFox,
     isWalletResetInProgress,
+    isSocialLoginFLow,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);
