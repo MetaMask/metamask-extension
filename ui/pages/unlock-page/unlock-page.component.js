@@ -505,7 +505,6 @@ class UnlockPage extends Component {
 
     const needHelpText = t('needHelpLinkText');
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
-    const isTestEnvironment = Boolean(process.env.IN_TEST);
 
     return (
       <Box
@@ -675,7 +674,7 @@ class UnlockPage extends Component {
             </Text>
           </Box>
         </Box>
-        {!isTestEnvironment && !isRehydrationFlow && (
+        {!isRehydrationFlow && (
           <Suspense fallback={<Box />}>
             <FoxAppearAnimation />
           </Suspense>
