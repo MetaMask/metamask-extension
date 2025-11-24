@@ -5,7 +5,7 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback } from 'react';
 
 import { TokenStandAndDetails } from '../../../../../store/actions';
@@ -14,6 +14,8 @@ import { useAsyncResult } from '../../../../../hooks/useAsync';
 import { fetchAllTokenDetails } from '../../../utils/token';
 import { getTokenValueFromRecord } from '../../../utils/dapp-swap-comparison-utils';
 import { useConfirmContext } from '../../../context/confirm';
+
+const POLYGON_NATIVE_ASSET = '0x0000000000000000000000000000000000001010';
 
 export function useDappSwapUSDValues({
   tokenAddresses = [],
@@ -30,10 +32,23 @@ export function useDappSwapUSDValues({
 
   const { value: fiatRates, pending: fiatRatesPending } = useAsyncResult<
     Record<Hex, number | undefined>
-  >(
-    () => fetchTokenExchangeRates('usd', tokenAddresses as Hex[], chainId),
-    [chainId, tokenAddresses?.length],
-  );
+  >(async () => {
+    const addresses = tokenAddresses.filter(
+      (tokenAddress) => !isNativeAddress(tokenAddress),
+    );
+    const exchangeRates = await fetchTokenExchangeRates(
+      'usd',
+      addresses as Hex[],
+      chainId,
+    );
+
+    if (chainId === CHAIN_IDS.POLYGON) {
+      const nativeAddress = getNativeAssetForChainId(chainId).address;
+      exchangeRates[nativeAddress] = exchangeRates[POLYGON_NATIVE_ASSET];
+    }
+
+    return exchangeRates;
+  }, [chainId, tokenAddresses?.length]);
 
   const { value: tokenDetails, pending: tokenDetailsPending } = useAsyncResult<
     Record<Hex, TokenStandAndDetails>
