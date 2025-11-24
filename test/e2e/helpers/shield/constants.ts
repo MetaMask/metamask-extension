@@ -1,6 +1,11 @@
 export const BASE_SUBSCRIPTION_API_URL =
   'https://subscription.dev-api.cx.metamask.io/v1';
 
+export const BASE_RULESET_ENGINE_API_URL =
+  'https://ruleset-engine.dev-api.cx.metamask.io/v1';
+
+export const BASE_CLAIMS_API_URL = 'https://claims.dev-api.cx.metamask.io';
+
 export const SUBSCRIPTION_API = {
   PRICING: `${BASE_SUBSCRIPTION_API_URL}/pricing`,
   ELIGIBILITY: `${BASE_SUBSCRIPTION_API_URL}/subscriptions/eligibility`,
@@ -8,15 +13,24 @@ export const SUBSCRIPTION_API = {
   USER_EVENTS: `${BASE_SUBSCRIPTION_API_URL}/user-events`,
   COHORT_ASSIGNMENT: `${BASE_SUBSCRIPTION_API_URL}/cohorts/assign`,
   CREATE_SUBSCRIPTION_BY_CARD: `${BASE_SUBSCRIPTION_API_URL}/subscriptions/card`,
+  CREATE_SUBSCRIPTION_BY_CRYPTO: `${BASE_SUBSCRIPTION_API_URL}/subscriptions/crypto`,
+  CRYPTO_APPROVAL_AMOUNT: `${BASE_SUBSCRIPTION_API_URL}/subscriptions/crypto/approval-amount`,
   CHECKOUT_SESSION: `${BASE_SUBSCRIPTION_API_URL}/pay/cs_test_123456789`,
   CANCEL_SUBSCRIPTION: `${BASE_SUBSCRIPTION_API_URL}/subscriptions/cancel`,
   UNCANCEL_SUBSCRIPTION: `${BASE_SUBSCRIPTION_API_URL}/subscriptions/uncancel`,
 };
 
 export const CLAIMS_API = {
-  CONFIGURATIONS: 'https://claims.dev-api.cx.metamask.io/configurations',
-  CLAIMS: 'https://claims.dev-api.cx.metamask.io/claims',
-  SIGNATURE: 'https://claims.dev-api.cx.metamask.io/signature/generateMessage',
+  CONFIGURATIONS: `${BASE_CLAIMS_API_URL}/configurations`,
+  CLAIMS: `${BASE_CLAIMS_API_URL}/claims`,
+  SIGNATURE: `${BASE_CLAIMS_API_URL}/signature/generateMessage`,
+};
+
+export const RULESET_ENGINE_API = {
+  TRANSACTION_COVERAGE_INIT: `${BASE_RULESET_ENGINE_API_URL}/transaction/coverage/init`,
+  TRANSACTION_COVERAGE_RESULT: `${BASE_RULESET_ENGINE_API_URL}/transaction/coverage/result`,
+  SIGNATURE_COVERAGE_INIT: `${BASE_RULESET_ENGINE_API_URL}/signature/coverage/init`,
+  SIGNATURE_COVERAGE_RESULT: `${BASE_RULESET_ENGINE_API_URL}/signature/coverage/result`,
 };
 
 export const BASE_SHIELD_SUBSCRIPTION = {
@@ -57,6 +71,35 @@ export const BASE_SHIELD_SUBSCRIPTION_CRYPTO = {
   interval: 'year',
   currentPeriodStart: '2025-10-20T02:43:29.000Z',
   currentPeriodEnd: '2025-11-03T02:43:29.000Z',
+  trialStart: '2025-10-20T02:43:29.000Z',
+  trialEnd: '2025-11-03T02:43:29.000Z',
+  trialPeriodDays: 14,
+  paymentMethod: {
+    type: 'crypto',
+    crypto: {
+      chainId: '0x1',
+      tokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      tokenSymbol: 'USDC',
+      payerAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+    },
+  },
+  isEligibleForSupport: true,
+};
+
+export const BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY = {
+  id: 'test_subscription_id_crypto_monthly',
+  status: 'trialing',
+  products: [
+    {
+      name: 'shield',
+      unitAmount: 800,
+      unitDecimals: 2,
+      currency: 'usd',
+    },
+  ],
+  interval: 'month',
+  currentPeriodStart: '2025-10-20T02:43:29.000Z',
+  currentPeriodEnd: '2025-11-20T02:43:29.000Z',
   trialStart: '2025-10-20T02:43:29.000Z',
   trialEnd: '2025-11-03T02:43:29.000Z',
   trialPeriodDays: 14,
