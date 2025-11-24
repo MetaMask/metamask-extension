@@ -51,7 +51,7 @@ export function createDappSwapMiddleware<
     const { securityAlertResponse } = req;
     const { securityAlertId } = securityAlertResponse ?? {};
 
-    if (securityAlertId) {
+    if (securityAlertId && req.method === 'eth_sendTransaction') {
       getQuotesForConfirmation({
         req,
         fetchQuotes,
