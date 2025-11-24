@@ -710,7 +710,7 @@
     "terser-webpack-plugin": "^5.3.14",
     "through2": "^4.0.2",
     "ts-node": "^10.9.2",
-    "tsx": "^4.19.2",
+    "tsx": "^4.20.6",
     "tweetnacl": "^1.0.3",
     "typescript": "~5.4.5",
     "unzipper": "^0.12.3",
