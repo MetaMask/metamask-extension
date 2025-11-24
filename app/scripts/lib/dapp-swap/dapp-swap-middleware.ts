@@ -1,31 +1,13 @@
-import {
-  Json,
-  JsonRpcParams,
-  JsonRpcRequest,
-  JsonRpcResponse,
-} from '@metamask/utils';
-import { NetworkClientId } from '@metamask/network-controller';
+import { Json, JsonRpcResponse } from '@metamask/utils';
 import {
   GenericQuoteRequest,
   QuoteResponse,
 } from '@metamask/bridge-controller';
 
-import { SecurityAlertResponse } from '../ppom/types';
-import { getQuotesForConfirmation } from './dapp-swap-util';
-
-export type DappSwapMiddlewareRequest<
-  Params extends JsonRpcParams = JsonRpcParams,
-> = Required<JsonRpcRequest<Params>> & {
-  origin?: string;
-  securityAlertResponse?: SecurityAlertResponse | undefined;
-  networkClientId: NetworkClientId;
-  params: {
-    data: string;
-    from: string;
-    chainId: string;
-    calls: { data: string; from: string }[];
-  }[];
-};
+import {
+  DappSwapMiddlewareRequest,
+  getQuotesForConfirmation,
+} from './dapp-swap-util';
 
 export function createDappSwapMiddleware<
   Params extends (string | { to: string })[],

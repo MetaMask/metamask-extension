@@ -2,10 +2,8 @@ import { JsonRpcResponseStruct } from '@metamask/utils';
 
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { mockBridgeQuotes } from '../../../../test/data/confirmations/contract-interaction';
-import {
-  createDappSwapMiddleware,
-  DappSwapMiddlewareRequest,
-} from './dapp-swap-middleware';
+import { createDappSwapMiddleware } from './dapp-swap-middleware';
+import { DappSwapMiddlewareRequest } from './dapp-swap-util';
 
 const REQUEST_MOCK = {
   params: [],

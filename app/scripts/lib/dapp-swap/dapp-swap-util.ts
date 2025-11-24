@@ -1,13 +1,28 @@
 import log from 'loglevel';
-import { Hex, JsonRpcParams } from '@metamask/utils';
+import { Hex, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import {
   GenericQuoteRequest,
   QuoteResponse,
 } from '@metamask/bridge-controller';
+import { NetworkClientId } from '@metamask/network-controller';
 
 import { captureException } from '../../../../shared/lib/sentry';
 import { getDataFromSwap } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
-import { DappSwapMiddlewareRequest } from './dapp-swap-middleware';
+import { SecurityAlertResponse } from '../ppom/types';
+
+export type DappSwapMiddlewareRequest<
+  Params extends JsonRpcParams = JsonRpcParams,
+> = Required<JsonRpcRequest<Params>> & {
+  origin?: string;
+  securityAlertResponse?: SecurityAlertResponse | undefined;
+  networkClientId: NetworkClientId;
+  params: {
+    data: string;
+    from: string;
+    chainId: string;
+    calls: { data: string; from: string }[];
+  }[];
+};
 
 const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
