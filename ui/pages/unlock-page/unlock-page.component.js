@@ -43,11 +43,11 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { withMetaMetrics } from '../../contexts/metametrics';
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
-import MetaFoxHorizontalLogo from '../../components/ui/metafox-logo/horizontal-logo';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
+import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';
 
 const FoxAppearAnimation = lazy(
   () => import('../onboarding-flow/welcome/fox-appear-animation'),
@@ -556,9 +556,7 @@ class UnlockPage extends Component {
               {isRehydrationFlow ? (
                 this.renderMascot()
               ) : (
-                <MetaFoxHorizontalLogo
-                  className={`unlock-page__mascot-container__horizontal-logo ${this.props.isPopup ? 'unlock-page__mascot-container__horizontal-logo--popup' : ''}`}
-                />
+                <MetamaskWordmarkLogo isPopup={this.props.isPopup} />
               )}
               {isBeta() ? (
                 <Text
