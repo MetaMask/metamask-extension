@@ -160,20 +160,23 @@ export const useMultichainBalances = (
   const tronBalancesWithFiat = useNonEvmAssetsWithBalances(
     tronAccount?.id,
     tronAccount?.type,
-  ).filter(
-    (token) =>
-      !TRON_RESOURCE_SYMBOLS_SET.has(
-        token.symbol.toLowerCase() as TronResourceSymbol,
-      ),
   );
 
   // return TokenWithFiat sorted by fiat balance amount
   const assetsWithBalance = useMemo(() => {
+    // Filter out Tron energy/bandwidth resources before combining
+    const filteredTronBalances = tronBalancesWithFiat.filter(
+      (token) =>
+        !TRON_RESOURCE_SYMBOLS_SET.has(
+          token.symbol.toLowerCase() as TronResourceSymbol,
+        ),
+    );
+
     return [
       ...evmBalancesWithFiatByChainId,
       ...solanaBalancesWithFiat,
       ...bitcoinBalancesWithFiat,
-      ...tronBalancesWithFiat,
+      ...filteredTronBalances,
     ]
       .map((token) => ({
         ...token,
@@ -189,11 +192,19 @@ export const useMultichainBalances = (
 
   // return total fiat balances by chainId/caipChainId
   const balanceByChainId = useMemo(() => {
+    // Filter out Tron energy/bandwidth resources
+    const filteredTronBalances = tronBalancesWithFiat.filter(
+      (token) =>
+        !TRON_RESOURCE_SYMBOLS_SET.has(
+          token.symbol.toLowerCase() as TronResourceSymbol,
+        ),
+    );
+
     return [
       ...evmBalancesWithFiatByChainId,
       ...solanaBalancesWithFiat,
       ...bitcoinBalancesWithFiat,
-      ...tronBalancesWithFiat,
+      ...filteredTronBalances,
     ].reduce((acc: Record<Hex | CaipChainId, number>, tokenWithBalanceData) => {
       if (!acc[tokenWithBalanceData.chainId]) {
         acc[tokenWithBalanceData.chainId] = 0;
