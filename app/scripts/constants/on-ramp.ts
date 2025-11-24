@@ -1,3 +1,21 @@
-export const TRANSAK_API_KEY = '25ac1309-a49b-4411-b20e-5e56c61a5b1c'; // It's a public key, which will be included in a URL for Transak.
-export const MOONPAY_API_KEY = 'pk_live_WbCpe6PxSIcGPCSd6lKCbJNRht7uy'; // Publishable key.
-export const COINBASEPAY_API_KEY = 'ab4b8829-a59d-44d3-accc-de77e4f18df2'; // Publishable key.
+/**
+ * Configuration file for third-party crypto/fiat payment providers.
+ *
+ * SECURITY WARNING:
+ * These API keys (even if marked as 'publishable') should never be hardcoded
+ * directly into the source code, especially for frontend applications.
+ * They MUST be loaded from environment variables (e.g., .env file, build process)
+ * to prevent accidental exposure when the source code is inspected.
+ */
+
+// Use process.env or import.meta.env, depending on the environment/framework.
+export const API_KEYS = {
+  // Transak API Key (Public/Client-side key for URL integration)
+  TRANSAK: process.env.TRANSAK_API_KEY,
+
+  // Moonpay Publishable Key (Client-side key)
+  MOONPAY: process.env.MOONPAY_API_KEY,
+
+  // CoinbasePay Publishable Key (Client-side key)
+  COINBASEPAY: process.env.COINBASEPAY_API_KEY,
+};
