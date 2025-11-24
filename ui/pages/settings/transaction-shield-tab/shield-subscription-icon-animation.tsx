@@ -27,7 +27,6 @@ const ShieldSubscriptionIconAnimation = ({
   containerClassName?: string;
   canvasClassName?: string;
 }) => {
-  const isTestEnvironment = Boolean(process.env.IN_TEST);
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError } = context;
   const {
@@ -91,7 +90,6 @@ const ShieldSubscriptionIconAnimation = ({
     bufferLoading ||
     !buffer ||
     status === 'loading' ||
-    isTestEnvironment ||
     status === 'failed'
   ) {
     return <Box className={containerClassName}></Box>;
