@@ -51,6 +51,7 @@ type State = {
       | 'participateInMetaMetrics'
       | 'remoteFeatureFlags'
       | 'pna25Acknowledged'
+      | 'completedOnboarding'
     >
   >;
 };
@@ -241,17 +242,25 @@ export function selectShowShieldEndingToast(
 
 /**
  * Determines if the PNA25 banner should be shown based on:
+ * - User has completed onboarding (completedOnboarding === true)
  * - LaunchDarkly feature flag (extension-ux-pna25) is enabled (boolean)
  * - User has opted into metrics (participateInMetaMetrics === true)
- * - User hasn't acknowledged the new feature yet (pna25Acknowledged !== true)
+ * - User is an EXISTING user (pna25Acknowledged === null)
+ * New users will have pna25Acknowledged = true (opted in) or false (opted out)
+ * Existing users will have pna25Acknowledged = null (state didn't exist when they onboarded)
  *
  * @param state - The application state containing the banner data.
  * @returns Boolean indicating whether to show the banner
  */
 export function selectShowPna25Banner(state: Pick<State, 'metamask'>): boolean {
-  const { participateInMetaMetrics, pna25Acknowledged } = state.metamask || {};
+  const { completedOnboarding, participateInMetaMetrics, pna25Acknowledged } =
+    state.metamask || {};
 
-  // Get the feature flag from LaunchDarkly
+  // Only show to users who have completed onboarding
+  if (!completedOnboarding) {
+    return false; // User hasn't completed onboarding yet
+  }
+
   // extension-ux-pna25 is a boolean flag
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const remoteFeatureFlags = getRemoteFeatureFlags(state as any);
@@ -270,6 +279,6 @@ export function selectShowPna25Banner(state: Pick<State, 'metamask'>): boolean {
     return false; // User already acknowledged
   }
 
-  // Show banner if user opted in before but hasn't acknowledged the new policy
+  // Show banner only for existing users who opted in before this feature
   return true;
 }
