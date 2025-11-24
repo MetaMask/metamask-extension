@@ -40,7 +40,6 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
       },
     );
   });
-  // eslint-disable-next-line mocha/no-skipped-tests
   it('should display wallet and accounts for hardware wallet', async function () {
     await withFixtures(
       {
