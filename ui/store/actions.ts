@@ -916,7 +916,6 @@ export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
         'getIsSeedlessOnboardingUserAuthenticated',
         [],
       );
-      console.log('isAuthenticated', isAuthenticated);
       return isAuthenticated;
     } catch (error) {
       log.warn('getIsSeedlessOnboardingUserAuthenticated error', error);
