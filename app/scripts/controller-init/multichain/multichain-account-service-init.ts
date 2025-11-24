@@ -39,7 +39,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
 > = ({ controllerMessenger, initMessenger }) => {
   const snapAccountProviderConfig = {
     // READ THIS CAREFULLY:
-    // We using 1 to prevent any concurrent `keyring_createAccount` requests, that make sure
+    // We are using 1 to prevent any concurrent `keyring_createAccount` requests. This ensures
     // we prevent any desync between Snap's accounts and Metamask's accounts.
     maxConcurrency: 1,
     // Re-use the default config for the rest:
