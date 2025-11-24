@@ -180,7 +180,6 @@ import {
  * @example
  * // Navigate to a new route
  * navigate('/settings', { replace: true });
- *
  * @example
  * // Go back in history
  * navigate(-1);
