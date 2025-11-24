@@ -1,3 +1,4 @@
+import React from 'react';
 import { waitFor } from '@testing-library/react';
 import nock from 'nock';
 import mockMetaMaskState from '../data/onboarding-completion-route.json';
@@ -22,6 +23,33 @@ jest.mock('../../../ui/store/background-connection', () => ({
 jest.mock('../../../ui/ducks/bridge/actions', () => ({
   ...jest.requireActual('../../../ui/ducks/bridge/actions'),
 }));
+
+jest.mock(
+  '../../../ui/pages/onboarding-flow/welcome/fox-appear-animation',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => <div data-testid="fox-appear-animation" />,
+  }),
+);
+
+jest.mock(
+  '../../../ui/pages/onboarding-flow/welcome/metamask-wordmark-animation',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => <div data-testid="metamask-wordmark-animation" />,
+  }),
+);
+
+jest.mock(
+  '../../../ui/pages/onboarding-flow/creation-successful/wallet-ready-animation',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => <div data-testid="wallet-ready-animation" />,
+  }),
+);
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 

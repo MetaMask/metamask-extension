@@ -157,6 +157,8 @@ const subscriptionService = new SubscriptionService({
   platform: mockPlatform,
   webAuthenticator: mockWebAuthenticator,
 });
+// Mock environment variables
+const originalEnv = process.env;
 
 describe('SubscriptionService - startSubscriptionWithCard', () => {
   const MOCK_STATE = createSwapsMockStore().metamask;
@@ -166,6 +168,8 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
   });
 
   beforeEach(() => {
+    process.env = { ...originalEnv };
+
     mockStartShieldSubscriptionWithCard.mockResolvedValue({
       checkoutSessionUrl: mockCheckoutSessionUrl,
     });
@@ -216,9 +220,12 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    process.env = { ...originalEnv };
   });
 
   it('should start the subscription with card', async () => {
+    delete process.env.IN_TEST; // unset IN_TEST environment variable
+
     await subscriptionService.startSubscriptionWithCard({
       products: [PRODUCT_TYPES.SHIELD],
       isTrialRequested: false,
