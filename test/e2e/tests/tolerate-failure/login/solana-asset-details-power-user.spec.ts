@@ -17,7 +17,6 @@ describe('Power user persona', function () {
   setupTimerReporting();
   // eslint-disable-next-line mocha/no-skipped-tests
   it('Check Solana asset details page load time', async function () {
-    // skipped until https://github.com/MetaMask/metamask-extension/pull/37339 gets merged
     if (!process.env.INFURA_PROJECT_ID) {
       throw new Error(
         'Running this E2E test requires a valid process.env.INFURA_PROJECT_ID',
