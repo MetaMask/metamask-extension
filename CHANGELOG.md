@@ -7,6 +7,104 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.10.2]
+
+### Fixed
+
+- fixed entry modal closed error (#38188)
+
+## [13.10.1]
+
+### Fixed
+
+- Prevents token list from fetching balances for all accounts (#38065)
+- Fixes dapp-swap comparison fiat rate fetching for native tokens (#37980)
+- Fixes dapp-swap fix conversion rate for pol native token (#38102)
+- Removes unnecessary extension permission (#38075)
+- Fixes missing native token balances in wallet balance (#38126)
+
+## [13.10.0]
+
+### Added
+
+- Updated Shield settings banner ui, copywriting and text colors (#37791)
+- Updated texts and notes for shield plan page (#37800)
+- Supports tron in the swaps and bridge experience (#37683)
+- Show Shield Settings billing account name in full (#37797)
+- Add generic Platform Notification support (#37709)
+- Introduced sidepanel (#37304)
+- Adds shield membership event metrics (#37767)
+- Adds new events for shield eligibility and priority support (#37822)
+- Updated text on Claims Form top details (#37770)
+- Added metrics tracking for the new Subscriptions (#37735)
+- Updated error codes for shield rule engine (#37748)
+- Adds animation to Shield Entry Modal Illustration (#37686)
+- Updated Transaction Shield page UI and added animated icons (#37692)
+- Improved initial cross ecosystem connection flows by preselecting all supported chains (EVM + Solana) when connecting through (#37088)
+  injected providers
+- Updated Shield Entry modal UI and added fullscreen mode (#37594)
+- All coverage statuses show a background of a lighter text color (#37580)
+  Gray status for not covered shield coverage status
+  Icon i info for all shield coverage status alert
+  Fix shield coverage status for simple send not showing
+  Onlys how shield footer indicator for
+  signature/transaction confirmation
+- Implement cohort-based gating system for Shield entry modal display (#37651)
+- Keep shield transaction claimable after subscription cancelled (#37700)
+  navigate back to shield plan if showing cancelled
+  subscription and user press renew
+- Added gas sponsorship for shield trial subscriptions (#37441)
+- Enable automatic updates of preinstalled Snaps (#37610)
+- Get required configurations for shield claims process from the backend (#37693)
+- Virtualize the Tokens list (#37589)
+- Add Shield entry modal to settings page (#37606)
+- Added automatic account upgrade support (#37571)
+- Added support for Tron (#35984)
+- Support ignoring non-evm tokens (#37423)
+- Added `@metamask/claims-controller` for shield claims Added Claim Signature Generation (#37597)
+- Support importing non-evm tokens (#37501)
+- Shield plan copywriting update and removed footer note (#37595)
+- Show Priority Tag on Menu > Support when shield subscription is active or paused (#37590)
+
+### Fixed
+
+- Fixed evaluateCohortEligibility call in home page just after the onboarding is completed (#37803)
+- Fixed shield coverage alert title for the Signature requests (#37799)
+- Fixes shield metrics events wrt to eventSource and cohort props (#37783)
+- Permissions screen height (#37812)
+- Added missing metrics to import SRP flow (#37567)
+- Shows token balance for gas tokens if fiat balance is disabled in settings (#37738)
+- Updates confirmations logic for sidepanel (#37778)
+- Used feature flag to only show this change when sidepanel flag is enabled for chrome. Updated button on wallet creation (#37782)
+  successful page from 'Done' to 'Open wallet'
+- Applied the settings theme to modify the background color of the unlock page (#37726)
+- Fix subscription default card payment method not saved (#37774)
+- Adds a hovered component when the address link is hovered over (#37539)
+- Added back hardware wallet device selection on expanded view in the context of sidepanel (#37731)
+- Fixed account details menu appearing in dapp connection account selection (#37704)
+- Fix design defects and show all native assets regardless of balance in send flow (#37613)
+- Fixed backup and sync toggle not persisting user's choice during onboarding (#37578)
+- Disable default "Alert" text and the arrow for inline Confirmation alerts (#37542)
+- Fixed bridging with qr-based wallets (#37549)
+- Validate seedphrase when user paste the data (#37611)
+- Fix incorrect token approval amount when change shield plan (#37585)
+- Show dest token symbol in HW approval label (#37629)
+- Smart transaction send and receive copy (#36229)
+- Fixed "Premature close" stream errors in extension context by adding graceful shutdown handlers (#37400)
+- Removed deprecated network warnings that were displayed at the bottom of the extension (#37702)
+- Use preferred avatar in site tooltip (#37634)
+- Filter Tron Energy/Bandwidth assets on token list (#37699)
+- Updates Shield Terms of Use URL (#37769)
+- Updates Shield confirmation messages (#37829)
+- Adds `from` and `to` fields to the send confirmation view (#37906)
+- Fixes menu height overflow (#37915)
+- Fixes crash when clicking away from swap flow (#37922)
+- Fixes styling in `MultichainHoveredAddressRowsList` and `MultichainAggregatedAddressListRow` components (#37792)
+- Fixes a bug that was not copying the checksummed address (#37939)
+- Updates Predict deeplink handler (#37907)
+- Fixes `Open full screen` text (#37916)
+- Adds the support link back in unlock page (#37967)
+
 ## [13.9.0]
 
 ### Added
@@ -1135,7 +1233,10 @@ authorized by the user.` error until the user fully revoked dapp
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.9.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.10.2...HEAD
+[13.10.2]: https://github.com/MetaMask/metamask-extension/compare/v13.10.1...v13.10.2
+[13.10.1]: https://github.com/MetaMask/metamask-extension/compare/v13.10.0...v13.10.1
+[13.10.0]: https://github.com/MetaMask/metamask-extension/compare/v13.9.0...v13.10.0
 [13.9.0]: https://github.com/MetaMask/metamask-extension/compare/v13.8.0...v13.9.0
 [13.8.0]: https://github.com/MetaMask/metamask-extension/compare/v13.7.0...v13.8.0
 [13.7.0]: https://github.com/MetaMask/metamask-extension/compare/v13.6.0...v13.7.0

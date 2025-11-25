@@ -16,7 +16,6 @@ import {
   getSubscriptionCryptoApprovalAmount,
   getSubscriptionPricing as getSubscriptionPricingAction,
 } from '../../store/actions';
-import { getSelectedAccount } from '../../selectors';
 import { getTokenBalancesEvm } from '../../selectors/assets';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../useTokenBalances';
 import {
@@ -26,6 +25,12 @@ import {
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { AssetType } from '../../../shared/constants/transaction';
 import { useAsyncResult } from '../useAsync';
+import {
+  getAccountGroupsByAddress,
+  getInternalAccountByGroupAndCaip,
+  getSelectedAccountGroup,
+} from '../../selectors/multichain-accounts/account-tree';
+import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 
 export type TokenWithApprovalAmount = (
   | AssetWithDisplayData<ERC20Asset>
@@ -75,9 +80,19 @@ export const useAvailableTokenBalances = (params: {
     [paymentChains],
   );
 
-  const selectedAccount = useSelector(getSelectedAccount);
+  // Use accountAddress's account group if it exists, otherwise use the selected account group
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
+  const [requestedAccountGroup] = useSelector((state) =>
+    getAccountGroupsByAddress(state as MultichainAccountsState, ['']),
+  );
+  const accountGroupIdToUse = requestedAccountGroup?.id ?? selectedAccountGroup;
+
+  // Get internal account to use for each supported scope
+  const evmAccount = useSelector((state) =>
+    getInternalAccountByGroupAndCaip(state, accountGroupIdToUse, 'eip155:1'),
+  );
   const evmBalances = useSelector((state) =>
-    getTokenBalancesEvm(state, selectedAccount.address),
+    getTokenBalancesEvm(state, evmAccount?.address),
   );
 
   // Poll and update evm balances for payment chains

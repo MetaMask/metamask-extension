@@ -12,7 +12,7 @@ import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmati
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
-import * as ConfirmContext from '../../../../../context/confirm';
+import * as DappSwapContext from '../../../../../context/dapp-swap';
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
 
 jest.mock('../../../../../../../../shared/modules/selectors');
@@ -154,10 +154,12 @@ describe('SelectedGasFeeToken', () => {
   });
 
   it('does not render arrow icon if quoted swap displayed in info', () => {
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+    jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
       isQuotedSwapDisplayedInInfo: true,
-      currentConfirmation: genUnapprovedContractInteractionConfirmation(),
-    } as ReturnType<typeof ConfirmContext.useConfirmContext>);
+      selectedQuote: undefined,
+      setSelectedQuote: jest.fn(),
+      setQuotedSwapDisplayedInInfo: jest.fn(),
+    } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
     const result = renderWithConfirmContextProvider(
       <SelectedGasFeeToken />,

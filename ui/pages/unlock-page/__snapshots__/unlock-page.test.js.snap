@@ -85,6 +85,9 @@ exports[`Unlock Page should match snapshot 1`] = `
         </p>
       </div>
     </form>
+    <div
+      class="mm-box"
+    />
   </div>
 </div>
 `;
