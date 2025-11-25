@@ -165,11 +165,6 @@ export const handleTransactionFailed = async (
     extraParams.error = transactionEventPayload.error;
   }
 
-  extraParams.hash = getTransactionHash(
-    transactionMetricsRequest,
-    transactionEventPayload,
-  );
-
   await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.finalized,
     extraParams,
@@ -221,11 +216,6 @@ export const handleTransactionConfirmed = async (
     extraParams.status = METRICS_STATUS_FAILED;
   }
 
-  extraParams.hash = getTransactionHash(
-    transactionMetricsRequest,
-    transactionEventPayload,
-  );
-
   await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.finalized,
     extraParams,
@@ -254,10 +244,6 @@ export const handleTransactionDropped = async (
 
   const extraParams = {
     dropped: true,
-    hash: getTransactionHash(
-      transactionMetricsRequest,
-      transactionEventPayload,
-    ),
   };
 
   await createUpdateFinalizeTransactionEventFragment({
@@ -1117,6 +1103,8 @@ async function buildEventFragmentProperties({
     transactionMetricsRequest.getAccountBalance,
   );
 
+  addHashProperty(transactionMeta, properties, transactionMetricsRequest);
+
   // Only calculate and add domain to properties for "Transaction Submitted" and "Transaction Finalized" events
   if (
     status === TransactionStatus.submitted ||
@@ -1426,22 +1414,27 @@ function determineTransactionTypeAndContractInteraction(
   };
 }
 
-function getTransactionHash(
+function addHashProperty(
+  transactionMeta: TransactionMeta,
+  properties: Record<string, Json | undefined>,
   transactionMetricsRequest: TransactionMetricsRequest,
-  transactionEventPayload:
-    | TransactionMetaEventPayload
-    | TransactionEventPayload,
 ) {
   const isExtensionUxPna25Enabled =
     transactionMetricsRequest.getFeatureFlags()?.extensionUxPna25;
+  const isPna25Acknowledged = transactionMetricsRequest.getPna25Acknowledged();
+  const isMetricsOptedIn = transactionMetricsRequest.getParticipateInMetrics();
+  const isFinalisedStatus = [
+    TransactionStatus.confirmed,
+    TransactionStatus.dropped,
+    TransactionStatus.failed,
+  ].includes(transactionMeta.status);
 
-  // There will be an extra condition to check if user already seen the "privacy notice update" toast
-  if (isExtensionUxPna25Enabled) {
-    return (
-      (transactionEventPayload as TransactionMetaEventPayload).hash ||
-      (transactionEventPayload as TransactionEventPayload).transactionMeta.hash
-    );
+  if (
+    isExtensionUxPna25Enabled &&
+    isPna25Acknowledged &&
+    isMetricsOptedIn &&
+    isFinalisedStatus
+  ) {
+    properties.hash = transactionMeta.hash;
   }
-
-  return undefined;
 }
