@@ -431,8 +431,8 @@ import {
   ClaimsControllerInit,
   ClaimsServiceInit,
 } from './controller-init/claims';
-import { UserProfileControllerInit } from './controller-init/user-profile-controller-init';
-import { UserProfileServiceInit } from './controller-init/user-profile-service-init';
+import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
+import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -663,8 +663,8 @@ export default class MetamaskController extends EventEmitter {
       AnnouncementController: AnnouncementControllerInit,
       RewardsDataService: RewardsDataServiceInit,
       RewardsController: RewardsControllerInit,
-      UserProfileController: UserProfileControllerInit,
-      UserProfileService: UserProfileServiceInit,
+      ProfileMetricsController: ProfileMetricsControllerInit,
+      ProfileMetricsService: ProfileMetricsServiceInit,
     };
 
     const {
@@ -778,8 +778,8 @@ export default class MetamaskController extends EventEmitter {
     this.rewardsController = controllersByName.RewardsController;
     this.claimsController = controllersByName.ClaimsController;
     this.claimsService = controllersByName.ClaimsService;
-    this.userProfileController = controllersByName.UserProfileController;
-    this.userProfileService = controllersByName.UserProfileService;
+    this.profileMetricsController = controllersByName.ProfileMetricsController;
+    this.profileMetricsService = controllersByName.ProfileMetricsService;
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -1183,7 +1183,7 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
-      UserProfileController: this.userProfileController,
+      ProfileMetricsController: this.profileMetricsController,
       ...resetOnRestartStore,
       ...controllerPersistedState,
     });
@@ -1250,7 +1250,7 @@ export default class MetamaskController extends EventEmitter {
         ClaimsService: this.claimsService,
         ...resetOnRestartStore,
         ...controllerMemState,
-        UserProfileController: this.userProfileController,
+        ProfileMetricsController: this.profileMetricsController,
       },
       controllerMessenger: this.controllerMessenger,
     });

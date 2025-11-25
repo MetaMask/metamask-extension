@@ -1,4 +1,4 @@
-import { UserProfileControllerMessenger } from '@metamask/user-profile-controller';
+import { ProfileMetricsControllerMessenger } from '@metamask/profile-metrics-controller';
 import {
   Messenger,
   MessengerActions,
@@ -6,9 +6,9 @@ import {
 } from '@metamask/messenger';
 import { RootMessenger } from '../../lib/messenger';
 
-type AllowedActions = MessengerActions<UserProfileControllerMessenger>;
+type AllowedActions = MessengerActions<ProfileMetricsControllerMessenger>;
 
-type AllowedEvents = MessengerEvents<UserProfileControllerMessenger>;
+type AllowedEvents = MessengerEvents<ProfileMetricsControllerMessenger>;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -17,23 +17,23 @@ type AllowedEvents = MessengerEvents<UserProfileControllerMessenger>;
  * @param messenger - The base messenger used to create the restricted
  * messenger.
  */
-export function getUserProfileControllerMessenger(
+export function getProfileMetricsControllerMessenger(
   messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  const userProfileControllerMessenger = new Messenger<
-    'UserProfileController',
+  const controllerMessenger = new Messenger<
+    'ProfileMetricsController',
     AllowedActions,
     AllowedEvents,
     typeof messenger
   >({
-    namespace: 'UserProfileController',
+    namespace: 'ProfileMetricsController',
     parent: messenger,
   });
   messenger.delegate({
-    messenger: userProfileControllerMessenger,
+    messenger: controllerMessenger,
     actions: [
       'AccountsController:listAccounts',
-      'UserProfileService:updateProfile',
+      'ProfileMetricsService:updateProfile',
     ],
     events: [
       'AccountsController:accountAdded',
@@ -41,5 +41,5 @@ export function getUserProfileControllerMessenger(
       'KeyringController:unlock',
     ],
   });
-  return userProfileControllerMessenger;
+  return controllerMessenger;
 }

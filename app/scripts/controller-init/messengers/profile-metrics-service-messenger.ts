@@ -1,4 +1,4 @@
-import { UserProfileServiceMessenger } from '@metamask/user-profile-controller';
+import { ProfileMetricsServiceMessenger } from '@metamask/profile-metrics-controller';
 import {
   Messenger,
   MessengerActions,
@@ -6,9 +6,9 @@ import {
 } from '@metamask/messenger';
 import { RootMessenger } from '../../lib/messenger';
 
-type AllowedActions = MessengerActions<UserProfileServiceMessenger>;
+type AllowedActions = MessengerActions<ProfileMetricsServiceMessenger>;
 
-type AllowedEvents = MessengerEvents<UserProfileServiceMessenger>;
+type AllowedEvents = MessengerEvents<ProfileMetricsServiceMessenger>;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -17,16 +17,16 @@ type AllowedEvents = MessengerEvents<UserProfileServiceMessenger>;
  * @param messenger - The base messenger used to create the restricted
  * messenger.
  */
-export function getUserProfileServiceMessenger(
+export function getProfileMetricsServiceMessenger(
   messenger: RootMessenger<AllowedActions, AllowedEvents>,
-): UserProfileServiceMessenger {
+): ProfileMetricsServiceMessenger {
   const serviceMessenger = new Messenger<
-    'UserProfileService',
+    'ProfileMetricsService',
     AllowedActions,
     AllowedEvents,
     typeof messenger
   >({
-    namespace: 'UserProfileService',
+    namespace: 'ProfileMetricsService',
     parent: messenger,
   });
   messenger.delegate({
